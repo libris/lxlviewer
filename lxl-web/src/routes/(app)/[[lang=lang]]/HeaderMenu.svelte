@@ -18,7 +18,7 @@
 		<li><a data-sveltekit-reload href="help">{$page.data.t('header.help')}</a></li>
 		<li>
 			<a
-				class="flex items-center gap-2"
+				class="flex items-center gap-2 whitespace-nowrap"
 				href={otherLangUrl}
 				hreflang={otherLangCode}
 				data-sveltekit-reload

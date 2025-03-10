@@ -3,7 +3,7 @@
 	import BiList from '~icons/bi/list';
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
-	import SuperSearchWrapper from '$lib/components/SuperSearchWrapper.svelte';
+	import SuperSearchWrapper from '$lib/components/supersearch/SuperSearchWrapper.svelte';
 
 	let showHeaderMenu = false;
 
