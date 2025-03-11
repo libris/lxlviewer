@@ -1,14 +1,9 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
 	import { page } from '$app/stores';
 	import BiList from '~icons/bi/list';
-	import Search from '$lib/components/Search.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
 	import SuperSearchWrapper from '$lib/components/supersearch/SuperSearchWrapper.svelte';
-
-	let useSuperSearch =
-		env?.PUBLIC_USE_SUPERSEARCH === 'true' || $page.url.searchParams.get('_x') === 'supersearch';
 
 	let showHeaderMenu = false;
 
@@ -28,12 +23,8 @@
 				>
 			</a>
 		</div>
-		<div class="search pb-4 md:px-4 md:pb-0">
-			{#if useSuperSearch}
-				<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
-			{:else}
-				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
-			{/if}
+		<div class="search pb-4 sm:px-4 sm:pb-0">
+			<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
 		</div>
 		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
 			<div id="header-menu" class="hidden items-center md:flex">
@@ -65,7 +56,7 @@
 			'home . actions'
 			'search search search';
 
-		@media screen and (min-width: theme('screens.md')) {
+		@media screen and (min-width: theme('screens.sm')) {
 			grid-template-areas: 'home search actions';
 		}
 	}
