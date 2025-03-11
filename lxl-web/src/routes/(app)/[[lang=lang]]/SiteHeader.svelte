@@ -23,7 +23,7 @@
 				>
 			</a>
 		</div>
-		<div class="search px-4">
+		<div class="search pb-4 sm:px-4 sm:pb-0">
 			<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
 		</div>
 		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
@@ -56,7 +56,7 @@
 			'home . actions'
 			'search search search';
 
-		@media screen and (min-width: theme('screens.md')) {
+		@media screen and (min-width: theme('screens.sm')) {
 			grid-template-areas: 'home search actions';
 		}
 	}
