@@ -74,7 +74,7 @@
 					{item.typeStr}
 				</strong>
 				<span class="text-xs">
-					{#if item.typeStr.length}
+					{#if item.typeStr?.length}
 						<span class="divider">{' • '}</span>
 					{/if}
 					{#each item?.[LensType.WebCardFooter]?._display as obj}
