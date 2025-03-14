@@ -60,5 +60,10 @@
 	},
 	"dependencies": {
 		"dotenv": "^16.4.7"
+	},
+	"overrides": {
+		"vite": {
+			"esbuild": "^0.25.0"
+		}
 	}
 }

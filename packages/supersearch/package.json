@@ -64,5 +64,10 @@
 		"typescript-eslint": "^8.26.1",
 		"vite": "^6.2.2",
 		"vitest": "^3.0.8"
+	},
+	"overrides": {
+		"vite": {
+			"esbuild": "^0.25.0"
+		}
 	}
 }
