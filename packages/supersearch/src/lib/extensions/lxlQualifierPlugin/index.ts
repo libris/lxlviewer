@@ -2,11 +2,17 @@ import {
 	Decoration,
 	EditorView,
 	ViewPlugin,
-	ViewUpdate,
+	type ViewUpdate,
 	WidgetType,
 	type DecorationSet
 } from '@codemirror/view';
-import { EditorState, Range, RangeSet, RangeSetBuilder, RangeValue } from '@codemirror/state';
+import {
+	EditorState,
+	RangeSet,
+	RangeSetBuilder,
+	type Range,
+	type RangeValue
+} from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
 import QualifierComponent from './QualifierComponent.svelte';
