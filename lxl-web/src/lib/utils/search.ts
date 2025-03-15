@@ -23,7 +23,7 @@ import {
 
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
-import { getTranslator, type translateFn } from '$lib/i18n';
+import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
@@ -92,7 +92,7 @@ export function displayMappings(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn,
+	translate: TranslateFn,
 	usePath?: string
 ): DisplayMapping[] {
 	const mapping = view.search?.mapping || [];
@@ -215,7 +215,7 @@ function displayFacetGroups(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn,
+	translate: TranslateFn,
 	usePath?: string
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
@@ -267,7 +267,7 @@ function displayBoolFilters(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn,
+	translate: TranslateFn,
 	usePath?: string
 ): FacetGroup {
 	const filters = view.stats?._boolFilters || [];
