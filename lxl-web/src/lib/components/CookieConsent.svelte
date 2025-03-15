@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import * as CookieConsent from 'vanilla-cookieconsent';
 	import 'vanilla-cookieconsent/dist/cookieconsent.css';
-	import svTranslations from '$lib/i18n/locales/cookieConsent.sv';
-	import enTranslations from '$lib/i18n/locales/cookieConsent.en';
+	import svTranslations from '$lib/i18n/cookieConsent/sv';
+	import enTranslations from '$lib/i18n/cookieConsent/en';
 	import { page } from '$app/stores';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 
