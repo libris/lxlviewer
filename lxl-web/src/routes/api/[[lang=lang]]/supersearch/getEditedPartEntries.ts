@@ -38,8 +38,9 @@ function getEditedPartEntries(
 			const baseClasses = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
 
 			if (baseClasses.length) {
+				const unquotedQualifierValue = qualifierValue.replaceAll(/(^")?("$)?/g, '');
 				return [
-					['_q', `${qualifierValue} "rdf:type":(${baseClasses.join(' OR ')})`],
+					['_q', `${unquotedQualifierValue} "rdf:type":(${baseClasses.join(' OR ')})`], // Use unquoted value as a temporary work-around for the issue where contributor:"Astrid Lindgren" didn't give any results (as the search index uses last name + first name)
 					['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
 				];
 			}
