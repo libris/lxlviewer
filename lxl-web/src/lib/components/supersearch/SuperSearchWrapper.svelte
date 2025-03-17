@@ -38,8 +38,6 @@
 		p.delete('_p');
 		return p;
 	});
-
-	const paramsArr = $derived(Array.from(pageParams));
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
 	afterNavigate(({ to }) => {
@@ -345,7 +343,7 @@
 			{/if}
 		{/snippet}
 	</SuperSearch>
-	{#each paramsArr as [name, value]}
+	{#each Array.from(pageParams) as [name, value]}
 		{#if name !== '_q'}
 			<input type="hidden" {name} {value} />
 		{/if}
