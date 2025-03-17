@@ -29,14 +29,15 @@
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 	let showMoreFilters = $state(false);
 
-	let params = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
-	// Always reset these params on new search
-	params.set('_offset', '0');
-	params.delete('_i');
-	params.delete('_o');
-	params.delete('_p');
-	const searchParams = Array.from(params);
-
+	let pageParams = $derived.by(() => {
+		let p = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
+		// Always reset these params on new search
+		p.set('_offset', '0');
+		p.delete('_i');
+		p.delete('_o');
+		p.delete('_p');
+		return p;
+	});
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
 	afterNavigate(({ to }) => {
@@ -113,15 +114,15 @@
 	function removeQualifier(qualifier: string) {
 		const newQ = addSpaceIfEndingQualifier(q.replace(qualifier, '').trim());
 		const insertCursor = Math.min(q.indexOf(qualifier), newQ.length);
-		const newUrl = new URLSearchParams(params);
-		newUrl.set('_q', newQ.trim() ? newQ : '*');
+		const newSearchParams = new URLSearchParams(pageParams);
+		newSearchParams.set('_q', newQ.trim() ? newQ : '*');
 
 		superSearch?.dispatchChange({
 			change: { from: 0, to: q.length, insert: newQ },
 			selection: { anchor: insertCursor, head: insertCursor },
 			userEvent: 'delete'
 		});
-		goto('/find?' + newUrl.toString());
+		goto('/find?' + newSearchParams.toString());
 	}
 
 	let derivedLxlQualifierPlugin = $derived.by(() => {
@@ -135,11 +136,9 @@
 	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
 
 	function getFullQualifierLink(q: string) {
-		const params = new URLSearchParams($page.url.searchParams.toString());
-		params.set('_q', q);
-		params.delete('_i');
-		params.set('_offset', '0');
-		return `/find?${params.toString()}`;
+		const newParams = new URLSearchParams(pageParams);
+		newParams.set('_q', q);
+		return `/find?${newParams.toString()}`;
 	}
 </script>
 
@@ -344,7 +343,7 @@
 			{/if}
 		{/snippet}
 	</SuperSearch>
-	{#each searchParams as [name, value]}
+	{#each Array.from(pageParams) as [name, value]}
 		{#if name !== '_q'}
 			<input type="hidden" {name} {value} />
 		{/if}
