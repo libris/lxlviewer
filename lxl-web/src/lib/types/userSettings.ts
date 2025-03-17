@@ -4,6 +4,9 @@ interface SettingsObj {
 	facetSort: {
 		[dimension: string]: string;
 	};
+	myLibraries: {
+		[id: string]: string;
+	};
 	debug: DebugFlags[];
 }
 
