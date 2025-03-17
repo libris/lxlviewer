@@ -99,7 +99,7 @@
 <article>
 	<div class="resource gap-8 find-layout page-padding" class:bg-header={shouldShowHeaderBackground}>
 		<div
-			class="mb-2 mt-4 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
+			class="image mb-2 mt-4 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
 		>
 			{#if data.images.length}
@@ -127,7 +127,7 @@
 						<DecoratedData data={data.overview} block />
 						{#if Object.keys(data.holdersByType).length}
 							<ul class="flex w-fit flex-wrap gap-2">
-								{#each Object.keys(data.holdersByType) as type}
+								{#each Object.keys(data.holdersByType) as type (type)}
 									<li>
 										<a
 											href={getHoldingsLink($page.url, type)}

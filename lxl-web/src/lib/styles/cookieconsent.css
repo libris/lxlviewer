@@ -1,0 +1,22 @@
+/* heading */
+#cc-main .cm__title,
+#cc-main .pm__title {
+	@apply text-primary text-4-cond-bold;
+}
+
+/* subheading */
+#cc-main .pm__section-title {
+	@apply text-primary text-3-cond;
+}
+
+/* body text */
+#cc-main .cm__desc,
+#cc-main .pm__section-desc {
+	@apply text-primary text-2-regular;
+}
+
+/* btns */
+#cc-main .cm__btn,
+#cc-main .pm__btn {
+	@apply text-3-cond;
+}

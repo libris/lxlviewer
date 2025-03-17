@@ -1,4 +1,4 @@
-import { EditorState, RangeSet, RangeValue, type TransactionSpec } from '@codemirror/state';
+import { EditorState, RangeSet, type RangeValue, type TransactionSpec } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 
 /**

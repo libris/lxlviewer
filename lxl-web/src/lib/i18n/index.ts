@@ -1,21 +1,18 @@
-// import { dev } from '$app/environment';
 import { interpolate } from './interpolate';
 import { defaultLocale, type LocaleCode } from './locales';
-import sv from './locales/sv.js';
 
-export type translateFn = {
+export type TranslateFn = {
 	(key: string, values?: { [key: string]: string }): string;
 };
 
-// always import default translation?
-const loadedTranslations: Record<string, typeof sv> = {
-	sv
-};
-
 export async function getTranslator(locale: LocaleCode) {
-	if (!loadedTranslations[locale]) {
+	const loadedTranslations: Record<string, string> = {};
+	try {
 		loadedTranslations[locale] = (await import(`./locales/${locale}.js`)).default;
-		// add error handling?
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	} catch (e) {
+		console.error('failed to load locale file for ', locale);
+		loadedTranslations[defaultLocale] = (await import(`./locales/${defaultLocale}.js`)).default;
 	}
 
 	return (key: string, values?: { [key: string]: string }): string => {
@@ -29,7 +26,7 @@ export async function getTranslator(locale: LocaleCode) {
 		const item = rest.join('.');
 
 		// @ts-expect-error - how to typecheck??
-		const localeResult = loadedTranslations[locale][section]?.[item];
+		const localeResult = loadedTranslations?.[locale]?.[section]?.[item];
 
 		if (localeResult) {
 			return interpolate(localeResult, values);
@@ -44,12 +41,7 @@ export async function getTranslator(locale: LocaleCode) {
 			return interpolate(fallbackResult, values);
 		}
 
-		const error = `Missing fallback translation for ${key}`;
-		// if (dev) {
-		// 	throw new Error(error);
-		// }
-
-		console.error(error);
+		console.error(`Missing fallback translation for ${key}`);
 		return key;
 	};
 }
