@@ -105,7 +105,7 @@ export default {
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
-		contributorLabel: 'Medverkan',
+		contributorLabel: 'Medverkande',
 		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
 		titleKey: 'titel',
 		titleLabel: 'Titel',
