@@ -114,15 +114,15 @@
 	function removeQualifier(qualifier: string) {
 		const newQ = addSpaceIfEndingQualifier(q.replace(qualifier, '').trim());
 		const insertCursor = Math.min(q.indexOf(qualifier), newQ.length);
-		const newUrl = new URLSearchParams(pageParams);
-		newUrl.set('_q', newQ.trim() ? newQ : '*');
+		const newSearchParams = new URLSearchParams(pageParams);
+		newSearchParams.set('_q', newQ.trim() ? newQ : '*');
 
 		superSearch?.dispatchChange({
 			change: { from: 0, to: q.length, insert: newQ },
 			selection: { anchor: insertCursor, head: insertCursor },
 			userEvent: 'delete'
 		});
-		goto('/find?' + newUrl.toString());
+		goto('/find?' + newSearchParams.toString());
 	}
 
 	let derivedLxlQualifierPlugin = $derived.by(() => {
