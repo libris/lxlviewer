@@ -75,10 +75,11 @@
 	function handleShouldShowStartContent(value: string, selection?: Selection) {
 		if (selection && selection.anchor == selection.head) {
 			const tree = lxlQuery.language.parser.parse(value);
-			const node = tree.resolveInner(selection.head, -1);
+			const nodeLeft = tree.resolveInner(selection.head, -1);
+			const nodeRight = tree.resolveInner(selection.head, 1);
 
 			/** Start content should be shown when the cursor isn't placed inside a qualifier or edited string part */
-			if (!node.parent?.name) {
+			if (!nodeLeft.parent?.name && !nodeRight.parent?.name) {
 				return true;
 			}
 		}
