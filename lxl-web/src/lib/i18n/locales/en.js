@@ -114,7 +114,11 @@ export default {
 		add: 'Add',
 		addAs: 'Add as',
 		goTo: 'Go to',
-		goToResource: 'Go to the resource'
+		goToResource: 'Go to the resource',
+		limitToLibraries: 'Limit to my libraries',
+		addLibraries: 'Add libraries',
+		noAddedLibrariesText:
+			'You have not chosen any favourite libraries. To do that, click the "Add libraries" link.'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
