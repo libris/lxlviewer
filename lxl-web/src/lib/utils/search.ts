@@ -18,7 +18,8 @@ import {
 	type MultiSelectFacet,
 	type FacetGroup,
 	type ApiItemDebugInfo,
-	type ItemDebugInfo
+	type ItemDebugInfo,
+	type LibraryResult
 } from '$lib/types/search';
 
 import { LxlLens } from '$lib/types/display';
@@ -30,6 +31,22 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 // import { error } from '@sveltejs/kit';
 // import { env } from '$env/dynamic/public';
+
+export async function asLibraryResult(
+	view: PartialCollectionView,
+	displayUtil: DisplayUtil,
+	locale: LangCode
+): Promise<LibraryResult> {
+	return {
+		totalItems: view.totalItems,
+		maxItems: view.maxItems,
+		items: view.items?.map((i) => ({
+			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
+			label: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale)) as string,
+			sigel: i.sigel as string
+		}))
+	};
+}
 
 export async function asResult(
 	view: PartialCollectionView,

@@ -1,3 +1,5 @@
+import type { LibraryItem } from '$lib/types/search';
+
 export type UserSettings = SettingsObj | undefined;
 
 interface SettingsObj {
@@ -5,7 +7,7 @@ interface SettingsObj {
 		[dimension: string]: string;
 	};
 	myLibraries: {
-		[id: string]: string;
+		[id: string]: LibraryItem;
 	};
 	debug: DebugFlags[];
 }
