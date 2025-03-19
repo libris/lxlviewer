@@ -20,7 +20,7 @@
 		debouncedWait
 	});
 
-	let myLibraries = $state($page.data.userSettings?.myLibraries || []);
+	let myLibraries = $state($page.data.userSettings?.myLibraries || {});
 
 	function handleInputChange() {
 		search.debouncedFetchData(searchPhrase);
@@ -79,11 +79,21 @@
 										<div class="px-3 py-1">
 											{resultItem.label}
 										</div>
-										<button
-											class="button-ghost mx-4 text-nowrap"
-											type="submit"
-											onclick={() => addFavorite(resultItem)}>Lägg till</button
-										>
+										{#if !myLibraries?.[resultItem['@id']]}
+											<button
+												class="button-ghost mx-4 text-nowrap"
+												type="submit"
+												onclick={() => addFavorite(resultItem)}
+												>Lägg till
+											</button>
+										{:else}
+											<button
+												class="button-ghost mx-4 text-nowrap"
+												type="submit"
+												onclick={() => removeFavorite(resultItem.id)}
+												>Ta bort
+											</button>
+										{/if}
 									</div>
 								{/each}
 							</div>
