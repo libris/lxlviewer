@@ -5,9 +5,21 @@ export default {
 	},
 	header: {
 		help: 'Help',
+		myPages: 'My pages',
 		changeLang: 'På svenska',
 		searchPlaceholder: 'Title, author, subject etc.',
 		openMenu: 'Open main menu'
+	},
+	myPages: {
+		myPages: 'My pages',
+		libraries: 'Libraries',
+		favoriteLibraries: 'My favorite libraries',
+		findLibrary: 'Search for libraries',
+		findAndAdd: 'Find and add favorite libraries',
+		noResultsFor: 'No results for',
+		hitsFor: 'hits for',
+		add: 'Add',
+		remove: 'Remove'
 	},
 	footer: {
 		logo: 'National Library of Sweden logotype',

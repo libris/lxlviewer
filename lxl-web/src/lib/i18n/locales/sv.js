@@ -10,7 +10,15 @@ export default {
 		openMenu: 'Öppna huvudmeny'
 	},
 	myPages: {
-		findLibrary: 'Sök efter bibliotek'
+		myPages: 'Mina sidor',
+		libraries: 'Bibliotek',
+		favoriteLibraries: 'Mina favoritbibliotek',
+		findLibrary: 'Sök efter bibliotek',
+		findAndAdd: 'Hitta och lägg till favoritbibliotek',
+		noResultsFor: 'Inga sökträffar för',
+		hitsFor: 'träffar för',
+		add: 'Lägg till',
+		remove: 'Ta bort'
 	},
 	footer: {
 		logo: 'Kungliga bibliotekets logotyp',
