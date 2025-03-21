@@ -9,7 +9,8 @@
 	import { userSettings } from '$lib/utils/userSettings.svelte';
 
 	const { children } = $props();
-	userSettings.update('name', page.data?.userSettings?.name);
+
+	userSettings.init(page.data?.userSettings);
 
 	NProgress.configure({
 		//https://github.com/rstacruz/nprogress#configuration

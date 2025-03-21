@@ -1,4 +1,4 @@
-import { JsonLd } from "./xl";
+import { JsonLd } from './xl';
 
 export interface LibraryItem {
 	[JsonLd.ID]: string;
@@ -6,12 +6,12 @@ export interface LibraryItem {
 	sigel: string;
 }
 
-export interface UserSettingsType {
-	facetSort: {
+export interface UserSettings {
+	facetSort?: {
 		[dimension: string]: string;
 	};
-	debug: DebugFlags[];
-	myLibraries?: LibraryItem[]
+	myLibraries?: Record<string, LibraryItem>;
+	debug?: DebugFlags[];
 }
 
 export enum DebugFlags {
