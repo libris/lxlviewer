@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import type { UserSettingsType } from '$lib/types/userSettings';
+import type { UserSettings as UserSettingsType } from '$lib/types/userSettings';
 
 // type UserState = {
 // 	settings: UserSettings | null
@@ -87,7 +87,7 @@ function UserSettings() {
 
 		const cookie = {
 			[namespace]: value
-		}
+		};
 		setCookie(cookie);
 	}
 
@@ -105,24 +105,23 @@ function UserSettings() {
 		},
 		init,
 		update
-	}
+	};
 }
 
 function createName() {
 	// let name = userSettings.name;
 
 	function setName(n: string) {
-		userSettings.update('name', n)
+		userSettings.update('name', n);
 		// name = n;
 	}
 	return {
 		get is() {
-			return userSettings.name
+			return userSettings.name;
 		},
 		setName
-	}
+	};
 }
 
 export const userSettings = UserSettings();
 export const myName = createName();
-

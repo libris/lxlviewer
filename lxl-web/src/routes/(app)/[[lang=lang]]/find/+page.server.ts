@@ -11,7 +11,6 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
-	const userSettings = locals.userSettings;
 
 	if (!url.searchParams.size) {
 		redirect(303, `/`); // redirect to home page if no search params are given
@@ -45,5 +44,5 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	const searchResult = await asResult(result, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 
-	return { searchResult, userSettings };
+	return { searchResult };
 };

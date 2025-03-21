@@ -13,8 +13,8 @@ export const handle = async ({ event, resolve }) => {
 	event.locals.vocab = vocabUtil;
 	event.locals.display = displayUtil;
 
-	// Get the settings cookie
-	let userSettings: UserSettings;
+	// Parse & return settings cookie
+	let userSettings: UserSettings = {};
 	const settingsCookie = event.cookies.get('userSettings');
 	if (settingsCookie) {
 		try {
@@ -32,7 +32,6 @@ export const handle = async ({ event, resolve }) => {
 			flags = [];
 		}
 
-		userSettings = userSettings || ({} as UserSettings);
 		userSettings.debug = flags;
 		event.cookies.set('userSettings', JSON.stringify(userSettings), {
 			maxAge: 365,
