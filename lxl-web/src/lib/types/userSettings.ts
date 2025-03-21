@@ -1,8 +1,12 @@
-import type { LibraryItem } from '$lib/types/search';
+import { JsonLd } from "./xl";
 
-export type UserSettings = SettingsObj | undefined;
+export interface LibraryItem {
+	[JsonLd.ID]: string;
+	label: string;
+	sigel: string;
+}
 
-interface SettingsObj {
+export interface UserSettingsType {
 	facetSort: {
 		[dimension: string]: string;
 	};

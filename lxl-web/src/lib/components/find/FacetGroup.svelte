@@ -8,7 +8,7 @@
 		DEFAULT_FACET_SORT,
 		CUSTOM_FACET_SORT
 	} from '$lib/constants/facets';
-	import { saveUserSetting } from '$lib/utils/userSettings';
+	import { saveUserSetting } from '$lib/utils/userSettings.svelte';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';
 	import FacetRange from './FacetRange.svelte';
@@ -63,7 +63,7 @@
 
 	function saveUserSort(e: Event): void {
 		const target = e.target as HTMLSelectElement;
-		saveUserSetting('facetSort', { [group.dimension]: target.value });
+		// saveUserSetting('facetSort', { [group.dimension]: target.value });
 
 		// testing analytics event tracker
 		if ($matomoTracker) {
@@ -111,7 +111,7 @@
 				class="appearance-none px-6 py-1 text-2-regular"
 				aria-label={$page.data.t('sort.sort') + ' ' + $page.data.t('search.filters')}
 			>
-				{#each sortOptions as option}
+				{#each sortOptions as option (option.value)}
 					<option value={option.value}>{option.label}</option>
 				{/each}
 			</select>

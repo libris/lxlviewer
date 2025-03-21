@@ -1,10 +1,15 @@
 <script lang="ts">
 	import '../app.css';
+	import { page } from '$app/state';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import NProgress from 'nprogress';
 	import '$lib/styles/nprogress.css';
-	import { navigating } from '$app/stores';
 	import Matomo from '$lib/components/Matomo.svelte';
 	import CookieConsent from '$lib/components/CookieConsent.svelte';
+	import { userSettings } from '$lib/utils/userSettings.svelte';
+
+	const { children } = $props();
+	userSettings.update('name', page.data?.userSettings?.name);
 
 	NProgress.configure({
 		//https://github.com/rstacruz/nprogress#configuration
@@ -12,24 +17,23 @@
 		showSpinner: false
 	});
 
-	let progressBarTimeout: number | undefined = undefined;
-	const progressDelay = 200;
+	let progressBarTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
+	const progressDelay = 300;
 
-	$: {
-		if ($navigating) {
-			clearTimeout(progressBarTimeout);
-			progressBarTimeout = setTimeout(NProgress.start, progressDelay);
-		}
-		if (!$navigating) {
-			clearTimeout(progressBarTimeout);
-			NProgress.done();
-		}
-	}
+	beforeNavigate(() => {
+		clearTimeout(progressBarTimeout);
+		progressBarTimeout = setTimeout(NProgress.start, progressDelay);
+	});
+
+	afterNavigate(() => {
+		clearTimeout(progressBarTimeout);
+		NProgress.done();
+	});
 </script>
 
 <div class="body-layout grid min-h-screen">
 	<Matomo>
-		<slot />
+		{@render children()}
 		<CookieConsent />
 	</Matomo>
 </div>
