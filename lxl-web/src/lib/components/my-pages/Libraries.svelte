@@ -91,7 +91,7 @@
 											<button
 												class="button-ghost mx-4 text-nowrap"
 												type="submit"
-												onclick={() => removeFavorite(resultItem.id)}
+												onclick={() => removeFavorite(resultItem['@id'])}
 												>{$page.data.t('myPages.remove')}
 											</button>
 										{/if}
