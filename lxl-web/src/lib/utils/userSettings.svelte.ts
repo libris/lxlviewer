@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import type { UserSettings as UserSettingsType } from '$lib/types/userSettings';
+import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 
 // type UserState = {
 // 	settings: UserSettings | null
@@ -40,53 +40,25 @@ import type { UserSettings as UserSettingsType } from '$lib/types/userSettings';
 // 	}
 // }
 
-// class UserSettings {
-// 	facetSort = $state({});
-// 	myLibraries = $state({});
-// 	name = $state('');
+interface UserSettingsState {
+	value: UserSettings;
+}
 
-// 	constructor(settings: UserSettingsType) {
-// 		// this.settings = settings;
-// 		this.facetSort = settings?.facetSort || {};
-// 		this.myLibraries = settings?.myLibraries || {};
-// 		this.name = settings?.name || '';
-// 	}
+function createUserSettings() {
+	const settings: UserSettingsState = $state({ value: {} }); // todo test remove value
 
-// 	set(value: UserSettingsType) {
-// 		console.log('SET!', value)
-// 		this.name = value.name;
-// 		const cookie = value;
-// 		setCookie(cookie)
-// 	}
-
-// 	get n() {
-// 		return this.name;
-// 	}
-
-// 	update(namespace: string, value: unknown) {
-// 		// this.facetSort = settings?.facetSort || {};
-// 		// this.myLibraris = settings?.myLibraries || {};
-// 		const cookie = {
-// 			[namespace]: value
-// 		}
-// 		setCookie(cookie);
-// 	}
-// }
-
-function UserSettings() {
-	let settings: UserSettingsType | object = $state({});
-
-	function init(s: UserSettingsType) {
+	function init(s: UserSettings) {
 		if (s) {
-			settings = s;
+			settings.value = s;
 		}
 	}
 
-	function update(namespace, value) {
-		settings[namespace] = value;
+	function update(namespace: keyof UserSettings, v: unknown) {
+		settings.value[namespace] = v;
 
 		const cookie = {
-			[namespace]: value
+			...settings.value,
+			...{ [namespace]: v }
 		};
 		setCookie(cookie);
 	}
@@ -99,12 +71,40 @@ function UserSettings() {
 		});
 	}
 
+	function addLibrary(library: LibraryItem) {
+		const myLibs = { ...userSettings?.myLibraries };
+		if (!myLibs[library['@id']]) {
+			myLibs[library['@id']] = library;
+			userSettings.update('myLibraries', myLibs);
+		} else {
+			console.log('already in my favs!');
+		}
+	}
+
+	function removeLibrary(library: LibraryItem) {
+		const myLibs = { ...userSettings?.myLibraries };
+		if (myLibs[library['@id']]) {
+			delete myLibs[library['@id']];
+			userSettings.update('myLibraries', myLibs);
+		} else {
+			console.log('could not remove. Lib not found in fav libs');
+		}
+	}
+
 	return {
 		get name() {
-			return settings?.name;
+			return settings.value?.name;
+		},
+		get myLibraries() {
+			return settings.value?.myLibraries || {};
+		},
+		get facetSort() {
+			return settings.value?.facetSort;
 		},
 		init,
-		update
+		update,
+		addLibrary,
+		removeLibrary
 	};
 }
 
@@ -123,5 +123,5 @@ function createName() {
 	};
 }
 
-export const userSettings = UserSettings();
+export const userSettings = createUserSettings();
 export const myName = createName();

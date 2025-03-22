@@ -6,13 +6,13 @@ export interface LibraryItem {
 	sigel: string;
 }
 
-export interface UserSettings {
+export type UserSettings = {
 	facetSort?: {
 		[dimension: string]: string;
 	};
 	myLibraries?: Record<string, LibraryItem>;
 	debug?: DebugFlags[];
-}
+};
 
 export enum DebugFlags {
 	ES_SCORE = 'esScore'
