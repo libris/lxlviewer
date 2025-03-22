@@ -1,16 +1,12 @@
 <script lang="ts">
 	import '../app.css';
-	import { page } from '$app/state';
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import NProgress from 'nprogress';
 	import '$lib/styles/nprogress.css';
 	import Matomo from '$lib/components/Matomo.svelte';
 	import CookieConsent from '$lib/components/CookieConsent.svelte';
-	import { userSettings } from '$lib/utils/userSettings.svelte';
 
 	const { children } = $props();
-
-	userSettings.init(page.data?.userSettings);
 
 	NProgress.configure({
 		//https://github.com/rstacruz/nprogress#configuration

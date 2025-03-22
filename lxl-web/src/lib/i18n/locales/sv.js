@@ -115,7 +115,7 @@ export default {
 		goTo: 'Gå till',
 		goToResource: 'Gå till resursen',
 		limitToLibraries: 'Avgränsa till mina bibliotek',
-		addLibraries: 'Lägg till',
+		addLibraries: 'Lägg till bibliotek',
 		noAddedLibrariesText:
 			'Du har inte valt några favoritbibliotek. Klicka på “Lägg till”-länken nedan för att välja favoritbibliotek.'
 	},
