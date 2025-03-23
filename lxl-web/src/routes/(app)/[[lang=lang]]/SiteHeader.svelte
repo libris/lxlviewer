@@ -4,13 +4,8 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
 	import SuperSearchWrapper from '$lib/components/supersearch/SuperSearchWrapper.svelte';
-	import { myName } from '$lib/utils/userSettings.svelte';
 
 	let showHeaderMenu = false;
-
-	const renderName = $derived.by(() => {
-		return myName.is || $page.data?.userSettings?.name;
-	})
 
 	function toggleHeaderMenu() {
 		showHeaderMenu = !showHeaderMenu;
@@ -18,7 +13,6 @@
 </script>
 
 <header class="bg-site-header">
-	{renderName}
 	<nav class="header-nav min-h-20 items-center px-4 py-0">
 		<div class="home md:pl-4">
 			<a href={$page.data.base} class="flex flex-col text-primary no-underline md:flex-row">
