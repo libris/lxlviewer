@@ -1,16 +1,25 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { page } from '$app/state';
 	import popover from '$lib/actions/popover';
-	import { myName, userSettings } from '$lib/utils/userSettings.svelte';
+	import type { LibraryItem } from '$lib/types/userSettings';
+	import { userSettings } from '$lib/utils/userSettings.svelte';
 	import BiCheckSquareFill from '~icons/bi/check-square-fill';
 	import BiSquare from '~icons/bi/square';
 
-	const libraryValues = $derived(Object.values(userSettings.myLibraries));
-	const sigelString = $derived(
-		libraryValues.map((v) => `itemHeldBy:"sigel:${v.sigel}"`).join(' OR ')
+	const myLibraries: Record<string, LibraryItem> | undefined = $derived(
+		browser ? userSettings.myLibraries : page.data?.userSettings?.myLibraries || {}
 	);
 
+	const libraryValues = $derived(Object.values(myLibraries));
+
+	const sigelString = $derived.by(() => {
+		const sigelMap = libraryValues.map((v) => `itemHeldBy:"sigel:${v.sigel}"`).join(' OR ');
+		return libraryValues.length > 1 ? sigelMap.replace(/^/, '(').replace(/$/, ')') : sigelMap;
+	});
+
 	const searchParams = $derived(new URLSearchParams(page.data.searchResult.first['@id']));
+
 	const applyFilterUrl = $derived.by(() => {
 		const paramsCopy = new URLSearchParams(searchParams);
 		const q = paramsCopy.get('_q');
@@ -18,13 +27,17 @@
 		return decodeURIComponent(paramsCopy.toString());
 	});
 
-	//mutation?
-	const removeFilterUrl = $derived(applyFilterUrl.replace(sigelString, ''));
-	const isFilterActive = $derived(searchParams.get('_q')?.includes(sigelString));
+	const removeFilterUrl = $derived.by(() => {
+		const paramsCopy = new URLSearchParams(searchParams);
+		const q = paramsCopy.get('_q');
+		const newQ = q?.replaceAll(sigelString, '') || '*';
+		paramsCopy.set('_q', newQ);
+		return decodeURIComponent(paramsCopy.toString());
+	});
 
-	console.log(removeFilterUrl);
-	console.log(applyFilterUrl);
-	console.log(sigelString);
+	const isFilterActive = $derived(
+		libraryValues.length && searchParams.get('_q')?.toString().includes(sigelString)
+	);
 
 	const kb = {
 		'@id': '1234',
@@ -37,12 +50,6 @@
 		label: 'Göteborg',
 		sigel: 'Gbg'
 	};
-
-	let setName = $state('');
-
-	function onclickSetName() {
-		myName.setName(setName);
-	}
 </script>
 
 {#snippet filterContent()}
@@ -59,9 +66,13 @@
 	</div>
 {/snippet}
 
-<input bind:value={setName} />
-<button onclick={onclickSetName}>sätt namn</button>
-<p>{myName.is}</p>
+{#if myLibraries}
+	<div class="border">
+		{#each Object.entries(myLibraries) as [key, lib] (key)}
+			<p data-key={key}>{lib.label}</p>
+		{/each}
+	</div>
+{/if}
 <button onclick={() => userSettings.addLibrary(kb)}>Add S</button>
 <button onclick={() => userSettings.removeLibrary(kb)}>Remove S</button>
 <button onclick={() => userSettings.addLibrary(gbg)}>Add gbg</button>

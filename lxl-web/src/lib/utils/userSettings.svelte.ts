@@ -71,11 +71,15 @@ function createUserSettings() {
 		});
 	}
 
+	// function sortFacet() {
+
+	// }
+
 	function addLibrary(library: LibraryItem) {
 		const myLibs = { ...userSettings?.myLibraries };
 		if (!myLibs[library['@id']]) {
 			myLibs[library['@id']] = library;
-			userSettings.update('myLibraries', myLibs);
+			update('myLibraries', myLibs);
 		} else {
 			console.log('already in my favs!');
 		}
@@ -85,16 +89,13 @@ function createUserSettings() {
 		const myLibs = { ...userSettings?.myLibraries };
 		if (myLibs[library['@id']]) {
 			delete myLibs[library['@id']];
-			userSettings.update('myLibraries', myLibs);
+			update('myLibraries', myLibs);
 		} else {
 			console.log('could not remove. Lib not found in fav libs');
 		}
 	}
 
 	return {
-		get name() {
-			return settings.value?.name;
-		},
 		get myLibraries() {
 			return settings.value?.myLibraries || {};
 		},
@@ -102,26 +103,10 @@ function createUserSettings() {
 			return settings.value?.facetSort;
 		},
 		init,
-		update,
+		// update,
 		addLibrary,
 		removeLibrary
 	};
 }
 
-function createName() {
-	// let name = userSettings.name;
-
-	function setName(n: string) {
-		userSettings.update('name', n);
-		// name = n;
-	}
-	return {
-		get is() {
-			return userSettings.name;
-		},
-		setName
-	};
-}
-
 export const userSettings = createUserSettings();
-export const myName = createName();
