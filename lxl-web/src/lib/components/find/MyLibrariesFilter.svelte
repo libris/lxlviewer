@@ -55,7 +55,13 @@
 {#snippet filterContent()}
 	<div class="flex items-baseline gap-2">
 		<span class="sr-only">{isFilterActive ? page.data.t('search.activeFilter') : ''}</span>
-		<div class="flex h-[13px] w-[13px] rounded-sm bg-[white]" aria-hidden="true">
+		<div
+			class={[
+				'flex h-[13px] w-[13px] rounded-sm bg-[white]',
+				!libraryValues.length && 'text-primary/24'
+			]}
+			aria-hidden="true"
+		>
 			{#if isFilterActive}
 				<BiCheckSquareFill height="13px" />
 			{:else}
@@ -84,7 +90,7 @@
 		</a>
 	{:else}
 		<div
-			class="cursor-not-allowed text-primary/64"
+			class="cursor-not-allowed text-secondary"
 			use:popover={{
 				title: page.data.t('search.noAddedLibrariesText'),
 				placeAsSibling: true
