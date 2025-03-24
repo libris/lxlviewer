@@ -27,10 +27,10 @@
 			<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
 		</div>
 		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
-			<div id="header-menu" class="hidden items-center md:flex">
+			<div id="header-menu" class="hidden items-center min-[1370px]:flex">
 				<HeaderMenu />
 			</div>
-			<div class="md:hidden">
+			<div class="min-[1370px]:hidden">
 				<a
 					aria-label={$page.data.t('header.openMenu')}
 					class="button-ghost h-11 w-11 !p-0"
