@@ -1,45 +1,6 @@
 import Cookies from 'js-cookie';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 
-// type UserState = {
-// 	settings: UserSettings | null
-// }
-
-// export const userState: UserState = $state({ settings: null })
-
-// export function saveUserSetting(namespace: 'facetSort' | 'myLibraries', value: { [dimension: string]: string }) {
-// 	if (browser) {
-// 		console.log('hello from save', value)
-// 		const userSettings = Cookies.get('userSettings');
-// 		let newSettings;
-
-// 		if (userSettings) {
-// 			try {
-// 				const parsedSettings = JSON.parse(userSettings) as UserSettings;
-// 				if (parsedSettings) {
-// 					newSettings = {
-// 						...parsedSettings,
-// 						[namespace]: {
-// 							...(namespace in parsedSettings && parsedSettings[namespace]),
-// 							...value
-// 						}
-// 					};
-// 				}
-// 			} catch (e) {
-// 				console.warn(e);
-// 			}
-// 		} else {
-// 			newSettings = { [namespace]: value };
-// 		}
-// 		console.log('saving new settings', newSettings)
-// 		Cookies.set('userSettings', JSON.stringify(newSettings), {
-// 			expires: 365,
-// 			secure: true,
-// 			sameSite: 'strict'
-// 		});
-// 	}
-// }
-
 interface UserSettingsState {
 	value: UserSettings;
 }
@@ -53,12 +14,13 @@ function createUserSettings() {
 		}
 	}
 
-	function update(namespace: keyof UserSettings, v: unknown) {
-		settings.value[namespace] = v;
+	function update(setting: keyof UserSettings, v: unknown) {
+		// if (true) check if setting namespace is allowed
+		settings.value[setting] = v;
 
 		const cookie = {
 			...settings.value,
-			...{ [namespace]: v }
+			...{ [setting]: v }
 		};
 		setCookie(cookie);
 	}
@@ -71,9 +33,13 @@ function createUserSettings() {
 		});
 	}
 
-	// function sortFacet() {
-
-	// }
+	function saveFacetSort(facet: string, value: string) {
+		if (facet && value) {
+			const facetSort = { ...userSettings.facetSort };
+			facetSort[facet] = value;
+			update('facetSort', facetSort);
+		}
+	}
 
 	function addLibrary(library: LibraryItem) {
 		const myLibs = { ...userSettings?.myLibraries };
@@ -105,7 +71,8 @@ function createUserSettings() {
 		init,
 		// update,
 		addLibrary,
-		removeLibrary
+		removeLibrary,
+		saveFacetSort
 	};
 }
 
