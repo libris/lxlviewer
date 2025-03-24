@@ -13,9 +13,9 @@ export default {
 	myPages: {
 		myPages: 'My pages',
 		libraries: 'Libraries',
-		favoriteLibraries: 'My favorite libraries',
+		favouriteLibraries: 'My favourite libraries',
 		findLibrary: 'Search for libraries',
-		findAndAdd: 'Find and add favorite libraries',
+		findAndAdd: 'Find and add favourite libraries',
 		noResultsFor: 'No results for',
 		hitsFor: 'hits for',
 		add: 'Add',

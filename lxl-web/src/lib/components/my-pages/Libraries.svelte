@@ -26,13 +26,13 @@
 		search.debouncedFetchData(searchPhrase);
 	}
 
-	function addFavorite(item: LibraryItem) {
+	function addfavourite(item: LibraryItem) {
 		const toAdd = { [item['@id']]: item };
 		myLibraries = { ...toAdd, ...myLibraries };
 		saveUserSetting('myLibraries', toAdd);
 	}
 
-	function removeFavorite(id: string) {
+	function removefavourite(id: string) {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { [id]: removed, ...newMyLibraries } = myLibraries;
 		myLibraries = newMyLibraries;
@@ -86,14 +86,14 @@
 											<button
 												class="button-ghost mx-2 text-nowrap"
 												type="submit"
-												onclick={() => addFavorite(resultItem)}
+												onclick={() => addfavourite(resultItem)}
 												>{$page.data.t('myPages.add')}
 											</button>
 										{:else}
 											<button
 												class="button-ghost mx-2 text-nowrap"
 												type="submit"
-												onclick={() => removeFavorite(resultItem['@id'])}
+												onclick={() => removefavourite(resultItem['@id'])}
 												>{$page.data.t('myPages.remove')}
 											</button>
 										{/if}
@@ -106,7 +106,7 @@
 			</div>
 		</div>
 		<div class="md:ml-10 md:w-2/5">
-			<div class="text-3-cond-bold">{$page.data.t('myPages.favoriteLibraries')}</div>
+			<div class="text-3-cond-bold">{$page.data.t('myPages.favouriteLibraries')}</div>
 			<div class="py-2">
 				{#each Object.entries(myLibraries) as [id, item] (id)}
 					<div class="flex justify-between">
@@ -114,7 +114,7 @@
 							{item.label}
 						</div>
 						<div>
-							<button class="ml-5 text-nowrap" type="submit" onclick={() => removeFavorite(id)}
+							<button class="ml-5 text-nowrap" type="submit" onclick={() => removefavourite(id)}
 								>{$page.data.t('myPages.remove')}</button
 							>
 						</div>
