@@ -24,7 +24,9 @@
 						"hasNotation",
 						"hasVariant",
 						"inCollection",
-						"genreForm",
+						{
+							"alternateProperties": ["category", "genreForm"]
+						},
 						"subject",
 						"classification",
 						"intendedAudience",
@@ -75,7 +77,9 @@
 						"productionMethod",
 						"digitalCharacteristic",
 						"marc:mediaTerm",
-						"genreForm",
+						{
+							"alternateProperties": ["category", "genreForm"]
+						},
 						"classification",
 						"accompaniedBy",
 						"seriesMembership",
@@ -583,6 +587,16 @@
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["contribution"],
 			"fresnel:propertyStyle": ["nolabel"]
+		},
+		"category-format": {
+			"@id": "category-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["category"],
+			"fresnel:propertyStyle": [],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
 		},
 		"genreForm-format": {
 			"@id": "genreForm-format",
