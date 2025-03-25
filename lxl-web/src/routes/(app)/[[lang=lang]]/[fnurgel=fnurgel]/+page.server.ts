@@ -40,8 +40,13 @@ export const load = async ({ params, url, locals, fetch }) => {
 	}
 
 	if (!resourceRes.ok) {
-		const err = (await resourceRes.json()) as ApiError;
-		throw error(err.status_code, { message: err.message, status: err.status });
+		try {
+			const err = (await resourceRes.json()) as ApiError;
+			throw error(err.status_code, { message: err.message, status: err.status });
+		} catch (e) {
+			console.warn(e);
+			throw error(resourceRes?.status, { message: resourceRes?.statusText });
+		}
 	}
 
 	const resource = await resourceRes.json();

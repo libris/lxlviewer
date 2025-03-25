@@ -30,7 +30,7 @@ test.describe('English 404 page', () => {
 
 test.describe('Missing resource page', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/aaaaaaaaaaaaaaaa');
+		await page.goto('/5nxb2lhk30q35zdb');
 	});
 	test('has expected h1', async ({ page }) => {
 		await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
