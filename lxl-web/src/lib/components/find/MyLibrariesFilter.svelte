@@ -83,9 +83,9 @@
 	</div>
 {/if}
 <button onclick={() => userSettings.addLibrary(kb)}>Add S</button>
-<button onclick={() => userSettings.removeLibrary(kb)}>Remove S</button>
+<button onclick={() => userSettings.removeLibrary(kb['@id'])}>Remove S</button>
 <button onclick={() => userSettings.addLibrary(gbg)}>Add gbg</button>
-<button onclick={() => userSettings.removeLibrary(gbg)}>Remove gbg</button>
+<button onclick={() => userSettings.removeLibrary(gbg['@id'])}>Remove gbg</button>
 <div class="flex w-full gap-2 rounded-sm bg-positive/40 p-3 md:flex-col md:gap-1">
 	{#if libraryValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>
