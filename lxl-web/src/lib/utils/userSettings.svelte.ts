@@ -57,13 +57,13 @@ function createUserSettings() {
 		}
 	}
 
-	function removeLibrary(library: LibraryItem) {
+	function removeLibrary(libraryId: string) {
 		const myLibs = { ...userSettings?.myLibraries };
-		if (myLibs[library['@id']]) {
-			delete myLibs[library['@id']];
+		if (myLibs[libraryId]) {
+			delete myLibs[libraryId];
 			update('myLibraries', myLibs);
 		} else {
-			console.log('could not remove. Lib not found in fav libs');
+			console.log('could not remove. Not found in fav libs');
 		}
 	}
 
