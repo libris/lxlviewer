@@ -10,7 +10,9 @@ export type UserSettings = {
 	facetSort?: {
 		[dimension: string]: string;
 	};
-	myLibraries?: Record<string, LibraryItem>;
+	myLibraries?: {
+		[id: string]: LibraryItem;
+	};
 	debug?: DebugFlags[];
 };
 

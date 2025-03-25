@@ -5,8 +5,13 @@ interface UserSettingsState {
 	value: UserSettings;
 }
 
+enum availableSettings {
+	facetSort = 'facetSort',
+	myLibraries = 'myLibraries'
+}
+
 function createUserSettings() {
-	const settings: UserSettingsState = $state({ value: {} }); // todo test remove value
+	const settings: UserSettingsState = $state({ value: {} });
 
 	function init(s: UserSettings) {
 		if (s) {
@@ -14,15 +19,16 @@ function createUserSettings() {
 		}
 	}
 
-	function update(setting: keyof UserSettings, v: unknown) {
-		// if (true) check if setting namespace is allowed
-		settings.value[setting] = v;
+	function update(setting: keyof typeof availableSettings, v: Partial<UserSettings>) {
+		if (setting in availableSettings) {
+			const settingsValue = {
+				...settings.value,
+				...{ [setting]: v }
+			};
 
-		const cookie = {
-			...settings.value,
-			...{ [setting]: v }
-		};
-		setCookie(cookie);
+			settings.value = settingsValue;
+			setCookie(settingsValue);
+		}
 	}
 
 	function setCookie(value: unknown) {
@@ -69,7 +75,6 @@ function createUserSettings() {
 			return settings.value?.facetSort;
 		},
 		init,
-		// update,
 		addLibrary,
 		removeLibrary,
 		saveFacetSort

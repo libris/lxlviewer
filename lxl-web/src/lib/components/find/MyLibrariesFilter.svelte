@@ -100,6 +100,8 @@
 		</div>
 	{/if}
 	<a class="self-end text-secondary text-2-regular" href="/my-page"
-		>{page.data.t('search.addLibraries')}</a
+		>{libraryValues.length
+			? page.data.t('search.changeLibraries')
+			: page.data.t('search.addLibraries')}</a
 	>
 </div>
