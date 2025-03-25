@@ -24,7 +24,10 @@
 		const paramsCopy = new URLSearchParams(searchParams);
 		const q = paramsCopy.get('_q');
 		paramsCopy.set('_q', `${q} ${sigelString}`);
-		return decodeURIComponent(paramsCopy.toString());
+		// 'replace' is a hack to get around the fact that...
+		// to get this working on fnurgel pages, we need to modify o & p-links from the response
+		// that are *partially* encoded. Can't preserve that encoding using built in methods
+		return decodeURIComponent(paramsCopy.toString()).replace('#', '%23');
 	});
 
 	const removeFilterUrl = $derived.by(() => {
@@ -32,7 +35,7 @@
 		const q = paramsCopy.get('_q');
 		const newQ = q?.replaceAll(sigelString, '') || '*';
 		paramsCopy.set('_q', newQ);
-		return decodeURIComponent(paramsCopy.toString());
+		return decodeURIComponent(paramsCopy.toString()).replace('#', '%23');
 	});
 
 	const isFilterActive = $derived(
