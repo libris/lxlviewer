@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import BiSearch from '~icons/bi/search';
 	import { useSearchRequest } from 'supersearch';
 	import { removeUserSetting, saveUserSetting } from '$lib/utils/userSettings';
@@ -20,7 +20,7 @@
 		debouncedWait
 	});
 
-	let myLibraries = $state($page.data.userSettings?.myLibraries || {});
+	let myLibraries = $state(page.data.userSettings?.myLibraries || {});
 
 	function handleInputChange() {
 		search.debouncedFetchData(searchPhrase);
@@ -41,19 +41,19 @@
 </script>
 
 <div class="container-fluid mb-12 mt-8 w-screen max-w-full page-padding md:max-w-5xl">
-	<h1 class="mb-4 pl-2 text-6-cond-extrabold">{$page.data.t('myPages.myPages')}</h1>
-	<h1 class="mb-2 pl-2 text-3-cond-bold">{$page.data.t('myPages.libraries')}</h1>
+	<h1 class="mb-4 pl-2 text-6-cond-extrabold">{page.data.t('myPages.myPages')}</h1>
+	<h1 class="mb-2 pl-2 text-3-cond-bold">{page.data.t('myPages.libraries')}</h1>
 	<div
 		class="flex w-screen max-w-full flex-col justify-between rounded-md bg-primary/4 page-padding md:container md:max-w-5xl md:flex-row"
 	>
 		<div class="md:w-3/5">
-			{$page.data.t('myPages.findAndAdd')}
+			{page.data.t('myPages.findAndAdd')}
 			<div class="relative">
 				<BiSearch class="absolute left-2.5 top-6 text-sm text-icon" />
 				<input
 					bind:value={searchPhrase}
-					placeholder={$page.data.t('myPages.findLibrary')}
-					aria-label={$page.data.t('myPages.findLibrary')}
+					placeholder={page.data.t('myPages.findLibrary')}
+					aria-label={page.data.t('myPages.findLibrary')}
 					class="my-3 w-full pl-8"
 					oninput={handleInputChange}
 					type="search"
@@ -65,12 +65,12 @@
 						{#if totalHits && totalHits !== 0}
 							<div class="mb-3">
 								{totalHits}
-								{$page.data.t('myPages.hitsFor')} "{searchPhrase}"
+								{page.data.t('myPages.hitsFor')} "{searchPhrase}"
 							</div>
 						{/if}
 						{#if totalHits === 0}
 							<div class="mb-3">
-								{$page.data.t('myPages.noResultsFor')} "{searchPhrase}"
+								{page.data.t('myPages.noResultsFor')} "{searchPhrase}"
 							</div>
 						{/if}
 						{#if resultItems && resultItems.length !== 0}
@@ -87,14 +87,14 @@
 												class="button-ghost mx-2 text-nowrap"
 												type="submit"
 												onclick={() => addfavourite(resultItem)}
-												>{$page.data.t('myPages.add')}
+												>{page.data.t('myPages.add')}
 											</button>
 										{:else}
 											<button
 												class="button-ghost mx-2 text-nowrap"
 												type="submit"
 												onclick={() => removefavourite(resultItem['@id'])}
-												>{$page.data.t('myPages.remove')}
+												>{page.data.t('myPages.remove')}
 											</button>
 										{/if}
 									</div>
@@ -106,7 +106,7 @@
 			</div>
 		</div>
 		<div class="md:ml-10 md:w-2/5">
-			<div class="text-3-cond-bold">{$page.data.t('myPages.favouriteLibraries')}</div>
+			<div class="text-3-cond-bold">{page.data.t('myPages.favouriteLibraries')}</div>
 			<div class="py-2">
 				{#each Object.entries(myLibraries) as [id, item] (id)}
 					<div class="flex justify-between">
@@ -115,7 +115,7 @@
 						</div>
 						<div>
 							<button class="ml-5 text-nowrap" type="submit" onclick={() => removefavourite(id)}
-								>{$page.data.t('myPages.remove')}</button
+								>{page.data.t('myPages.remove')}</button
 							>
 						</div>
 					</div>
