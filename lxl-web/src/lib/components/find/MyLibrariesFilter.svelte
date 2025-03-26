@@ -40,18 +40,6 @@
 	const isFilterActive = $derived(
 		libraryValues.length && searchParams.get('_q')?.toString().includes(sigelString)
 	);
-
-	const kb = {
-		'@id': '1234',
-		label: 'Kungliga bibiblioteket',
-		sigel: 'S'
-	};
-
-	const gbg = {
-		'@id': '6456456',
-		label: 'Göteborg',
-		sigel: 'Gbg'
-	};
 </script>
 
 {#snippet filterContent()}
@@ -74,17 +62,6 @@
 	</div>
 {/snippet}
 
-{#if myLibraries}
-	<div class="border">
-		{#each Object.entries(myLibraries) as [key, lib] (key)}
-			<p data-key={key}>{lib.label}</p>
-		{/each}
-	</div>
-{/if}
-<button onclick={() => userSettings.addLibrary(kb)}>Add S</button>
-<button onclick={() => userSettings.removeLibrary(kb['@id'])}>Remove S</button>
-<button onclick={() => userSettings.addLibrary(gbg)}>Add gbg</button>
-<button onclick={() => userSettings.removeLibrary(gbg['@id'])}>Remove gbg</button>
 <div class="flex w-full gap-2 rounded-sm bg-positive/40 p-3 md:flex-col md:gap-1">
 	{#if libraryValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>
@@ -101,7 +78,7 @@
 			{@render filterContent()}
 		</div>
 	{/if}
-	<a class="self-end text-secondary text-2-regular" href="/my-page"
+	<a class="self-end text-secondary text-2-regular" href="/my-pages"
 		>{libraryValues.length
 			? page.data.t('search.changeLibraries')
 			: page.data.t('search.addLibraries')}</a

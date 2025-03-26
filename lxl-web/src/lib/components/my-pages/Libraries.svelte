@@ -4,6 +4,7 @@
 	import { userSettings } from '$lib/utils/userSettings.svelte';
 	import { browser } from '$app/environment';
 	import BiSearch from '~icons/bi/search';
+	import { type LibraryResult } from '$lib/types/search';
 
 	let searchPhrase = $state('');
 	let endpoint = '/api/my-pages';
@@ -49,22 +50,21 @@
 				/>
 				<div>
 					{#if search.data}
-						{@const resultItems = search.data?.items}
-						{@const totalHits = search.data?.totalItems}
-						{#if totalHits && totalHits !== 0}
+						{@const searchResult = search.data as LibraryResult}
+						{#if searchResult?.totalItems && searchResult?.totalItems !== 0}
 							<div class="mb-3">
-								{totalHits}
+								{searchResult?.totalItems}
 								{page.data.t('myPages.hitsFor')} "{searchPhrase}"
 							</div>
 						{/if}
-						{#if totalHits === 0}
+						{#if searchResult?.totalItems === 0}
 							<div class="mb-3">
 								{page.data.t('myPages.noResultsFor')} "{searchPhrase}"
 							</div>
 						{/if}
-						{#if resultItems && resultItems.length !== 0}
+						{#if searchResult?.items && searchResult?.items.length !== 0}
 							<div class="my-3 rounded-md bg-cards py-2">
-								{#each resultItems as resultItem (resultItem['@id'])}
+								{#each searchResult.items as resultItem (resultItem['@id'])}
 									<div
 										class="flex min-h-12 w-full items-center justify-between bg-cards hover:bg-main"
 									>
@@ -116,6 +116,3 @@
 		</div>
 	</div>
 </div>
-
-<style lang="postcss">
-</style>
