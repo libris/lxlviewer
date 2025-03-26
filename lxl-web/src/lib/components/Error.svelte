@@ -1,14 +1,14 @@
 <script>
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import getPageTitle from '$lib/utils/getPageTitle';
 
 	export let showHeader = false;
 
 	function getErrorPageTitle() {
-		if ($page.status === 404) {
-			return getPageTitle($page.data.t('errors.notFound'));
+		if (page.status === 404) {
+			return getPageTitle(page.data.t('errors.notFound'));
 		}
-		return getPageTitle($page.data.t('errors.somethingWentWrong'));
+		return getPageTitle(page.data.t('errors.somethingWentWrong'));
 	}
 </script>
 
@@ -23,25 +23,24 @@
 	</header>
 {/if}
 <div class="m-auto flex flex-col p-8 text-center">
-	<h1 class="text-6-cond-extrabold">{$page.status}</h1>
-	{#if $page.status === 404}
-		<h2 class="pb-4">{$page.data.t('errors.notFound')}</h2>
-		<p>{$page.data.t('errors.wrongLink')}</p>
+	<h1 class="text-6-cond-extrabold">{page.status}</h1>
+	{#if page.status === 404}
+		<h2 class="pb-4">{page.data.t('errors.notFound')}</h2>
+		<p>{page.data.t('errors.wrongLink')}</p>
 		<p>
-			{$page.data.t('errors.sendEmail')}
+			{page.data.t('errors.sendEmail')}
 			<a
 				href="mailto:libris@kb.se?subject={encodeURIComponent(
-					$page.data.t('errors.mailSubject')
-				)}&body={encodeURIComponent($page.data.t('errors.mailBody'))} {$page.url.href}"
-				>{$page.data.t('errors.customerService')}</a
-			>{$page.data.t('errors.followUp')}
+					page.data.t('errors.mailSubject')
+				)}&body={encodeURIComponent(page.data.t('errors.mailBody'))} {page.url.href}"
+				>{page.data.t('errors.customerService')}</a
+			>{page.data.t('errors.followUp')}
 		</p>
 		<p class="pt-4">
-			<a href={$page.data.locale === 'en' ? '/en' : '/'}>{$page.data.t('errors.backToStartPage')}</a
-			>
+			<a href={page.data.locale === 'en' ? '/en' : '/'}>{page.data.t('errors.backToStartPage')}</a>
 		</p>
-	{:else if $page.error?.message}
-		<h2 class="pb-4">{$page.data.t('errors.somethingWentWrong')}</h2>
-		<p class="text-secondary">{$page.error.message}</p>
+	{:else if page.error?.message}
+		<h2 class="pb-4">{page.data.t('errors.somethingWentWrong')}</h2>
+		<p class="text-secondary">{page.error.message}</p>
 	{/if}
 </div>
