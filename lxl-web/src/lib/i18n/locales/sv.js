@@ -4,9 +4,21 @@ export default {
 	},
 	header: {
 		help: 'Hjälp',
+		myPages: 'Mina sidor',
 		changeLang: 'In English',
 		searchPlaceholder: 'Titel, författare, ämne med mera',
 		openMenu: 'Öppna huvudmeny'
+	},
+	myPages: {
+		myPages: 'Mina sidor',
+		libraries: 'Bibliotek',
+		favouriteLibraries: 'Mina favoritbibliotek',
+		findLibrary: 'Sök efter bibliotek',
+		findAndAdd: 'Hitta och lägg till favoritbibliotek',
+		noResultsFor: 'Inga sökträffar för',
+		hitsFor: 'träffar för',
+		add: 'Lägg till',
+		remove: 'Ta bort'
 	},
 	footer: {
 		logo: 'Kungliga bibliotekets logotyp',

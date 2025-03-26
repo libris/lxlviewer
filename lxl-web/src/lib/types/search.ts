@@ -18,6 +18,18 @@ export interface SearchResult {
 	_spell: SpellingSuggestion[] | [];
 }
 
+export interface LibraryResult {
+	totalItems: number;
+	maxItems: number;
+	items: LibraryItem[];
+}
+
+export interface LibraryItem {
+	[JsonLd.ID]: string;
+	label: string;
+	sigel: string;
+}
+
 export interface SearchResultItem {
 	[JsonLd.ID]: string;
 	[JsonLd.TYPE]: string;
