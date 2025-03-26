@@ -7,7 +7,7 @@
 	import BiCheckSquareFill from '~icons/bi/check-square-fill';
 	import BiSquare from '~icons/bi/square';
 
-	const myLibraries: Record<string, LibraryItem> | undefined = $derived(
+	const myLibraries: Record<string, LibraryItem> = $derived(
 		browser ? userSettings.myLibraries : page.data?.userSettings?.myLibraries || {}
 	);
 
