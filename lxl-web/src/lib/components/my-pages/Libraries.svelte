@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import BiSearch from '~icons/bi/search';
 	import { useSearchRequest } from 'supersearch';
-	import { removeUserSetting, saveUserSetting } from '$lib/utils/userSettings';
-	import type { LibraryItem } from '$lib/types/search';
+	import { userSettings } from '$lib/utils/userSettings.svelte';
+	import { browser } from '$app/environment';
+	import BiSearch from '~icons/bi/search';
 
 	let searchPhrase = $state('');
 	let endpoint = '/api/my-pages';
@@ -20,23 +20,12 @@
 		debouncedWait
 	});
 
-	let myLibraries = $state(page.data.userSettings?.myLibraries || {});
+	const myLibraries = $derived(
+		browser ? userSettings.myLibraries : page.data?.userSettings?.myLibraries || {}
+	);
 
 	function handleInputChange() {
 		search.debouncedFetchData(searchPhrase);
-	}
-
-	function addfavourite(item: LibraryItem) {
-		const toAdd = { [item['@id']]: item };
-		myLibraries = { ...toAdd, ...myLibraries };
-		saveUserSetting('myLibraries', toAdd);
-	}
-
-	function removefavourite(id: string) {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { [id]: removed, ...newMyLibraries } = myLibraries;
-		myLibraries = newMyLibraries;
-		removeUserSetting('myLibraries', id);
 	}
 </script>
 
@@ -86,14 +75,14 @@
 											<button
 												class="button-ghost mx-2 text-nowrap"
 												type="submit"
-												onclick={() => addfavourite(resultItem)}
+												onclick={() => userSettings.addLibrary(resultItem)}
 												>{page.data.t('myPages.add')}
 											</button>
 										{:else}
 											<button
 												class="button-ghost mx-2 text-nowrap"
 												type="submit"
-												onclick={() => removefavourite(resultItem['@id'])}
+												onclick={() => userSettings.removeLibrary(resultItem['@id'])}
 												>{page.data.t('myPages.remove')}
 											</button>
 										{/if}
@@ -114,7 +103,10 @@
 							{item.label}
 						</div>
 						<div>
-							<button class="ml-5 text-nowrap" type="submit" onclick={() => removefavourite(id)}
+							<button
+								class="ml-5 text-nowrap"
+								type="submit"
+								onclick={() => userSettings.removeLibrary(id)}
 								>{page.data.t('myPages.remove')}</button
 							>
 						</div>

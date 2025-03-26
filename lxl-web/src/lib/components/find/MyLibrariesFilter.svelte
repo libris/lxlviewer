@@ -2,12 +2,11 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/state';
 	import popover from '$lib/actions/popover';
-	import type { LibraryItem } from '$lib/types/userSettings';
 	import { userSettings } from '$lib/utils/userSettings.svelte';
 	import BiCheckSquareFill from '~icons/bi/check-square-fill';
 	import BiSquare from '~icons/bi/square';
 
-	const myLibraries: Record<string, LibraryItem> = $derived(
+	const myLibraries = $derived(
 		browser ? userSettings.myLibraries : page.data?.userSettings?.myLibraries || {}
 	);
 
