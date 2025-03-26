@@ -16,11 +16,13 @@
 
 <div class="header-menu py-8 md:py-0">
 	<ol class="flex flex-col items-center gap-6 text-secondary md:flex-row">
-		<li><a data-sveltekit-reload href="help">{$page.data.t('header.help')}</a></li>
+		<li><a href="help">{$page.data.t('header.help')}</a></li>
 		<li>
-			<a class="flex items-center gap-2" data-sveltekit-reload href="my-pages">
+			<a class="flex items-center gap-2" href="my-pages">
 				<BiPerson class="inline text-icon" />
-				{$page.data.t('header.myPages')}
+				<div class="text-nowrap">
+					{$page.data.t('header.myPages')}
+				</div>
 			</a>
 		</li>
 		<li>
