@@ -68,7 +68,7 @@
 									<div
 										class="flex min-h-12 w-full items-center justify-between bg-cards hover:bg-main"
 									>
-										<div class="truncate py-1 pl-3">
+										<div class="truncate py-1 pl-3" title={resultItem.label}>
 											{resultItem.label}
 										</div>
 										{#if !myLibraries?.[resultItem['@id']]}
@@ -99,7 +99,7 @@
 			<div class="py-2">
 				{#each Object.entries(myLibraries) as [id, item] (id)}
 					<div class="flex justify-between">
-						<div class="truncate py-1">
+						<div class="truncate py-1" title={item.label}>
 							{item.label}
 						</div>
 						<div>
