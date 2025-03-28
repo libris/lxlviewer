@@ -94,7 +94,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="md:ml-10 md:w-2/5">
+		<div class="md:ml-10 md:w-80">
 			<div class="text-3-cond-bold">{page.data.t('myPages.favouriteLibraries')}</div>
 			<div class="py-2">
 				{#each Object.entries(myLibraries) as [id, item] (id)}
