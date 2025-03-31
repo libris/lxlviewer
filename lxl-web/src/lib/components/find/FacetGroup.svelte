@@ -32,7 +32,6 @@
 
 	let { group, locale, searchPhrase }: FacetGroupProps = $props();
 
-	let expanded = true;
 	const maxItems = group.maxItems;
 	const totalItems = group.facets.length;
 	let defaultItemsShown = $state(DEFAULT_FACETS_SHOWN);
@@ -112,7 +111,7 @@
 	class:has-hits={hasHits}
 	data-dimension={group.dimension}
 >
-	<details class="relative" open={!!expanded}>
+	<details class="relative" open>
 		<summary
 			class="flex min-h-11 w-full cursor-pointer items-center gap-2 font-bold"
 			data-testid="facet-toggle"
