@@ -52,8 +52,6 @@ function createUserSettings() {
 		if (!myLibs[library['@id']]) {
 			myLibs[library['@id']] = library;
 			update('myLibraries', myLibs);
-		} else {
-			console.log('already in my favs!');
 		}
 	}
 
@@ -62,8 +60,6 @@ function createUserSettings() {
 		if (myLibs[libraryId]) {
 			delete myLibs[libraryId];
 			update('myLibraries', myLibs);
-		} else {
-			console.log('could not remove. Not found in fav libs');
 		}
 	}
 
