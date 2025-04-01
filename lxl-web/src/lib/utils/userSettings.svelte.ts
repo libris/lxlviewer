@@ -1,37 +1,31 @@
 import Cookies from 'js-cookie';
-import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
-
-interface UserSettingsState {
-	value: UserSettings;
-}
+import type { LibraryItem, UserSettings as UserSettingsType } from '$lib/types/userSettings';
 
 enum availableSettings {
 	facetSort = 'facetSort',
 	myLibraries = 'myLibraries'
 }
 
-function createUserSettings() {
-	const settings: UserSettingsState = $state({ value: {} });
+export class UserSettings {
+	private settings: UserSettingsType = $state({});
 
-	function init(s: UserSettings) {
-		if (s) {
-			settings.value = s;
-		}
+	constructor(settings: UserSettingsType) {
+		this.settings = settings;
 	}
 
-	function update(setting: keyof typeof availableSettings, v: Partial<UserSettings>) {
+	private update(setting: keyof typeof availableSettings, v: Partial<UserSettings>) {
 		if (setting in availableSettings) {
-			const settingsValue = {
-				...settings.value,
+			const settingsObj = {
+				...this.settings,
 				...{ [setting]: v }
 			};
 
-			settings.value = settingsValue;
-			setCookie(settingsValue);
+			this.settings = settingsObj;
+			this.setCookie(settingsObj);
 		}
 	}
 
-	function setCookie(value: unknown) {
+	private setCookie(value: UserSettingsType) {
 		Cookies.set('userSettings', JSON.stringify(value), {
 			expires: 365,
 			secure: true,
@@ -39,42 +33,35 @@ function createUserSettings() {
 		});
 	}
 
-	function saveFacetSort(facet: string, value: string) {
-		if (facet && value) {
-			const facetSort = { ...userSettings.facetSort };
-			facetSort[facet] = value;
-			update('facetSort', facetSort);
-		}
-	}
-
-	function addLibrary(library: LibraryItem) {
-		const myLibs = { ...userSettings?.myLibraries };
+	addLibrary(library: LibraryItem) {
+		const myLibs = { ...this.settings?.myLibraries };
 		if (!myLibs[library['@id']]) {
 			myLibs[library['@id']] = library;
-			update('myLibraries', myLibs);
+			this.update('myLibraries', myLibs);
 		}
 	}
 
-	function removeLibrary(libraryId: string) {
-		const myLibs = { ...userSettings?.myLibraries };
+	removeLibrary(libraryId: string) {
+		const myLibs = { ...this.settings?.myLibraries };
 		if (myLibs[libraryId]) {
 			delete myLibs[libraryId];
-			update('myLibraries', myLibs);
+			this.update('myLibraries', myLibs);
 		}
 	}
 
-	return {
-		get myLibraries() {
-			return settings.value?.myLibraries || {};
-		},
-		get facetSort() {
-			return settings.value?.facetSort;
-		},
-		init,
-		addLibrary,
-		removeLibrary,
-		saveFacetSort
-	};
-}
+	saveFacetSort(facet: string, value: string) {
+		if (facet && value) {
+			const facetSort = { ...this.settings.facetSort };
+			facetSort[facet] = value;
+			this.update('facetSort', facetSort);
+		}
+	}
 
-export const userSettings = createUserSettings();
+	get myLibraries() {
+		return this.settings?.myLibraries;
+	}
+
+	get facetSort() {
+		return this.settings?.facetSort;
+	}
+}

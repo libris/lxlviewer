@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { userSettings } from './userSettings.svelte';
+import { UserSettings } from './userSettings.svelte';
 
 const s = {
 	myLibraries: {
@@ -20,7 +20,7 @@ const s = {
 	}
 };
 const anotherLib = { '@id': '434566', label: 'Nya biblioteket', sigel: 'N' };
-userSettings.init(s);
+const userSettings = new UserSettings(s);
 
 describe('userSettings util', () => {
 	it('returns the user fav libraries', () => {

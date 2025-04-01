@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { useSearchRequest } from 'supersearch';
-	import { userSettings } from '$lib/utils/userSettings.svelte';
-	import { browser } from '$app/environment';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 	import BiSearch from '~icons/bi/search';
 	import { type LibraryResult } from '$lib/types/search';
 
@@ -21,9 +20,8 @@
 		debouncedWait
 	});
 
-	const myLibraries = $derived(
-		browser ? userSettings.myLibraries : page.data?.userSettings?.myLibraries || {}
-	);
+	const userSettings = getUserSettings();
+	const myLibraries = $derived(userSettings.myLibraries || {});
 
 	function handleInputChange() {
 		search.debouncedFetchData(searchPhrase);

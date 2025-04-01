@@ -8,7 +8,7 @@
 		DEFAULT_FACET_SORT,
 		CUSTOM_FACET_SORT
 	} from '$lib/constants/facets';
-	import { userSettings } from '$lib/utils/userSettings.svelte';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';
 	import FacetRange from './FacetRange.svelte';
@@ -18,11 +18,8 @@
 	import BiCheckSquareFill from '~icons/bi/check-square-fill';
 	import BiSquare from '~icons/bi/square';
 	import BiInfo from '~icons/bi/info-circle';
-	import { browser } from '$app/environment';
 
 	// Todo: Rename FacetGroup -> Facet (facets -> items/facetItems)
-
-	const matomoTracker = getMatomoTracker();
 
 	type FacetGroupProps = {
 		group: FacetGroup;
@@ -32,18 +29,15 @@
 
 	let { group, locale, searchPhrase }: FacetGroupProps = $props();
 
+	const matomoTracker = getMatomoTracker();
+	const userSettings = getUserSettings();
+
 	const maxItems = group.maxItems;
 	const totalItems = group.facets.length;
 	let defaultItemsShown = $state(DEFAULT_FACETS_SHOWN);
 
-	const userSortSetting = $state(
-		browser
-			? userSettings.facetSort?.[group.dimension]
-			: page.data.userSettings?.facetSort?.[group.dimension]
-	);
-
 	let currentSort = $state(
-		userSortSetting ||
+		userSettings.facetSort?.[group.dimension] ||
 			CUSTOM_FACET_SORT[group.dimension as keyof typeof CUSTOM_FACET_SORT] ||
 			DEFAULT_FACET_SORT
 	);

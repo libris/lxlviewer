@@ -1,16 +1,11 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { page } from '$app/state';
 	import popover from '$lib/actions/popover';
-	import { userSettings } from '$lib/utils/userSettings.svelte';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 	import BiCheckSquareFill from '~icons/bi/check-square-fill';
 	import BiSquare from '~icons/bi/square';
 
-	const myLibraries = $derived(
-		browser ? userSettings.myLibraries : page.data?.userSettings?.myLibraries || {}
-	);
-
-	const libraryValues = $derived(Object.values(myLibraries));
+	const libraryValues = $derived(Object.values(getUserSettings()?.myLibraries || {}));
 
 	const sigelString = $derived.by(() => {
 		const sigelMap = libraryValues.map((v) => `itemHeldBy:"sigel:${v.sigel}"`).join(' OR ');
