@@ -34,6 +34,7 @@ export interface SearchResultItem {
 	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
 	typeStr: string;
+	myLibrariesHolding?: Record<string, LibraryItem>;
 	_debug?: ItemDebugInfo;
 }
 

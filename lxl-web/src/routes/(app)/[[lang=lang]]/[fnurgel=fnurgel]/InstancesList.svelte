@@ -3,6 +3,7 @@
 	import { replaceState } from '$app/navigation';
 
 	import type { ResourceData } from '$lib/types/resourceData';
+	import type { DecoratedHolder, HoldingsByInstanceId } from '$lib/types/holdings';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
@@ -10,7 +11,9 @@
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesListContent from './InstancesListContent.svelte';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { page } from '$app/stores';
+	import MyLibrariesIndicator from '$lib/components/MyLibrariesIndicator.svelte';
 
 	/**
 	 * TODO:
@@ -19,6 +22,7 @@
 	 */
 
 	let instancesList: HTMLUListElement;
+	let userSettings = getUserSettings();
 
 	export let data: ResourceData;
 	export let columns: { header: string; data: string }[];
@@ -64,6 +68,19 @@
 				?.focus();
 		}
 	}
+
+	function myLibsFromHoldings(holdings: HoldingsByInstanceId[string]): DecoratedHolder[] {
+		if (userSettings?.myLibraries) {
+			return holdings
+				.filter((item) => {
+					return Object.values(userSettings.myLibraries).some(
+						(lib) => lib.sigel === item.heldBy.sigel
+					);
+				})
+				.map((item) => item.heldBy);
+		}
+		return [];
+	}
 </script>
 
 <div>
@@ -86,7 +103,7 @@
 
 	{#if Array.isArray(data) && data.length > 1}
 		<div class="column-headers mb-2 grid gap-2 text-sm font-bold">
-			{#each columns as { header: columnHeader }}
+			{#each columns as { header: columnHeader }, index (index)}
 				<div class="flex flex-1 first:pl-0">
 					{columnHeader}
 				</div>
@@ -109,13 +126,19 @@
 							<span class="arrow w-4">
 								<BiChevronRight />
 							</span>
-							{#each columns as { data: columnData }}
+							{#each columns as { data: columnData }, index (index)}
 								<div class="flex flex-1 items-center">
 									<DecoratedData data={jmespath.search(item, columnData)} />
 								</div>
 							{/each}
 							<div class="text flex flex-1 items-center justify-end text-sm">
 								{#if id && $page.data.holdingsByInstanceId[id]}
+									{@const myLibsWithHolding = myLibsFromHoldings(
+										$page.data.holdingsByInstanceId[id]
+									)}
+									{#if myLibsWithHolding.length}
+										<MyLibrariesIndicator />
+									{/if}
 									<a
 										href={getHoldingsLink($page.url, id)}
 										class="flex items-center self-center text-xs sm:text-sm"

@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { DecoratedHolder } from '$lib/types/holdings';
+	import type { DecoratedHolder, HoldingsByInstanceId } from '$lib/types/holdings';
 	import { Width } from '$lib/types/auxd';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import isFnurgel from '$lib/utils/isFnurgel';
@@ -15,6 +15,10 @@
 	import InstancesList from './InstancesList.svelte';
 	import HoldingStatus from './HoldingStatus.svelte';
 	import BiSearch from '~icons/bi/search';
+	import { relativizeUrl } from '$lib/utils/http';
+	import { getResourceId } from '$lib/utils/resourceData';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+	import MyLibrariesIndicator from '$lib/components/MyLibrariesIndicator.svelte';
 
 	export let data;
 
@@ -91,6 +95,21 @@
 			goto($page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
 		}
 	}
+
+	const userSettings = getUserSettings();
+
+	function myLibsFromHoldings(holdings: HoldingsByInstanceId[string]): DecoratedHolder[] {
+		if (userSettings?.myLibraries) {
+			return holdings
+				.filter((item) => {
+					return Object.values(userSettings.myLibraries).some(
+						(lib) => lib.sigel === item.heldBy.sigel
+					);
+				})
+				.map((item) => item.heldBy);
+		}
+		return [];
+	}
 </script>
 
 <svelte:head>
@@ -126,30 +145,39 @@
 					<div class="overview flex-1 gap-6">
 						<DecoratedData data={data.overview} block />
 						{#if Object.keys(data.holdersByType).length}
-							<ul class="flex w-fit flex-wrap gap-2">
-								{#each Object.keys(data.holdersByType) as type (type)}
-									<li>
-										<a
-											href={getHoldingsLink($page.url, type)}
-											class="button-ghost"
-											data-sveltekit-preload-data="false"
-											data-testid="holding-link"
-											on:click={(event) => handleClickHoldings(event, $page.state, type)}
-										>
-											{#if Object.keys(data.holdersByType).length == 1}
-												{data.t('holdings.availableAt')}
-												{data.holdersByType[type].length}
-												{data.t('holdings.libraries')}
-											{:else}
-												{localizedInstanceTypes[type]}
-												{`(${data.t('holdings.availableAt').toLowerCase()}`}
-												{data.holdersByType[type].length}
-												{`${data.t('holdings.libraries')})`}
-											{/if}
-										</a>
-									</li>
-								{/each}
-							</ul>
+							<div class="flex items-center">
+								<ul class="flex w-fit flex-wrap gap-2">
+									{#each Object.keys(data.holdersByType) as type (type)}
+										<li>
+											<a
+												href={getHoldingsLink($page.url, type)}
+												class="button-ghost"
+												data-sveltekit-preload-data="false"
+												data-testid="holding-link"
+												on:click={(event) => handleClickHoldings(event, $page.state, type)}
+											>
+												{#if Object.keys(data.holdersByType).length == 1}
+													{data.t('holdings.availableAt')}
+													{data.holdersByType[type].length}
+													{data.t('holdings.libraries')}
+												{:else}
+													{localizedInstanceTypes[type]}
+													{`(${data.t('holdings.availableAt').toLowerCase()}`}
+													{data.holdersByType[type].length}
+													{`${data.t('holdings.libraries')})`}
+												{/if}
+											</a>
+										</li>
+									{/each}
+								</ul>
+								{#if data.instances.length === 1}
+									{@const id = relativizeUrl(getResourceId(data.instances[0]))}
+									{@const favWithHolding = myLibsFromHoldings($page.data.holdingsByInstanceId[id])}
+									{#if favWithHolding.length}
+										<MyLibrariesIndicator />
+									{/if}
+								{/if}
+							</div>
 						{/if}
 					</div>
 				</div>
