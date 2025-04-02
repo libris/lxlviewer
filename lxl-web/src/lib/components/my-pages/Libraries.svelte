@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import BiSearch from '~icons/bi/search';
 	import { useSearchRequest } from 'supersearch';
-	import { removeUserSetting, saveUserSetting } from '$lib/utils/userSettings';
-	import type { LibraryItem } from '$lib/types/search';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+	import BiSearch from '~icons/bi/search';
+	import { type LibraryResult } from '$lib/types/search';
 
 	let searchPhrase = $state('');
 	let endpoint = '/api/my-pages';
@@ -20,23 +20,11 @@
 		debouncedWait
 	});
 
-	let myLibraries = $state(page.data.userSettings?.myLibraries || {});
+	const userSettings = getUserSettings();
+	const myLibraries = $derived(userSettings.myLibraries || {});
 
 	function handleInputChange() {
 		search.debouncedFetchData(searchPhrase);
-	}
-
-	function addfavourite(item: LibraryItem) {
-		const toAdd = { [item['@id']]: item };
-		myLibraries = { ...toAdd, ...myLibraries };
-		saveUserSetting('myLibraries', toAdd);
-	}
-
-	function removefavourite(id: string) {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { [id]: removed, ...newMyLibraries } = myLibraries;
-		myLibraries = newMyLibraries;
-		removeUserSetting('myLibraries', id);
 	}
 </script>
 
@@ -60,40 +48,39 @@
 				/>
 				<div>
 					{#if search.data}
-						{@const resultItems = search.data?.items}
-						{@const totalHits = search.data?.totalItems}
-						{#if totalHits && totalHits !== 0}
+						{@const searchResult = search.data as LibraryResult}
+						{#if searchResult?.totalItems && searchResult?.totalItems !== 0}
 							<div class="mb-3">
-								{totalHits}
+								{searchResult?.totalItems}
 								{page.data.t('myPages.hitsFor')} "{searchPhrase}"
 							</div>
 						{/if}
-						{#if totalHits === 0}
+						{#if searchResult?.totalItems === 0}
 							<div class="mb-3">
 								{page.data.t('myPages.noResultsFor')} "{searchPhrase}"
 							</div>
 						{/if}
-						{#if resultItems && resultItems.length !== 0}
+						{#if searchResult?.items && searchResult?.items.length !== 0}
 							<div class="my-3 rounded-md bg-cards py-2">
-								{#each resultItems as resultItem (resultItem['@id'])}
+								{#each searchResult.items as resultItem (resultItem['@id'])}
 									<div
 										class="flex min-h-12 w-full items-center justify-between bg-cards hover:bg-main"
 									>
-										<div class="truncate py-1 pl-3">
+										<div class="truncate py-1 pl-3" title={resultItem.label}>
 											{resultItem.label}
 										</div>
 										{#if !myLibraries?.[resultItem['@id']]}
 											<button
 												class="button-ghost mx-2 text-nowrap"
 												type="submit"
-												onclick={() => addfavourite(resultItem)}
+												onclick={() => userSettings.addLibrary(resultItem)}
 												>{page.data.t('myPages.add')}
 											</button>
 										{:else}
 											<button
 												class="button-ghost mx-2 text-nowrap"
 												type="submit"
-												onclick={() => removefavourite(resultItem['@id'])}
+												onclick={() => userSettings.removeLibrary(resultItem['@id'])}
 												>{page.data.t('myPages.remove')}
 											</button>
 										{/if}
@@ -105,16 +92,19 @@
 				</div>
 			</div>
 		</div>
-		<div class="md:ml-10 md:w-2/5">
+		<div class="md:ml-10 md:w-80">
 			<div class="text-3-cond-bold">{page.data.t('myPages.favouriteLibraries')}</div>
 			<div class="py-2">
 				{#each Object.entries(myLibraries) as [id, item] (id)}
 					<div class="flex justify-between">
-						<div class="truncate py-1">
+						<div class="truncate py-1" title={item.label}>
 							{item.label}
 						</div>
 						<div>
-							<button class="ml-5 text-nowrap" type="submit" onclick={() => removefavourite(id)}
+							<button
+								class="ml-5 text-nowrap"
+								type="submit"
+								onclick={() => userSettings.removeLibrary(id)}
 								>{page.data.t('myPages.remove')}</button
 							>
 						</div>
@@ -124,6 +114,3 @@
 		</div>
 	</div>
 </div>
-
-<style lang="postcss">
-</style>

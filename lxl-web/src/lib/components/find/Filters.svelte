@@ -6,6 +6,7 @@
 	import SearchMapping from './SearchMapping.svelte';
 	import { shouldShowMapping } from '$lib/utils/search';
 	import BiSearch from '~icons/bi/search';
+	import MyLibrariesFilter from './MyLibrariesFilter.svelte';
 
 	export let facets: TypedFacetGroup[];
 	export let mapping: DisplayMapping[];
@@ -35,6 +36,7 @@
 				type="search"
 			/>
 			<BiSearch class="absolute left-2.5 top-3 text-sm text-icon" />
+			<MyLibrariesFilter />
 			<ol>
 				{#each facets as group (group.dimension)}
 					<FacetGroup {group} locale={$page.data.locale} {searchPhrase} />

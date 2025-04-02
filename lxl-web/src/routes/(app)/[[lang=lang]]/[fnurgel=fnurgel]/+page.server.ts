@@ -26,7 +26,6 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
-	const userSettings = locals.userSettings;
 
 	let resourceId: null | string = null;
 	let searchPromise: Promise<SearchResult | null> | null = null;
@@ -85,8 +84,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		holdersByType,
 		full: overview,
 		images,
-		searchResult: searchPromise ? await searchPromise : null,
-		userSettings
+		searchResult: searchPromise ? await searchPromise : null
 	};
 
 	async function getRelated() {

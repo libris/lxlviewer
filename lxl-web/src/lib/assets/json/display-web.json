@@ -198,7 +198,7 @@
 				"Library": {
 					"@id": "Library-chips",
 					"@type": "fresnel:Lens",
-					"showProperties": ["name", "qualifier"],
+					"showProperties": ["name", "qualifier", "sigel"],
 					"classLensDomain": "Library"
 				},
 				"Bibliography": {

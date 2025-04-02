@@ -1,5 +1,6 @@
 import { JsonLd, type Link, type DisplayDecorated, type FramedData, LensType } from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
+import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 
 export interface SearchResult {
@@ -22,12 +23,6 @@ export interface LibraryResult {
 	totalItems: number;
 	maxItems: number;
 	items: LibraryItem[];
-}
-
-export interface LibraryItem {
-	[JsonLd.ID]: string;
-	label: string;
-	sigel: string;
 }
 
 export interface SearchResultItem {

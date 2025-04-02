@@ -27,10 +27,10 @@
 			<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
 		</div>
 		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
-			<div id="header-menu" class="hidden items-center min-[1580px]:flex">
+			<div id="header-menu" class="hidden items-center lg:flex">
 				<HeaderMenu />
 			</div>
-			<div class="min-[1580px]:hidden">
+			<div class="lg:hidden">
 				<a
 					aria-label={$page.data.t('header.openMenu')}
 					class="button-ghost h-11 w-11 !p-0"
@@ -40,7 +40,7 @@
 					<BiList width={20} height={20} aria-hidden="true" />
 				</a>
 				{#if showHeaderMenu}
-					<Modal close={toggleHeaderMenu} position="top">
+					<Modal close={toggleHeaderMenu}>
 						<HeaderMenu />
 					</Modal>
 				{/if}

@@ -1,16 +1,20 @@
-import type { LibraryItem } from '$lib/types/search';
+import { JsonLd } from './xl';
 
-export type UserSettings = SettingsObj | undefined;
+export interface LibraryItem {
+	[JsonLd.ID]: string;
+	label: string;
+	sigel: string;
+}
 
-interface SettingsObj {
-	facetSort: {
+export type UserSettings = {
+	facetSort?: {
 		[dimension: string]: string;
 	};
-	myLibraries: {
+	myLibraries?: {
 		[id: string]: LibraryItem;
 	};
-	debug: DebugFlags[];
-}
+	debug?: DebugFlags[];
+};
 
 export enum DebugFlags {
 	ES_SCORE = 'esScore'
