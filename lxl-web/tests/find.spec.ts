@@ -73,7 +73,7 @@ test('user sorting is persisted after navigating', async ({ page }) => {
 	await page.getByTestId('facet-sort').first().getByRole('combobox').selectOption('alpha.asc');
 	await page.goto('/find?_q=a&_limit=20&_offset=0&_sort=&_i=f');
 	const newSelect = await page.getByTestId('facet-sort').first().getByRole('combobox');
-	expect(newSelect).toHaveValue('alpha.asc');
+	await expect(newSelect).toHaveValue('alpha.asc');
 });
 
 test('displays hits info', async ({ page }) => {
