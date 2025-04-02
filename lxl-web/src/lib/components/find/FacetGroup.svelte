@@ -116,7 +116,7 @@
 			<span class="flex-1 whitespace-nowrap">{group.label}</span>
 		</summary>
 		<!-- sorting -->
-		<div class="facet-sort absolute right-0 top-2 hidden">
+		<div class="facet-sort absolute right-0 top-2 hidden" data-testid="facet-sort">
 			<select
 				bind:value={currentSort}
 				onchange={saveUserSort}
