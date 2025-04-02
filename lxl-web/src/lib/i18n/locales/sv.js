@@ -133,7 +133,7 @@ export default {
 		yearPlaceholder: '2002, 1987-1994',
 		genreFormKey: 'genreForm',
 		genreFormLabel: 'Genre/form',
-		genreFormPlaceholder: 'Skönlitteratur, Tidsskrift'
+		genreFormPlaceholder: 'Skönlitteratur, Tidskrift'
 	},
 	sort: {
 		sort: 'Sortera',
