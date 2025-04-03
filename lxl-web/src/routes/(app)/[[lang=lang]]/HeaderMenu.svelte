@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import BiGlobeAmericas from '~icons/bi/globe-americas';
-	import BiPerson from '~icons/bi/person-circle';
+	// import BiPerson from '~icons/bi/person-circle';
 	import BiQuestionCircle from '~icons/bi/question-circle';
 	import { Locales, defaultLocale } from '$lib/i18n/locales';
 
@@ -25,14 +25,14 @@
 				</span>
 			</a>
 		</li>
-		<li>
+		<!-- <li>
 			<a class="flex items-center gap-2 lg:flex-col lg:gap-1" href="my-pages">
 				<BiPerson class="h-4 w-4 text-icon" />
 				<div class="text-nowrap">
 					{$page.data.t('header.myPages')}
 				</div>
 			</a>
-		</li>
+		</li> -->
 		<li>
 			<a
 				class="flex items-center gap-2 whitespace-nowrap lg:flex-col lg:gap-1"
