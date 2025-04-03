@@ -1,11 +1,11 @@
 import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
-import { relativizeUrl } from '$lib/utils/http';
-import { LensType, type FramedData } from '$lib/types/xl';
 import type { BibIdObj, HoldersByType, HoldingsByInstanceId } from '$lib/types/holdings';
-import { DisplayUtil, toString } from '$lib/utils/xl.js';
+import { LensType, type FramedData } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
+import { relativizeUrl } from '$lib/utils/http';
+import { DisplayUtil, toString } from '$lib/utils/xl.js';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);

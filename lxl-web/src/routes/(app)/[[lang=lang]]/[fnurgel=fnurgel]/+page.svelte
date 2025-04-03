@@ -3,25 +3,27 @@
 	import { afterNavigate, goto } from '$app/navigation';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { DecoratedHolder } from '$lib/types/holdings';
+	import { type ResourceData } from '$lib/types/resourceData';
 	import { Width } from '$lib/types/auxd';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
+	import { relativizeUrl } from '$lib/utils/http';
+	import { getResourceId } from '$lib/utils/resourceData';
 
+	import InstancesList from './InstancesList.svelte';
+	import HoldingStatus from './HoldingStatus.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
-	import InstancesList from './InstancesList.svelte';
-	import HoldingStatus from './HoldingStatus.svelte';
-	import BiSearch from '~icons/bi/search';
-	import { relativizeUrl } from '$lib/utils/http';
-	import { getResourceId } from '$lib/utils/resourceData';
-	import { getUserSettings } from '$lib/contexts/userSettings';
 	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import { type ResourceData } from '$lib/types/resourceData';
+	import BiSearch from '~icons/bi/search';
 
 	export let data;
+	const userSettings = getUserSettings();
 
 	const ASIDE_SEARCH_CARD_MAX_HEIGHT = 140;
 
@@ -31,7 +33,6 @@
 	let expandedHoldingsInstance = false;
 	let previousURL: URL;
 	let searchPhrase = '';
-	const userSettings = getUserSettings();
 
 	$: selectedHoldingInstance = selectedHolding
 		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||

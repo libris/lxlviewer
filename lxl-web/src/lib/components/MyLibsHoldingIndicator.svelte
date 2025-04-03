@@ -1,6 +1,7 @@
 <script lang="ts">
-	import popover from '$lib/actions/popover';
+	import { page } from '$app/state';
 	import type { LibraryItem } from '$lib/types/userSettings';
+	import popover from '$lib/actions/popover';
 	import BiHouseHeart from '~icons/bi/house-heart';
 
 	type IndicatorProps = {
@@ -13,7 +14,7 @@
 <span
 	class="relative p-2 text-positive sm:text-lg md:text-xl"
 	use:popover={{
-		title: `Finns på ditt bibliotek: ${librariesString}`
+		title: `${page.data.t('holdings.availableAt')}: ${librariesString}`
 	}}
 >
 	<BiHouseHeart />

@@ -4,15 +4,15 @@
 	import { replaceState } from '$app/navigation';
 
 	import type { ResourceData } from '$lib/types/resourceData';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
 
-	import BiChevronRight from '~icons/bi/chevron-right';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesListContent from './InstancesListContent.svelte';
-	import { getUserSettings } from '$lib/contexts/userSettings';
+	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
+	import BiChevronRight from '~icons/bi/chevron-right';
 
 	/**
 	 * TODO:

@@ -120,7 +120,7 @@ export default {
 			},
 			gridTemplateColumns: {
 				find: 'minmax(240px, 1fr) 5fr',
-				'instance-list': '16px 1fr 2fr 1fr 1fr',
+				'instance-list': '16px 1fr 3fr 1fr 2fr',
 				header: '70px minmax(0, 8fr) 1fr',
 				'header-md': 'minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr)',
 				landing: 'minmax(240px, 1fr) 4fr minmax(240px, 1fr)'
