@@ -58,7 +58,9 @@ export async function asResult(
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
 		items: view.items?.map((i) => ({
-			...(myLibraries && { atMyLibraries: getMyLibsHolding(i, myLibraries, displayUtil, locale) }),
+			...(myLibraries && {
+				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
+			}),
 			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
@@ -205,7 +207,7 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getMyLibsHolding(
+function getHeldByMyLibraries(
 	item: FramedData,
 	myLibraries: Record<string, LibraryItem>,
 	display: DisplayUtil,

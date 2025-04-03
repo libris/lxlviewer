@@ -166,9 +166,9 @@
 				{/if}
 			{/key}
 		{/if}
-		{#if item.atMyLibraries?.length}
+		{#if item.heldByMyLibraries?.length}
 			<div class="card-libraries flex items-start">
-				<MyLibsHoldingIndicator libraries={item.atMyLibraries} />
+				<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
 			</div>
 		{/if}
 	</article>
