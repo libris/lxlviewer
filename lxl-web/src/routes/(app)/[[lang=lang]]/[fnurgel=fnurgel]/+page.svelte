@@ -2,11 +2,11 @@
 	import { page } from '$app/stores';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { DecoratedHolder, HoldingsByInstanceId } from '$lib/types/holdings';
+	import type { DecoratedHolder } from '$lib/types/holdings';
 	import { Width } from '$lib/types/auxd';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import isFnurgel from '$lib/utils/isFnurgel';
-	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
 
 	import Modal from '$lib/components/Modal.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
@@ -18,7 +18,8 @@
 	import { relativizeUrl } from '$lib/utils/http';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import MyLibrariesIndicator from '$lib/components/MyLibrariesIndicator.svelte';
+	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
+	import { type ResourceData } from '$lib/types/resourceData';
 
 	export let data;
 
@@ -30,6 +31,7 @@
 	let expandedHoldingsInstance = false;
 	let previousURL: URL;
 	let searchPhrase = '';
+	const userSettings = getUserSettings();
 
 	$: selectedHoldingInstance = selectedHolding
 		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
@@ -95,21 +97,6 @@
 			goto($page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
 		}
 	}
-
-	const userSettings = getUserSettings();
-
-	function myLibsFromHoldings(holdings: HoldingsByInstanceId[string]): DecoratedHolder[] {
-		if (userSettings?.myLibraries) {
-			return holdings
-				.filter((item) => {
-					return Object.values(userSettings.myLibraries).some(
-						(lib) => lib.sigel === item.heldBy.sigel
-					);
-				})
-				.map((item) => item.heldBy);
-		}
-		return [];
-	}
 </script>
 
 <svelte:head>
@@ -171,10 +158,15 @@
 									{/each}
 								</ul>
 								{#if data.instances.length === 1}
-									{@const id = relativizeUrl(getResourceId(data.instances[0]))}
-									{@const favWithHolding = myLibsFromHoldings($page.data.holdingsByInstanceId[id])}
-									{#if favWithHolding.length}
-										<MyLibrariesIndicator />
+									{@const id = relativizeUrl(getResourceId(data.instances[0] as ResourceData))}
+									{#if id}
+										{@const favWithHolding = getMyLibsFromHoldings(
+											userSettings.myLibraries,
+											$page.data.holdingsByInstanceId[id]
+										)}
+										{#if favWithHolding.length}
+											<MyLibrariesIndicator libraries={favWithHolding} />
+										{/if}
 									{/if}
 								{/if}
 							</div>

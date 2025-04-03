@@ -12,7 +12,7 @@
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
-	import MyLibrariesIndicator from '../MyLibrariesIndicator.svelte';
+	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 
 	export let item: SearchResultItem;
 
@@ -166,11 +166,9 @@
 				{/if}
 			{/key}
 		{/if}
-		{#if item.myLibrariesHolding}
-			<div class="card-libraries flex items-start">
-				{#each Object.values(item.myLibrariesHolding) as lib (lib['@id'])}
-					<MyLibrariesIndicator />
-				{/each}
+		{#if item.atMyLibraries?.length}
+			<div class="card-libraries flex items-center">
+				<MyLibsHoldingIndicator libraries={item.atMyLibraries} />
 			</div>
 		{/if}
 	</article>

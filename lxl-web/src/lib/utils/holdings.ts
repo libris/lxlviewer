@@ -5,6 +5,7 @@ import { LensType, type FramedData } from '$lib/types/xl';
 import type { BibIdObj, HoldersByType, HoldingsByInstanceId } from '$lib/types/holdings';
 import { DisplayUtil, toString } from '$lib/utils/xl.js';
 import type { LocaleCode } from '$lib/i18n/locales';
+import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -60,7 +61,9 @@ export function getHoldingsByInstanceId(
 					...holding,
 					heldBy: {
 						obj: displayUtil.lensAndFormat(holding.heldBy, LensType.Chip, locale),
-						sigel: holding.heldBy?.sigel,
+						sigel:
+							holding.heldBy?.sigel ||
+							holding.heldBy['@id'].replace('https://libris.kb.se/library/', ''),
 						str: toString(displayUtil.lensAndFormat(holding.heldBy, LensType.Chip, locale)) || ''
 					}
 				};
@@ -152,4 +155,33 @@ export function getHoldersByType(
 		];
 		return { ...acc, [type]: uniqueHeldBys };
 	}, {});
+}
+
+export function getMyLibsFromHoldings(
+	myLibraries: UserSettings['myLibraries'],
+	holdings: HoldingsByInstanceId | HoldingsByInstanceId[string]
+): LibraryItem[] {
+	const result: Record<string, LibraryItem> = {};
+
+	if (myLibraries) {
+		if (Array.isArray(holdings)) {
+			findLib(holdings);
+		} else if (holdings && typeof holdings === 'object') {
+			Object.values(holdings).forEach((holding) => findLib(holding));
+		}
+
+		function findLib(holding: HoldingsByInstanceId[string]) {
+			if (myLibraries) {
+				holding.forEach((holder) => {
+					const found = Object.values(myLibraries).find(
+						(library) => library.sigel === holder.heldBy.sigel
+					);
+					if (found) {
+						result[found['@id']] = found;
+					}
+				});
+			}
+		}
+	}
+	return Object.values(result);
 }

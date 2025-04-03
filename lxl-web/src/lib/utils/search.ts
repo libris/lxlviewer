@@ -28,7 +28,8 @@ import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
-import { getUriSlug, relativizeUrl } from '$lib/utils/http';
+import { getUriSlug } from '$lib/utils/http';
+import { getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -57,7 +58,7 @@ export async function asResult(
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
 		items: view.items?.map((i) => ({
-			...(myLibraries && { myLibrariesHolding: getFavLibrariesHolding(i, myLibraries) }),
+			...(myLibraries && { atMyLibraries: getMyLibsHolding(i, myLibraries, displayUtil, locale) }),
 			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
@@ -204,22 +205,14 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getFavLibrariesHolding(item: FramedData, myLibs: Record<string, LibraryItem>) {
-	// findMyLibrariesHolding
-	const myLibrariesHolding: Record<string, LibraryItem> = {};
-	item?.['@reverse']?.instanceOf?.forEach((instanceOfItem) => {
-		instanceOfItem?.['@reverse']?.itemOf?.forEach((i) => {
-			const sigel = i?.heldBy?.['@id'].replace('https://libris.kb.se/library/', '');
-			const library = Object.values(myLibs).find((lib) => lib.sigel === sigel);
-			if (library) {
-				const instanceId = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
-				if (instanceId) {
-					myLibrariesHolding[library['@id']] = library;
-				}
-			}
-		});
-	});
-	return myLibrariesHolding;
+function getMyLibsHolding(
+	item: FramedData,
+	myLibraries: Record<string, LibraryItem>,
+	display: DisplayUtil,
+	locale: LangCode
+) {
+	const res = getHoldingsByInstanceId(item, display, locale);
+	return getMyLibsFromHoldings(myLibraries, res);
 }
 
 function isFreeTextQuery(property: unknown): boolean {

@@ -1,19 +1,18 @@
 <script lang="ts">
 	import jmespath from 'jmespath';
+	import { page } from '$app/stores';
 	import { replaceState } from '$app/navigation';
 
 	import type { ResourceData } from '$lib/types/resourceData';
-	import type { DecoratedHolder, HoldingsByInstanceId } from '$lib/types/holdings';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
-	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
 
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesListContent from './InstancesListContent.svelte';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { page } from '$app/stores';
-	import MyLibrariesIndicator from '$lib/components/MyLibrariesIndicator.svelte';
+	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 
 	/**
 	 * TODO:
@@ -68,19 +67,6 @@
 				?.focus();
 		}
 	}
-
-	function myLibsFromHoldings(holdings: HoldingsByInstanceId[string]): DecoratedHolder[] {
-		if (userSettings?.myLibraries) {
-			return holdings
-				.filter((item) => {
-					return Object.values(userSettings.myLibraries).some(
-						(lib) => lib.sigel === item.heldBy.sigel
-					);
-				})
-				.map((item) => item.heldBy);
-		}
-		return [];
-	}
 </script>
 
 <div>
@@ -133,11 +119,12 @@
 							{/each}
 							<div class="text flex flex-1 items-center justify-end text-sm">
 								{#if id && $page.data.holdingsByInstanceId[id]}
-									{@const myLibsWithHolding = myLibsFromHoldings(
+									{@const myLibsWithHolding = getMyLibsFromHoldings(
+										userSettings.myLibraries,
 										$page.data.holdingsByInstanceId[id]
 									)}
 									{#if myLibsWithHolding.length}
-										<MyLibrariesIndicator />
+										<MyLibrariesIndicator libraries={myLibsWithHolding} />
 									{/if}
 									<a
 										href={getHoldingsLink($page.url, id)}
