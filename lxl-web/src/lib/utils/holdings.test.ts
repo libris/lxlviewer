@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { getBibIdsByInstanceId } from './holdings';
+import { getBibIdsByInstanceId, getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
 import mainEntity from '$lib/assets/json/test-data/main-entity.json';
 import record from '$lib/assets/json/test-data/record.json';
+import { UserSettings } from './userSettings.svelte';
 
 describe('getBibIdsByInstanceId', () => {
 	it('Returns a correctly mapped object (bibId, type & holders)', () => {
@@ -15,5 +16,38 @@ describe('getBibIdsByInstanceId', () => {
 				issn: []
 			}
 		});
+	});
+});
+
+describe('getMyLibsFromHoldings', () => {
+	it('Returns favourite library present in the holdings list', () => {
+		const userSettings = new UserSettings({});
+		userSettings.addLibrary({ '@id': '434566', label: 'Kungliga biblioteket', sigel: 'S' });
+		userSettings.addLibrary({ '@id': '54345', label: 'Mitt bibliotek', sigel: 'Mitt' });
+		const DisplayUtil = { lensAndFormat: (a: unknown) => a };
+		const instances = getHoldingsByInstanceId(mainEntity, DisplayUtil, 'sv');
+
+		expect(getMyLibsFromHoldings(userSettings.myLibraries, instances)).toStrictEqual([
+			{
+				'@id': '434566',
+				label: 'Kungliga biblioteket',
+				sigel: 'S'
+			}
+		]);
+
+		userSettings.addLibrary({ '@id': '645656', label: 'Frescatibilbioteket', sigel: 'H' });
+
+		expect(getMyLibsFromHoldings(userSettings.myLibraries, instances)).toStrictEqual([
+			{
+				'@id': '434566',
+				label: 'Kungliga biblioteket',
+				sigel: 'S'
+			},
+			{
+				'@id': '645656',
+				label: 'Frescatibilbioteket',
+				sigel: 'H'
+			}
+		]);
 	});
 });
