@@ -1,6 +1,6 @@
 <script lang="ts">
 	import jmespath from 'jmespath';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { replaceState } from '$app/navigation';
 
 	import type { ResourceData } from '$lib/types/resourceData';
@@ -19,16 +19,18 @@
 	 * - [] Replace jmespath (used for queriyng data for the columns) with something more home-baked (with smaller bundle-size). Another alternative could be querying and preparing the column data server-side?
 	 * - [] Add tests (e.g. rows should be expandable and permalink should work, and that opened state should be saved when navigating forward and backwards). The tests should probably be placed inside +page.svelte...
 	 */
+	type InstancesListProps = {
+		data: ResourceData;
+		columns: { header: string; data: string }[];
+	};
+	const { data, columns }: InstancesListProps = $props();
 
-	let instancesList: HTMLUListElement;
+	let instancesList: HTMLUListElement | undefined = $state();
 	let userSettings = getUserSettings();
-
-	export let data: ResourceData;
-	export let columns: { header: string; data: string }[];
 
 	function handleToggleDetails(state: { expandedInstances?: string[] }) {
 		let openIds: string[] = [];
-		instancesList.querySelectorAll('details[open]').forEach((openElement) => {
+		instancesList?.querySelectorAll('details[open]').forEach((openElement) => {
 			const parentId = openElement.parentElement?.id;
 			if (parentId) {
 				openIds = [...openIds, parentId];
@@ -72,17 +74,17 @@
 <div>
 	{#if Array.isArray(data) && data.length > 1}
 		<div class="flex items-center justify-between pb-4">
-			<h2 class="text-4-cond-bold capitalize">{$page.data.t('search.editions')}</h2>
+			<h2 class="text-4-cond-bold capitalize">{page.data.t('search.editions')}</h2>
 			<a
-				href={getCollapseAllUrl($page.url)}
+				href={getCollapseAllUrl(page.url)}
 				data-sveltekit-preload-data="false"
 				class="close-all text-disabled:text-disabled text-xs sm:text-sm"
-				on:click={(event) => {
+				onclick={(event) => {
 					event.preventDefault();
-					replaceState(getCollapseAllUrl($page.url), { ...$page.state, expandedInstances: [] });
+					replaceState(getCollapseAllUrl(page.url), { ...page.state, expandedInstances: [] });
 				}}
 			>
-				{$page.data.t('general.collapseAll')}
+				{page.data.t('general.collapseAll')}
 			</a>
 		</div>
 	{/if}
@@ -100,14 +102,14 @@
 				{@const id = relativizeUrl(getResourceId(item))}
 				<li {id} class="border-t-primary/16 border-t">
 					<details
-						open={$page.state.expandedInstances?.includes(id) ||
-							$page.url.searchParams.getAll('expanded').includes(id) ||
+						open={page.state.expandedInstances?.includes(id) ||
+							page.url.searchParams.getAll('expanded').includes(id) ||
 							data.length === 1}
-						on:toggle={() => handleToggleDetails($page.state)}
+						ontoggle={() => handleToggleDetails(page.state)}
 					>
 						<summary
 							class="hover:bg-primary/16 grid min-h-11 items-center gap-2 align-middle text-sm md:text-base"
-							on:keydown={handleSummaryKeydown}
+							onkeydown={handleSummaryKeydown}
 						>
 							<span class="arrow w-4">
 								<BiChevronRight />
@@ -118,28 +120,28 @@
 								</div>
 							{/each}
 							<div class="text flex flex-1 items-center justify-end text-sm">
-								{#if id && $page.data.holdingsByInstanceId[id]}
+								{#if id && page.data.holdingsByInstanceId[id]}
 									{@const myLibsWithHolding = getMyLibsFromHoldings(
 										userSettings.myLibraries,
-										$page.data.holdingsByInstanceId[id]
+										page.data.holdingsByInstanceId[id]
 									)}
 									{#if myLibsWithHolding.length}
 										<MyLibrariesIndicator libraries={myLibsWithHolding} />
 									{/if}
 									<a
-										href={getHoldingsLink($page.url, id)}
+										href={getHoldingsLink(page.url, id)}
 										class="flex items-center self-center text-xs sm:text-sm"
 										data-sveltekit-preload-data="false"
-										on:click={(event) => handleClickHoldings(event, $page.state, id)}
+										onclick={(event) => handleClickHoldings(event, page.state, id)}
 									>
-										{$page.data.holdingsByInstanceId[id].length}
-										{$page.data.holdingsByInstanceId[id].length === 1
-											? $page.data.t('holdings.library')
-											: $page.data.t('holdings.libraries')}
+										{page.data.holdingsByInstanceId[id].length}
+										{page.data.holdingsByInstanceId[id].length === 1
+											? page.data.t('holdings.library')
+											: page.data.t('holdings.libraries')}
 									</a>
 								{:else}
 									<span>
-										{$page.data.t('holdings.availableAt')} 0 {$page.data.t('holdings.libraries')}
+										{page.data.t('holdings.availableAt')} 0 {page.data.t('holdings.libraries')}
 									</span>
 								{/if}
 							</div>
