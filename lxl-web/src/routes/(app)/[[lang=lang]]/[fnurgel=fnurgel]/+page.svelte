@@ -21,6 +21,7 @@
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
 	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import BiSearch from '~icons/bi/search';
+	import BiHouseHeart from '~icons/bi/house-heart';
 
 	export let data;
 	const userSettings = getUserSettings();
@@ -77,9 +78,20 @@
 		}
 	}
 
-	$: filteredHolders = displayedHolders.filter((holder) => {
-		return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
-	});
+	$: filteredHolders = displayedHolders
+		.filter((holder) => {
+			return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
+		})
+		.filter((h) => h.str);
+
+	$: myLibsHolders = displayedHolders.filter((holder) =>
+		Object.values(userSettings?.myLibraries).some((lib) => lib.sigel === holder.sigel)
+	);
+	$: filteredMyLibsHolders = myLibsHolders
+		.filter((holder) => {
+			return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
+		})
+		.filter((h) => h.str);
 
 	afterNavigate(({ to }) => {
 		if (to) {
@@ -245,7 +257,7 @@
 					>
 				</div>
 				<div>
-					<h2 class="font-bold">
+					<h2 class="text-3-cond-bold">
 						{data.t('holdings.availableAt')}
 						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
 							{data.holdingsByInstanceId[latestHoldingUrl].length}
@@ -269,6 +281,26 @@
 						/>
 						<BiSearch class="text-icon absolute top-3 left-2.5 text-sm" />
 					</div>
+					{#if userSettings.hasLibraries && myLibsHolders.length}
+						<div class="rounded-sm bg-positive/32 p-4">
+							<h3 class="flex items-center gap-2 text-3-cond-bold">
+								<span aria-hidden="true" class="text-positive">
+									<BiHouseHeart />
+								</span>
+								<span>{$page.data.t('myPages.favouriteLibraries')}</span>
+							</h3>
+							<ul class="w-full text-sm">
+								{#each filteredMyLibsHolders as holder, i (holder.sigel || i)}
+									<HoldingStatus {holder} {holdingUrl} />
+								{/each}
+								{#if filteredMyLibsHolders.length === 0}
+									<li class="m-3">
+										<span>{$page.data.t('search.noResults')}</span>
+									</li>
+								{/if}
+							</ul>
+						</div>
+					{/if}
 					<ul class="w-full text-sm">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
 							<HoldingStatus {holder} {holdingUrl} />

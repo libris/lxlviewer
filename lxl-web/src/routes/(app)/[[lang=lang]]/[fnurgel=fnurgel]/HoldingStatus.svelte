@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { type HoldingStatus } from '$lib/types/api';
 	import type { BibIdObj, DecoratedHolder } from '$lib/types/holdings';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 
@@ -123,8 +123,8 @@
 				</div>
 			{/if}
 			{#if statusData && statusData.length > 0}
-				{#each statusData as instance}
-					{#if instance && instance.item_information}
+				{#each statusData as instance, index (index)}
+					{#if instance?.item_information}
 						{@const items = instance.item_information}
 						<div class="status-container flex flex-col gap-4">
 							{#if items.error || items.count === 0}
@@ -134,7 +134,7 @@
 									<p class="error" role="alert">{$page.data.t('holdings.loanStatusFailed')}</p>
 								{/if}
 							{/if}
-							{#each items.items as item}
+							{#each items.items as item, index (index)}
 								{@const indicator = getIndicator(item.Status)}
 								<table>
 									<tbody>
@@ -209,7 +209,7 @@
 	}
 
 	.status-container {
-		@apply border-primary/16 max-w-md rounded-sm border p-2;
+		@apply border-primary/16 max-w-md rounded-sm border p-2 bg-main;
 
 		&:has(p.error) {
 			@apply bg-negative;
