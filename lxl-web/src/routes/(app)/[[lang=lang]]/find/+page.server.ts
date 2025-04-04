@@ -42,7 +42,15 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	const result = (await recordsRes.json()) as PartialCollectionView;
 
-	const searchResult = await asResult(result, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
+	const searchResult = await asResult(
+		result,
+		displayUtil,
+		vocabUtil,
+		locale,
+		env.AUXD_SECRET,
+		undefined,
+		locals.userSettings?.myLibraries
+	);
 
 	return { searchResult };
 };

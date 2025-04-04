@@ -12,6 +12,7 @@
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
+	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 
 	export let item: SearchResultItem;
 
@@ -83,7 +84,7 @@
 				</hgroup>
 				{#if item[LensType.WebCardHeaderExtra]?._display}
 					<p class="card-header-extra">
-						{#each item[LensType.WebCardHeaderExtra]?._display as obj}
+						{#each item[LensType.WebCardHeaderExtra]?._display as obj, index (index)}
 							<span>
 								<DecoratedData data={obj} showLabels={ShowLabelsOptions.DefaultOn} />
 							</span>
@@ -93,7 +94,7 @@
 			</header>
 			{#if item[LxlLens.CardBody]?._display}
 				<div class="card-body" id={bodyId}>
-					{#each item[LxlLens.CardBody]?._display as obj}
+					{#each item[LxlLens.CardBody]?._display as obj, index (index)}
 						<div>
 							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
 						</div>
@@ -104,9 +105,11 @@
 				<span class="font-bold">
 					{item.typeStr}
 				</span>
+				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
 				<span class="divider">{' • '}</span>
-				{#each item[LensType.WebCardFooter]?._display as obj}
+				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
 					{#if 'hasInstance' in obj}
+						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
 						<span class="divider">{' • '}</span>
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
@@ -163,6 +166,11 @@
 				{/if}
 			{/key}
 		{/if}
+		{#if item.heldByMyLibraries?.length}
+			<div class="card-libraries flex items-start">
+				<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
+			</div>
+		{/if}
 	</article>
 </div>
 
@@ -174,8 +182,8 @@
 	.search-card {
 		@apply relative grid w-full gap-x-4 rounded-md border-b border-b-primary/16 bg-cards px-4 pb-3 pt-3 font-normal transition-shadow;
 
-		grid-template-areas: 'image content debug';
-		grid-template-columns: 64px 1fr auto;
+		grid-template-areas: 'image content debug libraries';
+		grid-template-columns: 64px 1fr auto auto;
 
 		&:hover,
 		&:focus-within {
@@ -216,7 +224,11 @@
 	}
 
 	.card-debug {
-		grid-area: debug;
+		grid-area: extra;
+	}
+
+	.card-libraries {
+		grid-area: libraries;
 	}
 
 	.card-body {

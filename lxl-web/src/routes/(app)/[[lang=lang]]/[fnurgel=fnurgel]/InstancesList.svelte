@@ -1,16 +1,18 @@
 <script lang="ts">
 	import jmespath from 'jmespath';
+	import { page } from '$app/stores';
 	import { replaceState } from '$app/navigation';
 
 	import type { ResourceData } from '$lib/types/resourceData';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
-	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
 
-	import BiChevronRight from '~icons/bi/chevron-right';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesListContent from './InstancesListContent.svelte';
-	import { page } from '$app/stores';
+	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
+	import BiChevronRight from '~icons/bi/chevron-right';
 
 	/**
 	 * TODO:
@@ -19,6 +21,7 @@
 	 */
 
 	let instancesList: HTMLUListElement;
+	let userSettings = getUserSettings();
 
 	export let data: ResourceData;
 	export let columns: { header: string; data: string }[];
@@ -86,7 +89,7 @@
 
 	{#if Array.isArray(data) && data.length > 1}
 		<div class="column-headers mb-2 grid gap-2 text-sm font-bold">
-			{#each columns as { header: columnHeader }}
+			{#each columns as { header: columnHeader }, index (index)}
 				<div class="flex flex-1 first:pl-0">
 					{columnHeader}
 				</div>
@@ -109,13 +112,20 @@
 							<span class="arrow w-4">
 								<BiChevronRight />
 							</span>
-							{#each columns as { data: columnData }}
+							{#each columns as { data: columnData }, index (index)}
 								<div class="flex flex-1 items-center">
 									<DecoratedData data={jmespath.search(item, columnData)} />
 								</div>
 							{/each}
 							<div class="text flex flex-1 items-center justify-end text-sm">
 								{#if id && $page.data.holdingsByInstanceId[id]}
+									{@const myLibsWithHolding = getMyLibsFromHoldings(
+										userSettings.myLibraries,
+										$page.data.holdingsByInstanceId[id]
+									)}
+									{#if myLibsWithHolding.length}
+										<MyLibrariesIndicator libraries={myLibsWithHolding} />
+									{/if}
 									<a
 										href={getHoldingsLink($page.url, id)}
 										class="flex items-center self-center text-xs sm:text-sm"

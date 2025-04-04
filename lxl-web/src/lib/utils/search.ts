@@ -21,15 +21,15 @@ import {
 	type ItemDebugInfo
 } from '$lib/types/search';
 
-import { LxlLens } from '$lib/types/display';
-import { Width } from '$lib/types/auxd';
 import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
+import type { LibraryItem } from '$lib/types/userSettings';
+import { LxlLens } from '$lib/types/display';
+import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-// import { error } from '@sveltejs/kit';
-// import { env } from '$env/dynamic/public';
+import { getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -37,7 +37,8 @@ export async function asResult(
 	vocabUtil: VocabUtil,
 	locale: LangCode,
 	auxdSecret: string,
-	usePath?: string
+	usePath?: string,
+	myLibraries?: Record<string, LibraryItem>
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
 
@@ -57,6 +58,9 @@ export async function asResult(
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
 		items: view.items?.map((i) => ({
+			...(myLibraries && {
+				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
+			}),
 			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
@@ -203,6 +207,16 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
+function getHeldByMyLibraries(
+	item: FramedData,
+	myLibraries: Record<string, LibraryItem>,
+	display: DisplayUtil,
+	locale: LangCode
+) {
+	const res = getHoldingsByInstanceId(item, display, locale);
+	return getMyLibsFromHoldings(myLibraries, res);
+}
+
 function isFreeTextQuery(property: unknown): boolean {
 	return isDatatypeProperty(property) && property['@id'] === 'https://id.kb.se/vocab/textQuery';
 }
@@ -307,11 +321,4 @@ function capitalize(str: string | undefined) {
 		return str[0].toUpperCase() + str.slice(1);
 	}
 	return str;
-}
-
-export function shouldShowMapping(mapping: DisplayMapping[]) {
-	if (mapping.length === 1 && mapping[0].display === '*' && mapping[0].operator === 'equals') {
-		return false; // hide if only wildcard search
-	}
-	return true;
 }

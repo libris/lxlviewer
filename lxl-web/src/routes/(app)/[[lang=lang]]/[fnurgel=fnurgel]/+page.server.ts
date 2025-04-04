@@ -126,7 +126,8 @@ export const load = async ({ params, url, locals, fetch }) => {
 				vocabUtil,
 				locale,
 				env.AUXD_SECRET,
-				url.pathname
+				url.pathname,
+				locals.userSettings?.myLibraries
 			)) as SearchResult;
 		}
 		return null;
