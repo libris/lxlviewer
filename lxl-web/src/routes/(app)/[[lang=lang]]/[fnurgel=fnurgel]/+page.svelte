@@ -84,9 +84,12 @@
 		})
 		.filter((h) => h.str);
 
-	$: myLibsHolders = displayedHolders.filter((holder) =>
-		Object.values(userSettings?.myLibraries).some((lib) => lib.sigel === holder.sigel)
-	);
+	$: myLibsHolders = displayedHolders.filter((holder) => {
+		if (userSettings.myLibraries) {
+			return Object.values(userSettings.myLibraries).some((lib) => lib.sigel === holder.sigel);
+		} else return [];
+	});
+
 	$: filteredMyLibsHolders = myLibsHolders
 		.filter((holder) => {
 			return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
