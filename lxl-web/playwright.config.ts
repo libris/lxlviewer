@@ -17,6 +17,10 @@ const config: PlaywrightTestConfig = {
 		port: 4173,
 		reuseExistingServer: !process.env.CI
 	},
+	retries: 1,
+	use: {
+		trace: process.env.CI ? 'on-first-retry' : 'off'
+	},
 	testDir: 'tests',
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/
 };
