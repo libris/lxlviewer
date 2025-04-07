@@ -57,10 +57,6 @@ export class UserSettings {
 		}
 	}
 
-	get hasLibraries() {
-		return !!this.settings?.myLibraries && !!Object.keys(this.settings.myLibraries).length;
-	}
-
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
