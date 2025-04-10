@@ -11,7 +11,7 @@ String { strliteral | str }
 Qualifier { 
   ( QualifierKey { String } QualifierOperator { bOperator } QualifierValue { String } ) | 
   ( QualifierKey { String } QualifierOperator { bOperatorEq } QualifierValue { term } ) |
-  filterAliases 
+  QualifierValue { filterAlias }
 }
 
 @tokens {
@@ -22,10 +22,10 @@ Qualifier {
   bOperatorEq { ":" | "=" }
   strliteral { '"' (!["\\] | "\\" _)* '"' }
   str { ![:><=()~!"\ ]+ }
-  filterAliases { "includeEplikt" | "includePreliminary" }
+  filterAlias { "includeEplikt" | "includePreliminary" }
   space { @whitespace+ }
 
-  @precedence { OrOperator, AndOperator, UOperator, bOperator, bOperatorEq, filterAliases, str, space}
+  @precedence { OrOperator, AndOperator, UOperator, bOperator, bOperatorEq, filterAlias, str, space}
 }
 
 @detectDelim
