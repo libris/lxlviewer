@@ -178,7 +178,7 @@
 		</div>
 	</div>
 	{#if data.instances?.length}
-		<div class="instances !pt-2 find-layout page-padding">
+		<div class="instances pt-2! find-layout page-padding">
 			<div class="instances-list max-w-content border-t border-t-primary/16 pt-6">
 				<InstancesList
 					data={data.instances}

@@ -43,7 +43,7 @@
 						alt={$page.data.t('general.latestInstanceCover')}
 						class:rounded-full={item['@type'] === 'Person'}
 						class="object-contain object-top {item['@type'] !== 'Person'
-							? 'aspect-[2/3]'
+							? 'aspect-2/3'
 							: 'aspect-square'}"
 					/>
 					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}

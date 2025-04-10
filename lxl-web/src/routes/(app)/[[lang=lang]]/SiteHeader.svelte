@@ -40,7 +40,7 @@
 			<div class="lg:hidden">
 				<a
 					aria-label={page.data.t('header.openMenu')}
-					class="button-ghost h-11 w-11 !p-0"
+					class="button-ghost h-11 w-11 p-0!"
 					href={`${page.url.pathname}?${page.url.search}#header-menu`}
 					on:click|preventDefault={toggleHeaderMenu}
 				>

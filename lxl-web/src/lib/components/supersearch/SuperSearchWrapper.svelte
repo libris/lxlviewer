@@ -421,7 +421,7 @@
 	}
 
 	:global(.codemirror-container .cm-scroller) {
-		@apply min-h-12 font-sans outline-none text-3-regular;
+		@apply min-h-12 font-sans outline-hidden text-3-regular;
 		scrollbar-width: none;
 	}
 
