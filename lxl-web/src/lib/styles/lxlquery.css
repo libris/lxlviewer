@@ -11,6 +11,10 @@
 	border-bottom-left-radius: 5px;
 }
 
+.lxl-filter-alias {
+	padding-right: 5px;
+}
+
 .lxl-qualifier-remove,
 .lxl-qualifier-value:not(:has(+ .lxl-qualifier-value)) {
 	padding-right: 5px;
