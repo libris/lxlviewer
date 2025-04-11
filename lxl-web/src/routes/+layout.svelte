@@ -39,7 +39,7 @@
 	</Matomo>
 </div>
 
-<style lang="postcss">
+<style>
 	.body-layout {
 		grid-template-rows: min-content 1fr min-content;
 	}

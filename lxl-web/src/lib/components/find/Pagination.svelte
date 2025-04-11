@@ -115,6 +115,8 @@
 {/if}
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	nav li > * {
 		@apply mx-0.5;
 	}

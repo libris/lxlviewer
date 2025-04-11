@@ -24,9 +24,9 @@
 		<div class="home md:pl-4">
 			<a href={page.data.base} class="flex flex-col text-primary no-underline md:flex-row">
 				<span class="text-[1.6rem] font-extrabold leading-tight md:text-[2.1rem]"> Libris</span>
-				<sup
+				<div
 					class="top-0 -rotate-6 self-baseline rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold md:rotate-0"
-					>Beta</sup
+					>Beta</div
 				>
 			</a>
 		</div>
@@ -57,6 +57,8 @@
 </header>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.header-nav {
 		@apply header-layout;
 		grid-template-areas:

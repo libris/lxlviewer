@@ -15,7 +15,7 @@
 	{/each}
 </details>
 
-<style lang="postcss">
+<style>
 	summary::after {
 		content: ' ...';
 	}

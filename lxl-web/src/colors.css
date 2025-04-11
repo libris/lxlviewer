@@ -39,16 +39,4 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--bg-positive-inv: var(--color-primary-light);
 	--bg-negative: var(--color-highlight);
 	--bg-cards: var(--color-white);
-	--bg-pill: var(--color-primary);
 }
-
-/* Dark mode */
-/* @media (prefers-color-scheme: dark) {
-	:root {
-		--bg-main: var(--color-black);
-		--bg-cards: var(--color-black);
-		--bg-head: var(--color-accent-dark);
-		--text-primary: var(--text-primary-inv);
-		--text-link: var(--color-accent-light);
-	}
-} */

@@ -28,7 +28,6 @@ export default {
 			}
 		},
 		backgroundColor: {
-			primary: 'rgb(var(--bg-pill) / <alpha-value>)',
 			transparent: 'transparent',
 			'site-header': 'rgb(var(--bg-site-header) / 1)',
 			header: 'rgb(var(--bg-header) / 1)',
@@ -38,7 +37,6 @@ export default {
 			'positive-inv': 'rgb(var(--bg-positive-inv) / 1)',
 			negative: 'rgb(var(--bg-negative) / 1)',
 			cards: 'rgb(var(--bg-cards) / 1)',
-			pill: 'rgb(var(--bg-pill) / <alpha-value>)',
 			backdrop: 'rgb(var(--color-black) / 0.25)'
 		},
 		opacity: {
@@ -54,17 +52,28 @@ export default {
 			4: '.04',
 			0: '0'
 		},
-		fontSize: ({ theme }) => ({
-			xs: ['0.75rem', theme('lineHeight.normal')],
-			sm: ['0.875rem', theme('lineHeight.normal')],
-			base: ['1rem', theme('lineHeight.normal')],
-			lg: ['1.25rem', theme('lineHeight.normal')],
-			xl: ['1.5rem', theme('lineHeight.tight')],
-			'2xl': ['2rem', theme('lineHeight.tight')],
-			'3xl': ['2.5rem', theme('lineHeight.tight')],
-			'4xl': ['3rem', theme('lineHeight.tight')],
-			'5xl': ['4rem', theme('lineHeight.tight')]
-		}),
+		// fontSize: ({ theme }) => ({
+		// 	xs: ['0.75rem', theme('lineHeight.normal')],
+		// 	sm: ['0.875rem', theme('lineHeight.normal')],
+		// 	base: ['1rem', theme('lineHeight.normal')],
+		// 	lg: ['1.25rem', theme('lineHeight.normal')],
+		// 	xl: ['1.5rem', theme('lineHeight.tight')],
+		// 	'2xl': ['2rem', theme('lineHeight.tight')],
+		// 	'3xl': ['2.5rem', theme('lineHeight.tight')],
+		// 	'4xl': ['3rem', theme('lineHeight.tight')],
+		// 	'5xl': ['4rem', theme('lineHeight.tight')]
+		// }),
+		fontSize: {
+			xs: '0.75rem',
+			sm: '0.875rem',
+			base: '1rem',
+			lg: '1.25rem',
+			xl: '1.5rem',
+			'2xl': '2rem',
+			'3xl': '2.5rem',
+			'4xl': '3rem',
+			'5xl': '4rem'
+		},
 		fontFamily: {
 			sans: ['"Roboto Flex"', 'sans-serif'],
 			condensed: [

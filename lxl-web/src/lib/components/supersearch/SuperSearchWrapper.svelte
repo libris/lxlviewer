@@ -351,6 +351,8 @@
 </form>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.supersearch-input {
 		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline focus-within:outline-2 focus-within:outline-accent-dark/32;
 	}

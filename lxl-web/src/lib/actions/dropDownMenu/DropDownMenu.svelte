@@ -99,6 +99,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.drop-down-menu {
 		position: absolute;
 		top: 0;

@@ -3,23 +3,18 @@
 
 @config '../tailwind.config.js';
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+/* @layer base {
+	h1 etc go here
+} */
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-	*,
-	::after,
-	::before,
-	::backdrop,
-	::file-selector-button {
-		border-color: var(--color-gray-200, currentcolor);
-	}
-}
+/* @utility somename {
+	additional utilites w variants go here
+} */
+
+/* @layer components {
+	card, btn, badge etc go here
+} */
+
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -29,7 +24,7 @@
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
 */
-@layer base {
+/* @layer base {
 	*,
 	::after,
 	::before,
@@ -37,7 +32,7 @@
 	::file-selector-button {
 		border-color: var(--color-gray-200, currentcolor);
 	}
-}
+} */
 
 @layer base {
 	/* Variable font */
@@ -64,7 +59,7 @@
 	/* Base styles for elements */
 	html,
 	dialog {
-		@apply bg-main text-primary font-sans text-base antialiased;
+		@apply bg-main text-primary font-sans text-base/normal  antialiased;
 	}
 
 	html {
@@ -76,7 +71,7 @@
 	}
 
 	input {
-		@apply shadow-input text-3-regular rounded-md px-4 py-2 text-ellipsis;
+		@apply shadow-input bg-white text-3-regular rounded-md px-4 py-2 text-ellipsis;
 	}
 
 	select {
@@ -89,6 +84,10 @@
 
 	summary::-webkit-details-marker {
 		display: none;
+	}
+
+	button {
+		cursor: pointer;
 	}
 
 	/* Utility classes */
@@ -114,7 +113,7 @@
 
 	.button-primary:disabled,
 	.button-primary.disabled {
-		@apply bg-pill/8 text-primary/40 pointer-events-none shadow-none hover:outline-hidden hover:before:hidden;
+		@apply bg-primary/8 text-primary/40 pointer-events-none shadow-none hover:outline-hidden hover:before:hidden;
 		background-image: none;
 
 		& svg {
@@ -126,7 +125,7 @@
 	.button-ghost {
 		@apply border-primary/16 text-secondary text-3-cond-bold flex h-10 items-center justify-center gap-2 rounded-md border-2 px-4 py-2 whitespace-nowrap no-underline transition-colors;
 
-		@apply hover:border-accent-dark/32 hover:bg-positive/32 hover:text-positive hover:outline-accent-dark/8 focus:border-accent-dark/32 focus:bg-positive/32 focus:text-positive hover:outline hover:outline-4;
+		@apply hover:border-accent-dark/32 hover:bg-positive/32 hover:text-positive outline-transparent hover:outline-accent-dark/8 focus:border-accent-dark/32 focus:bg-positive/32 focus:text-positive hover:outline-4;
 
 		&:not(:hover):not(:focus) svg {
 			@apply text-primary/40;

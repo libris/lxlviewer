@@ -340,7 +340,9 @@
 	}
 
 	.expandable:not(.expanded)::after {
-		@apply pointer-events-none absolute h-12 w-full overflow-hidden;
+		height: 3rem;
+		width: 100%;
+		position: absolute;
 		content: '';
 		bottom: 0;
 		left: 0;
@@ -354,7 +356,7 @@
 	}
 
 	:global([data-property='_script']) {
-		@apply italic;
+		font-style: italic;
 		display: block;
 	}
 </style>

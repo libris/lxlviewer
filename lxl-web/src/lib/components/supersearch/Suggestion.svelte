@@ -149,6 +149,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.suggestion {
 		display: flex;
 		align-items: stretch;
@@ -163,7 +165,7 @@
 
 	.suggestion:has(:global(*:hover)) h2,
 	:global(.focused) > .suggestion h2 {
-		color: theme(textColor.primary);
+		@apply text-primary;
 	}
 
 	:global(:not(.focused)) > .suggestion:has(:global(*:hover)) {
@@ -237,15 +239,15 @@
 	}
 
 	.more {
+		@apply text-secondary;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: theme(textColor.secondary);
 		width: 56px;
 		padding: 0;
 
 		&.focused-cell {
-			color: theme(textColor.primary);
+			@apply text-primary;
 		}
 	}
 
@@ -260,7 +262,6 @@
 
 	.more.focused-cell .more-icon-container,
 	.more:hover .more-icon-container {
-		background: theme(backgroundColor.positive);
-		color: theme(textColor.positive);
+		@apply bg-positive;
 	}
 </style>

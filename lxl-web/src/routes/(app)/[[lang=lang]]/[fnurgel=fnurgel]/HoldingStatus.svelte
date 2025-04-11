@@ -187,6 +187,8 @@
 </li>
 
 <style lang="postcss">
+	@reference "../../../../app.css";
+
 	details[open] {
 		& .arrow {
 			@apply rotate-90;

@@ -175,6 +175,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.search-card-container {
 		container-type: inline-size;
 	}
