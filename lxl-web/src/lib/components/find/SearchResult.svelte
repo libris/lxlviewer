@@ -261,7 +261,7 @@
 		grid-area: search-related;
 	}
 
-	@media screen and (min-width: theme('screens.sm')) {
+	@variant sm {
 		.toolbar {
 			grid-template-areas:
 				'filter-modal-toggle search-related'
@@ -270,7 +270,7 @@
 		}
 	}
 
-	@media screen and (min-width: theme('screens.md')) {
+	@variant md {
 		.filters {
 			display: block;
 		}
@@ -285,6 +285,7 @@
 				'hits sort-select';
 		}
 	}
+	
 	.tab-header {
 		@apply block py-4;
 	}

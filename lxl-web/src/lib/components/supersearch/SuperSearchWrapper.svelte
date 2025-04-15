@@ -354,7 +354,7 @@
 	@reference "../../../app.css";
 
 	.supersearch-input {
-		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline focus-within:outline-2 focus-within:outline-positive-dark/32;
+		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline-2 focus-within:outline-positive-dark/32;
 	}
 
 	/* dialog */
@@ -367,7 +367,7 @@
 		@apply pointer-events-none header-layout;
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
 
-		@media screen and (min-width: theme('screens.sm')) {
+		@variant sm {
 			grid-template-areas: '. supersearch-content .';
 		}
 	}

@@ -64,7 +64,7 @@
 			'home . actions'
 			'search search search';
 
-		@media screen and (min-width: theme('screens.sm')) {
+		@variant sm {
 			grid-template-areas: 'home search actions';
 		}
 	}
