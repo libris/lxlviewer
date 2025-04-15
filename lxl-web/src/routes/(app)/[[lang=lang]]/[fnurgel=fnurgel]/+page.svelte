@@ -286,7 +286,7 @@
 </article>
 <SearchResult searchResult={$page.data.searchResult} showMapping />
 
-<style lang="postcss">
+<style>
 	.resource {
 		grid-template-areas: 'image content';
 	}
@@ -347,7 +347,7 @@
 		bottom: 0;
 		left: 0;
 		pointer-events: none;
-		background: linear-gradient(to bottom, rgb(var(--bg-cards) / 0), rgb(var(--bg-cards) / 1));
+		background: linear-gradient(to bottom, --alpha(var(--color-cards) / 0%), --alpha(var(--color-cards) / 100%));
 		overflow: hidden;
 	}
 

@@ -20,7 +20,7 @@
 </script>
 
 <header class="bg-site-header">
-	<nav class="header-nav min-h-20 items-center px-4 py-0">
+	<nav class="header-nav header-layout min-h-20 items-center py-0">
 		<div class="home md:pl-4">
 			<a href={page.data.base} class="flex flex-col text-primary no-underline md:flex-row">
 				<span class="text-[1.6rem] font-extrabold leading-tight md:text-[2.1rem]"> Libris</span>
@@ -34,7 +34,7 @@
 			<SuperSearchWrapper placeholder={page.data.t('header.searchPlaceholder')} />
 		</div>
 		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
-			<div id="header-menu" class="hidden items-center lg:flex">
+			<div id="header-menu" class="hidden items-center lg:flex target:absolute target:left-0 target:block target:w-full target:bg-main">
 				<HeaderMenu />
 			</div>
 			<div class="lg:hidden">
@@ -60,7 +60,6 @@
 	@reference "../../../app.css";
 
 	.header-nav {
-		@apply header-layout;
 		grid-template-areas:
 			'home . actions'
 			'search search search';
@@ -80,9 +79,5 @@
 
 	.actions {
 		grid-area: actions;
-	}
-
-	#header-menu:target {
-		@apply /* TODO: fix better no-JS fallback styling */ absolute left-0 block w-full bg-main;
 	}
 </style>

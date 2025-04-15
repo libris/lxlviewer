@@ -1,65 +1,277 @@
 @import 'tailwindcss';
-@import './colors.css' layer(base);
 
-@config '../tailwind.config.js';
-
-/* @layer base {
-	h1 etc go here
-} */
-
-/* @utility somename {
-	additional utilites w variants go here
-} */
-
-/* @layer components {
-	card, btn, badge etc go here
-} */
-
-
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-/* @layer base {
-	*,
-	::after,
-	::before,
-	::backdrop,
-	::file-selector-button {
-		border-color: var(--color-gray-200, currentcolor);
+/* Variable font */
+@supports (font-variation-settings: normal) {
+	@font-face {
+		font-family: 'Roboto Flex';
+		src: url('/fonts/RobotoFlex-VariableReduced.woff2') format('woff2');
+		font-stretch: 60% 100%;
+		font-weight: 400 800;
+		font-display: auto;
 	}
-} */
+}
+
+/* Static fallback */
+@supports not (font-variation-settings: normal) {
+	@font-face {
+		font-family: 'Roboto Flex';
+		src: url('/fonts/RobotoFlex-Regular.ttf') format('truetype');
+		font-style: normal;
+		font-display: auto;
+	}
+}
+
+:root {
+	--color-white: rgba(255, 255, 255, 1);
+	--color-black: rgba(0, 0, 0, 1);
+	--color-main: rgba(247, 246, 242);
+	--color-main-dark: rgba(240, 238, 233, 1);
+	--color-primary-light: rgba(103, 64, 25, 1);
+	--color-cards: rgba(255, 255, 255, 1);
+}
+
+@theme inline {
+	--color-*: initial;
+	--color-primary: rgba(82, 51, 20, 1);
+	--color-primary-inv: var(--color-white);
+	--color-positive: rgba(213, 229, 220, 1);
+	--color-positive-dark: rgba(66, 107, 84, 1);
+	--color-highlight: rgba(239, 214, 189, 1);
+	--color-error: rgba(187, 54, 54, 1);
+
+	--leading-none: 0;
+	--leading-normal: 1.4;
+	--leading-tight: 1.2;
+
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-base: 1rem;
+	--text-lg: 1.25rem;
+	--text-xl: 1.5rem;
+	--text-2xl: 2rem;
+	--text-3xl: 2.5rem;
+	--text-4xl: 3rem;
+	--text-5xl: 4rem;
+
+	--text-xs--line-height: var(--leading-normal);
+	--text-sm--line-height: var(--leading-normal);
+	--text-base--line-height: var(--leading-normal);
+	--text-lg--line-height: var(--leading-normal);
+	--text-xl--line-height: var(--leading-tight);
+	--text-2xl--line-height: var(--leading-tight);
+	--text-3xl--line-height: var(--leading-tight);
+	--text-4xl--line-height: var(--leading-tight);
+	--text-5xl--line-height: var(--leading-tight);
+
+	--font-sans: "Roboto Flex", "sans-serif";
+	--font-condensed: "Roboto Flex", "sans-serif";
+	--font-condensed--font-variation-settings: "wdth" 60;
+
+	--breakpoint-xs: 375px;
+	--breakpoint-sm: 640px;
+	--breakpoint-md: 1024px;
+	--breakpoint-lg: 1440px;
+	--breakpoint-xl: 1760px;
+	--breakpoint-2xl: 1920px;
+}
+
+/* custom bg colors  */
+
+@utility bg-transparent {
+	background-color: transparent;
+}
+
+@utility bg-white {
+	background-color: var(--color-white);
+}
+
+@utility bg-main {
+	background-color: var(--color-main);
+}
+
+@utility bg-negative {
+	background-color: var(--color-highlight);
+}
+
+@utility bg-cards {
+	background-color: var(--color-cards);
+}
+
+@utility bg-site-header {
+	background-color: var(--color-positive);
+}
+
+@utility bg-backdrop {
+	background-color: --alpha(var(--color-black) / 25%);
+}
+
+@utility bg-positive-inv {
+	background-color: var(--color-primary-light);
+}
+
+@utility bg-header {
+	background-color: var(--color-main-dark);
+}
+
+/* custom text colors */
+
+@utility text-secondary {
+	color: --alpha(var(--color-primary) / 80%);
+}
+
+@utility text-secondary-inv {
+	color: --alpha(var(--color-primary-inv) / 80%);
+}
+
+@utility text-tertiary {
+	color: --alpha(var(--color-primary) / 50%);
+}
+
+@utility text-disabled {
+	color: --alpha(var(--color-primary) / 60%);
+}
+
+@utility text-icon {
+	color: --alpha(var(--color-primary) / 40%);
+}
+
+@utility text-icon-strong {
+	color: --alpha(var(--color-primary) / 80%);
+}
+
+/* typography */
+
+@utility text-1-regular {
+	@apply text-xs font-normal;
+}
+
+@utility text-1-cond {
+	@apply text-xs font-condensed;
+}
+
+@utility text-1-cond-bold {
+	@apply text-xs font-condensed font-bold;
+}
+
+@utility text-1-cond-caps {
+	@apply text-xs font-condensed font-normal uppercase tracking-wide;
+}
+
+@utility text-2-regular {
+	@apply text-sm font-normal;
+}
+
+@utility text-2-cond {
+	@apply text-sm font-condensed;
+}
+
+@utility text-2-cond-bold {
+	@apply text-sm font-condensed font-bold;
+}
+
+@utility text-3-regular {
+	@apply text-base font-normal;
+}
+
+@utility text-3-cond {
+	@apply text-base font-condensed;
+}
+
+@utility text-3-cond-bold {
+	@apply text-base font-condensed font-bold
+}
+
+@utility text-4-regular {
+	@apply text-lg font-normal;
+}
+
+@utility text-4-cond {
+	@apply text-lg font-condensed;
+}
+
+@utility text-4-cond-bold {
+	@apply text-lg font-condensed font-bold;
+}
+
+@utility text-5-cond-extrabold {
+	@apply text-xl font-condensed font-extrabold;
+}
+
+@utility text-6-cond-extrabold {
+	@apply text-2xl md:text-3xl font-condensed font-extrabold;
+}
+
+@utility text-7-cond-extrabold {
+	@apply text-3xl md:text-4xl lg:text-5xl font-condensed font-extrabold;
+}
+
+/* shadow */
+
+@utility shadow-input {
+	box-shadow: inset 0px 1px 0px 0px --alpha(var(--color-primary) / 16%);
+}
+
+@utility shadow-btn-primary {
+	box-shadow: 0px 1px 0px 0px --alpha(var(--color-primary) / 16%), inset 0px 1px 0px 0px --alpha(var(--color-highlight) / 24%);
+}
+
+/* gradient */
+
+@utility gradient-primary {
+	@apply bg-gradient-to-b from-[#7B4C1E] to-[#674019];
+}
+
+@utility gradient-secondary {
+	@apply bg-gradient-to-b from-[#A36629] to-[#8F5924];
+}
+
+/* layout */
+
+@utility grid-cols-find {
+	grid-template-columns: minmax(240px, 1fr) 5fr;
+}
+
+@utility grid-cols-instance-list {
+	grid-template-columns: 16px 1fr 3fr 1fr 2fr;
+}
+
+@utility find-layout {
+	@apply flex flex-col gap-4 md:grid md:grid-cols-find md:gap-8;
+}
+
+@utility header-layout-md {
+	grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
+}
+
+@utility header-layout {
+	grid-template-columns: 70px minmax(0, 8fr) 1fr;
+	@apply grid gap-x-8 px-4 md:px-2 sm:px-6 md:header-layout-md;
+
+	/* why is this not working?? */
+	/* @media screen and (min-width: var(--breakpoint-md)) {
+		grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
+	} */
+}
+
+/* layout utilites */
+
+@utility page-padding {
+	@apply p-4 sm:px-6;
+}
+
+@utility container-fluid {
+	@apply mx-auto px-4 sm:px-8;
+}
+
+@utility max-w-content {
+	max-width: 78rem;
+}
 
 @layer base {
-	/* Variable font */
-	@supports (font-variation-settings: normal) {
-		@font-face {
-			font-family: 'Roboto Flex';
-			src: url('/fonts/RobotoFlex-VariableReduced.woff2') format('woff2');
-			font-stretch: 60% 100%;
-			font-weight: 400 800;
-			font-display: auto;
-		}
-	}
-
-	/* Static fallback */
-	@supports not (font-variation-settings: normal) {
-		@font-face {
-			font-family: 'Roboto Flex';
-			src: url('/fonts/RobotoFlex-Regular.ttf') format('truetype');
-			font-style: normal;
-			font-display: auto;
-		}
-	}
-
 	/* Base styles for elements */
 	html,
 	dialog {
-		@apply bg-main text-primary font-sans text-base/normal  antialiased;
+		@apply bg-main text-primary font-sans text-base/normal antialiased;
 	}
 
 	html {
@@ -67,7 +279,11 @@
 	}
 
 	a {
-		@apply text-link hover:text-hover underline;
+		@apply text-secondary hover:text-primary underline;
+		&.ext-link::after {
+			content: '\2009↗';
+			@apply text-icon align-[10%];
+		}
 	}
 
 	input {
@@ -89,22 +305,13 @@
 	button {
 		cursor: pointer;
 	}
+}
 
-	/* Utility classes */
-
-	.container-fluid {
-		@apply mx-auto px-4 sm:px-8;
-	}
-
-	a.ext-link::after {
-		content: '\2009↗';
-		@apply text-icon align-[10%];
-	}
-
+@layer components {
 	/* primary btn */
 	.button-primary {
 		@apply text-primary-inv shadow-btn-primary text-3-cond-bold gradient-primary relative z-1 flex h-10 items-center justify-center gap-2 rounded-md px-4 py-2 no-underline;
-		@apply hover:text-primary-inv hover:outline-accent-dark/8 hover:outline hover:outline-4;
+		@apply hover:text-primary-inv hover:outline-positive-dark/8 hover:outline hover:outline-4;
 
 		/* enable transition to background gradient */
 		@apply before:shadow-btn-primary before:gradient-secondary before:absolute before:top-0 before:left-0 before:-z-1 before:h-full before:w-full before:rounded-[inherit] before:opacity-0 before:transition-opacity before:content-[''];
@@ -125,7 +332,7 @@
 	.button-ghost {
 		@apply border-primary/16 text-secondary text-3-cond-bold flex h-10 items-center justify-center gap-2 rounded-md border-2 px-4 py-2 whitespace-nowrap no-underline transition-colors;
 
-		@apply hover:border-accent-dark/32 hover:bg-positive/32 hover:text-positive outline-transparent hover:outline-accent-dark/8 focus:border-accent-dark/32 focus:bg-positive/32 focus:text-positive hover:outline-4;
+		@apply hover:border-positive-dark/32 hover:bg-positive/32 hover:text-positive-dark outline-transparent hover:outline-positive-dark/8 focus:border-positive-dark/32 focus:bg-positive/32 focus:text-positive-dark hover:outline-4;
 
 		&:not(:hover):not(:focus) svg {
 			@apply text-primary/40;
@@ -142,15 +349,18 @@
 	}
 
 	.button-ghost.active {
-		@apply border-accent-dark/32 bg-positive/32 text-positive;
+		@apply border-positive-dark/32 bg-positive/32 text-positive-dark;
 
 		& svg {
 			@apply text-positive!;
 		}
 	}
 
-	/* negative btn */
 	.button-negative {
 		@apply hover:bg-negative hover:text-secondary focus:bg-negative focus:text-secondary;
+	}
+
+	.icon-button {
+		@apply w-11 h-11 flex items-center justify-center rounded-full hover:bg-cards focus:bg-cards transition-colors relative;
 	}
 }

@@ -34,7 +34,7 @@
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
 	{#if item.qualifiers.length}
 		<span
-			class="order-1 ml-auto hidden whitespace-nowrap rounded-sm bg-positive px-1.5 py-0.5 text-xs text-positive sm:inline md:text-sm"
+			class="order-1 ml-auto hidden whitespace-nowrap rounded-sm bg-positive px-1.5 py-0.5 text-xs text-positive-dark sm:inline md:text-sm"
 		>
 			{$page.data.t('search.add')}
 
@@ -49,7 +49,7 @@
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<hgroup class="resource-heading">
-				<h2 class="inline overflow-hidden text-ellipsis text-secondary text-3-cond-bold">
+				<h2 class="inline overflow-hidden text-ellipsis text-secondary text-3-cond-bold md:max-w-[33vw]">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
 						showLabels={ShowLabelsOptions.Never}
@@ -119,10 +119,10 @@
 		>
 			{@render resourceSnippet(item)}
 		</button>
-		<button type="button" class="more" id={getCellId(1)} class:focused-cell={isFocusedCell(1)}>
+		<button type="button" class="more text-secondary" id={getCellId(1)} class:focused-cell={isFocusedCell(1)}>
 			{#key item.qualifiers}
 				<span
-					class="more-icon-container"
+					class="more-icon-container rounded-full"
 					use:dropdownMenu={{
 						menuItems: [
 							...item.qualifiers.map((qualifier) => ({
@@ -149,7 +149,7 @@
 </div>
 
 <style lang="postcss">
-	@reference "../../../app.css";
+	@reference "tailwindcss";
 
 	.suggestion {
 		display: flex;
@@ -165,11 +165,11 @@
 
 	.suggestion:has(:global(*:hover)) h2,
 	:global(.focused) > .suggestion h2 {
-		@apply text-primary;
+		color: var(--color-primary);
 	}
 
 	:global(:not(.focused)) > .suggestion:has(:global(*:hover)) {
-		background: theme(backgroundColor.main);
+		background-color: var(--color-main);
 	}
 
 	.suggestion button,
@@ -182,7 +182,7 @@
 	.suggestion button:first-child,
 	.suggestion a:first-child {
 		flex: 1;
-		padding: 0 theme(padding.4);
+		padding: 0 calc(var(--spacing) * 4);
 		text-align: left;
 	}
 
@@ -199,7 +199,7 @@
 		display: grid;
 		grid-template-columns: 40px minmax(0, 1fr);
 		align-items: center;
-		gap: theme(gap.2);
+		gap: calc(var(--spacing) * 2);
 	}
 
 	.resource-heading {
@@ -216,11 +216,11 @@
 
 		/* hide dangling divider • */
 		& .divider {
-			@apply hidden;
+			display: none;
 		}
 
 		& :global(.divider:has(+ span)) {
-			@apply inline;
+			display: inline;
 		}
 	}
 
@@ -232,14 +232,9 @@
 		display: inline-block;
 		max-width: 50vw;
 		text-overflow: ellipsis;
-
-		@media screen and (min-width: theme('screens.md')) {
-			max-width: 33vw;
-		}
 	}
 
 	.more {
-		@apply text-secondary;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -247,7 +242,7 @@
 		padding: 0;
 
 		&.focused-cell {
-			@apply text-primary;
+			color: var(--color-primary);
 		}
 	}
 
@@ -257,11 +252,10 @@
 		justify-content: center;
 		width: 40px;
 		height: 40px;
-		border-radius: theme(borderRadius.full);
 	}
 
 	.more.focused-cell .more-icon-container,
 	.more:hover .more-icon-container {
-		@apply bg-positive;
+		background-color: var(--color-positive);
 	}
 </style>

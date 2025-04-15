@@ -192,7 +192,7 @@
 			@apply shadow-lg;
 
 			& .card-header-title {
-				@apply text-hover;
+				@apply text-primary;
 			}
 		}
 
@@ -258,7 +258,7 @@
 	}
 
 	.card-header-title {
-		@apply text-link text-3-cond-bold;
+		@apply text-secondary text-3-cond-bold;
 
 		@container (min-width: 768px) {
 			@apply text-4-cond-bold;
