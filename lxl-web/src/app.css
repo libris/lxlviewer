@@ -42,7 +42,7 @@
 }
 
 @theme inline {
-	--font-sans: 'Inter', 'sans-serif';
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
 	--color-*: initial;
 	--color-primary: rgba(82, 51, 20, 1);
