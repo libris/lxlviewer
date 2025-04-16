@@ -31,7 +31,7 @@ export const dropdownMenu: Action<HTMLElement, Parameter> = (
 		node.addEventListener('mouseover', attachDropDownMenu);
 		node.addEventListener('mouseout', removeDropDownMenu);
 		node.addEventListener('focus', attachDropDownMenu);
-		node.addEventListener('blur-xs', removeDropDownMenu);
+		node.addEventListener('blur', removeDropDownMenu);
 
 		async function attachDropDownMenu(event: MouseEvent | FocusEvent) {
 			try {
@@ -100,7 +100,7 @@ export const dropdownMenu: Action<HTMLElement, Parameter> = (
 			node.removeEventListener('mouseover', attachDropDownMenu);
 			node.removeEventListener('mouseout', removeDropDownMenu);
 			node.removeEventListener('focus', attachDropDownMenu);
-			node.removeEventListener('blur-xs', removeDropDownMenu);
+			node.removeEventListener('blur', removeDropDownMenu);
 		};
 	});
 };
