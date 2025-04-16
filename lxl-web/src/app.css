@@ -1,24 +1,35 @@
 @import 'tailwindcss';
 
-/* Variable font */
-@supports (font-variation-settings: normal) {
-	@font-face {
-		font-family: 'Roboto Flex';
-		src: url('/fonts/RobotoFlex-VariableReduced.woff2') format('woff2');
-		font-stretch: 60% 100%;
-		font-weight: 400 800;
-		font-display: auto;
-	}
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/Inter-Regular.woff2') format('woff2');
 }
 
-/* Static fallback */
-@supports not (font-variation-settings: normal) {
-	@font-face {
-		font-family: 'Roboto Flex';
-		src: url('/fonts/RobotoFlex-Regular.ttf') format('truetype');
-		font-style: normal;
-		font-display: auto;
-	}
+@font-face {
+	font-family: 'Inter';
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/Inter-Italic.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/Inter-Medium.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Inter';
+	font-style: italic;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/Inter-MediumItalic.woff2') format('woff2');
 }
 
 :root {
@@ -31,6 +42,8 @@
 }
 
 @theme inline {
+	--font-sans: 'Inter', 'sans-serif';
+
 	--color-*: initial;
 	--color-primary: rgba(82, 51, 20, 1);
 	--color-primary-inv: var(--color-white);
@@ -62,10 +75,6 @@
 	--text-3xl--line-height: var(--leading-tight);
 	--text-4xl--line-height: var(--leading-tight);
 	--text-5xl--line-height: var(--leading-tight);
-
-	--font-sans: 'Roboto Flex', 'sans-serif';
-	--font-condensed: 'Roboto Flex', 'sans-serif';
-	--font-condensed--font-variation-settings: 'wdth' 60;
 
 	--breakpoint-xs: 375px;
 	--breakpoint-sm: 640px;
@@ -146,15 +155,15 @@
 }
 
 @utility text-1-cond {
-	@apply font-condensed text-xs;
+	@apply text-xs;
 }
 
 @utility text-1-cond-bold {
-	@apply font-condensed text-xs font-bold;
+	@apply text-xs font-bold;
 }
 
 @utility text-1-cond-caps {
-	@apply font-condensed text-xs font-normal tracking-wide uppercase;
+	@apply text-xs font-normal tracking-wide uppercase;
 }
 
 @utility text-2-regular {
@@ -162,11 +171,11 @@
 }
 
 @utility text-2-cond {
-	@apply font-condensed text-sm;
+	@apply text-sm;
 }
 
 @utility text-2-cond-bold {
-	@apply font-condensed text-sm font-bold;
+	@apply text-sm font-bold;
 }
 
 @utility text-3-regular {
@@ -174,11 +183,11 @@
 }
 
 @utility text-3-cond {
-	@apply font-condensed text-base;
+	@apply text-base;
 }
 
 @utility text-3-cond-bold {
-	@apply font-condensed text-base font-bold;
+	@apply text-base font-bold;
 }
 
 @utility text-4-regular {
@@ -186,23 +195,23 @@
 }
 
 @utility text-4-cond {
-	@apply font-condensed text-lg;
+	@apply text-lg;
 }
 
 @utility text-4-cond-bold {
-	@apply font-condensed text-lg font-bold;
+	@apply text-lg font-bold;
 }
 
 @utility text-5-cond-extrabold {
-	@apply font-condensed text-xl font-extrabold;
+	@apply text-xl font-extrabold;
 }
 
 @utility text-6-cond-extrabold {
-	@apply font-condensed text-2xl font-extrabold md:text-3xl;
+	@apply text-2xl font-extrabold md:text-3xl;
 }
 
 @utility text-7-cond-extrabold {
-	@apply font-condensed text-3xl font-extrabold md:text-4xl lg:text-5xl;
+	@apply text-3xl font-extrabold md:text-4xl lg:text-5xl;
 }
 
 /* shadow */
@@ -270,13 +279,8 @@
 }
 
 @layer base {
-	/* Base styles for elements */
-	html,
-	dialog {
-		@apply bg-main text-primary font-sans text-base/normal antialiased;
-	}
-
 	html {
+		font-family: var(--font-sans);
 		scrollbar-gutter: stable;
 	}
 
