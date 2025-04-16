@@ -77,6 +77,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../../../app.css";
+
 	:global(.columns > div) {
 		@apply gap-2 lg:columns-2 lg:gap-x-8;
 	}

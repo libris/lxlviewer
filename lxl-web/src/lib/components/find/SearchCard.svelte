@@ -43,7 +43,7 @@
 						alt={$page.data.t('general.latestInstanceCover')}
 						class:rounded-full={item['@type'] === 'Person'}
 						class="object-contain object-top {item['@type'] !== 'Person'
-							? 'aspect-[2/3]'
+							? 'aspect-2/3'
 							: 'aspect-square'}"
 					/>
 					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
@@ -175,6 +175,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.search-card-container {
 		container-type: inline-size;
 	}
@@ -190,7 +192,7 @@
 			@apply shadow-lg;
 
 			& .card-header-title {
-				@apply text-hover;
+				@apply text-primary;
 			}
 		}
 
@@ -256,7 +258,7 @@
 	}
 
 	.card-header-title {
-		@apply text-link text-3-cond-bold;
+		@apply text-secondary text-3-cond-bold;
 
 		@container (min-width: 768px) {
 			@apply text-4-cond-bold;

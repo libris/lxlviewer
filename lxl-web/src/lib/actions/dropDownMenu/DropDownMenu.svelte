@@ -71,7 +71,7 @@
 	Note that `DropDownMenu.svelte` isn't intended to be used directly in page templates – use the `use:dropDownMenu` instead (see `$lib/actions/dropDownMenu`).
 -->
 <div
-	class="drop-down-menu"
+	class="drop-down-menu absolute top-0 left-0 z-100 w-max-content max-w-sm bg-cards border border-primary/32 rounded-sm text-sm shadow-xl"
 	role="complementary"
 	bind:this={dropDownMenuElement}
 	{onmouseover}
@@ -82,11 +82,11 @@
 	<nav class="menu-items">
 		<ul>
 			{#each menuItems as item}
-				<li><button type="button" onclick={item.action}>{item.label}</button></li>
+				<li><button type="button" class="flex items-center text-left px-4 w-full min-h-[44px] cursor-pointer hover:bg-main" onclick={item.action}>{item.label}</button></li>
 			{/each}
 		</ul>
 	</nav>
-	<div class="arrow" bind:this={arrowElement}>
+	<div class="arrow absolute" bind:this={arrowElement}>
 		<svg
 			aria-hidden="true"
 			width={arrowWidth}
@@ -97,37 +97,3 @@
 		</svg>
 	</div>
 </div>
-
-<style lang="postcss">
-	.drop-down-menu {
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 100;
-		width: max-content;
-		max-width: theme(maxWidth.sm);
-		border: 1px solid rgb(var(--color-primary) / 0.32);
-		border-radius: theme(borderRadius.sm);
-		background: theme(backgroundColor.cards);
-		font-size: theme(fontSize.sm);
-		box-shadow: theme(boxShadow.xl);
-	}
-
-	.arrow {
-		position: absolute;
-	}
-
-	.menu-items button {
-		display: flex;
-		align-items: center;
-		text-align: left;
-		padding: 0 theme(padding.4);
-		width: 100%;
-		min-height: 44px;
-		cursor: pointer;
-
-		&:hover {
-			background: theme(backgroundColor.main);
-		}
-	}
-</style>

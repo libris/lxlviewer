@@ -114,6 +114,8 @@
 </ul>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.mapping-item {
 		@apply rounded-md px-4 py-2 brightness-100 text-3-cond-bold;
 		transition: filter 0.1s ease;
@@ -153,7 +155,7 @@
 	}
 
 	.pill-group {
-		@apply flex items-center gap-2 bg-pill/8 p-0 pr-4;
+		@apply flex items-center gap-2 bg-primary/8 p-0 pr-4;
 
 		&.outer {
 			@apply bg-transparent;

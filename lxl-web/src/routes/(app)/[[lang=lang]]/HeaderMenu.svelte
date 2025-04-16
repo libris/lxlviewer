@@ -15,7 +15,7 @@
 			: `/${otherLangCode}${$page.url.pathname}`) + $page.url.search;
 </script>
 
-<div class="header-menu py-4 lg:py-0">
+<div class="[&_a]:no-underline py-4 lg:py-0">
 	<ol class="flex flex-col items-center gap-4 text-secondary lg:flex-row lg:text-2-regular">
 		<li>
 			<a class="flex items-center gap-2 lg:flex-col lg:gap-1" href="help">
@@ -47,9 +47,3 @@
 		</li>
 	</ol>
 </div>
-
-<style>
-	.header-menu a {
-		@apply no-underline;
-	}
-</style>

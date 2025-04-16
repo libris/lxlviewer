@@ -103,7 +103,7 @@
 	}
 </script>
 
-<li class="border-b-primary/16 [&:not(:last-child)]:border-b">
+<li class="border-b-primary/16 not-last:border-b">
 	<details on:toggle={getHoldingStatus}>
 		<summary class="my-3 flex cursor-pointer items-baseline">
 			<span class="arrow mr-2 h-3">
@@ -187,6 +187,8 @@
 </li>
 
 <style lang="postcss">
+	@reference "../../../../app.css";
+
 	details[open] {
 		& .arrow {
 			@apply rotate-90;

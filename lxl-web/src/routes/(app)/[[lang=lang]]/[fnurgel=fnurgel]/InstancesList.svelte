@@ -106,7 +106,7 @@
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="grid min-h-11 items-center gap-2 align-middle text-sm hover:bg-pill/16 md:text-base"
+							class="grid min-h-11 items-center gap-2 align-middle text-sm hover:bg-primary/16 md:text-base"
 							on:keydown={handleSummaryKeydown}
 						>
 							<span class="arrow w-4">
@@ -157,6 +157,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../../../app.css";
+
 	.column-headers,
 	summary {
 		@apply grid-cols-instance-list gap-2;
@@ -171,7 +173,7 @@
 	}
 
 	details[open] > summary {
-		@apply bg-pill/8 hover:bg-pill/16;
+		@apply bg-primary/8 hover:bg-primary/16;
 	}
 
 	details[open] .arrow {

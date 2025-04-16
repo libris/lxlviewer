@@ -81,7 +81,7 @@
 					<li>
 						<a
 							class={p.page === currentPage
-								? 'button-primary !mx-4 sm:!mx-0.5'
+								? 'button-primary mx-4! sm:mx-0.5!'
 								: 'button-ghost hidden sm:flex'}
 							href={p.link}
 							aria-label="{$page.data.t('search.page')} {p}"
@@ -115,6 +115,8 @@
 {/if}
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	nav li > * {
 		@apply mx-0.5;
 	}

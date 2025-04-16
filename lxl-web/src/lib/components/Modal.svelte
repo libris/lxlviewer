@@ -106,7 +106,7 @@
 	</div>
 </dialog>
 
-<style lang="postcss">
+<style>
 	dialog {
 		background: none;
 	}

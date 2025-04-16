@@ -75,7 +75,7 @@
 						>
 							{p.str}
 							<span
-								class="mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs lg:text-sm"
+								class="mb-px rounded-sm bg-primary/4 px-1 text-sm text-secondary md:text-xs lg:text-sm"
 								aria-label="{p.totalItems} {$page.data.t('search.hits')}">{p.totalItems}</span
 							>
 						</a>
@@ -121,7 +121,7 @@
 					{$page.data.t('search.filters')}
 					{#if filterCount}
 						<span
-							class="flex h-5 w-5 items-center justify-center rounded-full bg-pill text-xs font-bold leading-none text-primary-inv"
+							class="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold leading-none text-primary-inv"
 						>
 							{filterCount}
 						</span>
@@ -206,6 +206,8 @@
 {/if}
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.toolbar {
 		@apply grid;
 		grid-template-areas:
@@ -259,7 +261,7 @@
 		grid-area: search-related;
 	}
 
-	@media screen and (min-width: theme('screens.sm')) {
+	@variant sm {
 		.toolbar {
 			grid-template-areas:
 				'filter-modal-toggle search-related'
@@ -268,7 +270,7 @@
 		}
 	}
 
-	@media screen and (min-width: theme('screens.md')) {
+	@variant md {
 		.filters {
 			display: block;
 		}
@@ -283,6 +285,7 @@
 				'hits sort-select';
 		}
 	}
+	
 	.tab-header {
 		@apply block py-4;
 	}

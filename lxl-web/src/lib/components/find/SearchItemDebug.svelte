@@ -15,7 +15,7 @@
 </script>
 
 <div class="text-xs">
-	<table class="table">
+	<table class="table [&_td]:pl-2">
 		<thead>
 			<tr>
 				<td></td>
@@ -46,9 +46,3 @@
 		</tbody>
 	</table>
 </div>
-
-<style lang="postcss">
-	td {
-		@apply pl-2;
-	}
-</style>

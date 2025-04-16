@@ -171,7 +171,7 @@
 							</span>
 							{#if facet.totalItems > 0}
 								<span
-									class="facet-total mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs"
+									class="facet-total mb-px rounded-sm bg-primary/4 px-1 text-sm text-secondary md:text-xs"
 									aria-label="{facet.totalItems} {page.data.t('search.hits')}"
 									>{facet.totalItems.toLocaleString(locale)}</span
 								>
@@ -197,7 +197,7 @@
 				{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
 					<div class="ml-auto mt-4">
 						<button
-							class="flex items-center gap-1 rounded-sm bg-pill/4 px-2 py-1 text-xs text-error"
+							class="flex items-center gap-1 rounded-sm bg-primary/4 px-2 py-1 text-xs text-error"
 							use:popover={{
 								title: page.data.t('facet.limitText'),
 								placeAsSibling: true
@@ -215,6 +215,8 @@
 </li>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	details[open] {
 		& .arrow {
 			@apply rotate-90;
@@ -232,7 +234,7 @@
 	.facet-link:hover,
 	.facet-link:focus {
 		& .facet-total {
-			@apply bg-pill/8;
+			@apply bg-primary/8;
 		}
 	}
 </style>

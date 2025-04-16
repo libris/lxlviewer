@@ -178,7 +178,7 @@
 		</div>
 	</div>
 	{#if data.instances?.length}
-		<div class="instances !pt-2 find-layout page-padding">
+		<div class="instances pt-2! find-layout page-padding">
 			<div class="instances-list max-w-content border-t border-t-primary/16 pt-6">
 				<InstancesList
 					data={data.instances}
@@ -286,7 +286,7 @@
 </article>
 <SearchResult searchResult={$page.data.searchResult} showMapping />
 
-<style lang="postcss">
+<style>
 	.resource {
 		grid-template-areas: 'image content';
 	}
@@ -340,12 +340,14 @@
 	}
 
 	.expandable:not(.expanded)::after {
-		@apply pointer-events-none absolute h-12 w-full overflow-hidden;
+		height: 3rem;
+		width: 100%;
+		position: absolute;
 		content: '';
 		bottom: 0;
 		left: 0;
 		pointer-events: none;
-		background: linear-gradient(to bottom, rgb(var(--bg-cards) / 0), rgb(var(--bg-cards) / 1));
+		background: linear-gradient(to bottom, --alpha(var(--color-cards) / 0%), --alpha(var(--color-cards) / 100%));
 		overflow: hidden;
 	}
 
@@ -354,7 +356,7 @@
 	}
 
 	:global([data-property='_script']) {
-		@apply italic;
+		font-style: italic;
 		display: block;
 	}
 </style>

@@ -1,4 +1,6 @@
 /* Make clicks pass-through */
+@reference "../../app.css";
+
 #nprogress {
   pointer-events: none;
 }

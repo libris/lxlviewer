@@ -3,6 +3,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../app.css";
+	
 	div {
 		& :global(h1) {
 			@apply text-6-cond-extrabold;

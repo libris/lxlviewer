@@ -351,8 +351,10 @@
 </form>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.supersearch-input {
-		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline focus-within:outline-2 focus-within:outline-accent-dark/32;
+		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline-2 focus-within:outline-positive-dark/32;
 	}
 
 	/* dialog */
@@ -365,7 +367,7 @@
 		@apply pointer-events-none header-layout;
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
 
-		@media screen and (min-width: theme('screens.sm')) {
+		@variant sm {
 			grid-template-areas: '. supersearch-content .';
 		}
 	}
@@ -390,7 +392,7 @@
 	}
 
 	:global(.supersearch-dialog .focused) {
-		@apply bg-site-header/48;
+		background-color: --alpha(var(--color-positive) / 48%);
 	}
 
 	:global(.focused-cell) {
@@ -421,7 +423,7 @@
 	}
 
 	:global(.codemirror-container .cm-scroller) {
-		@apply min-h-12 font-sans outline-none text-3-regular;
+		@apply min-h-12 font-sans outline-hidden text-3-regular;
 		scrollbar-width: none;
 	}
 

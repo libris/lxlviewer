@@ -260,6 +260,8 @@
 {/key}
 
 <style lang="postcss">
+	@reference "../../app.css";
+
 	.definition {
 		@apply underline decoration-dotted;
 	}
@@ -269,11 +271,11 @@
 	}
 
 	a.pill {
-		@apply border-primary/0 bg-pill/8 hover:bg-pill/16 focus:bg-pill/16;
+		@apply border-primary/0 bg-primary/8 hover:bg-primary/16 focus:bg-primary/16;
 	}
 
 	.remainder {
-		@apply ml-2 whitespace-nowrap rounded-full bg-pill/8 px-2 py-0.5 text-secondary;
+		@apply ml-2 whitespace-nowrap rounded-full bg-primary/8 px-2 py-0.5 text-secondary;
 	}
 
 	.block {

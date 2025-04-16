@@ -8,7 +8,7 @@
 </script>
 
 <div class="text-xs">
-	<table class="table">
+	<table class="table [&_td]:pl-2">
 		<thead>
 			<tr class="italic">
 				<td>field</td>
@@ -35,10 +35,7 @@
 	</table>
 </div>
 
-<style lang="postcss">
-	td {
-		@apply pl-2;
-	}
+<style>
 	tbody > tr {
 		border-top: gray solid 1px;
 	}
