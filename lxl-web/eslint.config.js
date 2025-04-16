@@ -29,5 +29,10 @@ export default [
 	},
 	{
 		ignores: ['build/', '.svelte-kit/', 'dist/']
+	},
+	{
+		rules: {
+			'svelte/require-each-key': 'warn' // Temporarily remove rule when replacing old tailwind theme
+		}
 	}
 ];
