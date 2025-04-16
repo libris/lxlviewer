@@ -52,7 +52,7 @@
 
 {#if showPagination}
 	<nav aria-label={$page.data.t('search.pagination')} data-testid="pagination">
-		<ul class="flex justify-center overflow-hidden page-padding">
+		<ul class="page-padding flex justify-center overflow-hidden">
 			<!-- prev -->
 			{#if previous}
 				<li>
@@ -73,7 +73,7 @@
 				>
 			</li>
 			{#if pageSequence[0].page > 2}
-				<li class="hidden items-end text-3-cond-bold sm:flex"><span>...</span></li>
+				<li class="text-3-cond-bold hidden items-end sm:flex"><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
 			{#each pageSequence as p}
@@ -92,7 +92,7 @@
 				{/if}
 			{/each}
 			{#if lastPage - pageSequence[pageSequence.length - 1].page > 1}
-				<li class="hidden items-end text-3-cond-bold sm:flex"><span>...</span></li>
+				<li class="text-3-cond-bold hidden items-end sm:flex"><span>...</span></li>
 			{/if}
 			<!-- last -->
 			<li>

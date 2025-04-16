@@ -56,13 +56,13 @@
 </script>
 
 <div
-	class="pointer-events-none fixed left-0 top-0 z-10 h-full w-full bg-backdrop"
+	class="bg-backdrop pointer-events-none fixed top-0 left-0 z-10 h-full w-full"
 	transition:fade={{ duration: 300 }}
 ></div>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <dialog
-	class="fixed left-0 top-0 flex h-screen max-h-full w-screen max-w-full"
+	class="fixed top-0 left-0 flex h-screen max-h-full w-screen max-w-full"
 	tabindex="-1"
 	on:click|self={handleBackdropClick}
 	on:close={handleClose}
@@ -76,7 +76,7 @@
 	}}
 >
 	<div
-		class="absolute right-0 top-0 flex w-full bg-main shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
+		class="bg-main absolute top-0 right-0 flex w-full shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
 		'top'
 			? 'h-auto'
 			: 'h-full'}"
@@ -85,7 +85,7 @@
 	>
 		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
 			<header
-				class="sticky top-0 z-10 flex min-h-14 items-center justify-between border-b border-b-primary/16 bg-main px-4"
+				class="border-b-primary/16 bg-main sticky top-0 z-10 flex min-h-14 items-center justify-between border-b px-4"
 			>
 				<h1 class="text-3-cond-bold"><slot name="title" /></h1>
 				<!-- svelte-ignore a11y-autofocus -->

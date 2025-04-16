@@ -72,7 +72,7 @@
 <div>
 	{#if Array.isArray(data) && data.length > 1}
 		<div class="flex items-center justify-between pb-4">
-			<h2 class="capitalize text-4-cond-bold">{$page.data.t('search.editions')}</h2>
+			<h2 class="text-4-cond-bold capitalize">{$page.data.t('search.editions')}</h2>
 			<a
 				href={getCollapseAllUrl($page.url)}
 				data-sveltekit-preload-data="false"
@@ -98,7 +98,7 @@
 		<ul bind:this={instancesList}>
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
-				<li {id} class="border-t border-t-primary/16">
+				<li {id} class="border-t-primary/16 border-t">
 					<details
 						open={$page.state.expandedInstances?.includes(id) ||
 							$page.url.searchParams.getAll('expanded').includes(id) ||
@@ -106,7 +106,7 @@
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="grid min-h-11 items-center gap-2 align-middle text-sm hover:bg-primary/16 md:text-base"
+							class="hover:bg-primary/16 grid min-h-11 items-center gap-2 align-middle text-sm md:text-base"
 							on:keydown={handleSummaryKeydown}
 						>
 							<span class="arrow w-4">

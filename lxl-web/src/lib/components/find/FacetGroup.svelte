@@ -100,7 +100,7 @@
 </script>
 
 <li
-	class="border-b border-primary/16 first:border-t"
+	class="border-primary/16 border-b first:border-t"
 	class:hidden={searchPhrase && !hasHits}
 	class:has-hits={hasHits}
 	data-dimension={group.dimension}
@@ -116,11 +116,11 @@
 			<span class="flex-1 whitespace-nowrap">{group.label}</span>
 		</summary>
 		<!-- sorting -->
-		<div class="facet-sort absolute right-0 top-2 hidden" data-testid="facet-sort">
+		<div class="facet-sort absolute top-2 right-0 hidden" data-testid="facet-sort">
 			<select
 				bind:value={currentSort}
 				onchange={saveUserSort}
-				class="appearance-none px-6 py-1 text-2-regular"
+				class="text-2-regular appearance-none px-6 py-1"
 				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
 			>
 				{#each sortOptions as option (option.value)}
@@ -128,9 +128,9 @@
 					>
 				{/each}
 			</select>
-			<BiSortDown class="pointer-events-none absolute top-0 m-1.5 text-icon-strong" />
+			<BiSortDown class="text-icon-strong pointer-events-none absolute top-0 m-1.5" />
 			<BiChevronRight
-				class="pointer-events-none absolute right-0 top-0 m-1.5 w-3 rotate-90 text-icon-strong"
+				class="text-icon-strong pointer-events-none absolute top-0 right-0 m-1.5 w-3 rotate-90"
 			/>
 		</div>
 		<div class="text-md mb-4 md:text-sm">
@@ -139,7 +139,7 @@
 				<FacetRange search={group.search} />
 			{/if}
 			<ol
-				class="flex max-h-72 flex-col gap-1 overflow-y-auto overflow-x-clip pl-6 pr-0.5 sm:max-h-[437px]"
+				class="flex max-h-72 flex-col gap-1 overflow-x-clip overflow-y-auto pr-0.5 pl-6 sm:max-h-[437px]"
 				data-testid="facet-list"
 			>
 				{#each shownItems as facet (facet.view['@id'])}
@@ -165,13 +165,13 @@
 								<span>
 									<DecoratedData data={facet.object} showLabels={ShowLabelsOptions.Never} />
 									{#if facet.discriminator}
-										<span class="text-sm text-secondary">({facet.discriminator})</span>
+										<span class="text-secondary text-sm">({facet.discriminator})</span>
 									{/if}
 								</span>
 							</span>
 							{#if facet.totalItems > 0}
 								<span
-									class="facet-total mb-px rounded-sm bg-primary/4 px-1 text-sm text-secondary md:text-xs"
+									class="facet-total bg-primary/4 text-secondary mb-px rounded-sm px-1 text-sm md:text-xs"
 									aria-label="{facet.totalItems} {page.data.t('search.hits')}"
 									>{facet.totalItems.toLocaleString(locale)}</span
 								>
@@ -184,7 +184,7 @@
 				<!-- 'show more' btn -->
 				{#if canShowMoreItems || canShowFewerItems}
 					<button
-						class="ml-6 mt-4 underline"
+						class="mt-4 ml-6 underline"
 						onclick={() =>
 							canShowMoreItems
 								? (defaultItemsShown = totalItems)
@@ -195,9 +195,9 @@
 				{/if}
 				<!-- limit reached info -->
 				{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
-					<div class="ml-auto mt-4">
+					<div class="mt-4 ml-auto">
 						<button
-							class="flex items-center gap-1 rounded-sm bg-primary/4 px-2 py-1 text-xs text-error"
+							class="bg-primary/4 text-error flex items-center gap-1 rounded-sm px-2 py-1 text-xs"
 							use:popover={{
 								title: page.data.t('facet.limitText'),
 								placeAsSibling: true

@@ -267,7 +267,7 @@
 	}
 
 	.pill {
-		@apply mb-1 mr-1 inline-block rounded-full border border-primary/8 px-3 py-1 no-underline;
+		@apply border-primary/8 mr-1 mb-1 inline-block rounded-full border px-3 py-1 no-underline;
 	}
 
 	a.pill {
@@ -275,7 +275,7 @@
 	}
 
 	.remainder {
-		@apply ml-2 whitespace-nowrap rounded-full bg-primary/8 px-2 py-0.5 text-secondary;
+		@apply bg-primary/8 text-secondary ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
 	}
 
 	.block {

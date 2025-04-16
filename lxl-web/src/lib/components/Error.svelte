@@ -18,7 +18,7 @@
 {#if showHeader}
 	<header class="flex justify-center pt-8">
 		<a href="/" class="inline-block no-underline">
-			<h1 class="text-3xl font-bold text-primary">Libris</h1>
+			<h1 class="text-primary text-3xl font-bold">Libris</h1>
 		</a>
 	</header>
 {/if}

@@ -34,7 +34,7 @@
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
 	{#if item.qualifiers.length}
 		<span
-			class="order-1 ml-auto hidden whitespace-nowrap rounded-sm bg-positive px-1.5 py-0.5 text-xs text-positive-dark sm:inline md:text-sm"
+			class="bg-positive text-positive-dark order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline md:text-sm"
 		>
 			{$page.data.t('search.add')}
 
@@ -49,7 +49,9 @@
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<hgroup class="resource-heading">
-				<h2 class="inline overflow-hidden text-ellipsis text-secondary text-3-cond-bold md:max-w-[33vw]">
+				<h2
+					class="text-secondary text-3-cond-bold inline overflow-hidden text-ellipsis md:max-w-[33vw]"
+				>
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
 						showLabels={ShowLabelsOptions.Never}
@@ -58,7 +60,7 @@
 					/>
 				</h2>
 				{#if item[LxlLens.CardBody]?._display?.[0]}
-					<p class="inline overflow-hidden text-ellipsis text-sm text-secondary">
+					<p class="text-secondary inline overflow-hidden text-sm text-ellipsis">
 						<span class="divider">{' • '}</span>
 						<DecoratedData
 							data={item[LxlLens.CardBody]?._display[0]}
@@ -70,7 +72,7 @@
 				{/if}
 			</hgroup>
 			<div class="resource-footer">
-				<strong class="text-xs text-secondary">
+				<strong class="text-secondary text-xs">
 					{item.typeStr}
 				</strong>
 				<span class="text-xs">
@@ -119,7 +121,12 @@
 		>
 			{@render resourceSnippet(item)}
 		</button>
-		<button type="button" class="more text-secondary" id={getCellId(1)} class:focused-cell={isFocusedCell(1)}>
+		<button
+			type="button"
+			class="more text-secondary"
+			id={getCellId(1)}
+			class:focused-cell={isFocusedCell(1)}
+		>
 			{#key item.qualifiers}
 				<span
 					class="more-icon-container rounded-full"

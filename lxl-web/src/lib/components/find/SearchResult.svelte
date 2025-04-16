@@ -57,7 +57,7 @@
 	{@const filterCount = getFiltersCount(searchResult.mapping)}
 	{#if predicates.length}
 		<nav
-			class="border-b border-primary/16 px-4 md:flex lg:px-6"
+			class="border-primary/16 border-b px-4 md:flex lg:px-6"
 			aria-label={$page.data.t('search.selectedFilters')}
 		>
 			<ul class="flex flex-wrap items-center gap-2">
@@ -75,7 +75,7 @@
 						>
 							{p.str}
 							<span
-								class="mb-px rounded-sm bg-primary/4 px-1 text-sm text-secondary md:text-xs lg:text-sm"
+								class="bg-primary/4 text-secondary mb-px rounded-sm px-1 text-sm md:text-xs lg:text-sm"
 								aria-label="{p.totalItems} {$page.data.t('search.hits')}">{p.totalItems}</span
 							>
 						</a>
@@ -86,13 +86,13 @@
 	{/if}
 	{#if showMapping}
 		<nav
-			class="hidden md:flex md:px-6 md:pb-0 md:pt-4"
+			class="hidden md:flex md:px-6 md:pt-4 md:pb-0"
 			aria-label={$page.data.t('search.selectedFilters')}
 		>
 			<SearchMapping mapping={searchResult.mapping} />
 		</nav>
 	{/if}
-	<div class="relative gap-y-4 find-layout md:page-padding">
+	<div class="find-layout md:page-padding relative gap-y-4">
 		{#if showFiltersModal}
 			<Modal position="left" close={toggleFiltersModal}>
 				<span slot="title">
@@ -108,7 +108,7 @@
 
 		<div class="results max-w-content">
 			<div
-				class="toolbar flex min-h-14 items-center justify-between page-padding md:min-h-fit md:p-0 md:pb-4"
+				class="toolbar page-padding flex min-h-14 items-center justify-between md:min-h-fit md:p-0 md:pb-4"
 				class:has-search={$page.params.fnurgel}
 			>
 				<a
@@ -121,13 +121,13 @@
 					{$page.data.t('search.filters')}
 					{#if filterCount}
 						<span
-							class="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold leading-none text-primary-inv"
+							class="bg-primary text-primary-inv flex h-5 w-5 items-center justify-center rounded-full text-xs leading-none font-bold"
 						>
 							{filterCount}
 						</span>
 					{/if}
 				</a>
-				<span class="hits pt-4 text-secondary md:pt-0" role="status" data-testid="result-info">
+				<span class="hits text-secondary pt-4 md:pt-0" role="status" data-testid="result-info">
 					{#if numHits && numHits > 0}
 						<span class="hits-count">
 							{#if numHits > searchResult.itemsPerPage}
@@ -175,7 +175,7 @@
 						class="sort-select flex flex-col items-end justify-self-end"
 						data-testid="sort-select"
 					>
-						<label class="pr-6 text-secondary text-2-regular" for="search-sort">
+						<label class="text-secondary text-2-regular pr-6" for="search-sort">
 							{$page.data.t('sort.sort')}
 						</label>
 						<div class="relative">
@@ -186,7 +186,7 @@
 									>
 								{/each}
 							</select>
-							<span class="pointer-events-none absolute right-0 top-[5px]">
+							<span class="pointer-events-none absolute top-[5px] right-0">
 								<BiChevronDown aria-hidden="true" class="text-icon" />
 							</span>
 						</div>
@@ -285,13 +285,13 @@
 				'hits sort-select';
 		}
 	}
-	
+
 	.tab-header {
 		@apply block py-4;
 	}
 
 	.tab {
-		@apply block py-4 pl-4 pr-3.5 lowercase no-underline;
+		@apply block py-4 pr-3.5 pl-4 lowercase no-underline;
 		transition: filter 0.1s ease;
 	}
 

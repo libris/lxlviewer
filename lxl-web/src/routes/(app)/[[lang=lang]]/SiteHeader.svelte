@@ -22,19 +22,23 @@
 <header class="bg-site-header">
 	<nav class="header-nav header-layout min-h-20 items-center py-0">
 		<div class="home md:pl-4">
-			<a href={page.data.base} class="flex flex-col text-primary no-underline md:flex-row">
-				<span class="text-[1.6rem] font-extrabold leading-tight md:text-[2.1rem]"> Libris</span>
+			<a href={page.data.base} class="text-primary flex flex-col no-underline md:flex-row">
+				<span class="text-[1.6rem] leading-tight font-extrabold md:text-[2.1rem]"> Libris</span>
 				<div
-					class="top-0 -rotate-6 self-baseline rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold md:rotate-0"
-					>Beta</div
+					class="bg-positive-dark/16 text-2-cond-bold top-0 -rotate-6 self-baseline rounded-sm px-2 uppercase md:rotate-0"
 				>
+					Beta
+				</div>
 			</a>
 		</div>
 		<div class="search pb-4 sm:px-4 sm:pb-0">
 			<SuperSearchWrapper placeholder={page.data.t('header.searchPlaceholder')} />
 		</div>
 		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
-			<div id="header-menu" class="hidden items-center lg:flex target:absolute target:left-0 target:block target:w-full target:bg-main">
+			<div
+				id="header-menu"
+				class="target:bg-main hidden items-center target:absolute target:left-0 target:block target:w-full lg:flex"
+			>
 				<HeaderMenu />
 			</div>
 			<div class="lg:hidden">

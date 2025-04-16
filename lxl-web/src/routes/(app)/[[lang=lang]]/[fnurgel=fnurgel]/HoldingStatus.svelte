@@ -209,7 +209,7 @@
 	}
 
 	.status-container {
-		@apply max-w-md rounded-sm border border-primary/16 p-2;
+		@apply border-primary/16 max-w-md rounded-sm border p-2;
 
 		&:has(p.error) {
 			@apply bg-negative;
