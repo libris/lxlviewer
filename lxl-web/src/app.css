@@ -51,37 +51,6 @@
 	--color-positive-dark: rgba(66, 107, 84, 1);
 	--color-highlight: rgba(239, 214, 189, 1);
 	--color-error: rgba(187, 54, 54, 1);
-
-	--leading-none: 0;
-	--leading-normal: 1.4;
-	--leading-tight: 1.2;
-
-	--text-xs: 0.75rem;
-	--text-sm: 0.875rem;
-	--text-base: 1rem;
-	--text-lg: 1.25rem;
-	--text-xl: 1.5rem;
-	--text-2xl: 2rem;
-	--text-3xl: 2.5rem;
-	--text-4xl: 3rem;
-	--text-5xl: 4rem;
-
-	--text-xs--line-height: var(--leading-normal);
-	--text-sm--line-height: var(--leading-normal);
-	--text-base--line-height: var(--leading-normal);
-	--text-lg--line-height: var(--leading-normal);
-	--text-xl--line-height: var(--leading-tight);
-	--text-2xl--line-height: var(--leading-tight);
-	--text-3xl--line-height: var(--leading-tight);
-	--text-4xl--line-height: var(--leading-tight);
-	--text-5xl--line-height: var(--leading-tight);
-
-	--breakpoint-xs: 375px;
-	--breakpoint-sm: 640px;
-	--breakpoint-md: 1024px;
-	--breakpoint-lg: 1440px;
-	--breakpoint-xl: 1760px;
-	--breakpoint-2xl: 1920px;
 }
 
 /* custom bg colors  */
@@ -282,30 +251,6 @@
 	html {
 		font-family: var(--font-sans);
 		scrollbar-gutter: stable;
-	}
-
-	a {
-		@apply text-secondary hover:text-primary underline;
-		&.ext-link::after {
-			content: '\2009↗';
-			@apply text-icon align-[10%];
-		}
-	}
-
-	input {
-		@apply shadow-input text-3-regular rounded-md bg-white px-4 py-2 text-ellipsis;
-	}
-
-	select {
-		@apply text-primary text-3-cond-bold bg-transparent;
-	}
-
-	summary {
-		@apply list-none;
-	}
-
-	summary::-webkit-details-marker {
-		display: none;
 	}
 
 	button {
