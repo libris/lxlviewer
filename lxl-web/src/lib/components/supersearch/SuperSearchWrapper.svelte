@@ -164,13 +164,13 @@
 			type="button"
 			role="gridcell"
 			id={getCellId(rowIndex, 0)}
-			class="flex min-h-12 w-full items-center px-4 hover:bg-main"
+			class="hover:bg-main flex min-h-12 w-full items-center px-4"
 			class:focused-cell={isFocusedCell(rowIndex, 0)}
 			onclick={() => addQualifierKey(qualifierKey)}
 		>
 			<span class="overflow-hidden text-ellipsis whitespace-nowrap">
 				<strong class="text-secondary text-3-cond-bold">{qualifierLabel}:</strong>
-				<span class="text-sm italic text-tertiary">{qualifierPlaceholder}</span>
+				<span class="text-tertiary text-sm italic">{qualifierPlaceholder}</span>
 			</span>
 		</button>
 	</div>
@@ -223,7 +223,7 @@
 						id={getCellId(0)}
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={$page.data.t('general.close')}
-						class="button-ghost min-h-12 min-w-11 rounded-none border-none hover:bg-main sm:hidden"
+						class="button-ghost hover:bg-main min-h-12 min-w-11 rounded-none border-none sm:hidden"
 						onclick={onclickClose}
 					>
 						<BiArrowLeft />
@@ -237,7 +237,7 @@
 						type="reset"
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
-						class="button-ghost min-h-12 rounded-none border-none hover:bg-main"
+						class="button-ghost hover:bg-main min-h-12 rounded-none border-none"
 						aria-label={$page.data.t('search.clearFilters')}
 						onclick={onclickClear}
 					>
@@ -258,7 +258,7 @@
 		{/snippet}
 		{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
 			<div role="rowgroup">
-				<div class="flex w-full items-center px-4 py-2 text-2-cond-bold">
+				<div class="text-2-cond-bold flex w-full items-center px-4 py-2">
 					{$page.data.t('search.supersearchStartHeader')}
 				</div>
 				{@render startFilterItem({
@@ -322,7 +322,7 @@
 						type="button"
 						role="gridcell"
 						id={getCellId(moreFiltersRowIndex, 0)}
-						class="flex min-h-11 w-full items-center px-4 text-secondary hover:bg-main"
+						class="text-secondary hover:bg-main flex min-h-11 w-full items-center px-4"
 						class:focused-cell={isFocusedCell(moreFiltersRowIndex, 0)}
 						onclick={() => (showMoreFilters = !showMoreFilters)}
 					>
@@ -354,7 +354,7 @@
 	@reference "../../../app.css";
 
 	.supersearch-input {
-		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline-2 focus-within:outline-positive-dark/32;
+		@apply bg-cards focus-within:outline-positive-dark/32 relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md focus-within:outline-2;
 	}
 
 	/* dialog */
@@ -364,7 +364,7 @@
 	}
 
 	:global(.supersearch-dialog-wrapper) {
-		@apply pointer-events-none header-layout;
+		@apply header-layout pointer-events-none;
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
 
 		@variant sm {
@@ -373,13 +373,13 @@
 	}
 
 	:global(.supersearch-dialog-content) {
-		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md bg-cards drop-shadow-md;
+		@apply bg-cards pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md drop-shadow-md;
 		grid-area: supersearch-content;
 		scrollbar-width: none;
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-20 items-stretch bg-cards px-4 pb-2 pt-4;
+		@apply bg-cards sticky top-0 z-20 items-stretch px-4 pt-4 pb-2;
 	}
 
 	:global(.supersearch-suggestions) {
@@ -407,13 +407,13 @@
 
 	:global(.supersearch-suggestions [role='row']:last-child) {
 		/* border-bottom: 1px solid rgb(var(--color-primary) / 0.12); */
-		@apply border-b border-b-primary/16;
+		@apply border-b-primary/16 border-b;
 	}
 
 	/* snippets elements */
 
 	:global(.supersearch-show-more) {
-		@apply flex min-h-11 w-full items-center px-4 text-left hover:bg-main;
+		@apply hover:bg-main flex min-h-11 w-full items-center px-4 text-left;
 	}
 
 	/* codemirror elements */
@@ -423,7 +423,7 @@
 	}
 
 	:global(.codemirror-container .cm-scroller) {
-		@apply min-h-12 font-sans outline-hidden text-3-regular;
+		@apply text-3-regular min-h-12 outline-hidden;
 		scrollbar-width: none;
 	}
 
