@@ -4,18 +4,18 @@
 
 <style lang="postcss">
 	@reference "../../app.css";
-	
+
 	div {
 		& :global(h1) {
 			@apply text-6-cond-extrabold;
 		}
 
 		& :global(h2) {
-			@apply mt-6 text-5-cond-extrabold;
+			@apply text-5-cond-extrabold mt-6;
 		}
 
 		& :global(h3) {
-			@apply mt-6 text-3-cond-bold;
+			@apply text-3-cond-bold mt-6;
 		}
 
 		& :global(p) {

@@ -57,14 +57,14 @@
 	</div>
 {/snippet}
 
-<div class="flex w-full gap-2 rounded-sm bg-positive/40 p-3 md:flex-col md:gap-1">
+<div class="bg-positive/40 flex w-full gap-2 rounded-sm p-3 md:flex-col md:gap-1">
 	{#if libraryValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>
 			{@render filterContent()}
 		</a>
 	{:else}
 		<div
-			class="cursor-not-allowed text-secondary"
+			class="text-secondary cursor-not-allowed"
 			use:popover={{
 				title: page.data.t('search.noAddedLibrariesText'),
 				placeAsSibling: true
@@ -73,7 +73,7 @@
 			{@render filterContent()}
 		</div>
 	{/if}
-	<a class="self-end text-secondary text-2-regular" href="/my-pages"
+	<a class="text-secondary text-2-regular self-end" href="/my-pages"
 		>{libraryValues.length
 			? page.data.t('search.changeLibraries')
 			: page.data.t('search.addLibraries')}</a

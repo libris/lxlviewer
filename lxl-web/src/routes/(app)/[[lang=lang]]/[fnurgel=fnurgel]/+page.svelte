@@ -104,9 +104,9 @@
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
 <article>
-	<div class="resource gap-8 find-layout page-padding" class:bg-header={shouldShowHeaderBackground}>
+	<div class="resource find-layout page-padding gap-8" class:bg-header={shouldShowHeaderBackground}>
 		<div
-			class="image mb-2 mt-4 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
+			class="image mt-4 mb-2 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
 		>
 			{#if data.images.length}
@@ -120,7 +120,7 @@
 			{/if}
 		</div>
 		<div
-			class="content flex max-w-content flex-col gap-4 pt-2 md:flex-row"
+			class="content max-w-content flex flex-col gap-4 pt-2 md:flex-row"
 			class:pb-4={shouldShowHeaderBackground}
 		>
 			<div class="flex flex-col gap-4">
@@ -178,8 +178,8 @@
 		</div>
 	</div>
 	{#if data.instances?.length}
-		<div class="instances pt-2! find-layout page-padding">
-			<div class="instances-list max-w-content border-t border-t-primary/16 pt-6">
+		<div class="instances find-layout page-padding pt-2!">
+			<div class="instances-list max-w-content border-t-primary/16 border-t pt-6">
 				<InstancesList
 					data={data.instances}
 					columns={[
@@ -196,7 +196,7 @@
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
 			<div class="flex flex-col">
 				<div
-					class="relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b border-b-primary/16 bg-cards p-5 text-sm transition-shadow"
+					class="border-b-primary/16 bg-cards relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-sm transition-shadow"
 				>
 					<div
 						id="instance-details"
@@ -259,7 +259,7 @@
 								: data.t('holdings.libraries')}
 						{/if}
 					</h2>
-					<div class="relative mb-4 mt-2">
+					<div class="relative mt-2 mb-4">
 						<input
 							bind:value={searchPhrase}
 							placeholder={$page.data.t('holdings.findLibrary')}
@@ -267,7 +267,7 @@
 							class="w-full pl-8"
 							type="search"
 						/>
-						<BiSearch class="absolute left-2.5 top-3 text-sm text-icon" />
+						<BiSearch class="text-icon absolute top-3 left-2.5 text-sm" />
 					</div>
 					<ul class="w-full text-sm">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
@@ -347,7 +347,11 @@
 		bottom: 0;
 		left: 0;
 		pointer-events: none;
-		background: linear-gradient(to bottom, --alpha(var(--color-cards) / 0%), --alpha(var(--color-cards) / 100%));
+		background: linear-gradient(
+			to bottom,
+			--alpha(var(--color-cards) / 0%),
+			--alpha(var(--color-cards) / 100%)
+		);
 		overflow: hidden;
 	}
 

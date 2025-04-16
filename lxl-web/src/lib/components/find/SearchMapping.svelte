@@ -61,10 +61,10 @@
 			{:else if m.operator === 'existence' || m.operator === 'notExistence'}
 				{@const symbol = getRelationSymbol(m.operator)}
 				<span class="pill-relation">{symbol}</span>
-				<div class="pill-label inline text-2-regular">{m.label}</div>
+				<div class="pill-label text-2-regular inline">{m.label}</div>
 			{:else if 'label' in m && 'display' in m}
 				{@const symbol = getRelationSymbol(m.operator)}
-				<div class="pill-label inline text-2-regular">{m.label}</div>
+				<div class="pill-label text-2-regular inline">{m.label}</div>
 				<span class="pill-relation">{symbol}</span>
 				<span class="pill-value">
 					<DecoratedData data={m.display} showLabels={ShowLabelsOptions['Never']} />
@@ -117,7 +117,7 @@
 	@reference "../../../app.css";
 
 	.mapping-item {
-		@apply rounded-md px-4 py-2 brightness-100 text-3-cond-bold;
+		@apply text-3-cond-bold rounded-md px-4 py-2 brightness-100;
 		transition: filter 0.1s ease;
 	}
 
@@ -155,7 +155,7 @@
 	}
 
 	.pill-group {
-		@apply flex items-center gap-2 bg-primary/8 p-0 pr-4;
+		@apply bg-primary/8 flex items-center gap-2 p-0 pr-4;
 
 		&.outer {
 			@apply bg-transparent;
@@ -164,7 +164,7 @@
 
 	.pill-between,
 	.pill-relation {
-		@apply uppercase text-primary text-2-regular;
+		@apply text-primary text-2-regular uppercase;
 	}
 
 	.pill-between-and,

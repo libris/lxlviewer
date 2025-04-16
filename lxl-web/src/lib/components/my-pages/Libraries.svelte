@@ -28,16 +28,16 @@
 	}
 </script>
 
-<div class="container-fluid mb-12 mt-8 w-screen max-w-full page-padding md:max-w-5xl">
-	<h1 class="mb-4 pl-2 text-6-cond-extrabold">{page.data.t('myPages.myPages')}</h1>
-	<h1 class="mb-2 pl-2 text-3-cond-bold">{page.data.t('myPages.libraries')}</h1>
+<div class="container-fluid page-padding mt-8 mb-12 w-screen max-w-full md:max-w-5xl">
+	<h1 class="text-6-cond-extrabold mb-4 pl-2">{page.data.t('myPages.myPages')}</h1>
+	<h1 class="text-3-cond-bold mb-2 pl-2">{page.data.t('myPages.libraries')}</h1>
 	<div
-		class="flex w-screen max-w-full flex-col justify-between rounded-md bg-primary/4 page-padding md:container md:max-w-5xl md:flex-row"
+		class="bg-primary/4 page-padding flex w-screen max-w-full flex-col justify-between rounded-md md:container md:max-w-5xl md:flex-row"
 	>
 		<div class="md:w-3/5">
 			{page.data.t('myPages.findAndAdd')}
 			<div class="relative">
-				<BiSearch class="absolute left-2.5 top-6 text-sm text-icon" />
+				<BiSearch class="text-icon absolute top-6 left-2.5 text-sm" />
 				<input
 					bind:value={searchPhrase}
 					placeholder={page.data.t('myPages.findLibrary')}
@@ -61,10 +61,10 @@
 							</div>
 						{/if}
 						{#if searchResult?.items && searchResult?.items.length !== 0}
-							<div class="my-3 rounded-md bg-cards py-2">
+							<div class="bg-cards my-3 rounded-md py-2">
 								{#each searchResult.items as resultItem (resultItem['@id'])}
 									<div
-										class="flex min-h-12 w-full items-center justify-between bg-cards hover:bg-main"
+										class="bg-cards hover:bg-main flex min-h-12 w-full items-center justify-between"
 									>
 										<div class="truncate py-1 pl-3" title={resultItem.label}>
 											{resultItem.label}

@@ -71,7 +71,7 @@
 	Note that `DropDownMenu.svelte` isn't intended to be used directly in page templates – use the `use:dropDownMenu` instead (see `$lib/actions/dropDownMenu`).
 -->
 <div
-	class="drop-down-menu absolute top-0 left-0 z-100 w-max-content max-w-sm bg-cards border border-primary/32 rounded-sm text-sm shadow-xl"
+	class="drop-down-menu w-max-content bg-cards border-primary/32 absolute top-0 left-0 z-100 max-w-sm rounded-sm border text-sm shadow-xl"
 	role="complementary"
 	bind:this={dropDownMenuElement}
 	{onmouseover}
@@ -82,7 +82,13 @@
 	<nav class="menu-items">
 		<ul>
 			{#each menuItems as item}
-				<li><button type="button" class="flex items-center text-left px-4 w-full min-h-[44px] cursor-pointer hover:bg-main" onclick={item.action}>{item.label}</button></li>
+				<li>
+					<button
+						type="button"
+						class="hover:bg-main flex min-h-[44px] w-full cursor-pointer items-center px-4 text-left"
+						onclick={item.action}>{item.label}</button
+					>
+				</li>
 			{/each}
 		</ul>
 	</nav>

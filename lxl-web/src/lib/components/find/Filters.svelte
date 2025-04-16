@@ -45,7 +45,7 @@
 				class="w-full pl-8"
 				type="search"
 			/>
-			<BiSearch class="absolute left-2.5 top-3 text-sm text-icon" />
+			<BiSearch class="text-icon absolute top-3 left-2.5 text-sm" />
 			<MyLibrariesFilter />
 			<ol>
 				{#each facets as group (group.dimension)}

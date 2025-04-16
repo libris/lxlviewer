@@ -92,6 +92,6 @@
 	}
 
 	.oneOfMany {
-		@apply grid grid-cols-1 gap-4 py-8 sm:grid-cols-instance-list sm:gap-2;
+		@apply sm:grid-cols-instance-list grid grid-cols-1 gap-4 py-8 sm:gap-2;
 	}
 </style>
