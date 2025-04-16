@@ -281,9 +281,9 @@
 					</h2>
 					<!-- my libraries holdings -->
 					{#if myLibsHolders.length}
-						<div class="my-4 rounded-sm border-b border-accent-light bg-positive/32 p-4 pb-0">
-							<h3 class="flex items-center gap-2 text-3-cond-bold">
-								<span aria-hidden="true" class="text-positive">
+						<div class="border-positive bg-positive/32 my-4 rounded-sm border-b p-4 pb-0">
+							<h3 class="text-3-cond-bold flex items-center gap-2">
+								<span aria-hidden="true" class="text-positive-dark">
 									<BiHouseHeart />
 								</span>
 								<span>{page.data.t('myPages.favouriteLibraries')}</span>
