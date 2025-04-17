@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
-	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
+	import CodeMirror, {
+		type ChangeCodeMirrorEvent,
+		type SelectCodeMirrorEvent,
+		type Selection
+	} from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
@@ -74,7 +78,7 @@
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
-		cursor?: number;
+		selection?: Selection;
 		isLoading?: boolean;
 		hasData?: boolean;
 		loadMoreLabel?: string;
@@ -104,7 +108,7 @@
 		defaultResultRow = 0,
 		defaultResultCol = 0,
 		debouncedWait = 300,
-		cursor = $bindable(0), // should be treated as readonly
+		selection = $bindable(),
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable(), // should be treated as readonly
 		loadMoreLabel = 'Load more'
@@ -215,7 +219,7 @@
 	}
 
 	function setDefaultRowAndCols() {
-		if (!shouldShowStartContentFn(value, cursor)) {
+		if (!shouldShowStartContentFn(value, selection)) {
 			activeRowIndex = defaultResultRow;
 			if (activeRowIndex > 0) {
 				activeColIndex = defaultResultCol;
@@ -233,18 +237,22 @@
 			showExpandedSearch();
 		}
 		value = event.value;
-		cursor = event.cursor;
+		selection = event.selection;
 		setDefaultRowAndCols();
 
 		if (value.trim() && value.trim() !== prevValue.trim()) {
 			prevValue = value;
-			search.debouncedFetchData(value, cursor);
+			search.debouncedFetchData(value, selection.head);
 		}
 
 		if (!value.trim()) {
 			prevValue = value;
 			if (search.data) search.resetData();
 		}
+	}
+
+	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
+		selection = event;
 	}
 
 	export function dispatchChange({
@@ -290,7 +298,6 @@
 		expandedEditorView?.dispatch({
 			selection: collapsedEditorView?.state.selection.main
 		});
-		cursor = collapsedEditorView?.state.selection.main.anchor || cursor;
 		dialog?.showModal();
 		expandedEditorView?.focus();
 		setDefaultRowAndCols();
@@ -303,9 +310,6 @@
 	}
 
 	function handleCloseExpandedSearch() {
-		collapsedEditorView?.dispatch({
-			selection: expandedEditorView?.state.selection.main
-		});
 		collapsedEditorView?.focus();
 		expanded = false;
 		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
@@ -578,6 +582,7 @@
 		extensions={collapsedExtensions}
 		onclick={handleClickCollapsed}
 		onchange={handleChangeCodeMirror}
+		onselect={handleSelectCodeMirror}
 		bind:editorView={collapsedEditorView}
 		syncedEditorView={expandedEditorView}
 	/>
@@ -588,6 +593,7 @@
 		{value}
 		extensions={expandedExtensions}
 		onchange={handleChangeCodeMirror}
+		onselect={handleSelectCodeMirror}
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
@@ -627,7 +633,7 @@
 				})}
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if startContent && shouldShowStartContentFn(value, cursor)}
+				{#if startContent && shouldShowStartContentFn(value, selection)}
 					{@render startContent({
 						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 						isFocusedCell: (rowIndex: number, colIndex: number) =>
@@ -644,30 +650,32 @@
 							})}
 						</div>
 					{/if}
-					{#if search.data}
-						{@const resultItemRows =
-							(Array.isArray(search.paginatedData) &&
-								search.paginatedData.map((page) => page.items).flat()) ||
-							search.data?.items}
-						{#each resultItemRows as resultItem, index}
-							{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
-							<div role="row" class:focused={activeRowIndex === rowIndex}>
-								{@render resultItemRow?.({
-									resultItem,
-									getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-									isFocusedCell: (colIndex: number) =>
-										activeRowIndex === rowIndex && colIndex === activeColIndex,
-									rowIndex
-								})}
-							</div>
-						{/each}
-					{/if}
-					{#if search.isLoading}
-						{@render loadingIndicator?.()}
-					{:else if search.hasMorePaginatedData}
-						<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-							{loadMoreLabel}
-						</button>
+					{#if selection?.anchor === selection?.head}
+						{#if search.data}
+							{@const resultItemRows =
+								(Array.isArray(search.paginatedData) &&
+									search.paginatedData.map((page) => page.items).flat()) ||
+								search.data?.items}
+							{#each resultItemRows as resultItem, index (index)}
+								{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
+								<div role="row" class:focused={activeRowIndex === rowIndex}>
+									{@render resultItemRow?.({
+										resultItem,
+										getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+										isFocusedCell: (colIndex: number) =>
+											activeRowIndex === rowIndex && colIndex === activeColIndex,
+										rowIndex
+									})}
+								</div>
+							{/each}
+						{/if}
+						{#if search.isLoading}
+							{@render loadingIndicator?.()}
+						{:else if search.hasMorePaginatedData}
+							<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+								{loadMoreLabel}
+							</button>
+						{/if}
 					{/if}
 				{/if}
 			</nav>
