@@ -78,7 +78,7 @@ const insertSpaceAroundQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 						// At qualifier end, insert space before input
 						insert = [{ changes: { from: atomicEnd, insert: ' ' } }, tr];
 					}
-				} else if (rightNode.parent?.name === 'QualifierKey') {
+				} else if (rightNode.parent?.name === 'QualifierKey' || rightNode.name === 'FilterAlias') {
 					if ((input && inputRangeMin === atomicStart) || (isDelete && prevChar)) {
 						// At qualifier start, insert space after input
 						insert = [tr, { changes: { from: atomicStart, insert: ' ' } }];

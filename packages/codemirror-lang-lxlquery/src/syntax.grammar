@@ -11,7 +11,7 @@ String { strliteral | str }
 Qualifier { 
   ( QualifierKey { String } QualifierOperator { bOperator } QualifierValue { String } ) | 
   ( QualifierKey { String } QualifierOperator { bOperatorEq } QualifierValue { term } ) |
-  QualifierValue { filterAlias }
+  QualifierValue { FilterAlias { filterAlias } }
 }
 
 @tokens {
