@@ -1,4 +1,4 @@
-import { EditorState, RangeSet, type RangeValue, type TransactionSpec } from '@codemirror/state';
+import { EditorState, RangeSet, RangeValue, type TransactionSpec } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 
 /**
@@ -17,12 +17,14 @@ const insertSpaceAroundQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 
 		let insert: TransactionSpec | TransactionSpec[] = [tr];
 		const inputLength = tr.changes.desc.newLength - tr.changes.desc.length;
-		const newCursorPos = tr.state.selection.main.head;
-		const oldCursorPos = newCursorPos - inputLength;
-		const atomicRanges = getRanges();
-
+		const oldCursorPos = Math.max(
+			tr.startState.selection.main.anchor,
+			tr.startState.selection.main.head
+		);
+		const newCursorPos = oldCursorPos + inputLength;
 		const inputRangeMin = Math.min(oldCursorPos, newCursorPos);
 		const inputRangeMax = Math.max(oldCursorPos, newCursorPos);
+		const atomicRanges = getRanges();
 
 		atomicRanges.between(inputRangeMin, inputRangeMax, (atomicStart, atomicEnd) => {
 			const input = tr.newDoc.slice(oldCursorPos, newCursorPos).toString().trim();
@@ -35,62 +37,52 @@ const insertSpaceAroundQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 				.toString()
 				.trim();
 
-			if (oldCursorPos === atomicStart && (input || (isDelete && prevChar))) {
-				// input touches atomic range start, insert space after input
-				insert = [
-					tr,
-					{
-						changes: {
-							from: newCursorPos,
-							to: newCursorPos,
-							insert: ' '
-						},
-						sequential: true,
-						selection: { anchor: newCursorPos }
-					}
-				];
-			} else if (
-				oldCursorPos >= atomicStart &&
-				oldCursorPos <= atomicEnd &&
-				newCursorPos !== atomicStart
+			if (
+				(inputRangeMin >= atomicStart && inputRangeMin <= atomicEnd) ||
+				(inputRangeMax <= atomicEnd && inputRangeMax >= atomicStart)
 			) {
-				const node = syntaxTree(tr.startState).resolveInner(oldCursorPos, -1);
-				if (node.parent?.name == 'QualifierValue') {
-					// input touches qualifier value, insert space before input after range
-					insert = [
+				// input is within the atomic range
+				const leftNode = syntaxTree(tr.startState).resolveInner(
+					isDelete ? newCursorPos : oldCursorPos,
+					-1
+				);
+				const rightNode = syntaxTree(tr.startState).resolveInner(
+					isDelete ? oldCursorPos : newCursorPos,
+					+1
+				);
+				if (leftNode.parent?.name === 'QualifierValue') {
+					if (inputRangeMin < atomicEnd) {
+						// Stuck inside qualifier, move out
+
 						// we need to pass the original transaction, or we get a sync error for some reason.
 						// Undo it before applying changes
-						tr,
-						{
-							changes: {
-								from: inputRangeMin,
-								to: inputRangeMax,
-								insert: ''
+						insert = [
+							tr,
+							{
+								changes: {
+									from: inputRangeMin,
+									to: inputRangeMax,
+									insert: ''
+								},
+								sequential: true
 							},
-							sequential: true
-						},
-						{
-							changes: {
-								from: atomicEnd,
-								insert: ` ${input}`
-							},
-							selection: { anchor: input ? atomicEnd + inputLength + 1 : atomicEnd + 1 }
-						}
-					];
-				}
-			} else if (newCursorPos === atomicEnd && isDelete && nextChar) {
-				const node = syntaxTree(tr.startState).resolveInner(newCursorPos, -1);
-				if (node.parent?.name == 'QualifierValue') {
-					// deletion touches qualifierValue end, insert space after input
-					insert = [
-						{
-							changes: {
-								from: atomicEnd,
-								insert: ' '
+							{
+								changes: {
+									from: atomicEnd,
+									insert: ` ${input}`
+								},
+								selection: { anchor: atomicEnd + inputLength + 1 }
 							}
-						},
-						tr
-					];
+						];
+					} else if (input || (isDelete && nextChar)) {
+						// At qualifier end, insert space before input
+						insert = [{ changes: { from: atomicEnd, insert: ' ' } }, tr];
+					}
+				} else if (rightNode.parent?.name === 'QualifierKey') {
+					if ((input && inputRangeMin === atomicStart) || (isDelete && prevChar)) {
+						// At qualifier start, insert space after input
+						insert = [tr, { changes: { from: atomicStart, insert: ' ' } }];
+					}
 				}
 			}
 			return false;
