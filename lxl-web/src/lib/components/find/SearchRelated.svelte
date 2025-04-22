@@ -34,7 +34,7 @@
 		placeholder={$page.data.t('search.relatedSearchLabel')}
 		bind:value={_i}
 	/>
-	<button class="button-primary" type="submit">
+	<button type="submit">
 		<BiSearch fill="currentColor" aria-hidden="true" />
 		<span class="sr-only sm:not-sr-only">{$page.data.t('search.search')}</span>
 	</button>

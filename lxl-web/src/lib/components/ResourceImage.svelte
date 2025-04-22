@@ -51,7 +51,7 @@
 		{/if}
 		{#if image?.usageAndAccessPolicy}
 			<figcaption
-				class="text-tertiary mt-1 table-caption caption-bottom overflow-hidden text-[10px]"
+				class="mt-1 table-caption caption-bottom overflow-hidden"
 				class:text-center={geometry === 'circle'}
 			>
 				{#if image.attribution}
@@ -103,7 +103,7 @@
 			class:rounded-full={geometry === 'circle'}
 		/>
 		{#if getTypeIcon(type)}
-			<svelte:component this={getTypeIcon(type)} class="text-icon absolute text-2xl" />
+			<svelte:component this={getTypeIcon(type)} class="absolute text-2xl" />
 		{/if}
 	</div>
 {/if}

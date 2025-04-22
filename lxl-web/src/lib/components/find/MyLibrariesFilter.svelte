@@ -36,8 +36,8 @@
 		<span class="sr-only">{isFilterActive ? page.data.t('search.activeFilter') : ''}</span>
 		<div
 			class={[
-				'flex h-[13px] w-[13px] rounded-sm bg-[white]',
-				!myLibrariesValues.length && 'text-primary/24'
+				'flex h-[13px] w-[13px] rounded-sm',
+				//!myLibrariesValues.length && 'text-primary/24'
 			]}
 			aria-hidden="true"
 		>
@@ -47,18 +47,18 @@
 				<BiSquare height="13px" />
 			{/if}
 		</div>
-		<span class="text-3-cond-bold">{page.data.t('search.limitToLibraries')}</span>
+		<span>{page.data.t('search.limitToLibraries')}</span>
 	</div>
 {/snippet}
 
-<div class="bg-positive/40 flex w-full gap-2 rounded-sm p-3 md:flex-col md:gap-1">
+<div class="flex w-full gap-2 rounded-sm p-3 md:flex-col md:gap-1">
 	{#if myLibrariesValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>
 			{@render filterContent()}
 		</a>
 	{:else}
 		<div
-			class="text-secondary cursor-not-allowed"
+			class="cursor-not-allowed"
 			use:popover={{
 				title: page.data.t('search.noAddedLibrariesText'),
 				placeAsSibling: true
@@ -67,7 +67,7 @@
 			{@render filterContent()}
 		</div>
 	{/if}
-	<a class="text-secondary text-2-regular self-end" href="/my-pages"
+	<a class="self-end" href="/my-pages"
 		>{myLibrariesValues.length
 			? page.data.t('search.changeLibraries')
 			: page.data.t('search.addLibraries')}</a

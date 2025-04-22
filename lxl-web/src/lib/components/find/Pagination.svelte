@@ -52,15 +52,12 @@
 
 {#if showPagination}
 	<nav aria-label={$page.data.t('search.pagination')} data-testid="pagination">
-		<ul class="page-padding flex justify-center overflow-hidden">
+		<ul class="flex justify-center overflow-hidden p-4 sm:px-6">
 			<!-- prev -->
 			{#if previous}
 				<li>
-					<a
-						class="button-ghost"
-						href={previous['@id']}
-						aria-label={$page.data.t('search.previous')}
-						><BiChevronLeft aria-hidden="true" class="text-icon" /></a
+					<a href={previous['@id']} aria-label={$page.data.t('search.previous')}
+						><BiChevronLeft aria-hidden="true" /></a
 					>
 				</li>
 			{/if}
@@ -73,16 +70,14 @@
 				>
 			</li>
 			{#if pageSequence[0].page > 2}
-				<li class="text-3-cond-bold hidden items-end sm:flex"><span>...</span></li>
+				<li class="hidden items-end sm:flex"><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
 			{#each pageSequence as p}
 				{#if p.page !== 1 && p.page !== lastPage}
 					<li>
 						<a
-							class={p.page === currentPage
-								? 'button-primary mx-4! sm:mx-0.5!'
-								: 'button-ghost hidden sm:flex'}
+							class={p.page === currentPage ? 'mx-4! sm:mx-0.5!' : 'hidden sm:flex'}
 							href={p.link}
 							aria-label="{$page.data.t('search.page')} {p}"
 							aria-current={p.page === currentPage ? 'page' : null}
@@ -92,7 +87,7 @@
 				{/if}
 			{/each}
 			{#if lastPage - pageSequence[pageSequence.length - 1].page > 1}
-				<li class="text-3-cond-bold hidden items-end sm:flex"><span>...</span></li>
+				<li class="hidden items-end sm:flex"><span>...</span></li>
 			{/if}
 			<!-- last -->
 			<li>
@@ -105,8 +100,8 @@
 			<!-- next -->
 			{#if next}
 				<li>
-					<a class="button-ghost" href={next['@id']} aria-label={$page.data.t('search.next')}
-						><BiChevronRight aria-hidden="true" class="text-icon" /></a
+					<a href={next['@id']} aria-label={$page.data.t('search.next')}
+						><BiChevronRight aria-hidden="true" /></a
 					>
 				</li>
 			{/if}

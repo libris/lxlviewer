@@ -109,7 +109,7 @@
 	}
 </script>
 
-<li class="border-b-primary/16 not-last:border-b">
+<li class="not-last:border-b">
 	<details ontoggle={getHoldingStatus}>
 		<summary class="my-3 flex cursor-pointer items-baseline">
 			<span class="arrow mr-2 h-3">
@@ -215,10 +215,9 @@
 	}
 
 	.status-container {
-		@apply border-primary/16 bg-main max-w-md rounded-sm border p-2;
+		@apply max-w-md rounded-sm border p-2;
 
 		&:has(p.error) {
-			@apply bg-negative;
 		}
 
 		/* don't repeat the library-unavailable message for every instance */

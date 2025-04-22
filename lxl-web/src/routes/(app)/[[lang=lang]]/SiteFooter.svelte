@@ -4,12 +4,10 @@
 	import * as CookieConsent from 'vanilla-cookieconsent';
 </script>
 
-<footer
-	class="bg-primary/4 text-secondary text-3-regular mt-auto flex flex-col justify-between gap-8 p-8 sm:flex-row lg:p-16"
->
+<footer class="mt-auto flex flex-col justify-between gap-8 p-8 sm:flex-row lg:p-16">
 	<div class="flex flex-col gap-8 sm:flex-row sm:gap-16">
 		<nav class="flex flex-col gap-4" aria-labelledby="nav-info">
-			<p id="nav-info" class="text-primary text-4-cond-bold">
+			<p id="nav-info">
 				{$page.data.t('footer.information')}
 			</p>
 			<ul>
@@ -27,7 +25,7 @@
 			</ul>
 		</nav>
 		<nav class="flex flex-col gap-4" aria-labelledby="nav-contact">
-			<p id="nav-contact" class="text-primary text-4-cond-bold">{$page.data.t('footer.contact')}</p>
+			<p id="nav-contact">{$page.data.t('footer.contact')}</p>
 			<ul>
 				<li>
 					<a href="https://www.kb.se/om-oss/kontakta-oss/#item-47bef1f3916eca87a61b1eed"

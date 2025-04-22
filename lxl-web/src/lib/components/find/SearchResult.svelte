@@ -56,10 +56,7 @@
 	{@const numHits = searchResult.totalItems}
 	{@const filterCount = getFiltersCount(searchResult.mapping)}
 	{#if predicates.length}
-		<nav
-			class="border-primary/16 border-b px-4 md:flex lg:px-6"
-			aria-label={$page.data.t('search.selectedFilters')}
-		>
+		<nav class="border-b px-4 md:flex lg:px-6" aria-label={$page.data.t('search.selectedFilters')}>
 			<ul class="flex flex-wrap items-center gap-2">
 				<li class="tab-header max-w-80 truncate font-bold">{$page.data.title}</li>
 				<span class="tab-header">{$page.data.t('search.occursAs')}</span>
@@ -75,7 +72,7 @@
 						>
 							{p.str}
 							<span
-								class="bg-primary/4 text-secondary mb-px rounded-sm px-1 text-sm md:text-xs lg:text-sm"
+								class="mb-px rounded-sm px-1 text-sm md:text-xs lg:text-sm"
 								aria-label="{p.totalItems} {$page.data.t('search.hits')}">{p.totalItems}</span
 							>
 						</a>
@@ -92,7 +89,7 @@
 			<SearchMapping mapping={searchResult.mapping} />
 		</nav>
 	{/if}
-	<div class="find-layout md:page-padding relative gap-y-4">
+	<div class="find-layout relative gap-y-4 sm:px-6 md:p-4">
 		{#if showFiltersModal}
 			<Modal position="left" close={toggleFiltersModal}>
 				<span slot="title">
@@ -106,14 +103,14 @@
 			<Filters {facets} mapping={searchResult.mapping} />
 		</div>
 
-		<div class="results max-w-content">
+		<div class="results">
 			<div
-				class="toolbar page-padding flex min-h-14 items-center justify-between md:min-h-fit md:p-0 md:pb-4"
+				class="toolbar flex min-h-14 items-center justify-between p-4 sm:px-6 md:min-h-fit md:p-0 md:pb-4"
 				class:has-search={$page.params.fnurgel}
 			>
 				<a
 					href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
-					class="filter-modal-toggle button-ghost md:hidden"
+					class="filter-modal-toggle md:hidden"
 					aria-label={$page.data.t('search.filters')}
 					on:click|preventDefault={toggleFiltersModal}
 				>
@@ -121,17 +118,17 @@
 					{$page.data.t('search.filters')}
 					{#if filterCount}
 						<span
-							class="bg-primary text-primary-inv flex h-5 w-5 items-center justify-center rounded-full text-xs leading-none font-bold"
+							class="flex h-5 w-5 items-center justify-center rounded-full text-xs leading-none font-bold"
 						>
 							{filterCount}
 						</span>
 					{/if}
 				</a>
-				<span class="hits text-secondary pt-4 md:pt-0" role="status" data-testid="result-info">
+				<span class="hits pt-4 md:pt-0" role="status" data-testid="result-info">
 					{#if numHits && numHits > 0}
 						<span class="hits-count">
 							{#if numHits > searchResult.itemsPerPage}
-								<span class="text-3-cond-bold">
+								<span>
 									{(searchResult.itemOffset + 1).toLocaleString($page.data.locale)}
 									-
 									{Math.min(
@@ -141,7 +138,7 @@
 								</span>
 								{$page.data.t('search.hitsOf')}
 							{/if}
-							<span class="text-3-cond-bold">
+							<span>
 								{numHits.toLocaleString($page.data.locale)}
 							</span>
 							{#if $page.data.instances}
@@ -175,7 +172,7 @@
 						class="sort-select flex flex-col items-end justify-self-end"
 						data-testid="sort-select"
 					>
-						<label class="text-secondary text-2-regular pr-6" for="search-sort">
+						<label class="pr-6" for="search-sort">
 							{$page.data.t('sort.sort')}
 						</label>
 						<div class="relative">
@@ -187,7 +184,7 @@
 								{/each}
 							</select>
 							<span class="pointer-events-none absolute top-[5px] right-0">
-								<BiChevronDown aria-hidden="true" class="text-icon" />
+								<BiChevronDown aria-hidden="true" />
 							</span>
 						</div>
 					</div>
@@ -296,7 +293,7 @@
 	}
 
 	.tab-selected {
-		@apply border-primary pb-3.5;
+		@apply pb-3.5;
 		border-bottom-width: 0.125rem;
 	}
 </style>
