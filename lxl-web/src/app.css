@@ -33,11 +33,6 @@
 }
 
 :root {
-	--color-black: #000;
-	--color-white: #fff;
-
-	--text-body: var(--color-black);
-	--bg-body: var(--color-white);
 }
 
 @theme inline {
@@ -50,8 +45,6 @@
 @layer base {
 	html {
 		font-family: var(--font-sans);
-		color: var(--text-body);
-		background-color: var(--bg-body);
 		scrollbar-gutter: stable;
 	}
 
