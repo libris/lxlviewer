@@ -105,7 +105,3 @@
 @utility container-fluid {
 	@apply mx-auto px-4 sm:px-8;
 }
-
-@utility max-w-content {
-	max-width: 78rem;
-}

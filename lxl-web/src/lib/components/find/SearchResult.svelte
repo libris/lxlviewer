@@ -103,7 +103,7 @@
 			<Filters {facets} mapping={searchResult.mapping} />
 		</div>
 
-		<div class="results max-w-content">
+		<div class="results">
 			<div
 				class="toolbar page-padding flex min-h-14 items-center justify-between md:min-h-fit md:p-0 md:pb-4"
 				class:has-search={$page.params.fnurgel}

@@ -120,7 +120,7 @@
 			{/if}
 		</div>
 		<div
-			class="content max-w-content flex flex-col gap-4 pt-2 md:flex-row"
+			class="content flex flex-col gap-4 pt-2 md:flex-row"
 			class:pb-4={shouldShowHeaderBackground}
 		>
 			<div class="flex flex-col gap-4">
@@ -178,7 +178,7 @@
 	</div>
 	{#if data.instances?.length}
 		<div class="instances find-layout page-padding pt-2!">
-			<div class="instances-list max-w-content border-t pt-6">
+			<div class="instances-list border-t pt-6">
 				<InstancesList
 					data={data.instances}
 					columns={[

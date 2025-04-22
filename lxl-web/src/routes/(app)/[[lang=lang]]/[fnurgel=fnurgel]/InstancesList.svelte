@@ -150,9 +150,7 @@
 			{/each}
 		</ul>
 	{:else}
-		<div class="max-w-content">
-			<InstancesListContent data={data[0]} id={relativizeUrl(getResourceId(data[0]))} />
-		</div>
+		<InstancesListContent data={data[0]} id={relativizeUrl(getResourceId(data[0]))} />
 	{/if}
 </div>
 
