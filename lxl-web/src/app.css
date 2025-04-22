@@ -33,8 +33,8 @@
 }
 
 :root {
-	--color-white: rgba(255, 255, 255, 1);
-	--color-black: rgba(0, 0, 0, 1);
+	--color-black: #000;
+	--color-white: #fff;
 
 	--text-body: var(--color-black);
 	--bg-body: var(--color-white);
