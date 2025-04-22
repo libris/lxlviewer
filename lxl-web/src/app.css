@@ -64,10 +64,6 @@
 
 /* custom bg colors  */
 
-@utility bg-transparent {
-	background-color: transparent;
-}
-
 @utility bg-backdrop {
 	background-color: --alpha(var(--color-black) / 25%);
 }
