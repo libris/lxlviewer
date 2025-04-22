@@ -9,7 +9,7 @@
 	<title>{getPageTitle()}</title>
 </svelte:head>
 
-<article class="container-fluid my-8 max-w-3xl">
+<article class="mx-auto my-8 max-w-3xl">
 	<div class="landing flex flex-col items-center gap-2 pb-3">
 		<h1 class="flex text-3xl/tight font-extrabold sm:text-[5.5rem] sm:font-bold">
 			Libris

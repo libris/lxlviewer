@@ -101,7 +101,3 @@
 @utility page-padding {
 	@apply p-4 sm:px-6;
 }
-
-@utility container-fluid {
-	@apply mx-auto px-4 sm:px-8;
-}

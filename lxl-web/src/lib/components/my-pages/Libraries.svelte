@@ -28,7 +28,7 @@
 	}
 </script>
 
-<div class="container-fluid page-padding mt-8 mb-12 w-screen max-w-full md:max-w-5xl">
+<div class="page-padding mx-auto mt-8 mb-12 w-screen max-w-full md:max-w-5xl">
 	<h1 class="mb-4 pl-2">{page.data.t('myPages.myPages')}</h1>
 	<h1 class="mb-2 pl-2">{page.data.t('myPages.libraries')}</h1>
 	<div
