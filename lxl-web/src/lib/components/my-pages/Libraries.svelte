@@ -28,11 +28,11 @@
 	}
 </script>
 
-<div class="page-padding mx-auto mt-8 mb-12 w-screen max-w-full md:max-w-5xl">
+<div class="mx-auto mt-8 mb-12 w-screen max-w-full p-4 sm:px-6 md:max-w-5xl">
 	<h1 class="mb-4 pl-2">{page.data.t('myPages.myPages')}</h1>
 	<h1 class="mb-2 pl-2">{page.data.t('myPages.libraries')}</h1>
 	<div
-		class="page-padding flex w-screen max-w-full flex-col justify-between rounded-md md:container md:max-w-5xl md:flex-row"
+		class="flex w-screen max-w-full flex-col justify-between rounded-md p-4 sm:px-6 md:container md:max-w-5xl md:flex-row"
 	>
 		<div class="md:w-3/5">
 			{page.data.t('myPages.findAndAdd')}

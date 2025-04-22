@@ -104,7 +104,7 @@
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
 <article>
-	<div class="resource find-layout page-padding gap-8">
+	<div class="resource find-layout gap-8 p-4 sm:px-6">
 		<div
 			class="image mt-4 mb-2 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
@@ -177,7 +177,7 @@
 		</div>
 	</div>
 	{#if data.instances?.length}
-		<div class="instances find-layout page-padding pt-2!">
+		<div class="instances find-layout p-4 pt-2! sm:px-6">
 			<div class="instances-list border-t pt-6">
 				<InstancesList
 					data={data.instances}

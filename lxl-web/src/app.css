@@ -95,9 +95,3 @@
 		grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
 	} */
 }
-
-/* layout utilites */
-
-@utility page-padding {
-	@apply p-4 sm:px-6;
-}

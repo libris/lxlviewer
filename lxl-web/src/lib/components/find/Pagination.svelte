@@ -52,7 +52,7 @@
 
 {#if showPagination}
 	<nav aria-label={$page.data.t('search.pagination')} data-testid="pagination">
-		<ul class="page-padding flex justify-center overflow-hidden">
+		<ul class="flex justify-center overflow-hidden p-4 sm:px-6">
 			<!-- prev -->
 			{#if previous}
 				<li>
