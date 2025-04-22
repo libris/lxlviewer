@@ -72,11 +72,11 @@
 <div>
 	{#if Array.isArray(data) && data.length > 1}
 		<div class="flex items-center justify-between pb-4">
-			<h2 class="text-4-cond-bold capitalize">{$page.data.t('search.editions')}</h2>
+			<h2 class="capitalize">{$page.data.t('search.editions')}</h2>
 			<a
 				href={getCollapseAllUrl($page.url)}
 				data-sveltekit-preload-data="false"
-				class="close-all text-disabled:text-disabled text-xs sm:text-sm"
+				class="close-all text-xs sm:text-sm"
 				on:click={(event) => {
 					event.preventDefault();
 					replaceState(getCollapseAllUrl($page.url), { ...$page.state, expandedInstances: [] });
@@ -98,7 +98,7 @@
 		<ul bind:this={instancesList}>
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
-				<li {id} class="border-t-primary/16 border-t">
+				<li {id} class="border-t">
 					<details
 						open={$page.state.expandedInstances?.includes(id) ||
 							$page.url.searchParams.getAll('expanded').includes(id) ||
@@ -106,7 +106,7 @@
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="hover:bg-primary/16 grid min-h-11 items-center gap-2 align-middle text-sm md:text-base"
+							class="grid min-h-11 items-center gap-2 align-middle text-sm md:text-base"
 							on:keydown={handleSummaryKeydown}
 						>
 							<span class="arrow w-4">
@@ -172,9 +172,9 @@
 		grid-column: span 2;
 	}
 
-	details[open] > summary {
+	/* details[open] > summary {
 		@apply bg-primary/8 hover:bg-primary/16;
-	}
+	} */
 
 	details[open] .arrow {
 		@apply rotate-90;

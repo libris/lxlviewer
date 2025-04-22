@@ -1,12 +1,10 @@
 /* Make clicks pass-through */
-@reference "../../app.css";
-
 #nprogress {
 	pointer-events: none;
 }
 
 #nprogress .bar {
-	@apply bg-positive-dark;
+	background-color: var(--text-body);
 
 	position: fixed;
 	z-index: 1031;

@@ -225,11 +225,7 @@
 						{#if shouldShowLabels() && typeof data._label === 'string'}
 							<svelte:element this={block ? 'div' : 'span'}>
 								<!-- Add inner span with inline-block to achieve first letter capitalization while still supporting inline whitespaces -->
-								<span
-									class="inline-block first-letter:capitalize"
-									class:text-sm={block}
-									class:text-secondary={block}
-								>
+								<span class="inline-block first-letter:capitalize" class:text-sm={block}>
 									{data._label}
 								</span>
 								{' '}
@@ -267,15 +263,14 @@
 	}
 
 	.pill {
-		@apply border-primary/8 mr-1 mb-1 inline-block rounded-full border px-3 py-1 no-underline;
+		@apply mr-1 mb-1 inline-block rounded-full border px-3 py-1 no-underline;
 	}
 
 	a.pill {
-		@apply border-primary/0 bg-primary/8 hover:bg-primary/16 focus:bg-primary/16;
 	}
 
 	.remainder {
-		@apply bg-primary/8 text-secondary ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
+		@apply ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
 	}
 
 	.block {

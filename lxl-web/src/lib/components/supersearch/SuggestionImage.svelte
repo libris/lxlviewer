@@ -26,8 +26,8 @@
 		{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 			{@const SvelteComponent = getTypeIcon(item['@type'])}
 			<div class="absolute -top-2 -left-2">
-				<div class="bg-main rounded-md p-1.5">
-					<SvelteComponent class="text-icon-strong h-3 w-3" />
+				<div class="rounded-md p-1.5">
+					<SvelteComponent class="h-3 w-3" />
 				</div>
 			</div>
 		{/if}
@@ -43,7 +43,7 @@
 			/>
 			{#if getTypeIcon(item['@type'])}
 				{@const SvelteComponent_1 = getTypeIcon(item['@type'])}
-				<SvelteComponent_1 class="text-icon absolute text-lg" />
+				<SvelteComponent_1 class="absolute text-lg" />
 			{/if}
 		</div>
 	{/if}

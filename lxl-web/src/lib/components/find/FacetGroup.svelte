@@ -100,7 +100,7 @@
 </script>
 
 <li
-	class="border-primary/16 border-b first:border-t"
+	class="border-b first:border-t"
 	class:hidden={searchPhrase && !hasHits}
 	class:has-hits={hasHits}
 	data-dimension={group.dimension}
@@ -111,7 +111,7 @@
 			data-testid="facet-toggle"
 		>
 			<span class="arrow transition-transform">
-				<BiChevronRight class="text-icon" />
+				<BiChevronRight />
 			</span>
 			<span class="flex-1 whitespace-nowrap">{group.label}</span>
 		</summary>
@@ -120,7 +120,7 @@
 			<select
 				bind:value={currentSort}
 				onchange={saveUserSort}
-				class="text-2-regular appearance-none px-6 py-1"
+				class="appearance-none px-6 py-1"
 				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
 			>
 				{#each sortOptions as option (option.value)}
@@ -128,10 +128,8 @@
 					>
 				{/each}
 			</select>
-			<BiSortDown class="text-icon-strong pointer-events-none absolute top-0 m-1.5" />
-			<BiChevronRight
-				class="text-icon-strong pointer-events-none absolute top-0 right-0 m-1.5 w-3 rotate-90"
-			/>
+			<BiSortDown class="pointer-events-none absolute top-0 m-1.5" />
+			<BiChevronRight class="pointer-events-none absolute top-0 right-0 m-1.5 w-3 rotate-90" />
 		</div>
 		<div class="text-md mb-4 md:text-sm">
 			{#if group.search && !(searchPhrase && hasHits)}
@@ -165,13 +163,13 @@
 								<span>
 									<DecoratedData data={facet.object} showLabels={ShowLabelsOptions.Never} />
 									{#if facet.discriminator}
-										<span class="text-secondary text-sm">({facet.discriminator})</span>
+										<span class="text-sm">({facet.discriminator})</span>
 									{/if}
 								</span>
 							</span>
 							{#if facet.totalItems > 0}
 								<span
-									class="facet-total bg-primary/4 text-secondary mb-px rounded-sm px-1 text-sm md:text-xs"
+									class="facet-total mb-px rounded-sm px-1 text-sm md:text-xs"
 									aria-label="{facet.totalItems} {page.data.t('search.hits')}"
 									>{facet.totalItems.toLocaleString(locale)}</span
 								>
@@ -197,7 +195,7 @@
 				{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
 					<div class="mt-4 ml-auto">
 						<button
-							class="bg-primary/4 text-error flex items-center gap-1 rounded-sm px-2 py-1 text-xs"
+							class="text-error flex items-center gap-1 rounded-sm px-2 py-1 text-xs"
 							use:popover={{
 								title: page.data.t('facet.limitText'),
 								placeAsSibling: true
@@ -231,10 +229,10 @@
 		@apply hidden;
 	}
 
-	.facet-link:hover,
+	/* .facet-link:hover,
 	.facet-link:focus {
 		& .facet-total {
 			@apply bg-primary/8;
 		}
-	}
+	} */
 </style>

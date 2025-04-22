@@ -104,7 +104,7 @@
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
 <article>
-	<div class="resource find-layout page-padding gap-8" class:bg-header={shouldShowHeaderBackground}>
+	<div class="resource find-layout page-padding gap-8">
 		<div
 			class="image mt-4 mb-2 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
@@ -125,7 +125,7 @@
 		>
 			<div class="flex flex-col gap-4">
 				<header>
-					<h1 class="text-6-cond-extrabold">
+					<h1>
 						<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 					</h1>
 				</header>
@@ -139,7 +139,6 @@
 										<li>
 											<a
 												href={getHoldingsLink($page.url, type)}
-												class="button-ghost"
 												data-sveltekit-preload-data="false"
 												data-testid="holding-link"
 												on:click={(event) => handleClickHoldings(event, $page.state, type)}
@@ -179,7 +178,7 @@
 	</div>
 	{#if data.instances?.length}
 		<div class="instances find-layout page-padding pt-2!">
-			<div class="instances-list max-w-content border-t-primary/16 border-t pt-6">
+			<div class="instances-list max-w-content border-t pt-6">
 				<InstancesList
 					data={data.instances}
 					columns={[
@@ -196,7 +195,7 @@
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
 			<div class="flex flex-col">
 				<div
-					class="border-b-primary/16 bg-cards relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-sm transition-shadow"
+					class="relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-sm transition-shadow"
 				>
 					<div
 						id="instance-details"
@@ -267,7 +266,7 @@
 							class="w-full pl-8"
 							type="search"
 						/>
-						<BiSearch class="text-icon absolute top-3 left-2.5 text-sm" />
+						<BiSearch class="absolute top-3 left-2.5 text-sm" />
 					</div>
 					<ul class="w-full text-sm">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
@@ -349,8 +348,8 @@
 		pointer-events: none;
 		background: linear-gradient(
 			to bottom,
-			--alpha(var(--color-cards) / 0%),
-			--alpha(var(--color-cards) / 100%)
+			--alpha(var(--bg-body) / 0%),
+			--alpha(var(--bg-body) / 100%)
 		);
 		overflow: hidden;
 	}

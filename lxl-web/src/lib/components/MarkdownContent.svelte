@@ -7,15 +7,14 @@
 
 	div {
 		& :global(h1) {
-			@apply text-6-cond-extrabold;
 		}
 
 		& :global(h2) {
-			@apply text-5-cond-extrabold mt-6;
+			@apply mt-6;
 		}
 
 		& :global(h3) {
-			@apply text-3-cond-bold mt-6;
+			@apply mt-6;
 		}
 
 		& :global(p) {

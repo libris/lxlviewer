@@ -48,11 +48,8 @@
 					/>
 					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 						<div class="absolute -top-4 -left-4">
-							<div class="bg-cards rounded-md p-1.5">
-								<svelte:component
-									this={getTypeIcon(item['@type'])}
-									class="text-icon-strong h-6 w-6"
-								/>
+							<div class="rounded-md p-1.5">
+								<svelte:component this={getTypeIcon(item['@type'])} class="h-6 w-6" />
 							</div>
 						</div>
 					{/if}
@@ -66,10 +63,7 @@
 							class="object-contain object-top"
 						/>
 						{#if getTypeIcon(item['@type'])}
-							<svelte:component
-								this={getTypeIcon(item['@type'])}
-								class="text-icon absolute text-lg"
-							/>
+							<svelte:component this={getTypeIcon(item['@type'])} class="absolute text-lg" />
 						{/if}
 					</div>
 				{/if}
@@ -182,7 +176,7 @@
 	}
 
 	.search-card {
-		@apply border-b-primary/16 bg-cards relative grid w-full gap-x-4 rounded-md border-b px-4 pt-3 pb-3 font-normal transition-shadow;
+		@apply relative grid w-full gap-x-4 rounded-md border-b px-4 pt-3 pb-3 font-normal transition-shadow;
 
 		grid-template-areas: 'image content debug libraries';
 		grid-template-columns: 64px 1fr auto auto;
@@ -192,7 +186,6 @@
 			@apply shadow-lg;
 
 			& .card-header-title {
-				@apply text-primary;
 			}
 		}
 
@@ -258,17 +251,14 @@
 	}
 
 	.card-header-title {
-		@apply text-secondary text-3-cond-bold;
-
 		@container (min-width: 768px) {
-			@apply text-4-cond-bold;
 		}
 	}
 
 	.card-header-extra,
 	.card-footer,
 	.card-header :global([data-property='_script']) {
-		@apply text-secondary text-xs;
+		@apply text-xs;
 		@container (min-width: 768px) {
 			@apply text-sm;
 		}

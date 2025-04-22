@@ -76,7 +76,7 @@
 	}}
 >
 	<div
-		class="bg-main absolute top-0 right-0 flex w-full shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
+		class="absolute top-0 right-0 flex w-full shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
 		'top'
 			? 'h-auto'
 			: 'h-full'}"
@@ -84,15 +84,12 @@
 		class:right-0={position === 'right'}
 	>
 		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
-			<header
-				class="border-b-primary/16 bg-main sticky top-0 z-10 flex min-h-14 items-center justify-between border-b px-4"
-			>
-				<h1 class="text-3-cond-bold"><slot name="title" /></h1>
+			<header class="sticky top-0 z-10 flex min-h-14 items-center justify-between border-b px-4">
+				<h1><slot name="title" /></h1>
 				<!-- svelte-ignore a11y-autofocus -->
 				<button
 					on:click={handleClose}
 					autofocus
-					class="icon-button"
 					aria-label={$page.data.t('general.close')}
 					data-testid="close-modal"
 				>

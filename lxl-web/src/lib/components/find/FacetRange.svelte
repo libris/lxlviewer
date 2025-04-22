@@ -30,7 +30,7 @@
 
 <form class="my-4 grid grid-cols-3 items-end gap-2" action="" on:submit={handleSubmit}>
 	<div class="flex flex-col gap-1">
-		<label class="text-1-cond-bold" for="facet-range-from">{$page.data.t('general.from')}</label>
+		<label for="facet-range-from">{$page.data.t('general.from')}</label>
 		<input
 			id="facet-range-from"
 			type="number"
@@ -42,7 +42,7 @@
 		/>
 	</div>
 	<div class="flex flex-col gap-1">
-		<label class="text-1-cond-bold" for="facet-range-to">{$page.data.t('general.to')}</label>
+		<label for="facet-range-to">{$page.data.t('general.to')}</label>
 		<input
 			id="facet-range-to"
 			type="number"
@@ -53,9 +53,7 @@
 			bind:value={rangeTo}
 		/>
 	</div>
-	<button disabled={!rangeFrom && !rangeTo} class="button-primary" type="submit"
-		>{$page.data.t('general.apply')}</button
-	>
+	<button disabled={!rangeFrom && !rangeTo} type="submit">{$page.data.t('general.apply')}</button>
 
 	{#each searchParams as [name, value]}
 		{#if name !== '_q'}
