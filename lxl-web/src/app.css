@@ -44,8 +44,11 @@
 
 @layer base {
 	html {
-		font-family: var(--font-sans);
 		scrollbar-gutter: stable;
+	}
+
+	body {
+		font-family: var(--font-sans);
 	}
 
 	button:not(:disabled),
