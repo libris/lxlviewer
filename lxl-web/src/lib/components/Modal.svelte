@@ -76,7 +76,7 @@
 	}}
 >
 	<div
-		class="absolute top-0 right-0 flex w-full shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
+		class="bg-page absolute top-0 right-0 flex w-full shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
 		'top'
 			? 'h-auto'
 			: 'h-full'}"

@@ -33,12 +33,14 @@
 }
 
 :root {
+	--color-black: #000;
 }
 
 @theme inline {
 	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
 	--color-*: initial;
+	--color-page: #fff;
 	--color-error: rgba(187, 54, 54, 1);
 }
 
@@ -49,6 +51,7 @@
 
 	body {
 		font-family: var(--font-sans);
+		background: var(--color-page);
 	}
 
 	button:not(:disabled),

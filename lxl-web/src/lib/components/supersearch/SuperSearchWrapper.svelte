@@ -374,6 +374,7 @@
 
 	:global(.supersearch-dialog-content) {
 		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md drop-shadow-md;
+		background: var(--color-page);
 		grid-area: supersearch-content;
 		scrollbar-width: none;
 	}
