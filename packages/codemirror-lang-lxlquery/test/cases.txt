@@ -420,7 +420,7 @@ Pippi includeEplikt
 
 ==>
 
-Query(String Qualifier)
+Query(String Qualifier(QualifierValue(FilterAlias)))
 
 
 # other filters: include preliminary
@@ -429,4 +429,4 @@ includePreliminary Pippi
 
 ==>
 
-Query(Qualifier String)
+Query(Qualifier(QualifierValue(FilterAlias)) String)

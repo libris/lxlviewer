@@ -110,7 +110,7 @@ function lxlQualifierPlugin(
 						const { keyLabel, valueLabel, invalid } = getLabelFn?.(key, value) || {};
 
 						// Add qualifier widget
-						if (keyLabel) {
+						if (keyLabel || valueLabel) {
 							const qualifierDecoration = Decoration.replace({
 								widget: new QualifierWidget(
 									key,

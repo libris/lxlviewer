@@ -149,6 +149,7 @@ export interface SearchMapping extends MappingObj {
 	alias: string;
 	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom | InvalidProperty;
 	object?: FramedData;
+	value?: string;
 	up: { '@id': string };
 	_key?: string;
 	_value?: string;

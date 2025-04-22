@@ -138,9 +138,13 @@ export function displayMappings(
 						LensType.Chip,
 						locale
 					),
+					displayStr: toString(
+						displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.Chip, locale)
+					),
 					label: '',
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) })
+					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					_value: m?.value
 				} as DisplayMapping;
 			} else {
 				return {

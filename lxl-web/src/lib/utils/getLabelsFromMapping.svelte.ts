@@ -54,6 +54,9 @@ function iterateMapping(
 						// only use atomic ranges for linked values
 						valueLabel = el.displayStr;
 					}
+				} else if (!key && value === el?._value && el?.displayStr) {
+					// ...unless a filter alias (no key, only value)
+					valueLabel = el.displayStr;
 				}
 			});
 		}
