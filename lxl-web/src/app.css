@@ -41,6 +41,7 @@
 
 	--color-*: initial;
 	--color-page: #fff;
+	--color-body: #333;
 	--color-error: rgba(187, 54, 54, 1);
 }
 
@@ -52,6 +53,7 @@
 	body {
 		font-family: var(--font-sans);
 		background: var(--color-page);
+		color: var(--color-body);
 	}
 
 	button:not(:disabled),
