@@ -33,11 +33,13 @@
 }
 
 :root {
+	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-black: #000;
 }
 
 @theme inline {
-	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--font-sans: 'Inter', var(--font-fallback);
+	--font-body: var(--font-sans);
 
 	--color-*: initial;
 	--color-page: #fff;
@@ -51,7 +53,7 @@
 	}
 
 	body {
-		font-family: var(--font-sans);
+		font-family: var(--font-body);
 		background: var(--color-page);
 		color: var(--color-body);
 	}
