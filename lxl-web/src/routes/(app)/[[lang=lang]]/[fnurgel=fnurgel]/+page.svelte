@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { DecoratedHolder } from '$lib/types/holdings';
@@ -21,64 +21,86 @@
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
 	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import BiSearch from '~icons/bi/search';
+	import BiHouseHeart from '~icons/bi/house-heart';
 
-	export let data;
+	const { data } = $props();
 	const userSettings = getUserSettings();
-
 	const ASIDE_SEARCH_CARD_MAX_HEIGHT = 140;
 
-	let selectedHolding: string | undefined;
-	let latestHoldingUrl: string | undefined;
-	let holdingsInstanceElement: HTMLElement | null;
-	let expandedHoldingsInstance = false;
+	let selectedHolding: string | undefined = $state();
+	let latestHoldingUrl: string | undefined = $state();
+	let holdingsInstanceElement: HTMLElement | undefined = $state();
+	let expandedHoldingsInstance = $state(false);
 	let previousURL: URL;
-	let searchPhrase = '';
+	let searchPhrase = $state('');
+	let displayedHolders: DecoratedHolder[] = $state([]);
 
-	$: selectedHoldingInstance = selectedHolding
-		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
-			data.overview
-		: undefined;
+	const selectedHoldingInstance = $derived(
+		selectedHolding
+			? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
+					data.overview
+			: undefined
+	);
 
-	$: localizedInstanceTypes = Object.values(data.instances).reduce((acc, instanceItem) => {
-		if (instanceItem['@type'] && instanceItem?._label) {
-			return {
-				...acc,
-				[instanceItem['@type']]: instanceItem._label
-			};
+	const localizedInstanceTypes = $derived(
+		Object.values(data.instances).reduce((acc, instanceItem) => {
+			if (instanceItem['@type'] && instanceItem?._label) {
+				return {
+					...acc,
+					[instanceItem['@type'] as string]: instanceItem._label
+				};
+			}
+			return acc;
+		}, {})
+	);
+
+	// we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
+	const holdingUrl = $derived(page.state.holdings || page.url.searchParams.get('holdings') || null);
+
+	const shouldShowHeaderBackground = $derived(!data.instances?.length);
+	const expandableHoldingsInstance = $derived(
+		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT
+	);
+
+	const filteredHolders = $derived(
+		displayedHolders
+			.filter((holder) => {
+				return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
+			})
+			.filter((h) => h.str)
+	);
+
+	const myLibsHolders = $derived(
+		displayedHolders.filter((holder) => {
+			if (userSettings.myLibraries) {
+				return Object.values(userSettings.myLibraries).some((lib) => lib.sigel === holder.sigel);
+			} else return false;
+		})
+	);
+
+	$effect(() => {
+		if (holdingUrl) {
+			selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : (data.overview as string);
+			latestHoldingUrl = holdingUrl;
 		}
-		return acc;
-	}, {});
+	});
 
-	$: holdingUrl = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
-	$: if (holdingUrl) {
-		selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : data.overview;
-		latestHoldingUrl = holdingUrl;
-	}
-
-	$: shouldShowHeaderBackground = !data.instances?.length;
-
-	$: expandableHoldingsInstance =
-		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT;
-
-	let displayedHolders: DecoratedHolder[] = [];
-	$: if (latestHoldingUrl) {
-		if (
-			isFnurgel(latestHoldingUrl) &&
-			selectedHolding &&
-			data.holdingsByInstanceId[selectedHolding]
-		) {
-			// show holdings for an instance
-			displayedHolders = data.holdingsByInstanceId[selectedHolding].map(
-				(holding) => holding.heldBy
-			);
-		} else if (data.holdersByType?.[latestHoldingUrl]) {
-			// show holdings by type
-			displayedHolders = data.holdersByType[latestHoldingUrl];
+	$effect(() => {
+		if (latestHoldingUrl) {
+			if (
+				isFnurgel(latestHoldingUrl) &&
+				selectedHolding &&
+				data.holdingsByInstanceId[selectedHolding]
+			) {
+				// show holdings for an instance
+				displayedHolders = data.holdingsByInstanceId[selectedHolding].map(
+					(holding) => holding.heldBy
+				);
+			} else if (data.holdersByType?.[latestHoldingUrl]) {
+				// show holdings by type
+				displayedHolders = data.holdersByType[latestHoldingUrl];
+			}
 		}
-	}
-
-	$: filteredHolders = displayedHolders.filter((holder) => {
-		return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
 	});
 
 	afterNavigate(({ to }) => {
@@ -91,11 +113,9 @@
 		if (!previousURL?.searchParams.has('holdings')) {
 			history.back();
 		} else {
-			const newSearchParams = new URLSearchParams([
-				...Array.from($page.url.searchParams.entries())
-			]);
+			const newSearchParams = new URLSearchParams([...Array.from(page.url.searchParams.entries())]);
 			newSearchParams.delete('holdings');
-			goto($page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
+			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
 		}
 	}
 </script>
@@ -107,7 +127,7 @@
 	<div class="resource find-layout page-padding gap-8" class:bg-header={shouldShowHeaderBackground}>
 		<div
 			class="image mt-4 mb-2 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
-			class:hidden={!$page.data.images?.length}
+			class:hidden={!page.data.images?.length}
 		>
 			{#if data.images.length}
 				<ResourceImage
@@ -138,11 +158,11 @@
 									{#each Object.keys(data.holdersByType) as type (type)}
 										<li>
 											<a
-												href={getHoldingsLink($page.url, type)}
+												href={getHoldingsLink(page.url, type)}
 												class="button-ghost"
 												data-sveltekit-preload-data="false"
 												data-testid="holding-link"
-												on:click={(event) => handleClickHoldings(event, $page.state, type)}
+												onclick={(event) => handleClickHoldings(event, page.state, type)}
 											>
 												{#if Object.keys(data.holdersByType).length == 1}
 													{data.t('holdings.availableAt')}
@@ -163,7 +183,7 @@
 									{#if id}
 										{@const favWithHolding = getMyLibsFromHoldings(
 											userSettings.myLibraries,
-											$page.data.holdingsByInstanceId[id]
+											page.data.holdingsByInstanceId[id]
 										)}
 										{#if favWithHolding.length}
 											<MyLibrariesIndicator libraries={favWithHolding} />
@@ -235,17 +255,17 @@
 					</div>
 					<button
 						class="mt-2 text-left underline"
-						on:click={() => (expandedHoldingsInstance = !expandedHoldingsInstance)}
+						onclick={() => (expandedHoldingsInstance = !expandedHoldingsInstance)}
 						aria-expanded={expandedHoldingsInstance}
 						aria-controls="instance-details"
 					>
 						{expandedHoldingsInstance
-							? $page.data.t('search.hideDetails')
-							: $page.data.t('search.showDetails')}</button
+							? page.data.t('search.hideDetails')
+							: page.data.t('search.showDetails')}</button
 					>
 				</div>
 				<div>
-					<h2 class="font-bold">
+					<h2 class="text-3-cond-bold">
 						{data.t('holdings.availableAt')}
 						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
 							{data.holdingsByInstanceId[latestHoldingUrl].length}
@@ -259,11 +279,27 @@
 								: data.t('holdings.libraries')}
 						{/if}
 					</h2>
+					<!-- my libraries holdings -->
+					{#if myLibsHolders.length}
+						<div class="border-positive bg-positive/32 my-4 rounded-sm border-b p-4 pb-0">
+							<h3 class="text-3-cond-bold flex items-center gap-2">
+								<span aria-hidden="true" class="text-positive-dark">
+									<BiHouseHeart />
+								</span>
+								<span>{page.data.t('myPages.favouriteLibraries')}</span>
+							</h3>
+							<ul class="w-full text-sm">
+								{#each myLibsHolders as holder, i (holder.sigel || i)}
+									<HoldingStatus {holder} {holdingUrl} />
+								{/each}
+							</ul>
+						</div>
+					{/if}
 					<div class="relative mt-2 mb-4">
 						<input
 							bind:value={searchPhrase}
-							placeholder={$page.data.t('holdings.findLibrary')}
-							aria-label={$page.data.t('holdings.findLibrary')}
+							placeholder={page.data.t('holdings.findLibrary')}
+							aria-label={page.data.t('holdings.findLibrary')}
 							class="w-full pl-8"
 							type="search"
 						/>
@@ -275,7 +311,7 @@
 						{/each}
 						{#if filteredHolders.length === 0}
 							<li class="m-3">
-								<span role="alert">{$page.data.t('search.noResults')}</span>
+								<span role="alert">{page.data.t('search.noResults')}</span>
 							</li>
 						{/if}
 					</ul>
@@ -284,7 +320,7 @@
 		</Modal>
 	{/if}
 </article>
-<SearchResult searchResult={$page.data.searchResult} showMapping />
+<SearchResult searchResult={page.data.searchResult} showMapping />
 
 <style>
 	.resource {
