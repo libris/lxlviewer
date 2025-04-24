@@ -47,7 +47,7 @@
 </script>
 
 <ul class="flex flex-wrap items-center gap-2">
-	{#each mapping as m (m['@id'])}
+	{#each mapping as m, index (`${m['@id']}-${index}`)}
 		<li
 			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
 			class:wildcard={m.operator === 'equals' && m.display === '*'}
