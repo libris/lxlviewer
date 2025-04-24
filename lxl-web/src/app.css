@@ -74,11 +74,36 @@
 	--color-accent-950: oklch(20.98% 0.052 244.04);
 	--color-accent: var(--color-accent-500);
 
-	--color-page: #fff;
+	--color-warning-50: oklch(97.86% 0.016 79.35);
+	--color-warning-100: oklch(96.23% 0.029 80.66);
+	--color-warning-200: oklch(91.99% 0.061 80.61);
+	--color-warning-300: oklch(88.23% 0.089 79.03);
+	--color-warning-400: oklch(84.82% 0.114 78.04);
+	--color-warning-500: oklch(81.33% 0.138 76.51);
+	--color-warning-600: oklch(75.93% 0.16 70.34);
+	--color-warning-700: oklch(61.67% 0.131 70.3);
+	--color-warning-800: oklch(45.81% 0.095 71.23);
+	--color-warning-900: oklch(29.68% 0.059 74.66);
+	--color-warning-950: oklch(19.23% 0.035 77.72);
+	--color-warning: var(--color-warning-500);
+
+	--color-severe-50: oklch(95% 0.017 13.1);
+	--color-severe-100: oklch(90.11% 0.037 13.71);
+	--color-severe-200: oklch(80.51% 0.075 15.76);
+	--color-severe-300: oklch(72.15% 0.115 16.94);
+	--color-severe-400: oklch(63.74% 0.157 19.79);
+	--color-severe-500: oklch(56.91% 0.194 23.85);
+	--color-severe-600: oklch(48.83% 0.169 23.68);
+	--color-severe-700: oklch(40.04% 0.135 23.32);
+	--color-severe-800: oklch(29.84% 0.094 22.52);
+	--color-severe-900: oklch(19.91% 0.055 20.06);
+	--color-severe-950: oklch(14.45% 0.031 21.73);
+	--color-severe: var(--color-severe-500);
+
 	--color-body: #333;
 	--color-subtle: #666;
 	--color-link: var(--color-accent);
-	--color-error: rgba(187, 54, 54, 1);
+	--color-error: var(--color-severe);
 
 	--color-app-header: var(--color-primary-100);
 	--color-input: var(--color-page);
