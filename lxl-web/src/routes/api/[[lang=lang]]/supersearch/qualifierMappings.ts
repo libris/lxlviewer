@@ -6,7 +6,7 @@ export const QUALIFIER_KEY_FROM_ALIAS = {
 };
 
 export const BASE_CLASS_FROM_QUALIFIER_KEY = {
-	BibliographicAgent: ['contributor', 'subject'],
+	Agent: ['contributor', 'subject'],
 	Subject: ['subject'],
 	GenreForm: ['genreForm'],
 	Language: ['language', 'translationOf.language'],
