@@ -75,6 +75,7 @@
 	--color-*: initial;
 	--color-page: #fff;
 	--color-body: #333;
+	--color-subtle: #666;
 	--color-link: var(--color-accent);
 	--color-error: rgba(187, 54, 54, 1);
 
