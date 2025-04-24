@@ -35,6 +35,32 @@
 :root {
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-black: #000;
+
+	--color-primary-50: oklch(97.93% 0.014 124.55);
+	--color-primary-100: oklch(95.92% 0.029 121.98);
+	--color-primary-200: oklch(90.73% 0.063 123.24);
+	--color-primary-300: oklch(85.59% 0.097 124.19);
+	--color-primary-400: oklch(79.68% 0.136 125.41);
+	--color-primary-500: oklch(72.74% 0.156 126.68);
+	--color-primary-600: oklch(66.86% 0.143 126.48);
+	--color-primary-700: oklch(61.09% 0.129 126.63);
+	--color-primary-800: oklch(54% 0.113 126.21);
+	--color-primary-900: oklch(42.94% 0.087 126.62);
+	--color-primary-950: oklch(33.73% 0.064 125.83);
+	--color-primary: var(--color-primary-500);
+
+	--color-accent-50: oklch(96.75% 0.017 242.42);
+	--color-accent-100: oklch(93.47% 0.035 241.45);
+	--color-accent-200: oklch(86.4% 0.074 241.98);
+	--color-accent-300: oklch(78.37% 0.119 243.24);
+	--color-accent-400: oklch(67.77% 0.178 248.77);
+	--color-accent-500: oklch(52.25% 0.152 251.05);
+	--color-accent-600: oklch(48% 0.139 250.8);
+	--color-accent-700: oklch(45.04% 0.128 250.28);
+	--color-accent-800: oklch(39.6% 0.113 250.2);
+	--color-accent-900: oklch(30.64% 0.084 248.52);
+	--color-accent-950: oklch(20.98% 0.052 244.04);
+	--color-accent: var(--color-accent-500);
 }
 
 @theme inline {
@@ -44,7 +70,11 @@
 	--color-*: initial;
 	--color-page: #fff;
 	--color-body: #333;
+	--color-link: var(--color-accent);
 	--color-error: rgba(187, 54, 54, 1);
+
+	--color-app-header: var(--color-primary-100);
+	--color-input: var(--color-page);
 }
 
 @layer base {

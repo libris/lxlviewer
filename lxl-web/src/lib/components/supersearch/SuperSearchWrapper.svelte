@@ -360,6 +360,7 @@
 
 	.supersearch-input {
 		@apply flex min-h-12 w-full cursor-text overflow-hidden rounded-md focus-within:relative focus-within:outline-2;
+		background: var(--color-input);
 	}
 
 	/* dialog */
