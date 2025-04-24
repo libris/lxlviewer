@@ -22,7 +22,7 @@
 
 	const applyFilterUrl = $derived.by(() => {
 		const paramsCopy = new URLSearchParams(page.url.searchParams);
-		let q = paramsCopy.get('_q')?.replaceAll(MY_LIBRARIES_FILTER_ALIAS, '');
+		let q = paramsCopy.get('_q');
 		q = q === '*' ? '' : q;
 		paramsCopy.set('_q', `${q?.trim()} ${MY_LIBRARIES_FILTER_ALIAS}`);
 		return 'find?' + paramsCopy.toString();
