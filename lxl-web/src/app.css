@@ -100,6 +100,7 @@
 	--color-severe-950: oklch(14.45% 0.031 21.73);
 	--color-severe: var(--color-severe-500);
 
+	--color-page: #fff;
 	--color-body: #333;
 	--color-subtle: #666;
 	--color-link: var(--color-accent);
