@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { DisplayMapping, SearchOperators } from '$lib/types/search';
 
 	import { page } from '$app/stores';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { getModalContext } from '$lib/contexts/modal';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiPencil from '~icons/bi/pencil';
@@ -49,7 +47,7 @@
 </script>
 
 <ul class="flex flex-wrap items-center gap-2">
-	{#each mapping as m}
+	{#each mapping as m (m['@id'])}
 		<li
 			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
 			class:wildcard={m.operator === 'equals' && m.display === '*'}
@@ -67,7 +65,7 @@
 				<div class="pill-label text-2-regular inline">{m.label}</div>
 				<span class="pill-relation">{symbol}</span>
 				<span class="pill-value">
-					<DecoratedData data={m.display} showLabels={ShowLabelsOptions['Never']} />
+					{m.displayStr}
 				</span>
 			{/if}
 			{#if 'up' in m && (!m.children || depth > 0)}

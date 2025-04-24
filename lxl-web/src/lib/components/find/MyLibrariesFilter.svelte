@@ -1,40 +1,34 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import type { FacetGroup, MultiSelectFacet } from '$lib/types/search';
 	import popover from '$lib/actions/popover';
+	import { MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import BiCheckSquareFill from '~icons/bi/check-square-fill';
 	import BiSquare from '~icons/bi/square';
 
-	const libraryValues = $derived(Object.values(getUserSettings()?.myLibraries || {}));
+	type MyLibrariesFilterProps = { facets: FacetGroup[] };
+	const { facets }: MyLibrariesFilterProps = $props();
 
-	const sigelString = $derived.by(() => {
-		const sigelMap = libraryValues.map((v) => `itemHeldBy:"sigel:${v.sigel}"`).join(' OR ');
-		return libraryValues.length > 1 ? sigelMap.replace(/^/, '(').replace(/$/, ')') : sigelMap;
-	});
+	const myLibrariesValues = $derived(Object.values(getUserSettings()?.myLibraries || {}));
 
-	const searchParams = $derived(new URLSearchParams(page.data.searchResult.first['@id']));
+	const boolFilters = $derived(
+		facets.filter((f) => f.dimension === 'boolFilters')[0]?.facets
+	) as MultiSelectFacet[];
+	const myLibsFacetObj = $derived(
+		boolFilters.filter((f) => f.alias === MY_LIBRARIES_FILTER_ALIAS)?.[0]
+	);
+	const isFilterActive = $derived((myLibrariesValues.length && myLibsFacetObj?.selected) || false);
 
 	const applyFilterUrl = $derived.by(() => {
-		const paramsCopy = new URLSearchParams(searchParams);
-		const q = paramsCopy.get('_q');
-		paramsCopy.set('_q', `${q} ${sigelString}`);
-		// 'replace' is a hack to get around the fact that...
-		// to get this working on fnurgel pages, we need to modify o & p-links from the response
-		// that are *partially* encoded. Can't preserve that encoding using built in methods
-		return decodeURIComponent(paramsCopy.toString()).replace('#', '%23');
+		const paramsCopy = new URLSearchParams(page.url.searchParams);
+		let q = paramsCopy.get('_q')?.replaceAll(MY_LIBRARIES_FILTER_ALIAS, '');
+		q = q === '*' ? '' : q;
+		paramsCopy.set('_q', `${q?.trim()} ${MY_LIBRARIES_FILTER_ALIAS}`);
+		return 'find?' + paramsCopy.toString();
 	});
 
-	const removeFilterUrl = $derived.by(() => {
-		const paramsCopy = new URLSearchParams(searchParams);
-		const q = paramsCopy.get('_q');
-		const newQ = q?.replaceAll(sigelString, '') || '*';
-		paramsCopy.set('_q', newQ);
-		return decodeURIComponent(paramsCopy.toString()).replace('#', '%23');
-	});
-
-	const isFilterActive = $derived(
-		libraryValues.length && searchParams.get('_q')?.toString().includes(sigelString)
-	);
+	const removeFilterUrl = $derived(myLibsFacetObj?.view?.['@id']);
 </script>
 
 {#snippet filterContent()}
@@ -43,7 +37,7 @@
 		<div
 			class={[
 				'flex h-[13px] w-[13px] rounded-sm bg-[white]',
-				!libraryValues.length && 'text-primary/24'
+				!myLibrariesValues.length && 'text-primary/24'
 			]}
 			aria-hidden="true"
 		>
@@ -58,7 +52,7 @@
 {/snippet}
 
 <div class="bg-positive/40 flex w-full gap-2 rounded-sm p-3 md:flex-col md:gap-1">
-	{#if libraryValues.length}
+	{#if myLibrariesValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>
 			{@render filterContent()}
 		</a>
@@ -74,7 +68,7 @@
 		</div>
 	{/if}
 	<a class="text-secondary text-2-regular self-end" href="/my-pages"
-		>{libraryValues.length
+		>{myLibrariesValues.length
 			? page.data.t('search.changeLibraries')
 			: page.data.t('search.addLibraries')}</a
 	>

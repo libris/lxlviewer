@@ -68,6 +68,7 @@ export interface Facet {
 
 export interface MultiSelectFacet extends Facet {
 	selected: boolean;
+	alias?: string;
 }
 
 interface SpellingSuggestion {

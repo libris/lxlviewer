@@ -193,5 +193,8 @@ export default {
 		available: 'Tillgänglig',
 		unavailable: 'Ej tillgänglig',
 		map: 'karta'
+	},
+	filterAlias: {
+		'alias-myLibraries': 'Mina bibliotek'
 	}
 };

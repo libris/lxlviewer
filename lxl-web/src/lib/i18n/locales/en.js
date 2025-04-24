@@ -194,5 +194,8 @@ export default {
 		available: 'Available',
 		unavailable: 'Not available',
 		map: 'map'
+	},
+	filterAlias: {
+		'alias-myLibraries': 'My Libraries'
 	}
 };
