@@ -104,7 +104,6 @@
 	--color-subtle: #666;
 	--color-link: var(--color-accent);
 	--color-error: var(--color-severe);
-
 	--color-app-header: var(--color-primary-100);
 	--color-input: var(--color-page);
 }
