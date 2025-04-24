@@ -46,7 +46,7 @@
 				type="search"
 			/>
 			<BiSearch class="text-icon absolute top-3 left-2.5 text-sm" />
-			{#if page.url.pathname === '/find'}
+			{#if page.route.id === '/(app)/[[lang=lang]]/find'}
 				<MyLibrariesFilter {facets} />
 			{/if}
 			<ol>
