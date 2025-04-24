@@ -84,7 +84,9 @@
 		class:right-0={position === 'right'}
 	>
 		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
-			<header class="sticky top-0 z-10 flex min-h-14 items-center justify-between border-b px-4">
+			<header
+				class="border-neutral sticky top-0 z-10 flex min-h-14 items-center justify-between border-b px-4"
+			>
 				<h1><slot name="title" /></h1>
 				<!-- svelte-ignore a11y-autofocus -->
 				<button

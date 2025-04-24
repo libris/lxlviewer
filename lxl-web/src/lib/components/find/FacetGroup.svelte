@@ -100,7 +100,7 @@
 </script>
 
 <li
-	class="border-b first:border-t"
+	class="border-neutral border-b first:border-t"
 	class:hidden={searchPhrase && !hasHits}
 	class:has-hits={hasHits}
 	data-dimension={group.dimension}

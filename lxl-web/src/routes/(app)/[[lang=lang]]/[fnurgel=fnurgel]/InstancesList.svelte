@@ -100,7 +100,7 @@
 		<ul bind:this={instancesList}>
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
-				<li {id} class="border-t">
+				<li {id} class="border-neutral border-t">
 					<details
 						open={page.state.expandedInstances?.includes(id) ||
 							page.url.searchParams.getAll('expanded').includes(id) ||

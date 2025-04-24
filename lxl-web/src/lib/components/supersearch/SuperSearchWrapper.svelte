@@ -411,7 +411,7 @@
 	/* suggestions */
 
 	:global(.supersearch-suggestions [role='row']:last-child) {
-		@apply border-b;
+		border-color: var(--color-neutral);
 	}
 
 	/* snippets elements */

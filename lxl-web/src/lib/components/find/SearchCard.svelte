@@ -176,7 +176,7 @@
 	}
 
 	.search-card {
-		@apply relative grid w-full gap-x-4 rounded-md border-b px-4 pt-3 pb-3 font-normal transition-shadow;
+		@apply border-neutral relative grid w-full gap-x-4 rounded-md border-b px-4 pt-3 pb-3 font-normal transition-shadow;
 
 		grid-template-areas: 'image content debug libraries';
 		grid-template-columns: 64px 1fr auto auto;

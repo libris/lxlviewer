@@ -56,7 +56,10 @@
 	{@const numHits = searchResult.totalItems}
 	{@const filterCount = getFiltersCount(searchResult.mapping)}
 	{#if predicates.length}
-		<nav class="border-b px-4 md:flex lg:px-6" aria-label={$page.data.t('search.selectedFilters')}>
+		<nav
+			class="border-neutral border-b px-4 md:flex lg:px-6"
+			aria-label={$page.data.t('search.selectedFilters')}
+		>
 			<ul class="flex flex-wrap items-center gap-2">
 				<li class="tab-header max-w-80 truncate font-bold">{$page.data.title}</li>
 				<span class="tab-header">{$page.data.t('search.occursAs')}</span>

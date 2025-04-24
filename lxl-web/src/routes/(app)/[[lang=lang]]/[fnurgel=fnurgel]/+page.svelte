@@ -198,7 +198,7 @@
 	</div>
 	{#if data.instances?.length}
 		<div class="instances find-layout p-4 pt-2! sm:px-6">
-			<div class="instances-list border-t pt-6">
+			<div class="instances-list border-neutral border-t pt-6">
 				<InstancesList
 					data={data.instances}
 					columns={[
@@ -280,7 +280,9 @@
 					</h2>
 					<!-- my libraries holdings -->
 					{#if myLibsHolders.length}
-						<div class="border-positive bg-positive/32 my-4 rounded-sm border-b p-4 pb-0">
+						<div
+							class="border-positive bg-positive/32 border-neutral my-4 rounded-sm border-b p-4 pb-0"
+						>
 							<h3 class="text-3-cond-bold flex items-center gap-2">
 								<span aria-hidden="true" class="text-positive-dark">
 									<BiHouseHeart />
