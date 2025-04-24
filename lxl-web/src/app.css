@@ -139,9 +139,25 @@
 	}
 }
 
-@layer components {
+@utility link {
+	color: var(--color-link);
+	text-decoration: underline;
+	text-decoration-style: dotted;
+
+	&:hover {
+		text-decoration-style: solid;
+	}
 }
 
+@utility link-subtle {
+	color: var(--color-body);
+	text-decoration: underline;
+	text-decoration-style: dotted;
+
+	&:hover {
+		text-decoration-style: solid;
+	}
+}
 /* OLD THEME */
 
 /* custom bg colors  */
