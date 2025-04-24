@@ -12,7 +12,7 @@ export default {
 	myPages: {
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
-		favouriteLibraries: 'Mina favoritbibliotek',
+		favouriteLibraries: 'Mina bibliotek',
 		findLibrary: 'Sök efter bibliotek',
 		findAndAdd: 'Hitta och lägg till favoritbibliotek',
 		noResultsFor: 'Inga sökträffar för',
