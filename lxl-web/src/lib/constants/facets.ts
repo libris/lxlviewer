@@ -4,3 +4,4 @@ export const CUSTOM_FACET_SORT = {
 	bibliography: 'alpha.asc',
 	itemHeldBy: 'alpha.asc'
 };
+export const MY_LIBRARIES_FILTER_ALIAS = 'alias-myLibraries';

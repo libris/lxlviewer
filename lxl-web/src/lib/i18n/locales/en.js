@@ -13,7 +13,7 @@ export default {
 	myPages: {
 		myPages: 'My pages',
 		libraries: 'Libraries',
-		favouriteLibraries: 'My favourite libraries',
+		favouriteLibraries: 'My libraries',
 		findLibrary: 'Search for libraries',
 		findAndAdd: 'Find and add favourite libraries',
 		noResultsFor: 'No results for',
@@ -194,5 +194,8 @@ export default {
 		available: 'Available',
 		unavailable: 'Not available',
 		map: 'map'
+	},
+	filterAlias: {
+		'alias-myLibraries': 'My Libraries'
 	}
 };

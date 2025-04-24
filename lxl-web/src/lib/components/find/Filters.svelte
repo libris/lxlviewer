@@ -46,7 +46,9 @@
 				type="search"
 			/>
 			<BiSearch class="text-icon absolute top-3 left-2.5 text-sm" />
-			<MyLibrariesFilter />
+			{#if page.route.id === '/(app)/[[lang=lang]]/find'}
+				<MyLibrariesFilter {facets} />
+			{/if}
 			<ol>
 				{#each facets as group (group.dimension)}
 					<FacetGroup {group} locale={page.data.locale} {searchPhrase} />

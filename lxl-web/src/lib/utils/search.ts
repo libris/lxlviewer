@@ -138,9 +138,10 @@ export function displayMappings(
 						LensType.Chip,
 						locale
 					),
-					displayStr: toString(
-						displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.Chip, locale)
-					),
+					displayStr:
+						toString(
+							displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.Chip, locale)
+						) || translate(`filterAlias.${m.object?.alias}`), // Allow frontend-defined displayStr for custom filter aliases
 					label: '',
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
@@ -297,7 +298,8 @@ function displayBoolFilters(
 			view: replacePath(o.view, usePath),
 			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-			discriminator: ''
+			discriminator: '',
+			alias: o.object.alias
 		};
 	});
 
