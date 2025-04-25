@@ -32,6 +32,14 @@
 	src: url('/fonts/Inter-MediumItalic.woff2') format('woff2');
 }
 
+@font-face {
+	font-family: 'Sentinel';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/Sentinel-Normal.woff2') format('woff2');
+}
+
 :root {
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-black: #000;
@@ -40,6 +48,7 @@
 @theme inline {
 	--font-sans: 'Inter', var(--font-fallback);
 	--font-body: var(--font-sans);
+	--font-heading: 'Sentinel', var(--font-fallback);
 
 	--text-4xs: 10px;
 	--text-3xs: 11px;
@@ -158,6 +167,7 @@
 		text-decoration-style: solid;
 	}
 }
+
 /* OLD THEME */
 
 /* custom bg colors  */
