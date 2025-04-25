@@ -10,11 +10,12 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const displayUtil = locals.display;
 	const locale = getSupportedLocale(params?.lang);
 
-	let _q = url.searchParams.get('_q') || '';
+	const _q = url.searchParams.get('_q') || '';
 
 	if (_q.length !== 0) {
-		_q = `${_q} "rdf:type":Library`;
-		url.searchParams.set('_q', _q);
+		const queryWithWildCard = _q + (_q.match(/[^*]$/) ? '*' : '');
+		const query = `${queryWithWildCard} "rdf:type":Library`;
+		url.searchParams.set('_q', query);
 	}
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
