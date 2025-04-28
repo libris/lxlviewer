@@ -19,7 +19,7 @@
 	});
 </script>
 
-<header class="bg-app-header">
+<header class="bg-app-header border-b-neutral border-b">
 	<nav class="header-nav header-layout min-h-20 items-center py-0">
 		<div class="home md:pl-4">
 			<a href={page.data.base} class="flex flex-col no-underline md:flex-row">
