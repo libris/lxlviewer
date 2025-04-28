@@ -9,11 +9,11 @@
 	<title>{getPageTitle()}</title>
 </svelte:head>
 
-<article class="mx-auto my-8 max-w-3xl">
-	<div class="landing flex flex-col items-center gap-2 pb-3">
-		<h1 class="flex text-3xl/tight font-extrabold sm:text-[5.5rem] sm:font-bold">
+<article class="mx-auto my-8 max-w-3xl p-6">
+	<div class="landing flex flex-col items-center gap-2">
+		<h1 class="flex text-5xl/tight font-medium sm:text-6xl/tight">
 			Libris
-			<div class="self-center rounded-sm px-2 uppercase">Beta</div>
+			<sup class="bg-primary-300 self-center rounded-sm px-2 text-base uppercase">Beta</sup>
 		</h1>
 	</div>
 

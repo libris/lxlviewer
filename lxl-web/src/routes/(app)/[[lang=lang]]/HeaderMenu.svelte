@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import BiGlobeAmericas from '~icons/bi/globe-americas';
+	import BiGlobe from '~icons/bi/globe';
 	import BiPerson from '~icons/bi/person-circle';
 	import BiQuestionCircle from '~icons/bi/question-circle';
 	import { Locales, defaultLocale } from '$lib/i18n/locales';
@@ -16,10 +16,12 @@
 </script>
 
 <div class="py-4 lg:py-0 [&_a]:no-underline">
-	<ol class="flex flex-col items-center gap-4 lg:flex-row">
+	<ol
+		class="text-subtle [&_svg]:text-body flex flex-col items-center gap-4 font-medium lg:flex-row [&_svg]:text-lg"
+	>
 		<li>
 			<a class="flex items-center gap-2 lg:flex-col lg:gap-1" href="help">
-				<BiQuestionCircle class="h-4 w-4" />
+				<BiQuestionCircle />
 				<span>
 					{$page.data.t('header.help')}
 				</span>
@@ -27,7 +29,7 @@
 		</li>
 		<li>
 			<a class="flex items-center gap-2 lg:flex-col lg:gap-1" href="my-pages">
-				<BiPerson class="h-4 w-4" />
+				<BiPerson />
 				<div class="text-nowrap">
 					{$page.data.t('header.myPages')}
 				</div>
@@ -41,7 +43,7 @@
 				data-sveltekit-reload
 				data-testid="current-lang"
 			>
-				<BiGlobeAmericas class="h-4 w-4" />
+				<BiGlobe />
 				<span>{otherLangLabel}</span>
 			</a>
 		</li>

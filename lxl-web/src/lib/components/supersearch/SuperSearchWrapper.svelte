@@ -11,6 +11,7 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
+	import BiSearch from '~icons/bi/search';
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import BiChevronUp from '~icons/bi/chevron-up';
 	import '$lib/styles/lxlquery.css';
@@ -169,13 +170,13 @@
 			type="button"
 			role="gridcell"
 			id={getCellId(rowIndex, 0)}
-			class="flex min-h-12 w-full items-center px-4"
+			class="hover:bg-primary/10 flex min-h-12 w-full items-center px-4"
 			class:focused-cell={isFocusedCell(rowIndex, 0)}
 			onclick={() => addQualifierKey(qualifierKey)}
 		>
-			<span class="overflow-hidden text-ellipsis whitespace-nowrap">
-				<strong>{qualifierLabel}:</strong>
-				<span class="text-sm italic">{qualifierPlaceholder}</span>
+			<span class="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+				<span class="font-medium">{qualifierLabel}:</span>
+				<span class="text-subtle italic">{qualifierPlaceholder}</span>
 			</span>
 		</button>
 	</div>
@@ -217,7 +218,7 @@
 			inputField,
 			getCellId,
 			isFocusedCell,
-			onclickSubmit,
+			// onclickSubmit,
 			onclickClear,
 			onclickClose
 		})}
@@ -228,13 +229,16 @@
 						id={getCellId(0)}
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={$page.data.t('general.close')}
-						class="min-h-12 min-w-11 rounded-none border-none sm:hidden"
+						class="p-4 sm:hidden"
 						onclick={onclickClose}
 					>
 						<BiArrowLeft />
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
+					<div class={['icon-base absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
+						<BiSearch aria-hidden="true" />
+					</div>
 					{@render inputField()}
 				</div>
 				{#if q}
@@ -242,14 +246,14 @@
 						type="reset"
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
-						class="min-h-12 rounded-none border-none"
+						class="icon-base p-4"
 						aria-label={$page.data.t('search.clearFilters')}
 						onclick={onclickClear}
 					>
 						<BiXLg />
 					</button>
 				{/if}
-				<button
+				<!-- <button
 					type="submit"
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
@@ -258,12 +262,12 @@
 					onclick={onclickSubmit}
 				>
 					{$page.data.t('search.search')}
-				</button>
+				</button> -->
 			</div>
 		{/snippet}
 		{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
 			<div role="rowgroup">
-				<div class="flex w-full items-center px-4 py-2">
+				<div class="text-2xs text-subtle flex w-full items-center px-4 py-2 font-medium">
 					{$page.data.t('search.supersearchStartHeader')}
 				</div>
 				{@render startFilterItem({
@@ -327,15 +331,15 @@
 						type="button"
 						role="gridcell"
 						id={getCellId(moreFiltersRowIndex, 0)}
-						class="flex min-h-11 w-full items-center px-4"
+						class="hover:bg-primary/10 flex min-h-11 w-full items-center px-4 text-sm"
 						class:focused-cell={isFocusedCell(moreFiltersRowIndex, 0)}
 						onclick={() => (showMoreFilters = !showMoreFilters)}
 					>
 						{#if showMoreFilters}
-							<BiChevronUp class="mr-2" />
+							<BiChevronUp class="icon-base mr-2" />
 							{$page.data.t('search.showFewer')}
 						{:else}
-							<BiChevronDown class="mr-2" />
+							<BiChevronDown class="icon-base mr-2" />
 							{$page.data.t('search.showMore')}
 						{/if}
 					</button>
@@ -359,14 +363,15 @@
 	@reference "../../../app.css";
 
 	.supersearch-input {
-		@apply flex min-h-12 w-full cursor-text overflow-hidden rounded-md focus-within:relative focus-within:outline-2;
+		@apply flex min-h-12 w-full cursor-text overflow-hidden rounded-md focus-within:relative;
 		background: var(--color-input);
+		outline: 1px solid var(--color-neutral-300);
 	}
 
 	/* dialog */
 
 	:global(.supersearch-dialog) {
-		@apply static m-0 h-full max-h-screen w-full max-w-full border-none bg-transparent p-0;
+		@apply static m-0 h-full max-h-screen w-full max-w-full bg-transparent p-0;
 	}
 
 	:global(.supersearch-dialog-wrapper) {
@@ -395,7 +400,6 @@
 
 	:global(.supersearch-dialog .supersearch-input) {
 		@apply overflow-hidden rounded-md sm:px-0;
-		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
 	}
 
 	:global(.supersearch-dialog .focused) {
@@ -432,9 +436,17 @@
 	}
 
 	:global(.supersearch-input .cm-line) {
-		@apply px-4;
+		padding-left: calc(var(--spacing, 0.25rem) * 12);
 		min-height: 28px;
 		line-height: 28px;
+		font-size: var(--text-xs);
+	}
+
+	:global(.supersearch-dialog .supersearch-input .cm-line) {
+		padding-left: 0;
+		@variant sm {
+			padding-left: calc(var(--spacing, 0.25rem) * 12);
+		}
 	}
 
 	:global(.supersearch-input .cm-focused) {
@@ -448,6 +460,6 @@
 	}
 
 	:global(.codemirror-container .cm-placeholder) {
-		color: #757575;
+		color: var(--color-placeholder);
 	}
 </style>

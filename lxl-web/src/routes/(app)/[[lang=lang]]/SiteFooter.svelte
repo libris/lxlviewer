@@ -4,8 +4,8 @@
 	import * as CookieConsent from 'vanilla-cookieconsent';
 </script>
 
-<footer class="mt-auto flex flex-col justify-between gap-8 p-8 sm:flex-row lg:p-16">
-	<div class="flex flex-col gap-8 sm:flex-row sm:gap-16">
+<footer class="mt-auto flex flex-col justify-between gap-8 bg-neutral-100 p-8 sm:flex-row lg:p-10">
+	<div class="[&_a]:link-subtle flex flex-col gap-8 sm:flex-row sm:gap-16 [&_p]:font-medium">
 		<nav class="flex flex-col gap-4" aria-labelledby="nav-info">
 			<p id="nav-info">
 				{$page.data.t('footer.information')}
@@ -18,7 +18,7 @@
 					>
 				</li>
 				<li>
-					<button class="underline" on:click={CookieConsent.showPreferences}
+					<button class="link-subtle" on:click={CookieConsent.showPreferences}
 						>{$page.data.t('footer.cookies')}</button
 					>
 				</li>
@@ -39,6 +39,6 @@
 		</nav>
 	</div>
 	<div class="flex items-end">
-		<img class="h-20 w-auto md:h-24 lg:h-28" alt={$page.data.t('footer.logo')} src={KbLogo} />
+		<img class="h-20 w-auto md:h-20 lg:h-24" alt={$page.data.t('footer.logo')} src={KbLogo} />
 	</div>
 </footer>

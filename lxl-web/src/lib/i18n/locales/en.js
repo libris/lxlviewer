@@ -7,7 +7,7 @@ export default {
 		help: 'Help',
 		myPages: 'My pages',
 		changeLang: 'På svenska',
-		searchPlaceholder: 'Title, author, subject etc.',
+		searchPlaceholder: 'Search for title, author, library, subject...',
 		openMenu: 'Open main menu'
 	},
 	myPages: {

@@ -6,7 +6,7 @@ export default {
 		help: 'Hjälp',
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
-		searchPlaceholder: 'Titel, författare, ämne med mera',
+		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
 		openMenu: 'Öppna huvudmeny'
 	},
 	myPages: {

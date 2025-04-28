@@ -46,6 +46,12 @@
 }
 
 @theme inline {
+	/* TODO: remove the old breakpoints (use tw defaults) when reworking layout */
+	--breakpoint-md: 1024px;
+	--breakpoint-lg: 1440px;
+	--breakpoint-xl: 1760px;
+	/* ---- */
+
 	--font-sans: 'Inter', var(--font-fallback);
 	--font-body: var(--font-sans);
 	--font-heading: 'Sentinel', var(--font-fallback);
@@ -129,6 +135,8 @@
 	--color-error: var(--color-severe);
 	--color-app-header: var(--color-primary-100);
 	--color-input: var(--color-page);
+
+	--color-placeholder: var(--color-neutral-500);
 }
 
 @layer base {
@@ -168,6 +176,11 @@
 	}
 }
 
+/* ??? */
+@utility icon-base {
+	color: oklch(0.51 0 0);
+}
+
 /* OLD THEME */
 
 /* custom bg colors  */
@@ -190,16 +203,12 @@
 	@apply md:grid-cols-find flex flex-col gap-4 md:grid md:gap-8;
 }
 
-@utility header-layout-md {
-	grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
-}
-
 @utility header-layout {
 	grid-template-columns: 70px minmax(0, 8fr) 1fr;
-	@apply md:header-layout-md grid gap-x-8 px-4 sm:px-6 md:px-2;
+	@apply grid gap-x-8 px-4 sm:px-6;
 
-	/* why is this not working?? */
-	/* @media screen and (min-width: var(--breakpoint-md)) {
+	@variant md {
 		grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
-	} */
+		padding-inline: calc(var(--spacing) * 2);
+	}
 }
