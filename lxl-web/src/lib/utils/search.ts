@@ -116,7 +116,7 @@ export function displayMappings(
 						? translate(`facet.${m.alias}`)
 						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) ||
 							m.property?.[JsonLd.ID] ||
-							'No label', // lensandformat?
+							m._key,
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
