@@ -121,7 +121,7 @@
 					<IconSliders width={20} height={20} />
 					{$page.data.t('search.filters')}
 					{#if filterCount}
-						<span class="badge-accent">
+						<span class="badge badge-accent">
 							{filterCount}
 						</span>
 					{/if}

@@ -797,7 +797,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Collection"],
 			"fresnel:propertyFormatDomain": ["sigel"],
-			"fresnel:propertyStyle": ["text-sm"],
+			"fresnel:propertyStyle": ["text-subtle"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",

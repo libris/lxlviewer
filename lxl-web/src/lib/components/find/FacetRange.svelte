@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import type { FacetSearch } from '$lib/types/search';
+	import BiSearch from '~icons/bi/search';
 
 	export let search: FacetSearch;
 
@@ -28,10 +29,15 @@
 	}
 </script>
 
-<form class="my-4 grid grid-cols-3 items-end gap-2" action="" on:submit={handleSubmit}>
+<form
+	class="[&_label]:text-subtle mb-2 grid grid-cols-3 items-end gap-2 rounded-sm border border-neutral-200 p-2"
+	action=""
+	on:submit={handleSubmit}
+>
 	<div class="flex flex-col gap-1">
 		<label for="facet-range-from">{$page.data.t('general.from')}</label>
 		<input
+			class="h-8 rounded-sm border border-neutral-300 px-2 py-1"
 			id="facet-range-from"
 			type="number"
 			min="1000"
@@ -44,6 +50,7 @@
 	<div class="flex flex-col gap-1">
 		<label for="facet-range-to">{$page.data.t('general.to')}</label>
 		<input
+			class="h-8 rounded-sm border border-neutral-300 px-2 py-1"
 			id="facet-range-to"
 			type="number"
 			min="1000"
@@ -53,7 +60,14 @@
 			bind:value={rangeTo}
 		/>
 	</div>
-	<button disabled={!rangeFrom && !rangeTo} type="submit">{$page.data.t('general.apply')}</button>
+	<button
+		class="btn btn-primary h-8 w-8"
+		disabled={!rangeFrom && !rangeTo}
+		type="submit"
+		aria-label={$page.data.t('general.apply')}
+	>
+		<BiSearch />
+	</button>
 
 	{#each searchParams as [name, value]}
 		{#if name !== '_q'}

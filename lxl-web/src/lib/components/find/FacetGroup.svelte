@@ -100,27 +100,29 @@
 </script>
 
 <li
-	class="border-neutral border-b first:border-t"
 	class:hidden={searchPhrase && !hasHits}
 	class:has-hits={hasHits}
 	data-dimension={group.dimension}
 >
 	<details class="relative" open>
 		<summary
-			class="flex min-h-11 w-full cursor-pointer items-center gap-2 font-bold"
+			class="flex min-h-9 w-full cursor-pointer items-center gap-2 text-xs font-medium"
 			data-testid="facet-toggle"
 		>
-			<span class="arrow transition-transform">
+			<span class="arrow text-subtle transition-transform">
 				<BiChevronRight />
 			</span>
 			<span class="flex-1 whitespace-nowrap">{group.label}</span>
 		</summary>
 		<!-- sorting -->
-		<div class="facet-sort absolute top-2 right-0 hidden" data-testid="facet-sort">
+		<div
+			class="facet-sort btn btn-primary absolute top-0 right-0 h-8 w-8 border-0 p-0"
+			data-testid="facet-sort"
+		>
 			<select
 				bind:value={currentSort}
 				onchange={saveUserSort}
-				class="appearance-none px-6 py-1"
+				class="h-8 w-8 appearance-none opacity-0"
 				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
 			>
 				{#each sortOptions as option (option.value)}
@@ -128,22 +130,21 @@
 					>
 				{/each}
 			</select>
-			<BiSortDown class="pointer-events-none absolute top-0 m-1.5" />
-			<BiChevronRight class="pointer-events-none absolute top-0 right-0 m-1.5 w-3 rotate-90" />
+			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
 		</div>
-		<div class="text-md mb-4 md:text-sm">
+		<div class="text-2xs">
 			{#if group.search && !(searchPhrase && hasHits)}
 				<!-- facet range inputs; hide in filter search results -->
 				<FacetRange search={group.search} />
 			{/if}
 			<ol
-				class="flex max-h-72 flex-col gap-1 overflow-x-clip overflow-y-auto pr-0.5 pl-6 sm:max-h-[437px]"
+				class="ml-1.5 flex max-h-72 flex-col overflow-x-clip overflow-y-auto border-l border-l-neutral-200 pr-0.5 pl-1.5 sm:max-h-[437px]"
 				data-testid="facet-list"
 			>
 				{#each shownItems as facet (facet.view['@id'])}
 					<li>
 						<a
-							class="facet-link flex items-end justify-between gap-2 no-underline"
+							class="facet-link hover:bg-primary-50 flex items-end justify-between gap-2 p-0.5 pl-2 font-normal no-underline"
 							href={facet.view['@id']}
 						>
 							<span class="overflow-hidden text-ellipsis whitespace-nowrap" title={facet.str}>
@@ -152,24 +153,24 @@
 									<span class="sr-only"
 										>{facet.selected ? page.data.t('search.activeFilter') : ''}</span
 									>
-									<div class="mr-1 inline-block h-[13px] w-[13px]" aria-hidden="true">
+									<div class="mr-1 inline-block text-sm" aria-hidden="true">
 										{#if facet.selected}
-											<BiCheckSquareFill height="13px" />
+											<BiCheckSquareFill class="text-accent" />
 										{:else}
-											<BiSquare height="13px" />
+											<BiSquare class="text-subtle" />
 										{/if}
 									</div>
 								{/if}
 								<span>
 									<DecoratedData data={facet.object} showLabels={ShowLabelsOptions.Never} />
 									{#if facet.discriminator}
-										<span class="text-sm">({facet.discriminator})</span>
+										<span class="text-subtle">({facet.discriminator})</span>
 									{/if}
 								</span>
 							</span>
 							{#if facet.totalItems > 0}
 								<span
-									class="facet-total mb-px rounded-sm px-1 text-sm md:text-xs"
+									class="badge badge-primary"
 									aria-label="{facet.totalItems} {page.data.t('search.hits')}"
 									>{facet.totalItems.toLocaleString(locale)}</span
 								>
@@ -178,34 +179,32 @@
 					</li>
 				{/each}
 			</ol>
-			<div class="flex">
+			<div class="text-2xs flex items-center justify-between">
 				<!-- 'show more' btn -->
 				{#if canShowMoreItems || canShowFewerItems}
 					<button
-						class="mt-4 ml-6 underline"
+						class="mt-2 ml-5"
 						onclick={() =>
 							canShowMoreItems
 								? (defaultItemsShown = totalItems)
 								: (defaultItemsShown = DEFAULT_FACETS_SHOWN)}
 					>
-						{canShowMoreItems ? page.data.t('search.showMore') : page.data.t('search.showFewer')}
+						{canShowMoreItems ? page.data.t('search.showMore') : page.data.t('search.showFewer')}...
 					</button>
 				{/if}
 				<!-- limit reached info -->
 				{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
-					<div class="mt-4 ml-auto">
-						<button
-							class="text-error flex items-center gap-1 rounded-sm px-2 py-1 text-xs"
-							use:popover={{
-								title: page.data.t('facet.limitText'),
-								placeAsSibling: true
-							}}
-						>
-							<span>{page.data.t('facet.limitInfo')}</span>
-							<span class="sr-only">{page.data.t('facet.limitText')}</span>
-							<BiInfo aria-hidden="true" />
-						</button>
-					</div>
+					<button
+						class="text-error bg-severe-50 mt-2 flex items-center gap-1 rounded-sm px-2 py-1"
+						use:popover={{
+							title: page.data.t('facet.limitText'),
+							placeAsSibling: true
+						}}
+					>
+						<span>{page.data.t('facet.limitInfo')}</span>
+						<span class="sr-only">{page.data.t('facet.limitText')}</span>
+						<BiInfo aria-hidden="true" />
+					</button>
 				{/if}
 			</div>
 		</div>
@@ -228,11 +227,4 @@
 	li[data-dimension='boolFilters'] details[open] .facet-sort {
 		@apply hidden;
 	}
-
-	/* .facet-link:hover,
-	.facet-link:focus {
-		& .facet-total {
-			@apply bg-primary/8;
-		}
-	} */
 </style>

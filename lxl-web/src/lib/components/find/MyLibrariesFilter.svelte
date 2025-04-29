@@ -35,16 +35,13 @@
 	<div class="flex items-center gap-2">
 		<span class="sr-only">{isFilterActive ? page.data.t('search.activeFilter') : ''}</span>
 		<div
-			class={[
-				'text-subtle flex h-[13px] w-[13px] rounded-sm',
-				!myLibrariesValues.length && 'text-subtle/50'
-			]}
+			class={['text-subtle flex rounded-sm text-sm', !myLibrariesValues.length && 'text-subtle/50']}
 			aria-hidden="true"
 		>
 			{#if isFilterActive}
-				<BiCheckSquareFill height="13px" />
+				<BiCheckSquareFill class="text-accent" />
 			{:else}
-				<BiSquare height="13px" />
+				<BiSquare />
 			{/if}
 		</div>
 		<span class="font-medium">{page.data.t('search.limitToLibraries')}</span>
