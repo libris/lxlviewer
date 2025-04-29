@@ -236,7 +236,7 @@
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
-					<div class={['icon-base absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
+					<div class={['text-subtle absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
 						<BiSearch aria-hidden="true" />
 					</div>
 					{@render inputField()}
@@ -246,7 +246,7 @@
 						type="reset"
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
-						class="icon-base p-4"
+						class="text-subtle p-4"
 						aria-label={$page.data.t('search.clearFilters')}
 						onclick={onclickClear}
 					>
@@ -336,10 +336,10 @@
 						onclick={() => (showMoreFilters = !showMoreFilters)}
 					>
 						{#if showMoreFilters}
-							<BiChevronUp class="icon-base mr-2" />
+							<BiChevronUp class="text-subtle mr-2" />
 							{$page.data.t('search.showFewer')}
 						{:else}
-							<BiChevronDown class="icon-base mr-2" />
+							<BiChevronDown class="text-subtle mr-2" />
 							{$page.data.t('search.showMore')}
 						{/if}
 					</button>
@@ -392,6 +392,7 @@
 
 	:global(.supersearch-dialog .supersearch-combobox) {
 		@apply sticky top-0 z-20 items-stretch px-4 pt-4 pb-2;
+		background-color: var(--color-page);
 	}
 
 	:global(.supersearch-suggestions) {
@@ -403,9 +404,11 @@
 	}
 
 	:global(.supersearch-dialog .focused) {
+		background-color: --alpha(var(--color-primary) / 10%);
 	}
 
 	:global(.focused-cell) {
+		background-color: --alpha(var(--color-primary) / 5%);
 	}
 
 	/* :global(.button-primary.focused-cell) {

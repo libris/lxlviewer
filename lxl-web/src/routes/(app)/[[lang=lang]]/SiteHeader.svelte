@@ -25,7 +25,7 @@
 			<a href={page.data.base} class="flex flex-col no-underline md:flex-row">
 				<span class="text-2xl font-medium md:text-3xl"> Libris</span>
 				<div
-					class="bg-primary-300 top-0 -rotate-6 self-baseline rounded-sm px-2 text-sm uppercase md:rotate-0"
+					class="bg-primary-200 top-0 -rotate-6 self-baseline rounded-sm px-2 text-sm uppercase md:rotate-0"
 				>
 					Beta
 				</div>
