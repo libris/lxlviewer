@@ -7,6 +7,7 @@
 .lxl-qualifier-key,
 .lxl-filter-alias {
 	font-weight: var(--font-weight-medium);
+	font-size: var(--text-2xs);
 	padding-left: calc(var(--spacing) * 1.5);
 	border-top-left-radius: calc(var(--spacing) * 1);
 	border-bottom-left-radius: calc(var(--spacing) * 1);
