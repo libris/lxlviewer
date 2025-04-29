@@ -611,7 +611,7 @@
 			"@id": "GenreForm-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["GenreForm"],
-			"fresnel:resourceStyle": ["link", "pill"]
+			"fresnel:resourceStyle": ["_link", "pill"]
 		},
 		"GenreForm-relations-format": {
 			"@id": "GenreForm-relations-format",
@@ -633,25 +633,25 @@
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Subject"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["_link"]
 		},
 		"Subdivision-format": {
 			"@id": "Subdivision-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Subdivision"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["_link"]
 		},
 		"Instance-format": {
 			"@id": "Instance-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Instance"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["_link"]
 		},
 		"Agent-format": {
 			"@id": "Agent-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["_link"]
 		},
 		"seeAlso-format": {
 			"@id": "seeAlso-format",
@@ -667,7 +667,7 @@
 			"@id": "Work-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["_link"]
 		},
 		"Agent-hasVariant-format": {
 			"@id": "Agent-hasVariant-format",
@@ -730,7 +730,7 @@
 			"@id": "UsageAndAccessPolicy-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["UsageAndAccessPolicy"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["_link"]
 		},
 		"Transliteration-format": {
 			"@id": "Transliteration-format",

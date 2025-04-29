@@ -45,7 +45,7 @@
 				class="bg-input h-8 w-full rounded-sm border border-neutral-300 pl-8 text-xs"
 				type="search"
 			/>
-			<BiSearch class="text-subtle absolute top-0 left-2.5 h-8 text-sm" />
+			<BiSearch class="text-subtle absolute top-0 left-2.5 h-8" />
 			{#if page.route.id === '/(app)/[[lang=lang]]/find'}
 				<MyLibrariesFilter {facets} />
 			{/if}

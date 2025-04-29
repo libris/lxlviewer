@@ -157,6 +157,27 @@
 }
 
 @layer components {
+	.link,
+	a._link {
+		color: var(--color-link);
+		text-decoration: underline;
+		text-decoration-style: dotted;
+
+		&:hover {
+			text-decoration-style: solid;
+		}
+	}
+
+	.link-subtle {
+		color: var(--color-body);
+		text-decoration: underline;
+		text-decoration-style: dotted;
+
+		&:hover {
+			text-decoration-style: solid;
+		}
+	}
+
 	.btn {
 		display: flex;
 		justify-content: center;
@@ -216,26 +237,6 @@
 	.badge-accent {
 		color: var(--color-page);
 		background-color: var(--color-accent);
-	}
-}
-
-@utility link {
-	color: var(--color-link);
-	text-decoration: underline;
-	text-decoration-style: dotted;
-
-	&:hover {
-		text-decoration-style: solid;
-	}
-}
-
-@utility link-subtle {
-	color: var(--color-body);
-	text-decoration: underline;
-	text-decoration-style: dotted;
-
-	&:hover {
-		text-decoration-style: solid;
 	}
 }
 

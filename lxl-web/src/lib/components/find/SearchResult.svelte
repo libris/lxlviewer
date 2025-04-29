@@ -118,7 +118,7 @@
 					aria-label={$page.data.t('search.filters')}
 					on:click|preventDefault={toggleFiltersModal}
 				>
-					<IconSliders width={20} height={20} />
+					<IconSliders class="text-base" />
 					{$page.data.t('search.filters')}
 					{#if filterCount}
 						<span class="badge badge-accent">
@@ -181,7 +181,7 @@
 							{$page.data.t('sort.sort')}
 						</label>
 						<div class="relative">
-							<span class="text-subtle pointer-events-none absolute top-0 left-1.5 py-2.5 text-xs">
+							<span class="text-subtle pointer-events-none absolute top-0 p-2">
 								<BiSortDown aria-hidden="true" />
 							</span>
 							<select
@@ -261,7 +261,7 @@
 		grid-area: sort-select;
 
 		& select {
-			@apply appearance-none px-6 text-right;
+			@apply appearance-none px-8 text-right;
 			/* Safari text-align fix */
 			text-align-last: right;
 		}
