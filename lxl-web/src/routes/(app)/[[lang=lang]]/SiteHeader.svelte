@@ -23,7 +23,7 @@
 	<nav class="header-nav header-layout min-h-20 items-center py-0">
 		<div class="home md:pl-4">
 			<a href={page.data.base} class="flex flex-col no-underline md:flex-row">
-				<span class="text-2xl font-medium md:text-3xl"> Libris</span>
+				<span class="text-2xl font-[600] md:text-3xl"> Libris</span>
 				<div
 					class="bg-primary-200 top-0 -rotate-6 self-baseline rounded-sm px-2 text-sm uppercase md:rotate-0"
 				>
@@ -44,7 +44,7 @@
 			<div class="lg:hidden">
 				<a
 					aria-label={page.data.t('header.openMenu')}
-					class="h-11 w-11 p-0!"
+					class="text-subtle flex items-center p-4"
 					href={`${page.url.pathname}?${page.url.search}#header-menu`}
 					on:click|preventDefault={toggleHeaderMenu}
 				>

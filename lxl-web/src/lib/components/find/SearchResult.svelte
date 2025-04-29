@@ -9,6 +9,7 @@
 	import SearchRelated from './SearchRelated.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiChevronDown from '~icons/bi/chevron-down';
+	import BiSortDown from '~icons/bi/sort-down';
 	import type { SearchResult, DisplayMapping } from '$lib/types/search';
 
 	let showFiltersModal = false;
@@ -92,7 +93,7 @@
 			<SearchMapping mapping={searchResult.mapping} />
 		</nav>
 	{/if}
-	<div class="find-layout relative gap-y-4 sm:px-6 md:p-4">
+	<div class="find-layout relative gap-y-4 p-4 sm:px-6">
 		{#if showFiltersModal}
 			<Modal position="left" close={toggleFiltersModal}>
 				<span slot="title">
@@ -108,30 +109,28 @@
 
 		<div class="results">
 			<div
-				class="toolbar flex min-h-14 items-center justify-between p-4 sm:px-6 md:min-h-fit md:p-0 md:pb-4"
+				class="toolbar flex items-center justify-between pb-4"
 				class:has-search={$page.params.fnurgel}
 			>
 				<a
 					href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
-					class="filter-modal-toggle md:hidden"
+					class="filter-modal-toggle btn-primary md:hidden"
 					aria-label={$page.data.t('search.filters')}
 					on:click|preventDefault={toggleFiltersModal}
 				>
 					<IconSliders width={20} height={20} />
 					{$page.data.t('search.filters')}
 					{#if filterCount}
-						<span
-							class="flex h-5 w-5 items-center justify-center rounded-full text-xs leading-none font-bold"
-						>
+						<span class="badge-accent">
 							{filterCount}
 						</span>
 					{/if}
 				</a>
-				<span class="hits pt-4 md:pt-0" role="status" data-testid="result-info">
+				<span class="hits text-2xs pt-4 md:pt-0" role="status" data-testid="result-info">
 					{#if numHits && numHits > 0}
 						<span class="hits-count">
 							{#if numHits > searchResult.itemsPerPage}
-								<span>
+								<span class="font-medium">
 									{(searchResult.itemOffset + 1).toLocaleString($page.data.locale)}
 									-
 									{Math.min(
@@ -141,7 +140,7 @@
 								</span>
 								{$page.data.t('search.hitsOf')}
 							{/if}
-							<span>
+							<span class="font-medium">
 								{numHits.toLocaleString($page.data.locale)}
 							</span>
 							{#if $page.data.instances}
@@ -156,7 +155,10 @@
 						<span class="suggest">
 							{#each searchResult._spell as suggestion (suggestion.label)}
 								{$page.data.t('search.didYouMean')}
-								<a href={suggestion.view['@id'].replace('_spell=true', '_spell=false')}>
+								<a
+									href={suggestion.view['@id'].replace('_spell=true', '_spell=false')}
+									class="link-subtle"
+								>
 									<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 									{@html suggestion.labelHtml}</a
 								>?
@@ -175,18 +177,26 @@
 						class="sort-select flex flex-col items-end justify-self-end"
 						data-testid="sort-select"
 					>
-						<label class="pr-6" for="search-sort">
+						<label class="sr-only" for="search-sort">
 							{$page.data.t('sort.sort')}
 						</label>
 						<div class="relative">
-							<select id="search-sort" form="main-search" on:change={handleSortChange}>
+							<span class="text-subtle pointer-events-none absolute top-0 left-1.5 py-2.5 text-xs">
+								<BiSortDown aria-hidden="true" />
+							</span>
+							<select
+								id="search-sort"
+								class="btn-primary"
+								form="main-search"
+								on:change={handleSortChange}
+							>
 								{#each sortOptions as option}
 									<option value={option.value} selected={option.value === sortOrder}
 										>{option.label}</option
 									>
 								{/each}
 							</select>
-							<span class="pointer-events-none absolute top-[5px] right-0">
+							<span class="text-subtle pointer-events-none absolute top-0 right-1.5 py-2.5 text-xs">
 								<BiChevronDown aria-hidden="true" />
 							</span>
 						</div>
@@ -230,6 +240,10 @@
 		grid-template-areas: 'filters results';
 	}
 
+	.filter-modal-toggle {
+		grid-area: filter-modal-toggle;
+	}
+
 	.filters {
 		grid-area: filters;
 	}
@@ -247,7 +261,7 @@
 		grid-area: sort-select;
 
 		& select {
-			@apply appearance-none pr-6 text-right;
+			@apply appearance-none px-6 text-right;
 			/* Safari text-align fix */
 			text-align-last: right;
 		}
@@ -273,10 +287,6 @@
 	@variant md {
 		.filters {
 			display: block;
-		}
-
-		.filter-modal-toggle {
-			display: none;
 		}
 
 		.toolbar {
