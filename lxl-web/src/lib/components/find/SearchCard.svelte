@@ -28,7 +28,7 @@
 <div class="search-card-container">
 	<article class="search-card" data-testid="search-card">
 		<a
-			class="card-link"
+			class="card-link absolute z-0 h-full w-full cursor-pointer"
 			href={id}
 			aria-labelledby={titleId}
 			aria-describedby={`${bodyId} ${footerId}`}
@@ -48,7 +48,7 @@
 					/>
 					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 						<div class="absolute -top-4 -left-4">
-							<div class="rounded-md p-1.5">
+							<div class="bg-page rounded-md p-1.5">
 								<svelte:component this={getTypeIcon(item['@type'])} class="h-6 w-6" />
 							</div>
 						</div>
@@ -63,7 +63,10 @@
 							class="object-contain object-top"
 						/>
 						{#if getTypeIcon(item['@type'])}
-							<svelte:component this={getTypeIcon(item['@type'])} class="absolute text-lg" />
+							<svelte:component
+								this={getTypeIcon(item['@type'])}
+								class="text-subtle absolute text-lg"
+							/>
 						{/if}
 					</div>
 				{/if}
@@ -72,7 +75,7 @@
 		<div class="card-content">
 			<header class="card-header" id={titleId}>
 				<hgroup>
-					<h2 class="card-header-title">
+					<h2 class="card-header-title text-base font-medium">
 						<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 					</h2>
 				</hgroup>
@@ -87,7 +90,7 @@
 				{/if}
 			</header>
 			{#if item[LxlLens.CardBody]?._display}
-				<div class="card-body" id={bodyId}>
+				<div class="card-body mt-1 text-xs" id={bodyId}>
 					{#each item[LxlLens.CardBody]?._display as obj, index (index)}
 						<div>
 							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
@@ -95,8 +98,8 @@
 					{/each}
 				</div>
 			{/if}
-			<footer class="card-footer" id={footerId}>
-				<span class="font-bold">
+			<footer class="card-footer mt-1" id={footerId}>
+				<span class="font-medium">
 					{item.typeStr}
 				</span>
 				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
@@ -176,31 +179,15 @@
 	}
 
 	.search-card {
-		@apply border-neutral relative grid w-full gap-x-4 rounded-md border-b px-4 pt-3 pb-3 font-normal transition-shadow;
+		@apply border-neutral relative grid w-full gap-x-4 border-t px-4 py-3 font-normal transition-shadow;
 
 		grid-template-areas: 'image content debug libraries';
 		grid-template-columns: 64px 1fr auto auto;
 
-		&:hover,
-		&:focus-within {
-			@apply shadow-lg;
-
-			& .card-header-title {
-			}
-		}
-
 		@container (min-width: 768px) {
-			@apply gap-x-6 px-6 pt-4 pb-6;
+			@apply gap-x-6 px-6 py-4;
 			grid-template-columns: 72px 1fr;
 		}
-	}
-
-	.card-link {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		z-index: 0;
-		cursor: pointer;
 	}
 
 	:global(a):not(.card-link),
@@ -226,47 +213,27 @@
 		grid-area: libraries;
 	}
 
-	.card-body {
-		@apply text-sm;
-
-		@container (min-width: 768px) {
-			@apply mt-2 text-base;
-		}
-	}
-
 	.card-footer {
-		@apply mt-1;
-
-		@container (min-width: 768px) {
-			@apply mt-3;
-		}
-
 		/* hide dangling divider • */
 		& .divider {
-			@apply hidden;
+			display: none;
 		}
 		& :global(.divider:has(+ span)) {
-			@apply inline;
-		}
-	}
-
-	.card-header-title {
-		@container (min-width: 768px) {
+			display: inline;
 		}
 	}
 
 	.card-header-extra,
 	.card-footer,
 	.card-header :global([data-property='_script']) {
-		@apply text-xs;
-		@container (min-width: 768px) {
-			@apply text-sm;
-		}
+		font-size: var(--text-2xs);
+		color: var(--color-subtle);
+		font-weight: var(--font-weight-normal);
 	}
 
 	/** TODO: Set transliteration styling via display-web.json? */
 	:global(.card-header [data-property='_script']) {
-		@apply italic;
+		font-style: italic;
 		display: block;
 	}
 </style>

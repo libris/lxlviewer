@@ -116,13 +116,13 @@
 		</summary>
 		<!-- sorting -->
 		<div
-			class="facet-sort btn btn-primary absolute top-0 right-0 h-8 w-8 border-0 p-0"
+			class="facet-sort btn btn-primary absolute top-0 right-0 m-1 h-6 w-6 border-0 p-0"
 			data-testid="facet-sort"
 		>
 			<select
 				bind:value={currentSort}
 				onchange={saveUserSort}
-				class="h-8 w-8 appearance-none opacity-0"
+				class="h-full w-full appearance-none text-transparent"
 				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
 			>
 				{#each sortOptions as option (option.value)}
@@ -130,7 +130,7 @@
 					>
 				{/each}
 			</select>
-			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
+			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-1 text-base" />
 		</div>
 		<div class="text-2xs">
 			{#if group.search && !(searchPhrase && hasHits)}
@@ -138,13 +138,13 @@
 				<FacetRange search={group.search} />
 			{/if}
 			<ol
-				class="ml-1.5 flex max-h-72 flex-col overflow-x-clip overflow-y-auto border-l border-l-neutral-200 pr-0.5 pl-1.5 sm:max-h-[437px]"
+				class="border-l-neutral ml-1.5 flex max-h-72 flex-col overflow-x-clip overflow-y-auto border-l pr-0.5 pl-1.5 sm:max-h-[437px]"
 				data-testid="facet-list"
 			>
 				{#each shownItems as facet (facet.view['@id'])}
 					<li>
 						<a
-							class="facet-link hover:bg-primary-50 flex items-end justify-between gap-2 p-0.5 pl-2 font-normal no-underline"
+							class="facet-link hover:bg-primary-50 flex items-end justify-between gap-2 p-1 pl-2 font-normal no-underline"
 							href={facet.view['@id']}
 						>
 							<span class="overflow-hidden text-ellipsis whitespace-nowrap" title={facet.str}>
@@ -153,7 +153,7 @@
 									<span class="sr-only"
 										>{facet.selected ? page.data.t('search.activeFilter') : ''}</span
 									>
-									<div class="mr-1 inline-block text-sm" aria-hidden="true">
+									<div class="mr-1 inline-block text-xs" aria-hidden="true">
 										{#if facet.selected}
 											<BiCheckSquareFill class="text-accent" />
 										{:else}

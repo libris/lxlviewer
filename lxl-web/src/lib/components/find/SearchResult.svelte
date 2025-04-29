@@ -109,7 +109,7 @@
 
 		<div class="results">
 			<div
-				class="toolbar flex items-center justify-between pb-4"
+				class="toolbar flex items-center justify-between pb-2"
 				class:has-search={$page.params.fnurgel}
 			>
 				<a

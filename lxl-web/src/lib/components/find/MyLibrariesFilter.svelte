@@ -32,10 +32,10 @@
 </script>
 
 {#snippet filterContent()}
-	<div class="flex items-center gap-2">
+	<div class="flex items-baseline gap-2 text-xs">
 		<span class="sr-only">{isFilterActive ? page.data.t('search.activeFilter') : ''}</span>
 		<div
-			class={['text-subtle flex rounded-sm text-sm', !myLibrariesValues.length && 'text-subtle/50']}
+			class={['text-subtle bg-page flex rounded-sm', !myLibrariesValues.length && 'text-subtle/50']}
 			aria-hidden="true"
 		>
 			{#if isFilterActive}
@@ -44,11 +44,13 @@
 				<BiSquare />
 			{/if}
 		</div>
-		<span class="font-medium">{page.data.t('search.limitToLibraries')}</span>
+		<span>{page.data.t('search.limitToLibraries')}</span>
 	</div>
 {/snippet}
 
-<div class="text-2xs flex w-full gap-2 rounded-sm bg-neutral-100 p-3 md:flex-col md:gap-1">
+<div
+	class="text-2xs bg-accent/5 border-neutral flex w-full gap-2 rounded-sm border p-3 md:flex-col md:gap-1"
+>
 	{#if myLibrariesValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>
 			{@render filterContent()}

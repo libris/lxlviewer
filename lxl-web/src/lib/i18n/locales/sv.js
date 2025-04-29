@@ -173,7 +173,7 @@ export default {
 		apply: 'Tillämpa',
 		from: 'Från',
 		to: 'Till',
-		year: 'Årtal',
+		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren'
 	},

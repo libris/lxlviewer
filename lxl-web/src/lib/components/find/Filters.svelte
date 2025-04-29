@@ -42,10 +42,10 @@
 				bind:value={searchPhrase}
 				placeholder={page.data.t('search.findFilter')}
 				aria-label={page.data.t('search.findFilter')}
-				class="bg-input h-10 w-full rounded-sm border border-neutral-200 pl-8 text-xs"
+				class="bg-input h-8 w-full rounded-sm border border-neutral-300 pl-8 text-xs"
 				type="search"
 			/>
-			<BiSearch class="text-subtle absolute top-0 left-2.5 h-10 text-sm" />
+			<BiSearch class="text-subtle absolute top-0 left-2.5 h-8 text-sm" />
 			{#if page.route.id === '/(app)/[[lang=lang]]/find'}
 				<MyLibrariesFilter {facets} />
 			{/if}

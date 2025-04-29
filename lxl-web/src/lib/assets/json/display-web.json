@@ -510,7 +510,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["subtitle", "titleRemainder"],
-			"fresnel:propertyStyle": ["font-normal"],
+			"fresnel:propertyStyle": [],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " : ",
 				"fresnel:contentFirst": ""
@@ -531,7 +531,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Contribution"],
 			"fresnel:propertyFormatDomain": ["role"],
-			"fresnel:propertyStyle": ["text-sm"],
+			"fresnel:propertyStyle": ["text-3xs text-subtle"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
@@ -683,7 +683,7 @@
 			"@id": "Role-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Role"],
-			"fresnel:resourceStyle": ["definition"]
+			"fresnel:resourceStyle": []
 		},
 		"role-format": {
 			"@id": "role-format",

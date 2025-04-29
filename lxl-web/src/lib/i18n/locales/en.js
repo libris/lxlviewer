@@ -174,7 +174,7 @@ export default {
 		apply: 'Apply',
 		from: 'From',
 		to: 'To',
-		year: 'Year',
+		year: 'year',
 		usagePolicy: 'License terms',
 		cropped: 'Cropped'
 	},

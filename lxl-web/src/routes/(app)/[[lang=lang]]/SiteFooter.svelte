@@ -5,8 +5,8 @@
 </script>
 
 <footer class="mt-auto flex flex-col justify-between gap-8 bg-neutral-100 p-8 sm:flex-row lg:p-10">
-	<div class="[&_a]:link-subtle flex flex-col gap-8 sm:flex-row sm:gap-16 [&_p]:font-medium">
-		<nav class="flex flex-col gap-4" aria-labelledby="nav-info">
+	<div class="flex flex-col gap-4 sm:flex-row sm:gap-16 [&_li>*]:text-sm [&_p]:font-medium">
+		<nav class="flex flex-col gap-2" aria-labelledby="nav-info">
 			<p id="nav-info">
 				{$page.data.t('footer.information')}
 			</p>
@@ -18,13 +18,11 @@
 					>
 				</li>
 				<li>
-					<button class="link-subtle" on:click={CookieConsent.showPreferences}
-						>{$page.data.t('footer.cookies')}</button
-					>
+					<button on:click={CookieConsent.showPreferences}>{$page.data.t('footer.cookies')}</button>
 				</li>
 			</ul>
 		</nav>
-		<nav class="flex flex-col gap-4" aria-labelledby="nav-contact">
+		<nav class="flex flex-col gap-2" aria-labelledby="nav-contact">
 			<p id="nav-contact">{$page.data.t('footer.contact')}</p>
 			<ul>
 				<li>

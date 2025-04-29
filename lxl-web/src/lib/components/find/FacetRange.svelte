@@ -30,33 +30,33 @@
 </script>
 
 <form
-	class="[&_label]:text-subtle mb-2 grid grid-cols-3 items-end gap-2 rounded-sm border border-neutral-200 p-2"
+	class="[&_label]:text-subtle border-neutral bg-accent/5 mb-2 grid grid-cols-[1fr_1fr_auto] items-end gap-2 rounded-sm border p-2"
 	action=""
 	on:submit={handleSubmit}
 >
 	<div class="flex flex-col gap-1">
-		<label for="facet-range-from">{$page.data.t('general.from')}</label>
+		<label class="sr-only" for="facet-range-from">{$page.data.t('general.from')}</label>
 		<input
-			class="h-8 rounded-sm border border-neutral-300 px-2 py-1"
+			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1"
 			id="facet-range-from"
 			type="number"
 			min="1000"
 			max="2099"
 			step="1"
-			placeholder={$page.data.t('general.year')}
+			placeholder={`${$page.data.t('general.from')} (${$page.data.t('general.year')})`}
 			bind:value={rangeFrom}
 		/>
 	</div>
 	<div class="flex flex-col gap-1">
-		<label for="facet-range-to">{$page.data.t('general.to')}</label>
+		<label class="sr-only" for="facet-range-to">{$page.data.t('general.to')}</label>
 		<input
-			class="h-8 rounded-sm border border-neutral-300 px-2 py-1"
+			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1"
 			id="facet-range-to"
 			type="number"
 			min="1000"
 			max="2099"
 			step="1"
-			placeholder={$page.data.t('general.year')}
+			placeholder={`${$page.data.t('general.to')} (${$page.data.t('general.year')})`}
 			bind:value={rangeTo}
 		/>
 	</div>
