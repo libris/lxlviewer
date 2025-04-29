@@ -56,8 +56,11 @@
 			<!-- prev -->
 			{#if previous}
 				<li>
-					<a href={previous['@id']} aria-label={$page.data.t('search.previous')}
-						><BiChevronLeft aria-hidden="true" /></a
+					<a
+						href={previous['@id']}
+						aria-label={$page.data.t('search.previous')}
+						class="btn btn-primary border-0"
+						><BiChevronLeft class="text-base" aria-hidden="true" /></a
 					>
 				</li>
 			{/if}
@@ -65,19 +68,22 @@
 			<li>
 				<a
 					aria-label="{$page.data.t('search.page')} 1"
-					class={currentPage === 1 ? 'button-primary' : 'button-ghost'}
+					class={['btn btn-primary', currentPage === 1 ? 'bg-accent-50' : 'border-0']}
 					href={first['@id']}>1</a
 				>
 			</li>
 			{#if pageSequence[0].page > 2}
-				<li class="hidden items-end sm:flex"><span>...</span></li>
+				<li class="hidden h-9 w-6 items-end pb-1 sm:flex"><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
 			{#each pageSequence as p}
 				{#if p.page !== 1 && p.page !== lastPage}
 					<li>
 						<a
-							class={p.page === currentPage ? 'mx-4! sm:mx-0.5!' : 'hidden sm:flex'}
+							class={[
+								'btn btn-primary',
+								p.page === currentPage ? 'bg-accent-50' : 'hidden border-0 sm:flex'
+							]}
 							href={p.link}
 							aria-label="{$page.data.t('search.page')} {p}"
 							aria-current={p.page === currentPage ? 'page' : null}
@@ -87,21 +93,24 @@
 				{/if}
 			{/each}
 			{#if lastPage - pageSequence[pageSequence.length - 1].page > 1}
-				<li class="hidden items-end sm:flex"><span>...</span></li>
+				<li class="hidden h-9 w-6 items-end pb-1 sm:flex"><span>...</span></li>
 			{/if}
 			<!-- last -->
 			<li>
 				<a
 					aria-label="{$page.data.t('search.page')} {lastPage}"
-					class={currentPage === lastPage ? 'button-primary' : 'button-ghost'}
+					class={['btn btn-primary', currentPage === lastPage ? 'bg-accent-50' : 'border-0']}
 					href={last['@id']}>{lastPage.toLocaleString($page.data.locale)}</a
 				>
 			</li>
 			<!-- next -->
 			{#if next}
 				<li>
-					<a href={next['@id']} aria-label={$page.data.t('search.next')}
-						><BiChevronRight aria-hidden="true" /></a
+					<a
+						href={next['@id']}
+						aria-label={$page.data.t('search.next')}
+						class="btn btn-primary border-0"
+						><BiChevronRight class="text-base" aria-hidden="true" /></a
 					>
 				</li>
 			{/if}
@@ -117,6 +126,6 @@
 	}
 
 	nav li > a {
-		@apply min-h-11 min-w-11 !px-2;
+		@apply min-h-9 min-w-9 !px-2;
 	}
 </style>

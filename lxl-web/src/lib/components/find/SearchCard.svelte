@@ -65,7 +65,7 @@
 						{#if getTypeIcon(item['@type'])}
 							<svelte:component
 								this={getTypeIcon(item['@type'])}
-								class="text-subtle absolute text-lg"
+								class="text-subtle absolute text-2xl"
 							/>
 						{/if}
 					</div>

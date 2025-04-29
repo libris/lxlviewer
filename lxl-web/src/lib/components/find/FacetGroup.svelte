@@ -106,7 +106,7 @@
 >
 	<details class="relative" open>
 		<summary
-			class="flex min-h-9 w-full cursor-pointer items-center gap-2 text-xs font-medium"
+			class="flex min-h-9 w-full cursor-pointer items-center gap-2 pr-8 text-xs font-medium"
 			data-testid="facet-toggle"
 		>
 			<span class="arrow text-subtle transition-transform">
