@@ -157,21 +157,38 @@
 }
 
 @layer components {
-	.btn-primary {
+	.btn {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		gap: var(--spacing);
-		background-color: var(--color-page);
-		color: var(--color-body);
 		font-size: var(--text-2xs);
 		font-weight: var(--font-weight-medium);
 		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
-		border: 1px solid var(--color-neutral-200);
 		border-radius: var(--spacing);
+	}
+
+	.btn-primary {
+		background-color: var(--color-page);
+		color: var(--color-body);
+		border: 1px solid var(--color-neutral-200);
 
 		&:hover {
 			background-color: var(--color-primary-100);
+		}
+
+		& svg {
+			color: var(--color-subtle);
+		}
+	}
+
+	.btn-accent {
+		background-color: --alpha(var(--color-accent) / 10%);
+		color: var(--color-body);
+		border: 1px solid --alpha(var(--color-accent) / 20%);
+
+		&:hover {
+			background-color: --alpha(var(--color-accent) / 20%);
 		}
 
 		& svg {

@@ -32,12 +32,12 @@
 </script>
 
 {#snippet filterContent()}
-	<div class="flex items-baseline gap-2">
+	<div class="flex items-center gap-2">
 		<span class="sr-only">{isFilterActive ? page.data.t('search.activeFilter') : ''}</span>
 		<div
 			class={[
-				'flex h-[13px] w-[13px] rounded-sm',
-				//!myLibrariesValues.length && 'text-primary/24'
+				'text-subtle flex h-[13px] w-[13px] rounded-sm',
+				!myLibrariesValues.length && 'text-subtle/50'
 			]}
 			aria-hidden="true"
 		>
@@ -47,11 +47,11 @@
 				<BiSquare height="13px" />
 			{/if}
 		</div>
-		<span>{page.data.t('search.limitToLibraries')}</span>
+		<span class="font-medium">{page.data.t('search.limitToLibraries')}</span>
 	</div>
 {/snippet}
 
-<div class="flex w-full gap-2 rounded-sm p-3 md:flex-col md:gap-1">
+<div class="text-2xs flex w-full gap-2 rounded-sm bg-neutral-100 p-3 md:flex-col md:gap-1">
 	{#if myLibrariesValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>
 			{@render filterContent()}
@@ -67,7 +67,7 @@
 			{@render filterContent()}
 		</div>
 	{/if}
-	<a class="self-end" href="/my-pages"
+	<a class="link-subtle self-end" href="/my-pages"
 		>{myLibrariesValues.length
 			? page.data.t('search.changeLibraries')
 			: page.data.t('search.addLibraries')}</a

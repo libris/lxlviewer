@@ -114,7 +114,7 @@
 			>
 				<a
 					href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
-					class="filter-modal-toggle btn-primary md:hidden"
+					class="filter-modal-toggle btn btn-primary md:hidden"
 					aria-label={$page.data.t('search.filters')}
 					on:click|preventDefault={toggleFiltersModal}
 				>
@@ -186,7 +186,7 @@
 							</span>
 							<select
 								id="search-sort"
-								class="btn-primary"
+								class="btn btn-primary"
 								form="main-search"
 								on:change={handleSortChange}
 							>
