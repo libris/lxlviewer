@@ -34,7 +34,7 @@
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
 	{#if item.qualifiers.length}
 		<span
-			class="order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline md:text-sm"
+			class="text-subtle order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline"
 		>
 			{$page.data.t('search.add')}
 
@@ -45,11 +45,11 @@
 	{:else}
 		<div class="sr-only">{$page.data.t('search.goTo')}</div>
 	{/if}
-	<div class="resource">
+	<div class="resource grid grid-cols-[40px_minmax(0,_1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<hgroup class="resource-heading">
-				<h2 class="inline overflow-hidden text-ellipsis md:max-w-[33vw]">
+			<hgroup class="resource-heading flex overflow-hidden text-xs font-medium whitespace-nowrap">
+				<h2 class="inline-block max-w-[40vw] overflow-hidden text-ellipsis sm:max-w-[33vw]">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
 						showLabels={ShowLabelsOptions.Never}
@@ -58,7 +58,7 @@
 					/>
 				</h2>
 				{#if item[LxlLens.CardBody]?._display?.[0]}
-					<p class="inline overflow-hidden text-sm text-ellipsis">
+					<p class="inline-block overflow-hidden text-ellipsis">
 						<span class="divider">{' • '}</span>
 						<DecoratedData
 							data={item[LxlLens.CardBody]?._display[0]}
@@ -69,47 +69,45 @@
 					</p>
 				{/if}
 			</hgroup>
-			<div class="resource-footer">
-				<strong class="text-xs">
+			<div
+				class="resource-footer text-3xs text-subtle overflow-hidden text-ellipsis whitespace-nowrap"
+			>
+				<strong class="font-medium">
 					{item.typeStr}
 				</strong>
-				<span class="text-xs">
-					{#if item.typeStr?.length}
-						<span class="divider">{' • '}</span>
-					{/if}
-					{#each item?.[LensType.WebCardFooter]?._display as obj}
-						{#if 'hasInstance' in obj}
-							{@const instances = getInstanceData(obj.hasInstance)}
-							{#if instances?.years}
-								<span class="divider">{' • '}</span>
-								<span>
-									{#if instances.count > 1}
-										{instances?.count}
-										{$page.data.t('search.editions')}
-										{`(${instances.years})`}
-									{:else}
-										{instances.years}
-									{/if}
-								</span>
-							{/if}
-						{:else}
-							<span class="text-xs">
-								<DecoratedData
-									data={obj}
-									showLabels={ShowLabelsOptions.Never}
-									allowLinks={false}
-									allowPopovers={false}
-								/>
+				{#if item.typeStr?.length}
+					<span class="divider">{' • '}</span>
+				{/if}
+				{#each item?.[LensType.WebCardFooter]?._display as obj}
+					{#if 'hasInstance' in obj}
+						{@const instances = getInstanceData(obj.hasInstance)}
+						{#if instances?.years}
+							<span class="divider">{' • '}</span>
+							<span>
+								{#if instances.count > 1}
+									{instances?.count}
+									{$page.data.t('search.editions')}
+									{`(${instances.years})`}
+								{:else}
+									{instances.years}
+								{/if}
 							</span>
 						{/if}
-					{/each}
-				</span>
+					{:else}
+						<DecoratedData
+							data={obj}
+							showLabels={ShowLabelsOptions.Never}
+							allowLinks={false}
+							allowPopovers={false}
+						/>
+					{/if}
+				{/each}
 			</div>
 		</div>
 	</div>
 {/snippet}
 
-<div class="suggestion" class:qualifier={item.qualifiers.length}>
+<div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers.length}>
 	{#if item.qualifiers.length}
 		<button
 			type="button"
@@ -119,10 +117,15 @@
 		>
 			{@render resourceSnippet(item)}
 		</button>
-		<button type="button" class="more" id={getCellId(1)} class:focused-cell={isFocusedCell(1)}>
+		<button
+			type="button"
+			class="more w-14 items-center justify-center p-0"
+			id={getCellId(1)}
+			class:focused-cell={isFocusedCell(1)}
+		>
 			{#key item.qualifiers}
 				<span
-					class="more-icon-container rounded-full"
+					class="more-icon-container text-subtle flex size-10 items-center justify-center rounded-full"
 					use:dropdownMenu={{
 						menuItems: [
 							...item.qualifiers.map((qualifier) => ({
@@ -152,10 +155,6 @@
 	@reference "tailwindcss";
 
 	.suggestion {
-		display: flex;
-		align-items: stretch;
-		height: 56px;
-
 		& :global([data-property='role']),
 		& :global(._contentBefore:has(+ [data-property='role'])),
 		& :global([data-property='role'] + ._contentAfter) {
@@ -168,7 +167,7 @@
 	}
 
 	:global(:not(.focused)) > .suggestion:has(:global(*:hover)) {
-		background-color: var(--color-main);
+		background-color: --alpha(var(--color-primary) / 10%);
 	}
 
 	.suggestion button,
@@ -194,25 +193,18 @@
 	.suggestion a:not(:first-child):last-child {
 		text-align: right;
 	}
-	.resource {
-		display: grid;
-		grid-template-columns: 40px minmax(0, 1fr);
-		align-items: center;
-		gap: calc(var(--spacing) * 2);
-	}
 
 	.resource-heading {
-		white-space: nowrap;
-		overflow: hidden;
-		line-height: 1;
+		& :global(span[data-property='_script']) {
+			display: none;
+		}
+
+		& :global(span[data-property='lifeSpan']) {
+			color: var(--color-subtle);
+		}
 	}
 
 	.resource-footer {
-		line-height: 1;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-
 		/* hide dangling divider • */
 		& .divider {
 			display: none;
@@ -223,36 +215,13 @@
 		}
 	}
 
-	.resource-heading > * {
-		display: inline-block;
-	}
-
-	.resource-heading h2 {
-		display: inline-block;
-		max-width: 50vw;
-		text-overflow: ellipsis;
-	}
-
 	.more {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 56px;
-		padding: 0;
-
 		&.focused-cell {
 		}
 	}
 
-	.more-icon-container {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 40px;
-		height: 40px;
-	}
-
 	.more.focused-cell .more-icon-container,
 	.more:hover .more-icon-container {
+		background-color: --alpha(var(--color-primary) / 20%);
 	}
 </style>

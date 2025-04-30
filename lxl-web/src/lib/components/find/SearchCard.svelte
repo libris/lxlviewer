@@ -28,7 +28,7 @@
 <div class="search-card-container">
 	<article class="search-card" data-testid="search-card">
 		<a
-			class="card-link absolute z-0 h-full w-full cursor-pointer"
+			class="card-link absolute z-0 size-full cursor-pointer"
 			href={id}
 			aria-labelledby={titleId}
 			aria-describedby={`${bodyId} ${footerId}`}

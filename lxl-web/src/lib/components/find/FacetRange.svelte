@@ -61,7 +61,7 @@
 		/>
 	</div>
 	<button
-		class="btn btn-primary h-8 w-8"
+		class="btn btn-primary size-8"
 		disabled={!rangeFrom && !rangeTo}
 		type="submit"
 		aria-label={$page.data.t('general.apply')}

@@ -98,7 +98,7 @@
 		<img
 			src={placeholder}
 			alt=""
-			class="h-20 w-20 object-cover object-[inherit]"
+			class="size-20 object-cover object-[inherit]"
 			class:rounded-sm={geometry !== 'circle'}
 			class:rounded-full={geometry === 'circle'}
 		/>

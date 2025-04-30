@@ -424,7 +424,11 @@
 	/* snippets elements */
 
 	:global(.supersearch-show-more) {
-		@apply flex min-h-11 w-full items-center px-4 text-left;
+		@apply flex min-h-11 w-full items-center px-4 text-left text-sm;
+
+		&:hover {
+			background-color: --alpha(var(--color-primary) / 10%);
+		}
 	}
 
 	/* codemirror elements */

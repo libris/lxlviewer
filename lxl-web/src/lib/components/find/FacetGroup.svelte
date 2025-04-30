@@ -116,13 +116,13 @@
 		</summary>
 		<!-- sorting -->
 		<div
-			class="facet-sort btn btn-primary absolute top-0 right-0 m-1 h-6 w-6 border-0 p-0"
+			class="facet-sort btn btn-primary absolute top-0 right-0 m-1 size-6 border-0 p-0"
 			data-testid="facet-sort"
 		>
 			<select
 				bind:value={currentSort}
 				onchange={saveUserSort}
-				class="h-full w-full appearance-none text-transparent"
+				class="size-full appearance-none text-transparent"
 				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
 			>
 				{#each sortOptions as option (option.value)}
