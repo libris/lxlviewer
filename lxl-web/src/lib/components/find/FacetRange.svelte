@@ -66,7 +66,7 @@
 		type="submit"
 		aria-label={$page.data.t('general.apply')}
 	>
-		<BiSearch />
+		<BiSearch class="text-base" />
 	</button>
 
 	{#each searchParams as [name, value]}
