@@ -37,52 +37,62 @@ const insertSpaceAroundQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 				.toString()
 				.trim();
 
-			if (
-				(inputRangeMin >= atomicStart && inputRangeMin <= atomicEnd) ||
-				(inputRangeMax <= atomicEnd && inputRangeMax >= atomicStart)
+			if (oldCursorPos === atomicStart && (input || (isDelete && prevChar))) {
+				// input touches atomic range start, insert space after input
+				insert = [
+					tr,
+					{
+						changes: {
+							from: newCursorPos,
+							to: newCursorPos,
+							insert: ' '
+						},
+						sequential: true,
+						selection: { anchor: newCursorPos }
+					}
+				];
+			} else if (
+				oldCursorPos >= atomicStart &&
+				oldCursorPos <= atomicEnd &&
+				newCursorPos !== atomicStart
 			) {
-				// input is within the atomic range
-				const leftNode = syntaxTree(tr.startState).resolveInner(
-					isDelete ? newCursorPos : oldCursorPos,
-					-1
-				);
-				const rightNode = syntaxTree(tr.startState).resolveInner(
-					isDelete ? oldCursorPos : newCursorPos,
-					+1
-				);
-				if (leftNode.parent?.name === 'QualifierValue') {
-					if (inputRangeMin < atomicEnd) {
-						// Stuck inside qualifier, move out
-
+				const node = syntaxTree(tr.startState).resolveInner(oldCursorPos, -1);
+				if (node.parent?.name == 'QualifierValue') {
+					// input touches qualifier value, insert space before input after range
+					insert = [
 						// we need to pass the original transaction, or we get a sync error for some reason.
 						// Undo it before applying changes
-						insert = [
-							tr,
-							{
-								changes: {
-									from: inputRangeMin,
-									to: inputRangeMax,
-									insert: ''
-								},
-								sequential: true
+						tr,
+						{
+							changes: {
+								from: inputRangeMin,
+								to: inputRangeMax,
+								insert: ''
 							},
-							{
-								changes: {
-									from: atomicEnd,
-									insert: ` ${input}`
-								},
-								selection: { anchor: atomicEnd + inputLength + 1 }
+							sequential: true
+						},
+						{
+							changes: {
+								from: atomicEnd,
+								insert: ` ${input}`
+							},
+							selection: { anchor: input ? atomicEnd + inputLength + 1 : atomicEnd + 1 }
+						}
+					];
+				}
+			} else if (newCursorPos === atomicEnd && isDelete && nextChar) {
+				const node = syntaxTree(tr.startState).resolveInner(newCursorPos, -1);
+				if (node.parent?.name == 'QualifierValue') {
+					// deletion touches qualifierValue end, insert space after input
+					insert = [
+						{
+							changes: {
+								from: atomicEnd,
+								insert: ' '
 							}
-						];
-					} else if (input || (isDelete && nextChar)) {
-						// At qualifier end, insert space before input
-						insert = [{ changes: { from: atomicEnd, insert: ' ' } }, tr];
-					}
-				} else if (rightNode.parent?.name === 'QualifierKey' || rightNode.name === 'FilterAlias') {
-					if ((input && inputRangeMin === atomicStart) || (isDelete && prevChar)) {
-						// At qualifier start, insert space after input
-						insert = [tr, { changes: { from: atomicStart, insert: ' ' } }];
-					}
+						},
+						tr
+					];
 				}
 			}
 			return false;
