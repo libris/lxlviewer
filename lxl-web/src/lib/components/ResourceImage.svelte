@@ -100,7 +100,7 @@
 			class:rounded-full={geometry === 'circle'}
 		/>
 		{#if getTypeIcon(type)}
-			<svelte:component this={getTypeIcon(type)} class="absolute text-2xl" />
+			<svelte:component this={getTypeIcon(type)} class="text-subtle absolute text-2xl" />
 		{/if}
 	</div>
 {/if}

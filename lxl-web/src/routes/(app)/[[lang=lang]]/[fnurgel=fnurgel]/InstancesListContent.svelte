@@ -51,6 +51,7 @@
 			{#if id && $page.data.holdingsByInstanceId[id]}
 				<div class="flex flex-col gap-1">
 					<a
+						class="link-subtle"
 						href={getHoldingsLink($page.url, id)}
 						data-sveltekit-preload-data="false"
 						on:click={(event) => handleClickHoldings(event, $page.state, id)}
@@ -62,6 +63,7 @@
 							: $page.data.t('holdings.libraries')}
 					</a>
 					<a
+						class="link-subtle"
 						href={getPermalink($page.url, id)}
 						on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}
 					>

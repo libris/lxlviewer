@@ -74,11 +74,11 @@
 <div>
 	{#if Array.isArray(data) && data.length > 1}
 		<div class="flex items-center justify-between pb-4">
-			<h2 class="capitalize">{page.data.t('search.editions')}</h2>
+			<h2 class="font-heading text-2xl capitalize">{page.data.t('search.editions')}</h2>
 			<a
 				href={getCollapseAllUrl(page.url)}
 				data-sveltekit-preload-data="false"
-				class="close-all text-xs sm:text-sm"
+				class="close-all link-subtle text-xs sm:text-sm"
 				onclick={(event) => {
 					event.preventDefault();
 					replaceState(getCollapseAllUrl(page.url), { ...page.state, expandedInstances: [] });
@@ -90,7 +90,7 @@
 	{/if}
 
 	{#if Array.isArray(data) && data.length > 1}
-		<div class="column-headers mb-2 grid gap-2 text-sm font-bold">
+		<div class="column-headers mb-2 grid gap-2 text-sm font-medium">
 			{#each columns as { header: columnHeader }, index (index)}
 				<div class="flex flex-1 first:pl-0">
 					{columnHeader}
@@ -108,7 +108,7 @@
 						ontoggle={() => handleToggleDetails(page.state)}
 					>
 						<summary
-							class="grid min-h-11 items-center gap-2 align-middle text-sm md:text-base"
+							class="hover:bg-primary/10 grid min-h-11 items-center gap-2 align-middle text-sm md:text-base"
 							onkeydown={handleSummaryKeydown}
 						>
 							<span class="arrow w-4">
@@ -130,7 +130,7 @@
 									{/if}
 									<a
 										href={getHoldingsLink(page.url, id)}
-										class="flex items-center self-center text-xs sm:text-sm"
+										class="link-subtle flex items-center self-center text-xs sm:text-sm"
 										data-sveltekit-preload-data="false"
 										onclick={(event) => handleClickHoldings(event, page.state, id)}
 									>

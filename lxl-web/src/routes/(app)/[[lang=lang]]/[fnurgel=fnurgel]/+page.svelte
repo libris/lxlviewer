@@ -265,7 +265,7 @@
 					>
 				</div>
 				<div>
-					<h2 class="text-3-cond-bold">
+					<h2>
 						{data.t('holdings.availableAt')}
 						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
 							{data.holdingsByInstanceId[latestHoldingUrl].length}
@@ -281,11 +281,9 @@
 					</h2>
 					<!-- my libraries holdings -->
 					{#if myLibsHolders.length}
-						<div
-							class="border-positive bg-positive/32 border-neutral my-4 rounded-sm border-b p-4 pb-0"
-						>
-							<h3 class="text-3-cond-bold flex items-center gap-2">
-								<span aria-hidden="true" class="text-positive-dark">
+						<div class="border-neutral my-4 rounded-sm border-b p-4 pb-0">
+							<h3 class="flex items-center gap-2">
+								<span aria-hidden="true">
 									<BiHouseHeart />
 								</span>
 								<span>{page.data.t('myPages.favouriteLibraries')}</span>
@@ -391,6 +389,7 @@
 
 		& :global([data-property='seeAlso'] > *) {
 			display: block;
+			width: fit-content;
 			white-space: nowrap;
 		}
 	}
