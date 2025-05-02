@@ -49,7 +49,7 @@
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<hgroup class="resource-heading flex overflow-hidden text-xs font-medium whitespace-nowrap">
-				<h2 class="inline-block max-w-[40vw] overflow-hidden text-ellipsis sm:max-w-[33vw]">
+				<h2 class="inline-block max-w-[40vw] truncate sm:max-w-[33vw]">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
 						showLabels={ShowLabelsOptions.Never}
@@ -58,7 +58,7 @@
 					/>
 				</h2>
 				{#if item[LxlLens.CardBody]?._display?.[0]}
-					<p class="inline-block overflow-hidden text-ellipsis">
+					<p class="inline-block truncate">
 						<span class="divider">{' • '}</span>
 						<DecoratedData
 							data={item[LxlLens.CardBody]?._display[0]}
@@ -69,9 +69,7 @@
 					</p>
 				{/if}
 			</hgroup>
-			<div
-				class="resource-footer text-3xs text-subtle overflow-hidden text-ellipsis whitespace-nowrap"
-			>
+			<div class="resource-footer text-3xs text-subtle truncate">
 				<strong class="font-medium">
 					{item.typeStr}
 				</strong>

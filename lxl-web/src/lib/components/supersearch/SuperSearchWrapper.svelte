@@ -174,7 +174,7 @@
 			class:focused-cell={isFocusedCell(rowIndex, 0)}
 			onclick={() => addQualifierKey(qualifierKey)}
 		>
-			<span class="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+			<span class="truncate text-sm">
 				<span class="font-medium">{qualifierLabel}:</span>
 				<span class="text-subtle italic">{qualifierPlaceholder}</span>
 			</span>

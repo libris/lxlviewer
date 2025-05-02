@@ -30,7 +30,7 @@
 </script>
 
 <form
-	class="[&_label]:text-subtle border-neutral bg-accent/5 mb-2 grid grid-cols-[1fr_1fr_auto] items-end gap-2 rounded-sm border p-2"
+	class="[&_label]:text-subtle mb-2 grid grid-cols-[1fr_1fr_auto] items-end gap-2 p-2"
 	action=""
 	on:submit={handleSubmit}
 >

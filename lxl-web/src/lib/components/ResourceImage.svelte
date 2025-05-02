@@ -55,7 +55,7 @@
 				class:text-center={geometry === 'circle'}
 			>
 				{#if image.attribution}
-					<span class="oveflow-hidden mr-1 text-ellipsis whitespace-nowrap">
+					<span class="mr-1 truncate">
 						<span class="mr-0.5">©</span>
 						{#if image.attribution.link}
 							<a href={image.attribution.link} target="_blank" class="ext-link">
@@ -71,10 +71,7 @@
 						{$page.data.t('general.cropped')}
 					{/if}
 				{/if}
-				<span
-					class="overflow-hidden text-ellipsis whitespace-nowrap"
-					use:popover={{ title: image?.usageAndAccessPolicy.title }}
-				>
+				<span class="truncate" use:popover={{ title: image?.usageAndAccessPolicy.title }}>
 					<InfoIcon style="display: inline; font-size: 13px" />
 					<span class="ml-0.5">
 						{#if image.usageAndAccessPolicy.link}

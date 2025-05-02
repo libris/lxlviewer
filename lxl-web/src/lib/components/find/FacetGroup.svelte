@@ -147,7 +147,7 @@
 							class="facet-link hover:bg-primary-50 flex items-end justify-between gap-2 p-1 pl-2 font-normal no-underline"
 							href={facet.view['@id']}
 						>
-							<span class="overflow-hidden text-ellipsis whitespace-nowrap" title={facet.str}>
+							<span class="truncate" title={facet.str}>
 								{#if 'selected' in facet}
 									<!-- checkboxes -->
 									<span class="sr-only"
