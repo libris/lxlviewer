@@ -588,9 +588,9 @@
 			"@id": "genreForm-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["genreForm"],
-			"fresnel:propertyStyle": ["nolabel"],
+			"fresnel:propertyStyle": [],
 			"fresnel:valueFormat": {
-				"fresnel:contentBefore": "",
+				"fresnel:contentBefore": ", ",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -611,7 +611,7 @@
 			"@id": "GenreForm-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["GenreForm"],
-			"fresnel:resourceStyle": ["_link", "pill"]
+			"fresnel:resourceStyle": ["_link"]
 		},
 		"GenreForm-relations-format": {
 			"@id": "GenreForm-relations-format",
@@ -625,7 +625,7 @@
 				"related"
 			],
 			"fresnel:valueFormat": {
-				"fresnel:contentBefore": "",
+				"fresnel:contentBefore": ", ",
 				"fresnel:contentFirst": ""
 			}
 		},
