@@ -188,6 +188,11 @@
 			@apply gap-x-6 px-6 py-4;
 			grid-template-columns: 72px 1fr;
 		}
+
+		& :global(.contribution-role) {
+			color: var(--color-subtle);
+			font-size: var(--text-3xs);
+		}
 	}
 
 	:global(a):not(.card-link),
@@ -225,15 +230,9 @@
 
 	.card-header-extra,
 	.card-footer,
-	.card-header :global([data-property='_script']) {
+	.card-header :global(.transliteration) {
 		font-size: var(--text-2xs);
 		color: var(--color-subtle);
 		font-weight: var(--font-weight-normal);
-	}
-
-	/** TODO: Set transliteration styling via display-web.json? */
-	:global(.card-header [data-property='_script']) {
-		font-style: italic;
-		display: block;
 	}
 </style>

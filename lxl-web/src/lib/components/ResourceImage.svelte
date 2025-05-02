@@ -51,7 +51,7 @@
 		{/if}
 		{#if image?.usageAndAccessPolicy}
 			<figcaption
-				class="mt-1 table-caption caption-bottom overflow-hidden"
+				class="text-3xs text-subtle mt-1 table-caption caption-bottom overflow-hidden"
 				class:text-center={geometry === 'circle'}
 			>
 				{#if image.attribution}

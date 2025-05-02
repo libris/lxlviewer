@@ -531,7 +531,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Contribution"],
 			"fresnel:propertyFormatDomain": ["role"],
-			"fresnel:propertyStyle": ["text-3xs text-subtle"],
+			"fresnel:propertyStyle": ["contribution-role"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
@@ -736,6 +736,7 @@
 			"@id": "Transliteration-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["_script"],
+			"fresnel:propertyStyle": ["italic", "block", "transliteration"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""

@@ -123,7 +123,7 @@
 <svelte:head>
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
-<article>
+<article class="resource-page text-base">
 	<div class="resource find-layout gap-8 p-4 sm:px-6">
 		<div
 			class="image mt-4 mb-2 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
@@ -145,7 +145,7 @@
 		>
 			<div class="flex flex-col gap-4">
 				<header>
-					<h1>
+					<h1 class="text-3xl font-medium">
 						<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 					</h1>
 				</header>
@@ -158,6 +158,7 @@
 									{#each Object.keys(data.holdersByType) as type (type)}
 										<li>
 											<a
+												class="btn btn-cta"
 												href={getHoldingsLink(page.url, type)}
 												data-sveltekit-preload-data="false"
 												data-testid="holding-link"
@@ -324,14 +325,33 @@
 <SearchResult searchResult={page.data.searchResult} showMapping />
 
 <style>
+	.resource-page {
+		& :global(.block-property) {
+			font-size: var(--text-xs);
+			color: var(--color-subtle);
+		}
+
+		& :global(.contribution-role) {
+			color: var(--color-subtle);
+			font-size: var(--text-sm);
+		}
+	}
+
 	.resource {
 		grid-template-areas: 'image content';
 	}
+
 	.image {
 		grid-area: image;
 	}
+
 	.content {
 		grid-area: content;
+
+		& :global(header .transliteration) {
+			color: var(--color-subtle);
+			font-size: var(--text-2xl);
+		}
 	}
 
 	.instances {
@@ -394,10 +414,5 @@
 
 	.expanded {
 		max-height: initial;
-	}
-
-	:global([data-property='_script']) {
-		font-style: italic;
-		display: block;
 	}
 </style>

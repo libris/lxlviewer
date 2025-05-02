@@ -33,6 +33,7 @@
 
 		& :global(ul) {
 			list-style-type: disc;
+			list-style-position: inside;
 			padding-inline-start: calc(var(--spacing) * 4)
 			font-size: var(--text-base);
 		}
@@ -50,7 +51,7 @@
 		& :global(a) {
 			text-decoration: underline;
 			text-decoration-style: dotted;
-			
+
 				&:hover {
 				text-decoration-style: solid;
 			}

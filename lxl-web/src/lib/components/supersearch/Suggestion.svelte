@@ -48,7 +48,9 @@
 	<div class="resource grid grid-cols-[40px_minmax(0,_1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<hgroup class="resource-heading flex overflow-hidden text-xs font-medium whitespace-nowrap">
+			<hgroup
+				class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap"
+			>
 				<h2 class="inline-block max-w-[40vw] truncate sm:max-w-[33vw]">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
@@ -193,7 +195,7 @@
 	}
 
 	.resource-heading {
-		& :global(span[data-property='_script']) {
+		& :global(.transliteration) {
 			display: none;
 		}
 

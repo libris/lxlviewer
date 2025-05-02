@@ -43,6 +43,7 @@
 :root {
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-black: #000;
+	--color-white: #fff;
 }
 
 @theme inline {
@@ -60,6 +61,7 @@
 	--text-3xs: 11px;
 	--text-2xs: 12px;
 	--text-xs: 13px;
+	--text-3xl: 28px;
 
 	--color-*: initial;
 
@@ -187,6 +189,8 @@
 		font-weight: var(--font-weight-medium);
 		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
 		border-radius: var(--spacing);
+		transition: background-color var(--default-transition-timing-function)
+			var(--default-transition-duration);
 	}
 
 	.btn-primary {
@@ -214,6 +218,20 @@
 
 		& svg {
 			color: var(--color-subtle);
+		}
+	}
+
+	.btn-cta {
+		background-color: var(--color-accent);
+		color: var(--color-white);
+		font-size: var(--text-xs);
+		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 6);
+		height: calc(var(--spacing) * 10);
+		border-radius: calc(infinity * 1px);
+		border: 1px solid var(--color-accent);
+
+		&:hover {
+			background-color: var(--color-accent-700);
 		}
 	}
 

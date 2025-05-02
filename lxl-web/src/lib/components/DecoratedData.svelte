@@ -225,7 +225,7 @@
 						{#if shouldShowLabels() && typeof data._label === 'string'}
 							<svelte:element this={block ? 'div' : 'span'}>
 								<!-- Add inner span with inline-block to achieve first letter capitalization while still supporting inline whitespaces -->
-								<span class="inline-block first-letter:capitalize" class:text-sm={block}>
+								<span class={['inline-block first-letter:capitalize', block && 'block-property']}>
 									{data._label}
 								</span>
 								{' '}
