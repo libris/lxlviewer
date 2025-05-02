@@ -352,6 +352,10 @@
 			color: var(--color-subtle);
 			font-size: var(--text-2xl);
 		}
+
+		& :global(header span[data-property='lifeSpan']) {
+			color: var(--color-subtle);
+		}
 	}
 
 	.instances {
