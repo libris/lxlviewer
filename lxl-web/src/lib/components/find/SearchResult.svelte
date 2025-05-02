@@ -62,13 +62,14 @@
 			aria-label={$page.data.t('search.selectedFilters')}
 		>
 			<ul class="flex flex-wrap items-center gap-2">
-				<li class="tab-header max-w-80 truncate font-bold">{$page.data.title}</li>
-				<span class="tab-header">{$page.data.t('search.occursAs')}</span>
-
+				<li class="block max-w-80 truncate py-4 text-sm whitespace-nowrap">
+					<span class="font-medium">{$page.data.title}</span>
+				</li>
+				<li class="text-sm">{$page.data.t('search.occursAs')}</li>
 				{#each predicates as p}
 					<li>
 						<a
-							class="tab"
+							class="flex flex-nowrap items-center gap-1 py-4 pr-3.5 pl-4 lowercase no-underline"
 							class:active={true}
 							class:tab-selected={p.selected}
 							data-sveltekit-replacestate
@@ -76,7 +77,7 @@
 						>
 							{p.str}
 							<span
-								class="mb-px rounded-sm px-1 text-sm md:text-xs lg:text-sm"
+								class="badge badge-primary text-xs"
 								aria-label="{p.totalItems} {$page.data.t('search.hits')}">{p.totalItems}</span
 							>
 						</a>
@@ -275,6 +276,12 @@
 		grid-area: search-related;
 	}
 
+	.tab-selected {
+		padding-bottom: cacl(--var(--spacing) * 3.5);
+		border-bottom-color: var(--color-accent);
+		border-bottom-width: 0.125rem;
+	}
+
 	@variant sm {
 		.toolbar {
 			grid-template-areas:
@@ -294,19 +301,5 @@
 				'search-related search-related'
 				'hits sort-select';
 		}
-	}
-
-	.tab-header {
-		@apply block py-4;
-	}
-
-	.tab {
-		@apply block py-4 pr-3.5 pl-4 lowercase no-underline;
-		transition: filter 0.1s ease;
-	}
-
-	.tab-selected {
-		@apply pb-3.5;
-		border-bottom-width: 0.125rem;
 	}
 </style>

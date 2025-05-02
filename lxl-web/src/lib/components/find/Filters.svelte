@@ -42,7 +42,7 @@
 				bind:value={searchPhrase}
 				placeholder={page.data.t('search.findFilter')}
 				aria-label={page.data.t('search.findFilter')}
-				class="bg-input h-9 w-full rounded-sm border border-neutral-300 pl-8 text-xs"
+				class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 				type="search"
 			/>
 			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />

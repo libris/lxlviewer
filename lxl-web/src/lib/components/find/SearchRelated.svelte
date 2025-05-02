@@ -25,19 +25,16 @@
 	});
 </script>
 
-<form action="" on:submit={handleSubmit} class="flex w-full gap-2 md:max-w-2xl">
+<form action="" on:submit={handleSubmit} class="relative flex w-full gap-2 md:max-w-2xl">
 	<label for="search-related" class="sr-only">{$page.data.t('search.relatedSearchLabel')}</label>
 	<input
-		class="flex-1"
+		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 		id="search-related"
 		type="search"
 		placeholder={$page.data.t('search.relatedSearchLabel')}
 		bind:value={_i}
 	/>
-	<button type="submit">
-		<BiSearch fill="currentColor" aria-hidden="true" />
-		<span class="sr-only sm:not-sr-only">{$page.data.t('search.search')}</span>
-	</button>
+	<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 
 	{#each searchParams as [name, value]}
 		{#if name !== '_i' && name !== '_q'}
