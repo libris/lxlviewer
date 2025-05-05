@@ -111,7 +111,7 @@
 							class="hover:bg-primary/10 grid min-h-11 items-center gap-2 align-middle text-sm md:text-base"
 							onkeydown={handleSummaryKeydown}
 						>
-							<span class="arrow w-4">
+							<span class="arrow text-subtle w-4 origin-center rotate-0 transition-transform">
 								<BiChevronRight />
 							</span>
 							{#each columns as { data: columnData }, index (index)}
@@ -178,10 +178,5 @@
 
 	details[open] .arrow {
 		@apply rotate-90;
-	}
-
-	.arrow {
-		transform-origin: center;
-		@apply rotate-0 transition-transform;
 	}
 </style>

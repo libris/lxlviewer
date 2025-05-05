@@ -44,6 +44,7 @@
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-black: #000;
 	--color-white: #fff;
+	--color-success: #2ab061;
 }
 
 @theme inline {
@@ -252,7 +253,7 @@
 		align-items: center;
 		justify-content: center;
 		height: calc(var(--spacing) * 4);
-		min-width: calc(var(--spacing) * 4);
+		min-width: calc(var(--spacing) * 5);
 		font-size: var(--text-4xs);
 		font-weight: var(--font-weight-medium);
 		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1.5);

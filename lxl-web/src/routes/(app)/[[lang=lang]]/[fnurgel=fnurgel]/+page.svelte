@@ -216,7 +216,7 @@
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
 			<div class="flex flex-col">
 				<div
-					class="relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-sm transition-shadow"
+					class="bg-page border-b-neutral relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-sm transition-shadow"
 				>
 					<div
 						id="instance-details"
@@ -227,7 +227,7 @@
 						bind:this={holdingsInstanceElement}
 					>
 						<h2 class="mb-2">
-							<span class="font-bold">
+							<span class="font-medium">
 								<DecoratedData
 									data={data.title}
 									block
@@ -254,7 +254,7 @@
 						/>
 					</div>
 					<button
-						class="mt-2 text-left underline"
+						class="link-subtle mt-2 text-left"
 						onclick={() => (expandedHoldingsInstance = !expandedHoldingsInstance)}
 						aria-expanded={expandedHoldingsInstance}
 						aria-controls="instance-details"
@@ -265,7 +265,7 @@
 					>
 				</div>
 				<div>
-					<h2>
+					<h2 class="text-sm font-medium">
 						{data.t('holdings.availableAt')}
 						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
 							{data.holdingsByInstanceId[latestHoldingUrl].length}
@@ -300,10 +300,10 @@
 							bind:value={searchPhrase}
 							placeholder={page.data.t('holdings.findLibrary')}
 							aria-label={page.data.t('holdings.findLibrary')}
-							class="w-full pl-8"
+							class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 							type="search"
 						/>
-						<BiSearch class="absolute top-3 left-2.5 text-sm" />
+						<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 					</div>
 					<ul class="w-full text-sm">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
@@ -409,8 +409,8 @@
 		pointer-events: none;
 		background: linear-gradient(
 			to bottom,
-			--alpha(var(--bg-body) / 0%),
-			--alpha(var(--bg-body) / 100%)
+			--alpha(var(--color-page) / 0%),
+			--alpha(var(--color-page) / 100%)
 		);
 		overflow: hidden;
 	}

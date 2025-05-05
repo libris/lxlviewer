@@ -76,7 +76,7 @@
 	}}
 >
 	<div
-		class="bg-page absolute top-0 right-0 flex w-full shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
+		class="absolute top-0 right-0 flex w-full bg-neutral-50 shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
 		'top'
 			? 'h-auto'
 			: 'h-full'}"
@@ -85,7 +85,7 @@
 	>
 		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
 			<header
-				class="border-neutral bg-page sticky top-0 z-10 flex min-h-14 items-center justify-between border-b px-4"
+				class="border-neutral sticky top-0 z-10 flex min-h-14 items-center justify-between border-b bg-neutral-50 px-4"
 			>
 				<h1 class="font-heading"><slot name="title" /></h1>
 				<!-- svelte-ignore a11y-autofocus -->
@@ -95,7 +95,7 @@
 					aria-label={$page.data.t('general.close')}
 					data-testid="close-modal"
 				>
-					<IconClose />
+					<IconClose class="text-subtle" />
 				</button>
 			</header>
 			<div class="px-4">

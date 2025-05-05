@@ -77,7 +77,7 @@
 						>
 							{p.str}
 							<span
-								class="badge badge-primary text-xs"
+								class="badge badge-accent"
 								aria-label="{p.totalItems} {$page.data.t('search.hits')}">{p.totalItems}</span
 							>
 						</a>
