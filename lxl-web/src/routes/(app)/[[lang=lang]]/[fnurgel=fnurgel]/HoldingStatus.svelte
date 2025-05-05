@@ -109,7 +109,7 @@
 	}
 </script>
 
-<li class="border-neutral not-last:border-b">
+<li class="border-neutral text-xs not-last:border-b">
 	<details ontoggle={getHoldingStatus}>
 		<summary class="my-3 flex cursor-pointer items-baseline">
 			<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">

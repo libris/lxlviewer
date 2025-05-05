@@ -214,9 +214,9 @@
 	{#if holdingUrl && selectedHoldingInstance}
 		<Modal close={handleCloseHoldings}>
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
-			<div class="flex flex-col">
+			<div class="flex flex-col text-sm">
 				<div
-					class="bg-page border-b-neutral relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-sm transition-shadow"
+					class="bg-page border-b-neutral relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-xs transition-shadow"
 				>
 					<div
 						id="instance-details"
@@ -265,7 +265,7 @@
 					>
 				</div>
 				<div>
-					<h2 class="text-sm font-medium">
+					<h2 class="font-medium">
 						{data.t('holdings.availableAt')}
 						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
 							{data.holdingsByInstanceId[latestHoldingUrl].length}
@@ -281,14 +281,14 @@
 					</h2>
 					<!-- my libraries holdings -->
 					{#if myLibsHolders.length}
-						<div class="border-neutral my-4 rounded-sm border-b p-4 pb-0">
+						<div class="border-neutral bg-primary/10 my-4 rounded-sm border-b p-4 pb-0">
 							<h3 class="flex items-center gap-2">
-								<span aria-hidden="true">
+								<span aria-hidden="true" class="text-primary-700 text-base">
 									<BiHouseHeart />
 								</span>
-								<span>{page.data.t('myPages.favouriteLibraries')}</span>
+								<span class="font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
 							</h3>
-							<ul class="w-full text-sm">
+							<ul class="w-full">
 								{#each myLibsHolders as holder, i (holder.sigel || i)}
 									<HoldingStatus {holder} {holdingUrl} />
 								{/each}
@@ -305,7 +305,7 @@
 						/>
 						<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 					</div>
-					<ul class="w-full text-sm">
+					<ul class="w-full">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
 							<HoldingStatus {holder} {holdingUrl} />
 						{/each}
@@ -417,5 +417,12 @@
 
 	.expanded {
 		max-height: initial;
+	}
+
+	#instance-details {
+		& :global(.contribution-role),
+		& :global(.block-property) {
+			font-size: var(--text-2xs);
+		}
 	}
 </style>
