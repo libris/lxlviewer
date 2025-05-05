@@ -7,4 +7,8 @@
 <svelte:head>
 	<title>{getPageTitle(page.data.t('header.myPages'))}</title>
 </svelte:head>
-<Libraries />
+
+<div class="mx-auto mt-8 max-w-screen p-4 sm:px-6 md:max-w-5xl">
+	<h1 class="font-heading text-3xl font-medium">{page.data.t('myPages.myPages')}</h1>
+	<Libraries />
+</div>
