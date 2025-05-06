@@ -133,7 +133,7 @@
 
 	--color-page: #fff;
 	--color-body: var(--color-neutral-800);
-	--color-subtle: var(--color-neutral-500);
+	--color-subtle: var(--color-neutral-600);
 	--color-link: var(--color-accent);
 	--color-error: var(--color-severe);
 	--color-app-header: var(--color-primary-100);
