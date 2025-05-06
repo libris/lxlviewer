@@ -222,7 +222,9 @@
 			onclickClear,
 			onclickClose
 		})}
-			<div class="supersearch-input">
+			<div
+				class="supersearch-input rounded-d bg-input outline-primary-200 has-focus:outline-primary-600 flex min-h-12 w-full cursor-text overflow-hidden rounded-md outline focus-within:relative"
+			>
 				{#if expanded}
 					<button
 						type="button"
@@ -361,12 +363,6 @@
 
 <style lang="postcss">
 	@reference "../../../app.css";
-
-	.supersearch-input {
-		@apply flex min-h-12 w-full cursor-text overflow-hidden rounded-md focus-within:relative;
-		background: var(--color-input);
-		outline: 1px solid var(--color-neutral-300);
-	}
 
 	/* dialog */
 
