@@ -25,7 +25,7 @@
 	});
 </script>
 
-<form action="" on:submit={handleSubmit} class="relative flex w-full gap-2 md:max-w-2xl">
+<form action="" on:submit={handleSubmit} class="relative flex w-full gap-2 lg:max-w-2xl">
 	<label for="search-related" class="sr-only">{$page.data.t('search.relatedSearchLabel')}</label>
 	<input
 		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"

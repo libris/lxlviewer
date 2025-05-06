@@ -82,7 +82,7 @@
 	@reference "../../../../app.css";
 
 	:global(.columns > div) {
-		@apply gap-2 lg:columns-2 lg:gap-x-8;
+		@apply gap-2 2xl:columns-2 2xl:gap-x-8;
 	}
 
 	:global(.columns > div > *) {

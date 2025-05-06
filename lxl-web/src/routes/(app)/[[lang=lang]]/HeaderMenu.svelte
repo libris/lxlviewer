@@ -15,12 +15,12 @@
 			: `/${otherLangCode}${$page.url.pathname}`) + $page.url.search;
 </script>
 
-<div class="py-4 lg:py-0 [&_a]:no-underline">
+<div class="py-4 2xl:py-0 [&_a]:no-underline">
 	<ol
-		class="text-subtle [&_svg]:text-body flex flex-col items-center gap-4 font-medium lg:flex-row [&_svg]:text-lg"
+		class="text-subtle [&_svg]:text-body flex flex-col items-center gap-4 font-medium 2xl:flex-row [&_svg]:text-lg"
 	>
 		<li>
-			<a class="flex items-center gap-2 lg:flex-col lg:gap-1" href="help">
+			<a class="flex items-center gap-2 2xl:flex-col 2xl:gap-1" href="help">
 				<BiQuestionCircle />
 				<span>
 					{$page.data.t('header.help')}
@@ -28,7 +28,7 @@
 			</a>
 		</li>
 		<li>
-			<a class="flex items-center gap-2 lg:flex-col lg:gap-1" href="my-pages">
+			<a class="flex items-center gap-2 2xl:flex-col 2xl:gap-1" href="my-pages">
 				<BiPerson />
 				<div class="text-nowrap">
 					{$page.data.t('header.myPages')}
@@ -37,7 +37,7 @@
 		</li>
 		<li>
 			<a
-				class="flex items-center gap-2 whitespace-nowrap lg:flex-col lg:gap-1"
+				class="flex items-center gap-2 whitespace-nowrap 2xl:flex-col 2xl:gap-1"
 				href={otherLangUrl}
 				hreflang={otherLangCode}
 				data-sveltekit-reload
