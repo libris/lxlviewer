@@ -276,4 +276,13 @@
 	.block {
 		display: block;
 	}
+
+	/* property-specific styles */
+	.transliteration {
+		font-style: italic;
+	}
+
+	.sigel {
+		color: var(--color-subtle);
+	}
 </style>
