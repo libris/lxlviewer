@@ -126,7 +126,7 @@
 <article class="resource-page text-base">
 	<div class="resource find-layout gap-8 p-4 sm:px-6">
 		<div
-			class="image mt-4 mb-2 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
+			class="image mt-4 mb-2 flex w-full justify-center self-center object-center lg:mx-auto lg:self-start lg:px-2 xl:px-0"
 			class:hidden={!page.data.images?.length}
 		>
 			{#if data.images.length}
@@ -140,7 +140,7 @@
 			{/if}
 		</div>
 		<div
-			class="content flex flex-col gap-4 pt-2 md:flex-row"
+			class="content flex flex-col gap-4 pt-2 lg:flex-row"
 			class:pb-4={shouldShowHeaderBackground}
 		>
 			<div class="flex flex-col gap-4">
@@ -149,7 +149,7 @@
 						<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 					</h1>
 				</header>
-				<div class="flex flex-col-reverse gap-4 md:flex-row">
+				<div class="flex flex-col-reverse gap-4 lg:flex-row">
 					<div class="overview flex-1 gap-6">
 						<DecoratedData data={data.overview} block />
 						{#if Object.keys(data.holdersByType).length}

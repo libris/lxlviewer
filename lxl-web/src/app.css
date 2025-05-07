@@ -40,11 +40,7 @@
 }
 
 @theme inline {
-	/* TODO: remove the old breakpoints (use tw defaults) when reworking layout */
-	--breakpoint-md: 64rem; /* 1024px */
-	--breakpoint-lg: 90rem; /* 1440px */
-	--breakpoint-xl: 110rem; /* 1760px */
-	/* ---- */
+	--breakpoint-3xl: 110rem; /* 1760px */
 
 	--font-sans: 'Inter', var(--font-fallback);
 	--font-body: var(--font-sans);
@@ -282,14 +278,14 @@
 }
 
 @utility find-layout {
-	@apply md:grid-cols-find flex flex-col gap-4 md:grid md:gap-8;
+	@apply lg:grid-cols-find flex flex-col gap-4 lg:grid lg:gap-8;
 }
 
 @utility header-layout {
 	grid-template-columns: 70px minmax(0, 8fr) 1fr;
 	@apply grid gap-x-8 px-4 sm:px-6;
 
-	@variant md {
+	@variant lg {
 		grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
 		padding-inline: calc(var(--spacing) * 2);
 	}

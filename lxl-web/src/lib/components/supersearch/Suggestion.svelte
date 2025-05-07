@@ -38,7 +38,7 @@
 		>
 			{$page.data.t('search.add')}
 
-			<span class="hidden lowercase md:inline">
+			<span class="hidden lowercase lg:inline">
 				{item.qualifiers[0].label}
 			</span>
 		</span>

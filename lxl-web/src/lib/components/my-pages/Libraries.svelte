@@ -29,8 +29,8 @@
 </script>
 
 <h2 class="mt-6 text-lg font-medium">{page.data.t('myPages.libraries')}</h2>
-<div class="flex flex-col justify-between gap-6 py-4 md:flex-row">
-	<div class="w-full shrink-0 md:w-1/2">
+<div class="flex flex-col justify-between gap-6 py-4 lg:flex-row">
+	<div class="w-full shrink-0 lg:w-1/2">
 		<label for="my-libraries-search" class="text-sm font-medium"
 			>{page.data.t('myPages.findAndAdd')}</label
 		>
@@ -80,7 +80,7 @@
 			{/if}
 		{/if}
 	</div>
-	<div class="w-full shrink-0 md:w-1/2">
+	<div class="w-full shrink-0 lg:w-1/2">
 		<span id="my-libraries" class="mb-2 block text-sm font-medium"
 			>{page.data.t('myPages.favouriteLibraries')}</span
 		>

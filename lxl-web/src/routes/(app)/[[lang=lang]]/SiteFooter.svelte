@@ -4,7 +4,7 @@
 	import * as CookieConsent from 'vanilla-cookieconsent';
 </script>
 
-<footer class="mt-auto flex flex-col justify-between gap-8 bg-neutral-100 p-8 sm:flex-row lg:p-10">
+<footer class="mt-auto flex flex-col justify-between gap-8 bg-neutral-100 p-8 sm:flex-row 2xl:p-10">
 	<div class="flex flex-col gap-4 sm:flex-row sm:gap-16 [&_li>*]:text-sm [&_p]:font-medium">
 		<nav class="flex flex-col gap-2" aria-labelledby="nav-info">
 			<p id="nav-info">
@@ -37,6 +37,6 @@
 		</nav>
 	</div>
 	<div class="flex items-end">
-		<img class="h-20 w-auto md:h-20 lg:h-24" alt={$page.data.t('footer.logo')} src={KbLogo} />
+		<img class="h-20 w-auto lg:h-20 2xl:h-24" alt={$page.data.t('footer.logo')} src={KbLogo} />
 	</div>
 </footer>

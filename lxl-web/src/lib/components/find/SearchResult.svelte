@@ -58,7 +58,7 @@
 	{@const filterCount = getFiltersCount(searchResult.mapping)}
 	{#if predicates.length}
 		<nav
-			class="border-neutral border-b px-4 md:flex lg:px-6"
+			class="border-neutral border-b px-4 lg:flex 2xl:px-6"
 			aria-label={$page.data.t('search.selectedFilters')}
 		>
 			<ul class="flex flex-wrap items-center gap-2">
@@ -88,7 +88,7 @@
 	{/if}
 	{#if showMapping}
 		<nav
-			class="hidden md:flex md:px-6 md:pt-4 md:pb-0"
+			class="hidden lg:flex lg:px-6 lg:pt-4 lg:pb-0"
 			aria-label={$page.data.t('search.selectedFilters')}
 		>
 			<SearchMapping mapping={searchResult.mapping} />
@@ -104,7 +104,7 @@
 				<Filters {facets} mapping={searchResult.mapping} />
 			</Modal>
 		{/if}
-		<div class="filters hidden md:block" id="filters">
+		<div class="filters hidden lg:block" id="filters">
 			<Filters {facets} mapping={searchResult.mapping} />
 		</div>
 
@@ -115,7 +115,7 @@
 			>
 				<a
 					href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
-					class="filter-modal-toggle btn btn-primary md:hidden"
+					class="filter-modal-toggle btn btn-primary lg:hidden"
 					aria-label={$page.data.t('search.filters')}
 					on:click|preventDefault={toggleFiltersModal}
 				>
@@ -127,7 +127,7 @@
 						</span>
 					{/if}
 				</a>
-				<span class="hits text-2xs pt-4 md:pt-0" role="status" data-testid="result-info">
+				<span class="hits text-2xs pt-4 lg:pt-0" role="status" data-testid="result-info">
 					{#if numHits && numHits > 0}
 						<span class="hits-count">
 							{#if numHits > searchResult.itemsPerPage}
@@ -204,7 +204,7 @@
 					</div>
 				{/if}
 			</div>
-			<ol class="flex flex-col gap-0.5 md:px-0">
+			<ol class="flex flex-col gap-0.5 lg:px-0">
 				{#each searchResult.items as item (item['@id'])}
 					<li>
 						<SearchCard {item} />
@@ -291,7 +291,7 @@
 		}
 	}
 
-	@variant md {
+	@variant lg {
 		.filters {
 			display: block;
 		}
