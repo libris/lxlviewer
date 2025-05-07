@@ -61,11 +61,11 @@
 			class="border-neutral border-b px-4 lg:flex 2xl:px-6"
 			aria-label={$page.data.t('search.selectedFilters')}
 		>
-			<ul class="flex flex-wrap items-center gap-2">
-				<li class="block max-w-80 truncate py-4 text-sm whitespace-nowrap">
+			<ul class="flex flex-wrap items-center gap-2 text-sm">
+				<li class="block max-w-80 truncate py-4 whitespace-nowrap">
 					<span class="font-medium">{$page.data.title}</span>
 				</li>
-				<li class="text-sm">{$page.data.t('search.occursAs')}</li>
+				<li>{$page.data.t('search.occursAs')}</li>
 				{#each predicates as p}
 					<li>
 						<a
