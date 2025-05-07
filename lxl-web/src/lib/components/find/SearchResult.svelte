@@ -291,7 +291,7 @@
 		}
 	}
 
-	@variant md {
+	@variant lg {
 		.filters {
 			display: block;
 		}

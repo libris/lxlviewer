@@ -294,7 +294,7 @@
 	grid-template-columns: 70px minmax(0, 8fr) 1fr;
 	@apply grid gap-x-8 px-4 sm:px-6;
 
-	@variant md {
+	@variant lg {
 		grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
 		padding-inline: calc(var(--spacing) * 2);
 	}
