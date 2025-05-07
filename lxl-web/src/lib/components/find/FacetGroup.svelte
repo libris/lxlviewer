@@ -169,9 +169,7 @@
 								</span>
 							</span>
 							{#if facet.totalItems > 0}
-								<span
-									class="badge badge-primary"
-									aria-label="{facet.totalItems} {page.data.t('search.hits')}"
+								<span class="badge" aria-label="{facet.totalItems} {page.data.t('search.hits')}"
 									>{facet.totalItems.toLocaleString(locale)}</span
 								>
 							{/if}
