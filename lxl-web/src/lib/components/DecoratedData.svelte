@@ -31,7 +31,7 @@
 
 	function getLink(value: ResourceData) {
 		if (allowLinks) {
-			if (depth > 1 && hasStyle(data, '_link')) {
+			if (depth > 1 && hasStyle(data, 'link')) {
 				const id = getResourceId(value);
 				if (id) {
 					return relativizeUrl(id);
@@ -59,7 +59,7 @@
 
 	/* Conditionally add popover action so it's only added when needed */
 	function conditionalPopover(node: HTMLElement, data: ResourceData) {
-		if (allowPopovers && ((depth > 1 && hasStyle(data, '_link')) || hasStyle(data, 'definition'))) {
+		if (allowPopovers && ((depth > 1 && hasStyle(data, 'link')) || hasStyle(data, 'definition'))) {
 			const id = getResourceId(data);
 			if (id) {
 				return popover(node, {

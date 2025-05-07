@@ -150,8 +150,7 @@
 }
 
 @layer components {
-	.link,
-	a._link,
+	a.link,
 	a.ext-link {
 		color: var(--color-link);
 		text-decoration: underline;
