@@ -423,7 +423,7 @@
 		@apply flex min-h-11 w-full items-center px-4 text-left text-sm;
 
 		&:hover {
-			background-color: var(--color-primary-100);
+			background-color: var(--color-primary-50);
 		}
 	}
 
