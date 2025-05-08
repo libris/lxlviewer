@@ -154,12 +154,8 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	.suggestion {
-		& :global([data-property='role']),
-		& :global(._contentBefore:has(+ [data-property='role'])),
-		& :global([data-property='role'] + ._contentAfter) {
-			display: none;
-		}
+	.suggestion :global(.contribution-role) {
+		display: none;
 	}
 
 	.suggestion:has(:global(*:hover)) h2,
@@ -199,7 +195,7 @@
 			display: none;
 		}
 
-		& :global(span[data-property='lifeSpan']) {
+		& :global(.agent-lifespan) {
 			color: var(--color-subtle);
 		}
 	}

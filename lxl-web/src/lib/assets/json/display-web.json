@@ -582,7 +582,7 @@
 			"@id": "contribution-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["contribution"],
-			"fresnel:propertyStyle": ["nolabel"]
+			"fresnel:propertyStyle": ["contribution nolabel"]
 		},
 		"genreForm-format": {
 			"@id": "genreForm-format",
@@ -658,6 +658,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
 			"fresnel:propertyFormatDomain": ["seeAlso"],
+			"fresnel:propertyStyle": ["see-also"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
@@ -678,6 +679,13 @@
 				"fresnel:contentBefore": "; ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"Agent-lifeSpan-format": {
+			"@id": "Agent-lifeSpan-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Agent"],
+			"fresnel:propertyFormatDomain": ["lifeSpan"],
+			"fresnel:propertyStyle": ["agent-lifespan"]
 		},
 		"Role-format": {
 			"@id": "Role-format",
@@ -736,7 +744,7 @@
 			"@id": "Transliteration-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["_script"],
-			"fresnel:propertyStyle": ["italic", "block", "transliteration"],
+			"fresnel:propertyStyle": ["transliteration", "block"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
@@ -798,7 +806,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Collection"],
 			"fresnel:propertyFormatDomain": ["sigel"],
-			"fresnel:propertyStyle": ["text-subtle"],
+			"fresnel:propertyStyle": ["sigel"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",

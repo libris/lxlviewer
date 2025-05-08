@@ -351,7 +351,7 @@
 			font-size: var(--text-2xl);
 		}
 
-		& :global(header span[data-property='lifeSpan']) {
+		& header :global(.agent-lifespan) {
 			color: var(--color-subtle);
 		}
 	}
@@ -377,17 +377,17 @@
 			margin-bottom: 0.8rem;
 		}
 
-		& :global([data-property='contribution'] > ._contentBefore),
-		:global([data-property='contribution'] > ._contentAfter) {
+		& :global(.contribution > ._contentBefore),
+		:global(.contribution > ._contentAfter) {
 			display: none;
 		}
 
-		& :global([data-property='contribution'] > *) {
+		& :global(.contribution > *) {
 			display: block;
 			white-space: nowrap;
 		}
 
-		& :global([data-property='seeAlso'] > *) {
+		& :global(.see-also > *) {
 			display: block;
 			width: fit-content;
 			white-space: nowrap;
