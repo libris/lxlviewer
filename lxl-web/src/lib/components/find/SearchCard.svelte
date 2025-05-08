@@ -27,12 +27,6 @@
 
 <div class="search-card-container">
 	<article class="search-card" data-testid="search-card">
-		<a
-			class="card-link absolute z-0 size-full cursor-pointer"
-			href={id}
-			aria-labelledby={titleId}
-			aria-describedby={`${bodyId} ${footerId}`}
-		></a>
 		<div class="card-image">
 			<div class="pointer-events-none relative flex">
 				{#if item.image}
@@ -63,10 +57,7 @@
 							class="object-contain object-top"
 						/>
 						{#if getTypeIcon(item['@type'])}
-							<svelte:component
-								this={getTypeIcon(item['@type'])}
-								class="text-subtle absolute text-2xl"
-							/>
+							<svelte:component this={getTypeIcon(item['@type'])} class="text-subtle text-2xl" />
 						{/if}
 					</div>
 				{/if}
@@ -76,7 +67,14 @@
 			<header class="card-header" id={titleId}>
 				<hgroup>
 					<h2 class="card-header-title text-base font-medium">
-						<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
+						<a
+							href={id}
+							class="block hover:underline"
+							aria-labelledby={titleId}
+							aria-describedby={`${bodyId} ${footerId}`}
+						>
+							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
+						</a>
 					</h2>
 				</hgroup>
 				{#if item[LensType.WebCardHeaderExtra]?._display}
@@ -193,13 +191,6 @@
 			color: var(--color-subtle);
 			font-size: var(--text-3xs);
 		}
-	}
-
-	:global(a):not(.card-link),
-	.card-header-extra :global(> span),
-	.card-body :global(span:first-of-type),
-	.card-footer :global(> span) {
-		position: relative; /* needed for supporting mouse events on text, links and definitions above card-link */
 	}
 
 	.card-image {
