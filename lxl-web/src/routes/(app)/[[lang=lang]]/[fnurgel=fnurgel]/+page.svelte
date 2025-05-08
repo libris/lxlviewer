@@ -199,7 +199,7 @@
 	</div>
 	{#if data.instances?.length}
 		<div class="instances find-layout p-4 pt-2! sm:px-6">
-			<div class="instances-list border-neutral border-t pt-6">
+			<div class="instances-list border-neutral border-t pt-6 text-sm">
 				<InstancesList
 					data={data.instances}
 					columns={[
@@ -324,9 +324,8 @@
 
 <style>
 	.resource-page {
-		& :global(.block-property) {
+		& :global(.property-label) {
 			font-size: var(--text-xs);
-			color: var(--color-subtle);
 		}
 
 		& :global(.contribution-role) {
@@ -421,7 +420,7 @@
 
 	#instance-details {
 		& :global(.contribution-role),
-		& :global(.block-property) {
+		& :global(.property-label) {
 			font-size: var(--text-2xs);
 		}
 	}

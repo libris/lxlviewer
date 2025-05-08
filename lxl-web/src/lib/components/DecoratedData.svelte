@@ -225,7 +225,7 @@
 						{#if shouldShowLabels() && typeof data._label === 'string'}
 							<svelte:element this={block ? 'div' : 'span'}>
 								<!-- Add inner span with inline-block to achieve first letter capitalization while still supporting inline whitespaces -->
-								<span class={['inline-block first-letter:capitalize', block && 'block-property']}>
+								<span class={['inline-block first-letter:capitalize', block && 'property-label']}>
 									{data._label}
 								</span>
 								{' '}
@@ -266,6 +266,10 @@
 		@apply ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
 	}
 
+	.property-label {
+		color: var(--color-subtle);
+	}
+
 	.block {
 		display: block;
 	}
@@ -302,5 +306,16 @@
 
 	.sigel {
 		color: var(--color-subtle);
+	}
+
+	/* decorated data in popover */
+	:global(.popover) {
+		& .property-label {
+			font-size: var(--text-3xs);
+		}
+
+		& div[data-property]:not(:last-child) {
+			margin-bottom: calc(var(--spacing) * 1);
+		}
 	}
 </style>

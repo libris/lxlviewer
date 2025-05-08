@@ -93,10 +93,3 @@
 		</svg>
 	</div>
 </div>
-
-<style>
-	.popover :global(.block-property) {
-		font-size: var(--text-2xs);
-		color: var(--color-subtle);
-	}
-</style>
