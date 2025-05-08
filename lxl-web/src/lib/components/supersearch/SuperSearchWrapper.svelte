@@ -170,7 +170,7 @@
 			type="button"
 			role="gridcell"
 			id={getCellId(rowIndex, 0)}
-			class="hover:bg-primary/10 flex min-h-12 w-full items-center px-4"
+			class="hover:bg-primary-50 flex min-h-12 w-full items-center px-4"
 			class:focused-cell={isFocusedCell(rowIndex, 0)}
 			onclick={() => addQualifierKey(qualifierKey)}
 		>
@@ -333,7 +333,7 @@
 						type="button"
 						role="gridcell"
 						id={getCellId(moreFiltersRowIndex, 0)}
-						class="hover:bg-primary/10 flex min-h-11 w-full items-center px-4 text-sm"
+						class="hover:bg-primary-50 flex min-h-11 w-full items-center px-4 text-sm"
 						class:focused-cell={isFocusedCell(moreFiltersRowIndex, 0)}
 						onclick={() => (showMoreFilters = !showMoreFilters)}
 					>
@@ -400,11 +400,11 @@
 	}
 
 	:global(.supersearch-dialog .focused) {
-		background-color: --alpha(var(--color-primary) / 10%);
+		background-color: var(--color-primary-100);
 	}
 
 	:global(.focused-cell) {
-		background-color: --alpha(var(--color-primary) / 5%);
+		background-color: var(--color-primary-100);
 	}
 
 	/* :global(.button-primary.focused-cell) {
@@ -423,7 +423,7 @@
 		@apply flex min-h-11 w-full items-center px-4 text-left text-sm;
 
 		&:hover {
-			background-color: --alpha(var(--color-primary) / 10%);
+			background-color: var(--color-primary-100);
 		}
 	}
 

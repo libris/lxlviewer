@@ -281,7 +281,7 @@
 					</h2>
 					<!-- my libraries holdings -->
 					{#if myLibsHolders.length}
-						<div class="border-neutral bg-primary/10 my-4 rounded-sm border-b p-4 pb-0">
+						<div class="border-neutral bg-accent-50 my-4 rounded-sm border-b p-4 pb-0">
 							<h3 class="flex items-center gap-2">
 								<span aria-hidden="true" class="text-primary-700 text-base">
 									<BiHouseHeart />

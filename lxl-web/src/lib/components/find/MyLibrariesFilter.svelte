@@ -49,7 +49,7 @@
 {/snippet}
 
 <div
-	class="text-2xs bg-accent/10 border-neutral flex w-full gap-2 rounded-sm border-b p-3 lg:flex-col lg:gap-1"
+	class="text-2xs bg-accent-50 border-neutral flex w-full gap-2 rounded-sm border-b p-3 lg:flex-col lg:gap-1"
 >
 	{#if myLibrariesValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>

@@ -291,7 +291,7 @@
 			border-color: var(--color-accent-200);
 
 			&:hover {
-				background-color: --alpha(var(--color-primary) / 10%);
+				background-color: var(--color-primary-100);
 			}
 		}
 	}

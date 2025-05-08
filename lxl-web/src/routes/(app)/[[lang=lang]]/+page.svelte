@@ -13,7 +13,9 @@
 	<div class="landing flex flex-col items-center gap-2">
 		<h1 class="flex text-5xl/tight font-[600] sm:text-6xl/tight">
 			Libris
-			<sup class="bg-primary-200 self-center rounded-sm px-2 text-base uppercase">Beta</sup>
+			<sup class="bg-primary-200 self-center rounded-sm px-2 text-base font-medium uppercase"
+				>Beta</sup
+			>
 		</h1>
 	</div>
 

@@ -1,7 +1,7 @@
 .lxl-qualifier {
 	display: inline-block;
 	color: var(--text-body);
-	background-color: --alpha(var(--color-accent) / 5%);
+	background-color: var(--color-accent-50);
 }
 
 .lxl-qualifier-key,
@@ -32,7 +32,7 @@
 }
 
 .lxl-qualifier-remove:hover {
-	background-color: --alpha(var(--color-accent) / 20%);
+	background-color: var(--color-accent-200);
 }
 
 .lxl-qualifier-value:has(~ .lxl-qualifier-remove) {
@@ -40,7 +40,7 @@
 }
 
 .atomic {
-	background-color: --alpha(var(--color-accent) / 15%);
+	background-color: var(--color-accent-100);
 	user-select: none;
 }
 

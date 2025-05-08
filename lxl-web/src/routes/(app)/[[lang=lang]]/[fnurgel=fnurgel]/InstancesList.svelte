@@ -108,7 +108,7 @@
 						ontoggle={() => handleToggleDetails(page.state)}
 					>
 						<summary
-							class="hover:bg-primary/10 grid min-h-11 items-center gap-2 align-middle text-sm lg:text-base"
+							class="hover:bg-primary-50 grid min-h-11 items-center gap-2 align-middle text-sm lg:text-base"
 							onkeydown={handleSummaryKeydown}
 						>
 							<span class="arrow text-subtle w-4 origin-center rotate-0 transition-transform">
@@ -171,10 +171,6 @@
 	.column-headers > :first-child {
 		grid-column: span 2;
 	}
-
-	/* details[open] > summary {
-		@apply bg-primary/8 hover:bg-primary/16;
-	} */
 
 	details[open] .arrow {
 		@apply rotate-90;

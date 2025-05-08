@@ -210,12 +210,12 @@
 	}
 
 	.btn-accent {
-		background-color: --alpha(var(--color-accent) / 10%);
+		background-color: var(--color-accent-100);
 		color: var(--color-body);
-		border: 1px solid --alpha(var(--color-accent) / 20%);
+		border: 1px solid var(--color-accent-200);
 
 		&:hover {
-			background-color: --alpha(var(--color-accent) / 20%);
+			background-color: var(--color-accent-200);
 		}
 
 		& svg {
@@ -248,7 +248,7 @@
 		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1.5);
 		border-radius: calc(infinity * 1px);
 		color: var(--color-body);
-		background-color: --alpha(var(--color-primary) / 20%);
+		background-color: var(--color-primary-200);
 	}
 
 	.badge-accent {

@@ -163,7 +163,7 @@
 	}
 
 	:global(:not(.focused)) > .suggestion:has(:global(*:hover)) {
-		background-color: --alpha(var(--color-primary) / 10%);
+		background-color: var(--color-primary-50);
 	}
 
 	.suggestion button,
@@ -218,6 +218,6 @@
 
 	.more.focused-cell .more-icon-container,
 	.more:hover .more-icon-container {
-		background-color: --alpha(var(--color-primary) / 20%);
+		background-color: var(--color-primary-200);
 	}
 </style>
