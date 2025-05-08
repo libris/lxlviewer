@@ -374,7 +374,7 @@
 			}
 		}
 		& :global(div[data-property]:not(:last-child)) {
-			margin-bottom: 0.8rem;
+			margin-bottom: calc(var(--spacing) * 4);
 		}
 
 		& :global(.contribution > ._contentBefore),
