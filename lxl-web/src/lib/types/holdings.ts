@@ -1,4 +1,4 @@
-import type { DisplayDecorated } from './xl';
+import type { DisplayDecorated, FramedData } from './xl';
 
 export type BibIdObj = {
 	bibId: string;
@@ -28,4 +28,16 @@ export type DecoratedHolder = {
 	obj: DisplayDecorated;
 	sigel: string;
 	str: string;
+};
+
+export type FullHolderBySigel = {
+	[sigel: string]: FramedData;
+};
+
+export type ItemLinksForHolder = {
+	[sigel: string]: string[]; //links
+};
+
+export type ItemLinksByInstanceId = {
+	[id: string]: ItemLinksForHolder;
 };

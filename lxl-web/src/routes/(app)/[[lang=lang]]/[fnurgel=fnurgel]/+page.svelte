@@ -308,6 +308,12 @@
 					<ul class="w-full">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
 							<HoldingStatus {holder} {holdingUrl} />
+							<!-- TODO: confusing that holdingUrl is actually the instanceId/fnurgel!! -->
+							{#if isFnurgel(holdingUrl) && data.itemLinksByInstanceId[holdingUrl][holder.sigel]}
+								<a href={data.itemLinksByInstanceId[holdingUrl][holder.sigel]?.at(0)}>
+									-> Titeln i bibliotekets lokala katalog
+								</a>
+							{/if}
 						{/each}
 						{#if filteredHolders.length === 0}
 							<li class="m-3">

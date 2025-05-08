@@ -1,11 +1,20 @@
 import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
-import type { BibIdObj, HoldersByType, HoldingsByInstanceId } from '$lib/types/holdings';
+import type {
+	BibIdObj,
+	DecoratedHolder,
+	FullHolderBySigel,
+	HoldersByType,
+	HoldingsByInstanceId,
+	ItemLinksByInstanceId,
+	ItemLinksForHolder
+} from '$lib/types/holdings';
 import { LensType, type FramedData } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 import { relativizeUrl } from '$lib/utils/http';
 import { DisplayUtil, toString } from '$lib/utils/xl.js';
+import getAtPath from '$lib/utils/getAtPath';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -184,4 +193,57 @@ export function getMyLibsFromHoldings(
 		}
 	}
 	return Object.values(result);
+}
+
+export async function getFullHolderData(allHolders: DecoratedHolder[]): Promise<FullHolderBySigel> {
+	const holderBySigel: FullHolderBySigel = {};
+
+	for (const h of allHolders) {
+		const id = h.obj?.['@id'];
+		const libraryRes = await fetch(`${id}?framed=true`, {
+			headers: { Accept: 'application/ld+json' }
+		});
+		const resJson = await libraryRes.json();
+		const libraryMainEntity = resJson['mainEntity'] as FramedData;
+
+		if (libraryMainEntity) {
+			holderBySigel[h.sigel] = libraryMainEntity;
+		}
+	}
+	return holderBySigel;
+}
+
+export function getItemLinksByInstanceId(
+	holderBySigel: FullHolderBySigel,
+	bibIdsByInstanceId: Record<string, BibIdObj>
+): ItemLinksByInstanceId {
+	const keys = ['bibdb:bibIdSearchUri', 'bibdb:isbnSearchUri', 'bibdb:issnSearchUri'];
+	const linksByInstanceId: ItemLinksByInstanceId = {};
+	for (const [id, bibIdObj] of Object.entries(bibIdsByInstanceId)) {
+		const linksForHolder: ItemLinksForHolder = {};
+		bibIdObj.holders.forEach((sigel) => {
+			const data = holderBySigel[sigel];
+			let links: string[] = [];
+			for (const key of keys) {
+				const linkTemplate = getAtPath(data, ['bibdb:ils', key], []);
+				if (linkTemplate.length !== 0) {
+					if (key === 'bibdb:bibIdSearchUri' && bibIdObj.bibId !== '') {
+						// forms in the wild %BIB_ID%, %BIBID%, more???
+						links = [linkTemplate.replace(/%BIB_*ID%/, bibIdObj.bibId), ...links];
+					}
+					if (key === 'bibdb:isbnSearchUri' && bibIdObj.isbn.length !== 0) {
+						links = [linkTemplate.replace(/%ISBN%/, bibIdObj.isbn), ...links];
+					}
+					if (key === 'bibdb:issnSearchUri' && bibIdObj.issn.length !== 0) {
+						links = [linkTemplate.replace(/%ISSN%/, bibIdObj.issn), ...links];
+					}
+				}
+			}
+			if (links.length !== 0) {
+				linksForHolder[sigel] = links;
+			}
+		});
+		linksByInstanceId[id] = linksForHolder;
+	}
+	return linksByInstanceId;
 }

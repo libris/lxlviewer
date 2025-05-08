@@ -18,7 +18,9 @@ import {
 	getHoldingsByInstanceId,
 	getHoldingsByType,
 	getHoldersByType,
-	getBibIdsByInstanceId
+	getBibIdsByInstanceId,
+	getItemLinksByInstanceId,
+	getFullHolderData
 } from '$lib/utils/holdings.js';
 import { DebugFlags } from '$lib/types/userSettings';
 
@@ -72,6 +74,10 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
 
+	//TODO: cache this
+	const fullHolderByHolderId = await getFullHolderData(Object.values(holdersByType).flat());
+	const itemLinksByInstanceId = getItemLinksByInstanceId(fullHolderByHolderId, bibIdsByInstanceId);
+
 	return {
 		type: mainEntity[JsonLd.TYPE],
 		title: toString(heading),
@@ -82,6 +88,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		holdingsByInstanceId,
 		bibIdsByInstanceId,
 		holdersByType,
+		itemLinksByInstanceId,
 		full: overview,
 		images,
 		searchResult: searchPromise ? await searchPromise : null
