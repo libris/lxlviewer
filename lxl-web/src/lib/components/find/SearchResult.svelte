@@ -262,9 +262,7 @@
 		grid-area: sort-select;
 
 		& select {
-			@apply appearance-none px-8 text-right;
-			/* Safari text-align fix */
-			text-align-last: right;
+			@apply appearance-none px-8;
 		}
 	}
 
