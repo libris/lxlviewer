@@ -28,40 +28,47 @@
 <div class="search-card-container">
 	<article class="search-card" data-testid="search-card">
 		<div class="card-image">
-			<div class="pointer-events-none relative flex">
-				{#if item.image}
-					<img
-						src={item.image.url}
-						width={item.image.widthṔx}
-						height={item.image.heightPx}
-						alt={$page.data.t('general.latestInstanceCover')}
-						class:rounded-full={item['@type'] === 'Person'}
-						class="object-contain object-top {item['@type'] !== 'Person'
-							? 'aspect-2/3'
-							: 'aspect-square'}"
-					/>
-					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
-						<div class="absolute -top-4 -left-4">
-							<div class="bg-page rounded-md p-1.5">
-								<svelte:component this={getTypeIcon(item['@type'])} class="h-6 w-6" />
+			<a
+				href={id}
+				aria-labelledby={titleId}
+				aria-describedby={`${bodyId} ${footerId}`}
+				tabindex="-1"
+			>
+				<div class="pointer-events-none relative flex">
+					{#if item.image}
+						<img
+							src={item.image.url}
+							width={item.image.widthṔx}
+							height={item.image.heightPx}
+							alt={$page.data.t('general.latestInstanceCover')}
+							class:rounded-full={item['@type'] === 'Person'}
+							class="object-contain object-top {item['@type'] !== 'Person'
+								? 'aspect-2/3'
+								: 'aspect-square'}"
+						/>
+						{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
+							<div class="absolute -top-4 -left-4">
+								<div class="bg-page rounded-md p-1.5">
+									<svelte:component this={getTypeIcon(item['@type'])} class="h-6 w-6" />
+								</div>
 							</div>
+						{/if}
+					{:else}
+						<div class="flex items-center justify-center">
+							<img
+								src={placeholder}
+								alt=""
+								class:rounded-full={item['@type'] === 'Person'}
+								class:rounded-sm={item['@type'] !== 'Person'}
+								class="object-contain object-top"
+							/>
+							{#if getTypeIcon(item['@type'])}
+								<svelte:component this={getTypeIcon(item['@type'])} class="text-subtle text-2xl" />
+							{/if}
 						</div>
 					{/if}
-				{:else}
-					<div class="flex items-center justify-center">
-						<img
-							src={placeholder}
-							alt=""
-							class:rounded-full={item['@type'] === 'Person'}
-							class:rounded-sm={item['@type'] !== 'Person'}
-							class="object-contain object-top"
-						/>
-						{#if getTypeIcon(item['@type'])}
-							<svelte:component this={getTypeIcon(item['@type'])} class="text-subtle text-2xl" />
-						{/if}
-					</div>
-				{/if}
-			</div>
+				</div>
+			</a>
 		</div>
 		<div class="card-content">
 			<header class="card-header" id={titleId}>
