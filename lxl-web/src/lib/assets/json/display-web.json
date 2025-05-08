@@ -582,7 +582,7 @@
 			"@id": "contribution-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["contribution"],
-			"fresnel:propertyStyle": ["contribution nolabel"]
+			"fresnel:propertyStyle": ["contribution", "nolabel"]
 		},
 		"genreForm-format": {
 			"@id": "genreForm-format",
