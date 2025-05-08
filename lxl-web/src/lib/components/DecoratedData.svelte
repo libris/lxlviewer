@@ -262,13 +262,6 @@
 		@apply underline decoration-dotted;
 	}
 
-	.pill {
-		@apply mr-1 mb-1 inline-block rounded-full border px-3 py-1 no-underline;
-	}
-
-	a.pill {
-	}
-
 	.remainder {
 		@apply ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
 	}
@@ -278,6 +271,31 @@
 	}
 
 	/* resource property-specific styles */
+	.genre-form {
+		display: flex;
+		flex-wrap: wrap;
+		gap: calc(var(--spacing) * 1.5);
+		font-size: var(--text-2xs);
+
+		/* pill */
+		& > * {
+			border: 1px solid var(--color-neutral-200);
+			border-radius: calc(infinity * 1px);
+			padding-block: calc(var(--spacing) * 1.5);
+			padding-inline: calc(var(--spacing) * 3);
+			text-decoration: none;
+			white-space: nowrap;
+		}
+
+		& > a {
+			border-color: var(--color-accent-200);
+
+			&:hover {
+				background-color: --alpha(var(--color-primary) / 10%);
+			}
+		}
+	}
+
 	.transliteration {
 		font-style: italic;
 	}

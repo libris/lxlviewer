@@ -588,9 +588,9 @@
 			"@id": "genreForm-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["genreForm"],
-			"fresnel:propertyStyle": [],
+			"fresnel:propertyStyle": ["nolabel", "genre-form"],
 			"fresnel:valueFormat": {
-				"fresnel:contentBefore": ", ",
+				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
 			}
 		},
