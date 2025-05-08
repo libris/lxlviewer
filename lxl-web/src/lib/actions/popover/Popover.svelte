@@ -67,7 +67,7 @@
 	Note that `Popover.svelte` isn't intended to be used directly in page templates – use the `use:popover` instead (see `$lib/actions/popover`).
 -->
 <div
-	class="bg-page absolute top-0 left-0 z-50 w-max max-w-sm rounded-md border text-sm shadow-xl"
+	class="popover bg-page text-2xs border-neutral absolute top-0 left-0 z-50 w-max max-w-sm rounded-md border shadow-xl"
 	role="complementary"
 	bind:this={popoverElement}
 	on:mouseover={onMouseOver}

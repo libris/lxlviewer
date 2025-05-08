@@ -49,7 +49,7 @@
 <ul class="flex flex-wrap items-center gap-2">
 	{#each mapping as m, index (`${m['@id']}-${index}`)}
 		<li
-			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
+			class="mapping-item {m.children ? 'pill-group' : 'btn btn-accent'} pill-{m.operator}"
 			class:wildcard={m.operator === 'equals' && m.display === '*'}
 			class:outer={depth === 0}
 			class:free-text={m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
@@ -81,11 +81,11 @@
 			{/if}
 		</li>
 		{#if parentOperator}
-			<li class="pill-between pill-between-{parentOperator}">{parentOperator}</li>
+			<li class="pill-between pill-between-{parentOperator} text-xs">{parentOperator}</li>
 		{/if}
 		{#if 'up' in m && m.children && depth === 0}
 			<li class="pill-remove">
-				<a href={m.up?.['@id']}>
+				<a href={m.up?.['@id']} class="btn btn-primary">
 					<BiTrash aria-hidden="true" />
 					{$page.data.t('search.clearFilters')}
 				</a>
@@ -110,12 +110,12 @@
 	@reference "../../../app.css";
 
 	.mapping-item {
-		@apply rounded-md px-4 py-2 brightness-100;
-		transition: filter 0.1s ease;
+		/* @apply rounded-md px-4 py-2 brightness-100;
+		transition: filter 0.1s ease; */
 	}
 
 	.mapping-item:has(> .pill-remove:hover) {
-		@apply brightness-[.85];
+		/* @apply brightness-[.85]; */
 	}
 
 	.pill {

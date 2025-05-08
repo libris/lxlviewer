@@ -19,28 +19,32 @@
 	});
 </script>
 
-<header class="bg-app-header">
+<header class="bg-app-header border-b-primary-200 border-b">
 	<nav class="header-nav header-layout min-h-20 items-center py-0">
-		<div class="home md:pl-4">
-			<a href={page.data.base} class="flex flex-col no-underline md:flex-row">
-				<span class="text-[1.6rem] leading-tight font-extrabold md:text-[2.1rem]"> Libris</span>
-				<div class="top-0 -rotate-6 self-baseline rounded-sm px-2 uppercase md:rotate-0">Beta</div>
+		<div class="home lg:pl-4">
+			<a href={page.data.base} class="flex flex-col no-underline lg:flex-row">
+				<span class="text-2xl font-[600] lg:text-3xl"> Libris</span>
+				<div
+					class="bg-primary-200 top-0 -rotate-6 self-baseline rounded-sm px-2 text-sm uppercase lg:rotate-0"
+				>
+					Beta
+				</div>
 			</a>
 		</div>
 		<div class="search pb-4 sm:px-4 sm:pb-0">
 			<SuperSearchWrapper placeholder={page.data.t('header.searchPlaceholder')} />
 		</div>
-		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
+		<div class="actions flex min-h-20 items-center justify-end lg:pr-4">
 			<div
 				id="header-menu"
-				class="hidden items-center target:absolute target:left-0 target:block target:w-full lg:flex"
+				class="text-3xs hidden items-center target:absolute target:left-0 target:block target:w-full 2xl:flex"
 			>
 				<HeaderMenu />
 			</div>
-			<div class="lg:hidden">
+			<div class="2xl:hidden">
 				<a
 					aria-label={page.data.t('header.openMenu')}
-					class="h-11 w-11 p-0!"
+					class="text-subtle flex items-center p-4"
 					href={`${page.url.pathname}?${page.url.search}#header-menu`}
 					on:click|preventDefault={toggleHeaderMenu}
 				>

@@ -109,10 +109,10 @@
 	}
 </script>
 
-<li class="border-neutral not-last:border-b">
+<li class="border-neutral text-xs not-last:border-b">
 	<details ontoggle={getHoldingStatus}>
 		<summary class="my-3 flex cursor-pointer items-baseline">
-			<span class="arrow mr-2 h-3">
+			<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
 				<BiChevronRight />
 			</span>
 			<span class="holder-label">
@@ -124,7 +124,7 @@
 				<p>{page.data.t('search.loading')}</p>
 			{/if}
 			{#if error}
-				<div class="status-container">
+				<div class="status-container border-neutral bg-page max-w-md rounded-sm border p-2">
 					<p class="error" role="alert">{error}</p>
 				</div>
 			{/if}
@@ -132,7 +132,9 @@
 				{#each statusData as instance, index (index)}
 					{#if instance?.item_information}
 						{@const items = instance.item_information}
-						<div class="status-container flex flex-col gap-4">
+						<div
+							class="status-container border-neutral bg-page flex max-w-md flex-col gap-4 rounded-sm border p-2"
+						>
 							{#if items.error || items.count === 0}
 								{#if urlNotDefinedError(items.error)}
 									<p class="library-unavailable">{page.data.t('holdings.libraryUnvaliable')}</p>
@@ -143,7 +145,7 @@
 							{#each items.items as item, index (index)}
 								{@const indicator = getIndicator(item.Status)}
 								<table>
-									<tbody>
+									<tbody class="text-xs leading-relaxed">
 										<tr>
 											<th>{page.data.t('holdings.location')}</th>
 											<td>{item.Location}</td>
@@ -201,7 +203,7 @@
 		}
 
 		& .holder-label {
-			@apply whitespace-normal;
+			white-space: normal;
 		}
 	}
 
@@ -209,39 +211,36 @@
 		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
 	}
 
-	.arrow {
-		transform-origin: center;
-		@apply rotate-0 transition-transform;
-	}
-
 	.status-container {
-		@apply max-w-md rounded-sm border p-2;
-
 		&:has(p.error) {
+			background-color: var(--color-warning-100);
 		}
 
 		/* don't repeat the library-unavailable message for every instance */
 		&:has(p.library-unavailable):not(:first-of-type) {
-			@apply hidden;
+			display: none;
 		}
 	}
 
 	table th {
-		@apply w-24 pr-4 align-baseline;
+		font-weight: var(--font-weight-medium);
+		width: calc(var(--spacing) * 24);
+		padding-right: calc(var(--spacing) * 4);
+		vertical-align: baseline;
 	}
 
 	table td {
-		@apply w-auto;
+		width: auto;
 	}
 
 	.indicator {
 		@apply mb-0.5 inline-block h-2.5 w-2.5 rounded-full align-middle;
 
 		&.unavailable {
-			@apply bg-[#dc110f];
+			background-color: var(--color-severe-500);
 		}
 		&.available {
-			@apply bg-[#2ab061];
+			background-color: var(--color-success);
 		}
 	}
 </style>

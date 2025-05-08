@@ -35,17 +35,22 @@
 :root {
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-black: #000;
+	--color-white: #fff;
+	--color-success: #2ab061;
 }
 
 @theme inline {
+	--breakpoint-3xl: 110rem; /* 1760px */
+
 	--font-sans: 'Inter', var(--font-fallback);
 	--font-body: var(--font-sans);
 	--font-heading: 'Inter', var(--font-fallback);
 
-	--text-4xs: 10px;
-	--text-3xs: 11px;
-	--text-2xs: 12px;
-	--text-xs: 13px;
+	--text-4xs: 0.625rem; /* 10px */
+	--text-3xs: 0.6875rem; /* 11px */
+	--text-2xs: 0.75rem; /* 12px */
+	--text-xs: 0.8125rem; /* 13px */
+	--text-3xl: 1.75rem; /* 28px */
 
 	--color-*: initial;
 
@@ -116,16 +121,20 @@
 
 	--color-page: #fff;
 	--color-body: var(--color-neutral-800);
-	--color-subtle: var(--color-neutral-500);
+	--color-subtle: var(--color-neutral-600);
 	--color-link: var(--color-accent);
 	--color-error: var(--color-severe);
 	--color-app-header: var(--color-primary-100);
 	--color-input: var(--color-page);
+
+	--color-placeholder: var(--color-neutral-500);
 }
 
 @layer base {
 	html {
 		scrollbar-gutter: stable;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 
 	body {
@@ -140,23 +149,111 @@
 	}
 }
 
-@utility link {
-	color: var(--color-link);
-	text-decoration: underline;
-	text-decoration-style: dotted;
+@layer components {
+	a.link,
+	a.ext-link {
+		color: var(--color-link);
+		text-decoration: underline;
+		text-decoration-style: dotted;
 
-	&:hover {
-		text-decoration-style: solid;
+		&:hover {
+			text-decoration-style: solid;
+		}
 	}
-}
 
-@utility link-subtle {
-	color: var(--color-body);
-	text-decoration: underline;
-	text-decoration-style: dotted;
+	a.ext-link::after {
+		background-color: var(--color-link);
+		content: '';
+		display: inline-flex;
+		height: calc(var(--spacing) * 2.5);
+		width: calc(var(--spacing) * 2.5);
+		margin-left: var(--spacing);
+		mask-image: url('$lib/assets/img/ext-link.svg');
+		mask-size: cover;
+	}
 
-	&:hover {
-		text-decoration-style: solid;
+	.link-subtle {
+		color: var(--color-body);
+		text-decoration: underline;
+		text-decoration-style: dotted;
+
+		&:hover {
+			text-decoration-style: solid;
+		}
+	}
+
+	.btn {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: var(--spacing);
+		font-size: var(--text-2xs);
+		font-weight: var(--font-weight-medium);
+		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+		border-radius: var(--spacing);
+		transition: background-color var(--default-transition-timing-function)
+			var(--default-transition-duration);
+	}
+
+	.btn-primary {
+		background-color: var(--color-page);
+		color: var(--color-body);
+		border: 1px solid var(--color-neutral-200);
+
+		&:hover {
+			background-color: var(--color-primary-100);
+		}
+
+		& svg {
+			color: var(--color-subtle);
+		}
+	}
+
+	.btn-accent {
+		background-color: var(--color-accent-100);
+		color: var(--color-body);
+		border: 1px solid var(--color-accent-200);
+
+		&:hover {
+			background-color: var(--color-accent-200);
+		}
+
+		& svg {
+			color: var(--color-subtle);
+		}
+	}
+
+	.btn-cta {
+		background-color: var(--color-accent);
+		color: var(--color-white);
+		font-size: var(--text-xs);
+		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 6);
+		height: calc(var(--spacing) * 10);
+		border-radius: calc(infinity * 1px);
+		border: 1px solid var(--color-accent);
+
+		&:hover {
+			background-color: var(--color-accent-700);
+		}
+	}
+
+	.badge {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: calc(var(--spacing) * 4);
+		min-width: calc(var(--spacing) * 5);
+		font-size: var(--text-4xs);
+		font-weight: var(--font-weight-medium);
+		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1.5);
+		border-radius: calc(infinity * 1px);
+		color: var(--color-body);
+		background-color: var(--color-primary-200);
+	}
+
+	.badge-accent {
+		color: var(--color-page);
+		background-color: var(--color-accent);
 	}
 }
 
@@ -179,19 +276,15 @@
 }
 
 @utility find-layout {
-	@apply md:grid-cols-find flex flex-col gap-4 md:grid md:gap-8;
-}
-
-@utility header-layout-md {
-	grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
+	@apply lg:grid-cols-find flex flex-col gap-4 lg:grid lg:gap-8;
 }
 
 @utility header-layout {
 	grid-template-columns: 70px minmax(0, 8fr) 1fr;
-	@apply md:header-layout-md grid gap-x-8 px-4 sm:px-6 md:px-2;
+	@apply grid gap-x-8 px-4 sm:px-6;
 
-	/* why is this not working?? */
-	/* @media screen and (min-width: var(--breakpoint-md)) {
+	@variant lg {
 		grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
-	} */
+		padding-inline: calc(var(--spacing) * 2);
+	}
 }

@@ -7,7 +7,7 @@ export default {
 		help: 'Help',
 		myPages: 'My pages',
 		changeLang: 'På svenska',
-		searchPlaceholder: 'Title, author, subject etc.',
+		searchPlaceholder: 'Search for title, author, library, subject...',
 		openMenu: 'Open main menu'
 	},
 	myPages: {
@@ -146,8 +146,8 @@ export default {
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',
 		alphaDesc: 'Z-A',
-		publicationAsc: 'Oldest first (publication year)',
-		publicationDesc: 'Newest first (publication year)',
+		publicationAsc: 'Oldest (publication year)',
+		publicationDesc: 'Newest (publication year)',
 		holdingsDesc: 'Number of libraries',
 		hitsAsc: 'Hits asc.',
 		hitsDesc: 'Hits desc.',
@@ -174,7 +174,7 @@ export default {
 		apply: 'Apply',
 		from: 'From',
 		to: 'To',
-		year: 'Year',
+		year: 'year',
 		usagePolicy: 'License terms',
 		cropped: 'Cropped'
 	},

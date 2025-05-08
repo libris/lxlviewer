@@ -1,20 +1,27 @@
-@reference "../../app.css";
-
 /* heading */
 #cc-main .cm__title,
 #cc-main .pm__title {
+	font-family: var(--font-heading);
+	font-size: var(--text-2xl);
+	font-weight: var(--font-normal);
 }
 
 /* subheading */
 #cc-main .pm__section-title {
+	font-family: var(--font-body);
+	font-weight: var(--font-weight-medium);
 }
 
 /* body text */
 #cc-main .cm__desc,
 #cc-main .pm__section-desc {
+	font-family: var(--font-body);
+	color: var(--color-body);
 }
 
 /* btns */
 #cc-main .cm__btn,
 #cc-main .pm__btn {
+	font-family: var(--font-body);
+	font-weight: var(--font-weight-medium);
 }
