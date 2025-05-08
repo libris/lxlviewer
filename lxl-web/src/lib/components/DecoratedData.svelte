@@ -277,7 +277,7 @@
 		display: block;
 	}
 
-	/* property-specific styles */
+	/* resource property-specific styles */
 	.transliteration {
 		font-style: italic;
 	}
