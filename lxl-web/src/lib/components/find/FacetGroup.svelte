@@ -181,7 +181,7 @@
 				<!-- 'show more' btn -->
 				{#if canShowMoreItems || canShowFewerItems}
 					<button
-						class="mt-2 ml-5"
+						class="mt-2 ml-5 h-6"
 						onclick={() =>
 							canShowMoreItems
 								? (defaultItemsShown = totalItems)

@@ -25,7 +25,7 @@
 			? [page.data.bibIdsByInstanceId[holdingUrl]]
 			: Object.keys(page.data.bibIdsByInstanceId)
 					.filter((i) => page.data.bibIdsByInstanceId[i]['@type'] === holdingUrl)
-					.filter((i) => page.data.bibIdsByInstanceId[i].holders.includes(sigel))
+					.filter((i) => page.data.bibIdsByInstanceId[i].holders?.includes(sigel))
 					.map((i) => page.data.bibIdsByInstanceId[i]);
 	});
 
