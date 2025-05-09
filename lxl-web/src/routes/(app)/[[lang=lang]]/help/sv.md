@@ -8,6 +8,10 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
+### 2025-05-09
+
+- Uppdatering av design
+
 ### 2025-04-24
 
 - Möjlighet att ange och filtrera på favoritbibliotek

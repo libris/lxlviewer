@@ -8,6 +8,10 @@ title: 'Help'
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### 2025-05-09
+
+- Design updates
+
 ### 2025-04-24
 
 - Ability to set and filter on favourite libraries
