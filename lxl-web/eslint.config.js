@@ -29,13 +29,5 @@ export default [
 	},
 	{
 		ignores: ['build/', '.svelte-kit/', 'dist/']
-	},
-	{
-		rules: {
-			// Temporarily disable errors while formatting old code
-			'svelte/require-each-key': 'warn',
-			'svelte/no-useless-mustaches': 'warn',
-			'svelte/no-unused-svelte-ignore': 'warn'
-		}
 	}
 ];
