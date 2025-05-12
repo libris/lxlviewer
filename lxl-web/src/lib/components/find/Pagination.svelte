@@ -1,22 +1,26 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import type { SearchResult } from '$lib/types/search';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronLeft from '~icons/bi/chevron-left';
-	export let data: SearchResult;
 
-	$: ({ first, last, next, previous, totalItems, itemsPerPage, itemOffset, maxItems } = data);
-	$: showPagination = data.items.length > 0 && totalItems > itemsPerPage;
+	type PaginationProps = {
+		data: SearchResult;
+	};
 
-	$: currentPage = Math.floor(itemOffset / itemsPerPage) + 1;
-	$: lastItem = totalItems > maxItems ? maxItems : totalItems;
-	$: lastPage = Math.ceil(lastItem / itemsPerPage);
+	const { data }: PaginationProps = $props();
 
-	// How many pages to display in a sequence (excl first & last)
 	const numberOfPages = 7;
-	$: sequenceSize = numberOfPages > lastPage ? lastPage : numberOfPages;
 
-	$: pageSequence = (() => {
+	const { first, last, next, previous, totalItems, itemsPerPage, itemOffset, maxItems } =
+		$derived(data);
+	const showPagination = $derived(data.items.length > 0 && totalItems > itemsPerPage);
+	const currentPage = $derived(Math.floor(itemOffset / itemsPerPage) + 1);
+	const lastItem = $derived(totalItems > maxItems ? maxItems : totalItems);
+	const lastPage = $derived(Math.ceil(lastItem / itemsPerPage));
+	const sequenceSize = $derived(numberOfPages > lastPage ? lastPage : numberOfPages);
+
+	const pageSequence = $derived.by(() => {
 		let pages = [];
 		let halfSequence = Math.floor(sequenceSize / 2);
 
@@ -39,10 +43,10 @@
 		}
 
 		for (let i = sequenceStart; i <= sequenceEnd; i++) {
-			pages.push({ page: i, link: getOffsetLink(itemsPerPage * (i - 1)) });
+			pages.push({ page: i, offset: itemsPerPage * (i - 1) });
 		}
 		return pages;
-	})();
+	});
 
 	function getOffsetLink(offset: number) {
 		let o = offset < 0 ? 0 : offset;
@@ -51,14 +55,14 @@
 </script>
 
 {#if showPagination}
-	<nav aria-label={$page.data.t('search.pagination')} data-testid="pagination">
+	<nav aria-label={page.data.t('search.pagination')} data-testid="pagination">
 		<ul class="flex justify-center overflow-hidden p-4 sm:px-6">
 			<!-- prev -->
 			{#if previous}
 				<li>
 					<a
 						href={previous['@id']}
-						aria-label={$page.data.t('search.previous')}
+						aria-label={page.data.t('search.previous')}
 						class="btn btn-primary border-0"
 						><BiChevronLeft class="text-base" aria-hidden="true" /></a
 					>
@@ -67,7 +71,7 @@
 			<!-- first -->
 			<li>
 				<a
-					aria-label="{$page.data.t('search.page')} 1"
+					aria-label="{page.data.t('search.page')} 1"
 					class={['btn btn-primary', currentPage === 1 ? 'bg-accent-50' : 'border-0']}
 					href={first['@id']}>1</a
 				>
@@ -76,7 +80,7 @@
 				<li class="hidden h-9 w-6 items-end pb-1 sm:flex"><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
-			{#each pageSequence as p}
+			{#each pageSequence as p (p.offset)}
 				{#if p.page !== 1 && p.page !== lastPage}
 					<li>
 						<a
@@ -84,10 +88,10 @@
 								'btn btn-primary',
 								p.page === currentPage ? 'bg-accent-50' : 'hidden border-0 sm:flex'
 							]}
-							href={p.link}
-							aria-label="{$page.data.t('search.page')} {p}"
+							href={getOffsetLink(p.offset)}
+							aria-label="{page.data.t('search.page')} {p}"
 							aria-current={p.page === currentPage ? 'page' : null}
-							>{p.page.toLocaleString($page.data.locale)}</a
+							>{p.page.toLocaleString(page.data.locale)}</a
 						>
 					</li>
 				{/if}
@@ -98,9 +102,9 @@
 			<!-- last -->
 			<li>
 				<a
-					aria-label="{$page.data.t('search.page')} {lastPage}"
+					aria-label="{page.data.t('search.page')} {lastPage}"
 					class={['btn btn-primary', currentPage === lastPage ? 'bg-accent-50' : 'border-0']}
-					href={last['@id']}>{lastPage.toLocaleString($page.data.locale)}</a
+					href={last['@id']}>{lastPage.toLocaleString(page.data.locale)}</a
 				>
 			</li>
 			<!-- next -->
@@ -108,7 +112,7 @@
 				<li>
 					<a
 						href={next['@id']}
-						aria-label={$page.data.t('search.next')}
+						aria-label={page.data.t('search.next')}
 						class="btn btn-primary border-0"
 						><BiChevronRight class="text-base" aria-hidden="true" /></a
 					>
@@ -118,14 +122,14 @@
 	</nav>
 {/if}
 
-<style lang="postcss">
-	@reference "../../../app.css";
-
+<style>
 	nav li > * {
-		@apply mx-0.5;
+		margin-inline: calc(var(--spacing) * 0.5);
 	}
 
 	nav li > a {
-		@apply min-h-9 min-w-9 !px-2;
+		min-height: calc(var(--spacing) * 9);
+		min-width: calc(var(--spacing) * 9);
+		padding-inline: calc(var(--spacing) * 2);
 	}
 </style>
