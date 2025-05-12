@@ -246,9 +246,23 @@ export function getItemLinksByInstanceId(
 				linksToItem = [linkTemplateEod.replace(/%BIBID%/, bibIdObj.bibId), ...linksToItem];
 			}
 
+			const allLinks: { [linkType: string]: string[] } = {};
+
+			const linksToSite: string[] = [];
+			const linkToSite = getAtPath(fullHolderData, ['bibdb:ils', 'url'], undefined);
+			if (linkToSite && linkToSite.length !== 0) {
+				linksToSite.push(linkToSite);
+				//TODO: formalize keys
+				allLinks['linksToSite'] = linksToSite;
+			}
+
 			if (linksToItem.length !== 0) {
-				//TODO: formalize linksToItem
 				linksForHolder[sigel] = { linksToItem: linksToItem };
+				allLinks['linksToItem'] = linksToItem;
+			}
+
+			if (Object.keys(allLinks).length !== 0) {
+				linksForHolder[sigel] = allLinks;
 			}
 		});
 		linksByInstanceId[id] = linksForHolder;

@@ -198,11 +198,20 @@
 		{#each bibIds as id (id.bibId)}
 			{#if linksByInstanceId[id.bibId]?.[holder.sigel]}
 				<div class="mb-4">
-					<li>
-						<a href={linksByInstanceId[id.bibId][holder.sigel]?.['linksToItem'].at(0)}>
-							-> Titeln i bibliotekets lokala katalog
-						</a>
-					</li>
+					{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToItem']}
+						<li>
+							<a href={linksByInstanceId[id.bibId][holder.sigel]['linksToItem'].at(0)}>
+								-> Titeln i bibliotekets lokala katalog
+							</a>
+						</li>
+					{/if}
+					{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToSite']}
+						<li>
+							<a href={linksByInstanceId[id.bibId][holder.sigel]['linksToSite'].at(0)}>
+								-> Bibliotekets hemsida
+							</a>
+						</li>
+					{/if}
 				</div>
 			{/if}
 		{/each}
