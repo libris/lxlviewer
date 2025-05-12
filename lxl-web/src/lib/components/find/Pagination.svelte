@@ -122,14 +122,14 @@
 	</nav>
 {/if}
 
-<style lang="postcss">
-	@reference "../../../app.css";
-
+<style>
 	nav li > * {
-		@apply mx-0.5;
+		margin-inline: calc(var(--spacing) * 0.5);
 	}
 
 	nav li > a {
-		@apply min-h-9 min-w-9 !px-2;
+		min-height: calc(var(--spacing) * 9);
+		min-width: calc(var(--spacing) * 9);
+		padding-inline: calc(var(--spacing) * 2);
 	}
 </style>
