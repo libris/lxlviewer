@@ -217,30 +217,38 @@ export function getItemLinksByInstanceId(
 	holderBySigel: FullHolderBySigel,
 	bibIdsByInstanceId: Record<string, BibIdObj>
 ): ItemLinksByInstanceId {
-	const keys = ['bibdb:bibIdSearchUri', 'bibdb:isbnSearchUri', 'bibdb:issnSearchUri'];
+	const ilsProperties = ['bibdb:bibIdSearchUri', 'bibdb:isbnSearchUri', 'bibdb:issnSearchUri'];
+
 	const linksByInstanceId: ItemLinksByInstanceId = {};
 	for (const [id, bibIdObj] of Object.entries(bibIdsByInstanceId)) {
 		const linksForHolder: ItemLinksForHolder = {};
 		bibIdObj.holders.forEach((sigel) => {
-			const data = holderBySigel[sigel];
-			let links: string[] = [];
-			for (const key of keys) {
-				const linkTemplate = getAtPath(data, ['bibdb:ils', key], []);
-				if (linkTemplate.length !== 0) {
+			const fullHolderData = holderBySigel[sigel];
+
+			let linksToItem: string[] = [];
+			for (const key of ilsProperties) {
+				const linkTemplateIls = getAtPath(fullHolderData, ['bibdb:ils', key], []);
+				if (linkTemplateIls.length !== 0) {
 					if (key === 'bibdb:bibIdSearchUri' && bibIdObj.bibId !== '') {
 						// forms in the wild %BIB_ID%, %BIBID%, more???
-						links = [linkTemplate.replace(/%BIB_*ID%/, bibIdObj.bibId), ...links];
+						linksToItem = [linkTemplateIls.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
 					}
 					if (key === 'bibdb:isbnSearchUri' && bibIdObj.isbn.length !== 0) {
-						links = [linkTemplate.replace(/%ISBN%/, bibIdObj.isbn), ...links];
+						linksToItem = [linkTemplateIls.replace(/%ISBN%/, bibIdObj.isbn), ...linksToItem];
 					}
 					if (key === 'bibdb:issnSearchUri' && bibIdObj.issn.length !== 0) {
-						links = [linkTemplate.replace(/%ISSN%/, bibIdObj.issn), ...links];
+						linksToItem = [linkTemplateIls.replace(/%ISSN%/, bibIdObj.issn), ...linksToItem];
 					}
 				}
 			}
-			if (links.length !== 0) {
-				linksForHolder[sigel] = links;
+			const linkTemplateEod = getAtPath(fullHolderData, ['bibdb:eodUri'], []);
+			if (linkTemplateEod) {
+				linksToItem = [linkTemplateEod.replace(/%BIBID%/, bibIdObj.bibId), ...linksToItem];
+			}
+
+			if (linksToItem.length !== 0) {
+				//TODO: formalize linksToItem
+				linksForHolder[sigel] = { linksToItem: linksToItem };
 			}
 		});
 		linksByInstanceId[id] = linksForHolder;

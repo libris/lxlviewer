@@ -35,7 +35,7 @@ export type FullHolderBySigel = {
 };
 
 export type ItemLinksForHolder = {
-	[sigel: string]: string[]; //links
+	[sigel: string]: { [linkType: string]: string[] }; //links
 };
 
 export type ItemLinksByInstanceId = {

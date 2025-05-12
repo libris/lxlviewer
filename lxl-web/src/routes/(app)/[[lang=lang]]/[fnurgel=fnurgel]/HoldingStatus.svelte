@@ -199,7 +199,7 @@
 			{#if linksByInstanceId[id.bibId]?.[holder.sigel]}
 				<div class="mb-4">
 					<li>
-						<a href={linksByInstanceId[id.bibId][holder.sigel]?.at(0)}>
+						<a href={linksByInstanceId[id.bibId][holder.sigel]?.['linksToItem'].at(0)}>
 							-> Titeln i bibliotekets lokala katalog
 						</a>
 					</li>
