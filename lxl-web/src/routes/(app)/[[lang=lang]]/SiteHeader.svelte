@@ -23,7 +23,7 @@
 	<nav class="header-nav header-layout min-h-20 items-center py-0">
 		<div class="home lg:pl-4">
 			<a href={page.data.base} class="flex flex-col no-underline lg:flex-row">
-				<span class="text-2xl font-[600] lg:text-3xl"> Libris</span>
+				<span class="font-heading text-2xl font-[600] lg:text-3xl"> Libris</span>
 				<div
 					class="bg-primary-200 top-0 -rotate-6 self-baseline rounded-sm px-2 text-sm uppercase lg:rotate-0"
 				>
