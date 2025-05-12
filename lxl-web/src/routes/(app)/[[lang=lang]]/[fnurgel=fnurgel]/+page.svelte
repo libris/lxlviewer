@@ -290,7 +290,11 @@
 							</h3>
 							<ul class="w-full">
 								{#each myLibsHolders as holder, i (holder.sigel || i)}
-									<HoldingStatus {holder} {holdingUrl} />
+									<HoldingStatus
+										{holder}
+										{holdingUrl}
+										linksByInstanceId={data.itemLinksByInstanceId}
+									/>
 								{/each}
 							</ul>
 						</div>
@@ -307,13 +311,7 @@
 					</div>
 					<ul class="w-full">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
-							<HoldingStatus {holder} {holdingUrl} />
-							<!-- TODO: confusing that holdingUrl is actually the instanceId/fnurgel!! -->
-							{#if isFnurgel(holdingUrl) && data.itemLinksByInstanceId[holdingUrl][holder.sigel]}
-								<a href={data.itemLinksByInstanceId[holdingUrl][holder.sigel]?.at(0)}>
-									-> Titeln i bibliotekets lokala katalog
-								</a>
-							{/if}
+							<HoldingStatus {holder} {holdingUrl} linksByInstanceId={data.itemLinksByInstanceId} />
 						{/each}
 						{#if filteredHolders.length === 0}
 							<li class="m-3">

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { type HoldingStatus } from '$lib/types/api';
-	import type { BibIdObj, DecoratedHolder } from '$lib/types/holdings';
+	import type { BibIdObj, DecoratedHolder, ItemLinksByInstanceId } from '$lib/types/holdings';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
@@ -9,9 +9,10 @@
 	type HoldingStatusProps = {
 		holder: DecoratedHolder;
 		holdingUrl: string;
+		linksByInstanceId: ItemLinksByInstanceId;
 	};
 
-	const { holder, holdingUrl }: HoldingStatusProps = $props();
+	const { holder, holdingUrl, linksByInstanceId }: HoldingStatusProps = $props();
 
 	const sigel = holder?.sigel;
 	let loading = $state(false);
@@ -192,6 +193,20 @@
 			{/if}
 		</div>
 	</details>
+
+	<ul>
+		{#each bibIds as id (id.bibId)}
+			{#if linksByInstanceId[id.bibId]?.[holder.sigel]}
+				<div class="mb-4">
+					<li>
+						<a href={linksByInstanceId[id.bibId][holder.sigel]?.at(0)}>
+							-> Titeln i bibliotekets lokala katalog
+						</a>
+					</li>
+				</div>
+			{/if}
+		{/each}
+	</ul>
 </li>
 
 <style lang="postcss">
