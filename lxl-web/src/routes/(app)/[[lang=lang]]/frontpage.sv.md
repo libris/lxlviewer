@@ -6,4 +6,4 @@ För att läsa mer om vilka funktioner som finns att testa, eller planeras fram�
 
 Läs gärna [svar på vanligt förekommande frågor](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html).
 
-Observera att betaversionen innehåller en kopia av Libris-katalogen som togs i mars 2024. Ofullständig information och fel kan därför förekomma i innehållet.
+Observera att betaversionen innehåller en kopia av Libris-katalogen. Ofullständig information och fel kan därför förekomma i innehållet.
