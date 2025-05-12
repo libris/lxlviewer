@@ -8,7 +8,7 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
-### 2025-05-09
+### 2025-05-12
 
 - Uppdatering av design
 
