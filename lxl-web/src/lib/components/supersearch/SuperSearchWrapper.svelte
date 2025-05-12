@@ -11,6 +11,7 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
+	import BiSearch from '~icons/bi/search';
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import BiChevronUp from '~icons/bi/chevron-up';
 	import '$lib/styles/lxlquery.css';
@@ -169,13 +170,13 @@
 			type="button"
 			role="gridcell"
 			id={getCellId(rowIndex, 0)}
-			class="hover:bg-main flex min-h-12 w-full items-center px-4"
+			class="hover:bg-primary-50 flex min-h-12 w-full items-center px-4"
 			class:focused-cell={isFocusedCell(rowIndex, 0)}
 			onclick={() => addQualifierKey(qualifierKey)}
 		>
-			<span class="overflow-hidden text-ellipsis whitespace-nowrap">
-				<strong class="text-secondary text-3-cond-bold">{qualifierLabel}:</strong>
-				<span class="text-tertiary text-sm italic">{qualifierPlaceholder}</span>
+			<span class="truncate text-sm">
+				<span class="font-medium">{qualifierLabel}:</span>
+				<span class="text-subtle italic">{qualifierPlaceholder}</span>
 			</span>
 		</button>
 	</div>
@@ -217,24 +218,29 @@
 			inputField,
 			getCellId,
 			isFocusedCell,
-			onclickSubmit,
+			// onclickSubmit,
 			onclickClear,
 			onclickClose
 		})}
-			<div class="supersearch-input">
+			<div
+				class="supersearch-input rounded-d bg-input outline-primary-200 has-focus:outline-primary-600 flex min-h-12 w-full cursor-text overflow-hidden rounded-md outline focus-within:relative"
+			>
 				{#if expanded}
 					<button
 						type="button"
 						id={getCellId(0)}
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={$page.data.t('general.close')}
-						class="button-ghost hover:bg-main min-h-12 min-w-11 rounded-none border-none sm:hidden"
+						class="p-4 sm:hidden"
 						onclick={onclickClose}
 					>
 						<BiArrowLeft />
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
+					<div class={['text-subtle absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
+						<BiSearch aria-hidden="true" />
+					</div>
 					{@render inputField()}
 				</div>
 				{#if q}
@@ -242,28 +248,28 @@
 						type="reset"
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
-						class="button-ghost hover:bg-main min-h-12 rounded-none border-none"
+						class="text-subtle p-4"
 						aria-label={$page.data.t('search.clearFilters')}
 						onclick={onclickClear}
 					>
 						<BiXLg />
 					</button>
 				{/if}
-				<button
+				<!-- <button
 					type="submit"
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
-					class="submit-action button-primary min-h-12 rounded-none"
+					class="submit-action min-h-12 rounded-none"
 					enterkeyhint="search"
 					onclick={onclickSubmit}
 				>
 					{$page.data.t('search.search')}
-				</button>
+				</button> -->
 			</div>
 		{/snippet}
 		{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
 			<div role="rowgroup">
-				<div class="text-2-cond-bold flex w-full items-center px-4 py-2">
+				<div class="text-2xs text-subtle flex w-full items-center px-4 py-2 font-medium">
 					{$page.data.t('search.supersearchStartHeader')}
 				</div>
 				{@render startFilterItem({
@@ -327,15 +333,15 @@
 						type="button"
 						role="gridcell"
 						id={getCellId(moreFiltersRowIndex, 0)}
-						class="text-secondary hover:bg-main flex min-h-11 w-full items-center px-4"
+						class="hover:bg-primary-50 flex min-h-11 w-full items-center px-4 text-sm"
 						class:focused-cell={isFocusedCell(moreFiltersRowIndex, 0)}
 						onclick={() => (showMoreFilters = !showMoreFilters)}
 					>
 						{#if showMoreFilters}
-							<BiChevronUp class="mr-2" />
+							<BiChevronUp class="text-subtle mr-2" />
 							{$page.data.t('search.showFewer')}
 						{:else}
-							<BiChevronDown class="mr-2" />
+							<BiChevronDown class="text-subtle mr-2" />
 							{$page.data.t('search.showMore')}
 						{/if}
 					</button>
@@ -358,14 +364,10 @@
 <style lang="postcss">
 	@reference "../../../app.css";
 
-	.supersearch-input {
-		@apply bg-cards focus-within:outline-positive-dark/32 relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md focus-within:outline-2;
-	}
-
 	/* dialog */
 
 	:global(.supersearch-dialog) {
-		@apply static m-0 h-full max-h-screen w-full max-w-full border-none bg-transparent p-0;
+		@apply static m-0 h-full max-h-screen w-full max-w-full bg-transparent p-0;
 	}
 
 	:global(.supersearch-dialog-wrapper) {
@@ -378,13 +380,15 @@
 	}
 
 	:global(.supersearch-dialog-content) {
-		@apply bg-cards pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md drop-shadow-md;
+		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md drop-shadow-md;
+		background: var(--color-page);
 		grid-area: supersearch-content;
 		scrollbar-width: none;
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply bg-cards sticky top-0 z-20 items-stretch px-4 pt-4 pb-2;
+		@apply sticky top-0 z-20 items-stretch px-4 pt-4 pb-2;
+		background-color: var(--color-page);
 	}
 
 	:global(.supersearch-suggestions) {
@@ -393,32 +397,34 @@
 
 	:global(.supersearch-dialog .supersearch-input) {
 		@apply overflow-hidden rounded-md sm:px-0;
-		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
 	}
 
 	:global(.supersearch-dialog .focused) {
-		background-color: --alpha(var(--color-positive) / 48%);
+		background-color: var(--color-primary-100);
 	}
 
 	:global(.focused-cell) {
-		/* @apply bg-site-header/64; */
+		background-color: var(--color-primary-100);
 	}
 
-	:global(.button-primary.focused-cell) {
+	/* :global(.button-primary.focused-cell) {
 		@apply before:opacity-100;
-	}
+	} */
 
 	/* suggestions */
 
 	:global(.supersearch-suggestions [role='row']:last-child) {
-		/* border-bottom: 1px solid rgb(var(--color-primary) / 0.12); */
-		@apply border-b-primary/16 border-b;
+		border-color: var(--color-neutral);
 	}
 
 	/* snippets elements */
 
 	:global(.supersearch-show-more) {
-		@apply hover:bg-main flex min-h-11 w-full items-center px-4 text-left;
+		@apply flex min-h-11 w-full items-center px-4 text-left text-sm;
+
+		&:hover {
+			background-color: var(--color-primary-50);
+		}
 	}
 
 	/* codemirror elements */
@@ -428,14 +434,22 @@
 	}
 
 	:global(.codemirror-container .cm-scroller) {
-		@apply text-3-regular min-h-12 font-sans outline-hidden;
+		@apply min-h-12 font-sans outline-hidden;
 		scrollbar-width: none;
 	}
 
 	:global(.supersearch-input .cm-line) {
-		@apply px-4;
+		padding-left: calc(var(--spacing, 0.25rem) * 12);
 		min-height: 28px;
 		line-height: 28px;
+		font-size: var(--text-xs);
+	}
+
+	:global(.supersearch-dialog .supersearch-input .cm-line) {
+		padding-left: 0;
+		@variant sm {
+			padding-left: calc(var(--spacing, 0.25rem) * 12);
+		}
 	}
 
 	:global(.supersearch-input .cm-focused) {
@@ -449,6 +463,6 @@
 	}
 
 	:global(.codemirror-container .cm-placeholder) {
-		color: #757575;
+		color: var(--color-placeholder);
 	}
 </style>

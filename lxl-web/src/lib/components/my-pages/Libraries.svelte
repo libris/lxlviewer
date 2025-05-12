@@ -28,89 +28,74 @@
 	}
 </script>
 
-<div class="container-fluid page-padding mt-8 mb-12 w-screen max-w-full md:max-w-5xl">
-	<h1 class="text-6-cond-extrabold mb-4 pl-2">{page.data.t('myPages.myPages')}</h1>
-	<h1 class="text-3-cond-bold mb-2 pl-2">{page.data.t('myPages.libraries')}</h1>
-	<div
-		class="bg-primary/4 page-padding flex w-screen max-w-full flex-col justify-between rounded-md md:container md:max-w-5xl md:flex-row"
-	>
-		<div class="md:w-3/5">
-			{page.data.t('myPages.findAndAdd')}
-			<div class="relative">
-				<BiSearch class="text-icon absolute top-6 left-2.5 text-sm" />
-				<input
-					bind:value={searchPhrase}
-					placeholder={page.data.t('myPages.findLibrary')}
-					aria-label={page.data.t('myPages.findLibrary')}
-					class="my-3 w-full pl-8"
-					oninput={handleInputChange}
-					type="search"
-				/>
-				<div>
-					{#if search.data}
-						{@const searchResult = search.data as LibraryResult}
-						{#if searchResult?.totalItems && searchResult?.totalItems !== 0}
-							<div class="mb-3">
-								{searchResult?.totalItems}
-								{page.data.t('myPages.hitsFor')} "{searchPhrase}"
-							</div>
-						{/if}
-						{#if searchResult?.totalItems === 0}
-							<div class="mb-3">
-								{page.data.t('myPages.noResultsFor')} "{searchPhrase}"
-							</div>
-						{/if}
-						{#if searchResult?.items && searchResult?.items.length !== 0}
-							<div class="bg-cards my-3 rounded-md py-2">
-								{#each searchResult.items as resultItem (resultItem['@id'])}
-									<div
-										class="bg-cards hover:bg-main flex min-h-12 w-full items-center justify-between"
-									>
-										<div class="truncate py-1 pl-3" title={resultItem.label}>
-											{resultItem.label}
-										</div>
-										{#if !myLibraries?.[resultItem['@id']]}
-											<button
-												class="button-ghost mx-2 text-nowrap"
-												type="submit"
-												onclick={() => userSettings.addLibrary(resultItem)}
-												>{page.data.t('myPages.add')}
-											</button>
-										{:else}
-											<button
-												class="button-ghost mx-2 text-nowrap"
-												type="submit"
-												onclick={() => userSettings.removeLibrary(resultItem['@id'])}
-												>{page.data.t('myPages.remove')}
-											</button>
-										{/if}
-									</div>
-								{/each}
-							</div>
-						{/if}
-					{/if}
-				</div>
-			</div>
+<h2 class="mt-6 text-lg font-medium">{page.data.t('myPages.libraries')}</h2>
+<div class="flex flex-col justify-between gap-6 py-4 lg:flex-row">
+	<div class="w-full shrink-0 lg:w-1/2">
+		<label for="my-libraries-search" class="text-sm font-medium"
+			>{page.data.t('myPages.findAndAdd')}</label
+		>
+		<div class="relative mt-2">
+			<input
+				id="my-libraries-search"
+				bind:value={searchPhrase}
+				placeholder={page.data.t('myPages.findLibrary')}
+				class="bg-input h-9 w-full max-w-md rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
+				oninput={handleInputChange}
+				type="search"
+			/>
+			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 		</div>
-		<div class="md:ml-10 md:w-80">
-			<div class="text-3-cond-bold">{page.data.t('myPages.favouriteLibraries')}</div>
-			<div class="py-2">
-				{#each Object.entries(myLibraries) as [id, item] (id)}
-					<div class="flex justify-between">
-						<div class="truncate py-1" title={item.label}>
-							{item.label}
-						</div>
-						<div>
+		{#if searchPhrase && search.data}
+			{@const searchResult = search.data as LibraryResult}
+			<span class="text-2xs my-3 block" role="status">
+				{#if searchResult?.totalItems && searchResult?.totalItems !== 0}
+					{searchResult?.totalItems}
+					{page.data.t('myPages.hitsFor')} "{searchPhrase}"
+				{:else}
+					{page.data.t('myPages.noResultsFor')} "{searchPhrase}"
+				{/if}
+			</span>
+			{#if searchResult?.items && searchResult?.items.length !== 0}
+				<ol class="text-xs">
+					{#each searchResult.items as resultItem (resultItem['@id'])}
+						{@const alreadyAdded = myLibraries?.[resultItem['@id']]}
+						<li
+							class="flex items-center justify-between p-1"
+							id="library-search-item-{resultItem.sigel}"
+						>
+							<span>{resultItem.label}</span>
 							<button
-								class="ml-5 text-nowrap"
-								type="submit"
-								onclick={() => userSettings.removeLibrary(id)}
-								>{page.data.t('myPages.remove')}</button
-							>
-						</div>
-					</div>
-				{/each}
-			</div>
-		</div>
+								class="btn btn-primary text-nowrap"
+								aria-describedby="library-search-item-{resultItem.sigel}"
+								type="button"
+								onclick={() =>
+									alreadyAdded
+										? userSettings.removeLibrary(resultItem['@id'])
+										: userSettings.addLibrary(resultItem)}
+								>{alreadyAdded ? page.data.t('myPages.remove') : page.data.t('myPages.add')}
+							</button>
+						</li>
+					{/each}
+				</ol>
+			{/if}
+		{/if}
+	</div>
+	<div class="w-full shrink-0 lg:w-1/2">
+		<span id="my-libraries" class="mb-2 block text-sm font-medium"
+			>{page.data.t('myPages.favouriteLibraries')}</span
+		>
+		<ol class="text-xs" aria-labelledby="my-libraries">
+			{#each Object.entries(myLibraries) as [id, item] (id)}
+				<li class="mb-1 flex items-center justify-between" id="added-library-item-{item.sigel}">
+					<span>{item.label}</span>
+					<button
+						class="btn btn-primary text-nowrap"
+						aria-describedby="added-library-item-{item.sigel}"
+						type="button"
+						onclick={() => userSettings.removeLibrary(id)}>{page.data.t('myPages.remove')}</button
+					>
+				</li>
+			{/each}
+		</ol>
 	</div>
 </div>

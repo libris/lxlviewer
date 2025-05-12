@@ -32,33 +32,32 @@
 </script>
 
 {#snippet filterContent()}
-	<div class="flex items-baseline gap-2">
+	<div class="flex items-baseline gap-2 text-xs">
 		<span class="sr-only">{isFilterActive ? page.data.t('search.activeFilter') : ''}</span>
 		<div
-			class={[
-				'flex h-[13px] w-[13px] rounded-sm bg-[white]',
-				!myLibrariesValues.length && 'text-primary/24'
-			]}
+			class={['text-subtle bg-page flex rounded-sm', !myLibrariesValues.length && 'text-subtle/50']}
 			aria-hidden="true"
 		>
 			{#if isFilterActive}
-				<BiCheckSquareFill height="13px" />
+				<BiCheckSquareFill class="text-accent" />
 			{:else}
-				<BiSquare height="13px" />
+				<BiSquare />
 			{/if}
 		</div>
-		<span class="text-3-cond-bold">{page.data.t('search.limitToLibraries')}</span>
+		<span>{page.data.t('search.limitToLibraries')}</span>
 	</div>
 {/snippet}
 
-<div class="bg-positive/40 flex w-full gap-2 rounded-sm p-3 md:flex-col md:gap-1">
+<div
+	class="text-2xs bg-accent-50 border-neutral flex w-full gap-2 rounded-sm border-b p-3 lg:flex-col lg:gap-1"
+>
 	{#if myLibrariesValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>
 			{@render filterContent()}
 		</a>
 	{:else}
 		<div
-			class="text-secondary cursor-not-allowed"
+			class="cursor-not-allowed"
 			use:popover={{
 				title: page.data.t('search.noAddedLibrariesText'),
 				placeAsSibling: true
@@ -67,7 +66,7 @@
 			{@render filterContent()}
 		</div>
 	{/if}
-	<a class="text-secondary text-2-regular self-end" href="/my-pages"
+	<a class="link-subtle self-end" href="/my-pages"
 		>{myLibrariesValues.length
 			? page.data.t('search.changeLibraries')
 			: page.data.t('search.addLibraries')}</a

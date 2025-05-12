@@ -74,11 +74,11 @@
 <div>
 	{#if Array.isArray(data) && data.length > 1}
 		<div class="flex items-center justify-between pb-4">
-			<h2 class="text-4-cond-bold capitalize">{page.data.t('search.editions')}</h2>
+			<h2 class="font-heading text-2xl capitalize">{page.data.t('search.editions')}</h2>
 			<a
 				href={getCollapseAllUrl(page.url)}
 				data-sveltekit-preload-data="false"
-				class="close-all text-disabled:text-disabled text-xs sm:text-sm"
+				class="close-all link-subtle text-xs sm:text-sm"
 				onclick={(event) => {
 					event.preventDefault();
 					replaceState(getCollapseAllUrl(page.url), { ...page.state, expandedInstances: [] });
@@ -90,7 +90,7 @@
 	{/if}
 
 	{#if Array.isArray(data) && data.length > 1}
-		<div class="column-headers mb-2 grid gap-2 text-sm font-bold">
+		<div class="column-headers mb-2 grid gap-2 text-sm font-medium">
 			{#each columns as { header: columnHeader }, index (index)}
 				<div class="flex flex-1 first:pl-0">
 					{columnHeader}
@@ -100,7 +100,7 @@
 		<ul bind:this={instancesList}>
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
-				<li {id} class="border-t-primary/16 border-t">
+				<li {id} class="border-neutral border-t">
 					<details
 						open={page.state.expandedInstances?.includes(id) ||
 							page.url.searchParams.getAll('expanded').includes(id) ||
@@ -108,10 +108,10 @@
 						ontoggle={() => handleToggleDetails(page.state)}
 					>
 						<summary
-							class="hover:bg-primary/16 grid min-h-11 items-center gap-2 align-middle text-sm md:text-base"
+							class="hover:bg-primary-50 grid min-h-11 items-center gap-2 align-middle text-sm"
 							onkeydown={handleSummaryKeydown}
 						>
-							<span class="arrow w-4">
+							<span class="arrow text-subtle w-4 origin-center rotate-0 transition-transform">
 								<BiChevronRight />
 							</span>
 							{#each columns as { data: columnData }, index (index)}
@@ -130,7 +130,7 @@
 									{/if}
 									<a
 										href={getHoldingsLink(page.url, id)}
-										class="flex items-center self-center text-xs sm:text-sm"
+										class="link-subtle flex items-center self-center text-xs sm:text-sm"
 										data-sveltekit-preload-data="false"
 										onclick={(event) => handleClickHoldings(event, page.state, id)}
 									>
@@ -152,9 +152,7 @@
 			{/each}
 		</ul>
 	{:else}
-		<div class="max-w-content">
-			<InstancesListContent data={data[0]} id={relativizeUrl(getResourceId(data[0]))} />
-		</div>
+		<InstancesListContent data={data[0]} id={relativizeUrl(getResourceId(data[0]))} />
 	{/if}
 </div>
 
@@ -174,16 +172,7 @@
 		grid-column: span 2;
 	}
 
-	details[open] > summary {
-		@apply bg-primary/8 hover:bg-primary/16;
-	}
-
 	details[open] .arrow {
 		@apply rotate-90;
-	}
-
-	.arrow {
-		transform-origin: center;
-		@apply rotate-0 transition-transform;
 	}
 </style>

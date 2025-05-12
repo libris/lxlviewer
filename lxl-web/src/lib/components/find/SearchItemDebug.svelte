@@ -21,7 +21,7 @@
 				<td></td>
 				<td></td>
 				<td>{fmtPercent(score.totalPercent)}%</td>
-				<td class="text-3-cond-bold">{fmt(score.total)}</td>
+				<td>{fmt(score.total)}</td>
 			</tr>
 			<tr class="italic">
 				<td>field</td>

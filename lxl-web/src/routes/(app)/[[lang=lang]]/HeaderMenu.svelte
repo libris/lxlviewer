@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import BiGlobeAmericas from '~icons/bi/globe-americas';
+	import BiGlobe from '~icons/bi/globe';
 	import BiPerson from '~icons/bi/person-circle';
 	import BiQuestionCircle from '~icons/bi/question-circle';
 	import { Locales, defaultLocale } from '$lib/i18n/locales';
@@ -15,19 +15,21 @@
 			: `/${otherLangCode}${$page.url.pathname}`) + $page.url.search;
 </script>
 
-<div class="py-4 lg:py-0 [&_a]:no-underline">
-	<ol class="text-secondary lg:text-2-regular flex flex-col items-center gap-4 lg:flex-row">
+<div class="py-4 2xl:py-0 [&_a]:no-underline">
+	<ol
+		class="text-subtle [&_svg]:text-body flex flex-col items-center gap-4 font-medium 2xl:flex-row [&_svg]:text-lg"
+	>
 		<li>
-			<a class="flex items-center gap-2 lg:flex-col lg:gap-1" href="help">
-				<BiQuestionCircle class="text-icon h-4 w-4" />
+			<a class="flex items-center gap-2 2xl:flex-col 2xl:gap-1" href="help">
+				<BiQuestionCircle />
 				<span>
 					{$page.data.t('header.help')}
 				</span>
 			</a>
 		</li>
 		<li>
-			<a class="flex items-center gap-2 lg:flex-col lg:gap-1" href="my-pages">
-				<BiPerson class="text-icon h-4 w-4" />
+			<a class="flex items-center gap-2 2xl:flex-col 2xl:gap-1" href="my-pages">
+				<BiPerson />
 				<div class="text-nowrap">
 					{$page.data.t('header.myPages')}
 				</div>
@@ -35,13 +37,13 @@
 		</li>
 		<li>
 			<a
-				class="flex items-center gap-2 whitespace-nowrap lg:flex-col lg:gap-1"
+				class="flex items-center gap-2 whitespace-nowrap 2xl:flex-col 2xl:gap-1"
 				href={otherLangUrl}
 				hreflang={otherLangCode}
 				data-sveltekit-reload
 				data-testid="current-lang"
 			>
-				<BiGlobeAmericas class="text-icon h-4 w-4" />
+				<BiGlobe />
 				<span>{otherLangLabel}</span>
 			</a>
 		</li>

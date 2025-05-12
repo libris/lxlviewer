@@ -34,7 +34,7 @@
 	{/if}
 	{#if facets?.length}
 		<nav
-			class="facet-nav relative flex flex-col gap-4"
+			class="facet-nav relative flex flex-col gap-4 text-sm"
 			aria-label={page.data.t('search.filters')}
 			data-testid="facets"
 		>
@@ -42,10 +42,10 @@
 				bind:value={searchPhrase}
 				placeholder={page.data.t('search.findFilter')}
 				aria-label={page.data.t('search.findFilter')}
-				class="w-full pl-8"
+				class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 				type="search"
 			/>
-			<BiSearch class="text-icon absolute top-3 left-2.5 text-sm" />
+			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 			{#if page.route.id === '/(app)/[[lang=lang]]/find'}
 				<MyLibrariesFilter {facets} />
 			{/if}

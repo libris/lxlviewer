@@ -225,11 +225,7 @@
 						{#if shouldShowLabels() && typeof data._label === 'string'}
 							<svelte:element this={block ? 'div' : 'span'}>
 								<!-- Add inner span with inline-block to achieve first letter capitalization while still supporting inline whitespaces -->
-								<span
-									class="inline-block first-letter:capitalize"
-									class:text-sm={block}
-									class:text-secondary={block}
-								>
+								<span class={['inline-block first-letter:capitalize', block && 'property-label']}>
 									{data._label}
 								</span>
 								{' '}
@@ -266,19 +262,60 @@
 		@apply underline decoration-dotted;
 	}
 
-	.pill {
-		@apply border-primary/8 mr-1 mb-1 inline-block rounded-full border px-3 py-1 no-underline;
-	}
-
-	a.pill {
-		@apply border-primary/0 bg-primary/8 hover:bg-primary/16 focus:bg-primary/16;
-	}
-
 	.remainder {
-		@apply bg-primary/8 text-secondary ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
+		@apply ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
+	}
+
+	.property-label {
+		color: var(--color-subtle);
 	}
 
 	.block {
 		display: block;
+	}
+
+	/* resource property-specific styles */
+	.genre-form {
+		display: flex;
+		flex-wrap: wrap;
+		gap: calc(var(--spacing) * 1.5);
+		font-size: var(--text-2xs);
+
+		/* pill */
+		& > * {
+			border: 1px solid var(--color-neutral-200);
+			border-radius: calc(infinity * 1px);
+			padding-block: calc(var(--spacing) * 1.5);
+			padding-inline: calc(var(--spacing) * 3);
+			text-decoration: none;
+			white-space: nowrap;
+		}
+
+		& > a {
+			border-color: var(--color-accent-200);
+
+			&:hover {
+				background-color: var(--color-primary-100);
+			}
+		}
+	}
+
+	.transliteration {
+		font-style: italic;
+	}
+
+	.sigel {
+		color: var(--color-subtle);
+	}
+
+	/* decorated data in popover */
+	:global(.popover) {
+		& .property-label {
+			font-size: var(--text-3xs);
+		}
+
+		& div[data-property]:not(:last-child) {
+			margin-bottom: calc(var(--spacing) * 1);
+		}
 	}
 </style>

@@ -9,6 +9,7 @@
 	import SearchRelated from './SearchRelated.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiChevronDown from '~icons/bi/chevron-down';
+	import BiSortDown from '~icons/bi/sort-down';
 	import type { SearchResult, DisplayMapping } from '$lib/types/search';
 
 	let showFiltersModal = false;
@@ -57,17 +58,18 @@
 	{@const filterCount = getFiltersCount(searchResult.mapping)}
 	{#if predicates.length}
 		<nav
-			class="border-primary/16 border-b px-4 md:flex lg:px-6"
+			class="border-neutral border-b px-4 lg:flex 2xl:px-6"
 			aria-label={$page.data.t('search.selectedFilters')}
 		>
-			<ul class="flex flex-wrap items-center gap-2">
-				<li class="tab-header max-w-80 truncate font-bold">{$page.data.title}</li>
-				<span class="tab-header">{$page.data.t('search.occursAs')}</span>
-
+			<ul class="flex flex-wrap items-center gap-2 text-sm">
+				<li class="block max-w-80 truncate py-4 whitespace-nowrap">
+					<span class="font-medium">{$page.data.title}</span>
+				</li>
+				<li>{$page.data.t('search.occursAs')}</li>
 				{#each predicates as p}
 					<li>
 						<a
-							class="tab"
+							class="flex flex-nowrap items-center gap-1 py-4 pr-3.5 pl-4 lowercase no-underline"
 							class:active={true}
 							class:tab-selected={p.selected}
 							data-sveltekit-replacestate
@@ -75,7 +77,7 @@
 						>
 							{p.str}
 							<span
-								class="bg-primary/4 text-secondary mb-px rounded-sm px-1 text-sm md:text-xs lg:text-sm"
+								class="badge badge-accent"
 								aria-label="{p.totalItems} {$page.data.t('search.hits')}">{p.totalItems}</span
 							>
 						</a>
@@ -86,13 +88,13 @@
 	{/if}
 	{#if showMapping}
 		<nav
-			class="hidden md:flex md:px-6 md:pt-4 md:pb-0"
+			class="hidden lg:flex lg:px-6 lg:pt-4 lg:pb-0"
 			aria-label={$page.data.t('search.selectedFilters')}
 		>
 			<SearchMapping mapping={searchResult.mapping} />
 		</nav>
 	{/if}
-	<div class="find-layout md:page-padding relative gap-y-4">
+	<div class="find-layout relative gap-y-4 p-4 sm:px-6">
 		{#if showFiltersModal}
 			<Modal position="left" close={toggleFiltersModal}>
 				<span slot="title">
@@ -102,36 +104,34 @@
 				<Filters {facets} mapping={searchResult.mapping} />
 			</Modal>
 		{/if}
-		<div class="filters hidden md:block" id="filters">
+		<div class="filters hidden lg:block" id="filters">
 			<Filters {facets} mapping={searchResult.mapping} />
 		</div>
 
-		<div class="results max-w-content">
+		<div class="results">
 			<div
-				class="toolbar page-padding flex min-h-14 items-center justify-between md:min-h-fit md:p-0 md:pb-4"
+				class="toolbar flex items-center justify-between pb-2"
 				class:has-search={$page.params.fnurgel}
 			>
 				<a
 					href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
-					class="filter-modal-toggle button-ghost md:hidden"
+					class="filter-modal-toggle btn btn-primary lg:hidden"
 					aria-label={$page.data.t('search.filters')}
 					on:click|preventDefault={toggleFiltersModal}
 				>
-					<IconSliders width={20} height={20} />
+					<IconSliders class="text-base" />
 					{$page.data.t('search.filters')}
 					{#if filterCount}
-						<span
-							class="bg-primary text-primary-inv flex h-5 w-5 items-center justify-center rounded-full text-xs leading-none font-bold"
-						>
+						<span class="badge badge-accent">
 							{filterCount}
 						</span>
 					{/if}
 				</a>
-				<span class="hits text-secondary pt-4 md:pt-0" role="status" data-testid="result-info">
+				<span class="hits text-2xs pt-4 lg:pt-0" role="status" data-testid="result-info">
 					{#if numHits && numHits > 0}
 						<span class="hits-count">
 							{#if numHits > searchResult.itemsPerPage}
-								<span class="text-3-cond-bold">
+								<span class="font-medium">
 									{(searchResult.itemOffset + 1).toLocaleString($page.data.locale)}
 									-
 									{Math.min(
@@ -141,7 +141,7 @@
 								</span>
 								{$page.data.t('search.hitsOf')}
 							{/if}
-							<span class="text-3-cond-bold">
+							<span class="font-medium">
 								{numHits.toLocaleString($page.data.locale)}
 							</span>
 							{#if $page.data.instances}
@@ -156,7 +156,10 @@
 						<span class="suggest">
 							{#each searchResult._spell as suggestion (suggestion.label)}
 								{$page.data.t('search.didYouMean')}
-								<a href={suggestion.view['@id'].replace('_spell=true', '_spell=false')}>
+								<a
+									href={suggestion.view['@id'].replace('_spell=true', '_spell=false')}
+									class="link-subtle"
+								>
 									<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 									{@html suggestion.labelHtml}</a
 								>?
@@ -175,25 +178,33 @@
 						class="sort-select flex flex-col items-end justify-self-end"
 						data-testid="sort-select"
 					>
-						<label class="text-secondary text-2-regular pr-6" for="search-sort">
+						<label class="sr-only" for="search-sort">
 							{$page.data.t('sort.sort')}
 						</label>
 						<div class="relative">
-							<select id="search-sort" form="main-search" on:change={handleSortChange}>
+							<span class="text-subtle pointer-events-none absolute top-0 p-2">
+								<BiSortDown aria-hidden="true" />
+							</span>
+							<select
+								id="search-sort"
+								class="btn btn-primary"
+								form="main-search"
+								on:change={handleSortChange}
+							>
 								{#each sortOptions as option}
 									<option value={option.value} selected={option.value === sortOrder}
 										>{option.label}</option
 									>
 								{/each}
 							</select>
-							<span class="pointer-events-none absolute top-[5px] right-0">
-								<BiChevronDown aria-hidden="true" class="text-icon" />
+							<span class="text-subtle pointer-events-none absolute top-0 right-1.5 py-2.5 text-xs">
+								<BiChevronDown aria-hidden="true" />
 							</span>
 						</div>
 					</div>
 				{/if}
 			</div>
-			<ol class="flex flex-col gap-0.5 md:px-0">
+			<ol class="flex flex-col gap-0.5 lg:px-0">
 				{#each searchResult.items as item (item['@id'])}
 					<li>
 						<SearchCard {item} />
@@ -230,6 +241,10 @@
 		grid-template-areas: 'filters results';
 	}
 
+	.filter-modal-toggle {
+		grid-area: filter-modal-toggle;
+	}
+
 	.filters {
 		grid-area: filters;
 	}
@@ -247,9 +262,7 @@
 		grid-area: sort-select;
 
 		& select {
-			@apply appearance-none pr-6 text-right;
-			/* Safari text-align fix */
-			text-align-last: right;
+			@apply appearance-none px-8;
 		}
 	}
 
@@ -261,6 +274,12 @@
 		grid-area: search-related;
 	}
 
+	.tab-selected {
+		padding-bottom: cacl(--var(--spacing) * 3.5);
+		border-bottom-color: var(--color-accent);
+		border-bottom-width: 0.125rem;
+	}
+
 	@variant sm {
 		.toolbar {
 			grid-template-areas:
@@ -270,13 +289,9 @@
 		}
 	}
 
-	@variant md {
+	@variant lg {
 		.filters {
 			display: block;
-		}
-
-		.filter-modal-toggle {
-			display: none;
 		}
 
 		.toolbar {
@@ -284,19 +299,5 @@
 				'search-related search-related'
 				'hits sort-select';
 		}
-	}
-
-	.tab-header {
-		@apply block py-4;
-	}
-
-	.tab {
-		@apply block py-4 pr-3.5 pl-4 lowercase no-underline;
-		transition: filter 0.1s ease;
-	}
-
-	.tab-selected {
-		@apply border-primary pb-3.5;
-		border-bottom-width: 0.125rem;
 	}
 </style>

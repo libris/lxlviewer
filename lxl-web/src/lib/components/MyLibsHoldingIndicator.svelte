@@ -12,7 +12,7 @@
 </script>
 
 <span
-	class="text-positive-dark relative p-2 text-lg md:text-xl"
+	class="text-primary-700 relative p-2 text-lg lg:text-xl"
 	use:popover={{
 		title: `${page.data.t('holdings.availableAt')}: ${librariesString}`
 	}}

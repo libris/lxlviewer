@@ -6,7 +6,7 @@ export default {
 		help: 'Hjälp',
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
-		searchPlaceholder: 'Titel, författare, ämne med mera',
+		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
 		openMenu: 'Öppna huvudmeny'
 	},
 	myPages: {
@@ -145,8 +145,8 @@ export default {
 		relevancy: 'Relevans',
 		alphaAsc: 'A-Ö',
 		alphaDesc: 'Ö-A',
-		publicationAsc: 'Äldst först (utgivningsår)',
-		publicationDesc: 'Nyast först (utgivningsår)',
+		publicationAsc: 'Äldst (utgivningsår)',
+		publicationDesc: 'Nyast (utgivningsår)',
 		holdingsDesc: 'Antal bibliotek',
 		hitsAsc: 'Minst träffar',
 		hitsDesc: 'Flest träffar',
@@ -173,7 +173,7 @@ export default {
 		apply: 'Tillämpa',
 		from: 'Från',
 		to: 'Till',
-		year: 'Årtal',
+		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren'
 	},
