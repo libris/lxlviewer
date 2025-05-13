@@ -111,119 +111,122 @@
 </script>
 
 <li class="border-neutral text-xs not-last:border-b">
-	<details ontoggle={getHoldingStatus}>
-		<summary class="my-3 flex cursor-pointer items-baseline">
-			<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
-				<BiChevronRight />
-			</span>
-			<span class="holder-label">
-				<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
-			</span>
-		</summary>
-		<div class="mb-4 flex flex-col gap-2">
-			{#if loading}
-				<p>{page.data.t('search.loading')}</p>
-			{/if}
-			{#if error}
-				<div class="status-container border-neutral bg-page max-w-md rounded-sm border p-2">
-					<p class="error" role="alert">{error}</p>
-				</div>
-			{/if}
-			{#if statusData && statusData.length > 0}
-				{#each statusData as instance, index (index)}
-					{#if instance?.item_information}
-						{@const items = instance.item_information}
-						<div
-							class="status-container border-neutral bg-page flex max-w-md flex-col gap-4 rounded-sm border p-2"
-						>
-							{#if items.error || items.count === 0}
-								{#if urlNotDefinedError(items.error)}
-									<p class="library-unavailable">{page.data.t('holdings.libraryUnvaliable')}</p>
-								{:else}
-									<p class="error" role="alert">{page.data.t('holdings.loanStatusFailed')}</p>
+	<div class="my-3">
+		<span class="holder-label">
+			<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
+		</span>
+		<details ontoggle={getHoldingStatus}>
+			<summary class="my-3 flex cursor-pointer items-baseline">
+				<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
+					<BiChevronRight />
+				</span>
+				Visa tillgänglighet
+			</summary>
+			<div class="mb-4 flex flex-col gap-2">
+				{#if loading}
+					<p>{page.data.t('search.loading')}</p>
+				{/if}
+				{#if error}
+					<div class="status-container border-neutral bg-page max-w-md rounded-sm border p-2">
+						<p class="error" role="alert">{error}</p>
+					</div>
+				{/if}
+				{#if statusData && statusData.length > 0}
+					{#each statusData as instance, index (index)}
+						{#if instance?.item_information}
+							{@const items = instance.item_information}
+							<div
+								class="status-container border-neutral bg-page flex max-w-md flex-col gap-4 rounded-sm border p-2"
+							>
+								{#if items.error || items.count === 0}
+									{#if urlNotDefinedError(items.error)}
+										<p class="library-unavailable">{page.data.t('holdings.libraryUnvaliable')}</p>
+									{:else}
+										<p class="error" role="alert">{page.data.t('holdings.loanStatusFailed')}</p>
+									{/if}
 								{/if}
-							{/if}
-							{#each items.items as item, index (index)}
-								{@const indicator = getIndicator(item.Status)}
-								<table>
-									<tbody class="text-xs leading-relaxed">
-										<tr>
-											<th>{page.data.t('holdings.location')}</th>
-											<td>{item.Location}</td>
-										</tr>
-										<tr>
-											<th>{page.data.t('holdings.shelf')}</th>
-											<td>
-												{item.Call_No}
-												<!-- show map link only if absolute url -->
-												{#if item.Map && (item.Map.startsWith('http://') || item.Map.startsWith('https://'))}
-													(<a href={item.Map} target="_blank" class="ext-link">
-														{page.data.t('holdings.map')}</a
-													>)
-												{/if}
-											</td>
-										</tr>
-										<tr>
-											<th>{page.data.t('holdings.loanPolicy')}</th>
-											<td>{item.Loan_Policy}</td>
-										</tr>
-										<tr>
-											<th>{page.data.t('holdings.status')}</th>
-											<td>
-												{#if indicator}
-													<span class={`indicator ${indicator}`}></span>
-													{page.data.t(`holdings.${indicator}`)}
-												{:else}
-													{item.Status}
-												{/if}
-											</td>
-										</tr>
-										{#if item.Status_Date}
+								{#each items.items as item, index (index)}
+									{@const indicator = getIndicator(item.Status)}
+									<table>
+										<tbody class="text-xs leading-relaxed">
 											<tr>
-												<th>{page.data.t('holdings.date')}</th>
-												<td>{item?.Status_Date_Description} {item.Status_Date}</td>
+												<th>{page.data.t('holdings.location')}</th>
+												<td>{item.Location}</td>
 											</tr>
-										{/if}
-									</tbody>
-								</table>
-							{/each}
-						</div>
-					{/if}
-				{/each}
-			{/if}
-		</div>
-	</details>
+											<tr>
+												<th>{page.data.t('holdings.shelf')}</th>
+												<td>
+													{item.Call_No}
+													<!-- show map link only if absolute url -->
+													{#if item.Map && (item.Map.startsWith('http://') || item.Map.startsWith('https://'))}
+														(<a href={item.Map} target="_blank" class="ext-link">
+															{page.data.t('holdings.map')}</a
+														>)
+													{/if}
+												</td>
+											</tr>
+											<tr>
+												<th>{page.data.t('holdings.loanPolicy')}</th>
+												<td>{item.Loan_Policy}</td>
+											</tr>
+											<tr>
+												<th>{page.data.t('holdings.status')}</th>
+												<td>
+													{#if indicator}
+														<span class={`indicator ${indicator}`}></span>
+														{page.data.t(`holdings.${indicator}`)}
+													{:else}
+														{item.Status}
+													{/if}
+												</td>
+											</tr>
+											{#if item.Status_Date}
+												<tr>
+													<th>{page.data.t('holdings.date')}</th>
+													<td>{item?.Status_Date_Description} {item.Status_Date}</td>
+												</tr>
+											{/if}
+										</tbody>
+									</table>
+								{/each}
+							</div>
+						{/if}
+					{/each}
+				{/if}
+			</div>
+		</details>
 
-	<ul>
-		{#each bibIds as id (id.bibId)}
-			{#if linksByInstanceId[id.bibId]?.[holder.sigel]}
-				<div class="mb-3">
-					{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToItem']}
-						<li>
-							<a
-								href={linksByInstanceId[id.bibId][holder.sigel]['linksToItem'].at(0)}
-								target="_blank"
-								class="btn btn-outlined ext-link h-9"
-							>
-								{page.data.t('holdings.linkToLocal')}
-							</a>
-						</li>
-					{/if}
-					{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToSite'] && !linksByInstanceId[id.bibId][holder.sigel]['linksToItem']}
-						<li>
-							<a
-								href={linksByInstanceId[id.bibId][holder.sigel]['linksToSite'].at(0)}
-								target="_blank"
-								class="ext-link"
-							>
-								{page.data.t('holdings.linkToLibrary')}
-							</a>
-						</li>
-					{/if}
-				</div>
-			{/if}
-		{/each}
-	</ul>
+		<ul>
+			{#each bibIds as id (id.bibId)}
+				{#if linksByInstanceId[id.bibId]?.[holder.sigel]}
+					<div class="mb-3">
+						{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToItem']}
+							<li>
+								<a
+									href={linksByInstanceId[id.bibId][holder.sigel]['linksToItem'].at(0)}
+									target="_blank"
+									class="btn btn-outlined ext-link h-9"
+								>
+									{page.data.t('holdings.linkToLocal')}
+								</a>
+							</li>
+						{/if}
+						{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToSite'] && !linksByInstanceId[id.bibId][holder.sigel]['linksToItem']}
+							<li>
+								<a
+									href={linksByInstanceId[id.bibId][holder.sigel]['linksToSite'].at(0)}
+									target="_blank"
+									class="ext-link"
+								>
+									{page.data.t('holdings.linkToLibrary')}
+								</a>
+							</li>
+						{/if}
+					</div>
+				{/if}
+			{/each}
+		</ul>
+	</div>
 </li>
 
 <style lang="postcss">
