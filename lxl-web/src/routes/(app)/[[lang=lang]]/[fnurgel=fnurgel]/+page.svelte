@@ -14,7 +14,7 @@
 	import { getResourceId } from '$lib/utils/resourceData';
 
 	import InstancesList from './InstancesList.svelte';
-	import HoldingStatus from './HoldingStatus.svelte';
+	import HoldingInfo from './HoldingInfo.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
@@ -290,7 +290,7 @@
 							</h3>
 							<ul class="w-full">
 								{#each myLibsHolders as holder, i (holder.sigel || i)}
-									<HoldingStatus
+									<HoldingInfo
 										{holder}
 										{holdingUrl}
 										linksByInstanceId={data.itemLinksByInstanceId}
@@ -311,7 +311,7 @@
 					</div>
 					<ul class="w-full">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
-							<HoldingStatus {holder} {holdingUrl} linksByInstanceId={data.itemLinksByInstanceId} />
+							<HoldingInfo {holder} {holdingUrl} linksByInstanceId={data.itemLinksByInstanceId} />
 						{/each}
 						{#if filteredHolders.length === 0}
 							<li class="m-3">

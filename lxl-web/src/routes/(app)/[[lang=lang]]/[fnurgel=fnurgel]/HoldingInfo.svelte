@@ -6,13 +6,13 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 
-	type HoldingStatusProps = {
+	type HoldingInfoProps = {
 		holder: DecoratedHolder;
 		holdingUrl: string;
 		linksByInstanceId: ItemLinksByInstanceId;
 	};
 
-	const { holder, holdingUrl, linksByInstanceId }: HoldingStatusProps = $props();
+	const { holder, holdingUrl, linksByInstanceId }: HoldingInfoProps = $props();
 
 	const sigel = holder?.sigel;
 	let loading = $state(false);
