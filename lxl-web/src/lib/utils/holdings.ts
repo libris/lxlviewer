@@ -243,7 +243,7 @@ export function getItemLinksByInstanceId(
 			}
 			const linkTemplateEod = getAtPath(fullHolderData, ['bibdb:eodUri'], []);
 			if (linkTemplateEod) {
-				linksToItem = [linkTemplateEod.replace(/%BIBID%/, bibIdObj.bibId), ...linksToItem];
+				linksToItem = [linkTemplateEod.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
 			}
 
 			const allLinks: { [linkType: string]: string[] } = {};

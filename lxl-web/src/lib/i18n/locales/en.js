@@ -193,7 +193,10 @@ export default {
 		loanStatusFailed: 'Failed to get loan status',
 		available: 'Available',
 		unavailable: 'Not available',
-		map: 'map'
+		map: 'map',
+		linkToLocal: 'Show in local catalog',
+		linkToLibrary: 'Library website',
+		openingHoursEtc: 'Opening hours, address etc'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'

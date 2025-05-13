@@ -197,18 +197,26 @@
 	<ul>
 		{#each bibIds as id (id.bibId)}
 			{#if linksByInstanceId[id.bibId]?.[holder.sigel]}
-				<div class="mb-4">
+				<div class="mb-3">
 					{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToItem']}
 						<li>
-							<a href={linksByInstanceId[id.bibId][holder.sigel]['linksToItem'].at(0)}>
-								-> Titeln i bibliotekets lokala katalog
+							<a
+								href={linksByInstanceId[id.bibId][holder.sigel]['linksToItem'].at(0)}
+								target="_blank"
+								class="btn btn-outlined ext-link h-9"
+							>
+								{page.data.t('holdings.linkToLocal')}
 							</a>
 						</li>
 					{/if}
-					{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToSite']}
+					{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToSite'] && !linksByInstanceId[id.bibId][holder.sigel]['linksToItem']}
 						<li>
-							<a href={linksByInstanceId[id.bibId][holder.sigel]['linksToSite'].at(0)}>
-								-> Bibliotekets hemsida
+							<a
+								href={linksByInstanceId[id.bibId][holder.sigel]['linksToSite'].at(0)}
+								target="_blank"
+								class="ext-link"
+							>
+								{page.data.t('holdings.linkToLibrary')}
 							</a>
 						</li>
 					{/if}
