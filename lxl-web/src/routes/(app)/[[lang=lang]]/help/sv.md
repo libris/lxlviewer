@@ -8,9 +8,11 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
-### 2025-05-12
+### 2025-05-13
 
 - Uppdatering av design
+- Filtrera på "fritt online"
+- Buggfixar
 
 ### 2025-04-24
 

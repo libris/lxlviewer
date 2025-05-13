@@ -8,9 +8,11 @@ title: 'Help'
 
 Here we will continuously provide information about newly added features and planned developments:
 
-### 2025-05-12
+### 2025-05-13
 
 - Design updates
+- Filter on free online material
+- Bug fixes
 
 ### 2025-04-24
 
