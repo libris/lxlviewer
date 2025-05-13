@@ -116,7 +116,7 @@
 			<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
 		</span>
 		<details ontoggle={getHoldingStatus}>
-			<summary class="my-3 flex cursor-pointer items-baseline">
+			<summary class="mt-3 flex cursor-pointer items-baseline">
 				<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
 					<BiChevronRight />
 				</span>
@@ -127,7 +127,7 @@
 					<p>{page.data.t('search.loading')}</p>
 				{/if}
 				{#if error}
-					<div class="status-container border-neutral bg-page max-w-md rounded-sm border p-2">
+					<div class="status-container border-neutral bg-page mt-2 max-w-md rounded-sm border p-2">
 						<p class="error" role="alert">{error}</p>
 					</div>
 				{/if}
@@ -136,7 +136,7 @@
 						{#if instance?.item_information}
 							{@const items = instance.item_information}
 							<div
-								class="status-container border-neutral bg-page flex max-w-md flex-col gap-4 rounded-sm border p-2"
+								class="status-container border-neutral bg-page mt-4 flex max-w-md flex-col gap-4 rounded-sm border p-2"
 							>
 								{#if items.error || items.count === 0}
 									{#if urlNotDefinedError(items.error)}
@@ -199,7 +199,7 @@
 		<ul>
 			{#each bibIds as id (id.bibId)}
 				{#if linksByInstanceId[id.bibId]?.[holder.sigel]}
-					<div class="mb-3">
+					<div class="mt-3">
 						{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToItem']}
 							<li>
 								<a
@@ -227,6 +227,14 @@
 			{/each}
 		</ul>
 	</div>
+	<details>
+		<summary class="my-3 flex cursor-pointer items-baseline">
+			<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
+				<BiChevronRight />
+			</span>
+			{page.data.t('holdings.openingHoursEtc')}
+		</summary>
+	</details>
 </li>
 
 <style lang="postcss">
