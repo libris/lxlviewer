@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { type HoldingStatus } from '$lib/types/api';
-	import type { BibIdObj, DecoratedHolder, ItemLinksByInstanceId } from '$lib/types/holdings';
+	import type { BibIdObj, DecoratedHolder, ItemLinksByBibId } from '$lib/types/holdings';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
@@ -9,10 +9,10 @@
 	type HoldingInfoProps = {
 		holder: DecoratedHolder;
 		holdingUrl: string;
-		linksByInstanceId: ItemLinksByInstanceId;
+		linksByBibId: ItemLinksByBibId;
 	};
 
-	const { holder, holdingUrl, linksByInstanceId }: HoldingInfoProps = $props();
+	const { holder, holdingUrl, linksByBibId }: HoldingInfoProps = $props();
 
 	const sigel = holder?.sigel;
 	let loading = $state(false);
@@ -108,6 +108,14 @@
 		}
 		return false;
 	}
+
+	function hasLinksToItem(id: string) {
+		return linksByBibId[id]?.[holder.sigel]?.['linksToItem'];
+	}
+
+	function missingAtLeastOneLinkToItem() {
+		return bibIds.find((id) => !hasLinksToItem(id.bibId));
+	}
 </script>
 
 <li class="border-neutral text-xs not-last:border-b">
@@ -115,6 +123,52 @@
 		<span class="holder-label">
 			<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
 		</span>
+		<ul>
+			{#each bibIds as id (id.bibId)}
+				{#if linksByBibId[id.bibId]?.[holder.sigel]}
+					<div class="mt-2">
+						{#if hasLinksToItem(id.bibId)}
+							<li>
+								<a
+									href={linksByBibId[id.bibId][holder.sigel]['linksToItem'].at(0)}
+									target="_blank"
+									class="btn btn-outlined ext-link h-9"
+								>
+									{page.data.t('holdings.linkToLocal')}
+								</a>
+							</li>
+						{/if}
+					</div>
+				{/if}
+			{/each}
+			{#if bibIds.at(0) && missingAtLeastOneLinkToItem()}
+				{@const firstBibId = bibIds.at(0).bibId}
+				<div class="mt-2">
+					{#if linksByBibId[firstBibId]?.[holder.sigel]?.['linksToCatalog']}
+						<li>
+							<a
+								href={linksByBibId[firstBibId][holder.sigel]['linksToCatalog'].at(0)}
+								target="_blank"
+								class="ext-link"
+							>
+								{page.data.t('holdings.linkToCatalog')}
+							</a>
+						</li>
+					{:else if linksByBibId[firstBibId]?.[holder.sigel]?.['linksToSite']}
+						<li>
+							<a
+								href={linksByBibId[firstBibId][holder.sigel]['linksToSite'].at(0)}
+								target="_blank"
+								class="ext-link"
+							>
+								{page.data.t('holdings.linkToSite')}
+							</a>
+						</li>
+					{/if}
+				</div>
+			{/if}
+		</ul>
+
 		<details ontoggle={getHoldingStatus}>
 			<summary class="mt-3 flex cursor-pointer items-baseline">
 				<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
@@ -195,37 +249,6 @@
 				{/if}
 			</div>
 		</details>
-
-		<ul>
-			{#each bibIds as id (id.bibId)}
-				{#if linksByInstanceId[id.bibId]?.[holder.sigel]}
-					<div class="mt-3">
-						{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToItem']}
-							<li>
-								<a
-									href={linksByInstanceId[id.bibId][holder.sigel]['linksToItem'].at(0)}
-									target="_blank"
-									class="btn btn-outlined ext-link h-9"
-								>
-									{page.data.t('holdings.linkToLocal')}
-								</a>
-							</li>
-						{/if}
-						{#if linksByInstanceId[id.bibId]?.[holder.sigel]['linksToSite'] && !linksByInstanceId[id.bibId][holder.sigel]['linksToItem']}
-							<li>
-								<a
-									href={linksByInstanceId[id.bibId][holder.sigel]['linksToSite'].at(0)}
-									target="_blank"
-									class="ext-link"
-								>
-									{page.data.t('holdings.linkToLibrary')}
-								</a>
-							</li>
-						{/if}
-					</div>
-				{/if}
-			{/each}
-		</ul>
 	</div>
 	<details>
 		<summary class="my-3 flex cursor-pointer items-baseline">

@@ -194,7 +194,8 @@ export default {
 		unavailable: 'Ej tillgänglig',
 		map: 'karta',
 		linkToLocal: 'Visa i bibliotekets katalog',
-		linkToLibrary: 'Bibliotekets webbplats',
+		linkToCatalog: 'Bibliotekets lokala katalog',
+		linkToSite: 'Bibliotekets webbplats',
 		openingHoursEtc: 'Öppettider, adress mm'
 	},
 	filterAlias: {

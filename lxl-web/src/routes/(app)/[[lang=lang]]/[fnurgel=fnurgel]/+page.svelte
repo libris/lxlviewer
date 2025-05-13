@@ -290,11 +290,7 @@
 							</h3>
 							<ul class="w-full">
 								{#each myLibsHolders as holder, i (holder.sigel || i)}
-									<HoldingInfo
-										{holder}
-										{holdingUrl}
-										linksByInstanceId={data.itemLinksByInstanceId}
-									/>
+									<HoldingInfo {holder} {holdingUrl} linksByBibId={data.itemLinksByBibId} />
 								{/each}
 							</ul>
 						</div>
@@ -311,7 +307,7 @@
 					</div>
 					<ul class="w-full">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
-							<HoldingInfo {holder} {holdingUrl} linksByInstanceId={data.itemLinksByInstanceId} />
+							<HoldingInfo {holder} {holdingUrl} linksByBibId={data.itemLinksByBibId} />
 						{/each}
 						{#if filteredHolders.length === 0}
 							<li class="m-3">

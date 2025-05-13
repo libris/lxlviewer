@@ -6,10 +6,10 @@ import type {
 	FullHolderBySigel,
 	HoldersByType,
 	HoldingsByInstanceId,
-	ItemLinksByInstanceId,
+	ItemLinksByBibId,
 	ItemLinksForHolder
 } from '$lib/types/holdings';
-import { LensType, type FramedData } from '$lib/types/xl';
+import { LensType, type FramedData, JsonLd } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 import { relativizeUrl } from '$lib/utils/http';
@@ -213,14 +213,14 @@ export async function getFullHolderData(allHolders: DecoratedHolder[]): Promise<
 	return holderBySigel;
 }
 
-export function getItemLinksByInstanceId(
+export function getItemLinksByBibId(
 	holderBySigel: FullHolderBySigel,
 	bibIdsByInstanceId: Record<string, BibIdObj>
-): ItemLinksByInstanceId {
+): ItemLinksByBibId {
 	const ilsProperties = ['bibdb:bibIdSearchUri', 'bibdb:isbnSearchUri', 'bibdb:issnSearchUri'];
 
-	const linksByInstanceId: ItemLinksByInstanceId = {};
-	for (const [id, bibIdObj] of Object.entries(bibIdsByInstanceId)) {
+	const linksByInstanceId: ItemLinksByBibId = {};
+	for (const bibIdObj of Object.values(bibIdsByInstanceId)) {
 		const linksForHolder: ItemLinksForHolder = {};
 		bibIdObj.holders.forEach((sigel) => {
 			const fullHolderData = holderBySigel[sigel];
@@ -248,11 +248,18 @@ export function getItemLinksByInstanceId(
 
 			const allLinks: { [linkType: string]: string[] } = {};
 
+			const linksToCatalog: string[] = [];
+			const linkToCatalog = getAtPath(fullHolderData, ['bibdb:ils', 'url'], undefined);
+			if (linkToCatalog && linkToCatalog.length !== 0) {
+				linksToCatalog.push(linkToCatalog);
+				//TODO: formalize keys
+				allLinks['linksToCatalog'] = linksToCatalog;
+			}
+
 			const linksToSite: string[] = [];
-			const linkToSite = getAtPath(fullHolderData, ['bibdb:ils', 'url'], undefined);
+			const linkToSite = getAtPath(fullHolderData, ['url', JsonLd.ID], undefined);
 			if (linkToSite && linkToSite.length !== 0) {
 				linksToSite.push(linkToSite);
-				//TODO: formalize keys
 				allLinks['linksToSite'] = linksToSite;
 			}
 
@@ -265,7 +272,7 @@ export function getItemLinksByInstanceId(
 				linksForHolder[sigel] = allLinks;
 			}
 		});
-		linksByInstanceId[id] = linksForHolder;
+		linksByInstanceId[bibIdObj.bibId] = linksForHolder;
 	}
 	return linksByInstanceId;
 }

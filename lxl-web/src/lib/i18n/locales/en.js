@@ -194,8 +194,9 @@ export default {
 		available: 'Available',
 		unavailable: 'Not available',
 		map: 'map',
-		linkToLocal: 'Show in local catalog',
-		linkToLibrary: 'Library website',
+		linkToLocal: 'Show in local library catalog',
+		linkToCatalog: 'Local library catalog',
+		linkToSite: 'Library website',
 		openingHoursEtc: 'Opening hours, address etc'
 	},
 	filterAlias: {

@@ -38,6 +38,6 @@ export type ItemLinksForHolder = {
 	[sigel: string]: { [linkType: string]: string[] }; //links
 };
 
-export type ItemLinksByInstanceId = {
+export type ItemLinksByBibId = {
 	[id: string]: ItemLinksForHolder;
 };
