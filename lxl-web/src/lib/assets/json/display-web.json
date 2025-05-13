@@ -115,6 +115,23 @@
 				"Subdivision": {
 					"fresnel:extends": { "@id": "Subdivision-chips" },
 					"showProperties": ["fresnel:super", "inScheme", "inCollection", "scopeNote"]
+				},
+				"Person": {
+					"@type": "fresnel:Lens",
+					"@id": "Person-cards",
+					"classLensDomain": "Person",
+					"fresnel:extends": { "@id": "Person-chips" },
+					"showProperties": [
+						"fresnel:super",
+						"hasOccupation",
+						"fieldOfActivity",
+						"description",
+						"seeAlso",
+						"disambiguatingDescription",
+						"nationality",
+						"identifiedBy",
+						"hasVariant"
+					]
 				}
 			}
 		},
