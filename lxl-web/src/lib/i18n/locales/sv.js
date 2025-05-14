@@ -194,9 +194,10 @@ export default {
 		unavailable: 'Ej tillgänglig',
 		map: 'karta',
 		linkToLocal: 'Visa i bibliotekets katalog',
+		loanReserveLink: 'Låna/reservera',
 		linkToCatalog: 'Bibliotekets lokala katalog',
 		linkToSite: 'Bibliotekets webbplats',
-		openingHoursEtc: 'Öppettider, adress mm'
+		openingHoursEtc: 'Öppettider, adress m.m.'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'

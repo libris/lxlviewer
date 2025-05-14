@@ -217,30 +217,27 @@ export function getItemLinksByBibId(
 	holderBySigel: FullHolderBySigel,
 	bibIdsByInstanceId: Record<string, BibIdObj>
 ): ItemLinksByBibId {
-	const ilsProperties = ['bibdb:bibIdSearchUri', 'bibdb:isbnSearchUri', 'bibdb:issnSearchUri'];
-
 	const linksByInstanceId: ItemLinksByBibId = {};
 	for (const bibIdObj of Object.values(bibIdsByInstanceId)) {
 		const linksForHolder: ItemLinksForHolder = {};
 		bibIdObj.holders.forEach((sigel) => {
 			const fullHolderData = holderBySigel[sigel];
 
-			let linksToItem: string[] = [];
-			for (const key of ilsProperties) {
-				const linkTemplateIls = getAtPath(fullHolderData, ['bibdb:ils', key], []);
-				if (linkTemplateIls.length !== 0) {
-					if (key === 'bibdb:bibIdSearchUri' && bibIdObj.bibId !== '') {
-						// forms in the wild %BIB_ID%, %BIBID%, more???
-						linksToItem = [linkTemplateIls.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
-					}
-					if (key === 'bibdb:isbnSearchUri' && bibIdObj.isbn.length !== 0) {
-						linksToItem = [linkTemplateIls.replace(/%ISBN%/, bibIdObj.isbn), ...linksToItem];
-					}
-					if (key === 'bibdb:issnSearchUri' && bibIdObj.issn.length !== 0) {
-						linksToItem = [linkTemplateIls.replace(/%ISSN%/, bibIdObj.issn), ...linksToItem];
-					}
-				}
-			}
+			const ilsPaths = [
+				['bibdb:ils', 'bibdb:bibIdSearchUri'],
+				['bibdb:ils', 'bibdb:isbnSearchUri'],
+				['bibdb:ils', 'bibdb:issnSearchUri']
+			];
+
+			const lopacPaths = [
+				['bibdb:lopac', 'bibdb:bibIdSearchUri', '*'],
+				['bibdb:lopac', 'bibdb:isbnSearchUri', '*'],
+				['bibdb:lopac', 'bibdb:issnSearchUri', '*']
+			];
+
+			let linksToItem = getLinksToItemFor(bibIdObj, fullHolderData, ilsPaths);
+			const lopacLinksItem = getLinksToItemFor(bibIdObj, fullHolderData, lopacPaths);
+
 			const linkTemplateEod = getAtPath(fullHolderData, ['bibdb:eodUri'], []);
 			if (linkTemplateEod) {
 				linksToItem = [linkTemplateEod.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
@@ -263,9 +260,19 @@ export function getItemLinksByBibId(
 				allLinks['linksToSite'] = linksToSite;
 			}
 
+			const openingHoursList: string[] = [];
+			const openingHours = getAtPath(fullHolderData, ['bibdb:openingHours'], undefined);
+			if (openingHours && openingHours !== '') {
+				openingHoursList.push(openingHours);
+				allLinks['openingHours'] = openingHoursList;
+			}
+
 			if (linksToItem.length !== 0) {
-				linksForHolder[sigel] = { linksToItem: linksToItem };
 				allLinks['linksToItem'] = linksToItem;
+			}
+
+			if (lopacLinksItem.length !== 0) {
+				allLinks['loanReserveLink'] = lopacLinksItem;
 			}
 
 			if (Object.keys(allLinks).length !== 0) {
@@ -275,4 +282,36 @@ export function getItemLinksByBibId(
 		linksByInstanceId[bibIdObj.bibId] = linksForHolder;
 	}
 	return linksByInstanceId;
+}
+
+function getLinksToItemFor(
+	bibIdObj: BibIdObj,
+	fullHolderData: FramedData,
+	paths: string[][]
+): string[] {
+	let linksToItem: string[] = [];
+	for (const path of paths) {
+		let linkTemplate = getAtPath(fullHolderData, path, []);
+		if (linkTemplate.length !== 0) {
+			if (linkTemplate.length > 1) {
+				for (const linkObj of linkTemplate) {
+					//TODO: set language based on selected language
+					if (linkObj['@language'] === 'sv') {
+						linkTemplate = linkObj['@value'];
+					}
+				}
+			}
+			if (path.includes('bibdb:bibIdSearchUri') && bibIdObj.bibId !== '') {
+				// forms in the wild %BIB_ID%, %BIBID%, more???
+				linksToItem = [linkTemplate.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
+			}
+			if (path.includes('bibdb:isbnSearchUri') && bibIdObj.isbn.length !== 0) {
+				linksToItem = [linkTemplate.replace(/%ISBN%/, bibIdObj.isbn), ...linksToItem];
+			}
+			if (path.includes('bibdb:issnSearchUri') && bibIdObj.issn.length !== 0) {
+				linksToItem = [linkTemplate.replace(/%ISSN%/, bibIdObj.issn), ...linksToItem];
+			}
+		}
+	}
+	return linksToItem;
 }

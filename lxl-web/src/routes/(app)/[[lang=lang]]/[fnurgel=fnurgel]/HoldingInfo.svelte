@@ -113,8 +113,12 @@
 		return linksByBibId[id]?.[holder.sigel]?.['linksToItem'];
 	}
 
+	function hasLoanReserveLink(id: string) {
+		return linksByBibId[id]?.[holder.sigel]?.['loanReserveLink'];
+	}
+
 	function missingAtLeastOneLinkToItem() {
-		return bibIds.find((id) => !hasLinksToItem(id.bibId));
+		return bibIds.find((id) => !hasLinksToItem(id.bibId) && !hasLoanReserveLink(id.bibId));
 	}
 </script>
 
@@ -127,7 +131,17 @@
 			{#each bibIds as id (id.bibId)}
 				{#if linksByBibId[id.bibId]?.[holder.sigel]}
 					<div class="mt-2">
-						{#if hasLinksToItem(id.bibId)}
+						{#if hasLoanReserveLink(id.bibId)}
+							<li>
+								<a
+									href={linksByBibId[id.bibId][holder.sigel]['loanReserveLink'].at(0)}
+									target="_blank"
+									class="btn btn-outlined ext-link h-9"
+								>
+									{page.data.t('holdings.loanReserveLink')}
+								</a>
+							</li>
+						{:else if hasLinksToItem(id.bibId)}
 							<li>
 								<a
 									href={linksByBibId[id.bibId][holder.sigel]['linksToItem'].at(0)}
@@ -257,6 +271,18 @@
 			</span>
 			{page.data.t('holdings.openingHoursEtc')}
 		</summary>
+		<span>
+			{#if bibIds.at(0)}
+				{@const firstBibId = bibIds.at(0).bibId}
+				<div class="my-2">
+					{#if linksByBibId[firstBibId]?.[holder.sigel]?.['openingHours']}
+						<li>
+							{linksByBibId[firstBibId][holder.sigel]['openingHours'].at(0)}
+						</li>
+					{/if}
+				</div>
+			{/if}
+		</span>
 	</details>
 </li>
 
