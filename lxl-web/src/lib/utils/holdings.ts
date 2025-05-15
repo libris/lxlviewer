@@ -224,7 +224,8 @@ export async function getFullHolderData(allHolders: DecoratedHolder[]): Promise<
 export function getItemLinksByBibId(
 	holderBySigel: FullHolderBySigel,
 	bibIdsByInstanceId: Record<string, BibIdObj>,
-	locale: LocaleCode
+	locale: LocaleCode,
+	displayUtil: DisplayUtil
 ): ItemLinksByBibId {
 	const linksByInstanceId: ItemLinksByBibId = {};
 	for (const bibIdObj of Object.values(bibIdsByInstanceId)) {
@@ -278,8 +279,18 @@ export function getItemLinksByBibId(
 			const visitingAddress = address.find((a) => a[JsonLd.TYPE] === 'bibdb:VisitingAddress');
 
 			if (address && address.length !== 0) {
-				addresses.push(postalAddress);
-				addresses.push(visitingAddress);
+				console.log(
+					'lensed and formatted',
+					displayUtil.lensAndFormat(postalAddress, LensType.Card, locale)
+				);
+				console.log('postal address', postalAddress as FramedData);
+				addresses.push(
+					toString(displayUtil.lensAndFormat(postalAddress as FramedData, LensType.Card, locale)) ||
+						''
+				);
+				addresses.push(
+					toString(displayUtil.lensAndFormat(visitingAddress, LensType.Card, locale)) || ''
+				);
 				allLinks['address'] = addresses;
 			}
 

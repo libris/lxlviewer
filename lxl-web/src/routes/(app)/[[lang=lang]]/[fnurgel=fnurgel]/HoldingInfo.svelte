@@ -282,13 +282,13 @@
 							{linksByBibId[firstBibId][holder.sigel]['openingHours'].at(0)}
 						</li>
 					{/if}
-					{#if linksByBibId[firstBibId]?.[holder.sigel]?.['address']}
-						<li class="my-2">
-							<!--{#each linksByBibId[firstBibId][holder.sigel]['address'] as address}-->
-							<!--	<DecoratedData data={address} showLabels={ShowLabelsOptions.Never} />-->
-							<!--{/each}-->
-						</li>
-					{/if}
+					<!--{#if linksByBibId[firstBibId]?.[holder.sigel]?.['address']}-->
+					<!--	<li class="my-2">-->
+					<!--		{#each linksByBibId[firstBibId][holder.sigel]['address'] as address}-->
+					<!--			{address}-->
+					<!--		{/each}-->
+					<!--	</li>-->
+					<!--{/if}-->
 				</div>
 			{/if}
 		</span>

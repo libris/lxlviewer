@@ -76,7 +76,12 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	//TODO: cache this
 	const fullHolderByHolderId = await getFullHolderData(Object.values(holdersByType).flat());
-	const itemLinksByBibId = getItemLinksByBibId(fullHolderByHolderId, bibIdsByInstanceId, locale);
+	const itemLinksByBibId = getItemLinksByBibId(
+		fullHolderByHolderId,
+		bibIdsByInstanceId,
+		locale,
+		displayUtil
+	);
 
 	return {
 		type: mainEntity[JsonLd.TYPE],
