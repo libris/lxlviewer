@@ -7,6 +7,7 @@ export type BibIdObj = {
 	onr: string | null;
 	isbn: string[];
 	issn: string[];
+	str: string;
 };
 
 export type HoldingsByInstanceId = {

@@ -95,7 +95,7 @@ export function getBibIdsByInstanceId(
 		const holders = instance['@reverse']?.itemOf?.map((i) => i?.heldBy?.sigel);
 		const str =
 			toString(displayUtil.lensAndFormat(instance.publication[0], LensType.Token, locale)) || '';
-		console.log('str', str);
+
 		// add Legacy Libris III system number for ONR param
 		let onr = null;
 		record?.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
@@ -127,7 +127,8 @@ export function getBibIdsByInstanceId(
 				holders,
 				onr,
 				isbn,
-				issn
+				issn,
+				str
 			}
 		};
 	}, {});
@@ -287,7 +288,6 @@ export function getItemLinksByBibId(
 			}
 
 			if (lopacLinksItem.length !== 0) {
-				console.log('lopacLinksItem', lopacLinksItem);
 				allLinks['loanReserveLink'] = lopacLinksItem;
 			}
 

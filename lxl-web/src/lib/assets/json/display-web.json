@@ -234,6 +234,18 @@
 				}
 			}
 		},
+		"tokens": {
+			"@id": "tokens",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Publication": {
+					"@id": "Publication-tokens",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Publication",
+					"showProperties": ["agent", "year"]
+				}
+			}
+		},
 		"web-chips": {
 			"@id": "web-chips",
 			"@type": "fresnel:Group",

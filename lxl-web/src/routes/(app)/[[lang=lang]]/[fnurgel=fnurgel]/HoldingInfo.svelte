@@ -130,9 +130,10 @@
 		<ul>
 			{#each bibIds as id (id.bibId)}
 				{#if linksByBibId[id.bibId]?.[holder.sigel]}
-					<div class="mt-2">
+					<div class="my-1">
 						{#if hasLoanReserveLink(id.bibId)}
 							<li>
+								<div class="instance-token mt-2 mb-1">{id.str}</div>
 								<a
 									href={linksByBibId[id.bibId][holder.sigel]['loanReserveLink'].at(0)}
 									target="_blank"
@@ -143,6 +144,7 @@
 							</li>
 						{:else if hasLinksToItem(id.bibId)}
 							<li>
+								<div class="instance-token mt-2 mb-1">{id.str}</div>
 								<a
 									href={linksByBibId[id.bibId][holder.sigel]['linksToItem'].at(0)}
 									target="_blank"
@@ -280,16 +282,13 @@
 							{linksByBibId[firstBibId][holder.sigel]['openingHours'].at(0)}
 						</li>
 					{/if}
-					<!--{#if linksByBibId[firstBibId]?.[holder.sigel]?.['address']}-->
-					<!--	<li class="my-2">-->
-					<!--		{#each linksByBibId[firstBibId][holder.sigel]['address'] as address}-->
-					<!--			{#if address['@type'] === 'bibdb:VisitingAddress' && address['bibdb:streetAddress']}-->
-					<!--				<h1>{page.data.t('holdings.streetAddress')}</h1>-->
-					<!--				{address['bibdb:streetAddress']}-->
-					<!--			{/if}-->
-					<!--		{/each}-->
-					<!--	</li>-->
-					<!--{/if}-->
+					{#if linksByBibId[firstBibId]?.[holder.sigel]?.['address']}
+						<li class="my-2">
+							<!--{#each linksByBibId[firstBibId][holder.sigel]['address'] as address}-->
+							<!--	<DecoratedData data={address} showLabels={ShowLabelsOptions.Never} />-->
+							<!--{/each}-->
+						</li>
+					{/if}
 				</div>
 			{/if}
 		</span>
@@ -311,6 +310,7 @@
 
 	.holder-label {
 		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
+		font-weight: bold;
 	}
 
 	.status-container {
@@ -333,6 +333,10 @@
 
 	table td {
 		width: auto;
+	}
+
+	.instance-token {
+		color: var(--color-subtle);
 	}
 
 	.indicator {
