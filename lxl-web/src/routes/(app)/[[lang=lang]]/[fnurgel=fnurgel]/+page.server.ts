@@ -70,13 +70,13 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
-	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, resource);
+	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
 
 	//TODO: cache this
 	const fullHolderByHolderId = await getFullHolderData(Object.values(holdersByType).flat());
-	const itemLinksByBibId = getItemLinksByBibId(fullHolderByHolderId, bibIdsByInstanceId);
+	const itemLinksByBibId = getItemLinksByBibId(fullHolderByHolderId, bibIdsByInstanceId, locale);
 
 	return {
 		type: mainEntity[JsonLd.TYPE],

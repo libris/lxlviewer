@@ -81,14 +81,21 @@ export function getHoldingsByInstanceId(
 	}, {});
 }
 
-export function getBibIdsByInstanceId(mainEntity, record): Record<string, BibIdObj> {
-	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
-		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
+export function getBibIdsByInstanceId(
+	mainEntity,
+	displayUtil: DisplayUtil,
+	record,
+	locale: LocaleCode
+): Record<string, BibIdObj> {
+	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instance) => {
+		const id = relativizeUrl(instance['@id'])?.replace('#it', '');
 
-		const bibId = instanceOfItem.meta?.controlNumber || record?.controlNumber;
-		const type = instanceOfItem['@type'];
-		const holders = instanceOfItem['@reverse']?.itemOf?.map((i) => i?.heldBy?.sigel);
-
+		const bibId = instance.meta?.controlNumber || record?.controlNumber;
+		const type = instance['@type'];
+		const holders = instance['@reverse']?.itemOf?.map((i) => i?.heldBy?.sigel);
+		const str =
+			toString(displayUtil.lensAndFormat(instance.publication[0], LensType.Token, locale)) || '';
+		console.log('str', str);
 		// add Legacy Libris III system number for ONR param
 		let onr = null;
 		record?.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
@@ -99,7 +106,7 @@ export function getBibIdsByInstanceId(mainEntity, record): Record<string, BibIdO
 
 		const isbn: string[] = [];
 		const issn: string[] = [];
-		instanceOfItem.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
+		instance.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
 			if (el['@type'] === 'ISBN') {
 				isbn.push(el.value);
 			}
@@ -215,7 +222,8 @@ export async function getFullHolderData(allHolders: DecoratedHolder[]): Promise<
 
 export function getItemLinksByBibId(
 	holderBySigel: FullHolderBySigel,
-	bibIdsByInstanceId: Record<string, BibIdObj>
+	bibIdsByInstanceId: Record<string, BibIdObj>,
+	locale: LocaleCode
 ): ItemLinksByBibId {
 	const linksByInstanceId: ItemLinksByBibId = {};
 	for (const bibIdObj of Object.values(bibIdsByInstanceId)) {
@@ -229,14 +237,10 @@ export function getItemLinksByBibId(
 				['bibdb:ils', 'bibdb:issnSearchUri']
 			];
 
-			const lopacPaths = [
-				['bibdb:lopac', 'bibdb:bibIdSearchUri', '*'],
-				['bibdb:lopac', 'bibdb:isbnSearchUri', '*'],
-				['bibdb:lopac', 'bibdb:issnSearchUri', '*']
-			];
+			const lopacPaths = [['bibdb:lopac', 'bibdb:bibIdSearchUriByLang']];
 
-			let linksToItem = getLinksToItemFor(bibIdObj, fullHolderData, ilsPaths);
-			const lopacLinksItem = getLinksToItemFor(bibIdObj, fullHolderData, lopacPaths);
+			let linksToItem = getLinksToItemFor(bibIdObj, fullHolderData, ilsPaths, locale);
+			const lopacLinksItem = getLinksToItemFor(bibIdObj, fullHolderData, lopacPaths, locale);
 
 			const linkTemplateEod = getAtPath(fullHolderData, ['bibdb:eodUri'], []);
 			if (linkTemplateEod) {
@@ -267,11 +271,23 @@ export function getItemLinksByBibId(
 				allLinks['openingHours'] = openingHoursList;
 			}
 
+			const addresses: string[] = [];
+			const address = getAtPath(fullHolderData, ['bibdb:address', '*'], undefined);
+			const postalAddress = address.find((a) => a[JsonLd.TYPE] === 'bibdb:PostalAddress');
+			const visitingAddress = address.find((a) => a[JsonLd.TYPE] === 'bibdb:VisitingAddress');
+
+			if (address && address.length !== 0) {
+				addresses.push(postalAddress);
+				addresses.push(visitingAddress);
+				allLinks['address'] = addresses;
+			}
+
 			if (linksToItem.length !== 0) {
 				allLinks['linksToItem'] = linksToItem;
 			}
 
 			if (lopacLinksItem.length !== 0) {
+				console.log('lopacLinksItem', lopacLinksItem);
 				allLinks['loanReserveLink'] = lopacLinksItem;
 			}
 
@@ -287,19 +303,15 @@ export function getItemLinksByBibId(
 function getLinksToItemFor(
 	bibIdObj: BibIdObj,
 	fullHolderData: FramedData,
-	paths: string[][]
+	paths: string[][],
+	locale: LocaleCode
 ): string[] {
 	let linksToItem: string[] = [];
 	for (const path of paths) {
-		let linkTemplate = getAtPath(fullHolderData, path, []);
-		if (linkTemplate.length !== 0) {
-			if (linkTemplate.length > 1) {
-				for (const linkObj of linkTemplate) {
-					//TODO: set language based on selected language
-					if (linkObj['@language'] === 'sv') {
-						linkTemplate = linkObj['@value'];
-					}
-				}
+		const linkTemplate = getAtPath(fullHolderData, path, []);
+		if (linkTemplate && linkTemplate.length !== 0) {
+			if (path.includes('bibdb:bibIdSearchUriByLang') && bibIdObj.bibId !== '') {
+				linksToItem = [linkTemplate[locale].replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
 			}
 			if (path.includes('bibdb:bibIdSearchUri') && bibIdObj.bibId !== '') {
 				// forms in the wild %BIB_ID%, %BIBID%, more???

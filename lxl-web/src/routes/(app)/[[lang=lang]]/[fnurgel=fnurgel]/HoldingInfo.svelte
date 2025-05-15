@@ -280,6 +280,16 @@
 							{linksByBibId[firstBibId][holder.sigel]['openingHours'].at(0)}
 						</li>
 					{/if}
+					<!--{#if linksByBibId[firstBibId]?.[holder.sigel]?.['address']}-->
+					<!--	<li class="my-2">-->
+					<!--		{#each linksByBibId[firstBibId][holder.sigel]['address'] as address}-->
+					<!--			{#if address['@type'] === 'bibdb:VisitingAddress' && address['bibdb:streetAddress']}-->
+					<!--				<h1>{page.data.t('holdings.streetAddress')}</h1>-->
+					<!--				{address['bibdb:streetAddress']}-->
+					<!--			{/if}-->
+					<!--		{/each}-->
+					<!--	</li>-->
+					<!--{/if}-->
 				</div>
 			{/if}
 		</span>
