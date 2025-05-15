@@ -835,6 +835,26 @@
 				"fresnel:contentBefore": ""
 			}
 		},
+		"bibdb:PostalAddress-format": {
+			"@id": "bibdb:PostalAddress-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["bibdb:PostalAddress"],
+			"fresnel:propertyFormatDomain": ["bibdb:streetAddress", "bibdb:postalCode", "bibdb:email"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "\n",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"bibdb:PostalAddress-format2": {
+			"@id": "bibdb:PostalAddress-format2",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["bibdb:PostalAddress"],
+			"fresnel:propertyFormatDomain": ["bibdb:addressLocality"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"default-separators": {
 			"@id": "default-separators",
 			"@type": "fresnel:Format",

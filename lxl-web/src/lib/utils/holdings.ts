@@ -279,17 +279,11 @@ export function getItemLinksByBibId(
 			const visitingAddress = address.find((a) => a[JsonLd.TYPE] === 'bibdb:VisitingAddress');
 
 			if (address && address.length !== 0) {
-				console.log(
-					'lensed and formatted',
-					displayUtil.lensAndFormat(postalAddress, LensType.Card, locale)
-				);
-				console.log('postal address', postalAddress as FramedData);
-				addresses.push(
-					toString(displayUtil.lensAndFormat(postalAddress as FramedData, LensType.Card, locale)) ||
-						''
-				);
 				addresses.push(
 					toString(displayUtil.lensAndFormat(visitingAddress, LensType.Card, locale)) || ''
+				);
+				addresses.push(
+					toString(displayUtil.lensAndFormat(postalAddress, LensType.Card, locale)) || ''
 				);
 				allLinks['address'] = addresses;
 			}

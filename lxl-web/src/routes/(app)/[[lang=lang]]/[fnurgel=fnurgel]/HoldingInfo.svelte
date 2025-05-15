@@ -276,20 +276,20 @@
 		<span>
 			{#if bibIds.at(0)}
 				{@const firstBibId = bibIds.at(0).bibId}
-				<div class="my-2">
+				<ul class="my-2" style="white-space: pre-line">
 					{#if linksByBibId[firstBibId]?.[holder.sigel]?.['openingHours']}
 						<li>
 							{linksByBibId[firstBibId][holder.sigel]['openingHours'].at(0)}
 						</li>
 					{/if}
-					<!--{#if linksByBibId[firstBibId]?.[holder.sigel]?.['address']}-->
-					<!--	<li class="my-2">-->
-					<!--		{#each linksByBibId[firstBibId][holder.sigel]['address'] as address}-->
-					<!--			{address}-->
-					<!--		{/each}-->
-					<!--	</li>-->
-					<!--{/if}-->
-				</div>
+					{#if linksByBibId[firstBibId]?.[holder.sigel]?.['address']}
+						{#each linksByBibId[firstBibId][holder.sigel]['address'] as address (address)}
+							<li class="my-2">
+								{address}
+							</li>
+						{/each}
+					{/if}
+				</ul>
 			{/if}
 		</span>
 	</details>
