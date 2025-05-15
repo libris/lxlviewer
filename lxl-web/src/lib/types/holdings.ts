@@ -36,7 +36,7 @@ export type FullHolderBySigel = {
 };
 
 export type ItemLinksForHolder = {
-	[sigel: string]: { [linkType: string]: string[] }; //links
+	[sigel: string]: { [linkType: string]: string[] };
 };
 
 export type ItemLinksByBibId = {

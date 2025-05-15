@@ -249,7 +249,15 @@ export function getItemLinksByBibId(
 				linksToItem = [linkTemplateEod.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
 			}
 
+			//TODO: rename
 			const allLinks: { [linkType: string]: string[] } = {};
+
+			const hasItemStatus = getAtPath(fullHolderData, ['bibdb:ils', 'bibdb:itemStatusUri'], []);
+
+			//TODO: don't just support list of strings
+			if (hasItemStatus) {
+				allLinks['hasItemStatus'] = ['true'];
+			}
 
 			const linksToCatalog: string[] = [];
 			const linkToCatalog = getAtPath(fullHolderData, ['bibdb:ils', 'url'], undefined);
