@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
 	import Suggestion from './Suggestion.svelte';
@@ -22,9 +22,9 @@
 
 	let { placeholder = '' }: Props = $props();
 	let q = $state(
-		$page.params.fnurgel
+		page.params.fnurgel
 			? ''
-			: addSpaceIfEndingQualifier($page.url.searchParams.get('_q')?.trim() || '')
+			: addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || '')
 	);
 	let selection: Selection | undefined = $state();
 	let cursor = $derived(selection?.head || 0);
@@ -33,7 +33,7 @@
 	let showMoreFilters = $state(false);
 
 	let pageParams = $derived.by(() => {
-		let p = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
+		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
 		// Always reset these params on new search
 		p.set('_offset', '0');
 		p.delete('_i');
@@ -47,7 +47,7 @@
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
 			const toQ = addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
-			q = $page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+			q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
 			superSearch?.hideExpandedSearch();
 		}
 	});
@@ -133,7 +133,7 @@
 
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
-			let pageMapping = $page.data.searchResult?.mapping;
+			let pageMapping = page.data.searchResult?.mapping;
 			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
 		}
 		return lxlQualifierPlugin(getLabels, removeQualifier);
@@ -145,6 +145,10 @@
 		const newParams = new URLSearchParams(pageParams);
 		newParams.set('_q', q);
 		return `/find?${newParams.toString()}`;
+	}
+
+	export function showExpandedSearch() {
+		superSearch?.showExpandedSearch();
 	}
 </script>
 
@@ -190,7 +194,7 @@
 		bind:selection
 		language={lxlQuery}
 		{placeholder}
-		endpoint={`/api/${$page.data.locale}/supersearch`}
+		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({
 				_q: query,
@@ -203,9 +207,9 @@
 		shouldShowStartContentFn={handleShouldShowStartContent}
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
-		comboboxAriaLabel={$page.data.t('search.search')}
+		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={2}
-		loadMoreLabel={$page.data.t('search.showMore')}
+		loadMoreLabel={page.data.t('search.showMore')}
 		debouncedWait={100}
 	>
 		{#snippet loadingIndicator()}
@@ -230,7 +234,7 @@
 						type="button"
 						id={getCellId(0)}
 						class:focused-cell={isFocusedCell(0)}
-						aria-label={$page.data.t('general.close')}
+						aria-label={page.data.t('general.close')}
 						class="p-4 sm:hidden"
 						onclick={onclickClose}
 					>
@@ -249,7 +253,7 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class="text-subtle p-4"
-						aria-label={$page.data.t('search.clearFilters')}
+						aria-label={page.data.t('search.clearFilters')}
 						onclick={onclickClear}
 					>
 						<BiXLg />
@@ -270,30 +274,30 @@
 		{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
 			<div role="rowgroup">
 				<div class="text-2xs text-subtle flex w-full items-center px-4 py-2 font-medium">
-					{$page.data.t('search.supersearchStartHeader')}
+					{page.data.t('search.supersearchStartHeader')}
 				</div>
 				{@render startFilterItem({
-					qualifierKey: $page.data.t('qualifiers.contributorKey'),
-					qualifierLabel: $page.data.t('qualifiers.contributorLabel'),
-					qualifierPlaceholder: $page.data.t('qualifiers.contributorPlaceholder'),
+					qualifierKey: page.data.t('qualifiers.contributorKey'),
+					qualifierLabel: page.data.t('qualifiers.contributorLabel'),
+					qualifierPlaceholder: page.data.t('qualifiers.contributorPlaceholder'),
 					getCellId,
 					isFocusedCell,
 					isFocusedRow,
 					rowIndex: 1
 				})}
 				{@render startFilterItem({
-					qualifierKey: $page.data.t('qualifiers.titleKey'),
-					qualifierLabel: $page.data.t('qualifiers.titleLabel'),
-					qualifierPlaceholder: $page.data.t('qualifiers.titlePlaceholder'),
+					qualifierKey: page.data.t('qualifiers.titleKey'),
+					qualifierLabel: page.data.t('qualifiers.titleLabel'),
+					qualifierPlaceholder: page.data.t('qualifiers.titlePlaceholder'),
 					getCellId,
 					isFocusedCell,
 					isFocusedRow,
 					rowIndex: 2
 				})}
 				{@render startFilterItem({
-					qualifierKey: $page.data.t('qualifiers.languageKey'),
-					qualifierLabel: $page.data.t('qualifiers.languageLabel'),
-					qualifierPlaceholder: $page.data.t('qualifiers.languagePlaceholder'),
+					qualifierKey: page.data.t('qualifiers.languageKey'),
+					qualifierLabel: page.data.t('qualifiers.languageLabel'),
+					qualifierPlaceholder: page.data.t('qualifiers.languagePlaceholder'),
 					getCellId,
 					isFocusedCell,
 					isFocusedRow,
@@ -301,27 +305,27 @@
 				})}
 				{#if showMoreFilters}
 					{@render startFilterItem({
-						qualifierKey: $page.data.t('qualifiers.subjectKey'),
-						qualifierLabel: $page.data.t('qualifiers.subjectLabel'),
-						qualifierPlaceholder: $page.data.t('qualifiers.subjectPlaceholder'),
+						qualifierKey: page.data.t('qualifiers.subjectKey'),
+						qualifierLabel: page.data.t('qualifiers.subjectLabel'),
+						qualifierPlaceholder: page.data.t('qualifiers.subjectPlaceholder'),
 						getCellId,
 						isFocusedCell,
 						isFocusedRow,
 						rowIndex: 4
 					})}
 					{@render startFilterItem({
-						qualifierKey: $page.data.t('qualifiers.yearKey'),
-						qualifierLabel: $page.data.t('qualifiers.yearLabel'),
-						qualifierPlaceholder: $page.data.t('qualifiers.yearPlaceholder'),
+						qualifierKey: page.data.t('qualifiers.yearKey'),
+						qualifierLabel: page.data.t('qualifiers.yearLabel'),
+						qualifierPlaceholder: page.data.t('qualifiers.yearPlaceholder'),
 						getCellId,
 						isFocusedCell,
 						isFocusedRow,
 						rowIndex: 5
 					})}
 					{@render startFilterItem({
-						qualifierKey: $page.data.t('qualifiers.genreFormKey'),
-						qualifierLabel: $page.data.t('qualifiers.genreFormLabel'),
-						qualifierPlaceholder: $page.data.t('qualifiers.genreFormPlaceholder'),
+						qualifierKey: page.data.t('qualifiers.genreFormKey'),
+						qualifierLabel: page.data.t('qualifiers.genreFormLabel'),
+						qualifierPlaceholder: page.data.t('qualifiers.genreFormPlaceholder'),
 						getCellId,
 						isFocusedCell,
 						isFocusedRow,
@@ -339,10 +343,10 @@
 					>
 						{#if showMoreFilters}
 							<BiChevronUp class="text-subtle mr-2" />
-							{$page.data.t('search.showFewer')}
+							{page.data.t('search.showFewer')}
 						{:else}
 							<BiChevronDown class="text-subtle mr-2" />
-							{$page.data.t('search.showMore')}
+							{page.data.t('search.showMore')}
 						{/if}
 					</button>
 				</div>
@@ -364,6 +368,14 @@
 <style lang="postcss">
 	@reference "../../../app.css";
 
+	/* search */
+	:global(#supersearch) {
+		display: none;
+		@variant sm {
+			display: block;
+		}
+	}
+
 	/* dialog */
 
 	:global(.supersearch-dialog) {
@@ -372,7 +384,7 @@
 	}
 
 	:global(.supersearch-dialog-wrapper) {
-		@apply header-layout pointer-events-none;
+		@apply header-layout pointer-events-none px-0 sm:px-6 lg:px-2;
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
 
 		@variant sm {
@@ -388,7 +400,7 @@
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-20 items-stretch px-4 pt-4 pb-2;
+		@apply sticky top-0 z-20 items-stretch px-4 pt-3 pb-2;
 		background-color: var(--color-page);
 	}
 

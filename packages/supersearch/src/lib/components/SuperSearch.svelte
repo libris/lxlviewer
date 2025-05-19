@@ -599,7 +599,7 @@
 	/>
 {/snippet}
 
-<div role="presentation" onkeydown={handleCollapsedKeyDown}>
+<div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
 	<div class="supersearch-combobox">
 		{@render inputRow?.({
 			expanded: false,
