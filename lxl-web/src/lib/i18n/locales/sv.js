@@ -9,7 +9,7 @@ export default {
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
 		openMenu: 'Öppna huvudmeny',
 		betaMessage: 'Du befinner dig på en testversion av nya Libris.',
-		betaDetails: 'Ofullständig information och fel kan förekomma.',
+		betaDetails: 'Den innehåller en kopia av katalogen som inte uppdateras löpande.',
 		betaLink: 'Tyck till om nya Libris'
 	},
 	myPages: {
