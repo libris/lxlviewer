@@ -8,7 +8,10 @@ export default {
 		myPages: 'My pages',
 		changeLang: 'På svenska',
 		searchPlaceholder: 'Search for title, author, library, subject...',
-		openMenu: 'Open main menu'
+		openMenu: 'Open main menu',
+		betaMessage: 'This is a test version of the new Libris.',
+		betaDetails: 'Incomplete information and errors may occur.',
+		betaLink: 'Go to old Libris'
 	},
 	myPages: {
 		myPages: 'My pages',

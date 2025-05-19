@@ -19,16 +19,32 @@
 	});
 </script>
 
-<header class="bg-app-header border-b-primary-200 border-b">
+<header class="bg-app-header">
+	<div
+		class="bg-primary-400 text-2xs/4 flex min-h-11 place-content-between items-center gap-8 px-3 py-1 font-medium text-[#000] sm:px-6 md:text-xs"
+	>
+		<span class="flex items-center gap-2">
+			<span
+				class="bg-primary-950 text-primary-50 text-2xs rounded-sm px-1.5 py-0.5 tracking-wider uppercase"
+			>
+				Beta
+			</span>
+			<span>
+				{page.data.t('header.betaMessage')}
+				<span class="sr-only lg:not-sr-only"> {page.data.t('header.betaDetails')}</span>
+			</span>
+		</span>
+		<a
+			href="/"
+			class="whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid"
+		>
+			{page.data.t('header.betaLink')}</a
+		>
+	</div>
 	<nav class="header-nav header-layout min-h-20 items-center py-0">
 		<div class="home lg:pl-4">
 			<a href={page.data.base} class="flex flex-col no-underline lg:flex-row">
 				<span class="font-heading text-2xl font-[600] lg:text-3xl"> Libris</span>
-				<div
-					class="bg-primary-200 top-0 -rotate-6 self-baseline rounded-sm px-2 text-sm uppercase lg:rotate-0"
-				>
-					Beta
-				</div>
 			</a>
 		</div>
 		<div class="search pb-4 sm:px-4 sm:pb-0">

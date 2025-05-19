@@ -7,7 +7,10 @@ export default {
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
-		openMenu: 'Öppna huvudmeny'
+		openMenu: 'Öppna huvudmeny',
+		betaMessage: 'Du befinner dig på en testversion av nya Libris.',
+		betaDetails: 'Ofullständig information och fel kan förekomma.',
+		betaLink: 'Gå till gamla Libris'
 	},
 	myPages: {
 		myPages: 'Mina sidor',
