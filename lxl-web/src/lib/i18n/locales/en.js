@@ -9,7 +9,7 @@ export default {
 		changeLang: 'På svenska',
 		searchPlaceholder: 'Search for title, author, library, subject...',
 		openMenu: 'Open main menu',
-		betaMessage: 'This is a test version of the new Libris.',
+		betaMessage: 'This is a test version of the new Libris website.',
 		betaDetails: `It is based on a copy of the catalogue which isn't updated continuously.`,
 		betaLink: 'Share your feedback'
 	},
