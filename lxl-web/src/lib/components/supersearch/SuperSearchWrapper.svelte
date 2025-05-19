@@ -93,6 +93,7 @@
 	}
 
 	function addQualifierKey(qualifierKey: string) {
+		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
 		superSearch?.dispatchChange({
 			change: {
 				from: cursor,
@@ -105,7 +106,6 @@
 			},
 			userEvent: 'input.complete'
 		});
-		superSearch?.hideExpandedSearch();
 	}
 
 	function addQualifier(qualifier: QualifierSuggestion) {
