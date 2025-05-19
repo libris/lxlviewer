@@ -29,7 +29,6 @@
 			</span>
 			<span>
 				{page.data.t('header.betaMessage')}
-				<span class="sr-only lg:not-sr-only"> {page.data.t('header.betaDetails')}</span>
 			</span>
 		</span>
 		<a
