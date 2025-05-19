@@ -11,7 +11,7 @@ export default {
 		openMenu: 'Open main menu',
 		betaMessage: 'This is a test version of the new Libris.',
 		betaDetails: 'Incomplete information and errors may occur.',
-		betaLink: 'Go to old Libris'
+		betaLink: 'Share your feedback'
 	},
 	myPages: {
 		myPages: 'My pages',

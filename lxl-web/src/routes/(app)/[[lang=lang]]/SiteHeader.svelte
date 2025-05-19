@@ -33,7 +33,9 @@
 			</span>
 		</span>
 		<a
-			href="/"
+			href={page.params?.lang === 'en'
+				? 'https://survey.kb.se/librisbeta/en'
+				: 'https://survey.kb.se/librisbeta'}
 			class="whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid"
 		>
 			{page.data.t('header.betaLink')}</a
