@@ -21,12 +21,10 @@
 
 <header class="bg-app-header">
 	<div
-		class="bg-primary-400 text-2xs/4 flex min-h-11 place-content-between items-center gap-8 px-3 py-1 font-medium text-[#000] sm:px-6 md:text-xs"
+		class="text-2xs/3.5 flex min-h-11 place-content-between items-center gap-8 self-baseline bg-[#fd6b8e] px-3 py-1 font-medium text-[#000] sm:px-6 md:text-xs"
 	>
 		<span class="flex items-center gap-2">
-			<span
-				class="bg-primary-950 text-primary-50 text-2xs rounded-sm px-1.5 py-0.5 tracking-wider uppercase"
-			>
+			<span class="text-2xs rounded-sm bg-[#000] px-1.5 py-0.5 tracking-wide text-[#fff] uppercase">
 				Beta
 			</span>
 			<span>
