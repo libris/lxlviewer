@@ -9,7 +9,7 @@ export default {
 		changeLang: 'På svenska',
 		searchPlaceholder: 'Search for title, author, library, subject...',
 		openMenu: 'Open main menu',
-		betaMessage: 'This is a test version, so the catalogue may contain outdated information.',
+		betaMessage: 'This is a test version, the catalogue may contain outdated information.',
 		betaLink: 'Share your feedback'
 	},
 	myPages: {
