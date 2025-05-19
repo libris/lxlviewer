@@ -5,6 +5,7 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
+	import { BibDb } from '$lib/types/xl';
 
 	type HoldingInfoProps = {
 		holder: DecoratedHolder;
@@ -110,11 +111,11 @@
 	}
 
 	function hasLinksToItem(id: string) {
-		return linksByBibId[id]?.[holder.sigel]?.['linksToItem'];
+		return linksByBibId[id]?.[holder.sigel]?.[BibDb.LinksToItem];
 	}
 
 	function hasLoanReserveLink(id: string) {
-		return linksByBibId[id]?.[holder.sigel]?.['loanReserveLink'];
+		return linksByBibId[id]?.[holder.sigel]?.[BibDb.LoanReserveLink];
 	}
 
 	function missingAtLeastOneLinkToItem() {
@@ -146,7 +147,7 @@
 							<li>
 								<div class="instance-token mt-2 mb-1">{id.str}</div>
 								<a
-									href={linksByBibId[id.bibId][holder.sigel]['linksToItem'].at(0)}
+									href={linksByBibId[id.bibId][holder.sigel][BibDb.LinksToItem].at(0)}
 									target="_blank"
 									class="btn btn-outlined ext-link h-9"
 								>
@@ -160,20 +161,20 @@
 			{#if bibIds.at(0) && missingAtLeastOneLinkToItem()}
 				{@const firstBibId = bibIds.at(0).bibId}
 				<div class="mt-2">
-					{#if linksByBibId[firstBibId]?.[holder.sigel]?.['linksToCatalog']}
+					{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.LinksToCatalog]}
 						<li>
 							<a
-								href={linksByBibId[firstBibId][holder.sigel]['linksToCatalog'].at(0)}
+								href={linksByBibId[firstBibId][holder.sigel][BibDb.LinksToCatalog].at(0)}
 								target="_blank"
 								class="ext-link"
 							>
 								{page.data.t('holdings.linkToCatalog')}
 							</a>
 						</li>
-					{:else if linksByBibId[firstBibId]?.[holder.sigel]?.['linksToSite']}
+					{:else if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.LinksToSite]}
 						<li>
 							<a
-								href={linksByBibId[firstBibId][holder.sigel]['linksToSite'].at(0)}
+								href={linksByBibId[firstBibId][holder.sigel][BibDb.LinksToSite].at(0)}
 								target="_blank"
 								class="ext-link"
 							>
@@ -184,7 +185,7 @@
 				</div>
 			{/if}
 		</ul>
-		{#if linksByBibId[bibIds.at(0).bibId]?.[holder.sigel]?.['hasItemStatus']}
+		{#if linksByBibId[bibIds.at(0).bibId]?.[holder.sigel]?.[BibDb.ItemStatus]}
 			<details ontoggle={getHoldingStatus}>
 				<summary class="mt-3 flex cursor-pointer items-baseline">
 					<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
@@ -280,13 +281,13 @@
 			{#if bibIds.at(0)}
 				{@const firstBibId = bibIds.at(0).bibId}
 				<ul class="my-2" style="white-space: pre-line">
-					{#if linksByBibId[firstBibId]?.[holder.sigel]?.['openingHours']}
+					{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.OpeningHours]}
 						<li>
-							{linksByBibId[firstBibId][holder.sigel]['openingHours'].at(0)}
+							{linksByBibId[firstBibId][holder.sigel][BibDb.OpeningHours].at(0)}
 						</li>
 					{/if}
-					{#if linksByBibId[firstBibId]?.[holder.sigel]?.['address']}
-						{#each linksByBibId[firstBibId][holder.sigel]['address'] as address (address)}
+					{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.Address]}
+						{#each linksByBibId[firstBibId][holder.sigel][BibDb.Address] as address (address)}
 							<li class="my-2">
 								{address}
 							</li>
