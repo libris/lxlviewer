@@ -8,8 +8,10 @@ export default {
 		changeLang: 'In English',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
 		openMenu: 'Öppna huvudmeny',
-		betaMessage: 'Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
-		betaLink: 'Tyck till om nya Libris'
+		betaMessage:
+			'Här kan du prova på nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
+		betaLink: 'Tyck till',
+		betaLinkLong: 'om nya Libris'
 	},
 	myPages: {
 		myPages: 'Mina sidor',

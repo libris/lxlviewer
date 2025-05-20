@@ -37,8 +37,11 @@
 				: 'https://survey.kb.se/librisbeta'}
 			class="whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid"
 		>
-			{page.data.t('header.betaLink')}</a
-		>
+			{page.data.t('header.betaLink')}
+			{#if page.data.t('header.betaLinkLong')}
+				<span class="sr-only lg:not-sr-only">{`${page.data.t('header.betaLinkLong')}`}</span>
+			{/if}
+		</a>
 	</div>
 	<nav class="header-nav header-layout min-h-20 items-center py-0">
 		<div class="home lg:pl-4">

@@ -9,8 +9,10 @@ export default {
 		changeLang: 'På svenska',
 		searchPlaceholder: 'Search for title, author, library, subject...',
 		openMenu: 'Open main menu',
-		betaMessage: 'This is a test version, the catalogue may contain outdated information.',
-		betaLink: 'Share your feedback'
+		betaMessage:
+			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
+		betaLink: 'Share your feedback',
+		betaLinkLong: ' '
 	},
 	myPages: {
 		myPages: 'My pages',
