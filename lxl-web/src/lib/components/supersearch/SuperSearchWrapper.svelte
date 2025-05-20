@@ -368,6 +368,7 @@
 
 	:global(.supersearch-dialog) {
 		@apply static m-0 h-full max-h-screen w-full max-w-full bg-transparent p-0;
+		top: var(--offset-top, 0);
 	}
 
 	:global(.supersearch-dialog-wrapper) {

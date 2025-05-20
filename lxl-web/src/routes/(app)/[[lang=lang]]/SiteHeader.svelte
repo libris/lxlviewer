@@ -7,6 +7,7 @@
 	import BiList from '~icons/bi/list';
 
 	let showHeaderMenu = false;
+	let bannerOffsetHeight: number | undefined = $state();
 
 	function toggleHeaderMenu() {
 		showHeaderMenu = !showHeaderMenu;
@@ -19,20 +20,42 @@
 	});
 </script>
 
-<header class="bg-app-header border-b-primary-200 border-b">
+<header class="bg-app-header">
+	<div
+		class="text-2xs/3.5 bg-warning-300 flex min-h-11 place-content-between items-center gap-8 px-3 py-1 font-medium sm:px-6 md:text-xs"
+		bind:offsetHeight={bannerOffsetHeight}
+	>
+		<span class="flex items-center gap-2">
+			<span class="text-2xs rounded-sm bg-[#000] px-1.5 py-0.5 tracking-wide text-[#fff] uppercase">
+				Beta
+			</span>
+			<span>
+				{page.data.t('header.betaMessage')}
+			</span>
+		</span>
+		<a
+			href={page.params?.lang === 'en'
+				? 'https://survey.kb.se/librisbeta/en'
+				: 'https://survey.kb.se/librisbeta'}
+			class="whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid"
+		>
+			{page.data.t('header.betaLink')}
+			{#if page.data.t('header.betaLinkLong')}
+				<span class="sr-only lg:not-sr-only">{`${page.data.t('header.betaLinkLong')}`}</span>
+			{/if}
+		</a>
+	</div>
 	<nav class="header-nav header-layout min-h-20 items-center py-0">
 		<div class="home lg:pl-4">
 			<a href={page.data.base} class="flex flex-col no-underline lg:flex-row">
 				<span class="font-heading text-2xl font-[600] lg:text-3xl"> Libris</span>
-				<div
-					class="bg-primary-200 top-0 -rotate-6 self-baseline rounded-sm px-2 text-sm uppercase lg:rotate-0"
-				>
-					Beta
-				</div>
 			</a>
 		</div>
 		<div class="search pb-4 sm:px-4 sm:pb-0">
-			<SuperSearchWrapper placeholder={page.data.t('header.searchPlaceholder')} />
+			<SuperSearchWrapper
+				placeholder={page.data.t('header.searchPlaceholder')}
+				--offset-top={`${bannerOffsetHeight}px`}
+			/>
 		</div>
 		<div class="actions flex min-h-20 items-center justify-end lg:pr-4">
 			<div
