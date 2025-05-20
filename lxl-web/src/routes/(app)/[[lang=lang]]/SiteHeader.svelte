@@ -8,7 +8,7 @@
 	import BiList from '~icons/bi/list';
 	import BiSearch from '~icons/bi/search';
 
-	let showHeaderMenu = false;
+	let showHeaderMenu = $state(false);
 	let bannerOffsetHeight: number | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent;
 
