@@ -4,7 +4,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
-	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import IconClose from '~icons/bi/x-lg';
 	import { setModalContext } from '$lib/contexts/modal';
@@ -13,20 +12,13 @@
 	export let close: ((event: Event) => void) | undefined = undefined;
 	export let position: 'left' | 'right' | 'top' = 'right';
 
-	let prevBodyOverflow: string | undefined = undefined;
-
 	setModalContext();
 
 	onMount(() => {
 		dialog?.showModal();
-		disableBodyScroll();
 	});
 
-	onDestroy(() => {
-		if (browser) {
-			enableBodyScroll();
-		}
-	});
+	onDestroy(() => {});
 
 	function handleClose(event: MouseEvent | Event) {
 		// Use close method from prop if available
@@ -44,23 +36,12 @@
 			handleClose(event);
 		}
 	}
-
-	function disableBodyScroll() {
-		prevBodyOverflow = document.body.style.overflow;
-		document.body.style.overflow = 'hidden';
-	}
-
-	function enableBodyScroll() {
-		document.body.style.overflow = prevBodyOverflow || '';
-	}
 </script>
 
 <div
 	class="bg-backdrop pointer-events-none fixed top-0 left-0 z-10 h-full w-full"
 	transition:fade={{ duration: 300 }}
 ></div>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <dialog
 	class="fixed top-0 left-0 flex h-screen max-h-full w-screen max-w-full"
 	tabindex="-1"

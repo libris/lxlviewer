@@ -151,6 +151,10 @@
 		color: var(--color-body);
 	}
 
+	body:has(dialog[open]) {
+		overflow: hidden;
+	}
+
 	button:not(:disabled),
 	[role='button']:not(:disabled) {
 		cursor: pointer;
