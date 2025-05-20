@@ -60,9 +60,6 @@
 
 	--color-*: initial;
 
-	--color-black: #000;
-	--color-white: #fff;
-
 	--color-primary-50: oklch(97.93% 0.014 124.55);
 	--color-primary-100: oklch(95.92% 0.029 121.98);
 	--color-primary-200: oklch(90.73% 0.063 123.24);
@@ -128,7 +125,10 @@
 	--color-severe-950: oklch(14.45% 0.031 21.73);
 	--color-severe: var(--color-severe-500);
 
-	--color-page: #fff;
+	--color-black: #000;
+	--color-white: #fff;
+
+	--color-page: var(--color-white);
 	--color-body: var(--color-neutral-800);
 	--color-subtle: var(--color-neutral-600);
 	--color-link: var(--color-accent);
