@@ -33,7 +33,7 @@
 		bind:offsetHeight={bannerOffsetHeight}
 	>
 		<span class="flex items-center gap-2">
-			<span class="text-2xs rounded-sm bg-[#000] px-1.5 py-0.5 tracking-wide text-[#fff] uppercase">
+			<span class="text-2xs rounded-sm bg-black px-1.5 py-0.5 tracking-wide text-white uppercase">
 				Beta
 			</span>
 			<span>

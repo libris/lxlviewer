@@ -42,8 +42,6 @@
 
 :root {
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
-	--color-black: #000;
-	--color-white: #fff;
 	--color-success: #2ab061;
 }
 
@@ -61,6 +59,9 @@
 	--text-3xl: 1.75rem; /* 28px */
 
 	--color-*: initial;
+
+	--color-black: #000;
+	--color-white: #fff;
 
 	--color-primary-50: oklch(97.93% 0.014 124.55);
 	--color-primary-100: oklch(95.92% 0.029 121.98);
