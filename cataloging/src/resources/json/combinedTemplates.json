@@ -1740,7 +1740,63 @@
             "hasNote": [{
               "@type": "marc:ParticipantOrPerformerNote",
               "label": ""
-            }]
+            }],
+            "hasPart": [
+              {
+                "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": null
+                  }
+                ],
+                "hasTitle": [
+                  {
+                    "@type": "Title",
+                    "mainTitle": "",
+                    "partNumber": [
+                      ""
+                    ],
+                    "partName": [
+                      ""
+                    ]
+                  }
+                ],
+                "musicKey": "",
+                "marc:arrangedStatementForMusic": "",
+                "musicMedium": [{
+                  "@type": "MusicMedium",
+                  "label": ""
+                }]
+              },
+              {
+                "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": null
+                  }
+                ],
+                "hasTitle": [
+                  {
+                    "@type": "Title",
+                    "mainTitle": "",
+                    "partNumber": [
+                      ""
+                    ],
+                    "partName": [
+                      ""
+                    ]
+                  }
+                ],
+                "musicKey": "",
+                "marc:arrangedStatementForMusic": "",
+                "musicMedium": [{
+                  "@type": "MusicMedium",
+                  "label": ""
+                }]
+              }
+            ]
           }
         }
       }

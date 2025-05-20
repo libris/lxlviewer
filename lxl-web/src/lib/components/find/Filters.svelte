@@ -1,53 +1,69 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { getModalContext } from '$lib/contexts/modal';
-	import FacetGroup from './FacetGroup.svelte';
 	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
+	import FacetGroup from './FacetGroup.svelte';
+	import MyLibrariesFilter from './MyLibrariesFilter.svelte';
 	import SearchMapping from './SearchMapping.svelte';
-	import { shouldShowMapping } from '$lib/utils/search';
 	import BiSearch from '~icons/bi/search';
 
-	export let facets: TypedFacetGroup[];
-	export let mapping: DisplayMapping[];
+	type filtersPropsType = {
+		facets: TypedFacetGroup[];
+		mapping: DisplayMapping[];
+	};
+
+	const { facets, mapping }: filtersPropsType = $props();
+
+	function shouldShowMapping() {
+		if (mapping.length === 1 && mapping[0].display === '*' && mapping[0].operator === 'equals') {
+			return false; // hide if only wildcard search
+		}
+		return true;
+	}
 
 	const inModal = getModalContext();
 
-	let searchPhrase = '';
+	let searchPhrase = $state('');
 </script>
 
 <div class="flex flex-col gap-4">
-	{#if inModal && shouldShowMapping(mapping)}
-		<nav aria-label={$page.data.t('search.selectedFilters')}>
+	{#if inModal && shouldShowMapping()}
+		<nav aria-label={page.data.t('search.selectedFilters')}>
 			<SearchMapping {mapping} />
 		</nav>
 	{/if}
 	{#if facets?.length}
 		<nav
-			class="facet-nav relative flex flex-col gap-4"
-			aria-label={$page.data.t('search.filters')}
+			class="facet-nav relative flex flex-col gap-4 text-sm"
+			aria-label={page.data.t('search.filters')}
 			data-testid="facets"
 		>
 			<input
 				bind:value={searchPhrase}
-				placeholder={$page.data.t('search.findFilter')}
-				aria-label={$page.data.t('search.findFilter')}
-				class="w-full pl-8"
+				placeholder={page.data.t('search.findFilter')}
+				aria-label={page.data.t('search.findFilter')}
+				class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 				type="search"
 			/>
-			<BiSearch class="absolute left-2.5 top-3 text-sm text-icon" />
+			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
+			{#if page.route.id === '/(app)/[[lang=lang]]/find'}
+				<MyLibrariesFilter {facets} />
+			{/if}
 			<ol>
 				{#each facets as group (group.dimension)}
-					<FacetGroup {group} locale={$page.data.locale} {searchPhrase} />
+					<FacetGroup {group} locale={page.data.locale} {searchPhrase} />
 				{/each}
 			</ol>
 			<span role="status" class="no-hits-msg px-2" aria-atomic="true"
-				>{$page.data.t('search.noResults')}</span
+				>{page.data.t('search.noResults')}</span
 			>
 		</nav>
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
+	@reference "../../../app.css";
+
 	/* hide 'no hits' msg as long as there's results displaying */
 	:global(.facet-nav:has(.has-hits) .no-hits-msg) {
 		@apply hidden;

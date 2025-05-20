@@ -225,11 +225,7 @@
 						{#if shouldShowLabels() && typeof data._label === 'string'}
 							<svelte:element this={block ? 'div' : 'span'}>
 								<!-- Add inner span with inline-block to achieve first letter capitalization while still supporting inline whitespaces -->
-								<span
-									class="inline-block first-letter:capitalize"
-									class:text-sm={block}
-									class:text-secondary={block}
-								>
+								<span class={['inline-block first-letter:capitalize', block && 'property-label']}>
 									{data._label}
 								</span>
 								{' '}
@@ -260,23 +256,66 @@
 {/key}
 
 <style lang="postcss">
+	@reference "../../app.css";
+
 	.definition {
 		@apply underline decoration-dotted;
 	}
 
-	.pill {
-		@apply mb-1 mr-1 inline-block rounded-full border border-primary/8 px-3 py-1 no-underline;
-	}
-
-	a.pill {
-		@apply border-primary/0 bg-pill/8 hover:bg-pill/16 focus:bg-pill/16;
-	}
-
 	.remainder {
-		@apply ml-2 whitespace-nowrap rounded-full bg-pill/8 px-2 py-0.5 text-secondary;
+		@apply ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
+	}
+
+	.property-label {
+		color: var(--color-subtle);
 	}
 
 	.block {
 		display: block;
+	}
+
+	/* resource property-specific styles */
+	.genre-form {
+		display: flex;
+		flex-wrap: wrap;
+		gap: calc(var(--spacing) * 1.5);
+		font-size: var(--text-2xs);
+
+		/* pill */
+		& > * {
+			border: 1px solid var(--color-neutral-200);
+			border-radius: calc(infinity * 1px);
+			padding-block: calc(var(--spacing) * 1.5);
+			padding-inline: calc(var(--spacing) * 3);
+			text-decoration: none;
+			white-space: nowrap;
+		}
+
+		& > a {
+			border-color: var(--color-accent-200);
+
+			&:hover {
+				background-color: var(--color-primary-100);
+			}
+		}
+	}
+
+	.transliteration {
+		font-style: italic;
+	}
+
+	.sigel {
+		color: var(--color-subtle);
+	}
+
+	/* decorated data in popover */
+	:global(.popover) {
+		& .property-label {
+			font-size: var(--text-3xs);
+		}
+
+		& div[data-property]:not(:last-child) {
+			margin-bottom: calc(var(--spacing) * 1);
+		}
 	}
 </style>

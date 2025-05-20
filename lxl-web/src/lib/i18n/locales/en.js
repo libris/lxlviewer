@@ -5,9 +5,25 @@ export default {
 	},
 	header: {
 		help: 'Help',
+		myPages: 'My pages',
 		changeLang: 'På svenska',
-		searchPlaceholder: 'Title, author, subject etc.',
-		openMenu: 'Open main menu'
+		searchPlaceholder: 'Search for title, author, library, subject...',
+		openMenu: 'Open main menu',
+		betaMessage:
+			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
+		betaLink: 'Share your feedback',
+		betaLinkLong: ' '
+	},
+	myPages: {
+		myPages: 'My pages',
+		libraries: 'Libraries',
+		favouriteLibraries: 'My libraries',
+		findLibrary: 'Search for libraries',
+		findAndAdd: 'Find and add favourite libraries',
+		noResultsFor: 'No results for',
+		hitsFor: 'hits for',
+		add: 'Add',
+		remove: 'Remove'
 	},
 	footer: {
 		logo: 'National Library of Sweden logotype',
@@ -33,7 +49,7 @@ export default {
 		'language.@id': 'Language',
 		'genreForm.@id': 'Genre/form',
 		'instanceOf.genreForm.@id': 'Genre/form of work',
-		'contribution.agent.@id': 'Contribution or primary contribution',
+		'contribution.agent.@id': 'Author/Contributor',
 		'contentType.@id': 'Content type',
 		'carrierType.@id': 'Carrier type',
 		'instanceOf.subject.@id': 'Subject',
@@ -50,7 +66,7 @@ export default {
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
 		bibliography: 'Bibliography',
-		contributor: 'Contribution',
+		contributor: 'Author/Contributor',
 		language: 'Language',
 		subject: 'Subject',
 		yearPublished: 'Year published',
@@ -99,11 +115,19 @@ export default {
 		didYouMean: 'Did you mean',
 		showAllResults: 'Show all results',
 		supersearchStartHeader: 'Build and refine your search query',
-		addAs: 'Add as'
+		add: 'Add',
+		addAs: 'Add as',
+		goTo: 'Go to',
+		goToResource: 'Go to the resource',
+		limitToLibraries: 'Limit to my libraries',
+		addLibraries: 'Add libraries',
+		changeLibraries: 'Change libraries',
+		noAddedLibrariesText:
+			'You have not chosen any favourite libraries. To do that, click the "Add libraries" link.'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
-		contributorLabel: 'Contributor',
+		contributorLabel: 'Author/Contributor',
 		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
 		titleKey: 'title',
 		titleLabel: 'Title',
@@ -126,8 +150,8 @@ export default {
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',
 		alphaDesc: 'Z-A',
-		publicationAsc: 'Oldest first (publication year)',
-		publicationDesc: 'Newest first (publication year)',
+		publicationAsc: 'Oldest (publication year)',
+		publicationDesc: 'Newest (publication year)',
 		holdingsDesc: 'Number of libraries',
 		hitsAsc: 'Hits asc.',
 		hitsDesc: 'Hits desc.',
@@ -154,7 +178,7 @@ export default {
 		apply: 'Apply',
 		from: 'From',
 		to: 'To',
-		year: 'Year',
+		year: 'year',
 		usagePolicy: 'License terms',
 		cropped: 'Cropped'
 	},
@@ -174,5 +198,8 @@ export default {
 		available: 'Available',
 		unavailable: 'Not available',
 		map: 'map'
+	},
+	filterAlias: {
+		'alias-myLibraries': 'My Libraries'
 	}
 };

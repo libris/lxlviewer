@@ -21,15 +21,15 @@ import {
 	type ItemDebugInfo
 } from '$lib/types/search';
 
+import { getTranslator, type TranslateFn } from '$lib/i18n';
+import { type LocaleCode as LangCode } from '$lib/i18n/locales';
+import type { LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
-import { getTranslator, type translateFn } from '$lib/i18n';
-import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-// import { error } from '@sveltejs/kit';
-// import { env } from '$env/dynamic/public';
+import { getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -37,7 +37,8 @@ export async function asResult(
 	vocabUtil: VocabUtil,
 	locale: LangCode,
 	auxdSecret: string,
-	usePath?: string
+	usePath?: string,
+	myLibraries?: Record<string, LibraryItem>
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
 
@@ -57,6 +58,9 @@ export async function asResult(
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
 		items: view.items?.map((i) => ({
+			...(myLibraries && {
+				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
+			}),
 			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
@@ -73,8 +77,10 @@ export async function asResult(
 				displayUtil.lensAndFormat(vocabUtil.getDefinition(i[JsonLd.TYPE]), LensType.Chip, locale)
 			)
 		})),
-		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath),
-		predicates: displayPredicates(view, displayUtil, locale, usePath),
+		...('stats' in view && {
+			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
+		}),
+		...('stats' in view && { predicates: displayPredicates(view, displayUtil, locale, usePath) }),
 		_spell: view._spell
 			? view._spell.map((el) => {
 					return {
@@ -90,7 +96,7 @@ export function displayMappings(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn,
+	translate: TranslateFn,
 	usePath?: string
 ): DisplayMapping[] {
 	const mapping = view.search?.mapping || [];
@@ -110,7 +116,7 @@ export function displayMappings(
 						? translate(`facet.${m.alias}`)
 						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) ||
 							m.property?.[JsonLd.ID] ||
-							'No label', // lensandformat?
+							m._key,
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
@@ -132,9 +138,14 @@ export function displayMappings(
 						LensType.Chip,
 						locale
 					),
+					displayStr:
+						toString(
+							displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.Chip, locale)
+						) || translate(`filterAlias.${m.object?.alias}`), // Allow frontend-defined displayStr for custom filter aliases
 					label: '',
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) })
+					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					_value: m?.value
 				} as DisplayMapping;
 			} else {
 				return {
@@ -201,6 +212,16 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
+function getHeldByMyLibraries(
+	item: FramedData,
+	myLibraries: Record<string, LibraryItem>,
+	display: DisplayUtil,
+	locale: LangCode
+) {
+	const res = getHoldingsByInstanceId(item, display, locale);
+	return getMyLibsFromHoldings(myLibraries, res);
+}
+
 function isFreeTextQuery(property: unknown): boolean {
 	return isDatatypeProperty(property) && property['@id'] === 'https://id.kb.se/vocab/textQuery';
 }
@@ -213,8 +234,8 @@ function displayFacetGroups(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn,
-	usePath: string
+	translate: TranslateFn,
+	usePath?: string
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 
@@ -246,7 +267,7 @@ export function displayPredicates(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	usePath: string
+	usePath?: string
 ): MultiSelectFacet[] {
 	const predicates = view.stats?._predicates || [];
 
@@ -265,8 +286,8 @@ function displayBoolFilters(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn,
-	usePath: string
+	translate: TranslateFn,
+	usePath?: string
 ): FacetGroup {
 	const filters = view.stats?._boolFilters || [];
 
@@ -277,7 +298,8 @@ function displayBoolFilters(
 			view: replacePath(o.view, usePath),
 			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-			discriminator: ''
+			discriminator: '',
+			alias: o.object.alias
 		};
 	});
 
@@ -305,11 +327,4 @@ function capitalize(str: string | undefined) {
 		return str[0].toUpperCase() + str.slice(1);
 	}
 	return str;
-}
-
-export function shouldShowMapping(mapping: DisplayMapping[]) {
-	if (mapping.length === 1 && mapping[0].display === '*' && mapping[0].operator === 'equals') {
-		return false; // hide if only wildcard search
-	}
-	return true;
 }

@@ -115,6 +115,23 @@
 				"Subdivision": {
 					"fresnel:extends": { "@id": "Subdivision-chips" },
 					"showProperties": ["fresnel:super", "inScheme", "inCollection", "scopeNote"]
+				},
+				"Person": {
+					"@type": "fresnel:Lens",
+					"@id": "Person-cards",
+					"classLensDomain": "Person",
+					"fresnel:extends": { "@id": "Person-chips" },
+					"showProperties": [
+						"fresnel:super",
+						"hasOccupation",
+						"fieldOfActivity",
+						"description",
+						"seeAlso",
+						"disambiguatingDescription",
+						"nationality",
+						"identifiedBy",
+						"hasVariant"
+					]
 				}
 			}
 		},
@@ -198,7 +215,7 @@
 				"Library": {
 					"@id": "Library-chips",
 					"@type": "fresnel:Lens",
-					"showProperties": ["name", "qualifier"],
+					"showProperties": ["name", "qualifier", "sigel"],
 					"classLensDomain": "Library"
 				},
 				"Bibliography": {
@@ -510,7 +527,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["subtitle", "titleRemainder"],
-			"fresnel:propertyStyle": ["font-normal"],
+			"fresnel:propertyStyle": [],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " : ",
 				"fresnel:contentFirst": ""
@@ -531,7 +548,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Contribution"],
 			"fresnel:propertyFormatDomain": ["role"],
-			"fresnel:propertyStyle": ["text-secondary", "text-sm"],
+			"fresnel:propertyStyle": ["contribution-role"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
@@ -582,13 +599,13 @@
 			"@id": "contribution-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["contribution"],
-			"fresnel:propertyStyle": ["nolabel"]
+			"fresnel:propertyStyle": ["contribution", "nolabel"]
 		},
 		"genreForm-format": {
 			"@id": "genreForm-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["genreForm"],
-			"fresnel:propertyStyle": ["nolabel"],
+			"fresnel:propertyStyle": ["nolabel", "genre-form"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
@@ -611,7 +628,7 @@
 			"@id": "GenreForm-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["GenreForm"],
-			"fresnel:resourceStyle": ["link", "pill"]
+			"fresnel:resourceStyle": ["link"]
 		},
 		"GenreForm-relations-format": {
 			"@id": "GenreForm-relations-format",
@@ -625,7 +642,7 @@
 				"related"
 			],
 			"fresnel:valueFormat": {
-				"fresnel:contentBefore": "",
+				"fresnel:contentBefore": ", ",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -658,6 +675,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
 			"fresnel:propertyFormatDomain": ["seeAlso"],
+			"fresnel:propertyStyle": ["see-also"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
@@ -679,11 +697,18 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Agent-lifeSpan-format": {
+			"@id": "Agent-lifeSpan-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Agent"],
+			"fresnel:propertyFormatDomain": ["lifeSpan"],
+			"fresnel:propertyStyle": ["agent-lifespan"]
+		},
 		"Role-format": {
 			"@id": "Role-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Role"],
-			"fresnel:resourceStyle": ["definition"]
+			"fresnel:resourceStyle": []
 		},
 		"role-format": {
 			"@id": "role-format",
@@ -698,7 +723,7 @@
 			"@id": "MediaObject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["MediaObject"],
-			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-3-cond-bold", "block"]
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "block"]
 		},
 		"Document-format": {
 			"@id": "Document-format",
@@ -736,6 +761,7 @@
 			"@id": "Transliteration-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["_script"],
+			"fresnel:propertyStyle": ["transliteration", "block"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
@@ -797,7 +823,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Collection"],
 			"fresnel:propertyFormatDomain": ["sigel"],
-			"fresnel:propertyStyle": ["text-secondary", "text-sm"],
+			"fresnel:propertyStyle": ["sigel"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",

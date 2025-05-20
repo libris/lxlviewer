@@ -1,5 +1,6 @@
 import { JsonLd, type Link, type DisplayDecorated, type FramedData, LensType } from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
+import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 
 export interface SearchResult {
@@ -13,9 +14,15 @@ export interface SearchResult {
 	next?: Link;
 	previous?: Link;
 	items: SearchResultItem[];
-	facetGroups: FacetGroup[];
-	predicates: MultiSelectFacet[];
+	facetGroups?: FacetGroup[];
+	predicates?: MultiSelectFacet[];
 	_spell: SpellingSuggestion[] | [];
+}
+
+export interface LibraryResult {
+	totalItems: number;
+	maxItems: number;
+	items: LibraryItem[];
 }
 
 export interface SearchResultItem {
@@ -27,6 +34,7 @@ export interface SearchResultItem {
 	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
 	typeStr: string;
+	heldByMyLibraries?: LibraryItem[];
 	_debug?: ItemDebugInfo;
 }
 
@@ -60,6 +68,7 @@ export interface Facet {
 
 export interface MultiSelectFacet extends Facet {
 	selected: boolean;
+	alias?: string;
 }
 
 interface SpellingSuggestion {
@@ -141,6 +150,7 @@ export interface SearchMapping extends MappingObj {
 	alias: string;
 	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom | InvalidProperty;
 	object?: FramedData;
+	value?: string;
 	up: { '@id': string };
 	_key?: string;
 	_value?: string;

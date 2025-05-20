@@ -51,6 +51,7 @@
 			{#if id && $page.data.holdingsByInstanceId[id]}
 				<div class="flex flex-col gap-1">
 					<a
+						class="link-subtle"
 						href={getHoldingsLink($page.url, id)}
 						data-sveltekit-preload-data="false"
 						on:click={(event) => handleClickHoldings(event, $page.state, id)}
@@ -62,6 +63,7 @@
 							: $page.data.t('holdings.libraries')}
 					</a>
 					<a
+						class="link-subtle"
 						href={getPermalink($page.url, id)}
 						on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}
 					>
@@ -77,8 +79,10 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../../../app.css";
+
 	:global(.columns > div) {
-		@apply gap-2 lg:columns-2 lg:gap-x-8;
+		@apply gap-2 2xl:columns-2 2xl:gap-x-8;
 	}
 
 	:global(.columns > div > *) {
@@ -90,6 +94,6 @@
 	}
 
 	.oneOfMany {
-		@apply grid grid-cols-1 gap-4 py-8 sm:grid-cols-instance-list sm:gap-2;
+		@apply sm:grid-cols-instance-list grid grid-cols-1 gap-4 py-8 sm:gap-2;
 	}
 </style>

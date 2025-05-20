@@ -4,9 +4,25 @@ export default {
 	},
 	header: {
 		help: 'Hjälp',
+		myPages: 'Mina sidor',
 		changeLang: 'In English',
-		searchPlaceholder: 'Titel, författare, ämne med mera',
-		openMenu: 'Öppna huvudmeny'
+		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
+		openMenu: 'Öppna huvudmeny',
+		betaMessage:
+			'Här kan du prova på nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
+		betaLink: 'Tyck till',
+		betaLinkLong: 'om nya Libris'
+	},
+	myPages: {
+		myPages: 'Mina sidor',
+		libraries: 'Bibliotek',
+		favouriteLibraries: 'Mina bibliotek',
+		findLibrary: 'Sök efter bibliotek',
+		findAndAdd: 'Hitta och lägg till favoritbibliotek',
+		noResultsFor: 'Inga sökträffar för',
+		hitsFor: 'träffar för',
+		add: 'Lägg till',
+		remove: 'Ta bort'
 	},
 	footer: {
 		logo: 'Kungliga bibliotekets logotyp',
@@ -32,7 +48,7 @@ export default {
 		'language.@id': 'Språk',
 		'genreForm.@id': 'Genre/form',
 		'instanceOf.genreForm.@id': 'Genre/form på verket',
-		'contribution.agent.@id': 'Medverkan eller primär medverkan',
+		'contribution.agent.@id': 'Författare/upphov',
 		'contentType.@id': 'Innehållstyp',
 		'carrierType.@id': 'Bärartyp',
 		'instanceOf.subject.@id': 'Ämne',
@@ -49,7 +65,7 @@ export default {
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Bibliotek',
 		bibliography: 'Bibliografi',
-		contributor: 'Medverkan',
+		contributor: 'Författare/upphov',
 		language: 'Språk',
 		subject: 'Ämne',
 		yearPublished: 'Utgivningsår',
@@ -98,11 +114,19 @@ export default {
 		didYouMean: 'Menade du',
 		showAllResults: 'Visa alla sökresultat',
 		supersearchStartHeader: 'Bygg och förfina din sökning',
-		addAs: 'Lägg till som'
+		add: 'Lägg till',
+		addAs: 'Lägg till som',
+		goTo: 'Gå till',
+		goToResource: 'Gå till resursen',
+		limitToLibraries: 'Avgränsa till mina bibliotek',
+		addLibraries: 'Lägg till bibliotek',
+		changeLibraries: 'Ändra bibliotek',
+		noAddedLibrariesText:
+			'Du har inte valt några favoritbibliotek. Klicka på “Lägg till”-länken nedan för att välja favoritbibliotek.'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
-		contributorLabel: 'Medverkan',
+		contributorLabel: 'Författare/upphov',
 		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
 		titleKey: 'titel',
 		titleLabel: 'Titel',
@@ -118,15 +142,15 @@ export default {
 		yearPlaceholder: '2002, 1987-1994',
 		genreFormKey: 'genreForm',
 		genreFormLabel: 'Genre/form',
-		genreFormPlaceholder: 'Skönlitteratur, Tidsskrift'
+		genreFormPlaceholder: 'Skönlitteratur, Tidskrift'
 	},
 	sort: {
 		sort: 'Sortera',
 		relevancy: 'Relevans',
 		alphaAsc: 'A-Ö',
 		alphaDesc: 'Ö-A',
-		publicationAsc: 'Äldst först (utgivningsår)',
-		publicationDesc: 'Nyast först (utgivningsår)',
+		publicationAsc: 'Äldst (utgivningsår)',
+		publicationDesc: 'Nyast (utgivningsår)',
 		holdingsDesc: 'Antal bibliotek',
 		hitsAsc: 'Minst träffar',
 		hitsDesc: 'Flest träffar',
@@ -153,7 +177,7 @@ export default {
 		apply: 'Tillämpa',
 		from: 'Från',
 		to: 'Till',
-		year: 'Årtal',
+		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren'
 	},
@@ -173,5 +197,8 @@ export default {
 		available: 'Tillgänglig',
 		unavailable: 'Ej tillgänglig',
 		map: 'karta'
+	},
+	filterAlias: {
+		'alias-myLibraries': 'Mina bibliotek'
 	}
 };

@@ -12,6 +12,7 @@
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
+	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 
 	export let item: SearchResultItem;
 
@@ -26,64 +27,64 @@
 
 <div class="search-card-container">
 	<article class="search-card" data-testid="search-card">
-		<a
-			class="card-link"
-			href={id}
-			aria-labelledby={titleId}
-			aria-describedby={`${bodyId} ${footerId}`}
-		></a>
 		<div class="card-image">
-			<div class="pointer-events-none relative flex">
-				{#if item.image}
-					<img
-						src={item.image.url}
-						width={item.image.widthṔx}
-						height={item.image.heightPx}
-						alt={$page.data.t('general.latestInstanceCover')}
-						class:rounded-full={item['@type'] === 'Person'}
-						class="object-contain object-top {item['@type'] !== 'Person'
-							? 'aspect-[2/3]'
-							: 'aspect-square'}"
-					/>
-					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
-						<div class="absolute -left-4 -top-4">
-							<div class="rounded-md bg-cards p-1.5">
+			<a
+				href={id}
+				aria-labelledby={titleId}
+				aria-describedby={`${bodyId} ${footerId}`}
+				tabindex="-1"
+			>
+				<div class="pointer-events-none relative flex">
+					{#if item.image}
+						<img
+							src={item.image.url}
+							width={item.image.widthṔx}
+							height={item.image.heightPx}
+							alt={$page.data.t('general.latestInstanceCover')}
+							class:rounded-full={item['@type'] === 'Person'}
+							class="object-contain object-top {item['@type'] !== 'Person'
+								? 'aspect-2/3'
+								: 'aspect-square'}"
+						/>
+						{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
+							<div class="absolute -top-4 -left-4">
+								<div class="bg-page rounded-md p-1.5">
+									<svelte:component this={getTypeIcon(item['@type'])} class="h-6 w-6" />
+								</div>
+							</div>
+						{/if}
+					{:else}
+						<div class="flex items-center justify-center">
+							<img
+								src={placeholder}
+								alt=""
+								class:rounded-full={item['@type'] === 'Person'}
+								class:rounded-sm={item['@type'] !== 'Person'}
+								class="object-contain object-top"
+							/>
+							{#if getTypeIcon(item['@type'])}
 								<svelte:component
 									this={getTypeIcon(item['@type'])}
-									class="h-6 w-6 text-icon-strong"
+									class="absolute text-2xl text-neutral-400"
 								/>
-							</div>
+							{/if}
 						</div>
 					{/if}
-				{:else}
-					<div class="flex items-center justify-center">
-						<img
-							src={placeholder}
-							alt=""
-							class:rounded-full={item['@type'] === 'Person'}
-							class:rounded-sm={item['@type'] !== 'Person'}
-							class="object-contain object-top"
-						/>
-						{#if getTypeIcon(item['@type'])}
-							<svelte:component
-								this={getTypeIcon(item['@type'])}
-								class="absolute text-lg text-icon"
-							/>
-						{/if}
-					</div>
-				{/if}
-			</div>
+				</div>
+			</a>
 		</div>
 		<div class="card-content">
 			<header class="card-header" id={titleId}>
 				<hgroup>
-					<h2 class="card-header-title">
-						<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
+					<h2 class="card-header-title text-base font-medium">
+						<a href={id} class="block hover:underline" aria-describedby={`${bodyId} ${footerId}`}>
+							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
+						</a>
 					</h2>
 				</hgroup>
 				{#if item[LensType.WebCardHeaderExtra]?._display}
 					<p class="card-header-extra">
-						{#each item[LensType.WebCardHeaderExtra]?._display as obj}
+						{#each item[LensType.WebCardHeaderExtra]?._display as obj, index (index)}
 							<span>
 								<DecoratedData data={obj} showLabels={ShowLabelsOptions.DefaultOn} />
 							</span>
@@ -92,21 +93,23 @@
 				{/if}
 			</header>
 			{#if item[LxlLens.CardBody]?._display}
-				<div class="card-body" id={bodyId}>
-					{#each item[LxlLens.CardBody]?._display as obj}
+				<div class="card-body mt-1 text-xs" id={bodyId}>
+					{#each item[LxlLens.CardBody]?._display as obj, index (index)}
 						<div>
 							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
 						</div>
 					{/each}
 				</div>
 			{/if}
-			<footer class="card-footer" id={footerId}>
-				<span class="font-bold">
+			<footer class="card-footer mt-1" id={footerId}>
+				<span class="font-medium">
 					{item.typeStr}
 				</span>
+				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
 				<span class="divider">{' • '}</span>
-				{#each item[LensType.WebCardFooter]?._display as obj}
+				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
 					{#if 'hasInstance' in obj}
+						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
 						<span class="divider">{' • '}</span>
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
@@ -130,7 +133,7 @@
 		</div>
 		{#if item._debug}
 			{#key item._debug}
-				<div class="card-debug z-20 select-text self-start text-left">
+				<div class="card-debug z-20 self-start text-left select-text">
 					<SearchItemDebug debugInfo={item._debug} />
 					<button
 						type="button"
@@ -163,48 +166,36 @@
 				{/if}
 			{/key}
 		{/if}
+		{#if item.heldByMyLibraries?.length}
+			<div class="card-libraries flex items-start">
+				<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
+			</div>
+		{/if}
 	</article>
 </div>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.search-card-container {
 		container-type: inline-size;
 	}
 
 	.search-card {
-		@apply relative grid w-full gap-x-4 rounded-md border-b border-b-primary/16 bg-cards px-4 pb-3 pt-3 font-normal transition-shadow;
+		@apply border-neutral relative grid w-full gap-x-4 border-t px-4 py-3 font-normal transition-shadow;
 
-		grid-template-areas: 'image content debug';
-		grid-template-columns: 64px 1fr auto;
-
-		&:hover,
-		&:focus-within {
-			@apply shadow-lg;
-
-			& .card-header-title {
-				@apply text-hover;
-			}
-		}
+		grid-template-areas: 'image content debug libraries';
+		grid-template-columns: 64px 1fr auto auto;
 
 		@container (min-width: 768px) {
-			@apply gap-x-6 px-6 pb-6 pt-4;
+			@apply gap-x-6 px-6 py-4;
 			grid-template-columns: 72px 1fr;
 		}
-	}
 
-	.card-link {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		z-index: 0;
-		cursor: pointer;
-	}
-
-	:global(a):not(.card-link),
-	.card-header-extra :global(> span),
-	.card-body :global(span:first-of-type),
-	.card-footer :global(> span) {
-		position: relative; /* needed for supporting mouse events on text, links and definitions above card-link */
+		& :global(.contribution-role) {
+			color: var(--color-subtle);
+			font-size: var(--text-3xs);
+		}
 	}
 
 	.card-image {
@@ -216,53 +207,28 @@
 	}
 
 	.card-debug {
-		grid-area: debug;
+		grid-area: extra;
 	}
 
-	.card-body {
-		@apply text-sm;
-
-		@container (min-width: 768px) {
-			@apply mt-2 text-base;
-		}
+	.card-libraries {
+		grid-area: libraries;
 	}
 
 	.card-footer {
-		@apply mt-1;
-
-		@container (min-width: 768px) {
-			@apply mt-3;
-		}
-
 		/* hide dangling divider • */
 		& .divider {
-			@apply hidden;
+			display: none;
 		}
 		& :global(.divider:has(+ span)) {
-			@apply inline;
-		}
-	}
-
-	.card-header-title {
-		@apply text-link text-3-cond-bold;
-
-		@container (min-width: 768px) {
-			@apply text-4-cond-bold;
+			display: inline;
 		}
 	}
 
 	.card-header-extra,
 	.card-footer,
-	.card-header :global([data-property='_script']) {
-		@apply text-xs text-secondary;
-		@container (min-width: 768px) {
-			@apply text-sm;
-		}
-	}
-
-	/** TODO: Set transliteration styling via display-web.json? */
-	:global(.card-header [data-property='_script']) {
-		@apply italic;
-		display: block;
+	.card-header :global(.transliteration) {
+		font-size: var(--text-2xs);
+		color: var(--color-subtle);
+		font-weight: var(--font-weight-normal);
 	}
 </style>

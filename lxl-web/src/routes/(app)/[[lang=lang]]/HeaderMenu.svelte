@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import BiGlobeAmericas from '~icons/bi/globe-americas';
+	import BiGlobe from '~icons/bi/globe';
+	import BiPerson from '~icons/bi/person-circle';
+	import BiQuestionCircle from '~icons/bi/question-circle';
 	import { Locales, defaultLocale } from '$lib/i18n/locales';
 
 	$: isLandingPage = $page.route.id === '/(app)/[[lang=lang]]';
@@ -13,26 +15,37 @@
 			: `/${otherLangCode}${$page.url.pathname}`) + $page.url.search;
 </script>
 
-<div class="header-menu py-8 md:py-0">
-	<ol class="flex flex-col items-center gap-6 text-secondary md:flex-row">
-		<li><a data-sveltekit-reload href="help">{$page.data.t('header.help')}</a></li>
+<div class="py-4 2xl:py-0 [&_a]:no-underline">
+	<ol
+		class="text-subtle [&_svg]:text-body flex flex-col items-center gap-4 font-medium 2xl:flex-row [&_svg]:text-lg"
+	>
+		<li>
+			<a class="flex items-center gap-2 2xl:flex-col 2xl:gap-1" href="help">
+				<BiQuestionCircle />
+				<span>
+					{$page.data.t('header.help')}
+				</span>
+			</a>
+		</li>
+		<li>
+			<a class="flex items-center gap-2 2xl:flex-col 2xl:gap-1" href="my-pages">
+				<BiPerson />
+				<div class="text-nowrap">
+					{$page.data.t('header.myPages')}
+				</div>
+			</a>
+		</li>
 		<li>
 			<a
-				class="flex items-center gap-2"
+				class="flex items-center gap-2 whitespace-nowrap 2xl:flex-col 2xl:gap-1"
 				href={otherLangUrl}
 				hreflang={otherLangCode}
 				data-sveltekit-reload
 				data-testid="current-lang"
 			>
-				<BiGlobeAmericas class="inline text-icon" />
+				<BiGlobe />
 				<span>{otherLangLabel}</span>
 			</a>
 		</li>
 	</ol>
 </div>
-
-<style>
-	.header-menu a {
-		@apply no-underline;
-	}
-</style>

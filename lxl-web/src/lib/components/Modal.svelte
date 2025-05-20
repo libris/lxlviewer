@@ -4,7 +4,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
-	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import IconClose from '~icons/bi/x-lg';
 	import { setModalContext } from '$lib/contexts/modal';
@@ -13,20 +12,13 @@
 	export let close: ((event: Event) => void) | undefined = undefined;
 	export let position: 'left' | 'right' | 'top' = 'right';
 
-	let prevBodyOverflow: string | undefined = undefined;
-
 	setModalContext();
 
 	onMount(() => {
 		dialog?.showModal();
-		disableBodyScroll();
 	});
 
-	onDestroy(() => {
-		if (browser) {
-			enableBodyScroll();
-		}
-	});
+	onDestroy(() => {});
 
 	function handleClose(event: MouseEvent | Event) {
 		// Use close method from prop if available
@@ -44,25 +36,14 @@
 			handleClose(event);
 		}
 	}
-
-	function disableBodyScroll() {
-		prevBodyOverflow = document.body.style.overflow;
-		document.body.style.overflow = 'hidden';
-	}
-
-	function enableBodyScroll() {
-		document.body.style.overflow = prevBodyOverflow || '';
-	}
 </script>
 
 <div
-	class="pointer-events-none fixed left-0 top-0 z-10 h-full w-full bg-backdrop"
+	class="bg-backdrop pointer-events-none fixed top-0 left-0 z-10 h-full w-full"
 	transition:fade={{ duration: 300 }}
 ></div>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <dialog
-	class="fixed left-0 top-0 flex h-screen max-h-full w-screen max-w-full"
+	class="fixed top-0 left-0 flex h-screen max-h-full w-screen max-w-full"
 	tabindex="-1"
 	on:click|self={handleBackdropClick}
 	on:close={handleClose}
@@ -76,7 +57,7 @@
 	}}
 >
 	<div
-		class="absolute right-0 top-0 flex w-full bg-main shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
+		class="3xl:max-w-[640px] absolute top-0 right-0 flex w-full bg-neutral-50 shadow-2xl lg:max-w-[480px] {position ===
 		'top'
 			? 'h-auto'
 			: 'h-full'}"
@@ -85,18 +66,17 @@
 	>
 		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
 			<header
-				class="sticky top-0 z-10 flex min-h-14 items-center justify-between border-b border-b-primary/16 bg-main px-4"
+				class="border-neutral sticky top-0 z-10 flex min-h-14 items-center justify-between border-b bg-neutral-50 px-4"
 			>
-				<h1 class="text-3-cond-bold"><slot name="title" /></h1>
+				<h1 class="font-heading"><slot name="title" /></h1>
 				<!-- svelte-ignore a11y-autofocus -->
 				<button
 					on:click={handleClose}
 					autofocus
-					class="icon-button"
 					aria-label={$page.data.t('general.close')}
 					data-testid="close-modal"
 				>
-					<IconClose />
+					<IconClose class="text-subtle" />
 				</button>
 			</header>
 			<div class="px-4">
@@ -106,7 +86,7 @@
 	</div>
 </dialog>
 
-<style lang="postcss">
+<style>
 	dialog {
 		background: none;
 	}

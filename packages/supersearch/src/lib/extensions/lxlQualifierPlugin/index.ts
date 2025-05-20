@@ -2,17 +2,23 @@ import {
 	Decoration,
 	EditorView,
 	ViewPlugin,
-	ViewUpdate,
+	type ViewUpdate,
 	WidgetType,
 	type DecorationSet
 } from '@codemirror/view';
-import { EditorState, Range, RangeSet, RangeSetBuilder, RangeValue } from '@codemirror/state';
+import {
+	EditorState,
+	RangeSet,
+	RangeSetBuilder,
+	type Range,
+	type RangeValue
+} from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
 import QualifierComponent from './QualifierComponent.svelte';
 import insertQuotes from './insertQuotes.js';
 import { messages } from '$lib/constants/messages.js';
-import insertSpaceBeforeQualifier from './insertSpaceBeforeQualifier.js';
+import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
 export type Qualifier = {
 	key: string;
@@ -26,9 +32,10 @@ export type GetLabelFunction = (
 ) => {
 	keyLabel?: string;
 	valueLabel?: string;
-	removeLink?: string;
 	invalid?: boolean;
 };
+
+export type RemoveQualifierFunction = (qualifier: string) => void;
 
 class QualifierWidget extends WidgetType {
 	constructor(
@@ -39,7 +46,7 @@ class QualifierWidget extends WidgetType {
 		readonly valueLabel: string | undefined,
 		readonly operator: string,
 		readonly operatorType: string | undefined,
-		readonly removeLink: string | undefined
+		readonly removeQualifierFn: RemoveQualifierFunction | undefined
 	) {
 		super();
 	}
@@ -64,7 +71,7 @@ class QualifierWidget extends WidgetType {
 				valueLabel: this.valueLabel,
 				operator: this.operator,
 				operatorType: this.operatorType,
-				removeLink: this.removeLink
+				removeQualifierFn: this.removeQualifierFn
 			},
 			target: container
 		});
@@ -72,7 +79,10 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
+function lxlQualifierPlugin(
+	getLabelFn?: GetLabelFunction,
+	removeQualifierFn?: RemoveQualifierFunction
+) {
 	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
 
 	function getQualifiers(view: EditorView) {
@@ -97,10 +107,10 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 						const valueNode = node.node.getChild('QualifierValue');
 						const value = valueNode ? doc.slice(valueNode?.from, valueNode?.to) : undefined;
 
-						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
+						const { keyLabel, valueLabel, invalid } = getLabelFn?.(key, value) || {};
 
 						// Add qualifier widget
-						if (keyLabel) {
+						if (keyLabel || valueLabel) {
 							const qualifierDecoration = Decoration.replace({
 								widget: new QualifierWidget(
 									key,
@@ -110,7 +120,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 									valueLabel,
 									operator,
 									operatorType,
-									removeLink
+									removeQualifierFn
 								)
 							});
 							const decorationRangeFrom = node.from;
@@ -165,7 +175,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 		provide: () => [
 			EditorView.atomicRanges.of(() => atomicRangeSet),
 			EditorState.transactionFilter.of(insertQuotes),
-			insertSpaceBeforeQualifier(() => atomicRangeSet)
+			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]
 	});
 

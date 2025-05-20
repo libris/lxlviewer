@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
-	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
+	import CodeMirror, {
+		type ChangeCodeMirrorEvent,
+		type SelectCodeMirrorEvent,
+		type Selection
+	} from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import preventEnterKeyHandling from '$lib/extensions/preventEnterKeyHandling.js';
+	import arrowKeyCursorHandling from '$lib/extensions/arrowKeyCursorHandling.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
 	import { messages } from '$lib/constants/messages.js';
@@ -73,9 +78,10 @@
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
-		cursor?: number;
+		selection?: Selection;
 		isLoading?: boolean;
 		hasData?: boolean;
+		loadMoreLabel?: string;
 	}
 
 	let {
@@ -102,9 +108,10 @@
 		defaultResultRow = 0,
 		defaultResultCol = 0,
 		debouncedWait = 300,
-		cursor = $bindable(0), // should be treated as readonly
+		selection = $bindable(),
 		isLoading = $bindable(), // should be treated as readonly
-		hasData = $bindable() // should be treated as readonly
+		hasData = $bindable(), // should be treated as readonly
+		loadMoreLabel = 'Load more'
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -114,6 +121,13 @@
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(0);
 	let prevValue: string = value;
+
+	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
+		vertical: true,
+		horizontal: true
+	});
+	let prevArrowKeyCursorHandling = { vertical: true, horizontal: true };
+	let cursorHandlingCompartment = new Compartment();
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
@@ -144,6 +158,7 @@
 	const extensionsWithDefaults = [
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		preventEnterKeyHandling(),
+		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: true, horizontal: true })),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
@@ -204,7 +219,7 @@
 	}
 
 	function setDefaultRowAndCols() {
-		if (value.trim().length) {
+		if (!shouldShowStartContentFn(value, selection)) {
 			activeRowIndex = defaultResultRow;
 			if (activeRowIndex > 0) {
 				activeColIndex = defaultResultCol;
@@ -222,18 +237,22 @@
 			showExpandedSearch();
 		}
 		value = event.value;
-		cursor = event.cursor;
+		selection = event.selection;
 		setDefaultRowAndCols();
 
 		if (value.trim() && value.trim() !== prevValue.trim()) {
 			prevValue = value;
-			search.debouncedFetchData(value, cursor);
+			search.debouncedFetchData(value, selection.head);
 		}
 
 		if (!value.trim()) {
 			prevValue = value;
 			if (search.data) search.resetData();
 		}
+	}
+
+	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
+		selection = event;
 	}
 
 	export function dispatchChange({
@@ -283,6 +302,7 @@
 		expandedEditorView?.focus();
 		setDefaultRowAndCols();
 		expanded = true;
+		allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 	}
 
 	export function hideExpandedSearch() {
@@ -290,11 +310,9 @@
 	}
 
 	function handleCloseExpandedSearch() {
-		collapsedEditorView?.dispatch({
-			selection: expandedEditorView?.state.selection.main
-		});
 		collapsedEditorView?.focus();
 		expanded = false;
+		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
 	}
 
 	function submitClosestForm() {
@@ -379,18 +397,33 @@
 							activeRowIndex--;
 							if (activeRowIndex < 1) {
 								activeColIndex = defaultInputCol;
+								allowArrowKeyCursorHandling = {
+									...allowArrowKeyCursorHandling,
+									horizontal: true
+								};
 							} else {
-								activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
+								const cols = getColsInRow(activeRowIndex);
+								activeColIndex = Math.min(activeColIndex, cols.length - 1);
+								allowArrowKeyCursorHandling = {
+									...allowArrowKeyCursorHandling,
+									horizontal: cols.length <= 1
+								};
 							}
 						}
 						break;
 					case 'ArrowDown':
-						if (activeRowIndex === 0) {
+						if (activeRowIndex < rows.length - 1) {
 							activeRowIndex++;
-							activeColIndex = 0;
-						} else if (activeRowIndex < rows.length - 1) {
-							activeRowIndex++;
-							activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
+							const cols = getColsInRow(activeRowIndex);
+							if (activeRowIndex === 1) {
+								activeColIndex = 0;
+							} else {
+								activeColIndex = Math.min(activeColIndex, cols.length - 1);
+							}
+							allowArrowKeyCursorHandling = {
+								...allowArrowKeyCursorHandling,
+								horizontal: cols.length <= 1
+							};
 						}
 						break;
 					case 'ArrowLeft':
@@ -504,6 +537,25 @@
 	});
 
 	$effect(() => {
+		if (
+			allowArrowKeyCursorHandling.vertical !== prevArrowKeyCursorHandling.vertical ||
+			allowArrowKeyCursorHandling.horizontal !== prevArrowKeyCursorHandling.horizontal
+		) {
+			collapsedEditorView?.dispatch({
+				effects: cursorHandlingCompartment.reconfigure(
+					arrowKeyCursorHandling(allowArrowKeyCursorHandling)
+				)
+			});
+			expandedEditorView?.dispatch({
+				effects: cursorHandlingCompartment.reconfigure(
+					arrowKeyCursorHandling(allowArrowKeyCursorHandling)
+				)
+			});
+			prevArrowKeyCursorHandling = allowArrowKeyCursorHandling;
+		}
+	});
+
+	$effect(() => {
 		collapsedEditorView?.dispatch({
 			effects: collapsedContentAttributesCompartment.reconfigure(collapsedContentAttributes)
 		});
@@ -530,6 +582,7 @@
 		extensions={collapsedExtensions}
 		onclick={handleClickCollapsed}
 		onchange={handleChangeCodeMirror}
+		onselect={handleSelectCodeMirror}
 		bind:editorView={collapsedEditorView}
 		syncedEditorView={expandedEditorView}
 	/>
@@ -540,12 +593,13 @@
 		{value}
 		extensions={expandedExtensions}
 		onchange={handleChangeCodeMirror}
+		onselect={handleSelectCodeMirror}
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
 {/snippet}
 
-<div role="presentation" onkeydown={handleCollapsedKeyDown}>
+<div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
 	<div class="supersearch-combobox">
 		{@render inputRow?.({
 			expanded: false,
@@ -579,7 +633,7 @@
 				})}
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if startContent && shouldShowStartContentFn(value, cursor)}
+				{#if startContent && shouldShowStartContentFn(value, selection)}
 					{@render startContent({
 						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 						isFocusedCell: (rowIndex: number, colIndex: number) =>
@@ -596,30 +650,32 @@
 							})}
 						</div>
 					{/if}
-					{#if search.data}
-						{@const resultItemRows =
-							(Array.isArray(search.paginatedData) &&
-								search.paginatedData.map((page) => page.items).flat()) ||
-							search.data?.items}
-						{#each resultItemRows as resultItem, index}
-							{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
-							<div role="row" class:focused={activeRowIndex === rowIndex}>
-								{@render resultItemRow?.({
-									resultItem,
-									getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-									isFocusedCell: (colIndex: number) =>
-										activeRowIndex === rowIndex && colIndex === activeColIndex,
-									rowIndex
-								})}
-							</div>
-						{/each}
-					{/if}
-					{#if search.isLoading}
-						{@render loadingIndicator?.()}
-					{:else if search.hasMorePaginatedData}
-						<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-							Load more
-						</button>
+					{#if selection?.anchor === selection?.head}
+						{#if search.data}
+							{@const resultItemRows =
+								(Array.isArray(search.paginatedData) &&
+									search.paginatedData.map((page) => page.items).flat()) ||
+								search.data?.items}
+							{#each resultItemRows as resultItem, index (index)}
+								{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
+								<div role="row" class:focused={activeRowIndex === rowIndex}>
+									{@render resultItemRow?.({
+										resultItem,
+										getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+										isFocusedCell: (colIndex: number) =>
+											activeRowIndex === rowIndex && colIndex === activeColIndex,
+										rowIndex
+									})}
+								</div>
+							{/each}
+						{/if}
+						{#if search.isLoading}
+							{@render loadingIndicator?.()}
+						{:else if search.hasMorePaginatedData}
+							<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+								{loadMoreLabel}
+							</button>
+						{/if}
 					{/if}
 				{/if}
 			</nav>

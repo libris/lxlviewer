@@ -3,29 +3,57 @@
 </div>
 
 <style lang="postcss">
+	@reference "tailwindcss";
+
 	div {
 		& :global(h1) {
-			@apply text-6-cond-extrabold;
+			font-family: var(--font-heading);
+			font-size: var(--text-3xl);
+			font-weight: var(--font-weight-medium);
 		}
 
 		& :global(h2) {
-			@apply mt-6 text-5-cond-extrabold;
+			margin-top: calc(var(--spacing) * 6);
+			font-family: var(--font-heading);
+			font-size: var(--text-2xl);
+			font-weight: var(--font-weight-medium);
 		}
 
 		& :global(h3) {
-			@apply mt-6 text-3-cond-bold;
+			margin-top: calc(var(--spacing) * 6);
+			font-size: var(--text-lg);
+			font-weight: var(--font-weight-medium);
 		}
 
 		& :global(p) {
-			@apply mt-4;
+			margin-top: calc(var(--spacing) * 4);
+			font-size: var(--text-base);
 		}
 
 		& :global(ul) {
-			@apply list-disc ps-4;
+			list-style-type: disc;
+			list-style-position: inside;
+			padding-inline-start: calc(var(--spacing) * 4);
+			font-size: var(--text-base);
 		}
 
 		& :global(li) {
-			@apply mt-2;
+			margin-top: calc(var(--spacing) * 2);
+		}
+
+		& :global(code) {
+			font-size: var(--text-sm);
+			background-color: var(--color-neutral-100);
+			padding: calc(var(--spacing) * 1);
+		}
+
+		& :global(a) {
+			text-decoration: underline;
+			text-decoration-style: dotted;
+
+			&:hover {
+				text-decoration-style: solid;
+			}
 		}
 	}
 </style>

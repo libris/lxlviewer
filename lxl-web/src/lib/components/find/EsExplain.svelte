@@ -6,7 +6,7 @@
 
 <details {open} class="text-xs">
 	<summary>
-		{explain.value} <span class="text-secondary">{explain.description}</span>
+		{explain.value} <span>{explain.description}</span>
 	</summary>
 	{#each explain.details as child}
 		<div class="pl-3">
@@ -15,7 +15,7 @@
 	{/each}
 </details>
 
-<style lang="postcss">
+<style>
 	summary::after {
 		content: ' ...';
 	}

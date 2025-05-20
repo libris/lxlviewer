@@ -15,9 +15,12 @@
 			"editor.defaultFormatter": "svelte.svelte-vscode"
 		},
 		"workbench.editor.labelFormat": "short",
-		"explorer.compactFolders": false
+		"explorer.compactFolders": false,
+		"files.associations": {
+			"*.css": "tailwindcss"
+		}
 	},
 	"extensions": {
-		"recommendations": ["svelte.svelte-vscode"]
+		"recommendations": ["svelte.svelte-vscode", "bradlc.vscode-tailwindcss"]
 	}
 }

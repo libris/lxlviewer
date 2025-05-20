@@ -1,5 +1,6 @@
 <script lang="ts">
 	import IconClear from './IconClear.svelte';
+	import type { RemoveQualifierFunction } from './index.js';
 
 	interface Props {
 		key: string;
@@ -9,25 +10,47 @@
 		valueLabel?: string;
 		operator: string;
 		operatorType?: string;
-		removeLink?: string;
+		removeQualifierFn?: RemoveQualifierFunction;
 	}
 
-	const { key, keyLabel, operator, value, valueLabel, removeLink }: Props = $props();
+	const { key, keyLabel, operator, value, valueLabel, removeQualifierFn }: Props = $props();
+
+	const hasRemoveBtn = $derived(
+		((keyLabel && operator && valueLabel) ||
+			// filter alias
+			(!keyLabel && !operator && valueLabel)) &&
+			removeQualifierFn
+	);
 </script>
 
-<span class="lxl-qualifier lxl-qualifier-key atomic" data-qualifier-key={key}>
-	{keyLabel}
-</span>
-<span class="lxl-qualifier lxl-qualifier-operator atomic" data-qualifier-operator={operator}>
-	{operator}
-</span>
+{#if keyLabel}
+	<span class="lxl-qualifier lxl-qualifier-key atomic" data-qualifier-key={key}>
+		{keyLabel}
+	</span>
+{/if}
+{#if operator}
+	<span class="lxl-qualifier lxl-qualifier-operator atomic" data-qualifier-operator={operator}>
+		{operator}
+	</span>
+{/if}
 {#if valueLabel}
-	<span class="lxl-qualifier lxl-qualifier-value atomic" data-qualifier-value={value}>
+	<span
+		class={[
+			'lxl-qualifier atomic',
+			keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-filter-alias'
+		]}
+		data-qualifier-value={value}
+	>
 		{valueLabel}
 	</span>
 {/if}
-{#if valueLabel && removeLink}
-	<a href={removeLink} class="lxl-qualifier lxl-qualifier-remove atomic" aria-label="clear">
+{#if hasRemoveBtn}
+	<button
+		type="button"
+		onclick={() => removeQualifierFn?.(key + operator + value)}
+		class="lxl-qualifier lxl-qualifier-remove atomic"
+		aria-label="clear"
+	>
 		<IconClear />
-	</a>
+	</button>
 {/if}

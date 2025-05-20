@@ -28,7 +28,7 @@ const config = {
 				'style-src': ['self', 'unsafe-inline'],
 				'base-uri': ['self'],
 				'form-action': ['self'],
-				'frame-ancestors': ['none'],
+				'frame-ancestors': ['self', 'http://*.kb.se', 'http://*.localhost:*'],
 				'img-src': ['self', 'kb.se', '*.kb.se', 'data:']
 			}
 		}

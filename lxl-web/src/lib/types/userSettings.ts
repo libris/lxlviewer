@@ -1,11 +1,20 @@
-export type UserSettings = SettingsObj | undefined;
+import { JsonLd } from './xl';
 
-interface SettingsObj {
-	facetSort: {
+export interface LibraryItem {
+	[JsonLd.ID]: string;
+	label: string;
+	sigel: string;
+}
+
+export type UserSettings = {
+	facetSort?: {
 		[dimension: string]: string;
 	};
-	debug: DebugFlags[];
-}
+	myLibraries?: {
+		[id: string]: LibraryItem;
+	};
+	debug?: DebugFlags[];
+};
 
 export enum DebugFlags {
 	ES_SCORE = 'esScore'

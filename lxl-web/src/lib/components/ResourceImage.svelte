@@ -24,7 +24,7 @@
 </script>
 
 {#if image && thumb}
-	<figure class="table aspect-square h-64 overflow-hidden md:h-56 xl:h-64">
+	<figure class="3xl:h-64 table aspect-square h-64 overflow-hidden lg:h-56">
 		{#if linkToFull && full}
 			<a href={full.url} target="_blank" class="object-[inherit]">
 				<img
@@ -51,11 +51,11 @@
 		{/if}
 		{#if image?.usageAndAccessPolicy}
 			<figcaption
-				class="mt-1 table-caption caption-bottom overflow-hidden text-[10px] text-tertiary"
+				class="text-3xs text-subtle mt-1 table-caption caption-bottom overflow-hidden"
 				class:text-center={geometry === 'circle'}
 			>
 				{#if image.attribution}
-					<span class="oveflow-hidden mr-1 text-ellipsis whitespace-nowrap">
+					<span class="mr-1 truncate">
 						<span class="mr-0.5">©</span>
 						{#if image.attribution.link}
 							<a href={image.attribution.link} target="_blank" class="ext-link">
@@ -71,10 +71,7 @@
 						{$page.data.t('general.cropped')}
 					{/if}
 				{/if}
-				<span
-					class="overflow-hidden text-ellipsis whitespace-nowrap"
-					use:popover={{ title: image?.usageAndAccessPolicy.title }}
-				>
+				<span class="truncate" use:popover={{ title: image?.usageAndAccessPolicy.title }}>
 					<InfoIcon style="display: inline; font-size: 13px" />
 					<span class="ml-0.5">
 						{#if image.usageAndAccessPolicy.link}
@@ -98,12 +95,12 @@
 		<img
 			src={placeholder}
 			alt=""
-			class="h-20 w-20 object-cover object-[inherit]"
+			class="size-20 object-cover object-[inherit]"
 			class:rounded-sm={geometry !== 'circle'}
 			class:rounded-full={geometry === 'circle'}
 		/>
 		{#if getTypeIcon(type)}
-			<svelte:component this={getTypeIcon(type)} class="absolute text-2xl text-icon" />
+			<svelte:component this={getTypeIcon(type)} class="text-subtle absolute text-2xl" />
 		{/if}
 	</div>
 {/if}

@@ -15,13 +15,13 @@
 </script>
 
 <div class="text-xs">
-	<table class="table">
+	<table class="table [&_td]:pl-2">
 		<thead>
 			<tr>
 				<td></td>
 				<td></td>
 				<td>{fmtPercent(score.totalPercent)}%</td>
-				<td class="text-3-cond-bold">{fmt(score.total)}</td>
+				<td>{fmt(score.total)}</td>
 			</tr>
 			<tr class="italic">
 				<td>field</td>
@@ -46,9 +46,3 @@
 		</tbody>
 	</table>
 </div>
-
-<style lang="postcss">
-	td {
-		@apply pl-2;
-	}
-</style>

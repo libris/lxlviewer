@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import type { FacetSearch } from '$lib/types/search';
+	import BiSearch from '~icons/bi/search';
 
 	export let search: FacetSearch;
 
@@ -28,34 +29,45 @@
 	}
 </script>
 
-<form class="my-4 grid grid-cols-3 items-end gap-2" action="" on:submit={handleSubmit}>
+<form
+	class="[&_label]:text-subtle mb-2 grid grid-cols-[1fr_1fr_auto] items-end gap-2 p-2"
+	action=""
+	on:submit={handleSubmit}
+>
 	<div class="flex flex-col gap-1">
-		<label class="text-1-cond-bold" for="facet-range-from">{$page.data.t('general.from')}</label>
+		<label class="sr-only" for="facet-range-from">{$page.data.t('general.from')}</label>
 		<input
+			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1"
 			id="facet-range-from"
 			type="number"
 			min="1000"
 			max="2099"
 			step="1"
-			placeholder={$page.data.t('general.year')}
+			placeholder={`${$page.data.t('general.from')} (${$page.data.t('general.year')})`}
 			bind:value={rangeFrom}
 		/>
 	</div>
 	<div class="flex flex-col gap-1">
-		<label class="text-1-cond-bold" for="facet-range-to">{$page.data.t('general.to')}</label>
+		<label class="sr-only" for="facet-range-to">{$page.data.t('general.to')}</label>
 		<input
+			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1"
 			id="facet-range-to"
 			type="number"
 			min="1000"
 			max="2099"
 			step="1"
-			placeholder={$page.data.t('general.year')}
+			placeholder={`${$page.data.t('general.to')} (${$page.data.t('general.year')})`}
 			bind:value={rangeTo}
 		/>
 	</div>
-	<button disabled={!rangeFrom && !rangeTo} class="button-primary" type="submit"
-		>{$page.data.t('general.apply')}</button
+	<button
+		class="btn btn-primary size-8"
+		disabled={!rangeFrom && !rangeTo}
+		type="submit"
+		aria-label={$page.data.t('general.apply')}
 	>
+		<BiSearch class="text-base" />
+	</button>
 
 	{#each searchParams as [name, value]}
 		{#if name !== '_q'}

@@ -1,100 +1,111 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
-	import { page } from '$app/stores';
-	import BiList from '~icons/bi/list';
-	import Search from '$lib/components/Search.svelte';
+	import type { SvelteComponent } from 'svelte';
+	import { page } from '$app/state';
+	import { beforeNavigate } from '$app/navigation';
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
-	import SuperSearchWrapper from '$lib/components/SuperSearchWrapper.svelte';
+	import SuperSearchWrapper from '$lib/components/supersearch/SuperSearchWrapper.svelte';
+	import BiList from '~icons/bi/list';
+	import BiSearch from '~icons/bi/search';
 
-	$: isLandingPage = $page.route.id === '/(app)/[[lang=lang]]';
-
-	let useSuperSearch =
-		env?.PUBLIC_USE_SUPERSEARCH === 'true' || $page.url.searchParams.get('_x') === 'supersearch';
-
-	let showHeaderMenu = false;
+	let showHeaderMenu = $state(false);
+	let bannerOffsetHeight: number | undefined = $state();
+	let superSearchWrapperComponent: SvelteComponent;
 
 	function toggleHeaderMenu() {
 		showHeaderMenu = !showHeaderMenu;
 	}
+
+	beforeNavigate(({ from, to }) => {
+		if (from?.url.pathname !== to?.url.pathname) {
+			showHeaderMenu = false;
+		}
+	});
+
+	function onClickExpandSearch() {
+		superSearchWrapperComponent.showExpandedSearch();
+	}
 </script>
 
-<header class="bg-site-header" class:is-landing={isLandingPage}>
-	<nav class="header-nav min-h-20 items-center px-4 py-0">
-		<div class="home md:pl-4">
-			{#if !isLandingPage}
-				<a href={$page.data.base} class="flex flex-col text-primary no-underline md:flex-row">
-					<span class="text-[1.6rem] font-extrabold leading-tight md:text-[2.1rem]"> Libris</span>
-					<sup
-						class="top-0 -rotate-6 self-baseline rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold md:rotate-0"
-						>Beta</sup
-					>
-				</a>
+<header class="bg-app-header">
+	<div
+		class="text-2xs/3.5 bg-warning-300 flex min-h-11 place-content-between items-center gap-8 px-3 py-1 font-medium sm:px-6 md:text-xs"
+		bind:offsetHeight={bannerOffsetHeight}
+	>
+		<span class="flex items-center gap-2">
+			<span class="text-2xs rounded-sm bg-black px-1.5 py-0.5 tracking-wide text-white uppercase">
+				Beta
+			</span>
+			<span>
+				{page.data.t('header.betaMessage')}
+			</span>
+		</span>
+		<a
+			href={page.params?.lang === 'en'
+				? 'https://survey.kb.se/librisbeta/en'
+				: 'https://survey.kb.se/librisbeta'}
+			class="whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid"
+		>
+			{page.data.t('header.betaLink')}
+			{#if page.data.t('header.betaLinkLong')}
+				<span class="sr-only lg:not-sr-only">{`${page.data.t('header.betaLinkLong')}`}</span>
 			{/if}
+		</a>
+	</div>
+	<nav class="header-nav header-layout min-h-18 items-center py-0">
+		<div class="home lg:pl-4">
+			<a href={page.data.base} class="flex no-underline">
+				<span class="font-heading text-2xl font-[600] lg:text-3xl">Libris</span>
+			</a>
 		</div>
-		<div class="search px-4">
-			{#if useSuperSearch}
-				<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
-			{:else}
-				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
-			{/if}
+		<div class="search sm:px-4">
+			<SuperSearchWrapper
+				placeholder={page.data.t('header.searchPlaceholder')}
+				--offset-top={`${bannerOffsetHeight}px`}
+				bind:this={superSearchWrapperComponent}
+			/>
 		</div>
-		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
-			<div id="header-menu" class="hidden items-center md:flex">
+		<div class="actions flex items-center justify-end lg:pr-4">
+			<button
+				aria-label={page.data.t('search.search')}
+				class="text-subtle p-4 sm:hidden"
+				onclick={() => onClickExpandSearch()}
+			>
+				<BiSearch />
+			</button>
+			<div
+				id="header-menu"
+				class="text-3xs hidden items-center target:absolute target:left-0 target:block target:w-full 2xl:flex"
+			>
 				<HeaderMenu />
 			</div>
-			<div class="md:hidden">
+			<div class="2xl:hidden">
 				<a
-					aria-label={$page.data.t('header.openMenu')}
-					class="button-ghost h-11 w-11 !p-0"
-					href={`${$page.url.pathname}?${$page.url.search}#header-menu`}
-					on:click|preventDefault={toggleHeaderMenu}
+					aria-label={page.data.t('header.openMenu')}
+					class="text-subtle flex items-center p-4"
+					href={`${page.url.pathname}?${page.url.search}#header-menu`}
+					onclick={(e) => {
+						e.preventDefault();
+						toggleHeaderMenu();
+					}}
 				>
 					<BiList width={20} height={20} aria-hidden="true" />
 				</a>
 				{#if showHeaderMenu}
-					<Modal close={toggleHeaderMenu} position="top">
+					<Modal close={toggleHeaderMenu}>
 						<HeaderMenu />
 					</Modal>
 				{/if}
 			</div>
 		</div>
-		{#if isLandingPage}
-			<div class="landing flex flex-col items-center gap-2 pb-3">
-				<h1 class="flex text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">
-					Libris
-					<sup
-						class="self-center rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold sm:text-3-cond-bold"
-						>Beta</sup
-					>
-				</h1>
-				<!-- <div class="w-full max-w-3xl">
-					<Search placeholder={$page.data.t('home.searchPlaceholder')} autofocus />
-				</div> -->
-			</div>
-		{/if}
 	</nav>
 </header>
 
 <style lang="postcss">
+	@reference "../../../app.css";
+
 	.header-nav {
-		@apply header-layout;
 		grid-template-areas: 'home search actions';
-	}
-
-	.is-landing .header-nav {
-		@apply landing-layout;
-		grid-template-areas:
-			'home . actions'
-			'. landing .'
-			'search search search';
-
-		@media screen and (min-width: theme('screens.sm')) {
-			grid-template-areas:
-				'home . actions'
-				'. landing .'
-				'. search .';
-		}
 	}
 
 	.home {
@@ -107,17 +118,5 @@
 
 	.actions {
 		grid-area: actions;
-	}
-
-	.landing {
-		grid-area: landing;
-	}
-
-	.is-landing .search {
-		@apply w-full max-w-3xl justify-self-center;
-	}
-
-	#header-menu:target {
-		@apply /* TODO: fix better no-JS fallback styling */ absolute left-0 block w-full bg-main;
 	}
 </style>

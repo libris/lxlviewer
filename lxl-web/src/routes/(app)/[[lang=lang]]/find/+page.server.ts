@@ -6,20 +6,31 @@ import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
 import { asResult } from '$lib/utils/search';
 import { DebugFlags } from '$lib/types/userSettings';
+import { MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets.js';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
-	const userSettings = locals.userSettings;
 
 	if (!url.searchParams.size) {
 		redirect(303, `/`); // redirect to home page if no search params are given
 	}
 
 	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
-
 	const searchParams = new URLSearchParams(url.searchParams.toString());
+
+	// Add param with my libraries from cookie
+	if (searchParams.get('_q')?.includes(MY_LIBRARIES_FILTER_ALIAS)) {
+		let sigelStr;
+		if (locals.userSettings?.myLibraries) {
+			sigelStr = Object.values(locals.userSettings?.myLibraries)
+				.map((lib) => `itemHeldBy:"sigel:${lib.sigel}"`)
+				.join(' OR ');
+		}
+		searchParams.append(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
+	}
+
 	const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}${debug}`, {
 		// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
 		redirect: 'manual'
@@ -43,7 +54,15 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	const result = (await recordsRes.json()) as PartialCollectionView;
 
-	const searchResult = await asResult(result, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
+	const searchResult = await asResult(
+		result,
+		displayUtil,
+		vocabUtil,
+		locale,
+		env.AUXD_SECRET,
+		undefined,
+		locals.userSettings?.myLibraries
+	);
 
-	return { searchResult, userSettings };
+	return { searchResult };
 };

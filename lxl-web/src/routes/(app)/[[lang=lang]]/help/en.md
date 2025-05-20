@@ -8,6 +8,20 @@ title: 'Help'
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### 2025-05-13
+
+- Design updates
+- Filter on free online material
+- Bug fixes
+
+### 2025-04-24
+
+- Ability to set and filter on favourite libraries
+
+### 2025-03-11
+
+- Add advanced search functionality
+
 ### 2024-11-07
 
 - Cookie settings
@@ -64,7 +78,7 @@ Here we will continuously provide information about newly added features and pla
 - Reference tools
 - Ability to save searches and lists of materials
 - Ability to export result lists
-- Ability to set favorite libraries, etc
+- Ability to set favourite libraries, etc
 - In addition to planned developments, improvements to current functionality will be made, and possibly new features will be added based on feedback from you, our users
 
 ## Help and information

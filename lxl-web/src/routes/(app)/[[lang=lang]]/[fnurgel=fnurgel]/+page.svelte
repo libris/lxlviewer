@@ -1,77 +1,106 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { DecoratedHolder } from '$lib/types/holdings';
+	import { type ResourceData } from '$lib/types/resourceData';
 	import { Width } from '$lib/types/auxd';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import isFnurgel from '$lib/utils/isFnurgel';
-	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
+	import { relativizeUrl } from '$lib/utils/http';
+	import { getResourceId } from '$lib/utils/resourceData';
 
+	import InstancesList from './InstancesList.svelte';
+	import HoldingStatus from './HoldingStatus.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
-	import InstancesList from './InstancesList.svelte';
-	import HoldingStatus from './HoldingStatus.svelte';
+	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import BiSearch from '~icons/bi/search';
+	import BiHouseHeart from '~icons/bi/house-heart';
 
-	export let data;
-
+	const { data } = $props();
+	const userSettings = getUserSettings();
 	const ASIDE_SEARCH_CARD_MAX_HEIGHT = 140;
 
-	let selectedHolding: string | undefined;
-	let latestHoldingUrl: string | undefined;
-	let holdingsInstanceElement: HTMLElement | null;
-	let expandedHoldingsInstance = false;
+	let selectedHolding: string | undefined = $state();
+	let latestHoldingUrl: string | undefined = $state();
+	let holdingsInstanceElement: HTMLElement | undefined = $state();
+	let expandedHoldingsInstance = $state(false);
 	let previousURL: URL;
-	let searchPhrase = '';
+	let searchPhrase = $state('');
+	let displayedHolders: DecoratedHolder[] = $state([]);
 
-	$: selectedHoldingInstance = selectedHolding
-		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
-			data.overview
-		: undefined;
+	const selectedHoldingInstance = $derived(
+		selectedHolding
+			? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
+					data.overview
+			: undefined
+	);
 
-	$: localizedInstanceTypes = Object.values(data.instances).reduce((acc, instanceItem) => {
-		if (instanceItem['@type'] && instanceItem?._label) {
-			return {
-				...acc,
-				[instanceItem['@type']]: instanceItem._label
-			};
+	const localizedInstanceTypes = $derived(
+		Object.values(data.instances).reduce((acc, instanceItem) => {
+			if (instanceItem['@type'] && instanceItem?._label) {
+				return {
+					...acc,
+					[instanceItem['@type'] as string]: instanceItem._label
+				};
+			}
+			return acc;
+		}, {})
+	);
+
+	// we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
+	const holdingUrl = $derived(page.state.holdings || page.url.searchParams.get('holdings') || null);
+
+	const shouldShowHeaderBackground = $derived(!data.instances?.length);
+	const expandableHoldingsInstance = $derived(
+		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT
+	);
+
+	const filteredHolders = $derived(
+		displayedHolders
+			.filter((holder) => {
+				return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
+			})
+			.filter((h) => h.str)
+	);
+
+	const myLibsHolders = $derived(
+		displayedHolders.filter((holder) => {
+			if (userSettings.myLibraries) {
+				return Object.values(userSettings.myLibraries).some((lib) => lib.sigel === holder.sigel);
+			} else return false;
+		})
+	);
+
+	$effect(() => {
+		if (holdingUrl) {
+			selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : (data.overview as string);
+			latestHoldingUrl = holdingUrl;
 		}
-		return acc;
-	}, {});
+	});
 
-	$: holdingUrl = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
-	$: if (holdingUrl) {
-		selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : data.overview;
-		latestHoldingUrl = holdingUrl;
-	}
-
-	$: shouldShowHeaderBackground = !data.instances?.length;
-
-	$: expandableHoldingsInstance =
-		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT;
-
-	let displayedHolders: DecoratedHolder[] = [];
-	$: if (latestHoldingUrl) {
-		if (
-			isFnurgel(latestHoldingUrl) &&
-			selectedHolding &&
-			data.holdingsByInstanceId[selectedHolding]
-		) {
-			// show holdings for an instance
-			displayedHolders = data.holdingsByInstanceId[selectedHolding].map(
-				(holding) => holding.heldBy
-			);
-		} else if (data.holdersByType?.[latestHoldingUrl]) {
-			// show holdings by type
-			displayedHolders = data.holdersByType[latestHoldingUrl];
+	$effect(() => {
+		if (latestHoldingUrl) {
+			if (
+				isFnurgel(latestHoldingUrl) &&
+				selectedHolding &&
+				data.holdingsByInstanceId[selectedHolding]
+			) {
+				// show holdings for an instance
+				displayedHolders = data.holdingsByInstanceId[selectedHolding].map(
+					(holding) => holding.heldBy
+				);
+			} else if (data.holdersByType?.[latestHoldingUrl]) {
+				// show holdings by type
+				displayedHolders = data.holdersByType[latestHoldingUrl];
+			}
 		}
-	}
-
-	$: filteredHolders = displayedHolders.filter((holder) => {
-		return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
 	});
 
 	afterNavigate(({ to }) => {
@@ -84,11 +113,9 @@
 		if (!previousURL?.searchParams.has('holdings')) {
 			history.back();
 		} else {
-			const newSearchParams = new URLSearchParams([
-				...Array.from($page.url.searchParams.entries())
-			]);
+			const newSearchParams = new URLSearchParams([...Array.from(page.url.searchParams.entries())]);
 			newSearchParams.delete('holdings');
-			goto($page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
+			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
 		}
 	}
 </script>
@@ -96,11 +123,11 @@
 <svelte:head>
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
-<article>
-	<div class="resource gap-8 find-layout page-padding" class:bg-header={shouldShowHeaderBackground}>
+<article class="resource-page text-base">
+	<div class="resource find-layout gap-8 p-4 sm:px-6">
 		<div
-			class="mb-2 mt-4 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
-			class:hidden={!$page.data.images?.length}
+			class="image mt-4 mb-2 flex w-full justify-center self-center object-center lg:mx-auto lg:self-start lg:px-2 xl:px-0"
+			class:hidden={!page.data.images?.length}
 		>
 			{#if data.images.length}
 				<ResourceImage
@@ -113,43 +140,57 @@
 			{/if}
 		</div>
 		<div
-			class="content flex max-w-content flex-col gap-4 pt-2 md:flex-row"
+			class="content flex flex-col gap-4 pt-2 lg:flex-row"
 			class:pb-4={shouldShowHeaderBackground}
 		>
 			<div class="flex flex-col gap-4">
 				<header>
-					<h1 class="text-6-cond-extrabold">
+					<h1 class="text-3xl font-medium">
 						<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 					</h1>
 				</header>
-				<div class="flex flex-col-reverse gap-4 md:flex-row">
+				<div class="flex flex-col-reverse gap-4 lg:flex-row">
 					<div class="overview flex-1 gap-6">
 						<DecoratedData data={data.overview} block />
 						{#if Object.keys(data.holdersByType).length}
-							<ul class="flex w-fit flex-wrap gap-2">
-								{#each Object.keys(data.holdersByType) as type}
-									<li>
-										<a
-											href={getHoldingsLink($page.url, type)}
-											class="button-ghost"
-											data-sveltekit-preload-data="false"
-											data-testid="holding-link"
-											on:click={(event) => handleClickHoldings(event, $page.state, type)}
-										>
-											{#if Object.keys(data.holdersByType).length == 1}
-												{data.t('holdings.availableAt')}
-												{data.holdersByType[type].length}
-												{data.t('holdings.libraries')}
-											{:else}
-												{localizedInstanceTypes[type]}
-												{`(${data.t('holdings.availableAt').toLowerCase()}`}
-												{data.holdersByType[type].length}
-												{`${data.t('holdings.libraries')})`}
-											{/if}
-										</a>
-									</li>
-								{/each}
-							</ul>
+							<div class="flex items-center">
+								<ul class="flex w-fit flex-wrap gap-2">
+									{#each Object.keys(data.holdersByType) as type (type)}
+										<li>
+											<a
+												class="btn btn-cta"
+												href={getHoldingsLink(page.url, type)}
+												data-sveltekit-preload-data="false"
+												data-testid="holding-link"
+												onclick={(event) => handleClickHoldings(event, page.state, type)}
+											>
+												{#if Object.keys(data.holdersByType).length == 1}
+													{data.t('holdings.availableAt')}
+													{data.holdersByType[type].length}
+													{data.t('holdings.libraries')}
+												{:else}
+													{localizedInstanceTypes[type]}
+													{`(${data.t('holdings.availableAt').toLowerCase()}`}
+													{data.holdersByType[type].length}
+													{`${data.t('holdings.libraries')})`}
+												{/if}
+											</a>
+										</li>
+									{/each}
+								</ul>
+								{#if data.instances.length === 1}
+									{@const id = relativizeUrl(getResourceId(data.instances[0] as ResourceData))}
+									{#if id}
+										{@const favWithHolding = getMyLibsFromHoldings(
+											userSettings.myLibraries,
+											page.data.holdingsByInstanceId[id]
+										)}
+										{#if favWithHolding.length}
+											<MyLibrariesIndicator libraries={favWithHolding} />
+										{/if}
+									{/if}
+								{/if}
+							</div>
 						{/if}
 					</div>
 				</div>
@@ -157,8 +198,8 @@
 		</div>
 	</div>
 	{#if data.instances?.length}
-		<div class="instances !pt-2 find-layout page-padding">
-			<div class="instances-list max-w-content border-t border-t-primary/16 pt-6">
+		<div class="instances find-layout p-4 pt-2! sm:px-6">
+			<div class="instances-list border-neutral border-t pt-6 text-sm">
 				<InstancesList
 					data={data.instances}
 					columns={[
@@ -173,9 +214,9 @@
 	{#if holdingUrl && selectedHoldingInstance}
 		<Modal close={handleCloseHoldings}>
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
-			<div class="flex flex-col">
+			<div class="flex flex-col text-sm">
 				<div
-					class="relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b border-b-primary/16 bg-cards p-5 text-sm transition-shadow"
+					class="bg-page border-b-neutral relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-xs transition-shadow"
 				>
 					<div
 						id="instance-details"
@@ -186,7 +227,7 @@
 						bind:this={holdingsInstanceElement}
 					>
 						<h2 class="mb-2">
-							<span class="font-bold">
+							<span class="font-medium">
 								<DecoratedData
 									data={data.title}
 									block
@@ -213,18 +254,18 @@
 						/>
 					</div>
 					<button
-						class="mt-2 text-left underline"
-						on:click={() => (expandedHoldingsInstance = !expandedHoldingsInstance)}
+						class="link-subtle mt-2 text-left"
+						onclick={() => (expandedHoldingsInstance = !expandedHoldingsInstance)}
 						aria-expanded={expandedHoldingsInstance}
 						aria-controls="instance-details"
 					>
 						{expandedHoldingsInstance
-							? $page.data.t('search.hideDetails')
-							: $page.data.t('search.showDetails')}</button
+							? page.data.t('search.hideDetails')
+							: page.data.t('search.showDetails')}</button
 					>
 				</div>
 				<div>
-					<h2 class="font-bold">
+					<h2 class="font-medium">
 						{data.t('holdings.availableAt')}
 						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
 							{data.holdingsByInstanceId[latestHoldingUrl].length}
@@ -238,23 +279,39 @@
 								: data.t('holdings.libraries')}
 						{/if}
 					</h2>
-					<div class="relative mb-4 mt-2">
+					<!-- my libraries holdings -->
+					{#if myLibsHolders.length}
+						<div class="border-neutral bg-accent-50 my-4 rounded-sm border-b p-4 pb-0">
+							<h3 class="flex items-center gap-2">
+								<span aria-hidden="true" class="text-primary-700 text-base">
+									<BiHouseHeart />
+								</span>
+								<span class="font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
+							</h3>
+							<ul class="w-full">
+								{#each myLibsHolders as holder, i (holder.sigel || i)}
+									<HoldingStatus {holder} {holdingUrl} />
+								{/each}
+							</ul>
+						</div>
+					{/if}
+					<div class="relative mt-2 mb-4">
 						<input
 							bind:value={searchPhrase}
-							placeholder={$page.data.t('holdings.findLibrary')}
-							aria-label={$page.data.t('holdings.findLibrary')}
-							class="w-full pl-8"
+							placeholder={page.data.t('holdings.findLibrary')}
+							aria-label={page.data.t('holdings.findLibrary')}
+							class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 							type="search"
 						/>
-						<BiSearch class="absolute left-2.5 top-3 text-sm text-icon" />
+						<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 					</div>
-					<ul class="w-full text-sm">
+					<ul class="w-full">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
 							<HoldingStatus {holder} {holdingUrl} />
 						{/each}
 						{#if filteredHolders.length === 0}
 							<li class="m-3">
-								<span role="alert">{$page.data.t('search.noResults')}</span>
+								<span role="alert">{page.data.t('search.noResults')}</span>
 							</li>
 						{/if}
 					</ul>
@@ -263,17 +320,39 @@
 		</Modal>
 	{/if}
 </article>
-<SearchResult searchResult={$page.data.searchResult} />
+<SearchResult searchResult={page.data.searchResult} showMapping />
 
-<style lang="postcss">
+<style>
+	.resource-page {
+		& :global(.property-label) {
+			font-size: var(--text-xs);
+		}
+
+		& :global(.contribution-role) {
+			color: var(--color-subtle);
+			font-size: var(--text-sm);
+		}
+	}
+
 	.resource {
 		grid-template-areas: 'image content';
 	}
+
 	.image {
 		grid-area: image;
 	}
+
 	.content {
 		grid-area: content;
+
+		& :global(header .transliteration) {
+			color: var(--color-subtle);
+			font-size: var(--text-2xl);
+		}
+
+		& header :global(.agent-lifespan) {
+			color: var(--color-subtle);
+		}
 	}
 
 	.instances {
@@ -294,21 +373,22 @@
 			}
 		}
 		& :global(div[data-property]:not(:last-child)) {
-			margin-bottom: 0.8rem;
+			margin-bottom: calc(var(--spacing) * 4);
 		}
 
-		& :global([data-property='contribution'] > ._contentBefore),
-		:global([data-property='contribution'] > ._contentAfter) {
+		& :global(.contribution > ._contentBefore),
+		:global(.contribution > ._contentAfter) {
 			display: none;
 		}
 
-		& :global([data-property='contribution'] > *) {
+		& :global(.contribution > *) {
 			display: block;
 			white-space: nowrap;
 		}
 
-		& :global([data-property='seeAlso'] > *) {
+		& :global(.see-also > *) {
 			display: block;
+			width: fit-content;
 			white-space: nowrap;
 		}
 	}
@@ -319,12 +399,18 @@
 	}
 
 	.expandable:not(.expanded)::after {
-		@apply pointer-events-none absolute h-12 w-full overflow-hidden;
+		height: 3rem;
+		width: 100%;
+		position: absolute;
 		content: '';
 		bottom: 0;
 		left: 0;
 		pointer-events: none;
-		background: linear-gradient(to bottom, rgb(var(--bg-cards) / 0), rgb(var(--bg-cards) / 1));
+		background: linear-gradient(
+			to bottom,
+			--alpha(var(--color-page) / 0%),
+			--alpha(var(--color-page) / 100%)
+		);
 		overflow: hidden;
 	}
 
@@ -332,8 +418,10 @@
 		max-height: initial;
 	}
 
-	:global([data-property='_script']) {
-		@apply italic;
-		display: block;
+	#instance-details {
+		& :global(.contribution-role),
+		& :global(.property-label) {
+			font-size: var(--text-2xs);
+		}
 	}
 </style>

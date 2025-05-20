@@ -1,31 +1,38 @@
 .lxl-qualifier {
 	display: inline-block;
-	color: rgb(0, 68, 0);
-	background: rgba(14, 113, 128, 0.1);
+	color: var(--text-body);
+	background-color: var(--color-accent-50);
 }
 
-.lxl-qualifier-key {
-	padding-left: 5px;
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;
+.lxl-qualifier-key,
+.lxl-filter-alias {
+	font-weight: var(--font-weight-medium);
+	font-size: var(--text-2xs);
+	padding-left: calc(var(--spacing) * 1.5);
+	border-top-left-radius: calc(var(--spacing) * 1);
+	border-bottom-left-radius: calc(var(--spacing) * 1);
+}
+
+.lxl-filter-alias {
+	padding-right: calc(var(--spacing) * 1.5);
 }
 
 .lxl-qualifier-remove,
 .lxl-qualifier-value:not(:has(+ .lxl-qualifier-value)) {
-	padding-right: 5px;
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
+	padding-right: calc(var(--spacing) * 1.5);
+	border-top-right-radius: calc(var(--spacing) * 1);
+	border-bottom-right-radius: calc(var(--spacing) * 1);
 }
 
 .lxl-qualifier-remove {
-	color: inherit;
+	color: var(--color-subtle);
 	display: flex;
 	align-items: center;
-	padding-left: 5px;
+	padding-left: calc(var(--spacing) * 1.5);
 }
 
 .lxl-qualifier-remove:hover {
-	background: rgba(14, 113, 128, 0.3);
+	background-color: var(--color-accent-200);
 }
 
 .lxl-qualifier-value:has(~ .lxl-qualifier-remove) {
@@ -33,27 +40,32 @@
 }
 
 .atomic {
-	background: rgba(14, 113, 128, 0.2);
-	font-weight: 500;
+	background-color: var(--color-accent-100);
 	user-select: none;
 }
 
+.lxl-qualifier-value.atomic {
+	color: var(--color-link);
+	text-decoration: underline;
+	text-decoration-style: dotted;
+}
+
 .lxl-qualifier-operator.atomic {
-	padding-right: 5px;
+	padding-right: calc(var(--spacing) * 1.5);
 }
 
 .lxl-invalid,
 .lxl-invalid .lxl-qualifier {
 	text-decoration: underline 1px solid;
-	text-decoration-color: rgba(255, 0, 0, 0.75);
+	text-decoration-color: var(--color-severe);
 	text-decoration-style: wavy;
 	text-underline-offset: 4px;
 }
 
 .lxl-not-term {
-	color: rgb(181, 58, 58);
+	color: var(--color-severe-600);
 }
 
 .lxl-boolean-operator {
-	color: rgba(6, 0, 250, 0.66);
+	color: var(--color-accent-800);
 }

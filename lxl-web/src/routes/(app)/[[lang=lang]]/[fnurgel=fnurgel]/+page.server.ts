@@ -26,7 +26,6 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
-	const userSettings = locals.userSettings;
 
 	let resourceId: null | string = null;
 	let searchPromise: Promise<SearchResult | null> | null = null;
@@ -40,8 +39,13 @@ export const load = async ({ params, url, locals, fetch }) => {
 	}
 
 	if (!resourceRes.ok) {
-		const err = (await resourceRes.json()) as ApiError;
-		throw error(err.status_code, { message: err.message, status: err.status });
+		try {
+			const err = (await resourceRes.json()) as ApiError;
+			throw error(err.status_code, { message: err.message, status: err.status });
+		} catch (e) {
+			console.warn(e);
+			throw error(resourceRes?.status, { message: resourceRes?.statusText });
+		}
 	}
 
 	const resource = await resourceRes.json();
@@ -80,8 +84,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		holdersByType,
 		full: overview,
 		images,
-		searchResult: searchPromise ? await searchPromise : null,
-		userSettings
+		searchResult: searchPromise ? await searchPromise : null
 	};
 
 	async function getRelated() {
@@ -123,7 +126,8 @@ export const load = async ({ params, url, locals, fetch }) => {
 				vocabUtil,
 				locale,
 				env.AUXD_SECRET,
-				url.pathname
+				url.pathname,
+				locals.userSettings?.myLibraries
 			)) as SearchResult;
 		}
 		return null;

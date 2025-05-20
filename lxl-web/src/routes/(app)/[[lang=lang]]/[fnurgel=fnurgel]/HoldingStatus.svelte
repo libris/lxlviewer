@@ -1,27 +1,33 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { type HoldingStatus } from '$lib/types/api';
 	import type { BibIdObj, DecoratedHolder } from '$lib/types/holdings';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 
-	export let holder: DecoratedHolder;
-	export let holdingUrl: string;
+	type HoldingStatusProps = {
+		holder: DecoratedHolder;
+		holdingUrl: string;
+	};
+
+	const { holder, holdingUrl }: HoldingStatusProps = $props();
 
 	const sigel = holder?.sigel;
-	let loading = false;
-	let statusData: HoldingStatus[] | undefined;
-	let error: string | undefined;
+	let loading = $state(false);
+	let statusData: HoldingStatus[] | undefined = $state();
+	let error: string | undefined = $state();
 
 	// if holdingUrl is an instance fnurgel, add its mapped bibId object into arr,
 	// else add all ids of current type with holdings for current sigel
-	$: bibIds = $page.data.bibIdsByInstanceId[holdingUrl]
-		? [$page.data.bibIdsByInstanceId[holdingUrl]]
-		: Object.keys($page.data.bibIdsByInstanceId)
-				.filter((i) => $page.data.bibIdsByInstanceId[i]['@type'] === holdingUrl)
-				.filter((i) => $page.data.bibIdsByInstanceId[i].holders.includes(sigel))
-				.map((i) => $page.data.bibIdsByInstanceId[i]);
+	const bibIds = $derived.by(() => {
+		return page.data.bibIdsByInstanceId?.[holdingUrl]
+			? [page.data.bibIdsByInstanceId[holdingUrl]]
+			: Object.keys(page.data.bibIdsByInstanceId)
+					.filter((i) => page.data.bibIdsByInstanceId[i]['@type'] === holdingUrl)
+					.filter((i) => page.data.bibIdsByInstanceId[i].holders?.includes(sigel))
+					.map((i) => page.data.bibIdsByInstanceId[i]);
+	});
 
 	async function fetchHoldingStatus(ids: BibIdObj[]) {
 		const promises = ids.map((id) => {
@@ -48,7 +54,7 @@
 				if (response && response.ok) {
 					return response.json();
 				} else {
-					error = `${$page.data.t('holdings.loanStatusFailed')}: ${response?.status} ${response?.statusText}`;
+					error = `${page.data.t('holdings.loanStatusFailed')}: ${response?.status} ${response?.statusText}`;
 				}
 			})
 		);
@@ -57,7 +63,7 @@
 
 	async function getHoldingStatus() {
 		if (!sigel || !bibIds || bibIds.length < 1) {
-			error = $page.data.t('holdings.loanStatusFailed');
+			error = page.data.t('holdings.loanStatusFailed');
 		} else if (!statusData) {
 			loading = true;
 
@@ -67,7 +73,7 @@
 					loading = false;
 				})
 				.catch((err) => {
-					error = `${$page.data.t('holdings.loanStatusFailed')}: ${err}`;
+					error = `${page.data.t('holdings.loanStatusFailed')}: ${err}`;
 					loading = false;
 				});
 		}
@@ -103,10 +109,10 @@
 	}
 </script>
 
-<li class="border-b-primary/16 [&:not(:last-child)]:border-b">
-	<details on:toggle={getHoldingStatus}>
+<li class="border-neutral text-xs not-last:border-b">
+	<details ontoggle={getHoldingStatus}>
 		<summary class="my-3 flex cursor-pointer items-baseline">
-			<span class="arrow mr-2 h-3">
+			<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
 				<BiChevronRight />
 			</span>
 			<span class="holder-label">
@@ -115,55 +121,57 @@
 		</summary>
 		<div class="mb-4 flex flex-col gap-2">
 			{#if loading}
-				<p>{$page.data.t('search.loading')}</p>
+				<p>{page.data.t('search.loading')}</p>
 			{/if}
 			{#if error}
-				<div class="status-container">
+				<div class="status-container border-neutral bg-page max-w-md rounded-sm border p-2">
 					<p class="error" role="alert">{error}</p>
 				</div>
 			{/if}
 			{#if statusData && statusData.length > 0}
-				{#each statusData as instance}
-					{#if instance && instance.item_information}
+				{#each statusData as instance, index (index)}
+					{#if instance?.item_information}
 						{@const items = instance.item_information}
-						<div class="status-container flex flex-col gap-4">
+						<div
+							class="status-container border-neutral bg-page flex max-w-md flex-col gap-4 rounded-sm border p-2"
+						>
 							{#if items.error || items.count === 0}
 								{#if urlNotDefinedError(items.error)}
-									<p class="library-unavailable">{$page.data.t('holdings.libraryUnvaliable')}</p>
+									<p class="library-unavailable">{page.data.t('holdings.libraryUnvaliable')}</p>
 								{:else}
-									<p class="error" role="alert">{$page.data.t('holdings.loanStatusFailed')}</p>
+									<p class="error" role="alert">{page.data.t('holdings.loanStatusFailed')}</p>
 								{/if}
 							{/if}
-							{#each items.items as item}
+							{#each items.items as item, index (index)}
 								{@const indicator = getIndicator(item.Status)}
 								<table>
-									<tbody>
+									<tbody class="text-xs leading-relaxed">
 										<tr>
-											<th>{$page.data.t('holdings.location')}</th>
+											<th>{page.data.t('holdings.location')}</th>
 											<td>{item.Location}</td>
 										</tr>
 										<tr>
-											<th>{$page.data.t('holdings.shelf')}</th>
+											<th>{page.data.t('holdings.shelf')}</th>
 											<td>
 												{item.Call_No}
 												<!-- show map link only if absolute url -->
 												{#if item.Map && (item.Map.startsWith('http://') || item.Map.startsWith('https://'))}
 													(<a href={item.Map} target="_blank" class="ext-link">
-														{$page.data.t('holdings.map')}</a
+														{page.data.t('holdings.map')}</a
 													>)
 												{/if}
 											</td>
 										</tr>
 										<tr>
-											<th>{$page.data.t('holdings.loanPolicy')}</th>
+											<th>{page.data.t('holdings.loanPolicy')}</th>
 											<td>{item.Loan_Policy}</td>
 										</tr>
 										<tr>
-											<th>{$page.data.t('holdings.status')}</th>
+											<th>{page.data.t('holdings.status')}</th>
 											<td>
 												{#if indicator}
 													<span class={`indicator ${indicator}`}></span>
-													{$page.data.t(`holdings.${indicator}`)}
+													{page.data.t(`holdings.${indicator}`)}
 												{:else}
 													{item.Status}
 												{/if}
@@ -171,7 +179,7 @@
 										</tr>
 										{#if item.Status_Date}
 											<tr>
-												<th>{$page.data.t('holdings.date')}</th>
+												<th>{page.data.t('holdings.date')}</th>
 												<td>{item?.Status_Date_Description} {item.Status_Date}</td>
 											</tr>
 										{/if}
@@ -187,13 +195,15 @@
 </li>
 
 <style lang="postcss">
+	@reference "../../../../app.css";
+
 	details[open] {
 		& .arrow {
 			@apply rotate-90;
 		}
 
 		& .holder-label {
-			@apply whitespace-normal;
+			white-space: normal;
 		}
 	}
 
@@ -201,40 +211,36 @@
 		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
 	}
 
-	.arrow {
-		transform-origin: center;
-		@apply rotate-0 transition-transform;
-	}
-
 	.status-container {
-		@apply max-w-md rounded-sm border border-primary/16 p-2;
-
 		&:has(p.error) {
-			@apply bg-negative;
+			background-color: var(--color-warning-100);
 		}
 
 		/* don't repeat the library-unavailable message for every instance */
 		&:has(p.library-unavailable):not(:first-of-type) {
-			@apply hidden;
+			display: none;
 		}
 	}
 
 	table th {
-		@apply w-24 pr-4 align-baseline;
+		font-weight: var(--font-weight-medium);
+		width: calc(var(--spacing) * 24);
+		padding-right: calc(var(--spacing) * 4);
+		vertical-align: baseline;
 	}
 
 	table td {
-		@apply w-auto;
+		width: auto;
 	}
 
 	.indicator {
 		@apply mb-0.5 inline-block h-2.5 w-2.5 rounded-full align-middle;
 
 		&.unavailable {
-			@apply bg-[#dc110f];
+			background-color: var(--color-severe-500);
 		}
 		&.available {
-			@apply bg-[#2ab061];
+			background-color: var(--color-success);
 		}
 	}
 </style>
