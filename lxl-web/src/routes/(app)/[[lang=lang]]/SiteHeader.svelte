@@ -1,13 +1,16 @@
 <script lang="ts">
+	import type { SvelteComponent } from 'svelte';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
 	import SuperSearchWrapper from '$lib/components/supersearch/SuperSearchWrapper.svelte';
 	import BiList from '~icons/bi/list';
+	import BiSearch from '~icons/bi/search';
 
-	let showHeaderMenu = false;
+	let showHeaderMenu = $state(false);
 	let bannerOffsetHeight: number | undefined = $state();
+	let superSearchWrapperComponent: SvelteComponent;
 
 	function toggleHeaderMenu() {
 		showHeaderMenu = !showHeaderMenu;
@@ -18,6 +21,10 @@
 			showHeaderMenu = false;
 		}
 	});
+
+	function onClickExpandSearch() {
+		superSearchWrapperComponent.showExpandedSearch();
+	}
 </script>
 
 <header class="bg-app-header">
@@ -26,7 +33,7 @@
 		bind:offsetHeight={bannerOffsetHeight}
 	>
 		<span class="flex items-center gap-2">
-			<span class="text-2xs rounded-sm bg-[#000] px-1.5 py-0.5 tracking-wide text-[#fff] uppercase">
+			<span class="text-2xs rounded-sm bg-black px-1.5 py-0.5 tracking-wide text-white uppercase">
 				Beta
 			</span>
 			<span>
@@ -45,19 +52,27 @@
 			{/if}
 		</a>
 	</div>
-	<nav class="header-nav header-layout min-h-20 items-center py-0">
+	<nav class="header-nav header-layout min-h-18 items-center py-0">
 		<div class="home lg:pl-4">
-			<a href={page.data.base} class="flex flex-col no-underline lg:flex-row">
-				<span class="font-heading text-2xl font-[600] lg:text-3xl"> Libris</span>
+			<a href={page.data.base} class="flex no-underline">
+				<span class="font-heading text-2xl font-[600] lg:text-3xl">Libris</span>
 			</a>
 		</div>
-		<div class="search pb-4 sm:px-4 sm:pb-0">
+		<div class="search sm:px-4">
 			<SuperSearchWrapper
 				placeholder={page.data.t('header.searchPlaceholder')}
 				--offset-top={`${bannerOffsetHeight}px`}
+				bind:this={superSearchWrapperComponent}
 			/>
 		</div>
-		<div class="actions flex min-h-20 items-center justify-end lg:pr-4">
+		<div class="actions flex items-center justify-end lg:pr-4">
+			<button
+				aria-label={page.data.t('search.search')}
+				class="text-subtle p-4 sm:hidden"
+				onclick={() => onClickExpandSearch()}
+			>
+				<BiSearch />
+			</button>
 			<div
 				id="header-menu"
 				class="text-3xs hidden items-center target:absolute target:left-0 target:block target:w-full 2xl:flex"
@@ -69,7 +84,10 @@
 					aria-label={page.data.t('header.openMenu')}
 					class="text-subtle flex items-center p-4"
 					href={`${page.url.pathname}?${page.url.search}#header-menu`}
-					on:click|preventDefault={toggleHeaderMenu}
+					onclick={(e) => {
+						e.preventDefault();
+						toggleHeaderMenu();
+					}}
 				>
 					<BiList width={20} height={20} aria-hidden="true" />
 				</a>
@@ -87,13 +105,7 @@
 	@reference "../../../app.css";
 
 	.header-nav {
-		grid-template-areas:
-			'home . actions'
-			'search search search';
-
-		@variant sm {
-			grid-template-areas: 'home search actions';
-		}
+		grid-template-areas: 'home search actions';
 	}
 
 	.home {

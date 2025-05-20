@@ -42,8 +42,6 @@
 
 :root {
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
-	--color-black: #000;
-	--color-white: #fff;
 	--color-success: #2ab061;
 }
 
@@ -127,7 +125,10 @@
 	--color-severe-950: oklch(14.45% 0.031 21.73);
 	--color-severe: var(--color-severe-500);
 
-	--color-page: #fff;
+	--color-black: #000;
+	--color-white: #fff;
+
+	--color-page: var(--color-white);
 	--color-body: var(--color-neutral-800);
 	--color-subtle: var(--color-neutral-600);
 	--color-link: var(--color-accent);
@@ -149,6 +150,10 @@
 		font-family: var(--font-body);
 		background: var(--color-page);
 		color: var(--color-body);
+	}
+
+	body:has(dialog[open]) {
+		overflow: hidden;
 	}
 
 	button:not(:disabled),
