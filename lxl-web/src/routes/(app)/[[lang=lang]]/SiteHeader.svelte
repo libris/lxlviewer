@@ -7,6 +7,7 @@
 	import BiList from '~icons/bi/list';
 
 	let showHeaderMenu = false;
+	let bannerOffsetHeight: number | undefined = $state();
 
 	function toggleHeaderMenu() {
 		showHeaderMenu = !showHeaderMenu;
@@ -22,6 +23,7 @@
 <header class="bg-app-header">
 	<div
 		class="text-2xs/3.5 bg-warning-300 flex min-h-11 place-content-between items-center gap-8 px-3 py-1 font-medium sm:px-6 md:text-xs"
+		bind:offsetHeight={bannerOffsetHeight}
 	>
 		<span class="flex items-center gap-2">
 			<span class="text-2xs rounded-sm bg-[#000] px-1.5 py-0.5 tracking-wide text-[#fff] uppercase">
@@ -50,7 +52,10 @@
 			</a>
 		</div>
 		<div class="search pb-4 sm:px-4 sm:pb-0">
-			<SuperSearchWrapper placeholder={page.data.t('header.searchPlaceholder')} />
+			<SuperSearchWrapper
+				placeholder={page.data.t('header.searchPlaceholder')}
+				--offset-top={`${bannerOffsetHeight}px`}
+			/>
 		</div>
 		<div class="actions flex min-h-20 items-center justify-end lg:pr-4">
 			<div
