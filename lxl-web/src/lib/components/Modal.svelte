@@ -64,7 +64,7 @@
 		class:left-0={position === 'left'}
 		class:right-0={position === 'right'}
 	>
-		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
+		<div class="flex flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto pb-4">
 			<header
 				class="border-neutral sticky top-0 z-10 flex min-h-14 items-center justify-between border-b bg-neutral-50 px-4"
 			>
