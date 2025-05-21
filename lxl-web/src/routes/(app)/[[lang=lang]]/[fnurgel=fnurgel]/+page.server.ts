@@ -20,9 +20,10 @@ import {
 	getHoldersByType,
 	getBibIdsByInstanceId,
 	getItemLinksByBibId,
-	getFullHolderData
+	fetchHoldersIfAbsent
 } from '$lib/utils/holdings.js';
 import { DebugFlags } from '$lib/types/userSettings';
+import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -74,14 +75,13 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
 
-	//TODO: cache this
-	const fullHolderByHolderId = await getFullHolderData(Object.values(holdersByType).flat());
-	const itemLinksByBibId = getItemLinksByBibId(
-		fullHolderByHolderId,
-		bibIdsByInstanceId,
-		locale,
-		displayUtil
-	);
+	await fetchHoldersIfAbsent(holdersByType);
+
+	if (holdersCache.holders) {
+		console.log('Current number of cached holders:', Object.keys(holdersCache.holders).length);
+	}
+
+	const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
 
 	return {
 		type: mainEntity[JsonLd.TYPE],

@@ -15,6 +15,7 @@ import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 import { relativizeUrl } from '$lib/utils/http';
 import { DisplayUtil, toString } from '$lib/utils/xl.js';
 import getAtPath from '$lib/utils/getAtPath';
+import { holdersCache } from '$lib/utils/holdersCache.svelte';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -221,8 +222,26 @@ export async function getFullHolderData(allHolders: DecoratedHolder[]): Promise<
 	return holderBySigel;
 }
 
+export async function fetchHoldersIfAbsent(holdersByType: HoldersByType) {
+	const cachedHolders = holdersCache.holders;
+	const allHolders = Object.values(holdersByType).flat();
+	for (const h of allHolders) {
+		const id = h.obj?.['@id'];
+
+		if (h.sigel && cachedHolders && !cachedHolders[h.sigel]) {
+			const libraryRes = await fetch(`${id}?framed=true`, {
+				headers: { Accept: 'application/ld+json' }
+			});
+			const resJson = await libraryRes.json();
+			const libraryMainEntity = resJson['mainEntity'] as FramedData;
+			if (libraryMainEntity) {
+				cachedHolders[h.sigel] = libraryMainEntity;
+			}
+		}
+	}
+}
+
 export function getItemLinksByBibId(
-	holderBySigel: FullHolderBySigel,
 	bibIdsByInstanceId: Record<string, BibIdObj>,
 	locale: LocaleCode,
 	displayUtil: DisplayUtil
@@ -231,80 +250,81 @@ export function getItemLinksByBibId(
 	for (const bibIdObj of Object.values(bibIdsByInstanceId)) {
 		const linksForHolder: ItemLinksForHolder = {};
 		bibIdObj.holders.forEach((sigel) => {
-			const fullHolderData = holderBySigel[sigel];
+			if (holdersCache.holders) {
+				const fullHolderData = holdersCache.holders[sigel];
 
-			const ilsPaths = [
-				[BibDb.ils, BibDb.bibIdSearchUri],
-				[BibDb.ils, BibDb.isbnSearchUri],
-				[BibDb.ils, BibDb.issnSearchUri]
-			];
+				const ilsPaths = [
+					[BibDb.ils, BibDb.bibIdSearchUri],
+					[BibDb.ils, BibDb.isbnSearchUri],
+					[BibDb.ils, BibDb.issnSearchUri]
+				];
 
-			const lopacPaths = [[BibDb.lopac, BibDb.bibIdSearchUriByLang]];
+				const lopacPaths = [[BibDb.lopac, BibDb.bibIdSearchUriByLang]];
 
-			let linksToItem = getLinksToItemFor(bibIdObj, fullHolderData, ilsPaths, locale);
-			const lopacLinksItem = getLinksToItemFor(bibIdObj, fullHolderData, lopacPaths, locale);
+				let linksToItem = getLinksToItemFor(bibIdObj, fullHolderData, ilsPaths, locale);
+				const lopacLinksItem = getLinksToItemFor(bibIdObj, fullHolderData, lopacPaths, locale);
 
-			const linkTemplateEod = getAtPath(fullHolderData, [BibDb.eodUri], []);
-			if (linkTemplateEod) {
-				linksToItem = [linkTemplateEod.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
-			}
+				const linkTemplateEod = getAtPath(fullHolderData, [BibDb.eodUri], []);
+				if (linkTemplateEod && linkTemplateEod.length !== 0) {
+					linksToItem = [linkTemplateEod.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
+				}
 
-			//TODO: rename
-			const allLinks: { [linkType: string]: string[] } = {};
+				//TODO: rename
+				const allLinks: { [linkType: string]: string[] } = {};
 
-			const itemStatusUri = getAtPath(fullHolderData, [BibDb.ils, BibDb.itemStatusUri], []);
+				const itemStatusUri = getAtPath(fullHolderData, [BibDb.ils, BibDb.itemStatusUri], []);
 
-			if (itemStatusUri && itemStatusUri.length !== 0) {
-				allLinks[BibDb.ItemStatus] = [itemStatusUri];
-			}
+				if (itemStatusUri && itemStatusUri.length !== 0) {
+					allLinks[BibDb.ItemStatus] = [itemStatusUri];
+				}
 
-			const linksToCatalog: string[] = [];
-			const linkToCatalog = getAtPath(fullHolderData, [BibDb.ils, 'url'], undefined);
-			if (linkToCatalog && linkToCatalog.length !== 0) {
-				linksToCatalog.push(linkToCatalog);
-				//TODO: formalize keys
-				allLinks[BibDb.LinksToCatalog] = linksToCatalog;
-			}
+				const linksToCatalog: string[] = [];
+				const linkToCatalog = getAtPath(fullHolderData, [BibDb.ils, 'url'], undefined);
+				if (linkToCatalog && linkToCatalog.length !== 0) {
+					linksToCatalog.push(linkToCatalog);
+					allLinks[BibDb.LinksToCatalog] = linksToCatalog;
+				}
 
-			const linksToSite: string[] = [];
-			const linkToSite = getAtPath(fullHolderData, ['url', JsonLd.ID], undefined);
-			if (linkToSite && linkToSite.length !== 0) {
-				linksToSite.push(linkToSite);
-				allLinks[BibDb.LinksToSite] = linksToSite;
-			}
+				const linksToSite: string[] = [];
+				const linkToSite = getAtPath(fullHolderData, ['url', JsonLd.ID], undefined);
+				if (linkToSite && linkToSite.length !== 0) {
+					linksToSite.push(linkToSite);
+					allLinks[BibDb.LinksToSite] = linksToSite;
+				}
 
-			const openingHoursList: string[] = [];
-			const openingHours = getAtPath(fullHolderData, [BibDb.openingHours], undefined);
-			if (openingHours && openingHours !== '') {
-				openingHoursList.push(openingHours);
-				allLinks[BibDb.OpeningHours] = openingHoursList;
-			}
+				const openingHoursList: string[] = [];
+				const openingHours = getAtPath(fullHolderData, [BibDb.openingHours], undefined);
+				if (openingHours && openingHours !== '') {
+					openingHoursList.push(openingHours);
+					allLinks[BibDb.OpeningHours] = openingHoursList;
+				}
 
-			const addresses: string[] = [];
-			const address = getAtPath(fullHolderData, [BibDb.address, '*'], undefined);
-			const postalAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.postalAddress);
-			const visitingAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.visitingAddress);
+				const addresses: string[] = [];
+				const address = getAtPath(fullHolderData, [BibDb.address, '*'], undefined);
+				const postalAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.postalAddress);
+				const visitingAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.visitingAddress);
 
-			if (address && address.length !== 0) {
-				addresses.push(
-					toString(displayUtil.lensAndFormat(visitingAddress, LensType.Card, locale)) || ''
-				);
-				addresses.push(
-					toString(displayUtil.lensAndFormat(postalAddress, LensType.Card, locale)) || ''
-				);
-				allLinks[BibDb.Address] = addresses;
-			}
+				if (address && address.length !== 0) {
+					addresses.push(
+						toString(displayUtil.lensAndFormat(visitingAddress, LensType.Card, locale)) || ''
+					);
+					addresses.push(
+						toString(displayUtil.lensAndFormat(postalAddress, LensType.Card, locale)) || ''
+					);
+					allLinks[BibDb.Address] = addresses;
+				}
 
-			if (linksToItem.length !== 0) {
-				allLinks[BibDb.LinksToItem] = linksToItem;
-			}
+				if (linksToItem.length !== 0) {
+					allLinks[BibDb.LinksToItem] = linksToItem;
+				}
 
-			if (lopacLinksItem.length !== 0) {
-				allLinks[BibDb.LoanReserveLink] = lopacLinksItem;
-			}
+				if (lopacLinksItem.length !== 0) {
+					allLinks[BibDb.LoanReserveLink] = lopacLinksItem;
+				}
 
-			if (Object.keys(allLinks).length !== 0) {
-				linksForHolder[sigel] = allLinks;
+				if (Object.keys(allLinks).length !== 0) {
+					linksForHolder[sigel] = allLinks;
+				}
 			}
 		});
 		linksByInstanceId[bibIdObj.bibId] = linksForHolder;
