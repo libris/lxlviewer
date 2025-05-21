@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import Modal from '$lib/components/Modal.svelte';
 	import SearchMapping from './SearchMapping.svelte';
 	import SearchCard from './SearchCard.svelte';
@@ -48,6 +48,10 @@
 			(filterItem) => !(filterItem.display === '*' && filterItem.operator === 'equals') // TODO: probably best to do wildcard-filtering in an earlier step (in search.ts)?
 		).length;
 	}
+
+	beforeNavigate(() => {
+		showFiltersModal = false;
+	});
 </script>
 
 <slot />
@@ -66,7 +70,7 @@
 					<span class="font-medium">{$page.data.title}</span>
 				</li>
 				<li>{$page.data.t('search.occursAs')}</li>
-				{#each predicates as p}
+				{#each predicates as p, index (index)}
 					<li>
 						<a
 							class="flex flex-nowrap items-center gap-1 py-4 pr-3.5 pl-4 lowercase no-underline"
@@ -191,7 +195,7 @@
 								form="main-search"
 								on:change={handleSortChange}
 							>
-								{#each sortOptions as option}
+								{#each sortOptions as option (option.value)}
 									<option value={option.value} selected={option.value === sortOrder}
 										>{option.label}</option
 									>
