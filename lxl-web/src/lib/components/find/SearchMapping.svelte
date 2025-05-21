@@ -25,7 +25,7 @@
 	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
 		switch (operator) {
 			case 'equals':
-				return '';
+				return ':';
 			case 'notEquals':
 				return '≠';
 			case 'greaterThan':
@@ -46,10 +46,12 @@
 	}
 </script>
 
-<ul class="flex flex-wrap items-center gap-2">
+<ul class="flex flex-wrap items-center gap-2 overflow-hidden">
 	{#each mapping as m, index (`${m['@id']}-${index}`)}
 		<li
-			class="mapping-item {m.children ? 'pill-group' : 'btn btn-accent'} pill-{m.operator}"
+			class="mapping-item overflow-hidden {m.children
+				? 'pill-group'
+				: 'btn btn-accent'} pill-{m.operator}"
 			class:wildcard={m.operator === 'equals' && m.display === '*'}
 			class:outer={depth === 0}
 			class:free-text={m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
@@ -59,12 +61,12 @@
 			{:else if m.operator === 'existence' || m.operator === 'notExistence'}
 				{@const symbol = getRelationSymbol(m.operator)}
 				<span class="pill-relation">{symbol}</span>
-				<div class="pill-label inline">{m.label}</div>
+				<div class="pill-label inline whitespace-nowrap">{m.label}</div>
 			{:else if 'label' in m && 'display' in m}
 				{@const symbol = getRelationSymbol(m.operator)}
-				<div class="pill-label inline">{m.label}</div>
+				<div class="pill-label inline whitespace-nowrap">{m.label}</div>
 				<span class="pill-relation">{symbol}</span>
-				<span class="pill-value">
+				<span class="pill-value truncate">
 					{m.displayStr}
 				</span>
 			{/if}
