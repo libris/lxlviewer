@@ -229,13 +229,17 @@ export async function fetchHoldersIfAbsent(holdersByType: HoldersByType) {
 		const id = h.obj?.['@id'];
 
 		if (h.sigel && cachedHolders && !cachedHolders[h.sigel]) {
-			const libraryRes = await fetch(`${id}?framed=true`, {
+			const response = await fetch(`${id}?framed=true`, {
 				headers: { Accept: 'application/ld+json' }
 			});
-			const resJson = await libraryRes.json();
-			const libraryMainEntity = resJson['mainEntity'] as FramedData;
-			if (libraryMainEntity) {
-				cachedHolders[h.sigel] = libraryMainEntity;
+			if (response.ok) {
+				const resJson = await response.json();
+				const libraryMainEntity = resJson['mainEntity'] as FramedData;
+				if (libraryMainEntity) {
+					cachedHolders[h.sigel] = libraryMainEntity;
+				}
+			} else {
+				console.error(`Could not fetch holder data for ${id}`);
 			}
 		}
 	}
