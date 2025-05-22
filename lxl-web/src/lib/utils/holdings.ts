@@ -249,7 +249,8 @@ export function getItemLinksByBibId(
 	const linksByInstanceId: ItemLinksByBibId = {};
 	for (const bibIdObj of Object.values(bibIdsByInstanceId)) {
 		const linksForHolder: ItemLinksForHolder = {};
-		bibIdObj.holders.forEach((sigel) => {
+		console.log('bibIdObj', bibIdObj);
+		bibIdObj.holders?.forEach((sigel) => {
 			if (holdersCache.holders) {
 				const fullHolderData = holdersCache.holders[sigel];
 
