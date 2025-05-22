@@ -1,6 +1,6 @@
 import type { FullHolderBySigel } from '$lib/types/holdings';
 
 type Cache = {
-	holders: undefined | FullHolderBySigel;
+	holders: FullHolderBySigel;
 };
-export const holdersCache: Cache = $state({ holders: undefined });
+export const holdersCache: Cache = $state({ holders: {} });
