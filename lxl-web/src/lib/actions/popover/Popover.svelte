@@ -67,7 +67,10 @@
 	Note that `Popover.svelte` isn't intended to be used directly in page templates – use the `use:popover` instead (see `$lib/actions/popover`).
 -->
 <div
-	class="popover bg-page text-2xs border-neutral absolute top-0 left-0 z-50 w-max max-w-sm rounded-md border shadow-xl"
+	class={[
+		'popover bg-page text-2xs border-neutral absolute top-0 left-0 z-50 w-max max-w-sm rounded-md border shadow-xl',
+		referenceElement.getAttribute('href') && 'link-popover'
+	]}
 	role="complementary"
 	bind:this={popoverElement}
 	on:mouseover={onMouseOver}
@@ -93,3 +96,12 @@
 		</svg>
 	</div>
 </div>
+
+<style>
+	/* prevent popover from flashing before navigating away on touch devices */
+	@media (hover: none) {
+		.link-popover {
+			display: none;
+		}
+	}
+</style>
