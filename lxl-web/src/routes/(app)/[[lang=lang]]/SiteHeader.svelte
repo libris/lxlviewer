@@ -36,8 +36,11 @@
 			<span class="text-2xs rounded-sm bg-black px-1.5 py-0.5 tracking-wide text-white uppercase">
 				Beta
 			</span>
-			<span>
-				{page.data.t('header.betaMessage')}
+			<span class="sm:hidden">
+				{page.data.t('header.betaMessageMobile')}
+			</span>
+			<span class="hidden sm:inline">
+				{page.data.t('header.betaMessageDesktop')}
 			</span>
 		</span>
 		<a
