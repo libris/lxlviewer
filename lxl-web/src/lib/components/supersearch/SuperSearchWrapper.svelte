@@ -398,8 +398,19 @@
 	/* dialog */
 
 	:global(.supersearch-dialog) {
-		@apply static m-0 h-full max-h-screen w-full max-w-full bg-transparent p-0;
-		top: var(--offset-top, 0);
+		position: static;
+		height: 100%;
+		max-height: 100vh;
+		width: 100%;
+		max-width: 100%;
+		background-color: transparent;
+		margin: 0;
+		padding: 0;
+		top: 0;
+
+		@variant sm {
+			top: var(--offset-top, 0);
+		}
 	}
 
 	:global(.supersearch-dialog-wrapper) {
