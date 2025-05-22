@@ -182,6 +182,10 @@
 		}
 	}
 
+	.ext-link {
+		word-break: break-word;
+	}
+
 	a.ext-link::after {
 		background-color: var(--color-link);
 		content: '';

@@ -26,7 +26,10 @@
 </script>
 
 <div class="search-card-container">
-	<article class="search-card" data-testid="search-card">
+	<article
+		class="search-card border-neutral relative grid w-full gap-x-4 border-t px-0 py-3 font-normal transition-shadow md:px-4"
+		data-testid="search-card"
+	>
 		<div class="card-image">
 			<a
 				href={id}
@@ -182,8 +185,6 @@
 	}
 
 	.search-card {
-		@apply border-neutral relative grid w-full gap-x-4 border-t px-4 py-3 font-normal transition-shadow;
-
 		grid-template-areas: 'image content debug libraries';
 		grid-template-columns: 64px 1fr auto auto;
 

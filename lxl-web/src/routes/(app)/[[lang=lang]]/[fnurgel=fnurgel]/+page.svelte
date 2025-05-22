@@ -383,7 +383,6 @@
 
 		& :global(.contribution > *) {
 			display: block;
-			white-space: nowrap;
 		}
 
 		& :global(.see-also > *) {
