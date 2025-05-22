@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
+	import { fade } from 'svelte/transition';
 	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
+	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
@@ -27,6 +29,22 @@
 			: addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || '')
 	);
 	let selection: Selection | undefined = $state();
+
+	let isLoading: boolean | undefined = $state();
+	let debouncedLoading: boolean | undefined = $state();
+	let timeout: ReturnType<typeof setTimeout> | null = null;
+
+	// debounce loading spinner
+	$effect(() => {
+		const current = isLoading;
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+		timeout = setTimeout(() => {
+			debouncedLoading = current;
+		}, 300);
+	});
+
 	let cursor = $derived(selection?.head || 0);
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
@@ -196,6 +214,7 @@
 		bind:this={superSearch}
 		bind:value={q}
 		bind:selection
+		bind:isLoading
 		language={lxlQuery}
 		{placeholder}
 		endpoint={`/api/${page.data.locale}/supersearch`}
@@ -216,17 +235,11 @@
 		loadMoreLabel={page.data.t('search.showMore')}
 		debouncedWait={100}
 	>
-		{#snippet loadingIndicator()}
-			<!-- <div class="flex min-h-11 w-full items-center px-4 text-left">
-				{$page.data.t('search.loading')}
-			</div> -->
-		{/snippet}
 		{#snippet inputRow({
 			expanded,
 			inputField,
 			getCellId,
 			isFocusedCell,
-			// onclickSubmit,
 			onclickClear,
 			onclickClose
 		})}
@@ -239,15 +252,27 @@
 						id={getCellId(0)}
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
-						class="p-4 sm:hidden"
+						class="text-subtle p-4 sm:hidden"
 						onclick={onclickClose}
 					>
-						<BiArrowLeft />
+						{#if debouncedLoading}
+							<span class="block size-4" in:fade={{ duration: 200 }}>
+								<Spinner />
+							</span>
+						{:else}
+							<BiArrowLeft aria-hidden="true" />
+						{/if}
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
 					<div class={['text-subtle absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
-						<BiSearch aria-hidden="true" />
+						{#if debouncedLoading}
+							<span class="block size-4" in:fade={{ duration: 200 }}>
+								<Spinner />
+							</span>
+						{:else}
+							<BiSearch aria-hidden="true" />
+						{/if}
 					</div>
 					{@render inputField()}
 				</div>
@@ -263,16 +288,6 @@
 						<BiXLg />
 					</button>
 				{/if}
-				<!-- <button
-					type="submit"
-					id={getCellId(2)}
-					class:focused-cell={isFocusedCell(2)}
-					class="submit-action min-h-12 rounded-none"
-					enterkeyhint="search"
-					onclick={onclickSubmit}
-				>
-					{$page.data.t('search.search')}
-				</button> -->
 			</div>
 		{/snippet}
 		{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
