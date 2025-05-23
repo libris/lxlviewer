@@ -208,6 +208,12 @@
 	</div>
 {/snippet}
 
+{#snippet loading()}
+	<span class="-mt-0.5 block size-4" in:fade={{ duration: 200 }}>
+		<Spinner />
+	</span>
+{/snippet}
+
 <form class="relative w-full" action="find" onsubmit={handleSubmit} data-testid="main-search">
 	<SuperSearch
 		name="_q"
@@ -256,9 +262,7 @@
 						onclick={onclickClose}
 					>
 						{#if debouncedLoading}
-							<span class="block size-4" in:fade={{ duration: 200 }}>
-								<Spinner />
-							</span>
+							{@render loading()}
 						{:else}
 							<BiArrowLeft aria-hidden="true" />
 						{/if}
@@ -267,9 +271,7 @@
 				<div class="flex-1 overflow-hidden">
 					<div class={['text-subtle absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
 						{#if debouncedLoading}
-							<span class="block size-4" in:fade={{ duration: 200 }}>
-								<Spinner />
-							</span>
+							{@render loading()}
 						{:else}
 							<BiSearch aria-hidden="true" />
 						{/if}
