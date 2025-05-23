@@ -34,9 +34,8 @@
 		data-qualifier-value={value}
 	>
 		{#if resourceLink}
-			<span class="lg:hidden">{valueLabel}</span><a
-				href={`/${resourceLink}`}
-				class="link hidden lg:inline">{valueLabel}</a
+			<span class="hidden">{valueLabel}</span><a href={`/${resourceLink}`} class="link"
+				>{valueLabel}</a
 			>
 		{:else}
 			{valueLabel}
@@ -53,3 +52,15 @@
 		<IconClose />
 	</button>
 {/if}
+
+<style lang="postcss">
+	@media (hover: none) {
+		.lxl-qualifier.atomic > a {
+			display: none;
+		}
+
+		.lxl-qualifier.atomic > span {
+			display: inline;
+		}
+	}
+</style>
