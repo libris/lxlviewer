@@ -11,6 +11,8 @@
 			(!keyLabel && !operator && valueLabel)) &&
 			removeQualifierFn
 	);
+
+	const resourceLink = value?.match(/([a-z0-9]{15})#it"$/m)?.[1]; // only create links for fnurgels for now (lang:sv and similar should also be linkable in the future...)
 </script>
 
 {#if keyLabel}
@@ -31,7 +33,14 @@
 		]}
 		data-qualifier-value={value}
 	>
-		{valueLabel}
+		{#if resourceLink}
+			<span class="lg:hidden">{valueLabel}</span><a
+				href={`/${resourceLink}`}
+				class="link hidden lg:inline">{valueLabel}</a
+			>
+		{:else}
+			{valueLabel}
+		{/if}
 	</span>
 {/if}
 {#if hasRemoveBtn}
