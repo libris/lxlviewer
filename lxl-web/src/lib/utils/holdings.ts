@@ -92,8 +92,12 @@ export function getBibIdsByInstanceId(
 		const bibId = instance.meta?.controlNumber || record?.controlNumber;
 		const type = instance['@type'];
 		const holders = instance['@reverse']?.itemOf?.map((i) => i?.heldBy?.sigel);
-		const str =
-			toString(displayUtil.lensAndFormat(instance.publication[0], LensType.Token, locale)) || '';
+		const publication = instance.publication;
+		let str = '';
+		if (publication) {
+			str =
+				toString(displayUtil.lensAndFormat(instance.publication[0], LensType.Token, locale)) || '';
+		}
 
 		// add Legacy Libris III system number for ONR param
 		let onr = null;
