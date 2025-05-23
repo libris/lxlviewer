@@ -138,7 +138,7 @@
 								<a
 									href={linksByBibId[id.bibId][holder.sigel]['loanReserveLink'].at(0)}
 									target="_blank"
-									class="btn btn-outlined ext-link h-9"
+									class="btn btn-outlined ext-link h-9 max-w-sm"
 								>
 									{page.data.t('holdings.loanReserveLink')}
 								</a>
@@ -149,7 +149,7 @@
 								<a
 									href={linksByBibId[id.bibId][holder.sigel][BibDb.LinksToItem].at(0)}
 									target="_blank"
-									class="btn btn-outlined ext-link h-9"
+									class="btn btn-outlined ext-link h-9 max-w-sm"
 								>
 									{page.data.t('holdings.linkToLocal')}
 								</a>
