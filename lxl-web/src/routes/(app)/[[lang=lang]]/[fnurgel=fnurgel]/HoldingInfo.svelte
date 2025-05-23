@@ -287,7 +287,7 @@
 						</li>
 					{/if}
 					{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.Address]}
-						{#each linksByBibId[firstBibId][holder.sigel][BibDb.Address] as address (address)}
+						{#each linksByBibId[firstBibId][holder.sigel][BibDb.Address] as address, index (index)}
 							<li class="my-2">
 								{address}
 							</li>
