@@ -122,7 +122,6 @@ function lxlQualifierPlugin(
 									key,
 									keyLabel,
 									operator,
-
 									value,
 									valueLabel,
 									qualifierComponent,
