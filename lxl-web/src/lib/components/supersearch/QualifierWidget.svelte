@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { type QualifierComponentProps } from 'supersearch';
+	import { type QualifierWidgetProps } from 'supersearch';
 	import IconClose from '~icons/bi/x-lg';
 
-	const { key, keyLabel, operator, value, valueLabel, removeQualifierFn }: QualifierComponentProps =
+	const { key, keyLabel, operator, value, valueLabel, removeQualifierFn }: QualifierWidgetProps =
 		$props();
 
 	const hasRemoveBtn = $derived(

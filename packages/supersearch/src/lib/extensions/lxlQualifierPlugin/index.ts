@@ -25,7 +25,7 @@ export type Qualifier = {
 	operator: string;
 };
 
-export type QualifierComponentProps = {
+export type QualifierWidgetProps = {
 	key: string;
 	keyLabel?: string;
 	operator: string;
@@ -45,7 +45,7 @@ export type GetLabelFunction = (
 
 export type RemoveQualifierFunction = (qualifier: string) => void;
 
-type QualifierComponent = Component<QualifierComponentProps>;
+type QualifierWidgetComponent = Component<QualifierWidgetProps>;
 
 class QualifierWidget extends WidgetType {
 	constructor(
@@ -54,7 +54,7 @@ class QualifierWidget extends WidgetType {
 		readonly operator: string,
 		readonly value: string | undefined,
 		readonly valueLabel: string | undefined,
-		readonly qualifierComponent: QualifierComponent,
+		readonly qualifierWidget: QualifierWidgetComponent,
 		readonly removeQualifierFn: RemoveQualifierFunction | undefined
 	) {
 		super();
@@ -71,7 +71,7 @@ class QualifierWidget extends WidgetType {
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
 		container.style.cssText = `position: relative; display:inline-flex`;
-		mount(this.qualifierComponent, {
+		mount(this.qualifierWidget, {
 			props: {
 				key: this.key,
 				keyLabel: this.keyLabel,
@@ -87,7 +87,7 @@ class QualifierWidget extends WidgetType {
 }
 
 function lxlQualifierPlugin(
-	qualifierComponent: QualifierComponent,
+	qualifierWidget: QualifierWidgetComponent,
 	getLabelFn?: GetLabelFunction,
 	removeQualifierFn?: RemoveQualifierFunction
 ) {
@@ -124,7 +124,7 @@ function lxlQualifierPlugin(
 									operator,
 									value,
 									valueLabel,
-									qualifierComponent,
+									qualifierWidget,
 									removeQualifierFn
 								)
 							});

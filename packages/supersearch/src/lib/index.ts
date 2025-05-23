@@ -1,7 +1,7 @@
 import SuperSearch from '$lib/components/SuperSearch.svelte';
 import type { Selection } from './components/CodeMirror.svelte';
 import lxlQualifierPlugin, {
-	type QualifierComponentProps
+	type QualifierWidgetProps
 } from '$lib/extensions/lxlQualifierPlugin/index.js';
 import type { ResultItem } from './types/superSearch.js';
 import useSearchRequest from './utils/useSearchRequest.svelte';
@@ -12,5 +12,5 @@ export {
 	useSearchRequest,
 	type ResultItem,
 	type Selection,
-	type QualifierComponentProps
+	type QualifierWidgetProps
 };

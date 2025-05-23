@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
-	import QualifierComponent from './QualifierComponent.svelte';
+	import QualifierWidget from './QualifierWidget.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
@@ -141,7 +141,7 @@
 			let pageMapping = page.data.searchResult?.mapping;
 			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
 		}
-		return lxlQualifierPlugin(QualifierComponent, getLabels, removeQualifier);
+		return lxlQualifierPlugin(QualifierWidget, getLabels, removeQualifier);
 	});
 
 	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
