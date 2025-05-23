@@ -185,7 +185,7 @@
 				</div>
 			{/if}
 		</ul>
-		{#if linksByBibId[bibIds.at(0).bibId]?.[holder.sigel]?.[BibDb.ItemStatus]}
+		{#if bibIds.at(0) && linksByBibId[bibIds.at(0).bibId]?.[holder.sigel]?.[BibDb.ItemStatus]}
 			<details ontoggle={getHoldingStatus}>
 				<summary class="mt-3 flex cursor-pointer items-baseline">
 					<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
