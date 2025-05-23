@@ -14,8 +14,7 @@ import {
 	type RangeValue
 } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
-import { mount } from 'svelte';
-import QualifierComponent from './QualifierComponent.svelte';
+import { mount, type Component } from 'svelte';
 import insertQuotes from './insertQuotes.js';
 import { messages } from '$lib/constants/messages.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
@@ -24,6 +23,15 @@ export type Qualifier = {
 	key: string;
 	value: string | undefined;
 	operator: string;
+};
+
+export type QualifierComponentProps = {
+	key: string;
+	keyLabel?: string;
+	operator: string;
+	value?: string;
+	valueLabel?: string;
+	removeQualifierFn?: RemoveQualifierFunction;
 };
 
 export type GetLabelFunction = (
@@ -37,15 +45,16 @@ export type GetLabelFunction = (
 
 export type RemoveQualifierFunction = (qualifier: string) => void;
 
+type QualifierComponent = Component<QualifierComponentProps>;
+
 class QualifierWidget extends WidgetType {
 	constructor(
 		readonly key: string,
 		readonly keyLabel: string | undefined,
-		readonly keyType: string | undefined,
+		readonly operator: string,
 		readonly value: string | undefined,
 		readonly valueLabel: string | undefined,
-		readonly operator: string,
-		readonly operatorType: string | undefined,
+		readonly qualifierComponent: QualifierComponent,
 		readonly removeQualifierFn: RemoveQualifierFunction | undefined
 	) {
 		super();
@@ -62,15 +71,13 @@ class QualifierWidget extends WidgetType {
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
 		container.style.cssText = `position: relative; display:inline-flex`;
-		mount(QualifierComponent, {
+		mount(this.qualifierComponent, {
 			props: {
 				key: this.key,
 				keyLabel: this.keyLabel,
-				keyType: this.keyType,
+				operator: this.operator,
 				value: this.value,
 				valueLabel: this.valueLabel,
-				operator: this.operator,
-				operatorType: this.operatorType,
 				removeQualifierFn: this.removeQualifierFn
 			},
 			target: container
@@ -80,6 +87,7 @@ class QualifierWidget extends WidgetType {
 }
 
 function lxlQualifierPlugin(
+	qualifierComponent: QualifierComponent,
 	getLabelFn?: GetLabelFunction,
 	removeQualifierFn?: RemoveQualifierFunction
 ) {
@@ -98,11 +106,9 @@ function lxlQualifierPlugin(
 					if (node.name === 'Qualifier') {
 						const keyNode = node.node.getChild('QualifierKey');
 						const key = keyNode ? doc.slice(keyNode?.from, keyNode?.to) : '';
-						const keyType = keyNode?.firstChild?.type.name;
 
 						const operatorNode = node.node.getChild('QualifierOperator');
 						const operator = operatorNode ? doc.slice(operatorNode?.from, operatorNode?.to) : '';
-						const operatorType = operatorNode?.firstChild?.type.name;
 
 						const valueNode = node.node.getChild('QualifierValue');
 						const value = valueNode ? doc.slice(valueNode?.from, valueNode?.to) : undefined;
@@ -115,11 +121,11 @@ function lxlQualifierPlugin(
 								widget: new QualifierWidget(
 									key,
 									keyLabel,
-									keyType,
+									operator,
+
 									value,
 									valueLabel,
-									operator,
-									operatorType,
+									qualifierComponent,
 									removeQualifierFn
 								)
 							});
