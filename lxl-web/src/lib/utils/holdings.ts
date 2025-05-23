@@ -2,8 +2,6 @@ import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
 import type {
 	BibIdObj,
-	DecoratedHolder,
-	FullHolderBySigel,
 	HoldersByType,
 	HoldingsByInstanceId,
 	ItemLinksByBibId,
@@ -202,24 +200,6 @@ export function getMyLibsFromHoldings(
 		}
 	}
 	return Object.values(result);
-}
-
-export async function getFullHolderData(allHolders: DecoratedHolder[]): Promise<FullHolderBySigel> {
-	const holderBySigel: FullHolderBySigel = {};
-
-	for (const h of allHolders) {
-		const id = h.obj?.['@id'];
-		const libraryRes = await fetch(`${id}?framed=true`, {
-			headers: { Accept: 'application/ld+json' }
-		});
-		const resJson = await libraryRes.json();
-		const libraryMainEntity = resJson['mainEntity'] as FramedData;
-
-		if (libraryMainEntity) {
-			holderBySigel[h.sigel] = libraryMainEntity;
-		}
-	}
-	return holderBySigel;
 }
 
 export async function fetchHoldersIfAbsent(holdersByType: HoldersByType) {
