@@ -34,7 +34,7 @@
 		data-qualifier-value={value}
 	>
 		{#if resourceLink}
-			<span class="hidden">{valueLabel}</span><a href={`/${resourceLink}`} class="link"
+			<span class="hidden">{valueLabel}</span><a href={`/${resourceLink}`} class="link inline-block"
 				>{valueLabel}</a
 			>
 		{:else}
