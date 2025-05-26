@@ -46,13 +46,6 @@ To use `supersearch` in a non-Svelte project ...
 | `isLoading` | `boolean` | A bindable prop telling if the component is currently loading data (the prop should be treated as readonly) | `undefined` |
 | `hasData` | `boolean` | A bindable prop telling if the component has data (the prop should be treated as readonly) | `undefined` |
 
-&nbsp;
-Supersearch also exports a `lxlQualifierPlugin` that can be used (passed to the extensions prop) if you want atomic, stylable, removable, labeled pills in your editor from some key-value pair or reserved word. This requires:
-
-- Your language exporting `Qualifier` nodes that can consist of `QualifierKey`, `QualifierOperator` and `QualifierValue` (i.e `key:value`).
-- Passing a function of type `GetLabelFunction`, that should return readable labels in order for the pill to turn atomic (non-editable) together with an optional `invalid` flag that enables styling of invalid queries.
-- Optionally passing a `RemoveQualifierFunction` that will be called with the qualifier when user clicks the remove button.
-
 ## Implementing the component in your project
 
 TODO: Write more documentation here...
