@@ -3,6 +3,7 @@
 	import { afterNavigate, goto } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
+	import QualifierPill from './QualifierPill.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
@@ -158,7 +159,7 @@
 			let pageMapping = page.data.searchResult?.mapping;
 			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
 		}
-		return lxlQualifierPlugin(getLabels, removeQualifier);
+		return lxlQualifierPlugin(QualifierPill, getLabels, removeQualifier);
 	});
 
 	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);

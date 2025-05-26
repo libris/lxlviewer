@@ -1,6 +1,5 @@
 <script lang="ts">
 	import SuperSearch from '$lib/components/SuperSearch.svelte';
-	import { lxlQualifierPlugin } from '$lib/index.js';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import type { JSONValue } from '$lib/types/json.js';
 	import type { MockQueryResponse } from './api/find/+server.js';
@@ -54,7 +53,6 @@
 			paginationQueryFn={handlePaginationQuery}
 			transformFn={handleTransform}
 			language={lxlQuery}
-			extensions={[lxlQualifierPlugin()]}
 			toggleWithKeyboardShortcut
 			defaultInputCol={-1}
 			defaultResultRow={1}
@@ -64,7 +62,7 @@
 			{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
 				<div role="rowgroup">
 					<div>Header for start items</div>
-					{#each { length: 3 } as _item, index}
+					{#each { length: 3 }, index}
 						{@const rowIndex = index + 1}
 						<div role="row" class="start-item" class:focused={isFocusedRow(rowIndex)}>
 							<button
@@ -73,7 +71,7 @@
 								id={getCellId(rowIndex, 0)}
 								class:focused-cell={isFocusedCell(rowIndex, 0)}
 							>
-								Start item {rowIndex}{_item}
+								Start item {rowIndex}
 							</button>
 						</div>
 					{/each}

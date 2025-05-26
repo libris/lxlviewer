@@ -46,7 +46,6 @@
 
 .lxl-qualifier-value.atomic {
 	color: var(--color-link);
-	text-decoration: underline;
 	text-decoration-style: dotted;
 }
 
