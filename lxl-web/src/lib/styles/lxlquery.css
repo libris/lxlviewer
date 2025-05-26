@@ -55,10 +55,11 @@
 
 .lxl-invalid,
 .lxl-invalid .lxl-qualifier {
-	text-decoration: underline 1px solid;
-	text-decoration-color: var(--color-severe);
+	text-decoration-line: underline;
+	text-decoration-thickness: 1px;
 	text-decoration-style: wavy;
-	text-underline-offset: 4px;
+	text-decoration-color: var(--color-severe);
+	text-underline-offset: 2px;
 }
 
 .lxl-not-term {
