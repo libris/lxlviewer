@@ -64,30 +64,12 @@
 	}
 </script>
 
-{#snippet pagination(
+{#snippet sequence(
 	pages: {
 		page: number;
 		offset: number;
 	}[]
 )}
-	<!-- prev -->
-	{#if previous}
-		<li>
-			<a
-				href={previous['@id']}
-				aria-label={page.data.t('search.previous')}
-				class="btn btn-primary border-0"><BiChevronLeft class="text-base" aria-hidden="true" /></a
-			>
-		</li>
-	{/if}
-	<!-- first -->
-	<li>
-		<a
-			aria-label="{page.data.t('search.page')} 1"
-			class={['btn btn-primary', currentPage === 1 ? 'bg-accent-50' : 'border-0']}
-			href={first['@id']}>1</a
-		>
-	</li>
 	{#if pages[0].page > 2}
 		<li class="text-2xs flex h-9 w-5 items-end justify-center pb-2 sm:w-9"><span>...</span></li>
 	{/if}
@@ -108,54 +90,92 @@
 	{#if lastPage - pages[pages.length - 1].page > 1}
 		<li class="text-2xs flex h-9 w-5 items-end justify-center pb-2 sm:w-9"><span>...</span></li>
 	{/if}
-	<!-- last -->
-	<li>
-		<a
-			aria-label="{page.data.t('search.page')} {lastPage}"
-			class={['btn btn-primary', currentPage === lastPage ? 'bg-accent-50' : 'border-0']}
-			href={last['@id']}>{lastPage.toLocaleString(page.data.locale)}</a
-		>
-	</li>
-	<!-- next -->
-	{#if next}
-		<li>
-			<a href={next['@id']} aria-label={page.data.t('search.next')} class="btn btn-primary border-0"
-				><BiChevronRight class="text-base" aria-hidden="true" /></a
-			>
-		</li>
-	{/if}
 {/snippet}
 
 {#if showPagination}
 	<nav
 		aria-label={page.data.t('search.pagination')}
 		data-testid="pagination"
-		class="mt-4 overflow-x-hidden py-4"
+		class="pagination mt-4 py-4"
 	>
-		<!-- sm -->
-		<ul class="sm-pagination flex items-center justify-center sm:hidden">
-			{@render pagination(pageSequenceSm)}
-		</ul>
-		<!-- md -->
-		<ul class="md-pagination hidden items-center justify-center sm:flex">
-			{@render pagination(pageSequenceMd)}
-		</ul>
+		<ol class="flex items-center justify-center">
+			<!-- prev -->
+			{#if previous}
+				<li>
+					<a
+						href={previous['@id']}
+						aria-label={page.data.t('search.previous')}
+						class="btn btn-primary border-0"
+						><BiChevronLeft class="text-base" aria-hidden="true" /></a
+					>
+				</li>
+			{/if}
+			<!-- first -->
+			<li>
+				<a
+					aria-label="{page.data.t('search.page')} 1"
+					class={['btn btn-primary', currentPage === 1 ? 'bg-accent-50' : 'border-0']}
+					href={first['@id']}>1</a
+				>
+			</li>
+			<!-- sm sequence -->
+			<li class="flex sm:hidden">
+				<ol class="sequence flex items-center justify-center">
+					{@render sequence(pageSequenceSm)}
+				</ol>
+			</li>
+			<!-- md sequence -->
+			<li class="hidden sm:flex">
+				<ol class="sequence flex items-center justify-center">
+					{@render sequence(pageSequenceMd)}
+				</ol>
+			</li>
+			<!-- last -->
+			<li>
+				<a
+					aria-label="{page.data.t('search.page')} {lastPage}"
+					class={['btn btn-primary', currentPage === lastPage ? 'bg-accent-50' : 'border-0']}
+					href={last['@id']}>{lastPage.toLocaleString(page.data.locale)}</a
+				>
+			</li>
+			<!-- next -->
+			{#if next}
+				<li>
+					<a
+						href={next['@id']}
+						aria-label={page.data.t('search.next')}
+						class="btn btn-primary border-0"
+						><BiChevronRight class="text-base" aria-hidden="true" /></a
+					>
+				</li>
+			{/if}
+		</ol>
 	</nav>
 {/if}
 
-<style>
-	.md-pagination li > * {
-		margin-inline: calc(var(--spacing) * 0.5);
-	}
+<style lang="postcss">
+	.pagination {
+		@reference 'tailwindcss';
 
-	.md-pagination li > a {
-		min-height: calc(var(--spacing) * 9);
-		min-width: calc(var(--spacing) * 9);
-		padding-inline: calc(var(--spacing) * 2);
-	}
+		& li > a {
+			min-height: calc(var(--spacing) * 8);
+			min-width: calc(var(--spacing) * 8);
+		}
 
-	.sm-pagination li > a {
-		min-height: calc(var(--spacing) * 8);
-		min-width: calc(var(--spacing) * 8);
+		& .sequence {
+			margin-inline: calc(var(--spacing) * 0);
+		}
+
+		@variant md {
+			& li > * {
+				margin-inline: calc(var(--spacing) * 0.5);
+			}
+
+			& li > a {
+				min-height: calc(var(--spacing) * 9);
+				min-width: calc(var(--spacing) * 9);
+				padding-inline: calc(var(--spacing) * 2);
+			}
+		}
 	}
 </style>
