@@ -27,7 +27,8 @@ import {
 	type ShowProperties,
 	type RangeRestriction,
 	type AlternateProperties,
-	type LangContainer
+	type LangContainer,
+	type DisplayDecoratedLite
 } from '$lib/types/xl';
 
 // TODO TESTS!
@@ -918,9 +919,55 @@ export function toString(data: DisplayDecorated) {
 		}
 		return v.join('');
 	} else if (Array.isArray(data)) {
-		data.map(toString).join('');
+		return data.map(toString).join('');
 	} else {
 		return data;
+	}
+}
+
+export function toLite(data: DisplayDecorated): DisplayDecoratedLite {
+	const result: DisplayDecoratedLite = [];
+	// TODO is this what we always want?
+	if (data._display) {
+		_toLite(data._display, result);
+	} else if (typeof data === 'string') {
+		_toLite(data, result);
+	} else if (data[JsonLd.ID]) {
+		result.push(data[JsonLd.ID]);
+	}
+
+	return result;
+}
+
+function _toLite(data: DisplayDecorated, result: DisplayDecoratedLite) {
+	if (isObject(data)) {
+		const v = [];
+		if (Fmt.CONTENT_BEFORE in data && data[Fmt.CONTENT_BEFORE] !== '') {
+			v.push(data[Fmt.CONTENT_BEFORE]);
+		}
+		if (Fmt.DISPLAY in data) {
+			v.push(...data[Fmt.DISPLAY].map(toString));
+		}
+		v.push(
+			...Object.entries(data)
+				.filter(([k]) => !(Object.values(Fmt).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
+				.map(([, v]) => toString(v))
+		);
+		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
+			v.push(data[Fmt.CONTENT_AFTER]);
+		}
+		const str = v.join('');
+		if (Fmt.STYLE in data && data[Fmt.STYLE].length > 0) {
+			result.push([str, data[Fmt.STYLE]]);
+		} else {
+			result.push(str);
+		}
+	} else if (Array.isArray(data)) {
+		data.forEach((v) => _toLite(v, result));
+	} else if (typeof data === 'string') {
+		result.push(data);
+	} else if (data !== null) {
+		result.push(`${data}`);
 	}
 }
 
