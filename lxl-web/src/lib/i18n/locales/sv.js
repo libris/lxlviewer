@@ -8,7 +8,8 @@ export default {
 		changeLang: 'In English',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
 		openMenu: 'Öppna huvudmeny',
-		betaMessage:
+		betaMessageMobile: 'Katalogen kan innehålla inaktuell information.',
+		betaMessageDesktop:
 			'Här kan du prova på nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
 		betaLink: 'Tyck till',
 		betaLinkLong: 'om nya Libris'

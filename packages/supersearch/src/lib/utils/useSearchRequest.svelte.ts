@@ -27,8 +27,11 @@ export function useSearchRequest({
 	const hasMorePaginatedData = $derived(!!moreSearchParams);
 
 	let controller: AbortController;
+	let latestRequest = 0;
 
 	async function _fetchData(searchParams: URLSearchParams) {
+		latestRequest++;
+		const currentRequest = latestRequest;
 		try {
 			isLoading = true;
 			error = undefined;
@@ -52,7 +55,9 @@ export function useSearchRequest({
 				error = 'Failed to fetch data';
 			}
 		} finally {
-			isLoading = false;
+			if (currentRequest === latestRequest) {
+				isLoading = false;
+			}
 		}
 	}
 
