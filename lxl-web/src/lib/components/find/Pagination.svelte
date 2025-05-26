@@ -12,23 +12,13 @@
 	const { first, last, next, previous, totalItems, itemsPerPage, itemOffset, maxItems } =
 		$derived(data);
 
-	const numberOfPagesSm = 3;
-	const numberOfPagesMd = 7;
+	const MAX_PAGES_SM = 3;
+	const MAX_PAGES_MD = 7;
 
 	const showPagination = $derived(data.items.length > 0 && totalItems > itemsPerPage);
 	const currentPage = $derived(Math.floor(itemOffset / itemsPerPage) + 1);
 	const lastItem = $derived(totalItems > maxItems ? maxItems : totalItems);
 	const lastPage = $derived(Math.ceil(lastItem / itemsPerPage));
-
-	const pageSequenceSm = $derived.by(() => {
-		let pagesSm = numberOfPagesSm > lastPage ? lastPage : numberOfPagesSm;
-		return getPages(pagesSm);
-	});
-
-	const pageSequenceMd = $derived.by(() => {
-		let pagesMd = numberOfPagesMd > lastPage ? lastPage : numberOfPagesMd;
-		return getPages(pagesMd);
-	});
 
 	function getPages(sequenceSize: number) {
 		let pages = [];
@@ -64,12 +54,8 @@
 	}
 </script>
 
-{#snippet sequence(
-	pages: {
-		page: number;
-		offset: number;
-	}[]
-)}
+{#snippet sequence(maxSize: number)}
+	{@const pages = getPages(Math.min(maxSize, lastPage))}
 	{#if pages[0].page > 2}
 		<li class="text-2xs flex h-9 w-5 items-end justify-center pb-2 sm:w-9"><span>...</span></li>
 	{/if}
@@ -121,13 +107,13 @@
 			<!-- sm sequence -->
 			<li class="flex sm:hidden">
 				<ol class="sequence flex items-center justify-center">
-					{@render sequence(pageSequenceSm)}
+					{@render sequence(MAX_PAGES_SM)}
 				</ol>
 			</li>
 			<!-- md sequence -->
 			<li class="hidden sm:flex">
 				<ol class="sequence flex items-center justify-center">
-					{@render sequence(pageSequenceMd)}
+					{@render sequence(MAX_PAGES_MD)}
 				</ol>
 			</li>
 			<!-- last -->
