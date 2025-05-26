@@ -60,7 +60,7 @@
 					{#if linksByBibId[id.bibId]?.[holder.sigel]}
 						{@const linksForHolder = linksByBibId[id.bibId][holder.sigel]}
 						{#if hasInstanceContent(id.bibId)}
-							<div class="instance-token mt-4 mb-1">{id.str}</div>
+							<div class="instance-token mt-4 mb-1">{id.str || '-'}</div>
 							{#if hasStatusLink(id.bibId)}
 								<HoldingAvailability {holder} bibId={id}></HoldingAvailability>
 							{/if}
