@@ -331,17 +331,17 @@ function getLinksToItemFor(
 		const linkTemplate = getAtPath(fullHolderData, path, []);
 		if (linkTemplate && linkTemplate.length !== 0) {
 			if (path.includes(BibDb.bibIdSearchUriByLang) && bibIdObj.bibId !== '') {
-				linksToItem = [linkTemplate[locale].replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
+				linksToItem = [linkTemplate[locale].replace(/%BIB_*ID%/g, bibIdObj.bibId), ...linksToItem];
 			}
 			if (path.includes(BibDb.bibIdSearchUri) && bibIdObj.bibId !== '') {
 				// forms in the wild %BIB_ID%, %BIBID%, more???
-				linksToItem = [linkTemplate.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
+				linksToItem = [linkTemplate.replace(/%BIB_*ID%/g, bibIdObj.bibId), ...linksToItem];
 			}
 			if (path.includes(BibDb.isbnSearchUri) && bibIdObj.isbn.length !== 0) {
-				linksToItem = [linkTemplate.replace(/%ISBN%/, bibIdObj.isbn), ...linksToItem];
+				linksToItem = [linkTemplate.replace(/%ISBN%/g, bibIdObj.isbn), ...linksToItem];
 			}
 			if (path.includes(BibDb.issnSearchUri) && bibIdObj.issn.length !== 0) {
-				linksToItem = [linkTemplate.replace(/%ISSN%/, bibIdObj.issn), ...linksToItem];
+				linksToItem = [linkTemplate.replace(/%ISSN%/g, bibIdObj.issn), ...linksToItem];
 			}
 		}
 	}
