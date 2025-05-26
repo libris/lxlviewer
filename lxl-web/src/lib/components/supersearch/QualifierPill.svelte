@@ -12,7 +12,10 @@
 			removeQualifierFn
 	);
 
-	const resourceLink = value?.match(/([a-z0-9]{15})#it"$/m)?.[1]; // only create links for fnurgels for now (lang:sv and similar should also be linkable in the future...)
+	/**
+	 * TODO: Add resource links when API exposes the record ids/fnurgels in mappings
+	 * const resourceLink = value?.match(/([a-z0-9]{15})#it"$/m)?.[1]; // only create links for fnurgels for now (lang:sv and similar should also be linkable in the future...)
+	 */
 </script>
 
 {#if keyLabel}
@@ -33,6 +36,7 @@
 		]}
 		data-qualifier-value={value}
 	>
+		<!--
 		{#if resourceLink}
 			<span class="hidden">{valueLabel}</span><a href={`/${resourceLink}`} class="link inline-block"
 				>{valueLabel}</a
@@ -40,6 +44,8 @@
 		{:else}
 			{valueLabel}
 		{/if}
+		-->
+		{valueLabel}
 	</span>
 {/if}
 {#if hasRemoveBtn}
@@ -54,6 +60,7 @@
 {/if}
 
 <style lang="postcss">
+	/** TODO: Add when resource links are available 
 	@media (hover: none) {
 		.lxl-qualifier.atomic > a {
 			display: none;
@@ -63,4 +70,5 @@
 			display: inline;
 		}
 	}
+		*/
 </style>
