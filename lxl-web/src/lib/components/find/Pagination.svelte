@@ -89,7 +89,7 @@
 		>
 	</li>
 	{#if pages[0].page > 2}
-		<li class="text-2xs flex size-8 items-end justify-center pb-2 sm:size-9"><span>...</span></li>
+		<li class="text-2xs flex h-9 w-5 items-end justify-center pb-2 sm:w-9"><span>...</span></li>
 	{/if}
 	<!-- page sequence -->
 	{#each pages as p (p.offset)}
@@ -106,7 +106,7 @@
 		{/if}
 	{/each}
 	{#if lastPage - pages[pages.length - 1].page > 1}
-		<li class="text-2xs flex size-8 items-end justify-center pb-2 sm:size-9"><span>...</span></li>
+		<li class="text-2xs flex h-9 w-5 items-end justify-center pb-2 sm:w-9"><span>...</span></li>
 	{/if}
 	<!-- last -->
 	<li>
@@ -133,11 +133,11 @@
 		class="mt-4 overflow-x-hidden py-4"
 	>
 		<!-- sm -->
-		<ul class="sm-pagination flex justify-center sm:hidden">
+		<ul class="sm-pagination flex items-center justify-center sm:hidden">
 			{@render pagination(pageSequenceSm)}
 		</ul>
 		<!-- md -->
-		<ul class="md-pagination hidden justify-center sm:flex">
+		<ul class="md-pagination hidden items-center justify-center sm:flex">
 			{@render pagination(pageSequenceMd)}
 		</ul>
 	</nav>
