@@ -1,4 +1,4 @@
-import { DisplayUtil, isObject, toString, VocabUtil } from '$lib/utils/xl';
+import { DisplayUtil, isObject, toLite, toString, VocabUtil } from '$lib/utils/xl';
 import {
 	type DisplayDecorated,
 	type FramedData,
@@ -250,7 +250,7 @@ function displayFacetGroups(
 					...('_selected' in o && { selected: o._selected }),
 					totalItems: o.totalItems,
 					view: replacePath(o.view, usePath),
-					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
+					object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
 					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
 				};
@@ -296,7 +296,7 @@ function displayBoolFilters(
 			selected: o._selected || false,
 			totalItems: o.totalItems,
 			view: replacePath(o.view, usePath),
-			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
+			object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
 			discriminator: '',
 			alias: o.object.alias

@@ -2,22 +2,21 @@
 	import { page } from '$app/state';
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import type { FacetGroup } from '$lib/types/search';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import {
-		DEFAULT_FACETS_SHOWN,
+		CUSTOM_FACET_SORT,
 		DEFAULT_FACET_SORT,
-		CUSTOM_FACET_SORT
+		DEFAULT_FACETS_SHOWN
 	} from '$lib/constants/facets';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';
 	import FacetRange from './FacetRange.svelte';
-	import DecoratedData from '../DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiCheckSquareFill from '~icons/bi/check-square-fill';
 	import BiSquare from '~icons/bi/square';
 	import BiInfo from '~icons/bi/info-circle';
+	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
 
 	// Todo: Rename FacetGroup -> Facet (facets -> items/facetItems)
 
@@ -162,7 +161,7 @@
 									</div>
 								{/if}
 								<span>
-									<DecoratedData data={facet.object} showLabels={ShowLabelsOptions.Never} />
+									<DecoratedDataLite data={facet.object} />
 									{#if facet.discriminator}
 										<span class="text-subtle">({facet.discriminator})</span>
 									{/if}

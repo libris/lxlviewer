@@ -196,6 +196,9 @@ export interface LensedOrdered {
 }
 export type DisplayDecorated = unknown;
 
+export type StyleList = string[];
+export type DisplayDecoratedLite = (string | [string, StyleList])[];
+
 export interface VocabData {
 	'@context'?: string | Context;
 	'@graph': Record<string, unknown>[];
