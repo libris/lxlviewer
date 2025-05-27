@@ -57,6 +57,8 @@
 						"editionStatement",
 						"editionStatementRemainder",
 						"isIssueOfEdition",
+						"isPartOf",
+						"part",
 						"publication",
 						"marc:primaryProvisionActivity",
 						"production",
