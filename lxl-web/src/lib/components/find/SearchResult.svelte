@@ -66,7 +66,7 @@
 					<span class="font-medium">{$page.data.title}</span>
 				</li>
 				<li>{$page.data.t('search.occursAs')}</li>
-				{#each predicates as p}
+				{#each predicates as p (p.view['@id'])}
 					<li>
 						<a
 							class="flex flex-nowrap items-center gap-1 py-4 pr-3.5 pl-4 lowercase no-underline"
@@ -109,13 +109,10 @@
 		</div>
 
 		<div class="results">
-			<div
-				class="toolbar flex items-center justify-between pb-2"
-				class:has-search={$page.params.fnurgel}
-			>
+			<div class="toolbar items-center pb-2" class:has-search={$page.params.fnurgel}>
 				<a
 					href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
-					class="filter-modal-toggle btn btn-primary lg:hidden"
+					class="filter-modal-toggle btn btn-primary max-w-40 lg:hidden"
 					aria-label={$page.data.t('search.filters')}
 					on:click|preventDefault={toggleFiltersModal}
 				>
@@ -127,7 +124,7 @@
 						</span>
 					{/if}
 				</a>
-				<span class="hits text-2xs pt-4 lg:pt-0" role="status" data-testid="result-info">
+				<span class="hits text-2xs" role="status" data-testid="result-info">
 					{#if numHits && numHits > 0}
 						<span class="hits-count">
 							{#if numHits > searchResult.itemsPerPage}
@@ -167,12 +164,12 @@
 						</span>
 					{/if}
 				</span>
-				<div class="search-related flex justify-start">
-					{#if $page.params.fnurgel}
-						{@const activePredicate = predicates.filter((p) => p.selected)}
+				{#if $page.params.fnurgel}
+					{@const activePredicate = predicates.filter((p) => p.selected)}
+					<div class="search-related flex justify-start">
 						<SearchRelated view={activePredicate[0].view} />
-					{/if}
-				</div>
+					</div>
+				{/if}
 				{#if numHits > 0}
 					<div
 						class="sort-select flex flex-col items-end justify-self-end"
@@ -191,7 +188,7 @@
 								form="main-search"
 								on:change={handleSortChange}
 							>
-								{#each sortOptions as option}
+								{#each sortOptions as option (option.value)}
 									<option value={option.value} selected={option.value === sortOrder}
 										>{option.label}</option
 									>
@@ -217,25 +214,7 @@
 {/if}
 
 <style lang="postcss">
-	@reference "../../../app.css";
-
-	.toolbar {
-		@apply grid;
-		grid-template-areas:
-			'filter-modal-toggle .'
-			'search-related search-related'
-			'hits sort-select';
-	}
-
-	.toolbar.has-search {
-		@apply gap-4;
-	}
-
-	.toolbar:has(.suggest) {
-		& .hits-count::after {
-			content: '.';
-		}
-	}
+	@reference 'tailwindcss';
 
 	.find-layout {
 		grid-template-areas: 'filters results';
@@ -254,6 +233,7 @@
 			display: block; /* TODO: fix better no-JS fallback styling */
 		}
 	}
+
 	.results {
 		grid-area: results;
 	}
@@ -262,7 +242,8 @@
 		grid-area: sort-select;
 
 		& select {
-			@apply appearance-none px-8;
+			appearance: none;
+			padding-inline: calc(var(--spacing) * 8);
 		}
 	}
 
@@ -280,12 +261,24 @@
 		border-bottom-width: 0.125rem;
 	}
 
-	@variant sm {
-		.toolbar {
-			grid-template-areas:
-				'filter-modal-toggle search-related'
-				'hits sort-select';
-			grid-template-columns: auto 1fr;
+	.toolbar {
+		display: grid;
+		gap: calc(var(--spacing) * 4);
+		grid-template-areas:
+			'filter-modal-toggle sort-select'
+			'hits hits';
+	}
+
+	.toolbar.has-search {
+		grid-template-areas:
+			'search-related search-related'
+			'filter-modal-toggle sort-select'
+			'hits hits';
+	}
+
+	.toolbar:has(.suggest) {
+		& .hits-count::after {
+			content: '.';
 		}
 	}
 
@@ -295,9 +288,13 @@
 		}
 
 		.toolbar {
+			grid-template-areas: 'hits sort-select';
+		}
+
+		.toolbar.has-search {
 			grid-template-areas:
-				'search-related search-related'
-				'hits sort-select';
+				'search-related sort-select'
+				'hits hits';
 		}
 	}
 </style>
