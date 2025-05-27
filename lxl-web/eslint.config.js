@@ -35,5 +35,11 @@ export default ts.config(
 				svelteConfig
 			}
 		}
+	},
+	{
+		rules: {
+			'svelte/no-useless-mustaches': 'warn',
+			'svelte/require-each-key': 'warn'
+		}
 	}
 );
