@@ -112,7 +112,7 @@
 			<div class="toolbar items-center pb-2" class:has-search={$page.params.fnurgel}>
 				<a
 					href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
-					class="filter-modal-toggle btn btn-primary max-w-40 lg:hidden"
+					class="filter-modal-toggle btn btn-primary max-w-44 lg:hidden"
 					aria-label={$page.data.t('search.filters')}
 					on:click|preventDefault={toggleFiltersModal}
 				>
@@ -263,6 +263,7 @@
 
 	.toolbar {
 		display: grid;
+		grid-template-columns: 1fr 1fr;
 		gap: calc(var(--spacing) * 4);
 		grid-template-areas:
 			'filter-modal-toggle sort-select'
