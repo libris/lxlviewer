@@ -35,12 +35,12 @@ const multipleInstances = [
 				_label: 'har titel'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				responsibilityStatement: 'Mikael Yvesand',
 				_label: 'upphovsuppgift'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				publication: {
 					'@type': 'PrimaryPublication',
 					_display: [
@@ -59,7 +59,7 @@ const multipleInstances = [
 							_label: 'land'
 						},
 						{
-							_contentBefore: ' • ',
+							_contentBefore: ' · ',
 							place: {
 								'@type': 'Place',
 								_display: [
@@ -125,12 +125,12 @@ const multipleInstances = [
 				_label: 'har titel'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				responsibilityStatement: 'Mikael Yvesand',
 				_label: 'upphovsuppgift'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				publication: {
 					'@type': 'PrimaryPublication',
 					_display: [
@@ -197,12 +197,12 @@ const multipleInstances = [
 				_label: 'har titel'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				responsibilityStatement: 'Mikael Yvesand',
 				_label: 'upphovsuppgift'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				publication: {
 					'@type': 'PrimaryPublication',
 					_display: [
@@ -221,7 +221,7 @@ const multipleInstances = [
 							_label: 'land'
 						},
 						{
-							_contentBefore: ' • ',
+							_contentBefore: ' · ',
 							place: {
 								'@type': 'Place',
 								_display: [
@@ -290,12 +290,12 @@ const oneInstance = {
 			_label: 'har titel'
 		},
 		{
-			_contentBefore: ' • ',
+			_contentBefore: ' · ',
 			responsibilityStatement: 'Mikael Yvesand',
 			_label: 'upphovsuppgift'
 		},
 		{
-			_contentBefore: ' • ',
+			_contentBefore: ' · ',
 			publication: {
 				'@type': 'PrimaryPublication',
 				_display: [
@@ -314,7 +314,7 @@ const oneInstance = {
 						_label: 'land'
 					},
 					{
-						_contentBefore: ' • ',
+						_contentBefore: ' · ',
 						place: {
 							'@type': 'Place',
 							_display: [

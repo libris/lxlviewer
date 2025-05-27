@@ -188,14 +188,14 @@ export function translateObjectProp(object) {
 function formatLabel(item, type, resources) {
   const label = [];
   const formatters = resources.display.lensGroups.formatters;
-  const replaceInnerDot = s => s.replace(/ • /g, ', '); // TODO: handle nested chips properly
+  const replaceInnerDot = s => s.replace(/ · /g, ', '); // TODO: handle nested chips properly
 
   // FIXME: this should be driven by display.jsonld
   // We don't want Library and Bibliography. Could do isSubclassOf('Agent') && !isSubclassOf('Collection') but hardcode the list for now
   const isAgent = ['Person', 'Organization', 'Jurisdiction', 'Meeting', 'Family'].includes(type);
   // We don't want to touch commas inside property values when doing the final cleanup. 
   // Use a private use character as a temporary stand in for comma.
-  const separator = isAgent ? '\uE000 ' : ' • ';
+  const separator = isAgent ? '\uE000 ' : ' · ';
 
   const objKeys = Object.keys(item);
   for (let i = 0; i < objKeys.length; i++) {
@@ -226,7 +226,7 @@ function formatLabel(item, type, resources) {
   labelStr = labelStr.replace(/([:.\uE000])\uE000/g, '$1');
   labelStr = labelStr.replace(/\(\uE000\s?/g, '(');
   labelStr = labelStr.replace(/\uE000/g, ',');
-  labelStr = labelStr.replace(/\uE001/g, '•');
+  labelStr = labelStr.replace(/\uE001/g, '·');
   return labelStr;
 }
 
@@ -556,7 +556,7 @@ export function getToken(item, resources, quoted, settings) {
   const token = { rendered: '' };
   Object.keys(tokenObj).forEach((key) => {
     // TODO: Fix handling of nested lenses. They should be rendered to strings one time in one place
-    // Private use character \uE001 is replaced by '•' in formatLabel()
+    // Private use character \uE001 is replaced by '·' in formatLabel()
     const v = tokenObj[key];
     token.rendered += token.rendered ? ` \uE001 ${v}` : v;
   });
