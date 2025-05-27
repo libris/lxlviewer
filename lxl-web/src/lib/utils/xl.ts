@@ -63,7 +63,7 @@ export class VocabUtil {
 
 	getInverseProperty(name: PropertyName): PropertyName | undefined {
 		const def = this.getDefinition(name);
-		const inverseId = def.inverseOf?.[JsonLd.ID];
+		const inverseId = def?.inverseOf?.[JsonLd.ID];
 		return inverseId ? lxljsString.getCompactUri(inverseId, this.context) : undefined;
 	}
 
