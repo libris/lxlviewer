@@ -3019,22 +3019,20 @@
             "otherYear": "",
             "year": ""
           },
-          "manufacture": [{
-            "@type": "Manufacture",
-            "agent": {
-              "@type": "Agent",
-              "label": ""
-            },
-            "date": "",
-            "place": {
-              "@type": "Place",
-              "label": ""
+          "manufacture": [
+            {
+              "@type": "Manufacture",
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              },
+              "date": "",
+              "place": {
+                "@type": "Place",
+                "label": ""
+              }
             }
-          }],
-          "production": [{
-            "@type": "Production",
-            "date": ""
-          }],
+          ],
           "productionMethod": [
             {
               "@type": "ProductionMethod",
@@ -3043,7 +3041,6 @@
           ],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
-          "appliedMaterial": [],
           "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
           "colorContent": [],
           "extent": [{
@@ -3106,12 +3103,6 @@
                     "prefLabel": ""
                   }
                 ]
-              }
-            ],
-            "summary": [
-              {
-                "@type": "Summary",
-                "label": ""
               }
             ]
           }
