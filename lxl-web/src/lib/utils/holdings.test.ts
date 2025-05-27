@@ -6,14 +6,18 @@ import { UserSettings } from './userSettings.svelte';
 
 describe('getBibIdsByInstanceId', () => {
 	it('Returns a correctly mapped object (bibId, type & holders)', () => {
-		expect(getBibIdsByInstanceId(mainEntity, record)).toStrictEqual({
+		const instanceTokenStr = 'Natur och kultur, 2018';
+		const DisplayUtil = { lensAndFormat: () => instanceTokenStr };
+
+		expect(getBibIdsByInstanceId(mainEntity, DisplayUtil, record, 'sv')).toStrictEqual({
 			'0h96fs3b0c49qkt': {
 				bibId: '7654300',
 				'@type': 'Instance',
 				holders: ['S', 'H', 'U', 'Um', 'Umdp', 'La', 'Q', 'L', 'Sbi', 'NB'],
 				onr: '9176423484',
 				isbn: ['9176423484'],
-				issn: []
+				issn: [],
+				str: instanceTokenStr
 			}
 		});
 	});

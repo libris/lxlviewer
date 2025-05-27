@@ -46,6 +46,28 @@ export enum Platform {
 	meta = 'meta'
 }
 
+export enum BibDb {
+	ils = 'bibdb:ils',
+	lopac = 'bibdb:lopac',
+	bibIdSearchUriByLang = 'bibdb:bibIdSearchUriByLang',
+	bibIdSearchUri = 'bibdb:bibIdSearchUri',
+	isbnSearchUri = 'bibdb:isbnSearchUri',
+	issnSearchUri = 'bibdb:issnSearchUri',
+	eodUri = 'bibdb:eodUri',
+	itemStatusUri = 'bibdb:itemStatusUri',
+	openingHours = 'bibdb:openingHours',
+	address = 'bibdb:address',
+	postalAddress = 'bibdb:PostalAddress',
+	visitingAddress = 'bibdb:VisitingAddress',
+	LinksToCatalog = 'linksToCatalog',
+	LinksToSite = 'linksToSite',
+	LinksToItem = 'linksToItem',
+	Address = 'address',
+	ItemStatus = 'itemStatus',
+	OpeningHours = 'openingHours',
+	LoanReserveLink = 'loanReserveLink'
+}
+
 export type ClassName = string;
 export type PropertyName = string;
 export type LangCode = string;

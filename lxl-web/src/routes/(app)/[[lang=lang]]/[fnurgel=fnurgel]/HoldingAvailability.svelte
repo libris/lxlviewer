@@ -2,32 +2,20 @@
 	import { page } from '$app/state';
 	import { type HoldingStatus } from '$lib/types/api';
 	import type { BibIdObj, DecoratedHolder } from '$lib/types/holdings';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 
-	type HoldingStatusProps = {
+	type HoldingAvailabilityProps = {
 		holder: DecoratedHolder;
-		holdingUrl: string;
+		bibId: BibIdObj;
 	};
 
-	const { holder, holdingUrl }: HoldingStatusProps = $props();
+	const { holder, bibId }: HoldingAvailabilityProps = $props();
 
 	const sigel = holder?.sigel;
 	let loading = $state(false);
 	let statusData: HoldingStatus[] | undefined = $state();
 	let error: string | undefined = $state();
-
-	// if holdingUrl is an instance fnurgel, add its mapped bibId object into arr,
-	// else add all ids of current type with holdings for current sigel
-	const bibIds = $derived.by(() => {
-		return page.data.bibIdsByInstanceId?.[holdingUrl]
-			? [page.data.bibIdsByInstanceId[holdingUrl]]
-			: Object.keys(page.data.bibIdsByInstanceId)
-					.filter((i) => page.data.bibIdsByInstanceId[i]['@type'] === holdingUrl)
-					.filter((i) => page.data.bibIdsByInstanceId[i].holders?.includes(sigel))
-					.map((i) => page.data.bibIdsByInstanceId[i]);
-	});
+	let bibIds: BibIdObj[] = [bibId];
 
 	async function fetchHoldingStatus(ids: BibIdObj[]) {
 		const promises = ids.map((id) => {
@@ -109,22 +97,20 @@
 	}
 </script>
 
-<li class="border-neutral text-xs not-last:border-b">
+<div class="my-2">
 	<details ontoggle={getHoldingStatus}>
-		<summary class="my-3 flex cursor-pointer items-baseline">
+		<summary class="flex cursor-pointer items-baseline">
 			<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
 				<BiChevronRight />
 			</span>
-			<span class="holder-label">
-				<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
-			</span>
+			Tillgänglighet
 		</summary>
 		<div class="mb-4 flex flex-col gap-2">
 			{#if loading}
 				<p>{page.data.t('search.loading')}</p>
 			{/if}
 			{#if error}
-				<div class="status-container border-neutral bg-page max-w-md rounded-sm border p-2">
+				<div class="status-container border-neutral bg-page mt-2 max-w-md rounded-sm border p-2">
 					<p class="error" role="alert">{error}</p>
 				</div>
 			{/if}
@@ -133,7 +119,7 @@
 					{#if instance?.item_information}
 						{@const items = instance.item_information}
 						<div
-							class="status-container border-neutral bg-page flex max-w-md flex-col gap-4 rounded-sm border p-2"
+							class="status-container border-neutral bg-page mt-2 flex max-w-md flex-col gap-4 rounded-sm border p-2"
 						>
 							{#if items.error || items.count === 0}
 								{#if urlNotDefinedError(items.error)}
@@ -192,7 +178,7 @@
 			{/if}
 		</div>
 	</details>
-</li>
+</div>
 
 <style lang="postcss">
 	@reference "../../../../app.css";
@@ -209,6 +195,7 @@
 
 	.holder-label {
 		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
+		font-weight: bold;
 	}
 
 	.status-container {
@@ -231,6 +218,10 @@
 
 	table td {
 		width: auto;
+	}
+
+	.instance-token {
+		color: var(--color-subtle);
 	}
 
 	.indicator {

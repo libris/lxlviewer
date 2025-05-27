@@ -197,7 +197,12 @@ export default {
 		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',
 		unavailable: 'Ej tillgänglig',
-		map: 'karta'
+		map: 'karta',
+		linkToLocal: 'Visa i bibliotekets katalog',
+		loanReserveLink: 'Låna/reservera',
+		linkToCatalog: 'Bibliotekets lokala katalog',
+		linkToSite: 'Bibliotekets webbplats',
+		openingHoursEtc: 'Öppettider, adress m.m.'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'
