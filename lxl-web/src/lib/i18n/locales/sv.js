@@ -10,7 +10,7 @@ export default {
 		openMenu: 'Öppna huvudmeny',
 		betaMessageMobile: 'Katalogen kan innehålla inaktuell information.',
 		betaMessageDesktop:
-			'Här kan du prova på nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
+			'Välkommen till nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
 		betaLink: 'Tyck till',
 		betaLinkLong: 'om nya Libris'
 	},
