@@ -61,7 +61,7 @@
 				</h2>
 				{#if item[LxlLens.CardBody]?._display?.[0]}
 					<p class="inline-block truncate">
-						<span class="divider">{' • '}</span>
+						<span class="divider">{' · '}</span>
 						<DecoratedData
 							data={item[LxlLens.CardBody]?._display[0]}
 							showLabels={ShowLabelsOptions.Never}
@@ -76,13 +76,13 @@
 					{item.typeStr}
 				</strong>
 				{#if item.typeStr?.length}
-					<span class="divider">{' • '}</span>
+					<span class="divider">{' · '}</span>
 				{/if}
 				{#each item?.[LensType.WebCardFooter]?._display as obj}
 					{#if 'hasInstance' in obj}
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
-							<span class="divider">{' • '}</span>
+							<span class="divider">{' · '}</span>
 							<span>
 								{#if instances.count > 1}
 									{instances?.count}
@@ -201,7 +201,7 @@
 	}
 
 	.resource-footer {
-		/* hide dangling divider • */
+		/* hide dangling divider · */
 		& .divider {
 			display: none;
 		}

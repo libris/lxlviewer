@@ -109,11 +109,11 @@
 					{item.typeStr}
 				</span>
 				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-				<span class="divider">{' • '}</span>
+				<span class="divider">{' · '}</span>
 				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
 					{#if 'hasInstance' in obj}
 						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-						<span class="divider">{' • '}</span>
+						<span class="divider">{' · '}</span>
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
 							<span>
@@ -216,7 +216,7 @@
 	}
 
 	.card-footer {
-		/* hide dangling divider • */
+		/* hide dangling divider · */
 		& .divider {
 			display: none;
 		}
