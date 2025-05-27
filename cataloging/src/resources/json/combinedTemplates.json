@@ -2948,6 +2948,176 @@
         }
       }
     },
+    "printedPoster": {
+      "label": "Affisch",
+      "description": "Tryckt affisch - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@id": "https://id.kb.se/term/enum/Rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Print",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "contribution": [
+          {
+            "@type": "Contribution",
+            "agent": null,
+            "role": []
+          }
+        ],
+          "publication": [
+            {
+              "@type": "Publication",
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": ""
+                }
+              ],
+              "agent": [
+                {
+                  "@type": "Agent",
+                  "label": ""
+                }
+              ],
+              "date": ""
+            }
+          ],
+          "marc:primaryProvisionActivity": {
+            "@type": "PrimaryPublication",
+            "country": null,
+            "marc:publicationStatus": null,
+            "otherYear": "",
+            "year": ""
+          },
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": {
+              "@type": "Agent",
+              "label": ""
+            },
+            "date": "",
+            "place": {
+              "@type": "Place",
+              "label": ""
+            }
+          }],
+          "production": [{
+            "@type": "Production",
+            "date": ""
+          }],
+          "productionMethod": [
+            {
+              "@type": "ProductionMethod",
+              "label": "plantryck"
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
+          "appliedMaterial": [],
+          "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
+          "colorContent": [],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "physicalDetailsNote": "",
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/Poster"
+            }
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/term/gmgpc/swe/Affischer"
+              }
+            ],
+            "contribution": [{
+                "@type": "Contribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/artist"
+                }]
+              }
+            ],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/Text"
+              },
+              {
+                "@id": "https://id.kb.se/term/rda/StillImage"
+              }
+            ],
+            "subject": [
+              {
+                "@type": "ComplexSubject",
+                "inScheme": {
+                  "@id": "https://id.kb.se/term/sao"
+                },
+                "termComponentList": [
+                  {
+                    "@type": "Geographic",
+                    "prefLabel": ""
+                  },
+                  {
+                    "@type": "GeographicSubdivision",
+                    "prefLabel": ""
+                  }
+                ]
+              }
+            ],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ]
+          }
+        }
+      }
+    },
     "printedStillImage": {
       "label": "Stillbild",
       "description": "Tryckt stillbild - RDA",
