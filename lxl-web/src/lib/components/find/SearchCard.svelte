@@ -146,6 +146,13 @@
 								{/if}
 							{/each}
 						{/if}
+						{#if instances?.count === 1}
+							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+							<span class="divider">{' · '}</span>
+							{#each obj.hasInstance._display as obj2, index (index)}
+								<DecoratedData data={obj2} showLabels={ShowLabelsOptions.Never} />
+							{/each}
+						{/if}
 					{:else}
 						<span>
 							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
