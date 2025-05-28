@@ -164,6 +164,7 @@ export enum LensType {
 	WebChip = 'web-chips',
 	WebCard = 'web-card',
 	WebCardFooter = 'web-card-footer',
+	WebCardHeaderTop = 'web-card-header-top',
 	WebCardHeaderExtra = 'web-card-header-extra',
 	None = null // FIXME
 }

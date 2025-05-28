@@ -66,6 +66,7 @@ export async function asResult(
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
+			[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(i, LensType.WebCardHeaderTop, locale),
 			[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
 				i,
 				LensType.WebCardHeaderExtra,

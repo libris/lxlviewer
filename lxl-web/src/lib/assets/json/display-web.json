@@ -170,13 +170,13 @@
 					"@id": "Classification-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Classification",
-					"showProperties": ["code", "prefLabel"]
+					"showProperties": ["code", "prefLabel", "inScheme"]
 				},
 				"ClassificationDdc": {
 					"@id": "ClassificationDdc-chips",
 					"@type": "fresnel:Lens",
-					"classLensDomain": "Classification",
-					"showProperties": ["code", "prefLabel"]
+					"classLensDomain": "ClassificationDdc",
+					"showProperties": ["code", "prefLabel", "rdf:type"]
 				},
 				"Document": {
 					"@id": "Document-chips",
@@ -342,6 +342,36 @@
 				}
 			}
 		},
+		"web-card-header-top": {
+			"@id": "web-card-header-top",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["category", "language"]
+				},
+				"Agent": {
+					"@id": "Agent-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Agent",
+					"showProperties": []
+				},
+				"Concept": {
+					"@id": "Concept-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Concept",
+					"showProperties": []
+				},
+				"Language": {
+					"@id": "Language-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Language",
+					"showProperties": []
+				}
+			}
+		},
 		"web-card-header-extra": {
 			"@id": "web-card-header-extra",
 			"@type": "fresnel:Group",
@@ -351,6 +381,12 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
 					"showProperties": ["translationOf"]
+				},
+				"Instance": {
+					"@id": "Instance-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["isPartOf", "part"]
 				},
 				"Agent": {
 					"@id": "Agent-web-card-header-extra",
@@ -380,13 +416,13 @@
 					"@id": "Work-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["language", { "inverseOf": "instanceOf" }]
+					"showProperties": [{ "inverseOf": "instanceOf" }]
 				},
 				"Instance": {
 					"@id": "Instance-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
+					"showProperties": ["editionStatement", "publication", "identifier"]
 				},
 				"Agent": {
 					"@id": "Agent-web-card-footer",
@@ -608,6 +644,12 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Identifier"],
 			"fresnel:resourceStyle": ["ext-link", "displayType()", "uriToId()"]
+		},
+		"ClassificationDdc-format": {
+			"@id": "ClassificationDdc-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["ClassificationDdc"],
+			"fresnel:resourceStyle": ["displayType()"]
 		},
 		"contribution-format": {
 			"@id": "contribution-format",

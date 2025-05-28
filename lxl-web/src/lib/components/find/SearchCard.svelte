@@ -78,6 +78,19 @@
 		</div>
 		<div class="card-content">
 			<header class="card-header" id={titleId}>
+				<p class="card-header-extra">
+					<span class="font-medium">
+						<svelte:component this={getTypeIcon(item['@type'])} class="inline align-middle" />
+						{item.typeStr}
+					</span>
+					<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+					<span class="divider">{' · '}</span>
+					{#each item[LensType.WebCardHeaderTop]?._display as obj, index (index)}
+						<span>
+							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
+						</span>
+					{/each}
+				</p>
 				<hgroup>
 					<h2 class="card-header-title text-base font-medium">
 						<a href={id} class="block hover:underline" aria-describedby={`${bodyId} ${footerId}`}>
@@ -105,18 +118,11 @@
 				</div>
 			{/if}
 			<footer class="card-footer mt-1" id={footerId}>
-				<span class="font-medium">
-					{item.typeStr}
-				</span>
-				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-				<span class="divider">{' · '}</span>
 				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
 					{#if 'hasInstance' in obj}
-						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-						<span class="divider">{' · '}</span>
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
-							<span>
+							<span class="font-medium">
 								{#if instances.count > 1}
 									{instances?.count}
 									{$page.data.t('search.editions')}
@@ -125,6 +131,13 @@
 									{instances.years}
 								{/if}
 							</span>
+						{/if}
+						{#if instances?.count === 1}
+							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+							<span class="divider">{' · '}</span>
+							{#each obj.hasInstance._display as obj2, index (index)}
+								<DecoratedData data={obj2} showLabels={ShowLabelsOptions.Never} />
+							{/each}
 						{/if}
 					{:else}
 						<span>

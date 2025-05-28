@@ -160,9 +160,10 @@ export class DisplayUtil {
 			case LensType.Card:
 			case LensType.SearchCard:
 			case LensType.WebCard:
+			case LensType.WebCardHeaderTop:
 			case LensType.WebCardHeaderExtra:
-			case LensType.WebCardFooter:
 				return LensType.Chip;
+			case LensType.WebCardFooter:
 			case LensType.Chip:
 			case LensType.SearchChip:
 			case LensType.WebChip:
