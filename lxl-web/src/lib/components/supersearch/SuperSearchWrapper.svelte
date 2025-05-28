@@ -241,6 +241,7 @@
 		defaultInputCol={2}
 		loadMoreLabel={page.data.t('search.showMore')}
 		debouncedWait={100}
+		onclickWrapper="showExpandedSearch"
 	>
 		{#snippet inputRow({
 			expanded,
@@ -250,9 +251,7 @@
 			onclickClear,
 			onclickClose
 		})}
-			<div
-				class="supersearch-input rounded-d bg-input outline-primary-200 has-focus:outline-primary-600 flex min-h-12 w-full cursor-text overflow-hidden rounded-md outline focus-within:relative"
-			>
+			<div class="supersearch-input">
 				{#if expanded}
 					<button
 						type="button"
@@ -269,22 +268,20 @@
 						{/if}
 					</button>
 				{/if}
-				<div class="flex-1 overflow-hidden">
-					<div class={['text-subtle absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
-						{#if debouncedLoading}
-							{@render loading()}
-						{:else}
-							<BiSearch aria-hidden="true" />
-						{/if}
-					</div>
-					{@render inputField()}
+				<div class="leading-action" onclick={showExpandedSearch}>
+					{#if debouncedLoading}F
+						{@render loading()}
+					{:else}
+						<BiSearch aria-hidden="true" />
+					{/if}
 				</div>
+				{@render inputField()}
 				{#if q}
 					<button
 						type="reset"
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
-						class="text-subtle p-4"
+						class="trailing-action"
 						aria-label={page.data.t('search.clearFilters')}
 						onclick={onclickClear}
 					>
@@ -398,6 +395,55 @@
 		}
 	}
 
+	:global(.supersearch-combobox) {
+		cursor: text;
+	}
+
+	:global(.supersearch-input) {
+		/* rounded-d bg-input outline-primary-200 has-focus:outline-primary-600 flex min-h-12 w-full cursor-text overflow-hidden rounded-md outline focus-within:relative */
+		background: var(--color-input);
+		width: 100%;
+		overflow: hidden;
+		padding: 0 calc(var(--spacing, 0.25rem) * 12);
+	}
+
+	.leading-action {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: calc(var(--spacing, 0.25rem) * 12);
+		height: calc(var(--spacing, 0.25rem) * 12);
+		/* ['text-subtle absolute left-0 p-4', expanded ? 'hidden sm:block' : 'block'] */
+	}
+	.trailing-action {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		top: 0;
+		right: 0;
+		color: var(--color-subtle);
+		width: calc(var(--spacing, 0.25rem) * 12);
+		height: calc(var(--spacing, 0.25rem) * 12);
+	}
+
+	:global(.supersearch-dialog) .leading-action {
+		top: calc(var(--spacing, 0.25rem) * 3);
+		left: calc(var(--spacing, 0.25rem) * 4);
+	}
+
+	:global(.supersearch-dialog) .trailing-action {
+		top: calc(var(--spacing, 0.25rem) * 3);
+	}
+
+	:global(.supersearch-dialog) :global(.supersearch-input) {
+		/* rounded-d bg-input outline-primary-200 has-focus:outline-primary-600 flex min-h-12 w-full cursor-text overflow-hidden rounded-md outline focus-within:relative */
+
+		padding: 0 calc(var(--spacing, 0.25rem) * 16);
+	}
 	/* dialog */
 
 	:global(.supersearch-dialog) {
@@ -433,16 +479,14 @@
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-20 items-stretch px-4 pt-3 pb-2;
+		position: sticky;
+		top: 0;
 		background-color: var(--color-page);
+		padding-top: 0.75em;
 	}
 
 	:global(.supersearch-suggestions) {
 		@apply min-h-2;
-	}
-
-	:global(.supersearch-dialog .supersearch-input) {
-		@apply overflow-hidden rounded-md sm:px-0;
 	}
 
 	:global(.supersearch-dialog .focused) {
@@ -485,17 +529,9 @@
 	}
 
 	:global(.supersearch-input .cm-line) {
-		padding-left: calc(var(--spacing, 0.25rem) * 12);
-		min-height: 28px;
-		line-height: 28px;
+		padding: 0 1px; /* using 0 on horizontal axis causes codemirror cursor to occasionally disappear on firefox */
+		line-height: 2;
 		font-size: var(--text-xs);
-	}
-
-	:global(.supersearch-dialog .supersearch-input .cm-line) {
-		padding-left: 0;
-		@variant sm {
-			padding-left: calc(var(--spacing, 0.25rem) * 12);
-		}
 	}
 
 	:global(.supersearch-input .cm-focused) {
@@ -503,8 +539,8 @@
 	}
 
 	:global(.codemirror-container .cm-content) {
-		padding-top: 0.6125rem;
-		padding-bottom: 0.6125rem;
+		padding-top: 0.75em;
+		padding-bottom: 0.75em;
 		outline: none;
 	}
 

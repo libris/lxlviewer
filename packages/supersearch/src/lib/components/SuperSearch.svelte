@@ -211,6 +211,7 @@
 
 	let expandedExtensions = $derived([
 		...extensionsWithDefaults,
+		EditorView.lineWrapping,
 		expandedContentAttributesCompartment.of(initialExpandedContentAttributes)
 	]);
 
@@ -580,7 +581,6 @@
 	<CodeMirror
 		{value}
 		extensions={collapsedExtensions}
-		onclick={handleClickCollapsed}
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
 		bind:editorView={collapsedEditorView}
@@ -600,7 +600,7 @@
 {/snippet}
 
 <div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
-	<div class="supersearch-combobox">
+	<div class="supersearch-combobox" onclickcapture={handleClickCollapsed}>
 		{@render inputRow?.({
 			expanded: false,
 			inputField: collapsedInputSnippet,
