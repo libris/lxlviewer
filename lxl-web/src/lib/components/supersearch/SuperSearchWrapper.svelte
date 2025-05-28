@@ -395,9 +395,9 @@
 	:global(.supersearch-dialog-wrapper) {
 		@apply header-layout pointer-events-none px-0 sm:px-6 lg:px-2;
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
-		width: 100vw;
-		position: fixed;
 		height: 100%;
+		width: 100%;
+		position: fixed;
 
 		@variant sm {
 			grid-template-areas: '. supersearch-content .';
