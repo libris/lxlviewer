@@ -109,8 +109,6 @@
 </ul>
 
 <style lang="postcss">
-	@reference "../../../app.css";
-
 	.mapping-item {
 		/* @apply rounded-md px-4 py-2 brightness-100;
 		transition: filter 0.1s ease; */
@@ -134,29 +132,34 @@
 	}
 
 	.pill-equals.wildcard {
-		@apply hidden;
+		display: none;
 	}
 
 	.pill-group {
-		@apply flex items-center gap-2 p-0 pr-4;
+		display: flex;
+		align-items: center;
+		gap: calc(var(--spacing) * 2);
+		padding: 0;
+		padding-right: calc(var(--spacing) * 4);
 
 		&.outer {
-			@apply bg-transparent;
+			background-color: transparent;
 		}
 	}
 
 	.pill-between,
 	.pill-relation {
-		@apply uppercase;
+		text-transform: uppercase;
 	}
 
 	.pill-between-and,
 	.pill-between:last-of-type {
-		@apply hidden;
+		display: none;
 	}
 
 	.free-text {
-		& > .pill-label {
+		& > .pill-label,
+		.pill-relation {
 			display: none;
 		}
 
