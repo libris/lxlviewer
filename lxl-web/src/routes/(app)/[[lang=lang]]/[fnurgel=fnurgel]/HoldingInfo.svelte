@@ -49,109 +49,111 @@
 	}
 </script>
 
-<li class="border-neutral text-xs not-last:border-b">
-	<div class="holder-label mt-4">
+<li class="border-neutral text-sm not-last:border-b">
+	<h2 class="holder-label mt-4">
 		<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
-	</div>
-	<div class="ml-3">
-		<div class="my-3">
-			<ul>
-				{#each bibIds as id (id.bibId)}
-					{#if linksByBibId[id.bibId]?.[holder.sigel]}
-						{@const linksForHolder = linksByBibId[id.bibId][holder.sigel]}
+	</h2>
+	<div class="">
+		<ul>
+			{#each bibIds as id (id.bibId)}
+				{#if linksByBibId[id.bibId]?.[holder.sigel]}
+					{@const linksForHolder = linksByBibId[id.bibId][holder.sigel]}
+					<li>
 						{#if hasInstanceContent(id.bibId)}
-							<div class="instance-token mt-4 mb-1">{id.str || '-'}</div>
+							{#if bibIds.length > 1}
+								<div class="text-subtle">{id.str || '-'}</div>
+							{/if}
+							{#if hasLoanReserveLink(id.bibId)}
+								<a
+									href={linksForHolder['loanReserveLink'].at(0)}
+									target="_blank"
+									class="ext-link mr-2 h-9 max-w-sm align-top"
+								>
+									{page.data.t('holdings.loanReserveLink')}
+								</a>
+							{:else if hasLinksToItem(id.bibId)}
+								<a
+									href={linksForHolder[BibDb.LinksToItem].at(0)}
+									target="_blank"
+									class="ext-link mr-2 h-9 max-w-sm align-top"
+								>
+									{page.data.t('holdings.linkToLocal')}
+								</a>
+							{/if}
 							{#if hasStatusLink(id.bibId)}
 								<HoldingAvailability {holder} bibId={id}></HoldingAvailability>
 							{/if}
-							<div class="mb-3">
-								{#if hasLoanReserveLink(id.bibId)}
-									<li>
-										<a
-											href={linksForHolder['loanReserveLink'].at(0)}
-											target="_blank"
-											class="btn btn-outlined ext-link h-9 max-w-sm"
-										>
-											{page.data.t('holdings.loanReserveLink')}
-										</a>
-									</li>
-								{:else if hasLinksToItem(id.bibId)}
-									<li>
-										<a
-											href={linksForHolder[BibDb.LinksToItem].at(0)}
-											target="_blank"
-											class="btn btn-outlined ext-link h-9 max-w-sm"
-										>
-											{page.data.t('holdings.linkToLocal')}
-										</a>
-									</li>
-								{/if}
-							</div>
 						{/if}
-					{/if}
-				{/each}
-				{#if bibIds.at(0) && missingAtLeastOneLinkToItem()}
-					{@const firstBibId = bibIds.at(0).bibId}
-					<div class="mt-2">
-						{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.LinksToCatalog]}
-							<li>
-								<a
-									href={linksByBibId[firstBibId][holder.sigel][BibDb.LinksToCatalog].at(0)}
-									target="_blank"
-									class="ext-link"
-								>
-									{page.data.t('holdings.linkToCatalog')}
-								</a>
-							</li>
-						{:else if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.LinksToSite]}
-							<li>
-								<a
-									href={linksByBibId[firstBibId][holder.sigel][BibDb.LinksToSite].at(0)}
-									target="_blank"
-									class="ext-link"
-								>
-									{page.data.t('holdings.linkToSite')}
-								</a>
-							</li>
-						{/if}
-					</div>
+					</li>
 				{/if}
-			</ul>
-		</div>
-		<details>
-			<summary class="my-4 flex cursor-pointer items-baseline">
-				<span class="arrow text-subtle mr-2 h-3 origin-center rotate-0 transition-transform">
-					<BiChevronRight />
-				</span>
-				{page.data.t('holdings.openingHoursEtc')}
-			</summary>
-			<div class="status-container border-neutral bg-page my-3 max-w-md rounded-sm border p-2">
-				<span>
-					{#if bibIds.at(0)}
-						{@const firstBibId = bibIds.at(0).bibId}
-						<ul style="white-space: pre-line">
-							{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.OpeningHours]}
-								<li>
-									{linksByBibId[firstBibId][holder.sigel][BibDb.OpeningHours].at(0)}
-								</li>
-							{/if}
-							{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.Address]}
-								{#each linksByBibId[firstBibId][holder.sigel][BibDb.Address] as address, index (index)}
-									<li class="my-2">
-										{address}
-									</li>
-								{/each}
-							{/if}
-						</ul>
+			{/each}
+			{#if bibIds.at(0) && missingAtLeastOneLinkToItem()}
+				{@const firstBibId = bibIds.at(0).bibId}
+				<li>
+					{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.LinksToCatalog]}
+						<a
+							href={linksByBibId[firstBibId][holder.sigel][BibDb.LinksToCatalog].at(0)}
+							target="_blank"
+							class="ext-link"
+						>
+							{page.data.t('holdings.linkToCatalog')}
+						</a>
+					{:else if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.LinksToSite]}
+						<a
+							href={linksByBibId[firstBibId][holder.sigel][BibDb.LinksToSite].at(0)}
+							target="_blank"
+							class="ext-link"
+						>
+							{page.data.t('holdings.linkToSite')}
+						</a>
 					{/if}
-				</span>
-			</div>
-		</details>
+				</li>
+			{/if}
+		</ul>
 	</div>
+	<details>
+		<summary class="my-3 flex cursor-pointer items-baseline">
+			<span
+				class="text-3xs arrow text-subtle mr-0.5 h-3 origin-center rotate-0 transition-transform"
+			>
+				<BiChevronRight />
+			</span>
+			{page.data.t('holdings.openingHoursEtc')}
+		</summary>
+		<div class="status-container border-neutral bg-page my-3 max-w-md rounded-sm border p-2">
+			<span>
+				{#if bibIds.at(0)}
+					{@const firstBibId = bibIds.at(0).bibId}
+					<ul style="white-space: pre-line">
+						{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.OpeningHours]}
+							<li>
+								{linksByBibId[firstBibId][holder.sigel][BibDb.OpeningHours].at(0)}
+							</li>
+						{/if}
+						{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.Address]}
+							{#each linksByBibId[firstBibId][holder.sigel][BibDb.Address] as address, index (index)}
+								<li class="my-2">
+									{address}
+								</li>
+							{/each}
+						{/if}
+					</ul>
+				{/if}
+			</span>
+		</div>
+	</details>
 </li>
 
 <style lang="postcss">
 	@reference "../../../../app.css";
+
+	h2 {
+		@apply mb-2;
+	}
+
+	li {
+		@apply mb-2;
+	}
 
 	details[open] {
 		& .arrow {
@@ -165,7 +167,7 @@
 
 	.holder-label {
 		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
-		font-weight: bold;
+		@apply text-base font-medium;
 	}
 
 	.status-container {
@@ -188,10 +190,6 @@
 
 	table td {
 		width: auto;
-	}
-
-	.instance-token {
-		color: var(--color-subtle);
 	}
 
 	.indicator {

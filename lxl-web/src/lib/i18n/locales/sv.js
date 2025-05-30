@@ -193,6 +193,7 @@ export default {
 		loanPolicy: 'Lånepolitik',
 		status: 'Status',
 		date: 'Datum',
+		loanStatus: 'Utlånad?',
 		libraryUnvaliable: 'Lånestatus är inte tillgänglig för detta bibliotek',
 		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',
