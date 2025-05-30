@@ -197,6 +197,7 @@ export default {
 		status: 'Status',
 		date: 'Date',
 		loanPolicy: 'Loan policy',
+		loanStatus: 'Available?',
 		libraryUnvaliable: 'Loan status is not available for this library',
 		loanStatusFailed: 'Failed to get loan status',
 		available: 'Available',
@@ -206,7 +207,9 @@ export default {
 		loanReserveLink: 'Loan/reserve',
 		linkToCatalog: 'Local library catalog',
 		linkToSite: 'Library website',
-		openingHoursEtc: 'Opening hours, address etc'
+		openingHoursEtc: 'Opening hours, address etc',
+		showAll: 'Show all editions',
+		showFewer: 'Show fewer editions'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'

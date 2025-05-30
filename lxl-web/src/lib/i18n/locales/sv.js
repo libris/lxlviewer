@@ -196,6 +196,7 @@ export default {
 		loanPolicy: 'Lånepolitik',
 		status: 'Status',
 		date: 'Datum',
+		loanStatus: 'Utlånad?',
 		libraryUnvaliable: 'Lånestatus är inte tillgänglig för detta bibliotek',
 		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',
@@ -205,7 +206,9 @@ export default {
 		loanReserveLink: 'Låna/reservera',
 		linkToCatalog: 'Bibliotekets lokala katalog',
 		linkToSite: 'Bibliotekets webbplats',
-		openingHoursEtc: 'Öppettider, adress m.m.'
+		openingHoursEtc: 'Öppettider, adress m.m.',
+		showAll: 'Visa alla utgåvor',
+		showFewer: 'Visa färre utgåvor'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'
