@@ -203,7 +203,9 @@ export default {
 		loanReserveLink: 'Låna/reservera',
 		linkToCatalog: 'Bibliotekets lokala katalog',
 		linkToSite: 'Bibliotekets webbplats',
-		openingHoursEtc: 'Öppettider, adress m.m.'
+		openingHoursEtc: 'Öppettider, adress m.m.',
+		showAll: 'Visa alla utgåvor',
+		showFewer: 'Visa färre utgåvor'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'

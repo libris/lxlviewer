@@ -204,7 +204,9 @@ export default {
 		loanReserveLink: 'Loan/reserve',
 		linkToCatalog: 'Local library catalog',
 		linkToSite: 'Library website',
-		openingHoursEtc: 'Opening hours, address etc'
+		openingHoursEtc: 'Opening hours, address etc',
+		showAll: 'Show all editions',
+		showFewer: 'Show fewer editions'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'

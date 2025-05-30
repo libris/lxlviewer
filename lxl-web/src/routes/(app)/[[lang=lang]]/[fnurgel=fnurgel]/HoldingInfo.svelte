@@ -94,9 +94,9 @@
 				<li>
 					<button class="show-all" onclick={() => (instancesCollapsed = !instancesCollapsed)}>
 						{#if instancesCollapsed}
-							Visa alla utgåvor ({bibIds.length})
+							{page.data.t('holdings.showAll')} ({bibIds.length})
 						{:else}
-							Visa färre utgåvor...
+							{page.data.t('holdings.showFewer')}...
 						{/if}
 					</button>
 				</li>
