@@ -10,7 +10,7 @@
 
 	let showHeaderMenu = $state(false);
 	let bannerOffsetHeight: number | undefined = $state();
-	let superSearchWrapperComponent: SvelteComponent;
+	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
 	const isFindPage = $derived(page.url.pathname === '/find');
 
 	function toggleHeaderMenu() {
@@ -24,7 +24,7 @@
 	});
 
 	function onClickExpandSearch() {
-		superSearchWrapperComponent.showExpandedSearch();
+		superSearchWrapperComponent?.showExpandedSearch();
 	}
 </script>
 
@@ -57,7 +57,12 @@
 	</a>
 </div>
 <!-- navbar -->
-<header class={['app-bar bg-app-header top-0 z-10 px-3 sm:px-6', isFindPage && 'sticky']}>
+<header
+	class={[
+		'app-bar bg-app-header top-0 z-10 border-b-neutral-200 px-3 sm:border-b sm:px-6',
+		isFindPage && 'sticky'
+	]}
+>
 	<nav class="header-nav header-layout items-center sm:min-h-18">
 		<div class="home flex">
 			<a href={page.data.base} class="grow-0 no-underline">

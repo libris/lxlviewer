@@ -1,12 +1,25 @@
 <script>
+	import { LEADING_PANE_DEFAULT_WIDTH } from '$lib/constants/panels';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 	import Toolbar from '../Toolbar.svelte';
 	const { children } = $props();
+	const userSettings = getUserSettings();
+
+	const paneOpen = $derived(userSettings.leadingPane?.open);
+	const paneWidth = $state(LEADING_PANE_DEFAULT_WIDTH);
 </script>
 
-<section class="leading-pane relative hidden border-r border-r-neutral-200 bg-neutral-50 sm:block">
+<section
+	class="leading-pane relative hidden border-r border-r-neutral-200 bg-neutral-50 sm:block"
+	style="width:{paneOpen ? paneWidth : 0}px"
+>
 	<div class="leading-pane-sticky sticky top-0 pb-6">
 		<div class="leading-pane-toolbar sticky top-0 z-10 bg-neutral-50">
-			<Toolbar></Toolbar>
+			<Toolbar>
+				{#snippet trailingActions()}
+					<button onclick={() => userSettings.closeLeadingPane()}>⬅️</button>
+				{/snippet}
+			</Toolbar>
 		</div>
 		{@render children()}
 	</div>
