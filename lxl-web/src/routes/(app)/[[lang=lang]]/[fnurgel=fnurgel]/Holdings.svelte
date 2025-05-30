@@ -57,7 +57,7 @@
 			{/each}
 		</ul>
 		{#if bibIds.length > 5}
-			<button class="show-all" onclick={() => (instancesCollapsed = !instancesCollapsed)}>
+			<button class="show-all mb-2" onclick={() => (instancesCollapsed = !instancesCollapsed)}>
 				{#if instancesCollapsed}
 					Visa alla utgåvor ({bibIds.length})
 				{:else}
