@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	const { searchResult } = $props();
+	import type { SearchResult } from '$lib/types/search';
+
+	type SearchResultInfoProps = {
+		searchResult: SearchResult;
+	};
+
+	const { searchResult }: SearchResultInfoProps = $props();
 	const numHits = searchResult.totalItems;
 </script>
 

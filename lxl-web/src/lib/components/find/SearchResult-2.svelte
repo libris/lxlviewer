@@ -17,10 +17,10 @@
 {#if searchResult}
 	<div class="search-result flex w-full">
 		<LeadingPane>
-			<Filters facets={searchResult.facetGroups || []} mapping={searchResult.mapping} />
+			<Filters facets={searchResult.facetGroups || []} />
 		</LeadingPane>
 		<section class="@container/content flex-1">
-			<SearchResultToolbar />
+			<SearchResultToolbar {searchResult} />
 			<div class="flex flex-col @5xl/content:flex-row">
 				<main class="flex-1">
 					<SearchResultInfo {searchResult} />

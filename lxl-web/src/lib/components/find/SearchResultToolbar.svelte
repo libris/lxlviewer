@@ -1,7 +1,62 @@
-<script>
+<script lang="ts">
+	import { page } from '$app/state';
+	import type { DisplayMapping, SearchResult } from '$lib/types/search';
+	import Modal from '../Modal.svelte';
 	import Toolbar from '../Toolbar.svelte';
+	import IconSliders from '~icons/bi/sliders';
+	import Filters from './Filters.svelte';
+
+	type SearchResultToolbarProps = {
+		searchResult: SearchResult;
+	};
+
+	const { searchResult }: SearchResultToolbarProps = $props();
+
+	let showFiltersModal = $state(false);
+	const numHits = searchResult.totalItems;
+	const filterCount = getFiltersCount(searchResult.mapping);
+
+	function getFiltersCount(mapping: DisplayMapping[]) {
+		return (mapping[0].children || mapping).filter(
+			(filterItem) => !(filterItem.display === '*' && filterItem.operator === 'equals') // TODO: probably best to do wildcard-filtering in an earlier step (in search.ts)?
+		).length;
+	}
+
+	function toggleFiltersModal() {
+		showFiltersModal = !showFiltersModal;
+	}
 </script>
 
 <div class="bg-page sticky top-[var(--app-bar-height)] z-10 sm:static">
-	<Toolbar></Toolbar>
+	<Toolbar>
+		{#snippet leadingActions()}
+			<a
+				href={`${page.url.pathname}?$$page.url.searchParams.toString()}#filters`}
+				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
+				aria-label={page.data.t('search.filters')}
+				onclick={(e) => {
+					e.preventDefault();
+					toggleFiltersModal();
+				}}
+			>
+				<IconSliders class="text-base" />
+				{page.data.t('search.filters')}
+				{#if filterCount}
+					<span class="badge badge-accent">
+						{filterCount}
+					</span>
+				{/if}
+			</a>
+		{/snippet}
+	</Toolbar>
 </div>
+
+{#if showFiltersModal}
+	<Modal position="left" close={toggleFiltersModal}>
+		<span slot="title">
+			{page.data.t('search.filters')} ({numHits.toLocaleString(page.data.locale)}
+			{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
+		</span>
+		<Filters facets={searchResult.facetGroups || []} mapping={searchResult.mapping} />
+	</Modal>
+{/if}

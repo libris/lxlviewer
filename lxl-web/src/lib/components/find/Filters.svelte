@@ -9,13 +9,18 @@
 
 	type filtersPropsType = {
 		facets: TypedFacetGroup[];
-		mapping: DisplayMapping[];
+		mapping?: DisplayMapping[];
 	};
 
 	const { facets, mapping }: filtersPropsType = $props();
 
 	function shouldShowMapping() {
-		if (mapping.length === 1 && mapping[0].display === '*' && mapping[0].operator === 'equals') {
+		if (
+			mapping &&
+			mapping.length === 1 &&
+			mapping[0].display === '*' &&
+			mapping[0].operator === 'equals'
+		) {
 			return false; // hide if only wildcard search
 		}
 		return true;
@@ -27,7 +32,7 @@
 </script>
 
 <div class="mt-4 flex flex-col gap-4">
-	{#if inModal && shouldShowMapping()}
+	{#if mapping && inModal && shouldShowMapping()}
 		<nav aria-label={page.data.t('search.selectedFilters')}>
 			<SearchMapping {mapping} />
 		</nav>

@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import Modal from '$lib/components/Modal.svelte';
+	// import Modal from '$lib/components/Modal.svelte';
 	import SearchMapping from './SearchMapping.svelte';
 	import SearchCard from './SearchCard.svelte';
 	import Pagination from './Pagination.svelte';
 	import Filters from './Filters.svelte';
 	import SearchRelated from './SearchRelated.svelte';
-	import IconSliders from '~icons/bi/sliders';
+	// import IconSliders from '~icons/bi/sliders';
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import BiSortDown from '~icons/bi/sort-down';
-	import type { SearchResult, DisplayMapping } from '$lib/types/search';
+	import type { SearchResult } from '$lib/types/search';
 
-	let showFiltersModal = false;
+	// let showFiltersModal = false;
 	export let searchResult: SearchResult;
 	export let showMapping: boolean = false;
 
@@ -39,15 +39,15 @@
 		goto(`${$page.url.pathname}?${searchParams.toString()}`, { invalidateAll: true });
 	}
 
-	function toggleFiltersModal() {
-		showFiltersModal = !showFiltersModal;
-	}
+	// function toggleFiltersModal() {
+	// 	showFiltersModal = !showFiltersModal;
+	// }
 
-	function getFiltersCount(mapping: DisplayMapping[]) {
-		return (mapping[0].children || mapping).filter(
-			(filterItem) => !(filterItem.display === '*' && filterItem.operator === 'equals') // TODO: probably best to do wildcard-filtering in an earlier step (in search.ts)?
-		).length;
-	}
+	// function getFiltersCount(mapping: DisplayMapping[]) {
+	// 	return (mapping[0].children || mapping).filter(
+	// 		(filterItem) => !(filterItem.display === '*' && filterItem.operator === 'equals') // TODO: probably best to do wildcard-filtering in an earlier step (in search.ts)?
+	// 	).length;
+	// }
 </script>
 
 <slot />
@@ -55,7 +55,7 @@
 	{@const facets = searchResult.facetGroups || []}
 	{@const predicates = searchResult.predicates || []}
 	{@const numHits = searchResult.totalItems}
-	{@const filterCount = getFiltersCount(searchResult.mapping)}
+	<!-- {@const filterCount = getFiltersCount(searchResult.mapping)} -->
 	{#if predicates.length}
 		<nav
 			class="border-neutral border-b px-4 lg:flex 2xl:px-6"
@@ -95,7 +95,7 @@
 		</nav>
 	{/if}
 	<div class="find-layout relative gap-y-4 p-4 sm:px-6">
-		{#if showFiltersModal}
+		<!-- {#if showFiltersModal}
 			<Modal position="left" close={toggleFiltersModal}>
 				<span slot="title">
 					{$page.data.t('search.filters')} ({numHits.toLocaleString($page.data.locale)}
@@ -103,14 +103,14 @@
 				</span>
 				<Filters {facets} mapping={searchResult.mapping} />
 			</Modal>
-		{/if}
+		{/if} -->
 		<div class="filters hidden lg:block" id="filters">
 			<Filters {facets} mapping={searchResult.mapping} />
 		</div>
 
 		<div class="results">
 			<div class="toolbar items-center pb-2" class:has-search={$page.params.fnurgel}>
-				<a
+				<!-- <a
 					href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
 					class="filter-modal-toggle btn btn-primary max-w-44 lg:hidden"
 					aria-label={$page.data.t('search.filters')}
@@ -123,8 +123,8 @@
 							{filterCount}
 						</span>
 					{/if}
-				</a>
-				<span class="hits text-2xs" role="status" data-testid="result-info">
+				</a> -->
+				<!-- <span class="hits text-2xs" role="status" data-testid="result-info">
 					{#if numHits && numHits > 0}
 						<span class="hits-count">
 							{#if numHits > searchResult.itemsPerPage}
@@ -157,13 +157,12 @@
 									href={suggestion.view['@id'].replace('_spell=true', '_spell=false')}
 									class="link-subtle"
 								>
-									<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 									{@html suggestion.labelHtml}</a
 								>?
 							{/each}
 						</span>
 					{/if}
-				</span>
+				</span> -->
 				{#if $page.params.fnurgel}
 					{@const activePredicate = predicates.filter((p) => p.selected)}
 					<div class="search-related flex justify-start">
