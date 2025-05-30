@@ -49,13 +49,6 @@
 								? 'aspect-2/3'
 								: 'aspect-square'}"
 						/>
-						{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
-							<div class="absolute -top-4 -left-4">
-								<div class="bg-page rounded-md p-1.5">
-									<svelte:component this={getTypeIcon(item['@type'])} class="h-6 w-6" />
-								</div>
-							</div>
-						{/if}
 					{:else}
 						<div class="flex items-center justify-center">
 							<img
@@ -78,9 +71,11 @@
 		</div>
 		<div class="card-content">
 			<header class="card-header" id={titleId}>
-				<p class="card-header-extra">
-					<span class="font-medium">
+				<p class="card-header-top">
+					<span class="text-xs">
 						<svelte:component this={getTypeIcon(item['@type'])} class="inline align-middle" />
+					</span>
+					<span class="font-medium">
 						{item.typeStr}
 					</span>
 					<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
@@ -238,6 +233,7 @@
 		}
 	}
 
+	.card-header-top,
 	.card-header-extra,
 	.card-footer,
 	.card-header :global(.transliteration) {
