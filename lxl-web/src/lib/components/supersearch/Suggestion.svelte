@@ -49,9 +49,9 @@
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<hgroup
-				class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap"
+				class="resource-heading grid gap-1 overflow-hidden text-xs font-medium whitespace-nowrap"
 			>
-				<h2 class="inline-block max-w-[40vw] truncate sm:max-w-[33vw]">
+				<h2 class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
 						showLabels={ShowLabelsOptions.Never}
@@ -60,7 +60,7 @@
 					/>
 				</h2>
 				{#if item[LxlLens.CardBody]?._display?.[0]}
-					<p class="inline-block truncate">
+					<p class="truncate">
 						<span class="divider">{' · '}</span>
 						<DecoratedData
 							data={item[LxlLens.CardBody]?._display[0]}
@@ -78,7 +78,7 @@
 				{#if item.typeStr?.length}
 					<span class="divider">{' · '}</span>
 				{/if}
-				{#each item?.[LensType.WebCardFooter]?._display as obj}
+				{#each item?.[LensType.WebCardFooter]?._display as obj, index (index)}
 					{#if 'hasInstance' in obj}
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
@@ -191,6 +191,8 @@
 	}
 
 	.resource-heading {
+		grid-template-columns: auto auto;
+
 		& :global(.transliteration) {
 			display: none;
 		}

@@ -62,10 +62,8 @@
 </div>
 
 <style lang="postcss">
-	@reference "../../../app.css";
-
 	/* hide 'no hits' msg as long as there's results displaying */
 	:global(.facet-nav:has(.has-hits) .no-hits-msg) {
-		@apply hidden;
+		display: none;
 	}
 </style>

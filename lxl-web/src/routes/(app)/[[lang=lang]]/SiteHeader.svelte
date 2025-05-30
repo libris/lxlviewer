@@ -11,6 +11,7 @@
 	let showHeaderMenu = $state(false);
 	let bannerOffsetHeight: number | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent;
+	const isFindPage = $derived(page.url.pathname === '/find');
 
 	function toggleHeaderMenu() {
 		showHeaderMenu = !showHeaderMenu;
@@ -28,6 +29,7 @@
 </script>
 
 <header class="bg-app-header">
+	<!-- beta banner -->
 	<div
 		class="text-2xs/3.5 bg-warning-300 flex min-h-11 place-content-between items-center gap-8 px-3 py-1 font-medium sm:px-6 md:text-xs"
 		bind:offsetHeight={bannerOffsetHeight}
@@ -53,7 +55,8 @@
 			{/if}
 		</a>
 	</div>
-	<nav class="header-nav header-layout min-h-18 items-center py-0">
+	<!-- navbar -->
+	<nav class="header-nav header-layout items-center py-0 sm:min-h-18">
 		<div class="home lg:pl-4">
 			<a href={page.data.base} class="flex no-underline">
 				<span class="font-heading text-2xl font-[600] lg:text-3xl">Libris</span>
@@ -67,13 +70,15 @@
 			/>
 		</div>
 		<div class="actions flex items-center justify-end lg:pr-4">
-			<button
-				aria-label={page.data.t('search.search')}
-				class="text-subtle p-4 sm:hidden"
-				onclick={() => onClickExpandSearch()}
-			>
-				<BiSearch />
-			</button>
+			{#if !isFindPage}
+				<button
+					aria-label={page.data.t('search.search')}
+					class="text-subtle p-4 sm:hidden"
+					onclick={() => onClickExpandSearch()}
+				>
+					<BiSearch />
+				</button>
+			{/if}
 			<div
 				id="header-menu"
 				class="text-3xs hidden items-center target:absolute target:left-0 target:block target:w-full 2xl:flex"
@@ -103,10 +108,16 @@
 </header>
 
 <style lang="postcss">
-	@reference "../../../app.css";
+	@reference 'tailwindcss';
 
 	.header-nav {
-		grid-template-areas: 'home search actions';
+		grid-template-areas:
+			'home . actions'
+			'search search search';
+
+		@variant sm {
+			grid-template-areas: 'home search actions';
+		}
 	}
 
 	.home {

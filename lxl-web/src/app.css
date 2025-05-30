@@ -152,8 +152,12 @@
 		color: var(--color-body);
 	}
 
+	html:has(dialog[open]),
 	body:has(dialog[open]) {
+		height: 100%;
+		width: 100%;
 		overflow: hidden;
+		position: fixed;
 	}
 
 	button:not(:disabled),

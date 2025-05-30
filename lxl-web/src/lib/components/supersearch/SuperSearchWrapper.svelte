@@ -15,8 +15,6 @@
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
 	import BiSearch from '~icons/bi/search';
-	import BiChevronDown from '~icons/bi/chevron-down';
-	import BiChevronUp from '~icons/bi/chevron-up';
 	import '$lib/styles/lxlquery.css';
 
 	interface Props {
@@ -47,9 +45,9 @@
 	});
 
 	let cursor = $derived(selection?.head || 0);
+	const isFindPage = $derived(page.url.pathname === '/find');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
-	let showMoreFilters = $state(false);
 
 	let pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -77,18 +75,6 @@
 		} else {
 			q = addSpaceIfEndingQualifier(q.trim());
 		}
-	}
-
-	function handlePaginationQuery(searchParams: URLSearchParams, prevData: unknown) {
-		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
-		const limit = parseInt(searchParams.get('_limit')!, 10);
-		const offset = limit + parseInt(searchParams.get('_offset') || '0', 10);
-
-		if (prevData && offset < prevData.totalItems) {
-			paginatedSearchParams.set('_offset', offset.toString());
-			return paginatedSearchParams;
-		}
-		return undefined;
 	}
 
 	function handleShouldShowStartContent(value: string, selection?: Selection) {
@@ -162,8 +148,6 @@
 		return lxlQualifierPlugin(QualifierPill, getLabels, removeQualifier);
 	});
 
-	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
-
 	function getFullQualifierLink(q: string) {
 		const newParams = new URLSearchParams(pageParams);
 		newParams.set('_q', q);
@@ -215,7 +199,12 @@
 	</span>
 {/snippet}
 
-<form class="relative w-full" action="find" onsubmit={handleSubmit} data-testid="main-search">
+<form
+	class={['relative w-full', isFindPage && 'find-page']}
+	action="find"
+	onsubmit={handleSubmit}
+	data-testid="main-search"
+>
 	<SuperSearch
 		name="_q"
 		bind:this={superSearch}
@@ -233,13 +222,11 @@
 			});
 		}}
 		transformFn={handleTransform}
-		paginationQueryFn={handlePaginationQuery}
 		shouldShowStartContentFn={handleShouldShowStartContent}
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
 		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={2}
-		loadMoreLabel={page.data.t('search.showMore')}
 		debouncedWait={100}
 	>
 		{#snippet inputRow({
@@ -325,53 +312,33 @@
 					isFocusedRow,
 					rowIndex: 3
 				})}
-				{#if showMoreFilters}
-					{@render startFilterItem({
-						qualifierKey: page.data.t('qualifiers.subjectKey'),
-						qualifierLabel: page.data.t('qualifiers.subjectLabel'),
-						qualifierPlaceholder: page.data.t('qualifiers.subjectPlaceholder'),
-						getCellId,
-						isFocusedCell,
-						isFocusedRow,
-						rowIndex: 4
-					})}
-					{@render startFilterItem({
-						qualifierKey: page.data.t('qualifiers.yearKey'),
-						qualifierLabel: page.data.t('qualifiers.yearLabel'),
-						qualifierPlaceholder: page.data.t('qualifiers.yearPlaceholder'),
-						getCellId,
-						isFocusedCell,
-						isFocusedRow,
-						rowIndex: 5
-					})}
-					{@render startFilterItem({
-						qualifierKey: page.data.t('qualifiers.genreFormKey'),
-						qualifierLabel: page.data.t('qualifiers.genreFormLabel'),
-						qualifierPlaceholder: page.data.t('qualifiers.genreFormPlaceholder'),
-						getCellId,
-						isFocusedCell,
-						isFocusedRow,
-						rowIndex: 6
-					})}
-				{/if}
-				<div role="row" class="start-item" class:focused={isFocusedRow(moreFiltersRowIndex)}>
-					<button
-						type="button"
-						role="gridcell"
-						id={getCellId(moreFiltersRowIndex, 0)}
-						class="hover:bg-primary-50 flex min-h-11 w-full items-center px-4 text-sm"
-						class:focused-cell={isFocusedCell(moreFiltersRowIndex, 0)}
-						onclick={() => (showMoreFilters = !showMoreFilters)}
-					>
-						{#if showMoreFilters}
-							<BiChevronUp class="text-subtle mr-2" />
-							{page.data.t('search.showFewer')}
-						{:else}
-							<BiChevronDown class="text-subtle mr-2" />
-							{page.data.t('search.showMore')}
-						{/if}
-					</button>
-				</div>
+				{@render startFilterItem({
+					qualifierKey: page.data.t('qualifiers.subjectKey'),
+					qualifierLabel: page.data.t('qualifiers.subjectLabel'),
+					qualifierPlaceholder: page.data.t('qualifiers.subjectPlaceholder'),
+					getCellId,
+					isFocusedCell,
+					isFocusedRow,
+					rowIndex: 4
+				})}
+				{@render startFilterItem({
+					qualifierKey: page.data.t('qualifiers.yearKey'),
+					qualifierLabel: page.data.t('qualifiers.yearLabel'),
+					qualifierPlaceholder: page.data.t('qualifiers.yearPlaceholder'),
+					getCellId,
+					isFocusedCell,
+					isFocusedRow,
+					rowIndex: 5
+				})}
+				{@render startFilterItem({
+					qualifierKey: page.data.t('qualifiers.genreFormKey'),
+					qualifierLabel: page.data.t('qualifiers.genreFormLabel'),
+					qualifierPlaceholder: page.data.t('qualifiers.genreFormPlaceholder'),
+					getCellId,
+					isFocusedCell,
+					isFocusedRow,
+					rowIndex: 6
+				})}
 			</div>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
@@ -398,6 +365,15 @@
 		}
 	}
 
+	:global(.find-page #supersearch) {
+		display: block;
+		padding-bottom: calc(var(--spacing) * 2);
+
+		@variant sm {
+			padding-bottom: 0;
+		}
+	}
+
 	/* dialog */
 
 	:global(.supersearch-dialog) {
@@ -419,9 +395,13 @@
 	:global(.supersearch-dialog-wrapper) {
 		@apply header-layout pointer-events-none px-0 sm:px-6 lg:px-2;
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
+		height: 100%;
+		width: 100%;
+		position: fixed;
 
 		@variant sm {
 			grid-template-areas: '. supersearch-content .';
+			height: auto;
 		}
 	}
 

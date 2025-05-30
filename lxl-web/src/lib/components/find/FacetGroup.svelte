@@ -143,7 +143,7 @@
 				{#each shownItems as facet (facet.view['@id'])}
 					<li>
 						<a
-							class="facet-link hover:bg-primary-50 flex items-end justify-between gap-2 p-1 pl-2 font-normal no-underline"
+							class="facet-link hover:bg-primary-50 grid grid-cols-[auto_auto] items-end justify-between gap-2 p-1 pl-2 font-normal no-underline"
 							href={facet.view['@id']}
 						>
 							<span class="truncate" title={facet.str}>
@@ -209,19 +209,17 @@
 </li>
 
 <style lang="postcss">
-	@reference "../../../app.css";
-
 	details[open] {
 		& .arrow {
-			@apply rotate-90;
+			rotate: 90deg;
 		}
 		& .facet-sort {
-			@apply block;
+			display: block;
 		}
 	}
 
 	/* hide sorting for bool filters */
 	li[data-dimension='boolFilters'] details[open] .facet-sort {
-		@apply hidden;
+		display: hidden;
 	}
 </style>
