@@ -14,6 +14,9 @@ export default {
 		betaLink: 'Tyck till',
 		betaLinkLong: 'om nya Libris'
 	},
+	about: {
+		pageTitle: 'Om betan'
+	},
 	myPages: {
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
