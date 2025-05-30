@@ -16,6 +16,7 @@
 	const { holder, holdingUrl, linksByBibId }: HoldingInfoProps = $props();
 
 	const sigel = holder?.sigel;
+	let instancesCollapsed = $state(true);
 
 	// if holdingUrl is an instance fnurgel, add its mapped bibId object into arr,
 	// else add all ids of current type with holdings for current sigel
@@ -54,7 +55,7 @@
 		<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
 	</h2>
 	<div class="">
-		<ul>
+		<ul class="bib-list" class:instancesCollapsed>
 			{#each bibIds as id (id.bibId)}
 				{#if linksByBibId[id.bibId]?.[holder.sigel]}
 					{@const linksForHolder = linksByBibId[id.bibId][holder.sigel]}
@@ -87,6 +88,19 @@
 					</li>
 				{/if}
 			{/each}
+		</ul>
+		<ul>
+			{#if bibIds.length > 5}
+				<li>
+					<button class="show-all" onclick={() => (instancesCollapsed = !instancesCollapsed)}>
+						{#if instancesCollapsed}
+							Visa alla utgåvor ({bibIds.length})
+						{:else}
+							Visa färre utgåvor...
+						{/if}
+					</button>
+				</li>
+			{/if}
 			{#if bibIds.at(0) && missingAtLeastOneLinkToItem()}
 				{@const firstBibId = bibIds.at(0).bibId}
 				<li>
@@ -153,6 +167,19 @@
 
 	li {
 		@apply mb-2;
+	}
+
+	.show-all {
+		@apply text-subtle;
+		text-decoration: underline;
+		text-decoration-style: dotted;
+	}
+
+	.bib-list li {
+		display: list-item;
+	}
+	.bib-list.instancesCollapsed li:nth-child(n + 6) {
+		display: none;
 	}
 
 	details[open] {
