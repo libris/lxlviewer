@@ -5,6 +5,7 @@
 	import Toolbar from '../Toolbar.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import Filters from './Filters.svelte';
+	import SearchResultSort from './SearchResultSort.svelte';
 
 	type SearchResultToolbarProps = {
 		searchResult: SearchResult;
@@ -47,6 +48,11 @@
 					</span>
 				{/if}
 			</a>
+		{/snippet}
+		{#snippet trailingActions()}
+			{#if numHits > 0}
+				<SearchResultSort />
+			{/if}
 		{/snippet}
 	</Toolbar>
 </div>
