@@ -1,43 +1,43 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
+	// import { goto } from '$app/navigation';
 	// import Modal from '$lib/components/Modal.svelte';
 	import SearchMapping from './SearchMapping.svelte';
 	import SearchCard from './SearchCard.svelte';
 	import Pagination from './Pagination.svelte';
-	import Filters from './Filters.svelte';
+	// import Filters from './Filters.svelte';
 	import SearchRelated from './SearchRelated.svelte';
 	// import IconSliders from '~icons/bi/sliders';
-	import BiChevronDown from '~icons/bi/chevron-down';
-	import BiSortDown from '~icons/bi/sort-down';
+	// import BiChevronDown from '~icons/bi/chevron-down';
+	// import BiSortDown from '~icons/bi/sort-down';
 	import type { SearchResult } from '$lib/types/search';
 
 	// let showFiltersModal = false;
 	export let searchResult: SearchResult;
 	export let showMapping: boolean = false;
 
-	$: sortOrder = $page.url.searchParams.get('_sort');
-	const sortOptions = [
-		{ value: '', label: $page.data.t('sort.relevancy') },
-		{ value: `_sortKeyByLang.${$page.data.locale}`, label: $page.data.t('sort.alphaAsc') },
-		{ value: `-_sortKeyByLang.${$page.data.locale}`, label: $page.data.t('sort.alphaDesc') },
-		{ value: '-@reverse.instanceOf.publication.year', label: $page.data.t('sort.publicationDesc') },
-		{ value: '@reverse.instanceOf.publication.year', label: $page.data.t('sort.publicationAsc') },
-		{
-			value: '-reverseLinks.totalItemsByRelation.itemOf.instanceOf',
-			label: $page.data.t('sort.holdingsDesc')
-		}
-	];
+	// $: sortOrder = $page.url.searchParams.get('_sort');
+	// const sortOptions = [
+	// 	{ value: '', label: $page.data.t('sort.relevancy') },
+	// 	{ value: `_sortKeyByLang.${$page.data.locale}`, label: $page.data.t('sort.alphaAsc') },
+	// 	{ value: `-_sortKeyByLang.${$page.data.locale}`, label: $page.data.t('sort.alphaDesc') },
+	// 	{ value: '-@reverse.instanceOf.publication.year', label: $page.data.t('sort.publicationDesc') },
+	// 	{ value: '@reverse.instanceOf.publication.year', label: $page.data.t('sort.publicationAsc') },
+	// 	{
+	// 		value: '-reverseLinks.totalItemsByRelation.itemOf.instanceOf',
+	// 		label: $page.data.t('sort.holdingsDesc')
+	// 	}
+	// ];
 
-	function handleSortChange(e: Event) {
-		const value = (e.target as HTMLSelectElement).value;
-		let searchParams = $page.url.searchParams;
-		searchParams.set('_sort', value);
-		if (searchParams.has('_offset')) {
-			searchParams.set('_offset', '0');
-		}
-		goto(`${$page.url.pathname}?${searchParams.toString()}`, { invalidateAll: true });
-	}
+	// function handleSortChange(e: Event) {
+	// 	const value = (e.target as HTMLSelectElement).value;
+	// 	let searchParams = $page.url.searchParams;
+	// 	searchParams.set('_sort', value);
+	// 	if (searchParams.has('_offset')) {
+	// 		searchParams.set('_offset', '0');
+	// 	}
+	// 	goto(`${$page.url.pathname}?${searchParams.toString()}`, { invalidateAll: true });
+	// }
 
 	// function toggleFiltersModal() {
 	// 	showFiltersModal = !showFiltersModal;
@@ -52,9 +52,9 @@
 
 <slot />
 {#if searchResult}
-	{@const facets = searchResult.facetGroups || []}
+	<!-- {@const facets = searchResult.facetGroups || []} -->
 	{@const predicates = searchResult.predicates || []}
-	{@const numHits = searchResult.totalItems}
+	<!-- {@const numHits = searchResult.totalItems} -->
 	<!-- {@const filterCount = getFiltersCount(searchResult.mapping)} -->
 	{#if predicates.length}
 		<nav
@@ -104,9 +104,9 @@
 				<Filters {facets} mapping={searchResult.mapping} />
 			</Modal>
 		{/if} -->
-		<div class="filters hidden lg:block" id="filters">
+		<!-- <div class="filters hidden lg:block" id="filters">
 			<Filters {facets} mapping={searchResult.mapping} />
-		</div>
+		</div> -->
 
 		<div class="results">
 			<div class="toolbar items-center pb-2" class:has-search={$page.params.fnurgel}>
@@ -169,7 +169,7 @@
 						<SearchRelated view={activePredicate[0].view} />
 					</div>
 				{/if}
-				{#if numHits > 0}
+				<!-- {#if numHits > 0}
 					<div
 						class="sort-select flex flex-col items-end justify-self-end"
 						data-testid="sort-select"
@@ -198,7 +198,7 @@
 							</span>
 						</div>
 					</div>
-				{/if}
+				{/if} -->
 			</div>
 			<ol class="flex flex-col gap-0.5 lg:px-0">
 				{#each searchResult.items as item (item['@id'])}
@@ -276,11 +276,11 @@
 			'hits hits';
 	}
 
-	.toolbar:has(.suggest) {
+	/* .toolbar:has(.suggest) {
 		& .hits-count::after {
 			content: '.';
 		}
-	}
+	} */
 
 	@variant lg {
 		.filters {

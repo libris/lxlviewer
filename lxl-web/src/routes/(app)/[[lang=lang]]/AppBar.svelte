@@ -59,8 +59,8 @@
 <!-- navbar -->
 <header class={['app-bar bg-app-header top-0 z-10 px-3 sm:px-6', isFindPage && 'sticky']}>
 	<nav class="header-nav header-layout items-center sm:min-h-18">
-		<div class="home">
-			<a href={page.data.base} class="flex no-underline">
+		<div class="home flex">
+			<a href={page.data.base} class="grow-0 no-underline">
 				<span class="font-heading text-2xl font-[600] lg:text-3xl">Libris</span>
 			</a>
 		</div>
