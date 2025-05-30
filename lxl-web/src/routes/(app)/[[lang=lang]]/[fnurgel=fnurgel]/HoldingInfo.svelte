@@ -5,6 +5,7 @@
 	import type { HoldingStatus } from '$lib/types/api';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronDown from '~icons/bi/chevron-down';
+	import Spinner from '$lib/components/Spinner.svelte';
 
 	type HoldingInfoProps = {
 		id: BibIdObj;
@@ -166,7 +167,13 @@
 			</button>
 			<div class="mb-4">
 				{#if loading}
-					<p>{page.data.t('search.loading')}</p>
+					<div
+						class="status-container border-neutral bg-page mt-2 flex max-w-md flex-col gap-4 rounded-sm border p-2"
+					>
+						<span class="-mt-0.5 block size-4" in:fade={{ duration: 200 }}>
+							<Spinner />
+						</span>
+					</div>
 				{/if}
 				{#if error}
 					<div class="status-container border-neutral bg-page mt-2 max-w-md rounded-sm border p-2">
