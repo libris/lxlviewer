@@ -105,7 +105,7 @@
 >
 	<details class="relative" open>
 		<summary
-			class="flex min-h-9 w-full cursor-pointer items-center gap-2 pr-8 text-xs font-medium"
+			class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
 			data-testid="facet-toggle"
 		>
 			<span class="arrow text-subtle transition-transform">
@@ -115,7 +115,7 @@
 		</summary>
 		<!-- sorting -->
 		<div
-			class="facet-sort btn btn-primary absolute top-0 right-0 m-1 size-6 border-0 p-0"
+			class="facet-sort btn btn-primary absolute top-0 right-0 mx-3 size-6 border-0 p-0 py-1"
 			data-testid="facet-sort"
 		>
 			<select
@@ -137,13 +137,13 @@
 				<FacetRange search={group.search} />
 			{/if}
 			<ol
-				class="border-l-neutral ml-1.5 flex max-h-72 flex-col overflow-x-clip overflow-y-auto border-l pr-0.5 pl-1.5 sm:max-h-[437px]"
+				class="flex max-h-72 flex-col overflow-x-clip overflow-y-auto sm:max-h-[437px]"
 				data-testid="facet-list"
 			>
 				{#each shownItems as facet (facet.view['@id'])}
-					<li>
+					<li class="hover:bg-primary-100">
 						<a
-							class="facet-link hover:bg-primary-50 grid grid-cols-[auto_auto] items-end justify-between gap-2 p-1 pl-2 font-normal no-underline"
+							class="facet-link ml-4.5 grid grid-cols-[auto_auto] items-end justify-between gap-2 border-l border-l-neutral-200 py-1.5 pr-3 pl-4 font-normal no-underline"
 							href={facet.view['@id']}
 						>
 							<span class="truncate" title={facet.str}>
@@ -176,23 +176,27 @@
 					</li>
 				{/each}
 			</ol>
-			<div class="text-2xs flex items-center justify-between">
+			<div class="text-2xs flex flex-col justify-start">
 				<!-- 'show more' btn -->
 				{#if canShowMoreItems || canShowFewerItems}
 					<button
-						class="mt-2 ml-5 h-6"
+						class="hover:bg-primary-100 w-full"
 						onclick={() =>
 							canShowMoreItems
 								? (defaultItemsShown = totalItems)
 								: (defaultItemsShown = DEFAULT_FACETS_SHOWN)}
 					>
-						{canShowMoreItems ? page.data.t('search.showMore') : page.data.t('search.showFewer')}...
+						<span class="ml-4.5 block border-l border-l-neutral-200 py-1.5 pr-3 pl-4 text-left">
+							{canShowMoreItems
+								? page.data.t('search.showMore')
+								: page.data.t('search.showFewer')}...
+						</span>
 					</button>
 				{/if}
 				<!-- limit reached info -->
 				{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
 					<button
-						class="text-error bg-severe-50 mt-2 flex items-center gap-1 rounded-sm px-2 py-1"
+						class="text-error bg-severe-50 m-6 flex items-center gap-1 rounded-sm px-2 py-1"
 						use:popover={{
 							title: page.data.t('facet.limitText'),
 							placeAsSibling: true
@@ -215,6 +219,13 @@
 		}
 		& .facet-sort {
 			display: block;
+			&:not(:hover) {
+				background-color: inherit;
+			}
+		}
+
+		& summary:hover {
+			background-color: inherit;
 		}
 	}
 

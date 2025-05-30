@@ -46,6 +46,8 @@
 
 	--app-bar-height: 52px;
 	--app-bar-height-sm: 71px;
+	--toolbar-height: 48px;
+	--beta-banner-height: 44px;
 }
 
 @theme inline {
