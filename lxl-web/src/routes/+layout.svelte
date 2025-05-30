@@ -32,7 +32,7 @@
 	});
 </script>
 
-<div class="body-layout grid min-h-screen">
+<div class="min-h-screen">
 	<Matomo>
 		{@render children()}
 		<CookieConsent />
@@ -40,7 +40,4 @@
 </div>
 
 <style>
-	.body-layout {
-		grid-template-rows: min-content 1fr min-content;
-	}
 </style>

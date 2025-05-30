@@ -367,6 +367,7 @@
 	:global(.find-page #supersearch) {
 		display: block;
 		padding-bottom: calc(var(--spacing) * 2);
+		padding-top: 1px;
 
 		@variant sm {
 			padding-bottom: 0;
