@@ -15,6 +15,9 @@ export default {
 		betaLink: 'Share your feedback',
 		betaLinkLong: ' '
 	},
+	about: {
+		pageTitle: 'About the beta'
+	},
 	myPages: {
 		myPages: 'My pages',
 		libraries: 'Libraries',
