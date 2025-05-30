@@ -1,4 +1,4 @@
-## Welcome to open beta!
+# Welcome to open beta!
 
 Here you can follow the development of the new libris.kb.se. There's still a
 lot that is not finished. Improvements and new features will be added
