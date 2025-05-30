@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type { DisplayMapping, SearchResult } from '$lib/types/search';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+	import { fade } from 'svelte/transition';
 	import Modal from '../Modal.svelte';
 	import Toolbar from '../Toolbar.svelte';
 	import IconSliders from '~icons/bi/sliders';
@@ -12,6 +14,7 @@
 	};
 
 	const { searchResult }: SearchResultToolbarProps = $props();
+	const userSettings = getUserSettings();
 
 	let showFiltersModal = $state(false);
 	const numHits = searchResult.totalItems;
@@ -31,6 +34,7 @@
 <div class="bg-page sticky top-[var(--app-bar-height)] z-10 sm:static">
 	<Toolbar>
 		{#snippet leadingActions()}
+			<!-- mobile modal filter btn -->
 			<a
 				href={`${page.url.pathname}?$$page.url.searchParams.toString()}#filters`}
 				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
@@ -48,6 +52,16 @@
 					</span>
 				{/if}
 			</a>
+			<!-- expand leadingPane btn -->
+			{#if !userSettings.leadingPane?.open}
+				<button
+					class="hidden sm:block"
+					in:fade={{ duration: 200 }}
+					onclick={() => userSettings.openLeadingPane()}
+				>
+					➡️
+				</button>
+			{/if}
 		{/snippet}
 		{#snippet trailingActions()}
 			{#if numHits > 0}

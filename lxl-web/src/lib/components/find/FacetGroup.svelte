@@ -219,9 +219,6 @@
 		}
 		& .facet-sort {
 			display: block;
-			&:not(:hover) {
-				background-color: inherit;
-			}
 		}
 
 		& summary:hover {

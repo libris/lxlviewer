@@ -13,6 +13,10 @@ export type UserSettings = {
 	myLibraries?: {
 		[id: string]: LibraryItem;
 	};
+	leadingPane?: {
+		width?: number;
+		open?: boolean;
+	};
 	debug?: DebugFlags[];
 };
 

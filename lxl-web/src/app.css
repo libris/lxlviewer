@@ -230,7 +230,7 @@
 	}
 
 	.btn-primary {
-		background-color: var(--color-page);
+		background-color: transparent;
 		color: var(--color-body);
 		border: 1px solid var(--color-neutral-200);
 
