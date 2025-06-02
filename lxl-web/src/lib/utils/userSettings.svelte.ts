@@ -66,6 +66,12 @@ export class UserSettings {
 		}
 	}
 
+	setLeadingPaneWidth(width: number) {
+		const leadingPane = { ...this.settings?.leadingPane };
+		leadingPane.width = width;
+		this.update('leadingPane', leadingPane);
+	}
+
 	closeLeadingPane() {
 		const leadingPane = { ...this.settings?.leadingPane };
 		leadingPane.open = false;
