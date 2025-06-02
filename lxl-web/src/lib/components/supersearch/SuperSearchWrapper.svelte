@@ -91,7 +91,9 @@
 			if (
 				!node.parent?.type &&
 				node.childBefore(selection.from)?.type.name !== 'String' &&
-				node.childAfter(selection.from)?.type.name !== 'String'
+				node.childAfter(selection.from)?.type.name !== 'String' &&
+				node.childBefore(selection.from)?.type.name !== 'Group' &&
+				node.childAfter(selection.from)?.type.name !== 'Group'
 			) {
 				return true;
 			}
