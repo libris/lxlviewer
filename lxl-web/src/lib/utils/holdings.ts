@@ -250,7 +250,7 @@ export function getItemLinksByBibId(
 				const lopacPaths = [[BibDb.lopac, BibDb.bibIdSearchUriByLang]];
 
 				let linksToItem = getLinksToItemFor(bibIdObj, fullHolderData, ilsPaths, locale);
-				const lopacLinksItem = getLinksToItemFor(bibIdObj, fullHolderData, lopacPaths, locale);
+				const lopacLinksToItem = getLinksToItemFor(bibIdObj, fullHolderData, lopacPaths, locale);
 
 				const linkTemplateEod = getAtPath(fullHolderData, [BibDb.eodUri], []);
 				if (linkTemplateEod && linkTemplateEod.length !== 0) {
@@ -306,8 +306,8 @@ export function getItemLinksByBibId(
 					allLinks[BibDb.LinksToItem] = linksToItem;
 				}
 
-				if (lopacLinksItem.length !== 0) {
-					allLinks[BibDb.LoanReserveLink] = lopacLinksItem;
+				if (lopacLinksToItem.length !== 0) {
+					allLinks[BibDb.LoanReserveLink] = lopacLinksToItem;
 				}
 
 				if (Object.keys(allLinks).length !== 0) {
@@ -331,7 +331,9 @@ function getLinksToItemFor(
 		const linkTemplate = getAtPath(fullHolderData, path, []);
 		if (linkTemplate && linkTemplate.length !== 0) {
 			if (path.includes(BibDb.bibIdSearchUriByLang) && bibIdObj.bibId !== '') {
-				linksToItem = [linkTemplate[locale].replace(/%BIB_*ID%/g, bibIdObj.bibId), ...linksToItem];
+				const linkTemplateLocalized =
+					linkTemplate[locale] || linkTemplate['sv'] || Object.values(linkTemplate)[0];
+				linksToItem = [linkTemplateLocalized.replace(/%BIB_*ID%/g, bibIdObj.bibId), ...linksToItem];
 			}
 			if (path.includes(BibDb.bibIdSearchUri) && bibIdObj.bibId !== '') {
 				// forms in the wild %BIB_ID%, %BIBID%, more???
