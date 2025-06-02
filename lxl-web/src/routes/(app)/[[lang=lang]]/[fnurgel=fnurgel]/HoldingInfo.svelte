@@ -275,15 +275,6 @@
 		& .arrow {
 			@apply rotate-90;
 		}
-
-		& .holder-label {
-			white-space: normal;
-		}
-	}
-
-	.holder-label {
-		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
-		@apply text-base font-medium;
 	}
 
 	.status-container {

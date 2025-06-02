@@ -43,7 +43,7 @@
 </script>
 
 <li class="border-neutral text-sm not-last:border-b">
-	<h2 class="holder-label mt-4">
+	<h2 class="holder-label mt-4 line-clamp-1">
 		<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
 	</h2>
 	<div class="">
@@ -151,15 +151,10 @@
 		& .arrow {
 			@apply rotate-90;
 		}
-
-		& .holder-label {
-			white-space: normal;
-		}
 	}
 
 	.holder-label {
-		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
-		@apply text-base font-medium;
+		@apply line-clamp-2 text-base font-medium;
 	}
 
 	.status-container {
@@ -182,16 +177,5 @@
 
 	table td {
 		width: auto;
-	}
-
-	.indicator {
-		@apply mb-0.5 inline-block h-2.5 w-2.5 rounded-full align-middle;
-
-		&.unavailable {
-			background-color: var(--color-severe-500);
-		}
-		&.available {
-			background-color: var(--color-success);
-		}
 	}
 </style>
