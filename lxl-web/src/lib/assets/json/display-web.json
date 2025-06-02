@@ -153,7 +153,13 @@
 					"classLensDomain": "Concept",
 					"showProperties": [
 						{
-							"alternateProperties": ["prefLabel", "label", "termComponentList", "code"]
+							"alternateProperties": [
+								"prefLabel",
+								"singularLabel",
+								"label",
+								"termComponentList",
+								"code"
+							]
 						}
 					]
 				},
@@ -350,7 +356,7 @@
 					"@id": "Work-web-card-header-top",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["category", "language"]
+					"showProperties": ["language"]
 				},
 				"Agent": {
 					"@id": "Agent-web-card-header-top",

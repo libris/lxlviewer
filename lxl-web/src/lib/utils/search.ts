@@ -1,24 +1,24 @@
 import { DisplayUtil, isObject, toLite, toString, VocabUtil } from '$lib/utils/xl';
 import {
+	Base,
 	type DisplayDecorated,
 	type FramedData,
-	type Link,
-	LensType,
 	JsonLd,
-	Base
+	LensType,
+	type Link
 } from '$lib/types/xl';
 
 import {
-	type PartialCollectionView,
-	type SearchResult,
+	type ApiItemDebugInfo,
+	type DatatypeProperty,
 	type DisplayMapping,
+	type FacetGroup,
+	type ItemDebugInfo,
+	type MultiSelectFacet,
+	type PartialCollectionView,
 	type SearchMapping,
 	SearchOperators,
-	type DatatypeProperty,
-	type MultiSelectFacet,
-	type FacetGroup,
-	type ApiItemDebugInfo,
-	type ItemDebugInfo
+	type SearchResult
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
@@ -30,6 +30,7 @@ import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
+import getTypeLike from '$lib/utils/getTypeLike';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -74,9 +75,9 @@ export async function asResult(
 			),
 			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
 			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
-			typeStr: toString(
-				displayUtil.lensAndFormat(vocabUtil.getDefinition(i[JsonLd.TYPE]), LensType.Chip, locale)
-			)
+			typeStr: getTypeLike(i, vocabUtil)
+				.map((t) => toString(displayUtil.lensAndFormat(t, LensType.Chip, locale)))
+				.join(', ')
 		})),
 		...('stats' in view && {
 			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
