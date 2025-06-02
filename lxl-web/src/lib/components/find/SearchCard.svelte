@@ -49,6 +49,15 @@
 								? 'aspect-2/3'
 								: 'aspect-square'}"
 						/>
+						<!--
+						{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
+							<div class="absolute -top-4 -left-4">
+								<div class="bg-page rounded-md p-1.5">
+									<svelte:component this={getTypeIcon(item['@type'])} class="h-6 w-6" />
+								</div>
+							</div>
+						{/if}
+						-->
 					{:else}
 						<div class="flex items-center justify-center">
 							<img
