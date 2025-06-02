@@ -59,9 +59,9 @@
 		{#if bibIds.length > 5}
 			<button class="show-all mb-2" onclick={() => (instancesCollapsed = !instancesCollapsed)}>
 				{#if instancesCollapsed}
-					Visa alla utgåvor ({bibIds.length})
+					{page.data.t('holdings.showAll')} ({bibIds.length})
 				{:else}
-					Visa färre utgåvor...
+					{page.data.t('holdings.showFewer')}
 				{/if}
 			</button>
 		{/if}
