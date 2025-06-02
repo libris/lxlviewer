@@ -211,5 +211,9 @@ export default {
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'
+	},
+	panes: {
+		show: 'Visa sidopanel',
+		hide: 'Dölj sidopanel'
 	}
 };

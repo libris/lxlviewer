@@ -5,9 +5,10 @@
 	import { fade } from 'svelte/transition';
 	import Modal from '../Modal.svelte';
 	import Toolbar from '../Toolbar.svelte';
-	import IconSliders from '~icons/bi/sliders';
 	import Filters from './Filters.svelte';
 	import SearchResultSort from './SearchResultSort.svelte';
+	import IconSliders from '~icons/bi/sliders';
+	import BiLayoutSidebar from '~icons/bi/layout-sidebar';
 
 	type SearchResultToolbarProps = {
 		searchResult: SearchResult;
@@ -55,11 +56,12 @@
 			<!-- expand leadingPane btn -->
 			{#if !userSettings.leadingPane?.open}
 				<button
-					class="hidden sm:block"
+					class="btn btn-primary hidden sm:block"
+					aria-label={page.data.t('panes.show')}
 					in:fade={{ duration: 200 }}
 					onclick={() => userSettings.openLeadingPane()}
 				>
-					➡️
+					<BiLayoutSidebar class="size-4" />
 				</button>
 			{/if}
 		{/snippet}
