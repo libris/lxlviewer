@@ -25,9 +25,9 @@
 
 <section
 	class={[
-		'leading-pane relative hidden w-0 border-r border-b border-r-neutral-200 border-b-neutral-200 bg-neutral-50 sm:block',
+		'leading-pane relative hidden w-0 border-b border-b-neutral-200 sm:block',
 		// Enable transition for the collapse animation. But disable it while resizing the panel!
-		!isDragging && 'transition-[padding] duration-1000 motion-reduce:transition-none'
+		!isDragging && 'transition-[padding] duration-150 ease-in motion-reduce:transition-none'
 	]}
 	style="padding-right:{paneOpen ? paneWidth : 0}px"
 	inert={!paneOpen}
@@ -35,12 +35,12 @@
 	<div
 		class={[
 			'leading-pane-sticky sticky top-0 pb-6',
-			!isDragging && 'transition-transform duration-1000 motion-reduce:transition-none',
+			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none',
 			paneOpen ? 'translate-x-0' : '-translate-x-full'
 		]}
 		style="width:{paneWidth}px"
 	>
-		<div class="leading-pane-toolbar sticky top-0 z-10 bg-neutral-50">
+		<div class="leading-pane-toolbar sticky top-0 z-10">
 			<Toolbar>
 				{#snippet trailingActions()}
 					<button
@@ -71,8 +71,9 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	.leading-pane {
-		box-shadow: -3px -3px 12px 0px rgba(0, 0, 0, 0.04) inset;
+	.leading-pane,
+	.leading-pane-toolbar {
+		background: linear-gradient(90deg, var(--color-neutral-50) 95%, var(--color-neutral-100) 100%);
 	}
 
 	.leading-pane-sticky {
@@ -80,7 +81,7 @@
 		@variant sm {
 			top: var(--app-bar-height-sm);
 			max-height: calc(100vh - var(--app-bar-height-sm));
-			overflow: auto;
+			overflow-x: auto;
 		}
 	}
 </style>
