@@ -92,8 +92,9 @@
 				!node.parent?.type &&
 				node.childBefore(selection.from)?.type.name !== 'String' &&
 				node.childAfter(selection.from)?.type.name !== 'String'
-			)
+			) {
 				return true;
+			}
 		}
 
 		/** TODO: Should start content be shown in while editing inside parentheses/groups? */
