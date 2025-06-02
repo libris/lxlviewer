@@ -78,20 +78,25 @@
 	}
 
 	function handleShouldShowStartContent(value: string, selection?: Selection) {
-		if (selection && selection.anchor == selection.head) {
-			const tree = lxlQuery.language.parser.parse(value);
-			const nodeLeft = tree.resolveInner(selection.head, -1);
-			const nodeRight = tree.resolveInner(selection.head, 1);
-
-			/** Start content should be shown when the cursor isn't placed inside a qualifier or edited string part */
-			if (!nodeLeft.parent?.name && !nodeRight.parent?.name) {
-				return true;
-			}
-		}
-
-		if (!value) {
+		/* Show start content if empty */
+		if (!value.trim()) {
 			return true;
 		}
+
+		if (selection) {
+			const tree = lxlQuery.language.parser.parse(value);
+			const node = tree.resolveInner(selection.head, 0);
+
+			/* Show start content if not editing part of qualifier or string */
+			if (
+				!node.parent?.type &&
+				node.childBefore(selection.from)?.type.name !== 'String' &&
+				node.childAfter(selection.from)?.type.name !== 'String'
+			)
+				return true;
+		}
+
+		/** TODO: Should start content be shown in while editing inside parentheses/groups? */
 
 		return false;
 	}
