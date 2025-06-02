@@ -25,7 +25,7 @@
 				<main class="flex-1">
 					<SearchResultToolbar {searchResult} />
 					<SearchResultInfo {searchResult} />
-					<ol class="flex flex-col sm:px-4">
+					<ol class="flex flex-col px-4">
 						{#each searchResult.items as item (item['@id'])}
 							<li>
 								<SearchCard {item} />
@@ -34,12 +34,12 @@
 					</ol>
 					<Pagination data={searchResult} />
 				</main>
-				<aside>
+				<aside class="min-w-[300px]">
 					<div class="hidden @5xl/content:block">
 						<Toolbar />
 					</div>
-					<div class="aside-content sticky p-3">
-						<p>This is some aside content</p>
+					<div class="aside-content sticky m-3 h-44 rounded-sm border border-neutral-200 p-3">
+						<h2 class="text-sm font-medium">This is some aside content</h2>
 					</div>
 				</aside>
 			</div>
