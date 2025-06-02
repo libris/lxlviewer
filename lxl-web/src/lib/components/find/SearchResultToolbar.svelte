@@ -18,7 +18,7 @@
 	const userSettings = getUserSettings();
 
 	let showFiltersModal = $state(false);
-	const numHits = searchResult.totalItems;
+	const numHits = $derived(searchResult.totalItems);
 	const filterCount = getFiltersCount(searchResult.mapping);
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
