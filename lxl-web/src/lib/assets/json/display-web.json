@@ -383,7 +383,7 @@
 					"showProperties": ["translationOf"]
 				},
 				"Instance": {
-					"@id": "Instance-web-card-footer",
+					"@id": "Instance-web-card-header-extra",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
 					"showProperties": ["isPartOf", "part"]
