@@ -7,7 +7,7 @@
 	};
 
 	const { searchResult }: SearchResultInfoProps = $props();
-	const numHits = searchResult.totalItems;
+	const numHits = $derived(searchResult.totalItems);
 </script>
 
 <div
