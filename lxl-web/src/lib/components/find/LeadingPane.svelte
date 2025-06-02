@@ -34,13 +34,13 @@
 >
 	<div
 		class={[
-			'leading-pane-sticky sticky top-0 pb-6',
+			'leading-pane-wrapper sticky top-0',
 			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none',
 			paneOpen ? 'translate-x-0' : '-translate-x-full'
 		]}
 		style="width:{paneWidth}px"
 	>
-		<div class="leading-pane-toolbar sticky top-0 z-10">
+		<div class="leading-pane-toolbar">
 			<Toolbar>
 				{#snippet trailingActions()}
 					<button
@@ -53,7 +53,9 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		{@render children()}
+		<div class="leading-pane-content mr-1.5 pb-6">
+			{@render children()}
+		</div>
 	</div>
 	<Draggable
 		bind:width={paneWidth}
@@ -76,12 +78,15 @@
 		background: linear-gradient(90deg, var(--color-neutral-50) 95%, var(--color-neutral-100) 100%);
 	}
 
-	.leading-pane-sticky {
-		scrollbar-width: thin;
+	.leading-pane-wrapper {
 		@variant sm {
 			top: var(--app-bar-height-sm);
-			max-height: calc(100vh - var(--app-bar-height-sm));
-			overflow-x: auto;
 		}
+	}
+
+	.leading-pane-content {
+		max-height: calc(100vh - var(--app-bar-height-sm) - var(--toolbar-height));
+		overflow-y: auto;
+		scrollbar-width: thin;
 	}
 </style>
