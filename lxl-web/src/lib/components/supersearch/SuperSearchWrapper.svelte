@@ -141,6 +141,7 @@
 			selection: { anchor: q.indexOf(qualifier) },
 			userEvent: 'delete'
 		});
+		superSearch?.hideExpandedSearch();
 		goto('/find?' + newSearchParams.toString());
 	}
 
