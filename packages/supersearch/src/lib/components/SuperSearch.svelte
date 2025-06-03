@@ -262,7 +262,7 @@
 	}: {
 		change?: {
 			from: number;
-			to: number;
+			to?: number;
 			insert?: string;
 		};
 		selection?: {
