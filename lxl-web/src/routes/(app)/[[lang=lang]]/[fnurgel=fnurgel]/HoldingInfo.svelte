@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { fade } from 'svelte/transition';
 	import type { BibIdObj, DecoratedHolder, ItemLinksByBibId } from '$lib/types/holdings';
 	import { BibDb } from '$lib/types/xl';
 	import type { HoldingStatus } from '$lib/types/api';
@@ -275,15 +276,6 @@
 		& .arrow {
 			@apply rotate-90;
 		}
-
-		& .holder-label {
-			white-space: normal;
-		}
-	}
-
-	.holder-label {
-		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
-		@apply text-base font-medium;
 	}
 
 	.status-container {

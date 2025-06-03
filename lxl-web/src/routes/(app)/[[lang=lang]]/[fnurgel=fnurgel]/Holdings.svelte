@@ -40,10 +40,21 @@
 	function missingAtLeastOneLinkToItem() {
 		return bibIds.find((id) => !hasLinksToItem(id.bibId) && !hasLoanReserveLink(id.bibId));
 	}
+
+	function hasOpeningHoursEtc() {
+		const id = bibIds.at(0);
+		if (id) {
+			const openingHours = linksByBibId[id.bibId]?.[holder.sigel]?.[BibDb.OpeningHours];
+			const address = linksByBibId[id.bibId]?.[holder.sigel]?.[BibDb.Address];
+
+			return openingHours || address?.join('').trim();
+		}
+		return false;
+	}
 </script>
 
 <li class="border-neutral text-sm not-last:border-b">
-	<h2 class="holder-label mt-4">
+	<h2 class="mt-4 line-clamp-2 text-base font-medium">
 		<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
 	</h2>
 	<div class="">
@@ -90,37 +101,37 @@
 			{/if}
 		</ul>
 	</div>
-	<details>
-		<summary class="my-3 flex cursor-pointer items-baseline">
-			<span
-				class="text-3xs arrow text-subtle mr-0.5 h-3 origin-center rotate-0 transition-transform"
-			>
-				<BiChevronRight />
-			</span>
-			{page.data.t('holdings.openingHoursEtc')}
-		</summary>
-		<div class="status-container border-neutral bg-page my-3 max-w-md rounded-sm border p-2">
-			<span>
-				{#if bibIds.at(0)}
-					{@const firstBibId = bibIds.at(0).bibId}
-					<ul style="white-space: pre-line">
-						{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.OpeningHours]}
-							<li>
-								{linksByBibId[firstBibId][holder.sigel][BibDb.OpeningHours].at(0)}
-							</li>
-						{/if}
-						{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.Address]}
-							{#each linksByBibId[firstBibId][holder.sigel][BibDb.Address] as address, index (index)}
-								<li class="my-2">
-									{address}
+	{#if hasOpeningHoursEtc()}
+		<details>
+			<summary class="my-3 flex cursor-pointer items-baseline gap-0.5">
+				<span class="text-3xs arrow text-subtle h-3 origin-center rotate-0 transition-transform">
+					<BiChevronRight />
+				</span>
+				{page.data.t('holdings.openingHoursEtc')}
+			</summary>
+			<div class="status-container border-neutral bg-page my-3 max-w-md rounded-sm border p-2">
+				<span>
+					{#if bibIds.at(0)}
+						{@const firstBibId = bibIds.at(0).bibId}
+						<ul style="white-space: pre-line">
+							{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.OpeningHours]}
+								<li>
+									{linksByBibId[firstBibId][holder.sigel][BibDb.OpeningHours].at(0)}
 								</li>
-							{/each}
-						{/if}
-					</ul>
-				{/if}
-			</span>
-		</div>
-	</details>
+							{/if}
+							{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.Address]}
+								{#each linksByBibId[firstBibId][holder.sigel][BibDb.Address] as address, index (index)}
+									<li class="my-2">
+										{address}
+									</li>
+								{/each}
+							{/if}
+						</ul>
+					{/if}
+				</span>
+			</div>
+		</details>
+	{/if}
 </li>
 
 <style lang="postcss">
@@ -151,15 +162,6 @@
 		& .arrow {
 			@apply rotate-90;
 		}
-
-		& .holder-label {
-			white-space: normal;
-		}
-	}
-
-	.holder-label {
-		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
-		@apply text-base font-medium;
 	}
 
 	.status-container {
@@ -182,16 +184,5 @@
 
 	table td {
 		width: auto;
-	}
-
-	.indicator {
-		@apply mb-0.5 inline-block h-2.5 w-2.5 rounded-full align-middle;
-
-		&.unavailable {
-			background-color: var(--color-severe-500);
-		}
-		&.available {
-			background-color: var(--color-success);
-		}
 	}
 </style>
