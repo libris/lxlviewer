@@ -9,7 +9,6 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
-	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
 	import type { DisplayMapping, QualifierSuggestion } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
@@ -22,11 +21,7 @@
 	}
 
 	let { placeholder = '' }: Props = $props();
-	let q = $state(
-		page.params.fnurgel
-			? ''
-			: addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || '')
-	);
+	let q = $state(page.params.fnurgel ? '' : page.url.searchParams.get('_q') || '');
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
@@ -63,8 +58,12 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			const toQ = addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
-			q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+			const toQ = new URL(to.url).searchParams.get('_q')?.trim() || '';
+			if (toQ === '*') {
+				q = ''; // hide wildcard in input field
+			} else if (toQ !== q.trim()) {
+				q = page.params.fnurgel ? '' : toQ;
+			}
 			superSearch?.hideExpandedSearch();
 		}
 	});
@@ -72,8 +71,6 @@
 	function handleSubmit(event: SubmitEvent) {
 		if (!q || !q.trim()) {
 			event.preventDefault();
-		} else {
-			q = addSpaceIfEndingQualifier(q.trim());
 		}
 	}
 
@@ -127,22 +124,21 @@
 
 	function addQualifier(qualifier: QualifierSuggestion) {
 		superSearch?.dispatchChange({
-			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(qualifier._q) },
-			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
+			change: { from: 0, to: q.length, insert: qualifier._q },
+			selection: { anchor: qualifier.cursor, head: qualifier.cursor },
 			userEvent: 'input.complete'
 		});
 		goto(getFullQualifierLink(qualifier._q));
 	}
 
 	function removeQualifier(qualifier: string) {
-		const newQ = addSpaceIfEndingQualifier(q.replace(qualifier, '').trim());
-		const insertCursor = Math.min(q.indexOf(qualifier), newQ.length);
+		const newQ = q.replace(qualifier, '');
 		const newSearchParams = new URLSearchParams(pageParams);
-		newSearchParams.set('_q', newQ.trim() ? newQ : '*');
+		newSearchParams.set('_q', newQ.trim() || '*');
 
 		superSearch?.dispatchChange({
-			change: { from: 0, to: q.length, insert: newQ },
-			selection: { anchor: insertCursor, head: insertCursor },
+			change: { from: q.indexOf(qualifier), to: q.indexOf(qualifier) + qualifier.length },
+			selection: { anchor: q.indexOf(qualifier) },
 			userEvent: 'delete'
 		});
 		goto('/find?' + newSearchParams.toString());
