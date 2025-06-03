@@ -9,7 +9,7 @@
 	<title>{getPageTitle()}</title>
 </svelte:head>
 
-<article class="mx-auto max-w-3xl p-6">
+<article class="mx-auto mt-8 mb-12 max-w-3xl p-4">
 	{#if $page.data.locale === 'en'}
 		<EnContent />
 	{:else}
