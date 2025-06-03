@@ -43,11 +43,13 @@
 
 	function hasOpeningHoursEtc() {
 		const id = bibIds.at(0);
-		return (
-			id &&
-			(linksByBibId[id.bibId]?.[holder.sigel]?.[BibDb.OpeningHours] ||
-				linksByBibId[id.bibId]?.[holder.sigel]?.[BibDb.Address])
-		);
+		if (id) {
+			const openingHours = linksByBibId[id.bibId]?.[holder.sigel]?.[BibDb.OpeningHours];
+			const address = linksByBibId[id.bibId]?.[holder.sigel]?.[BibDb.Address];
+
+			return openingHours || address?.join('').trim();
+		}
+		return false;
 	}
 </script>
 
