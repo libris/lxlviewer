@@ -10,7 +10,7 @@
 	import IconSliders from '~icons/bi/sliders';
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import BiSortDown from '~icons/bi/sort-down';
-	import type { SearchResult } from '$lib/types/search';
+	import type { SearchResult, DisplayMapping } from '$lib/types/search';
 
 	let showFiltersModal = false;
 	export let searchResult: SearchResult;
