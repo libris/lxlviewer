@@ -146,7 +146,7 @@
 					{keyed}
 				/>
 			{:else}
-				{#each data as arrayItem}
+				{#each data as arrayItem (arrayItem)}
 					<svelte:self
 						data={arrayItem}
 						depth={depth + 1}
@@ -228,6 +228,7 @@
 								<span class={['inline-block first-letter:capitalize', block && 'property-label']}>
 									{data._label}
 								</span>
+								<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
 								{' '}
 							</svelte:element>
 						{/if}
@@ -282,6 +283,7 @@
 		font-size: var(--text-2xs);
 
 		/* pill */
+		/*
 		& > * {
 			border: 1px solid var(--color-neutral-200);
 			border-radius: calc(infinity * 1px);
@@ -290,6 +292,7 @@
 			text-decoration: none;
 			white-space: nowrap;
 		}
+		 */
 
 		& > a {
 			border-color: var(--color-accent-200);

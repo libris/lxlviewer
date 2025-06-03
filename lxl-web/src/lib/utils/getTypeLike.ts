@@ -6,17 +6,26 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): FramedData[] {
 	if (thing[JsonLd.TYPE] != 'Monograph') {
 		result.push(vocabUtil.getDefinition(thing[JsonLd.TYPE] as string));
 	}
-	const contentType: FramedData[] = [];
+	const contentTypes: FramedData[] = [];
+	const categories: FramedData[] = [];
+	const other: FramedData[] = [];
 	(asArray(thing.category) as FramedData[]).forEach((category) => {
-		if (first(asArray(category[JsonLd.TYPE])) === 'ContentType') {
-			contentType.push(category);
+		if (first(asArray(category[JsonLd.TYPE])) === 'Category') {
+			categories.push(category);
+		} else if (first(asArray(category[JsonLd.TYPE])) === 'ContentType') {
+			contentTypes.push(category);
 		} else {
-			result.push(category);
+			other.push(category);
 		}
 	});
-	if (result.length === 0) {
+	result.push(...categories);
+	result.push(...other);
+	result.push(...contentTypes);
+	/*if (result.length === 0) {
 		result.push(...contentType);
 	}
+
+	 */
 	return result;
 }
 

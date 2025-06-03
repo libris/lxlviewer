@@ -77,7 +77,7 @@ export async function asResult(
 			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
 			typeStr: getTypeLike(i, vocabUtil)
 				.map((t) => toString(displayUtil.lensAndFormat(t, LensType.Chip, locale)))
-				.join(', ')
+				.join(' · ')
 		})),
 		...('stats' in view && {
 			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
