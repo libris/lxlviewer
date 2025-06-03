@@ -43,7 +43,7 @@
 			/>
 			{#if getTypeIcon(item['@type'])}
 				{@const SvelteComponent_1 = getTypeIcon(item['@type'])}
-				<SvelteComponent_1 class="text-subtle absolute text-lg" />
+				<SvelteComponent_1 class="absolute text-lg text-neutral-400" />
 			{/if}
 		</div>
 	{/if}

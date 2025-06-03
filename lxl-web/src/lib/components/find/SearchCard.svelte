@@ -49,6 +49,7 @@
 								? 'aspect-2/3'
 								: 'aspect-square'}"
 						/>
+						<!--
 						{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 							<div class="absolute -top-4 -left-4">
 								<div class="bg-page rounded-md p-1.5">
@@ -56,6 +57,7 @@
 								</div>
 							</div>
 						{/if}
+						-->
 					{:else}
 						<div class="flex items-center justify-center">
 							<img
@@ -78,6 +80,19 @@
 		</div>
 		<div class="card-content">
 			<header class="card-header" id={titleId}>
+				<p class="card-header-top">
+					<svelte:component this={getTypeIcon(item['@type'])} class="text-2xs mb-0.25 inline" />
+					<span class="font-medium">
+						{item.typeStr}
+					</span>
+					<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+					<span class="divider">{' · '}</span>
+					{#each item[LensType.WebCardHeaderTop]?._display as obj, index (index)}
+						<span>
+							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
+						</span>
+					{/each}
+				</p>
 				<hgroup>
 					<h2 class="card-header-title text-base font-medium">
 						<a
@@ -109,26 +124,27 @@
 				</div>
 			{/if}
 			<footer class="card-footer mt-1" id={footerId}>
-				<span class="font-medium">
-					{item.typeStr}
-				</span>
-				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-				<span class="divider">{' · '}</span>
 				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
 					{#if 'hasInstance' in obj}
-						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-						<span class="divider">{' · '}</span>
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
-							<span>
-								{#if instances.count > 1}
-									{instances?.count}
-									{$page.data.t('search.editions')}
-									{`(${instances.years})`}
-								{:else}
-									{instances.years}
+							{#if instances.count > 1}
+								{instances?.count}
+								{$page.data.t('search.editions')}
+								{`(${instances.years})`}
+							{:else}
+								{instances.years}
+							{/if}
+						{/if}
+						{#if instances?.count === 1}
+							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+							<span class="divider">{' · '}</span>
+							{#each obj.hasInstance._display as obj2, index (index)}
+								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
+								{#if !obj2.publication}
+									<DecoratedData data={obj2} showLabels={ShowLabelsOptions.Never} />
 								{/if}
-							</span>
+							{/each}
 						{/if}
 					{:else}
 						<span>
@@ -229,6 +245,7 @@
 		}
 	}
 
+	.card-header-top,
 	.card-header-extra,
 	.card-footer,
 	.card-header :global(.transliteration) {

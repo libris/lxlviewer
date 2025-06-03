@@ -31,6 +31,7 @@ export interface SearchResultItem {
 	[LxlLens.CardHeading]: DisplayDecorated;
 	[LxlLens.CardBody]: DisplayDecorated;
 	[LensType.WebCardHeaderExtra]: DisplayDecorated;
+	[LensType.WebCardHeaderTop]: DisplayDecorated;
 	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
 	typeStr: string;
