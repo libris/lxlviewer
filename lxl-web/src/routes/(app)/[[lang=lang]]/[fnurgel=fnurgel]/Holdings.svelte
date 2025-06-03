@@ -52,7 +52,7 @@
 </script>
 
 <li class="border-neutral text-sm not-last:border-b">
-	<h2 class="holder-label mt-4 line-clamp-1">
+	<h2 class="mt-4 line-clamp-2 text-base font-medium">
 		<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
 	</h2>
 	<div class="">
@@ -101,10 +101,8 @@
 	</div>
 	{#if hasOpeningHoursEtc()}
 		<details>
-			<summary class="my-3 flex cursor-pointer items-baseline">
-				<span
-					class="text-3xs arrow text-subtle mr-0.5 h-3 origin-center rotate-0 transition-transform"
-				>
+			<summary class="my-3 flex cursor-pointer items-baseline gap-0.5">
+				<span class="text-3xs arrow text-subtle h-3 origin-center rotate-0 transition-transform">
 					<BiChevronRight />
 				</span>
 				{page.data.t('holdings.openingHoursEtc')}
@@ -162,10 +160,6 @@
 		& .arrow {
 			@apply rotate-90;
 		}
-	}
-
-	.holder-label {
-		@apply line-clamp-2 text-base font-medium;
 	}
 
 	.status-container {
