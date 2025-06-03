@@ -39,9 +39,6 @@
 	border-radius: 0;
 }
 
-.lxl-qualifier-key {
-	margin-left: 1px;
-}
 .atomic {
 	background-color: var(--color-accent-100);
 	user-select: none;

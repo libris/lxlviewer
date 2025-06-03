@@ -70,7 +70,7 @@ class QualifierWidget extends WidgetType {
 	}
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
-		container.style.cssText = `position: relative; display:inline-flex`;
+		container.style.cssText = `position: relative; display:inline-flex; margin: 0 1px;`;
 		mount(this.qualifierWidget, {
 			props: {
 				key: this.key,
