@@ -145,7 +145,11 @@
 		>
 			<div class="flex flex-col gap-4">
 				<header>
-					<h1 class="text-3xl font-medium">
+					<span class="mb-4">
+						{console.log('dada', data.types)}
+						<DecoratedData data={data.types} showLabels={ShowLabelsOptions.Never} />
+					</span>
+					<h1 class="mt-3 text-3xl font-medium">
 						<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 					</h1>
 				</header>

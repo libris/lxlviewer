@@ -68,6 +68,8 @@ export default {
 		'meta.encodingLevel': 'Beskrivningsnivå',
 		'rdf:type': 'Typ',
 		hasInstanceType: 'Format',
+		hasInstanceCategory: 'Format',
+		category: 'Kategori',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Bibliotek',
 		bibliography: 'Bibliografi',
