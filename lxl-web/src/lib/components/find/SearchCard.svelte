@@ -80,7 +80,11 @@
 			<header class="card-header" id={titleId}>
 				<hgroup>
 					<h2 class="card-header-title text-base font-medium">
-						<a href={id} class="block hover:underline" aria-describedby={`${bodyId} ${footerId}`}>
+						<a
+							href={id}
+							class="decoration-subtle block underline decoration-dotted hover:decoration-solid focus:decoration-solid"
+							aria-describedby={`${bodyId} ${footerId}`}
+						>
 							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 						</a>
 					</h2>
