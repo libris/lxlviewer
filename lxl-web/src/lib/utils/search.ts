@@ -18,7 +18,8 @@ import {
 	type MultiSelectFacet,
 	type FacetGroup,
 	type ApiItemDebugInfo,
-	type ItemDebugInfo
+	type ItemDebugInfo,
+	type Observation
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
@@ -245,18 +246,21 @@ function displayFacetGroups(
 			dimension: g.dimension,
 			maxItems: g.maxItems,
 			...('search' in g && { search: g.search }),
-			facets: g.observation.map((o) => {
-				return {
-					...('_selected' in o && { selected: o._selected }),
-					totalItems: o.totalItems,
-					view: replacePath(o.view, usePath),
-					object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
-					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
-				};
-			})
+			facets: g.observation.map((o) => mapObservation(o))
 		};
 	});
+
+	function mapObservation(o: Observation) {
+		return {
+			...('_selected' in o && { selected: o._selected }),
+			totalItems: o.totalItems,
+			view: replacePath(o.view, usePath),
+			object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
+			discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || '',
+			_children: o._children?.map((o) => mapObservation(o))
+		};
+	}
 
 	result.push(displayBoolFilters(view, displayUtil, locale, translate, usePath));
 

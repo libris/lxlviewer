@@ -64,6 +64,7 @@ export interface Facet {
 	object: DisplayDecorated;
 	str: string;
 	discriminator: string;
+	_children?: Facet[];
 }
 
 export interface MultiSelectFacet extends Facet {
@@ -122,11 +123,12 @@ interface Slice {
 	maxItems: number;
 }
 
-interface Observation {
+export interface Observation {
 	totalItems: number;
 	view: Link;
 	object: FramedData;
 	_selected?: boolean;
+	_children?: Observation[];
 }
 
 export enum SearchOperators {

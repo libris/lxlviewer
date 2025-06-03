@@ -2,21 +2,20 @@
 	import { page } from '$app/state';
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import type { FacetGroup } from '$lib/types/search';
+
 	import {
 		CUSTOM_FACET_SORT,
 		DEFAULT_FACET_SORT,
 		DEFAULT_FACETS_SHOWN
 	} from '$lib/constants/facets';
+
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';
 	import FacetRange from './FacetRange.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiSortDown from '~icons/bi/sort-down';
-	import BiCheckSquareFill from '~icons/bi/check-square-fill';
-	import BiSquare from '~icons/bi/square';
 	import BiInfo from '~icons/bi/info-circle';
-	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
 
 	// Todo: Rename FacetGroup -> Facet (facets -> items/facetItems)
 
@@ -27,6 +26,7 @@
 	};
 
 	let { group, locale, searchPhrase }: FacetGroupProps = $props();
+	import Node from '$lib/components/find/Node.svelte';
 
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
@@ -142,37 +142,7 @@
 			>
 				{#each shownItems as facet (facet.view['@id'])}
 					<li>
-						<a
-							class="facet-link hover:bg-primary-50 grid grid-cols-[auto_auto] items-end justify-between gap-2 p-1 pl-2 font-normal no-underline"
-							href={facet.view['@id']}
-						>
-							<span class="truncate" title={facet.str}>
-								{#if 'selected' in facet}
-									<!-- checkboxes -->
-									<span class="sr-only"
-										>{facet.selected ? page.data.t('search.activeFilter') : ''}</span
-									>
-									<div class="mr-1 inline-block text-xs" aria-hidden="true">
-										{#if facet.selected}
-											<BiCheckSquareFill class="text-accent" />
-										{:else}
-											<BiSquare class="text-subtle" />
-										{/if}
-									</div>
-								{/if}
-								<span>
-									<DecoratedDataLite data={facet.object} />
-									{#if facet.discriminator}
-										<span class="text-subtle">({facet.discriminator})</span>
-									{/if}
-								</span>
-							</span>
-							{#if facet.totalItems > 0}
-								<span class="badge" aria-label="{facet.totalItems} {page.data.t('search.hits')}"
-									>{facet.totalItems.toLocaleString(locale)}</span
-								>
-							{/if}
-						</a>
+						<Node root={facet} {locale} />
 					</li>
 				{/each}
 			</ol>
@@ -211,7 +181,7 @@
 <style lang="postcss">
 	details[open] {
 		& .arrow {
-			rotate: 90deg;
+			/*rotate: 90deg;*/
 		}
 		& .facet-sort {
 			display: block;
