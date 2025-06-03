@@ -393,22 +393,35 @@
 	}
 
 	:global(.supersearch-dialog-wrapper) {
-		@apply header-layout pointer-events-none px-0 sm:px-6 lg:px-2;
+		display: grid;
+		grid-template-columns: 1fr minmax(0, 8fr) 1fr;
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
+		column-gap: calc(var(--spacing) * 8);
+
+		pointer-events: none;
 		height: 100%;
 		width: 100%;
 		position: fixed;
 
 		@variant sm {
 			grid-template-areas: '. supersearch-content .';
+			padding-inline: calc(var(--spacing) * 3);
 			height: auto;
+		}
+
+		@variant lg {
+			grid-template-columns: 1fr minmax(0, 4fr) 1fr;
+		}
+
+		@variant xl {
+			grid-template-columns: 1fr minmax(0, 3fr) 1fr;
 		}
 	}
 
 	:global(.supersearch-dialog-content) {
 		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md drop-shadow-md;
-		background: var(--color-page);
 		grid-area: supersearch-content;
+		background: var(--color-page);
 		scrollbar-width: none;
 	}
 

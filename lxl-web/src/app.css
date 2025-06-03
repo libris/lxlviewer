@@ -322,11 +322,11 @@
 	@apply lg:grid-cols-find flex flex-col gap-4 lg:grid lg:gap-8;
 }
 
-@utility header-layout {
+/* @utility header-layout {
 	grid-template-columns: 70px minmax(0, 8fr) 1fr;
 	@apply grid gap-x-8;
 
 	@variant lg {
 		grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
 	}
-}
+} */

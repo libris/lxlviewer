@@ -59,17 +59,17 @@
 <!-- navbar -->
 <header
 	class={[
-		'app-bar bg-app-header top-0 z-10 border-b-neutral-200 px-3 sm:border-b sm:px-6',
+		'app-bar bg-app-header top-0 z-10 border-b-neutral-200 sm:border-b',
 		isFindPage && 'sticky'
 	]}
 >
-	<nav class="header-nav header-layout items-center sm:min-h-18">
-		<div class="home flex">
+	<nav class="header-nav grid items-center gap-x-8 px-3 sm:min-h-18">
+		<div class="home flex sm:pl-3">
 			<a href={page.data.base} class="grow-0 no-underline">
 				<span class="font-heading text-2xl font-[600] lg:text-3xl">Libris</span>
 			</a>
 		</div>
-		<search class="search hidden sm:block">
+		<search class="search hidden px-4 sm:block">
 			<SuperSearchWrapper
 				placeholder={page.data.t('header.searchPlaceholder')}
 				--offset-top={`${bannerOffsetHeight}px`}
@@ -140,8 +140,18 @@
 			'home . actions'
 			'search search search';
 
+		grid-template-columns: 1fr minmax(0, 8fr) 1fr;
+
 		@variant sm {
 			grid-template-areas: 'home search actions';
+		}
+
+		@variant lg {
+			grid-template-columns: 1fr minmax(0, 4fr) 1fr;
+		}
+
+		@variant xl {
+			grid-template-columns: 1fr minmax(0, 3fr) 1fr;
 		}
 	}
 
