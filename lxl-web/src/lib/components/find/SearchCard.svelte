@@ -126,15 +126,13 @@
 					{#if 'hasInstance' in obj}
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
-							<span class="font-medium">
-								{#if instances.count > 1}
-									{instances?.count}
-									{$page.data.t('search.editions')}
-									{`(${instances.years})`}
-								{:else}
-									{instances.years}
-								{/if}
-							</span>
+							{#if instances.count > 1}
+								{instances?.count}
+								{$page.data.t('search.editions')}
+								{`(${instances.years})`}
+							{:else}
+								{instances.years}
+							{/if}
 						{/if}
 						{#if instances?.count === 1}
 							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
