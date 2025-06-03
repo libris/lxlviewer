@@ -81,9 +81,7 @@
 		<div class="card-content">
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
-					<span class="text-xs">
-						<svelte:component this={getTypeIcon(item['@type'])} class="inline align-middle" />
-					</span>
+					<svelte:component this={getTypeIcon(item['@type'])} class="text-2xs mb-0.25 inline" />
 					<span class="font-medium">
 						{item.typeStr}
 					</span>
