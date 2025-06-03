@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { fade } from 'svelte/transition';
 	import type { BibIdObj, DecoratedHolder, ItemLinksByBibId } from '$lib/types/holdings';
 	import { BibDb } from '$lib/types/xl';
 	import type { HoldingStatus } from '$lib/types/api';
