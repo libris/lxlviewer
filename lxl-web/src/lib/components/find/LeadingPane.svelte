@@ -24,6 +24,7 @@
 </script>
 
 <section
+	id="leading-pane"
 	class={[
 		'leading-pane relative hidden w-0 border-b border-b-neutral-200 sm:block',
 		// Enable transition for the collapse animation. But disable it while resizing the panel!

@@ -34,6 +34,7 @@
 
 	let dragHandle: HTMLDivElement | undefined = $state();
 	let parent = $derived(dragHandle?.parentElement);
+	let parentId = $derived(parent?.id);
 	let parentRect: DOMRect | undefined;
 
 	let collapsedWhileDragging = false;
@@ -106,7 +107,7 @@
 	aria-valuemin={minWidth}
 	aria-valuemax={maxWidth}
 	aria-orientation="vertical"
-	aria-controls="something"
+	aria-controls={parentId}
 	onpointerdown={handlePointerDown}
 ></div>
 
