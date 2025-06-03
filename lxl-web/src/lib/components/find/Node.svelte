@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import Node from '$lib/components/find/Node.svelte';
-	import DecoratedData from '../DecoratedData.svelte';
 	import type { Facet } from '$lib/types/search';
 	import { page } from '$app/state';
 	import { slide } from 'svelte/transition';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronDown from '~icons/bi/chevron-down';
+	import BiCheckSquareFill from '~icons/bi/check-square-fill';
+	import BiSquare from '~icons/bi/square';
 	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
 
 	// Corresponds to a folder
@@ -39,59 +39,36 @@
 		class="facet-link hover:bg-primary-50 grid grid-cols-[auto_auto] items-end justify-between gap-2 p-1 pl-2 font-normal no-underline"
 		href={facet.view['@id']}
 	>
-							<span class="truncate" title={facet.str}>
-								{#if 'selected' in facet}
-									<!-- checkboxes -->
-									<span class="sr-only"
-									>{facet.selected ? page.data.t('search.activeFilter') : ''}</span
-									>
-									<div class="mr-1 inline-block text-xs" aria-hidden="true">
-										{#if facet.selected}
-											<BiCheckSquareFill class="text-accent" />
-										{:else}
-											<BiSquare class="text-subtle" />
-										{/if}
-									</div>
-								{/if}
-								<span>
-									<DecoratedDataLite data={facet.object} />
-									{#if facet.discriminator}
-										<span class="text-subtle">({facet.discriminator})</span>
-									{/if}
-								</span>
-							</span>
+		<span class="truncate" title={facet.str}>
+			{#if 'selected' in facet}
+				<!-- checkboxes -->
+				<span class="sr-only">{facet.selected ? page.data.t('search.activeFilter') : ''}</span>
+				<div class="mr-1 inline-block text-xs" aria-hidden="true">
+					{#if facet.selected}
+						<BiCheckSquareFill class="text-accent" />
+					{:else}
+						<BiSquare class="text-subtle" />
+					{/if}
+				</div>
+			{/if}
+			<span>
+				<DecoratedDataLite data={facet.object} />
+				{#if facet.discriminator}
+					<span class="text-subtle">({facet.discriminator})</span>
+				{/if}
+			</span>
+		</span>
 		{#if facet.totalItems > 0}
-								<span class="badge" aria-label="{facet.totalItems} {page.data.t('search.hits')}"
-								>{facet.totalItems.toLocaleString(locale)}</span
-								>
-							{/if}
-						</a>
-<!--	<a-->
-<!--		class="facet-link flex w-full items-end justify-between gap-2 no-underline"-->
-<!--		href={facet.view['@id']}-->
-<!--	>-->
-<!--		<span class="overflow-hidden text-ellipsis whitespace-nowrap">-->
-<!--			<span>-->
-<!--				<DecoratedData data={facet.object} showLabels={ShowLabelsOptions.Never} />-->
-<!--				{#if facet.discriminator}-->
-<!--					<span class="text-sm text-secondary">({facet.discriminator})</span>-->
-<!--				{/if}-->
-<!--			</span>-->
-<!--		</span>-->
-<!--		{#if facet.totalItems > 0}-->
-<!--			<span-->
-<!--				class="facet-total mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs"-->
-<!--				aria-label="{facet.totalItems} {$page.data.t('search.hits')}"-->
-<!--			>-->
-<!--				{facet.totalItems.toLocaleString(locale)}-->
-<!--			</span>-->
-<!--		{/if}-->
-<!--	</a>-->
+			<span class="badge" aria-label="{facet.totalItems} {page.data.t('search.hits')}"
+				>{facet.totalItems.toLocaleString(locale)}</span
+			>
+		{/if}
+	</a>
 </span>
 
 {#if expanded}
 	<ul transition:slide={{ duration: 300 }}>
-		{#each facet._children as child}
+		{#each facet._children as child, index (index)}
 			<Node root={child} {locale} />
 		{/each}
 	</ul>

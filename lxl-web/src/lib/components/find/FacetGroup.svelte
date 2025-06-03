@@ -181,7 +181,7 @@
 <style lang="postcss">
 	details[open] {
 		& .arrow {
-			rotate: 90deg;
+			/*rotate: 90deg;*/
 		}
 		& .facet-sort {
 			display: block;
