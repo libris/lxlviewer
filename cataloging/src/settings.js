@@ -171,6 +171,13 @@ export default {
         order: 1,
       },
     },
+    issuanceType: {
+      sv: 'Utgivningssätt',
+      en: 'Issuance type',
+      facet: {
+        order: 1,
+      },
+    },
     '@type': {
       sv: 'Typ',
       en: 'Type',
@@ -267,13 +274,6 @@ export default {
       en: 'Carrier type',
       facet: {
         order: 15,
-      },
-    },
-    issuanceType: {
-      sv: 'Utgivningssätt',
-      en: 'Issuance type',
-      facet: {
-        order: 16,
       },
     },
     'instanceOf.subject.@id': {
