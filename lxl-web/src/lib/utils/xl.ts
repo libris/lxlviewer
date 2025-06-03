@@ -424,6 +424,15 @@ export class DisplayUtil {
 			});
 		}
 
+		// Fall back to URI slug if nothing in result
+		if (result._props?.length == 0 && JsonLd.TYPE in thing && JsonLd.ID in thing) {
+			const slug = '<' + thing[JsonLd.ID].split('/').pop() + '>';
+			// TODO fnurgels showing up in empty header-extra etc
+			if (!slug.includes('#')) {
+				ack(result, '_uriSlug', slug);
+			}
+		}
+
 		return result;
 	}
 
