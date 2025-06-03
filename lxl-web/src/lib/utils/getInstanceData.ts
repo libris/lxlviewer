@@ -23,7 +23,7 @@ function getInstanceData(instances: ResourceData) {
 			if (y.length <= NUM_NEW + NUM_OLD) {
 				years = y.join(', ');
 			} else {
-				years = y.slice(0, NUM_OLD).join(', ') + ' ... ' + y.slice(-NUM_NEW, y.length).join(', ');
+				years = y.slice(0, NUM_OLD).join(', ') + ' … ' + y.slice(-NUM_NEW, y.length).join(', ');
 			}
 		}
 
