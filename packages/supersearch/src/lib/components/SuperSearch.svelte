@@ -263,11 +263,11 @@
 		change?: {
 			from: number;
 			to: number;
-			insert: string;
+			insert?: string;
 		};
 		selection?: {
 			anchor: number;
-			head: number;
+			head?: number;
 		};
 		userEvent?:
 			| 'input'
