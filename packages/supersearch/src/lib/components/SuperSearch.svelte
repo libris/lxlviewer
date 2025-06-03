@@ -507,6 +507,11 @@
 			document.addEventListener('keydown', handleKeyboardShortcut);
 		}
 		dialog?.addEventListener('click', handleClickOutsideDialog);
+
+		/** Quickfix for showing initial suggestions on free-text searches */
+		if (value) {
+			search.debouncedFetchData(value, value.length);
+		}
 	});
 
 	onDestroy(() => {
