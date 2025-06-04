@@ -86,6 +86,7 @@
 		}
 
 		/* Show start content if value is equal to initial value, or value set after navigation */
+		console.log('q', q, 'initialQ', initialQ);
 		if (q === initialQ) {
 			initialQ = undefined; // set to undefined so results are shown if the user adds a character and then removes it
 			return true;
@@ -120,7 +121,7 @@
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
 		const charBeforeSelection = q.slice(cursor - 1, cursor);
-		const insert = (charBeforeSelection ? ' ' : '') + `${qualifierKey}:`; // Add extra whitespace before if there already is a character infront of the qualifier key
+		const insert = (charBeforeSelection ? ' ' : '') + `${qualifierKey}:`; // Add extra whitespace before if there already is an adjecent character
 		superSearch?.dispatchChange({
 			change: {
 				from: cursor,
