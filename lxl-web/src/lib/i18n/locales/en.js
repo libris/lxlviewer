@@ -144,10 +144,7 @@ export default {
 		subjectPlaceholder: 'Sommaren, Romerska riket',
 		yearKey: 'year',
 		yearLabel: 'Year',
-		yearPlaceholder: '1994, 2002, 2025',
-		genreFormKey: 'genreForm',
-		genreFormLabel: 'Genre/form',
-		genreFormPlaceholder: 'Fiction'
+		yearPlaceholder: '1994, 2002, 2025'
 	},
 	sort: {
 		sort: 'Sort',

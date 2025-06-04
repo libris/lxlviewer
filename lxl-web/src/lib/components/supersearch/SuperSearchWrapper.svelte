@@ -338,15 +338,6 @@
 					isFocusedRow,
 					rowIndex: 5
 				})}
-				{@render startFilterItem({
-					qualifierKey: page.data.t('qualifiers.genreFormKey'),
-					qualifierLabel: page.data.t('qualifiers.genreFormLabel'),
-					qualifierPlaceholder: page.data.t('qualifiers.genreFormPlaceholder'),
-					getCellId,
-					isFocusedCell,
-					isFocusedRow,
-					rowIndex: 6
-				})}
 			</div>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
