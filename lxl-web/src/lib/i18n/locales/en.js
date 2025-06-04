@@ -15,7 +15,6 @@ export default {
 		messageDesktop:
 			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
 		feedback: 'Share your feedback',
-		feedbackShort: 'Feedback',
 		old: 'Go to libris.kb.se'
 	},
 	about: {
