@@ -14,6 +14,7 @@ export default {
 		messageDesktop:
 			'Välkommen till nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
 		feedback: 'Tyck till',
+		feedbackShort: 'Tyck till',
 		old: 'Gå till libris.kb.se'
 	},
 	about: {

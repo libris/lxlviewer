@@ -51,7 +51,12 @@
 			href={page.params?.lang === 'en' ? '/en/about' : '/about'}
 			class="whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid"
 		>
-			{page.data.t('banner.feedback')}
+			<span class="hidden sm:inline">
+				{page.data.t('banner.feedback')}
+			</span>
+			<span class="inline sm:hidden">
+				{page.data.t('banner.feedbackShort')}
+			</span>
 		</a>
 		<a
 			href="https://libris.kb.se"
