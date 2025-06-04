@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { SearchResult } from '$lib/types/search';
+	import SiteFooter from '../../../routes/(app)/[[lang=lang]]/SiteFooter.svelte';
 	import Toolbar from '../Toolbar.svelte';
 	import Filters from './Filters.svelte';
 	import LeadingPane from './LeadingPane.svelte';
@@ -43,6 +44,7 @@
 					</div>
 				</aside>
 			</div>
+			<SiteFooter />
 		</section>
 		<TrailingPanes />
 	</div>
