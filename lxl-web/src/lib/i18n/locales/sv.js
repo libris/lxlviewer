@@ -14,7 +14,7 @@ export default {
 		messageDesktop:
 			'Välkommen till nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
 		feedback: 'Tyck till',
-		old: 'Gå till gamla Libris'
+		old: 'Gå till libris.kb.se'
 	},
 	about: {
 		pageTitle: 'Om betan'
