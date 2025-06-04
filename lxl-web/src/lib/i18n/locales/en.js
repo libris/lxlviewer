@@ -8,12 +8,14 @@ export default {
 		myPages: 'My pages',
 		changeLang: 'På svenska',
 		searchPlaceholder: 'Search for title, author, library, subject...',
-		openMenu: 'Open main menu',
-		betaMessageMobile: 'The catalogue may contain outdated information.',
-		betaMessageDesktop:
+		openMenu: 'Open main menu'
+	},
+	banner: {
+		messageMobile: 'The catalogue may contain outdated information.',
+		messageDesktop:
 			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
-		betaLink: 'Share your feedback',
-		betaLinkLong: ' '
+		feedback: 'Share your feedback',
+		old: 'Go to old Libris'
 	},
 	about: {
 		pageTitle: 'About the beta'

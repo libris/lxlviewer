@@ -31,28 +31,33 @@
 <header class="bg-app-header">
 	<!-- beta banner -->
 	<div
-		class="text-2xs/3.5 bg-warning-300 flex min-h-11 place-content-between items-center gap-8 px-3 py-1 font-medium sm:px-6 md:text-xs"
+		class="text-2xs/3.5 bg-warning-300 flex min-h-11 place-content-between items-center gap-3 px-3 py-1 font-medium sm:px-6 md:text-xs"
 		bind:offsetHeight={bannerOffsetHeight}
 	>
-		<span class="flex items-center gap-2">
-			<span class="text-2xs rounded-sm bg-black px-1.5 py-0.5 tracking-wide text-white uppercase">
+		<span class="flex flex-1 items-center gap-2">
+			<span
+				class="text-3xs sm:text-2xs rounded-sm bg-black px-1.5 py-0.5 tracking-wide text-white uppercase"
+			>
 				Beta
 			</span>
 			<span class="sm:hidden">
-				{page.data.t('header.betaMessageMobile')}
+				{page.data.t('banner.messageMobile')}
 			</span>
 			<span class="hidden sm:inline">
-				{page.data.t('header.betaMessageDesktop')}
+				{page.data.t('banner.messageDesktop')}
 			</span>
 		</span>
 		<a
 			href={page.params?.lang === 'en' ? '/en/about' : '/about'}
 			class="whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid"
 		>
-			{page.data.t('header.betaLink')}
-			{#if page.data.t('header.betaLinkLong')}
-				<span class="sr-only lg:not-sr-only">{`${page.data.t('header.betaLinkLong')}`}</span>
-			{/if}
+			{page.data.t('banner.feedback')}
+		</a>
+		<a
+			href="https://libris.kb.se"
+			class="whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid"
+		>
+			{page.data.t('banner.old')}
 		</a>
 	</div>
 	<!-- navbar -->
