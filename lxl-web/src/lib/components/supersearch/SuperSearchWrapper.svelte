@@ -155,6 +155,7 @@
 			selection: { anchor: insertCursor, head: insertCursor },
 			userEvent: 'delete'
 		});
+		superSearch?.hideExpandedSearch();
 		goto('/find?' + newSearchParams.toString());
 	}
 
