@@ -7,12 +7,14 @@ export default {
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
-		openMenu: 'Öppna huvudmeny',
-		betaMessageMobile: 'Katalogen kan innehålla inaktuell information.',
-		betaMessageDesktop:
+		openMenu: 'Öppna huvudmeny'
+	},
+	banner: {
+		messageMobile: 'Katalogen kan innehålla inaktuell information.',
+		messageDesktop:
 			'Välkommen till nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
-		betaLink: 'Tyck till',
-		betaLinkLong: 'om nya Libris'
+		feedback: 'Tyck till',
+		old: 'Gå till libris.kb.se'
 	},
 	about: {
 		pageTitle: 'Om betan'
