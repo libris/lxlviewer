@@ -121,6 +121,7 @@
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(0);
 	let prevValue: string = value;
+	let showResults: boolean = $state(true);
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
 		vertical: true,
@@ -215,6 +216,14 @@
 	]);
 
 	let showStartContent = $derived(shouldShowStartContentFn(value, selection));
+
+	$effect(() => {
+		if (showStartContent) {
+			showResults = false;
+		} else if (!showResults && value === search.lastSettledQueryValue) {
+			showResults = true;
+		}
+	});
 
 	function handleClickCollapsed() {
 		if (!dialog?.open) showExpandedSearch();
@@ -653,7 +662,7 @@
 						</div>
 					{/if}
 					{#if selection?.anchor === selection?.head}
-						{#if search.data}
+						{#if search.data && showResults}
 							{@const resultItemRows =
 								(Array.isArray(search.paginatedData) &&
 									search.paginatedData.map((page) => page.items).flat()) ||
