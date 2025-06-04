@@ -214,12 +214,14 @@
 		expandedContentAttributesCompartment.of(initialExpandedContentAttributes)
 	]);
 
+	let showStartContent = $derived(shouldShowStartContentFn(value, selection));
+
 	function handleClickCollapsed() {
 		if (!dialog?.open) showExpandedSearch();
 	}
 
 	function setDefaultRowAndCols() {
-		if (!shouldShowStartContentFn(value, selection)) {
+		if (!showStartContent) {
 			activeRowIndex = defaultResultRow;
 			if (activeRowIndex > 0) {
 				activeColIndex = defaultResultCol;
@@ -633,7 +635,7 @@
 				})}
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if startContent && shouldShowStartContentFn(value, selection)}
+				{#if startContent && showStartContent}
 					{@render startContent({
 						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 						isFocusedCell: (rowIndex: number, colIndex: number) =>
