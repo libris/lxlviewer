@@ -27,6 +27,7 @@
 			? ''
 			: addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || '')
 	);
+	let initialQ: string | undefined;
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
@@ -65,6 +66,7 @@
 		if (to?.url) {
 			const toQ = addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
 			q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+			initialQ = q;
 			superSearch?.hideExpandedSearch();
 		}
 	});
@@ -80,6 +82,12 @@
 	function handleShouldShowStartContent(value: string, selection?: Selection) {
 		/* Show start content if empty */
 		if (!value.trim()) {
+			return true;
+		}
+
+		/* Show start content if value is equal to initial value, or value set after navigation */
+		if (q === initialQ) {
+			initialQ = undefined; // set to undefined so results are shown if the user adds a character and then removes it
 			return true;
 		}
 
