@@ -11,7 +11,7 @@
 	let showHeaderMenu = $state(false);
 	let bannerOffsetHeight: number | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent;
-	const isFindPage = $derived(page.url.pathname === '/find');
+	const isFindPage = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
 	function toggleHeaderMenu() {
 		showHeaderMenu = !showHeaderMenu;
