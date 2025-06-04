@@ -11,7 +11,7 @@
 	<base href={data.base} />
 </svelte:head>
 <AppBar />
-<div class="flex flex-1">
+<div class="flex flex-1 flex-col">
 	<slot />
 </div>
 <SiteFooter />
