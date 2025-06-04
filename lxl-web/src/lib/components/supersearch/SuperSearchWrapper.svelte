@@ -119,15 +119,17 @@
 
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
+		const charBeforeSelection = q.slice(cursor - 1, cursor);
+		const insert = (charBeforeSelection ? ' ' : '') + `${qualifierKey}:`; // Add extra whitespace before if there already is a character infront of the qualifier key
 		superSearch?.dispatchChange({
 			change: {
 				from: cursor,
 				to: cursor,
-				insert: `${qualifierKey}:`
+				insert
 			},
 			selection: {
-				anchor: cursor + qualifierKey?.length + 1,
-				head: cursor + qualifierKey?.length + 1
+				anchor: cursor + insert.length,
+				head: cursor + insert.length
 			},
 			userEvent: 'input.complete'
 		});
