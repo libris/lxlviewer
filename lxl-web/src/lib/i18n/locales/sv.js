@@ -143,7 +143,7 @@ export default {
 		subjectPlaceholder: 'Sommaren, Romerska riket',
 		yearKey: 'år',
 		yearLabel: 'År',
-		yearPlaceholder: '2002, 1987-1994',
+		yearPlaceholder: '1994, 2002, 2025',
 		genreFormKey: 'genreForm',
 		genreFormLabel: 'Genre/form',
 		genreFormPlaceholder: 'Skönlitteratur, Tidskrift'
