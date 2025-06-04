@@ -1,9 +1,11 @@
 <script lang="ts">
 	import getPageTitle from '$lib/utils/getPageTitle';
-	// import SiteHeader from './SiteHeader.svelte';
 	import SiteFooter from './SiteFooter.svelte';
 	import AppBar from './AppBar.svelte';
-	export let data;
+	import { page } from '$app/state';
+	const { data, children } = $props();
+
+	const isFindPage = $derived(page.url.pathname === '/find');
 </script>
 
 <svelte:head>
@@ -12,7 +14,9 @@
 </svelte:head>
 <AppBar />
 <div class="flex flex-1 flex-col">
-	<slot />
+	{@render children()}
 </div>
-<SiteFooter />
+{#if !isFindPage}
+	<SiteFooter />
+{/if}
 <div id="floating-elements-container"></div>
