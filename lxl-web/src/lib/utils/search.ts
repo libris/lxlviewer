@@ -1,4 +1,4 @@
-import { DisplayUtil, isObject, toLite, toString, VocabUtil } from '$lib/utils/xl';
+import { asArray, DisplayUtil, isObject, toLite, toString, VocabUtil } from '$lib/utils/xl';
 import {
 	Base,
 	type DisplayDecorated,
@@ -58,27 +58,35 @@ export async function asResult(
 		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
-		items: view.items?.map((i) => ({
-			...(myLibraries && {
-				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
-			}),
-			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
-			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
-			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
-			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
-			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-			[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(i, LensType.WebCardHeaderTop, locale),
-			[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
-				i,
-				LensType.WebCardHeaderExtra,
-				locale
-			),
-			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
-			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
-			typeStr: getTypeLike(i, vocabUtil)
-				.map((t) => toString(displayUtil.lensAndFormat(t, LensType.Chip, locale)))
-				.join(' · ')
-		})),
+		items: view.items
+			?.map((i) => cleanUpItem(i))
+			.map((i) => ({
+				...(myLibraries && {
+					heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
+				}),
+				...('_debug' in i && {
+					_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
+				}),
+				[JsonLd.ID]: i.meta[JsonLd.ID] as string,
+				[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
+				[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
+				[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
+				[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(
+					i,
+					LensType.WebCardHeaderTop,
+					locale
+				),
+				[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
+					i,
+					LensType.WebCardHeaderExtra,
+					locale
+				),
+				[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
+				image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
+				typeStr: getTypeLike(i, vocabUtil)
+					.map((t) => toString(displayUtil.lensAndFormat(t, LensType.Chip, locale)))
+					.join(' · ')
+			})),
 		...('stats' in view && {
 			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 		}),
@@ -174,6 +182,39 @@ export function displayMappings(
 
 		return op;
 	}
+}
+
+function cleanUpItem(item: FramedData): FramedData {
+	if (isSerial(item)) {
+		const FILTER_ROLES = [
+			'https://id.kb.se/relator/publishingDirector',
+			'https://id.kb.se/relator/responsibleParty',
+			'https://id.kb.se/relator/editor',
+			'https://id.kb.se/relator/honoree'
+		];
+		item.contribution = asArray(item.contribution).filter(
+			(c) => !asArray(c.role).some((r) => FILTER_ROLES.includes(r[JsonLd.ID]))
+		);
+	}
+
+	const HIDE_ROLES = [
+		'https://id.kb.se/relator/author',
+		'https://id.kb.se/relator/unspecifiedContributor'
+	];
+	asArray(item.contribution).forEach((c) => {
+		if (asArray(c.role).every((r) => HIDE_ROLES.includes(r[JsonLd.ID]))) {
+			delete c.role;
+		}
+	});
+
+	return item;
+}
+
+function isSerial(item: FramedData): boolean {
+	return (
+		item[JsonLd.TYPE] === 'Serial' ||
+		getAtPath(item, ['@reverse', 'instanceOf', '*', 'issuanceType']).every((v) => v === 'Serial')
+	);
 }
 
 function getMaxScores(itemDebugs: ApiItemDebugInfo[]) {
