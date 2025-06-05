@@ -148,16 +148,6 @@
 								{/if}
 							{/each}
 						{/if}
-						{#if instances?.count === 1}
-							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-							<span class="divider">{' · '}</span>
-							{#each obj.hasInstance._display as obj2, index (index)}
-								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
-								{#if !obj2.publication}
-									<DecoratedData data={obj2} showLabels={ShowLabelsOptions.Never} />
-								{/if}
-							{/each}
-						{/if}
 					{:else}
 						<span>
 							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
