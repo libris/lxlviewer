@@ -283,7 +283,6 @@
 		font-size: var(--text-2xs);
 
 		/* pill */
-		/*
 		& > * {
 			border: 1px solid var(--color-neutral-200);
 			border-radius: calc(infinity * 1px);
@@ -292,7 +291,6 @@
 			text-decoration: none;
 			white-space: nowrap;
 		}
-		 */
 
 		& > a {
 			border-color: var(--color-accent-200);
