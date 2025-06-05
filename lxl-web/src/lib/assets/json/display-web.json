@@ -33,6 +33,7 @@
 						"isPartOf",
 						"associatedMedia",
 						"isPrimaryTopicOf",
+						"_category",
 						{ "inverseOf": "instanceOf" }
 					]
 				},
@@ -913,6 +914,16 @@
 			"fresnel:propertyFormatDomain": ["bibdb:addressLocality"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Work-dummy": {
+			"@id": "Work-dummy",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Work"],
+			"fresnel:propertyFormatDomain": ["_category"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": " · ",
 				"fresnel:contentFirst": ""
 			}
 		},
