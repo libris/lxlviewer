@@ -82,11 +82,13 @@
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
 					<svelte:component this={getTypeIcon(item['@type'])} class="text-2xs mb-0.25 inline" />
-					<span class="font-medium">
-						{item.typeStr}
-					</span>
-					<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-					<span class="divider">{' · '}</span>
+					{#if item.typeStr}
+						<span class="font-medium">
+							{item.typeStr}
+						</span>
+						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+						<span class="divider">{' · '}</span>
+					{/if}
 					{#each item[LensType.WebCardHeaderTop]?._display as obj, index (index)}
 						<span>
 							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />

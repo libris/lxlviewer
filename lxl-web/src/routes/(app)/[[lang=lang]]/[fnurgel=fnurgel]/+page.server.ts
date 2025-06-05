@@ -3,7 +3,7 @@ import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 
-import { type FramedData, JsonLd } from '$lib/types/xl.js';
+import { type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, SearchResult } from '$lib/types/search.js';
@@ -24,6 +24,7 @@ import {
 } from '$lib/utils/holdings.js';
 import { DebugFlags } from '$lib/types/userSettings';
 import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
+import getTypeLike from '$lib/utils/getTypeLike';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -56,6 +57,12 @@ export const load = async ({ params, url, locals, fetch }) => {
 	copyMediaLinksToWork(mainEntity);
 
 	resourceId = resource.mainEntity['@id'];
+
+	// FIXME DisplayDecorated needs a dummy wrapper to get the styling right
+	//const types = getTypeLike(mainEntity, vocabUtil).map(t => displayUtil.lensAndFormat(t, LensType.Chip, locale));
+	const t = { '@type': 'Work', _category: getTypeLike(mainEntity, vocabUtil) };
+	const types = displayUtil.lensAndFormat(t, LensType.Card, locale);
+
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
@@ -85,6 +92,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	return {
 		type: mainEntity[JsonLd.TYPE],
+		types: types,
 		title: toString(heading),
 		heading,
 		overview: overviewWithoutHasInstance,

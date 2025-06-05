@@ -22,6 +22,7 @@
 	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
+	import getTypeIcon from '$lib/utils/getTypeIcon';
 
 	const { data } = $props();
 	const userSettings = getUserSettings();
@@ -145,7 +146,11 @@
 		>
 			<div class="flex flex-col gap-4">
 				<header>
-					<h1 class="text-3xl font-medium">
+					<span class="mb-4 text-xs">
+						<svelte:component this={getTypeIcon(data.type)} class="mb-0.25 inline text-sm" />
+						<DecoratedData data={data.types} showLabels={ShowLabelsOptions.Never} />
+					</span>
+					<h1 class="mt-3 text-3xl font-medium">
 						<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 					</h1>
 				</header>
