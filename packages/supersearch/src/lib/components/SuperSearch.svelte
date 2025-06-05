@@ -220,7 +220,7 @@
 	$effect(() => {
 		if (showStartContent) {
 			showResults = false;
-		} else if (!showResults && value === search.lastSettledQueryValue) {
+		} else if (!showResults && value === search.lastSuccesfulQuery) {
 			showResults = true;
 		}
 	});
