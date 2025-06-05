@@ -45,7 +45,7 @@
 	});
 
 	let cursor = $derived(selection?.head || 0);
-	const isFindPage = $derived(page.url.pathname === '/find');
+	const isFindPage = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
