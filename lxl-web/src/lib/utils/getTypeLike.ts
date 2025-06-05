@@ -1,6 +1,7 @@
 import { type FramedData, JsonLd } from '$lib/types/xl';
 import { asArray, first, VocabUtil } from '$lib/utils/xl';
 
+// TODO this is just a temporary implementation for exploring different ways of displaying categories
 function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): FramedData[] {
 	const result = [];
 	if (thing[JsonLd.TYPE] != 'Monograph') {
