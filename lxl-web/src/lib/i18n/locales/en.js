@@ -68,7 +68,7 @@ export default {
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Encoding level',
 		'rdf:type': 'Type',
-		hasInstanceType: 'Carrier',
+		hasInstanceType: 'Format', // 'Carrier',
 		hasInstanceCategory: 'Format',
 		category: 'Category',
 		genreForm: 'Genre/form',

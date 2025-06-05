@@ -67,7 +67,7 @@ export default {
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Beskrivningsnivå',
 		'rdf:type': 'Typ',
-		hasInstanceType: 'Bärare',
+		hasInstanceType: 'Format', // 'Bärare',
 		hasInstanceCategory: 'Format',
 		category: 'Kategori',
 		genreForm: 'Genre/form',
