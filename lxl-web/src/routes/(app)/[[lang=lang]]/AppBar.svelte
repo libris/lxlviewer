@@ -11,7 +11,7 @@
 	let showHeaderMenu = $state(false);
 	let bannerOffsetHeight: number | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
-	const isFindPage = $derived(page.url.pathname === '/find');
+	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
 	function toggleHeaderMenu() {
 		showHeaderMenu = !showHeaderMenu;
@@ -63,7 +63,7 @@
 <header
 	class={[
 		'app-bar bg-app-header top-0 z-10 border-b-neutral-200 sm:border-b',
-		isFindPage && 'sticky'
+		isFindRoute && 'sticky'
 	]}
 >
 	<nav class="header-nav grid items-center gap-x-8 px-3 sm:min-h-18">
@@ -114,7 +114,7 @@
 		</div>
 	</nav>
 </header>
-{#if isFindPage}
+{#if isFindRoute}
 	<search class="bg-app-header block px-3 sm:hidden sm:px-6">
 		<SuperSearchWrapper
 			placeholder={page.data.t('header.searchPlaceholder')}

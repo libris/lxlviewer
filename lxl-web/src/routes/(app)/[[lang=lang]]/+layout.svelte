@@ -5,7 +5,7 @@
 	import { page } from '$app/state';
 	const { data, children } = $props();
 
-	const isFindPage = $derived(page.url.pathname === '/find');
+	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 </script>
 
 <svelte:head>
@@ -16,7 +16,7 @@
 <div class="flex flex-1 flex-col">
 	{@render children()}
 </div>
-{#if !isFindPage}
+{#if !isFindRoute}
 	<SiteFooter />
 {/if}
 <div id="floating-elements-container"></div>

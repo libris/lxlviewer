@@ -45,7 +45,7 @@
 	});
 
 	let cursor = $derived(selection?.head || 0);
-	const isFindPage = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
+	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
@@ -208,7 +208,7 @@
 {/snippet}
 
 <form
-	class={['relative w-full', isFindPage && 'find-page']}
+	class={['relative w-full', isFindRoute && 'find-page']}
 	action="find"
 	onsubmit={handleSubmit}
 	data-testid="main-search"
