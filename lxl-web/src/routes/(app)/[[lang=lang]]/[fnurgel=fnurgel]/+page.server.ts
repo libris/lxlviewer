@@ -60,7 +60,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	// FIXME DisplayDecorated needs a dummy wrapper to get the styling right
 	//const types = getTypeLike(mainEntity, vocabUtil).map(t => displayUtil.lensAndFormat(t, LensType.Chip, locale));
-	const t = { '@type': 'Work', genreForm: getTypeLike(mainEntity, vocabUtil) };
+	const t = { '@type': 'Work', subject: getTypeLike(mainEntity, vocabUtil) };
 	const types = displayUtil.lensAndFormat(t, LensType.Card, locale);
 
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
