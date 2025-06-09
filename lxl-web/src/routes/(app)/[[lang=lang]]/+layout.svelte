@@ -13,10 +13,14 @@
 	<base href={data.base} />
 </svelte:head>
 <AppBar />
-<div class="flex flex-1 flex-col">
-	{@render children()}
-</div>
-{#if !isFindRoute}
+{#if isFindRoute}
+	<div class="flex flex-1 flex-col">
+		{@render children()}
+	</div>
+{:else}
+	<main class="flex flex-1 flex-col">
+		{@render children()}
+	</main>
 	<SiteFooter />
 {/if}
 <div id="floating-elements-container"></div>
