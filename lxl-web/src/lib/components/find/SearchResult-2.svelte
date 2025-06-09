@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { SearchResult } from '$lib/types/search';
 	import SiteFooter from '../../../routes/(app)/[[lang=lang]]/SiteFooter.svelte';
 	import Toolbar from '../Toolbar.svelte';
@@ -21,9 +22,10 @@
 		<LeadingPane>
 			<Filters facets={searchResult.facetGroups || []} />
 		</LeadingPane>
-		<section class="@container/content flex-1">
+		<div class="@container/content flex-1">
 			<div class="flex flex-col @5xl/content:flex-row">
 				<main class="flex-1">
+					<h1 class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar {searchResult} />
 					<SearchResultInfo {searchResult} />
 					<ol class="flex flex-col px-4">
@@ -45,7 +47,7 @@
 				</aside>
 			</div>
 			<SiteFooter />
-		</section>
+		</div>
 		<TrailingPanes />
 	</div>
 {/if}

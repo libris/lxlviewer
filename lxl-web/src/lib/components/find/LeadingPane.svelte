@@ -23,7 +23,8 @@
 	}
 </script>
 
-<section
+<nav
+	aria-label={page.data.t('panes.leadingPane')}
 	id="leading-pane"
 	class={[
 		'leading-pane relative hidden w-0 border-b border-b-neutral-200 sm:block',
@@ -69,7 +70,7 @@
 		collapseHandler={() => userSettings.closeLeadingPane()}
 		expandHandler={() => userSettings.openLeadingPane()}
 	/>
-</section>
+</nav>
 
 <style lang="postcss">
 	@reference 'tailwindcss';

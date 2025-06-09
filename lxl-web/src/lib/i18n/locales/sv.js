@@ -213,6 +213,7 @@ export default {
 		'alias-myLibraries': 'Mina bibliotek'
 	},
 	panes: {
+		leadingPane: 'Vänsterpanel',
 		show: 'Visa sidopanel',
 		hide: 'Dölj sidopanel'
 	}

@@ -29,7 +29,8 @@
 </script>
 
 <!-- beta banner -->
-<div
+<nav
+	aria-label="beta banner"
 	class="beta-banner text-2xs/3.5 bg-warning-300 flex min-h-11 place-content-between items-center gap-3 px-3 py-1 font-medium sm:px-6 md:text-xs"
 	bind:offsetHeight={bannerOffsetHeight}
 >
@@ -58,7 +59,7 @@
 	>
 		{page.data.t('banner.old')}
 	</a>
-</div>
+</nav>
 <!-- navbar -->
 <header
 	class={[
@@ -66,7 +67,7 @@
 		isFindRoute && 'sticky'
 	]}
 >
-	<nav class="header-nav grid items-center gap-x-8 px-3 sm:min-h-18">
+	<div class="header-nav grid items-center gap-x-8 px-3 sm:min-h-18">
 		<div class="home flex sm:pl-3">
 			<a href={page.data.base} class="grow-0 no-underline">
 				<span class="font-heading text-2xl font-[600] lg:text-3xl">Libris</span>
@@ -112,7 +113,7 @@
 				{/if}
 			</div>
 		</div>
-	</nav>
+	</div>
 </header>
 {#if isFindRoute}
 	<search class="bg-app-header block px-3 sm:hidden sm:px-6">
