@@ -64,7 +64,7 @@
 <header
 	class={[
 		'app-bar bg-app-header top-0 z-10 border-b-neutral-200 sm:border-b',
-		isFindRoute && 'sticky'
+		isFindRoute && 'sticky z-20'
 	]}
 >
 	<div class="header-nav grid items-center gap-x-8 px-3 sm:min-h-18">
