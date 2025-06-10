@@ -13,7 +13,7 @@
 		maxWidth?: number;
 		isDragging?: boolean;
 		disabled?: boolean;
-		onDragEnd?: () => void;
+		onresized?: () => void;
 		collapseWidth?: number;
 		collapseHandler?: () => void;
 		expandHandler?: () => void;
@@ -27,7 +27,7 @@
 		collapseWidth,
 		side = 'right',
 		disabled = false,
-		onDragEnd,
+		onresized,
 		collapseHandler,
 		expandHandler
 	}: DraggableProps = $props();
@@ -37,6 +37,7 @@
 	let parentId = $derived(parent?.id);
 	let parentRect: DOMRect | undefined;
 
+	let initialWidth = width;
 	let collapsedWhileDragging = false;
 
 	const onPointerMove = (e: PointerEvent) => {
@@ -72,6 +73,7 @@
 		isDragging = true;
 		collapsedWhileDragging = false;
 		parentRect = parent?.getBoundingClientRect();
+		initialWidth = width;
 
 		document.addEventListener('pointermove', throttledOnPointerMove);
 		document.addEventListener('pointerup', onPointerUp, { once: true });
@@ -80,7 +82,11 @@
 	function onPointerUp() {
 		document.removeEventListener('pointermove', throttledOnPointerMove);
 		isDragging = false;
-		onDragEnd?.();
+		if (collapsedWhileDragging) {
+			width = initialWidth;
+		} else {
+			onresized?.();
+		}
 	}
 
 	onDestroy(() => {

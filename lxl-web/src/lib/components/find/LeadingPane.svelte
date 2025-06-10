@@ -18,7 +18,7 @@
 	let paneWidth = $state(userSettings.leadingPane?.width || LEADING_PANE_DEFAULT_WIDTH);
 	let isDragging = $state(false);
 
-	function onDragEnd() {
+	function handleOnResized() {
 		userSettings.setLeadingPaneWidth(paneWidth);
 	}
 </script>
@@ -65,7 +65,7 @@
 		minWidth={LEADING_PANE_MIN_WIDTH}
 		maxWidth={LEADING_PANE_MAX_WIDTH}
 		bind:isDragging
-		{onDragEnd}
+		onresized={handleOnResized}
 		collapseWidth={LEADING_PANE_COLLAPSE_WIDTH}
 		collapseHandler={() => userSettings.closeLeadingPane()}
 		expandHandler={() => userSettings.openLeadingPane()}
