@@ -121,6 +121,7 @@
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(0);
 	let prevValue: string = value;
+	let showResults: boolean = $state(true);
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
 		vertical: true,
@@ -214,12 +215,22 @@
 		expandedContentAttributesCompartment.of(initialExpandedContentAttributes)
 	]);
 
+	let showStartContent = $derived(shouldShowStartContentFn(value, selection));
+
+	$effect(() => {
+		if (showStartContent) {
+			showResults = false;
+		} else if (!showResults && value === search.lastSuccesfulQuery) {
+			showResults = true;
+		}
+	});
+
 	function handleClickCollapsed() {
 		if (!dialog?.open) showExpandedSearch();
 	}
 
 	function setDefaultRowAndCols() {
-		if (!shouldShowStartContentFn(value, selection)) {
+		if (!showStartContent) {
 			activeRowIndex = defaultResultRow;
 			if (activeRowIndex > 0) {
 				activeColIndex = defaultResultCol;
@@ -633,7 +644,7 @@
 				})}
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if startContent && shouldShowStartContentFn(value, selection)}
+				{#if startContent && showStartContent}
 					{@render startContent({
 						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 						isFocusedCell: (rowIndex: number, colIndex: number) =>
@@ -651,7 +662,7 @@
 						</div>
 					{/if}
 					{#if selection?.anchor === selection?.head}
-						{#if search.data}
+						{#if search.data && showResults}
 							{@const resultItemRows =
 								(Array.isArray(search.paginatedData) &&
 									search.paginatedData.map((page) => page.items).flat()) ||

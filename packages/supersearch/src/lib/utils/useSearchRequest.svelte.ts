@@ -23,6 +23,7 @@ export function useSearchRequest({
 	let error: string | undefined = $state();
 	let data = $state();
 	let paginatedData = $state();
+	let lastSuccesfulQuery: string | undefined = $state();
 	let moreSearchParams: URLSearchParams | undefined = $state();
 	const hasMorePaginatedData = $derived(!!moreSearchParams);
 
@@ -63,6 +64,7 @@ export function useSearchRequest({
 
 	async function fetchData(query: string, cursor: number) {
 		data = await _fetchData(queryFn(query, cursor));
+		lastSuccesfulQuery = query;
 		if (paginationQueryFn) {
 			paginatedData = [data];
 		}
@@ -105,6 +107,9 @@ export function useSearchRequest({
 		},
 		get hasMorePaginatedData() {
 			return hasMorePaginatedData;
+		},
+		get lastSuccesfulQuery() {
+			return lastSuccesfulQuery;
 		}
 	};
 }
