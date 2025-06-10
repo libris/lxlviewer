@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { SvelteComponent } from 'svelte';
+	import { onMount, type SvelteComponent } from 'svelte';
 	import { page } from '$app/state';
+	import { browser } from '$app/environment';
 	import { beforeNavigate } from '$app/navigation';
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
@@ -11,7 +12,27 @@
 	let showHeaderMenu = $state(false);
 	let bannerOffsetHeight: number | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
+	let bannerElement: HTMLElement | undefined = $state();
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
+
+	onMount(() => {
+		if (browser) {
+			const observer = new IntersectionObserver(onObserveBanner);
+			if (bannerElement) {
+				observer.observe(bannerElement);
+			}
+		}
+	});
+
+	function onObserveBanner(entries: IntersectionObserverEntry[]) {
+		entries.forEach((entry) => {
+			if (entry.isIntersecting) {
+				bannerOffsetHeight = entry.target.scrollHeight;
+			} else {
+				bannerOffsetHeight = 0;
+			}
+		});
+	}
 
 	function toggleHeaderMenu() {
 		showHeaderMenu = !showHeaderMenu;
@@ -32,7 +53,7 @@
 <nav
 	aria-label="beta banner"
 	class="beta-banner text-2xs/3.5 bg-warning-300 flex min-h-11 place-content-between items-center gap-3 px-3 py-1 font-medium sm:px-6 md:text-xs"
-	bind:offsetHeight={bannerOffsetHeight}
+	bind:this={bannerElement}
 >
 	<span class="flex flex-1 items-center gap-2">
 		<span
@@ -63,8 +84,8 @@
 <!-- navbar -->
 <header
 	class={[
-		'app-bar bg-app-header top-0 z-10 border-b-neutral-200 sm:border-b',
-		isFindRoute && 'sticky z-20'
+		'app-bar bg-app-header top-0 border-b-neutral-200 sm:border-b',
+		isFindRoute && 'z-20 sm:sticky'
 	]}
 >
 	<div class="header-nav grid items-center gap-x-8 px-3 sm:min-h-18">
@@ -73,7 +94,7 @@
 				<span class="font-heading text-2xl font-[600] lg:text-3xl">Libris</span>
 			</a>
 		</div>
-		<search class="search hidden px-4 sm:block">
+		<search class="search sm:px-4">
 			<SuperSearchWrapper
 				placeholder={page.data.t('header.searchPlaceholder')}
 				--offset-top={`${bannerOffsetHeight}px`}
@@ -81,13 +102,15 @@
 			/>
 		</search>
 		<div class="actions flex items-center justify-end">
-			<button
-				aria-label={page.data.t('search.search')}
-				class="text-subtle p-4 sm:hidden"
-				onclick={() => onClickExpandSearch()}
-			>
-				<BiSearch />
-			</button>
+			{#if !isFindRoute}
+				<button
+					aria-label={page.data.t('search.search')}
+					class="text-subtle p-4 sm:hidden"
+					onclick={() => onClickExpandSearch()}
+				>
+					<BiSearch />
+				</button>
+			{/if}
 			<div
 				id="header-menu"
 				class="text-3xs hidden items-center target:absolute target:left-0 target:block target:w-full 2xl:flex"
@@ -115,27 +138,13 @@
 		</div>
 	</div>
 </header>
-{#if isFindRoute}
-	<search class="bg-app-header block px-3 sm:hidden sm:px-6">
-		<SuperSearchWrapper
-			placeholder={page.data.t('header.searchPlaceholder')}
-			bind:this={superSearchWrapperComponent}
-		/>
-	</search>
-{/if}
 
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	.beta-banner {
-		min-height: var(--beta-banner-height);
-	}
-
 	.app-bar {
-		height: var(--app-bar-height);
-
 		@variant sm {
-			height: var(--app-bar-height-sm);
+			height: var(--app-bar-height);
 		}
 	}
 

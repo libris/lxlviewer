@@ -32,7 +32,7 @@
 	}
 </script>
 
-<div class="bg-page sticky top-[var(--app-bar-height)] z-10 sm:static">
+<div class="bg-page sticky top-0 z-10 sm:static">
 	<Toolbar>
 		{#snippet leadingActions()}
 			<!-- mobile modal filter btn -->

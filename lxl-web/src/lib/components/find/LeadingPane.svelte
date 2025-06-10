@@ -82,12 +82,12 @@
 
 	.leading-pane-wrapper {
 		@variant sm {
-			top: var(--app-bar-height-sm);
+			top: var(--app-bar-height);
 		}
 	}
 
 	.leading-pane-content {
-		max-height: calc(100vh - var(--app-bar-height-sm) - var(--toolbar-height));
+		max-height: calc(100vh - var(--app-bar-height) - var(--toolbar-height));
 		overflow-y: auto;
 		scrollbar-width: thin;
 	}
