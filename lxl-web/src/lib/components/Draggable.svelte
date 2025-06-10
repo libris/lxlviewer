@@ -13,10 +13,10 @@
 		maxWidth?: number;
 		isDragging?: boolean;
 		disabled?: boolean;
-		onresized?: () => void;
 		collapseWidth?: number;
-		collapseHandler?: () => void;
-		expandHandler?: () => void;
+		onresized?: () => void;
+		oncollapse?: () => void;
+		onexpand?: () => void;
 	};
 
 	let {
@@ -27,9 +27,9 @@
 		collapseWidth,
 		side = 'right',
 		disabled = false,
-		onresized,
-		collapseHandler,
-		expandHandler
+		oncollapse,
+		onexpand,
+		onresized
 	}: DraggableProps = $props();
 
 	let dragHandle: HTMLDivElement | undefined = $state();
@@ -52,14 +52,14 @@
 		if (collapseWidth && distanceFromStart < collapseWidth) {
 			if (!collapsedWhileDragging) {
 				collapsedWhileDragging = true;
-				collapseHandler?.();
+				oncollapse?.();
 			}
 			return;
 		}
 
 		// reopen if over threshold again during the same drag session
 		if (collapseWidth && collapsedWhileDragging && distanceFromStart > collapseWidth) {
-			expandHandler?.();
+			onexpand?.();
 			collapsedWhileDragging = false;
 		}
 

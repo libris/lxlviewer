@@ -65,10 +65,10 @@
 		minWidth={LEADING_PANE_MIN_WIDTH}
 		maxWidth={LEADING_PANE_MAX_WIDTH}
 		bind:isDragging
-		onresized={handleOnResized}
 		collapseWidth={LEADING_PANE_COLLAPSE_WIDTH}
-		collapseHandler={() => userSettings.closeLeadingPane()}
-		expandHandler={() => userSettings.openLeadingPane()}
+		oncollapse={() => userSettings.closeLeadingPane()}
+		onexpand={() => userSettings.openLeadingPane()}
+		onresized={handleOnResized}
 	/>
 </nav>
 
