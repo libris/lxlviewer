@@ -31,7 +31,7 @@
 	let searchPhrase = $state('');
 </script>
 
-<div class="mt-4 flex flex-col gap-4">
+<div class="flex flex-col gap-4 sm:mt-4">
 	{#if mapping && inModal && shouldShowMapping()}
 		<nav aria-label={page.data.t('search.selectedFilters')}>
 			<SearchMapping {mapping} />
@@ -74,5 +74,10 @@
 	/* hide 'no hits' msg as long as there's results displaying */
 	:global(.facet-nav:has(.has-hits) .no-hits-msg) {
 		display: none;
+	}
+
+	:global(dialog .facet-nav) {
+		margin-right: calc(var(--spacing) * -4);
+		margin-left: calc(var(--spacing) * -4);
 	}
 </style>

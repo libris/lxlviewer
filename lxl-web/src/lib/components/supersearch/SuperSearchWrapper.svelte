@@ -367,7 +367,6 @@
 	:global(.find-page #supersearch) {
 		display: block;
 		padding-bottom: calc(var(--spacing) * 2);
-		padding-top: 1px;
 
 		@variant sm {
 			padding-bottom: 0;
@@ -419,10 +418,19 @@
 	}
 
 	:global(.supersearch-dialog-content) {
-		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md drop-shadow-md;
 		grid-area: supersearch-content;
 		background: var(--color-page);
+		pointer-events: auto;
+		max-height: 100vh;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		overscroll-behavior: contain;
 		scrollbar-width: none;
+
+		@variant sm {
+			border-radius: var(--radius-md);
+			@apply drop-shadow-md;
+		}
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {

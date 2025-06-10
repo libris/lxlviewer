@@ -36,7 +36,12 @@
 		<span class="text-subtle pointer-events-none absolute top-0 p-2">
 			<BiSortDown aria-hidden="true" />
 		</span>
-		<select id="search-sort" class="btn btn-primary" form="main-search" onchange={handleSortChange}>
+		<select
+			id="search-sort"
+			class="btn btn-primary w-px sm:w-auto"
+			form="main-search"
+			onchange={handleSortChange}
+		>
 			{#each sortOptions as option (option.value)}
 				<option value={option.value} selected={option.value === sortOrder}>{option.label}</option>
 			{/each}

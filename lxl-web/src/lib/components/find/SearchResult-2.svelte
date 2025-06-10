@@ -18,12 +18,12 @@
 </script>
 
 {#if searchResult}
-	<div class="search-result flex w-full">
+	<div class="search-result flex w-full flex-1">
 		<LeadingPane>
 			<Filters facets={searchResult.facetGroups || []} />
 		</LeadingPane>
-		<div class="@container/content flex-1">
-			<div class="flex flex-col @5xl/content:flex-row">
+		<div class="@container/content flex flex-1 flex-col">
+			<div class="flex flex-1 flex-col @5xl/content:flex-row">
 				<main class="flex-1">
 					<h1 class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar {searchResult} />
@@ -54,6 +54,6 @@
 
 <style>
 	.aside-content {
-		top: calc(var(--app-bar-height) + (var(--spacing) * 8));
+		top: calc(var(--app-bar-height) + (var(--spacing) * 4));
 	}
 </style>
