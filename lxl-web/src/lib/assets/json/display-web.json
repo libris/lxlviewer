@@ -203,6 +203,38 @@
 					"classLensDomain": "Class",
 					"showProperties": ["label"]
 				},
+				"Publication": {
+					"@id": "Publication-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Publication",
+					"showProperties": [
+						"place",
+						"country",
+						"agent",
+						"hasPart",
+						"year",
+						"startYear",
+						"endYear",
+						"date",
+						"marc:publicationStatus"
+					]
+				},
+				"ProvisionActivity": {
+					"@id": "ProvisionActivity-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "ProvisionActivity",
+					"showProperties": [
+						"place",
+						"country",
+						"agent",
+						"hasPart",
+						"year",
+						"startYear",
+						"endYear",
+						"date",
+						"marc:publicationStatus"
+					]
+				},
 				"Work": {
 					"@id": "Work-chips",
 					"@type": "fresnel:Lens",
@@ -517,6 +549,7 @@
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
 			"fresnel:propertyFormatDomain": [
 				"place",
+				"country",
 				"year",
 				"startYear",
 				"date",
