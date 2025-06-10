@@ -86,7 +86,6 @@
 		}
 
 		/* Show start content if value is equal to initial value, or value set after navigation */
-		console.log('q', q, 'initialQ', initialQ);
 		if (q === initialQ) {
 			initialQ = undefined; // set to undefined so results are shown if the user adds a character and then removes it
 			return true;
