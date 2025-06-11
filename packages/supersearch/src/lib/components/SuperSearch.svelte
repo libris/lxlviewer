@@ -337,6 +337,12 @@
 		}
 	}
 
+	export function fetchData() {
+		if (selection) {
+			search?.fetchData(value, selection.head);
+		}
+	}
+
 	function submitClosestForm() {
 		const formElement = form
 			? document.getElementById(form)

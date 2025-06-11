@@ -32,6 +32,7 @@
 	let isLoading: boolean | undefined = $state();
 	let debouncedLoading: boolean | undefined = $state();
 	let timeout: ReturnType<typeof setTimeout> | null = null;
+	let fetchOnExpand = $state(true);
 
 	// debounce loading spinner
 	$effect(() => {
@@ -66,6 +67,7 @@
 			const toQ = addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
 			q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
 			superSearch?.hideExpandedSearch();
+			fetchOnExpand = true;
 		}
 	});
 
@@ -165,6 +167,17 @@
 	export function showExpandedSearch() {
 		superSearch?.showExpandedSearch();
 	}
+
+	function handleOnChange() {
+		fetchOnExpand = false;
+	}
+
+	function handleOnExpand() {
+		if (fetchOnExpand && q.trim()) {
+			superSearch?.fetchData();
+			fetchOnExpand = false;
+		}
+	}
 </script>
 
 {#snippet startFilterItem({
@@ -236,6 +249,8 @@
 		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={2}
 		debouncedWait={100}
+		onexpand={handleOnExpand}
+		onchange={handleOnChange}
 	>
 		{#snippet inputRow({
 			expanded,
