@@ -5,6 +5,7 @@ import lxlQualifierPlugin, {
 } from '$lib/extensions/lxlQualifierPlugin/index.js';
 import type { ResultItem } from './types/superSearch.js';
 import useSearchRequest from './utils/useSearchRequest.svelte';
+import type { ChangeCodeMirrorEvent as ChangeSuperSearchEvent } from './components/CodeMirror.svelte';
 
 export {
 	SuperSearch,
@@ -12,5 +13,6 @@ export {
 	useSearchRequest,
 	type ResultItem,
 	type Selection,
-	type QualifierWidgetProps
+	type QualifierWidgetProps,
+	type ChangeSuperSearchEvent
 };

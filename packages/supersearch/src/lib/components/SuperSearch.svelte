@@ -6,6 +6,7 @@
 		type SelectCodeMirrorEvent,
 		type Selection
 	} from '$lib/components/CodeMirror.svelte';
+	import type { ChangeSuperSearchEvent } from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
@@ -82,6 +83,9 @@
 		isLoading?: boolean;
 		hasData?: boolean;
 		loadMoreLabel?: string;
+		onexpand?: () => void;
+		oncollapse?: () => void;
+		onchange?: (event: ChangeSuperSearchEvent) => void;
 	}
 
 	let {
@@ -111,7 +115,10 @@
 		selection = $bindable(),
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable(), // should be treated as readonly
-		loadMoreLabel = 'Load more'
+		loadMoreLabel = 'Load more',
+		onexpand,
+		oncollapse,
+		onchange
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -260,6 +267,8 @@
 			prevValue = value;
 			if (search.data) search.resetData();
 		}
+
+		onchange?.(event);
 	}
 
 	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
@@ -306,24 +315,26 @@
 	}
 
 	export function showExpandedSearch() {
-		expandedEditorView?.dispatch({
-			selection: collapsedEditorView?.state.selection.main
-		});
-		dialog?.showModal();
-		expandedEditorView?.focus();
-		setDefaultRowAndCols();
-		expanded = true;
-		allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
+		if (!expanded) {
+			expandedEditorView?.dispatch({
+				selection: collapsedEditorView?.state.selection.main
+			});
+			dialog?.showModal();
+			setDefaultRowAndCols();
+			allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
+			expanded = true;
+			onexpand?.();
+		}
 	}
 
 	export function hideExpandedSearch() {
-		dialog?.close();
-	}
-
-	function handleCloseExpandedSearch() {
-		collapsedEditorView?.focus();
-		expanded = false;
-		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
+		if (expanded) {
+			dialog?.close();
+			collapsedEditorView?.focus();
+			expanded = false;
+			allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
+			oncollapse?.();
+		}
 	}
 
 	function submitClosestForm() {
@@ -624,12 +635,7 @@
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
 </div>
-<dialog
-	class="supersearch-dialog"
-	id={`${id}-dialog`}
-	bind:this={dialog}
-	onclose={handleCloseExpandedSearch}
->
+<dialog class="supersearch-dialog" id={`${id}-dialog`} bind:this={dialog}>
 	<div class="supersearch-dialog-wrapper" role="presentation" onkeydown={handleExpandedKeyDown}>
 		<div class="supersearch-dialog-content" role="grid">
 			<div class="supersearch-combobox" role="row">
