@@ -321,9 +321,15 @@
 	}
 
 	function handleCloseExpandedSearch() {
-		collapsedEditorView?.focus();
+		collapsedEditorView?.dispatch({
+			selection: expandedEditorView?.state.selection.main
+		});
 		expanded = false;
 		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
+	}
+
+	export function blur() {
+		collapsedEditorView?.contentDOM.blur();
 	}
 
 	function submitClosestForm() {

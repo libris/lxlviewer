@@ -66,6 +66,7 @@
 			const toQ = addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
 			q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
 			superSearch?.hideExpandedSearch();
+			superSearch?.blur(); // remove focus from input after searching or navigating
 		}
 	});
 
