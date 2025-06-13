@@ -16,12 +16,12 @@ function toImage(imageObject: KbvImageObject, recordId: string, lang: LocaleCode
 	const mapOne = (i: KbvImageObject) =>
 		({
 			url: i[JsonLd.ID] || getAtPath(i, [Owl.SAME_AS, 0, JsonLd.ID], undefined),
-			widthṔx: Number.parseInt(i.width || ''),
+			widthPx: Number.parseInt(i.width || ''),
 			heightPx: Number.parseInt(i.height || '')
 		}) as ImageResolution;
 
 	const sizes = [...(imageObject.thumbnail?.map(mapOne) || []), mapOne(imageObject)];
-	sizes.sort((a, b) => a.widthṔx - b.widthṔx);
+	sizes.sort((a, b) => a.widthPx - b.widthPx);
 
 	const attribution = getAttribution(imageObject);
 	const usageAndAccessPolicy = getUsageAndAccessPolicy(imageObject, lang);
@@ -35,7 +35,7 @@ export function bestSize(from: Image | undefined, minWidthPx: number): ImageReso
 		return undefined;
 	}
 	const sizes = from.sizes;
-	const result = sizes.find((i) => i.widthṔx >= minWidthPx);
+	const result = sizes.find((i) => i.widthPx >= minWidthPx);
 	return result || sizes[sizes.length - 1];
 }
 
@@ -138,7 +138,7 @@ export function isImage(v: unknown): v is Image {
 }
 
 export function isImageResolution(v: unknown): v is ImageResolution {
-	return isObject(v) && 'url' in v && 'widthṔx' in v && 'heightPx' in v;
+	return isObject(v) && 'url' in v && 'widthPx' in v && 'heightPx' in v;
 }
 
 function generateImageHash(expires, url, secret) {

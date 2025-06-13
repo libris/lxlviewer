@@ -15,8 +15,8 @@
 	{#if item.image}
 		<img
 			src={item.image.url}
-			width={item.image.widthṔx}
-			height={item.image.heightPx}
+			width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
+			height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
 			alt={$page.data.t('general.latestInstanceCover')}
 			class={[
 				'aspect-square object-contain object-top',
