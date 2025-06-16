@@ -138,6 +138,7 @@
 		instances={data.instances}
 		title={data.title}
 		overview={data.overview}
+		holdersByType={data.holdersByType}
 	></HoldingsModal>
 </article>
 <SearchResultOld searchResult={page.data.searchResult} showMapping />

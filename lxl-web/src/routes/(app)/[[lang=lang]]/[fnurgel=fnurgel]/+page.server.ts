@@ -90,8 +90,6 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
 
-	console.log('itemLinksByBibId', itemLinksByBibId);
-
 	return {
 		type: mainEntity[JsonLd.TYPE],
 		types: types,
