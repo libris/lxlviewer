@@ -1,9 +1,9 @@
-export const QUALIFIER_KEY_FROM_ALIAS = {
-	Contributor: ['medverkande'],
-	Language: ['språk'],
-	Subject: ['ämne'],
-	Bibliography: ['bibliografi']
-};
+// export const QUALIFIER_KEY_FROM_ALIAS = {
+// 	Contributor: ['medverkande'],
+// 	Language: ['språk'],
+// 	Subject: ['ämne'],
+// 	Bibliography: ['bibliografi']
+// };
 
 export const BASE_CLASS_FROM_QUALIFIER_KEY = {
 	Agent: ['contributor', 'subject'],

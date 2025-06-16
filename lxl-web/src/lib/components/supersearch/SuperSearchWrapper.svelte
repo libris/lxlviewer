@@ -10,7 +10,7 @@
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping, QualifierSuggestion } from '$lib/types/search';
+	import type { DisplayMapping } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
@@ -141,15 +141,15 @@
 		});
 	}
 
-	function addQualifier(qualifier: QualifierSuggestion) {
-		superSearch?.dispatchChange({
-			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(qualifier._q) },
-			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
-			userEvent: 'input.complete'
-		});
-		superSearch?.hideExpandedSearch();
-		goto(getFullQualifierLink(qualifier._q));
-	}
+// function addQualifier(qualifier: QualifierSuggestion) {
+// 		superSearch?.dispatchChange({
+// 			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(qualifier._q) },
+// 			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
+// 			userEvent: 'input.complete'
+// 		});
+// 		superSearch?.hideExpandedSearch();
+// 		goto(getFullQualifierLink(qualifier._q));
+// 	}
 
 	function removeQualifier(qualifier: string) {
 		const newQ = addSpaceIfEndingQualifier(q.replace(qualifier, '').trim());
@@ -174,11 +174,11 @@
 		return lxlQualifierPlugin(QualifierPill, getLabels, removeQualifier);
 	});
 
-	function getFullQualifierLink(q: string) {
-		const newParams = new URLSearchParams(pageParams);
-		newParams.set('_q', q);
-		return `/find?${newParams.toString()}`;
-	}
+	// function getFullQualifierLink(q: string) {
+	// 	const newParams = new URLSearchParams(pageParams);
+	// 	newParams.set('_q', q);
+	// 	return `/find?${newParams.toString()}`;
+	// }
 
 	export function showExpandedSearch() {
 		superSearch?.showExpandedSearch();
@@ -343,7 +343,7 @@
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
 			{#if resultItem}
-				<Suggestion item={resultItem} {getCellId} {isFocusedCell} {addQualifier} />
+				<Suggestion item={resultItem} {getCellId} {isFocusedCell} />
 			{/if}
 		{/snippet}
 	</SuperSearch>

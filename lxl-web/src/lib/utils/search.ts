@@ -120,6 +120,7 @@ export function displayMappings(
 
 			if ('property' in m && operator) {
 				const property = m[operator] as FramedData;
+				// console.log(property)
 				return {
 					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),

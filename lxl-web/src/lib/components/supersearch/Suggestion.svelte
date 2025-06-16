@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { relativizeUrl } from '$lib/utils/http';
-	import type { QualifierSuggestion, SuperSearchResultItem } from '$lib/types/search';
+	import type { SuperSearchResultItem } from '$lib/types/search';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
@@ -16,15 +16,14 @@
 		item: SuperSearchResultItem;
 		getCellId: (cellIndex: number) => string;
 		isFocusedCell: (cellIndex: number) => boolean;
-		addQualifier: (qualifier: QualifierSuggestion) => void;
 	};
 
-	const { item, getCellId, isFocusedCell, addQualifier }: Props = $props();
+	const { item, getCellId, isFocusedCell }: Props = $props();
 	const resourceId = $derived(relativizeUrl(item?.['@id']));
 
 	function handleClickPrimaryAction() {
 		if (item?.qualifiers.length) {
-			addQualifier(item?.qualifiers[0]);
+			goto(item?.qualifiers[0]._q);
 		} else if (resourceId) {
 			goto(resourceId);
 		}
@@ -130,7 +129,7 @@
 						menuItems: [
 							...item.qualifiers.map((qualifier) => ({
 								label: `${$page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
-								action: () => addQualifier(qualifier)
+								action: () => goto(qualifier._q)
 							})),
 							{
 								label: `${$page.data.t('search.goToResource')}`,
