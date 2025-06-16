@@ -145,7 +145,7 @@
 			{/key}
 		</button>
 	{:else}
-		<a href={resourceId}>
+		<a href={resourceId} id={getCellId(0)}>
 			{@render resourceSnippet(item)}
 		</a>
 	{/if}
