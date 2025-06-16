@@ -137,6 +137,58 @@ export function getBibIdsByInstanceId(
 	}, {});
 }
 
+// TODO: We do not have access to the full record when calling getBibIdsByInstanceId
+// hence this version which is not dependent on the resource/record parameter
+export function getBibIdsByInstanceId2(
+	mainEntity,
+	displayUtil: DisplayUtil,
+	locale: LocaleCode
+): Record<string, BibIdObj> {
+	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instance) => {
+		const id = relativizeUrl(instance['@id'])?.replace('#it', '');
+
+		const bibId = instance.meta?.controlNumber;
+		const type = instance['@type'];
+		const holders = instance['@reverse']?.itemOf?.map((i) => i?.heldBy?.sigel);
+		const publication = instance.publication;
+		let str = '';
+		if (publication) {
+			str =
+				toString(displayUtil.lensAndFormat(instance.publication[0], LensType.Token, locale)) || '';
+		}
+
+		const onr = '';
+
+		const isbn: string[] = [];
+		const issn: string[] = [];
+		instance.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
+			if (el['@type'] === 'ISBN') {
+				isbn.push(el.value);
+			}
+
+			if (el['@type'] === 'ISSN') {
+				issn.push(el.value);
+			}
+		});
+
+		if (!id) {
+			return acc;
+		}
+		return {
+			...acc,
+			[id]: {
+				bibId,
+				'@type': type,
+				holders,
+				onr,
+				isbn,
+				issn,
+				str
+			}
+		};
+	}, {});
+}
+
 export function getHoldingsByType(mainEntity: FramedData) {
 	const holdingsByType = mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
 		const type = instanceOfItem['@type'];
@@ -349,3 +401,10 @@ function getLinksToItemFor(
 	}
 	return linksToItem;
 }
+
+//CALL ON CLICK
+// function getItemLinks(bibIdsByInstanceId, displayUtil, locale) {
+// 	// hit the holdings cache
+//
+// 	return getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
+// }

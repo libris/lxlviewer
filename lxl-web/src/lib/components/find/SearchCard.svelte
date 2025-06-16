@@ -8,11 +8,12 @@
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 
 	export let item: SearchResultItem;
 
@@ -43,7 +44,7 @@
 							src={item.image.url}
 							width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
 							height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
-							alt={$page.data.t('general.latestInstanceCover')}
+							alt={page.data.t('general.latestInstanceCover')}
 							class:rounded-full={item['@type'] === 'Person'}
 							class="object-contain object-top {item['@type'] !== 'Person'
 								? 'aspect-2/3'
@@ -132,7 +133,7 @@
 						{#if instances?.years}
 							{#if instances.count > 1}
 								{instances?.count}
-								{$page.data.t('search.editions')}
+								{page.data.t('search.editions')}
 								{`(${instances.years})`}
 							{:else}
 								{instances.years}
@@ -156,6 +157,19 @@
 				{/each}
 			</footer>
 		</div>
+		<div>
+			{#if id}
+				<a
+					class="btn btn-cta"
+					href={getHoldingsLink(page.url, id)}
+					data-sveltekit-preload-data="false"
+					data-testid="holding-link"
+					onclick={(event) => handleClickHoldings(event, page.state, id)}
+				>
+					test
+				</a>
+			{/if}
+		</div>
 		{#if item._debug}
 			{#key item._debug}
 				<div class="card-debug z-20 self-start text-left select-text">
@@ -163,7 +177,7 @@
 					<button
 						type="button"
 						class="text-xs"
-						on:click={() => {
+						onclick={() => {
 							showDebugHaystack = !showDebugHaystack;
 						}}
 					>
@@ -172,7 +186,7 @@
 					<button
 						type="button"
 						class="text-xs"
-						on:click={() => {
+						onclick={() => {
 							showDebugExplain = !showDebugExplain;
 						}}
 					>
