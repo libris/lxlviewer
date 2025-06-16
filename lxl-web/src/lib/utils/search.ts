@@ -12,6 +12,7 @@ import {
 	type ApiItemDebugInfo,
 	type DatatypeProperty,
 	type DisplayMapping,
+	type Facet,
 	type FacetGroup,
 	type ItemDebugInfo,
 	type MultiSelectFacet,
@@ -31,6 +32,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
 import getTypeLike from '$lib/utils/getTypeLike';
+import { TOP_FACETS } from '$lib/constants/facets';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -282,7 +284,11 @@ function displayFacetGroups(
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 
-	const result = Object.values(slices).map((g) => {
+	const result = [];
+
+	result.push(displayAccessFilters(view, displayUtil, locale, translate, usePath));
+
+	result.push(... Object.values(slices).map((g) => {
 		return {
 			label: translate(`facet.${g.alias || g.dimension}`),
 			dimension: g.dimension,
@@ -299,7 +305,7 @@ function displayFacetGroups(
 				};
 			})
 		};
-	});
+	}));
 
 	result.push(displayBoolFilters(view, displayUtil, locale, translate, usePath));
 
@@ -325,6 +331,35 @@ export function displayPredicates(
 	});
 }
 
+function displayAccessFilters(
+	view: PartialCollectionView,
+	displayUtil: DisplayUtil,
+	locale: LangCode,
+	translate: TranslateFn,
+	usePath?: string
+): FacetGroup {
+	const filters =
+		view.stats?._boolFilters.filter((f) => TOP_FACETS.includes(<string>f.object?.alias)) || [];
+
+	const facets = filters.map((o) => {
+		return {
+			selected: o._selected || false,
+			totalItems: o.totalItems,
+			view: replacePath(o.view, usePath),
+			object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
+			discriminator: '',
+			alias: o.object.alias
+		};
+	});
+
+	return {
+		label: translate('facet.accessFilters'),
+		dimension: 'accessFilters',
+		facets: facets
+	};
+}
+
 function displayBoolFilters(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
@@ -332,7 +367,8 @@ function displayBoolFilters(
 	translate: TranslateFn,
 	usePath?: string
 ): FacetGroup {
-	const filters = view.stats?._boolFilters || [];
+	const filters =
+		view.stats?._boolFilters.filter((f) => !TOP_FACETS.includes(<string>f.object?.alias)) || [];
 
 	const facets = filters.map((o) => {
 		return {

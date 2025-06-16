@@ -32,7 +32,7 @@
 </script>
 
 {#snippet filterContent()}
-	<div class="flex items-baseline gap-2 text-xs">
+	<div class="flex items-baseline gap-2 pl-2 text-xs">
 		<span class="sr-only">{isFilterActive ? page.data.t('search.activeFilter') : ''}</span>
 		<div
 			class={['text-subtle bg-page flex rounded-sm', !myLibrariesValues.length && 'text-subtle/50']}
@@ -48,9 +48,7 @@
 	</div>
 {/snippet}
 
-<div
-	class="text-2xs bg-accent-50 border-neutral flex w-full gap-2 rounded-sm border-b p-3 lg:flex-col lg:gap-1"
->
+<div class="text-2xs bg-accent-50 border-neutral flex w-full gap-2 rounded-sm border-b p-3 lg:flex-col lg:gap-1">
 	{#if myLibrariesValues.length}
 		<a class="no-underline" href={isFilterActive ? removeFilterUrl : applyFilterUrl}>
 			{@render filterContent()}
