@@ -1,10 +1,16 @@
 import Cookies from 'js-cookie';
-import type { LibraryItem, UserSettings as UserSettingsType } from '$lib/types/userSettings';
+import {
+	ExpandState,
+	type LibraryItem,
+	type UserSettings as UserSettingsType
+} from '$lib/types/userSettings';
 
 enum availableSettings {
 	facetSort = 'facetSort',
+
 	myLibraries = 'myLibraries',
-	leadingPane = 'leadingPane'
+	leadingPane = 'leadingPane',
+	facetExpanded = 'facetExpanded',
 }
 
 export class UserSettings {
@@ -88,11 +94,23 @@ export class UserSettings {
 		return this.settings?.leadingPane;
 	}
 
+	saveFacetExpanded(facet: string, value: boolean) {
+		if (facet) {
+			const facetExpanded = { ...this.settings.facetExpanded };
+			facetExpanded[facet] = value ? ExpandState.OPEN : ExpandState.CLOSED;
+			this.update('facetExpanded', facetExpanded);
+		}
+	}
+
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
 
 	get facetSort() {
 		return this.settings?.facetSort;
+	}
+
+	get facetExpanded() {
+		return this.settings?.facetExpanded;
 	}
 }

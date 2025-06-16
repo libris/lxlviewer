@@ -15,6 +15,7 @@
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiInfo from '~icons/bi/info-circle';
 	import FacetValue from '$lib/components/find/FacetValue.svelte';
+	import { ExpandState } from '$lib/types/userSettings';
 
 	// Todo: Rename FacetGroup -> Facet (facets -> items/facetItems)
 
@@ -22,9 +23,10 @@
 		group: FacetGroup;
 		locale: LocaleCode;
 		searchPhrase: string;
+		defaultExpanded: boolean;
 	};
 
-	let { group, locale, searchPhrase }: FacetGroupProps = $props();
+	let { group, locale, searchPhrase, defaultExpanded }: FacetGroupProps = $props();
 
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
@@ -37,6 +39,12 @@
 		userSettings.facetSort?.[group.dimension] ||
 			CUSTOM_FACET_SORT[group.dimension as keyof typeof CUSTOM_FACET_SORT] ||
 			DEFAULT_FACET_SORT
+	);
+
+	let userExpanded = $derived(
+		userSettings.facetExpanded?.[group.dimension]
+			? userSettings.facetExpanded?.[group.dimension] === ExpandState.OPEN
+			: defaultExpanded
 	);
 
 	const sortOptions = [
@@ -79,6 +87,7 @@
 
 	const shownItems = $derived(filteredItems.filter((facet, index) => index < defaultItemsShown));
 	let hasHits = $derived(filteredItems.length > 0);
+	let expanded = $derived(userExpanded || (searchPhrase && hasHits));
 	const canShowMoreItems = $derived(filteredItems.length > defaultItemsShown);
 	const canShowFewerItems = $derived(
 		!canShowMoreItems && filteredItems.length > DEFAULT_FACET_VALUES_SHOWN
@@ -94,6 +103,11 @@
 			$matomoTracker.trackEvent('Facet sort', group.dimension, target.value);
 		}
 	}
+
+	function saveUserExpanded(e: Event): void {
+		const target = e.target as HTMLDetailsElement;
+		userSettings.saveFacetExpanded(group.dimension, target.open);
+	}
 </script>
 
 <li
@@ -101,7 +115,7 @@
 	class:has-hits={hasHits}
 	data-dimension={group.dimension}
 >
-	<details class="relative" open>
+	<details class="relative" open={!!expanded} ontoggle={saveUserExpanded}>
 		<summary
 			class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
 			data-testid="facet-toggle"

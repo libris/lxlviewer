@@ -6,9 +6,17 @@ export interface LibraryItem {
 	sigel: string;
 }
 
+export enum ExpandState {
+	OPEN = 'OPEN',
+	CLOSED = 'CLOSED'
+}
+
 export type UserSettings = {
 	facetSort?: {
 		[dimension: string]: string;
+	};
+	facetExpanded?: {
+		[dimension: string]: ExpandState;
 	};
 	myLibraries?: {
 		[id: string]: LibraryItem;

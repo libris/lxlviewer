@@ -6,6 +6,7 @@
 	import MyLibrariesFilter from './MyLibrariesFilter.svelte';
 	import SearchMapping from './SearchMapping.svelte';
 	import BiSearch from '~icons/bi/search';
+	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 
 	type filtersPropsType = {
 		facets: TypedFacetGroup[];
@@ -58,8 +59,13 @@
 			{/if}
 		</div>
 		<ol>
-			{#each facets as group (group.dimension)}
-				<FacetGroup {group} locale={page.data.locale} {searchPhrase} />
+			{#each facets as group, i (group.dimension)}
+				<FacetGroup
+						{group}
+						locale={page.data.locale}
+						{searchPhrase}
+						defaultExpanded={i < DEFAULT_FACETS_EXPANDED}
+				/>
 			{/each}
 		</ol>
 		<span role="status" class="no-hits-msg px-2 text-xs" aria-atomic="true"
