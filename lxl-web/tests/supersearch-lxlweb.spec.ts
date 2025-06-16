@@ -36,3 +36,11 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 	await page.keyboard.press('Enter');
 	await expect(page.locator('.resource-page')).toBeVisible();
 });
+
+test('input loses focus when navigating', async ({ page }) => {
+	await page.getByRole('combobox').fill('a');
+	await expect(await page.locator('.supersearch-combobox .cm-focused')).toBeVisible();
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('Enter');
+	await expect(await page.locator('.supersearch-combobox .cm-focused')).not.toBeVisible();
+});
