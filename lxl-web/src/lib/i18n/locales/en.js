@@ -82,6 +82,7 @@ export default {
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
 		fieldOfActivity: 'Field of Activity',
+		accessFilters: 'Access',
 		boolFilters: 'Other',
 		limitInfo: 'Some options are not displayed',
 		limitText:

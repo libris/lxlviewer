@@ -81,6 +81,7 @@ export default {
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
 		fieldOfActivity: 'Verksamhetsområde',
+		accessFilters: 'Åtkomst',
 		boolFilters: 'Övrigt',
 		limitInfo: 'Alla val kan ej visas',
 		limitText:
