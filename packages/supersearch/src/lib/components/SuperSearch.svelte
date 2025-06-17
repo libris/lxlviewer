@@ -320,6 +320,7 @@
 				selection: collapsedEditorView?.state.selection.main
 			});
 			dialog?.showModal();
+			expandedEditorView?.focus();
 			setDefaultRowAndCols();
 			allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 			expanded = true;
