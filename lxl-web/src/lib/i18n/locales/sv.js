@@ -121,7 +121,6 @@ export default {
 		relatedSearchLabel: 'Sök i resultaten',
 		didYouMean: 'Menade du',
 		showAllResults: 'Visa alla sökresultat',
-		supersearchStartHeader: 'Bygg och förfina din sökning',
 		add: 'Lägg till',
 		addAs: 'Lägg till som',
 		goTo: 'Gå till',
@@ -131,6 +130,11 @@ export default {
 		changeLibraries: 'Ändra bibliotek',
 		noAddedLibrariesText:
 			'Du har inte valt några favoritbibliotek. Klicka på “Lägg till”-länken nedan för att välja favoritbibliotek.'
+	},
+	supersearch: {
+		addQualifiers: 'Lägg till filter',
+		suggestions: 'Förslag',
+		showAll: 'Visa alla träffar'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

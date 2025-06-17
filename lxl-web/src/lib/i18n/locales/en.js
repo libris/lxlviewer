@@ -122,7 +122,6 @@ export default {
 		relatedSearchLabel: 'Search the results',
 		didYouMean: 'Did you mean',
 		showAllResults: 'Show all results',
-		supersearchStartHeader: 'Build and refine your search query',
 		add: 'Add',
 		addAs: 'Add as',
 		goTo: 'Go to',
@@ -132,6 +131,11 @@ export default {
 		changeLibraries: 'Change libraries',
 		noAddedLibrariesText:
 			'You have not chosen any favourite libraries. To do that, click the "Add libraries" link.'
+	},
+	supersearch: {
+		addQualifiers: 'Add filter',
+		suggestions: 'Suggestions',
+		showAll: 'Show all results'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
