@@ -513,6 +513,7 @@
 		value = '';
 		search.resetData();
 		showExpandedSearch();
+		expandedEditorView?.focus();
 	}
 
 	onMount(() => {
