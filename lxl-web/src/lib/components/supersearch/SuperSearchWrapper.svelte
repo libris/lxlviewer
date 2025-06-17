@@ -80,6 +80,7 @@
 			q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
 			superSearch?.hideExpandedSearch();
 			fetchOnExpand = true;
+			superSearch?.blur(); // remove focus from input after searching or navigating
 		}
 	});
 

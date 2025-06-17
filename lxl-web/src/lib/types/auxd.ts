@@ -28,7 +28,7 @@ export enum Width {
 
 export interface ImageResolution {
 	url: string;
-	widthṔx: number;
+	widthPx: number;
 	heightPx: number;
 }
 

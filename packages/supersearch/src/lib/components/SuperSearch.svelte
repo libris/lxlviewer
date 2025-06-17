@@ -315,6 +315,9 @@
 	export function hideExpandedSearch() {
 		if (expanded) {
 			dialog?.close();
+			collapsedEditorView?.dispatch({
+				selection: expandedEditorView?.state.selection.main
+			});
 			collapsedEditorView?.focus();
 			expanded = false;
 			allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
@@ -326,6 +329,10 @@
 		if (selection) {
 			search?.fetchData(value, selection.head);
 		}
+	}
+
+	export function blur() {
+		collapsedEditorView?.contentDOM.blur();
 	}
 
 	function submitClosestForm() {

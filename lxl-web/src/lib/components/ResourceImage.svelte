@@ -31,8 +31,8 @@
 					{alt}
 					{loading}
 					src={thumb.url}
-					width={thumb.widthṔx}
-					height={thumb.heightPx}
+					width={thumb.widthPx > 0 ? thumb.widthPx : undefined}
+					height={thumb.heightPx > 0 ? thumb.heightPx : undefined}
 					class="object-contain object-[inherit]"
 					class:object-cover={geometry === 'circle'}
 					class:rounded-full={geometry === 'circle'}
@@ -43,8 +43,8 @@
 				{alt}
 				{loading}
 				src={thumb.url}
-				width={thumb.widthṔx}
-				height={thumb.heightPx}
+				width={thumb.widthPx > 0 ? thumb.widthPx : undefined}
+				height={thumb.heightPx > 0 ? thumb.heightPx : undefined}
 				class="object-contain object-[inherit]"
 				class:rounded-full={geometry === 'circle'}
 			/>
