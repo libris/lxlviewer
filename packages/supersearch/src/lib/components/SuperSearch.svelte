@@ -304,12 +304,12 @@
 				selection: collapsedEditorView?.state.selection.main
 			});
 			dialog?.showModal();
-			expandedEditorView?.focus();
 			setDefaultRowAndCols();
 			allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 			expanded = true;
 			onexpand?.();
 		}
+		expandedEditorView?.focus();
 	}
 
 	export function hideExpandedSearch() {
@@ -513,7 +513,6 @@
 		value = '';
 		search.resetData();
 		showExpandedSearch();
-		expandedEditorView?.focus();
 	}
 
 	onMount(() => {
