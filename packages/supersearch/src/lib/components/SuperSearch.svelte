@@ -19,10 +19,18 @@
 		QueryFunction,
 		PaginationQueryFunction,
 		TransformFunction,
-		ShouldShowStartContentFunction,
 		ResultItem
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
+
+	export type ExpandedContentParams = {
+		search: ReturnType<typeof useSearchRequest>;
+		resultsSnippet: Snippet<[{ rowOffset: number }]>;
+		resultsCount?: number;
+		getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
+		isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
+		isFocusedRow: (rowIndex: number) => boolean;
+	};
 
 	interface Props {
 		id?: string;
@@ -35,18 +43,8 @@
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
-		shouldShowStartContentFn?: ShouldShowStartContentFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
-		startContent?: Snippet<
-			[
-				{
-					getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
-					isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
-					isFocusedRow: (rowIndex: number) => boolean;
-				}
-			]
-		>;
 		inputRow?: Snippet<
 			[
 				{
@@ -60,6 +58,7 @@
 				}
 			]
 		>;
+		expandedContent?: Snippet<[ExpandedContentParams]>;
 		resultItemRow?: Snippet<
 			[
 				{
@@ -69,9 +68,6 @@
 					rowIndex: number;
 				}
 			]
-		>;
-		persistentResultItemRow?: Snippet<
-			[{ getCellId: (cellIndex: number) => string; isFocusedCell: (cellIndex: number) => boolean }]
 		>;
 		loadingIndicator?: Snippet;
 		defaultInputCol?: number;
@@ -99,13 +95,11 @@
 		queryFn = (value) => new URLSearchParams({ q: value }),
 		paginationQueryFn,
 		transformFn,
-		shouldShowStartContentFn = (value) => !value.trim().length,
 		extensions = [],
 		comboboxAriaLabel,
-		startContent,
 		inputRow = fallbackInputRow,
+		expandedContent = fallbackExpandedContent,
 		resultItemRow = fallbackResultItemRow,
-		persistentResultItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		defaultInputCol = -1,
@@ -128,7 +122,6 @@
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(0);
 	let prevValue: string = value;
-	let showResults: boolean = $state(true);
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
 		vertical: true,
@@ -222,30 +215,21 @@
 		expandedContentAttributesCompartment.of(initialExpandedContentAttributes)
 	]);
 
-	let showStartContent = $derived(shouldShowStartContentFn(value, selection));
-
-	$effect(() => {
-		if (showStartContent) {
-			showResults = false;
-		} else if (!showResults && value === search.lastSuccesfulQuery) {
-			showResults = true;
-		}
-	});
+	let resultItemRows = $derived(
+		(Array.isArray(search.paginatedData) &&
+			search.paginatedData.map((page) => page.items).flat()) ||
+			search.data?.items
+	);
 
 	function handleClickCollapsed() {
 		if (!dialog?.open) showExpandedSearch();
 	}
 
 	function setDefaultRowAndCols() {
-		if (!showStartContent) {
-			activeRowIndex = defaultResultRow;
-			if (activeRowIndex > 0) {
-				activeColIndex = defaultResultCol;
-			} else {
-				activeColIndex = defaultInputCol;
-			}
+		activeRowIndex = defaultResultRow;
+		if (activeRowIndex > 0) {
+			activeColIndex = defaultResultCol;
 		} else {
-			activeRowIndex = 0;
 			activeColIndex = defaultInputCol;
 		}
 	}
@@ -597,12 +581,40 @@
 	});
 </script>
 
+{#snippet fallbackExpandedContent({ search }: { search: ReturnType<typeof useSearchRequest> })}
+	<nav class="supersearch-suggestions" role="rowgroup">
+		{@render resultsSnippet()}
+		{#if search.isLoading}
+			{@render loadingIndicator?.()}
+		{:else if search.hasMorePaginatedData}
+			<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+				{loadMoreLabel}
+			</button>
+		{/if}
+	</nav>
+{/snippet}
+
 {#snippet fallbackResultItemRow({ resultItem }: { resultItem: ResultItem })}
 	{JSON.stringify(resultItem)}
 {/snippet}
 
 {#snippet fallbackInputRow({ inputField }: { inputField: Snippet<[]> })}
 	{@render inputField()}
+{/snippet}
+
+{#snippet resultsSnippet({ rowOffset }: { rowOffset: number } = { rowOffset: 1 })}
+	{#each resultItemRows as resultItem, index (index)}
+		{@const rowIndex = index + rowOffset}
+		<div role="row" class:focused={activeRowIndex === rowIndex}>
+			{@render resultItemRow?.({
+				resultItem,
+				getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+				isFocusedCell: (colIndex: number) =>
+					activeRowIndex === rowIndex && colIndex === activeColIndex,
+				rowIndex
+			})}
+		</div>
+	{/each}
 {/snippet}
 
 {#snippet collapsedInputSnippet()}
@@ -656,53 +668,15 @@
 					onclickClose: hideExpandedSearch
 				})}
 			</div>
-			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if startContent && showStartContent}
-					{@render startContent({
-						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-						isFocusedCell: (rowIndex: number, colIndex: number) =>
-							activeRowIndex === rowIndex && colIndex === activeColIndex,
-						isFocusedRow: (rowIndex: number) => activeRowIndex === rowIndex
-					})}
-				{:else}
-					{#if persistentResultItemRow}
-						<div role="row" class:focused={activeRowIndex === 1}>
-							{@render persistentResultItemRow({
-								getCellId: (colIndex: number) => `${id}-item-1x${colIndex}`,
-								isFocusedCell: (colIndex: number) =>
-									activeRowIndex === 1 && colIndex === activeColIndex
-							})}
-						</div>
-					{/if}
-					{#if selection?.anchor === selection?.head}
-						{#if search.data && showResults}
-							{@const resultItemRows =
-								(Array.isArray(search.paginatedData) &&
-									search.paginatedData.map((page) => page.items).flat()) ||
-								search.data?.items}
-							{#each resultItemRows as resultItem, index (index)}
-								{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
-								<div role="row" class:focused={activeRowIndex === rowIndex}>
-									{@render resultItemRow?.({
-										resultItem,
-										getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-										isFocusedCell: (colIndex: number) =>
-											activeRowIndex === rowIndex && colIndex === activeColIndex,
-										rowIndex
-									})}
-								</div>
-							{/each}
-						{/if}
-						{#if search.isLoading}
-							{@render loadingIndicator?.()}
-						{:else if search.hasMorePaginatedData}
-							<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-								{loadMoreLabel}
-							</button>
-						{/if}
-					{/if}
-				{/if}
-			</nav>
+			{@render expandedContent({
+				search,
+				resultsSnippet,
+				resultsCount: resultItemRows?.length,
+				getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+				isFocusedCell: (rowIndex: number, colIndex: number) =>
+					rowIndex === activeRowIndex && colIndex === activeColIndex,
+				isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
+			})}
 		</div>
 	</div>
 </dialog>
