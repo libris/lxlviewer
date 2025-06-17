@@ -315,7 +315,7 @@
 					<div role="row" class="border-neutral border-t">
 						<button
 							type="submit"
-							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-sm"
+							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs"
 							class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
 							>{page.data.t('supersearch.showAll')}</button
 						>
