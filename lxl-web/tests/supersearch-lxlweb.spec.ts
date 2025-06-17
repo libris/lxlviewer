@@ -22,15 +22,16 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 	await page.getByTestId('main-search').click();
 	await expect(page.getByText('Lägg till filter')).toBeVisible();
 	await expect(
-		page.getByRole('rowgroup').getByRole('button'),
+		await page.getByRole('rowgroup').getByRole('button').count(),
 		'persistent items are shown on empty input'
-	).not.toHaveCount(0);
+	).toBeGreaterThan(0);
 	await page.getByRole('dialog').getByRole('combobox').fill('hej');
+
 	await expect(
-		page.getByRole('rowgroup').getByRole('button'),
-		'persistent items are shown after searching'
-	).not.toHaveCount(0);
-	await expect(await page.locator('.suggestion'), 'search results are shown').toHaveCount(5);
+		await page.getByRole('rowgroup').getByRole('button').count(),
+		'persistent items are also shown after typing'
+	).toBeGreaterThan(0);
+	await expect(page.locator('.suggestion'), 'search results are shown').toHaveCount(5);
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
