@@ -15,7 +15,6 @@ test('prevents new line characters (e.g. when pasting multi-lined text)', async 
 two
 three`)
 	);
-	await page.getByRole('dialog').getByRole('combobox').click();
 	await page.keyboard.press(`ControlOrMeta+v`);
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('One two three');
 });
