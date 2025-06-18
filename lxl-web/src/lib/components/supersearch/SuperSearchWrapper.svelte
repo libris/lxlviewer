@@ -289,7 +289,7 @@
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="qualifier-suggestions flex items-center gap-2 px-4 py-2">
+						<div role="row" class="flex items-center gap-2 px-4 py-2">
 							<IconAddQualifierKey class="text-subtle" />
 							{#each QUALIFIER_SUGGESTIONS as { key, label }, cellIndex (key)}
 								<button
