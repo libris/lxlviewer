@@ -24,20 +24,24 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
 		'persistent items are shown on empty input'
 	).toBeGreaterThan(0);
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag'),
+		'seach results are not visible on empty input'
+	).toBeHidden();
 	await page.getByRole('dialog').getByRole('combobox').fill('hej');
 	await expect(
 		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
 		'persistent items are also shown after typing'
 	).toBeGreaterThan(0);
 	await expect(
-		page.getByRole('dialog').getByLabel('Förslag'),
-		'search results are shown'
-	).toBeVisible();
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
+		'search results are shown after typing'
+	).toHaveCount(5);
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
 	await page.getByRole('combobox').fill('a');
-	await expect(await page.locator('.suggestion')).toHaveCount(5);
+	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
