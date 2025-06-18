@@ -331,6 +331,10 @@
 		}
 	}
 
+	export function resetData() {
+		search?.resetData();
+	}
+
 	export function blur() {
 		collapsedEditorView?.contentDOM.blur();
 	}

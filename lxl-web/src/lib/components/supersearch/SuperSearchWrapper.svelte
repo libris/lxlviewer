@@ -117,6 +117,7 @@
 	}
 
 	function addQualifierKey(qualifierKey: string) {
+		superSearch?.resetData();
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
 		const charBefore = q.slice(cursor - 1, cursor).trim();
 		const charAfter = q.slice(cursor, cursor + 1).trim();
