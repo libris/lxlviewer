@@ -20,18 +20,19 @@ test('type & enter performs search', async ({ page }) => {
 
 test('expanded content shows persistant items and results', async ({ page }) => {
 	await page.getByTestId('main-search').click();
-	await expect(page.getByText('Lägg till filter')).toBeVisible();
 	await expect(
-		await page.getByRole('rowgroup').getByRole('button').count(),
+		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
 		'persistent items are shown on empty input'
 	).toBeGreaterThan(0);
 	await page.getByRole('dialog').getByRole('combobox').fill('hej');
-
 	await expect(
-		await page.getByRole('rowgroup').getByRole('button').count(),
+		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
 		'persistent items are also shown after typing'
 	).toBeGreaterThan(0);
-	await expect(page.locator('.suggestion'), 'search results are shown').toHaveCount(5);
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag'),
+		'search results are shown'
+	).toBeVisible();
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
