@@ -41,9 +41,7 @@
 					<div class="hidden @5xl/content:block">
 						<Toolbar />
 					</div>
-					<div class="aside-content sticky m-3 h-44 rounded-sm border border-neutral-200 p-3">
-						<h2 class="text-sm font-medium">This is some aside content</h2>
-					</div>
+					<div class="aside-content sticky h-px"></div>
 				</aside>
 			</div>
 			<SiteFooter />
