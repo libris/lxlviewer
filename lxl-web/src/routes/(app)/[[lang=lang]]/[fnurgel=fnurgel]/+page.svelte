@@ -18,7 +18,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import SearchResult from '$lib/components/find/SearchResult.svelte';
+	import SearchResultOld from '$lib/components/find/SearchResultOld.svelte';
 	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
@@ -320,7 +320,7 @@
 		</Modal>
 	{/if}
 </article>
-<SearchResult searchResult={page.data.searchResult} showMapping />
+<SearchResultOld searchResult={page.data.searchResult} showMapping />
 
 <style>
 	.resource-page {
