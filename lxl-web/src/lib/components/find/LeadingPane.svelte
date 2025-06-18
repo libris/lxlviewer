@@ -55,7 +55,7 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div class="leading-pane-content mr-1.5 pb-6">
+		<div class="leading-pane-content mr-1.5 pt-2 pb-6">
 			{@render children()}
 		</div>
 	</div>
