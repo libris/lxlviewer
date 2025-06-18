@@ -12,10 +12,10 @@ import {
 	type ApiItemDebugInfo,
 	type DatatypeProperty,
 	type DisplayMapping,
-	type Facet,
 	type FacetGroup,
 	type ItemDebugInfo,
 	type MultiSelectFacet,
+	type Observation,
 	type PartialCollectionView,
 	type SearchMapping,
 	SearchOperators,
@@ -32,7 +32,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
 import getTypeLike from '$lib/utils/getTypeLike';
-import { TOP_FACETS } from '$lib/constants/facets';
+import { ACCESS_FILTERS } from '$lib/constants/facets';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -286,28 +286,50 @@ function displayFacetGroups(
 
 	const result = [];
 
-	result.push(displayAccessFilters(view, displayUtil, locale, translate, usePath));
+	result.push(
+		displayBoolFilters(
+			'accessFilters',
+			(f) => ACCESS_FILTERS.includes(<string>f.object?.alias),
+			view,
+			displayUtil,
+			locale,
+			translate,
+			usePath
+		)
+	);
 
-	result.push(... Object.values(slices).map((g) => {
-		return {
-			label: translate(`facet.${g.alias || g.dimension}`),
-			dimension: g.dimension,
-			maxItems: g.maxItems,
-			...('search' in g && { search: g.search }),
-			facets: g.observation.map((o) => {
-				return {
-					...('_selected' in o && { selected: o._selected }),
-					totalItems: o.totalItems,
-					view: replacePath(o.view, usePath),
-					object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
-					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
-				};
-			})
-		};
-	}));
+	result.push(
+		...Object.values(slices).map((g) => {
+			return {
+				label: translate(`facet.${g.alias || g.dimension}`),
+				dimension: g.dimension,
+				maxItems: g.maxItems,
+				...('search' in g && { search: g.search }),
+				facets: g.observation.map((o) => {
+					return {
+						...('_selected' in o && { selected: o._selected }),
+						totalItems: o.totalItems,
+						view: replacePath(o.view, usePath),
+						object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+						str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
+						discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
+					};
+				})
+			};
+		})
+	);
 
-	result.push(displayBoolFilters(view, displayUtil, locale, translate, usePath));
+	result.push(
+		displayBoolFilters(
+			'boolFilters',
+			(f) => !ACCESS_FILTERS.includes(<string>f.object?.alias),
+			view,
+			displayUtil,
+			locale,
+			translate,
+			usePath
+		)
+	);
 
 	return result;
 }
@@ -331,44 +353,16 @@ export function displayPredicates(
 	});
 }
 
-function displayAccessFilters(
-	view: PartialCollectionView,
-	displayUtil: DisplayUtil,
-	locale: LangCode,
-	translate: TranslateFn,
-	usePath?: string
-): FacetGroup {
-	const filters =
-		view.stats?._boolFilters.filter((f) => TOP_FACETS.includes(<string>f.object?.alias)) || [];
-
-	const facets = filters.map((o) => {
-		return {
-			selected: o._selected || false,
-			totalItems: o.totalItems,
-			view: replacePath(o.view, usePath),
-			object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
-			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-			discriminator: '',
-			alias: o.object.alias
-		};
-	});
-
-	return {
-		label: translate('facet.accessFilters'),
-		dimension: 'accessFilters',
-		facets: facets
-	};
-}
-
 function displayBoolFilters(
+	dimension: string,
+	predicate: (o: Observation) => boolean,
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
 	usePath?: string
 ): FacetGroup {
-	const filters =
-		view.stats?._boolFilters.filter((f) => !TOP_FACETS.includes(<string>f.object?.alias)) || [];
+	const filters = view.stats?._boolFilters?.filter(predicate) || [];
 
 	const facets = filters.map((o) => {
 		return {
@@ -383,8 +377,8 @@ function displayBoolFilters(
 	});
 
 	return {
-		label: translate('facet.boolFilters'),
-		dimension: 'boolFilters',
+		label: translate(`facet.${dimension}`),
+		dimension: dimension,
 		facets: facets
 	};
 }
