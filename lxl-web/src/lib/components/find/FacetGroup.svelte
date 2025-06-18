@@ -48,8 +48,6 @@
 		{ value: 'alpha.desc', label: getAlphaLabel('Desc') }
 	];
 
-	const excludeSort = ['boolFilters'];
-
 	function getAlphaLabel(dir: 'Asc' | 'Desc' = 'Desc'): string {
 		let key = group.dimension === 'yearPublished' ? `sort.year${dir}` : `sort.alpha${dir}`;
 		return page.data.t(key);
@@ -116,24 +114,21 @@
 			<span class="flex-1 whitespace-nowrap">{group.label}</span>
 		</summary>
 		<!-- sorting -->
-		{#if !excludeSort.includes(group.dimension)}
-			<div class="facet-sort absolute top-0 right-2 size-8" data-testid="facet-sort">
-				<select
-					name={group.dimension}
-					bind:value={currentSort}
-					onchange={saveUserSort}
-					class="btn btn-primary size-full appearance-none border-0 text-transparent"
-					aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
-				>
-					{#each sortOptions as option (option.value)}
-						<option selected={option.value == currentSort} value={option.value}
-							>{option.label}</option
-						>
-					{/each}
-				</select>
-				<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
-			</div>
-		{/if}
+		<div class="facet-sort absolute top-0 right-2 size-8" data-testid="facet-sort">
+			<select
+				name={group.dimension}
+				bind:value={currentSort}
+				onchange={saveUserSort}
+				class="btn btn-primary size-full appearance-none border-0 text-transparent"
+				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
+			>
+				{#each sortOptions as option (option.value)}
+					<option selected={option.value == currentSort} value={option.value}>{option.label}</option
+					>
+				{/each}
+			</select>
+			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
+		</div>
 		<div class="text-2xs">
 			{#if group.search && !(searchPhrase && hasHits)}
 				<!-- facet range inputs; hide in filter search results -->
@@ -231,6 +226,6 @@
 
 	/* hide sorting for bool filters */
 	li[data-dimension='boolFilters'] details[open] .facet-sort {
-		display: hidden;
+		display: none;
 	}
 </style>
