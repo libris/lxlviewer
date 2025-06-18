@@ -113,7 +113,7 @@
 			{/if}
 			<div
 				id="header-menu"
-				class="text-3xs hidden items-center target:absolute target:left-0 target:block target:w-full 2xl:flex"
+				class="text-3xs hidden items-center target:absolute target:left-0 target:block target:w-full lg:pr-3 2xl:flex"
 			>
 				<HeaderMenu />
 			</div>
