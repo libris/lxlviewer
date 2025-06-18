@@ -21,13 +21,13 @@
 	const { item, getCellId, isFocusedCell }: Props = $props();
 	const resourceId = $derived(relativizeUrl(item?.['@id']));
 
-	function handleClickPrimaryAction() {
-		if (item?.qualifiers.length) {
-			goto(item?.qualifiers[0]._q);
-		} else if (resourceId) {
-			goto(resourceId);
-		}
-	}
+	// function handleClickPrimaryAction() {
+	// 	if (item?.qualifiers.length) {
+	// 		goto(item?.qualifiers[0]._q);
+	// 	} else if (resourceId) {
+	// 		goto(resourceId);
+	// 	}
+	// }
 </script>
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
@@ -108,14 +108,9 @@
 
 <div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers.length}>
 	{#if item.qualifiers.length}
-		<button
-			type="button"
-			id={getCellId(0)}
-			class:focused-cell={isFocusedCell(0)}
-			onclick={handleClickPrimaryAction}
-		>
+		<a href={item.qualifiers[0]._q} id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
 			{@render resourceSnippet(item)}
-		</button>
+		</a>
 		<button
 			type="button"
 			class="more w-14 items-center justify-center p-0"
