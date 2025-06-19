@@ -136,4 +136,30 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		page.getByRole('combobox').locator('.lxl-qualifier-key').last(),
 		'pills for both contributor and language exists'
 	).toContainText('Språk');
+	await page.getByTestId('main-search').click();
+	await page.keyboard.press('Home'); // for PCs
+	await page.keyboard.press('Meta+ArrowLeft'); // for mac
+	await page.keyboard.press('Space'); // TODO: Remove the need for a space character to correctly position cursor inside quotes
+	await page.keyboard.press('ArrowLeft');
+	await page
+		.getByRole('dialog')
+		.getByLabel('Lägg till filter')
+		.getByRole('button')
+		.getByText('Ämne')
+		.click();
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('button').filter({ hasText: 'ämne' })
+	).toHaveCount(5);
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.waitForURL(/subject/);
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-key').first(),
+		'qualifier is added in the beginning if the cursor is placed there'
+	).toContainText('Ämne');
+	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').nth(1)).toContainText(
+		'Författare/upphov'
+	);
+	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').last()).toContainText(
+		'Språk'
+	);
 });
