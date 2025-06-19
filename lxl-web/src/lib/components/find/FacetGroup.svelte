@@ -23,10 +23,10 @@
 		group: FacetGroup;
 		locale: LocaleCode;
 		searchPhrase: string;
-		defaultExpanded: boolean;
+		isDefaultExpanded: boolean;
 	};
 
-	let { group, locale, searchPhrase, defaultExpanded }: FacetGroupProps = $props();
+	let { group, locale, searchPhrase, isDefaultExpanded }: FacetGroupProps = $props();
 
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
@@ -44,7 +44,7 @@
 	let userExpanded = $derived(
 		userSettings.facetExpanded?.[group.dimension]
 			? userSettings.facetExpanded?.[group.dimension] === ExpandState.OPEN
-			: defaultExpanded
+			: isDefaultExpanded
 	);
 
 	const sortOptions = [

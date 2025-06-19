@@ -65,7 +65,7 @@
 						{group}
 						locale={page.data.locale}
 						{searchPhrase}
-						defaultExpanded={i < DEFAULT_FACETS_EXPANDED}
+						isDefaultExpanded={i < DEFAULT_FACETS_EXPANDED}
 					/>
 				{/each}
 			</ol>
