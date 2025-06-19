@@ -22,7 +22,7 @@
 	const { data } = $props();
 	const userSettings = getUserSettings();
 	const shouldShowHeaderBackground = $derived(!data.instances?.length);
-
+	const holdingsParam = page.url.searchParams.get('holdings');
 	//TODO: duplicated
 	const localizedInstanceTypes = $derived(
 		Object.values(data.instances).reduce((acc, instanceItem) => {
@@ -132,14 +132,9 @@
 			</div>
 		</div>
 	{/if}
-	<HoldingsModal
-		holdingsByInstanceId={data.holdingsByInstanceId}
-		itemLinksByBibId={data.itemLinksByBibId}
-		instances={data.instances}
-		title={data.title}
-		overview={data.overview}
-		holdersByType={data.holdersByType}
-	></HoldingsModal>
+	{#if holdingsParam}
+		<HoldingsModal></HoldingsModal>
+	{/if}
 </article>
 <SearchResultOld searchResult={page.data.searchResult} showMapping />
 

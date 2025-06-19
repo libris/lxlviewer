@@ -11,10 +11,12 @@
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import BiSortDown from '~icons/bi/sort-down';
 	import type { SearchResult, DisplayMapping } from '$lib/types/search';
+	import HoldingsModal from '../../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/HoldingsModal.svelte';
 
 	let showFiltersModal = false;
 	export let searchResult: SearchResult;
 	export let showMapping: boolean = false;
+	const holdingsParam = $page.url.searchParams.get('holdings');
 
 	$: sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
@@ -210,6 +212,9 @@
 			</ol>
 			<Pagination data={searchResult} />
 		</div>
+		{#if holdingsParam}
+			<HoldingsModal></HoldingsModal>
+		{/if}
 	</div>
 {/if}
 

@@ -8,6 +8,9 @@
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 </script>
 
+<!-- if holdings=fnurgel rendera ut holdingskomponent som
+laddar det den behöver onMount-->
+
 <svelte:head>
 	<title>{getPageTitle()}</title>
 	<base href={data.base} />

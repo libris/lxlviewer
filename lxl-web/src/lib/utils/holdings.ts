@@ -2,6 +2,7 @@ import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
 import type {
 	BibIdObj,
+	DecoratedHolder,
 	HoldersByType,
 	HoldingsByInstanceId,
 	ItemLinksByBibId,
@@ -50,6 +51,26 @@ function sortHoldings(holdings) {
 		}
 		return 0;
 	});
+}
+
+export function getHoldersByInstanceId(
+	holdingsByInstanceId,
+	displayUtil: DisplayUtil,
+	locale: LocaleCode
+): HoldersByType {
+	return Object.entries(holdingsByInstanceId).reduce((acc, [id, holdings]) => {
+		const heldBys = holdings.map((holdingItem) => {
+			return {
+				obj: displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale),
+				sigel: holdingItem.heldBy.sigel,
+				str: toString(displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale)) || ''
+			};
+		});
+		const uniqueHeldBys = [
+			...new Map(heldBys.map((heldByItem) => [heldByItem.obj['@id'], heldByItem])).values()
+		];
+		return { ...acc, [id]: uniqueHeldBys };
+	}, {});
 }
 
 export function getHoldingsByInstanceId(
@@ -258,9 +279,8 @@ export function getMyLibsFromHoldings(
 	return Object.values(result);
 }
 
-export async function fetchHoldersIfAbsent(holdersByType: HoldersByType) {
+export async function fetchHoldersIfAbsent(allHolders: DecoratedHolder[]) {
 	const cachedHolders = holdersCache.holders;
-	const allHolders = Object.values(holdersByType).flat();
 	for (const h of allHolders) {
 		const id = h.obj?.['@id'];
 
@@ -401,10 +421,3 @@ function getLinksToItemFor(
 	}
 	return linksToItem;
 }
-
-//CALL ON CLICK
-// function getItemLinks(bibIdsByInstanceId, displayUtil, locale) {
-// 	// hit the holdings cache
-//
-// 	return getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
-// }

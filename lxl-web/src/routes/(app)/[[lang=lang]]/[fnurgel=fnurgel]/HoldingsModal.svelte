@@ -1,10 +1,12 @@
 <script lang="ts">
 	import type {
+		BibIdObj,
 		DecoratedHolder,
 		HoldersByType,
 		HoldingsByInstanceId,
 		ItemLinksByBibId
 	} from '$lib/types/holdings';
+	import { onMount } from 'svelte';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import Holdings from './Holdings.svelte';
 	import Modal from '$lib/components/Modal.svelte';
@@ -15,33 +17,28 @@
 	import BiHouseHeart from '~icons/bi/house-heart';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 
-	// Props we need to pass:
-	// holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
-
-	// Title/ heading, overview
-	// can all be derived from mainEntity
-	// but still should be calculated on the server?
-
-	// data.instances does not have to be sorted in this context
-	// although getSortedInstances is called in +page.server.ts
-
 	type HoldingsModalProps = {
 		holdingsByInstanceId: HoldingsByInstanceId;
 		itemLinksByBibId: ItemLinksByBibId;
-		instances: Record<string, unknown>[];
-		title: string;
+		instances: unknown;
+		title: unknown;
 		overview: unknown;
 		holdersByType?: HoldersByType;
+		bibIdsByInstanceId: Record<string, BibIdObj>;
 	};
 
-	const {
-		holdingsByInstanceId,
-		itemLinksByBibId,
-		instances,
-		title,
-		overview,
-		holdersByType
-	}: HoldingsModalProps = $props();
+	let data: HoldingsModalProps | undefined = $state();
+
+	onMount(async () => {
+		console.log('ON MOUNT');
+		const fnurgel = page.url.searchParams.get('holdings');
+		if (fnurgel && isFnurgel(fnurgel)) {
+			const result = await fetch(`/api/holdings/${fnurgel}`);
+			data = await result.json();
+		}
+	});
+
+	// Also call the onMount functions when the fnurgel changes!!
 
 	const userSettings = getUserSettings();
 	const ASIDE_SEARCH_CARD_MAX_HEIGHT = 140;
@@ -59,7 +56,8 @@
 
 	const selectedHoldingInstance = $derived(
 		selectedHolding
-			? instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) || overview
+			? data?.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
+					data?.overview
 			: undefined
 	);
 
@@ -74,17 +72,19 @@
 	);
 
 	//TODO: duplicated
-	const localizedInstanceTypes = $derived(
-		Object.values(instances).reduce((acc, instanceItem) => {
-			if (instanceItem['@type'] && instanceItem?._label) {
-				return {
-					...acc,
-					[instanceItem['@type'] as string]: instanceItem._label
-				};
-			}
-			return acc;
-		}, {})
-	);
+	// if (data?.holdersByType) {
+	// 	const localizedInstanceTypes = $derived(
+	// 		Object.values(data?.instances).reduce((acc, instanceItem) => {
+	// 			if (instanceItem['@type'] && instanceItem?._label) {
+	// 				return {
+	// 					...acc,
+	// 					[instanceItem['@type'] as string]: instanceItem._label
+	// 				};
+	// 			}
+	// 			return acc;
+	// 		}, {})
+	// 	);
+	// }
 
 	const filteredHolders = $derived(
 		displayedHolders
@@ -104,19 +104,36 @@
 
 	$effect(() => {
 		if (holdingUrl) {
-			selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : (overview as string);
+			selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : (data?.overview as string);
 			latestHoldingUrl = holdingUrl;
+			console.log('holdingUrl', latestHoldingUrl);
 		}
 	});
 
 	$effect(() => {
+		console.log('EFFECT!!!');
+		if (latestHoldingUrl && isFnurgel(latestHoldingUrl)) {
+			fetch(`/api/holdings/${latestHoldingUrl}`).then((res) => {
+				res.json().then((d) => (data = d));
+			});
+		}
+	});
+
+	// Need to check that holdingsByInstanceId contains instanceId
+	$effect(() => {
 		if (latestHoldingUrl) {
-			if (isFnurgel(latestHoldingUrl) && selectedHolding && holdingsByInstanceId[selectedHolding]) {
+			if (
+				isFnurgel(latestHoldingUrl) &&
+				selectedHolding &&
+				data?.holdingsByInstanceId[selectedHolding]
+			) {
 				// show holdings for an instance
-				displayedHolders = holdingsByInstanceId[selectedHolding].map((holding) => holding.heldBy);
-			} else if (holdersByType?.[latestHoldingUrl]) {
+				displayedHolders = data?.holdingsByInstanceId[selectedHolding].map(
+					(holding) => holding.heldBy
+				);
+			} else if (data?.holdersByType?.[latestHoldingUrl]) {
 				// show holdings by type
-				displayedHolders = holdersByType[latestHoldingUrl];
+				displayedHolders = data?.holdersByType[latestHoldingUrl];
 			}
 		}
 	});
@@ -150,14 +167,14 @@
 					<h2 class="mb-2">
 						<span class="font-medium">
 							<DecoratedData
-								data={title}
+								data={data?.title}
 								block
 								keyed={false}
 								allowPopovers={false}
 								allowLinks={false}
 							/>
 						</span>
-						{#if selectedHolding && instances?.length !== 1}
+						{#if selectedHolding && data?.instances?.length !== 1}
 							<span> · </span>
 							{#if isFnurgel(selectedHolding)}
 								{selectedHoldingInstance['_label']}
@@ -188,14 +205,14 @@
 			<div>
 				<h2 class="font-medium">
 					{page.data.t('holdings.availableAt')}
-					{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
-						{holdingsByInstanceId[latestHoldingUrl].length}
-						{holdingsByInstanceId[latestHoldingUrl].length === 1
+					{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && data?.holdingsByInstanceId[latestHoldingUrl]}
+						{data?.holdingsByInstanceId[latestHoldingUrl].length}
+						{data?.holdingsByInstanceId[latestHoldingUrl].length === 1
 							? page.data.t('holdings.library')
 							: page.data.t('holdings.libraries')}
-					{:else if latestHoldingUrl && holdersByType?.[latestHoldingUrl]}
-						{holdersByType[latestHoldingUrl].length}
-						{holdersByType[latestHoldingUrl].length === 1
+					{:else if latestHoldingUrl && data?.holdersByType?.[latestHoldingUrl]}
+						{data?.holdersByType[latestHoldingUrl].length}
+						{data?.holdersByType[latestHoldingUrl].length === 1
 							? page.data.t('holdings.library')
 							: page.data.t('holdings.libraries')}
 					{/if}
@@ -211,7 +228,12 @@
 						</h3>
 						<ul class="w-full">
 							{#each myLibsHolders as holder, i (holder.sigel || i)}
-								<Holdings {holder} {holdingUrl} linksByBibId={itemLinksByBibId} />
+								<Holdings
+									{holder}
+									{holdingUrl}
+									linksByBibId={data?.itemLinksByBibId}
+									bibIdsByInstanceId={data?.bibIdsByInstanceId}
+								/>
 							{/each}
 						</ul>
 					</div>
@@ -228,7 +250,12 @@
 				</div>
 				<ul class="w-full">
 					{#each filteredHolders as holder, i (holder.sigel || i)}
-						<Holdings {holder} {holdingUrl} linksByBibId={itemLinksByBibId} />
+						<Holdings
+							{holder}
+							{holdingUrl}
+							linksByBibId={data?.itemLinksByBibId}
+							bibIdsByInstanceId={data?.bibIdsByInstanceId}
+						/>
 					{/each}
 					{#if filteredHolders.length === 0}
 						<li class="m-3">

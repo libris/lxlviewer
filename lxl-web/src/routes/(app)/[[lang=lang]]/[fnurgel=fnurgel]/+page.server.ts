@@ -17,10 +17,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import {
 	getHoldingsByInstanceId,
 	getHoldingsByType,
-	getHoldersByType,
-	getBibIdsByInstanceId,
-	getItemLinksByBibId,
-	fetchHoldersIfAbsent
+	getHoldersByType
 } from '$lib/utils/holdings.js';
 import { DebugFlags } from '$lib/types/userSettings';
 import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
@@ -78,17 +75,12 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
-	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
-
-	await fetchHoldersIfAbsent(holdersByType);
 
 	if (holdersCache.holders) {
 		console.log('Current number of cached holders:', Object.keys(holdersCache.holders).length);
 	}
-
-	const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
 
 	return {
 		type: mainEntity[JsonLd.TYPE],
@@ -96,13 +88,9 @@ export const load = async ({ params, url, locals, fetch }) => {
 		title: toString(heading),
 		heading,
 		overview: overviewWithoutHasInstance,
-		details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
 		instances: sortedInstances,
 		holdingsByInstanceId,
-		bibIdsByInstanceId,
 		holdersByType,
-		itemLinksByBibId: itemLinksByBibId,
-		full: overview,
 		images,
 		searchResult: searchPromise ? await searchPromise : null
 	};
