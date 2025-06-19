@@ -214,5 +214,10 @@ export default {
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'
+	},
+	panes: {
+		leadingPane: 'Leading pane',
+		show: 'Show pane',
+		hide: 'Hide pane'
 	}
 };

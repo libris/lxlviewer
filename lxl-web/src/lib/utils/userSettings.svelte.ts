@@ -3,7 +3,8 @@ import type { LibraryItem, UserSettings as UserSettingsType } from '$lib/types/u
 
 enum availableSettings {
 	facetSort = 'facetSort',
-	myLibraries = 'myLibraries'
+	myLibraries = 'myLibraries',
+	leadingPane = 'leadingPane'
 }
 
 export class UserSettings {
@@ -11,6 +12,14 @@ export class UserSettings {
 
 	constructor(settings: UserSettingsType) {
 		this.settings = settings;
+
+		// set default
+		if (!Object.prototype.hasOwnProperty.call(settings, 'leadingPane')) {
+			this.settings = {
+				...this.settings,
+				...{ leadingPane: { open: true } }
+			};
+		}
 	}
 
 	private update(setting: keyof typeof availableSettings, v: Partial<UserSettings>) {
@@ -55,6 +64,28 @@ export class UserSettings {
 			facetSort[facet] = value;
 			this.update('facetSort', facetSort);
 		}
+	}
+
+	setLeadingPaneWidth(width: number) {
+		const leadingPane = { ...this.settings?.leadingPane };
+		leadingPane.width = width;
+		this.update('leadingPane', leadingPane);
+	}
+
+	closeLeadingPane() {
+		const leadingPane = { ...this.settings?.leadingPane };
+		leadingPane.open = false;
+		this.update('leadingPane', leadingPane);
+	}
+
+	openLeadingPane() {
+		const leadingPane = { ...this.settings?.leadingPane };
+		leadingPane.open = true;
+		this.update('leadingPane', leadingPane);
+	}
+
+	get leadingPane() {
+		return this.settings?.leadingPane;
 	}
 
 	get myLibraries() {
