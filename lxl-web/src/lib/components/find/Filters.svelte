@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getModalContext } from '$lib/contexts/modal';
-	import type { DisplayMapping, Facet, FacetGroup as TypedFacetGroup } from '$lib/types/search';
+	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
 	import FacetGroup from './FacetGroup.svelte';
 	import MyLibrariesFilter from './MyLibrariesFilter.svelte';
 	import SearchMapping from './SearchMapping.svelte';
@@ -38,40 +38,42 @@
 			<SearchMapping {mapping} />
 		</nav>
 	{/if}
-	<nav
+	{#if facets?.length}
+		<nav
 			class="facet-nav relative flex flex-col gap-2 text-sm"
 			aria-label={page.data.t('search.filters')}
 			data-testid="facets"
-	>
-		<div class="px-3">
-			<input
+		>
+			<div class="px-3">
+				<input
 					bind:value={searchPhrase}
 					placeholder={page.data.t('search.findFilter')}
 					aria-label={page.data.t('search.findFilter')}
 					class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 					type="search"
-			/>
-			<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
-		</div>
-		<div class="px-3">
+				/>
+				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
+			</div>
 			{#if page.route.id === '/(app)/[[lang=lang]]/find'}
-				<MyLibrariesFilter {facets} />
+				<div class="px-3">
+					<MyLibrariesFilter {facets} />
+				</div>
 			{/if}
-		</div>
-		<ol>
-			{#each facets as group, i (group.dimension)}
-				<FacetGroup
+			<ol>
+				{#each facets as group, i (group.dimension)}
+					<FacetGroup
 						{group}
 						locale={page.data.locale}
 						{searchPhrase}
 						defaultExpanded={i < DEFAULT_FACETS_EXPANDED}
-				/>
-			{/each}
-		</ol>
-		<span role="status" class="no-hits-msg px-2 text-xs" aria-atomic="true"
-		>{page.data.t('search.noResults')}</span
-		>
-	</nav>
+					/>
+				{/each}
+			</ol>
+			<span role="status" class="no-hits-msg px-2 text-xs" aria-atomic="true"
+				>{page.data.t('search.noResults')}</span
+			>
+		</nav>
+	{/if}
 </div>
 
 <style lang="postcss">
