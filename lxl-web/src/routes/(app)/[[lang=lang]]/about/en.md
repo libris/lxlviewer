@@ -50,6 +50,14 @@ Different terms and degrees of precision may still be needed in different contex
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### 2025-06-19
+
+- Layout modifications including an adjustable left panel
+
+### 2025-06-01
+
+- Links to library catalogues in holdings modal
+
 ### 2025-05-13
 
 - Design updates
