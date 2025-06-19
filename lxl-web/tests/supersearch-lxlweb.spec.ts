@@ -48,6 +48,73 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 	await expect(page.locator('.resource-page')).toBeVisible();
 	await expect(
 		page.locator('.supersearch-combobox .cm-focused'),
-		'input loses focus when navigatiing'
+		'input loses focus when navigating'
 	).not.toBeVisible();
+});
+
+test('qualifier keys can be added using the user interface', async ({ page }) => {
+	await page.getByTestId('main-search').click();
+	await page
+		.getByRole('dialog')
+		.getByLabel('Lägg till filter')
+		.getByRole('button')
+		.getByText('Författare/upphov')
+		.click();
+	await expect(
+		page.getByRole('dialog').getByLabel('Lägg till filter'),
+		'buttons for adding qualifier keys is hidden after selecting one of them'
+	).toBeHidden();
+	await expect(
+		page
+			.getByRole('dialog')
+			.getByLabel('Förslag')
+			.getByRole('button')
+			.filter({ hasText: 'Person' }),
+		'all suggestions are persons'
+	).toHaveCount(5);
+	await expect(page.getByRole('dialog').getByRole('combobox')).toContainText('Författare/upphov');
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('pippi');
+	await expect(
+		await page
+			.getByRole('dialog')
+			.getByLabel('Förslag')
+			.getByRole('button')
+			.filter({ hasText: 'Person' })
+			.filter({ hasText: /pippi/i }),
+		'all suggestions are persons related to the query pippi'
+	).toHaveCount(5);
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.waitForURL('**/find?**');
+	await expect(page.url()).toContain('contributor');
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-key'),
+		'pill with selected qualifier key exists...'
+	).toContainText('Författare/upphov');
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-value.atomic'),
+		'...and the value is related to the previous query'
+	).toContainText(/pippi/i);
+	await page.getByTestId('main-search').click();
+	await page
+		.getByRole('dialog')
+		.getByLabel('Lägg till filter')
+		.getByRole('button')
+		.getByText('Språk')
+		.click();
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('button').filter({ hasText: 'Språk' }),
+		'all suggestions are languages'
+	).toHaveCount(5);
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('Swahili');
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.waitForURL(/language/);
+	await expect(page.url()).toContain('contributor');
+	await expect(page.url(), 'url contains both contributor and language').toContain('language');
+	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').first()).toContainText(
+		'Författare/upphov'
+	);
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-key').last(),
+		'pills for both contributor and language exists'
+	).toContainText('Språk');
 });
