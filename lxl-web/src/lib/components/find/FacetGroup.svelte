@@ -41,7 +41,7 @@
 			DEFAULT_FACET_SORT
 	);
 
-	let userExpanded = $derived(
+	let isUserOrDefaultExpanded = $derived(
 		userSettings.facetExpanded?.[group.dimension]
 			? userSettings.facetExpanded?.[group.dimension] === ExpandedState.OPEN
 			: isDefaultExpanded
@@ -87,7 +87,7 @@
 
 	const shownItems = $derived(filteredItems.filter((facet, index) => index < defaultItemsShown));
 	let hasHits = $derived(filteredItems.length > 0);
-	let expanded = $derived(userExpanded || (searchPhrase && hasHits));
+	let expanded = $derived(isUserOrDefaultExpanded || (searchPhrase && hasHits));
 	const canShowMoreItems = $derived(filteredItems.length > defaultItemsShown);
 	const canShowFewerItems = $derived(
 		!canShowMoreItems && filteredItems.length > DEFAULT_FACET_VALUES_SHOWN
