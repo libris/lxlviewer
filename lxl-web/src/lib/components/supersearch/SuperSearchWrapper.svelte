@@ -76,8 +76,13 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			const toQ = addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
-			q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+			if (page.route.id === '/(app)/[[lang=lang]]') {
+				q = ''; // reset query if navigating to start/index page
+			} else if (to.url.searchParams.has('_q')) {
+				const toQ = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
+				q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+			}
+
 			superSearch?.hideExpandedSearch();
 			fetchOnExpand = true;
 			superSearch?.blur(); // remove focus from input after searching or navigating
