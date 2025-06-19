@@ -26,7 +26,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 	).toBeGreaterThan(0);
 	await expect(
 		page.getByRole('dialog').getByLabel('Förslag'),
-		'seach results are not visible on empty input'
+		'search results are not visible on empty input'
 	).toBeHidden();
 	await page.getByRole('dialog').getByRole('combobox').fill('hej');
 	await expect(
@@ -37,6 +37,25 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'search results are shown after typing'
 	).toHaveCount(5);
+	await page.goto('/find?_limit=20&_offset=0&_q=language%3A"lang%3Aswe"&_sort=&_spell=true');
+	await page.getByTestId('main-search').click();
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
+		'results are shown if there is an initial query'
+	).toHaveCount(5);
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
+	await page.waitForURL(/\/[a-z0-9]{15,}$/); // fnurgel route
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-key'),
+		'query is kept when navigating from find routes...'
+	).toContainText('Språk');
+	await expect(page.getByRole('combobox').locator('.lxl-qualifier-value')).toContainText('Svenska');
+	await page.locator('.home').getByRole('link').click(); // click on home link
+	await page.waitForURL('/'); // fnurgel route
+	await expect(
+		page.getByRole('combobox'),
+		'...except when navigating to start/index (which should be seen as a reset)'
+	).toContainText('Sök titel, upphovsperson, bibliotek, ämnen...');
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
