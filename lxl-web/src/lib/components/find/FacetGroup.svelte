@@ -15,7 +15,7 @@
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiInfo from '~icons/bi/info-circle';
 	import FacetValue from '$lib/components/find/FacetValue.svelte';
-	import { ExpandState } from '$lib/types/userSettings';
+	import { ExpandedState } from '$lib/types/userSettings';
 
 	// Todo: Rename FacetGroup -> Facet (facets -> items/facetItems)
 
@@ -43,7 +43,7 @@
 
 	let userExpanded = $derived(
 		userSettings.facetExpanded?.[group.dimension]
-			? userSettings.facetExpanded?.[group.dimension] === ExpandState.OPEN
+			? userSettings.facetExpanded?.[group.dimension] === ExpandedState.OPEN
 			: isDefaultExpanded
 	);
 

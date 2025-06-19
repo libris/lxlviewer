@@ -6,7 +6,7 @@ export interface LibraryItem {
 	sigel: string;
 }
 
-export enum ExpandState {
+export enum ExpandedState {
 	OPEN = 'OPEN',
 	CLOSED = 'CLOSED'
 }
@@ -16,7 +16,7 @@ export type UserSettings = {
 		[dimension: string]: string;
 	};
 	facetExpanded?: {
-		[dimension: string]: ExpandState;
+		[dimension: string]: ExpandedState;
 	};
 	myLibraries?: {
 		[id: string]: LibraryItem;
