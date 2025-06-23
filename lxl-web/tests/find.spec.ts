@@ -15,7 +15,7 @@ test('page displays the site header', async ({ page }) => {
 });
 
 test('page has a search input', async ({ page }) => {
-	await expect(page.getByTestId('main-search')).toBeVisible();
+	await expect(page.getByTestId('main-search').nth(0)).toBeVisible();
 });
 
 test('can change the language', async ({ page }) => {
@@ -60,7 +60,9 @@ test('sorting the facet sets a cookie', async ({ page, context }) => {
 	await page.getByTestId('facet-sort').first().getByRole('combobox').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
 	expect(afterCookies[0].name).toEqual('userSettings');
-	expect(afterCookies[0].value).toEqual('{%22facetSort%22:{%22rdf:type%22:%22alpha.asc%22}}');
+	expect(afterCookies[0].value).toEqual(
+		'{%22leadingPane%22:{%22open%22:true}%2C%22facetSort%22:{%22rdf:type%22:%22alpha.asc%22}}'
+	);
 });
 
 // Comment out test that fails in CI

@@ -43,6 +43,9 @@
 :root {
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-success: #2ab061;
+
+	--app-bar-height: 71px;
+	--toolbar-height: 48px;
 }
 
 @theme inline {
@@ -155,9 +158,12 @@
 	html:has(dialog[open]),
 	body:has(dialog[open]) {
 		height: 100%;
-		width: 100%;
 		overflow: hidden;
-		position: fixed;
+
+		@variant sm {
+			height: auto;
+			overflow: clip;
+		}
 	}
 
 	button:not(:disabled),
@@ -225,7 +231,7 @@
 	}
 
 	.btn-primary {
-		background-color: var(--color-page);
+		background-color: transparent;
 		color: var(--color-body);
 		border: 1px solid var(--color-neutral-200);
 
@@ -315,14 +321,4 @@
 
 @utility find-layout {
 	@apply lg:grid-cols-find flex flex-col gap-4 lg:grid lg:gap-8;
-}
-
-@utility header-layout {
-	grid-template-columns: 70px minmax(0, 8fr) 1fr;
-	@apply grid gap-x-8 px-4 sm:px-6;
-
-	@variant lg {
-		grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr);
-		padding-inline: calc(var(--spacing) * 2);
-	}
 }

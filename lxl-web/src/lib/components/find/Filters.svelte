@@ -9,13 +9,18 @@
 
 	type filtersPropsType = {
 		facets: TypedFacetGroup[];
-		mapping: DisplayMapping[];
+		mapping?: DisplayMapping[];
 	};
 
 	const { facets, mapping }: filtersPropsType = $props();
 
 	function shouldShowMapping() {
-		if (mapping.length === 1 && mapping[0].display === '*' && mapping[0].operator === 'equals') {
+		if (
+			mapping &&
+			mapping.length === 1 &&
+			mapping[0].display === '*' &&
+			mapping[0].operator === 'equals'
+		) {
 			return false; // hide if only wildcard search
 		}
 		return true;
@@ -27,34 +32,38 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	{#if inModal && shouldShowMapping()}
+	{#if mapping && inModal && shouldShowMapping()}
 		<nav aria-label={page.data.t('search.selectedFilters')}>
 			<SearchMapping {mapping} />
 		</nav>
 	{/if}
 	{#if facets?.length}
 		<nav
-			class="facet-nav relative flex flex-col gap-4 text-sm"
+			class="facet-nav relative flex flex-col gap-2 text-sm"
 			aria-label={page.data.t('search.filters')}
 			data-testid="facets"
 		>
-			<input
-				bind:value={searchPhrase}
-				placeholder={page.data.t('search.findFilter')}
-				aria-label={page.data.t('search.findFilter')}
-				class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
-				type="search"
-			/>
-			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
+			<div class="px-3">
+				<input
+					bind:value={searchPhrase}
+					placeholder={page.data.t('search.findFilter')}
+					aria-label={page.data.t('search.findFilter')}
+					class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
+					type="search"
+				/>
+				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
+			</div>
 			{#if page.route.id === '/(app)/[[lang=lang]]/find'}
-				<MyLibrariesFilter {facets} />
+				<div class="px-3">
+					<MyLibrariesFilter {facets} />
+				</div>
 			{/if}
 			<ol>
 				{#each facets as group (group.dimension)}
 					<FacetGroup {group} locale={page.data.locale} {searchPhrase} />
 				{/each}
 			</ol>
-			<span role="status" class="no-hits-msg px-2" aria-atomic="true"
+			<span role="status" class="no-hits-msg px-2 text-xs" aria-atomic="true"
 				>{page.data.t('search.noResults')}</span
 			>
 		</nav>
@@ -65,5 +74,10 @@
 	/* hide 'no hits' msg as long as there's results displaying */
 	:global(.facet-nav:has(.has-hits) .no-hits-msg) {
 		display: none;
+	}
+
+	:global(dialog .facet-nav) {
+		margin-right: calc(var(--spacing) * -4);
+		margin-left: calc(var(--spacing) * -4);
 	}
 </style>

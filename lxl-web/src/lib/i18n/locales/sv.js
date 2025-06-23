@@ -217,5 +217,10 @@ export default {
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'
+	},
+	panes: {
+		leadingPane: 'Vänsterpanel',
+		show: 'Visa sidopanel',
+		hide: 'Dölj sidopanel'
 	}
 };

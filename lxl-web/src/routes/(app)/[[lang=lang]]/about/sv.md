@@ -63,6 +63,14 @@ Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utv
 
 - Användarförbättringar av sökgränsnitt
 
+### 2025-06-19
+
+- Layoutförändringar inklusive justerbar vänsterpanel på sökresultatsidan
+
+### 2025-06-01
+
+- Mer information och länk till lokal bibliotekskatalog i åtkomstpanelen
+
 ### 2025-05-13
 
 - Uppdatering av design
