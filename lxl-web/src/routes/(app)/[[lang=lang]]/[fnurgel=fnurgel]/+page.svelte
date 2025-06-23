@@ -131,7 +131,7 @@
 			</div>
 		</div>
 	{/if}
-	<HoldingsModal></HoldingsModal>
+	<HoldingsModal workFnurgel={page.data.workFnurgel}></HoldingsModal>
 </article>
 <SearchResultOld searchResult={page.data.searchResult} showMapping />
 

@@ -22,6 +22,7 @@ import {
 import { DebugFlags } from '$lib/types/userSettings';
 import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
 import getTypeLike from '$lib/utils/getTypeLike';
+import { getUriSlug } from '$lib/utils/http';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -81,8 +82,9 @@ export const load = async ({ params, url, locals, fetch }) => {
 	if (holdersCache.holders) {
 		console.log('Current number of cached holders:', Object.keys(holdersCache.holders).length);
 	}
-
+	console.log('holdersByType', holdersByType);
 	return {
+		workFnurgel: getUriSlug(resourceId || undefined),
 		type: mainEntity[JsonLd.TYPE],
 		types: types,
 		title: toString(heading),

@@ -27,8 +27,14 @@
 		bibIdsByInstanceId: Record<string, BibIdObj>;
 	};
 
+	type HoldingsModalParams = {
+		workFnurgel: string;
+	};
+
 	const ASIDE_SEARCH_CARD_MAX_HEIGHT = 140;
 	const userSettings = getUserSettings();
+
+	const { workFnurgel }: HoldingsModalParams = $props();
 
 	let data: HoldingsModalProps | undefined = $state();
 	let previousURL: URL;
@@ -60,19 +66,17 @@
 	);
 
 	//TODO: duplicated
-	// if (data?.holdersByType) {
-	// 	const localizedInstanceTypes = $derived(
-	// 		Object.values(data?.instances).reduce((acc, instanceItem) => {
-	// 			if (instanceItem['@type'] && instanceItem?._label) {
-	// 				return {
-	// 					...acc,
-	// 					[instanceItem['@type'] as string]: instanceItem._label
-	// 				};
-	// 			}
-	// 			return acc;
-	// 		}, {})
-	// 	);
-	// }
+	// const localizedInstanceTypes = $derived(
+	// 	Object.values(data?.instances).reduce((acc, instanceItem) => {
+	// 		if (instanceItem['@type'] && instanceItem?._label) {
+	// 			return {
+	// 				...acc,
+	// 				[instanceItem['@type'] as string]: instanceItem._label
+	// 			};
+	// 		}
+	// 		return acc;
+	// 	}, {})
+	// );
 
 	const filteredHolders = $derived(
 		displayedHolders
@@ -91,18 +95,20 @@
 	);
 
 	onMount(async () => {
-		console.log('ON MOUNT');
-		getForHoldingUrl();
+		console.log('onMount');
+		getDataForWork();
 	});
 
 	$effect(() => {
-		console.log('EFFECT!!!');
-		getForHoldingUrl();
+		console.log('effect');
+		getDataForWork();
 	});
 
-	function getForHoldingUrl() {
-		if (latestHoldingUrl && isFnurgel(latestHoldingUrl)) {
-			fetch(`/api/holdings/${latestHoldingUrl}`).then((res) => {
+	function getDataForWork() {
+		if (workFnurgel) {
+			console.log('workfnurgel', workFnurgel);
+			console.log('Preparing data for work with ID:', workFnurgel);
+			fetch(`/api/holdings/${workFnurgel}`).then((res) => {
 				res.json().then((d) => (data = d));
 			});
 		}
@@ -112,12 +118,12 @@
 		if (holdingUrl) {
 			selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : (data?.overview as string);
 			latestHoldingUrl = holdingUrl;
-			console.log('holdingUrl', latestHoldingUrl);
 		}
 	});
 
 	// Need to check that holdingsByInstanceId contains instanceId
 	$effect(() => {
+		console.log('data?.holdersByType', JSON.stringify(data?.holdersByType));
 		if (latestHoldingUrl) {
 			if (
 				isFnurgel(latestHoldingUrl) &&
@@ -125,6 +131,7 @@
 				data?.holdingsByInstanceId[selectedHolding]
 			) {
 				// show holdings for an instance
+				console.log('Hej');
 				displayedHolders = data?.holdingsByInstanceId[selectedHolding].map(
 					(holding) => holding.heldBy
 				);
@@ -175,8 +182,8 @@
 							<span> · </span>
 							{#if isFnurgel(selectedHolding)}
 								{selectedHoldingInstance['_label']}
-							{:else if localizedInstanceTypes?.[latestHoldingUrl]}
-								{localizedInstanceTypes[latestHoldingUrl]}
+								<!--{:else if localizedInstanceTypes?.[latestHoldingUrl]}-->
+								<!--	{localizedInstanceTypes[latestHoldingUrl]}-->
 							{/if}
 						{/if}
 					</h2>

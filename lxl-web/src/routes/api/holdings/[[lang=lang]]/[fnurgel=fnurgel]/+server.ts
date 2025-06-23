@@ -7,8 +7,9 @@ import { pickProperty, toString } from '$lib/utils/xl';
 import {
 	fetchHoldersIfAbsent,
 	getBibIdsByInstanceId,
-	getHoldersByInstanceId,
+	getHoldersByType,
 	getHoldingsByInstanceId,
+	getHoldingsByType,
 	getItemLinksByBibId
 } from '$lib/utils/holdings';
 import { error, json } from '@sveltejs/kit';
@@ -20,9 +21,11 @@ export async function GET({ url, params, locals }) {
 
 	const displayUtil = locals.display;
 	const locale = getSupportedLocale(params.lang);
+	console.log('params.fnurgel', params.fnurgel);
 	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
 		headers: { Accept: 'application/ld+json' }
 	});
+	console.log('resourceRes', resourceRes);
 
 	if (resourceRes.status === 404) {
 		throw error(resourceRes.status, { message: 'Not found' });
@@ -49,10 +52,15 @@ export async function GET({ url, params, locals }) {
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
 	const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
-	const holdersByInstanceId = getHoldersByInstanceId(holdingsByInstanceId, displayUtil, locale);
+	// const holdersByInstanceId = getHoldersByInstanceId(holdingsByInstanceId, displayUtil, locale);
 
-	//get all holders
-	await fetchHoldersIfAbsent(Object.values(holdersByInstanceId).flat());
+	// Should this be passed as a parameter to HoldingsModal.svelte instead?
+	const holdingsByType = getHoldingsByType(mainEntity);
+	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
+
+	// FIXME: beware holdingsByInstanceId => has .heldBy.obj
+	// holdingsByType => has just .heldBy without .obj
+	await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
 
 	return json({
 		bibIdsByInstanceId: bibIdsByInstanceId,
@@ -60,7 +68,8 @@ export async function GET({ url, params, locals }) {
 		itemLinksByBibId: itemLinksByBibId,
 		instances: instances,
 		title: toString(heading),
-		overview: overviewWithoutHasInstance
+		overview: overviewWithoutHasInstance,
+		holdersByType: holdersByType
 	});
 
 	//TODO: duplicated, extract to holdings.ts? or similar

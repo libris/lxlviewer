@@ -54,25 +54,25 @@ function sortHoldings(holdings) {
 	});
 }
 
-export function getHoldersByInstanceId(
-	holdingsByInstanceId,
-	displayUtil: DisplayUtil,
-	locale: LocaleCode
-): HoldersByType {
-	return Object.entries(holdingsByInstanceId).reduce((acc, [id, holdings]) => {
-		const heldBys = holdings.map((holdingItem) => {
-			return {
-				obj: displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale),
-				sigel: holdingItem.heldBy.sigel,
-				str: toString(displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale)) || ''
-			};
-		});
-		const uniqueHeldBys = [
-			...new Map(heldBys.map((heldByItem) => [heldByItem.obj['@id'], heldByItem])).values()
-		];
-		return { ...acc, [id]: uniqueHeldBys };
-	}, {});
-}
+// export function getHoldersByInstanceId(
+// 	holdingsByInstanceId,
+// 	displayUtil: DisplayUtil,
+// 	locale: LocaleCode
+// ): HoldersByType {
+// 	return Object.entries(holdingsByInstanceId).reduce((acc, [id, holdings]) => {
+// 		const heldBys = holdings.map((holdingItem) => {
+// 			return {
+// 				obj: displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale),
+// 				sigel: holdingItem.heldBy.sigel,
+// 				str: toString(displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale)) || ''
+// 			};
+// 		});
+// 		const uniqueHeldBys = [
+// 			...new Map(heldBys.map((heldByItem) => [heldByItem.obj['@id'], heldByItem])).values()
+// 		];
+// 		return { ...acc, [id]: uniqueHeldBys };
+// 	}, {});
+// }
 
 export function getHoldingsByInstanceId(
 	mainEntity,

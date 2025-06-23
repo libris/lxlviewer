@@ -211,7 +211,7 @@
 			</ol>
 			<Pagination data={searchResult} />
 		</div>
-		<HoldingsModal></HoldingsModal>
+		<HoldingsModal workFnurgel={$page.state.holdings}></HoldingsModal>
 	</div>
 {/if}
 
