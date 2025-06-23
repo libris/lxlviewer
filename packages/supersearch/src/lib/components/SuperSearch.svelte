@@ -52,6 +52,7 @@
 					inputField: Snippet;
 					getCellId: (cellIndex: number) => string | undefined;
 					isFocusedCell: (cellIndex: number) => boolean;
+					isFocusedRow: () => boolean;
 					onclickSubmit: (event: MouseEvent) => void;
 					onclickClear: (event: MouseEvent) => void;
 					onclickClose: (event: MouseEvent) => void;
@@ -666,6 +667,7 @@
 			inputField: collapsedInputSnippet,
 			getCellId: () => undefined,
 			isFocusedCell: () => false,
+			isFocusedRow: () => activeRowIndex === 0,
 			onclickSubmit: handleClickSubmit,
 			onclickClear: handleReset,
 			onclickClose: hideExpandedSearch
@@ -682,6 +684,7 @@
 					inputField: expandedInputSnippet,
 					getCellId: (colIndex: number) => `${id}-item-0x${colIndex}`,
 					isFocusedCell: (colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex,
+					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
 					onclickClear: handleReset,
 					onclickClose: hideExpandedSearch

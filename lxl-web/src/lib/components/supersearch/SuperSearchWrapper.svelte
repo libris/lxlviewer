@@ -239,11 +239,18 @@
 			inputField,
 			getCellId,
 			isFocusedCell,
+			isFocusedRow,
 			onclickClear,
 			onclickClose
 		})}
 			<div
-				class="supersearch-input rounded-d bg-input outline-primary-200 has-focus:outline-primary-600 flex min-h-12 w-full cursor-text overflow-hidden rounded-md outline focus-within:relative"
+				class={[
+					'supersearch-input rounded-d border-primary-200 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
+					isFocusedRow() && [
+						'outline-primary-200 has-focus:border-primary-500 has-focus:outline-4',
+						expanded && 'has-focus:outline-primary-200'
+					]
+				]}
 			>
 				{#if expanded}
 					<button
