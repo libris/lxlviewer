@@ -5,12 +5,14 @@
 	import type { MockQueryResponse } from './api/find/+server.js';
 	import clearIconSvg from './icon-clear.svg';
 	import backIconSvg from './icon-arrow-left.svg';
+	import type { ExpandedContentParams } from '$lib/components/SuperSearch.svelte';
 
 	let isLoading: boolean | undefined = $state();
 	let hasData: boolean | undefined = $state();
 	let value = $state('');
 	let placeholder = $state('Search');
 	let useFormAttribute = $state(false);
+	let useCustomExpandedContent = $state(false);
 
 	function handlePaginationQuery(searchParams: URLSearchParams, prevData: JSONValue) {
 		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
@@ -35,6 +37,42 @@
 	}
 </script>
 
+{#snippet expandedContent({
+	resultsCount,
+	resultsSnippet,
+	getCellId,
+	isFocusedRow,
+	isFocusedCell
+}: ExpandedContentParams)}
+	<nav>
+		<div role="rowgroup">
+			{#each { length: 2 }, index}
+				{@const rowIndex = index + 1}
+				<div
+					role="row"
+					class="persistent-item"
+					class:focused={isFocusedRow(rowIndex)}
+					data-testid="persistent-item"
+				>
+					<button
+						type="button"
+						role="gridcell"
+						id={getCellId(rowIndex, 0)}
+						class:focused-cell={isFocusedCell(rowIndex, 0)}
+					>
+						Persistent item {rowIndex}
+					</button>
+				</div>
+			{/each}
+		</div>
+		{#if resultsCount}
+			<div role="rowgroup">
+				{@render resultsSnippet({ rowOffset: 3 })}
+			</div>
+		{/if}
+	</nav>
+{/snippet}
+
 <form action="test1">
 	<fieldset>
 		<legend>Supersearch component</legend>
@@ -55,28 +93,11 @@
 			language={lxlQuery}
 			toggleWithKeyboardShortcut
 			defaultInputCol={-1}
-			defaultResultRow={1}
+			defaultResultRow={0}
 			defaultResultCol={0}
 			form={useFormAttribute ? 'form-outside' : undefined}
+			expandedContent={useCustomExpandedContent ? expandedContent : undefined}
 		>
-			{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
-				<div role="rowgroup">
-					<div>Header for start items</div>
-					{#each { length: 3 }, index}
-						{@const rowIndex = index + 1}
-						<div role="row" class="start-item" class:focused={isFocusedRow(rowIndex)}>
-							<button
-								type="button"
-								role="gridcell"
-								id={getCellId(rowIndex, 0)}
-								class:focused-cell={isFocusedCell(rowIndex, 0)}
-							>
-								Start item {rowIndex}
-							</button>
-						</div>
-					{/each}
-				</div>
-			{/snippet}
 			{#snippet inputRow({
 				expanded,
 				inputField,
@@ -126,16 +147,6 @@
 				>
 					Search
 				</button>
-			{/snippet}
-			{#snippet persistentResultItemRow({ getCellId, isFocusedCell })}
-				<div class="persistent-item" data-testid="persistent-item">
-					<a
-						href={`/test1#${getCellId(0)}`}
-						role="gridcell"
-						id={getCellId(0)}
-						class:focused-cell={isFocusedCell(0)}>Show all results</a
-					>
-				</div>
 			{/snippet}
 			{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell, rowIndex })}
 				<div class="result-item" data-testid="result-item">
@@ -190,6 +201,15 @@
 		><input type="checkbox" bind:checked={useFormAttribute} data-testid="use-form-attribute" />
 		Use form attribute
 	</label>
+
+	<label
+		><input
+			type="checkbox"
+			bind:checked={useCustomExpandedContent}
+			data-testid="use-custom-expanded-content"
+		/>
+		Use custom expanded content
+	</label>
 </fieldset>
 
 <style>
@@ -242,20 +262,7 @@
 		padding-left: 44px;
 	}
 
-	.persistent-item {
-		display: flex;
-		min-width: 480px;
-
-		& a {
-			display: flex;
-			flex: 1;
-			align-items: center;
-			min-height: 44px;
-			text-align: left;
-		}
-	}
-
-	.start-item,
+	.persistent-item,
 	.result-item {
 		display: flex;
 		align-items: flex-start;

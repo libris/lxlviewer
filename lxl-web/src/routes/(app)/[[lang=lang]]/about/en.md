@@ -50,6 +50,10 @@ Different terms and degrees of precision may still be needed in different contex
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### 2025-06-23
+
+- Usability improvements of search user interface
+
 ### 2025-06-19
 
 - Layout modifications including an adjustable left panel

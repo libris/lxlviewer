@@ -59,6 +59,10 @@ för att, som idag, ligga hårt knutna till olika tjänster.
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
+### 2025-06-23
+
+- Användarförbättringar av sökgränsnitt
+
 ### 2025-06-19
 
 - Layoutförändringar inklusive justerbar vänsterpanel på sökresultatsidan

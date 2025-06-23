@@ -18,29 +18,148 @@ test('type & enter performs search', async ({ page }) => {
 	await expect(page).toHaveURL('/find?_q=hej&_limit=20&_offset=0&_sort=&_spell=true');
 });
 
-test('start content shown on empty input', async ({ page }) => {
+test('expanded content shows persistant items and results', async ({ page }) => {
 	await page.getByTestId('main-search').click();
-	await expect(page.getByText('Bygg och förfina din sökning')).toBeVisible();
-});
-
-test('8 suggestions shown after typing', async ({ page }) => {
-	await page.getByRole('combobox').fill('hej');
-	await expect(page.getByText('Bygg och förfina din sökning')).not.toBeVisible();
-	await expect(await page.locator('.suggestion')).toHaveCount(8);
+	await expect(
+		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
+		'persistent items are shown on empty input'
+	).toBeGreaterThan(0);
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag'),
+		'search results are not visible on empty input'
+	).toBeHidden();
+	await page.getByRole('dialog').getByRole('combobox').fill('hej');
+	await expect(
+		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
+		'persistent items are also shown after typing'
+	).toBeGreaterThan(0);
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
+		'search results are shown after typing'
+	).toHaveCount(5);
+	await page.goto('/find?_limit=20&_offset=0&_q=language%3A"lang%3Aswe"&_sort=&_spell=true');
+	await page.getByTestId('main-search').click();
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
+		'results are shown if there is an initial query'
+	).toHaveCount(5);
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
+	await page.waitForURL(/\/[a-z0-9]{15,}$/); // fnurgel route
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-key'),
+		'query is kept when navigating from find routes...'
+	).toContainText('Språk');
+	await expect(page.getByRole('combobox').locator('.lxl-qualifier-value')).toContainText('Svenska');
+	await page.locator('.home').getByRole('link').click(); // click on home link
+	await page.waitForURL('/'); // fnurgel route
+	await expect(
+		page.getByRole('combobox'),
+		'...except when navigating to start/index (which should be seen as a reset)'
+	).toContainText('Sök titel, upphovsperson, bibliotek, ämnen...');
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
 	await page.getByRole('combobox').fill('a');
-	await expect(await page.locator('.suggestion')).toHaveCount(8);
+	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
+	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
 	await expect(page.locator('.resource-page')).toBeVisible();
+	await expect(
+		page.locator('.supersearch-combobox .cm-focused'),
+		'input loses focus when navigating'
+	).not.toBeVisible();
 });
 
-test('input loses focus when navigating', async ({ page }) => {
-	await page.getByRole('combobox').fill('a');
-	await expect(await page.locator('.supersearch-combobox .cm-focused')).toBeVisible();
-	await page.keyboard.press('ArrowDown');
-	await page.keyboard.press('Enter');
-	await expect(await page.locator('.supersearch-combobox .cm-focused')).not.toBeVisible();
+test('qualifier keys can be added using the user interface', async ({ page }) => {
+	await page.getByTestId('main-search').click();
+	await page
+		.getByRole('dialog')
+		.getByLabel('Lägg till filter')
+		.getByRole('button')
+		.getByText('Författare/upphov')
+		.click();
+	await expect(
+		page.getByRole('dialog').getByLabel('Lägg till filter'),
+		'buttons for adding qualifier keys is hidden after selecting one of them'
+	).toBeHidden();
+	await expect(
+		page
+			.getByRole('dialog')
+			.getByLabel('Förslag')
+			.getByRole('button')
+			.filter({ hasText: 'Person' }),
+		'all suggestions are persons'
+	).toHaveCount(5);
+	await expect(page.getByRole('dialog').getByRole('combobox')).toContainText('Författare/upphov');
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('pippi');
+	await expect(
+		await page
+			.getByRole('dialog')
+			.getByLabel('Förslag')
+			.getByRole('button')
+			.filter({ hasText: 'Person' })
+			.filter({ hasText: /pippi/i }),
+		'all suggestions are persons related to the query pippi'
+	).toHaveCount(5);
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.waitForURL('**/find?**');
+	await expect(page.url()).toContain('contributor');
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-key'),
+		'pill with selected qualifier key exists...'
+	).toContainText('Författare/upphov');
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-value.atomic'),
+		'...and the value is related to the previous query'
+	).toContainText(/pippi/i);
+	await page.getByTestId('main-search').click();
+	await page
+		.getByRole('dialog')
+		.getByLabel('Lägg till filter')
+		.getByRole('button')
+		.getByText('Språk')
+		.click();
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('button').filter({ hasText: 'Språk' }),
+		'all suggestions are languages'
+	).toHaveCount(5);
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('Swahili');
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.waitForURL(/language/);
+	await expect(page.url()).toContain('contributor');
+	await expect(page.url(), 'url contains both contributor and language').toContain('language');
+	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').first()).toContainText(
+		'Författare/upphov'
+	);
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-key').last(),
+		'pills for both contributor and language exists'
+	).toContainText('Språk');
+	await page.getByTestId('main-search').click();
+	await page.keyboard.press('Home'); // for PCs
+	await page.keyboard.press('Meta+ArrowLeft'); // for mac
+	await page.keyboard.press('Space'); // TODO: Remove the need for a space character to correctly position cursor inside quotes
+	await page.keyboard.press('ArrowLeft');
+	await page
+		.getByRole('dialog')
+		.getByLabel('Lägg till filter')
+		.getByRole('button')
+		.getByText('Ämne')
+		.click();
+	await expect(
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('button').filter({ hasText: 'ämne' })
+	).toHaveCount(5);
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.waitForURL(/subject/);
+	await expect(
+		page.getByRole('combobox').locator('.lxl-qualifier-key').first(),
+		'qualifier is added in the beginning if the cursor is placed there'
+	).toContainText('Ämne');
+	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').nth(1)).toContainText(
+		'Författare/upphov'
+	);
+	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').last()).toContainText(
+		'Språk'
+	);
 });

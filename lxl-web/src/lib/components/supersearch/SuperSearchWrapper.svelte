@@ -15,7 +15,19 @@
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
 	import BiSearch from '~icons/bi/search';
+	import IconAddQualifierKey from '~icons/bi/plus-circle';
 	import '$lib/styles/lxlquery.css';
+
+	const QUALIFIER_SUGGESTIONS = [
+		{
+			key: page.data.t('qualifiers.contributorKey'),
+			label: page.data.t('qualifiers.contributorLabel')
+		},
+		{ key: page.data.t('qualifiers.titleKey'), label: page.data.t('qualifiers.titleLabel') },
+		{ key: page.data.t('qualifiers.languageKey'), label: page.data.t('qualifiers.languageLabel') },
+		{ key: page.data.t('qualifiers.subjectKey'), label: page.data.t('qualifiers.subjectLabel') },
+		{ key: page.data.t('qualifiers.yearKey'), label: page.data.t('qualifiers.yearLabel') }
+	];
 
 	interface Props {
 		placeholder: string;
@@ -32,6 +44,7 @@
 	let isLoading: boolean | undefined = $state();
 	let debouncedLoading: boolean | undefined = $state();
 	let timeout: ReturnType<typeof setTimeout> | null = null;
+	let fetchOnExpand = $state(true);
 
 	// debounce loading spinner
 	$effect(() => {
@@ -63,9 +76,15 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			const toQ = addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
-			q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+			if (page.route.id === '/(app)/[[lang=lang]]') {
+				q = ''; // reset query if navigating to start/index page
+			} else if (to.url.searchParams.has('_q')) {
+				const toQ = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
+				q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+			}
+
 			superSearch?.hideExpandedSearch();
+			fetchOnExpand = true;
 			superSearch?.blur(); // remove focus from input after searching or navigating
 		}
 	});
@@ -78,32 +97,24 @@
 		}
 	}
 
-	function handleShouldShowStartContent(value: string, selection?: Selection) {
-		/* Show start content if empty */
-		if (!value.trim()) {
-			return true;
+	const editedParentNode = $derived.by(() => {
+		if (!q || !selection) {
+			return null;
 		}
 
 		if (selection) {
-			const tree = lxlQuery.language.parser.parse(value);
+			const tree = lxlQuery.language.parser.parse(q);
 			const node = tree.resolveInner(selection.head, 0);
 
-			/* Show start content if not editing part of qualifier or string */
-			if (
-				!node.parent?.type &&
-				node.childBefore(selection.from)?.type.name !== 'String' &&
-				node.childAfter(selection.from)?.type.name !== 'String' &&
-				node.childBefore(selection.from)?.type.name !== 'Group' &&
-				node.childAfter(selection.from)?.type.name !== 'Group'
-			) {
-				return true;
+			if (node.type.name) {
+				return node.parent?.type.name;
 			}
 		}
 
-		/** TODO: Should start content be shown in while editing inside parentheses/groups? */
+		return null;
+	});
 
-		return false;
-	}
+	const showAddQualifiers = $derived(editedParentNode !== 'QualifierValue');
 
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
@@ -111,16 +122,20 @@
 	}
 
 	function addQualifierKey(qualifierKey: string) {
+		superSearch?.resetData();
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
+		const charBefore = q.slice(cursor - 1, cursor).trim();
+		const charAfter = q.slice(cursor, cursor + 1).trim();
+		const insert = (charBefore ? ' ' : '') + `${qualifierKey}:""` + (charAfter ? ' ' : '');
 		superSearch?.dispatchChange({
 			change: {
 				from: cursor,
 				to: cursor,
-				insert: `${qualifierKey}:`
+				insert
 			},
 			selection: {
-				anchor: cursor + qualifierKey?.length + 1,
-				head: cursor + qualifierKey?.length + 1
+				anchor: cursor + insert.length - 1,
+				head: cursor + insert.length - 1
 			},
 			userEvent: 'input.complete'
 		});
@@ -132,6 +147,7 @@
 			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
 			userEvent: 'input.complete'
 		});
+		superSearch?.hideExpandedSearch();
 		goto(getFullQualifierLink(qualifier._q));
 	}
 
@@ -146,6 +162,7 @@
 			selection: { anchor: insertCursor, head: insertCursor },
 			userEvent: 'delete'
 		});
+		superSearch?.hideExpandedSearch();
 		goto('/find?' + newSearchParams.toString());
 	}
 
@@ -166,41 +183,18 @@
 	export function showExpandedSearch() {
 		superSearch?.showExpandedSearch();
 	}
-</script>
 
-{#snippet startFilterItem({
-	qualifierKey,
-	qualifierLabel,
-	qualifierPlaceholder,
-	getCellId,
-	isFocusedCell,
-	isFocusedRow,
-	rowIndex
-}: {
-	qualifierKey: string;
-	qualifierLabel: string;
-	qualifierPlaceholder: string;
-	getCellId: (rowIndex: number, colIndex: number) => string | undefined;
-	isFocusedCell: (rowIndex: number, colIndex: number) => boolean;
-	isFocusedRow: (rowIndex: number) => boolean;
-	rowIndex: number;
-})}
-	<div role="row" class="suggestion" class:focused={isFocusedRow(rowIndex)}>
-		<button
-			type="button"
-			role="gridcell"
-			id={getCellId(rowIndex, 0)}
-			class="hover:bg-primary-50 flex min-h-12 w-full items-center px-4"
-			class:focused-cell={isFocusedCell(rowIndex, 0)}
-			onclick={() => addQualifierKey(qualifierKey)}
-		>
-			<span class="truncate text-sm">
-				<span class="font-medium">{qualifierLabel}:</span>
-				<span class="text-subtle italic">{qualifierPlaceholder}</span>
-			</span>
-		</button>
-	</div>
-{/snippet}
+	function handleOnChange() {
+		fetchOnExpand = false;
+	}
+
+	function handleOnExpand() {
+		if (fetchOnExpand && q.trim()) {
+			superSearch?.fetchData();
+			fetchOnExpand = false;
+		}
+	}
+</script>
 
 {#snippet loading()}
 	<span class="-mt-0.5 block size-4" in:fade={{ duration: 200 }}>
@@ -226,17 +220,18 @@
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({
 				_q: query,
-				_limit: '8',
+				_limit: '5',
 				cursor: cursor.toString()
 			});
 		}}
 		transformFn={handleTransform}
-		shouldShowStartContentFn={handleShouldShowStartContent}
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
 		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={2}
 		debouncedWait={100}
+		onexpand={handleOnExpand}
+		onchange={handleOnChange}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -289,57 +284,54 @@
 				{/if}
 			</div>
 		{/snippet}
-		{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
-			<div role="rowgroup">
-				<div class="text-2xs text-subtle flex w-full items-center px-4 py-2 font-medium">
-					{page.data.t('search.supersearchStartHeader')}
-				</div>
-				{@render startFilterItem({
-					qualifierKey: page.data.t('qualifiers.contributorKey'),
-					qualifierLabel: page.data.t('qualifiers.contributorLabel'),
-					qualifierPlaceholder: page.data.t('qualifiers.contributorPlaceholder'),
-					getCellId,
-					isFocusedCell,
-					isFocusedRow,
-					rowIndex: 1
-				})}
-				{@render startFilterItem({
-					qualifierKey: page.data.t('qualifiers.titleKey'),
-					qualifierLabel: page.data.t('qualifiers.titleLabel'),
-					qualifierPlaceholder: page.data.t('qualifiers.titlePlaceholder'),
-					getCellId,
-					isFocusedCell,
-					isFocusedRow,
-					rowIndex: 2
-				})}
-				{@render startFilterItem({
-					qualifierKey: page.data.t('qualifiers.languageKey'),
-					qualifierLabel: page.data.t('qualifiers.languageLabel'),
-					qualifierPlaceholder: page.data.t('qualifiers.languagePlaceholder'),
-					getCellId,
-					isFocusedCell,
-					isFocusedRow,
-					rowIndex: 3
-				})}
-				{@render startFilterItem({
-					qualifierKey: page.data.t('qualifiers.subjectKey'),
-					qualifierLabel: page.data.t('qualifiers.subjectLabel'),
-					qualifierPlaceholder: page.data.t('qualifiers.subjectPlaceholder'),
-					getCellId,
-					isFocusedCell,
-					isFocusedRow,
-					rowIndex: 4
-				})}
-				{@render startFilterItem({
-					qualifierKey: page.data.t('qualifiers.yearKey'),
-					qualifierLabel: page.data.t('qualifiers.yearLabel'),
-					qualifierPlaceholder: page.data.t('qualifiers.yearPlaceholder'),
-					getCellId,
-					isFocusedCell,
-					isFocusedRow,
-					rowIndex: 5
-				})}
-			</div>
+		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
+			<nav>
+				{#if showAddQualifiers}
+					<div
+						id="supersearch-add-qualifier-key-label"
+						class="text-2xs text-subtle px-4 font-medium"
+					>
+						{page.data.t('supersearch.addQualifiers')}
+					</div>
+					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
+						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
+							<IconAddQualifierKey class="text-subtle shrink-0" />
+							{#each QUALIFIER_SUGGESTIONS as { key, label }, cellIndex (key)}
+								<button
+									type="button"
+									id={getCellId(1, cellIndex)}
+									class={[
+										'text-body bg-accent-50 text-2xs border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
+										isFocusedCell(1, cellIndex) &&
+											'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
+									]}
+									onclick={() => addQualifierKey(key)}
+								>
+									{label}:
+								</button>
+							{/each}
+						</div>
+					</div>
+				{/if}
+				{#if resultsCount && q.trim().length}
+					<div id="supersearch-results-label" class="text-2xs text-subtle px-4 font-medium">
+						{page.data.t('supersearch.suggestions')}
+					</div>
+					<div role="rowgroup" aria-labelledby="supersearch-results-label">
+						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+					</div>
+				{/if}
+				{#if showAddQualifiers && resultsCount}
+					<div role="row" class="border-neutral border-t">
+						<button
+							type="submit"
+							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs"
+							class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
+							>{page.data.t('supersearch.showAll')}</button
+						>
+					</div>
+				{/if}
+			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
 			{#if resultItem}
@@ -435,7 +427,7 @@
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-20 items-stretch px-4 pt-3 pb-2;
+		@apply sticky top-0 z-20 items-stretch px-4 pt-3 pb-3;
 		background-color: var(--color-page);
 	}
 
