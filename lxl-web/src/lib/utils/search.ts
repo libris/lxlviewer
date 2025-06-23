@@ -15,6 +15,7 @@ import {
 	type FacetGroup,
 	type ItemDebugInfo,
 	type MultiSelectFacet,
+	type Observation,
 	type PartialCollectionView,
 	type SearchMapping,
 	SearchOperators,
@@ -31,6 +32,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
 import getTypeLike from '$lib/utils/getTypeLike';
+import { ACCESS_FILTERS } from '$lib/constants/facets';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -282,26 +284,52 @@ function displayFacetGroups(
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 
-	const result = Object.values(slices).map((g) => {
-		return {
-			label: translate(`facet.${g.alias || g.dimension}`),
-			dimension: g.dimension,
-			maxItems: g.maxItems,
-			...('search' in g && { search: g.search }),
-			facets: g.observation.map((o) => {
-				return {
-					...('_selected' in o && { selected: o._selected }),
-					totalItems: o.totalItems,
-					view: replacePath(o.view, usePath),
-					object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
-					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
-				};
-			})
-		};
-	});
+	const result = [];
 
-	result.push(displayBoolFilters(view, displayUtil, locale, translate, usePath));
+	result.push(
+		displayBoolFilters(
+			'accessFilters',
+			(f) => ACCESS_FILTERS.includes(<string>f.object?.alias),
+			view,
+			displayUtil,
+			locale,
+			translate,
+			usePath
+		)
+	);
+
+	result.push(
+		...Object.values(slices).map((g) => {
+			return {
+				label: translate(`facet.${g.alias || g.dimension}`),
+				dimension: g.dimension,
+				maxItems: g.maxItems,
+				...('search' in g && { search: g.search }),
+				facets: g.observation.map((o) => {
+					return {
+						...('_selected' in o && { selected: o._selected }),
+						totalItems: o.totalItems,
+						view: replacePath(o.view, usePath),
+						object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+						str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
+						discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
+					};
+				})
+			};
+		})
+	);
+
+	result.push(
+		displayBoolFilters(
+			'boolFilters',
+			(f) => !ACCESS_FILTERS.includes(<string>f.object?.alias),
+			view,
+			displayUtil,
+			locale,
+			translate,
+			usePath
+		)
+	);
 
 	return result;
 }
@@ -326,13 +354,15 @@ export function displayPredicates(
 }
 
 function displayBoolFilters(
+	dimension: string,
+	predicate: (o: Observation) => boolean,
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
 	usePath?: string
 ): FacetGroup {
-	const filters = view.stats?._boolFilters || [];
+	const filters = view.stats?._boolFilters?.filter(predicate) || [];
 
 	const facets = filters.map((o) => {
 		return {
@@ -347,8 +377,8 @@ function displayBoolFilters(
 	});
 
 	return {
-		label: translate('facet.boolFilters'),
-		dimension: 'boolFilters',
+		label: translate(`facet.${dimension}`),
+		dimension: dimension,
 		facets: facets
 	};
 }

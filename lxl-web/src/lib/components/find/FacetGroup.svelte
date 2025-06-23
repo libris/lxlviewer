@@ -5,7 +5,7 @@
 	import {
 		CUSTOM_FACET_SORT,
 		DEFAULT_FACET_SORT,
-		DEFAULT_FACETS_SHOWN
+		DEFAULT_FACET_VALUES_SHOWN
 	} from '$lib/constants/facets';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
@@ -13,10 +13,9 @@
 	import FacetRange from './FacetRange.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiSortDown from '~icons/bi/sort-down';
-	import BiCheckSquareFill from '~icons/bi/check-square-fill';
-	import BiSquare from '~icons/bi/square';
 	import BiInfo from '~icons/bi/info-circle';
-	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
+	import FacetValue from '$lib/components/find/FacetValue.svelte';
+	import { ExpandedState } from '$lib/types/userSettings';
 
 	// Todo: Rename FacetGroup -> Facet (facets -> items/facetItems)
 
@@ -24,21 +23,30 @@
 		group: FacetGroup;
 		locale: LocaleCode;
 		searchPhrase: string;
+		isDefaultExpanded: boolean;
 	};
 
-	let { group, locale, searchPhrase }: FacetGroupProps = $props();
+	let { group, locale, searchPhrase, isDefaultExpanded }: FacetGroupProps = $props();
 
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
 
+	let detailsEl: HTMLDetailsElement | undefined = undefined;
+
 	const maxItems = group.maxItems;
 	const totalItems = group.facets.length;
-	let defaultItemsShown = $state(DEFAULT_FACETS_SHOWN);
+	let defaultItemsShown = $state(DEFAULT_FACET_VALUES_SHOWN);
 
 	let currentSort = $state(
 		userSettings.facetSort?.[group.dimension] ||
 			CUSTOM_FACET_SORT[group.dimension as keyof typeof CUSTOM_FACET_SORT] ||
 			DEFAULT_FACET_SORT
+	);
+
+	let isUserOrDefaultExpanded = $derived(
+		userSettings.facetExpanded?.[group.dimension]
+			? userSettings.facetExpanded?.[group.dimension] === ExpandedState.OPEN
+			: isDefaultExpanded
 	);
 
 	const sortOptions = [
@@ -81,9 +89,10 @@
 
 	const shownItems = $derived(filteredItems.filter((facet, index) => index < defaultItemsShown));
 	let hasHits = $derived(filteredItems.length > 0);
+	let expanded = $derived(isUserOrDefaultExpanded || (searchPhrase && hasHits));
 	const canShowMoreItems = $derived(filteredItems.length > defaultItemsShown);
 	const canShowFewerItems = $derived(
-		!canShowMoreItems && filteredItems.length > DEFAULT_FACETS_SHOWN
+		!canShowMoreItems && filteredItems.length > DEFAULT_FACET_VALUES_SHOWN
 	);
 	const maxItemsReached = $derived(totalItems === maxItems);
 
@@ -96,6 +105,13 @@
 			$matomoTracker.trackEvent('Facet sort', group.dimension, target.value);
 		}
 	}
+
+	function saveUserExpanded(e: Event): void {
+		e.preventDefault();
+		if (detailsEl) {
+			userSettings.saveFacetExpanded(group.dimension, !detailsEl.open);
+		}
+	}
 </script>
 
 <li
@@ -103,10 +119,11 @@
 	class:has-hits={hasHits}
 	data-dimension={group.dimension}
 >
-	<details class="relative" open>
+	<details class="relative" open={!!expanded} bind:this={detailsEl}>
 		<summary
 			class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
 			data-testid="facet-toggle"
+			onclick={saveUserExpanded}
 		>
 			<span class="arrow text-subtle transition-transform">
 				<BiChevronRight />
@@ -140,37 +157,7 @@
 			>
 				{#each shownItems as facet (facet.view['@id'])}
 					<li class="hover:bg-primary-100">
-						<a
-							class="facet-link ml-4.5 grid grid-cols-[auto_auto] items-end justify-between gap-2 border-l border-l-neutral-200 py-1.5 pr-3 pl-4 font-normal no-underline"
-							href={facet.view['@id']}
-						>
-							<span class="truncate" title={facet.str}>
-								{#if 'selected' in facet}
-									<!-- checkboxes -->
-									<span class="sr-only"
-										>{facet.selected ? page.data.t('search.activeFilter') : ''}</span
-									>
-									<div class="mr-1 inline-block text-xs" aria-hidden="true">
-										{#if facet.selected}
-											<BiCheckSquareFill class="text-accent" />
-										{:else}
-											<BiSquare class="text-subtle" />
-										{/if}
-									</div>
-								{/if}
-								<span>
-									<DecoratedDataLite data={facet.object} />
-									{#if facet.discriminator}
-										<span class="text-subtle">({facet.discriminator})</span>
-									{/if}
-								</span>
-							</span>
-							{#if facet.totalItems > 0}
-								<span class="badge" aria-label="{facet.totalItems} {page.data.t('search.hits')}"
-									>{facet.totalItems.toLocaleString(locale)}</span
-								>
-							{/if}
-						</a>
+						<FacetValue {facet} {locale} />
 					</li>
 				{/each}
 			</ol>
@@ -182,7 +169,7 @@
 						onclick={() =>
 							canShowMoreItems
 								? (defaultItemsShown = totalItems)
-								: (defaultItemsShown = DEFAULT_FACETS_SHOWN)}
+								: (defaultItemsShown = DEFAULT_FACET_VALUES_SHOWN)}
 					>
 						<span class="ml-4.5 block border-l border-l-neutral-200 py-1.5 pr-3 pl-4 text-left">
 							{canShowMoreItems
@@ -194,7 +181,7 @@
 				<!-- limit reached info -->
 				{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
 					<button
-						class="text-error bg-severe-50 m-6 flex items-center gap-1 rounded-sm px-2 py-1"
+						class="text-error bg-severe-50 m-3 flex items-center gap-1 rounded-sm px-2 py-1"
 						use:popover={{
 							title: page.data.t('facet.limitText'),
 							placeAsSibling: false
@@ -226,6 +213,10 @@
 
 	/* hide sorting for bool filters */
 	li[data-dimension='boolFilters'] details[open] .facet-sort {
+		display: none;
+	}
+
+	li[data-dimension='accessFilters'] details[open] .facet-sort {
 		display: none;
 	}
 </style>

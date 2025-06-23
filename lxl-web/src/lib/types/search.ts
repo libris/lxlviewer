@@ -123,7 +123,7 @@ interface Slice {
 	maxItems: number;
 }
 
-interface Observation {
+export interface Observation {
 	totalItems: number;
 	view: Link;
 	object: FramedData;

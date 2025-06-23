@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 
 test.beforeEach(async ({ page }) => {
 	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
@@ -57,12 +58,33 @@ test('expanded filters have no detectable a11y issues', async ({ page }) => {
 test('sorting the facet sets a cookie', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
 	expect(beforeCookies).toEqual([]);
-	await page.getByTestId('facet-sort').first().getByRole('combobox').selectOption('alpha.asc');
+	await page.getByTestId('facet-sort').nth(1).getByRole('combobox').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
 	expect(afterCookies[0].name).toEqual('userSettings');
 	expect(afterCookies[0].value).toEqual(
 		'{%22leadingPane%22:{%22open%22:true}%2C%22facetSort%22:{%22rdf:type%22:%22alpha.asc%22}}'
 	);
+});
+
+test('facet opened/closed state is preserved', async ({ page, context }) => {
+	const beforeCookies = await context.cookies();
+	expect(beforeCookies).toEqual([]);
+
+	const firstClosed = DEFAULT_FACETS_EXPANDED;
+
+	await expect(page.getByTestId('facet-list').first()).toBeVisible();
+	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeHidden();
+
+	await page.getByTestId('facet-toggle').first().click();
+	await page.getByTestId('facet-toggle').nth(firstClosed).click();
+
+	await expect(page.getByTestId('facet-list').first()).toBeHidden();
+	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeVisible();
+
+	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
+
+	await expect(page.getByTestId('facet-list').first()).toBeHidden();
+	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeVisible();
 });
 
 // Comment out test that fails in CI
