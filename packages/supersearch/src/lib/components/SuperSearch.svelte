@@ -365,6 +365,10 @@
 		if (event.key === 'Enter' && value.length) {
 			submitClosestForm();
 		}
+		if (event.key === 'ArrowDown' && event.altKey) {
+			event.preventDefault();
+			showExpandedSearch();
+		}
 	}
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
@@ -428,7 +432,10 @@
 			if (rows.length) {
 				switch (event.key) {
 					case 'ArrowUp':
-						if (controlOrMetaKey(event)) {
+						if (event.altKey) {
+							event.preventDefault();
+							hideExpandedSearch();
+						} else if (controlOrMetaKey(event)) {
 							event.preventDefault();
 							activeRowIndex = 0;
 							activeColIndex = defaultInputCol;
