@@ -31,6 +31,8 @@
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
 
+	let detailsEl: HTMLDetailsElement | undefined = undefined;
+
 	const maxItems = group.maxItems;
 	const totalItems = group.facets.length;
 	let defaultItemsShown = $state(DEFAULT_FACET_VALUES_SHOWN);
@@ -105,8 +107,10 @@
 	}
 
 	function saveUserExpanded(e: Event): void {
-		const target = e.target as HTMLDetailsElement;
-		userSettings.saveFacetExpanded(group.dimension, target.open);
+		e.preventDefault();
+		if (detailsEl) {
+			userSettings.saveFacetExpanded(group.dimension, !detailsEl.open);
+		}
 	}
 </script>
 
@@ -115,10 +119,11 @@
 	class:has-hits={hasHits}
 	data-dimension={group.dimension}
 >
-	<details class="relative" open={!!expanded} ontoggle={saveUserExpanded}>
+	<details class="relative" open={!!expanded} bind:this={detailsEl}>
 		<summary
 			class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
 			data-testid="facet-toggle"
+			onclick={saveUserExpanded}
 		>
 			<span class="arrow text-subtle transition-transform">
 				<BiChevronRight />
@@ -176,7 +181,7 @@
 				<!-- limit reached info -->
 				{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
 					<button
-						class="text-error bg-severe-50 m-6 flex items-center gap-1 rounded-sm px-2 py-1"
+						class="text-error bg-severe-50 m-3 flex items-center gap-1 rounded-sm px-2 py-1"
 						use:popover={{
 							title: page.data.t('facet.limitText'),
 							placeAsSibling: false

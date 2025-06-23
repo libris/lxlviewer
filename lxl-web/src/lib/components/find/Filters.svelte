@@ -69,7 +69,7 @@
 					/>
 				{/each}
 			</ol>
-			<span role="status" class="no-hits-msg px-2 text-xs" aria-atomic="true"
+			<span role="status" class="no-hits-msg px-4 text-xs" aria-atomic="true"
 				>{page.data.t('search.noResults')}</span
 			>
 		</nav>
