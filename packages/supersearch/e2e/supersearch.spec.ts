@@ -169,6 +169,24 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
 });
 
+test('user can use control (or meta key) + arrow keys to jump to start or end ', async ({
+	page
+}) => {
+	await page.getByRole('combobox').click();
+	const comboboxElement = page.getByRole('dialog').getByRole('combobox');
+	await expect(comboboxElement, 'no item cell is focused initially').not.toHaveAttribute(
+		'aria-activedescendant',
+		/.+/
+	);
+	await page.getByRole('dialog').getByRole('combobox').fill('a');
+	await expect(page.getByTestId('result-item')).toHaveCount(10);
+	await page.keyboard.press('ControlOrMeta+ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-10x0');
+	await page.keyboard.press('ControlOrMeta+ArrowUp');
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
+});
+
 test('syncs collapsed and expanded editor views', async ({ context, page }) => {
 	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 	await page.getByRole('combobox').click();

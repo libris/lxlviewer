@@ -353,6 +353,14 @@
 		}
 	}
 
+	function controlOrMetaKey(event: KeyboardEvent) {
+		if (!event.ctrlKey && !event.metaKey) return false;
+		const isMac = navigator.userAgent.includes('Mac OS X');
+		if (isMac && event.metaKey) return true;
+		if (!isMac && event.ctrlKey) return true;
+		return false;
+	}
+
 	function handleCollapsedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Enter' && value.length) {
 			submitClosestForm();
@@ -420,43 +428,55 @@
 			if (rows.length) {
 				switch (event.key) {
 					case 'ArrowUp':
-						if (loopingArrowKeyNavigation && activeRowIndex === 0) {
+						if (controlOrMetaKey(event)) {
+							event.preventDefault();
+							activeRowIndex = 0;
+							activeColIndex = defaultInputCol;
+						} else {
+							if (loopingArrowKeyNavigation && activeRowIndex === 0) {
+								activeRowIndex = rows.length - 1;
+								activeColIndex = 0;
+							} else if (activeRowIndex >= 1) {
+								activeRowIndex--;
+								if (activeRowIndex < 1) {
+									activeColIndex = defaultInputCol;
+									allowArrowKeyCursorHandling = {
+										...allowArrowKeyCursorHandling,
+										horizontal: true
+									};
+								} else {
+									const cols = getColsInRow(activeRowIndex);
+									activeColIndex = Math.min(activeColIndex, cols.length - 1);
+									allowArrowKeyCursorHandling = {
+										...allowArrowKeyCursorHandling,
+										horizontal: cols.length <= 1
+									};
+								}
+							}
+						}
+						break;
+					case 'ArrowDown':
+						if (controlOrMetaKey(event)) {
+							event.preventDefault();
 							activeRowIndex = rows.length - 1;
 							activeColIndex = 0;
-						} else if (activeRowIndex >= 1) {
-							activeRowIndex--;
-							if (activeRowIndex < 1) {
+						} else {
+							if (loopingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
+								activeRowIndex = 0;
 								activeColIndex = defaultInputCol;
-								allowArrowKeyCursorHandling = {
-									...allowArrowKeyCursorHandling,
-									horizontal: true
-								};
-							} else {
+							} else if (activeRowIndex < rows.length - 1) {
+								activeRowIndex++;
 								const cols = getColsInRow(activeRowIndex);
-								activeColIndex = Math.min(activeColIndex, cols.length - 1);
+								if (activeRowIndex === 1) {
+									activeColIndex = 0;
+								} else {
+									activeColIndex = Math.min(activeColIndex, cols.length - 1);
+								}
 								allowArrowKeyCursorHandling = {
 									...allowArrowKeyCursorHandling,
 									horizontal: cols.length <= 1
 								};
 							}
-						}
-						break;
-					case 'ArrowDown':
-						if (loopingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
-							activeRowIndex = 0;
-							activeColIndex = defaultInputCol;
-						} else if (activeRowIndex < rows.length - 1) {
-							activeRowIndex++;
-							const cols = getColsInRow(activeRowIndex);
-							if (activeRowIndex === 1) {
-								activeColIndex = 0;
-							} else {
-								activeColIndex = Math.min(activeColIndex, cols.length - 1);
-							}
-							allowArrowKeyCursorHandling = {
-								...allowArrowKeyCursorHandling,
-								horizontal: cols.length <= 1
-							};
 						}
 						break;
 					case 'ArrowLeft':
