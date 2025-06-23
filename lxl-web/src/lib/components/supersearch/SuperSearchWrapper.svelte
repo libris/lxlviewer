@@ -227,6 +227,7 @@
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
+		loopingArrowKeyNavigation
 		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={2}
 		debouncedWait={100}
@@ -490,10 +491,6 @@
 		@variant sm {
 			padding-left: calc(var(--spacing, 0.25rem) * 12);
 		}
-	}
-
-	:global(.supersearch-input .cm-focused) {
-		outline: none;
 	}
 
 	:global(.codemirror-container .cm-content) {

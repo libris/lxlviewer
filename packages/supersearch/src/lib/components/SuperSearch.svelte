@@ -74,6 +74,7 @@
 		defaultResultRow?: number;
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
+		loopingArrowKeyNavigation?: boolean;
 		debouncedWait?: number;
 		selection?: Selection;
 		isLoading?: boolean;
@@ -102,6 +103,7 @@
 		resultItemRow = fallbackResultItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
+		loopingArrowKeyNavigation = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -417,7 +419,10 @@
 			if (rows.length) {
 				switch (event.key) {
 					case 'ArrowUp':
-						if (activeRowIndex >= 1) {
+						if (loopingArrowKeyNavigation && activeRowIndex === 0) {
+							activeRowIndex = rows.length - 1;
+							activeColIndex = 0;
+						} else if (activeRowIndex >= 1) {
 							activeRowIndex--;
 							if (activeRowIndex < 1) {
 								activeColIndex = defaultInputCol;
@@ -436,7 +441,10 @@
 						}
 						break;
 					case 'ArrowDown':
-						if (activeRowIndex < rows.length - 1) {
+						if (loopingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
+							activeRowIndex = 0;
+							activeColIndex = defaultInputCol;
+						} else if (activeRowIndex < rows.length - 1) {
 							activeRowIndex++;
 							const cols = getColsInRow(activeRowIndex);
 							if (activeRowIndex === 1) {
@@ -476,10 +484,10 @@
 
 							if (typeof closestAfter !== 'number' && activeRowIndex < rows.length - 1) {
 								activeRowIndex++;
-								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex)[0].id);
+								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex)[0].id) || 0;
 							}
 							if (typeof closestAfter === 'number') {
-								activeColIndex = closestAfter;
+								activeColIndex = closestAfter || 0;
 							}
 						}
 						break;
