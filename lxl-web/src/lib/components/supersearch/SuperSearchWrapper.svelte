@@ -294,14 +294,14 @@
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="flex items-center gap-2 px-4 py-2">
-							<IconAddQualifierKey class="text-subtle" />
+						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
+							<IconAddQualifierKey class="text-subtle shrink-0" />
 							{#each QUALIFIER_SUGGESTIONS as { key, label }, cellIndex (key)}
 								<button
 									type="button"
 									id={getCellId(1, cellIndex)}
 									class={[
-										'text-body bg-accent-50 text-2xs border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 rounded-md border px-1.5 font-medium',
+										'text-body bg-accent-50 text-2xs border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
 										isFocusedCell(1, cellIndex) &&
 											'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
 									]}
