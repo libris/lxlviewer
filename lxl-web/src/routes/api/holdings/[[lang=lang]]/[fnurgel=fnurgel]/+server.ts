@@ -53,7 +53,6 @@ export async function GET({ url, params, locals }) {
 
 	//get all holders
 	await fetchHoldersIfAbsent(Object.values(holdersByInstanceId).flat());
-	console.log('bibIdsByInstanceId', bibIdsByInstanceId);
 
 	return json({
 		bibIdsByInstanceId: bibIdsByInstanceId,

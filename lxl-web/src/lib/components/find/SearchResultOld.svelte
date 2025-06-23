@@ -16,7 +16,6 @@
 	let showFiltersModal = false;
 	export let searchResult: SearchResult;
 	export let showMapping: boolean = false;
-	const holdingsParam = $page.url.searchParams.get('holdings');
 
 	$: sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
@@ -212,9 +211,7 @@
 			</ol>
 			<Pagination data={searchResult} />
 		</div>
-		{#if holdingsParam}
-			<HoldingsModal></HoldingsModal>
-		{/if}
+		<HoldingsModal></HoldingsModal>
 	</div>
 {/if}
 

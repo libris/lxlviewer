@@ -27,23 +27,11 @@
 		bibIdsByInstanceId: Record<string, BibIdObj>;
 	};
 
-	let data: HoldingsModalProps | undefined = $state();
-
-	onMount(async () => {
-		console.log('ON MOUNT');
-		const fnurgel = page.url.searchParams.get('holdings');
-		if (fnurgel && isFnurgel(fnurgel)) {
-			const result = await fetch(`/api/holdings/${fnurgel}`);
-			data = await result.json();
-		}
-	});
-
-	// Also call the onMount functions when the fnurgel changes!!
-
-	const userSettings = getUserSettings();
 	const ASIDE_SEARCH_CARD_MAX_HEIGHT = 140;
-	let previousURL: URL;
+	const userSettings = getUserSettings();
 
+	let data: HoldingsModalProps | undefined = $state();
+	let previousURL: URL;
 	let displayedHolders: DecoratedHolder[] = $state([]);
 	let selectedHolding: string | undefined = $state();
 	let latestHoldingUrl: string | undefined = $state();
@@ -102,20 +90,29 @@
 		})
 	);
 
+	onMount(async () => {
+		console.log('ON MOUNT');
+		getForHoldingUrl();
+	});
+
+	$effect(() => {
+		console.log('EFFECT!!!');
+		getForHoldingUrl();
+	});
+
+	function getForHoldingUrl() {
+		if (latestHoldingUrl && isFnurgel(latestHoldingUrl)) {
+			fetch(`/api/holdings/${latestHoldingUrl}`).then((res) => {
+				res.json().then((d) => (data = d));
+			});
+		}
+	}
+
 	$effect(() => {
 		if (holdingUrl) {
 			selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : (data?.overview as string);
 			latestHoldingUrl = holdingUrl;
 			console.log('holdingUrl', latestHoldingUrl);
-		}
-	});
-
-	$effect(() => {
-		console.log('EFFECT!!!');
-		if (latestHoldingUrl && isFnurgel(latestHoldingUrl)) {
-			fetch(`/api/holdings/${latestHoldingUrl}`).then((res) => {
-				res.json().then((d) => (data = d));
-			});
 		}
 	});
 

@@ -27,6 +27,7 @@ export function handleClickHoldings(
 	state: object,
 	id: string
 ) {
+	console.log('state', JSON.stringify(state));
 	event.preventDefault();
 	pushState(event.currentTarget.href, { ...state, holdings: id });
 }
