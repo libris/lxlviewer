@@ -95,18 +95,15 @@
 	);
 
 	onMount(async () => {
-		console.log('onMount');
 		getDataForWork();
 	});
 
 	$effect(() => {
-		console.log('effect');
 		getDataForWork();
 	});
 
 	function getDataForWork() {
 		if (workFnurgel) {
-			console.log('workfnurgel', workFnurgel);
 			console.log('Preparing data for work with ID:', workFnurgel);
 			fetch(`/api/holdings/${workFnurgel}`).then((res) => {
 				res.json().then((d) => (data = d));
@@ -121,9 +118,7 @@
 		}
 	});
 
-	// Need to check that holdingsByInstanceId contains instanceId
 	$effect(() => {
-		console.log('data?.holdersByType', JSON.stringify(data?.holdersByType));
 		if (latestHoldingUrl) {
 			if (
 				isFnurgel(latestHoldingUrl) &&
@@ -131,13 +126,21 @@
 				data?.holdingsByInstanceId[selectedHolding]
 			) {
 				// show holdings for an instance
-				console.log('Hej');
 				displayedHolders = data?.holdingsByInstanceId[selectedHolding].map(
 					(holding) => holding.heldBy
 				);
 			} else if (data?.holdersByType?.[latestHoldingUrl]) {
 				// show holdings by type
 				displayedHolders = data?.holdersByType[latestHoldingUrl];
+			} else if (isFnurgel(latestHoldingUrl) && data?.holdersByType) {
+				// show all (associated with a work)
+				displayedHolders = [
+					...new Map(
+						Object.values(data.holdersByType)
+							.flat()
+							.map((holder) => [holder.sigel, holder])
+					).values()
+				];
 			}
 		}
 	});

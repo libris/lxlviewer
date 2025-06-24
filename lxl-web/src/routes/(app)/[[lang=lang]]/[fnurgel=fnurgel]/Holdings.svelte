@@ -6,6 +6,7 @@
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import { BibDb } from '$lib/types/xl';
 	import HoldingInfo from './HoldingInfo.svelte';
+	import isFnurgel from '$lib/utils/isFnurgel';
 
 	type HoldingsProps = {
 		holder: DecoratedHolder;
@@ -22,12 +23,20 @@
 	// if holdingUrl is an instance fnurgel, add its mapped bibId object into arr,
 	// else add all ids of current type with holdings for current sigel
 	const bibIds = $derived.by(() => {
-		return bibIdsByInstanceId?.[holdingUrl]
-			? [bibIdsByInstanceId[holdingUrl]]
-			: Object.keys(bibIdsByInstanceId)
-					.filter((i) => bibIdsByInstanceId[i]['@type'] === holdingUrl)
-					.filter((i) => bibIdsByInstanceId[i].holders?.includes(sigel))
-					.map((i) => bibIdsByInstanceId[i]);
+		if (bibIdsByInstanceId?.[holdingUrl]) {
+			return [bibIdsByInstanceId[holdingUrl]];
+		} else if (!isFnurgel(holdingUrl)) {
+			// holdingUrl is type
+			return Object.keys(bibIdsByInstanceId)
+				.filter((i) => bibIdsByInstanceId[i]['@type'] === holdingUrl)
+				.filter((i) => bibIdsByInstanceId[i].holders?.includes(sigel))
+				.map((i) => bibIdsByInstanceId[i]);
+		} else {
+			// holdingUrl is a workFnurgel
+			return Object.keys(bibIdsByInstanceId)
+				.filter((i) => bibIdsByInstanceId[i].holders?.includes(sigel))
+				.map((i) => bibIdsByInstanceId[i]);
+		}
 	});
 
 	function hasLinksToItem(id: string) {
