@@ -82,7 +82,6 @@ export const load = async ({ params, url, locals, fetch }) => {
 	if (holdersCache.holders) {
 		console.log('Current number of cached holders:', Object.keys(holdersCache.holders).length);
 	}
-	console.log('holdersByType', holdersByType);
 	return {
 		workFnurgel: getUriSlug(resourceId || undefined),
 		type: mainEntity[JsonLd.TYPE],

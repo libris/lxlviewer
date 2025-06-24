@@ -54,30 +54,10 @@ function sortHoldings(holdings) {
 	});
 }
 
-// export function getHoldersByInstanceId(
-// 	holdingsByInstanceId,
-// 	displayUtil: DisplayUtil,
-// 	locale: LocaleCode
-// ): HoldersByType {
-// 	return Object.entries(holdingsByInstanceId).reduce((acc, [id, holdings]) => {
-// 		const heldBys = holdings.map((holdingItem) => {
-// 			return {
-// 				obj: displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale),
-// 				sigel: holdingItem.heldBy.sigel,
-// 				str: toString(displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale)) || ''
-// 			};
-// 		});
-// 		const uniqueHeldBys = [
-// 			...new Map(heldBys.map((heldByItem) => [heldByItem.obj['@id'], heldByItem])).values()
-// 		];
-// 		return { ...acc, [id]: uniqueHeldBys };
-// 	}, {});
-// }
-
 export function getHoldersCount(mainEntity): number {
 	const instances = mainEntity['@reverse']?.instanceOf;
 	const holders = new Set();
-	instances.forEach((instance) => {
+	instances?.forEach((instance) => {
 		const holdings = instance['@reverse']?.itemOf;
 		holdings?.forEach((h) => {
 			if (h.heldBy) {

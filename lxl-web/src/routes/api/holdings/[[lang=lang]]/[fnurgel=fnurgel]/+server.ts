@@ -15,17 +15,12 @@ import {
 import { error, json } from '@sveltejs/kit';
 import jmespath from 'jmespath';
 
-export async function GET({ url, params, locals }) {
-	console.log('url', url);
-	console.log('params', params);
-
+export async function GET({ params, locals }) {
 	const displayUtil = locals.display;
 	const locale = getSupportedLocale(params.lang);
-	console.log('params.fnurgel', params.fnurgel);
 	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
 		headers: { Accept: 'application/ld+json' }
 	});
-	console.log('resourceRes', resourceRes);
 
 	if (resourceRes.status === 404) {
 		throw error(resourceRes.status, { message: 'Not found' });
@@ -52,7 +47,6 @@ export async function GET({ url, params, locals }) {
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
 	const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
-	// const holdersByInstanceId = getHoldersByInstanceId(holdingsByInstanceId, displayUtil, locale);
 
 	// Should this be passed as a parameter to HoldingsModal.svelte instead?
 	const holdingsByType = getHoldingsByType(mainEntity);
