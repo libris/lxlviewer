@@ -435,10 +435,6 @@
 						if (event.altKey) {
 							event.preventDefault();
 							hideExpandedSearch();
-						} else if (controlOrMetaKey(event)) {
-							event.preventDefault();
-							activeRowIndex = 0;
-							activeColIndex = defaultInputCol;
 						} else {
 							if (loopingArrowKeyNavigation && activeRowIndex === 0) {
 								activeRowIndex = rows.length - 1;
@@ -463,27 +459,21 @@
 						}
 						break;
 					case 'ArrowDown':
-						if (controlOrMetaKey(event)) {
-							event.preventDefault();
-							activeRowIndex = rows.length - 1;
-							activeColIndex = 0;
-						} else {
-							if (loopingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
-								activeRowIndex = 0;
-								activeColIndex = defaultInputCol;
-							} else if (activeRowIndex < rows.length - 1) {
-								activeRowIndex++;
-								const cols = getColsInRow(activeRowIndex);
-								if (activeRowIndex === 1) {
-									activeColIndex = 0;
-								} else {
-									activeColIndex = Math.min(activeColIndex, cols.length - 1);
-								}
-								allowArrowKeyCursorHandling = {
-									...allowArrowKeyCursorHandling,
-									horizontal: cols.length <= 1
-								};
+						if (loopingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
+							activeRowIndex = 0;
+							activeColIndex = defaultInputCol;
+						} else if (activeRowIndex < rows.length - 1) {
+							activeRowIndex++;
+							const cols = getColsInRow(activeRowIndex);
+							if (activeRowIndex === 1) {
+								activeColIndex = 0;
+							} else {
+								activeColIndex = Math.min(activeColIndex, cols.length - 1);
 							}
+							allowArrowKeyCursorHandling = {
+								...allowArrowKeyCursorHandling,
+								horizontal: cols.length <= 1
+							};
 						}
 						break;
 					case 'ArrowLeft':
