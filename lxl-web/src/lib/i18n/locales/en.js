@@ -84,6 +84,7 @@ export default {
 		fieldOfActivity: 'Field of Activity',
 		accessFilters: 'Access',
 		boolFilters: 'Other',
+		'alias-myLibraries': 'Limit to my libraries',
 		limitInfo: 'Some options are not displayed',
 		limitText:
 			'The list shows a limited number of options, the most common ones related to your search. Try narrowing your search to get other, more relevant options.'
@@ -127,11 +128,9 @@ export default {
 		addAs: 'Add as',
 		goTo: 'Go to',
 		goToResource: 'Go to the resource',
-		limitToLibraries: 'Limit to my libraries',
 		addLibraries: 'Add libraries',
 		changeLibraries: 'Change libraries',
-		noAddedLibrariesText:
-			'You have not chosen any favourite libraries. To do that, click the "Add libraries" link.'
+		noAddedLibrariesText: 'You have not chosen any favourite libraries.'
 	},
 	supersearch: {
 		addQualifiers: 'Add filter',

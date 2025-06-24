@@ -32,7 +32,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
 import getTypeLike from '$lib/utils/getTypeLike';
-import { ACCESS_FILTERS } from '$lib/constants/facets';
+import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -283,6 +283,8 @@ function displayFacetGroups(
 	usePath?: string
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
+	// manually add myLibraries to boolfilters
+	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, locale, translate) || [];
 
 	const result = [];
 
@@ -290,7 +292,7 @@ function displayFacetGroups(
 		displayBoolFilters(
 			'accessFilters',
 			(f) => ACCESS_FILTERS.includes(<string>f.object?.alias),
-			view,
+			boolFilters,
 			displayUtil,
 			locale,
 			translate,
@@ -323,7 +325,7 @@ function displayFacetGroups(
 		displayBoolFilters(
 			'boolFilters',
 			(f) => !ACCESS_FILTERS.includes(<string>f.object?.alias),
-			view,
+			boolFilters,
 			displayUtil,
 			locale,
 			translate,
@@ -356,13 +358,13 @@ export function displayPredicates(
 function displayBoolFilters(
 	dimension: string,
 	predicate: (o: Observation) => boolean,
-	view: PartialCollectionView,
+	boolFilters: Observation[],
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
 	usePath?: string
 ): FacetGroup {
-	const filters = view.stats?._boolFilters?.filter(predicate) || [];
+	const filters = boolFilters?.filter(predicate) || [];
 
 	const facets = filters.map((o) => {
 		return {
@@ -400,4 +402,41 @@ function capitalize(str: string | undefined) {
 		return str[0].toUpperCase() + str.slice(1);
 	}
 	return str;
+}
+
+// TODO: we should get this from the backend...
+function addMyLibrariesBoolFilter(
+	boolFilters: Observation[] | undefined,
+	locale: LangCode,
+	translate: TranslateFn
+) {
+	if (boolFilters) {
+		let existingBoolFilter: Observation | undefined;
+		const rest: Observation[] = [];
+		boolFilters.forEach((f) => {
+			if (f.object.alias === MY_LIBRARIES_FILTER_ALIAS) {
+				existingBoolFilter = f;
+			} else rest.push(f);
+		});
+
+		if (existingBoolFilter) {
+			existingBoolFilter.object.prefLabel = translate(`facet.${MY_LIBRARIES_FILTER_ALIAS}`);
+			return [...[existingBoolFilter], ...rest];
+		} else {
+			// not present, get a template object an modify it
+			const newBoolFilter = structuredClone(rest[0]);
+			delete newBoolFilter.object.prefLabelByLang;
+			delete newBoolFilter.object.raw;
+			newBoolFilter.object.prefLabel = translate(`facet.${MY_LIBRARIES_FILTER_ALIAS}`);
+			newBoolFilter.view['@id'] = newBoolFilter.view['@id'].replace(
+				newBoolFilter.object.alias as string,
+				MY_LIBRARIES_FILTER_ALIAS
+			);
+			newBoolFilter.object.alias = MY_LIBRARIES_FILTER_ALIAS;
+			newBoolFilter._selected = false;
+
+			return [...[newBoolFilter], ...rest];
+		}
+	}
+	return boolFilters;
 }
