@@ -1,27 +1,40 @@
-<div class="tablist flex" role="tablist" aria-label="Sample Tabs">
-	<button role="tab" aria-selected="true" aria-controls="filters" id="tab-1" tabindex="0">
-		Filter
-	</button>
-	<button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1">
-		Second Tab
-	</button>
-	<button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-1">
-		Third Tab
-	</button>
+<script lang="ts">
+	const { tabs, tabContent } = $props();
+</script>
+
+<div class="flex gap-2" role="tablist" aria-label="tabs">
+	{#each tabs as tab, index (index)}
+		<button
+			id={'tab-' + tab.targetId}
+			class="relative content-center"
+			role="tab"
+			aria-controls={tab.targetId}
+			aria-selected={tab.active}
+		>
+			{@render tabContent(tab)}
+		</button>
+	{/each}
 </div>
 
 <style>
-	.tablist {
+	[role='tablist'] {
 		height: var(--toolbar-height);
 	}
 
 	[role='tab'] {
-		border-bottom-width: calc(var(--spacing) * 1);
-		border-bottom-style: solid;
-		border-bottom-color: transparent;
+		&::after {
+			position: absolute;
+			content: '';
+			width: 100%;
+			height: 3px;
+			background-color: transparent;
+			left: 0;
+			bottom: 0;
+			border-radius: 20px;
+		}
 	}
 
-	[role='tab'][aria-selected='true'] {
-		border-bottom-color: var(--color-accent);
+	[role='tab'][aria-selected='true']::after {
+		background-color: var(--color-accent);
 	}
 </style>

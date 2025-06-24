@@ -99,7 +99,7 @@
 					<h2 class="card-header-title text-base font-medium">
 						<a
 							href={id}
-							class="block underline decoration-neutral-400 decoration-dotted hover:decoration-solid focus:decoration-solid"
+							class="link-subtle block decoration-neutral-400"
 							aria-describedby={`${bodyId} ${footerId}`}
 						>
 							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
