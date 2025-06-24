@@ -61,7 +61,7 @@
 </div>
 <!-- no fav libraries + myLibraries filter warning -->
 {#if showMyLibrariesWarning}
-	<div class="text-2xs mb-4 px-4" role="alert">
+	<div class="text-2xs mb-4 px-4" role="alert" data-testid="my-libraries-warning">
 		<BiInfo aria-hidden="true" class="text-subtle mb-0.5 inline align-middle" />
 		<p class="inline">{page.data.t('search.noAddedLibrariesText')}</p>
 		<a class="link inline" href="/my-pages">{page.data.t('search.addLibraries')}</a>

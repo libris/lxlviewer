@@ -87,6 +87,22 @@ test('facet opened/closed state is preserved', async ({ page, context }) => {
 	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeVisible();
 });
 
+test('myLibraries filter is visible (when not active)', async ({ page }) => {
+	await expect(page.getByText('Avgränsa till mina bibliotek')).toBeVisible();
+});
+
+test('select myLibraries filter adds filter alias to url', async ({ page }) => {
+	await expect(page).not.toHaveURL(/alias-myLibraries/);
+	await page.getByText('Avgränsa till mina bibliotek').click();
+	await expect(page).toHaveURL(/alias-myLibraries/);
+});
+
+test('myLibraries without favourite libraries shows a message', async ({ page }) => {
+	await expect(page.getByTestId('my-libraries-warning')).not.toBeVisible();
+	await page.getByText('Avgränsa till mina bibliotek').click();
+	await expect(page.getByTestId('my-libraries-warning')).toBeVisible();
+});
+
 // Comment out test that fails in CI
 
 // test('user sorting is persisted after navigating', async ({ page }) => {
