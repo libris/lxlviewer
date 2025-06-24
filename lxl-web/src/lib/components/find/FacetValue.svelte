@@ -19,7 +19,7 @@
 		{#if 'selected' in facet}
 			<!-- checkboxes -->
 			<span class="sr-only">{facet.selected ? page.data.t('search.activeFilter') : ''}</span>
-			<div class="mr-1 inline-block text-xs" aria-hidden="true">
+			<div class="bg-page mr-1 inline-block rounded-sm text-xs" aria-hidden="true">
 				{#if facet.selected}
 					<BiCheckSquareFill class="text-accent" />
 				{:else}
