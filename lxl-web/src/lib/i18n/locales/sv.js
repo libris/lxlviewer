@@ -129,7 +129,8 @@ export default {
 		goToResource: 'Gå till resursen',
 		addLibraries: 'Lägg till bibliotek',
 		changeLibraries: 'Ändra bibliotek',
-		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek.'
+		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek.',
+		libraries: 'bibliotek'
 	},
 	supersearch: {
 		addQualifiers: 'Lägg till filter',

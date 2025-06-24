@@ -157,19 +157,7 @@
 				{/each}
 			</footer>
 		</div>
-		<div>
-			{#if id}
-				<a
-					class="btn btn-cta"
-					href={getHoldingsLink(page.url, id)}
-					data-sveltekit-preload-data="false"
-					data-testid="holding-link"
-					onclick={(event) => handleClickHoldings(event, page.state, id)}
-				>
-					test
-				</a>
-			{/if}
-		</div>
+
 		{#if item._debug}
 			{#key item._debug}
 				<div class="card-debug z-20 self-start text-left select-text">
@@ -205,11 +193,23 @@
 				{/if}
 			{/key}
 		{/if}
-		{#if item.heldByMyLibraries?.length}
-			<div class="card-libraries flex items-start">
+		<div class="card-libraries flex items-start">
+			{#if item.heldByMyLibraries?.length}
 				<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
-			</div>
-		{/if}
+			{/if}
+			{#if id}
+				<a
+					class="btn btn-primary rounded-full"
+					href={getHoldingsLink(page.url, id)}
+					data-sveltekit-preload-data="false"
+					data-testid="holding-link"
+					onclick={(event) => handleClickHoldings(event, page.state, id)}
+				>
+					{item.numberOfHolders}
+					{page.data.t('search.libraries')}
+				</a>
+			{/if}
+		</div>
 	</article>
 </div>
 

@@ -2,7 +2,6 @@ import { JsonLd, type Link, type DisplayDecorated, type FramedData, LensType } f
 import { type SecureImageResolution } from '$lib/types/auxd';
 import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
-import type { BibIdObj } from '$lib/types/holdings';
 
 export interface SearchResult {
 	itemOffset: number;
@@ -37,7 +36,7 @@ export interface SearchResultItem {
 	image: SecureImageResolution | undefined;
 	typeStr: string;
 	heldByMyLibraries?: LibraryItem[];
-	bibIdsByInstanceId: Record<string, BibIdObj>;
+	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }
 

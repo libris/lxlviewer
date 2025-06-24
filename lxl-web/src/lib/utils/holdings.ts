@@ -74,6 +74,20 @@ function sortHoldings(holdings) {
 // 	}, {});
 // }
 
+export function getHoldersCount(mainEntity): number {
+	const instances = mainEntity['@reverse']?.instanceOf;
+	const holders = new Set();
+	instances.forEach((instance) => {
+		const holdings = instance['@reverse']?.itemOf;
+		holdings?.forEach((h) => {
+			if (h.heldBy) {
+				holders.add(h.heldBy['@id']);
+			}
+		});
+	});
+	return holders.size;
+}
+
 export function getHoldingsByInstanceId(
 	mainEntity,
 	displayUtil: DisplayUtil,
