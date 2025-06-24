@@ -8,6 +8,7 @@
 	} from '$lib/constants/panels';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import Draggable from '../Draggable.svelte';
+	import TabList from '../TabList.svelte';
 	import Toolbar from '../Toolbar.svelte';
 	import BiArrowBarLeft from '~icons/bi/arrow-bar-left';
 
@@ -44,9 +45,12 @@
 	>
 		<div class="leading-pane-toolbar">
 			<Toolbar>
+				{#snippet leadingActions()}
+					<TabList></TabList>
+				{/snippet}
 				{#snippet trailingActions()}
 					<button
-						class="btn btn-primary"
+						class="btn btn-primary my-2"
 						aria-label={page.data.t('panes.hide')}
 						onclick={() => userSettings.closeLeadingPane()}
 					>
