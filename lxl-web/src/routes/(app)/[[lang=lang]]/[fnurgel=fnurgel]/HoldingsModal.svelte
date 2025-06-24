@@ -65,7 +65,7 @@
 		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT
 	);
 
-	//TODO: duplicated
+	//TODO: duplicated + not working, is this really needed? Used in the "holding instance summary".
 	// const localizedInstanceTypes = $derived(
 	// 	Object.values(data?.instances).reduce((acc, instanceItem) => {
 	// 		if (instanceItem['@type'] && instanceItem?._label) {

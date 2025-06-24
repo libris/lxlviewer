@@ -14,6 +14,7 @@ import {
 } from '$lib/utils/holdings';
 import { error, json } from '@sveltejs/kit';
 import jmespath from 'jmespath';
+import { centerOnWork } from '$lib/utils/centerOnWork';
 
 export async function GET({ params, locals }) {
 	const displayUtil = locals.display;
@@ -56,6 +57,7 @@ export async function GET({ params, locals }) {
 	// holdingsByType => has just .heldBy without .obj
 	await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
 
+	//TODO: cache response for a short amount of time?
 	return json({
 		bibIdsByInstanceId: bibIdsByInstanceId,
 		holdingsByInstanceId: holdingsByInstanceId,
@@ -65,19 +67,4 @@ export async function GET({ params, locals }) {
 		overview: overviewWithoutHasInstance,
 		holdersByType: holdersByType
 	});
-
-	//TODO: duplicated, extract to holdings.ts? or similar
-	function centerOnWork(mainEntity: FramedData): FramedData {
-		if ('instanceOf' in mainEntity) {
-			const result = mainEntity.instanceOf;
-			delete mainEntity.instanceOf;
-			result['@reverse'] = { instanceOf: [mainEntity] };
-			if (!result.hasTitle && mainEntity.hasTitle) {
-				result.hasTitle = mainEntity.hasTitle;
-			}
-			return result;
-		} else {
-			return mainEntity;
-		}
-	}
 }

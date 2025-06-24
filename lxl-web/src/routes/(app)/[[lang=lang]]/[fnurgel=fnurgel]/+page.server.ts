@@ -23,6 +23,7 @@ import { DebugFlags } from '$lib/types/userSettings';
 import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
 import getTypeLike from '$lib/utils/getTypeLike';
 import { getUriSlug } from '$lib/utils/http';
+import { centerOnWork } from '$lib/utils/centerOnWork';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -153,21 +154,6 @@ export const load = async ({ params, url, locals, fetch }) => {
 		return (await recordsRes.json()) as PartialCollectionView;
 	}
 };
-
-// TODO: handle titles correctly
-function centerOnWork(mainEntity: FramedData): FramedData {
-	if ('instanceOf' in mainEntity) {
-		const result = mainEntity.instanceOf;
-		delete mainEntity.instanceOf;
-		result['@reverse'] = { instanceOf: [mainEntity] };
-		if (!result.hasTitle && mainEntity.hasTitle) {
-			result.hasTitle = mainEntity.hasTitle;
-		}
-		return result;
-	} else {
-		return mainEntity;
-	}
-}
 
 function getSortedInstances(instances: Record<string, unknown>[]) {
 	return instances.sort((a, b) => {
