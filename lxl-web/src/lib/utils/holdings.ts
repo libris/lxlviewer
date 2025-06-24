@@ -11,7 +11,7 @@ import type {
 import { LensType, type FramedData, JsonLd, BibDb } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
-import { relativizeUrl } from '$lib/utils/http';
+import { relativizeUrl, stripAnchor } from '$lib/utils/http';
 import { DisplayUtil, toString } from '$lib/utils/xl.js';
 import getAtPath from '$lib/utils/getAtPath';
 import { holdersCache } from '$lib/utils/holdersCache.svelte';
@@ -29,7 +29,7 @@ export function handleClickHoldings(
 ) {
 	console.log('state', JSON.stringify(state));
 	event.preventDefault();
-	pushState(event.currentTarget.href, { ...state, holdings: id });
+	pushState(event.currentTarget.href, { ...state, holdings: stripAnchor(id) });
 }
 
 export function getSelectedHolding(value: string, instanceIdsByType: { [key: string]: string[] }) {
