@@ -152,18 +152,18 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await expect(comboboxElement).not.toHaveAttribute('aria-activedescendant', /.+/);
 
 	await page.getByRole('dialog').getByRole('combobox').press('Escape');
-	await page.getByTestId('use-looping-arrow-key-navigation').check();
+	await page.getByTestId('use-wrapping-arrow-key-navigation').check();
 	await page.getByRole('combobox').fill('a');
 	await expect(page.getByTestId('result-item')).toHaveCount(10);
 	await page.keyboard.press('ArrowUp');
 	await expect(
 		comboboxElement,
-		'user can jump from first row to last by pressing arrow up if useLoopingArrowKeyNavigation is enabled'
+		'user can jump from first row to last by pressing arrow up if wrappingArrowKeyNavigation is enabled'
 	).toHaveAttribute('aria-activedescendant', 'supersearch-item-10x0');
 	await page.keyboard.press('ArrowDown');
 	await expect(
 		comboboxElement,
-		'user can jump from last row to first by pressing arrow down if useLoopingArrowKeyNavigation is enabled'
+		'user can jump from last row to first by pressing arrow down if wrappingArrowKeyNavigation is enabled'
 	).not.toHaveAttribute('aria-activedescendant', /.+/);
 	await page.keyboard.press('ArrowDown');
 	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');

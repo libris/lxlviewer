@@ -75,7 +75,7 @@
 		defaultResultRow?: number;
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
-		loopingArrowKeyNavigation?: boolean;
+		wrappingArrowKeyNavigation?: boolean;
 		debouncedWait?: number;
 		selection?: Selection;
 		isLoading?: boolean;
@@ -104,7 +104,7 @@
 		resultItemRow = fallbackResultItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
-		loopingArrowKeyNavigation = false,
+		wrappingArrowKeyNavigation = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -436,7 +436,7 @@
 							event.preventDefault();
 							hideExpandedSearch();
 						} else {
-							if (loopingArrowKeyNavigation && activeRowIndex === 0) {
+							if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
 								activeRowIndex = rows.length - 1;
 								activeColIndex = 0;
 							} else if (activeRowIndex >= 1) {
@@ -459,7 +459,7 @@
 						}
 						break;
 					case 'ArrowDown':
-						if (loopingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
+						if (wrappingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
 							activeRowIndex = 0;
 							activeColIndex = defaultInputCol;
 						} else if (activeRowIndex < rows.length - 1) {
