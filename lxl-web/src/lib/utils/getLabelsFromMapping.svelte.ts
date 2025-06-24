@@ -8,12 +8,10 @@ function getLabelFromMappings(
 	pageMapping?: DisplayMapping[],
 	suggestMapping?: DisplayMapping[]
 ) {
-	const nonQuotedKey = key.replace(/^"(.*)"$/, '$1');
-	const nonQuotedValue = value && value.replace(/^"(.*)"$/, '$1');
 	const bestSuggestMapping = suggestMapping?.length ? suggestMapping : prevSuggestMapping;
 
-	const pageLabels = iterateMapping(nonQuotedKey, nonQuotedValue, pageMapping);
-	const suggestLabels = iterateMapping(nonQuotedKey, nonQuotedValue, bestSuggestMapping);
+	const pageLabels = iterateMapping(key, value, pageMapping);
+	const suggestLabels = iterateMapping(key, value, bestSuggestMapping);
 
 	const keyLabel = suggestLabels.keyLabel || pageLabels.keyLabel;
 	const valueLabel = suggestLabels.valueLabel || pageLabels.valueLabel;
