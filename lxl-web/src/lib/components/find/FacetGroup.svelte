@@ -2,20 +2,22 @@
 	import { page } from '$app/state';
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import type { FacetGroup } from '$lib/types/search';
+	import { ExpandedState } from '$lib/types/userSettings';
 	import {
 		CUSTOM_FACET_SORT,
 		DEFAULT_FACET_SORT,
-		DEFAULT_FACET_VALUES_SHOWN
+		DEFAULT_FACET_VALUES_SHOWN,
+		MY_LIBRARIES_FILTER_ALIAS
 	} from '$lib/constants/facets';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';
-	import FacetRange from './FacetRange.svelte';
+	import FacetValue from '$lib/components/find/FacetValue.svelte';
+	import FacetRange from '$lib/components/find/FacetRange.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiInfo from '~icons/bi/info-circle';
-	import FacetValue from '$lib/components/find/FacetValue.svelte';
-	import { ExpandedState } from '$lib/types/userSettings';
+	import BiPencil from '~icons/bi/pencil';
 
 	// Todo: Rename FacetGroup -> Facet (facets -> items/facetItems)
 
@@ -156,8 +158,17 @@
 				data-testid="facet-list"
 			>
 				{#each shownItems as facet (facet.view['@id'])}
-					<li class="hover:bg-primary-100">
+					<li class="facet-group-list-value hover:bg-primary-100 flex">
 						<FacetValue {facet} {locale} />
+						{#if 'alias' in facet && facet.alias === MY_LIBRARIES_FILTER_ALIAS}
+							<a
+								href="/my-pages"
+								class="btn btn-primary mr-2 border-0"
+								aria-label={page.data.t('search.changeLibraries')}
+							>
+								<BiPencil />
+							</a>
+						{/if}
 					</li>
 				{/each}
 			</ol>
@@ -209,6 +220,10 @@
 		& summary:hover {
 			background-color: inherit;
 		}
+	}
+
+	.facet-group-list-value:has(.btn:hover) {
+		background-color: inherit;
 	}
 
 	/* hide sorting for bool filters */

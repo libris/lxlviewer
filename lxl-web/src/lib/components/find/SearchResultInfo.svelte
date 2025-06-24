@@ -12,6 +12,11 @@
 	const { searchResult }: SearchResultInfoProps = $props();
 	const userSettings = getUserSettings();
 	const numHits = $derived(searchResult.totalItems);
+	const showMyLibrariesWarning = $derived(
+		numHits === 0 &&
+			page.url.search.includes(MY_LIBRARIES_FILTER_ALIAS) &&
+			(!userSettings.myLibraries || Object.keys(userSettings.myLibraries).length === 0)
+	);
 </script>
 
 <div
@@ -55,7 +60,7 @@
 	{/if}
 </div>
 <!-- no fav libraries + myLibraries filter warning -->
-{#if numHits === 0 && !userSettings.myLibraries?.length && page.url.search.includes(MY_LIBRARIES_FILTER_ALIAS)}
+{#if showMyLibrariesWarning}
 	<div class="text-2xs mb-4 px-4" role="alert">
 		<BiInfo aria-hidden="true" class="text-subtle mb-0.5 inline align-middle" />
 		<p class="inline">{page.data.t('search.noAddedLibrariesText')}</p>
