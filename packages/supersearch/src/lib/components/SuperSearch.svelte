@@ -540,7 +540,7 @@
 	}
 
 	function handleKeyboardShortcut(event: KeyboardEvent) {
-		if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+		if (controlOrMetaKey(event) && event.key === 'k') {
 			event.preventDefault();
 			if (dialog?.open) {
 				hideExpandedSearch();
