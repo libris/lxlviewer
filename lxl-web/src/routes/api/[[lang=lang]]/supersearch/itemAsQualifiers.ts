@@ -26,10 +26,8 @@ import type { LocaleCode } from '$lib/i18n/locales';
 // };
 
 function itemAsQualifiers(item: FramedData, locale: LocaleCode): QualifierSuggestion[] {
-	const qualifiers = item['_qualifiers'] as [];
+	const qualifiers = item['_qualifiers'];
 	return qualifiers.map((qualifier) => {
-		// console.log(item)
-		console.log(qualifier);
 		const predicate = qualifier['_predicate'];
 		const label = predicate.labelByLang?.[locale] || predicate.label;
 		return {

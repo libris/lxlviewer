@@ -1,12 +1,13 @@
 import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
+import type { SuperSearchResult } from '$lib/types/search.js';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 // import getEditedPartEntries from './getEditedPartEntries.js';
 // import getEditedRanges from './getEditedRanges.js';
+import insertWildcard from './insertWildcard.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
-import type { SuperSearchResult } from '$lib/types/search.js';
 import itemAsQualifiers from './itemAsQualifiers.js';
 
 /**
@@ -20,9 +21,8 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 
-	// const _q = url.searchParams.get('_q') || '';
-	// const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
-	// const editedRanges = getEditedRanges(_q, cursor);
+	const _q = url.searchParams.get('_q') || '';
+	const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 
@@ -35,7 +35,10 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	}
 
 	newSearchParams.set('_suggest', 'true');
-	// newSearchParams.delete('cursor');
+
+	const withWildcard = insertWildcard(_q, cursor);
+	newSearchParams.set('_q', withWildcard.query);
+	newSearchParams.set('cursor', withWildcard.cursor.toString());
 
 	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
 	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
@@ -56,10 +59,6 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 			};
 		})
 	};
-
-	// superSearchResult.items.forEach(item =>
-	// 	console.log(item.qualifiers)
-	// )
 
 	return json(superSearchResult);
 };
