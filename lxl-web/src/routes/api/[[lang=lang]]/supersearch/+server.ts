@@ -3,8 +3,6 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import type { SuperSearchResult } from '$lib/types/search.js';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-// import getEditedPartEntries from './getEditedPartEntries.js';
-// import getEditedRanges from './getEditedRanges.js';
 import insertWildcard from './insertWildcard.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
@@ -25,10 +23,6 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
-
-	// alter query based on edited part
-	// const editedPartEntries = getEditedPartEntries(_q, cursor, editedRanges);
-	// editedPartEntries.forEach(([key, value]) => newSearchParams.set(key, value));
 
 	if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
 		newSearchParams.set('_debug', 'esScore');
