@@ -114,6 +114,7 @@
 				<span
 					class="more-icon-container text-subtle flex size-10 items-center justify-center rounded-full"
 					use:dropdownMenu={{
+						// todo: enable rendering snippet links here
 						menuItems: [
 							...item.qualifiers.map((qualifier) => ({
 								label: `${page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,

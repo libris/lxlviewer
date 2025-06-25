@@ -141,16 +141,6 @@
 		});
 	}
 
-// function addQualifier(qualifier: QualifierSuggestion) {
-// 		superSearch?.dispatchChange({
-// 			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(qualifier._q) },
-// 			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
-// 			userEvent: 'input.complete'
-// 		});
-// 		superSearch?.hideExpandedSearch();
-// 		goto(getFullQualifierLink(qualifier._q));
-// 	}
-
 	function removeQualifier(qualifier: string) {
 		const newQ = addSpaceIfEndingQualifier(q.replace(qualifier, '').trim());
 		const insertCursor = Math.min(q.indexOf(qualifier), newQ.length);
@@ -173,12 +163,6 @@
 		}
 		return lxlQualifierPlugin(QualifierPill, getLabels, removeQualifier);
 	});
-
-	// function getFullQualifierLink(q: string) {
-	// 	const newParams = new URLSearchParams(pageParams);
-	// 	newParams.set('_q', q);
-	// 	return `/find?${newParams.toString()}`;
-	// }
 
 	export function showExpandedSearch() {
 		superSearch?.showExpandedSearch();
