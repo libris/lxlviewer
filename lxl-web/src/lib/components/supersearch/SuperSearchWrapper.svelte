@@ -227,7 +227,7 @@
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
-		loopingArrowKeyNavigation
+		wrappingArrowKeyNavigation
 		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={2}
 		debouncedWait={100}
