@@ -71,6 +71,15 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 	).not.toBeVisible();
 });
 
+test('user can jump from first row to bottom by pressing arrow up', async ({ page }) => {
+	await page.getByRole('combobox').fill('a');
+	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
+	await page.keyboard.press('ArrowUp');
+	await page.keyboard.press('ArrowUp');
+	await page.keyboard.press('Enter');
+	await expect(page.locator('.resource-page')).toBeVisible();
+});
+
 test('qualifier keys can be added using the user interface', async ({ page }) => {
 	await page.getByTestId('main-search').click();
 	await page

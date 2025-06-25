@@ -13,6 +13,7 @@
 	let placeholder = $state('Search');
 	let useFormAttribute = $state(false);
 	let useCustomExpandedContent = $state(false);
+	let useWrappingArrowKeyNavigation = $state(false);
 
 	function handlePaginationQuery(searchParams: URLSearchParams, prevData: JSONValue) {
 		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
@@ -97,6 +98,7 @@
 			defaultResultCol={0}
 			form={useFormAttribute ? 'form-outside' : undefined}
 			expandedContent={useCustomExpandedContent ? expandedContent : undefined}
+			wrappingArrowKeyNavigation={useWrappingArrowKeyNavigation}
 		>
 			{#snippet inputRow({
 				expanded,
@@ -201,7 +203,6 @@
 		><input type="checkbox" bind:checked={useFormAttribute} data-testid="use-form-attribute" />
 		Use form attribute
 	</label>
-
 	<label
 		><input
 			type="checkbox"
@@ -209,6 +210,14 @@
 			data-testid="use-custom-expanded-content"
 		/>
 		Use custom expanded content
+	</label>
+	<label
+		><input
+			type="checkbox"
+			bind:checked={useWrappingArrowKeyNavigation}
+			data-testid="use-wrapping-arrow-key-navigation"
+		/>
+		Use wrapping arrow key navigation
 	</label>
 </fieldset>
 

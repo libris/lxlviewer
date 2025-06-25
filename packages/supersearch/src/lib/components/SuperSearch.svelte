@@ -52,6 +52,7 @@
 					inputField: Snippet;
 					getCellId: (cellIndex: number) => string | undefined;
 					isFocusedCell: (cellIndex: number) => boolean;
+					isFocusedRow: () => boolean;
 					onclickSubmit: (event: MouseEvent) => void;
 					onclickClear: (event: MouseEvent) => void;
 					onclickClose: (event: MouseEvent) => void;
@@ -74,6 +75,7 @@
 		defaultResultRow?: number;
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
+		wrappingArrowKeyNavigation?: boolean;
 		debouncedWait?: number;
 		selection?: Selection;
 		isLoading?: boolean;
@@ -102,6 +104,7 @@
 		resultItemRow = fallbackResultItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
+		wrappingArrowKeyNavigation = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -350,9 +353,21 @@
 		}
 	}
 
+	function controlOrMetaKey(event: KeyboardEvent) {
+		if (!event.ctrlKey && !event.metaKey) return false;
+		const isMac = navigator.userAgent.includes('Mac OS X');
+		if (isMac && event.metaKey) return true;
+		if (!isMac && event.ctrlKey) return true;
+		return false;
+	}
+
 	function handleCollapsedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Enter' && value.length) {
 			submitClosestForm();
+		}
+		if (event.key === 'ArrowDown' && event.altKey) {
+			event.preventDefault();
+			showExpandedSearch();
 		}
 	}
 
@@ -417,26 +432,37 @@
 			if (rows.length) {
 				switch (event.key) {
 					case 'ArrowUp':
-						if (activeRowIndex >= 1) {
-							activeRowIndex--;
-							if (activeRowIndex < 1) {
-								activeColIndex = defaultInputCol;
-								allowArrowKeyCursorHandling = {
-									...allowArrowKeyCursorHandling,
-									horizontal: true
-								};
-							} else {
-								const cols = getColsInRow(activeRowIndex);
-								activeColIndex = Math.min(activeColIndex, cols.length - 1);
-								allowArrowKeyCursorHandling = {
-									...allowArrowKeyCursorHandling,
-									horizontal: cols.length <= 1
-								};
+						if (event.altKey) {
+							event.preventDefault();
+							hideExpandedSearch();
+						} else {
+							if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
+								activeRowIndex = rows.length - 1;
+								activeColIndex = 0;
+							} else if (activeRowIndex >= 1) {
+								activeRowIndex--;
+								if (activeRowIndex < 1) {
+									activeColIndex = defaultInputCol;
+									allowArrowKeyCursorHandling = {
+										...allowArrowKeyCursorHandling,
+										horizontal: true
+									};
+								} else {
+									const cols = getColsInRow(activeRowIndex);
+									activeColIndex = Math.min(activeColIndex, cols.length - 1);
+									allowArrowKeyCursorHandling = {
+										...allowArrowKeyCursorHandling,
+										horizontal: cols.length <= 1
+									};
+								}
 							}
 						}
 						break;
 					case 'ArrowDown':
-						if (activeRowIndex < rows.length - 1) {
+						if (wrappingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
+							activeRowIndex = 0;
+							activeColIndex = defaultInputCol;
+						} else if (activeRowIndex < rows.length - 1) {
 							activeRowIndex++;
 							const cols = getColsInRow(activeRowIndex);
 							if (activeRowIndex === 1) {
@@ -476,10 +502,10 @@
 
 							if (typeof closestAfter !== 'number' && activeRowIndex < rows.length - 1) {
 								activeRowIndex++;
-								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex)[0].id);
+								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex)[0].id) || 0;
 							}
 							if (typeof closestAfter === 'number') {
-								activeColIndex = closestAfter;
+								activeColIndex = closestAfter || 0;
 							}
 						}
 						break;
@@ -504,7 +530,7 @@
 	}
 
 	function handleKeyboardShortcut(event: KeyboardEvent) {
-		if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+		if (controlOrMetaKey(event) && event.key === 'k') {
 			event.preventDefault();
 			if (dialog?.open) {
 				hideExpandedSearch();
@@ -658,6 +684,7 @@
 			inputField: collapsedInputSnippet,
 			getCellId: () => undefined,
 			isFocusedCell: () => false,
+			isFocusedRow: () => activeRowIndex === 0,
 			onclickSubmit: handleClickSubmit,
 			onclickClear: handleReset,
 			onclickClose: hideExpandedSearch
@@ -674,6 +701,7 @@
 					inputField: expandedInputSnippet,
 					getCellId: (colIndex: number) => `${id}-item-0x${colIndex}`,
 					isFocusedCell: (colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex,
+					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
 					onclickClear: handleReset,
 					onclickClose: hideExpandedSearch

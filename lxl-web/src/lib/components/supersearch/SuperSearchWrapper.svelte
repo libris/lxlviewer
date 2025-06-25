@@ -227,6 +227,7 @@
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
+		wrappingArrowKeyNavigation
 		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={2}
 		debouncedWait={100}
@@ -238,11 +239,18 @@
 			inputField,
 			getCellId,
 			isFocusedCell,
+			isFocusedRow,
 			onclickClear,
 			onclickClose
 		})}
 			<div
-				class="supersearch-input rounded-d bg-input outline-primary-200 has-focus:outline-primary-600 flex min-h-12 w-full cursor-text overflow-hidden rounded-md outline focus-within:relative"
+				class={[
+					'supersearch-input rounded-d border-primary-200 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
+					isFocusedRow() && [
+						'outline-primary-200 has-focus:border-primary-500 has-focus:outline-4',
+						expanded && 'has-focus:outline-primary-200'
+					]
+				]}
 			>
 				{#if expanded}
 					<button
@@ -490,10 +498,6 @@
 		@variant sm {
 			padding-left: calc(var(--spacing, 0.25rem) * 12);
 		}
-	}
-
-	:global(.supersearch-input .cm-focused) {
-		outline: none;
 	}
 
 	:global(.codemirror-container .cm-content) {

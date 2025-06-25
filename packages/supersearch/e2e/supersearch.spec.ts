@@ -150,6 +150,38 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await page.getByRole('dialog').getByRole('combobox').press('Escape');
 	await page.getByRole('combobox').click();
 	await expect(comboboxElement).not.toHaveAttribute('aria-activedescendant', /.+/);
+
+	await page.getByRole('dialog').getByRole('combobox').press('Escape');
+	await page.getByTestId('use-wrapping-arrow-key-navigation').check();
+	await page.getByRole('combobox').fill('a');
+	await expect(page.getByTestId('result-item')).toHaveCount(10);
+	await page.keyboard.press('ArrowUp');
+	await expect(
+		comboboxElement,
+		'user can jump from first row to last by pressing arrow up if wrappingArrowKeyNavigation is enabled'
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-10x0');
+	await page.keyboard.press('ArrowDown');
+	await expect(
+		comboboxElement,
+		'user can jump from last row to first by pressing arrow down if wrappingArrowKeyNavigation is enabled'
+	).not.toHaveAttribute('aria-activedescendant', /.+/);
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
+});
+
+test('user can toggle expanded search using alt key + arrow up or down (without moving cursor) ', async ({
+	page
+}) => {
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('abc');
+	await expect(page.getByTestId('result-item')).toHaveCount(10);
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('Alt+ArrowUp');
+	await expect(page.getByRole('dialog')).not.toBeVisible();
+	await page.keyboard.press('Alt+ArrowDown');
+	await expect(page.getByRole('dialog')).toBeVisible();
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('x');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('abxc');
 });
 
 test('syncs collapsed and expanded editor views', async ({ context, page }) => {
