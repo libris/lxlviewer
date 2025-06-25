@@ -83,6 +83,7 @@ export default {
 		fieldOfActivity: 'Verksamhetsområde',
 		accessFilters: 'Åtkomst',
 		boolFilters: 'Övrigt',
+		'alias-myLibraries': 'Avgränsa till mina bibliotek',
 		limitInfo: 'Alla val kan ej visas',
 		limitText:
 			'Listan visar ett begränsat antal alternativ, de mest förekommande kopplade till din sökning. Prova att avgränsa din sökning för att få andra, mer relevanta alternativ.'
@@ -126,11 +127,9 @@ export default {
 		addAs: 'Lägg till som',
 		goTo: 'Gå till',
 		goToResource: 'Gå till resursen',
-		limitToLibraries: 'Avgränsa till mina bibliotek',
 		addLibraries: 'Lägg till bibliotek',
 		changeLibraries: 'Ändra bibliotek',
-		noAddedLibrariesText:
-			'Du har inte valt några favoritbibliotek. Klicka på “Lägg till”-länken nedan för att välja favoritbibliotek.'
+		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek.'
 	},
 	supersearch: {
 		addQualifiers: 'Lägg till filter',

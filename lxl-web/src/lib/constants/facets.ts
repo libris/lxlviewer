@@ -5,5 +5,5 @@ export const CUSTOM_FACET_SORT = {
 	bibliography: 'alpha.asc',
 	itemHeldBy: 'alpha.asc'
 };
-export const ACCESS_FILTERS = ['freeOnline'];
+export const ACCESS_FILTERS = ['freeOnline', 'alias-myLibraries'];
 export const MY_LIBRARIES_FILTER_ALIAS = 'alias-myLibraries';

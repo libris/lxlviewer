@@ -3,7 +3,6 @@
 	import { getModalContext } from '$lib/contexts/modal';
 	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
 	import FacetGroup from './FacetGroup.svelte';
-	import MyLibrariesFilter from './MyLibrariesFilter.svelte';
 	import SearchMapping from './SearchMapping.svelte';
 	import BiSearch from '~icons/bi/search';
 	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
@@ -54,11 +53,6 @@
 				/>
 				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
 			</div>
-			{#if page.route.id === '/(app)/[[lang=lang]]/find'}
-				<div class="px-3">
-					<MyLibrariesFilter {facets} />
-				</div>
-			{/if}
 			<ol>
 				{#each facets as group, i (group.dimension)}
 					<FacetGroup

@@ -12,14 +12,14 @@
 </script>
 
 <a
-	class="facet-link ml-4.5 grid grid-cols-[auto_auto] items-end justify-between gap-2 border-l border-l-neutral-200 py-1.5 pr-3 pl-4 font-normal no-underline"
+	class="facet-link ml-4.5 grid flex-1 grid-cols-[auto_auto] items-end justify-between gap-2 border-l border-l-neutral-200 py-1.5 pr-3 pl-4 font-normal no-underline"
 	href={facet.view['@id']}
 >
 	<span class="truncate" title={facet.str}>
 		{#if 'selected' in facet}
 			<!-- checkboxes -->
 			<span class="sr-only">{facet.selected ? page.data.t('search.activeFilter') : ''}</span>
-			<div class="mr-1 inline-block text-xs" aria-hidden="true">
+			<div class="bg-page mr-1 inline-block rounded-sm text-xs" aria-hidden="true">
 				{#if facet.selected}
 					<BiCheckSquareFill class="text-accent" />
 				{:else}
