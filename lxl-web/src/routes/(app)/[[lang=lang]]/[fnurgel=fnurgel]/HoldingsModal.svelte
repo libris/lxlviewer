@@ -16,6 +16,7 @@
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
 	import { getUserSettings } from '$lib/contexts/userSettings';
+	import Spinner from '$lib/components/Spinner.svelte';
 
 	type HoldingsModalProps = {
 		holdingsByInstanceId: HoldingsByInstanceId;
@@ -36,6 +37,7 @@
 
 	const { workFnurgel }: HoldingsModalParams = $props();
 
+	let loading = $state(false);
 	let data: HoldingsModalProps | undefined = $state();
 	let previousURL: URL;
 	let displayedHolders: DecoratedHolder[] = $state([]);
@@ -104,9 +106,13 @@
 
 	function getDataForWork() {
 		if (workFnurgel) {
+			loading = true;
 			console.log('Preparing data for work with ID:', workFnurgel);
 			fetch(`/api/holdings/${workFnurgel}`).then((res) => {
-				res.json().then((d) => (data = d));
+				res.json().then((d) => {
+					data = d;
+					loading = false;
+				});
 			});
 		}
 	}
@@ -159,118 +165,126 @@
 {#if holdingUrl && selectedHoldingInstance}
 	<Modal close={handleCloseHoldings}>
 		<span slot="title">{page.data.t('holdings.findAtYourNearestLibrary')}</span>
-		<div class="flex flex-col text-sm">
-			<div
-				class="bg-page border-b-neutral relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-xs transition-shadow"
-			>
+		{#if loading}
+			<div class="flex h-screen items-center justify-center">
+				<span class="size-6">
+					<Spinner />
+				</span>
+			</div>
+		{:else}
+			<div class="flex flex-col text-sm">
 				<div
-					id="instance-details"
-					class="overview relative"
-					class:expandable={expandableHoldingsInstance}
-					class:expanded={expandedHoldingsInstance}
-					style="--max-height:{ASIDE_SEARCH_CARD_MAX_HEIGHT}px"
-					bind:this={holdingsInstanceElement}
+					class="bg-page border-b-neutral relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-xs transition-shadow"
 				>
-					<h2 class="mb-2">
-						<span class="font-medium">
-							<DecoratedData
-								data={data?.title}
-								block
-								keyed={false}
-								allowPopovers={false}
-								allowLinks={false}
-							/>
-						</span>
-						{#if selectedHolding && data?.instances?.length !== 1}
-							<span> · </span>
-							{#if isFnurgel(selectedHolding)}
-								{selectedHoldingInstance['_label']}
-								<!--{:else if localizedInstanceTypes?.[latestHoldingUrl]}-->
-								<!--	{localizedInstanceTypes[latestHoldingUrl]}-->
+					<div
+						id="instance-details"
+						class="overview relative"
+						class:expandable={expandableHoldingsInstance}
+						class:expanded={expandedHoldingsInstance}
+						style="--max-height:{ASIDE_SEARCH_CARD_MAX_HEIGHT}px"
+						bind:this={holdingsInstanceElement}
+					>
+						<h2 class="mb-2">
+							<span class="font-medium">
+								<DecoratedData
+									data={data?.title}
+									block
+									keyed={false}
+									allowPopovers={false}
+									allowLinks={false}
+								/>
+							</span>
+							{#if selectedHolding && data?.instances?.length !== 1}
+								<span> · </span>
+								{#if isFnurgel(selectedHolding)}
+									{selectedHoldingInstance['_label']}
+									<!--{:else if localizedInstanceTypes?.[latestHoldingUrl]}-->
+									<!--	{localizedInstanceTypes[latestHoldingUrl]}-->
+								{/if}
 							{/if}
+						</h2>
+						<DecoratedData
+							data={selectedHoldingInstance}
+							block
+							keyed={false}
+							allowPopovers={false}
+							allowLinks={false}
+						/>
+					</div>
+					<button
+						class="link-subtle mt-2 text-left"
+						onclick={() => (expandedHoldingsInstance = !expandedHoldingsInstance)}
+						aria-expanded={expandedHoldingsInstance}
+						aria-controls="instance-details"
+					>
+						{expandedHoldingsInstance
+							? page.data.t('search.hideDetails')
+							: page.data.t('search.showDetails')}</button
+					>
+				</div>
+				<div>
+					<h2 class="font-medium">
+						{page.data.t('holdings.availableAt')}
+						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && data?.holdingsByInstanceId[latestHoldingUrl]}
+							{data?.holdingsByInstanceId[latestHoldingUrl].length}
+							{data?.holdingsByInstanceId[latestHoldingUrl].length === 1
+								? page.data.t('holdings.library')
+								: page.data.t('holdings.libraries')}
+						{:else if latestHoldingUrl && data?.holdersByType?.[latestHoldingUrl]}
+							{data?.holdersByType[latestHoldingUrl].length}
+							{data?.holdersByType[latestHoldingUrl].length === 1
+								? page.data.t('holdings.library')
+								: page.data.t('holdings.libraries')}
 						{/if}
 					</h2>
-					<DecoratedData
-						data={selectedHoldingInstance}
-						block
-						keyed={false}
-						allowPopovers={false}
-						allowLinks={false}
-					/>
-				</div>
-				<button
-					class="link-subtle mt-2 text-left"
-					onclick={() => (expandedHoldingsInstance = !expandedHoldingsInstance)}
-					aria-expanded={expandedHoldingsInstance}
-					aria-controls="instance-details"
-				>
-					{expandedHoldingsInstance
-						? page.data.t('search.hideDetails')
-						: page.data.t('search.showDetails')}</button
-				>
-			</div>
-			<div>
-				<h2 class="font-medium">
-					{page.data.t('holdings.availableAt')}
-					{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && data?.holdingsByInstanceId[latestHoldingUrl]}
-						{data?.holdingsByInstanceId[latestHoldingUrl].length}
-						{data?.holdingsByInstanceId[latestHoldingUrl].length === 1
-							? page.data.t('holdings.library')
-							: page.data.t('holdings.libraries')}
-					{:else if latestHoldingUrl && data?.holdersByType?.[latestHoldingUrl]}
-						{data?.holdersByType[latestHoldingUrl].length}
-						{data?.holdersByType[latestHoldingUrl].length === 1
-							? page.data.t('holdings.library')
-							: page.data.t('holdings.libraries')}
+					<!-- my libraries holdings -->
+					{#if myLibsHolders.length}
+						<div class="border-neutral bg-accent-50 my-4 rounded-sm border-b p-4 pb-0">
+							<h3 class="flex items-center gap-2">
+								<span aria-hidden="true" class="text-primary-700 text-base">
+									<BiHouseHeart />
+								</span>
+								<span class="font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
+							</h3>
+							<ul class="w-full">
+								{#each myLibsHolders as holder, i (holder.sigel || i)}
+									<Holdings
+										{holder}
+										{holdingUrl}
+										linksByBibId={data?.itemLinksByBibId}
+										bibIdsByInstanceId={data?.bibIdsByInstanceId}
+									/>
+								{/each}
+							</ul>
+						</div>
 					{/if}
-				</h2>
-				<!-- my libraries holdings -->
-				{#if myLibsHolders.length}
-					<div class="border-neutral bg-accent-50 my-4 rounded-sm border-b p-4 pb-0">
-						<h3 class="flex items-center gap-2">
-							<span aria-hidden="true" class="text-primary-700 text-base">
-								<BiHouseHeart />
-							</span>
-							<span class="font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
-						</h3>
-						<ul class="w-full">
-							{#each myLibsHolders as holder, i (holder.sigel || i)}
-								<Holdings
-									{holder}
-									{holdingUrl}
-									linksByBibId={data?.itemLinksByBibId}
-									bibIdsByInstanceId={data?.bibIdsByInstanceId}
-								/>
-							{/each}
-						</ul>
-					</div>
-				{/if}
-				<div class="relative mt-2 mb-4">
-					<input
-						bind:value={searchPhrase}
-						placeholder={page.data.t('holdings.findLibrary')}
-						aria-label={page.data.t('holdings.findLibrary')}
-						class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
-						type="search"
-					/>
-					<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
-				</div>
-				<ul class="w-full">
-					{#each filteredHolders as holder, i (holder.sigel || i)}
-						<Holdings
-							{holder}
-							{holdingUrl}
-							linksByBibId={data?.itemLinksByBibId}
-							bibIdsByInstanceId={data?.bibIdsByInstanceId}
+					<div class="relative mt-2 mb-4">
+						<input
+							bind:value={searchPhrase}
+							placeholder={page.data.t('holdings.findLibrary')}
+							aria-label={page.data.t('holdings.findLibrary')}
+							class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
+							type="search"
 						/>
-					{/each}
-					{#if filteredHolders.length === 0}
-						<li class="m-3">
-							<span role="alert">{page.data.t('search.noResults')}</span>
-						</li>
-					{/if}
-				</ul>
+						<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
+					</div>
+					<ul class="w-full">
+						{#each filteredHolders as holder, i (holder.sigel || i)}
+							<Holdings
+								{holder}
+								{holdingUrl}
+								linksByBibId={data?.itemLinksByBibId}
+								bibIdsByInstanceId={data?.bibIdsByInstanceId}
+							/>
+						{/each}
+						{#if filteredHolders.length === 0}
+							<li class="m-3">
+								<span role="alert">{page.data.t('search.noResults')}</span>
+							</li>
+						{/if}
+					</ul>
+				</div>
 			</div>
-		</div>
+		{/if}
 	</Modal>
 {/if}
