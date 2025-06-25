@@ -51,6 +51,10 @@
 @theme inline {
 	--breakpoint-3xl: 110rem; /* 1760px */
 
+	--container-8xl: 90rem; /* 1440px */
+	--container-9xl: 96rem; /* 1536px */
+	--container-10xl: 110rem; /* 1760px */
+
 	--font-sans: 'Inter', var(--font-fallback);
 	--font-body: var(--font-sans);
 	--font-heading: 'InterDisplay', var(--font-fallback);
@@ -321,4 +325,12 @@
 
 @utility find-layout {
 	@apply lg:grid-cols-find flex flex-col gap-4 lg:grid lg:gap-8;
+}
+
+.qualifier-pill {
+	background: var(--color-accent-50);
+	border: 1px solid var(--color-accent-200);
+	border-radius: var(--radius-md);
+	padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+	font-size: var(--text-xs);
 }
