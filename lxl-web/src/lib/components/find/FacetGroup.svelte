@@ -73,10 +73,11 @@
 			}
 			if (currentSort === 'alpha.asc') {
 				return a.str.localeCompare(b.str, page.data.locale);
-			} else {
-				// hits.desc
-				return b.totalItems < a.totalItems ? -1 : 1;
 			}
+			if (a.totalItems === b.totalItems) {
+				return 0;
+			}
+			return b.totalItems < a.totalItems ? -1 : 1; // hits.desc
 		})
 	);
 
