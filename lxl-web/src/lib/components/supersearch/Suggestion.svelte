@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { relativizeUrl } from '$lib/utils/http';
 	import type { SuperSearchResultItem } from '$lib/types/search';
@@ -20,14 +20,7 @@
 
 	const { item, getCellId, isFocusedCell }: Props = $props();
 	const resourceId = $derived(relativizeUrl(item?.['@id']));
-
-	// function handleClickPrimaryAction() {
-	// 	if (item?.qualifiers.length) {
-	// 		goto(item?.qualifiers[0]._q);
-	// 	} else if (resourceId) {
-	// 		goto(resourceId);
-	// 	}
-	// }
+	const primaryAddQualifierLink = $derived(item.qualifiers?.[0]?._q || resourceId);
 </script>
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
@@ -35,14 +28,14 @@
 		<span
 			class="text-subtle order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline"
 		>
-			{$page.data.t('search.add')}
+			{page.data.t('search.add')}
 
 			<span class="hidden lowercase lg:inline">
 				{item.qualifiers[0].label}
 			</span>
 		</span>
 	{:else}
-		<div class="sr-only">{$page.data.t('search.goTo')}</div>
+		<div class="sr-only">{page.data.t('search.goTo')}</div>
 	{/if}
 	<div class="resource grid grid-cols-[40px_minmax(0,_1fr)] items-center gap-2">
 		<SuggestionImage {item} />
@@ -85,7 +78,7 @@
 							<span>
 								{#if instances.count > 1}
 									{instances?.count}
-									{$page.data.t('search.editions')}
+									{page.data.t('search.editions')}
 									{`(${instances.years})`}
 								{:else}
 									{instances.years}
@@ -108,7 +101,7 @@
 
 <div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers.length}>
 	{#if item.qualifiers.length}
-		<a href={item.qualifiers[0]._q} id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
+		<a href={primaryAddQualifierLink} id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
 			{@render resourceSnippet(item)}
 		</a>
 		<button
@@ -123,11 +116,11 @@
 					use:dropdownMenu={{
 						menuItems: [
 							...item.qualifiers.map((qualifier) => ({
-								label: `${$page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
+								label: `${page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
 								action: () => goto(qualifier._q)
 							})),
 							{
-								label: `${$page.data.t('search.goToResource')}`,
+								label: `${page.data.t('search.goToResource')}`,
 								action: () => goto(resourceId as string)
 							}
 						],
