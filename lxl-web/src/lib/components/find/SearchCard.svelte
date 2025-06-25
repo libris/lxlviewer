@@ -14,6 +14,7 @@
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import BiHouse from '~icons/bi/house';
 
 	export let item: SearchResultItem;
 
@@ -194,17 +195,23 @@
 			{/key}
 		{/if}
 		<div class="card-libraries flex items-start">
-			{#if item.heldByMyLibraries?.length}
-				<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
-			{/if}
 			{#if id}
 				<a
-					class="btn btn-primary rounded-full"
+					class="btn btn-primary h-8 rounded-full"
 					href={getHoldingsLink(page.url, id)}
 					data-sveltekit-preload-data="false"
 					data-testid="holding-link"
 					onclick={(event) => handleClickHoldings(event, page.state, id)}
 				>
+					{#if item.heldByMyLibraries?.length}
+						<span class="[&_svg]:text-primary-700 pr-0.5">
+							<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
+						</span>
+					{:else}
+						<span class="relative pr-0.5 text-lg lg:text-lg">
+							<BiHouse />
+						</span>
+					{/if}
 					{item.numberOfHolders}
 					{page.data.t('search.libraries')}
 				</a>
