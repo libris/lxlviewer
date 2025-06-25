@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
+	import Resource from '$lib/components/Resource.svelte';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { DecoratedHolder } from '$lib/types/holdings';
 	import { type ResourceData } from '$lib/types/resourceData';
@@ -124,6 +125,7 @@
 <svelte:head>
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
+<Resource />
 <article class="resource-page text-base">
 	<div class="resource find-layout gap-8 p-4 sm:px-6">
 		<div

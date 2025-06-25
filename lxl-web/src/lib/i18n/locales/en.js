@@ -179,6 +179,8 @@ export default {
 		mailBody: 'Incorrect reference to the page'
 	},
 	general: {
+		onThisPage: 'On this page',
+		returnToTop: 'Return to top',
 		collapseAll: 'Collapse all',
 		copyPermalinkToInstance: 'Copy link to edition',
 		latestInstanceCover: 'Cover of latest edition',
