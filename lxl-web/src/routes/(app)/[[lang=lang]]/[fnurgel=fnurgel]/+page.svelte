@@ -14,8 +14,6 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import SearchResultOld from '$lib/components/find/SearchResultOld.svelte';
 	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import BiSearch from '~icons/bi/search';
-	import BiHouseHeart from '~icons/bi/house-heart';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import HoldingsModal from './HoldingsModal.svelte';
 
@@ -204,38 +202,6 @@
 			display: block;
 			width: fit-content;
 			white-space: nowrap;
-		}
-	}
-
-	.expandable {
-		max-height: var(--max-height);
-		overflow: hidden;
-	}
-
-	.expandable:not(.expanded)::after {
-		height: 3rem;
-		width: 100%;
-		position: absolute;
-		content: '';
-		bottom: 0;
-		left: 0;
-		pointer-events: none;
-		background: linear-gradient(
-			to bottom,
-			--alpha(var(--color-page) / 0%),
-			--alpha(var(--color-page) / 100%)
-		);
-		overflow: hidden;
-	}
-
-	.expanded {
-		max-height: initial;
-	}
-
-	#instance-details {
-		& :global(.contribution-role),
-		& :global(.property-label) {
-			font-size: var(--text-2xs);
 		}
 	}
 </style>
