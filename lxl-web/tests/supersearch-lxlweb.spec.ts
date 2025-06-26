@@ -143,7 +143,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		page.getByRole('combobox').locator('.lxl-qualifier-key').last(),
 		'pills for both contributor and language exists'
 	).toContainText('Språk');
-	await page.getByTestId('main-search').click({ position: { x: 10, y: 10 } }); // do not accidentally press a remove button on a puill
+	await page.getByTestId('main-search').click({ position: { x: 10, y: 10 } }); // Make sure to not accidentally click the remove button of a pill
 	await page.keyboard.press('Home'); // for PCs
 	await page.keyboard.press('Meta+ArrowLeft'); // for mac
 	await page
