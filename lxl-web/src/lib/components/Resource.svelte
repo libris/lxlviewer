@@ -24,6 +24,9 @@
 	<div
 		class="max-w-10xl mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
 	>
+		<aside class="order-last hidden @7xl:block">
+			<TableOfContents items={tocItems} />
+		</aside>
 		<div
 			class="border-neutral aspect-3/2 max-h-96 w-full border-b bg-neutral-50 @3xl:aspect-square @3xl:border-none"
 		>
@@ -44,9 +47,6 @@
 				</p>
 			{/each}
 		</div>
-		<aside class="sticky top-0 hidden @7xl:block">
-			<TableOfContents items={tocItems} />
-		</aside>
 	</div>
 </article>
 
