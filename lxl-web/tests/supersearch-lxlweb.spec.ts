@@ -187,5 +187,7 @@ test('clear button clears input field', async ({ page }) => {
 	await page.getByTestId('main-search').getByLabel('Rensa').last().click();
 	await expect(page.getByRole('combobox').last(), 'Clear input after click').toContainText('');
 	await page.getByRole('combobox').last().fill('hello');
-	await expect(page.getByRole('combobox').last(), 'Clear input after click').toContainText('');
+	await expect(page.getByRole('combobox').last(), 'Can type again after clear').toContainText(
+		'hello'
+	);
 });
