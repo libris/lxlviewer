@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
 
-	export type MenuItem = { label: string; action: () => void };
+	export type MenuItem = { label: string; href: string };
 
 	type Props = {
 		referenceElement: HTMLElement;
@@ -81,15 +81,18 @@
 >
 	<nav class="menu-items">
 		<ul>
-			{#each menuItems as item}
-				<li>
-					<button
-						type="button"
-						class="flex min-h-[44px] w-full cursor-pointer items-center px-4 text-left hover:bg-neutral-100"
-						onclick={item.action}>{item.label}</button
-					>
-				</li>
-			{/each}
+			{#if menuItems?.length}
+				{#each menuItems as item, index (`menuItem-${index}`)}
+					<li>
+						<a
+							href={item.href}
+							class="flex min-h-[44px] w-full cursor-pointer items-center px-4 text-left hover:bg-neutral-100"
+						>
+							{item.label}</a
+						>
+					</li>
+				{/each}
+			{/if}
 		</ul>
 	</nav>
 	<div class="arrow absolute" bind:this={arrowElement}>

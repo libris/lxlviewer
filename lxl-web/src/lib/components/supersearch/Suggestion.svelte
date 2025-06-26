@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
 	import { relativizeUrl } from '$lib/utils/http';
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
@@ -118,11 +117,11 @@
 						menuItems: [
 							...item.qualifiers.map((qualifier) => ({
 								label: `${page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
-								action: () => goto(qualifier._q)
+								href: qualifier._q
 							})),
 							{
 								label: `${page.data.t('search.goToResource')}`,
-								action: () => goto(resourceId as string)
+								href: resourceId || ''
 							}
 						],
 						placeAsSibling: true
