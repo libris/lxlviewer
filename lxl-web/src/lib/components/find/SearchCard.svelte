@@ -27,6 +27,33 @@
 	let showDebugHaystack = false;
 </script>
 
+{#snippet holdingsButton()}
+	<div class="card-libraries flex items-start pt-1">
+		{#if id}
+			<a
+				class="btn btn-primary h-7
+							 rounded-full md:h-8"
+				href={getHoldingsLink(page.url, id)}
+				data-sveltekit-preload-data="false"
+				data-testid="holding-link"
+				onclick={(event) => handleClickHoldings(event, page.state, id)}
+			>
+				{#if item.heldByMyLibraries?.length}
+					<span class="[&_svg]:text-primary-700 pr-0.5">
+						<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
+					</span>
+				{:else}
+					<span class="relative pr-0.5 text-lg lg:text-lg">
+						<BiHouse />
+					</span>
+				{/if}
+				{item.numberOfHolders}
+				{page.data.t('search.libraries')}
+			</a>
+		{/if}
+	</div>
+{/snippet}
+
 <div class="search-card-container">
 	<article
 		class="search-card border-neutral relative grid w-full gap-x-4 border-t px-0 py-3 font-normal transition-shadow md:px-4"
@@ -156,6 +183,9 @@
 						</span>
 					{/if}
 				{/each}
+				<div class="md:hidden">
+					{@render holdingsButton()}
+				</div>
 			</footer>
 		</div>
 
@@ -194,28 +224,8 @@
 				{/if}
 			{/key}
 		{/if}
-		<div class="card-libraries flex items-start">
-			{#if id}
-				<a
-					class="btn btn-primary h-8 rounded-full"
-					href={getHoldingsLink(page.url, id)}
-					data-sveltekit-preload-data="false"
-					data-testid="holding-link"
-					onclick={(event) => handleClickHoldings(event, page.state, id)}
-				>
-					{#if item.heldByMyLibraries?.length}
-						<span class="[&_svg]:text-primary-700 pr-0.5">
-							<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
-						</span>
-					{:else}
-						<span class="relative pr-0.5 text-lg lg:text-lg">
-							<BiHouse />
-						</span>
-					{/if}
-					{item.numberOfHolders}
-					{page.data.t('search.libraries')}
-				</a>
-			{/if}
+		<div class="hidden md:inline">
+			{@render holdingsButton()}
 		</div>
 	</article>
 </div>
