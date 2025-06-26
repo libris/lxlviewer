@@ -93,11 +93,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		'buttons for adding qualifier keys is hidden after selecting one of them'
 	).toBeHidden();
 	await expect(
-		page
-			.getByRole('dialog')
-			.getByLabel('Förslag')
-			.getByRole('button')
-			.filter({ hasText: 'Person' }),
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'Person' }),
 		'all suggestions are persons'
 	).toHaveCount(5);
 	await expect(page.getByRole('dialog').getByRole('combobox')).toContainText('Författare/upphov');
@@ -106,12 +102,12 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		await page
 			.getByRole('dialog')
 			.getByLabel('Förslag')
-			.getByRole('button')
+			.getByRole('link')
 			.filter({ hasText: 'Person' })
 			.filter({ hasText: /pippi/i }),
 		'all suggestions are persons related to the query pippi'
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL('**/find?**');
 	await expect(page.url()).toContain('contributor');
 	await expect(
@@ -130,11 +126,11 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByText('Språk')
 		.click();
 	await expect(
-		page.getByRole('dialog').getByLabel('Förslag').getByRole('button').filter({ hasText: 'Språk' }),
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'Språk' }),
 		'all suggestions are languages'
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByRole('combobox').pressSequentially('Swahili');
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL(/language/);
 	await expect(page.url()).toContain('contributor');
 	await expect(page.url(), 'url contains both contributor and language').toContain('language');
@@ -157,9 +153,9 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByText('Ämne')
 		.click();
 	await expect(
-		page.getByRole('dialog').getByLabel('Förslag').getByRole('button').filter({ hasText: 'ämne' })
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'ämne' })
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL(/subject/);
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-key').first(),
