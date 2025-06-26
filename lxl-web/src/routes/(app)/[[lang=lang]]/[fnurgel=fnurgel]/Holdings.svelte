@@ -17,7 +17,6 @@
 
 	const { holder, holdingUrl, linksByBibId, bibIdsByInstanceId }: HoldingsProps = $props();
 
-	const sigel = holder?.sigel;
 	let instancesCollapsed = $state(true);
 
 	// if holdingUrl is an instance fnurgel, add its mapped bibId object into arr,
@@ -29,12 +28,12 @@
 			// holdingUrl is type
 			return Object.keys(bibIdsByInstanceId)
 				.filter((i) => bibIdsByInstanceId[i]['@type'] === holdingUrl)
-				.filter((i) => bibIdsByInstanceId[i].holders?.includes(sigel))
+				.filter((i) => bibIdsByInstanceId[i].holders?.includes(holder.sigel))
 				.map((i) => bibIdsByInstanceId[i]);
 		} else {
 			// holdingUrl is a workFnurgel
 			return Object.keys(bibIdsByInstanceId)
-				.filter((i) => bibIdsByInstanceId[i].holders?.includes(sigel))
+				.filter((i) => bibIdsByInstanceId[i].holders?.includes(holder.sigel))
 				.map((i) => bibIdsByInstanceId[i]);
 		}
 	});
