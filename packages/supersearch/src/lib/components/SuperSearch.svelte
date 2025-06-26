@@ -547,7 +547,10 @@
 	}
 
 	function handleReset() {
-		value = '';
+		collapsedEditorView?.dispatch({
+			changes: { from: 0, to: value.length, insert: '' },
+			userEvent: 'delete'
+		});
 		search.resetData();
 		showExpandedSearch();
 	}
