@@ -124,9 +124,7 @@
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
-		const charBefore = q.slice(cursor - 1, cursor).trim();
-		const charAfter = q.slice(cursor, cursor + 1).trim();
-		const insert = (charBefore ? ' ' : '') + `${qualifierKey}:""` + (charAfter ? ' ' : '');
+		const insert = `${qualifierKey}:`;
 		superSearch?.dispatchChange({
 			change: {
 				from: cursor,
@@ -134,8 +132,8 @@
 				insert
 			},
 			selection: {
-				anchor: cursor + insert.length - 1,
-				head: cursor + insert.length - 1
+				anchor: cursor + insert.length,
+				head: cursor + insert.length
 			},
 			userEvent: 'input.complete'
 		});
