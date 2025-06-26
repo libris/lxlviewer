@@ -172,3 +172,20 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		'Språk'
 	);
 });
+
+test('clear button clears input field', async ({ page }) => {
+	await page.getByTestId('main-search').click();
+	await expect(
+		page.getByTestId('main-search').getByLabel('Rensa').last(),
+		'Clear button not visible initially'
+	).not.toBeVisible();
+	await page.getByRole('combobox').last().fill('hello');
+	await expect(
+		page.getByTestId('main-search').getByLabel('Rensa').last(),
+		'Clear button visible after typing'
+	).toBeVisible();
+	await page.getByTestId('main-search').getByLabel('Rensa').last().click();
+	await expect(page.getByRole('combobox').last(), 'Clear input after click').toContainText('');
+	await page.getByRole('combobox').last().fill('hello');
+	await expect(page.getByRole('combobox').last(), 'Clear input after click').toContainText('');
+});
