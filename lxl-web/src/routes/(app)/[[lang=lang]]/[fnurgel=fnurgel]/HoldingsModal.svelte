@@ -247,7 +247,7 @@
 								<span class="font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
 							</h3>
 							<ul class="w-full">
-								{#each myLibsHolders as holder, i (holder.sigel || i)}
+								{#each myLibsHolders as holder, i (i)}
 									<Holdings
 										{holder}
 										{holdingUrl}
@@ -269,7 +269,7 @@
 						<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 					</div>
 					<ul class="w-full">
-						{#each filteredHolders as holder, i (holder.sigel || i)}
+						{#each filteredHolders as holder, i (i)}
 							<Holdings
 								{holder}
 								{holdingUrl}
