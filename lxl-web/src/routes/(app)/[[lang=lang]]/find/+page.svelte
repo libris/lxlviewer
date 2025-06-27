@@ -11,6 +11,7 @@
 	import TrailingPanes from '$lib/components/find/TrailingPanes.svelte';
 	import Pagination from '$lib/components/find/Pagination.svelte';
 	import SiteFooter from '../SiteFooter.svelte';
+	import HoldingsModal from '../[fnurgel=fnurgel]/HoldingsModal.svelte';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 </script>
@@ -48,6 +49,8 @@
 			<SiteFooter />
 		</div>
 		<TrailingPanes />
+		<HoldingsModal workFnurgel={page.state.holdings || page.url.searchParams.get('holdings')}
+		></HoldingsModal>
 	</div>
 {/if}
 

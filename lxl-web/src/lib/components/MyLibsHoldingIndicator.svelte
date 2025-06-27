@@ -12,10 +12,9 @@
 </script>
 
 <span
-	class="text-primary-700 relative p-2 text-lg lg:text-xl"
 	use:popover={{
 		title: `${page.data.t('holdings.availableAt')}: ${librariesString}`
 	}}
 >
-	<BiHouseHeart />
+	<BiHouseHeart class="text-primary-700" />
 </span>

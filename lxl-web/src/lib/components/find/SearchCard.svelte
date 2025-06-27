@@ -8,11 +8,13 @@
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import BiHouse from '~icons/bi/house';
 
 	export let item: SearchResultItem;
 
@@ -24,6 +26,33 @@
 	let showDebugExplain = false;
 	let showDebugHaystack = false;
 </script>
+
+<!--//TODO: look into using grid template areas + container queries instead
+see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c23e223cdda91b17a -->
+
+{#snippet holdingsButton()}
+	<div class="flex items-start pt-1">
+		{#if id}
+			<a
+				class="btn btn-primary h-7 rounded-full md:h-8"
+				href={getHoldingsLink(page.url, id)}
+				data-sveltekit-preload-data="false"
+				data-testid="holding-link"
+				onclick={(event) => handleClickHoldings(event, page.state, id)}
+			>
+				<span class="text-base">
+					{#if item.heldByMyLibraries?.length}
+						<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
+					{:else}
+						<BiHouse class="text-neutral-400" />
+					{/if}
+				</span>
+				{item.numberOfHolders}
+				{page.data.t('search.libraries')}
+			</a>
+		{/if}
+	</div>
+{/snippet}
 
 <div class="search-card-container">
 	<article
@@ -43,7 +72,7 @@
 							src={item.image.url}
 							width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
 							height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
-							alt={$page.data.t('general.latestInstanceCover')}
+							alt={page.data.t('general.latestInstanceCover')}
 							class:rounded-full={item['@type'] === 'Person'}
 							class="object-contain object-top {item['@type'] !== 'Person'
 								? 'aspect-2/3'
@@ -132,7 +161,7 @@
 						{#if instances?.years}
 							{#if instances.count > 1}
 								{instances?.count}
-								{$page.data.t('search.editions')}
+								{page.data.t('search.editions')}
 								{`(${instances.years})`}
 							{:else}
 								{instances.years}
@@ -154,8 +183,12 @@
 						</span>
 					{/if}
 				{/each}
+				<div class="md:hidden">
+					{@render holdingsButton()}
+				</div>
 			</footer>
 		</div>
+
 		{#if item._debug}
 			{#key item._debug}
 				<div class="card-debug z-20 self-start text-left select-text">
@@ -163,7 +196,7 @@
 					<button
 						type="button"
 						class="text-xs"
-						on:click={() => {
+						onclick={() => {
 							showDebugHaystack = !showDebugHaystack;
 						}}
 					>
@@ -172,7 +205,7 @@
 					<button
 						type="button"
 						class="text-xs"
-						on:click={() => {
+						onclick={() => {
 							showDebugExplain = !showDebugExplain;
 						}}
 					>
@@ -191,11 +224,9 @@
 				{/if}
 			{/key}
 		{/if}
-		{#if item.heldByMyLibraries?.length}
-			<div class="card-libraries flex items-start">
-				<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
-			</div>
-		{/if}
+		<div class="hidden md:inline">
+			{@render holdingsButton()}
+		</div>
 	</article>
 </div>
 
@@ -207,8 +238,8 @@
 	}
 
 	.search-card {
-		grid-template-areas: 'image content debug libraries';
-		grid-template-columns: 64px 1fr auto auto;
+		grid-template-areas: 'image content debug';
+		grid-template-columns: 64px 1fr auto;
 
 		@container (min-width: 768px) {
 			@apply gap-x-6 px-6 py-4;
@@ -231,10 +262,6 @@
 
 	.card-debug {
 		grid-area: extra;
-	}
-
-	.card-libraries {
-		grid-area: libraries;
 	}
 
 	.card-footer {

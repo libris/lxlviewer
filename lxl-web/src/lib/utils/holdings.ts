@@ -2,6 +2,7 @@ import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
 import type {
 	BibIdObj,
+	DecoratedHolder,
 	HoldersByType,
 	HoldingsByInstanceId,
 	ItemLinksByBibId,
@@ -10,7 +11,7 @@ import type {
 import { LensType, type FramedData, JsonLd, BibDb } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
-import { relativizeUrl } from '$lib/utils/http';
+import { relativizeUrl, stripAnchor } from '$lib/utils/http';
 import { DisplayUtil, toString } from '$lib/utils/xl.js';
 import getAtPath from '$lib/utils/getAtPath';
 import { holdersCache } from '$lib/utils/holdersCache.svelte';
@@ -27,7 +28,7 @@ export function handleClickHoldings(
 	id: string
 ) {
 	event.preventDefault();
-	pushState(event.currentTarget.href, { ...state, holdings: id });
+	pushState(event.currentTarget.href, { ...state, holdings: stripAnchor(id) });
 }
 
 export function getSelectedHolding(value: string, instanceIdsByType: { [key: string]: string[] }) {
@@ -50,6 +51,20 @@ function sortHoldings(holdings) {
 		}
 		return 0;
 	});
+}
+
+export function getHoldersCount(mainEntity): number {
+	const instances = mainEntity['@reverse']?.instanceOf;
+	const holders = new Set();
+	instances?.forEach((instance) => {
+		const holdings = instance['@reverse']?.itemOf;
+		holdings?.forEach((h) => {
+			if (h.heldBy) {
+				holders.add(h.heldBy['@id']);
+			}
+		});
+	});
+	return holders.size;
 }
 
 export function getHoldingsByInstanceId(
@@ -206,9 +221,8 @@ export function getMyLibsFromHoldings(
 	return Object.values(result);
 }
 
-export async function fetchHoldersIfAbsent(holdersByType: HoldersByType) {
+export async function fetchHoldersIfAbsent(allHolders: DecoratedHolder[]) {
 	const cachedHolders = holdersCache.holders;
-	const allHolders = Object.values(holdersByType).flat();
 	for (const h of allHolders) {
 		const id = h.obj?.['@id'];
 

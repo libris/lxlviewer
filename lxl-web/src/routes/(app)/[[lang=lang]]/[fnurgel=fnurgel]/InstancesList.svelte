@@ -126,7 +126,9 @@
 										page.data.holdingsByInstanceId[id]
 									)}
 									{#if myLibsWithHolding.length}
-										<MyLibrariesIndicator libraries={myLibsWithHolding} />
+										<span class="p-2">
+											<MyLibrariesIndicator libraries={myLibsWithHolding} />
+										</span>
 									{/if}
 									<a
 										href={getHoldingsLink(page.url, id)}

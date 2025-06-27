@@ -11,6 +11,7 @@
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import BiSortDown from '~icons/bi/sort-down';
 	import type { SearchResult, DisplayMapping } from '$lib/types/search';
+	import HoldingsModal from '../../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/HoldingsModal.svelte';
 
 	let showFiltersModal = false;
 	export let searchResult: SearchResult;
@@ -210,6 +211,7 @@
 			</ol>
 			<Pagination data={searchResult} />
 		</div>
+		<HoldingsModal workFnurgel={$page.state.holdings}></HoldingsModal>
 	</div>
 {/if}
 
