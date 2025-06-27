@@ -31,8 +31,7 @@
 	<div class="card-libraries flex items-start pt-1">
 		{#if id}
 			<a
-				class="btn btn-primary h-7
-							 rounded-full md:h-8"
+				class="btn btn-primary h-7 rounded-full md:h-8"
 				href={getHoldingsLink(page.url, id)}
 				data-sveltekit-preload-data="false"
 				data-testid="holding-link"
