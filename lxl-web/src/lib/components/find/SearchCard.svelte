@@ -38,15 +38,13 @@
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, id)}
 			>
-				{#if item.heldByMyLibraries?.length}
-					<span class="[&_svg]:text-primary-700 pr-0.5">
+				<span class="text-subtle text-base">
+					{#if item.heldByMyLibraries?.length}
 						<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
-					</span>
-				{:else}
-					<span class="relative pr-0.5 text-lg lg:text-lg">
+					{:else}
 						<BiHouse />
-					</span>
-				{/if}
+					{/if}
+				</span>
 				{item.numberOfHolders}
 				{page.data.t('search.libraries')}
 			</a>
