@@ -37,11 +37,11 @@
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, id)}
 			>
-				<span class="text-subtle text-base">
+				<span class="text-base">
 					{#if item.heldByMyLibraries?.length}
 						<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
 					{:else}
-						<BiHouse />
+						<BiHouse class="text-neutral-400" />
 					{/if}
 				</span>
 				{item.numberOfHolders}
