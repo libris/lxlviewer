@@ -27,8 +27,11 @@
 	let showDebugHaystack = false;
 </script>
 
+<!--//TODO: look into using grid template areas + container queries instead
+see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c23e223cdda91b17a -->
+
 {#snippet holdingsButton()}
-	<div class="card-libraries flex items-start pt-1">
+	<div class="flex items-start pt-1">
 		{#if id}
 			<a
 				class="btn btn-primary h-7 rounded-full md:h-8"
@@ -235,8 +238,8 @@
 	}
 
 	.search-card {
-		grid-template-areas: 'image content debug libraries';
-		grid-template-columns: 64px 1fr auto auto;
+		grid-template-areas: 'image content debug';
+		grid-template-columns: 64px 1fr auto;
 
 		@container (min-width: 768px) {
 			@apply gap-x-6 px-6 py-4;
@@ -259,10 +262,6 @@
 
 	.card-debug {
 		grid-area: extra;
-	}
-
-	.card-libraries {
-		grid-area: libraries;
 	}
 
 	.card-footer {
