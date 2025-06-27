@@ -49,7 +49,8 @@
 			<SiteFooter />
 		</div>
 		<TrailingPanes />
-		<HoldingsModal workFnurgel={page.state.holdings}></HoldingsModal>
+		<HoldingsModal workFnurgel={page.state.holdings || page.url.searchParams.get('holdings')}
+		></HoldingsModal>
 	</div>
 {/if}
 
