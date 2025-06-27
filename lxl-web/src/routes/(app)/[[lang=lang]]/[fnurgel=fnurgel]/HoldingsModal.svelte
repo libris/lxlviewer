@@ -107,7 +107,6 @@
 	function getDataForWork() {
 		if (workFnurgel) {
 			loading = true;
-			console.log('Preparing data for work with ID:', workFnurgel);
 			fetch(`/api/holdings/${workFnurgel}`).then((res) => {
 				res.json().then((d) => {
 					data = d;
