@@ -1,12 +1,11 @@
 import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
+import type { SuperSearchResult } from '$lib/types/search.js';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-import getEditedPartEntries from './getEditedPartEntries.js';
-import getEditedRanges from './getEditedRanges.js';
+import insertWildcard from './insertWildcard.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
-import type { SuperSearchResult } from '$lib/types/search.js';
 import itemAsQualifiers from './itemAsQualifiers.js';
 
 /**
@@ -22,35 +21,25 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	const _q = url.searchParams.get('_q') || '';
 	const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
-	const editedRanges = getEditedRanges(_q, cursor);
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
-
-	// alter query based on edited part
-	const editedPartEntries = getEditedPartEntries(_q, cursor, editedRanges);
-	editedPartEntries.forEach(([key, value]) => newSearchParams.set(key, value));
 
 	if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
 		newSearchParams.set('_debug', 'esScore');
 	}
 
-	newSearchParams.set('_stats', 'false');
-	newSearchParams.delete('cursor');
+	newSearchParams.set('_suggest', 'true');
+
+	const withWildcard = insertWildcard(_q, cursor);
+	newSearchParams.set('_q', withWildcard.query);
+	newSearchParams.set('cursor', withWildcard.cursor.toString());
 
 	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
 	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
 
-	const [findRes, mappingRes] = await Promise.all([
-		fetch(`${env.API_URL}/find?${newSearchParams.toString()}`),
-		editedRanges?.qualifierKey && fetch(`${env.API_URL}/find?_q=${encodeURIComponent(_q)}&_limit=0`) // when getting narrowed results for qualifier, we also need to send the full query to not lose all mapping labels :(
-	]);
-
-	const data = await findRes.json();
-
-	if (mappingRes && mappingRes.ok) {
-		const mappingData = await mappingRes.json();
-		data.search.mapping = [...mappingData.search.mapping];
-	}
+	const data = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`).then((res) =>
+		res.json()
+	);
 
 	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 
@@ -60,7 +49,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		items: searchResult.items?.map((item, index) => {
 			return {
 				...item,
-				qualifiers: itemAsQualifiers(data.items[index], editedRanges, _q, locale, vocabUtil)
+				qualifiers: itemAsQualifiers(data.items[index], locale)
 			};
 		})
 	};

@@ -10,7 +10,7 @@
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping, QualifierSuggestion } from '$lib/types/search';
+	import type { DisplayMapping } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
@@ -124,9 +124,7 @@
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
-		const charBefore = q.slice(cursor - 1, cursor).trim();
-		const charAfter = q.slice(cursor, cursor + 1).trim();
-		const insert = (charBefore ? ' ' : '') + `${qualifierKey}:""` + (charAfter ? ' ' : '');
+		const insert = `${qualifierKey}:`;
 		superSearch?.dispatchChange({
 			change: {
 				from: cursor,
@@ -134,21 +132,11 @@
 				insert
 			},
 			selection: {
-				anchor: cursor + insert.length - 1,
-				head: cursor + insert.length - 1
+				anchor: cursor + insert.length,
+				head: cursor + insert.length
 			},
 			userEvent: 'input.complete'
 		});
-	}
-
-	function addQualifier(qualifier: QualifierSuggestion) {
-		superSearch?.dispatchChange({
-			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(qualifier._q) },
-			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
-			userEvent: 'input.complete'
-		});
-		superSearch?.hideExpandedSearch();
-		goto(getFullQualifierLink(qualifier._q));
 	}
 
 	function removeQualifier(qualifier: string) {
@@ -173,12 +161,6 @@
 		}
 		return lxlQualifierPlugin(QualifierPill, getLabels, removeQualifier);
 	});
-
-	function getFullQualifierLink(q: string) {
-		const newParams = new URLSearchParams(pageParams);
-		newParams.set('_q', q);
-		return `/find?${newParams.toString()}`;
-	}
 
 	export function showExpandedSearch() {
 		superSearch?.showExpandedSearch();
@@ -343,7 +325,7 @@
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
 			{#if resultItem}
-				<Suggestion item={resultItem} {getCellId} {isFocusedCell} {addQualifier} />
+				<Suggestion item={resultItem} {getCellId} {isFocusedCell} />
 			{/if}
 		{/snippet}
 	</SuperSearch>
