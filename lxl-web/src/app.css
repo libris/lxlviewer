@@ -308,7 +308,7 @@
 	}
 }
 
-@custom-variant wide (&:where([data-layout=wide], [data-layout=wide] *));
+@custom-variant wide (&:where(.prefers-wide-layout, .prefers-wide-layout *));
 
 @utility scrollbar-hidden {
 	&::-webkit-scrollbar {
