@@ -47,8 +47,8 @@
 	--app-bar-height: 71px;
 	--toolbar-height: 48px;
 
-	--two-grid-cols: 1fr 3fr;
-	--three-grid-cols: 5fr 14fr 5fr;
+	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
+	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);
 }
 
 @theme inline {
