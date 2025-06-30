@@ -22,7 +22,7 @@
 		<TableOfContents items={tocItems} mobile />
 	</div>
 	<div
-		class="max-w-10xl mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
+		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
 	>
 		<div class="order-last hidden @7xl:block">
 			<aside class="sticky top-0">
@@ -36,7 +36,7 @@
 				Image
 			</div>
 		</div>
-		<div class="mx-auto w-full max-w-4xl">
+		<div class="wide:max-w-screen mx-auto w-full max-w-4xl">
 			{#each { length: 5 }}
 				<p class="not-first:mt-6">
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare ut tortor ac

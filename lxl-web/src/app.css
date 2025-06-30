@@ -308,6 +308,8 @@
 	}
 }
 
+@custom-variant wide (&:where([data-layout=wide], [data-layout=wide] *));
+
 /* OLD THEME */
 
 /* custom bg colors  */
