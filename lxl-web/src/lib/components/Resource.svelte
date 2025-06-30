@@ -1,5 +1,17 @@
 <script lang="ts">
+	import { page } from '$app/state';
+
 	import TableOfContents from './TableOfContents.svelte';
+	import ResourceImage from './ResourceImage.svelte';
+	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
+
+	type Props = {
+		type: unknown; // should probably not be unknown...
+		images: SecureImage[];
+	};
+
+	const { type, images }: Props = $props();
+
 	const tocItems = [
 		{
 			id: 'id-1',
@@ -32,7 +44,13 @@
 			<div
 				class="border-neutral sticky top-3 aspect-3/2 max-h-96 w-full border-b bg-neutral-50 sm:top-6 @3xl:aspect-square @3xl:border-none"
 			>
-				Image
+				<ResourceImage
+					{images}
+					alt={page.data.t('general.latestInstanceCover')}
+					thumbnailTargetWidth={ImageWidth.MEDIUM}
+					geometry={type === 'Person' ? 'circle' : 'rectangle'}
+					linkToFull
+				/>
 			</div>
 		</div>
 		<div class="wide:max-w-screen mx-auto w-full max-w-4xl py-3 sm:py-6">

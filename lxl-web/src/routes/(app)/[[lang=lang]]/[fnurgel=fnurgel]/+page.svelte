@@ -38,7 +38,7 @@
 <svelte:head>
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
-<Resource />
+<Resource type={data.type} images={data.images} />
 <article class="resource-page text-base">
 	<div class="resource find-layout gap-8 p-4 sm:px-6">
 		<div
