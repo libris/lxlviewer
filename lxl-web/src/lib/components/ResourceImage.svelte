@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Image, Width } from '$lib/types/auxd';
+	import { type Image, type ImageResolution, Width } from '$lib/types/auxd';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { bestSize } from '$lib/utils/auxd';
@@ -35,31 +35,27 @@
 	let full = $derived(image ? bestSize(image, Width.FULL) : undefined);
 </script>
 
+{#snippet img(res: ImageResolution)}
+	<img
+		{alt}
+		{loading}
+		src={res.url}
+		width={res.widthPx > 0 ? res.widthPx : undefined}
+		height={res.heightPx > 0 ? res.heightPx : undefined}
+		class="object-contain object-[inherit]"
+		class:object-cover={geometry === 'circle'}
+		class:rounded-full={geometry === 'circle'}
+	/>
+{/snippet}
+
 {#if image && thumb}
-	<figure class="3xl:h-64 table aspect-square h-64 overflow-hidden lg:h-56">
+	<figure>
 		{#if linkToFull && full}
 			<a href={full.url} target="_blank" class="object-[inherit]">
-				<img
-					{alt}
-					{loading}
-					src={thumb.url}
-					width={thumb.widthPx > 0 ? thumb.widthPx : undefined}
-					height={thumb.heightPx > 0 ? thumb.heightPx : undefined}
-					class="object-contain object-[inherit]"
-					class:object-cover={geometry === 'circle'}
-					class:rounded-full={geometry === 'circle'}
-				/>
+				{@render img(thumb)}
 			</a>
 		{:else}
-			<img
-				{alt}
-				{loading}
-				src={thumb.url}
-				width={thumb.widthPx > 0 ? thumb.widthPx : undefined}
-				height={thumb.heightPx > 0 ? thumb.heightPx : undefined}
-				class="object-contain object-[inherit]"
-				class:rounded-full={geometry === 'circle'}
-			/>
+			{@render img(thumb)}
 		{/if}
 		{#if image?.usageAndAccessPolicy}
 			<figcaption
