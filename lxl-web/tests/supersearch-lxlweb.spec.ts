@@ -93,11 +93,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		'buttons for adding qualifier keys is hidden after selecting one of them'
 	).toBeHidden();
 	await expect(
-		page
-			.getByRole('dialog')
-			.getByLabel('Förslag')
-			.getByRole('button')
-			.filter({ hasText: 'Person' }),
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'Person' }),
 		'all suggestions are persons'
 	).toHaveCount(5);
 	await expect(page.getByRole('dialog').getByRole('combobox')).toContainText('Författare/upphov');
@@ -106,12 +102,12 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		await page
 			.getByRole('dialog')
 			.getByLabel('Förslag')
-			.getByRole('button')
+			.getByRole('link')
 			.filter({ hasText: 'Person' })
 			.filter({ hasText: /pippi/i }),
 		'all suggestions are persons related to the query pippi'
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL('**/find?**');
 	await expect(page.url()).toContain('contributor');
 	await expect(
@@ -130,14 +126,16 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByText('Språk')
 		.click();
 	await expect(
-		page.getByRole('dialog').getByLabel('Förslag').getByRole('button').filter({ hasText: 'Språk' }),
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'Språk' }),
 		'all suggestions are languages'
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByRole('combobox').pressSequentially('Swahili');
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
-	await page.waitForURL(/language/);
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
+	await page.waitForURL(/spr%C3%A5k/);
 	await expect(page.url()).toContain('contributor');
-	await expect(page.url(), 'url contains both contributor and language').toContain('language');
+	await expect(page.url(), 'url contains both contributor and language').toContain(
+		encodeURIComponent('språk')
+	);
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').first()).toContainText(
 		'Författare/upphov'
 	);
@@ -145,11 +143,9 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		page.getByRole('combobox').locator('.lxl-qualifier-key').last(),
 		'pills for both contributor and language exists'
 	).toContainText('Språk');
-	await page.getByTestId('main-search').click();
+	await page.getByTestId('main-search').click({ position: { x: 10, y: 10 } }); // Make sure to not accidentally click the remove button of a pill
 	await page.keyboard.press('Home'); // for PCs
 	await page.keyboard.press('Meta+ArrowLeft'); // for mac
-	await page.keyboard.press('Space'); // TODO: Remove the need for a space character to correctly position cursor inside quotes
-	await page.keyboard.press('ArrowLeft');
 	await page
 		.getByRole('dialog')
 		.getByLabel('Lägg till filter')
@@ -157,10 +153,10 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByText('Ämne')
 		.click();
 	await expect(
-		page.getByRole('dialog').getByLabel('Förslag').getByRole('button').filter({ hasText: 'ämne' })
+		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'ämne' })
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('button').first().click();
-	await page.waitForURL(/subject/);
+	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
+	await page.waitForURL(/A4mne/);
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-key').first(),
 		'qualifier is added in the beginning if the cursor is placed there'
@@ -170,5 +166,24 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	);
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').last()).toContainText(
 		'Språk'
+	);
+});
+
+test('clear button clears input field', async ({ page }) => {
+	await page.getByTestId('main-search').click();
+	await expect(
+		page.getByTestId('main-search').getByLabel('Rensa').last(),
+		'Clear button not visible initially'
+	).not.toBeVisible();
+	await page.getByRole('combobox').last().fill('hello');
+	await expect(
+		page.getByTestId('main-search').getByLabel('Rensa').last(),
+		'Clear button visible after typing'
+	).toBeVisible();
+	await page.getByTestId('main-search').getByLabel('Rensa').last().click();
+	await expect(page.getByRole('combobox').last(), 'Clear input after click').toContainText('');
+	await page.getByRole('combobox').last().fill('hello');
+	await expect(page.getByRole('combobox').last(), 'Can type again after clear').toContainText(
+		'hello'
 	);
 });

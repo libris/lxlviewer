@@ -39,7 +39,7 @@
 </script>
 
 <div
-	class="bg-backdrop pointer-events-none fixed top-0 left-0 z-10 h-full w-full"
+	class="bg-backdrop pointer-events-none fixed top-0 left-0 z-20 h-full w-full"
 	transition:fade={{ duration: 300 }}
 ></div>
 <dialog

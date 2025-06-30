@@ -36,6 +36,7 @@ export interface SearchResultItem {
 	image: SecureImageResolution | undefined;
 	typeStr: string;
 	heldByMyLibraries?: LibraryItem[];
+	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }
 

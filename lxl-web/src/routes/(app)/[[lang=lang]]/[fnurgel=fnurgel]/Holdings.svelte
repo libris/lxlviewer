@@ -1,32 +1,41 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { DecoratedHolder, ItemLinksByBibId } from '$lib/types/holdings';
+	import type { BibIdObj, DecoratedHolder, ItemLinksByBibId } from '$lib/types/holdings';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import { BibDb } from '$lib/types/xl';
 	import HoldingInfo from './HoldingInfo.svelte';
+	import isFnurgel from '$lib/utils/isFnurgel';
 
 	type HoldingsProps = {
 		holder: DecoratedHolder;
 		holdingUrl: string;
 		linksByBibId: ItemLinksByBibId;
+		bibIdsByInstanceId: Record<string, BibIdObj>;
 	};
 
-	const { holder, holdingUrl, linksByBibId }: HoldingsProps = $props();
+	const { holder, holdingUrl, linksByBibId, bibIdsByInstanceId }: HoldingsProps = $props();
 
-	const sigel = holder?.sigel;
 	let instancesCollapsed = $state(true);
 
 	// if holdingUrl is an instance fnurgel, add its mapped bibId object into arr,
 	// else add all ids of current type with holdings for current sigel
 	const bibIds = $derived.by(() => {
-		return page.data.bibIdsByInstanceId?.[holdingUrl]
-			? [page.data.bibIdsByInstanceId[holdingUrl]]
-			: Object.keys(page.data.bibIdsByInstanceId)
-					.filter((i) => page.data.bibIdsByInstanceId[i]['@type'] === holdingUrl)
-					.filter((i) => page.data.bibIdsByInstanceId[i].holders?.includes(sigel))
-					.map((i) => page.data.bibIdsByInstanceId[i]);
+		if (bibIdsByInstanceId?.[holdingUrl]) {
+			return [bibIdsByInstanceId[holdingUrl]];
+		} else if (!isFnurgel(holdingUrl)) {
+			// holdingUrl is type
+			return Object.keys(bibIdsByInstanceId)
+				.filter((i) => bibIdsByInstanceId[i]['@type'] === holdingUrl)
+				.filter((i) => bibIdsByInstanceId[i].holders?.includes(holder.sigel))
+				.map((i) => bibIdsByInstanceId[i]);
+		} else {
+			// holdingUrl is a workFnurgel
+			return Object.keys(bibIdsByInstanceId)
+				.filter((i) => bibIdsByInstanceId[i].holders?.includes(holder.sigel))
+				.map((i) => bibIdsByInstanceId[i]);
+		}
 	});
 
 	function hasLinksToItem(id: string) {
