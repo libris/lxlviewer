@@ -310,6 +310,14 @@
 
 @custom-variant wide (&:where([data-layout=wide], [data-layout=wide] *));
 
+@utility scrollbar-hidden {
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
 /* OLD THEME */
 
 /* custom bg colors  */
