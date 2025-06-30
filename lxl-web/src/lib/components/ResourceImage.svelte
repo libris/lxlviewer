@@ -8,19 +8,31 @@
 	import { popover } from '$lib/actions/popover';
 	import InfoIcon from '~icons/bi/info-circle';
 
-	export let images: Image[];
-	export let alt: string | undefined;
-	export let linkToFull = false;
-	export let type = '';
-	export let thumbnailTargetWidth: number = Width.SMALL;
-	export let showPlaceholder = true;
-	export let geometry: 'rectangle' | 'circle' = 'rectangle';
-	export let loading: 'eager' | 'lazy' = 'eager';
+	interface Props {
+		images: Image[];
+		alt: string | undefined;
+		linkToFull?: boolean;
+		type?: string;
+		thumbnailTargetWidth?: number;
+		showPlaceholder?: boolean;
+		geometry?: 'rectangle' | 'circle';
+		loading?: 'eager' | 'lazy';
+	}
 
-	$: image = first(images);
+	let {
+		images,
+		alt,
+		linkToFull = false,
+		type = '',
+		thumbnailTargetWidth = Width.SMALL,
+		showPlaceholder = true,
+		geometry = 'rectangle',
+		loading = 'eager'
+	}: Props = $props();
 
-	$: thumb = (image && bestSize(image, thumbnailTargetWidth)) || undefined;
-	$: full = (image && bestSize(image, Width.FULL)) || undefined;
+	let image = $derived(first(images));
+	let thumb = $derived(image ? bestSize(image, thumbnailTargetWidth) : undefined);
+	let full = $derived(image ? bestSize(image, Width.FULL) : undefined);
 </script>
 
 {#if image && thumb}
@@ -100,7 +112,8 @@
 			class:rounded-full={geometry === 'circle'}
 		/>
 		{#if getTypeIcon(type)}
-			<svelte:component this={getTypeIcon(type)} class="text-subtle absolute text-2xl" />
+			{@const SvelteComponent = getTypeIcon(type)}
+			<SvelteComponent class="text-subtle absolute text-2xl" />
 		{/if}
 	</div>
 {/if}
