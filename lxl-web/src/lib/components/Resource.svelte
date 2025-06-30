@@ -1,6 +1,5 @@
 <script lang="ts">
 	import TableOfContents from './TableOfContents.svelte';
-
 	const tocItems = [
 		{
 			id: 'id-1',
@@ -22,7 +21,7 @@
 		<TableOfContents items={tocItems} mobile />
 	</div>
 	<div
-		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
+		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 px-3 sm:gap-6 sm:px-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
 	>
 		<div class="order-last hidden @7xl:block">
 			<aside class="sticky top-0">
@@ -49,6 +48,20 @@
 					velit. Curabitur dignissim eros sit amet placerat. Donec nec nisl ante. Mauris eget justo
 					augue. Quisque vitae elementum nibh.
 				</p>
+			{/each}
+			{#each { length: 3 }}
+				<section class="-mx-3 sm:-mx-6 @3xl:mx-0">
+					<ul
+						class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0!"
+					>
+						{#each { length: 10 }}
+							<li class="min-w-[192px] flex-1 text-sm">
+								<div class="aspect-2/3 bg-neutral-100"></div>
+								Lorem ipsum ad est dolors
+							</li>
+						{/each}
+					</ul>
+				</section>
 			{/each}
 		</div>
 	</div>
