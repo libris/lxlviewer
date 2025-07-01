@@ -10,12 +10,11 @@
 
 	interface Props {
 		images: Image[];
-		alt: string | undefined;
+		alt?: string;
 		linkToFull?: boolean;
 		type?: string;
 		thumbnailTargetWidth?: number;
 		showPlaceholder?: boolean;
-		geometry?: 'rectangle' | 'circle';
 		loading?: 'eager' | 'lazy';
 	}
 
@@ -26,13 +25,14 @@
 		type = '',
 		thumbnailTargetWidth = Width.SMALL,
 		showPlaceholder = true,
-		geometry = 'rectangle',
 		loading = 'eager'
 	}: Props = $props();
 
 	let image = $derived(first(images));
 	let thumb = $derived(image ? bestSize(image, thumbnailTargetWidth) : undefined);
 	let full = $derived(image ? bestSize(image, Width.FULL) : undefined);
+	let geometry = $derived(type === 'Person' ? 'circle' : 'rectangle');
+	let TypeIcon = $derived(!image ? getTypeIcon(type) : undefined);
 </script>
 
 {#snippet img(res: ImageResolution, imgClass?: string | string[])}
@@ -87,19 +87,17 @@
 			</span>
 		</figcaption>
 	</figure>
-{:else if showPlaceholder}
+{:else if showPlaceholder && TypeIcon}
 	<div class="flex items-center justify-center">
 		<img
 			src={placeholder}
 			alt=""
 			class={[
-				'size-full max-w-48 object-cover',
-				geometry === 'circle' ? 'rounded-full' : 'rounded-sm'
+				'size-full max-w-32 object-cover',
+				geometry === 'circle' ? 'rounded-full' : 'rounded-lg',
+				type === 'Text' && 'aspect-3/4'
 			]}
 		/>
-		{#if getTypeIcon(type)}
-			{@const SvelteComponent = getTypeIcon(type)}
-			<SvelteComponent class="text-subtle absolute text-2xl" />
-		{/if}
+		<TypeIcon class="absolute text-4xl text-neutral-300" />
 	</div>
 {/if}

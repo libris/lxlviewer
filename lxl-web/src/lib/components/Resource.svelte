@@ -6,7 +6,7 @@
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 
 	type Props = {
-		type: unknown; // should probably not be unknown...
+		type: string | undefined;
 		images: SecureImage[];
 	};
 
@@ -44,9 +44,9 @@
 			<div class="sticky top-6">
 				<ResourceImage
 					{images}
+					{type}
 					alt={page.data.t('general.latestInstanceCover')}
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
-					geometry={type === 'Person' ? 'circle' : 'rectangle'}
 					linkToFull
 				/>
 			</div>
