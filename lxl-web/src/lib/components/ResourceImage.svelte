@@ -4,7 +4,7 @@
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { bestSize } from '$lib/utils/auxd';
 	import { first } from '$lib/utils/xl';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { popover } from '$lib/actions/popover';
 	import InfoIcon from '~icons/bi/info-circle';
 
@@ -42,70 +42,60 @@
 		src={res.url}
 		width={res.widthPx > 0 ? res.widthPx : undefined}
 		height={res.heightPx > 0 ? res.heightPx : undefined}
-		class="object-contain object-[inherit]"
-		class:object-cover={geometry === 'circle'}
-		class:rounded-full={geometry === 'circle'}
+		class={[
+			'mt-1.5 aspect-square object-contain',
+			geometry === 'circle' && 'max-w-48 rounded-full'
+		]}
 	/>
 {/snippet}
 
 {#if image && thumb}
-	<figure>
+	<figure class="flex w-full flex-col items-center gap-3">
 		{#if linkToFull && full}
-			<a href={full.url} target="_blank" class="object-[inherit]">
+			<a href={full.url} target="_blank">
 				{@render img(thumb)}
 			</a>
 		{:else}
 			{@render img(thumb)}
 		{/if}
-		{#if image?.usageAndAccessPolicy}
-			<figcaption
-				class="text-3xs text-subtle mt-1 table-caption caption-bottom overflow-hidden"
-				class:text-center={geometry === 'circle'}
-			>
-				{#if image.attribution}
-					<span class="mr-1 truncate">
-						<span class="mr-0.5">©</span>
-						{#if image.attribution.link}
-							<a href={image.attribution.link} target="_blank" class="ext-link">
-								{image.attribution.name}
-							</a>
-						{:else}
+		<figcaption class="text-5xs text-subtle w-full">
+			{#if image.attribution}
+				<span class="mr-1">
+					{'© '}
+					{#if image.attribution.link}
+						<a href={image.attribution.link} target="_blank" class="ext-link">
 							{image.attribution.name}
-						{/if}
-					</span>
-					<!-- This could be based on if attribution required by license.
-						For now, display if there is any attribution info available -->
-					{#if geometry === 'circle'}
-						{$page.data.t('general.cropped')}
+						</a>
+					{:else}
+						{image.attribution.name}
 					{/if}
-				{/if}
-				<span class="truncate" use:popover={{ title: image?.usageAndAccessPolicy.title }}>
-					<InfoIcon style="display: inline; font-size: 13px" />
-					<span class="ml-0.5">
-						{#if image.usageAndAccessPolicy.link}
-							<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
-								{#if image.usageAndAccessPolicy.identifier}
-									{image.usageAndAccessPolicy.identifier}
-								{:else}
-									{$page.data.t('general.usagePolicy')}
-								{/if}
-							</a>
-						{:else}
-							{$page.data.t('general.usagePolicy')}
-						{/if}
-					</span>
 				</span>
-			</figcaption>
-		{/if}
+			{/if}
+			<span class="truncate" use:popover={{ title: image?.usageAndAccessPolicy.title }}>
+				<InfoIcon class="inline" />
+				{#if image.usageAndAccessPolicy.link}
+					<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
+						{#if image.usageAndAccessPolicy.identifier}
+							{image.usageAndAccessPolicy.identifier}
+						{:else}
+							{page.data.t('general.usagePolicy')}
+						{/if}
+					</a>
+				{:else}
+					{page.data.t('general.usagePolicy')}
+				{/if}
+			</span>
+		</figcaption>
 	</figure>
 {:else if showPlaceholder}
-	<div class="flex items-center justify-center object-[inherit]">
+	<div class="flex items-center justify-center">
 		<img
 			src={placeholder}
 			alt=""
-			class="size-20 object-cover object-[inherit]"
-			class:rounded-sm={geometry !== 'circle'}
-			class:rounded-full={geometry === 'circle'}
+			class={[
+				'size-full max-w-48 object-cover',
+				geometry === 'circle' ? 'rounded-full' : 'rounded-sm'
+			]}
 		/>
 		{#if getTypeIcon(type)}
 			{@const SvelteComponent = getTypeIcon(type)}

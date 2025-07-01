@@ -33,17 +33,15 @@
 		<TableOfContents items={tocItems} mobile />
 	</div>
 	<div
-		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 px-3 sm:gap-6 sm:px-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
+		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
 	>
-		<div class="order-last hidden py-3 sm:py-6 @7xl:block">
-			<aside class="sticky top-3 sm:top-6">
+		<div class="order-last hidden @7xl:block">
+			<aside class="sticky top-6">
 				<TableOfContents items={tocItems} />
 			</aside>
 		</div>
-		<div class="py-3 sm:py-6">
-			<div
-				class="border-neutral sticky top-3 aspect-3/2 max-h-96 w-full border-b bg-neutral-50 sm:top-6 @3xl:aspect-square @3xl:border-none"
-			>
+		<div>
+			<div class="sticky top-6">
 				<ResourceImage
 					{images}
 					alt={page.data.t('general.latestInstanceCover')}
@@ -53,7 +51,7 @@
 				/>
 			</div>
 		</div>
-		<div class="wide:max-w-screen mx-auto w-full max-w-4xl py-3 sm:py-6">
+		<div class="wide:max-w-screen mx-auto w-full max-w-4xl">
 			{#each { length: 5 }}
 				<p class="not-first:mt-6">
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare ut tortor ac
@@ -70,7 +68,7 @@
 			{#each { length: 3 }}
 				<section class="-mx-3 sm:-mx-6 @3xl:mx-0">
 					<ul
-						class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0!"
+						class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
 					>
 						{#each { length: 10 }}
 							<li class="min-w-[192px] flex-1 text-sm">
@@ -85,5 +83,6 @@
 	</div>
 </article>
 
-<style>
+<style lang="postcss">
+	@reference 'tailwindcss';
 </style>
