@@ -35,7 +35,7 @@
 	let full = $derived(image ? bestSize(image, Width.FULL) : undefined);
 </script>
 
-{#snippet img(res: ImageResolution)}
+{#snippet img(res: ImageResolution, imgClass?: string | string[])}
 	<img
 		{alt}
 		{loading}
@@ -44,7 +44,8 @@
 		height={res.heightPx > 0 ? res.heightPx : undefined}
 		class={[
 			'mt-1.5 aspect-square object-contain',
-			geometry === 'circle' && 'max-w-48 rounded-full'
+			geometry === 'circle' && 'max-w-48 rounded-full',
+			imgClass
 		]}
 	/>
 {/snippet}
@@ -52,12 +53,11 @@
 {#if image && thumb}
 	<figure class="flex w-full flex-col items-center gap-3">
 		{#if linkToFull && full}
-			<a href={full.url} target="_blank">
+			<a href={full.url} target="_blank" class="hidden @3xl:block">
 				{@render img(thumb)}
 			</a>
-		{:else}
-			{@render img(thumb)}
 		{/if}
+		{@render img(thumb, linkToFull ? '@3xl:hidden' : undefined)}
 		<figcaption class="text-5xs text-subtle w-full">
 			{#if image.attribution}
 				<span class="mr-1">
