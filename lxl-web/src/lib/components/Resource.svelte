@@ -2,11 +2,14 @@
 	import { page } from '$app/state';
 
 	import TableOfContents from './TableOfContents.svelte';
+	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
+	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 
 	type Props = {
-		type: string | undefined;
+		type?: string;
 		images: SecureImage[];
 	};
 
@@ -26,6 +29,8 @@
 			label: 'Länk 3'
 		}
 	];
+
+	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 </script>
 
 <article class="@container">
@@ -51,20 +56,25 @@
 				/>
 			</div>
 		</div>
-		<div class="wide:max-w-screen mx-auto w-full max-w-4xl">
-			{#each { length: 5 }}
-				<p class="not-first:mt-6">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare ut tortor ac
-					sollicitudin. Nam semper neque nec pellentesque ultrices. Curabitur finibus aliquam
-					consequat. Pellentesque adiste, urna ut volutpat placerat, elit dui tempus urna, id
-					sagittis erat magna sit amet neque. Etiam sagittis congue lectus quis laoreet. Quisque
-					pretium elit vitae sollicitudin dictum. Maecenas nibh enim, congue vel condimentum vitae,
-					porttitor non eros. Nulla ultrices justo id elit varius congue. Suspendisse ultrices,
-					tortor vitae pulvinar egestas, orci purus accumsan dui, eget ornare quam odio sit amet
-					velit. Curabitur dignissim eros sit amet placerat. Donec nec nisl ante. Mauris eget justo
-					augue. Quisque vitae elementum nibh.
-				</p>
-			{/each}
+		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-6">
+			<div>
+				<header>
+					<hgroup>
+						<p class="text-xs font-medium">
+							{#if TypeIcon}
+								<TypeIcon class="mr-0.5 inline text-sm" />
+							{/if}
+							<DecoratedData data={page.data.types} showLabels={ShowLabelsOptions.Never} />
+						</p>
+						<h1 class="my-3 text-2xl font-medium @3xl:text-3xl">
+							<DecoratedData data={page.data.heading} showLabels={ShowLabelsOptions.Never} />
+						</h1>
+					</hgroup>
+				</header>
+				<div class="decorated-overview">
+					<DecoratedData data={page.data.overview} block />
+				</div>
+			</div>
 			{#each { length: 3 }}
 				<section class="-mx-3 sm:-mx-6 @3xl:mx-0">
 					<ul
@@ -85,4 +95,44 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	.decorated-overview {
+		& :global(.property-label) {
+			font-size: var(--text-2xs);
+		}
+
+		& :global(.contribution-role) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+		}
+
+		& :global(small) {
+			display: block;
+			&::first-letter {
+				text-transform: capitalize;
+			}
+		}
+		& :global(div[data-property]:not(:last-child)) {
+			margin-bottom: calc(var(--spacing) * 1.5);
+
+			@variant sm {
+				margin-bottom: calc(var(--spacing) * 3);
+			}
+		}
+
+		& :global(.contribution > ._contentBefore),
+		:global(.contribution > ._contentAfter) {
+			display: none;
+		}
+
+		& :global(.contribution > *) {
+			display: block;
+		}
+
+		& :global(.see-also > *) {
+			display: block;
+			width: fit-content;
+			white-space: nowrap;
+		}
+	}
 </style>
