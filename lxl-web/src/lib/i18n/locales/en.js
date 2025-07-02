@@ -180,8 +180,6 @@ export default {
 		mailBody: 'Incorrect reference to the page'
 	},
 	general: {
-		onThisPage: 'On this page',
-		returnToTop: 'Return to top',
 		collapseAll: 'Collapse all',
 		copyPermalinkToInstance: 'Copy link to edition',
 		latestInstanceCover: 'Cover of latest edition',
@@ -193,6 +191,10 @@ export default {
 		year: 'year',
 		usagePolicy: 'License terms',
 		cropped: 'Cropped'
+	},
+	tableOfContents: {
+		onThisPage: 'On this page',
+		top: 'Return to top'
 	},
 	holdings: {
 		availableAt: 'Available at',

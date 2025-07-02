@@ -179,8 +179,6 @@ export default {
 		mailBody: 'Felaktig referens till sidan'
 	},
 	general: {
-		onThisPage: 'På den här sidan',
-		returnToTop: 'Gå till toppen',
 		collapseAll: 'Stäng alla',
 		copyPermalinkToInstance: 'Kopiera länk till utgåva',
 		latestInstanceCover: 'Senaste utgåvans omslag',
@@ -192,6 +190,10 @@ export default {
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren'
+	},
+	tableOfContents: {
+		onThisPage: 'På den här sidan',
+		top: 'Inledning'
 	},
 	holdings: {
 		availableAt: 'Finns på',

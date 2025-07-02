@@ -13,7 +13,7 @@
 {#snippet tocList()}
 	<ul>
 		{#each items as { id, label } (label)}
-			<li><a href="#{id}">{label}</a></li>
+			<li><a href="{page.url.pathname}#{id}">{label}</a></li>
 		{/each}
 	</ul>
 {/snippet}
@@ -24,7 +24,7 @@
 			class="bg-page text-2xs text-subtle flex h-11 cursor-pointer items-center gap-1.5 px-3 sm:px-6 has-checked:[&+nav]:block"
 		>
 			<IconToC class="size-4" />
-			{page.data.t('general.onThisPage')}
+			{page.data.t('tableOfContents.onThisPage')}
 			<input type="checkbox" role="button" aria-haspopup="true" class="h-0 appearance-none" />
 		</label>
 		<nav class="bg-page hidden px-3 sm:px-6">
@@ -32,6 +32,8 @@
 		</nav>
 	</div>
 {:else}
-	<header class="text-subtle text-sm font-medium">{page.data.t('general.onThisPage')}</header>
+	<header class="text-subtle text-sm font-medium">
+		{page.data.t('tableOfContents.onThisPage')}
+	</header>
 	<nav class="text-subtle text-sm">{@render tocList()}</nav>
 {/if}

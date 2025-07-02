@@ -9,16 +9,19 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 
 	type Props = {
+		uid?: string;
 		type?: string;
 		images: SecureImage[];
 	};
 
-	const { type, images }: Props = $props();
+	const { uid, type, images }: Props = $props();
+
+	const uidPrefix = uid ? `${uid}-` : ''; // used for prefixing id's when resource is rendered inside panes
 
 	const tocItems = [
 		{
-			id: 'id-1',
-			label: 'Länk 1'
+			id: `${uidPrefix}top`,
+			label: page.data.t('tableOfContents.top')
 		},
 		{
 			id: 'id-2',
@@ -33,7 +36,7 @@
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 </script>
 
-<article class="@container">
+<article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
 	<div class="contents @7xl:hidden">
 		<TableOfContents items={tocItems} mobile />
 	</div>
@@ -45,7 +48,7 @@
 				<TableOfContents items={tocItems} />
 			</aside>
 		</div>
-		<div>
+		<div id="{uidPrefix}top">
 			<div class="sticky top-6">
 				<ResourceImage
 					{images}
