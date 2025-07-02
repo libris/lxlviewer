@@ -24,8 +24,8 @@
 			label: page.data.t('tableOfContents.top')
 		},
 		{
-			id: 'id-2',
-			label: 'Länk 2'
+			id: `${uidPrefix}occurrences`,
+			label: page.data.t('resource.occurrences')
 		},
 		{
 			id: 'id-3',
@@ -69,7 +69,7 @@
 							{/if}
 							<DecoratedData data={page.data.types} showLabels={ShowLabelsOptions.Never} />
 						</p>
-						<h1 class="my-3 text-2xl font-medium @3xl:text-3xl">
+						<h1 class="my-3 text-3xl font-medium @3xl:text-3xl">
 							<DecoratedData data={page.data.heading} showLabels={ShowLabelsOptions.Never} />
 						</h1>
 					</hgroup>
@@ -78,8 +78,11 @@
 					<DecoratedData data={page.data.overview} block />
 				</div>
 			</div>
-			{#each { length: 3 }}
-				<section class="-mx-3 sm:-mx-6 @3xl:mx-0">
+			{#each { length: 3 }, index}
+				<section
+					id={index === 0 ? `${uidPrefix}occurrences` : `temp-${index}`}
+					class="-mx-3 sm:-mx-6 @3xl:mx-0"
+				>
 					<ul
 						class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
 					>

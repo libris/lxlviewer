@@ -196,6 +196,9 @@ export default {
 		onThisPage: 'On this page',
 		top: 'Return to top'
 	},
+	resource: {
+		occurrences: 'Occurrences'
+	},
 	holdings: {
 		availableAt: 'Available at',
 		library: 'library',

@@ -195,6 +195,9 @@ export default {
 		onThisPage: 'På den här sidan',
 		top: 'Inledning'
 	},
+	resource: {
+		occurrences: 'Förekomster'
+	},
 	holdings: {
 		availableAt: 'Finns på',
 		library: 'bibliotek',
