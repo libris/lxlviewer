@@ -32,7 +32,13 @@
 <svelte:head>
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
-<Resource type={data.type} images={data.images} />
+<Resource
+	type={data.type}
+	images={data.images}
+	decoratedTypes={data.types}
+	decoratedHeading={data.heading}
+	decoratedOverview={data.overview}
+/>
 
 {#if Object.keys(data.holdersByType).length}
 	<div class="flex items-center">

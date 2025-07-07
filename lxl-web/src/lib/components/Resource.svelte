@@ -12,9 +12,13 @@
 		uid?: string;
 		type?: string;
 		images: SecureImage[];
+		decoratedTypes: DecoratedData;
+		decoratedHeading: DecoratedData;
+		decoratedOverview: DecoratedData;
 	};
 
-	const { uid, type, images }: Props = $props();
+	const { uid, type, images, decoratedTypes, decoratedHeading, decoratedOverview }: Props =
+		$props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
@@ -87,15 +91,15 @@
 							{#if TypeIcon}
 								<TypeIcon class="mr-0.5 inline text-sm" />
 							{/if}
-							<DecoratedData data={page.data.types} showLabels={ShowLabelsOptions.Never} />
+							<DecoratedData data={decoratedTypes} showLabels={ShowLabelsOptions.Never} />
 						</p>
 						<h1 class="decorated-heading my-3 text-3xl font-medium @3xl:text-3xl">
-							<DecoratedData data={page.data.heading} showLabels={ShowLabelsOptions.Never} />
+							<DecoratedData data={decoratedHeading} showLabels={ShowLabelsOptions.Never} />
 						</h1>
 					</hgroup>
 				</header>
 				<div class="decorated-overview">
-					<DecoratedData data={page.data.overview} block />
+					<DecoratedData data={decoratedOverview} block />
 				</div>
 			</section>
 			{@render scrollableSection(`${uidPrefix}occurrences`)}
