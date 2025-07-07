@@ -193,7 +193,9 @@ export default {
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
-		top: 'Inledning'
+		top: 'Inledning',
+		show: 'Visa innehållsförteckning för denna sida',
+		hide: 'Dölj innehållsförteckning för denna sida'
 	},
 	resource: {
 		occurrences: 'Förekomster'

@@ -194,7 +194,9 @@ export default {
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',
-		top: 'Return to top'
+		top: 'Return to top',
+		show: 'Show table of contents for this page',
+		hide: 'Hide table of contents for this page'
 	},
 	resource: {
 		occurrences: 'Occurrences'

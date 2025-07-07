@@ -95,11 +95,14 @@
 				class="bg-page text-2xs text-subtle flex h-11 cursor-pointer items-center gap-1.5 px-3 sm:px-6 has-checked:[&+nav]:block"
 			>
 				<IconToC class="size-4" />
-				{page.data.t('tableOfContents.onThisPage')}
+				<h2>{page.data.t('tableOfContents.onThisPage')}</h2>
 				<input
 					type="checkbox"
 					role="button"
 					bind:checked={openOnMobile}
+					aria-label={openOnMobile
+						? page.data.t('tableOfContents.hide')
+						: page.data.t('tableOfContents.show')}
 					aria-expanded={openOnMobile}
 					aria-controls={`${uidPrefix}toc-items`}
 					aria-haspopup="true"
@@ -109,7 +112,6 @@
 			</label>
 			<nav
 				id={`${uidPrefix}toc-items`}
-				aria-labelledby={`${uidPrefix}toc-label`}
 				class="bg-page text-subtle mb-3 hidden px-3 text-xs sm:px-6"
 			>
 				{@render tocList()}
