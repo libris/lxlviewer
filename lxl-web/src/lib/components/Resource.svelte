@@ -42,7 +42,7 @@
 
 {#snippet scrollableSection(id: string)}
 	<section {id} class="-mx-3 sm:-mx-6 @3xl:mx-0">
-		<h2>{id === 'occurrences' ? page.data.t('occurrences') : id}</h2>
+		<h2>{id === 'occurrences' ? page.data.t('resource.occurrences') : id}</h2>
 		<ul
 			class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
 		>
