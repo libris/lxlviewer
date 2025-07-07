@@ -40,6 +40,22 @@
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 </script>
 
+{#snippet scrollableSection(id: string)}
+	<section {id} class="-mx-3 sm:-mx-6 @3xl:mx-0">
+		<h2>{id === 'occurrences' ? page.data.t('occurrences') : id}</h2>
+		<ul
+			class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
+		>
+			{#each { length: 10 }}
+				<li class="min-w-[192px] flex-1 text-sm">
+					<div class="aspect-2/3 bg-neutral-100"></div>
+					Lorem ipsum ad est dolors
+				</li>
+			{/each}
+		</ul>
+	</section>
+{/snippet}
+
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
 	<section data-testid="toc-mobile" class="contents @7xl:hidden">
 		<TableOfContents items={tocItems} {uidPrefix} mobile />
@@ -82,24 +98,9 @@
 					<DecoratedData data={page.data.overview} block />
 				</div>
 			</section>
-			{#each { length: 3 }, index}
-				<section
-					id={index === 0 ? `${uidPrefix}occurrences` : `temp-${index}`}
-					class="-mx-3 sm:-mx-6 @3xl:mx-0"
-				>
-					<h2>{index === 0 ? page.data.t('occurrences') : 'Label'}</h2>
-					<ul
-						class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
-					>
-						{#each { length: 10 }}
-							<li class="min-w-[192px] flex-1 text-sm">
-								<div class="aspect-2/3 bg-neutral-100"></div>
-								Lorem ipsum ad est dolors
-							</li>
-						{/each}
-					</ul>
-				</section>
-			{/each}
+			{@render scrollableSection(`${uidPrefix}occurrences`)}
+			{@render scrollableSection(`${uidPrefix}third`)}
+			{@render scrollableSection(`${uidPrefix}fourth`)}
 		</div>
 	</div>
 </article>
