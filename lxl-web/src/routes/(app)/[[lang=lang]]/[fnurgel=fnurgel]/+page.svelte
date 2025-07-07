@@ -95,72 +95,11 @@
 <SearchResultOld searchResult={page.data.searchResult} showMapping />
 
 <style>
-	.resource-page {
-		& :global(.property-label) {
-			font-size: var(--text-xs);
-		}
-
-		& :global(.contribution-role) {
-			color: var(--color-subtle);
-			font-size: var(--text-sm);
-		}
-	}
-
-	.resource {
-		grid-template-areas: 'image content';
-	}
-
-	.image {
-		grid-area: image;
-	}
-
-	.content {
-		grid-area: content;
-
-		& :global(header .transliteration) {
-			color: var(--color-subtle);
-			font-size: var(--text-2xl);
-		}
-
-		& header :global(.agent-lifespan) {
-			color: var(--color-subtle);
-		}
-	}
-
 	.instances {
 		grid-template-areas: '. instances-list';
 	}
 
 	.instances-list {
 		grid-area: instances-list;
-	}
-
-	.overview {
-		display: grid;
-
-		& :global(small) {
-			display: block;
-			&::first-letter {
-				text-transform: capitalize;
-			}
-		}
-		& :global(div[data-property]:not(:last-child)) {
-			margin-bottom: calc(var(--spacing) * 4);
-		}
-
-		& :global(.contribution > ._contentBefore),
-		:global(.contribution > ._contentAfter) {
-			display: none;
-		}
-
-		& :global(.contribution > *) {
-			display: block;
-		}
-
-		& :global(.see-also > *) {
-			display: block;
-			width: fit-content;
-			white-space: nowrap;
-		}
 	}
 </style>

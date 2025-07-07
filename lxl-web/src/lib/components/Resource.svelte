@@ -89,7 +89,7 @@
 							{/if}
 							<DecoratedData data={page.data.types} showLabels={ShowLabelsOptions.Never} />
 						</p>
-						<h1 class="my-3 text-3xl font-medium @3xl:text-3xl">
+						<h1 class="decorated-heading my-3 text-3xl font-medium @3xl:text-3xl">
 							<DecoratedData data={page.data.heading} showLabels={ShowLabelsOptions.Never} />
 						</h1>
 					</hgroup>
@@ -107,6 +107,18 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	.decorated-heading {
+		& :global(.transliteration) {
+			font-size: var(--text-2xl);
+			color: var(--color-subtle);
+		}
+
+		& :global(.agent-lifespan) {
+			font-weight: var(--font-weight-normal);
+			color: var(--color-subtle);
+		}
+	}
 
 	.decorated-overview {
 		& :global(.property-label) {
