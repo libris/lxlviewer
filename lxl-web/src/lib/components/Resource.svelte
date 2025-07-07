@@ -83,7 +83,7 @@
 			<section id="{uidPrefix}top">
 				<header>
 					<hgroup>
-						<p class="text-xs font-medium">
+						<p class="text-subtle text-xs font-medium">
 							{#if TypeIcon}
 								<TypeIcon class="mr-0.5 inline text-sm" />
 							{/if}
