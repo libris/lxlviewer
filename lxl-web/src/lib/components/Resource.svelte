@@ -41,14 +41,14 @@
 </script>
 
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
-	<section class="contents @7xl:hidden">
+	<section data-testid="toc-mobile" class="contents @7xl:hidden">
 		<TableOfContents items={tocItems} {uidPrefix} mobile />
 	</section>
 	<div
 		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
 	>
 		<div class="order-last hidden @7xl:block">
-			<section class="sticky top-6">
+			<section data-testid="toc" class="sticky top-6">
 				<TableOfContents items={tocItems} />
 			</section>
 		</div>
@@ -87,6 +87,7 @@
 					id={index === 0 ? `${uidPrefix}occurrences` : `temp-${index}`}
 					class="-mx-3 sm:-mx-6 @3xl:mx-0"
 				>
+					<h2>{index === 0 ? page.data.t('occurrences') : 'Label'}</h2>
 					<ul
 						class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
 					>
