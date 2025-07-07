@@ -16,9 +16,9 @@
 
 	const { uid, type, images }: Props = $props();
 
-	const uidPrefix = uid ? `${uid}-` : ''; // used for prefixing id's when resource is rendered inside panes
+	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
-	const tocItems = [
+	const tocItems = $derived([
 		{
 			id: `${uidPrefix}top`,
 			label: page.data.t('tableOfContents.top')
@@ -28,27 +28,31 @@
 			label: page.data.t('resource.occurrences')
 		},
 		{
-			id: 'id-3',
-			label: 'Länk 3'
+			id: `${uidPrefix}third`,
+			label: 'Label'
+		},
+		{
+			id: `${uidPrefix}fourth`,
+			label: 'Label'
 		}
-	];
+	]);
 
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 </script>
 
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
-	<div class="contents @7xl:hidden">
-		<TableOfContents items={tocItems} mobile />
-	</div>
+	<section class="contents @7xl:hidden">
+		<TableOfContents items={tocItems} {uidPrefix} mobile />
+	</section>
 	<div
 		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
 	>
 		<div class="order-last hidden @7xl:block">
-			<aside class="sticky top-6">
+			<section class="sticky top-6">
 				<TableOfContents items={tocItems} />
-			</aside>
+			</section>
 		</div>
-		<div id="{uidPrefix}top">
+		<div>
 			<div class="sticky top-6">
 				<ResourceImage
 					{images}
@@ -60,7 +64,7 @@
 			</div>
 		</div>
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-6">
-			<div>
+			<section id="{uidPrefix}top">
 				<header>
 					<hgroup>
 						<p class="text-xs font-medium">
@@ -77,7 +81,7 @@
 				<div class="decorated-overview">
 					<DecoratedData data={page.data.overview} block />
 				</div>
-			</div>
+			</section>
 			{#each { length: 3 }, index}
 				<section
 					id={index === 0 ? `${uidPrefix}occurrences` : `temp-${index}`}
