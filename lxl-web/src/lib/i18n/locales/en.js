@@ -202,6 +202,7 @@ export default {
 		occurrences: 'Occurrences'
 	},
 	holdings: {
+		availabilityByType: 'Availability by type',
 		availableAt: 'Available at',
 		library: 'library',
 		libraries: 'libraries',

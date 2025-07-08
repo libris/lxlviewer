@@ -201,6 +201,7 @@ export default {
 		occurrences: 'Förekomster'
 	},
 	holdings: {
+		availabilityByType: 'Tillgänglighet utifrån medietyp',
 		availableAt: 'Finns på',
 		library: 'bibliotek',
 		libraries: 'bibliotek',

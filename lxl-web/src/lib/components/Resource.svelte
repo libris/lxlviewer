@@ -4,9 +4,11 @@
 	import TableOfContents from './TableOfContents.svelte';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
+	import ResourceHoldings from './ResourceHoldings.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import type { HoldersByType } from '$lib/types/holdings';
 
 	type Props = {
 		uid?: string;
@@ -15,10 +17,20 @@
 		decoratedTypes: DecoratedData;
 		decoratedHeading: DecoratedData;
 		decoratedOverview: DecoratedData;
+		instances: Record<string, unknown>[]; // TODO: fix better types
+		holdersByType: HoldersByType;
 	};
 
-	const { uid, type, images, decoratedTypes, decoratedHeading, decoratedOverview }: Props =
-		$props();
+	const {
+		uid,
+		type,
+		images,
+		decoratedTypes,
+		decoratedHeading,
+		decoratedOverview,
+		instances,
+		holdersByType
+	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
@@ -81,6 +93,12 @@
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
 					linkToFull
 				/>
+				{#if holdersByType && Object.keys(holdersByType).length && instances}
+					<section class="mt-2">
+						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
+						<ResourceHoldings {holdersByType} {instances} />
+					</section>
+				{/if}
 			</div>
 		</div>
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-6">
