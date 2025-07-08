@@ -4,7 +4,6 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 
 	import Resource from '$lib/components/Resource.svelte';
-	import SearchResultOld from '$lib/components/find/SearchResultOld.svelte';
 
 	const { data } = $props();
 </script>
@@ -22,4 +21,3 @@
 	instances={data.instances}
 	holdersByType={data.holdersByType}
 />
-<SearchResultOld searchResult={page.data.searchResult} showMapping />
