@@ -5,12 +5,15 @@
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
+	import InstancesList from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/InstancesList.svelte';
+	import HoldingsModal from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/HoldingsModal.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 
 	type Props = {
+		fnurgel: string;
 		uid?: string;
 		type?: string;
 		images: SecureImage[];
@@ -22,6 +25,7 @@
 	};
 
 	const {
+		fnurgel,
 		uid,
 		type,
 		images,
@@ -123,9 +127,23 @@
 			{@render scrollableSection(`${uidPrefix}occurrences`)}
 			{@render scrollableSection(`${uidPrefix}third`)}
 			{@render scrollableSection(`${uidPrefix}fourth`)}
+			<section>
+				<InstancesList
+					data={instances}
+					columns={[
+						{
+							header: page.data.t('search.publicationYear'),
+							data: '*[].publication[].*[][?year].year'
+						},
+						{ header: page.data.t('search.publisher'), data: '*[].publication.*[][?agent].agent' },
+						{ header: page.data.t('search.type'), data: '_label' }
+					]}
+				/>
+			</section>
 		</div>
 	</div>
 </article>
+<HoldingsModal workFnurgel={fnurgel} />
 
 <style lang="postcss">
 	@reference 'tailwindcss';
