@@ -44,7 +44,7 @@
 		height={res.heightPx > 0 ? res.heightPx : undefined}
 		class={[
 			'mt-1.5 aspect-square object-contain',
-			geometry === 'circle' && 'max-w-48 rounded-full',
+			geometry === 'circle' && 'max-w-40 rounded-full @3xl:max-w-48',
 			imgClass
 		]}
 	/>
@@ -58,7 +58,7 @@
 			</a>
 		{/if}
 		{@render img(thumb, linkToFull ? '@3xl:hidden' : undefined)}
-		<figcaption class="text-5xs text-subtle w-full">
+		<figcaption class="text-5xs @3xl:text-4xs text-subtle w-full">
 			{#if image.attribution}
 				<span class="mr-1">
 					{'© '}
@@ -93,11 +93,11 @@
 			src={placeholder}
 			alt=""
 			class={[
-				'size-full max-w-32 object-cover',
+				'size-full max-w-40 object-cover @3xl:max-w-48',
 				geometry === 'circle' ? 'rounded-full' : 'rounded-lg',
 				type === 'Text' && 'aspect-3/4'
 			]}
 		/>
-		<TypeIcon class="absolute text-4xl text-neutral-300" />
+		<TypeIcon class="absolute text-4xl text-neutral-300 @3xl:text-6xl" />
 	</div>
 {/if}
