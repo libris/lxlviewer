@@ -44,7 +44,7 @@
 		height={res.heightPx > 0 ? res.heightPx : undefined}
 		class={[
 			'mt-1.5 aspect-square object-contain',
-			geometry === 'circle' && 'max-w-40 rounded-full @3xl:max-w-48',
+			geometry === 'circle' && 'max-w-40 rounded-full object-cover @3xl:max-w-48',
 			imgClass
 		]}
 	/>
