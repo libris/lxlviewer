@@ -23,17 +23,6 @@
 	}
 </script>
 
-{#snippet libraryCount(type: string)}
-	<span class="text-2xs truncate font-normal opacity-90">
-		{' · '}
-		<span class="hidden @3xs:inline">{page.data.t('holdings.availableAt').toLowerCase()}</span>
-		{holdersByType[type].length}
-		{holdersByType[type].length === 1
-			? page.data.t('holdings.library')
-			: page.data.t('holdings.libraries')}
-	</span>
-{/snippet}
-
 <ul class="@container flex flex-col gap-2">
 	{#each Object.keys(holdersByType) as type (type)}
 		<li>
@@ -44,12 +33,16 @@
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, type)}
 			>
-				{#if Object.keys(holdersByType).length == 1}
-					{@render libraryCount(type)}
-				{:else}
-					{getLocalizedType(type)}
-					{@render libraryCount(type)}
-				{/if}
+				{getLocalizedType(type)}
+				<span class="text-2xs truncate font-normal opacity-90">
+					{' · '}
+					<span class="hidden @3xs:inline">{page.data.t('holdings.availableAt').toLowerCase()}</span
+					>
+					{holdersByType[type].length}
+					{holdersByType[type].length === 1
+						? page.data.t('holdings.library')
+						: page.data.t('holdings.libraries')}
+				</span>
 			</a>
 		</li>
 	{/each}
