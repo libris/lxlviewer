@@ -83,7 +83,7 @@
 		<TableOfContents items={tocItems} {uidPrefix} mobile />
 	</section>
 	<div
-		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols) @7xl:gap-9"
+		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols) @7xl:gap-9 @7xl:px-9"
 	>
 		<div class="order-last hidden @7xl:block">
 			<section data-testid="toc" class="sticky top-6">
@@ -91,7 +91,7 @@
 			</section>
 		</div>
 		<div>
-			<div class="sticky top-6 mx-auto max-w-xs">
+			<div class="sticky top-6 mx-auto @3xl:max-w-xs">
 				<ResourceImage
 					{images}
 					{type}
