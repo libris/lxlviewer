@@ -51,7 +51,8 @@
 			text-decoration: underline;
 			text-decoration-style: dotted;
 
-			&:hover {
+			&:hover,
+			&:focus {
 				text-decoration-style: solid;
 			}
 		}

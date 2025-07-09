@@ -22,7 +22,9 @@
 {#if searchResult}
 	<div class="search-result flex w-full flex-1">
 		<LeadingPane>
-			<Filters facets={searchResult.facetGroups || []} />
+			<div id="filters" role="tabpanel" aria-labelledby="tab-filters">
+				<Filters facets={searchResult.facetGroups || []} />
+			</div>
 		</LeadingPane>
 		<div class="@container/content flex flex-1 flex-col">
 			<div class="flex flex-1 flex-col @5xl/content:flex-row">

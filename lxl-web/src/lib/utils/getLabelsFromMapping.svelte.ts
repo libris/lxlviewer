@@ -16,13 +16,14 @@ function getLabelFromMappings(
 	const keyLabel = suggestLabels.keyLabel || pageLabels.keyLabel;
 	const valueLabel = suggestLabels.valueLabel || pageLabels.valueLabel;
 	const invalid = suggestLabels.invalid || pageLabels.invalid;
+	const removeLink = suggestLabels.removeLink || pageLabels.removeLink;
 
 	if (suggestMapping?.length) {
 		// save latest mapping as fallback for error responses etc
 		prevSuggestMapping = suggestMapping;
 	}
 
-	return { keyLabel, valueLabel, invalid };
+	return { keyLabel, valueLabel, removeLink, invalid };
 }
 
 function iterateMapping(
@@ -32,6 +33,7 @@ function iterateMapping(
 ) {
 	let keyLabel: string | undefined;
 	let valueLabel: string | undefined;
+	let removeLink: string | undefined;
 	let invalid: boolean = false;
 
 	if (mapping && Array.isArray(mapping)) {
@@ -51,6 +53,7 @@ function iterateMapping(
 					if (isLinked && value === el?._value && el?.displayStr) {
 						// only use atomic ranges for linked values
 						valueLabel = el.displayStr;
+						removeLink = el.up?.['@id'];
 					}
 				} else if (!key && value === el?._value && el?.displayStr) {
 					// ...unless a filter alias (no key, only value)
@@ -59,7 +62,7 @@ function iterateMapping(
 			});
 		}
 	}
-	return { keyLabel, valueLabel, invalid };
+	return { keyLabel, valueLabel, removeLink, invalid };
 }
 
 export default getLabelFromMappings;

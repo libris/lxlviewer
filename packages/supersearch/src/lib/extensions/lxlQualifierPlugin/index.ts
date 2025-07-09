@@ -31,7 +31,7 @@ export type QualifierWidgetProps = {
 	operator: string;
 	value?: string;
 	valueLabel?: string;
-	removeQualifierFn?: RemoveQualifierFunction;
+	removeLink?: string;
 };
 
 export type GetLabelFunction = (
@@ -41,9 +41,8 @@ export type GetLabelFunction = (
 	keyLabel?: string;
 	valueLabel?: string;
 	invalid?: boolean;
+	removeLink?: string;
 };
-
-export type RemoveQualifierFunction = (qualifier: string) => void;
 
 type QualifierWidgetComponent = Component<QualifierWidgetProps>;
 
@@ -55,7 +54,7 @@ class QualifierWidget extends WidgetType {
 		readonly value: string | undefined,
 		readonly valueLabel: string | undefined,
 		readonly qualifierWidget: QualifierWidgetComponent,
-		readonly removeQualifierFn: RemoveQualifierFunction | undefined
+		readonly removeLink: string | undefined
 	) {
 		super();
 	}
@@ -65,7 +64,8 @@ class QualifierWidget extends WidgetType {
 			this.keyLabel === other.keyLabel &&
 			this.operator === other.operator &&
 			this.value === other.value &&
-			this.valueLabel === other.valueLabel
+			this.valueLabel === other.valueLabel &&
+			this.removeLink === other.removeLink
 		);
 	}
 	toDOM(): HTMLElement {
@@ -78,7 +78,7 @@ class QualifierWidget extends WidgetType {
 				operator: this.operator,
 				value: this.value,
 				valueLabel: this.valueLabel,
-				removeQualifierFn: this.removeQualifierFn
+				removeLink: this.removeLink
 			},
 			target: container
 		});
@@ -88,8 +88,7 @@ class QualifierWidget extends WidgetType {
 
 function lxlQualifierPlugin(
 	qualifierWidget: QualifierWidgetComponent,
-	getLabelFn?: GetLabelFunction,
-	removeQualifierFn?: RemoveQualifierFunction
+	getLabelFn?: GetLabelFunction
 ) {
 	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
 
@@ -113,7 +112,7 @@ function lxlQualifierPlugin(
 						const valueNode = node.node.getChild('QualifierValue');
 						const value = valueNode ? doc.slice(valueNode?.from, valueNode?.to) : undefined;
 
-						const { keyLabel, valueLabel, invalid } = getLabelFn?.(key, value) || {};
+						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
 
 						// Add qualifier widget
 						if (keyLabel || valueLabel) {
@@ -125,7 +124,7 @@ function lxlQualifierPlugin(
 									value,
 									valueLabel,
 									qualifierWidget,
-									removeQualifierFn
+									removeLink
 								)
 							});
 							const decorationRangeFrom = node.from;

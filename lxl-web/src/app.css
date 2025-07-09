@@ -189,6 +189,7 @@
 }
 
 @layer components {
+	/* links */
 	a.link,
 	a.ext-link {
 		color: var(--color-link);
@@ -220,12 +221,15 @@
 		text-decoration: underline;
 		text-decoration-style: dotted;
 
-		&:hover {
+		&:hover,
+		&:focus {
 			text-decoration-style: solid;
 		}
 	}
 
-	.btn {
+	/* buttons / tabs */
+	.btn,
+	.tab {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -238,10 +242,11 @@
 			var(--default-transition-duration);
 	}
 
-	.btn-primary {
+	.btn-primary,
+	.tab-primary {
 		background-color: transparent;
 		color: var(--color-body);
-		border: 1px solid var(--color-neutral-200);
+		border: 1px solid var(--color-neutral-300);
 
 		&:hover {
 			background-color: var(--color-primary-100);
@@ -253,12 +258,12 @@
 	}
 
 	.btn-accent {
-		background-color: var(--color-accent-100);
+		background-color: var(--color-accent-50);
 		color: var(--color-body);
 		border: 1px solid var(--color-accent-200);
 
 		&:hover {
-			background-color: var(--color-accent-200);
+			background-color: var(--color-accent-100);
 		}
 
 		& svg {
@@ -280,15 +285,25 @@
 		}
 	}
 
-	.btn-outlined {
-		color: var(--color-link);
-		font-size: var(--text-xs);
-		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 6);
-		height: calc(var(--spacing) * 10);
-		border-radius: calc(infinity * 1px);
-		border: 1px solid var(--color-link);
+	.tab {
+		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
 	}
 
+	.tab-primary {
+		border: none;
+	}
+
+	.tab-highlighted {
+		background-color: var(--color-accent-50);
+		color: var(--color-body);
+		border: 1px solid var(--color-accent-200);
+
+		& svg {
+			color: var(--color-accent);
+		}
+	}
+
+	/* badges */
 	.badge {
 		display: flex;
 		align-items: center;

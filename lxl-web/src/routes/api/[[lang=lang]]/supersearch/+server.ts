@@ -21,6 +21,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	const _q = url.searchParams.get('_q') || '';
 	const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
+	const _sort = url.searchParams.get('_sort') || '';
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 
@@ -33,6 +34,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const withWildcard = insertWildcard(_q, cursor);
 	newSearchParams.set('_q', withWildcard.query);
 	newSearchParams.set('cursor', withWildcard.cursor.toString());
+	newSearchParams.set('_sort', _sort);
 
 	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
 	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));

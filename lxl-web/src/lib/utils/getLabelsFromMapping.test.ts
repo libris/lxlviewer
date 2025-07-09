@@ -38,6 +38,18 @@ describe('getLabelsFromMapping', () => {
 		expect(labels.keyLabel).toBe('Utgivningsår');
 		expect(labels.valueLabel).toBe(undefined);
 	});
+
+	it('does not return a removelink for unlinked items', () => {
+		const labels = getLabelsFromMapping('ÅR', '2023', pageMapping, suggestMapping);
+		expect(labels.removeLink).toBe(undefined);
+	});
+
+	it('it prefers suggest mapping remove links over page mapping remove links', () => {
+		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', pageMapping, suggestMapping);
+		expect(labels.removeLink).toBe(
+			'/find?_i=sommar&_q=sommar+%C3%85R:2023+SPR%C3%85K:%22lang:swe%22&_limit=0'
+		);
+	});
 });
 
 // sommar genreForm:"saogf:Romaner" ÅR:2023
