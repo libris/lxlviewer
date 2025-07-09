@@ -188,7 +188,8 @@
 			return new URLSearchParams({
 				_q: query,
 				_limit: '5',
-				cursor: cursor.toString()
+				cursor: cursor.toString(),
+				_sort: page.url.searchParams.get('_sort') || ''
 			});
 		}}
 		transformFn={handleTransform}
