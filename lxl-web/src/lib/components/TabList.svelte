@@ -1,8 +1,8 @@
 <script lang="ts">
-	const { tabs, tabContent } = $props();
+	const { tabs, tabContent, ...restProps } = $props();
 </script>
 
-<div class="flex gap-2" role="tablist" aria-label="tabs">
+<div class="flex gap-2" role="tablist" {...restProps}>
 	{#each tabs as tab, index (index)}
 		<button
 			id={'tab-' + tab.targetId}

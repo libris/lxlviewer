@@ -65,7 +65,7 @@
 		<div class="leading-pane-toolbar">
 			<Toolbar>
 				{#snippet leadingActions()}
-					<TabList {tabContent} {tabs} />
+					<TabList {tabContent} {tabs} aria-label={page.data.t('panes.leadingPaneTabs')} />
 				{/snippet}
 				{#snippet trailingActions()}
 					<button

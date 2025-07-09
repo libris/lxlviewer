@@ -221,6 +221,7 @@ export default {
 	},
 	panes: {
 		leadingPane: 'Vänsterpanel',
+		leadingPaneTabs: 'Vänsterpanelsflikar',
 		show: 'Visa sidopanel',
 		hide: 'Dölj sidopanel'
 	}
