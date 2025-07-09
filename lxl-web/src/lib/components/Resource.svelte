@@ -62,7 +62,9 @@
 
 {#snippet scrollableSection(id: string)}
 	<section {id} class="-mx-3 sm:-mx-6 @3xl:mx-0">
-		<h2>{id === 'occurrences' ? page.data.t('resource.occurrences') : id}</h2>
+		<h2 class="px-3 sm:px-6 @3xl:px-0">
+			{id === 'occurrences' ? page.data.t('resource.occurrences') : id}
+		</h2>
 		<ul
 			class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
 		>
@@ -81,7 +83,7 @@
 		<TableOfContents items={tocItems} {uidPrefix} mobile />
 	</section>
 	<div
-		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)"
+		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:gap-12 @7xl:px-12"
 	>
 		<div class="order-last hidden @7xl:block">
 			<section data-testid="toc" class="sticky top-6">
