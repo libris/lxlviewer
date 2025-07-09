@@ -222,6 +222,7 @@ export default {
 	},
 	panes: {
 		leadingPane: 'Leading pane',
+		leadingPaneTabs: 'Tabs for leading pane',
 		show: 'Show pane',
 		hide: 'Hide pane'
 	}

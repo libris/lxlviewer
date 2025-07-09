@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/state';
 	import {
 		LEADING_PANE_DEFAULT_WIDTH,
@@ -8,8 +8,10 @@
 	} from '$lib/constants/panels';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import Draggable from '../Draggable.svelte';
+	import TabList from '../TabList.svelte';
 	import Toolbar from '../Toolbar.svelte';
 	import BiArrowBarLeft from '~icons/bi/arrow-bar-left';
+	import IconSliders from '~icons/bi/sliders';
 
 	const { children } = $props();
 	const userSettings = getUserSettings();
@@ -21,7 +23,25 @@
 	function handleOnResized() {
 		userSettings.setLeadingPaneWidth(paneWidth);
 	}
+
+	const tabs = [
+		{
+			label: 'Filter',
+			targetId: 'filters',
+			active: true,
+			leadingIcon: IconSliders
+		}
+	];
 </script>
+
+{#snippet tabContent(tab: (typeof tabs)[0])}
+	<div class={['tab flex gap-2', tab.active ? 'tab-highlighted' : 'tab-primary']}>
+		{#if tab.leadingIcon}
+			<tab.leadingIcon />
+		{/if}
+		<span>{tab.label}</span>
+	</div>
+{/snippet}
 
 <nav
 	aria-label={page.data.t('panes.leadingPane')}
@@ -44,9 +64,12 @@
 	>
 		<div class="leading-pane-toolbar">
 			<Toolbar>
+				{#snippet leadingActions()}
+					<TabList {tabContent} {tabs} aria-label={page.data.t('panes.leadingPaneTabs')} />
+				{/snippet}
 				{#snippet trailingActions()}
 					<button
-						class="btn btn-primary"
+						class="btn btn-primary my-2"
 						aria-label={page.data.t('panes.hide')}
 						onclick={() => userSettings.closeLeadingPane()}
 					>

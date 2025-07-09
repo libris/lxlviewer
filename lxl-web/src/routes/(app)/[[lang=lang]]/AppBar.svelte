@@ -70,14 +70,11 @@
 	</span>
 	<a
 		href={page.params?.lang === 'en' ? '/en/about' : '/about'}
-		class="hidden whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid sm:inline"
+		class="link-subtle hidden whitespace-nowrap sm:inline"
 	>
 		{page.data.t('banner.feedback')}
 	</a>
-	<a
-		href="https://libris.kb.se"
-		class="whitespace-nowrap underline decoration-dotted hover:decoration-solid focus:decoration-solid"
-	>
+	<a href="https://libris.kb.se" class="link-subtle whitespace-nowrap">
 		{page.data.t('banner.old')}
 	</a>
 </nav>

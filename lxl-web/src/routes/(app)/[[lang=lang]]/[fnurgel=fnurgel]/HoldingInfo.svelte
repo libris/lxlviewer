@@ -259,12 +259,6 @@
 		@apply mb-2;
 	}
 
-	.show-all {
-		@apply text-subtle;
-		text-decoration: underline;
-		text-decoration-style: dotted;
-	}
-
 	.bib-list li {
 		display: list-item;
 	}

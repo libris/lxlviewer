@@ -77,7 +77,10 @@
 			{/each}
 		</ul>
 		{#if bibIds.length > 5}
-			<button class="show-all mb-2" onclick={() => (instancesCollapsed = !instancesCollapsed)}>
+			<button
+				class="text-subtle link-subtle mb-2"
+				onclick={() => (instancesCollapsed = !instancesCollapsed)}
+			>
 				{#if instancesCollapsed}
 					{page.data.t('holdings.showAll')} ({bibIds.length})
 				{:else}
@@ -152,12 +155,6 @@
 
 	li {
 		@apply mb-2;
-	}
-
-	.show-all {
-		@apply text-subtle;
-		text-decoration: underline;
-		text-decoration-style: dotted;
 	}
 
 	.bib-list li {
