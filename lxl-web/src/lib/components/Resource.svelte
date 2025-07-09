@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 
-	import TableOfContents from './TableOfContents.svelte';
+	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
@@ -24,6 +24,7 @@
 		relations: Relation[];
 		instances: Record<string, unknown>[]; // TODO: fix better types
 		holdersByType: HoldersByType;
+		tableOfContents: TableOfContentsItem[];
 	};
 
 	const {
@@ -36,29 +37,11 @@
 		decoratedOverview,
 		relations,
 		instances,
-		holdersByType
+		holdersByType,
+		tableOfContents
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
-
-	const tocItems = $derived([
-		{
-			id: `${uidPrefix}top`,
-			label: page.data.t('tableOfContents.top')
-		},
-		{
-			id: `${uidPrefix}occurrences`,
-			label: page.data.t('resource.occurrences')
-		},
-		{
-			id: `${uidPrefix}third`,
-			label: 'Label'
-		},
-		{
-			id: `${uidPrefix}fourth`,
-			label: 'Label'
-		}
-	]);
 
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 </script>
@@ -80,14 +63,14 @@
 
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
 	<section data-testid="toc-mobile" class="contents @7xl:hidden">
-		<TableOfContents items={tocItems} {uidPrefix} mobile />
+		<TableOfContents items={tableOfContents} {uidPrefix} mobile />
 	</section>
 	<div
 		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols) @7xl:gap-9 @7xl:px-9"
 	>
 		<div class="order-last hidden @7xl:block">
 			<section data-testid="toc" class="sticky top-6">
-				<TableOfContents items={tocItems} />
+				<TableOfContents items={tableOfContents} />
 			</section>
 		</div>
 		<div>

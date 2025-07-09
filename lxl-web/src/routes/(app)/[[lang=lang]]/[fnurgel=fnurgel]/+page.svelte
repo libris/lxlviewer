@@ -21,4 +21,5 @@
 	relations={data.relations}
 	instances={data.instances}
 	holdersByType={data.holdersByType}
+	tableOfContents={data.tableOfContents}
 />

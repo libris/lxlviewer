@@ -2,6 +2,7 @@ import { error } from '@sveltejs/kit';
 import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
+import { getTranslator } from '$lib/i18n';
 
 import { type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
@@ -20,11 +21,14 @@ import getTypeLike from '$lib/utils/getTypeLike';
 import { getUriSlug } from '$lib/utils/http';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
+import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 
 export const load = async ({ params, locals, fetch }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
+	const translate = await getTranslator(locale);
+
 	let resourceId: null | string = null;
 
 	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
@@ -61,6 +65,22 @@ export const load = async ({ params, locals, fetch }) => {
 
 	const relations: Relation[] | null = await getRelations(resourceId, vocabUtil, locale);
 
+	const tableOfContents: TableOfContentsItem[] = [
+		...(relations.length
+			? [
+					{
+						id: 'occurrences',
+						label: translate('resource.occurrences'),
+						children: relations.map((relationItem) => ({
+							id: `occurrences-${relationItem.qualifierKey}`, // all ids should  be prefixed in +page.svelte
+							label: relationItem.label
+						}))
+					}
+				]
+			: [])
+	];
+
+	console.log(JSON.stringify(tableOfContents, null, 2));
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
 	const instances = jmespath.search(overview, '*[].hasInstance[]');
 
@@ -88,7 +108,8 @@ export const load = async ({ params, locals, fetch }) => {
 		instances: sortedInstances,
 		holdingsByInstanceId,
 		holdersByType,
-		images
+		images,
+		tableOfContents
 	};
 };
 

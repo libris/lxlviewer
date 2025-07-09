@@ -1,3 +1,7 @@
+<script module>
+	export type TableOfContentsItem = { id: string; label: string; children?: TableOfContentsItem[] };
+</script>
+
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
@@ -6,7 +10,7 @@
 	import IconToC from '~icons/bi/list-ul';
 
 	type Props = {
-		items: { id: string; label: string }[];
+		items: TableOfContentsItem[];
 		uidPrefix?: string;
 		mobile?: boolean;
 		intersectionRoot?: HTMLElement;
@@ -18,6 +22,11 @@
 	let visibleSections: Set<string> = new SvelteSet();
 	let firstVisibleSection: string | undefined = $state();
 	let openOnMobile = $state(false);
+
+	const itemsWithTop = $derived([
+		{ id: 'top', label: page.data.t('tableOfContents.top') },
+		...items
+	]);
 
 	afterNavigate(() => {
 		observer?.disconnect();
@@ -71,10 +80,10 @@
 	}
 </script>
 
-{#snippet tocList()}
+{#snippet tocList(items: TableOfContentsItem[], isChild = false)}
 	<ul>
-		{#each items as { id, label } (id)}
-			<li class="border-l-2 border-l-neutral-200">
+		{#each items as { id, label, children } (id)}
+			<li class={[isChild ? 'child ml-4' : 'border-l-2 border-l-neutral-200']}>
 				<a
 					href="{page.url.pathname}#{id}"
 					aria-current={id === firstVisibleSection || undefined}
@@ -82,6 +91,9 @@
 				>
 					{label}
 				</a>
+				{#if children}
+					{@render tocList(children, true)}
+				{/if}
 			</li>
 		{/each}
 	</ul>
@@ -114,14 +126,14 @@
 				id={`${uidPrefix}toc-items`}
 				class="bg-page text-subtle mb-3 hidden px-3 text-xs sm:px-6"
 			>
-				{@render tocList()}
+				{@render tocList(itemsWithTop)}
 			</nav>
 		</div>
 	{:else}
 		<header class="text-subtle mb-2 text-xs font-medium">
 			<h2>{page.data.t('tableOfContents.onThisPage')}</h2>
 		</header>
-		<nav class="text-placeholder text-xs">{@render tocList()}</nav>
+		<nav class="text-placeholder text-xs">{@render tocList(itemsWithTop)}</nav>
 	{/if}
 </div>
 
