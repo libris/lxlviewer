@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { afterNavigate, goto } from '$app/navigation';
+	import { afterNavigate } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
@@ -139,27 +139,12 @@
 		});
 	}
 
-	function removeQualifier(qualifier: string) {
-		const newQ = addSpaceIfEndingQualifier(q.replace(qualifier, '').trim());
-		const insertCursor = Math.min(q.indexOf(qualifier), newQ.length);
-		const newSearchParams = new URLSearchParams(pageParams);
-		newSearchParams.set('_q', newQ.trim() ? newQ : '*');
-
-		superSearch?.dispatchChange({
-			change: { from: 0, to: q.length, insert: newQ },
-			selection: { anchor: insertCursor, head: insertCursor },
-			userEvent: 'delete'
-		});
-		superSearch?.hideExpandedSearch();
-		goto('/find?' + newSearchParams.toString());
-	}
-
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
 			let pageMapping = page.data.searchResult?.mapping;
 			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
 		}
-		return lxlQualifierPlugin(QualifierPill, getLabels, removeQualifier);
+		return lxlQualifierPlugin(QualifierPill, getLabels);
 	});
 
 	export function showExpandedSearch() {
@@ -203,7 +188,8 @@
 			return new URLSearchParams({
 				_q: query,
 				_limit: '5',
-				cursor: cursor.toString()
+				cursor: cursor.toString(),
+				_sort: page.url.searchParams.get('_sort') || ''
 			});
 		}}
 		transformFn={handleTransform}
