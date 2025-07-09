@@ -18,6 +18,7 @@
 	decoratedTypes={data.types}
 	decoratedHeading={data.heading}
 	decoratedOverview={data.overview}
+	relations={data.relations}
 	instances={data.instances}
 	holdersByType={data.holdersByType}
 />

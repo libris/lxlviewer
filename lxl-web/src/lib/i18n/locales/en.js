@@ -199,7 +199,11 @@ export default {
 		hide: 'Hide table of contents for this page'
 	},
 	resource: {
-		occurrences: 'Occurrences'
+		occurrences: 'Occurrences',
+		show: 'Show',
+		all: 'all',
+		results: 'results',
+		result: 'result'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',

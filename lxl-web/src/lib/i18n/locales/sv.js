@@ -198,7 +198,11 @@ export default {
 		hide: 'Dölj innehållsförteckning för denna sida'
 	},
 	resource: {
-		occurrences: 'Förekomster'
+		occurrences: 'Förekomster',
+		show: 'Visa',
+		all: 'alla',
+		results: 'träffar',
+		result: 'träff'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

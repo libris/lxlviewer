@@ -11,6 +11,7 @@
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
+	import type { Relation } from '$lib/utils/relations';
 
 	type Props = {
 		fnurgel: string;
@@ -20,6 +21,7 @@
 		decoratedTypes: DecoratedData;
 		decoratedHeading: DecoratedData;
 		decoratedOverview: DecoratedData;
+		relations: Relation[];
 		instances: Record<string, unknown>[]; // TODO: fix better types
 		holdersByType: HoldersByType;
 	};
@@ -32,6 +34,7 @@
 		decoratedTypes,
 		decoratedHeading,
 		decoratedOverview,
+		relations,
 		instances,
 		holdersByType
 	}: Props = $props();
@@ -60,11 +63,8 @@
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 </script>
 
-{#snippet scrollableSection(id: string)}
-	<section {id} class="-mx-3 sm:-mx-6 @3xl:mx-0">
-		<h2 class="px-3 sm:px-6 @3xl:px-0">
-			{id === 'occurrences' ? page.data.t('resource.occurrences') : id}
-		</h2>
+{#snippet scrollableList()}
+	<div class="-mx-3 sm:-mx-6 @3xl:mx-0">
 		<ul
 			class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
 		>
@@ -75,7 +75,7 @@
 				</li>
 			{/each}
 		</ul>
-	</section>
+	</div>
 {/snippet}
 
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
@@ -126,9 +126,47 @@
 					<DecoratedData data={decoratedOverview} block />
 				</div>
 			</section>
-			{@render scrollableSection(`${uidPrefix}occurrences`)}
-			{@render scrollableSection(`${uidPrefix}third`)}
-			{@render scrollableSection(`${uidPrefix}fourth`)}
+			{#if relations.length}
+				<section id={`${uidPrefix}occurrences`}>
+					<h2 class="mb-3 text-xl font-medium">{page.data.t('resource.occurrences')}</h2>
+					<ul>
+						{#each relations as relationItem (relationItem.qualifierKey)}
+							<li class="not-last:mb-9">
+								<div class="mb-3 flex place-content-between">
+									<h3
+										id="{uidPrefix}occurrences-{relationItem.qualifierKey}"
+										class="font-medium capitalize"
+									>
+										<a
+											href={relationItem.findUrl}
+											class="hover:underline focus:underline"
+											tabindex={-1}
+										>
+											{relationItem.label}
+										</a>
+									</h3>
+									<a
+										href={relationItem.findUrl}
+										class="text-sm font-medium hover:underline focus:underline"
+									>
+										{page.data.t('resource.show')}
+										{#if relationItem.totalItems > 10}
+											{page.data.t('resource.all')}
+										{/if}
+										{relationItem.totalItems}
+										{#if relationItem.totalItems === 1}
+											{page.data.t('resource.result')}
+										{:else}
+											{page.data.t('resource.results')}
+										{/if}
+									</a>
+								</div>
+								{@render scrollableList()}
+							</li>
+						{/each}
+					</ul>
+				</section>
+			{/if}
 			<section>
 				<InstancesList
 					data={instances}
