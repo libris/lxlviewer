@@ -88,7 +88,7 @@
 		</figcaption>
 	</figure>
 {:else if showPlaceholder && TypeIcon}
-	<div class="flex items-center justify-center">
+	<div class="mb-6 flex items-center justify-center">
 		<img
 			src={placeholder}
 			alt=""
