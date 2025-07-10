@@ -9,6 +9,7 @@
 	import HoldingsModal from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/HoldingsModal.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { Relation } from '$lib/utils/relations';
@@ -133,18 +134,21 @@
 									</h3>
 									<a
 										href={relationItem.findUrl}
-										class="text-sm font-medium hover:underline focus:underline"
+										class="flex items-center text-sm font-medium hover:underline focus:underline"
 									>
-										{page.data.t('resource.show')}
-										{#if relationItem.totalItems > 10}
-											{page.data.t('resource.all')}
-										{/if}
-										{relationItem.totalItems}
-										{#if relationItem.totalItems === 1}
-											{page.data.t('resource.result')}
-										{:else}
-											{page.data.t('resource.results')}
-										{/if}
+										<IconArrowRight class="inline size-5 text-neutral-500" />
+										<span>
+											{page.data.t('resource.show')}
+											{#if relationItem.totalItems > 10}
+												{page.data.t('resource.all')}
+											{/if}
+											{relationItem.totalItems}
+											{#if relationItem.totalItems === 1}
+												{page.data.t('resource.result')}
+											{:else}
+												{page.data.t('resource.results')}
+											{/if}
+										</span>
 									</a>
 								</div>
 								{@render scrollableList()}
