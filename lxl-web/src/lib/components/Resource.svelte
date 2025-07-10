@@ -111,7 +111,7 @@
 			</section>
 			{#if relations.length}
 				<section>
-					<h2 id={`${uidPrefix}occurrences`} class="mb-3 text-xl font-medium">
+					<h2 id={`${uidPrefix}occurrences`} class="mb-6 text-xl font-medium">
 						{page.data.t('resource.occurrences')}
 					</h2>
 					<ul>
