@@ -122,7 +122,7 @@
 						{#each relations as relationItem (relationItem.qualifierKey)}
 							<li id="{uidPrefix}occurrences-{relationItem.qualifierKey}" class="not-last:mb-9">
 								<div class="mb-3 flex place-content-between">
-									<h3 class="font-medium capitalize">
+									<h3 class="font-medium">
 										<a
 											href={relationItem.findUrl}
 											class="hover:underline focus:underline"

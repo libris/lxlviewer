@@ -21,7 +21,6 @@ import getTypeLike from '$lib/utils/getTypeLike';
 import { getUriSlug } from '$lib/utils/http';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
-import capitalize from '$lib/utils/capitalize.js';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 
 export const load = async ({ params, locals, fetch }) => {
@@ -71,10 +70,10 @@ export const load = async ({ params, locals, fetch }) => {
 			? [
 					{
 						id: 'occurrences',
-						label: capitalize(translate('resource.occurrences')) as string,
+						label: translate('resource.occurrences'),
 						children: relations.map((relationItem) => ({
 							id: `occurrences-${relationItem.qualifierKey}`, // all ids should  be prefixed in +page.svelte
-							label: capitalize(relationItem.label) as string
+							label: relationItem.label
 						}))
 					}
 				]

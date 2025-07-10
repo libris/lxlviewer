@@ -6,6 +6,7 @@ import { JsonLd } from '$lib/types/xl';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 import prefixesByNamespace from '$lib/assets/json/prefixesByNamespace.json';
+import capitalize from '$lib/utils/capitalize';
 import { type ApiError } from '$lib/types/api.js';
 
 export type Relation = {
@@ -47,8 +48,9 @@ export async function getRelations(
 		return data.stats._predicates.map((p) => {
 			const qualifierKey = new URLSearchParams(p.view[JsonLd.ID]).get('_p') as string;
 			const qualifierValue = getQualifierValue(resourceId);
-			const label = (vocabUtil.getLabelByLang(qualifierKey as string, locale) ||
-				qualifierKey) as string;
+			const label = capitalize(
+				vocabUtil.getLabelByLang(qualifierKey as string, locale) || qualifierKey
+			);
 			const findUrl = `/find?${getSortedSearchParams(
 				addDefaultSearchParams(
 					new URLSearchParams({
