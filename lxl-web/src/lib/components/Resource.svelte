@@ -62,17 +62,21 @@
 {/snippet}
 
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
-	<section data-testid="toc-mobile" class="contents @7xl:hidden">
-		<TableOfContents items={tableOfContents} {uidPrefix} mobile />
-	</section>
+	{#if tableOfContents.length}
+		<section data-testid="toc-mobile" class="contents @7xl:hidden">
+			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
+		</section>
+	{/if}
 	<div
 		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols) @7xl:gap-9 @7xl:px-9"
 	>
-		<div class="order-last hidden @7xl:block">
-			<section data-testid="toc" class="sticky top-6">
-				<TableOfContents items={tableOfContents} />
-			</section>
-		</div>
+		{#if tableOfContents.length}
+			<div class="order-last hidden @7xl:block">
+				<section data-testid="toc" class="sticky top-6">
+					<TableOfContents items={tableOfContents} />
+				</section>
+			</div>
+		{/if}
 		<div>
 			<div class="sticky top-6 mx-auto @3xl:max-w-xs">
 				<ResourceImage
