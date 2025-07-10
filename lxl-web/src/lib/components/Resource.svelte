@@ -110,16 +110,15 @@
 				</div>
 			</section>
 			{#if relations.length}
-				<section id={`${uidPrefix}occurrences`}>
-					<h2 class="mb-3 text-xl font-medium">{page.data.t('resource.occurrences')}</h2>
+				<section>
+					<h2 id={`${uidPrefix}occurrences`} class="mb-3 text-xl font-medium">
+						{page.data.t('resource.occurrences')}
+					</h2>
 					<ul>
 						{#each relations as relationItem (relationItem.qualifierKey)}
-							<li class="not-last:mb-9">
+							<li id="{uidPrefix}occurrences-{relationItem.qualifierKey}" class="not-last:mb-9">
 								<div class="mb-3 flex place-content-between">
-									<h3
-										id="{uidPrefix}occurrences-{relationItem.qualifierKey}"
-										class="font-medium capitalize"
-									>
+									<h3 class="font-medium capitalize">
 										<a
 											href={relationItem.findUrl}
 											class="hover:underline focus:underline"

@@ -66,7 +66,7 @@
 					firstVisibleSection =
 						tocElement
 							.closest('article')
-							?.querySelector(`:scope #${Array.from(visibleSections).join(', :scope #')}`) // find first visible section by generating a selector string using the ids of visible secitons
+							?.querySelector(`:scope #${Array.from(visibleSections).join(', :scope #')}`) // find first visible section by generating a selector string using the ids of visible sections
 							?.getAttribute('id') || firstVisibleSection; // fallback to previous visible section
 				}
 			}
@@ -80,19 +80,23 @@
 	}
 </script>
 
-{#snippet tocList(items: TableOfContentsItem[], isChild = false)}
+{#snippet tocList(items: TableOfContentsItem[])}
 	<ul>
 		{#each items as { id, label, children } (id)}
-			<li class={[isChild ? 'child ml-4' : 'border-l-2 border-l-neutral-200']}>
-				<a
-					href="{page.url.pathname}#{id}"
-					aria-current={id === firstVisibleSection || undefined}
-					class="hover:text-body focus:text-body inline-flex min-h-8 items-center px-3 hover:underline focus:underline"
-				>
-					{label}
-				</a>
+			<li class={children && '[&>ul_a]:pl-7'}>
+				<div class={['border-l-2 border-l-neutral-200']}>
+					<a
+						href="{page.url.pathname}#{id}"
+						aria-current={id === firstVisibleSection || undefined}
+						class={[
+							'hover:text-body focus:text-body inline-flex min-h-8 items-center px-3 hover:underline focus:underline'
+						]}
+					>
+						{label}
+					</a>
+				</div>
 				{#if children}
-					{@render tocList(children, true)}
+					{@render tocList(children)}
 				{/if}
 			</li>
 		{/each}
@@ -142,7 +146,7 @@
 		aria-current is styled here as aria-current variant is currently not supported by Tailwind
 		(see: https://github.com/tailwindlabs/tailwindcss/discussions/9563 
 	*/
-	li:has([aria-current]) {
+	li > div:has([aria-current]) {
 		border-color: var(--color-accent);
 	}
 	[aria-current] {
