@@ -63,7 +63,7 @@ export async function getRelations(
 				addDefaultSearchParams(
 					new URLSearchParams({
 						_q: `${qualifierKey}:${qualifierValue}`,
-						_limit: '6',
+						_limit: '10',
 						_spell: 'false'
 					})
 				)

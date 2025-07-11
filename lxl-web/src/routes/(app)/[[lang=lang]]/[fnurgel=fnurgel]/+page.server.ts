@@ -22,6 +22,7 @@ import { getUriSlug } from '$lib/utils/http';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
+import { asResult } from '$lib/utils/search';
 
 export const load = async ({ params, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -65,6 +66,32 @@ export const load = async ({ params, locals, fetch }) => {
 
 	const relations: Relation[] | null = await getRelations(resourceId, vocabUtil, locale);
 
+	/** TODO: Better error handling while fetching relations previews */
+	const relationsPreviews = await Promise.all(
+		relations.map(async (relation) => {
+			const previewRes = await fetch(relation.previewUrl);
+			const previewData = await previewRes.json();
+			return asResult(
+				previewData,
+				displayUtil,
+				vocabUtil,
+				locale,
+				env.AUXD_SECRET,
+				undefined,
+				locals.userSettings?.myLibraries
+			);
+		})
+	);
+	const relationsPreviewsByQualifierKey = relations.reduce(
+		(acc, currentRelation, relationIndex) => {
+			return {
+				...acc,
+				[currentRelation.qualifierKey]: relationsPreviews[relationIndex].items
+			};
+		},
+		{}
+	);
+
 	const tableOfContents: TableOfContentsItem[] = [
 		...(relations.length
 			? [
@@ -80,7 +107,6 @@ export const load = async ({ params, locals, fetch }) => {
 			: [])
 	];
 
-	console.log(JSON.stringify(tableOfContents, null, 2));
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
 	const instances = jmespath.search(overview, '*[].hasInstance[]');
 
@@ -105,6 +131,7 @@ export const load = async ({ params, locals, fetch }) => {
 		heading,
 		overview: overviewWithoutHasInstance,
 		relations,
+		relationsPreviewsByQualifierKey,
 		instances: sortedInstances,
 		holdingsByInstanceId,
 		holdersByType,

@@ -13,6 +13,8 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { Relation } from '$lib/utils/relations';
+	import type { SearchResultItem } from '$lib/types/search';
+	import SearchResultList from './SearchResultList.svelte';
 
 	type Props = {
 		fnurgel: string;
@@ -23,6 +25,7 @@
 		decoratedHeading: DecoratedData;
 		decoratedOverview: DecoratedData;
 		relations: Relation[];
+		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
 		instances: Record<string, unknown>[]; // TODO: fix better types
 		holdersByType: HoldersByType;
 		tableOfContents: TableOfContentsItem[];
@@ -37,6 +40,7 @@
 		decoratedHeading,
 		decoratedOverview,
 		relations,
+		relationsPreviewsByQualifierKey,
 		instances,
 		holdersByType,
 		tableOfContents
@@ -47,21 +51,6 @@
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 </script>
 
-{#snippet scrollableList()}
-	<div class="-mx-3 sm:-mx-6 @3xl:mx-0">
-		<ul
-			class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
-		>
-			{#each { length: 10 }}
-				<li class="min-w-[192px] flex-1 text-sm">
-					<div class="aspect-2/3 bg-neutral-100"></div>
-					Lorem ipsum ad est dolors
-				</li>
-			{/each}
-		</ul>
-	</div>
-{/snippet}
-
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
 	{#if tableOfContents.length}
 		<section data-testid="toc-mobile" class="contents @7xl:hidden">
@@ -69,7 +58,7 @@
 		</section>
 	{/if}
 	<div
-		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols) @7xl:gap-9 @7xl:px-9"
+		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"
 	>
 		{#if tableOfContents.length}
 			<div class="order-last hidden @7xl:block">
@@ -115,14 +104,14 @@
 				</div>
 			</section>
 			{#if relations.length}
-				<section class="border-t-neutral border-t pt-6">
+				<section class="mt-6">
 					<h2 id={`${uidPrefix}occurrences`} class="mb-6 text-xl font-medium">
 						{page.data.t('resource.occurrences')}
 					</h2>
 					<ul>
 						{#each relations as relationItem (relationItem.qualifierKey)}
-							<li id="{uidPrefix}occurrences-{relationItem.qualifierKey}" class="not-last:mb-9">
-								<div class="mb-3 flex place-content-between">
+							<li id="{uidPrefix}occurrences-{relationItem.qualifierKey}" class="mb-12">
+								<div class="border-b-neutral mb-6 flex place-content-between border-b pb-3">
 									<h3 class="font-medium">
 										<a
 											href={relationItem.findUrl}
@@ -151,7 +140,12 @@
 										</span>
 									</a>
 								</div>
-								{@render scrollableList()}
+								<div class="-mx-3 sm:-mx-6 @3xl:mx-0">
+									<SearchResultList
+										type="horizontal"
+										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
+									/>
+								</div>
 							</li>
 						{/each}
 					</ul>
