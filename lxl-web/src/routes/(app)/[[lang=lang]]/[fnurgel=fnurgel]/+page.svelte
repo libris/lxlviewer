@@ -11,16 +11,18 @@
 <svelte:head>
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
-<Resource
-	fnurgel={page.params.fnurgel}
-	type={data.type}
-	images={data.images}
-	decoratedTypes={data.types}
-	decoratedHeading={data.heading}
-	decoratedOverview={data.overview}
-	relations={data.relations}
-	relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}
-	instances={data.instances}
-	holdersByType={data.holdersByType}
-	tableOfContents={data.tableOfContents}
-/>
+<div data-testid="resource-page" class="contents">
+	<Resource
+		fnurgel={page.params.fnurgel}
+		type={data.type}
+		images={data.images}
+		decoratedTypes={data.types}
+		decoratedHeading={data.heading}
+		decoratedOverview={data.overview}
+		relations={data.relations}
+		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}
+		instances={data.instances}
+		holdersByType={data.holdersByType}
+		tableOfContents={data.tableOfContents}
+	/>
+</div>

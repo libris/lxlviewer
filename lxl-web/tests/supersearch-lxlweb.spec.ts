@@ -64,7 +64,7 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
-	await expect(page.locator('.resource-page')).toBeVisible();
+	await expect(page.getByTestId('resource-page')).toBeVisible();
 	await expect(
 		page.locator('.supersearch-combobox .cm-focused'),
 		'input loses focus when navigating'
@@ -77,7 +77,7 @@ test('user can jump from first row to bottom by pressing arrow up', async ({ pag
 	await page.keyboard.press('ArrowUp');
 	await page.keyboard.press('ArrowUp');
 	await page.keyboard.press('Enter');
-	await expect(page.locator('.resource-page')).toBeVisible();
+	await expect(page.getByTestId('resource-page')).toBeVisible();
 });
 
 test('qualifier keys can be added using the user interface', async ({ page }) => {

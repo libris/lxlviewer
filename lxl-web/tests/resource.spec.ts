@@ -30,7 +30,7 @@ test('decorated data in holdings modal is not duplicated while closing modal', a
 });
 
 test('table of contents', async ({ page }) => {
-	await page.goto('/h08ndxddfg5v2pjf');
+	await page.goto('/khwz18234vvmvn7');
 	await expect(page.getByTestId('toc')).toBeVisible();
 	await expect(page.getByTestId('toc-mobile')).not.toBeVisible();
 	await expect(
@@ -70,4 +70,10 @@ test('table of contents', async ({ page }) => {
 		page.getByTestId('toc-mobile').locator('a').first(),
 		'enter keypress toggles table of contents while focused on toggle'
 	).toBeVisible();
+	await page.goto('/h08ndxddfg5v2pjf');
+	await expect(
+		page.getByTestId('toc'),
+		'table of contents is hidden if there are no items to show'
+	).not.toBeVisible();
+	await expect(page.getByTestId('toc-mobile')).not.toBeVisible();
 });
