@@ -61,9 +61,9 @@ export function extractFnurgel(uri) {
   // TODO: Make more checks before returning something
   const recordUri = uri.split('#')[0];
 
-  // If Marc entity, don't proceed
-  if (recordUri.indexOf('marc/') !== -1) {
-    return recordUri;
+  // If Marc entity or term, don't proceed
+  if (recordUri.includes('marc/') || recordUri.includes('term/')) {
+    return undefined;
   }
 
   const splitUri = recordUri.split('/');

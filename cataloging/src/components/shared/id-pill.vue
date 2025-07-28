@@ -48,10 +48,9 @@ export default {
         if (fnurgel && this.isLibrisResource) {
           return fnurgel;
         }
-        return id
+        return decodeURI(id)
           .replace('https://', '')
           .replace('http://', '');
-          // TODO? uridecode for display?
       }
       return null;
     },
