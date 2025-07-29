@@ -2,5 +2,5 @@
 	"Agent": ["contributor", "subject", "publisher"],
 	"GenreForm": ["genreForm"],
 	"Topic": ["subject", "hasOccupation", "fieldOfActivity", "termComponentList"],
-	"Work": ["subject"]
+	"Work": ["subject", "isPartOf"]
 }
