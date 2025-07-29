@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { page } from '$app/state';
@@ -22,6 +22,9 @@
 	let visibleSections: Set<string> = new SvelteSet();
 	let firstVisibleSection: string | undefined = $state();
 	let openOnMobile = $state(false);
+	let selectedAnchor: string = $state('');
+	let isProgrammaticScroll = $state(false);
+	let currentSection = $derived(selectedAnchor || firstVisibleSection);
 
 	const itemsWithTop = $derived([
 		{ id: 'top', label: page.data.t('tableOfContents.top') },
@@ -30,6 +33,8 @@
 
 	afterNavigate(() => {
 		observer?.disconnect();
+
+		selectedAnchor = window.location.hash?.substring(1);
 
 		if (!mobile) {
 			const closestArticle = tocElement.closest('article');
@@ -51,6 +56,25 @@
 
 	onDestroy(() => {
 		observer?.disconnect();
+	});
+
+	onMount(() => {
+		const handleScroll = () => {
+			if (!isProgrammaticScroll) {
+				selectedAnchor = '';
+			}
+		};
+		window.addEventListener('scroll', handleScroll);
+
+		const handleHashChange = () => {
+			selectedAnchor = window.location.hash?.substring(1);
+		};
+		window.addEventListener('hashchange', handleHashChange);
+
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+			window.removeEventListener('hashchange', handleHashChange);
+		};
 	});
 
 	function handleObserve(entries: IntersectionObserverEntry[]) {
@@ -78,6 +102,14 @@
 			tocElement.querySelector<HTMLInputElement>(':scope input[type="checkbox"]')?.click();
 		}
 	}
+
+	function handleAnchorClick() {
+		// this just handles the case where there is no hashchange event:
+		// user clicks anchor, scrolls away, clicks same anchor
+		selectedAnchor = window.location.hash?.substring(1);
+		isProgrammaticScroll = true;
+		setTimeout(() => (isProgrammaticScroll = false), 50);
+	}
 </script>
 
 {#snippet tocList(items: TableOfContentsItem[])}
@@ -87,10 +119,11 @@
 				<div class={['border-l-2 border-l-neutral-200']}>
 					<a
 						href="{page.url.pathname}#{id}"
-						aria-current={id === firstVisibleSection || undefined}
+						aria-current={id === currentSection || undefined}
 						class={[
 							'hover:text-body focus:text-body inline-flex min-h-8 items-center px-3 hover:underline focus:underline'
 						]}
+						onclick={handleAnchorClick}
 					>
 						{label}
 					</a>
