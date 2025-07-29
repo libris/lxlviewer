@@ -103,6 +103,19 @@
 					<DecoratedData data={decoratedOverview} block />
 				</div>
 			</section>
+			<section>
+				<InstancesList
+					data={instances}
+					columns={[
+						{
+							header: page.data.t('search.publicationYear'),
+							data: '*[].publication[].*[][?year].year'
+						},
+						{ header: page.data.t('search.publisher'), data: '*[].publication.*[][?agent].agent' },
+						{ header: page.data.t('search.type'), data: '_label' }
+					]}
+				/>
+			</section>
 			{#if relations.length}
 				<section class="mt-6">
 					<h2 id={`${uidPrefix}occurrences`} class="mb-6 text-xl font-medium">
@@ -151,19 +164,6 @@
 					</ul>
 				</section>
 			{/if}
-			<section>
-				<InstancesList
-					data={instances}
-					columns={[
-						{
-							header: page.data.t('search.publicationYear'),
-							data: '*[].publication[].*[][?year].year'
-						},
-						{ header: page.data.t('search.publisher'), data: '*[].publication.*[][?agent].agent' },
-						{ header: page.data.t('search.type'), data: '_label' }
-					]}
-				/>
-			</section>
 		</div>
 	</div>
 </article>
