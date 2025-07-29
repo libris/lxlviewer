@@ -191,7 +191,21 @@ export default {
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren'
 	},
+	tableOfContents: {
+		onThisPage: 'På den här sidan',
+		top: 'Översikt',
+		show: 'Visa innehållsförteckning för denna sida',
+		hide: 'Dölj innehållsförteckning för denna sida'
+	},
+	resource: {
+		occurrences: 'Förekomster',
+		show: 'Visa',
+		all: 'alla',
+		results: 'träffar',
+		result: 'träff'
+	},
 	holdings: {
+		availabilityByType: 'Tillgänglighet utifrån medietyp',
 		availableAt: 'Finns på',
 		library: 'bibliotek',
 		libraries: 'bibliotek',

@@ -192,7 +192,21 @@ export default {
 		usagePolicy: 'License terms',
 		cropped: 'Cropped'
 	},
+	tableOfContents: {
+		onThisPage: 'On this page',
+		top: 'Return to top',
+		show: 'Show table of contents for this page',
+		hide: 'Hide table of contents for this page'
+	},
+	resource: {
+		occurrences: 'Occurrences',
+		show: 'Show',
+		all: 'all',
+		results: 'results',
+		result: 'result'
+	},
 	holdings: {
+		availabilityByType: 'Availability by type',
 		availableAt: 'Available at',
 		library: 'library',
 		libraries: 'libraries',

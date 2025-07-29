@@ -30,8 +30,9 @@ import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-import {getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
+import { getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
 import getTypeLike from '$lib/utils/getTypeLike';
+import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 
 export async function asResult(
@@ -396,13 +397,6 @@ function replacePath(view: Link, usePath: string | undefined) {
 		};
 	}
 	return view;
-}
-
-function capitalize(str: string | undefined) {
-	if (str && typeof str === 'string') {
-		return str[0].toUpperCase() + str.slice(1);
-	}
-	return str;
 }
 
 // TODO: we should get this from the backend...

@@ -9,7 +9,7 @@
 
 	export let data: ResourceData;
 	export let depth = 0;
-	export let showLabels: ShowLabelsOptions = ShowLabelsOptions.DefaultOn;
+	export let showLabels: 'always' | 'never' | 'defaultOn' | 'defaultOff' = 'defaultOn';
 	export let allowPopovers = true; // used for preventing nested popovers
 	export let allowLinks = true;
 	export let block = false;

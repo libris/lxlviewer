@@ -1,106 +1,103 @@
 <script lang="ts">
-	import { type Image, Width } from '$lib/types/auxd';
+	import { type Image, type ImageResolution, Width } from '$lib/types/auxd';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { bestSize } from '$lib/utils/auxd';
 	import { first } from '$lib/utils/xl';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { popover } from '$lib/actions/popover';
 	import InfoIcon from '~icons/bi/info-circle';
 
-	export let images: Image[];
-	export let alt: string | undefined;
-	export let linkToFull = false;
-	export let type = '';
-	export let thumbnailTargetWidth: number = Width.SMALL;
-	export let showPlaceholder = true;
-	export let geometry: 'rectangle' | 'circle' = 'rectangle';
-	export let loading: 'eager' | 'lazy' = 'eager';
+	interface Props {
+		images: Image[];
+		alt?: string;
+		linkToFull?: boolean;
+		type?: string;
+		thumbnailTargetWidth?: number;
+		showPlaceholder?: boolean;
+		loading?: 'eager' | 'lazy';
+	}
 
-	$: image = first(images);
+	let {
+		images,
+		alt,
+		linkToFull = false,
+		type = '',
+		thumbnailTargetWidth = Width.SMALL,
+		showPlaceholder = true,
+		loading = 'eager'
+	}: Props = $props();
 
-	$: thumb = (image && bestSize(image, thumbnailTargetWidth)) || undefined;
-	$: full = (image && bestSize(image, Width.FULL)) || undefined;
+	let image = $derived(first(images));
+	let thumb = $derived(image ? bestSize(image, thumbnailTargetWidth) : undefined);
+	let full = $derived(image ? bestSize(image, Width.FULL) : undefined);
+	let geometry = $derived(type === 'Person' ? 'circle' : 'rectangle');
+	let TypeIcon = $derived(!image ? getTypeIcon(type) : undefined);
 </script>
 
+{#snippet img(res: ImageResolution, imgClass?: string | string[])}
+	<img
+		{alt}
+		{loading}
+		src={res.url}
+		width={res.widthPx > 0 ? res.widthPx : undefined}
+		height={res.heightPx > 0 ? res.heightPx : undefined}
+		class={[
+			'mt-1.5 aspect-square object-contain',
+			geometry === 'circle' && 'max-w-40 rounded-full object-cover @3xl:max-w-48',
+			imgClass
+		]}
+	/>
+{/snippet}
+
 {#if image && thumb}
-	<figure class="3xl:h-64 table aspect-square h-64 overflow-hidden lg:h-56">
+	<figure class="flex w-full flex-col items-center gap-3">
 		{#if linkToFull && full}
-			<a href={full.url} target="_blank" class="object-[inherit]">
-				<img
-					{alt}
-					{loading}
-					src={thumb.url}
-					width={thumb.widthPx > 0 ? thumb.widthPx : undefined}
-					height={thumb.heightPx > 0 ? thumb.heightPx : undefined}
-					class="object-contain object-[inherit]"
-					class:object-cover={geometry === 'circle'}
-					class:rounded-full={geometry === 'circle'}
-				/>
+			<a href={full.url} target="_blank" class="hidden @3xl:block">
+				{@render img(thumb)}
 			</a>
-		{:else}
-			<img
-				{alt}
-				{loading}
-				src={thumb.url}
-				width={thumb.widthPx > 0 ? thumb.widthPx : undefined}
-				height={thumb.heightPx > 0 ? thumb.heightPx : undefined}
-				class="object-contain object-[inherit]"
-				class:rounded-full={geometry === 'circle'}
-			/>
 		{/if}
-		{#if image?.usageAndAccessPolicy}
-			<figcaption
-				class="text-3xs text-subtle mt-1 table-caption caption-bottom overflow-hidden"
-				class:text-center={geometry === 'circle'}
-			>
-				{#if image.attribution}
-					<span class="mr-1 truncate">
-						<span class="mr-0.5">©</span>
-						{#if image.attribution.link}
-							<a href={image.attribution.link} target="_blank" class="ext-link">
-								{image.attribution.name}
-							</a>
-						{:else}
+		{@render img(thumb, linkToFull ? '@3xl:hidden' : undefined)}
+		<figcaption class="text-5xs @3xl:text-4xs text-subtle w-full">
+			{#if image.attribution}
+				<span class="mr-1">
+					{'© '}
+					{#if image.attribution.link}
+						<a href={image.attribution.link} target="_blank" class="ext-link">
 							{image.attribution.name}
-						{/if}
-					</span>
-					<!-- This could be based on if attribution required by license.
-						For now, display if there is any attribution info available -->
-					{#if geometry === 'circle'}
-						{$page.data.t('general.cropped')}
+						</a>
+					{:else}
+						{image.attribution.name}
 					{/if}
-				{/if}
-				<span class="truncate" use:popover={{ title: image?.usageAndAccessPolicy.title }}>
-					<InfoIcon style="display: inline; font-size: 13px" />
-					<span class="ml-0.5">
-						{#if image.usageAndAccessPolicy.link}
-							<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
-								{#if image.usageAndAccessPolicy.identifier}
-									{image.usageAndAccessPolicy.identifier}
-								{:else}
-									{$page.data.t('general.usagePolicy')}
-								{/if}
-							</a>
-						{:else}
-							{$page.data.t('general.usagePolicy')}
-						{/if}
-					</span>
 				</span>
-			</figcaption>
-		{/if}
+			{/if}
+			<span class="truncate" use:popover={{ title: image?.usageAndAccessPolicy.title }}>
+				<InfoIcon class="inline" />
+				{#if image.usageAndAccessPolicy.link}
+					<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
+						{#if image.usageAndAccessPolicy.identifier}
+							{image.usageAndAccessPolicy.identifier}
+						{:else}
+							{page.data.t('general.usagePolicy')}
+						{/if}
+					</a>
+				{:else}
+					{page.data.t('general.usagePolicy')}
+				{/if}
+			</span>
+		</figcaption>
 	</figure>
-{:else if showPlaceholder}
-	<div class="flex items-center justify-center object-[inherit]">
+{:else if showPlaceholder && TypeIcon}
+	<div class="mb-6 flex items-center justify-center">
 		<img
 			src={placeholder}
 			alt=""
-			class="size-20 object-cover object-[inherit]"
-			class:rounded-sm={geometry !== 'circle'}
-			class:rounded-full={geometry === 'circle'}
+			class={[
+				'size-full max-w-40 object-cover @3xl:max-w-48',
+				geometry === 'circle' ? 'rounded-full' : 'rounded-lg',
+				type === 'Text' && 'aspect-3/4'
+			]}
 		/>
-		{#if getTypeIcon(type)}
-			<svelte:component this={getTypeIcon(type)} class="text-subtle absolute text-2xl" />
-		{/if}
+		<TypeIcon class="absolute text-4xl text-neutral-300 @3xl:text-6xl" />
 	</div>
 {/if}
