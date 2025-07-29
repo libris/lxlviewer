@@ -36,7 +36,7 @@ test('table of contents', async ({ page }) => {
 	await expect(
 		page.getByTestId('toc').locator('a[aria-current]'),
 		'first visible link is shown as active'
-	).toHaveText('Inledning');
+	).toHaveText('Översikt');
 	await page.getByTestId('toc').locator('a:not([aria-current])').first().click();
 	await expect(
 		page.getByTestId('toc').locator('a[aria-current]'),
@@ -46,7 +46,7 @@ test('table of contents', async ({ page }) => {
 	await expect(
 		page.getByTestId('toc').locator('a[aria-current]'),
 		'active link is changed when scrolling'
-	).toHaveText('Inledning');
+	).toHaveText('Översikt');
 	await page.setViewportSize(devices['iPhone X'].viewport);
 	await expect(page.getByTestId('toc')).not.toBeVisible();
 	await expect(page.getByTestId('toc-mobile')).toBeVisible();
@@ -55,7 +55,7 @@ test('table of contents', async ({ page }) => {
 	await expect(
 		page.getByTestId('toc-mobile').locator('a').first(),
 		'mobile table of contents is visible after clicking on toggle'
-	).toHaveText('Inledning');
+	).toHaveText('Översikt');
 	await page.getByTestId('toc-mobile').locator('a').nth(1).click();
 	await expect(page.locator('#top')).not.toBeInViewport({ ratio: 0.1 });
 	await expect(
