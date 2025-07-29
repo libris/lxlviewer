@@ -193,7 +193,7 @@ export default {
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
-		top: 'Inledning',
+		top: 'Översikt',
 		show: 'Visa innehållsförteckning för denna sida',
 		hide: 'Dölj innehållsförteckning för denna sida'
 	},
