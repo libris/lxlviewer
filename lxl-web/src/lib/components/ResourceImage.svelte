@@ -51,14 +51,14 @@
 {/snippet}
 
 {#if image && thumb}
-	<figure class="flex w-full flex-col items-center gap-3">
+	<figure class="flex w-full flex-col items-center gap-2">
 		{#if linkToFull && full}
 			<a href={full.url} target="_blank" class="hidden @3xl:block">
 				{@render img(thumb)}
 			</a>
 		{/if}
 		{@render img(thumb, linkToFull ? '@3xl:hidden' : undefined)}
-		<figcaption class="text-5xs @3xl:text-4xs text-subtle w-full">
+		<figcaption class="text-5xs @3xl:text-4xs text-subtle">
 			{#if image.attribution}
 				<span class="mr-1">
 					{'© '}

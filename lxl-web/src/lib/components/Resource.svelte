@@ -77,7 +77,7 @@
 					linkToFull
 				/>
 				{#if holdersByType && Object.keys(holdersByType).length && instances}
-					<section class="mt-2">
+					<section class="mt-5">
 						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
 						<ResourceHoldings {holdersByType} {instances} />
 					</section>
