@@ -104,17 +104,22 @@
 				</div>
 			</section>
 			<section>
-				<InstancesList
-					data={instances}
-					columns={[
-						{
-							header: page.data.t('search.publicationYear'),
-							data: '*[].publication[].*[][?year].year'
-						},
-						{ header: page.data.t('search.publisher'), data: '*[].publication.*[][?agent].agent' },
-						{ header: page.data.t('search.type'), data: '_label' }
-					]}
-				/>
+				<div class="decorated-overview">
+					<InstancesList
+						data={instances}
+						columns={[
+							{
+								header: page.data.t('search.publicationYear'),
+								data: '*[].publication[].*[][?year].year'
+							},
+							{
+								header: page.data.t('search.publisher'),
+								data: '*[].publication.*[][?agent].agent'
+							},
+							{ header: page.data.t('search.type'), data: '_label' }
+						]}
+					/>
+				</div>
 			</section>
 			{#if relations.length}
 				<section class="mt-6">
