@@ -93,6 +93,7 @@ export enum Fresnel {
 	contentFirst = 'fresnel:contentFirst',
 	contentLast = 'fresnel:contentLast',
 	extends = 'fresnel:extends',
+	fslselector = 'fresnel:fslselector',
 	group = 'fresnel:group',
 	propertyFormat = 'fresnel:propertyFormat',
 	propertyFormatDomain = 'fresnel:propertyFormatDomain',
@@ -136,10 +137,14 @@ export interface Link {
 	'@id': string;
 }
 
+export type FslSelector = { [JsonLd.TYPE]: Fresnel.fslselector; [JsonLd.VALUE]: string };
 export type RangeRestriction = { subPropertyOf: PropertyName; range: ClassName };
-export type AlternateProperties = { alternateProperties: (PropertyName | RangeRestriction)[] };
+export type AlternateProperties = {
+	alternateProperties: (PropertyName | FslSelector | RangeRestriction)[];
+};
 export type ShowProperty =
 	| PropertyName
+	| FslSelector
 	| Fresnel.super
 	| AlternateProperties
 	| { inverse: PropertyName };

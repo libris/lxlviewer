@@ -28,7 +28,8 @@ import {
 	type RangeRestriction,
 	type AlternateProperties,
 	type LangContainer,
-	type DisplayDecoratedLite
+	type DisplayDecoratedLite,
+	type FslSelector
 } from '$lib/types/xl';
 
 // TODO TESTS!
@@ -382,6 +383,9 @@ export class DisplayUtil {
 							pick({ [k]: v }, k);
 							break;
 						}
+					} else if (isFslSelector(alternative)) {
+						// TODO
+						console.log();
 					} else {
 						if (has(thing, alternative)) {
 							pick(thing, alternative);
@@ -389,10 +393,14 @@ export class DisplayUtil {
 						}
 					}
 				}
+			} else if (isFslSelector(p)) {
+				// TODO
+				console.log();
 			} else if (isInverseProperty(p)) {
 				// never language container
 				if (isObject(thing[JsonLd.REVERSE]) && p.inverseOf in thing[JsonLd.REVERSE]) {
-					const inverseName = this.vocabUtil.getInverseProperty(p.inverseOf);
+					const inverseName =
+						this.vocabUtil.getInverseProperty(p.inverseOf) || JsonLd.REVERSE + '.' + p.inverseOf;
 					const v = thing[JsonLd.REVERSE][p.inverseOf];
 					pick({ [inverseName]: v }, inverseName);
 				}
@@ -1053,6 +1061,12 @@ function isTransliteratedLatin(langCode: LangCode) {
 	return langCode.includes('Latn-t-');
 }
 
+function isFslSelector(v: ShowProperty): v is FslSelector {
+	return (
+		isObject(v) && JsonLd.TYPE in v && v[JsonLd.TYPE] === Fresnel.fslselector && JsonLd.VALUE in v
+	);
+}
+
 function isAlternateProperties(v: ShowProperty): v is AlternateProperties {
 	return isObject(v) && 'alternateProperties' in v;
 }
@@ -1061,7 +1075,9 @@ function isInverseProperty(v: ShowProperty): v is { inverseOf: PropertyName } {
 	return isObject(v) && 'inverseOf' in v;
 }
 
-function isRangeRestriction(v: PropertyName | RangeRestriction): v is RangeRestriction {
+function isRangeRestriction(
+	v: PropertyName | FslSelector | RangeRestriction
+): v is RangeRestriction {
 	return isObject(v) && 'subPropertyOf' in v && 'range' in v;
 }
 
