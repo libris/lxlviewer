@@ -155,7 +155,7 @@
 				<FacetRange search={group.search} />
 			{/if}
 			<ol
-				class="flex max-h-72 flex-col overflow-x-clip overflow-y-auto sm:max-h-[437px]"
+				class="flex max-h-72 flex-col overflow-x-clip overflow-y-auto sm:max-h-[453px]"
 				data-testid="facet-list"
 			>
 				{#each shownItems as facet (facet.view['@id'])}
