@@ -5,7 +5,8 @@ import {
 	type FramedData,
 	JsonLd,
 	LensType,
-	type Link
+	type Link,
+	Owl
 } from '$lib/types/xl';
 
 import {
@@ -121,16 +122,29 @@ export function displayMappings(
 			const operator = _hasOperator(m);
 
 			if ('property' in m && operator) {
-				const property = m[operator] as FramedData;
-				return {
-					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
-					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
-					displayStr: toString(displayUtil.lensAndFormat(property, LensType.Chip, locale)) || '',
-					label: m.alias
+				const value = m[operator] as FramedData;
+
+				let label = '';
+				// FIXME
+				if (Owl.PROPERTY_CHAIN_AXIOM in m.property && !(JsonLd.TYPE in m.property)) {
+					label = label = m.alias
+						? translate(`facet.${m.alias}`)
+						: m.property[Owl.PROPERTY_CHAIN_AXIOM]
+								.map((p) => toString(displayUtil.lensAndFormat(p, LensType.Token, locale)))
+								.join('/');
+				} else {
+					label = m.alias
 						? translate(`facet.${m.alias}`)
 						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) ||
 							m.property?.[JsonLd.ID] ||
-							m._key,
+							m._key;
+				}
+
+				return {
+					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
+					display: displayUtil.lensAndFormat(value, LensType.Chip, locale),
+					displayStr: toString(displayUtil.lensAndFormat(value, LensType.Chip, locale)) || '',
+					label,
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),

@@ -289,6 +289,22 @@
 						"marc:titlesAndOtherWordsAssociatedWithAName",
 						"fullerFormOfName"
 					]
+				},
+				"DatatypeProperty": {
+					"@id": "DatatypeProperty-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "DatatypeProperty",
+					"showProperties": [
+						{ "alternateProperties": ["title", "prefLabel", "label", "name", "code", "uri"] }
+					]
+				},
+				"ObjectProperty": {
+					"@id": "ObjectProperty-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "ObjectProperty",
+					"showProperties": [
+						{ "alternateProperties": ["title", "prefLabel", "label", "name", "code", "uri"] }
+					]
 				}
 			}
 		},

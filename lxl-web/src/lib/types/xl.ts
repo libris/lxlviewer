@@ -16,7 +16,8 @@ export enum JsonLd {
 }
 
 export enum Owl {
-	SAME_AS = 'sameAs'
+	SAME_AS = 'sameAs',
+	PROPERTY_CHAIN_AXIOM = 'propertyChainAxiom'
 }
 
 export enum Fmt {
