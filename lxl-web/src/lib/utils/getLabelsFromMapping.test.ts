@@ -50,6 +50,13 @@ describe('getLabelsFromMapping', () => {
 			'/find?_i=sommar&_q=sommar+%C3%85R:2023+SPR%C3%85K:%22lang:swe%22&_limit=0'
 		);
 	});
+
+	it('returns the correct data when using a bool filter', () => {
+		const boolObj = getLabelsFromMapping('', 'freeOnline', boolFilterMapping);
+		expect(boolObj.keyLabel).toBe(undefined);
+		expect(boolObj.valueLabel).toBe('Fritt online');
+		expect(boolObj.removeLink).toBe('/find?_q=*');
+	});
 });
 
 // sommar genreForm:"saogf:Romaner" ÅR:2023
@@ -175,5 +182,27 @@ const suggestMapping: DisplayMapping[] = [
 		up: {
 			'@id': '/find?_i=&_q=*&_limit=0'
 		}
+	}
+];
+
+const boolFilterMapping: DisplayMapping[] = [
+	{
+		display: {
+			'@type': 'Resource',
+			_display: [
+				{
+					prefLabel: 'Fritt online',
+					_label: 'föredragen benämning'
+				}
+			],
+			_label: 'Resurs'
+		},
+		displayStr: 'Fritt online',
+		label: '',
+		operator: 'none',
+		up: {
+			'@id': '/find?_q=*'
+		},
+		_value: 'freeOnline'
 	}
 ];

@@ -58,6 +58,7 @@ function iterateMapping(
 				} else if (!key && value === el?._value && el?.displayStr) {
 					// ...unless a filter alias (no key, only value)
 					valueLabel = el.displayStr;
+					removeLink = el.up?.['@id'];
 				}
 			});
 		}
