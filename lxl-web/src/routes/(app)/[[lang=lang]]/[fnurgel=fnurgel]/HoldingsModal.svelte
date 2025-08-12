@@ -163,7 +163,9 @@
 
 {#if holdingUrl && selectedHoldingInstance}
 	<Modal close={handleCloseHoldings}>
-		<span slot="title">{page.data.t('holdings.findAtYourNearestLibrary')}</span>
+		{#snippet title()}
+			<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
+		{/snippet}
 		{#if loading}
 			<div class="flex h-screen items-center justify-center">
 				<span class="size-6">

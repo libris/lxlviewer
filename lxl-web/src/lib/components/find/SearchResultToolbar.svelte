@@ -75,10 +75,12 @@
 
 {#if showFiltersModal}
 	<Modal position="left" close={toggleFiltersModal}>
-		<span slot="title">
-			{page.data.t('search.filters')} ({numHits.toLocaleString(page.data.locale)}
-			{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
-		</span>
+		{#snippet title()}
+			<span>
+				{page.data.t('search.filters')} ({numHits.toLocaleString(page.data.locale)}
+				{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
+			</span>
+		{/snippet}
 		<Filters facets={searchResult.facetGroups || []} mapping={searchResult.mapping} />
 	</Modal>
 {/if}
