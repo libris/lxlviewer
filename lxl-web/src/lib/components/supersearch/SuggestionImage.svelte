@@ -9,6 +9,8 @@
 	};
 
 	const { item }: Props = $props();
+
+	const TypeIcon = $derived(getTypeIcon(item['@type']));
 </script>
 
 <div class="pointer-events-none relative flex">
@@ -23,11 +25,10 @@
 				item['@type'] === 'Person' && 'rounded-full'
 			]}
 		/>
-		{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
-			{@const SvelteComponent = getTypeIcon(item['@type'])}
+		{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && TypeIcon}
 			<div class="absolute -top-2 -left-2">
 				<div class="rounded-md p-1.5">
-					<SvelteComponent class="size-3" />
+					<TypeIcon class="size-3" />
 				</div>
 			</div>
 		{/if}
@@ -41,9 +42,8 @@
 					item['@type'] === 'Person' ? 'rounded-full' : 'rounded-sm'
 				]}
 			/>
-			{#if getTypeIcon(item['@type'])}
-				{@const SvelteComponent_1 = getTypeIcon(item['@type'])}
-				<SvelteComponent_1 class="absolute text-lg text-neutral-400" />
+			{#if TypeIcon}
+				<TypeIcon class="absolute text-lg text-neutral-400" />
 			{/if}
 		</div>
 	{/if}
