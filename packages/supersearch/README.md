@@ -127,8 +127,8 @@ npm run watch
 
 To build the library:
 
-```bash
-npm run package
+```sh
+npm pack
 ```
 
 To create a production version of the showcase app:
