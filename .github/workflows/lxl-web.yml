@@ -3,15 +3,15 @@ on:
   push:
     branches: [develop]
     paths:
-      - 'lxl-web/**'
-      - 'lxljs/**'
-      - 'packages/**'
+      - "lxl-web/**"
+      - "lxljs/**"
+      - "packages/**"
   pull_request:
     branches: [develop]
     paths:
-      - 'lxl-web/**'
-      - 'lxljs/**'
-      - 'packages/**'
+      - "lxl-web/**"
+      - "lxljs/**"
+      - "packages/**"
 jobs:
   test:
     timeout-minutes: 60
