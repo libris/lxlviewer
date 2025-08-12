@@ -39,7 +39,7 @@
 		"js-cookie": "^3.0.5",
 		"lxljs": "^1.1.0",
 		"magic-string": "^0.30.11",
-		"mdsvex": "^0.12.3",
+		"mdsvex": "^0.12.6",
 		"nprogress": "^0.2.0",
 		"prettier": "^3.6.2",
 		"prettier-plugin-svelte": "^3.4.0",
