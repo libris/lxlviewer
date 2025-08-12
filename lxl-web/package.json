@@ -35,7 +35,7 @@
 		"eslint-config-prettier": "^10.1.1",
 		"eslint-plugin-svelte": "^3.5.1",
 		"estree-walker": "^3.0.3",
-		"globals": "^16.0.0",
+		"globals": "^16.3.0",
 		"jmespath": "^0.16.0",
 		"js-cookie": "^3.0.5",
 		"lxljs": "^1.1.0",
