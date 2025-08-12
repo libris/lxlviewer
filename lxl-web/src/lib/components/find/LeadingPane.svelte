@@ -13,7 +13,11 @@
 	import BiArrowBarLeft from '~icons/bi/arrow-bar-left';
 	import IconSliders from '~icons/bi/sliders';
 
-	const { children } = $props();
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	const { children }: Props = $props();
 	const userSettings = getUserSettings();
 
 	const paneOpen = $derived(userSettings.leadingPane?.open);
@@ -79,7 +83,7 @@
 			</Toolbar>
 		</div>
 		<div class="leading-pane-content mr-1.5 pt-2 pb-6">
-			{@render children()}
+			{@render children?.()}
 		</div>
 	</div>
 	<Draggable

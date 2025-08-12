@@ -2,6 +2,11 @@
 	import { env } from '$env/dynamic/public';
 	import { afterNavigate } from '$app/navigation';
 	import { setMatomoTracker, getMatomoTracker, setMatomoContext } from '$lib/contexts/matomo';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	const URL: string = env.PUBLIC_MATOMO_URL;
 
@@ -35,4 +40,4 @@
 		<script async defer src={`${URL}/matomo.js`} on:load={onMatomoScriptLoad}></script>
 	{/if}
 </svelte:head>
-<slot />
+{@render children?.()}
