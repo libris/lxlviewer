@@ -2,7 +2,7 @@
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import placeholder from '$lib/assets/img/placeholder.svg';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	type Props = {
 		item: SuperSearchResultItem;
@@ -17,7 +17,7 @@
 			src={item.image.url}
 			width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
 			height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
-			alt={$page.data.t('general.latestInstanceCover')}
+			alt={page.data.t('general.latestInstanceCover')}
 			class={[
 				'aspect-square object-contain object-top',
 				item['@type'] === 'Person' && 'rounded-full'
