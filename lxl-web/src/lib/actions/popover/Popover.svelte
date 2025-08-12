@@ -4,13 +4,25 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/resourceData';
 
-	export let title: string | undefined = undefined;
-	export let resourceData: ResourceData | undefined = undefined;
-	export let referenceElement: HTMLElement;
-	export let onMouseOver: (event: MouseEvent) => void;
-	export let onMouseLeave: (event: MouseEvent) => void;
-	export let onFocus: (event: FocusEvent) => void;
-	export let onBlur: (event: FocusEvent) => void;
+	interface PopoverProps {
+		title?: string | undefined;
+		resourceData?: ResourceData | undefined;
+		referenceElement: HTMLElement;
+		onMouseOver: (event: MouseEvent) => void;
+		onMouseLeave: (event: MouseEvent) => void;
+		onFocus: (event: FocusEvent) => void;
+		onBlur: (event: FocusEvent) => void;
+	}
+
+	let {
+		title = undefined,
+		resourceData = undefined,
+		referenceElement,
+		onMouseOver,
+		onMouseLeave,
+		onFocus,
+		onBlur
+	}: PopoverProps = $props();
 
 	let popoverElement: HTMLElement;
 	let arrowElement: HTMLDivElement;
@@ -73,10 +85,10 @@
 	]}
 	role="complementary"
 	bind:this={popoverElement}
-	on:mouseover={onMouseOver}
-	on:mouseleave={onMouseLeave}
-	on:focus={onFocus}
-	on:blur={onBlur}
+	onmouseover={onMouseOver}
+	onmouseleave={onMouseLeave}
+	onfocus={onFocus}
+	onblur={onBlur}
 >
 	<div class="p-2">
 		{#if resourceData}

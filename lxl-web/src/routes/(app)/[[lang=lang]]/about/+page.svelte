@@ -1,14 +1,14 @@
 <script lang="ts">
 	import getPageTitle from '$lib/utils/getPageTitle';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import SvContent from './sv.md';
 	import EnContent from './en.md';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <svelte:head>
-	<title>{getPageTitle($page.data.t('about.pageTitle'))}</title>
+	<title>{getPageTitle(page.data.t('about.pageTitle'))}</title>
 </svelte:head>
 
 <article class="mx-auto mt-8 mb-12 max-w-3xl p-4 sm:px-6">
