@@ -1,4 +1,4 @@
-<script module>
+<script module lang="ts">
 	export type TableOfContentsItem = { id: string; label: string; children?: TableOfContentsItem[] };
 </script>
 
