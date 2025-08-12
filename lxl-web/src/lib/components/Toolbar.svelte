@@ -3,33 +3,26 @@
 
 	type ToolbarProps = {
 		leadingActions?: Snippet;
-		centerActions?: Snippet;
 		trailingActions?: Snippet;
+		children?: Snippet;
 	};
 
-	let { leadingActions, centerActions, trailingActions }: ToolbarProps = $props();
+	let { leadingActions, trailingActions, children }: ToolbarProps = $props();
 </script>
 
 <div
-	class="h-[var(--toolbar-height)] content-center overflow-hidden border-b border-b-neutral-200 px-3"
+	class="flex h-[var(--toolbar-height)] place-content-between items-center gap-2 overflow-hidden border-b border-b-neutral-200 px-3"
 >
-	<ul class="grid grid-cols-3 grid-rows-1">
-		<li class="flex gap-1 justify-self-start">
-			{#if leadingActions}
-				{@render leadingActions()}
-			{/if}
-		</li>
+	{#if leadingActions}
+		<div class="flex gap-1">
+			{@render leadingActions()}
+		</div>
+	{/if}
+	{@render children?.()}
 
-		<li class="flex gap-1 justify-self-center">
-			{#if centerActions}
-				{@render centerActions()}
-			{/if}
-		</li>
-
-		<li class="flex gap-1 justify-self-end">
-			{#if trailingActions}
-				{@render trailingActions()}
-			{/if}
-		</li>
-	</ul>
+	{#if trailingActions}
+		<div class="ml-auto flex gap-1">
+			{@render trailingActions()}
+		</div>
+	{/if}
 </div>
