@@ -63,7 +63,7 @@
 </script>
 
 <li class="border-neutral text-sm not-last:border-b">
-	<h2 class="mt-4 line-clamp-2 text-base font-medium">
+	<h2 class="mt-4 mb-2 line-clamp-2 text-base font-medium">
 		<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
 	</h2>
 	<div class="">
@@ -121,7 +121,7 @@
 				</span>
 				{page.data.t('holdings.openingHoursEtc')}
 			</summary>
-			<div class="status-container border-neutral bg-page my-3 max-w-md rounded-sm border p-2">
+			<div class="border-neutral bg-page my-3 max-w-md rounded-sm border p-2">
 				<span>
 					{#if bibIds.at(0)}
 						{@const firstBibId = bibIds.at(0).bibId}
@@ -147,48 +147,21 @@
 </li>
 
 <style lang="postcss">
-	@reference "../../../../app.css";
-
-	h2 {
-		@apply mb-2;
-	}
-
 	li {
-		@apply mb-2;
+		margin-bottom: calc(var(--spacing) * 2);
 	}
 
 	.bib-list li {
 		display: list-item;
 	}
+
 	.bib-list.instancesCollapsed li:nth-child(n + 6) {
 		display: none;
 	}
 
 	details[open] {
 		& .arrow {
-			@apply rotate-90;
+			rotate: 90deg;
 		}
-	}
-
-	.status-container {
-		&:has(p.error) {
-			background-color: var(--color-warning-100);
-		}
-
-		/* don't repeat the library-unavailable message for every instance */
-		&:has(p.library-unavailable):not(:first-of-type) {
-			display: none;
-		}
-	}
-
-	table th {
-		font-weight: var(--font-weight-medium);
-		width: calc(var(--spacing) * 24);
-		padding-right: calc(var(--spacing) * 4);
-		vertical-align: baseline;
-	}
-
-	table td {
-		width: auto;
 	}
 </style>
