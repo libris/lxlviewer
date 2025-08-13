@@ -204,8 +204,10 @@
 							use:popover={{
 								resource: { data: remainder, lang: getSupportedLocale(page.params.lang) }
 							}}
-							class="remainder">+ {remainder.length}</span
+							class="ml-2 rounded-full px-2 py-0.5 whitespace-nowrap"
 						>
+							+ {remainder.length}
+						</span>
 					{/if}
 				</svelte:element>
 			{:else if data['@value']}
@@ -272,14 +274,9 @@
 {/key}
 
 <style lang="postcss">
-	@reference "../../app.css";
-
 	.definition {
-		@apply underline decoration-dotted;
-	}
-
-	.remainder {
-		@apply ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
+		text-decoration-line: underline;
+		text-decoration-style: dotted;
 	}
 
 	.property-label {
