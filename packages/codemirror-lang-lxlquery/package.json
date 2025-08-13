@@ -4,10 +4,10 @@
 	"description": "Libris XL query language support for CodeMirror",
 	"scripts": {
 		"test": "vitest",
-		"prepare": "rollup -c",
+		"prepare": "rollup -c --bundleConfigAsCjs --configImportAttributesKey with",
 		"lint": "eslint . && prettier --check .",
 		"format": "prettier --write .",
-		"watch": "rollup -c --watch"
+		"watch": "rollup -c --watch --bundleConfigAsCjs --configImportAttributesKey with"
 	},
 	"type": "module",
 	"main": "dist/index.cjs",
@@ -29,8 +29,8 @@
 		"eslint-config-prettier": "^10.1.8",
 		"globals": "^16.3.0",
 		"prettier": "^3.6.2",
-		"rollup": "^2.79.2",
-		"rollup-plugin-dts": "^4.0.1",
+		"rollup": "^4.46.2",
+		"rollup-plugin-dts": "^6.2.1",
 		"rollup-plugin-ts": "^3.0.2",
 		"typescript": "^5.9.2",
 		"typescript-eslint": "^8.39.1",
