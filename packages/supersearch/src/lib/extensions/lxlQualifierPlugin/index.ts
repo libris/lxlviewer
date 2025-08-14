@@ -148,6 +148,7 @@ function lxlQualifierPlugin(
 			});
 		}
 		atomicRangeSet = ranges.finish();
+
 		return Decoration.set(widgets, true);
 	}
 
