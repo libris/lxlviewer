@@ -59,5 +59,8 @@
 	},
 	"dependencies": {
 		"dotenv": "^17.2.1"
+	},
+	"optionalDependencies": {
+		"lightningcss-linux-x64-gnu": "^1.30.1"
 	}
 }
