@@ -115,8 +115,4 @@
 			display: none;
 		}
 	}
-
-	.scroll-button {
-		display: none;
-	}
 </style>
