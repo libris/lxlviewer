@@ -67,14 +67,14 @@
 			{/each}
 		</ul>
 		<button
-			class="scroll-button btn btn-icon absolute top-[calc(50%-22px)] left-2 hidden shadow-lg disabled:opacity-25 noscript:hidden"
+			class="scroll-button btn btn-icon absolute top-[calc(50%-22px)] left-2 hidden shadow-lg disabled:opacity-50 disabled:shadow-none noscript:hidden"
 			onclick={scrollLeft}
 			disabled={disabledLeftScrollButton}
 		>
 			<IconChevronLeft class="size-5" />
 		</button>
 		<button
-			class="scroll-button btn btn-icon absolute top-[calc(50%-22px)] right-2 hidden shadow-lg disabled:opacity-25 noscript:hidden"
+			class="scroll-button btn btn-icon absolute top-[calc(50%-22px)] right-2 hidden shadow-lg disabled:opacity-50 disabled:shadow-none noscript:hidden"
 			onclick={scrollRight}
 			disabled={disabledRightScrollButton}
 		>
