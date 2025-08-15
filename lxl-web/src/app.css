@@ -285,6 +285,25 @@
 		}
 	}
 
+	.btn-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--color-page);
+		border-radius: calc(infinity * 1px);
+		border: 1px solid var(--color-neutral);
+		color: var(--color-body);
+		width: calc(var(--spacing) * 11);
+		height: calc(var(--spacing) * 11);
+
+		&:not(:disabled) {
+			&:hover,
+			&:focus {
+				background-color: var(--color-accent-100);
+			}
+		}
+	}
+
 	.tab {
 		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
 	}
