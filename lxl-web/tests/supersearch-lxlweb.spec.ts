@@ -93,6 +93,13 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		'buttons for adding qualifier keys is hidden after selecting one of them'
 	).toBeHidden();
 	await expect(
+		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier-value')
+	).toBeVisible();
+	await expect(
+		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier-value'),
+		'qualifier value is initially empty but has styling'
+	).toContainText('""');
+	await expect(
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'Person' }),
 		'all suggestions are persons'
 	).toHaveCount(5);
