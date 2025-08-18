@@ -66,6 +66,7 @@
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
 		// Always reset these params on new search
 		p.delete('_offset');
+		p.delete('_limit');
 		p.delete('_i');
 		p.delete('_o');
 		p.delete('_p');
