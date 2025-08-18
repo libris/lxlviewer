@@ -65,7 +65,7 @@
 	let pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
 		// Always reset these params on new search
-		p.set('_offset', '0');
+		p.delete('_offset');
 		p.delete('_i');
 		p.delete('_o');
 		p.delete('_p');
