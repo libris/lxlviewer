@@ -194,3 +194,26 @@ test('clear button clears input field', async ({ page }) => {
 		'hello'
 	);
 });
+
+test('access filters can be added/removed', async ({ page }) => {
+	await page.getByRole('combobox').fill('hej');
+	await page.keyboard.press('Enter');
+	await page.getByText('Fritt online').click();
+	await expect(page, 'user can add access filters').toHaveURL('/find?_q=hej+freeOnline');
+	await page.getByLabel('Rensa').first().click();
+	await expect(page, 'user can remove access filters by pressing clear icon').toHaveURL(
+		'/find?_q=hej+freeOnline'
+	);
+	await page.getByText('Fritt online').first().click();
+	await expect(page).toHaveURL('/find?_q=hej+freeOnline');
+	await expect(page.getByRole('combobox').first()).toContainText('hej Fritt online');
+
+	await page.getByTestId('main-search').click();
+	await page.keyboard.press('Backspace');
+	await page.keyboard.press('Backspace');
+	await expect(
+		page.getByRole('dialog').getByRole('combobox'),
+		'user can remove access filters by pressing backspace to remove pill'
+	).not.toContainText('Fritt online');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toContainText('hej');
+});
