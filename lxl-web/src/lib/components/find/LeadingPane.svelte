@@ -7,6 +7,7 @@
 		LEADING_PANE_COLLAPSE_WIDTH
 	} from '$lib/constants/panels';
 	import { getUserSettings } from '$lib/contexts/userSettings';
+	import type { Snippet } from 'svelte';
 	import Draggable from '../Draggable.svelte';
 	import TabList from '../TabList.svelte';
 	import Toolbar from '../Toolbar.svelte';
@@ -14,7 +15,7 @@
 	import IconSliders from '~icons/bi/sliders';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	const { children }: Props = $props();

@@ -1,7 +1,7 @@
 <svelte:options />
 
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
 	import { page } from '$app/state';
@@ -12,8 +12,8 @@
 		dialog?: HTMLDialogElement | undefined;
 		close?: ((event: Event) => void) | undefined;
 		position?: 'left' | 'right' | 'top';
-		title?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		title?: Snippet;
+		children?: Snippet;
 	}
 
 	let {

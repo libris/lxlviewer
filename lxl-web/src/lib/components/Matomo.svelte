@@ -2,10 +2,11 @@
 	import { env } from '$env/dynamic/public';
 	import { afterNavigate } from '$app/navigation';
 	import { setMatomoTracker, getMatomoTracker, setMatomoContext } from '$lib/contexts/matomo';
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import { browser } from '$app/environment';
+
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();
