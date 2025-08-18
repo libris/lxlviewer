@@ -4,7 +4,7 @@
 			"startServerCommand": "npm run preview",
 			"url": [
 				"http://localhost:4173/",
-				"http://localhost:4173/find?_q=*&_limit=10&_offset=0&_sort=&_i=*",
+				"http://localhost:4173/find?_q=*",
 				"http://localhost:4173/h08ndxddfg5v2pjf"
 			]
 		},
