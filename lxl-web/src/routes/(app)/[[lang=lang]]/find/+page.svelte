@@ -11,9 +11,28 @@
 	import TrailingPanes from '$lib/components/find/TrailingPanes.svelte';
 	import Pagination from '$lib/components/find/Pagination.svelte';
 	import SiteFooter from '../SiteFooter.svelte';
-	import HoldingsModal from '../[fnurgel=fnurgel]/HoldingsModal.svelte';
+	import HoldingsList from '$lib/components/supersearch/HoldingsList.svelte';
+	import { goto } from '$app/navigation';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
+	const holdings = $derived(page.data.holdings);
+
+	function handleCloseHoldings() {
+		// fixme
+		// if (!previousURL?.searchParams.has('holdings')) {
+		// 	history.back();
+		// } else {
+		const newSearchParams = new SvelteURLSearchParams([
+			...Array.from(page.url.searchParams.entries())
+		]);
+		newSearchParams.delete('holdings');
+		goto(page.url.pathname + `?${newSearchParams.toString()}`, {
+			replaceState: true,
+			noScroll: true
+		});
+		// }
+	}
 </script>
 
 <svelte:head>
@@ -50,9 +69,33 @@
 			</div>
 			<SiteFooter />
 		</div>
-		<TrailingPanes />
-		<HoldingsModal workFnurgel={page.state.holdings || page.url.searchParams.get('holdings')}
-		></HoldingsModal>
+		<!-- <HoldingsModal workFnurgel={page.state.holdings || page.url.searchParams.get('holdings')}
+		></HoldingsModal> -->
+		{#if holdings}
+			<!-- <Modal close={handleCloseHoldings}>
+			<span slot="title">{page.data.t('holdings.findAtYourNearestLibrary')}</span> -->
+			<!-- <svelte:boundary>
+				<HoldingsList {holdings} />
+				{#snippet pending()}
+					<p>loading...</p>
+				{/snippet}
+			</svelte:boundary>
+			</Modal> -->
+
+			<TrailingPanes close={handleCloseHoldings}>
+				{#snippet title()}
+					{page.data.t('holdings.findAtYourNearestLibrary')}
+				{/snippet}
+				<!-- https://github.com/sveltejs/svelte/discussions/15845#discussioncomment-13766810 -->
+				<!-- this component can use await in the script -->
+				<svelte:boundary>
+					<HoldingsList {holdings} />
+					{#snippet pending()}
+						<p>loading...</p>
+					{/snippet}
+				</svelte:boundary>
+			</TrailingPanes>
+		{/if}
 	</div>
 {/if}
 

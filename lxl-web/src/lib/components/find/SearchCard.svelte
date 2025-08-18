@@ -16,7 +16,7 @@
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getHoldingsLink } from '$lib/utils/holdings';
 	import BiHouse from '~icons/bi/house';
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 
@@ -82,9 +82,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			<a
 				class="btn btn-primary h-7 rounded-full md:h-8"
 				href={page.data.localizeHref(getHoldingsLink(page.url, id))}
-				data-sveltekit-preload-data="false"
+				data-sveltekit-noscroll
 				data-testid="holding-link"
-				onclick={(event) => handleClickHoldings(event, page.state, id)}
 			>
 				<span class="text-base">
 					{#if item.heldByMyLibraries?.length}
