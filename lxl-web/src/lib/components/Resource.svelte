@@ -106,6 +106,7 @@
 			<section>
 				<div class="decorated-overview">
 					<InstancesList
+						{uidPrefix}
 						data={instances}
 						columns={[
 							{
