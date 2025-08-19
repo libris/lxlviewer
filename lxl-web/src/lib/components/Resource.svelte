@@ -149,7 +149,7 @@
 											{#if relationItem.totalItems > 10}
 												{page.data.t('resource.all')}
 											{/if}
-											{relationItem.totalItems}
+											{relationItem.totalItems.toLocaleString(page.data.locale)}
 											{#if relationItem.totalItems === 1}
 												{page.data.t('resource.result')}
 											{:else}
