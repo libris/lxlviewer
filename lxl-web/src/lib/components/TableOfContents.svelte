@@ -39,7 +39,12 @@
 		if (!mobile) {
 			const closestArticle = tocElement.closest('article');
 			if (closestArticle) {
-				const sections = Array.from(closestArticle.querySelectorAll<HTMLElement>(':scope [id]'));
+				const sections = itemsWithTop
+					.flatMap((item) => [
+						document.getElementById(item.id),
+						...(item.children?.map((childItem) => document.getElementById(childItem.id)) || [])
+					])
+					.filter((item) => item !== null);
 
 				if (sections) {
 					observer = new IntersectionObserver(handleObserve, {
