@@ -126,15 +126,15 @@
 				>
 					<BiList width={20} height={20} aria-hidden="true" />
 				</a>
-				{#if showHeaderMenu}
-					<Modal close={toggleHeaderMenu}>
-						<HeaderMenu />
-					</Modal>
-				{/if}
 			</div>
 		</div>
 	</div>
 </header>
+{#if showHeaderMenu}
+	<Modal close={toggleHeaderMenu}>
+		<HeaderMenu />
+	</Modal>
+{/if}
 
 <style lang="postcss">
 	@reference 'tailwindcss';

@@ -16,12 +16,12 @@
 	);
 </script>
 
-<nav class="py-4 2xl:py-0 [&_a]:no-underline">
+<nav class="header-menu py-4 2xl:py-0 [&_a]:no-underline">
 	<ol
-		class="text-subtle [&_svg]:text-body flex flex-col items-center gap-4 font-medium 2xl:flex-row [&_svg]:text-lg"
+		class="text-subtle [&_svg]:text-body flex flex-row items-center gap-4 font-medium [&_svg]:text-lg"
 	>
 		<li>
-			<a class="flex items-center gap-2 2xl:flex-col 2xl:gap-1" href="help">
+			<a class="flex flex-col items-center gap-1 whitespace-nowrap" href="help">
 				<BiQuestionCircle />
 				<span>
 					{page.data.t('header.help')}
@@ -29,7 +29,7 @@
 			</a>
 		</li>
 		<li>
-			<a class="flex items-center gap-2 2xl:flex-col 2xl:gap-1" href="my-pages">
+			<a class="flex flex-col items-center gap-1 whitespace-nowrap" href="my-pages">
 				<BiPerson />
 				<div class="text-nowrap">
 					{page.data.t('header.myPages')}
@@ -38,7 +38,7 @@
 		</li>
 		<li>
 			<a
-				class="flex items-center gap-2 whitespace-nowrap 2xl:flex-col 2xl:gap-1"
+				class="flex flex-col items-center gap-1 whitespace-nowrap"
 				href={otherLangUrl}
 				hreflang={otherLangCode}
 				data-sveltekit-reload
@@ -50,3 +50,17 @@
 		</li>
 	</ol>
 </nav>
+
+<style>
+	/* header menu in dialog */
+	:global(dialog .header-menu) {
+		& ol {
+			flex-direction: column;
+		}
+
+		& ol li a {
+			flex-direction: row;
+			gap: calc(var(--spacing) * 2);
+		}
+	}
+</style>
