@@ -223,7 +223,9 @@
 												<th>{page.data.t('holdings.status')}</th>
 												<td>
 													{#if indicator}
-														<span class={`indicator ${indicator}`}></span>
+														<span
+															class={`indicator mb-0.5 inline-block h-2.5 w-2.5 rounded-full align-middle ${indicator}`}
+														></span>
 														{page.data.t(`holdings.${indicator}`)}
 													{:else}
 														{item.Status}
@@ -249,29 +251,6 @@
 {/if}
 
 <style lang="postcss">
-	@reference "../../../../app.css";
-
-	h2 {
-		@apply mb-2;
-	}
-
-	li {
-		@apply mb-2;
-	}
-
-	.bib-list li {
-		display: list-item;
-	}
-	.bib-list.instancesCollapsed li:nth-child(n + 6) {
-		display: none;
-	}
-
-	details[open] {
-		& .arrow {
-			@apply rotate-90;
-		}
-	}
-
 	.status-container {
 		&:has(p.error) {
 			background-color: var(--color-warning-100);
@@ -294,14 +273,11 @@
 		width: auto;
 	}
 
-	.indicator {
-		@apply mb-0.5 inline-block h-2.5 w-2.5 rounded-full align-middle;
+	.indicator.unavailable {
+		background-color: var(--color-severe-500);
+	}
 
-		&.unavailable {
-			background-color: var(--color-severe-500);
-		}
-		&.available {
-			background-color: var(--color-success);
-		}
+	.indicator.available {
+		background-color: var(--color-success);
 	}
 </style>

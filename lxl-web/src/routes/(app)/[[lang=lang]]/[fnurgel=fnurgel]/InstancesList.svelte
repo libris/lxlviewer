@@ -175,6 +175,6 @@
 	}
 
 	details[open] .arrow {
-		@apply rotate-90;
+		rotate: 90deg;
 	}
 </style>

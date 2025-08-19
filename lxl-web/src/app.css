@@ -344,14 +344,6 @@
 
 /* layout */
 
-@utility grid-cols-find {
-	grid-template-columns: minmax(240px, 1fr) 5fr;
-}
-
 @utility grid-cols-instance-list {
 	grid-template-columns: 16px 1fr 3fr 1fr 2fr;
-}
-
-@utility find-layout {
-	@apply lg:grid-cols-find flex flex-col gap-4 lg:grid lg:gap-8;
 }

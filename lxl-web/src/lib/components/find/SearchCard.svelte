@@ -16,15 +16,21 @@
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 	import BiHouse from '~icons/bi/house';
 
-	export let item: SearchResultItem;
+	interface Props {
+		item: SearchResultItem;
+	}
 
-	$: id = relativizeUrl(item['@id']);
-	$: titleId = `card-title-${id}`;
-	$: bodyId = `card-body-${id}`;
-	$: footerId = `card-footer-${id}`;
+	let { item }: Props = $props();
 
-	let showDebugExplain = false;
-	let showDebugHaystack = false;
+	let id = $derived(relativizeUrl(item['@id']));
+	let titleId = $derived(`card-title-${id}`);
+	let bodyId = $derived(`card-body-${id}`);
+	let footerId = $derived(`card-footer-${id}`);
+
+	let showDebugExplain = $state(false);
+	let showDebugHaystack = $state(false);
+
+	const TypeIcon = $derived(getTypeIcon(item['@type']));
 </script>
 
 <!--//TODO: look into using grid template areas + container queries instead
@@ -96,11 +102,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								class:rounded-sm={item['@type'] !== 'Person'}
 								class="object-contain object-top"
 							/>
-							{#if getTypeIcon(item['@type'])}
-								<svelte:component
-									this={getTypeIcon(item['@type'])}
-									class="absolute text-2xl text-neutral-400"
-								/>
+							{#if TypeIcon}
+								<TypeIcon class="absolute text-2xl text-neutral-400" />
 							{/if}
 						</div>
 					{/if}
@@ -110,7 +113,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		<div class="card-content">
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
-					<svelte:component this={getTypeIcon(item['@type'])} class="text-2xs mb-0.25 inline" />
+					<TypeIcon class="text-2xs mb-0.25 inline" />
 					{#if item.typeStr}
 						<span class="font-medium">
 							{item.typeStr}

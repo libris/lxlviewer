@@ -1,16 +1,28 @@
-<svelte:options accessors />
+<svelte:options />
 
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import IconClose from '~icons/bi/x-lg';
 	import { setModalContext } from '$lib/contexts/modal';
 
-	export let dialog: HTMLDialogElement | undefined = undefined;
-	export let close: ((event: Event) => void) | undefined = undefined;
-	export let position: 'left' | 'right' | 'top' = 'right';
+	interface Props {
+		dialog?: HTMLDialogElement | undefined;
+		close?: ((event: Event) => void) | undefined;
+		position?: 'left' | 'right' | 'top';
+		title?: Snippet;
+		children?: Snippet;
+	}
+
+	let {
+		dialog = $bindable(undefined),
+		close = undefined,
+		position = 'right',
+		title,
+		children
+	}: Props = $props();
 
 	setModalContext();
 
@@ -36,6 +48,8 @@
 			handleClose(event);
 		}
 	}
+
+	export { dialog, close, position };
 </script>
 
 <div
@@ -45,8 +59,8 @@
 <dialog
 	class="fixed top-0 left-0 flex h-screen max-h-full w-screen max-w-full"
 	tabindex="-1"
-	on:click|self={handleBackdropClick}
-	on:close={handleClose}
+	onclick={handleBackdropClick}
+	onclose={handleClose}
 	bind:this={dialog}
 	data-testid="modal"
 	transition:fly={{
@@ -70,19 +84,21 @@
 			<header
 				class="border-neutral sticky top-0 z-10 flex min-h-14 items-center justify-between border-b bg-neutral-50 px-4"
 			>
-				<h1 class="font-heading"><slot name="title" /></h1>
-				<!-- svelte-ignore a11y-autofocus -->
+				<h1 class="font-heading">
+					{@render title?.()}
+				</h1>
+				<!-- svelte-ignore a11y_autofocus -->
 				<button
-					on:click={handleClose}
+					onclick={handleClose}
 					autofocus
-					aria-label={$page.data.t('general.close')}
+					aria-label={page.data.t('general.close')}
 					data-testid="close-modal"
 				>
 					<IconClose class="text-subtle" />
 				</button>
 			</header>
 			<div class="px-4">
-				<slot />
+				{@render children?.()}
 			</div>
 		</div>
 	</div>

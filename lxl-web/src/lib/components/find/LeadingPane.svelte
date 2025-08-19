@@ -7,13 +7,18 @@
 		LEADING_PANE_COLLAPSE_WIDTH
 	} from '$lib/constants/panels';
 	import { getUserSettings } from '$lib/contexts/userSettings';
+	import type { Snippet } from 'svelte';
 	import Draggable from '../Draggable.svelte';
 	import TabList from '../TabList.svelte';
 	import Toolbar from '../Toolbar.svelte';
 	import BiArrowBarLeft from '~icons/bi/arrow-bar-left';
 	import IconSliders from '~icons/bi/sliders';
 
-	const { children } = $props();
+	interface Props {
+		children?: Snippet;
+	}
+
+	const { children }: Props = $props();
 	const userSettings = getUserSettings();
 
 	const paneOpen = $derived(userSettings.leadingPane?.open);
@@ -79,7 +84,7 @@
 			</Toolbar>
 		</div>
 		<div class="leading-pane-content mr-1.5 pt-2 pb-6">
-			{@render children()}
+			{@render children?.()}
 		</div>
 	</div>
 	<Draggable

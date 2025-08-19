@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { DisplayDecoratedLite } from '$lib/types/xl';
 
-	export let data: DisplayDecoratedLite;
+	interface Props {
+		data: DisplayDecoratedLite;
+	}
+
+	let { data }: Props = $props();
 </script>
 
 {#if Array.isArray(data)}

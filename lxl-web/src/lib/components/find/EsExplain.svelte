@@ -1,16 +1,21 @@
 <script lang="ts">
-	import type { EsExplain } from '$lib/types/search';
-	export let explain: EsExplain;
-	export let open = true;
+	import EsExplain from './EsExplain.svelte';
+	import type { EsExplain as EsExplainType } from '$lib/types/search';
+	interface Props {
+		explain: EsExplainType;
+		open?: boolean;
+	}
+
+	let { explain, open = true }: Props = $props();
 </script>
 
 <details {open} class="text-xs">
 	<summary>
 		{explain.value} <span>{explain.description}</span>
 	</summary>
-	{#each explain.details as child}
+	{#each explain.details as child, index (index)}
 		<div class="pl-3">
-			<svelte:self explain={child} />
+			<EsExplain explain={child} />
 		</div>
 	{/each}
 </details>

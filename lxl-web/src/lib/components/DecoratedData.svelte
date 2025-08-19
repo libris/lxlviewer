@@ -1,23 +1,38 @@
 <script lang="ts">
+	import DecoratedData from './DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import popover from '$lib/actions/popover';
 	import { hasStyle, getStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 
-	export let data: ResourceData;
-	export let depth = 0;
-	export let showLabels: 'always' | 'never' | 'defaultOn' | 'defaultOff' = 'defaultOn';
-	export let allowPopovers = true; // used for preventing nested popovers
-	export let allowLinks = true;
-	export let block = false;
-	export let truncate = false;
-	export let remainder: ResourceData | undefined = undefined;
-	export let keyed = true;
+	interface Props {
+		data: ResourceData;
+		depth?: number;
+		showLabels?: 'always' | 'never' | 'defaultOn' | 'defaultOff';
+		allowPopovers?: boolean; // used for preventing nested popovers
+		allowLinks?: boolean;
+		block?: boolean;
+		truncate?: boolean;
+		remainder?: ResourceData | undefined;
+		keyed?: boolean;
+	}
 
-	$: key = keyed && data; // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what the root cause is...) – we should try to remove the need for this when updating to Svelte 5.
+	let {
+		data,
+		depth = 0,
+		showLabels = 'defaultOn',
+		allowPopovers = true,
+		allowLinks = true,
+		block = false,
+		truncate = false,
+		remainder = undefined,
+		keyed = true
+	}: Props = $props();
+
+	let key = $derived(keyed && data); // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what the root cause is...) – we should try to remove the need for this when updating to Svelte 5.
 
 	const hiddenProperties = [
 		'@context',
@@ -65,7 +80,7 @@
 				return popover(node, {
 					resource: {
 						id,
-						lang: getSupportedLocale($page.params.lang)
+						lang: getSupportedLocale(page.params.lang)
 					}
 				});
 			}
@@ -134,7 +149,7 @@
 			{#if truncate && depth === 1 && data.length > 1}
 				<!-- truncate option; use only first item as data and keep the remainder for tooltip -->
 				{@const [first, ...remainder] = data}
-				<svelte:self
+				<DecoratedData
 					data={first}
 					depth={depth + 1}
 					{showLabels}
@@ -147,7 +162,7 @@
 				/>
 			{:else}
 				{#each data as arrayItem (arrayItem)}
-					<svelte:self
+					<DecoratedData
 						data={arrayItem}
 						depth={depth + 1}
 						{showLabels}
@@ -174,7 +189,7 @@
 					class={getStyleClasses(data)}
 					use:conditionalPopover={data}
 				>
-					<svelte:self
+					<DecoratedData
 						data={data['_display']}
 						depth={depth + 1}
 						{showLabels}
@@ -187,14 +202,16 @@
 					{#if remainder && Array.isArray(remainder)}
 						<span
 							use:popover={{
-								resource: { data: remainder, lang: getSupportedLocale($page.params.lang) }
+								resource: { data: remainder, lang: getSupportedLocale(page.params.lang) }
 							}}
-							class="remainder">+ {remainder.length}</span
+							class="ml-2 rounded-full px-2 py-0.5 whitespace-nowrap"
 						>
+							+ {remainder.length}
+						</span>
 					{/if}
 				</svelte:element>
 			{:else if data['@value']}
-				<svelte:self
+				<DecoratedData
 					data={data['@value']}
 					depth={depth + 1}
 					{showLabels}
@@ -204,7 +221,7 @@
 					{keyed}
 				/>
 			{:else if data['_display']}
-				<svelte:self
+				<DecoratedData
 					data={data['_display']}
 					depth={depth + 1}
 					{showLabels}
@@ -232,7 +249,7 @@
 								{' '}
 							</svelte:element>
 						{/if}
-						<svelte:self
+						<DecoratedData
 							data={propertyData}
 							depth={depth + 1}
 							{showLabels}
@@ -257,14 +274,9 @@
 {/key}
 
 <style lang="postcss">
-	@reference "../../app.css";
-
 	.definition {
-		@apply underline decoration-dotted;
-	}
-
-	.remainder {
-		@apply ml-2 rounded-full px-2 py-0.5 whitespace-nowrap;
+		text-decoration-line: underline;
+		text-decoration-style: dotted;
 	}
 
 	.property-label {

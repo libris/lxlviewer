@@ -5,7 +5,7 @@
 	import '$lib/styles/cookieconsent.css';
 	import svTranslations from '$lib/i18n/cookieConsent/sv';
 	import enTranslations from '$lib/i18n/cookieConsent/en';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 
 	const matomoTracker = getMatomoTracker();
@@ -48,7 +48,7 @@
 			}
 		},
 		language: {
-			default: $page.data.locale,
+			default: page.data.locale,
 			translations: {
 				sv: svTranslations,
 				en: enTranslations

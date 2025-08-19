@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import getPageTitle from '$lib/utils/getPageTitle';
 
-	export let showHeader = false;
+	let { showHeader = false } = $props();
 
 	function getErrorPageTitle() {
 		if (page.status === 404) {

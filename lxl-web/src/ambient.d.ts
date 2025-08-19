@@ -4,3 +4,4 @@ declare module 'lxljs/display';
 declare module 'lxljs/string';
 declare module 'lxljs/vocab';
 declare module 'nprogress';
+declare module '*.md';

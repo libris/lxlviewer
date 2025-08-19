@@ -7,8 +7,12 @@
 	import type { Facet, MultiSelectFacet } from '$lib/types/search';
 	import type { LocaleCode } from '$lib/i18n/locales';
 
-	export let facet: Facet | MultiSelectFacet;
-	export let locale: LocaleCode;
+	interface Props {
+		facet: Facet | MultiSelectFacet;
+		locale: LocaleCode;
+	}
+
+	let { facet, locale }: Props = $props();
 </script>
 
 <a

@@ -1,26 +1,17 @@
 <script lang="ts">
+	import SearchMapping from './SearchMapping.svelte';
 	import type { DisplayMapping, SearchOperators } from '$lib/types/search';
-
-	import { page } from '$app/stores';
-	import { getModalContext } from '$lib/contexts/modal';
+	import { page } from '$app/state';
 	import BiXLg from '~icons/bi/x-lg';
-	import BiPencil from '~icons/bi/pencil';
-	import BiPencilFill from '~icons/bi/pencil-fill';
 	import BiTrash from '~icons/bi/trash';
 
-	export let mapping: DisplayMapping[];
-	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
-	export let depth = 0;
+	interface Props {
+		mapping: DisplayMapping[];
+		parentOperator?: keyof typeof SearchOperators | undefined;
+		depth?: number;
+	}
 
-	const inModal = getModalContext();
-
-	$: showEditButton =
-		$page.url.pathname === `${$page.data.base}find` &&
-		$page.url.searchParams.get('_q') !== $page.url.searchParams.get('_i');
-	$: editActive = $page.url.searchParams.has('_x');
-	$: toggleEditUrl = editActive
-		? $page.url.href.replace(`&_x=${$page.url.searchParams.get('_x')}`, '')
-		: `${$page.url.href}&_x=advanced`;
+	let { mapping, parentOperator = undefined, depth = 0 }: Props = $props();
 
 	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
 		switch (operator) {
@@ -57,7 +48,7 @@
 			class:free-text={m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
 		>
 			{#if 'children' in m}
-				<svelte:self mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
+				<SearchMapping mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
 			{:else if m.operator === 'existence' || m.operator === 'notExistence'}
 				{@const symbol = getRelationSymbol(m.operator)}
 				<span class="pill-relation">{symbol}</span>
@@ -75,7 +66,7 @@
 					<a
 						class="float-right pl-2 text-[inherit] hover:text-[inherit]"
 						href={m.up?.['@id']}
-						aria-label={$page.data.t('search.removeFilter')}
+						aria-label={page.data.t('search.removeFilter')}
 					>
 						<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
 					</a>
@@ -89,32 +80,22 @@
 			<li class="pill-remove">
 				<a href={m.up?.['@id']} class="btn btn-primary">
 					<BiTrash aria-hidden="true" />
-					{$page.data.t('search.clearFilters')}
+					{page.data.t('search.clearFilters')}
 				</a>
 			</li>
 		{/if}
 	{/each}
-	{#if !inModal && showEditButton && depth === 0}
-		<li>
-			<a class:active={editActive} data-sveltekit-replacestate href={toggleEditUrl}>
-				{#if editActive}
-					<BiPencilFill aria-hidden="true" />
-				{:else}
-					<BiPencil aria-hidden="true" />
-				{/if}
-				{$page.data.t('search.editFilters')}
-			</a>
-		</li>
-	{/if}
 </ul>
 
 <style lang="postcss">
+	/* TODO: add styles consistent with new design  */
+
 	.mapping-item {
 		/* @apply rounded-md px-4 py-2 brightness-100;
 		transition: filter 0.1s ease; */
 	}
 
-	.mapping-item:has(> .pill-remove:hover) {
+	.mapping-item:has(:global(> .pill-remove:hover)) {
 		/* @apply brightness-[.85]; */
 	}
 

@@ -37,7 +37,7 @@
 		{#snippet leadingActions()}
 			<!-- mobile modal filter btn -->
 			<a
-				href={`${page.url.pathname}?$$page.url.searchParams.toString()}#filters`}
+				href={`${page.url.pathname}?${page.url.searchParams.toString()}#filters`}
 				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
 				aria-label={page.data.t('search.filters')}
 				onclick={(e) => {
@@ -75,10 +75,12 @@
 
 {#if showFiltersModal}
 	<Modal position="left" close={toggleFiltersModal}>
-		<span slot="title">
-			{page.data.t('search.filters')} ({numHits.toLocaleString(page.data.locale)}
-			{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
-		</span>
+		{#snippet title()}
+			<span>
+				{page.data.t('search.filters')} ({numHits.toLocaleString(page.data.locale)}
+				{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
+			</span>
+		{/snippet}
 		<Filters facets={searchResult.facetGroups || []} mapping={searchResult.mapping} />
 	</Modal>
 {/if}
