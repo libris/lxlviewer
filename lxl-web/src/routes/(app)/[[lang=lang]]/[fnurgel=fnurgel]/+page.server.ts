@@ -99,7 +99,7 @@ export const load = async ({ params, locals, fetch }) => {
 	const sortedInstances = getSortedInstances([...instances]);
 
 	const tableOfContents: TableOfContentsItem[] = [
-		...(instances.length
+		...(instances.length > 1
 			? [
 					{
 						id: 'editions',
