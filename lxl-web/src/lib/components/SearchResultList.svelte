@@ -50,9 +50,9 @@
 </script>
 
 {#snippet horizontalList()}
-	<div class="horizontal-list relative">
+	<div class="horizontal-list @container relative">
 		<ul
-			class="scrollbar-hidden @container flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
+			class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
 			bind:this={ulElement}
 			bind:clientWidth
 			onscroll={updateDisabledScrollButtons}
@@ -67,14 +67,14 @@
 			{/each}
 		</ul>
 		<button
-			class="scroll-button btn btn-icon absolute top-[calc(50%-22px)] left-2 hidden shadow-lg disabled:opacity-50 disabled:shadow-none noscript:hidden"
+			class="scroll-button btn btn-icon absolute top-[calc(33cqw-44px)] left-1 hidden shadow-lg disabled:opacity-50 disabled:shadow-none @lg:top-[calc(26cqw-44px)] @3xl:top-[calc(21cqw-44px)] @5xl:top-[calc(17cqw-44px)] noscript:hidden"
 			onclick={scrollLeft}
 			disabled={disabledLeftScrollButton}
 		>
 			<IconChevronLeft class="size-5" />
 		</button>
 		<button
-			class="scroll-button btn btn-icon absolute top-[calc(50%-22px)] right-2 hidden shadow-lg disabled:opacity-50 disabled:shadow-none noscript:hidden"
+			class="scroll-button btn btn-icon absolute top-[calc(33cqw-44px)] right-1 hidden shadow-lg disabled:opacity-50 disabled:shadow-none @lg:top-[calc(26cqw-44px)] @3xl:top-[calc(21cqw-44px)] @5xl:top-[calc(17cqw-44px)] noscript:hidden"
 			onclick={scrollRight}
 			disabled={disabledRightScrollButton}
 		>
