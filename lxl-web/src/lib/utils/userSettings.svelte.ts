@@ -11,7 +11,8 @@ enum availableSettings {
 	myLibraries = 'myLibraries',
 	leadingPane = 'leadingPane',
 	facetExpanded = 'facetExpanded',
-	selectedCitationFormat = 'selectedCitationFormat'
+	selectedCitationFormat = 'selectedCitationFormat',
+	trailingPane = 'trailingPane'
 }
 
 export class UserSettings {
@@ -91,6 +92,12 @@ export class UserSettings {
 		this.update('leadingPane', leadingPane);
 	}
 
+	setTrailingPaneWidth(width: number) {
+		const trailingPane = { ...this.settings?.trailingPane };
+		trailingPane.width = width;
+		this.update('trailingPane', trailingPane);
+	}
+
 	saveFacetExpanded(facet: string, value: boolean) {
 		if (facet) {
 			const facetExpanded = { ...this.settings.facetExpanded };
@@ -102,11 +109,6 @@ export class UserSettings {
 	saveSelectedCitationFormat(format: AvailableCitationFormat) {
 		this.update('selectedCitationFormat', format);
 	}
-
-	get leadingPane() {
-		return this.settings?.leadingPane;
-	}
-
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
@@ -121,5 +123,12 @@ export class UserSettings {
 
 	get selectedCitationFormat() {
 		return this.settings?.selectedCitationFormat;
+	}
+	get leadingPane() {
+		return this.settings?.leadingPane;
+	}
+
+	get trailingPane() {
+		return this.settings?.trailingPane;
 	}
 }

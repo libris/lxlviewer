@@ -10,6 +10,7 @@
 	import Toolbar from '../Toolbar.svelte';
 	import { page } from '$app/state';
 	import BiXLg from '~icons/bi/x-lg';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 
 	type Props = {
 		children?: Snippet;
@@ -19,17 +20,16 @@
 
 	const { children, title, close }: Props = $props();
 
-	let paneWidth = $state(TRAILING_PANE_DEFAULT_WIDTH);
+	const userSettings = getUserSettings();
+	let paneWidth = $state(userSettings.trailingPane?.width || TRAILING_PANE_DEFAULT_WIDTH);
 	let isDragging = $state(false);
-	const paneOpen = $derived(true);
 
 	function handleOnResized() {
-		// userSettings.setLeadingPaneWidth(paneWidth);
+		userSettings.setTrailingPaneWidth(paneWidth);
 	}
 </script>
 
-<!-- <section class="hidden">Trailing Panes</section> -->
-<nav
+<section
 	aria-label={page.data.t('panes.leadingPane')}
 	id="leading-pane"
 	class={[
@@ -37,14 +37,12 @@
 		// Enable transition for the collapse animation. But disable it while resizing the panel!
 		!isDragging && 'transition-[padding] duration-150 ease-in motion-reduce:transition-none'
 	]}
-	style="padding-right:{paneOpen ? paneWidth : 0}px"
-	inert={!paneOpen}
+	style="padding-right:{paneWidth}px"
 >
 	<div
 		class={[
 			'leading-pane-wrapper sticky top-0',
-			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none',
-			paneOpen ? 'translate-x-0' : '-translate-x-full'
+			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none'
 		]}
 		style="width:{paneWidth}px"
 	>
@@ -77,7 +75,7 @@
 		onexpand={() => {}}
 		onresized={handleOnResized}
 	/>
-</nav>
+</section>
 
 <style lang="postcss">
 	@reference 'tailwindcss';
