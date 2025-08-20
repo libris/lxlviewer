@@ -72,7 +72,7 @@ test('table of contents', async ({ page }) => {
 		page.getByTestId('toc-mobile').locator('a').first(),
 		'enter keypress toggles table of contents while focused on toggle'
 	).toBeVisible();
-	await page.goto('/h08ndxddfg5v2pjf');
+	await page.goto('/2jr64jg10461zcj2');
 	await expect(
 		page.getByTestId('toc'),
 		'table of contents is hidden if there are no items to show'

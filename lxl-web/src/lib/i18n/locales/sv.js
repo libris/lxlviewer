@@ -202,7 +202,8 @@ export default {
 		show: 'Visa',
 		all: 'alla',
 		results: 'träffar',
-		result: 'träff'
+		result: 'träff',
+		editions: 'Utgåvor'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

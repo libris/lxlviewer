@@ -203,7 +203,8 @@ export default {
 		show: 'Show',
 		all: 'all',
 		results: 'results',
-		result: 'result'
+		result: 'result',
+		editions: 'Editions'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',
