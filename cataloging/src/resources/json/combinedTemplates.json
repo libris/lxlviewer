@@ -2494,6 +2494,180 @@
         }
       }
     },
+    "printedMonographTextNormalized": {
+      "label": "Bok - med typnormalisering",
+      "description": "Tryckt monografi, med nya typer och kategorier.",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@id": "https://id.kb.se/term/enum/Rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Print",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [{
+            "@type": "ISBN",
+            "value": "",
+            "qualifier": ""
+          }],
+          "editionStatement": [""],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": [{
+              "@type": "Agent",
+              "label": ""
+            }],
+            "date": "",
+            "place": [{
+              "@type": "Place",
+              "label": ""
+            }]
+          }],
+          "copyright": [{
+            "@type": "Copyright",
+            "date": ""
+          }],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "physicalDetailsNote": "",
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/author"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "hasNote": [
+              {
+                "@type": "marc:LanguageNote",
+                "label": ""
+              }
+            ],
+            "subject": [],
+            "intendedAudience": []
+          },
+           "contribution": [
+        {
+          "@type": "Contribution",
+          "agent": null,      
+          "role": []
+        }
+      ]
+        }
+      }
+    },
     "printedPeriodicalText": {
       "label": "Tryckt seriell resurs",
       "description": "RDA",
