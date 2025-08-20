@@ -15,6 +15,7 @@
 	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
+	import ReferenceModal from './ReferenceModal.svelte';
 
 	type Props = {
 		fnurgel: string;
@@ -180,6 +181,7 @@
 	</div>
 </article>
 <HoldingsModal workFnurgel={fnurgel} />
+<ReferenceModal />
 
 <style lang="postcss">
 	@reference 'tailwindcss';

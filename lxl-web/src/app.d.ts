@@ -25,6 +25,7 @@ declare global {
 			expandedInstances?: string[];
 			holdings?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
+			reference?: string;
 		}
 		// interface Platform {}
 	}

@@ -6,6 +6,7 @@
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import { getReferenceLink, handleClickReference } from '$lib/utils/reference';
 
 	interface Props {
 		id: string | undefined;
@@ -66,6 +67,12 @@
 							? page.data.t('holdings.library')
 							: page.data.t('holdings.libraries')}
 					</a>
+					<a
+						class="link-subtle"
+						href={getReferenceLink(page.url, id)}
+						onclick={(event) => handleClickReference(event, page.state, id)}
+						>{page.data.t('reference.createReference')}</a
+					>
 					<a
 						class="link-subtle"
 						href={getPermalink(page.url, id)}

@@ -245,5 +245,8 @@ export default {
 		leadingPaneTabs: 'Tabs for leading pane',
 		show: 'Show pane',
 		hide: 'Hide pane'
+	},
+	reference: {
+		createReference: 'Create reference'
 	}
 };

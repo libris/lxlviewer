@@ -244,5 +244,8 @@ export default {
 		leadingPaneTabs: 'Vänsterpanelsflikar',
 		show: 'Visa sidopanel',
 		hide: 'Dölj sidopanel'
+	},
+	reference: {
+		createReference: 'Skapa referens'
 	}
 };
