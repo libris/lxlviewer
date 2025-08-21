@@ -205,7 +205,8 @@ export default {
 		results: 'results',
 		result: 'result',
 		previousResult: 'Previous result',
-		nextResult: 'Next result'
+		nextResult: 'Next result',
+		resultOf: 'of'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',

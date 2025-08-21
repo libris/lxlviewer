@@ -204,7 +204,8 @@ export default {
 		results: 'träffar',
 		result: 'träff',
 		previousResult: 'Föregående träff',
-		nextResult: 'Nästa träff'
+		nextResult: 'Nästa träff',
+		resultOf: 'av'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

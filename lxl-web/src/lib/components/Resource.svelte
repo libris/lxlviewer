@@ -16,6 +16,7 @@
 	import type { SearchResult, SearchResultItem } from '$lib/types/search';
 	import SearchResultList from './SearchResultList.svelte';
 	import getAdjecentResults from '$lib/utils/getAdjecentResults';
+	import capitalize from '$lib/utils/capitalize';
 
 	type Props = {
 		fnurgel: string;
@@ -53,9 +54,7 @@
 
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 
-	const [previousResultLink, nextResultLink] = $derived.by(() =>
-		getAdjecentResults({ searchResult, fnurgel })
-	);
+	const adjecentResults = $derived.by(() => getAdjecentResults({ searchResult, fnurgel }));
 
 	function passAlongSearchResults(event: MouseEvent) {
 		event.preventDefault();
@@ -74,15 +73,21 @@
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
 		</section>
 	{/if}
-	{#if previousResultLink || nextResultLink}
-		<div class="flex min-h-11 items-center">
-			{#if previousResultLink}
-				<a href={previousResultLink} class="text-link" onclick={passAlongSearchResults}>
+	{#if searchResult && (adjecentResults?.prev || adjecentResults?.next)}
+		<div class="flex min-h-11 items-center gap-3">
+			<p>
+				{capitalize(page.data.t('resource.result'))}
+				{(adjecentResults.absoluteOffset + 1).toLocaleString(page.data.locale)}
+				{page.data.t('resource.resultOf')}
+				{searchResult.totalItems.toLocaleString(page.data.locale)}
+			</p>
+			{#if adjecentResults.prev}
+				<a href={adjecentResults.prev} class="text-link" onclick={passAlongSearchResults}>
 					{page.data.t('resource.previousResult')}
 				</a>
 			{/if}
-			{#if nextResultLink}
-				<a href={nextResultLink} class="text-link ml-auto" onclick={passAlongSearchResults}>
+			{#if adjecentResults.next}
+				<a href={adjecentResults.next} class="text-link ml-auto" onclick={passAlongSearchResults}>
 					{page.data.t('resource.nextResult')}
 				</a>
 			{/if}

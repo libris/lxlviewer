@@ -7,7 +7,14 @@ function getAdjecentResults({
 }: {
 	searchResult?: SearchResult;
 	fnurgel: string;
-}): [string | undefined, string | undefined] {
+}):
+	| {
+			prev: string | undefined;
+			next: string | undefined;
+			relativeOffset: number;
+			absoluteOffset: number;
+	  }
+	| undefined {
 	if (searchResult) {
 		const relativeOffset = searchResult.items.findIndex((item) => item['@id'].includes(fnurgel));
 		const absoluteOffset = searchResult.itemOffset + (relativeOffset || 0);
@@ -26,10 +33,10 @@ function getAdjecentResults({
 						? relativizeUrl(searchResult.items[relativeOffset + 1]['@id'])
 						: undefined //TODO: return or use promise fetch which can be used to get next search results (which should include next result item)
 					: undefined;
-			return [prev, next];
+			return { prev, next, relativeOffset, absoluteOffset };
 		}
 	}
-	return [undefined, undefined];
+	return undefined;
 }
 
 export default getAdjecentResults;
