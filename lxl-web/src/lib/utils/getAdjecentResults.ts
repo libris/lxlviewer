@@ -3,8 +3,8 @@ import { relativizeUrl } from '$lib/utils/http';
 
 function getAdjecentResults({
 	searchResult,
-	fnurgel,
-	uidPrefix
+	fnurgel
+	// uidPrefix
 }: {
 	searchResult?: SearchResult;
 	fnurgel: string;
@@ -37,7 +37,8 @@ function getAdjecentResults({
 						: undefined //TODO: return or use promise fetch which can be used to get next search results (which should include next result item)
 					: undefined;
 
-			const findAnchorLink = `${relativizeUrl(searchResult['@id'])}#${uidPrefix}${fnurgel}`;
+			// const findAnchorLink = `${relativizeUrl(searchResult['@id'])}#${uidPrefix}${fnurgel}`;
+			const findAnchorLink = `${relativizeUrl(searchResult['@id'])}`; // temporarily remove has until hash navigation bug is fixed
 			return { prev, next, relativeOffset, absoluteOffset, findAnchorLink };
 		}
 	}
