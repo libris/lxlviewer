@@ -53,6 +53,7 @@ export async function asResult(
 		: {};
 
 	return {
+		'@id': view['@id'],
 		...('next' in view && { next: replacePath(view.next as Link, usePath) }),
 		...('previous' in view && { previous: replacePath(view.previous as Link, usePath) }),
 		itemOffset: view.itemOffset,

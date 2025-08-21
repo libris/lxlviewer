@@ -4,6 +4,7 @@ import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 
 export interface SearchResult {
+	[JsonLd.ID]: string;
 	itemOffset: number;
 	itemsPerPage: number;
 	totalItems: number;
