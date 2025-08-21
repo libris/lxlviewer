@@ -5,8 +5,11 @@ inside a modal/panel -->
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import Modal from './Modal.svelte';
+	import References from './References.svelte';
 
 	let previousURL: URL;
+	// TODO type
+	const references: Promise<unknown> = page.data.references;
 
 	afterNavigate(({ to }) => {
 		if (to) {
@@ -32,6 +35,6 @@ inside a modal/panel -->
 		{#snippet title()}
 			<span>{page.data.t('reference.createReference')}</span>
 		{/snippet}
-		<p>Hello</p>
+		<References {references} />
 	</Modal>
 {/if}
