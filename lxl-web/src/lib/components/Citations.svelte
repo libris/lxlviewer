@@ -1,14 +1,14 @@
 <script lang="ts">
-	let { references } = $props();
+	let { citations } = $props();
 </script>
 
 <div>
-	{#if references}
-		{#await references}
+	{#if citations}
+		{#await citations}
 			<p>laddar...</p>
-		{:then r}
-			<p>Klart! {r}</p>
-			{console.log(r)}
+		{:then c}
+			<p>Klart! {c}</p>
+			{console.log(c)}
 		{:catch}
 			<p>Oh no</p>
 		{/await}

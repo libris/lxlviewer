@@ -246,7 +246,7 @@ export default {
 		show: 'Show pane',
 		hide: 'Hide pane'
 	},
-	reference: {
-		createReference: 'Create reference'
+	citations: {
+		createCitation: 'Create citation'
 	}
 };

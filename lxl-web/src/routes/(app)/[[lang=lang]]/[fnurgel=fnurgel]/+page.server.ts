@@ -1,17 +1,17 @@
 export const load = async ({ url, fetch }) => {
 	console.log('page load');
-	// makes this load function dependant on 'reference' param change
-	const fnurgel = url.searchParams.get('reference');
+	// makes this load function dependant on 'cite' param change
+	const fnurgel = url.searchParams.get('cite');
 
-	async function getReferences() {
+	async function getCitations() {
 		if (fnurgel) {
-			const res = await fetch(`/api/reference?id=${fnurgel}`);
+			const res = await fetch(`/api/cite?id=${fnurgel}`);
 			return await res.json();
 		}
 		return null;
 	}
 
 	return {
-		references: getReferences()
+		citations: getCitations()
 	};
 };

@@ -5,11 +5,11 @@ inside a modal/panel -->
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import Modal from './Modal.svelte';
-	import References from './References.svelte';
+	import Citations from './Citations.svelte';
 
 	let previousURL: URL;
 	// TODO type
-	const references: Promise<unknown> = page.data.references;
+	const citations: Promise<unknown> = page.data.citations;
 
 	afterNavigate(({ to }) => {
 		if (to) {
@@ -17,24 +17,24 @@ inside a modal/panel -->
 		}
 	});
 
-	function handleCloseReferenceModal() {
-		if (!previousURL?.searchParams.has('holdings')) {
+	function handleCloseCitations() {
+		if (!previousURL?.searchParams.has('cite')) {
 			history.back();
 		} else {
 			const newSearchParams = new SvelteURLSearchParams([
 				...Array.from(page.url.searchParams.entries())
 			]);
-			newSearchParams.delete('holdings');
+			newSearchParams.delete('cite');
 			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
 		}
 	}
 </script>
 
-{#if page.state.reference || page.url.searchParams.has('reference')}
-	<Modal close={handleCloseReferenceModal}>
+{#if page.state.cite || page.url.searchParams.has('cite')}
+	<Modal close={handleCloseCitations}>
 		{#snippet title()}
-			<span>{page.data.t('reference.createReference')}</span>
+			<span>{page.data.t('citations.createCitation')}</span>
 		{/snippet}
-		<References {references} />
+		<Citations {citations} />
 	</Modal>
 {/if}

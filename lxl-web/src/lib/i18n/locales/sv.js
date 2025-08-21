@@ -245,7 +245,7 @@ export default {
 		show: 'Visa sidopanel',
 		hide: 'Dölj sidopanel'
 	},
-	reference: {
-		createReference: 'Skapa referens'
+	citations: {
+		createCitation: 'Skapa referens'
 	}
 };

@@ -4,9 +4,9 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citations';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { getReferenceLink, handleClickReference } from '$lib/utils/reference';
 
 	interface Props {
 		id: string | undefined;
@@ -69,9 +69,9 @@
 					</a>
 					<a
 						class="link-subtle"
-						href={getReferenceLink(page.url, id)}
-						onclick={(event) => handleClickReference(event, page.state, id)}
-						>{page.data.t('reference.createReference')}</a
+						href={getCiteLink(page.url, id)}
+						onclick={(event) => handleClickCite(event, page.state, id)}
+						>{page.data.t('citations.createCitation')}</a
 					>
 					<a
 						class="link-subtle"
