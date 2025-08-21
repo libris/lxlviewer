@@ -205,7 +205,8 @@ export default {
 		result: 'träff',
 		previousResult: 'Föregående träff',
 		nextResult: 'Nästa träff',
-		resultOf: 'av'
+		resultOf: 'av',
+		showInSearchResults: 'Visa i sökträfflistan'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

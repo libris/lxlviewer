@@ -54,7 +54,9 @@
 
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 
-	const adjecentResults = $derived.by(() => getAdjecentResults({ searchResult, fnurgel }));
+	const adjecentResults = $derived.by(() =>
+		getAdjecentResults({ searchResult, fnurgel, uidPrefix })
+	);
 
 	function passAlongSearchResults(event: MouseEvent) {
 		event.preventDefault();
@@ -75,22 +77,35 @@
 	{/if}
 	{#if searchResult && (adjecentResults?.prev || adjecentResults?.next)}
 		<div class="flex min-h-11 items-center gap-3">
+			<a href={adjecentResults.findAnchorLink} class="text-link">
+				{page.data.t('resource.showInSearchResults')}
+			</a>
 			<p>
 				{capitalize(page.data.t('resource.result'))}
 				{(adjecentResults.absoluteOffset + 1).toLocaleString(page.data.locale)}
 				{page.data.t('resource.resultOf')}
 				{searchResult.totalItems.toLocaleString(page.data.locale)}
 			</p>
-			{#if adjecentResults.prev}
-				<a href={adjecentResults.prev} class="text-link" onclick={passAlongSearchResults}>
-					{page.data.t('resource.previousResult')}
-				</a>
-			{/if}
-			{#if adjecentResults.next}
-				<a href={adjecentResults.next} class="text-link ml-auto" onclick={passAlongSearchResults}>
-					{page.data.t('resource.nextResult')}
-				</a>
-			{/if}
+			<div class="ml-auto flex gap-2">
+				{#if adjecentResults.prev}
+					<a href={adjecentResults.prev} class="text-link" onclick={passAlongSearchResults}>
+						{page.data.t('resource.previousResult')}
+					</a>
+				{:else}
+					<span class="text-disabled" aria-hidden="true">
+						{page.data.t('resource.previousResult')}
+					</span>
+				{/if}
+				{#if adjecentResults.next}
+					<a href={adjecentResults.next} class="text-link" onclick={passAlongSearchResults}>
+						{page.data.t('resource.nextResult')}
+					</a>
+				{:else}
+					<span class="text-disabled" aria-hidden="true">
+						{page.data.t('resource.nextResult')}
+					</span>
+				{/if}
+			</div>
 		</div>
 	{/if}
 	<div
