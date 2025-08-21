@@ -203,7 +203,9 @@ export default {
 		show: 'Show',
 		all: 'all',
 		results: 'results',
-		result: 'result'
+		result: 'result',
+		previousResult: 'Previous result',
+		nextResult: 'Next result'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',

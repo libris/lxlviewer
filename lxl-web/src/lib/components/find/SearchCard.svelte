@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { SearchResultItem } from '$lib/types/search';
 	import { LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
@@ -31,6 +32,16 @@
 	let showDebugHaystack = $state(false);
 
 	const TypeIcon = $derived(getTypeIcon(item['@type']));
+
+	function passAlongSearchResults(event: MouseEvent) {
+		event.preventDefault();
+		goto((event.currentTarget as HTMLAnchorElement).href, {
+			state: {
+				...page.state,
+				searchResult: page.data.searchResult
+			}
+		});
+	}
 </script>
 
 <!--//TODO: look into using grid template areas + container queries instead
@@ -71,6 +82,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				aria-labelledby={titleId}
 				aria-describedby={`${bodyId} ${footerId}`}
 				tabindex="-1"
+				onclick={passAlongSearchResults}
 			>
 				<div class="pointer-events-none relative flex">
 					{#if item.image}
@@ -133,6 +145,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							href={id}
 							class="link-subtle block decoration-neutral-400"
 							aria-describedby={`${bodyId} ${footerId}`}
+							onclick={passAlongSearchResults}
 						>
 							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 						</a>

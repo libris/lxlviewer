@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-
+	import { goto } from '$app/navigation';
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
@@ -13,8 +13,9 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { Relation } from '$lib/utils/relations';
-	import type { SearchResultItem } from '$lib/types/search';
+	import type { SearchResult, SearchResultItem } from '$lib/types/search';
 	import SearchResultList from './SearchResultList.svelte';
+	import getAdjecentResults from '$lib/utils/getAdjecentResults';
 
 	type Props = {
 		fnurgel: string;
@@ -29,6 +30,7 @@
 		instances: Record<string, unknown>[]; // TODO: fix better types
 		holdersByType: HoldersByType;
 		tableOfContents: TableOfContentsItem[];
+		searchResult?: SearchResult;
 	};
 
 	const {
@@ -43,12 +45,27 @@
 		relationsPreviewsByQualifierKey,
 		instances,
 		holdersByType,
-		tableOfContents
+		tableOfContents,
+		searchResult
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
+
+	const [previousResultLink, nextResultLink] = $derived.by(() =>
+		getAdjecentResults({ searchResult, fnurgel })
+	);
+
+	function passAlongSearchResults(event: MouseEvent) {
+		event.preventDefault();
+		goto((event.currentTarget as HTMLAnchorElement).href, {
+			state: {
+				...page.state,
+				searchResult
+			}
+		});
+	}
 </script>
 
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
@@ -56,6 +73,20 @@
 		<section data-testid="toc-mobile" class="contents @7xl:hidden">
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
 		</section>
+	{/if}
+	{#if previousResultLink || nextResultLink}
+		<div class="flex min-h-11 items-center">
+			{#if previousResultLink}
+				<a href={previousResultLink} class="text-link" onclick={passAlongSearchResults}>
+					{page.data.t('resource.previousResult')}
+				</a>
+			{/if}
+			{#if nextResultLink}
+				<a href={nextResultLink} class="text-link ml-auto" onclick={passAlongSearchResults}>
+					{page.data.t('resource.nextResult')}
+				</a>
+			{/if}
+		</div>
 	{/if}
 	<div
 		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"

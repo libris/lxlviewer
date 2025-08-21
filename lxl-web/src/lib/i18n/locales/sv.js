@@ -202,7 +202,9 @@ export default {
 		show: 'Visa',
 		all: 'alla',
 		results: 'träffar',
-		result: 'träff'
+		result: 'träff',
+		previousResult: 'Föregående träff',
+		nextResult: 'Nästa träff'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

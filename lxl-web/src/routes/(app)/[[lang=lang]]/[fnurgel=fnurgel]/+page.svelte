@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-
 	import getPageTitle from '$lib/utils/getPageTitle';
-
 	import Resource from '$lib/components/Resource.svelte';
 
 	const { data } = $props();
@@ -24,5 +22,6 @@
 		instances={data.instances}
 		holdersByType={data.holdersByType}
 		tableOfContents={data.tableOfContents}
+		searchResult={page.state.searchResult}
 	/>
 </div>
