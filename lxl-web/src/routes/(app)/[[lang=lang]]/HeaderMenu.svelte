@@ -4,6 +4,7 @@
 	import BiPerson from '~icons/bi/person-circle';
 	import BiQuestionCircle from '~icons/bi/question-circle';
 	import { Locales, defaultLocale } from '$lib/i18n/locales';
+	import { goto } from '$app/navigation';
 
 	const isLandingPage = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
@@ -14,6 +15,13 @@
 			? page.url.pathname.replace(`/${page.data.locale}`, isLandingPage ? '/' : '')
 			: `/${otherLangCode}${page.url.pathname}`) + page.url.search
 	);
+
+	function preservePageState(event: MouseEvent) {
+		if (page.state && Object.keys(page.state).length) {
+			event.preventDefault();
+			goto((event.currentTarget as HTMLAnchorElement).href, { state: page.state });
+		}
+	}
 </script>
 
 <nav class="py-4 2xl:py-0 [&_a]:no-underline">
@@ -41,8 +49,8 @@
 				class="flex items-center gap-2 whitespace-nowrap 2xl:flex-col 2xl:gap-1"
 				href={otherLangUrl}
 				hreflang={otherLangCode}
-				data-sveltekit-reload
 				data-testid="current-lang"
+				onclick={preservePageState}
 			>
 				<BiGlobe />
 				<span>{otherLangLabel}</span>
