@@ -31,6 +31,7 @@
 		"@types/eslint": "^9.6.0",
 		"@types/jmespath": "^0.15.2",
 		"@types/js-cookie": "^3.0.6",
+		"citeproc": "^2.4.63",
 		"codemirror-lang-lxlquery": "^0.1.0",
 		"eslint": "^9.34.0",
 		"eslint-config-prettier": "^10.1.8",
