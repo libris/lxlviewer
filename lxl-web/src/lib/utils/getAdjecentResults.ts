@@ -11,11 +11,13 @@ function getAdjecentResults({
 	uidPrefix?: string;
 }):
 	| {
-			prev: string | undefined;
-			next: string | undefined;
 			relativeOffset: number;
 			absoluteOffset: number;
-			findAnchorLink: string | undefined;
+			previousResultItem: string | undefined;
+			nextResultItem: string | undefined;
+			searchResult: string | undefined;
+			previousSearchResult: string | undefined;
+			nextSearchResult: string | undefined;
 	  }
 	| undefined {
 	if (searchResult) {
@@ -23,23 +25,31 @@ function getAdjecentResults({
 		const absoluteOffset = searchResult.itemOffset + (relativeOffset || 0);
 
 		if (typeof relativeOffset === 'number' && relativeOffset >= 0) {
-			const prev =
-				absoluteOffset !== 0
-					? relativeOffset > 0 // check if part of fetched search results
-						? relativizeUrl(searchResult.items[relativeOffset - 1]['@id'])
-						: undefined // TODO: return or use promise fetch which can be used to get previous search results (which should include previous result item)
-					: undefined;
-
-			const next =
-				absoluteOffset < searchResult.totalItems - 1
-					? relativeOffset >= 0 && relativeOffset < searchResult.itemsPerPage - 1 // check if part of fetched search results
-						? relativizeUrl(searchResult.items[relativeOffset + 1]['@id'])
-						: undefined //TODO: return or use promise fetch which can be used to get next search results (which should include next result item)
-					: undefined;
-
-			// const findAnchorLink = `${relativizeUrl(searchResult['@id'])}#${uidPrefix}${fnurgel}`;
-			const findAnchorLink = `${relativizeUrl(searchResult['@id'])}`; // temporarily remove has until hash navigation bug is fixed
-			return { prev, next, relativeOffset, absoluteOffset, findAnchorLink };
+			return {
+				relativeOffset,
+				absoluteOffset,
+				previousResultItem:
+					absoluteOffset !== 0
+						? relativeOffset > 0 // check if part of fetched search results
+							? relativizeUrl(searchResult.items[relativeOffset - 1]['@id'])
+							: undefined
+						: undefined,
+				nextResultItem:
+					absoluteOffset < searchResult.totalItems - 1
+						? relativeOffset >= 0 && relativeOffset < searchResult.itemsPerPage - 1 // check if part of fetched search results
+							? relativizeUrl(searchResult.items[relativeOffset + 1]['@id'])
+							: undefined
+						: undefined,
+				searchResult: `${relativizeUrl(searchResult['@id'])}`, // temporarily remove hash until hash navigation bug is fixed
+				previousSearchResult:
+					searchResult.previous && searchResult['@id'] !== searchResult.first['@id']
+						? relativizeUrl(searchResult.previous['@id'])
+						: undefined,
+				nextSearchResult:
+					searchResult.next && searchResult['@id'] !== searchResult.last['@id']
+						? relativizeUrl(searchResult.next['@id'])
+						: undefined
+			};
 		}
 	}
 	return undefined;

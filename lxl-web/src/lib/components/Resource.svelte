@@ -75,9 +75,9 @@
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
 		</section>
 	{/if}
-	{#if searchResult && (adjecentResults?.prev || adjecentResults?.next)}
+	{#if searchResult && adjecentResults?.searchResult}
 		<div class="flex min-h-11 items-center gap-3">
-			<a href={adjecentResults.findAnchorLink} class="text-link">
+			<a href={adjecentResults.searchResult} class="text-link">
 				{page.data.t('resource.showInSearchResults')}
 			</a>
 			<p>
@@ -86,26 +86,36 @@
 				{page.data.t('resource.resultOf')}
 				{searchResult.totalItems.toLocaleString(page.data.locale)}
 			</p>
-			<div class="ml-auto flex gap-2">
-				{#if adjecentResults.prev}
-					<a href={adjecentResults.prev} class="text-link" onclick={passAlongSearchResults}>
-						{page.data.t('resource.previousResult')}
-					</a>
-				{:else}
-					<span class="text-disabled" aria-hidden="true">
-						{page.data.t('resource.previousResult')}
-					</span>
-				{/if}
-				{#if adjecentResults.next}
-					<a href={adjecentResults.next} class="text-link" onclick={passAlongSearchResults}>
-						{page.data.t('resource.nextResult')}
-					</a>
-				{:else}
-					<span class="text-disabled" aria-hidden="true">
-						{page.data.t('resource.nextResult')}
-					</span>
-				{/if}
-			</div>
+			{#if adjecentResults.previousResultItem || adjecentResults.nextResultItem}
+				<div class="ml-auto flex gap-2">
+					{#if adjecentResults.previousResultItem}
+						<a
+							href={adjecentResults.previousResultItem}
+							class="text-link"
+							onclick={passAlongSearchResults}
+						>
+							{page.data.t('resource.previousResult')}
+						</a>
+					{:else}
+						<span class="text-disabled" aria-hidden="true">
+							{page.data.t('resource.previousResult')}
+						</span>
+					{/if}
+					{#if adjecentResults.nextResultItem}
+						<a
+							href={adjecentResults.nextResultItem}
+							class="text-link"
+							onclick={passAlongSearchResults}
+						>
+							{page.data.t('resource.nextResult')}
+						</a>
+					{:else}
+						<span class="text-disabled" aria-hidden="true">
+							{page.data.t('resource.nextResult')}
+						</span>
+					{/if}
+				</div>
+			{/if}
 		</div>
 	{/if}
 	<div
