@@ -204,10 +204,11 @@ export default {
 		all: 'all',
 		results: 'results',
 		result: 'result',
-		previousResult: 'Previous result',
-		nextResult: 'Next result',
+		previous: 'Previous',
+		next: 'Next',
 		resultOf: 'of',
-		showInSearchResults: 'Show in search results'
+		showInSearchResults: 'Show in search results',
+		showInSearchResultsShort: 'Show all results'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',

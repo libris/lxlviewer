@@ -203,10 +203,11 @@ export default {
 		all: 'alla',
 		results: 'träffar',
 		result: 'träff',
-		previousResult: 'Föregående träff',
-		nextResult: 'Nästa träff',
+		previous: 'Föregående',
+		next: 'Nästa',
 		resultOf: 'av',
-		showInSearchResults: 'Visa i sökträfflista'
+		showInSearchResults: 'Visa i sökträfflista',
+		showInSearchResultsShort: 'Visa träfflista'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

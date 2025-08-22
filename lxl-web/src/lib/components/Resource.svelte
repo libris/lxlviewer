@@ -20,6 +20,7 @@
 	import IconChevronleft from '~icons/bi/chevron-left';
 	import IconListUl from '~icons/bi/list-ul';
 	import capitalize from '$lib/utils/capitalize';
+
 	type Props = {
 		fnurgel: string;
 		uid?: string;
@@ -71,6 +72,18 @@
 	}
 </script>
 
+{#snippet previousResultContent()}
+	<IconChevronleft class="inline" />
+	{page.data.t('resource.previous')}
+	<span class="hidden @xl:inline">{page.data.t('resource.result')}</span>
+{/snippet}
+
+{#snippet nextResultContent()}
+	{page.data.t('resource.next')}
+	<span class="hidden @xl:inline">{page.data.t('resource.result')}</span>
+	<IconChevronRight class="inline" />
+{/snippet}
+
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
 	{#if tableOfContents.length}
 		<section data-testid="toc-mobile" class="contents @7xl:hidden">
@@ -79,11 +92,12 @@
 	{/if}
 	{#if searchResult && adjecentResults?.searchResult}
 		<div class="border-neutral flex min-h-12 items-center gap-1 border-b px-3 text-xs">
-			<a href={adjecentResults.searchResult} class="btn btn-primary inline-block">
+			<a href={adjecentResults.searchResult} class="btn btn-primary inline-block whitespace-nowrap">
 				<IconListUl class="inline" />
-				{page.data.t('resource.showInSearchResults')}
+				<span class="@xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>
+				<span class="hidden @xl:inline">{page.data.t('resource.showInSearchResults')}</span>
 			</a>
-			<span class="text-2xs ml-1">
+			<span class="text-2xs ml-1 truncate">
 				{capitalize(page.data.t('resource.result'))}
 				<span class="font-medium">
 					{(adjecentResults.absoluteOffset + 1).toLocaleString(page.data.locale)}
@@ -100,13 +114,11 @@
 						class="btn btn-primary"
 						onclick={passAlongSearchResults}
 					>
-						<IconChevronleft class="inline" />
-						{page.data.t('resource.previousResult')}
+						{@render previousResultContent()}
 					</a>
 				{:else}
-					<span class="text-disabled btn btn-primary" aria-hidden="true">
-						<IconChevronleft class="inline" />
-						{page.data.t('resource.previousResult')}
+					<span class="text-disabled btn btn-primary">
+						{@render previousResultContent()}
 					</span>
 				{/if}
 				{#if adjecentResults.nextResultItem}
@@ -115,13 +127,11 @@
 						class="btn btn-primary"
 						onclick={passAlongSearchResults}
 					>
-						{page.data.t('resource.nextResult')}
-						<IconChevronRight class="inline" />
+						{@render nextResultContent()}
 					</a>
 				{:else}
-					<span class="text-disabled btn btn-primary" aria-hidden="true">
-						{page.data.t('resource.nextResult')}
-						<IconChevronRight class="inline" />
+					<span class="text-disabled btn btn-primary">
+						{@render nextResultContent()}
 					</span>
 				{/if}
 			</span>
