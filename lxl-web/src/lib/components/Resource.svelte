@@ -19,7 +19,7 @@
 	import IconChevronRight from '~icons/bi/chevron-right';
 	import IconChevronleft from '~icons/bi/chevron-left';
 	import IconListUl from '~icons/bi/list-ul';
-
+	import capitalize from '$lib/utils/capitalize';
 	type Props = {
 		fnurgel: string;
 		uid?: string;
@@ -78,45 +78,52 @@
 		</section>
 	{/if}
 	{#if searchResult && adjecentResults?.searchResult}
-		<div class="border-neutral flex min-h-11 items-center gap-4 border-b px-3 text-xs">
-			{#if adjecentResults.previousResultItem}
-				<a
-					href={adjecentResults.previousResultItem}
-					class="text-link"
-					onclick={passAlongSearchResults}
-				>
-					<IconChevronleft class="inline" />
-					{page.data.t('resource.previousResult')}
-				</a>
-			{:else}
-				<span class="text-disabled" aria-hidden="true">
-					<IconChevronleft class="inline" />
-					{page.data.t('resource.previousResult')}
-				</span>
-			{/if}
-			{#if adjecentResults.nextResultItem}
-				<a href={adjecentResults.nextResultItem} class="text-link" onclick={passAlongSearchResults}>
-					{page.data.t('resource.nextResult')}
-					<IconChevronRight class="inline" />
-				</a>
-			{:else}
-				<span class="text-disabled" aria-hidden="true">
-					{page.data.t('resource.nextResult')}
-					<IconChevronRight class="inline" />
-				</span>
-			{/if}
-			<span>
-				<a href={adjecentResults.searchResult} class="text-link">
-					<IconListUl class="inline" />
-					{page.data.t('resource.showInSearchResults')}
-				</a>
-				<span class="text-subtle text-2xs">
-					{'('}{page.data.t('resource.result')}
+		<div class="border-neutral flex min-h-12 items-center gap-1 border-b px-3 text-xs">
+			<a href={adjecentResults.searchResult} class="btn btn-primary inline-block">
+				<IconListUl class="inline" />
+				{page.data.t('resource.showInSearchResults')}
+			</a>
+			<span class="text-2xs ml-1">
+				{capitalize(page.data.t('resource.result'))}
+				<span class="font-medium">
 					{(adjecentResults.absoluteOffset + 1).toLocaleString(page.data.locale)}
-
-					{page.data.t('resource.resultOf')}
-					{searchResult.totalItems.toLocaleString(page.data.locale)}{')'}
 				</span>
+				{page.data.t('resource.resultOf')}
+				<span class="font-medium">
+					{searchResult.totalItems.toLocaleString(page.data.locale)}
+				</span>
+			</span>
+			<span class="ml-auto flex gap-2">
+				{#if adjecentResults.previousResultItem}
+					<a
+						href={adjecentResults.previousResultItem}
+						class="btn btn-primary"
+						onclick={passAlongSearchResults}
+					>
+						<IconChevronleft class="inline" />
+						{page.data.t('resource.previousResult')}
+					</a>
+				{:else}
+					<span class="text-disabled btn btn-primary" aria-hidden="true">
+						<IconChevronleft class="inline" />
+						{page.data.t('resource.previousResult')}
+					</span>
+				{/if}
+				{#if adjecentResults.nextResultItem}
+					<a
+						href={adjecentResults.nextResultItem}
+						class="btn btn-primary"
+						onclick={passAlongSearchResults}
+					>
+						{page.data.t('resource.nextResult')}
+						<IconChevronRight class="inline" />
+					</a>
+				{:else}
+					<span class="text-disabled btn btn-primary" aria-hidden="true">
+						{page.data.t('resource.nextResult')}
+						<IconChevronRight class="inline" />
+					</span>
+				{/if}
 			</span>
 		</div>
 	{/if}
