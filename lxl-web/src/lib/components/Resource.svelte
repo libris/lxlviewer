@@ -16,7 +16,9 @@
 	import type { SearchResult, SearchResultItem } from '$lib/types/search';
 	import SearchResultList from './SearchResultList.svelte';
 	import getAdjecentResults from '$lib/utils/getAdjecentResults';
-	import capitalize from '$lib/utils/capitalize';
+	import IconChevronRight from '~icons/bi/chevron-right';
+	import IconChevronleft from '~icons/bi/chevron-left';
+	import IconListUl from '~icons/bi/list-ul';
 
 	type Props = {
 		fnurgel: string;
@@ -76,46 +78,46 @@
 		</section>
 	{/if}
 	{#if searchResult && adjecentResults?.searchResult}
-		<div class="flex min-h-11 items-center gap-3">
-			<a href={adjecentResults.searchResult} class="text-link">
-				{page.data.t('resource.showInSearchResults')}
-			</a>
-			<p>
-				{capitalize(page.data.t('resource.result'))}
-				{(adjecentResults.absoluteOffset + 1).toLocaleString(page.data.locale)}
-				{page.data.t('resource.resultOf')}
-				{searchResult.totalItems.toLocaleString(page.data.locale)}
-			</p>
-			{#if adjecentResults.previousResultItem || adjecentResults.nextResultItem}
-				<div class="ml-auto flex gap-2">
-					{#if adjecentResults.previousResultItem}
-						<a
-							href={adjecentResults.previousResultItem}
-							class="text-link"
-							onclick={passAlongSearchResults}
-						>
-							{page.data.t('resource.previousResult')}
-						</a>
-					{:else}
-						<span class="text-disabled" aria-hidden="true">
-							{page.data.t('resource.previousResult')}
-						</span>
-					{/if}
-					{#if adjecentResults.nextResultItem}
-						<a
-							href={adjecentResults.nextResultItem}
-							class="text-link"
-							onclick={passAlongSearchResults}
-						>
-							{page.data.t('resource.nextResult')}
-						</a>
-					{:else}
-						<span class="text-disabled" aria-hidden="true">
-							{page.data.t('resource.nextResult')}
-						</span>
-					{/if}
-				</div>
+		<div class="border-neutral flex min-h-11 items-center gap-4 border-b px-3 text-xs">
+			{#if adjecentResults.previousResultItem}
+				<a
+					href={adjecentResults.previousResultItem}
+					class="text-link"
+					onclick={passAlongSearchResults}
+				>
+					<IconChevronleft class="inline" />
+					{page.data.t('resource.previousResult')}
+				</a>
+			{:else}
+				<span class="text-disabled" aria-hidden="true">
+					<IconChevronleft class="inline" />
+					{page.data.t('resource.previousResult')}
+				</span>
 			{/if}
+			{#if adjecentResults.nextResultItem}
+				<a href={adjecentResults.nextResultItem} class="text-link" onclick={passAlongSearchResults}>
+					{page.data.t('resource.nextResult')}
+					<IconChevronRight class="inline" />
+				</a>
+			{:else}
+				<span class="text-disabled" aria-hidden="true">
+					{page.data.t('resource.nextResult')}
+					<IconChevronRight class="inline" />
+				</span>
+			{/if}
+			<span>
+				<a href={adjecentResults.searchResult} class="text-link">
+					<IconListUl class="inline" />
+					{page.data.t('resource.showInSearchResults')}
+				</a>
+				<span class="text-subtle text-2xs">
+					{'('}{page.data.t('resource.result')}
+					{(adjecentResults.absoluteOffset + 1).toLocaleString(page.data.locale)}
+
+					{page.data.t('resource.resultOf')}
+					{searchResult.totalItems.toLocaleString(page.data.locale)}{')'}
+				</span>
+			</span>
 		</div>
 	{/if}
 	<div
