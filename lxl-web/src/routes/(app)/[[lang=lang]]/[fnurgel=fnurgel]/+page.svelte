@@ -10,6 +10,11 @@
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
 <div data-testid="resource-page" class="contents">
+	{#if data.holdingsByInstanceId}
+		{#each Object.keys(data.holdingsByInstanceId) as id (id)}
+			<abbr class="unapi-id hidden" title={id}></abbr>
+		{/each}
+	{/if}
 	<Resource
 		fnurgel={page.params.fnurgel}
 		type={data.type}

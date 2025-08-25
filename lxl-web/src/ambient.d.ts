@@ -5,4 +5,4 @@ declare module 'lxljs/string';
 declare module 'lxljs/vocab';
 declare module 'nprogress';
 declare module '*.md';
-declare module 'citeproc';
+declare module '@citation-js/core';

@@ -5,7 +5,7 @@ export const load = async ({ url, fetch }) => {
 
 	async function getCitations() {
 		if (fnurgel) {
-			const res = await fetch(`/api/cite?id=${fnurgel}`);
+			const res = await fetch(`/api/cite?id=${fnurgel}&format=csl`);
 			return await res.json();
 		}
 		return null;
