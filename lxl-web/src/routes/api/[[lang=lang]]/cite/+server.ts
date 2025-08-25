@@ -68,6 +68,7 @@ export async function GET({ params, url, fetch }) {
         ${formats}
         <format name='bibtex' type='text/plain' />
         <format name='ris' type='text/plain' />
+        <format name='csl' type='application/json' />
       </formats>`;
 
 		return new Response(xml, {
