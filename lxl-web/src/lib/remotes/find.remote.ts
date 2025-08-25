@@ -20,9 +20,10 @@ export const findRecords = query(
 		offset: v.optional(v.pipe(v.number(), v.transform(String)), DEFAULT_OFFSET),
 		sort: v.optional(v.string(), ''),
 		spell: v.optional(v.pipe(v.boolean(), v.transform(String)), true),
-		suggest: v.optional(v.pipe(v.boolean(), v.transform(String)), false)
+		suggest: v.optional(v.boolean(), false),
+		cursor: v.optional(v.pipe(v.number(), v.integer()))
 	}),
-	async ({ query, limit, offset, sort, spell, suggest }) => {
+	async ({ query, limit, offset, sort, spell, suggest, cursor }) => {
 		const { locals, fetch, url, params } = getRequestEvent();
 		const displayUtil = locals.display;
 		const vocabUtil = locals.vocab;
@@ -32,11 +33,16 @@ export const findRecords = query(
 			['_limit', limit],
 			['_offset', offset],
 			['_sort', sort],
-			['_spell', spell],
-			['_suggest', suggest]
+			['_spell', spell]
 		]);
 
-		console.log('searchParams', searchParams.toString());
+		if (suggest) {
+			searchParams.append('suggest', 'true');
+			searchParams.append(
+				'cursor',
+				(cursor && Number.isInteger(cursor) && cursor?.toString()) || '0'
+			);
+		}
 
 		if (query.includes(MY_LIBRARIES_FILTER_ALIAS) && locals.userSettings?.myLibraries) {
 			searchParams.append(
