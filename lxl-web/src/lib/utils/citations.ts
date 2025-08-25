@@ -42,13 +42,15 @@ interface CslJSON {
 	'publisher-place'?: string;
 }
 
-// TODO lang
-// TODO add many
-export function mapCiteFrom(instance: FramedData) {
+/**
+ * @param mainEntity
+ * @returns citation-js Cite instance
+ */
+export function citeFromMainEntity(instance: FramedData) {
 	const csl: CslJSON = {
 		id: instance['@id'] as string,
 		type: 'book', // TODO type mapping
-		title: instance.hasTitle[0].computedLabel,
+		title: instance.hasTitle.map((t) => t.computedLabel).join('; '),
 		author: instance.instanceOf?.contribution?.map((c) => {
 			return {
 				family: c?.agent?.familyName,
@@ -56,15 +58,18 @@ export function mapCiteFrom(instance: FramedData) {
 			};
 		}),
 		ISBN: instance?.identifiedBy
-			.map((i) => {
-				if (i['@type'] === 'ISBN') {
-					return i.value;
+			?.map((i) => {
+				if (i?.['@type'] === 'ISBN') {
+					return i?.value;
 				}
 			})
-			.join(', '),
-		issued: { 'date-parts': [[instance?.publication?.[0].year]] },
-		publisher: instance?.publication?.[0].agent?.computedLabel,
-		'publisher-place': instance?.publication?.[0].place?.[0].computedLabel
+			.join('; '),
+		issued: { 'date-parts': [instance?.publication?.map((p) => p?.year)] },
+		publisher: instance?.publication?.map((p) => p?.agent?.computedLabel).join('; '),
+		'publisher-place': instance?.publication
+			?.flatMap((pub) => pub?.place)
+			.map((p) => p?.computedLabel)
+			.join('; ')
 	};
 
 	return new Cite(csl);

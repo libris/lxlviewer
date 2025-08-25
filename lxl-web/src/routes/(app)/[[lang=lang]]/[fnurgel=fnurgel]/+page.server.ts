@@ -5,6 +5,7 @@ export const load = async ({ url, fetch }) => {
 
 	async function getCitations() {
 		if (fnurgel) {
+			// fetching the record again via cite api is needed as long as csl mapping depends on computedLabel
 			const res = await fetch(`/api/cite?id=${fnurgel}&format=csl`);
 			return await res.json();
 		}
