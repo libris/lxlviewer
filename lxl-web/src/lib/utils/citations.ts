@@ -3,6 +3,7 @@ import '@citation-js/plugin-bibtex';
 import '@citation-js/plugin-ris';
 import { pushState } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
+import type { FramedData } from '$lib/types/xl';
 
 export function getCiteLink(url: URL, value: string) {
 	const newSearchParams = new SvelteURLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -35,19 +36,35 @@ interface CslJSON {
 	type: string; // e.g book or article'
 	title?: string;
 	author?: CSLName[];
-	issued?: CSLDate;
 	ISBN?: string;
+	issued?: CSLDate;
 	publisher?: string;
 	'publisher-place'?: string;
 }
 
 // TODO lang
 // TODO add many
-export function mapCiteFrom(instance) {
+export function mapCiteFrom(instance: FramedData) {
 	const csl: CslJSON = {
 		id: instance['@id'] as string,
 		type: 'book', // TODO type mapping
-		title: instance.hasTitle[0].computedLabel
+		title: instance.hasTitle[0].computedLabel,
+		author: instance.instanceOf?.contribution?.map((c) => {
+			return {
+				family: c?.agent?.familyName,
+				given: c?.agent?.givenName
+			};
+		}),
+		ISBN: instance?.identifiedBy
+			.map((i) => {
+				if (i['@type'] === 'ISBN') {
+					return i.value;
+				}
+			})
+			.join(', '),
+		issued: { 'date-parts': [[instance?.publication?.[0].year]] },
+		publisher: instance?.publication?.[0].agent?.computedLabel,
+		'publisher-place': instance?.publication?.[0].place?.[0].computedLabel
 	};
 
 	return new Cite(csl);
