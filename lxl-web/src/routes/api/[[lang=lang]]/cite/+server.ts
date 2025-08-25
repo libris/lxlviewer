@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales';
-import { citeFromMainEntity } from '$lib/utils/citations';
+import { citeFromMainEntity } from '$lib/utils/citation';
 
 const supportedFormats = ['ris', 'bibtex', 'csl'];
 
@@ -20,7 +20,7 @@ export async function GET({ params, url, fetch }) {
 
 				// return CSL-JSON
 				if (format === 'csl') {
-					const csl = cite.get({ style: 'csl', type: 'json', format: 'string' });
+					const csl = cite.get({ style: 'csl', type: 'json', format: 'string' }) as string;
 					return new Response(csl, {
 						status: 300,
 						headers: {
@@ -31,7 +31,7 @@ export async function GET({ params, url, fetch }) {
 
 				// return RIS
 				if (format === 'ris') {
-					const ris = cite.get({ style: 'ris', type: 'string', format: 'real' });
+					const ris = cite.get({ style: 'ris', type: 'string', format: 'real' }) as string;
 					return new Response(ris, {
 						status: 300,
 						headers: {
@@ -42,7 +42,7 @@ export async function GET({ params, url, fetch }) {
 
 				// TODO return bibtex
 				if (format == 'bibtex') {
-					const bibtex = cite.get({ style: 'bibtex', type: 'string', format: 'real' });
+					const bibtex = cite.get({ style: 'bibtex', type: 'string', format: 'real' }) as string;
 					return new Response(bibtex, {
 						status: 300,
 						headers: {
@@ -65,7 +65,7 @@ export async function GET({ params, url, fetch }) {
 		const formats = id ? `<formats id='${id}'>` : '<formats>';
 
 		const xml = `<?xml version='1.0' encoding='UTF-8'?>
-        ${formats}
+      ${formats}
         <format name='bibtex' type='text/plain' />
         <format name='ris' type='text/plain' />
         <format name='csl' type='application/json' />

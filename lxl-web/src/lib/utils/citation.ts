@@ -1,6 +1,6 @@
-import { Cite } from '@citation-js/core';
-import '@citation-js/plugin-bibtex';
+import { Cite, type CSLJSON } from '@citation-js/core';
 import '@citation-js/plugin-ris';
+import '@citation-js/plugin-bibtex';
 import { pushState } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import type { FramedData } from '$lib/types/xl';
@@ -20,34 +20,13 @@ export function handleClickCite(
 	pushState(event.currentTarget.href, { ...state, cite: id });
 }
 
-interface CSLName {
-	family?: string;
-	given?: string;
-	literal?: string;
-}
-
-interface CSLDate {
-	'date-parts'?: Array<number | string>[];
-	raw?: string;
-}
-
-interface CslJSON {
-	id: string | number;
-	type: string; // e.g book or article'
-	title?: string;
-	author?: CSLName[];
-	ISBN?: string;
-	issued?: CSLDate;
-	publisher?: string;
-	'publisher-place'?: string;
-}
-
 /**
  * @param mainEntity
- * @returns citation-js Cite instance
+ * Maps a mainEntity into rudimentary CSLJSON and returns a citation.js Cite instance
+ * TODO: add lang
  */
 export function citeFromMainEntity(instance: FramedData) {
-	const csl: CslJSON = {
+	const csl: CSLJSON = {
 		id: instance['@id'] as string,
 		type: 'book', // TODO type mapping
 		title: instance.hasTitle.map((t) => t.computedLabel).join('; '),
@@ -66,7 +45,7 @@ export function citeFromMainEntity(instance: FramedData) {
 			.join('; '),
 		issued: { 'date-parts': [instance?.publication?.map((p) => p?.year)] },
 		publisher: instance?.publication?.map((p) => p?.agent?.computedLabel).join('; '),
-		'publisher-place': instance?.publication
+		publisherPlace: instance?.publication
 			?.flatMap((pub) => pub?.place)
 			.map((p) => p?.computedLabel)
 			.join('; ')
