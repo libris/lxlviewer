@@ -1,14 +1,29 @@
-import { redirect, error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { getSupportedLocale } from '$lib/i18n/locales.js';
+import { redirect } from '@sveltejs/kit';
+import { findRecords } from '$lib/remotes/find.remote.js';
 
-import { type ApiError } from '$lib/types/api.js';
-import type { PartialCollectionView } from '$lib/types/search.js';
-import { asResult } from '$lib/utils/search';
-import { DebugFlags } from '$lib/types/userSettings';
-import { MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets.js';
+export const load = async ({ url }) => {
+	if (!url.searchParams.size || !url.searchParams.has('_q')) {
+		redirect(303, `/`); // redirect to home page if no search params are given or missing query value
+	}
 
-export const load = async ({ params, url, locals, fetch }) => {
+	const searchResult = await findRecords({
+		query: url.searchParams.get('_q') ?? '*',
+		limit:
+			(url.searchParams.get('_limit') &&
+				Number.isInteger(Number.parseInt(url.searchParams.get('_limit')!, 10)) &&
+				Number.parseInt(url.searchParams.get('_limit')!, 10)) ||
+			undefined,
+		offset:
+			(url.searchParams.get('_offset') &&
+				Number.isInteger(Number.parseInt(url.searchParams.get('_offset')!, 10)) &&
+				Number.parseInt(url.searchParams.get('_offset')!, 10)) ||
+			undefined,
+		sort: url.searchParams.get('_sort') ?? ''
+	});
+
+	return { searchResult };
+
+	/**
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
@@ -65,4 +80,5 @@ export const load = async ({ params, url, locals, fetch }) => {
 	);
 
 	return { searchResult };
+	*/
 };
