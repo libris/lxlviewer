@@ -40,7 +40,7 @@
 		"jmespath": "^0.16.0",
 		"js-cookie": "^3.0.5",
 		"lxljs": "^1.1.0",
-		"magic-string": "^0.30.11",
+		"magic-string": "^0.30.18",
 		"mdsvex": "^0.12.6",
 		"nprogress": "^0.2.0",
 		"prettier": "^3.6.2",
