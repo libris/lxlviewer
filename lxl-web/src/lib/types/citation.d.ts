@@ -1,5 +1,3 @@
-// reworked from https://github.com/citation-js/citation-js/issues/104#issuecomment-2333614835
-
 declare module '@citation-js/core' {
 	interface InputOptions {
 		output: OutputOptions;
@@ -17,6 +15,8 @@ declare module '@citation-js/core' {
 
 	type InputFormat = 'csl' | 'ris' | 'bibtex';
 
+	// full CSL-JSON schema, see
+	// https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
 	interface CSLDate {
 		'date-parts': number[][];
 		literal?: string;
@@ -38,91 +38,17 @@ declare module '@citation-js/core' {
 		};
 	}
 
-	type CSLItemType =
-		| 'article'
-		| 'article-journal'
-		| 'article-magazine'
-		| 'article-newspaper'
-		| 'book'
-		| 'chapter'
-		| 'entry'
-		| 'entry-dictionary'
-		| 'entry-encyclopedia'
-		| 'manuscript'
-		| 'paper-conference'
-		| 'patent'
-		| 'report'
-		| 'thesis'
-		| 'webpage'
-		| 'bill'
-		| 'case'
-		| 'graphic'
-		| 'interview'
-		| 'legislation'
-		| 'motion_picture'
-		| 'song'
-		| 'speech'
-		| 'map'
-		| 'broadcast'
-		| 'personal_communication'
-		| 'software'
-		| 'dataset'
-		| 'figure'
-		| 'post'
-		| 'document'
-		| 'other';
+	type CSLItemType = 'article' | 'book';
 
 	export interface CSLJSON {
-		abstract?: string;
-		accessed?: CSLDate;
-		archive?: string;
-		archiveLocation?: string;
 		author?: CSLName[];
-		chapterNumber?: string;
-		citationLabel?: string;
-		citationNumber?: number;
-		collectionEditor?: CSLName[];
-		collectionTitle?: string;
-		containerTitle?: string;
-		DOI?: string;
-		edition?: string;
-		editor?: CSLName[];
-		event?: string;
-		eventPlace?: string;
-		genre?: string;
 		id: string | number;
 		ISBN?: string;
-		ISSN?: string;
-		issue?: string;
 		issued?: CSLDate;
-		jurisdiction?: string;
-		keyword?: string;
-		language?: string;
-		medium?: string;
-		note?: string;
-		number?: string;
-		numberOfVolumes?: string;
-		originalDate?: CSLDate;
-		originalPublisher?: string;
-		originalPublisherPlace?: string;
-		originalTitle?: string;
-		page?: string;
 		publisher?: string;
-		publisherPlace?: string;
-		references?: string;
-		reviewedAuthor?: CSLName[];
-		reviewedTitle?: string;
-		section?: string;
-		shortTitle?: string;
-		source?: string;
-		status?: string;
-		submitted?: CSLDate;
+		'publisher-place'?: string;
 		title?: string;
-		translator?: CSLName[];
 		type: CSLItemType;
-		URL?: string;
-		version?: string;
-		volume?: string;
 	}
 
 	export class Cite {

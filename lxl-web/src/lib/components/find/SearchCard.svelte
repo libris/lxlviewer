@@ -74,6 +74,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 {/snippet}
 
 <div class="search-card-container">
+	<!-- Zotero tag -->
+	<abbr class="unapi-id hidden" title={id?.replace('#work-record', '')}></abbr>
 	<article
 		{id}
 		class="search-card border-neutral relative grid w-full gap-x-4 border-t px-0 py-3 font-normal transition-shadow md:px-4"

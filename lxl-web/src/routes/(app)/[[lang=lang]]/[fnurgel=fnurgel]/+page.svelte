@@ -10,11 +10,8 @@
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
 <div data-testid="resource-page" class="contents">
-	{#if data.holdingsByInstanceId}
-		{#each Object.keys(data.holdingsByInstanceId) as id (id)}
-			<abbr class="unapi-id hidden" title={id}></abbr>
-		{/each}
-	{/if}
+	<!-- Zotero tag -->
+	<abbr class="unapi-id hidden" title={page.params.fnurgel}></abbr>
 	<Resource
 		fnurgel={page.params.fnurgel}
 		type={data.type}

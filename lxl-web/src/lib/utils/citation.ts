@@ -4,6 +4,7 @@ import '@citation-js/plugin-bibtex';
 import { pushState } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import type { FramedData } from '$lib/types/xl';
+import { centerOnWork } from './centerOnWork';
 
 export function getCiteLink(url: URL, value: string) {
 	const newSearchParams = new SvelteURLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -22,45 +23,48 @@ export function handleClickCite(
 
 /**
  * @param mainEntity
- * Maps a mainEntity into rudimentary CSLJSON and returns a citation.js Cite instance
+ * Maps mainEntity into CSLJSON and returns a citation.js Cite instance
+ * works containing multiple instances will get one cite for each
  * TODO: add lang
  */
-export function citeFromMainEntity(instance: FramedData) {
-	const csl: CSLJSON = {
-		id: instance['@id'] as string,
-		type: 'book', // TODO type mapping
-		title: instance.hasTitle.map((t) => t.computedLabel).join('; '),
-		author: instance.instanceOf?.contribution?.map((c) => {
-			return {
-				family: c?.agent?.familyName,
-				given: c?.agent?.givenName
-			};
-		}),
-		ISBN: instance?.identifiedBy
-			?.map((i) => {
-				if (i?.['@type'] === 'ISBN') {
-					return i?.value;
-				}
-			})
-			.join('; '),
-		issued: { 'date-parts': [instance?.publication?.map((p) => p?.year)] },
-		publisher: instance?.publication?.map((p) => p?.agent?.computedLabel).join('; '),
-		publisherPlace: instance?.publication
-			?.flatMap((pub) => pub?.place)
-			.map((p) => p?.computedLabel)
-			.join('; ')
-	};
+export function citeFromMainEntity(data: FramedData) {
+	let result: CSLJSON[] = [];
 
-	return new Cite(csl);
+	const mainEntity = centerOnWork(data);
+	if (mainEntity?.['@reverse']?.instanceOf) {
+		// map work with instances
+		result = mainEntity?.['@reverse']?.instanceOf.map((instance) => mapCsl(instance, mainEntity));
+	} else {
+		// map instance
+		result = [mapCsl(mainEntity, mainEntity)];
+	}
+
+	function mapCsl(instance, mainEntity): CSLJSON {
+		return {
+			id: instance['@id'] as string,
+			type: 'book', // TODO type mapping
+			title: instance?.hasTitle?.map((t) => t?.computedLabel).join('; '),
+			author: mainEntity?.contribution?.map((c) => {
+				return {
+					family: c?.agent?.familyName,
+					given: c?.agent?.givenName
+				};
+			}),
+			ISBN: instance?.identifiedBy
+				?.map((i) => {
+					if (i?.['@type'] === 'ISBN') {
+						return i?.value;
+					}
+				})
+				.join('; '),
+			issued: { 'date-parts': [instance?.publication?.[0]?.year] },
+			publisher: instance?.publication?.[0]?.agent?.computedLabel,
+			'publisher-place': instance?.publication?.[0]?.place?.[0]?.computedLabel
+		};
+	}
+
+	return new Cite(result);
 }
-
-// export function formatCsl(
-// 		csl: CslJSON,
-// 		style?: 'csl' | 'bibtex' | 'ris' | 'citation-*' = 'csl',
-// 		type?: 'json' | 'html' | 'string' = 'json',
-// 		format?: 'real' | 'string' = 'real'
-// 	) {
-// }
 
 // CSL-JSON
 // cite.get({format: 'real', type: 'json', style: 'csl'})
