@@ -247,6 +247,6 @@ export default {
 		hide: 'Hide pane'
 	},
 	citations: {
-		createCitation: 'Create citation'
+		cite: 'Cite'
 	}
 };

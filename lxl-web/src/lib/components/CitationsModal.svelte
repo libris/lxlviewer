@@ -33,7 +33,7 @@ inside a modal/panel -->
 {#if page.state.cite || page.url.searchParams.has('cite')}
 	<Modal close={handleCloseCitations}>
 		{#snippet title()}
-			<span>{page.data.t('citations.createCitation')}</span>
+			<span>{page.data.t('citations.cite')}</span>
 		{/snippet}
 		<Citations {citations} />
 	</Modal>

@@ -8,6 +8,7 @@
 	import HoldingsModal from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/HoldingsModal.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
@@ -94,19 +95,31 @@
 		</div>
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-6">
 			<section id="{uidPrefix}top">
-				<header>
-					<hgroup>
-						<p class="text-subtle text-xs font-medium">
-							{#if TypeIcon}
-								<TypeIcon class="mr-0.5 inline text-sm" />
-							{/if}
-							<DecoratedData data={decoratedTypes} showLabels={ShowLabelsOptions.Never} />
-						</p>
-						<h1 class="decorated-heading my-3 text-3xl font-medium @3xl:text-3xl">
-							<DecoratedData data={decoratedHeading} showLabels={ShowLabelsOptions.Never} />
-						</h1>
-					</hgroup>
-				</header>
+				<div class="flex">
+					<header class="flex-1">
+						<hgroup>
+							<p class="text-subtle text-xs font-medium">
+								{#if TypeIcon}
+									<TypeIcon class="mr-0.5 inline text-sm" />
+								{/if}
+								<DecoratedData data={decoratedTypes} showLabels={ShowLabelsOptions.Never} />
+							</p>
+							<h1 class="decorated-heading my-3 text-3xl font-medium @3xl:text-3xl">
+								<DecoratedData data={decoratedHeading} showLabels={ShowLabelsOptions.Never} />
+							</h1>
+						</hgroup>
+					</header>
+					<div class="header-actions">
+						{#if instances.length === 1}
+							<a
+								class="btn btn-primary"
+								href={getCiteLink(page.url, fnurgel)}
+								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
+								>{page.data.t('citations.cite')}</a
+							>
+						{/if}
+					</div>
+				</div>
 				<div class="decorated-overview">
 					<DecoratedData data={decoratedOverview} block />
 				</div>
