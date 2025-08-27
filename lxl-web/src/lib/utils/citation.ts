@@ -1,7 +1,7 @@
 import { Cite, type CSLJSON } from '@citation-js/core';
 import '@citation-js/plugin-ris';
 import '@citation-js/plugin-bibtex';
-import { pushState } from '$app/navigation';
+import { goto, preloadData, pushState } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import type { FramedData } from '$lib/types/xl';
 import { centerOnWork } from './centerOnWork';
@@ -12,13 +12,20 @@ export function getCiteLink(url: URL, value: string) {
 	return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
 }
 
-export function handleClickCite(
+export async function handleClickCite(
 	event: MouseEvent & { currentTarget: HTMLAnchorElement },
-	state: object,
-	id: string
+	state: object
 ) {
+	// https://svelte.dev/docs/kit/shallow-routing#Loading-data-for-a-route
 	event.preventDefault();
-	pushState(event.currentTarget.href, { ...state, cite: id });
+	const { href } = event.currentTarget;
+	const result = await preloadData(href);
+
+	if (result.type === 'loaded' && result.status === 200) {
+		pushState(href, { ...state, citations: await result.data.citations });
+	} else {
+		goto(href);
+	}
 }
 
 /**

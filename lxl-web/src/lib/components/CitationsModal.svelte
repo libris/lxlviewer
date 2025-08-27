@@ -8,8 +8,6 @@ inside a modal/panel -->
 	import Citations from './Citations.svelte';
 
 	let previousURL: URL;
-	// TODO type
-	const citations: Promise<unknown> = page.data.citations;
 
 	afterNavigate(({ to }) => {
 		if (to) {
@@ -30,11 +28,11 @@ inside a modal/panel -->
 	}
 </script>
 
-{#if page.state.cite || page.url.searchParams.has('cite')}
+{#if page.state.citations || page.url.searchParams.get('cite')}
 	<Modal close={handleCloseCitations}>
 		{#snippet title()}
 			<span>{page.data.t('citations.cite')}</span>
 		{/snippet}
-		<Citations {citations} />
+		<Citations citations={page.state.citations || page.data.citations} />
 	</Modal>
 {/if}

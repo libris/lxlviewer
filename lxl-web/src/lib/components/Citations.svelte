@@ -1,6 +1,10 @@
 <script lang="ts">
-	import { Cite } from '@citation-js/core';
-	let { citations } = $props();
+	import { Cite, type CSLJSON } from '@citation-js/core';
+	type Props = {
+		citations: CSLJSON[];
+	};
+
+	let { citations }: Props = $props();
 </script>
 
 <div>

@@ -4,6 +4,7 @@ import type { MatomoTracker } from '$lib/types/matomo';
 import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import type { AdjecentSearchResult } from '$lib/types/search';
+import type { CSLJSON } from '@citation-js/core';
 import 'unplugin-icons/types/svelte';
 
 declare global {
@@ -25,7 +26,7 @@ declare global {
 			expandedInstances?: string[];
 			holdings?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
-			cite?: string;
+			citations?: CSLJSON[];
 		}
 		// interface Platform {}
 	}
