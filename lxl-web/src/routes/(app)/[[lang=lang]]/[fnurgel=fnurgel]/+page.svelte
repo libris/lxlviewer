@@ -11,7 +11,9 @@
 </svelte:head>
 <div data-testid="resource-page" class="contents">
 	<!-- Zotero tag -->
-	<abbr class="unapi-id hidden" title={page.params.fnurgel}></abbr>
+	{#if data.instances.length}
+		<abbr class="unapi-id hidden" title={page.params.fnurgel}></abbr>
+	{/if}
 	<Resource
 		fnurgel={page.params.fnurgel}
 		type={data.type}
