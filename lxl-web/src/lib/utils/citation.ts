@@ -1,10 +1,25 @@
-import { Cite, type CSLJSON } from '@citation-js/core';
+import { Cite, plugins } from '@citation-js/core';
 import '@citation-js/plugin-ris';
 import '@citation-js/plugin-bibtex';
+import '@citation-js/plugin-csl';
+
 import { goto, preloadData, pushState } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import type { FramedData } from '$lib/types/xl';
 import { centerOnWork } from './centerOnWork';
+import type { CSLJSON } from '$lib/types/citation';
+
+// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
+import chicago from '$lib/assets/csl/chicago-author-date.csl?raw';
+
+// https://github.com/citation-js/citation-js/tree/main/packages/plugin-csl
+const templateName = 'chicago';
+const template = chicago;
+
+const config = plugins.config.get('@csl');
+config.templates.add(templateName, template);
+
+// console.log(config)
 
 export function getCiteLink(url: URL, value: string) {
 	const newSearchParams = new SvelteURLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -72,46 +87,3 @@ export function citeFromMainEntity(data: FramedData) {
 
 	return new Cite(result);
 }
-
-// CSL-JSON
-// cite.get({format: 'real', type: 'json', style: 'csl'})
-
-// cite.get({
-//   type: 'html',
-//   style: 'citation-apa',
-//   prepend ({id}) {
-//     return `[${id}]: `
-//   },
-//   append: ` [Retreived on ${date}]`
-// })
-
-// let templateName = 'custom'
-// let template = '<?xml version="1.0" encoding="utf-8"?><style ...>...</style>' // The actual XML file
-
-// let config = Cite.plugins.config.get('csl')
-// config.templates.add(templateName, template)
-
-// let example = new Cite(...)
-// example.format('bibliography', {
-//   format: 'html',
-//   template: templateName,
-//   lang: 'en-US'
-// })
-
-// CSL Locale Plugins
-// Replace templateName with the template name you want to use.
-
-// Different CSL Locales can be registered like this:
-
-// let language = 'en-GB'
-// let locale = '<?xml version="1.0" encoding="utf-8"?><locale ...>...</locale>' // The actual XML file
-
-// let config = Cite.plugins.config.get('csl')
-// config.locales.add(language, locale)
-
-// let example = new Cite(...)
-// example.format('bibliography', {
-//   format: 'html',
-//   template: 'apa',
-//   lang: language
-// })

@@ -10,6 +10,7 @@
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
+	import BiQuote from '~icons/bi/chat-right-quote';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { Relation } from '$lib/utils/relations';
@@ -95,7 +96,7 @@
 		</div>
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-6">
 			<section id="{uidPrefix}top">
-				<div class="flex">
+				<div class="flex gap-2">
 					<header class="flex-1">
 						<hgroup>
 							<p class="text-subtle text-xs font-medium">
@@ -115,8 +116,10 @@
 								class="btn btn-primary"
 								href={getCiteLink(page.url, fnurgel)}
 								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
-								>{page.data.t('citations.cite')}</a
 							>
+								<BiQuote />
+								<span>{page.data.t('citations.cite')}</span>
+							</a>
 						{/if}
 					</div>
 				</div>

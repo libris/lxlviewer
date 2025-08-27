@@ -246,6 +246,7 @@ export default {
 		hide: 'Dölj sidopanel'
 	},
 	citations: {
-		cite: 'Referera'
+		cite: 'Referera',
+		createCitation: 'Skapa referens'
 	}
 };

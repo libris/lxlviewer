@@ -5,6 +5,4 @@ declare module 'lxljs/string';
 declare module 'lxljs/vocab';
 declare module 'nprogress';
 declare module '*.md';
-/// <reference path="$lib/types/citation.d.ts" />
-declare module '@citation-js/plugin-ris';
-declare module '@citation-js/plugin-bibtex';
+declare module '@citation-js/core';
