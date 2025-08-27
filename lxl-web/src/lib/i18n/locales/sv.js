@@ -206,7 +206,7 @@ export default {
 		previous: 'Föregående',
 		next: 'Nästa',
 		resultOf: 'av',
-		showInSearchResults: 'Visa i sökträfflista',
+		showInSearchResults: 'Visa i träfflista',
 		showInSearchResultsShort: 'Visa träfflista'
 	},
 	holdings: {
