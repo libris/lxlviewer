@@ -13,6 +13,6 @@ export const load = async ({ url, fetch }) => {
 	}
 
 	return {
-		citations: getCitations()
+		citations: await getCitations()
 	};
 };

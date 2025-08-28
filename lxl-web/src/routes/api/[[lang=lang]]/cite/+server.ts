@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales';
-import { citeFromMainEntity } from '$lib/utils/citation';
+import { cslFromMainEntity, initCite } from '$lib/utils/citation';
 
 const supportedFormats = ['ris', 'bibtex', 'csl'];
 
@@ -16,11 +16,13 @@ export async function GET({ params, url, fetch }) {
 			const res = await fetch(`${env.API_URL}/${id}/data.jsonld?framed=true&computedLabel=${lang}`);
 			if (res.ok) {
 				const record = await res.json();
-				const cite = citeFromMainEntity(record.mainEntity);
+				const csl = cslFromMainEntity(record.mainEntity);
+				const cite = await initCite();
+				cite.add(csl);
 
 				// return CSL-JSON
 				if (format === 'csl') {
-					const csl = cite.format('data') as string;
+					const csl = cite.format('csl') as string;
 					return new Response(csl, {
 						status: 300,
 						headers: {

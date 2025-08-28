@@ -6,3 +6,6 @@ declare module 'lxljs/vocab';
 declare module 'nprogress';
 declare module '*.md';
 declare module '@citation-js/core';
+declare module '@citation-js/plugin-bibtex';
+declare module '@citation-js/plugin-ris';
+declare module '@citation-js/plugin-csl';
