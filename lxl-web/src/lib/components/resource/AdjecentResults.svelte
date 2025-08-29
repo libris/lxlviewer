@@ -1,0 +1,127 @@
+<script lang="ts">
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
+	import type { AdjecentSearchResult } from '$lib/types/search';
+	import { relativizeUrl } from '$lib/utils/http';
+	import IconListUl from '~icons/bi/chevron-right';
+	import IconChevronRight from '~icons/bi/chevron-right';
+	import IconChevronleft from '~icons/bi/chevron-left';
+	import capitalize from '$lib/utils/capitalize';
+	import { getPreviousItemFnurgel, getNextItemFnurgel } from '$lib/utils/adjecentSearchResult';
+
+	type Props = {
+		fnurgel: string;
+		adjecentSearchResults: AdjecentSearchResult[];
+	};
+
+	const { fnurgel, adjecentSearchResults: adjecentSearchResultsFromPageState }: Props = $props();
+
+	let adjecentSearchResults = $state(adjecentSearchResultsFromPageState);
+
+	const currentSearchResult = $derived(
+		adjecentSearchResults?.find((searchResult) =>
+			searchResult.items.find((item) => item['@id'].includes(fnurgel))
+		)
+	);
+
+	const currentSearchResultIndex = $derived(
+		adjecentSearchResults?.findIndex(
+			(searchResult) => searchResult['@id'] === currentSearchResult?.['@id']
+		)
+	);
+
+	const itemIndex = $derived(
+		currentSearchResult?.items.findIndex((item) => item['@id'].includes(fnurgel))
+	);
+
+	const indexOfTotalSearchResults = $derived(
+		currentSearchResult && typeof itemIndex === 'number' && itemIndex >= 0
+			? currentSearchResult?.itemOffset + itemIndex
+			: undefined
+	);
+
+	const previousItemFnurgel = $derived(
+		getPreviousItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
+	);
+
+	const nextItemFnurgel = $derived(
+		getNextItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
+	);
+
+	function passAlongAdjecentSearchResults(event: MouseEvent) {
+		event.preventDefault();
+		goto((event.currentTarget as HTMLAnchorElement).href, {
+			state: {
+				...page.state,
+				adjecentSearchResults: $state.snapshot(adjecentSearchResults)
+			}
+		});
+	}
+</script>
+
+{#snippet previousResultContent()}
+	<IconChevronleft class="inline" />
+	{page.data.t('resource.previous')}
+	<span class="hidden @xl:inline">{page.data.t('resource.result')}</span>
+{/snippet}
+
+{#snippet nextResultContent()}
+	{page.data.t('resource.next')}
+	<span class="hidden @xl:inline">{page.data.t('resource.result')}</span>
+	<IconChevronRight class="inline" />
+{/snippet}
+
+{#if currentSearchResult}
+	<div class="flex min-h-12 items-center gap-1 text-xs">
+		<a
+			href={relativizeUrl(currentSearchResult['@id'])}
+			class="btn btn-primary inline-block whitespace-nowrap"
+		>
+			<IconListUl class="inline" />
+			<span class="@xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>
+			<span class="hidden @xl:inline">{page.data.t('resource.showInSearchResults')}</span>
+		</a>
+		{#if typeof indexOfTotalSearchResults === 'number'}
+			<span class="text-2xs ml-1 truncate">
+				{capitalize(page.data.t('resource.result'))}
+				<span class="font-medium">
+					{(indexOfTotalSearchResults + 1).toLocaleString(page.data.locale)}
+				</span>
+				{page.data.t('resource.resultOf')}
+				<span class="font-medium">
+					{currentSearchResult.totalItems.toLocaleString(page.data.locale)}
+				</span>
+			</span>
+		{/if}
+		{#if previousItemFnurgel || nextItemFnurgel}
+			<span class="ml-auto flex gap-2">
+				{#if previousItemFnurgel}
+					<a
+						href={previousItemFnurgel}
+						class="btn btn-primary"
+						onclick={passAlongAdjecentSearchResults}
+					>
+						{@render previousResultContent()}
+					</a>
+				{:else}
+					<span class="text-disabled btn btn-primary">
+						{@render previousResultContent()}
+					</span>
+				{/if}
+				{#if nextItemFnurgel}
+					<a
+						href={nextItemFnurgel}
+						class="btn btn-primary"
+						onclick={passAlongAdjecentSearchResults}
+					>
+						{@render nextResultContent()}
+					</a>
+				{:else}
+					<span class="text-disabled btn btn-primary">
+						{@render nextResultContent()}
+					</span>
+				{/if}
+			</span>
+		{/if}
+	</div>
+{/if}

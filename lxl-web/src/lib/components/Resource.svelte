@@ -14,6 +14,7 @@
 	import type { Relation } from '$lib/utils/relations';
 	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
 	import SearchResultList from './SearchResultList.svelte';
+	import AdjecentResults from './resource/AdjecentResults.svelte';
 
 	type Props = {
 		fnurgel: string;
@@ -53,9 +54,7 @@
 </script>
 
 {#if adjecentSearchResults}
-	<div>
-		{JSON.stringify(adjecentSearchResults)}
-	</div>
+	<AdjecentResults {fnurgel} {adjecentSearchResults} />
 {/if}
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
 	{#if tableOfContents.length}

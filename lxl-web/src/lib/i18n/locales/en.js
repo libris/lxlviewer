@@ -204,7 +204,12 @@ export default {
 		all: 'all',
 		results: 'results',
 		result: 'result',
-		editions: 'Editions'
+		editions: 'Editions',
+		previous: 'Previous',
+		next: 'Next',
+		resultOf: 'of',
+		showInSearchResults: 'Show in search results',
+		showInSearchResultsShort: 'Show all results'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',
