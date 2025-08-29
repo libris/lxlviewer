@@ -49,3 +49,16 @@ test('navigation between results works', async ({ page }) => {
 		'button for navigating to search results works when navigating to result which is part of other search results'
 	).toHaveURL('/find?_q=f&_limit=20');
 });
+
+test('navigation between results also works when changing _limit value', async ({ page }) => {
+	await page.goto('/find?_q=f&_limit=2');
+	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
+	await page.getByRole('link').getByText('6', { exact: true }).click();
+	await expect(page).toHaveURL('/find?_q=f&_limit=2&_offset=10');
+	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
+	await expect(page).toHaveURL(articleIds[10]);
+	await page.getByRole('main').getByRole('link').getByText('Föregående').click();
+	await expect(page).toHaveURL(articleIds[9]);
+	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
+	await expect(page).toHaveURL('/find?_q=f&_limit=2&_offset=8');
+});
