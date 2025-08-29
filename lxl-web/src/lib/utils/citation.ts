@@ -9,7 +9,6 @@ const availableFormats = {
 	chicago: {
 		name: 'Chicago',
 		fullName: 'Chicago Manual of Style 17th edition (author-date)',
-		// real source
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
 		source: (await import('$lib/assets/csl/chicago-author-date.csl?raw')).default
 	},
@@ -30,7 +29,7 @@ const availableFormats = {
 
 let loaded = false;
 
-// TODO this better
+// TODO more accurate mapping
 export function cslFromMainEntity(data: FramedData): CSLJSON[] {
 	const mainEntity = centerOnWork(data);
 
@@ -47,12 +46,12 @@ export function cslFromMainEntity(data: FramedData): CSLJSON[] {
 			id: instance['@id'] as string,
 			type: 'book', // TODO type mapping
 			title: instance?.hasTitle?.map((t) => t?.computedLabel).join('; '),
-			author: mainEntity?.contribution?.map((c) => {
-				return {
-					family: c?.agent?.familyName,
-					given: c?.agent?.givenName
-				};
-			}),
+			author: [
+				{
+					family: mainEntity.contribution?.[0]?.agent?.familyName,
+					given: mainEntity.contribution?.[0]?.agent?.givenName
+				}
+			],
 			ISBN: instance?.identifiedBy
 				?.map((i) => {
 					if (i?.['@type'] === 'ISBN') {

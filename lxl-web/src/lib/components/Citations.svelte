@@ -2,6 +2,9 @@
 	import type { CSLJSON } from '$lib/types/citation';
 	import { getAvailableFormats, initCite } from '$lib/utils/citation';
 	import { onMount } from 'svelte';
+	import Spinner from './Spinner.svelte';
+	import { fade } from 'svelte/transition';
+	import { page } from '$app/state';
 
 	type Props = {
 		citations: CSLJSON[];
@@ -9,10 +12,12 @@
 
 	let { citations }: Props = $props();
 
+	let loading = $state(false);
 	const preElements = ['ris', 'bibtex', 'csl'];
 	let selectedFormat = $state('all');
 
 	let cite: Awaited<ReturnType<typeof initCite>> | null = $state(null);
+
 	let formattedData = $state();
 	const displayedData = $derived(
 		formattedData &&
@@ -22,6 +27,7 @@
 	);
 
 	async function load() {
+		loading = true;
 		cite = await initCite();
 		cite.add(citations);
 
@@ -29,9 +35,10 @@
 		formattedData = availableFormats.map((format) => {
 			return {
 				...format,
-				citation: cite?.format(format.key)
+				citation: cite.format(format.key)
 			};
 		});
+		loading = false;
 	}
 
 	onMount(() => {
@@ -41,17 +48,27 @@
 
 <div>
 	<select class="btn btn-primary" bind:value={selectedFormat}>
-		<option value="all">Alla format</option>
+		<option value="all">{page.data.t('citations.allFormats')}</option>
 		{#each getAvailableFormats() as format (format.key)}
 			<option value={format.key}>{format.name}</option>
 		{/each}
 	</select>
-	<div class="flex flex-col gap-1">
+	{#if loading}
+		<div class="flex h-36 items-center justify-center" in:fade={{ duration: 200 }}>
+			<span class="size-6">
+				<Spinner />
+			</span>
+		</div>
+	{/if}
+	<div class="mt-2 flex flex-col gap-1">
 		{#if displayedData && displayedData.length}
 			{#each displayedData as style (style.key)}
 				<div class="my-2 text-xs">
-					<p class="mb-2 font-bold">{style.name}</p>
-					<svelte:element this={preElements.some((e) => e === style.key) ? 'pre' : 'span'}>
+					<p class="mb-2 font-medium">{style.name}</p>
+					<svelte:element
+						this={preElements.some((e) => e === style.key) ? 'pre' : 'span'}
+						class="block rounded-sm bg-neutral-100 p-2"
+					>
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html style.citation}
 					</svelte:element>

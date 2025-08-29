@@ -247,6 +247,7 @@ export default {
 	},
 	citations: {
 		cite: 'Referera',
-		createCitation: 'Skapa referens'
+		createCitation: 'Skapa referens',
+		allFormats: 'Alla format'
 	}
 };
