@@ -33,6 +33,20 @@
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, type)}
 			>
+				{#if instances.length === 1}
+					{@const id = relativizeUrl(getResourceId(instances[0] as ResourceData))}
+					{#if id}
+						{@const favWithHolding = getMyLibsFromHoldings(
+							userSettings.myLibraries,
+							page.data.holdingsByInstanceId[id]
+						)}
+						{#if favWithHolding.length}
+							<div class="mr-1 text-lg">
+								<MyLibrariesIndicator libraries={favWithHolding} />
+							</div>
+						{/if}
+					{/if}
+				{/if}
 				{getLocalizedType(type)}
 				<span class="text-2xs truncate font-normal opacity-90">
 					{' · '}
@@ -47,17 +61,3 @@
 		</li>
 	{/each}
 </ul>
-{#if instances.length === 1}
-	{@const id = relativizeUrl(getResourceId(instances[0] as ResourceData))}
-	{#if id}
-		{@const favWithHolding = getMyLibsFromHoldings(
-			userSettings.myLibraries,
-			page.data.holdingsByInstanceId[id]
-		)}
-		{#if favWithHolding.length}
-			<div class="mt-2 text-2xl">
-				<MyLibrariesIndicator libraries={favWithHolding} />
-			</div>
-		{/if}
-	{/if}
-{/if}
