@@ -224,3 +224,15 @@ export interface QualifierSuggestion {
 	_q: string;
 	cursor: number;
 }
+
+export interface AdjecentSearchResult {
+	[JsonLd.ID]: string;
+	itemOffset: number;
+	itemsPerPage: number;
+	totalItems: number;
+	first: Link;
+	last: Link;
+	previous?: Link;
+	next?: Link;
+	items: Link[];
+}

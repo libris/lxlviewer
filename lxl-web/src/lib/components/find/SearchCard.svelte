@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { SearchResultItem } from '$lib/types/search';
 	import { LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
@@ -15,6 +16,7 @@
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 	import BiHouse from '~icons/bi/house';
+	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 
 	interface Props {
 		item: SearchResultItem;
@@ -31,6 +33,16 @@
 	let showDebugHaystack = $state(false);
 
 	const TypeIcon = $derived(getTypeIcon(item['@type']));
+
+	function passAlongAdjecentSearchResults(event: MouseEvent) {
+		event.preventDefault();
+		goto((event.currentTarget as HTMLAnchorElement).href, {
+			state: {
+				...page.state,
+				adjecentSearchResults: [asAdjecentSearchResult(page.data.searchResult)] // TODO: save adjecent results together with optional pane references so it will work with multiple panes
+			}
+		});
+	}
 </script>
 
 <!--//TODO: look into using grid template areas + container queries instead
@@ -71,6 +83,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				aria-labelledby={titleId}
 				aria-describedby={`${bodyId} ${footerId}`}
 				tabindex="-1"
+				onclick={passAlongAdjecentSearchResults}
 			>
 				<div class="pointer-events-none relative flex">
 					{#if item.image}
@@ -133,6 +146,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							href={id}
 							class="link-subtle block decoration-neutral-400"
 							aria-describedby={`${bodyId} ${footerId}`}
+							onclick={passAlongAdjecentSearchResults}
 						>
 							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 						</a>
