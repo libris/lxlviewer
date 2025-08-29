@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { beforeNavigate, afterNavigate, goto } from '$app/navigation';
+	import { afterNavigate, goto } from '$app/navigation';
 	import type { AdjecentSearchResult } from '$lib/types/search';
 	import { relativizeUrl } from '$lib/utils/http';
 	import IconListUl from '~icons/bi/chevron-right';
@@ -17,14 +17,10 @@
 
 	const { fnurgel, adjecentSearchResults: adjecentSearchResultsFromPageState }: Props = $props();
 
-	let previousResultsQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
-	let nextResultsQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
+	let previousQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
+	let nextQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
 
-	const adjecentSearchResults = $derived([
-		...(previousResultsQuery?.current ? [previousResultsQuery.current] : []),
-		...adjecentSearchResultsFromPageState,
-		...(nextResultsQuery?.current ? [nextResultsQuery.current] : [])
-	]);
+	let adjecentSearchResults = $state(adjecentSearchResultsFromPageState);
 
 	const currentSearchResult = $derived(
 		adjecentSearchResults?.find((searchResult) =>
@@ -56,33 +52,15 @@
 		getNextItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
 	);
 
-	function handleClickNextItem(event: MouseEvent) {
+	function passAlongAdjecentSearchResults(event: MouseEvent) {
 		event.preventDefault();
 		goto((event.currentTarget as HTMLAnchorElement).href, {
 			state: {
 				...page.state,
-				adjecentSearchResults
+				adjecentSearchResults: $state.snapshot(adjecentSearchResults)
 			}
 		});
 	}
-
-	function handleClickPreviousItem(event: MouseEvent) {
-		event.preventDefault();
-		goto((event.currentTarget as HTMLAnchorElement).href, {
-			state: {
-				...page.state,
-				adjecentSearchResults
-			}
-		});
-	}
-
-	beforeNavigate(() => {
-		/* Reset queries on navigation */
-		if (previousResultsQuery || nextResultsQuery) {
-			previousResultsQuery = undefined;
-			nextResultsQuery = undefined;
-		}
-	});
 
 	afterNavigate(() => {
 		if (
@@ -90,14 +68,36 @@
 			currentSearchResult?.previous?.['@id'] &&
 			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.previous?.['@id'])
 		) {
-			previousResultsQuery = getAdjecentSearchResult(currentSearchResult.previous['@id']);
+			previousQuery = getAdjecentSearchResult(currentSearchResult.previous['@id']);
 		}
 		if (
 			!nextItemFnurgel &&
 			currentSearchResult?.next?.['@id'] &&
 			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.next?.['@id'])
 		) {
-			nextResultsQuery = getAdjecentSearchResult(currentSearchResult.next['@id']);
+			nextQuery = getAdjecentSearchResult(currentSearchResult.next['@id']);
+		}
+	});
+
+	$effect(() => {
+		if (
+			previousQuery?.current &&
+			!adjecentSearchResults.find(
+				(searchResult) => searchResult['@id'] === previousQuery?.current?.['@id']
+			)
+		) {
+			adjecentSearchResults = [previousQuery.current, ...adjecentSearchResults];
+		}
+	});
+
+	$effect(() => {
+		if (
+			nextQuery?.current &&
+			!adjecentSearchResults.find(
+				(searchResult) => searchResult['@id'] === nextQuery?.current?.['@id']
+			)
+		) {
+			adjecentSearchResults = [...adjecentSearchResults, nextQuery.current];
 		}
 	});
 </script>
@@ -139,7 +139,11 @@
 		{#if previousItemFnurgel || nextItemFnurgel}
 			<span class="ml-auto flex gap-2">
 				{#if previousItemFnurgel}
-					<a href={previousItemFnurgel} class="btn btn-primary" onclick={handleClickPreviousItem}>
+					<a
+						href={previousItemFnurgel}
+						class="btn btn-primary"
+						onclick={passAlongAdjecentSearchResults}
+					>
 						{@render previousResultContent()}
 					</a>
 				{:else}
@@ -148,7 +152,11 @@
 					</span>
 				{/if}
 				{#if nextItemFnurgel}
-					<a href={nextItemFnurgel} class="btn btn-primary" onclick={handleClickNextItem}>
+					<a
+						href={nextItemFnurgel}
+						class="btn btn-primary"
+						onclick={passAlongAdjecentSearchResults}
+					>
 						{@render nextResultContent()}
 					</a>
 				{:else}
