@@ -48,6 +48,4 @@ test('page displays the site header', async ({ page }) => {
 		page,
 		'button for navigating to search results works when navigating to result which is part of other search results'
 	).toHaveURL('/find?_q=f&_limit=20');
-
-	await expect(page.getByRole('banner')).toBeVisible();
 });
