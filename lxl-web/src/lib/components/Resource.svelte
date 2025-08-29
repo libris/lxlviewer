@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
@@ -13,13 +12,9 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { Relation } from '$lib/utils/relations';
-	import type { SearchResult, SearchResultItem } from '$lib/types/search';
+	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
 	import SearchResultList from './SearchResultList.svelte';
-	import getAdjecentResults from '$lib/utils/getAdjecentResults';
-	import IconChevronRight from '~icons/bi/chevron-right';
-	import IconChevronleft from '~icons/bi/chevron-left';
-	import IconListUl from '~icons/bi/list-ul';
-	import capitalize from '$lib/utils/capitalize';
+	import AdjecentResults from './resource/AdjecentResults.svelte';
 
 	type Props = {
 		fnurgel: string;
@@ -34,7 +29,7 @@
 		instances: Record<string, unknown>[]; // TODO: fix better types
 		holdersByType: HoldersByType;
 		tableOfContents: TableOfContentsItem[];
-		searchResult?: SearchResult;
+		adjecentSearchResults?: AdjecentSearchResult[];
 	};
 
 	const {
@@ -50,39 +45,13 @@
 		instances,
 		holdersByType,
 		tableOfContents,
-		searchResult
+		adjecentSearchResults
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
-
-	const adjecentResults = $derived.by(() =>
-		getAdjecentResults({ searchResult, fnurgel, uidPrefix })
-	);
-
-	function passAlongSearchResults(event: MouseEvent) {
-		event.preventDefault();
-		goto((event.currentTarget as HTMLAnchorElement).href, {
-			state: {
-				...page.state,
-				searchResult
-			}
-		});
-	}
 </script>
-
-{#snippet previousResultContent()}
-	<IconChevronleft class="inline" />
-	{page.data.t('resource.previous')}
-	<span class="hidden @xl:inline">{page.data.t('resource.result')}</span>
-{/snippet}
-
-{#snippet nextResultContent()}
-	{page.data.t('resource.next')}
-	<span class="hidden @xl:inline">{page.data.t('resource.result')}</span>
-	<IconChevronRight class="inline" />
-{/snippet}
 
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
 	{#if tableOfContents.length}
@@ -90,52 +59,8 @@
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
 		</section>
 	{/if}
-	{#if searchResult && adjecentResults?.searchResult}
-		<div class="border-neutral flex min-h-12 items-center gap-1 border-b px-3 text-xs">
-			<a href={adjecentResults.searchResult} class="btn btn-primary inline-block whitespace-nowrap">
-				<IconListUl class="inline" />
-				<span class="@xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>
-				<span class="hidden @xl:inline">{page.data.t('resource.showInSearchResults')}</span>
-			</a>
-			<span class="text-2xs ml-1 truncate">
-				{capitalize(page.data.t('resource.result'))}
-				<span class="font-medium">
-					{(adjecentResults.absoluteOffset + 1).toLocaleString(page.data.locale)}
-				</span>
-				{page.data.t('resource.resultOf')}
-				<span class="font-medium">
-					{searchResult.totalItems.toLocaleString(page.data.locale)}
-				</span>
-			</span>
-			<span class="ml-auto flex gap-2">
-				{#if adjecentResults.previousResultItem}
-					<a
-						href={adjecentResults.previousResultItem}
-						class="btn btn-primary"
-						onclick={passAlongSearchResults}
-					>
-						{@render previousResultContent()}
-					</a>
-				{:else}
-					<span class="text-disabled btn btn-primary">
-						{@render previousResultContent()}
-					</span>
-				{/if}
-				{#if adjecentResults.nextResultItem}
-					<a
-						href={adjecentResults.nextResultItem}
-						class="btn btn-primary"
-						onclick={passAlongSearchResults}
-					>
-						{@render nextResultContent()}
-					</a>
-				{:else}
-					<span class="text-disabled btn btn-primary">
-						{@render nextResultContent()}
-					</span>
-				{/if}
-			</span>
-		</div>
+	{#if adjecentSearchResults}
+		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	{/if}
 	<div
 		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"

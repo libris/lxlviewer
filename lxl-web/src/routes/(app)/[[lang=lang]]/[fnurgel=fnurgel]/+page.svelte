@@ -22,6 +22,6 @@
 		instances={data.instances}
 		holdersByType={data.holdersByType}
 		tableOfContents={data.tableOfContents}
-		searchResult={page.state.searchResult}
+		adjecentSearchResults={page.state.adjecentSearchResults}
 	/>
 </div>

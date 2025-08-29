@@ -1,9 +1,9 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 import type { MatomoTracker } from '$lib/types/matomo';
-import type { SearchResult } from '$lib/types/search';
 import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
+import type { AdjecentSearchResult } from '$lib/types/search';
 import 'unplugin-icons/types/svelte';
 
 declare global {
@@ -24,7 +24,7 @@ declare global {
 		interface PageState {
 			expandedInstances?: string[];
 			holdings?: string;
-			searchResult?: SearchResult;
+			adjecentSearchResults?: AdjecentSearchResult[];
 		}
 		// interface Platform {}
 	}

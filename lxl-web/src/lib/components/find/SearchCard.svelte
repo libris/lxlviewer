@@ -16,6 +16,7 @@
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 	import BiHouse from '~icons/bi/house';
+	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResults';
 
 	interface Props {
 		item: SearchResultItem;
@@ -34,12 +35,12 @@
 
 	const TypeIcon = $derived(getTypeIcon(item['@type']));
 
-	function passAlongSearchResults(event: MouseEvent) {
+	function passAlongAdjecentSearchResults(event: MouseEvent) {
 		event.preventDefault();
 		goto((event.currentTarget as HTMLAnchorElement).href, {
 			state: {
 				...page.state,
-				searchResult: page.data.searchResult
+				adjecentSearchResults: [asAdjecentSearchResult(page.data.searchResult)] // TODO: save adjecent results together with optional pane references so it will work with multiple panes
 			}
 		});
 	}
@@ -87,7 +88,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				aria-labelledby={titleId}
 				aria-describedby={`${bodyId} ${footerId}`}
 				tabindex="-1"
-				onclick={passAlongSearchResults}
+				onclick={passAlongAdjecentSearchResults}
 			>
 				<div class="pointer-events-none relative flex">
 					{#if item.image}
@@ -150,7 +151,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							href={id}
 							class="link-subtle block decoration-neutral-400"
 							aria-describedby={`${bodyId} ${footerId}`}
-							onclick={passAlongSearchResults}
+							onclick={passAlongAdjecentSearchResults}
 						>
 							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 						</a>
