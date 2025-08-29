@@ -14,7 +14,7 @@ test.beforeAll(async ({ page }) => {
 		);
 });
 
-test('page displays the site header', async ({ page }) => {
+test('navigation between results works', async ({ page }) => {
 	await page.goto('/find?_q=f&_offset=0&_limit=20');
 	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
 	await expect(page).toHaveURL(articleIds[0]);
