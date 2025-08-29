@@ -54,7 +54,9 @@
 </script>
 
 {#if adjecentSearchResults}
-	<AdjecentResults {fnurgel} {adjecentSearchResults} />
+	<div class="border-b-neutral border-b px-3 sm:px-6">
+		<AdjecentResults {fnurgel} {adjecentSearchResults} />
+	</div>
 {/if}
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
 	{#if tableOfContents.length}

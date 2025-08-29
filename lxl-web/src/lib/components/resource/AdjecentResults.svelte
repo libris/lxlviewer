@@ -3,9 +3,8 @@
 	import { afterNavigate, goto } from '$app/navigation';
 	import type { AdjecentSearchResult } from '$lib/types/search';
 	import { relativizeUrl } from '$lib/utils/http';
-	import IconListUl from '~icons/bi/chevron-right';
+	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';
-	import IconChevronleft from '~icons/bi/chevron-left';
 	import capitalize from '$lib/utils/capitalize';
 	import { getPreviousItemFnurgel, getNextItemFnurgel } from '$lib/utils/adjecentSearchResult';
 	import { getAdjecentSearchResult } from '$lib/remotes/adjecentSearchResult.remote';
@@ -103,29 +102,21 @@
 </script>
 
 {#snippet previousResultContent()}
-	<IconChevronleft class="inline" />
-	{page.data.t('resource.previous')}
-	<span class="hidden @xl:inline">{page.data.t('resource.result')}</span>
+	<IconChevronLeft class="mr-0.5 inline" />{page.data.t('resource.previous')}
 {/snippet}
 
 {#snippet nextResultContent()}
-	{page.data.t('resource.next')}
-	<span class="hidden @xl:inline">{page.data.t('resource.result')}</span>
-	<IconChevronRight class="inline" />
+	{page.data.t('resource.next')}<IconChevronRight class="ml-0.5 inline" />
 {/snippet}
 
 {#if currentSearchResult}
-	<div class="flex min-h-12 items-center gap-1 text-xs">
-		<a
-			href={relativizeUrl(currentSearchResult['@id'])}
-			class="btn btn-primary inline-block whitespace-nowrap"
-		>
-			<IconListUl class="inline" />
-			<span class="@xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>
-			<span class="hidden @xl:inline">{page.data.t('resource.showInSearchResults')}</span>
-		</a>
+	<div class="@container flex min-h-12 items-center gap-2 text-xs">
 		{#if typeof indexOfTotalSearchResults === 'number'}
-			<span class="text-2xs ml-1 truncate">
+			<a href={relativizeUrl(currentSearchResult['@id'])} class="link text-2xs whitespace-nowrap">
+				<span class="@xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>
+				<span class="hidden @xl:inline">{page.data.t('resource.showInSearchResults')}</span>
+			</a>
+			<span class="text-2xs truncate">
 				{capitalize(page.data.t('resource.result'))}
 				<span class="font-medium">
 					{(indexOfTotalSearchResults + 1).toLocaleString(page.data.locale)}
@@ -136,35 +127,29 @@
 				</span>
 			</span>
 		{/if}
-		{#if previousItemFnurgel || nextItemFnurgel}
-			<span class="ml-auto flex gap-2">
+		<span class="text-2xs ml-auto flex gap-2">
+			<span class="after:text-subtle after:ml-2 after:content-['·']">
 				{#if previousItemFnurgel}
-					<a
-						href={previousItemFnurgel}
-						class="btn btn-primary"
-						onclick={passAlongAdjecentSearchResults}
-					>
+					<a href={previousItemFnurgel} class="link" onclick={passAlongAdjecentSearchResults}>
 						{@render previousResultContent()}
 					</a>
 				{:else}
-					<span class="text-disabled btn btn-primary">
+					<span class="text-disabled">
 						{@render previousResultContent()}
 					</span>
 				{/if}
+			</span>
+			<span>
 				{#if nextItemFnurgel}
-					<a
-						href={nextItemFnurgel}
-						class="btn btn-primary"
-						onclick={passAlongAdjecentSearchResults}
-					>
+					<a href={nextItemFnurgel} class="link" onclick={passAlongAdjecentSearchResults}>
 						{@render nextResultContent()}
 					</a>
 				{:else}
-					<span class="text-disabled btn btn-primary">
+					<span class="text-disabled">
 						{@render nextResultContent()}
 					</span>
 				{/if}
 			</span>
-		{/if}
+		</span>
 	</div>
 {/if}
