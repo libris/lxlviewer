@@ -1,0 +1,53 @@
+import { expect, test } from '@playwright/test';
+
+let articleIds: string[] = [];
+
+test.beforeAll(async ({ page }) => {
+	await page.goto('/find?_q=f&_offset=0&_limit=40');
+	articleIds = await page
+		.getByRole('main')
+		.getByRole('article')
+		.evaluateAll((elements) =>
+			elements
+				.map((element) => element.getAttribute('id'))
+				.filter((item) => typeof item === 'string')
+		);
+});
+
+test('page displays the site header', async ({ page }) => {
+	await page.goto('/find?_q=f&_offset=0&_limit=20');
+	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
+	await expect(page).toHaveURL(articleIds[0]);
+	await page.getByRole('main').getByRole('link').getByText('Nästa').click();
+	await expect(page, 'button for navigating to next result works').toHaveURL(articleIds[1]);
+	await page.getByRole('main').getByRole('link').getByText('Föregående').click();
+	await expect(page, 'button for navigating to previous result works').toHaveURL(articleIds[0]);
+	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
+	await expect(page, 'button for navigating to search results works').toHaveURL(
+		'/find?_q=f&_limit=20'
+	);
+	await page.getByRole('main').getByRole('article').nth(19).getByRole('link').first().click();
+	await expect(page).toHaveURL(articleIds[19]);
+	await page.getByRole('main').getByRole('link').getByText('Nästa').click();
+	await expect(page, 'navigating to result on next search results works').toHaveURL(articleIds[20]);
+	await page.getByRole('main').getByRole('link').getByText('Nästa').click();
+	await expect(page, 'navigating to result on next search results works').toHaveURL(articleIds[21]);
+	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
+	await expect(
+		page,
+		'button for navigating to search results works when navigating to result which is part of other search results'
+	).toHaveURL('/find?_q=f&_offset=20&_limit=20');
+	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
+	await expect(page).toHaveURL(articleIds[20]);
+	await page.getByRole('main').getByRole('link').getByText('Föregående').click();
+	await expect(page, 'navigating to result on previous search results works').toHaveURL(
+		articleIds[19]
+	);
+	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
+	await expect(
+		page,
+		'button for navigating to search results works when navigating to result which is part of other search results'
+	).toHaveURL('/find?_q=f&_limit=20');
+
+	await expect(page.getByRole('banner')).toBeVisible();
+});
