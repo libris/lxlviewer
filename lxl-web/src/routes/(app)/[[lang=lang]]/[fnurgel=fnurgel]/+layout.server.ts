@@ -25,7 +25,6 @@ import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte
 import { asResult } from '$lib/utils/search';
 
 export const load = async ({ params, locals, fetch }) => {
-	console.log('layout load');
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
