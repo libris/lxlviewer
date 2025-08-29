@@ -26,35 +26,34 @@
 		...(nextResultsQuery?.current ? [nextResultsQuery.current] : [])
 	]);
 
-	const searchResult = $derived(
+	const currentSearchResult = $derived(
 		adjecentSearchResults?.find((searchResult) =>
 			searchResult.items.find((item) => item['@id'].includes(fnurgel))
 		)
 	);
 
-	/** Could we do get current search result and index in one go? */
-	const searchResultIndex = $derived(
-		adjecentSearchResults?.findIndex((searchResult) =>
-			searchResult.items.find((item) => item['@id'].includes(fnurgel))
+	const currentSearchResultIndex = $derived(
+		adjecentSearchResults?.findIndex(
+			(searchResult) => searchResult['@id'] === currentSearchResult?.['@id']
 		)
 	);
 
 	const itemIndex = $derived(
-		searchResult?.items.findIndex((item) => item['@id'].includes(fnurgel))
+		currentSearchResult?.items.findIndex((item) => item['@id'].includes(fnurgel))
 	);
 
 	const indexOfTotalSearchResults = $derived(
-		searchResult && typeof itemIndex === 'number' && itemIndex >= 0
-			? searchResult?.itemOffset + itemIndex
+		currentSearchResult && typeof itemIndex === 'number' && itemIndex >= 0
+			? currentSearchResult?.itemOffset + itemIndex
 			: undefined
 	);
 
 	const previousItemFnurgel = $derived(
-		getPreviousItemFnurgel(adjecentSearchResults, searchResultIndex, itemIndex)
+		getPreviousItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
 	);
 
 	const nextItemFnurgel = $derived(
-		getNextItemFnurgel(adjecentSearchResults, searchResultIndex, itemIndex)
+		getNextItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
 	);
 
 	function handleClickNextItem(event: MouseEvent) {
@@ -88,17 +87,17 @@
 	afterNavigate(() => {
 		if (
 			!previousItemFnurgel &&
-			searchResult?.previous?.['@id'] &&
-			!adjecentSearchResults?.find((i) => i['@id'] === searchResult.previous?.['@id'])
+			currentSearchResult?.previous?.['@id'] &&
+			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.previous?.['@id'])
 		) {
-			previousResultsQuery = getAdjecentSearchResult(searchResult.previous['@id']);
+			previousResultsQuery = getAdjecentSearchResult(currentSearchResult.previous['@id']);
 		}
 		if (
 			!nextItemFnurgel &&
-			searchResult?.next?.['@id'] &&
-			!adjecentSearchResults?.find((i) => i['@id'] === searchResult.next?.['@id'])
+			currentSearchResult?.next?.['@id'] &&
+			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.next?.['@id'])
 		) {
-			nextResultsQuery = getAdjecentSearchResult(searchResult.next['@id']);
+			nextResultsQuery = getAdjecentSearchResult(currentSearchResult.next['@id']);
 		}
 	});
 </script>
@@ -115,17 +114,17 @@
 	<IconChevronRight class="inline" />
 {/snippet}
 
-{#if searchResult}
+{#if currentSearchResult}
 	<div class="flex min-h-12 items-center gap-1 text-xs">
 		<a
-			href={relativizeUrl(searchResult['@id'])}
+			href={relativizeUrl(currentSearchResult['@id'])}
 			class="btn btn-primary inline-block whitespace-nowrap"
 		>
 			<IconListUl class="inline" />
 			<span class="@xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>
 			<span class="hidden @xl:inline">{page.data.t('resource.showInSearchResults')}</span>
 		</a>
-		{#if indexOfTotalSearchResults}
+		{#if typeof indexOfTotalSearchResults === 'number'}
 			<span class="text-2xs ml-1 truncate">
 				{capitalize(page.data.t('resource.result'))}
 				<span class="font-medium">
@@ -133,7 +132,7 @@
 				</span>
 				{page.data.t('resource.resultOf')}
 				<span class="font-medium">
-					{searchResult.totalItems.toLocaleString(page.data.locale)}
+					{currentSearchResult.totalItems.toLocaleString(page.data.locale)}
 				</span>
 			</span>
 		{/if}
