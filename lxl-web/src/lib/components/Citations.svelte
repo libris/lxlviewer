@@ -47,7 +47,9 @@
 </script>
 
 <div>
-	<select class="btn btn-primary" bind:value={selectedFormat}>
+	<label for="citation-format-select" class="sr-only">{page.data.t('citations.selectFormat')}</label
+	>
+	<select class="btn btn-primary" bind:value={selectedFormat} id="citation-format-select">
 		<option value="all">{page.data.t('citations.allFormats')}</option>
 		{#each getAvailableFormats() as format (format.key)}
 			<option value={format.key}>{format.name}</option>
@@ -60,11 +62,11 @@
 			</span>
 		</div>
 	{/if}
-	<div class="mt-2 flex flex-col gap-1">
+	<ul class="mt-2 flex flex-col gap-1">
 		{#if displayedData && displayedData.length}
 			{#each displayedData as style (style.key)}
-				<div class="my-2 text-xs">
-					<p class="mb-2 font-medium">{style.name}</p>
+				<li class="my-2 text-xs">
+					<p class="mb-2 font-medium">{style.fullName || style.name}</p>
 					<svelte:element
 						this={preElements.some((e) => e === style.key) ? 'pre' : 'span'}
 						class="block rounded-sm bg-neutral-100 p-2"
@@ -72,8 +74,8 @@
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html style.citation}
 					</svelte:element>
-				</div>
+				</li>
 			{/each}
 		{/if}
-	</div>
+	</ul>
 </div>

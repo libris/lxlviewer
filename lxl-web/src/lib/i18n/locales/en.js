@@ -249,6 +249,7 @@ export default {
 	citations: {
 		cite: 'Cite',
 		createCitation: 'Create citation',
+		selectFormat: 'Select format',
 		allFormats: 'All formats'
 	}
 };

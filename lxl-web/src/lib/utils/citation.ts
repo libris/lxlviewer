@@ -8,12 +8,13 @@ import type { CSLJSON } from '$lib/types/citation';
 const availableFormats = {
 	chicago: {
 		name: 'Chicago',
-		fullName: 'Chicago Manual of Style 17th edition (author-date)',
+		fullName: 'Chicago 17th edition (author-date)',
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
 		source: (await import('$lib/assets/csl/chicago-author-date.csl?raw')).default
 	},
 	apa: {
-		name: 'APA' // built-in
+		name: 'APA', // built-in
+		fullName: 'APA (American Psychological Association 7th edition)'
 	},
 	ris: {
 		name: 'RIS' // imported via plugin
@@ -120,7 +121,7 @@ async function loadCiteResources() {
 
 export function getAvailableFormats() {
 	return Object.entries(availableFormats).map(([key, value]) => {
-		return { key, name: value.name };
+		return { key, name: value.name, fullName: value.fullName || '' };
 	});
 }
 

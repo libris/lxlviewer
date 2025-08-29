@@ -1,19 +1,3 @@
-export interface InputOptions {
-	output: OutputOptions;
-	forceType?: InputFormat;
-}
-
-interface OutputOptions {
-	format?: 'real' | 'string';
-	type?: 'json' | 'html' | 'string';
-	style?: 'csl' | 'bibtex' | 'ris' | 'cication-*';
-	lang?: 'en-US';
-	prepend?: string | (() => void);
-	append?: string | (() => void);
-}
-
-type InputFormat = 'csl' | 'ris' | 'bibtex';
-
 // full CSL-JSON schema, see
 // https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
 interface CSLDate {

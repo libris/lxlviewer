@@ -10,7 +10,7 @@
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
-	import BiQuote from '~icons/bi/chat-right-quote';
+	import BiQuote from '~icons/bi/quote';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { Relation } from '$lib/utils/relations';
@@ -115,10 +115,10 @@
 							<a
 								class="btn btn-primary"
 								href={getCiteLink(page.url, fnurgel)}
-								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
+								onclick={(event) => handleClickCite(event, page.state)}
 							>
 								<BiQuote />
-								<span>{page.data.t('citations.cite')}</span>
+								<span>{page.data.t('citations.createCitation')}</span>
 							</a>
 						{/if}
 					</div>

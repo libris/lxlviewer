@@ -248,6 +248,7 @@ export default {
 	citations: {
 		cite: 'Referera',
 		createCitation: 'Skapa referens',
+		selectFormat: 'Välj format',
 		allFormats: 'Alla format'
 	}
 };
