@@ -3069,6 +3069,9 @@
             "genreForm": [
               {
                 "@id": "https://id.kb.se/term/gmgpc/swe/Affischer"
+              },
+              {
+                "@id": "https://id.kb.se/marc/Graphic"
               }
             ],
             "contribution": [{
