@@ -106,6 +106,7 @@ export interface PartialCollectionView {
 	};
 	first: Link;
 	last: Link;
+	previous?: Link;
 	next?: Link;
 	items: FramedData[];
 	stats?: {
