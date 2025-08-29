@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
+	import { afterNavigate, goto } from '$app/navigation';
 	import type { AdjecentSearchResult } from '$lib/types/search';
 	import { relativizeUrl } from '$lib/utils/http';
 	import IconListUl from '~icons/bi/chevron-right';
@@ -8,6 +8,7 @@
 	import IconChevronleft from '~icons/bi/chevron-left';
 	import capitalize from '$lib/utils/capitalize';
 	import { getPreviousItemFnurgel, getNextItemFnurgel } from '$lib/utils/adjecentSearchResult';
+	import { getAdjecentSearchResult } from '$lib/remotes/adjecentSearchResult.remote';
 
 	type Props = {
 		fnurgel: string;
@@ -15,6 +16,9 @@
 	};
 
 	const { fnurgel, adjecentSearchResults: adjecentSearchResultsFromPageState }: Props = $props();
+
+	let previousQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
+	let nextQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
 
 	let adjecentSearchResults = $state(adjecentSearchResultsFromPageState);
 
@@ -57,6 +61,45 @@
 			}
 		});
 	}
+
+	afterNavigate(() => {
+		if (
+			!previousItemFnurgel &&
+			currentSearchResult?.previous?.['@id'] &&
+			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.previous?.['@id'])
+		) {
+			previousQuery = getAdjecentSearchResult(currentSearchResult.previous['@id']);
+		}
+		if (
+			!nextItemFnurgel &&
+			currentSearchResult?.next?.['@id'] &&
+			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.next?.['@id'])
+		) {
+			nextQuery = getAdjecentSearchResult(currentSearchResult.next['@id']);
+		}
+	});
+
+	$effect(() => {
+		if (
+			previousQuery?.current &&
+			!adjecentSearchResults.find(
+				(searchResult) => searchResult['@id'] === previousQuery?.current?.['@id']
+			)
+		) {
+			adjecentSearchResults = [previousQuery.current, ...adjecentSearchResults];
+		}
+	});
+
+	$effect(() => {
+		if (
+			nextQuery?.current &&
+			!adjecentSearchResults.find(
+				(searchResult) => searchResult['@id'] === nextQuery?.current?.['@id']
+			)
+		) {
+			adjecentSearchResults = [...adjecentSearchResults, nextQuery.current];
+		}
+	});
 </script>
 
 {#snippet previousResultContent()}

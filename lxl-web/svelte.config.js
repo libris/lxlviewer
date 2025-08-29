@@ -31,6 +31,9 @@ const config = {
 				'frame-ancestors': ['self', 'http://*.kb.se', 'http://*.localhost:*'],
 				'img-src': ['self', 'kb.se', '*.kb.se', 'data:']
 			}
+		},
+		experimental: {
+			remoteFunctions: true
 		}
 	}
 };
