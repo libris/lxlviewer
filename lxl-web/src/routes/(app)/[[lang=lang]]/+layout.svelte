@@ -3,14 +3,13 @@
 	import SiteFooter from './SiteFooter.svelte';
 	import AppBar from './AppBar.svelte';
 	import { page } from '$app/state';
-	const { data, children } = $props();
+	const { children } = $props();
 
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 </script>
 
 <svelte:head>
 	<title>{getPageTitle()}</title>
-	<base href={data.base} />
 </svelte:head>
 <AppBar />
 {#if isFindRoute}
