@@ -146,8 +146,8 @@
 	--color-error: var(--color-severe);
 	--color-app-header: var(--color-primary-100);
 	--color-input: var(--color-page);
-
 	--color-placeholder: var(--color-neutral-500);
+	--color-disabled: var(--color-neutral-400);
 }
 
 @layer base {

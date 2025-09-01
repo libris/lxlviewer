@@ -203,7 +203,12 @@ export default {
 		all: 'alla',
 		results: 'träffar',
 		result: 'träff',
-		editions: 'Utgåvor'
+		editions: 'Utgåvor',
+		previous: 'Föregående',
+		next: 'Nästa',
+		resultOf: 'av',
+		showInSearchResults: 'Visa i träfflista',
+		showInSearchResultsShort: 'Visa träfflista'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

@@ -146,7 +146,7 @@
 		<div class="border-b-neutral border-b">
 			<label
 				id={`${uidPrefix}toc-label`}
-				class="bg-page text-2xs text-subtle flex h-11 cursor-pointer items-center gap-1.5 px-3 sm:px-6 has-checked:[&+nav]:block"
+				class="bg-page text-2xs text-subtle flex min-h-10 cursor-pointer items-center gap-1.5 px-3 sm:px-6 has-checked:[&+nav]:block"
 			>
 				<IconToC class="size-4" />
 				<h2>{page.data.t('tableOfContents.onThisPage')}</h2>

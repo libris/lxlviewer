@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
@@ -13,8 +12,9 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { Relation } from '$lib/utils/relations';
-	import type { SearchResultItem } from '$lib/types/search';
+	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
 	import SearchResultList from './SearchResultList.svelte';
+	import AdjecentResults from './resource/AdjecentResults.svelte';
 
 	type Props = {
 		fnurgel: string;
@@ -29,6 +29,7 @@
 		instances: Record<string, unknown>[]; // TODO: fix better types
 		holdersByType: HoldersByType;
 		tableOfContents: TableOfContentsItem[];
+		adjecentSearchResults?: AdjecentSearchResult[];
 	};
 
 	const {
@@ -43,7 +44,8 @@
 		relationsPreviewsByQualifierKey,
 		instances,
 		holdersByType,
-		tableOfContents
+		tableOfContents,
+		adjecentSearchResults
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
@@ -51,6 +53,11 @@
 	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
 </script>
 
+{#if adjecentSearchResults}
+	<div class="border-b-neutral @container border-b">
+		<AdjecentResults {fnurgel} {adjecentSearchResults} />
+	</div>
+{/if}
 <article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
 	{#if tableOfContents.length}
 		<section data-testid="toc-mobile" class="contents @7xl:hidden">
@@ -106,7 +113,6 @@
 			<section>
 				<div class="decorated-overview">
 					<InstancesList
-						{uidPrefix}
 						data={instances}
 						columns={[
 							{
@@ -150,7 +156,7 @@
 											{#if relationItem.totalItems > 10}
 												{page.data.t('resource.all')}
 											{/if}
-											{relationItem.totalItems.toLocaleString(page.data.locale)}
+											{relationItem.totalItems}
 											{#if relationItem.totalItems === 1}
 												{page.data.t('resource.result')}
 											{:else}

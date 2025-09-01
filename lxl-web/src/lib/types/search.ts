@@ -4,6 +4,7 @@ import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 
 export interface SearchResult {
+	[JsonLd.ID]: string;
 	itemOffset: number;
 	itemsPerPage: number;
 	totalItems: number;
@@ -105,6 +106,7 @@ export interface PartialCollectionView {
 	};
 	first: Link;
 	last: Link;
+	previous?: Link;
 	next?: Link;
 	items: FramedData[];
 	stats?: {
@@ -221,4 +223,16 @@ export interface QualifierSuggestion {
 	label: string;
 	_q: string;
 	cursor: number;
+}
+
+export interface AdjecentSearchResult {
+	[JsonLd.ID]: string;
+	itemOffset: number;
+	itemsPerPage: number;
+	totalItems: number;
+	first: Link;
+	last: Link;
+	previous?: Link;
+	next?: Link;
+	items: Link[];
 }
