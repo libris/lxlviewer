@@ -100,19 +100,23 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		'qualifier value is initially empty but has styling'
 	).toContainText('""');
 	await expect(
-		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'Person' }),
-		'all suggestions are persons'
+		page
+			.getByRole('dialog')
+			.getByLabel('Förslag')
+			.getByRole('link')
+			.filter({ hasText: /Person|Organisation/ }),
+		'all suggestions are persons or organizations'
 	).toHaveCount(5);
 	await expect(page.getByRole('dialog').getByRole('combobox')).toContainText('Författare/upphov');
-	await page.getByRole('dialog').getByRole('combobox').pressSequentially('pippi');
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('jan');
 	await expect(
 		await page
 			.getByRole('dialog')
 			.getByLabel('Förslag')
 			.getByRole('link')
-			.filter({ hasText: 'Person' })
-			.filter({ hasText: /pippi/i }),
-		'all suggestions are persons related to the query pippi'
+			.filter({ hasText: /Person|Organisation/ })
+			.filter({ hasText: /jan/i }),
+		'all suggestions are persons related to the query "jan"'
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL('**/find?**');
@@ -124,7 +128,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-value.atomic'),
 		'...and the value is related to the previous query'
-	).toContainText(/pippi/i);
+	).toContainText(/jan/i);
 	await page.getByTestId('main-search').click();
 	await page
 		.getByRole('dialog')
