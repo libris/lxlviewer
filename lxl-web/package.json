@@ -47,7 +47,7 @@
 		"prettier-plugin-svelte": "^3.4.0",
 		"prettier-plugin-tailwindcss": "^0.6.14",
 		"supersearch": "^0.0.1",
-		"svelte": "^5.38.3",
+		"svelte": "^5.38.6",
 		"svelte-check": "^4.3.1",
 		"tailwindcss": "^4.1.11",
 		"tslib": "^2.6.3",
