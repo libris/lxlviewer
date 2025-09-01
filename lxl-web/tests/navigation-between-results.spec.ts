@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test';
 
 let articleIds: string[] = [];
 
-test.beforeAll(async ({ page }) => {
+test.beforeAll(async ({ browser }) => {
+	const page = await browser.newPage();
 	await page.goto('/find?_q=f&_offset=0&_limit=40');
 	articleIds = await page
 		.getByRole('main')
