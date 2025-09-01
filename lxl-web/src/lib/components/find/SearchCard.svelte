@@ -8,25 +8,63 @@
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import BiHouse from '~icons/bi/house';
 
-	export let item: SearchResultItem;
+	interface Props {
+		item: SearchResultItem;
+	}
 
-	$: id = relativizeUrl(item['@id']);
-	$: titleId = `card-title-${id}`;
-	$: bodyId = `card-body-${id}`;
-	$: footerId = `card-footer-${id}`;
+	let { item }: Props = $props();
 
-	let showDebugExplain = false;
-	let showDebugHaystack = false;
+	let id = $derived(relativizeUrl(item['@id']));
+	let titleId = $derived(`card-title-${id}`);
+	let bodyId = $derived(`card-body-${id}`);
+	let footerId = $derived(`card-footer-${id}`);
+
+	let showDebugExplain = $state(false);
+	let showDebugHaystack = $state(false);
+
+	const TypeIcon = $derived(getTypeIcon(item['@type']));
 </script>
 
+<!--//TODO: look into using grid template areas + container queries instead
+see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c23e223cdda91b17a -->
+
+{#snippet holdingsButton()}
+	<div class="flex items-start pt-1">
+		{#if id}
+			<a
+				class="btn btn-primary h-7 rounded-full md:h-8"
+				href={getHoldingsLink(page.url, id)}
+				data-sveltekit-preload-data="false"
+				data-testid="holding-link"
+				onclick={(event) => handleClickHoldings(event, page.state, id)}
+			>
+				<span class="text-base">
+					{#if item.heldByMyLibraries?.length}
+						<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
+					{:else}
+						<BiHouse class="text-neutral-400" />
+					{/if}
+				</span>
+				{item.numberOfHolders}
+				{page.data.t('search.libraries')}
+			</a>
+		{/if}
+	</div>
+{/snippet}
+
 <div class="search-card-container">
-	<article class="search-card" data-testid="search-card">
+	<article
+		class="search-card border-neutral relative grid w-full gap-x-4 border-t px-0 py-3 font-normal transition-shadow md:px-4"
+		data-testid="search-card"
+	>
 		<div class="card-image">
 			<a
 				href={id}
@@ -38,14 +76,15 @@
 					{#if item.image}
 						<img
 							src={item.image.url}
-							width={item.image.widthṔx}
-							height={item.image.heightPx}
-							alt={$page.data.t('general.latestInstanceCover')}
+							width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
+							height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
+							alt={page.data.t('general.latestInstanceCover')}
 							class:rounded-full={item['@type'] === 'Person'}
 							class="object-contain object-top {item['@type'] !== 'Person'
 								? 'aspect-2/3'
 								: 'aspect-square'}"
 						/>
+						<!--
 						{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 							<div class="absolute -top-4 -left-4">
 								<div class="bg-page rounded-md p-1.5">
@@ -53,6 +92,7 @@
 								</div>
 							</div>
 						{/if}
+						-->
 					{:else}
 						<div class="flex items-center justify-center">
 							<img
@@ -62,11 +102,8 @@
 								class:rounded-sm={item['@type'] !== 'Person'}
 								class="object-contain object-top"
 							/>
-							{#if getTypeIcon(item['@type'])}
-								<svelte:component
-									this={getTypeIcon(item['@type'])}
-									class="absolute text-2xl text-neutral-400"
-								/>
+							{#if TypeIcon}
+								<TypeIcon class="absolute text-2xl text-neutral-400" />
 							{/if}
 						</div>
 					{/if}
@@ -75,9 +112,28 @@
 		</div>
 		<div class="card-content">
 			<header class="card-header" id={titleId}>
+				<p class="card-header-top">
+					<TypeIcon class="text-2xs mb-0.25 inline" />
+					{#if item.typeStr}
+						<span class="font-medium">
+							{item.typeStr}
+						</span>
+						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+						<span class="divider">{' · '}</span>
+					{/if}
+					{#each item[LensType.WebCardHeaderTop]?._display as obj, index (index)}
+						<span>
+							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
+						</span>
+					{/each}
+				</p>
 				<hgroup>
 					<h2 class="card-header-title text-base font-medium">
-						<a href={id} class="block hover:underline" aria-describedby={`${bodyId} ${footerId}`}>
+						<a
+							href={id}
+							class="link-subtle block decoration-neutral-400"
+							aria-describedby={`${bodyId} ${footerId}`}
+						>
 							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 						</a>
 					</h2>
@@ -102,26 +158,27 @@
 				</div>
 			{/if}
 			<footer class="card-footer mt-1" id={footerId}>
-				<span class="font-medium">
-					{item.typeStr}
-				</span>
-				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-				<span class="divider">{' • '}</span>
 				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
 					{#if 'hasInstance' in obj}
-						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-						<span class="divider">{' • '}</span>
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
-							<span>
-								{#if instances.count > 1}
-									{instances?.count}
-									{$page.data.t('search.editions')}
-									{`(${instances.years})`}
-								{:else}
-									{instances.years}
+							{#if instances.count > 1}
+								{instances?.count}
+								{page.data.t('search.editions')}
+								{`(${instances.years})`}
+							{:else}
+								{instances.years}
+							{/if}
+						{/if}
+						{#if instances?.count === 1}
+							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+							<span class="divider">{' · '}</span>
+							{#each obj.hasInstance._display as obj2, index (index)}
+								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
+								{#if !obj2.publication}
+									<DecoratedData data={obj2} showLabels={ShowLabelsOptions.Never} />
 								{/if}
-							</span>
+							{/each}
 						{/if}
 					{:else}
 						<span>
@@ -129,8 +186,12 @@
 						</span>
 					{/if}
 				{/each}
+				<div class="md:hidden">
+					{@render holdingsButton()}
+				</div>
 			</footer>
 		</div>
+
 		{#if item._debug}
 			{#key item._debug}
 				<div class="card-debug z-20 self-start text-left select-text">
@@ -138,7 +199,7 @@
 					<button
 						type="button"
 						class="text-xs"
-						on:click={() => {
+						onclick={() => {
 							showDebugHaystack = !showDebugHaystack;
 						}}
 					>
@@ -147,7 +208,7 @@
 					<button
 						type="button"
 						class="text-xs"
-						on:click={() => {
+						onclick={() => {
 							showDebugExplain = !showDebugExplain;
 						}}
 					>
@@ -166,11 +227,9 @@
 				{/if}
 			{/key}
 		{/if}
-		{#if item.heldByMyLibraries?.length}
-			<div class="card-libraries flex items-start">
-				<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
-			</div>
-		{/if}
+		<div class="hidden md:inline">
+			{@render holdingsButton()}
+		</div>
 	</article>
 </div>
 
@@ -182,10 +241,8 @@
 	}
 
 	.search-card {
-		@apply border-neutral relative grid w-full gap-x-4 border-t px-4 py-3 font-normal transition-shadow;
-
-		grid-template-areas: 'image content debug libraries';
-		grid-template-columns: 64px 1fr auto auto;
+		grid-template-areas: 'image content debug';
+		grid-template-columns: 64px 1fr auto;
 
 		@container (min-width: 768px) {
 			@apply gap-x-6 px-6 py-4;
@@ -210,12 +267,8 @@
 		grid-area: extra;
 	}
 
-	.card-libraries {
-		grid-area: libraries;
-	}
-
 	.card-footer {
-		/* hide dangling divider • */
+		/* hide dangling divider · */
 		& .divider {
 			display: none;
 		}
@@ -224,6 +277,7 @@
 		}
 	}
 
+	.card-header-top,
 	.card-header-extra,
 	.card-footer,
 	.card-header :global(.transliteration) {

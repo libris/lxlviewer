@@ -16,7 +16,8 @@ export enum JsonLd {
 }
 
 export enum Owl {
-	SAME_AS = 'sameAs'
+	SAME_AS = 'sameAs',
+	PROPERTY_CHAIN_AXIOM = 'propertyChainAxiom'
 }
 
 export enum Fmt {
@@ -44,6 +45,28 @@ export enum Concepts {
 export enum Platform {
 	integral = 'integral',
 	meta = 'meta'
+}
+
+export enum BibDb {
+	ils = 'bibdb:ils',
+	lopac = 'bibdb:lopac',
+	bibIdSearchUriByLang = 'bibdb:bibIdSearchUriByLang',
+	bibIdSearchUri = 'bibdb:bibIdSearchUri',
+	isbnSearchUri = 'bibdb:isbnSearchUri',
+	issnSearchUri = 'bibdb:issnSearchUri',
+	eodUri = 'bibdb:eodUri',
+	itemStatusUri = 'bibdb:itemStatusUri',
+	openingHours = 'bibdb:openingHours',
+	address = 'bibdb:address',
+	postalAddress = 'bibdb:PostalAddress',
+	visitingAddress = 'bibdb:VisitingAddress',
+	LinksToCatalog = 'linksToCatalog',
+	LinksToSite = 'linksToSite',
+	LinksToItem = 'linksToItem',
+	Address = 'address',
+	ItemStatus = 'itemStatus',
+	OpeningHours = 'openingHours',
+	LoanReserveLink = 'loanReserveLink'
 }
 
 export type ClassName = string;
@@ -142,6 +165,7 @@ export enum LensType {
 	WebChip = 'web-chips',
 	WebCard = 'web-card',
 	WebCardFooter = 'web-card-footer',
+	WebCardHeaderTop = 'web-card-header-top',
 	WebCardHeaderExtra = 'web-card-header-extra',
 	None = null // FIXME
 }
@@ -173,6 +197,9 @@ export interface LensedOrdered {
 	[Fmt.PROPS]: LensedOrdered[];
 }
 export type DisplayDecorated = unknown;
+
+export type StyleList = string[];
+export type DisplayDecoratedLite = (string | [string, StyleList])[];
 
 export interface VocabData {
 	'@context'?: string | Context;

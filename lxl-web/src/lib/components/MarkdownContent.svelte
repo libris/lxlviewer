@@ -1,5 +1,15 @@
+<script lang="ts">
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		children?: Snippet;
+	}
+
+	let { children }: Props = $props();
+</script>
+
 <div>
-	<slot />
+	{@render children?.()}
 </div>
 
 <style lang="postcss">
@@ -51,7 +61,8 @@
 			text-decoration: underline;
 			text-decoration-style: dotted;
 
-			&:hover {
+			&:hover,
+			&:focus {
 				text-decoration-style: solid;
 			}
 		}

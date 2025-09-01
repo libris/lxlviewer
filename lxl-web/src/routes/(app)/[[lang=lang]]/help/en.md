@@ -4,100 +4,7 @@ title: 'Help'
 
 # Help
 
-## Version Information
-
-Here we will continuously provide information about newly added features and planned developments:
-
-### 2025-05-13
-
-- Design updates
-- Filter on free online material
-- Bug fixes
-
-### 2025-04-24
-
-- Ability to set and filter on favourite libraries
-
-### 2025-03-11
-
-- Add advanced search functionality
-
-### 2024-11-07
-
-- Cookie settings
-
-### 2024-10-14
-
-- Improvements in the filter panel, filter items can now be sorted by preference.
-- Bug fixes
-
-### 2024-09-09
-
-- Loan status information now shown in the library holdings list
-- Library list now contains more detailed information and search functionality
-- Spelling suggestions next to search result
-- Access and usage policy for cover images
-- Loading indicator
-- Bug fixes
-
-### 2024-06-27
-
-- Changed default number of hits per page to 20
-- Added search on result list for people and subjects
-- Hide labels for free text queries and add quotes instead
-- Bug fixes
-
-### 2024-06-12
-
-- Improved help text
-- Selectable text in search results
-- Improved pagination
-
-### 2024-05-29
-
-- Standard free text search
-- Filters to narrow down search results
-- Result list with pagination and sorting options
-- Pages for detailed information about materials, including which libraries hold them
-- Pages for persons and subject terms listing related materials
-- Boolean search logic in the search box. Example: pippi SPRÅK:"lang" hasInstanceType itemHeldBy:"sigel S"
-- Basic search filtering that excludes upcoming titles (preliminary information) or electronically deposited resources, with the option to manually deactivate.
-
-### Features to look forward to:
-
-- Improved layout and information content in the search result list
-- Adjustments to the selection and presentation of information on detailed pages
-- Support in the interface for advanced search functionality
-- Enhanced connection to local library systems regarding loan status and links
-- Improved material categorization (types) such as book, e-book, poster, newspaper, and so on
-- Improved relevance ranking of search results
-- Filtering for freely available material
-- Libris interlibrary loan
-- Libris borrower requests
-- Lopac - Libris as a local library catalog
-- Reference tools
-- Ability to save searches and lists of materials
-- Ability to export result lists
-- Ability to set favourite libraries, etc
-- In addition to planned developments, improvements to current functionality will be made, and possibly new features will be added based on feedback from you, our users
-
-## Help and information
-
-### General information about the search service
-
-The new Libris search service will eventually replace [libris.kb.se](https://www.libris.kb.se/). The old service is technically outdated and needs to be replaced to meet the legal requirements for accessibility in digital public services. This beta version is a first step towards a service that will bring several improvements for users.
-
-A cornerstone of Libris is the information model based on linked data used to describe the material in the catalog. The new service is built with a more direct connection to this model, making it both simpler and technically more robust. This also means that changes made using the Libris cataloging tool are reflected in the search service without delay.
-
-The goal is also to build a more user-friendly interface while improving and expanding many of the existing features. With a more data-oriented design, some text may initially appear more technical than before. This is something we will continue to work on to improve. The design and graphical expression of the service will also change and improve over time.
-
-### Improved material categorization:
-
-The material categories (or "types") visible in the current beta version will eventually be replaced if they are not clear enough. Terms like "Text, print", "Instance", "Monographic resource", and so on will be replaced with clearer terms such as "Journal", "Audiobook", "Poster", and "Postcard". The goal is understandable and usable types that will stand the test of time.
-
-In today’s libris.kb.se, labels like “book”, “e-book”, and “poster” are calculated in the search service in a complicated way, based on a multitude of data points. This unnecessary complexity is partly due to the limitations that existed in the catalog when the service was developed. Alongside the development of the new search service, we are now working to improve the catalog's data and information model. Because the new search service more directly reflects the catalog, improvements will be visible as soon as they are made.
-
-Different terms and degrees of precision may still be needed in different contexts. However, these differences can largely be captured in the common catalog model instead of being tightly bound to different services, as they are today.
+<i>WARNING: Automated machine translation</i>
 
 ### Using the search function
 
@@ -150,5 +57,3 @@ Each object in the catalog can be accessed either by clicking on it in the resul
 If the material is published in several editions, these are shown in a list sorted by publication date. By clicking the arrow for each edition, more detailed information about it is displayed, as well as the libraries that have that specific edition.
 
 In some cases, the detail view contains one or more links to access the material online. Some material is freely available to everyone, while others require you to be a borrower at a library that has a license to display the material.
-
-<i>Translation done with the help of ChatGPT.</i>

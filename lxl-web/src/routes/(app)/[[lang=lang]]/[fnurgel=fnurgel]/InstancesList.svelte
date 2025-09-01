@@ -2,6 +2,7 @@
 	import jmespath from 'jmespath';
 	import { page } from '$app/state';
 	import { replaceState } from '$app/navigation';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { getUserSettings } from '$lib/contexts/userSettings';
@@ -20,10 +21,11 @@
 	 * - [] Add tests (e.g. rows should be expandable and permalink should work, and that opened state should be saved when navigating forward and backwards). The tests should probably be placed inside +page.svelte...
 	 */
 	type InstancesListProps = {
+		uidPrefix?: string;
 		data: ResourceData;
 		columns: { header: string; data: string }[];
 	};
-	const { data, columns }: InstancesListProps = $props();
+	const { uidPrefix, data, columns }: InstancesListProps = $props();
 
 	let instancesList: HTMLUListElement | undefined = $state();
 	let userSettings = getUserSettings();
@@ -50,7 +52,7 @@
 	}
 
 	function getCollapseAllUrl(url: URL) {
-		const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
+		const newSearchParams = new SvelteURLSearchParams([...Array.from(url.searchParams.entries())]);
 		newSearchParams.delete('expanded');
 		return `${url.origin}${url.pathname}${newSearchParams.size ? '?' + newSearchParams.toString() : ''}`;
 	}
@@ -74,7 +76,9 @@
 <div>
 	{#if Array.isArray(data) && data.length > 1}
 		<div class="flex items-center justify-between pb-4">
-			<h2 class="font-heading text-2xl capitalize">{page.data.t('search.editions')}</h2>
+			<h2 class="font-heading text-2xl capitalize" id="{uidPrefix}editions">
+				{page.data.t('resource.editions')}
+			</h2>
 			<a
 				href={getCollapseAllUrl(page.url)}
 				data-sveltekit-preload-data="false"
@@ -126,7 +130,9 @@
 										page.data.holdingsByInstanceId[id]
 									)}
 									{#if myLibsWithHolding.length}
-										<MyLibrariesIndicator libraries={myLibsWithHolding} />
+										<span class="p-2">
+											<MyLibrariesIndicator libraries={myLibsWithHolding} />
+										</span>
 									{/if}
 									<a
 										href={getHoldingsLink(page.url, id)}
@@ -152,7 +158,7 @@
 			{/each}
 		</ul>
 	{:else}
-		<InstancesListContent data={data[0]} id={relativizeUrl(getResourceId(data[0]))} />
+		<InstancesListContent data={data[0]} id="{uidPrefix}{relativizeUrl(getResourceId(data[0]))}" />
 	{/if}
 </div>
 
@@ -173,6 +179,6 @@
 	}
 
 	details[open] .arrow {
-		@apply rotate-90;
+		rotate: 90deg;
 	}
 </style>

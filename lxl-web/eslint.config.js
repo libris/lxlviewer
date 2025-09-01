@@ -21,9 +21,17 @@ export default ts.config(
 			globals: {
 				...globals.browser,
 				...globals.node
+			},
+			parserOptions: {
+				tsconfigRootDir: import.meta.dirname
 			}
 		},
-		rules: { 'no-undef': 'off' }
+		rules: {
+			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
+			// see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
+			'no-undef': 'off',
+			'svelte/no-useless-mustaches': 'warn'
+		}
 	},
 	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],

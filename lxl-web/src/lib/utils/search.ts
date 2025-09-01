@@ -1,24 +1,26 @@
-import { DisplayUtil, isObject, toString, VocabUtil } from '$lib/utils/xl';
+import { asArray, DisplayUtil, isObject, toLite, toString, VocabUtil } from '$lib/utils/xl';
 import {
+	Base,
 	type DisplayDecorated,
 	type FramedData,
-	type Link,
-	LensType,
 	JsonLd,
-	Base
+	LensType,
+	type Link,
+	Owl
 } from '$lib/types/xl';
 
 import {
-	type PartialCollectionView,
-	type SearchResult,
+	type ApiItemDebugInfo,
+	type DatatypeProperty,
 	type DisplayMapping,
+	type FacetGroup,
+	type ItemDebugInfo,
+	type MultiSelectFacet,
+	type Observation,
+	type PartialCollectionView,
 	type SearchMapping,
 	SearchOperators,
-	type DatatypeProperty,
-	type MultiSelectFacet,
-	type FacetGroup,
-	type ApiItemDebugInfo,
-	type ItemDebugInfo
+	type SearchResult
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
@@ -29,7 +31,10 @@ import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-import { getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
+import { getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
+import getTypeLike from '$lib/utils/getTypeLike';
+import capitalize from '$lib/utils/capitalize';
+import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -57,26 +62,36 @@ export async function asResult(
 		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
-		items: view.items?.map((i) => ({
-			...(myLibraries && {
-				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
-			}),
-			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
-			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
-			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
-			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
-			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-			[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
-				i,
-				LensType.WebCardHeaderExtra,
-				locale
-			),
-			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
-			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
-			typeStr: toString(
-				displayUtil.lensAndFormat(vocabUtil.getDefinition(i[JsonLd.TYPE]), LensType.Chip, locale)
-			)
-		})),
+		items: view.items
+			?.map((i) => cleanUpItem(i))
+			.map((i) => ({
+				...(myLibraries && {
+					heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
+				}),
+				...('_debug' in i && {
+					_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
+				}),
+				[JsonLd.ID]: i.meta[JsonLd.ID] as string,
+				[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
+				[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
+				[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
+				[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(
+					i,
+					LensType.WebCardHeaderTop,
+					locale
+				),
+				[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
+					i,
+					LensType.WebCardHeaderExtra,
+					locale
+				),
+				[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
+				image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
+				typeStr: getTypeLike(i, vocabUtil)
+					.map((t) => toString(displayUtil.lensAndFormat(t, LensType.Chip, locale)))
+					.join(' · '),
+				numberOfHolders: getHoldersCount(i)
+			})),
 		...('stats' in view && {
 			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 		}),
@@ -107,16 +122,29 @@ export function displayMappings(
 			const operator = _hasOperator(m);
 
 			if ('property' in m && operator) {
-				const property = m[operator] as FramedData;
-				return {
-					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
-					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
-					displayStr: toString(displayUtil.lensAndFormat(property, LensType.Chip, locale)) || '',
-					label: m.alias
+				const value = m[operator] as FramedData;
+
+				let label = '';
+				// FIXME
+				if (Owl.PROPERTY_CHAIN_AXIOM in m.property && !(JsonLd.TYPE in m.property)) {
+					label = label = m.alias
+						? translate(`facet.${m.alias}`)
+						: m.property[Owl.PROPERTY_CHAIN_AXIOM]
+								.map((p) => toString(displayUtil.lensAndFormat(p, LensType.Token, locale)))
+								.join('/');
+				} else {
+					label = m.alias
 						? translate(`facet.${m.alias}`)
 						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) ||
 							m.property?.[JsonLd.ID] ||
-							m._key,
+							m._key;
+				}
+
+				return {
+					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
+					display: displayUtil.lensAndFormat(value, LensType.Chip, locale),
+					displayStr: toString(displayUtil.lensAndFormat(value, LensType.Chip, locale)) || '',
+					label,
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
@@ -172,6 +200,39 @@ export function displayMappings(
 
 		return op;
 	}
+}
+
+function cleanUpItem(item: FramedData): FramedData {
+	if (isSerial(item)) {
+		const FILTER_ROLES = [
+			'https://id.kb.se/relator/publishingDirector',
+			'https://id.kb.se/relator/responsibleParty',
+			'https://id.kb.se/relator/editor',
+			'https://id.kb.se/relator/honoree'
+		];
+		item.contribution = asArray(item.contribution).filter(
+			(c) => !asArray(c.role).some((r) => FILTER_ROLES.includes(r[JsonLd.ID]))
+		);
+	}
+
+	const HIDE_ROLES = [
+		'https://id.kb.se/relator/author',
+		'https://id.kb.se/relator/unspecifiedContributor'
+	];
+	asArray(item.contribution).forEach((c) => {
+		if (asArray(c.role).every((r) => HIDE_ROLES.includes(r[JsonLd.ID]))) {
+			delete c.role;
+		}
+	});
+
+	return item;
+}
+
+function isSerial(item: FramedData): boolean {
+	return (
+		item[JsonLd.TYPE] === 'Serial' ||
+		getAtPath(item, ['@reverse', 'instanceOf', '*', 'issuanceType']).every((v) => v === 'Serial')
+	);
 }
 
 function getMaxScores(itemDebugs: ApiItemDebugInfo[]) {
@@ -238,27 +299,55 @@ function displayFacetGroups(
 	usePath?: string
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
+	// manually add myLibraries to boolfilters
+	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, locale, translate) || [];
 
-	const result = Object.values(slices).map((g) => {
-		return {
-			label: translate(`facet.${g.alias || g.dimension}`),
-			dimension: g.dimension,
-			maxItems: g.maxItems,
-			...('search' in g && { search: g.search }),
-			facets: g.observation.map((o) => {
-				return {
-					...('_selected' in o && { selected: o._selected }),
-					totalItems: o.totalItems,
-					view: replacePath(o.view, usePath),
-					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
-					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
-				};
-			})
-		};
-	});
+	const result = [];
 
-	result.push(displayBoolFilters(view, displayUtil, locale, translate, usePath));
+	result.push(
+		displayBoolFilters(
+			'accessFilters',
+			(f) => ACCESS_FILTERS.includes(<string>f.object?.alias),
+			boolFilters,
+			displayUtil,
+			locale,
+			translate,
+			usePath
+		)
+	);
+
+	result.push(
+		...Object.values(slices).map((g) => {
+			return {
+				label: translate(`facet.${g.alias || g.dimension}`),
+				dimension: g.dimension,
+				maxItems: g.maxItems,
+				...('search' in g && { search: g.search }),
+				facets: g.observation.map((o) => {
+					return {
+						...('_selected' in o && { selected: o._selected }),
+						totalItems: o.totalItems,
+						view: replacePath(o.view, usePath),
+						object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+						str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
+						discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
+					};
+				})
+			};
+		})
+	);
+
+	result.push(
+		displayBoolFilters(
+			'boolFilters',
+			(f) => !ACCESS_FILTERS.includes(<string>f.object?.alias),
+			boolFilters,
+			displayUtil,
+			locale,
+			translate,
+			usePath
+		)
+	);
 
 	return result;
 }
@@ -283,20 +372,22 @@ export function displayPredicates(
 }
 
 function displayBoolFilters(
-	view: PartialCollectionView,
+	dimension: string,
+	predicate: (o: Observation) => boolean,
+	boolFilters: Observation[],
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
 	usePath?: string
 ): FacetGroup {
-	const filters = view.stats?._boolFilters || [];
+	const filters = boolFilters?.filter(predicate) || [];
 
 	const facets = filters.map((o) => {
 		return {
 			selected: o._selected || false,
 			totalItems: o.totalItems,
 			view: replacePath(o.view, usePath),
-			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
+			object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
 			discriminator: '',
 			alias: o.object.alias
@@ -304,8 +395,8 @@ function displayBoolFilters(
 	});
 
 	return {
-		label: translate('facet.boolFilters'),
-		dimension: 'boolFilters',
+		label: translate(`facet.${dimension}`),
+		dimension: dimension,
 		facets: facets
 	};
 }
@@ -322,9 +413,39 @@ function replacePath(view: Link, usePath: string | undefined) {
 	return view;
 }
 
-function capitalize(str: string | undefined) {
-	if (str && typeof str === 'string') {
-		return str[0].toUpperCase() + str.slice(1);
+// TODO: we should get this from the backend...
+function addMyLibrariesBoolFilter(
+	boolFilters: Observation[] | undefined,
+	locale: LangCode,
+	translate: TranslateFn
+) {
+	if (boolFilters) {
+		let existingBoolFilter: Observation | undefined;
+		const rest: Observation[] = [];
+		boolFilters.forEach((f) => {
+			if (f.object.alias === MY_LIBRARIES_FILTER_ALIAS) {
+				existingBoolFilter = f;
+			} else rest.push(f);
+		});
+
+		if (existingBoolFilter) {
+			existingBoolFilter.object.prefLabel = translate(`facet.${MY_LIBRARIES_FILTER_ALIAS}`);
+			return [...[existingBoolFilter], ...rest];
+		} else {
+			// not present, get a template object an modify it
+			const newBoolFilter = structuredClone(rest[0]);
+			delete newBoolFilter.object.prefLabelByLang;
+			delete newBoolFilter.object.raw;
+			newBoolFilter.object.prefLabel = translate(`facet.${MY_LIBRARIES_FILTER_ALIAS}`);
+			newBoolFilter.view['@id'] = newBoolFilter.view['@id'].replace(
+				newBoolFilter.object.alias as string,
+				MY_LIBRARIES_FILTER_ALIAS
+			);
+			newBoolFilter.object.alias = MY_LIBRARIES_FILTER_ALIAS;
+			newBoolFilter._selected = false;
+
+			return [...[newBoolFilter], ...rest];
+		}
 	}
-	return str;
+	return boolFilters;
 }

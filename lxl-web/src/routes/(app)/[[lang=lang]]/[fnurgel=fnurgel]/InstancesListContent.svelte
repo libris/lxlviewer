@@ -4,12 +4,16 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
-	export let id: string | undefined;
-	export let data: ResourceData;
-	export let oneOfMany = false;
+	interface Props {
+		id: string | undefined;
+		data: ResourceData;
+		oneOfMany?: boolean;
+	}
+
+	let { id, data, oneOfMany = false }: Props = $props();
 
 	function getPermalink(url: URL, id: string) {
 		const newSearchParams = new URLSearchParams({ expanded: id });
@@ -41,33 +45,33 @@
 		<div class="col-span-2 flex flex-col gap-2 text-sm">
 			<div class="flex object-left">
 				<ResourceImage
-					images={$page.data.images.filter((i) => i.recordId === id)}
-					alt={$page.data.t('general.instanceCover')}
-					type={$page.data.type}
+					images={page.data.images.filter((i) => i.recordId === id)}
+					alt={page.data.t('general.instanceCover')}
+					type={page.data.type}
 					loading="lazy"
 					linkToFull
 				/>
 			</div>
-			{#if id && $page.data.holdingsByInstanceId[id]}
+			{#if id && page.data.holdingsByInstanceId[id]}
 				<div class="flex flex-col gap-1">
 					<a
 						class="link-subtle"
-						href={getHoldingsLink($page.url, id)}
+						href={getHoldingsLink(page.url, id)}
 						data-sveltekit-preload-data="false"
-						on:click={(event) => handleClickHoldings(event, $page.state, id)}
+						onclick={(event) => handleClickHoldings(event, page.state, id)}
 					>
-						{$page.data.t('holdings.availableAt')}
-						{$page.data.holdingsByInstanceId[id].length}
-						{$page.data.holdingsByInstanceId[id].length === 1
-							? $page.data.t('holdings.library')
-							: $page.data.t('holdings.libraries')}
+						{page.data.t('holdings.availableAt')}
+						{page.data.holdingsByInstanceId[id].length}
+						{page.data.holdingsByInstanceId[id].length === 1
+							? page.data.t('holdings.library')
+							: page.data.t('holdings.libraries')}
 					</a>
 					<a
 						class="link-subtle"
-						href={getPermalink($page.url, id)}
-						on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}
+						href={getPermalink(page.url, id)}
+						onclick={(event) => handleCopyPermalink(event, page.url, id, page.state)}
 					>
-						{$page.data.t('general.copyPermalinkToInstance')}
+						{page.data.t('general.copyPermalinkToInstance')}
 					</a>
 				</div>
 			{/if}

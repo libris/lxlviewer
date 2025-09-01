@@ -2,32 +2,33 @@
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import placeholder from '$lib/assets/img/placeholder.svg';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	type Props = {
 		item: SuperSearchResultItem;
 	};
 
 	const { item }: Props = $props();
+
+	const TypeIcon = $derived(getTypeIcon(item['@type']));
 </script>
 
 <div class="pointer-events-none relative flex">
 	{#if item.image}
 		<img
 			src={item.image.url}
-			width={item.image.widthṔx}
-			height={item.image.heightPx}
-			alt={$page.data.t('general.latestInstanceCover')}
+			width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
+			height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
+			alt={page.data.t('general.latestInstanceCover')}
 			class={[
 				'aspect-square object-contain object-top',
 				item['@type'] === 'Person' && 'rounded-full'
 			]}
 		/>
-		{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
-			{@const SvelteComponent = getTypeIcon(item['@type'])}
+		{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && TypeIcon}
 			<div class="absolute -top-2 -left-2">
 				<div class="rounded-md p-1.5">
-					<SvelteComponent class="size-3" />
+					<TypeIcon class="size-3" />
 				</div>
 			</div>
 		{/if}
@@ -41,9 +42,8 @@
 					item['@type'] === 'Person' ? 'rounded-full' : 'rounded-sm'
 				]}
 			/>
-			{#if getTypeIcon(item['@type'])}
-				{@const SvelteComponent_1 = getTypeIcon(item['@type'])}
-				<SvelteComponent_1 class="text-subtle absolute text-lg" />
+			{#if TypeIcon}
+				<TypeIcon class="absolute text-lg text-neutral-400" />
 			{/if}
 		</div>
 	{/if}

@@ -31,10 +31,12 @@ export interface SearchResultItem {
 	[LxlLens.CardHeading]: DisplayDecorated;
 	[LxlLens.CardBody]: DisplayDecorated;
 	[LensType.WebCardHeaderExtra]: DisplayDecorated;
+	[LensType.WebCardHeaderTop]: DisplayDecorated;
 	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
 	typeStr: string;
 	heldByMyLibraries?: LibraryItem[];
+	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }
 
@@ -122,7 +124,7 @@ interface Slice {
 	maxItems: number;
 }
 
-interface Observation {
+export interface Observation {
 	totalItems: number;
 	view: Link;
 	object: FramedData;

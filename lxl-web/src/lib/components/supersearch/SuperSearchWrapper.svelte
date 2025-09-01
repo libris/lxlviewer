@@ -1,20 +1,33 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { afterNavigate, goto } from '$app/navigation';
+	import { afterNavigate } from '$app/navigation';
+	import { fade } from 'svelte/transition';
 	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
+	import QualifierPill from './QualifierPill.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping, QualifierSuggestion } from '$lib/types/search';
+	import type { DisplayMapping } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
 	import BiSearch from '~icons/bi/search';
-	import BiChevronDown from '~icons/bi/chevron-down';
-	import BiChevronUp from '~icons/bi/chevron-up';
+	import IconAddQualifierKey from '~icons/bi/plus-circle';
 	import '$lib/styles/lxlquery.css';
+
+	const QUALIFIER_SUGGESTIONS = [
+		{
+			key: page.data.t('qualifiers.contributorKey'),
+			label: page.data.t('qualifiers.contributorLabel')
+		},
+		{ key: page.data.t('qualifiers.titleKey'), label: page.data.t('qualifiers.titleLabel') },
+		{ key: page.data.t('qualifiers.languageKey'), label: page.data.t('qualifiers.languageLabel') },
+		{ key: page.data.t('qualifiers.subjectKey'), label: page.data.t('qualifiers.subjectLabel') },
+		{ key: page.data.t('qualifiers.yearKey'), label: page.data.t('qualifiers.yearLabel') }
+	];
 
 	interface Props {
 		placeholder: string;
@@ -27,10 +40,27 @@
 			: addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || '')
 	);
 	let selection: Selection | undefined = $state();
+
+	let isLoading: boolean | undefined = $state();
+	let debouncedLoading: boolean | undefined = $state();
+	let timeout: ReturnType<typeof setTimeout> | null = null;
+	let fetchOnExpand = $state(true);
+
+	// debounce loading spinner
+	$effect(() => {
+		const current = isLoading;
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+		timeout = setTimeout(() => {
+			debouncedLoading = current;
+		}, 300);
+	});
+
 	let cursor = $derived(selection?.head || 0);
+	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
-	let showMoreFilters = $state(false);
 
 	let pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -46,9 +76,16 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			const toQ = addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
-			q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+			if (page.route.id === '/(app)/[[lang=lang]]') {
+				q = ''; // reset query if navigating to start/index page
+			} else if (to.url.searchParams.has('_q')) {
+				const toQ = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
+				q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+			}
+
 			superSearch?.hideExpandedSearch();
+			fetchOnExpand = true;
+			superSearch?.blur(); // remove focus from input after searching or navigating
 		}
 	});
 
@@ -60,36 +97,24 @@
 		}
 	}
 
-	function handlePaginationQuery(searchParams: URLSearchParams, prevData: unknown) {
-		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
-		const limit = parseInt(searchParams.get('_limit')!, 10);
-		const offset = limit + parseInt(searchParams.get('_offset') || '0', 10);
-
-		if (prevData && offset < prevData.totalItems) {
-			paginatedSearchParams.set('_offset', offset.toString());
-			return paginatedSearchParams;
+	const editedParentNode = $derived.by(() => {
+		if (!q || !selection) {
+			return null;
 		}
-		return undefined;
-	}
 
-	function handleShouldShowStartContent(value: string, selection?: Selection) {
-		if (selection && selection.anchor == selection.head) {
-			const tree = lxlQuery.language.parser.parse(value);
-			const nodeLeft = tree.resolveInner(selection.head, -1);
-			const nodeRight = tree.resolveInner(selection.head, 1);
+		if (selection) {
+			const tree = lxlQuery.language.parser.parse(q);
+			const node = tree.resolveInner(selection.head, 0);
 
-			/** Start content should be shown when the cursor isn't placed inside a qualifier or edited string part */
-			if (!nodeLeft.parent?.name && !nodeRight.parent?.name) {
-				return true;
+			if (node.type.name) {
+				return node.parent?.type.name;
 			}
 		}
 
-		if (!value) {
-			return true;
-		}
+		return null;
+	});
 
-		return false;
-	}
+	const showAddQualifiers = $derived(editedParentNode !== 'QualifierValue');
 
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
@@ -97,42 +122,21 @@
 	}
 
 	function addQualifierKey(qualifierKey: string) {
+		superSearch?.resetData();
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
+		const insert = `${qualifierKey}:`;
 		superSearch?.dispatchChange({
 			change: {
 				from: cursor,
 				to: cursor,
-				insert: `${qualifierKey}:`
+				insert
 			},
 			selection: {
-				anchor: cursor + qualifierKey?.length + 1,
-				head: cursor + qualifierKey?.length + 1
+				anchor: cursor + insert.length,
+				head: cursor + insert.length
 			},
 			userEvent: 'input.complete'
 		});
-	}
-
-	function addQualifier(qualifier: QualifierSuggestion) {
-		superSearch?.dispatchChange({
-			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(qualifier._q) },
-			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
-			userEvent: 'input.complete'
-		});
-		goto(getFullQualifierLink(qualifier._q));
-	}
-
-	function removeQualifier(qualifier: string) {
-		const newQ = addSpaceIfEndingQualifier(q.replace(qualifier, '').trim());
-		const insertCursor = Math.min(q.indexOf(qualifier), newQ.length);
-		const newSearchParams = new URLSearchParams(pageParams);
-		newSearchParams.set('_q', newQ.trim() ? newQ : '*');
-
-		superSearch?.dispatchChange({
-			change: { from: 0, to: q.length, insert: newQ },
-			selection: { anchor: insertCursor, head: insertCursor },
-			userEvent: 'delete'
-		});
-		goto('/find?' + newSearchParams.toString());
 	}
 
 	let derivedLxlQualifierPlugin = $derived.by(() => {
@@ -140,98 +144,81 @@
 			let pageMapping = page.data.searchResult?.mapping;
 			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
 		}
-		return lxlQualifierPlugin(getLabels, removeQualifier);
+		return lxlQualifierPlugin(QualifierPill, getLabels);
 	});
-
-	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
-
-	function getFullQualifierLink(q: string) {
-		const newParams = new URLSearchParams(pageParams);
-		newParams.set('_q', q);
-		return `/find?${newParams.toString()}`;
-	}
 
 	export function showExpandedSearch() {
 		superSearch?.showExpandedSearch();
 	}
+
+	function handleOnChange() {
+		fetchOnExpand = false;
+	}
+
+	function handleOnExpand() {
+		if (fetchOnExpand && q.trim()) {
+			superSearch?.fetchData();
+			fetchOnExpand = false;
+		}
+	}
 </script>
 
-{#snippet startFilterItem({
-	qualifierKey,
-	qualifierLabel,
-	qualifierPlaceholder,
-	getCellId,
-	isFocusedCell,
-	isFocusedRow,
-	rowIndex
-}: {
-	qualifierKey: string;
-	qualifierLabel: string;
-	qualifierPlaceholder: string;
-	getCellId: (rowIndex: number, colIndex: number) => string | undefined;
-	isFocusedCell: (rowIndex: number, colIndex: number) => boolean;
-	isFocusedRow: (rowIndex: number) => boolean;
-	rowIndex: number;
-})}
-	<div role="row" class="suggestion" class:focused={isFocusedRow(rowIndex)}>
-		<button
-			type="button"
-			role="gridcell"
-			id={getCellId(rowIndex, 0)}
-			class="hover:bg-primary-50 flex min-h-12 w-full items-center px-4"
-			class:focused-cell={isFocusedCell(rowIndex, 0)}
-			onclick={() => addQualifierKey(qualifierKey)}
-		>
-			<span class="truncate text-sm">
-				<span class="font-medium">{qualifierLabel}:</span>
-				<span class="text-subtle italic">{qualifierPlaceholder}</span>
-			</span>
-		</button>
-	</div>
+{#snippet loading()}
+	<span class="-mt-0.5 block size-4" in:fade={{ duration: 200 }}>
+		<Spinner />
+	</span>
 {/snippet}
 
-<form class="relative w-full" action="find" onsubmit={handleSubmit} data-testid="main-search">
+<form
+	class={['relative w-full', isFindRoute && 'find-page']}
+	action="find"
+	onsubmit={handleSubmit}
+	data-testid="main-search"
+>
 	<SuperSearch
 		name="_q"
 		bind:this={superSearch}
 		bind:value={q}
 		bind:selection
+		bind:isLoading
 		language={lxlQuery}
 		{placeholder}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({
 				_q: query,
-				_limit: '8',
-				cursor: cursor.toString()
+				_limit: '5',
+				cursor: cursor.toString(),
+				_sort: page.url.searchParams.get('_sort') || ''
 			});
 		}}
 		transformFn={handleTransform}
-		paginationQueryFn={handlePaginationQuery}
-		shouldShowStartContentFn={handleShouldShowStartContent}
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
+		wrappingArrowKeyNavigation
 		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={2}
-		loadMoreLabel={page.data.t('search.showMore')}
 		debouncedWait={100}
+		onexpand={handleOnExpand}
+		onchange={handleOnChange}
 	>
-		{#snippet loadingIndicator()}
-			<!-- <div class="flex min-h-11 w-full items-center px-4 text-left">
-				{$page.data.t('search.loading')}
-			</div> -->
-		{/snippet}
 		{#snippet inputRow({
 			expanded,
 			inputField,
 			getCellId,
 			isFocusedCell,
-			// onclickSubmit,
+			isFocusedRow,
 			onclickClear,
 			onclickClose
 		})}
 			<div
-				class="supersearch-input rounded-d bg-input outline-primary-200 has-focus:outline-primary-600 flex min-h-12 w-full cursor-text overflow-hidden rounded-md outline focus-within:relative"
+				class={[
+					'supersearch-input rounded-d border-primary-200 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
+					isFocusedRow() && [
+						'outline-primary-200 has-focus:border-primary-500 has-focus:outline-4',
+						expanded && 'has-focus:outline-primary-200'
+					]
+				]}
 			>
 				{#if expanded}
 					<button
@@ -239,15 +226,23 @@
 						id={getCellId(0)}
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
-						class="p-4 sm:hidden"
+						class="text-subtle p-4 sm:hidden"
 						onclick={onclickClose}
 					>
-						<BiArrowLeft />
+						{#if debouncedLoading}
+							{@render loading()}
+						{:else}
+							<BiArrowLeft aria-hidden="true" />
+						{/if}
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
 					<div class={['text-subtle absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
-						<BiSearch aria-hidden="true" />
+						{#if debouncedLoading}
+							{@render loading()}
+						{:else}
+							<BiSearch aria-hidden="true" />
+						{/if}
 					</div>
 					{@render inputField()}
 				</div>
@@ -263,102 +258,60 @@
 						<BiXLg />
 					</button>
 				{/if}
-				<!-- <button
-					type="submit"
-					id={getCellId(2)}
-					class:focused-cell={isFocusedCell(2)}
-					class="submit-action min-h-12 rounded-none"
-					enterkeyhint="search"
-					onclick={onclickSubmit}
-				>
-					{$page.data.t('search.search')}
-				</button> -->
 			</div>
 		{/snippet}
-		{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
-			<div role="rowgroup">
-				<div class="text-2xs text-subtle flex w-full items-center px-4 py-2 font-medium">
-					{page.data.t('search.supersearchStartHeader')}
-				</div>
-				{@render startFilterItem({
-					qualifierKey: page.data.t('qualifiers.contributorKey'),
-					qualifierLabel: page.data.t('qualifiers.contributorLabel'),
-					qualifierPlaceholder: page.data.t('qualifiers.contributorPlaceholder'),
-					getCellId,
-					isFocusedCell,
-					isFocusedRow,
-					rowIndex: 1
-				})}
-				{@render startFilterItem({
-					qualifierKey: page.data.t('qualifiers.titleKey'),
-					qualifierLabel: page.data.t('qualifiers.titleLabel'),
-					qualifierPlaceholder: page.data.t('qualifiers.titlePlaceholder'),
-					getCellId,
-					isFocusedCell,
-					isFocusedRow,
-					rowIndex: 2
-				})}
-				{@render startFilterItem({
-					qualifierKey: page.data.t('qualifiers.languageKey'),
-					qualifierLabel: page.data.t('qualifiers.languageLabel'),
-					qualifierPlaceholder: page.data.t('qualifiers.languagePlaceholder'),
-					getCellId,
-					isFocusedCell,
-					isFocusedRow,
-					rowIndex: 3
-				})}
-				{#if showMoreFilters}
-					{@render startFilterItem({
-						qualifierKey: page.data.t('qualifiers.subjectKey'),
-						qualifierLabel: page.data.t('qualifiers.subjectLabel'),
-						qualifierPlaceholder: page.data.t('qualifiers.subjectPlaceholder'),
-						getCellId,
-						isFocusedCell,
-						isFocusedRow,
-						rowIndex: 4
-					})}
-					{@render startFilterItem({
-						qualifierKey: page.data.t('qualifiers.yearKey'),
-						qualifierLabel: page.data.t('qualifiers.yearLabel'),
-						qualifierPlaceholder: page.data.t('qualifiers.yearPlaceholder'),
-						getCellId,
-						isFocusedCell,
-						isFocusedRow,
-						rowIndex: 5
-					})}
-					{@render startFilterItem({
-						qualifierKey: page.data.t('qualifiers.genreFormKey'),
-						qualifierLabel: page.data.t('qualifiers.genreFormLabel'),
-						qualifierPlaceholder: page.data.t('qualifiers.genreFormPlaceholder'),
-						getCellId,
-						isFocusedCell,
-						isFocusedRow,
-						rowIndex: 6
-					})}
-				{/if}
-				<div role="row" class="start-item" class:focused={isFocusedRow(moreFiltersRowIndex)}>
-					<button
-						type="button"
-						role="gridcell"
-						id={getCellId(moreFiltersRowIndex, 0)}
-						class="hover:bg-primary-50 flex min-h-11 w-full items-center px-4 text-sm"
-						class:focused-cell={isFocusedCell(moreFiltersRowIndex, 0)}
-						onclick={() => (showMoreFilters = !showMoreFilters)}
+		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
+			<nav>
+				{#if showAddQualifiers}
+					<div
+						id="supersearch-add-qualifier-key-label"
+						class="text-2xs text-subtle px-4 font-medium"
 					>
-						{#if showMoreFilters}
-							<BiChevronUp class="text-subtle mr-2" />
-							{page.data.t('search.showFewer')}
-						{:else}
-							<BiChevronDown class="text-subtle mr-2" />
-							{page.data.t('search.showMore')}
-						{/if}
-					</button>
-				</div>
-			</div>
+						{page.data.t('supersearch.addQualifiers')}
+					</div>
+					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
+						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
+							<IconAddQualifierKey class="text-subtle shrink-0" />
+							{#each QUALIFIER_SUGGESTIONS as { key, label }, cellIndex (key)}
+								<button
+									type="button"
+									id={getCellId(1, cellIndex)}
+									class={[
+										'text-body bg-accent-50 text-2xs border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
+										isFocusedCell(1, cellIndex) &&
+											'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
+									]}
+									onclick={() => addQualifierKey(key)}
+								>
+									{label}:
+								</button>
+							{/each}
+						</div>
+					</div>
+				{/if}
+				{#if resultsCount && q.trim().length}
+					<div id="supersearch-results-label" class="text-2xs text-subtle px-4 font-medium">
+						{page.data.t('supersearch.suggestions')}
+					</div>
+					<div role="rowgroup" aria-labelledby="supersearch-results-label">
+						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+					</div>
+				{/if}
+				{#if showAddQualifiers && resultsCount}
+					<div role="row" class="border-neutral border-t">
+						<button
+							type="submit"
+							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs"
+							class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
+							>{page.data.t('supersearch.showAll')}</button
+						>
+					</div>
+				{/if}
+			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
 			{#if resultItem}
-				<Suggestion item={resultItem} {getCellId} {isFocusedCell} {addQualifier} />
+				<Suggestion item={resultItem} {getCellId} {isFocusedCell} />
 			{/if}
 		{/snippet}
 	</SuperSearch>
@@ -380,31 +333,77 @@
 		}
 	}
 
+	:global(.find-page #supersearch) {
+		display: block;
+		padding-bottom: calc(var(--spacing) * 2);
+
+		@variant sm {
+			padding-bottom: 0;
+		}
+	}
+
 	/* dialog */
 
 	:global(.supersearch-dialog) {
-		@apply static m-0 h-full max-h-screen w-full max-w-full bg-transparent p-0;
-		top: var(--offset-top, 0);
+		position: static;
+		height: 100%;
+		max-height: 100vh;
+		width: 100%;
+		max-width: 100%;
+		background-color: transparent;
+		margin: 0;
+		padding: 0;
+		top: 0;
+
+		@variant sm {
+			top: var(--offset-top, 0);
+		}
 	}
 
 	:global(.supersearch-dialog-wrapper) {
-		@apply header-layout pointer-events-none px-0 sm:px-6 lg:px-2;
+		display: grid;
+		grid-template-columns: 1fr minmax(0, 8fr) 1fr;
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
+		column-gap: calc(var(--spacing) * 8);
+
+		pointer-events: none;
+		height: 100%;
+		width: 100%;
+		position: fixed;
 
 		@variant sm {
 			grid-template-areas: '. supersearch-content .';
+			padding-inline: calc(var(--spacing) * 3);
+			height: auto;
+		}
+
+		@variant lg {
+			grid-template-columns: 1fr minmax(0, 4fr) 1fr;
+		}
+
+		@variant xl {
+			grid-template-columns: 1fr minmax(0, 3fr) 1fr;
 		}
 	}
 
 	:global(.supersearch-dialog-content) {
-		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md drop-shadow-md;
-		background: var(--color-page);
 		grid-area: supersearch-content;
+		background: var(--color-page);
+		pointer-events: auto;
+		max-height: 100vh;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		overscroll-behavior: contain;
 		scrollbar-width: none;
+
+		@variant sm {
+			border-radius: var(--radius-md);
+			@apply drop-shadow-md;
+		}
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-20 items-stretch px-4 pt-3 pb-2;
+		@apply sticky top-0 z-20 items-stretch px-4 pt-3 pb-3;
 		background-color: var(--color-page);
 	}
 
@@ -467,10 +466,6 @@
 		@variant sm {
 			padding-left: calc(var(--spacing, 0.25rem) * 12);
 		}
-	}
-
-	:global(.supersearch-input .cm-focused) {
-		outline: none;
 	}
 
 	:global(.codemirror-container .cm-content) {

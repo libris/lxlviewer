@@ -1,31 +1,22 @@
 <script lang="ts">
+	import SearchMapping from './SearchMapping.svelte';
 	import type { DisplayMapping, SearchOperators } from '$lib/types/search';
-
-	import { page } from '$app/stores';
-	import { getModalContext } from '$lib/contexts/modal';
+	import { page } from '$app/state';
 	import BiXLg from '~icons/bi/x-lg';
-	import BiPencil from '~icons/bi/pencil';
-	import BiPencilFill from '~icons/bi/pencil-fill';
 	import BiTrash from '~icons/bi/trash';
 
-	export let mapping: DisplayMapping[];
-	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
-	export let depth = 0;
+	interface Props {
+		mapping: DisplayMapping[];
+		parentOperator?: keyof typeof SearchOperators | undefined;
+		depth?: number;
+	}
 
-	const inModal = getModalContext();
-
-	$: showEditButton =
-		$page.url.pathname === `${$page.data.base}find` &&
-		$page.url.searchParams.get('_q') !== $page.url.searchParams.get('_i');
-	$: editActive = $page.url.searchParams.has('_x');
-	$: toggleEditUrl = editActive
-		? $page.url.href.replace(`&_x=${$page.url.searchParams.get('_x')}`, '')
-		: `${$page.url.href}&_x=advanced`;
+	let { mapping, parentOperator = undefined, depth = 0 }: Props = $props();
 
 	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
 		switch (operator) {
 			case 'equals':
-				return '';
+				return ':';
 			case 'notEquals':
 				return '≠';
 			case 'greaterThan':
@@ -46,25 +37,27 @@
 	}
 </script>
 
-<ul class="flex flex-wrap items-center gap-2">
+<ul class="flex flex-wrap items-center gap-2 overflow-hidden">
 	{#each mapping as m, index (`${m['@id']}-${index}`)}
 		<li
-			class="mapping-item {m.children ? 'pill-group' : 'btn btn-accent'} pill-{m.operator}"
+			class="mapping-item overflow-hidden {m.children
+				? 'pill-group'
+				: 'btn btn-accent'} pill-{m.operator}"
 			class:wildcard={m.operator === 'equals' && m.display === '*'}
 			class:outer={depth === 0}
 			class:free-text={m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
 		>
 			{#if 'children' in m}
-				<svelte:self mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
+				<SearchMapping mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
 			{:else if m.operator === 'existence' || m.operator === 'notExistence'}
 				{@const symbol = getRelationSymbol(m.operator)}
 				<span class="pill-relation">{symbol}</span>
-				<div class="pill-label inline">{m.label}</div>
+				<div class="pill-label inline whitespace-nowrap">{m.label}</div>
 			{:else if 'label' in m && 'display' in m}
 				{@const symbol = getRelationSymbol(m.operator)}
-				<div class="pill-label inline">{m.label}</div>
+				<div class="pill-label inline whitespace-nowrap">{m.label}</div>
 				<span class="pill-relation">{symbol}</span>
-				<span class="pill-value">
+				<span class="pill-value truncate">
 					{m.displayStr}
 				</span>
 			{/if}
@@ -73,7 +66,7 @@
 					<a
 						class="float-right pl-2 text-[inherit] hover:text-[inherit]"
 						href={m.up?.['@id']}
-						aria-label={$page.data.t('search.removeFilter')}
+						aria-label={page.data.t('search.removeFilter')}
 					>
 						<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
 					</a>
@@ -87,34 +80,22 @@
 			<li class="pill-remove">
 				<a href={m.up?.['@id']} class="btn btn-primary">
 					<BiTrash aria-hidden="true" />
-					{$page.data.t('search.clearFilters')}
+					{page.data.t('search.clearFilters')}
 				</a>
 			</li>
 		{/if}
 	{/each}
-	{#if !inModal && showEditButton && depth === 0}
-		<li>
-			<a class:active={editActive} data-sveltekit-replacestate href={toggleEditUrl}>
-				{#if editActive}
-					<BiPencilFill aria-hidden="true" />
-				{:else}
-					<BiPencil aria-hidden="true" />
-				{/if}
-				{$page.data.t('search.editFilters')}
-			</a>
-		</li>
-	{/if}
 </ul>
 
 <style lang="postcss">
-	@reference "../../../app.css";
+	/* TODO: add styles consistent with new design  */
 
 	.mapping-item {
 		/* @apply rounded-md px-4 py-2 brightness-100;
 		transition: filter 0.1s ease; */
 	}
 
-	.mapping-item:has(> .pill-remove:hover) {
+	.mapping-item:has(:global(> .pill-remove:hover)) {
 		/* @apply brightness-[.85]; */
 	}
 
@@ -132,29 +113,34 @@
 	}
 
 	.pill-equals.wildcard {
-		@apply hidden;
+		display: none;
 	}
 
 	.pill-group {
-		@apply flex items-center gap-2 p-0 pr-4;
+		display: flex;
+		align-items: center;
+		gap: calc(var(--spacing) * 2);
+		padding: 0;
+		padding-right: calc(var(--spacing) * 4);
 
 		&.outer {
-			@apply bg-transparent;
+			background-color: transparent;
 		}
 	}
 
 	.pill-between,
 	.pill-relation {
-		@apply uppercase;
+		text-transform: uppercase;
 	}
 
 	.pill-between-and,
 	.pill-between:last-of-type {
-		@apply hidden;
+		display: none;
 	}
 
 	.free-text {
-		& > .pill-label {
+		& > .pill-label,
+		.pill-relation {
 			display: none;
 		}
 

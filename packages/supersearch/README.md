@@ -16,42 +16,33 @@ To use `supersearch` in a non-Svelte project ...
 
 ## Properties
 
-| Property                   | Type                                                                                                       | Description                                                                                                                                    | Default value                     |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| `id`                       | `string`                                                                                                   | A string defining a identifier which must be unique in the whole document.                                                                     | `"supersearch"`                   |
-| `name`                     | `string`                                                                                                   | A string specifying a name for the form control.                                                                                               | `undefined`                       |
-| `value`                    | `string`                                                                                                   | The value that will be displayed and edited inside the component.                                                                              | `""`                              |
-| `form`                     | `string`                                                                                                   | A string matching the `id` of a `<form>` element.                                                                                              | `undefined`                       |
-| `language`                 | `LanguageSupport`                                                                                          | The language extension that will parse and highlight the value.                                                                                | `undefined`                       |
-| `placeholder`              | `string`                                                                                                   | A brief hint which is shown when value is empty.                                                                                               | `""`                              |
-| `endpoint`                 | `string` or `URL`                                                                                          | The endpoint from which the component should fetch data from (used together with `queryFn`).                                                   | `undefined`                       |
-| `queryFn`                  | `QueryFunction`                                                                                            | A function that converts `value` to `URLSearchParams` (which will be appended to the endpoint).                                                | `undefined`                       |
-| `paginationQueryFn`        | `PaginationQueryFunction`                                                                                  | A function which should return `URLSearchParams` used for querying more paginated data (if available)                                          | `undefined`                       |
-| `transformFn`              | `TransformFunction`                                                                                        | A generic helper function which can be used to transform data fetched from the endpoint.                                                       | `(value) => !value.trim().length` |
-| `shouldShowStartContentFn` | `ShouldShowStartContentFunction`                                                                           | A function returning a boolean value which controls if startContent                                                                            | `undefined`                       |
-| `extensions`               | `Extension[]`                                                                                              | A list of extensions which should extend the default extensions.                                                                               | `[]`                              |
-| `comboboxAriaLabel`        | `string`                                                                                                   | A string defining an optional aria label for the combobox                                                                                      | `undefined`                       |
-| `inputRow`                 | `Snippet<[{expanded, inputSnippet, getCellId, isFocusedCell, onclickSubmit, onclickClear, onclickClose}]>` | A [Snippet](https://svelte.dev/docs/svelte/snippet) used for customized rendering of the input row. See [Custom input row](#custom-input-row). | `undefined`                       |
-| `startContent`             | `Snippet<[{getCellId, isFocusedCell, isFocusedRow}]>`                                                      | A Snippet used for customized rendering of start content. See [Custom start content](#custom-start-content).                                   | `undefined`                       |
-| `resultItemRow`            | `Snippet<[{resultItem, getCellId, isFocusedCell, rowIndex}]>`                                              | A Snippet used for customized rendering of result items. See [Custom result items](#custom-result-items).                                      | `undefined`                       |
-| `persistentResultItemRow`  | `Snippet<[{getCellId, isFocusedCell}]>`                                                                    | An optional Snippet used for adding a persistent result item (placed before result items). See [Persistent item](#persistent-result-item).     | `undefined`                       |
-| `loadingIndicator`         | `Snippet`                                                                                                  | A Snippet used for rendering a loading indicator.                                                                                              | `undefined`                       |
-| `defaultRow`               | `number`                                                                                                   | An integer defining which row should be focused by default (use `-1` if no row should be focused).                                             | `0`                               |
-| `defaultInputCol`          | `number`                                                                                                   | An integer defining which input item column should be focused by default (use `-1` if no column should be focused).                            | `-1`                              |
-| `defaultResultItemCol`     | `number`                                                                                                   | An integer defining which result item column should be focused by default (use `-1` if no column should be focused).                           | `0`                               |
+| Property               | Type                                                                                                       | Description                                                                                                                                        | Default value                     |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `id`                   | `string`                                                                                                   | A string defining a identifier which must be unique in the whole document.                                                                         | `"supersearch"`                   |
+| `name`                 | `string`                                                                                                   | A string specifying a name for the form control.                                                                                                   | `undefined`                       |
+| `value`                | `string`                                                                                                   | The value that will be displayed and edited inside the component.                                                                                  | `""`                              |
+| `form`                 | `string`                                                                                                   | A string matching the `id` of a `<form>` element.                                                                                                  | `undefined`                       |
+| `language`             | `LanguageSupport`                                                                                          | The language extension that will parse and highlight the value.                                                                                    | `undefined`                       |
+| `placeholder`          | `string`                                                                                                   | A brief hint which is shown when value is empty.                                                                                                   | `""`                              |
+| `endpoint`             | `string` or `URL`                                                                                          | The endpoint from which the component should fetch data from (used together with `queryFn`).                                                       | `undefined`                       |
+| `queryFn`              | `QueryFunction`                                                                                            | A function that converts `value` to `URLSearchParams` (which will be appended to the endpoint).                                                    | `undefined`                       |
+| `paginationQueryFn`    | `PaginationQueryFunction`                                                                                  | A function which should return `URLSearchParams` used for querying more paginated data (if available)                                              | `undefined`                       |
+| `transformFn`          | `TransformFunction`                                                                                        | A generic helper function which can be used to transform data fetched from the endpoint.                                                           | `(value) => !value.trim().length` |
+| `extensions`           | `Extension[]`                                                                                              | A list of extensions which should extend the default extensions.                                                                                   | `[]`                              |
+| `comboboxAriaLabel`    | `string`                                                                                                   | A string defining an optional aria label for the combobox                                                                                          | `undefined`                       |
+| `inputRow`             | `Snippet<[{expanded, inputSnippet, getCellId, isFocusedCell, onclickSubmit, onclickClear, onclickClose}]>` | A [Snippet](https://svelte.dev/docs/svelte/snippet) used for customized rendering of the input row. See [Custom input row](#custom-input-row).     | `undefined`                       |
+| `expandedContent`      | `Snippet<[{search, resultsSnippet, resultsCount, getCellId, isFocuedCell, isFocusedRow}]>`                 | A [Snippet](https://svelte.dev/docs/svelte/snippet) used for customized rendering the expanded content. See [Custom input row](#custom-input-row). | `undefined`                       |
+| `resultItemRow`        | `Snippet<[{resultItem, getCellId, isFocusedCell, rowIndex}]>`                                              | A Snippet used for customized rendering of result items. See [Custom result items](#custom-result-items).                                          | `undefined`                       |
+| `loadingIndicator`     | `Snippet`                                                                                                  | A Snippet used for rendering a loading indicator.                                                                                                  | `undefined`                       |
+| `defaultRow`           | `number`                                                                                                   | An integer defining which row should be focused by default (use `-1` if no row should be focused).                                                 | `0`                               |
+| `defaultInputCol`      | `number`                                                                                                   | An integer defining which input item column should be focused by default (use `-1` if no column should be focused).                                | `-1`                              |
+| `defaultResultItemCol` | `number`                                                                                                   | An integer defining which result item column should be focused by default (use `-1` if no column should be focused).                               | `0`                               |
 
 | `toggleWithKeyboardShortcut` | `boolean` | Controls if expanded search should be togglable using `cmd+k`(macOS) and `ctrl+k` (Linux/Windows) | `false` |
 | `debouncedWait` | `number` | The wait time, in milliseconds that debounce function should wait between invocated search queries. | `300` |
 | `cursor` | `number` | A bindable prop telling the current cursor position index (the prop should be treated as readonly) | `0` |
 | `isLoading` | `boolean` | A bindable prop telling if the component is currently loading data (the prop should be treated as readonly) | `undefined` |
 | `hasData` | `boolean` | A bindable prop telling if the component has data (the prop should be treated as readonly) | `undefined` |
-
-&nbsp;
-Supersearch also exports a `lxlQualifierPlugin` that can be used (passed to the extensions prop) if you want atomic, stylable, removable, labeled pills in your editor from some key-value pair or reserved word. This requires:
-
-- Your language exporting `Qualifier` nodes that can consist of `QualifierKey`, `QualifierOperator` and `QualifierValue` (i.e `key:value`).
-- Passing a function of type `GetLabelFunction`, that should return readable labels in order for the pill to turn atomic (non-editable) together with an optional `invalid` flag that enables styling of invalid queries.
-- Optionally passing a `RemoveQualifierFunction` that will be called with the qualifier when user clicks the remove button.
 
 ## Implementing the component in your project
 
@@ -79,17 +70,23 @@ The follwing named snippet params are available:
 
 Each interactable cell element (button or links) should have the `role="gridcell"` attribute and an ID generated by the `getCellId` helper function from the snippet params. Some sort of focused styling should also be applied using `isFocusedCell` from the snippet params.
 
-### Custom start content
+### Custom expanded content
 
-Custom start content (shown if the provided `shouldShowStartContentFn` function returns `true`) can be defined as a [Snippet](https://svelte.dev/docs/svelte/snippet) passed as a `startContent` prop.
+The expanded content can be defined as a [Snippet](https://svelte.dev/docs/svelte/snippet) passed as a `expandedContent` prop.
 
-- `getCellId<[rowIndex: number, cellIndex: number]>` - A helper function to get a calculated ID for the cell (e.g. `#supersearch-item-0x0`) by passing a row and cell index value. This enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element.
+The follwing named snippet params are available:
 
-- `isFocusedCell<[rowIndex: number, cellIndex: number]>` - A helper function which returns a boolean value if the cell is focused (useful for styling).
+- `search`- The return value from the `queryFn`/`transformFn` functions (`ReturnType<typeof useSearchRequest>`).
 
-- `isFocusedRow<[rowIndex: number]>` - A helper function which returns a boolean value if a cell in the row is focused (useful for styling).
+- `resultSnippet`- A Snippet used for rendering the results. The optional snippet param `rowOffset` can be used to add an row offset (e.g. if persistant items are shown before the results and therefor should be focused first when using keyboard navigation).
 
-See the example route for an example on how to implement keyboard navigation handling between the start contents items.
+- `resultsCount` - The number of results
+
+- `getCellId<[rowIndex: number, cellIndex: number]>` - A helper function to get a calculated ID for the cell (e.g. `#supersearch-item-0x0`) by passing a row and cell/column index value. This enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element.
+
+- `isFocusedCell[rowIndex: number, cellIndex: number]` - A helper function which returns a boolean value if the cell is focused (useful for styling).
+
+- `isFocusedCell[rowIndex: number]` - A helper function which returns a boolean value if the row has focused (useful for styling).
 
 ### Custom Result items
 
@@ -106,16 +103,6 @@ The follwing named snippet params are available:
 - `rowIndex` - Integer defining the current row index of the result item.
 
 Each interactable cell element (button or links) should have the `role="gridcell"` attribute and an ID generated by the `getCellId` helper function from the snippet params. Some sort of focused styling should also be applied using `isFocusedCell` from the snippet params.
-
-### Persistent result item
-
-A custom persistent result item can be defined as [Snippet](https://svelte.dev/docs/svelte/snippet) passed as a `persistentResultItemRow` prop. The persistent result item is placed before the result items and is shown directly after the user enters a value in the input field (in contrast to the result items which are shown after the search request has finished).
-
-The follwing named snippet params are available:
-
-- `getCellId<[cellIndex: number]>` - A helper function to get a calculated ID for the cell (e.g. `#supersearch-item-1x0`) by passing a cell/column index value. This enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element.
-
-- `isFocusedCell[cellIndex: number]` - A helper function which returns a boolean value if the cell is focused (useful for styling).
 
 ## Developing
 
@@ -140,8 +127,8 @@ npm run watch
 
 To build the library:
 
-```bash
-npm run package
+```sh
+npm pack
 ```
 
 To create a production version of the showcase app:

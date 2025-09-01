@@ -7,11 +7,17 @@ export default {
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
-		openMenu: 'Öppna huvudmeny',
-		betaMessage:
-			'Här kan du prova på nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
-		betaLink: 'Tyck till',
-		betaLinkLong: 'om nya Libris'
+		openMenu: 'Öppna huvudmeny'
+	},
+	banner: {
+		messageMobile: 'Katalogen kan innehålla inaktuell information.',
+		messageDesktop:
+			'Välkommen till nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
+		feedback: 'Tyck till',
+		old: 'Gå till libris.kb.se'
+	},
+	about: {
+		pageTitle: 'Om betan'
 	},
 	myPages: {
 		myPages: 'Mina sidor',
@@ -61,7 +67,9 @@ export default {
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Beskrivningsnivå',
 		'rdf:type': 'Typ',
-		hasInstanceType: 'Format',
+		hasInstanceType: 'Format', // 'Bärare',
+		hasInstanceCategory: 'Format',
+		category: 'Kategori',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Bibliotek',
 		bibliography: 'Bibliografi',
@@ -73,7 +81,9 @@ export default {
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
 		fieldOfActivity: 'Verksamhetsområde',
+		accessFilters: 'Åtkomst',
 		boolFilters: 'Övrigt',
+		'alias-myLibraries': 'Avgränsa till mina bibliotek',
 		limitInfo: 'Alla val kan ej visas',
 		limitText:
 			'Listan visar ett begränsat antal alternativ, de mest förekommande kopplade till din sökning. Prova att avgränsa din sökning för att få andra, mer relevanta alternativ.'
@@ -113,16 +123,19 @@ export default {
 		relatedSearchLabel: 'Sök i resultaten',
 		didYouMean: 'Menade du',
 		showAllResults: 'Visa alla sökresultat',
-		supersearchStartHeader: 'Bygg och förfina din sökning',
 		add: 'Lägg till',
 		addAs: 'Lägg till som',
 		goTo: 'Gå till',
 		goToResource: 'Gå till resursen',
-		limitToLibraries: 'Avgränsa till mina bibliotek',
 		addLibraries: 'Lägg till bibliotek',
 		changeLibraries: 'Ändra bibliotek',
-		noAddedLibrariesText:
-			'Du har inte valt några favoritbibliotek. Klicka på “Lägg till”-länken nedan för att välja favoritbibliotek.'
+		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek.',
+		libraries: 'bibliotek'
+	},
+	supersearch: {
+		addQualifiers: 'Lägg till filter',
+		suggestions: 'Förslag',
+		showAll: 'Visa alla träffar'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
@@ -139,10 +152,7 @@ export default {
 		subjectPlaceholder: 'Sommaren, Romerska riket',
 		yearKey: 'år',
 		yearLabel: 'År',
-		yearPlaceholder: '2002, 1987-1994',
-		genreFormKey: 'genreForm',
-		genreFormLabel: 'Genre/form',
-		genreFormPlaceholder: 'Skönlitteratur, Tidskrift'
+		yearPlaceholder: '1994, 2002, 2025'
 	},
 	sort: {
 		sort: 'Sortera',
@@ -181,7 +191,22 @@ export default {
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren'
 	},
+	tableOfContents: {
+		onThisPage: 'På den här sidan',
+		top: 'Översikt',
+		show: 'Visa innehållsförteckning för denna sida',
+		hide: 'Dölj innehållsförteckning för denna sida'
+	},
+	resource: {
+		occurrences: 'Förekomster',
+		show: 'Visa',
+		all: 'alla',
+		results: 'träffar',
+		result: 'träff',
+		editions: 'Utgåvor'
+	},
 	holdings: {
+		availabilityByType: 'Tillgänglighet utifrån medietyp',
 		availableAt: 'Finns på',
 		library: 'bibliotek',
 		libraries: 'bibliotek',
@@ -192,13 +217,27 @@ export default {
 		loanPolicy: 'Lånepolitik',
 		status: 'Status',
 		date: 'Datum',
+		loanStatus: 'Utlånad?',
 		libraryUnvaliable: 'Lånestatus är inte tillgänglig för detta bibliotek',
 		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',
 		unavailable: 'Ej tillgänglig',
-		map: 'karta'
+		map: 'karta',
+		linkToLocal: 'Visa i bibliotekets katalog',
+		loanReserveLink: 'Låna/reservera',
+		linkToCatalog: 'Bibliotekets lokala katalog',
+		linkToSite: 'Bibliotekets webbplats',
+		openingHoursEtc: 'Öppettider, adress m.m.',
+		showAll: 'Visa alla utgåvor',
+		showFewer: 'Visa färre utgåvor'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'
+	},
+	panes: {
+		leadingPane: 'Vänsterpanel',
+		leadingPaneTabs: 'Vänsterpanelsflikar',
+		show: 'Visa sidopanel',
+		hide: 'Dölj sidopanel'
 	}
 };

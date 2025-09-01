@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, devices } from '@playwright/test';
 
 test('decorated data label visibilty is correct after page navigations', async ({ page }) => {
 	// TODO: We should probably mock the required requests but something similar to https://github.com/markjaquith/sveltekit-playwright-fetch-mock would be needed to mock the server-side fetches.
@@ -27,4 +27,55 @@ test('decorated data in holdings modal is not duplicated while closing modal', a
 	expect(page.locator('dialog [data-type="Text"]')).toHaveCount(1);
 	await page.getByTestId('modal').waitFor({ state: 'hidden' });
 	await expect(page.getByTestId('modal')).toBeHidden();
+});
+
+test('table of contents', async ({ page }) => {
+	await page.goto('/khwz18234vvmvn7');
+	await expect(page.getByTestId('toc')).toBeVisible();
+	await expect(page.getByTestId('toc-mobile')).not.toBeVisible();
+	await expect(
+		page.getByTestId('toc').locator('a[aria-current]'),
+		'first visible link is shown as active'
+	).toHaveText('Översikt');
+	await page.getByTestId('toc').locator('a:not([aria-current])').first().click();
+	await expect(
+		page.getByTestId('toc').locator('a[aria-current]'),
+		'active link is changed when clicking on link'
+	).toHaveText('Förekomster');
+	await page.waitForTimeout(60);
+
+	await page.evaluate(() => window.scrollTo(0, 0));
+	await expect(
+		page.getByTestId('toc').locator('a[aria-current]'),
+		'active link is changed when scrolling'
+	).toHaveText('Översikt');
+	await page.setViewportSize(devices['iPhone X'].viewport);
+	await expect(page.getByTestId('toc')).not.toBeVisible();
+	await expect(page.getByTestId('toc-mobile')).toBeVisible();
+	await expect(page.getByTestId('toc-mobile').locator('a').first()).not.toBeVisible();
+	await page.getByTestId('toc-mobile').locator('label').click();
+	await expect(
+		page.getByTestId('toc-mobile').locator('a').first(),
+		'mobile table of contents is visible after clicking on toggle'
+	).toHaveText('Översikt');
+	await page.getByTestId('toc-mobile').locator('a').nth(1).click();
+	await expect(page.locator('#top')).not.toBeInViewport({ ratio: 0.1 });
+	await expect(
+		page.locator('#occurrences'),
+		'links in mobile table of contents works'
+	).toBeInViewport();
+	await page.getByTestId('toc-mobile').locator('label input[type="checkbox"]').focus();
+	await page.keyboard.press('Enter');
+	await expect(page.getByTestId('toc-mobile').locator('a').first()).not.toBeVisible();
+	await page.keyboard.press('Enter');
+	await expect(
+		page.getByTestId('toc-mobile').locator('a').first(),
+		'enter keypress toggles table of contents while focused on toggle'
+	).toBeVisible();
+	await page.goto('/2jr64jg10461zcj2');
+	await expect(
+		page.getByTestId('toc'),
+		'table of contents is hidden if there are no items to show'
+	).not.toBeVisible();
+	await expect(page.getByTestId('toc-mobile')).not.toBeVisible();
 });

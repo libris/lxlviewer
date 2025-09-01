@@ -8,11 +8,17 @@ export default {
 		myPages: 'My pages',
 		changeLang: 'På svenska',
 		searchPlaceholder: 'Search for title, author, library, subject...',
-		openMenu: 'Open main menu',
-		betaMessage:
+		openMenu: 'Open main menu'
+	},
+	banner: {
+		messageMobile: 'The catalogue may contain outdated information.',
+		messageDesktop:
 			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
-		betaLink: 'Share your feedback',
-		betaLinkLong: ' '
+		feedback: 'Share your feedback',
+		old: 'Go to libris.kb.se'
+	},
+	about: {
+		pageTitle: 'About the beta'
 	},
 	myPages: {
 		myPages: 'My pages',
@@ -62,7 +68,9 @@ export default {
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Encoding level',
 		'rdf:type': 'Type',
-		hasInstanceType: 'Format',
+		hasInstanceType: 'Format', // 'Carrier',
+		hasInstanceCategory: 'Format',
+		category: 'Category',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
 		bibliography: 'Bibliography',
@@ -74,7 +82,9 @@ export default {
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
 		fieldOfActivity: 'Field of Activity',
+		accessFilters: 'Access',
 		boolFilters: 'Other',
+		'alias-myLibraries': 'Limit to my libraries',
 		limitInfo: 'Some options are not displayed',
 		limitText:
 			'The list shows a limited number of options, the most common ones related to your search. Try narrowing your search to get other, more relevant options.'
@@ -114,16 +124,19 @@ export default {
 		relatedSearchLabel: 'Search the results',
 		didYouMean: 'Did you mean',
 		showAllResults: 'Show all results',
-		supersearchStartHeader: 'Build and refine your search query',
 		add: 'Add',
 		addAs: 'Add as',
 		goTo: 'Go to',
 		goToResource: 'Go to the resource',
-		limitToLibraries: 'Limit to my libraries',
 		addLibraries: 'Add libraries',
 		changeLibraries: 'Change libraries',
-		noAddedLibrariesText:
-			'You have not chosen any favourite libraries. To do that, click the "Add libraries" link.'
+		noAddedLibrariesText: 'You have not chosen any favourite libraries.',
+		libraries: 'libraries'
+	},
+	supersearch: {
+		addQualifiers: 'Add filter',
+		suggestions: 'Suggestions',
+		showAll: 'Show all results'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
@@ -140,10 +153,7 @@ export default {
 		subjectPlaceholder: 'Sommaren, Romerska riket',
 		yearKey: 'year',
 		yearLabel: 'Year',
-		yearPlaceholder: '2002, 1987-1994',
-		genreFormKey: 'genreForm',
-		genreFormLabel: 'Genre/form',
-		genreFormPlaceholder: 'Fiction'
+		yearPlaceholder: '1994, 2002, 2025'
 	},
 	sort: {
 		sort: 'Sort',
@@ -182,7 +192,22 @@ export default {
 		usagePolicy: 'License terms',
 		cropped: 'Cropped'
 	},
+	tableOfContents: {
+		onThisPage: 'On this page',
+		top: 'Return to top',
+		show: 'Show table of contents for this page',
+		hide: 'Hide table of contents for this page'
+	},
+	resource: {
+		occurrences: 'Occurrences',
+		show: 'Show',
+		all: 'all',
+		results: 'results',
+		result: 'result',
+		editions: 'Editions'
+	},
 	holdings: {
+		availabilityByType: 'Availability by type',
 		availableAt: 'Available at',
 		library: 'library',
 		libraries: 'libraries',
@@ -193,13 +218,27 @@ export default {
 		status: 'Status',
 		date: 'Date',
 		loanPolicy: 'Loan policy',
+		loanStatus: 'Available?',
 		libraryUnvaliable: 'Loan status is not available for this library',
 		loanStatusFailed: 'Failed to get loan status',
 		available: 'Available',
 		unavailable: 'Not available',
-		map: 'map'
+		map: 'map',
+		linkToLocal: 'Show in local library catalog',
+		loanReserveLink: 'Loan/reserve',
+		linkToCatalog: 'Local library catalog',
+		linkToSite: 'Library website',
+		openingHoursEtc: 'Opening hours, address etc',
+		showAll: 'Show all editions',
+		showFewer: 'Show fewer editions'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'
+	},
+	panes: {
+		leadingPane: 'Leading pane',
+		leadingPaneTabs: 'Tabs for leading pane',
+		show: 'Show pane',
+		hide: 'Hide pane'
 	}
 };

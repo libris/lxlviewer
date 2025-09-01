@@ -44,42 +44,41 @@ test('expanded search is togglable using keyboard shortcut', async ({ page }) =>
 test('supports keyboard navigation between rows and columns/cells', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const comboboxElement = page.getByRole('dialog').getByRole('combobox');
-	await expect(comboboxElement, 'no start item cell is focused initially').not.toHaveAttribute(
+	await expect(comboboxElement, 'no item cell is focused initially').not.toHaveAttribute(
 		'aria-activedescendant',
 		/.+/
 	);
-	await page.keyboard.press('ArrowDown');
-	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
-	await expect(page.locator('#supersearch-item-1x0')).toHaveClass(/focused-cell/);
-	await page.keyboard.press('ArrowDown');
-	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
-	await page.keyboard.press('ArrowDown');
-	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-3x0');
-	await page.keyboard.press('ArrowDown');
-	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-3x0');
-	await expect(
-		page.locator('#supersearch-item-3x0'),
-		'focus is kept on last item when reaching the end of the grid'
-	).toHaveClass(/focused-cell/);
-	await page.keyboard.press('ArrowUp');
-	await page.keyboard.press('ArrowUp');
-	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
-	await page.keyboard.press('ArrowUp');
-	await expect(comboboxElement).not.toHaveAttribute('aria-activedescendant', /.+/);
+	await page.getByRole('dialog').getByRole('combobox').fill('a');
+	await expect(page.getByTestId('result-item')).toHaveCount(10);
+
 	await page.keyboard.press('Tab');
 	await expect(
 		page.getByRole('dialog').getByRole('combobox'),
 		'items on input row are focusable using tab'
-	).toHaveAttribute('aria-activedescendant', 'supersearch-item-0x2');
-	await page.keyboard.press('Escape');
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-0x1');
+	await page.keyboard.press('Tab');
 
-	await page.getByRole('combobox').fill('a');
-	await expect(comboboxElement, 'default result item cell is focused initially').toHaveAttribute(
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-item-0x2'
+	);
+	await page.keyboard.press('Tab');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
 		'supersearch-item-1x0'
 	);
-	await expect(page.locator('#supersearch-item-1x0')).toHaveClass(/focused-cell/);
-	await expect(page.getByTestId('result-item')).toHaveCount(10);
+	await page.keyboard.press('Shift+Tab');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-item-0x2'
+	);
+	await page.keyboard.press('Shift+Tab');
+	await page.keyboard.press('Shift+Tab');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-item-0x1'
+	);
+	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-3x0');
@@ -101,13 +100,12 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await expect(
 		comboboxElement,
 		'focused cell is reset if user updates value in combobox'
-	).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
-	await expect(page.locator('#supersearch-item-1x0')).toHaveClass(/focused-cell/);
+	).not.toHaveAttribute('aria-activedescendant', /.+/);
 	await page.keyboard.press('Tab');
-	await expect(page.locator('#supersearch-item-2x0')).toHaveClass(/focused-cell/);
-	await page.keyboard.press('Tab');
-	await page.keyboard.press('Tab');
-	await page.keyboard.press('Tab');
+	await expect(page.locator('#supersearch-item-0x1')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
 	await expect(page.locator('#supersearch-item-3x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
@@ -137,13 +135,53 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Tab');
+	await page.keyboard.press('Tab');
+	await page.keyboard.press('Tab');
+
 	await expect(
-		page.locator('#supersearch-item-11x0'),
+		page.locator('#supersearch-item-10x2'),
 		'ensure focus is kept inside result items when tabbing on last row'
+	).toHaveClass(/focused-cell/);
+	await page.keyboard.press('ArrowDown');
+	await expect(
+		page.locator('#supersearch-item-10x2'),
+		'focus is kept on last item when reaching the end of the grid'
 	).toHaveClass(/focused-cell/);
 	await page.getByRole('dialog').getByRole('combobox').press('Escape');
 	await page.getByRole('combobox').click();
-	await expect(page.locator('#supersearch-item-1x0')).toHaveClass(/focused-cell/);
+	await expect(comboboxElement).not.toHaveAttribute('aria-activedescendant', /.+/);
+
+	await page.getByRole('dialog').getByRole('combobox').press('Escape');
+	await page.getByTestId('use-wrapping-arrow-key-navigation').check();
+	await page.getByRole('combobox').fill('a');
+	await expect(page.getByTestId('result-item')).toHaveCount(10);
+	await page.keyboard.press('ArrowUp');
+	await expect(
+		comboboxElement,
+		'user can jump from first row to last by pressing arrow up if wrappingArrowKeyNavigation is enabled'
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-10x0');
+	await page.keyboard.press('ArrowDown');
+	await expect(
+		comboboxElement,
+		'user can jump from last row to first by pressing arrow down if wrappingArrowKeyNavigation is enabled'
+	).not.toHaveAttribute('aria-activedescendant', /.+/);
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
+});
+
+test('user can toggle expanded search using alt key + arrow up or down (without moving cursor) ', async ({
+	page
+}) => {
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('abc');
+	await expect(page.getByTestId('result-item')).toHaveCount(10);
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('Alt+ArrowUp');
+	await expect(page.getByRole('dialog')).not.toBeVisible();
+	await page.keyboard.press('Alt+ArrowDown');
+	await expect(page.getByRole('dialog')).toBeVisible();
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('x');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('abxc');
 });
 
 test('syncs collapsed and expanded editor views', async ({ context, page }) => {
@@ -275,7 +313,7 @@ test('submits form on enter key press (if no result item is selected)', async ({
 	await page.keyboard.press('Enter');
 	await expect(page, 'submits closest form').toHaveURL('/test1?q=hello+world');
 	await page.goBack();
-	await page.getByRole('checkbox').check();
+	await page.getByTestId('use-form-attribute').check();
 	await page.getByRole('combobox').fill('hello world');
 	await page.keyboard.press('Escape');
 	await page.keyboard.press('Enter');
@@ -291,10 +329,14 @@ test('clears input form when pressing clear action', async ({ page }) => {
 	await expect(await page.getByRole('dialog').getByRole('combobox')).toHaveText('Search');
 });
 
-test('has support for persistent items', async ({ page }) => {
+test('allows custom expanded content', async ({ page }) => {
+	await page.getByTestId('use-custom-expanded-content').check();
 	await page.getByRole('combobox').click();
-	await page.getByRole('dialog').getByRole('combobox').fill('Hello world');
-	await expect(page.getByTestId('persistent-item')).toBeVisible();
+	await expect(page.getByTestId('persistent-item')).toHaveCount(2);
+	await expect(page.getByTestId('result-item')).toHaveCount(0);
+	await page.getByRole('dialog').getByRole('combobox').fill('a');
+	await expect(page.getByTestId('persistent-item')).toHaveCount(2);
+	await expect(page.getByTestId('result-item')).toHaveCount(10);
 });
 
 test('supports custom loading indicator snippet', async ({ page }) => {

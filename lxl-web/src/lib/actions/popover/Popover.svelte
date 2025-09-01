@@ -4,13 +4,25 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/resourceData';
 
-	export let title: string | undefined = undefined;
-	export let resourceData: ResourceData | undefined = undefined;
-	export let referenceElement: HTMLElement;
-	export let onMouseOver: (event: MouseEvent) => void;
-	export let onMouseLeave: (event: MouseEvent) => void;
-	export let onFocus: (event: FocusEvent) => void;
-	export let onBlur: (event: FocusEvent) => void;
+	interface PopoverProps {
+		title?: string | undefined;
+		resourceData?: ResourceData | undefined;
+		referenceElement: HTMLElement;
+		onMouseOver: (event: MouseEvent) => void;
+		onMouseLeave: (event: MouseEvent) => void;
+		onFocus: (event: FocusEvent) => void;
+		onBlur: (event: FocusEvent) => void;
+	}
+
+	let {
+		title = undefined,
+		resourceData = undefined,
+		referenceElement,
+		onMouseOver,
+		onMouseLeave,
+		onFocus,
+		onBlur
+	}: PopoverProps = $props();
 
 	let popoverElement: HTMLElement;
 	let arrowElement: HTMLDivElement;
@@ -67,13 +79,16 @@
 	Note that `Popover.svelte` isn't intended to be used directly in page templates – use the `use:popover` instead (see `$lib/actions/popover`).
 -->
 <div
-	class="popover bg-page text-2xs border-neutral absolute top-0 left-0 z-50 w-max max-w-sm rounded-md border shadow-xl"
+	class={[
+		'popover bg-page text-2xs border-neutral absolute top-0 left-0 z-50 w-max max-w-sm rounded-md border shadow-xl',
+		referenceElement.getAttribute('href') && 'link-popover'
+	]}
 	role="complementary"
 	bind:this={popoverElement}
-	on:mouseover={onMouseOver}
-	on:mouseleave={onMouseLeave}
-	on:focus={onFocus}
-	on:blur={onBlur}
+	onmouseover={onMouseOver}
+	onmouseleave={onMouseLeave}
+	onfocus={onFocus}
+	onblur={onBlur}
 >
 	<div class="p-2">
 		{#if resourceData}
@@ -93,3 +108,12 @@
 		</svg>
 	</div>
 </div>
+
+<style>
+	/* prevent popover from flashing before navigating away on touch devices */
+	@media (hover: none) {
+		.link-popover {
+			display: none;
+		}
+	}
+</style>

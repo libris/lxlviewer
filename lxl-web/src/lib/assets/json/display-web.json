@@ -33,6 +33,7 @@
 						"isPartOf",
 						"associatedMedia",
 						"isPrimaryTopicOf",
+						"_category",
 						{ "inverseOf": "instanceOf" }
 					]
 				},
@@ -57,6 +58,8 @@
 						"editionStatement",
 						"editionStatementRemainder",
 						"isIssueOfEdition",
+						"isPartOf",
+						"part",
 						"publication",
 						"marc:primaryProvisionActivity",
 						"production",
@@ -151,7 +154,13 @@
 					"classLensDomain": "Concept",
 					"showProperties": [
 						{
-							"alternateProperties": ["prefLabel", "label", "termComponentList", "code"]
+							"alternateProperties": [
+								"prefLabel",
+								"singularLabel",
+								"label",
+								"termComponentList",
+								"code"
+							]
 						}
 					]
 				},
@@ -173,7 +182,7 @@
 				"ClassificationDdc": {
 					"@id": "ClassificationDdc-chips",
 					"@type": "fresnel:Lens",
-					"classLensDomain": "Classification",
+					"classLensDomain": "ClassificationDdc",
 					"showProperties": ["code", "prefLabel"]
 				},
 				"Document": {
@@ -193,6 +202,38 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Class",
 					"showProperties": ["label"]
+				},
+				"Publication": {
+					"@id": "Publication-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Publication",
+					"showProperties": [
+						"place",
+						"country",
+						"agent",
+						"hasPart",
+						"year",
+						"startYear",
+						"endYear",
+						"date",
+						"marc:publicationStatus"
+					]
+				},
+				"ProvisionActivity": {
+					"@id": "ProvisionActivity-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "ProvisionActivity",
+					"showProperties": [
+						"place",
+						"country",
+						"agent",
+						"hasPart",
+						"year",
+						"startYear",
+						"endYear",
+						"date",
+						"marc:publicationStatus"
+					]
 				},
 				"Work": {
 					"@id": "Work-chips",
@@ -248,6 +289,34 @@
 						"marc:titlesAndOtherWordsAssociatedWithAName",
 						"fullerFormOfName"
 					]
+				},
+				"DatatypeProperty": {
+					"@id": "DatatypeProperty-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "DatatypeProperty",
+					"showProperties": [
+						{ "alternateProperties": ["title", "prefLabel", "label", "name", "code", "uri"] }
+					]
+				},
+				"ObjectProperty": {
+					"@id": "ObjectProperty-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "ObjectProperty",
+					"showProperties": [
+						{ "alternateProperties": ["title", "prefLabel", "label", "name", "code", "uri"] }
+					]
+				}
+			}
+		},
+		"tokens": {
+			"@id": "tokens",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Publication": {
+					"@id": "Publication-tokens",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Publication",
+					"showProperties": ["agent", "year"]
 				}
 			}
 		},
@@ -328,6 +397,36 @@
 				}
 			}
 		},
+		"web-card-header-top": {
+			"@id": "web-card-header-top",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["language"]
+				},
+				"Agent": {
+					"@id": "Agent-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Agent",
+					"showProperties": []
+				},
+				"Concept": {
+					"@id": "Concept-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Concept",
+					"showProperties": []
+				},
+				"Language": {
+					"@id": "Language-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Language",
+					"showProperties": []
+				}
+			}
+		},
 		"web-card-header-extra": {
 			"@id": "web-card-header-extra",
 			"@type": "fresnel:Group",
@@ -337,6 +436,12 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
 					"showProperties": ["translationOf"]
+				},
+				"Instance": {
+					"@id": "Instance-web-card-header-extra",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["isPartOf", "part"]
 				},
 				"Agent": {
 					"@id": "Agent-web-card-header-extra",
@@ -366,13 +471,13 @@
 					"@id": "Work-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["language", { "inverseOf": "instanceOf" }]
+					"showProperties": [{ "inverseOf": "instanceOf" }]
 				},
 				"Instance": {
 					"@id": "Instance-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
+					"showProperties": ["editionStatement", "publication", "identifier"]
 				},
 				"Agent": {
 					"@id": "Agent-web-card-footer",
@@ -460,6 +565,7 @@
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
 			"fresnel:propertyFormatDomain": [
 				"place",
+				"country",
 				"year",
 				"startYear",
 				"date",
@@ -840,13 +946,43 @@
 				"fresnel:contentBefore": ""
 			}
 		},
+		"bibdb:PostalAddress-format": {
+			"@id": "bibdb:PostalAddress-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["bibdb:PostalAddress"],
+			"fresnel:propertyFormatDomain": ["bibdb:streetAddress", "bibdb:postalCode", "bibdb:email"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "\n",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"bibdb:PostalAddress-format2": {
+			"@id": "bibdb:PostalAddress-format2",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["bibdb:PostalAddress"],
+			"fresnel:propertyFormatDomain": ["bibdb:addressLocality"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Work-dummy": {
+			"@id": "Work-dummy",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Work"],
+			"fresnel:propertyFormatDomain": ["_category"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": " · ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"default-separators": {
 			"@id": "default-separators",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Resource"],
 			"fresnel:propertyFormatDomain": ["*"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " • ",
+				"fresnel:contentBefore": " · ",
 				"fresnel:contentFirst": ""
 			},
 			"fresnel:valueFormat": {

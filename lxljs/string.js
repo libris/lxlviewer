@@ -292,7 +292,7 @@ export function formatLabel(obj) {
     }
   });
   label = [].concat.apply([], label).filter(el => el && el.length > 0); // eslint-disable-line prefer-spread
-  label = label.join(' • ');
+  label = label.join(' · ');
   return label;
 }
 

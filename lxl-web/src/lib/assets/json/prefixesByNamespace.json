@@ -1,0 +1,13 @@
+{
+	"https://id.kb.se/vocab/": "kbv:",
+	"http://id.loc.gov/ontologies/bibframe/": "bf:",
+	"http://purl.org/dc/terms/": "dc:",
+	"http://schema.org/": "sdo:",
+	"https://id.kb.se/term/sao/": "sao:",
+	"https://id.kb.se/marc/": "marc:",
+	"https://id.kb.se/term/saogf/": "saogf:",
+	"https://id.kb.se/term/barn/": "barn:",
+	"https://id.kb.se/term/barngf/": "barngf:",
+	"https://libris.kb.se/library/": "sigel:",
+	"https://id.kb.se/language/": "lang:"
+}

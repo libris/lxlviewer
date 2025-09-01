@@ -3,7 +3,17 @@ import getInstanceData from './getInstanceData';
 
 describe('getInstanceData', () => {
 	it('returns count and years for multiple instances', () => {
-		expect(getInstanceData(multipleInstances)).toStrictEqual({ count: 3, years: '2020-2022' });
+		expect(getInstanceData(multipleInstances.slice(0, 3))).toStrictEqual({
+			count: 3,
+			years: '2020, 2021, 2022'
+		});
+	});
+
+	it('returns count and years for multiple instances', () => {
+		expect(getInstanceData(multipleInstances)).toStrictEqual({
+			count: 5,
+			years: '2020 … 2022, 2025, 2027'
+		});
 	});
 
 	it('returns count and year for one instance', () => {
@@ -35,12 +45,12 @@ const multipleInstances = [
 				_label: 'har titel'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				responsibilityStatement: 'Mikael Yvesand',
 				_label: 'upphovsuppgift'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				publication: {
 					'@type': 'PrimaryPublication',
 					_display: [
@@ -59,7 +69,7 @@ const multipleInstances = [
 							_label: 'land'
 						},
 						{
-							_contentBefore: ' • ',
+							_contentBefore: ' · ',
 							place: {
 								'@type': 'Place',
 								_display: [
@@ -125,12 +135,12 @@ const multipleInstances = [
 				_label: 'har titel'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				responsibilityStatement: 'Mikael Yvesand',
 				_label: 'upphovsuppgift'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				publication: {
 					'@type': 'PrimaryPublication',
 					_display: [
@@ -197,12 +207,12 @@ const multipleInstances = [
 				_label: 'har titel'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				responsibilityStatement: 'Mikael Yvesand',
 				_label: 'upphovsuppgift'
 			},
 			{
-				_contentBefore: ' • ',
+				_contentBefore: ' · ',
 				publication: {
 					'@type': 'PrimaryPublication',
 					_display: [
@@ -221,7 +231,7 @@ const multipleInstances = [
 							_label: 'land'
 						},
 						{
-							_contentBefore: ' • ',
+							_contentBefore: ' · ',
 							place: {
 								'@type': 'Place',
 								_display: [
@@ -268,6 +278,188 @@ const multipleInstances = [
 		_style: ['link'],
 		_contentBefore: ', ',
 		_label: 'Instans'
+	},
+	{
+		'@id': 'https://libris-qa.kb.se/br78xdb78ksdfzr5',
+		'@type': 'Instance',
+		_display: [
+			{
+				_style: ['block'],
+				hasTitle: {
+					'@type': 'Title',
+					_display: [
+						{
+							mainTitle: 'Häng City',
+							_label: 'huvudtitel'
+						}
+					],
+					_label: 'Titel'
+				},
+				_label: 'har titel'
+			},
+			{
+				_contentBefore: ' · ',
+				responsibilityStatement: 'Mikael Yvesand',
+				_label: 'upphovsuppgift'
+			},
+			{
+				_contentBefore: ' · ',
+				publication: {
+					'@type': 'PrimaryPublication',
+					_display: [
+						{
+							country: {
+								'@id': 'https://libris-qa.kb.se/jf9xxz4ml0jrz74j',
+								'@type': 'Country',
+								_display: [
+									{
+										prefLabel: 'Sverige',
+										_label: 'föredragen benämning'
+									}
+								],
+								_label: 'Land'
+							},
+							_label: 'land'
+						},
+						{
+							_contentBefore: ' · ',
+							place: {
+								'@type': 'Place',
+								_display: [
+									{
+										label: 'Stockholm',
+										_label: 'benämning'
+									}
+								],
+								_label: 'Plats'
+							},
+							_label: 'plats'
+						},
+						{
+							_contentBefore: ' : ',
+							agent: {
+								'@type': 'Agent',
+								_display: [
+									{
+										label: 'Polaris',
+										_label: 'benämning'
+									}
+								],
+								_style: ['link'],
+								_label: 'Agent'
+							},
+							_label: 'agent'
+						},
+						{
+							_contentBefore: ', ',
+							year: '2025',
+							_label: 'år'
+						},
+						{
+							_contentBefore: ', ',
+							date: '[2022]',
+							_label: 'datum'
+						}
+					],
+					_label: 'Primär utgivning'
+				},
+				_label: 'utgivning'
+			}
+		],
+		_style: ['link'],
+		_contentBefore: ', ',
+		_label: 'Instans'
+	},
+	{
+		'@id': 'https://libris-qa.kb.se/br78xdb78kg8gz11',
+		'@type': 'Instance',
+		_display: [
+			{
+				_style: ['block'],
+				hasTitle: {
+					'@type': 'Title',
+					_display: [
+						{
+							mainTitle: 'Häng City',
+							_label: 'huvudtitel'
+						}
+					],
+					_label: 'Titel'
+				},
+				_label: 'har titel'
+			},
+			{
+				_contentBefore: ' · ',
+				responsibilityStatement: 'Mikael Yvesand',
+				_label: 'upphovsuppgift'
+			},
+			{
+				_contentBefore: ' · ',
+				publication: {
+					'@type': 'PrimaryPublication',
+					_display: [
+						{
+							country: {
+								'@id': 'https://libris-qa.kb.se/jf9xxz4ml0jrz74j',
+								'@type': 'Country',
+								_display: [
+									{
+										prefLabel: 'Sverige',
+										_label: 'föredragen benämning'
+									}
+								],
+								_label: 'Land'
+							},
+							_label: 'land'
+						},
+						{
+							_contentBefore: ' · ',
+							place: {
+								'@type': 'Place',
+								_display: [
+									{
+										label: 'Stockholm',
+										_label: 'benämning'
+									}
+								],
+								_label: 'Plats'
+							},
+							_label: 'plats'
+						},
+						{
+							_contentBefore: ' : ',
+							agent: {
+								'@type': 'Agent',
+								_display: [
+									{
+										label: 'Polaris',
+										_label: 'benämning'
+									}
+								],
+								_style: ['link'],
+								_label: 'Agent'
+							},
+							_label: 'agent'
+						},
+						{
+							_contentBefore: ', ',
+							year: '2027',
+							_label: 'år'
+						},
+						{
+							_contentBefore: ', ',
+							date: '[2022]',
+							_label: 'datum'
+						}
+					],
+					_label: 'Primär utgivning'
+				},
+				_label: 'utgivning'
+			}
+		],
+		_style: ['link'],
+		_contentBefore: ', ',
+		_label: 'Instans'
 	}
 ];
 
@@ -290,12 +482,12 @@ const oneInstance = {
 			_label: 'har titel'
 		},
 		{
-			_contentBefore: ' • ',
+			_contentBefore: ' · ',
 			responsibilityStatement: 'Mikael Yvesand',
 			_label: 'upphovsuppgift'
 		},
 		{
-			_contentBefore: ' • ',
+			_contentBefore: ' · ',
 			publication: {
 				'@type': 'PrimaryPublication',
 				_display: [
@@ -314,7 +506,7 @@ const oneInstance = {
 						_label: 'land'
 					},
 					{
-						_contentBefore: ' • ',
+						_contentBefore: ' · ',
 						place: {
 							'@type': 'Place',
 							_display: [

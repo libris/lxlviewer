@@ -1,9 +1,16 @@
 import Cookies from 'js-cookie';
-import type { LibraryItem, UserSettings as UserSettingsType } from '$lib/types/userSettings';
+import {
+	ExpandedState,
+	type LibraryItem,
+	type UserSettings as UserSettingsType
+} from '$lib/types/userSettings';
 
 enum availableSettings {
 	facetSort = 'facetSort',
-	myLibraries = 'myLibraries'
+
+	myLibraries = 'myLibraries',
+	leadingPane = 'leadingPane',
+	facetExpanded = 'facetExpanded'
 }
 
 export class UserSettings {
@@ -11,6 +18,14 @@ export class UserSettings {
 
 	constructor(settings: UserSettingsType) {
 		this.settings = settings;
+
+		// set default
+		if (!Object.prototype.hasOwnProperty.call(settings, 'leadingPane')) {
+			this.settings = {
+				...this.settings,
+				...{ leadingPane: { open: true } }
+			};
+		}
 	}
 
 	private update(setting: keyof typeof availableSettings, v: Partial<UserSettings>) {
@@ -57,11 +72,45 @@ export class UserSettings {
 		}
 	}
 
+	setLeadingPaneWidth(width: number) {
+		const leadingPane = { ...this.settings?.leadingPane };
+		leadingPane.width = width;
+		this.update('leadingPane', leadingPane);
+	}
+
+	closeLeadingPane() {
+		const leadingPane = { ...this.settings?.leadingPane };
+		leadingPane.open = false;
+		this.update('leadingPane', leadingPane);
+	}
+
+	openLeadingPane() {
+		const leadingPane = { ...this.settings?.leadingPane };
+		leadingPane.open = true;
+		this.update('leadingPane', leadingPane);
+	}
+
+	get leadingPane() {
+		return this.settings?.leadingPane;
+	}
+
+	saveFacetExpanded(facet: string, value: boolean) {
+		if (facet) {
+			const facetExpanded = { ...this.settings.facetExpanded };
+			facetExpanded[facet] = value ? ExpandedState.OPEN : ExpandedState.CLOSED;
+			this.update('facetExpanded', facetExpanded);
+		}
+	}
+
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
 
 	get facetSort() {
 		return this.settings?.facetSort;
+	}
+
+	get facetExpanded() {
+		return this.settings?.facetExpanded;
 	}
 }

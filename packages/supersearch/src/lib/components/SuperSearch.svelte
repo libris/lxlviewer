@@ -6,6 +6,7 @@
 		type SelectCodeMirrorEvent,
 		type Selection
 	} from '$lib/components/CodeMirror.svelte';
+	import type { ChangeSuperSearchEvent } from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
@@ -18,10 +19,18 @@
 		QueryFunction,
 		PaginationQueryFunction,
 		TransformFunction,
-		ShouldShowStartContentFunction,
 		ResultItem
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
+
+	export type ExpandedContentParams = {
+		search: ReturnType<typeof useSearchRequest>;
+		resultsSnippet: Snippet<[{ rowOffset: number }]>;
+		resultsCount?: number;
+		getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
+		isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
+		isFocusedRow: (rowIndex: number) => boolean;
+	};
 
 	interface Props {
 		id?: string;
@@ -34,18 +43,8 @@
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
-		shouldShowStartContentFn?: ShouldShowStartContentFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
-		startContent?: Snippet<
-			[
-				{
-					getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
-					isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
-					isFocusedRow: (rowIndex: number) => boolean;
-				}
-			]
-		>;
 		inputRow?: Snippet<
 			[
 				{
@@ -53,12 +52,14 @@
 					inputField: Snippet;
 					getCellId: (cellIndex: number) => string | undefined;
 					isFocusedCell: (cellIndex: number) => boolean;
+					isFocusedRow: () => boolean;
 					onclickSubmit: (event: MouseEvent) => void;
 					onclickClear: (event: MouseEvent) => void;
 					onclickClose: (event: MouseEvent) => void;
 				}
 			]
 		>;
+		expandedContent?: Snippet<[ExpandedContentParams]>;
 		resultItemRow?: Snippet<
 			[
 				{
@@ -69,19 +70,20 @@
 				}
 			]
 		>;
-		persistentResultItemRow?: Snippet<
-			[{ getCellId: (cellIndex: number) => string; isFocusedCell: (cellIndex: number) => boolean }]
-		>;
 		loadingIndicator?: Snippet;
 		defaultInputCol?: number;
 		defaultResultRow?: number;
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
+		wrappingArrowKeyNavigation?: boolean;
 		debouncedWait?: number;
 		selection?: Selection;
 		isLoading?: boolean;
 		hasData?: boolean;
 		loadMoreLabel?: string;
+		onexpand?: () => void;
+		oncollapse?: () => void;
+		onchange?: (event: ChangeSuperSearchEvent) => void;
 	}
 
 	let {
@@ -95,15 +97,14 @@
 		queryFn = (value) => new URLSearchParams({ q: value }),
 		paginationQueryFn,
 		transformFn,
-		shouldShowStartContentFn = (value) => !value.trim().length,
 		extensions = [],
 		comboboxAriaLabel,
-		startContent,
 		inputRow = fallbackInputRow,
+		expandedContent = fallbackExpandedContent,
 		resultItemRow = fallbackResultItemRow,
-		persistentResultItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
+		wrappingArrowKeyNavigation = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -111,7 +112,10 @@
 		selection = $bindable(),
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable(), // should be treated as readonly
-		loadMoreLabel = 'Load more'
+		loadMoreLabel = 'Load more',
+		onexpand,
+		oncollapse,
+		onchange
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -168,7 +172,7 @@
 	let collapsedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
 			role: 'combobox',
-			inputmode: 'search',
+			enterkeyhint: 'search',
 			...(comboboxAriaLabel && {
 				'aria-label': comboboxAriaLabel
 			}),
@@ -184,7 +188,7 @@
 		EditorView.contentAttributes.of({
 			id: `${id}-content`,
 			role: 'combobox', // identifies the element as a combobox
-			inputmode: 'search',
+			enterkeyhint: 'search',
 			...(comboboxAriaLabel && {
 				'aria-label': comboboxAriaLabel
 			}),
@@ -214,20 +218,21 @@
 		expandedContentAttributesCompartment.of(initialExpandedContentAttributes)
 	]);
 
+	let resultItemRows = $derived(
+		(Array.isArray(search.paginatedData) &&
+			search.paginatedData.map((page) => page.items).flat()) ||
+			search.data?.items
+	);
+
 	function handleClickCollapsed() {
 		if (!dialog?.open) showExpandedSearch();
 	}
 
 	function setDefaultRowAndCols() {
-		if (!shouldShowStartContentFn(value, selection)) {
-			activeRowIndex = defaultResultRow;
-			if (activeRowIndex > 0) {
-				activeColIndex = defaultResultCol;
-			} else {
-				activeColIndex = defaultInputCol;
-			}
+		activeRowIndex = defaultResultRow;
+		if (activeRowIndex > 0) {
+			activeColIndex = defaultResultCol;
 		} else {
-			activeRowIndex = 0;
 			activeColIndex = defaultInputCol;
 		}
 	}
@@ -249,6 +254,8 @@
 			prevValue = value;
 			if (search.data) search.resetData();
 		}
+
+		onchange?.(event);
 	}
 
 	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
@@ -295,24 +302,44 @@
 	}
 
 	export function showExpandedSearch() {
-		expandedEditorView?.dispatch({
-			selection: collapsedEditorView?.state.selection.main
-		});
-		dialog?.showModal();
+		if (!expanded) {
+			expandedEditorView?.dispatch({
+				selection: collapsedEditorView?.state.selection.main
+			});
+			dialog?.showModal();
+			setDefaultRowAndCols();
+			allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
+			expanded = true;
+			onexpand?.();
+		}
 		expandedEditorView?.focus();
-		setDefaultRowAndCols();
-		expanded = true;
-		allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 	}
 
 	export function hideExpandedSearch() {
-		dialog?.close();
+		if (expanded) {
+			dialog?.close();
+			collapsedEditorView?.dispatch({
+				selection: expandedEditorView?.state.selection.main
+			});
+			collapsedEditorView?.focus();
+			expanded = false;
+			allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
+			oncollapse?.();
+		}
 	}
 
-	function handleCloseExpandedSearch() {
-		collapsedEditorView?.focus();
-		expanded = false;
-		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
+	export function fetchData() {
+		if (selection) {
+			search?.fetchData(value, selection.head);
+		}
+	}
+
+	export function resetData() {
+		search?.resetData();
+	}
+
+	export function blur() {
+		collapsedEditorView?.contentDOM.blur();
 	}
 
 	function submitClosestForm() {
@@ -326,9 +353,21 @@
 		}
 	}
 
+	function controlOrMetaKey(event: KeyboardEvent) {
+		if (!event.ctrlKey && !event.metaKey) return false;
+		const isMac = navigator.userAgent.includes('Mac OS X');
+		if (isMac && event.metaKey) return true;
+		if (!isMac && event.ctrlKey) return true;
+		return false;
+	}
+
 	function handleCollapsedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Enter' && value.length) {
 			submitClosestForm();
+		}
+		if (event.key === 'ArrowDown' && event.altKey) {
+			event.preventDefault();
+			showExpandedSearch();
 		}
 	}
 
@@ -393,26 +432,37 @@
 			if (rows.length) {
 				switch (event.key) {
 					case 'ArrowUp':
-						if (activeRowIndex >= 1) {
-							activeRowIndex--;
-							if (activeRowIndex < 1) {
-								activeColIndex = defaultInputCol;
-								allowArrowKeyCursorHandling = {
-									...allowArrowKeyCursorHandling,
-									horizontal: true
-								};
-							} else {
-								const cols = getColsInRow(activeRowIndex);
-								activeColIndex = Math.min(activeColIndex, cols.length - 1);
-								allowArrowKeyCursorHandling = {
-									...allowArrowKeyCursorHandling,
-									horizontal: cols.length <= 1
-								};
+						if (event.altKey) {
+							event.preventDefault();
+							hideExpandedSearch();
+						} else {
+							if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
+								activeRowIndex = rows.length - 1;
+								activeColIndex = 0;
+							} else if (activeRowIndex >= 1) {
+								activeRowIndex--;
+								if (activeRowIndex < 1) {
+									activeColIndex = defaultInputCol;
+									allowArrowKeyCursorHandling = {
+										...allowArrowKeyCursorHandling,
+										horizontal: true
+									};
+								} else {
+									const cols = getColsInRow(activeRowIndex);
+									activeColIndex = Math.min(activeColIndex, cols.length - 1);
+									allowArrowKeyCursorHandling = {
+										...allowArrowKeyCursorHandling,
+										horizontal: cols.length <= 1
+									};
+								}
 							}
 						}
 						break;
 					case 'ArrowDown':
-						if (activeRowIndex < rows.length - 1) {
+						if (wrappingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
+							activeRowIndex = 0;
+							activeColIndex = defaultInputCol;
+						} else if (activeRowIndex < rows.length - 1) {
 							activeRowIndex++;
 							const cols = getColsInRow(activeRowIndex);
 							if (activeRowIndex === 1) {
@@ -452,10 +502,10 @@
 
 							if (typeof closestAfter !== 'number' && activeRowIndex < rows.length - 1) {
 								activeRowIndex++;
-								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex)[0].id);
+								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex)[0].id) || 0;
 							}
 							if (typeof closestAfter === 'number') {
-								activeColIndex = closestAfter;
+								activeColIndex = closestAfter || 0;
 							}
 						}
 						break;
@@ -480,7 +530,7 @@
 	}
 
 	function handleKeyboardShortcut(event: KeyboardEvent) {
-		if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+		if (controlOrMetaKey(event) && event.key === 'k') {
 			event.preventDefault();
 			if (dialog?.open) {
 				hideExpandedSearch();
@@ -497,7 +547,10 @@
 	}
 
 	function handleReset() {
-		value = '';
+		collapsedEditorView?.dispatch({
+			changes: { from: 0, to: value.length, insert: '' },
+			userEvent: 'delete'
+		});
 		search.resetData();
 		showExpandedSearch();
 	}
@@ -568,12 +621,40 @@
 	});
 </script>
 
+{#snippet fallbackExpandedContent({ search }: { search: ReturnType<typeof useSearchRequest> })}
+	<nav class="supersearch-suggestions" role="rowgroup">
+		{@render resultsSnippet()}
+		{#if search.isLoading}
+			{@render loadingIndicator?.()}
+		{:else if search.hasMorePaginatedData}
+			<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+				{loadMoreLabel}
+			</button>
+		{/if}
+	</nav>
+{/snippet}
+
 {#snippet fallbackResultItemRow({ resultItem }: { resultItem: ResultItem })}
 	{JSON.stringify(resultItem)}
 {/snippet}
 
 {#snippet fallbackInputRow({ inputField }: { inputField: Snippet<[]> })}
 	{@render inputField()}
+{/snippet}
+
+{#snippet resultsSnippet({ rowOffset }: { rowOffset: number } = { rowOffset: 1 })}
+	{#each resultItemRows as resultItem, index (index)}
+		{@const rowIndex = index + rowOffset}
+		<div role="row" class:focused={activeRowIndex === rowIndex}>
+			{@render resultItemRow?.({
+				resultItem,
+				getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+				isFocusedCell: (colIndex: number) =>
+					activeRowIndex === rowIndex && colIndex === activeColIndex,
+				rowIndex
+			})}
+		</div>
+	{/each}
 {/snippet}
 
 {#snippet collapsedInputSnippet()}
@@ -606,6 +687,7 @@
 			inputField: collapsedInputSnippet,
 			getCellId: () => undefined,
 			isFocusedCell: () => false,
+			isFocusedRow: () => activeRowIndex === 0,
 			onclickSubmit: handleClickSubmit,
 			onclickClear: handleReset,
 			onclickClose: hideExpandedSearch
@@ -613,12 +695,7 @@
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
 </div>
-<dialog
-	class="supersearch-dialog"
-	id={`${id}-dialog`}
-	bind:this={dialog}
-	onclose={handleCloseExpandedSearch}
->
+<dialog class="supersearch-dialog" id={`${id}-dialog`} bind:this={dialog}>
 	<div class="supersearch-dialog-wrapper" role="presentation" onkeydown={handleExpandedKeyDown}>
 		<div class="supersearch-dialog-content" role="grid">
 			<div class="supersearch-combobox" role="row">
@@ -627,58 +704,21 @@
 					inputField: expandedInputSnippet,
 					getCellId: (colIndex: number) => `${id}-item-0x${colIndex}`,
 					isFocusedCell: (colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex,
+					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
 					onclickClear: handleReset,
 					onclickClose: hideExpandedSearch
 				})}
 			</div>
-			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if startContent && shouldShowStartContentFn(value, selection)}
-					{@render startContent({
-						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-						isFocusedCell: (rowIndex: number, colIndex: number) =>
-							activeRowIndex === rowIndex && colIndex === activeColIndex,
-						isFocusedRow: (rowIndex: number) => activeRowIndex === rowIndex
-					})}
-				{:else}
-					{#if persistentResultItemRow}
-						<div role="row" class:focused={activeRowIndex === 1}>
-							{@render persistentResultItemRow({
-								getCellId: (colIndex: number) => `${id}-item-1x${colIndex}`,
-								isFocusedCell: (colIndex: number) =>
-									activeRowIndex === 1 && colIndex === activeColIndex
-							})}
-						</div>
-					{/if}
-					{#if selection?.anchor === selection?.head}
-						{#if search.data}
-							{@const resultItemRows =
-								(Array.isArray(search.paginatedData) &&
-									search.paginatedData.map((page) => page.items).flat()) ||
-								search.data?.items}
-							{#each resultItemRows as resultItem, index (index)}
-								{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
-								<div role="row" class:focused={activeRowIndex === rowIndex}>
-									{@render resultItemRow?.({
-										resultItem,
-										getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-										isFocusedCell: (colIndex: number) =>
-											activeRowIndex === rowIndex && colIndex === activeColIndex,
-										rowIndex
-									})}
-								</div>
-							{/each}
-						{/if}
-						{#if search.isLoading}
-							{@render loadingIndicator?.()}
-						{:else if search.hasMorePaginatedData}
-							<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-								{loadMoreLabel}
-							</button>
-						{/if}
-					{/if}
-				{/if}
-			</nav>
+			{@render expandedContent({
+				search,
+				resultsSnippet,
+				resultsCount: resultItemRows?.length,
+				getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+				isFocusedCell: (rowIndex: number, colIndex: number) =>
+					rowIndex === activeRowIndex && colIndex === activeColIndex,
+				isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
+			})}
 		</div>
 	</div>
 </dialog>
