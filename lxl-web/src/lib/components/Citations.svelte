@@ -66,9 +66,9 @@
 		{#if displayedData && displayedData.length}
 			{#each displayedData as style (style.key)}
 				<li class="my-2 text-xs">
-					<p class="mb-2 font-medium">{style.fullName || style.name}</p>
+					<h2 class="mb-2 font-medium" id={style.key}>{style.fullName || style.name}</h2>
 					<svelte:element
-						this={preElements.some((e) => e === style.key) ? 'pre' : 'span'}
+						this={preElements.some((e) => e === style.key) ? 'pre' : 'p'}
 						class="block rounded-sm bg-neutral-100 p-2"
 					>
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
