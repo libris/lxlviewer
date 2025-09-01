@@ -61,5 +61,5 @@ test('navigation between results also works when changing _limit value', async (
 	await page.getByRole('main').getByRole('link').getByText('Föregående').click();
 	await expect(page).toHaveURL(articleIds[9]);
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
-	await expect(page).toHaveURL('/find?_q=f&_limit=2&_offset=8');
+	await expect(page).toHaveURL('/find?_q=f&_offset=8&_limit=2');
 });
