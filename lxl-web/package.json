@@ -32,7 +32,7 @@
 		"@types/jmespath": "^0.15.2",
 		"@types/js-cookie": "^3.0.6",
 		"codemirror-lang-lxlquery": "^0.1.0",
-		"eslint": "^9.22.0",
+		"eslint": "^9.34.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.11.0",
 		"estree-walker": "^3.0.3",

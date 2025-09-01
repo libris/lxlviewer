@@ -49,7 +49,7 @@
 		"@types/eslint": "^9.6.0",
 		"codemirror": "^6.0.2",
 		"codemirror-lang-lxlquery": "^0.1.0",
-		"eslint": "^9.22.0",
+		"eslint": "^9.34.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.11.0",
 		"esm-env": "^1.2.1",
