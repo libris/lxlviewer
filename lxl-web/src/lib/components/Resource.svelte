@@ -54,7 +54,7 @@
 </script>
 
 {#if adjecentSearchResults}
-	<div class="border-b-neutral border-b px-3 sm:px-6">
+	<div class="border-b-neutral @container border-b">
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	</div>
 {/if}

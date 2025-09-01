@@ -110,13 +110,13 @@
 {/snippet}
 
 {#if currentSearchResult}
-	<div class="@container flex min-h-12 items-center gap-2 text-xs">
+	<div class="text-2xs flex min-h-12 items-center gap-2 px-3 sm:px-6 @7xl:text-xs">
 		{#if typeof indexOfTotalSearchResults === 'number'}
-			<a href={relativizeUrl(currentSearchResult['@id'])} class="link text-2xs whitespace-nowrap">
+			<a href={relativizeUrl(currentSearchResult['@id'])} class="link whitespace-nowrap">
 				<span class="@xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>
 				<span class="hidden @xl:inline">{page.data.t('resource.showInSearchResults')}</span>
 			</a>
-			<span class="text-2xs truncate">
+			<span class="truncate">
 				{capitalize(page.data.t('resource.result'))}
 				<span class="font-medium">
 					{(indexOfTotalSearchResults + 1).toLocaleString(page.data.locale)}
@@ -127,7 +127,7 @@
 				</span>
 			</span>
 		{/if}
-		<span class="text-2xs ml-auto flex gap-2">
+		<span class="ml-auto flex gap-2">
 			<span class="after:text-subtle after:ml-2 after:content-['·']">
 				{#if previousItemFnurgel}
 					<a href={previousItemFnurgel} class="link" onclick={passAlongAdjecentSearchResults}>
