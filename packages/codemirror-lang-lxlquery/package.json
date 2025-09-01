@@ -33,7 +33,7 @@
 		"rollup": "^4.47.1",
 		"rollup-plugin-dts": "^6.2.3",
 		"typescript": "^5.9.2",
-		"typescript-eslint": "^8.40.0",
+		"typescript-eslint": "^8.41.0",
 		"vitest": "^3.2.4"
 	},
 	"license": "MIT"
