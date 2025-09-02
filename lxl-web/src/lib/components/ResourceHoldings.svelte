@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
-	import { relativizeUrl } from '$lib/utils/http';
+	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
@@ -34,7 +34,7 @@
 				onclick={(event) => handleClickHoldings(event, page.state, type)}
 			>
 				{#if instances.length === 1}
-					{@const id = relativizeUrl(getResourceId(instances[0] as ResourceData))}
+					{@const id = trimSlashes(relativizeUrl(getResourceId(instances[0] as ResourceData)))}
 					{#if id}
 						{@const favWithHolding = getMyLibsFromHoldings(
 							userSettings.myLibraries,

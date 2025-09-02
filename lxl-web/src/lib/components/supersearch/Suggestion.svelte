@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { relativizeUrl } from '$lib/utils/http';
+	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
@@ -18,7 +18,7 @@
 	};
 
 	const { item, getCellId, isFocusedCell }: Props = $props();
-	const resourceId = $derived(relativizeUrl(item?.['@id']));
+	const resourceId = $derived(trimSlashes(relativizeUrl(item?.['@id'])));
 	const primaryAddQualifierLink = $derived(item.qualifiers?.[0]?._q || resourceId);
 </script>
 

@@ -19,6 +19,10 @@ export function stripAnchor(url: string | undefined) {
 	return url.split('#')[0];
 }
 
+export function trimSlashes(url: string | undefined) {
+	return url?.replace(/^\/|\/$/g, '');
+}
+
 export function getUriSlug(url: string | undefined) {
 	if (!url) {
 		return '';
