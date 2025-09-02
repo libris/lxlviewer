@@ -1,3 +1,5 @@
+import type { availableFormats } from '$lib/utils/citation';
+
 // full CSL-JSON schema, see
 // https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
 interface CSLDate {
@@ -33,3 +35,5 @@ export interface CSLJSON {
 	title?: string;
 	type: CSLItemType;
 }
+
+export type AvailableCitationFormat = keyof typeof availableFormats;

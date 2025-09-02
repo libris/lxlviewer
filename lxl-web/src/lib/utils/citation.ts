@@ -3,9 +3,9 @@ import { goto, preloadData, pushState } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import type { FramedData } from '$lib/types/xl';
 import { centerOnWork } from './centerOnWork';
-import type { CSLJSON } from '$lib/types/citation';
+import type { AvailableCitationFormat, CSLJSON } from '$lib/types/citation';
 
-const availableFormats = {
+export const availableFormats = {
 	chicago: {
 		name: 'Chicago',
 		fullName: 'Chicago 17th edition (author-date)',
@@ -79,7 +79,7 @@ export async function initCite() {
 		cite.add(data);
 	}
 
-	function formatAs(name: keyof typeof availableFormats) {
+	function formatAs(name: AvailableCitationFormat) {
 		switch (name) {
 			case 'csl':
 				return cite.format('data');
@@ -121,7 +121,11 @@ async function loadCiteResources() {
 
 export function getAvailableFormats() {
 	return Object.entries(availableFormats).map(([key, value]) => {
-		return { key, name: value.name, fullName: value.fullName || '' };
+		return {
+			key: key as AvailableCitationFormat,
+			name: value.name,
+			fullName: value.fullName || ''
+		};
 	});
 }
 

@@ -1,6 +1,7 @@
 <!-- This component should probably merge with HoldingsModal in a more flexible solution to display various content 
 inside a modal/panel -->
 <script lang="ts">
+	import type { ApiError } from '$lib/types/api';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
@@ -35,7 +36,7 @@ inside a modal/panel -->
 		{/snippet}
 		<Citations
 			citations={page.state.citations || page.data.citations}
-			error={page.state.citations?.message || page.data.citations?.message}
+			error={(page.state.citations as ApiError)?.message || page.data.citations?.message}
 		/>
 	</Modal>
 {/if}

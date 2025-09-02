@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { CSLJSON } from '$lib/types/citation';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+	import type { AvailableCitationFormat, CSLJSON } from '$lib/types/citation';
 	import { getAvailableFormats, initCite } from '$lib/utils/citation';
 	import { onMount } from 'svelte';
 	import Spinner from './Spinner.svelte';
@@ -12,14 +13,23 @@
 	};
 
 	let { citations, error }: Props = $props();
+	const userSettings = getUserSettings();
 
 	let loading = $state(false);
 	const formatsRenderedAsPreElement = ['ris', 'bibtex', 'csl'];
-	let selectedFormat = $state('all');
+	let selectedFormat = $state(userSettings.selectedCitationFormat || 'all');
 
 	let cite: Awaited<ReturnType<typeof initCite>> | null = $state(null);
 
-	let formattedData = $state();
+	let formattedData:
+		| {
+				key: AvailableCitationFormat;
+				name: string;
+				fullName?: string;
+				citation: string;
+		  }[]
+		| undefined = $state();
+
 	const displayedFormats = $derived(
 		formattedData &&
 			formattedData.filter((format) =>
@@ -37,11 +47,16 @@
 			formattedData = availableFormats.map((format) => {
 				return {
 					...format,
-					citation: cite?.formatAs(format.key)
+					citation: cite?.formatAs(format.key) as string
 				};
 			});
 			loading = false;
 		}
+	}
+
+	function handleChangeFormat(e: Event): void {
+		const target = e.target as HTMLSelectElement;
+		userSettings.saveSelectedCitationFormat(target.value as AvailableCitationFormat);
 	}
 
 	onMount(() => {
@@ -52,7 +67,12 @@
 <div>
 	<label for="citation-format-select" class="sr-only">{page.data.t('citations.selectFormat')}</label
 	>
-	<select class="btn btn-primary" bind:value={selectedFormat} id="citation-format-select">
+	<select
+		class="btn btn-primary"
+		bind:value={selectedFormat}
+		id="citation-format-select"
+		onchange={handleChangeFormat}
+	>
 		<option value="all">{page.data.t('citations.allFormats')}</option>
 		{#each getAvailableFormats() as format (format.key)}
 			<option value={format.key}>{format.name}</option>
