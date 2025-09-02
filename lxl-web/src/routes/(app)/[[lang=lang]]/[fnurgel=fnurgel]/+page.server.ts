@@ -124,6 +124,7 @@ export const load = async ({ params, locals, fetch }) => {
 	}
 
 	return {
+		uri: resource['@id'] as string,
 		workFnurgel: getUriSlug(resourceId || undefined),
 		type: mainEntity[JsonLd.TYPE],
 		types: types,

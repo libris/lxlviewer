@@ -12,7 +12,7 @@
 <div data-testid="resource-page" class="contents">
 	<!-- Zotero tag -->
 	{#if data.instances.length}
-		<abbr class="unapi-id hidden" title={page.params.fnurgel}></abbr>
+		<abbr class="unapi-id hidden" title={data.uri}></abbr>
 	{/if}
 	<Resource
 		fnurgel={page.params.fnurgel}

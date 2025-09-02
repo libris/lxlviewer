@@ -14,7 +14,14 @@ export async function GET({ params, url, fetch }) {
 
 	if (id && format) {
 		if (supportedFormats.some((f) => format.toLowerCase() === f)) {
-			const res = await fetch(`${env.API_URL}/${id}/data.jsonld?framed=true&computedLabel=${lang}`);
+			let url;
+			if (id.startsWith(env.API_URL)) {
+				// support both full URI:s and fnurgels
+				url = id;
+			} else {
+				url = `${env.API_URL}/${id}`;
+			}
+			const res = await fetch(`${url}/data.jsonld?framed=true&computedLabel=${lang}`);
 			if (res.ok) {
 				const record = await res.json();
 				const csl = cslFromMainEntity(record.mainEntity);
