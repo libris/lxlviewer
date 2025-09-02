@@ -12,6 +12,12 @@ export const availableFormats = {
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
 		source: (await import('$lib/assets/csl/chicago-author-date.csl?raw')).default
 	},
+	mla: {
+		name: 'MLA',
+		fullName: 'MLA (Modern Language Association 9th edition)',
+		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fmodern-language-association
+		source: (await import('$lib/assets/csl/modern-language-association.csl?raw')).default
+	},
 	apa: {
 		name: 'APA', // built-in
 		fullName: 'APA (American Psychological Association 7th edition)'
@@ -91,9 +97,11 @@ export async function initCite() {
 				return cite.format('bibliography', { template: 'chicago', format: 'html' });
 			case 'apa':
 				return cite.format('bibliography', { template: 'apa', format: 'html' });
+			case 'mla':
+				return cite.format('bibliography', { template: 'mla', format: 'html' });
 			default:
 				console.warn('asked for unavailable format', name);
-				return cite.format();
+				return '-';
 		}
 	}
 
@@ -124,7 +132,7 @@ export function getAvailableFormats() {
 		return {
 			key: key as AvailableCitationFormat,
 			name: value.name,
-			fullName: value.fullName || ''
+			fullName: value?.fullName || ''
 		};
 	});
 }
