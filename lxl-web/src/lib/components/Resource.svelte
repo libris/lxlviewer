@@ -113,11 +113,13 @@
 					<div class="header-actions">
 						{#if instances.length === 1}
 							<a
-								class="btn btn-primary"
+								class="btn btn-primary h-7"
 								href={getCiteLink(page.url, fnurgel)}
 								onclick={(event) => handleClickCite(event, page.state)}
 							>
-								<BiQuote />
+								<div class="bg-subtle flex size-4 items-center justify-center rounded-full">
+									<BiQuote class="text-white" />
+								</div>
 								<span>{page.data.t('citations.createCitation')}</span>
 							</a>
 						{/if}
