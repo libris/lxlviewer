@@ -33,6 +33,9 @@ inside a modal/panel -->
 		{#snippet title()}
 			<span>{page.data.t('citations.createCitation')}</span>
 		{/snippet}
-		<Citations citations={page.state.citations || page.data.citations} />
+		<Citations
+			citations={page.state.citations || page.data.citations}
+			error={page.state.citations?.message || page.data.citations?.message}
+		/>
 	</Modal>
 {/if}

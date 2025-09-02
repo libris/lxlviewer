@@ -1,6 +1,7 @@
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { cslFromMainEntity, initCite } from '$lib/utils/citation';
+import { error } from '@sveltejs/kit';
 
 const supportedFormats = ['ris', 'bibtex', 'csl'];
 
@@ -54,13 +55,13 @@ export async function GET({ params, url, fetch }) {
 				}
 			} else if (res.status === 404) {
 				// not found
-				return new Response('Not Found', { status: 404 });
+				return error(404, 'Not found');
 			} else {
-				return new Response('Error', { status: 500 });
+				return error(500, 'An error occurred');
 			}
 		} else {
 			// bad format
-			return new Response('Bad format', { status: 406 });
+			return error(406, 'Bad format');
 		}
 	} else {
 		// XML response when missing id or format param

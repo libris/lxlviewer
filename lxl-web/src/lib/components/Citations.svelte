@@ -8,9 +8,10 @@
 
 	type Props = {
 		citations: CSLJSON[];
+		error: string;
 	};
 
-	let { citations }: Props = $props();
+	let { citations, error }: Props = $props();
 
 	let loading = $state(false);
 	const preElements = ['ris', 'bibtex', 'csl'];
@@ -27,18 +28,20 @@
 	);
 
 	async function load() {
-		loading = true;
-		cite = await initCite();
-		cite.add(citations);
+		if (!error) {
+			loading = true;
+			cite = await initCite();
+			cite.add(citations);
 
-		const availableFormats = getAvailableFormats();
-		formattedData = availableFormats.map((format) => {
-			return {
-				...format,
-				citation: cite.format(format.key)
-			};
-		});
-		loading = false;
+			const availableFormats = getAvailableFormats();
+			formattedData = availableFormats.map((format) => {
+				return {
+					...format,
+					citation: cite.format(format.key)
+				};
+			});
+			loading = false;
+		}
 	}
 
 	onMount(() => {
@@ -78,4 +81,7 @@
 			{/each}
 		{/if}
 	</ul>
+	{#if error}
+		<p role="alert" class="text-xs">{page.data.t('errors.somethingWentWrong')}: {error}</p>
+	{/if}
 </div>
