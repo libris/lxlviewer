@@ -30,7 +30,7 @@ export async function GET({ params, url, fetch }) {
 
 				// return CSL-JSON
 				if (format === 'csl') {
-					const csl = cite.format('csl') as string;
+					const csl = cite.formatAs('csl') as string;
 					return new Response(csl, {
 						status: 300,
 						headers: {
@@ -41,7 +41,7 @@ export async function GET({ params, url, fetch }) {
 
 				// return RIS
 				if (format === 'ris') {
-					const ris = cite.format('ris') as string;
+					const ris = cite.formatAs('ris') as string;
 					return new Response(ris, {
 						status: 300,
 						headers: {
@@ -52,7 +52,7 @@ export async function GET({ params, url, fetch }) {
 
 				// TODO return bibtex
 				if (format == 'bibtex') {
-					const bibtex = cite.format('bibtex') as string;
+					const bibtex = cite.formatAs('bibtex') as string;
 					return new Response(bibtex, {
 						status: 300,
 						headers: {

@@ -79,7 +79,7 @@ export async function initCite() {
 		cite.add(data);
 	}
 
-	function format(name: keyof typeof availableFormats) {
+	function formatAs(name: keyof typeof availableFormats) {
 		switch (name) {
 			case 'csl':
 				return cite.format('data');
@@ -97,7 +97,7 @@ export async function initCite() {
 		}
 	}
 
-	return { add, format };
+	return { add, formatAs };
 }
 
 // load these resources only if user uses cite functionality

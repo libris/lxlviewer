@@ -14,13 +14,13 @@
 	let { citations, error }: Props = $props();
 
 	let loading = $state(false);
-	const preElements = ['ris', 'bibtex', 'csl'];
+	const formatsRenderedAsPreElement = ['ris', 'bibtex', 'csl'];
 	let selectedFormat = $state('all');
 
 	let cite: Awaited<ReturnType<typeof initCite>> | null = $state(null);
 
 	let formattedData = $state();
-	const displayedData = $derived(
+	const displayedFormats = $derived(
 		formattedData &&
 			formattedData.filter((format) =>
 				selectedFormat === 'all' ? true : format.key === selectedFormat
@@ -37,7 +37,7 @@
 			formattedData = availableFormats.map((format) => {
 				return {
 					...format,
-					citation: cite.format(format.key)
+					citation: cite?.formatAs(format.key)
 				};
 			});
 			loading = false;
@@ -66,16 +66,16 @@
 		</div>
 	{/if}
 	<ul class="mt-2 flex flex-col gap-1">
-		{#if displayedData && displayedData.length}
-			{#each displayedData as style (style.key)}
+		{#if displayedFormats && displayedFormats.length}
+			{#each displayedFormats as format (format.key)}
 				<li class="my-2 text-xs">
-					<h2 class="mb-2 font-medium" id={style.key}>{style.fullName || style.name}</h2>
+					<h2 class="mb-2 font-medium" id={format.key}>{format.fullName || format.name}</h2>
 					<svelte:element
-						this={preElements.some((e) => e === style.key) ? 'pre' : 'p'}
+						this={formatsRenderedAsPreElement.some((e) => e === format.key) ? 'pre' : 'p'}
 						class="block rounded-sm bg-neutral-100 p-2"
 					>
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-						{@html style.citation}
+						{@html format.citation}
 					</svelte:element>
 				</li>
 			{/each}
