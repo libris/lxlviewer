@@ -96,7 +96,7 @@
 		</div>
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-6">
 			<section id="{uidPrefix}top">
-				<div class="flex gap-2">
+				<div class="flex flex-col-reverse items-center gap-2 md:flex-row md:items-start">
 					<header class="flex-1">
 						<hgroup>
 							<p class="text-subtle text-xs font-medium">
