@@ -7,13 +7,15 @@
 	import { page } from '$app/state';
 	import Spinner from './Spinner.svelte';
 	import BiCopy from '~icons/bi/copy';
+	import BiDownload from '~icons/bi/download';
 
 	type Props = {
 		citations: CSLJSON[];
+		id: string | undefined | null;
 		error: string;
 	};
 
-	let { citations, error }: Props = $props();
+	let { citations, id, error }: Props = $props();
 	const userSettings = getUserSettings();
 
 	const plainTextFormats = ['ris', 'bibtex', 'csl'];
@@ -107,6 +109,7 @@
 				{@const isPlainText = plainTextFormats.some((e) => e === format.key)}
 				<li
 					class="bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs"
+					id={`list-item-${format.key}`}
 				>
 					<h2 class="mb-2 font-medium" id={format.key}>{format.fullName || format.name}</h2>
 					<svelte:element
@@ -119,7 +122,7 @@
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html format.citation}
 					</svelte:element>
-					<div>
+					<div class="flex gap-2">
 						<!-- copy button -->
 						<button
 							class="btn btn-accent"
@@ -140,6 +143,17 @@
 								{page.data.t('citations.copyToClipboard')}
 							{/if}
 						</button>
+						{#if isPlainText && id}
+							<!-- download button -->
+							<a
+								class="btn btn-accent"
+								download={`${id}.${format.key}`}
+								href={`api/cite?id=${id}&format=${format.key}`}
+							>
+								<BiDownload />
+								{page.data.t('citations.saveAsFile')}</a
+							>
+						{/if}
 					</div>
 				</li>
 			{/each}
@@ -149,3 +163,9 @@
 		<p role="alert" class="text-xs">{page.data.t('errors.somethingWentWrong')}: {error}</p>
 	{/if}
 </div>
+
+<style>
+	#list-item-csl {
+		display: none;
+	}
+</style>

@@ -251,6 +251,7 @@ export default {
 		selectFormat: 'Välj format',
 		allFormats: 'Alla format',
 		copyToClipboard: 'Kopiera till urklipp',
-		copied: 'Kopierad!'
+		copied: 'Kopierad!',
+		saveAsFile: 'Spara som fil'
 	}
 };

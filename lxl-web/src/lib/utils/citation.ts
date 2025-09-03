@@ -147,7 +147,8 @@ export function getCiteLink(url: URL, value: string) {
 
 export async function handleClickCite(
 	event: MouseEvent & { currentTarget: HTMLAnchorElement },
-	state: object
+	state: object,
+	id: string
 ) {
 	// https://svelte.dev/docs/kit/shallow-routing#Loading-data-for-a-route
 	event.preventDefault();
@@ -155,7 +156,7 @@ export async function handleClickCite(
 	const result = await preloadData(href);
 
 	if (result.type === 'loaded' && result.status === 200) {
-		pushState(href, { ...state, citations: await result.data.citations });
+		pushState(href, { ...state, citations: await result.data.citations, citationId: id });
 	} else {
 		goto(href);
 	}

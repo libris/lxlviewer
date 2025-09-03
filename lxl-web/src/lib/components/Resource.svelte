@@ -115,7 +115,7 @@
 							<a
 								class="btn btn-primary h-7"
 								href={getCiteLink(page.url, fnurgel)}
-								onclick={(event) => handleClickCite(event, page.state)}
+								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
 							>
 								<div class="bg-subtle flex size-4 items-center justify-center rounded-full">
 									<BiQuote class="text-white" />

@@ -70,7 +70,7 @@
 					<a
 						class="link-subtle"
 						href={getCiteLink(page.url, id)}
-						onclick={(event) => handleClickCite(event, page.state)}
+						onclick={(event) => handleClickCite(event, page.state, id)}
 						>{page.data.t('citations.createCitation')}</a
 					>
 					<a

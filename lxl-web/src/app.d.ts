@@ -28,6 +28,7 @@ declare global {
 			holdings?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
 			citations?: CSLJSON[] | ApiError;
+			citationId?: string;
 		}
 		// interface Platform {}
 	}

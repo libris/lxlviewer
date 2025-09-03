@@ -252,6 +252,7 @@ export default {
 		selectFormat: 'Select format',
 		allFormats: 'All formats',
 		copyToClipboard: 'Copy to clipboard',
-		copied: 'Copied!'
+		copied: 'Copied!',
+		saveAsFile: 'Save as file'
 	}
 };

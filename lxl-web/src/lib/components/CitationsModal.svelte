@@ -37,6 +37,7 @@ inside a modal/panel -->
 		<Citations
 			citations={page.state.citations || page.data.citations}
 			error={(page.state.citations as ApiError)?.message || page.data.citations?.message}
+			id={page.state.citationId || page.url.searchParams.get('cite')}
 		/>
 	</Modal>
 {/if}

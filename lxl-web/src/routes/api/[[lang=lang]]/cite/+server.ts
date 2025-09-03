@@ -32,7 +32,7 @@ export async function GET({ params, url, fetch }) {
 				if (format === 'csl') {
 					const csl = cite.formatAs('csl') as string;
 					return new Response(csl, {
-						status: 300,
+						status: 200,
 						headers: {
 							'Content-Type': 'application/json;charset=utf-8'
 						}
@@ -43,7 +43,7 @@ export async function GET({ params, url, fetch }) {
 				if (format === 'ris') {
 					const ris = cite.formatAs('ris') as string;
 					return new Response(ris, {
-						status: 300,
+						status: 200,
 						headers: {
 							'Content-Type': 'text/plain;charset=UTF-8'
 						}
@@ -54,7 +54,7 @@ export async function GET({ params, url, fetch }) {
 				if (format == 'bibtex') {
 					const bibtex = cite.formatAs('bibtex') as string;
 					return new Response(bibtex, {
-						status: 300,
+						status: 200,
 						headers: {
 							'Content-Type': 'text/plain;charset=UTF-8'
 						}
@@ -82,6 +82,7 @@ export async function GET({ params, url, fetch }) {
       </formats>`;
 
 		return new Response(xml, {
+			status: 300,
 			headers: {
 				'Content-Type': 'application/xml;charset=UTF-8'
 			}
