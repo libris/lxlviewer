@@ -45,6 +45,7 @@
 	let debouncedLoading: boolean | undefined = $state();
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
+	let prevLocale = page.data.locale;
 
 	// debounce loading spinner
 	$effect(() => {
@@ -161,6 +162,13 @@
 			fetchOnExpand = false;
 		}
 	}
+
+	$effect(() => {
+		if (page.data.locale !== prevLocale) {
+			prevLocale = page.data.locale;
+			superSearch?.fetchData();
+		}
+	});
 </script>
 
 {#snippet loading()}
