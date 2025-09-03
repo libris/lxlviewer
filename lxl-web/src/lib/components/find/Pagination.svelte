@@ -65,7 +65,7 @@
 			<li>
 				<a
 					class={['btn btn-primary', p.page === currentPage ? 'bg-accent-50' : 'border-0']}
-					href={getOffsetLink(p.offset)}
+					href={page.data.localizeHref(getOffsetLink(p.offset))}
 					aria-label="{page.data.t('search.page')} {p}"
 					aria-current={p.page === currentPage ? 'page' : null}
 					>{p.page.toLocaleString(page.data.locale)}</a
@@ -89,7 +89,7 @@
 			{#if previous}
 				<li>
 					<a
-						href={previous['@id']}
+						href={page.data.localizeHref(previous['@id'])}
 						aria-label={page.data.t('search.previous')}
 						class="btn btn-primary border-0"
 						><BiChevronLeft class="text-base" aria-hidden="true" /></a
@@ -101,7 +101,7 @@
 				<a
 					aria-label="{page.data.t('search.page')} 1"
 					class={['btn btn-primary', currentPage === 1 ? 'bg-accent-50' : 'border-0']}
-					href={first['@id']}>1</a
+					href={page.data.localizeHref(first['@id'])}>1</a
 				>
 			</li>
 			<!-- sm sequence -->
@@ -121,14 +121,14 @@
 				<a
 					aria-label="{page.data.t('search.page')} {lastPage}"
 					class={['btn btn-primary', currentPage === lastPage ? 'bg-accent-50' : 'border-0']}
-					href={last['@id']}>{lastPage.toLocaleString(page.data.locale)}</a
+					href={page.data.localizeHref(last['@id'])}>{lastPage.toLocaleString(page.data.locale)}</a
 				>
 			</li>
 			<!-- next -->
 			{#if next}
 				<li>
 					<a
-						href={next['@id']}
+						href={page.data.localizeHref(next['@id'])}
 						aria-label={page.data.t('search.next')}
 						class="btn btn-primary border-0"
 						><BiChevronRight class="text-base" aria-hidden="true" /></a

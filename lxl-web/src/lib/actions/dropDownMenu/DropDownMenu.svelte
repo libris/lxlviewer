@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
+	import { page } from '$app/state';
 
 	export type MenuItem = { label: string; href: string };
 
@@ -85,7 +86,7 @@
 				{#each menuItems as item, index (`menuItem-${index}`)}
 					<li>
 						<a
-							href={item.href}
+							href={page.data.localizeHref(item.href)}
 							class="flex min-h-[44px] w-full cursor-pointer items-center px-4 text-left hover:bg-neutral-100"
 						>
 							{item.label}</a

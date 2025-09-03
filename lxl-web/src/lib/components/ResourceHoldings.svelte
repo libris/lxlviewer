@@ -28,7 +28,7 @@
 		<li>
 			<a
 				class="btn btn-cta"
-				href={getHoldingsLink(page.url, type)}
+				href={page.data.localizeHref(getHoldingsLink(page.url, type))}
 				data-sveltekit-preload-data="false"
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, type)}

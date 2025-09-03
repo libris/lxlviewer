@@ -49,7 +49,7 @@
 			if (depth > 1 && hasStyle(data, 'link')) {
 				const id = getResourceId(value);
 				if (id) {
-					return trimSlashes(relativizeUrl(id));
+					return page.data.localizeHref(trimSlashes(relativizeUrl(id)));
 				}
 			}
 			if (depth > 1 && hasStyle(data, 'ext-link')) {

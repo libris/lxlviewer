@@ -51,7 +51,12 @@
 		<p class="suggest">
 			{#each searchResult._spell as suggestion (suggestion.label)}
 				{page.data.t('search.didYouMean')}
-				<a href={suggestion.view['@id'].replace('_spell=true', '_spell=false')} class="link-subtle">
+				<a
+					href={page.data.localizeHref(
+						suggestion.view['@id'].replace('_spell=true', '_spell=false')
+					)}
+					class="link-subtle"
+				>
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 					{@html suggestion.labelHtml}</a
 				>?

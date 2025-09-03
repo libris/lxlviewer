@@ -17,7 +17,7 @@
 </svelte:head>
 {#if showHeader}
 	<header class="flex justify-center pt-8">
-		<a href="/" class="inline-block no-underline">
+		<a href={page.data.localizeHref(page.data.base)} class="inline-block no-underline">
 			<h1 class="text-3xl font-bold">Libris</h1>
 		</a>
 	</header>
@@ -38,7 +38,7 @@
 			>{page.data.t('errors.followUp')}
 		</p>
 		<p class="pt-4">
-			<a class="link-subtle" href={page.data.locale === 'en' ? '/en' : '/'}
+			<a class="link-subtle" href={page.data.localizeHref(page.data.base)}
 				>{page.data.t('errors.backToStartPage')}</a
 			>
 		</p>

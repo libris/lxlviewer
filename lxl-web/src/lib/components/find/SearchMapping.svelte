@@ -65,7 +65,7 @@
 				<span class="pill-remove inline-block align-sub">
 					<a
 						class="float-right pl-2 text-[inherit] hover:text-[inherit]"
-						href={m.up?.['@id']}
+						href={page.data.localizeHref(m.up?.['@id'])}
 						aria-label={page.data.t('search.removeFilter')}
 					>
 						<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
@@ -78,7 +78,7 @@
 		{/if}
 		{#if 'up' in m && m.children && depth === 0}
 			<li class="pill-remove">
-				<a href={m.up?.['@id']} class="btn btn-primary">
+				<a href={page.data.localizeHref(m.up?.['@id'])} class="btn btn-primary">
 					<BiTrash aria-hidden="true" />
 					{page.data.t('search.clearFilters')}
 				</a>

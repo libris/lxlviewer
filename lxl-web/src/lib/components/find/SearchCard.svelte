@@ -4,7 +4,7 @@
 	import { LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
-	import { relativizeUrl, stripAnchor } from '$lib/utils/http';
+	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
@@ -25,7 +25,7 @@
 
 	let { item, uidPrefix = '' }: Props = $props();
 
-	let id = $derived(`${uidPrefix}${stripAnchor(relativizeUrl(item['@id']))}`);
+	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
 	let titleId = $derived(`card-title-${id}`);
 	let bodyId = $derived(`card-body-${id}`);
 	let footerId = $derived(`card-footer-${id}`);
@@ -54,7 +54,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		{#if id}
 			<a
 				class="btn btn-primary h-7 rounded-full md:h-8"
-				href={getHoldingsLink(page.url, id)}
+				href={page.data.localizeHref(getHoldingsLink(page.url, id))}
 				data-sveltekit-preload-data="false"
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, id)}
@@ -81,7 +81,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	>
 		<div class="card-image">
 			<a
-				href={id}
+				href={page.data.localizeHref(id)}
 				aria-labelledby={titleId}
 				aria-describedby={`${bodyId} ${footerId}`}
 				tabindex="-1"
@@ -145,7 +145,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				<hgroup>
 					<h2 class="card-header-title text-base font-medium">
 						<a
-							href={id}
+							href={page.data.localizeHref(id)}
 							class="link-subtle block decoration-neutral-400"
 							aria-describedby={`${bodyId} ${footerId}`}
 							onclick={passAlongAdjecentSearchResults}
