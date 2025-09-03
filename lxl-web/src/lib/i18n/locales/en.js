@@ -250,6 +250,7 @@ export default {
 		cite: 'Cite',
 		createCitation: 'Create citation',
 		selectFormat: 'Select format',
-		allFormats: 'All formats'
+		allFormats: 'All formats',
+		copyToClipboard: 'Copy to clipboard'
 	}
 };

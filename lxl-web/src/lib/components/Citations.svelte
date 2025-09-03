@@ -3,9 +3,11 @@
 	import type { AvailableCitationFormat, CSLJSON } from '$lib/types/citation';
 	import { getAvailableFormats, initCite } from '$lib/utils/citation';
 	import { onMount } from 'svelte';
-	import Spinner from './Spinner.svelte';
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/state';
+	import Spinner from './Spinner.svelte';
+	import BiClipboard from '~icons/bi/clipboard';
+	import BiClipboardCheck from '~icons/bi/clipboard-check';
 
 	type Props = {
 		citations: CSLJSON[];
@@ -15,8 +17,10 @@
 	let { citations, error }: Props = $props();
 	const userSettings = getUserSettings();
 
+	const plainTextFormats = ['ris', 'bibtex', 'csl'];
+	const wasCopied: Record<string, boolean> = $state({});
+
 	let loading = $state(false);
-	const formatsRenderedAsPreElement = ['ris', 'bibtex', 'csl'];
 	let selectedFormat = $state(userSettings.selectedCitationFormat || 'all');
 
 	let cite: Awaited<ReturnType<typeof initCite>> | null = $state(null);
@@ -59,6 +63,19 @@
 		userSettings.saveSelectedCitationFormat(target.value as AvailableCitationFormat);
 	}
 
+	async function handleCopyCitation(
+		citation: string,
+		type: 'text/html' | 'text/plain' = 'text/plain',
+		onSuccess?: () => void
+	) {
+		if (citation) {
+			const blob = new Blob([citation], { type });
+			const data = new ClipboardItem({ [type]: blob });
+			await navigator.clipboard.write([data]);
+			onSuccess?.();
+		}
+	}
+
 	onMount(() => {
 		load();
 	});
@@ -88,15 +105,35 @@
 	<ul class="mt-2 flex flex-col gap-1">
 		{#if displayedFormats && displayedFormats.length}
 			{#each displayedFormats as format (format.key)}
-				<li class="my-2 text-xs">
+				{@const isPlainText = plainTextFormats.some((e) => e === format.key)}
+				<li
+					class="bg-page border-r-neutral border-b-neutral rounded-sm border-r border-b p-4 text-xs"
+				>
 					<h2 class="mb-2 font-medium" id={format.key}>{format.fullName || format.name}</h2>
 					<svelte:element
-						this={formatsRenderedAsPreElement.some((e) => e === format.key) ? 'pre' : 'p'}
-						class="block rounded-sm bg-neutral-100 p-2"
+						this={isPlainText ? 'pre' : 'p'}
+						class={['mb-2 block', isPlainText && 'text-2xs']}
 					>
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html format.citation}
 					</svelte:element>
+					<button
+						class="btn btn-accent"
+						onclick={() =>
+							handleCopyCitation(format.citation, isPlainText ? 'text/plain' : 'text/html', () => {
+								wasCopied[format.key] = true;
+								setTimeout(() => {
+									wasCopied[format.key] = false;
+								}, 2000);
+							})}
+					>
+						{#if wasCopied[format.key]}
+							<BiClipboardCheck class="text-primary-700" />
+						{:else}
+							<BiClipboard />
+						{/if}
+						{page.data.t('citations.copyToClipboard')}
+					</button>
 				</li>
 			{/each}
 		{/if}
