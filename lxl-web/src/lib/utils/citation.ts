@@ -23,10 +23,10 @@ export const availableFormats = {
 	},
 	bibtex: {
 		name: 'Bibtex' // imported via plugin
-	},
-	csl: {
-		name: 'CSL' // imported via plugin
 	}
+	// csl: {
+	// 	name: 'CSL' // imported via plugin
+	// }
 };
 
 let loaded = false;
@@ -80,7 +80,7 @@ export async function initCite() {
 		cite.add(data);
 	}
 
-	function formatAs(name: AvailableCitationFormat) {
+	function formatAs(name: AvailableCitationFormat | 'csl') {
 		switch (name) {
 			case 'csl':
 				return cite.format('data');

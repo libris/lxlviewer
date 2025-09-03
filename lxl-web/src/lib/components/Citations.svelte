@@ -109,7 +109,6 @@
 				{@const isPlainText = plainTextFormats.some((e) => e === format.key)}
 				<li
 					class="bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs"
-					id={`list-item-${format.key}`}
 				>
 					<h2 class="mb-2 font-medium" id={format.key}>{format.fullName || format.name}</h2>
 					<svelte:element
@@ -163,9 +162,3 @@
 		<p role="alert" class="text-xs">{page.data.t('errors.somethingWentWrong')}: {error}</p>
 	{/if}
 </div>
-
-<style>
-	#list-item-csl {
-		display: none;
-	}
-</style>
