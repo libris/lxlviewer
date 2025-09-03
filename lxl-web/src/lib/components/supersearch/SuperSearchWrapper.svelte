@@ -18,7 +18,7 @@
 	import IconAddQualifierKey from '~icons/bi/plus-circle';
 	import '$lib/styles/lxlquery.css';
 
-	const QUALIFIER_SUGGESTIONS = [
+	const qualifierSuggestions = $derived([
 		{
 			key: page.data.t('qualifiers.contributorKey'),
 			label: page.data.t('qualifiers.contributorLabel')
@@ -27,7 +27,7 @@
 		{ key: page.data.t('qualifiers.languageKey'), label: page.data.t('qualifiers.languageLabel') },
 		{ key: page.data.t('qualifiers.subjectKey'), label: page.data.t('qualifiers.subjectLabel') },
 		{ key: page.data.t('qualifiers.yearKey'), label: page.data.t('qualifiers.yearLabel') }
-	];
+	]);
 
 	interface Props {
 		placeholder: string;
@@ -273,7 +273,7 @@
 						<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
 							<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
 								<IconAddQualifierKey class="text-subtle shrink-0" />
-								{#each QUALIFIER_SUGGESTIONS as { key, label }, cellIndex (key)}
+								{#each qualifierSuggestions as { key, label }, cellIndex (key)}
 									<button
 										type="button"
 										id={getCellId(1, cellIndex)}
