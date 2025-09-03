@@ -8,15 +8,11 @@ import type { AvailableCitationFormat, CSLJSON } from '$lib/types/citation';
 export const availableFormats = {
 	chicago: {
 		name: 'Chicago',
-		fullName: 'Chicago 17th edition (author-date)',
-		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
-		source: (await import('$lib/assets/csl/chicago-author-date.csl?raw')).default
+		fullName: 'Chicago 17th edition (author-date)'
 	},
 	mla: {
 		name: 'MLA',
-		fullName: 'MLA (Modern Language Association 9th edition)',
-		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fmodern-language-association
-		source: (await import('$lib/assets/csl/modern-language-association.csl?raw')).default
+		fullName: 'MLA (Modern Language Association 9th edition)'
 	},
 	apa: {
 		name: 'APA', // built-in
@@ -31,7 +27,6 @@ export const availableFormats = {
 	csl: {
 		name: 'CSL' // imported via plugin
 	}
-	// TODO add more templates
 };
 
 let loaded = false;
@@ -115,12 +110,19 @@ async function loadCiteResources() {
 	await import('@citation-js/plugin-bibtex');
 	await import('@citation-js/plugin-csl');
 
+	const citationStyleResources = {
+		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
+		chicago: (await import('$lib/assets/csl/chicago-author-date.csl?raw')).default,
+		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fmodern-language-association
+		mla: (await import('$lib/assets/csl/modern-language-association.csl?raw')).default
+	};
+
 	// https://github.com/citation-js/citation-js/tree/main/packages/plugin-csl
 	const config = plugins.config.get('@csl');
 
-	Object.entries(availableFormats).forEach(async ([key, value]) => {
-		if ('source' in value) {
-			config.templates.add(key, value.source);
+	Object.keys(availableFormats).forEach(async (key) => {
+		if (key in citationStyleResources) {
+			config.templates.add(key, citationStyleResources[key]);
 		}
 	});
 
