@@ -106,31 +106,41 @@
 			{#each displayedFormats as format (format.key)}
 				{@const isPlainText = plainTextFormats.some((e) => e === format.key)}
 				<li
-					class="bg-page border-r-neutral border-b-neutral rounded-sm border-r border-b p-4 text-xs"
+					class="bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs"
 				>
 					<h2 class="mb-2 font-medium" id={format.key}>{format.fullName || format.name}</h2>
 					<svelte:element
 						this={isPlainText ? 'pre' : 'p'}
-						class={['mb-2 block', isPlainText && 'text-2xs']}
+						class={[
+							'mb-2 block',
+							isPlainText && 'text-2xs overflow-x-scroll [scrollbar-width:thin]'
+						]}
 					>
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html format.citation}
 					</svelte:element>
-					<button
-						class="btn btn-accent"
-						onclick={() =>
-							handleCopyCitation(format.citation, isPlainText ? 'text/plain' : 'text/html', () => {
-								wasCopied = {};
-								wasCopied[format.key] = true;
-							})}
-					>
-						<BiCopy />
-						{#if wasCopied[format.key]}
-							{page.data.t('citations.copied')}
-						{:else}
-							{page.data.t('citations.copyToClipboard')}
-						{/if}
-					</button>
+					<div>
+						<!-- copy button -->
+						<button
+							class="btn btn-accent"
+							onclick={() =>
+								handleCopyCitation(
+									format.citation,
+									isPlainText ? 'text/plain' : 'text/html',
+									() => {
+										wasCopied = {};
+										wasCopied[format.key] = true;
+									}
+								)}
+						>
+							<BiCopy />
+							{#if wasCopied[format.key]}
+								{page.data.t('citations.copied')}
+							{:else}
+								{page.data.t('citations.copyToClipboard')}
+							{/if}
+						</button>
+					</div>
 				</li>
 			{/each}
 		{/if}
