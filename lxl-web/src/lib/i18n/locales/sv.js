@@ -250,6 +250,7 @@ export default {
 		createCitation: 'Skapa referens',
 		selectFormat: 'Välj format',
 		allFormats: 'Alla format',
-		copyToClipboard: 'Kopiera till urklipp'
+		copyToClipboard: 'Kopiera till urklipp',
+		copied: 'Kopierad!'
 	}
 };

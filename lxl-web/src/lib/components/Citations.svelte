@@ -6,8 +6,7 @@
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/state';
 	import Spinner from './Spinner.svelte';
-	import BiClipboard from '~icons/bi/clipboard';
-	import BiClipboardCheck from '~icons/bi/clipboard-check';
+	import BiCopy from '~icons/bi/copy';
 
 	type Props = {
 		citations: CSLJSON[];
@@ -18,7 +17,7 @@
 	const userSettings = getUserSettings();
 
 	const plainTextFormats = ['ris', 'bibtex', 'csl'];
-	const wasCopied: Record<string, boolean> = $state({});
+	let wasCopied: Record<string, boolean> = $state({});
 
 	let loading = $state(false);
 	let selectedFormat = $state(userSettings.selectedCitationFormat || 'all');
@@ -121,18 +120,16 @@
 						class="btn btn-accent"
 						onclick={() =>
 							handleCopyCitation(format.citation, isPlainText ? 'text/plain' : 'text/html', () => {
+								wasCopied = {};
 								wasCopied[format.key] = true;
-								setTimeout(() => {
-									wasCopied[format.key] = false;
-								}, 2000);
 							})}
 					>
+						<BiCopy />
 						{#if wasCopied[format.key]}
-							<BiClipboardCheck class="text-primary-700" />
+							{page.data.t('citations.copied')}
 						{:else}
-							<BiClipboard />
+							{page.data.t('citations.copyToClipboard')}
 						{/if}
-						{page.data.t('citations.copyToClipboard')}
 					</button>
 				</li>
 			{/each}

@@ -251,6 +251,7 @@ export default {
 		createCitation: 'Create citation',
 		selectFormat: 'Select format',
 		allFormats: 'All formats',
-		copyToClipboard: 'Copy to clipboard'
+		copyToClipboard: 'Copy to clipboard',
+		copied: 'Copied!'
 	}
 };
