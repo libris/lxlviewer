@@ -1,4 +1,5 @@
 import type { availableFormats } from '$lib/utils/citation';
+import type { ApiError } from './api';
 
 // full CSL-JSON schema, see
 // https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
@@ -34,6 +35,19 @@ export interface CSLJSON {
 	'publisher-place'?: string;
 	title?: string;
 	type: CSLItemType;
+}
+
+export interface CitationsType {
+	data:
+		| {
+				citation: string;
+				fileFormat?: string;
+				fullName?: string;
+				key: AvailableCitationFormat;
+				name: string;
+		  }[]
+		| undefined;
+	error: ApiError | undefined;
 }
 
 export type AvailableCitationFormat = keyof typeof availableFormats;

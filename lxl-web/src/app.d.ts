@@ -1,7 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-import type { CSLJSON } from '$lib/types/citation';
-import type { ApiError } from '$lib/types/api';
+import type { CitationsType } from '$lib/types/citation';
 import type { MatomoTracker } from '$lib/types/matomo';
 import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
@@ -27,7 +26,7 @@ declare global {
 			expandedInstances?: string[];
 			holdings?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
-			citations?: CSLJSON[] | ApiError;
+			citations?: CitationsType;
 			citationId?: string;
 		}
 		// interface Platform {}
