@@ -1,12 +1,12 @@
 import { getTranslator } from '$lib/i18n/index.js';
 import { getSupportedLocale, initLocalizeHref, baseLocale } from '$lib/i18n/locales';
 
-export async function load({ params, data }) {
+export async function load({ params, data, url }) {
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param
 	const t = await getTranslator(locale);
-	const localizeHref = initLocalizeHref(locale);
+	const localizeHref = initLocalizeHref(locale, url.origin);
 
-	const base = locale === baseLocale ? '/' : `/${locale}/`;
+	const base = locale === baseLocale ? '/' : `/${locale}`;
 	const userSettings = data.userSettings;
 
 	return { locale, t, localizeHref, base, userSettings };
