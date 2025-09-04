@@ -4,11 +4,19 @@
 	import BiPerson from '~icons/bi/person-circle';
 	import BiQuestionCircle from '~icons/bi/question-circle';
 	import { Locales } from '$lib/i18n/locales';
+	import { goto } from '$app/navigation';
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale)
 	);
 	const otherLangLabel = $derived(page.data.t('header.changeLang'));
+
+	function handleChangeLocale(event: MouseEvent) {
+		event.preventDefault();
+		goto((event.currentTarget as HTMLAnchorElement).href, {
+			state: page.state
+		});
+	}
 </script>
 
 <nav class="header-menu py-4 2xl:py-0 [&_a]:no-underline">
@@ -44,6 +52,7 @@
 					locale: otherLangCode
 				})}
 				hreflang={otherLangCode}
+				onclick={handleChangeLocale}
 				data-testid="current-lang"
 			>
 				<BiGlobe />
