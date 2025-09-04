@@ -113,7 +113,7 @@
 	<div class="text-2xs flex min-h-10 items-center gap-2 px-3 sm:px-6 @7xl:min-h-11 @7xl:text-xs">
 		{#if typeof indexOfTotalSearchResults === 'number'}
 			<a
-				href={page.data.localizeHref(relativizeUrl(currentSearchResult['@id']))}
+				href={page.data.localizeHref(relativizeUrl(currentSearchResult['@id']) + `#${fnurgel}`)}
 				class="link whitespace-nowrap"
 			>
 				<span class="@xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>

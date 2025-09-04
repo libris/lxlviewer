@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { onDestroy } from 'svelte';
+	import { goto, onNavigate, replaceState } from '$app/navigation';
 	import type { SearchResultItem } from '$lib/types/search';
 	import { LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
@@ -23,13 +25,14 @@
 		uidPrefix?: string;
 	}
 
+	let articleElement: HTMLElement;
 	let { item, uidPrefix = '' }: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
 	let titleId = $derived(`card-title-${id}`);
 	let bodyId = $derived(`card-body-${id}`);
 	let footerId = $derived(`card-footer-${id}`);
-
+	let showHighlight = $derived(!page.state.dimissedHighlighting && page.url.hash === `#${id}`);
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
 
@@ -44,6 +47,30 @@
 			}
 		});
 	}
+
+	function handleRemoveHighlighting(event: MouseEvent) {
+		if (event.target && !articleElement.contains(event.target as Node)) {
+			document?.removeEventListener('click', handleRemoveHighlighting);
+			replaceState(page.url.pathname + page.url.search + page.url.hash, {
+				...page.state,
+				dimissedHighlighting: true
+			});
+		}
+	}
+
+	$effect(() => {
+		if (showHighlight && page.data.locale) {
+			document?.addEventListener('click', handleRemoveHighlighting);
+		}
+	});
+
+	onDestroy(() => {
+		if (browser) document?.removeEventListener('click', handleRemoveHighlighting);
+	});
+
+	onNavigate(() => {
+		document?.removeEventListener('click', handleRemoveHighlighting);
+	});
 </script>
 
 <!--//TODO: look into using grid template areas + container queries instead
@@ -76,8 +103,13 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 <div class="search-card-container">
 	<article
 		{id}
-		class="search-card border-neutral relative grid w-full gap-x-4 border-t px-0 py-3 font-normal transition-shadow md:px-4"
+		class={[
+			'search-card border-neutral relative grid w-full gap-x-4 border-t px-0 py-3 font-normal transition-colors md:px-4',
+			showHighlight && 'bg-accent-50/75'
+		]}
+		aria-current={showHighlight || undefined}
 		data-testid="search-card"
+		bind:this={articleElement}
 	>
 		<div class="card-image">
 			<a

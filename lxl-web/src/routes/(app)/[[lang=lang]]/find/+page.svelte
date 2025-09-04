@@ -20,7 +20,7 @@
 	<title>{getPageTitle(page.url.searchParams.get('_q')?.trim())}</title>
 </svelte:head>
 {#if searchResult}
-	<div class="search-result flex w-full flex-1">
+	<div class="search-result flex w-full flex-1 [&_[id]]:scroll-mt-11 sm:[&_[id]]:scroll-mt-17">
 		<LeadingPane>
 			<div id="filters" role="tabpanel" aria-labelledby="tab-filters">
 				<Filters facets={searchResult.facetGroups || []} />

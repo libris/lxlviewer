@@ -63,3 +63,36 @@ test('navigation between results also works when changing _limit value', async (
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
 	await expect(page).toHaveURL('/find?_q=f&_offset=8&_limit=2');
 });
+
+test('resource is highlighted when navigating to search results', async ({ page }) => {
+	await page.goto('/find?_q=f&_limit=20');
+	await page.getByRole('main').getByRole('article').nth(3).getByRole('link').first().click();
+	await expect(page).toHaveURL(articleIds[3]);
+	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
+	await expect(page, 'url has resource id as hash').toHaveURL(
+		`/find?_q=f&_limit=20#${articleIds[3]}`
+	);
+	await expect(
+		page.getByRole('article').nth(3),
+		'resource has aria-current attribute'
+	).toHaveAttribute('aria-current', 'true');
+	// Click the top left corner
+	await page.getByRole('main').click({ position: { x: 0, y: 0 }, force: true });
+	await expect(
+		page.getByRole('article').nth(3),
+		'aria-current is dismissable by clicking anywhere'
+	).not.toHaveAttribute('aria-current', 'true');
+	await page.getByRole('main').getByRole('article').nth(3).getByRole('link').first().click();
+	await expect(page).toHaveURL(articleIds[3]);
+	await page.goBack();
+	await expect(page).toHaveURL(`/find?_q=f&_limit=20#${articleIds[3]}`);
+	await expect(
+		page.getByRole('article').nth(3),
+		'aria-current is still dismissed if navigating back to page'
+	).not.toHaveAttribute('aria-current', 'true');
+	await page.reload();
+	await expect(
+		page.getByRole('article').nth(3),
+		'resource has aria-current value if page is reloaded (and hash includes resource id)'
+	).toHaveAttribute('aria-current', 'true');
+});

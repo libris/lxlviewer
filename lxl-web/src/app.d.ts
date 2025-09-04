@@ -26,6 +26,7 @@ declare global {
 			expandedInstances?: string[];
 			holdings?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
+			dimissedHighlighting?: boolean;
 		}
 		// interface Platform {}
 	}
