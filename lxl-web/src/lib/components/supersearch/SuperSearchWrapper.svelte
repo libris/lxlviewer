@@ -3,6 +3,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
+	import { baseLocale } from '$lib/i18n/locales';
 	import QualifierPill from './QualifierPill.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
@@ -58,6 +59,9 @@
 		}, 300);
 	});
 
+	const actionUrl = $derived(
+		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
+	);
 	let cursor = $derived(selection?.head || 0);
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
@@ -179,7 +183,7 @@
 
 <form
 	class={['relative w-full', isFindRoute && 'find-page']}
-	action="find"
+	action={actionUrl}
 	onsubmit={handleSubmit}
 	data-testid="main-search"
 >
