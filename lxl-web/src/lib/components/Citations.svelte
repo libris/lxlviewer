@@ -18,22 +18,12 @@
 	let { citations, id, error }: Props = $props();
 	const userSettings = getUserSettings();
 
-	const plainTextFormats = ['ris', 'bibtex', 'csl'];
 	let wasCopied: Record<string, boolean> = $state({});
-
 	let loading = $state(false);
 	let selectedFormat = $state(userSettings.selectedCitationFormat || 'all');
 
 	let cite: Awaited<ReturnType<typeof initCite>> | null = $state(null);
-
-	let formattedData:
-		| {
-				key: AvailableCitationFormat;
-				name: string;
-				fullName?: string;
-				citation: string;
-		  }[]
-		| undefined = $state();
+	let formattedData: ReturnType<typeof getFormattedData> | undefined = $state();
 
 	const displayedFormats = $derived(
 		formattedData &&
@@ -45,18 +35,22 @@
 	async function load() {
 		if (!error) {
 			loading = true;
-			cite = await initCite();
+			cite = await initCite(page.data.locale);
 			cite.add(citations);
 
 			const availableFormats = getAvailableFormats();
-			formattedData = availableFormats.map((format) => {
-				return {
-					...format,
-					citation: cite?.formatAs(format.key) as string
-				};
-			});
+			formattedData = getFormattedData(availableFormats);
 			loading = false;
 		}
+	}
+
+	function getFormattedData(formats: ReturnType<typeof getAvailableFormats>) {
+		return formats.map((format) => {
+			return {
+				...format,
+				citation: cite?.formatAs(format.key) as string
+			};
+		});
 	}
 
 	function handleChangeFormat(e: Event): void {
@@ -106,16 +100,16 @@
 	<ul class="mt-2 flex flex-col gap-1">
 		{#if displayedFormats && displayedFormats.length}
 			{#each displayedFormats as format (format.key)}
-				{@const isPlainText = plainTextFormats.some((e) => e === format.key)}
+				{@const isFileFormat = !!format?.fileFormat}
 				<li
 					class="bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs"
 				>
 					<h2 class="mb-2 font-medium" id={format.key}>{format.fullName || format.name}</h2>
 					<svelte:element
-						this={isPlainText ? 'pre' : 'p'}
+						this={isFileFormat ? 'pre' : 'p'}
 						class={[
 							'mb-2 block',
-							isPlainText && 'text-2xs overflow-x-scroll [scrollbar-width:thin]'
+							isFileFormat && 'text-2xs overflow-x-scroll [scrollbar-width:thin]'
 						]}
 					>
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
@@ -128,7 +122,7 @@
 							onclick={() =>
 								handleCopyCitation(
 									format.citation,
-									isPlainText ? 'text/plain' : 'text/html',
+									isFileFormat ? 'text/plain' : 'text/html',
 									() => {
 										wasCopied = {};
 										wasCopied[format.key] = true;
@@ -142,11 +136,11 @@
 								{page.data.t('citations.copyToClipboard')}
 							{/if}
 						</button>
-						{#if isPlainText && id}
+						{#if isFileFormat && id}
 							<!-- download button -->
 							<a
 								class="btn btn-accent"
-								download={`${id}.${format.key}`}
+								download={`${id}.${format.fileFormat}`}
 								href={`api/cite?id=${id}&format=${format.key}`}
 							>
 								<BiDownload />

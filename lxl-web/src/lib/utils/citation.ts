@@ -2,13 +2,14 @@ import { Cite, plugins } from '@citation-js/core';
 import { goto, preloadData, pushState } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import type { FramedData } from '$lib/types/xl';
+import type { CSLJSON, AvailableCitationFormat } from '$lib/types/citation';
+import type { LocaleCode } from '$lib/i18n/locales';
 import { centerOnWork } from './centerOnWork';
-import type { AvailableCitationFormat, CSLJSON } from '$lib/types/citation';
 
 export const availableFormats = {
 	chicago: {
 		name: 'Chicago',
-		fullName: 'Chicago 17th edition (author-date)'
+		fullName: 'Chicago (17th edition author-date)'
 	},
 	mla: {
 		name: 'MLA',
@@ -19,14 +20,18 @@ export const availableFormats = {
 		fullName: 'APA (American Psychological Association 7th edition)'
 	},
 	ris: {
-		name: 'RIS' // imported via plugin
+		name: 'RIS',
+		fileFormat: 'ris'
 	},
 	bibtex: {
-		name: 'Bibtex' // imported via plugin
+		name: 'BibTeX',
+		fileFormat: 'bib'
+	},
+	csl: {
+		name: 'CSL',
+		fullName: 'CSL-JSON',
+		fileFormat: 'json'
 	}
-	// csl: {
-	// 	name: 'CSL' // imported via plugin
-	// }
 };
 
 let loaded = false;
@@ -69,18 +74,19 @@ export function cslFromMainEntity(data: FramedData): CSLJSON[] {
 }
 
 // Create a more managable wrapper around citation.js + get some typestafety
-export async function initCite() {
+export async function initCite(locale: LocaleCode) {
 	if (!loaded) {
 		await loadCiteResources();
 	}
 
+	const lang = citationLangFromLocaleCode(locale);
 	const cite = new Cite();
 
 	function add(data: CSLJSON[]) {
 		cite.add(data);
 	}
 
-	function formatAs(name: AvailableCitationFormat | 'csl') {
+	function formatAs(name: AvailableCitationFormat) {
 		switch (name) {
 			case 'csl':
 				return cite.format('data');
@@ -89,11 +95,11 @@ export async function initCite() {
 			case 'bibtex':
 				return cite.format('bibtex');
 			case 'chicago':
-				return cite.format('bibliography', { template: 'chicago', format: 'html' });
+				return cite.format('bibliography', { template: 'chicago', format: 'html', lang });
 			case 'apa':
-				return cite.format('bibliography', { template: 'apa', format: 'html' });
+				return cite.format('bibliography', { template: 'apa', format: 'html', lang });
 			case 'mla':
-				return cite.format('bibliography', { template: 'mla', format: 'html' });
+				return cite.format('bibliography', { template: 'mla', format: 'html', lang });
 			default:
 				console.warn('asked for unavailable format', name);
 				return '-';
@@ -110,7 +116,7 @@ async function loadCiteResources() {
 	await import('@citation-js/plugin-bibtex');
 	await import('@citation-js/plugin-csl');
 
-	const citationStyleResources = {
+	const externalStyleTemplates: Partial<Record<AvailableCitationFormat, string>> = {
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
 		chicago: (await import('$lib/assets/csl/chicago-author-date.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fmodern-language-association
@@ -120,9 +126,13 @@ async function loadCiteResources() {
 	// https://github.com/citation-js/citation-js/tree/main/packages/plugin-csl
 	const config = plugins.config.get('@csl');
 
-	Object.keys(availableFormats).forEach(async (key) => {
-		if (key in citationStyleResources) {
-			config.templates.add(key, citationStyleResources[key]);
+	const sv = (await import('$lib/assets/csl/locales-sv-SE.xml?raw')).default;
+	config.locales.add('sv-SE', sv);
+
+	const formatKeys = Object.keys(availableFormats) as (keyof typeof availableFormats)[];
+	formatKeys.forEach((key) => {
+		if (key in externalStyleTemplates) {
+			config.templates.add(key, externalStyleTemplates[key]);
 		}
 	});
 
@@ -134,7 +144,8 @@ export function getAvailableFormats() {
 		return {
 			key: key as AvailableCitationFormat,
 			name: value.name,
-			fullName: value?.fullName || ''
+			...('fullName' in value && { fullName: value.fullName }),
+			...('fileFormat' in value && { fileFormat: value.fileFormat })
 		};
 	});
 }
@@ -159,5 +170,16 @@ export async function handleClickCite(
 		pushState(href, { ...state, citations: await result.data.citations, citationId: id });
 	} else {
 		goto(href);
+	}
+}
+
+function citationLangFromLocaleCode(locale: LocaleCode) {
+	switch (locale) {
+		case 'sv':
+			return 'sv-SE';
+		case 'en':
+			return 'en-US';
+		default:
+			return 'sv-SE';
 	}
 }

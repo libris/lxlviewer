@@ -25,7 +25,7 @@ export async function GET({ params, url, fetch }) {
 			if (res.ok) {
 				const record = await res.json();
 				const csl = cslFromMainEntity(record.mainEntity);
-				const cite = await initCite();
+				const cite = await initCite(lang);
 				cite.add(csl);
 
 				// return CSL-JSON
