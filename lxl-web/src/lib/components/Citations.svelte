@@ -113,7 +113,7 @@
 								<a
 									class="btn btn-accent"
 									download={`${id}.${format.fileFormat}`}
-									href={`api/cite?id=${id}&format=${format.key}`}
+									href={`/api/${page.data.locale}/cite?id=${id}&format=${format.key}`}
 								>
 									<BiDownload />
 									{page.data.t('citations.saveAsFile')}</a

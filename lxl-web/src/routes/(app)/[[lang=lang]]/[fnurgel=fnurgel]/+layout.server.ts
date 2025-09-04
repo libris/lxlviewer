@@ -6,6 +6,7 @@ import { getAvailableFormats, initCite } from '$lib/utils/citation.js';
 export const load = async ({ url, fetch, params }) => {
 	// makes this load function dependant on 'cite' param change
 	const id = url.searchParams.get('cite');
+	const locale = getSupportedLocale(params?.lang);
 
 	async function getData() {
 		if (id) {
@@ -13,10 +14,9 @@ export const load = async ({ url, fetch, params }) => {
 			let error;
 
 			// fetching the record again via cite api is needed as long as csl mapping depends on computedLabel
-			const res = await fetch(`/api/cite?id=${id}&format=csl`);
+			const res = await fetch(`/api/${locale}/cite?id=${id}&format=csl`);
 			if (res.ok) {
 				const citations: CSLJSON[] = await res.json();
-				const locale = getSupportedLocale(params?.lang);
 				const cite = await initCite(locale);
 				cite.add(citations);
 
@@ -28,6 +28,8 @@ export const load = async ({ url, fetch, params }) => {
 					};
 				});
 			} else {
+				// can't make proper promise rejections work with streamed data,
+				// see https://github.com/sveltejs/kit/issues/9785
 				error = (await res.json()) as ApiError;
 			}
 
