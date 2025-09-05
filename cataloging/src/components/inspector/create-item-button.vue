@@ -60,9 +60,24 @@ export default {
       const fnurgel = locationParts[locationParts.length - 1];
       this.$router.push({ path: `/${fnurgel}` });
     },
-    previewHolding() {
-      this.$store.dispatch('setInsertData', DataUtil.getMergedItems(this.itemData.record, this.itemData.mainEntity, null, this.itemData.quoted));
-      this.$router.push({ path: '/new' });
+    reviewHolding() {
+      const merged = DataUtil.getMergedItems(
+        this.itemData.record,
+        this.itemData.mainEntity,
+        null,
+        this.itemData.quoted
+      );
+
+      this.$store.dispatch('setInsertData', merged);
+
+      this.$router.push({
+        path: '/new',
+        query: {
+          record: JSON.stringify(this.itemData.record),
+          entity: JSON.stringify(this.itemData.mainEntity),
+          quoted: this.itemData.quoted
+        }
+      });
     },
     performItemAction() {
       if (this.hasHolding) {
@@ -92,6 +107,16 @@ export default {
     disabled() {
       return this.inspector && this.inspector.status.isNew;
     },
+    newItemUrl() {
+      return this.$router.resolve({
+        path: '/new',
+        query: {
+          record: JSON.stringify(this.itemData.record),
+          entity: JSON.stringify(this.itemData.mainEntity),
+          quoted: this.itemData.quoted
+        }
+      }).href;
+    }
   },
   components: {
     'rounded-button': RoundedButton,
@@ -120,22 +145,19 @@ export default {
   <div class="CreateItem create-item-button-container">
     <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
     <template v-if="!compact">
-      <button
-        class="btn btn--md CreateItem-btn"
-        v-if="!hasHolding || checkingHolding"
-        @click="previewHolding()"
-        :disabled="disabled"
-        :class=" { 'is-disabled': disabled, 'btn-primary': !disabled } "
-        v-tooltip.top="keyBindText">
-        <i
-          class="fa fa-plus-circle"
-          v-if="!hasHolding && !checkingHolding" />
-        <i
-          class="fa fa-fw fa-circle-o-notch fa-spin"
-          v-if="checkingHolding" />
-        {{ translatePhrase("Add holding") }}
-        <span>({{user.settings.activeSigel}})</span>
-      </button>
+    <a
+      v-if="!hasHolding || checkingHolding"
+      :href="newItemUrl"
+      @click="previewHolding"
+      class="btn btn--md CreateItem-btn"
+      :class="{ 'is-disabled': disabled, 'btn-primary': !disabled }"
+      v-tooltip.top="keyBindText"
+    >
+      <i class="fa fa-plus-circle" v-if="!hasHolding && !checkingHolding" />
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-if="checkingHolding" />
+      {{ translatePhrase("Add holding") }}
+      <span>({{ user.settings.activeSigel }})</span>
+    </a>
       <button
         class="btn btn--md CreateItem-btn"
         v-if="hasHolding"
