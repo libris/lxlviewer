@@ -1,5 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
+import type { CitationsType } from '$lib/types/citation';
 import type { MatomoTracker } from '$lib/types/matomo';
 import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
@@ -27,6 +28,8 @@ declare global {
 			holdings?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
 			dimissedHighlighting?: boolean;
+			citations?: CitationsType;
+			citationId?: string;
 		}
 		// interface Platform {}
 	}

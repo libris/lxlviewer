@@ -245,5 +245,14 @@ export default {
 		leadingPaneTabs: 'Tabs for leading pane',
 		show: 'Show pane',
 		hide: 'Hide pane'
+	},
+	citations: {
+		cite: 'Cite',
+		createCitation: 'Create citation',
+		selectFormat: 'Select format',
+		allFormats: 'All formats',
+		copyToClipboard: 'Copy to clipboard',
+		copied: 'Copied!',
+		saveAsFile: 'Save as file'
 	}
 };

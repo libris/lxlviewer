@@ -10,6 +10,7 @@
 
 <svelte:head>
 	<title>{getPageTitle()}</title>
+	<link rel="unapi-server" type="application/xml" href={`/api/${page.data.locale}/cite`} />
 </svelte:head>
 <AppBar />
 {#if isFindRoute}

@@ -244,5 +244,14 @@ export default {
 		leadingPaneTabs: 'Vänsterpanelsflikar',
 		show: 'Visa sidopanel',
 		hide: 'Dölj sidopanel'
+	},
+	citations: {
+		cite: 'Referera',
+		createCitation: 'Skapa referens',
+		selectFormat: 'Välj format',
+		allFormats: 'Alla format',
+		copyToClipboard: 'Kopiera till urklipp',
+		copied: 'Kopierad!',
+		saveAsFile: 'Spara som fil'
 	}
 };
