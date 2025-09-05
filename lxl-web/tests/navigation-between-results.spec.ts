@@ -25,7 +25,7 @@ test('navigation between results works', async ({ page }) => {
 	await expect(page, 'button for navigating to previous result works').toHaveURL(articleIds[0]);
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
 	await expect(page, 'button for navigating to search results works').toHaveURL(
-		'/find?_q=f&_limit=20'
+		`/find?_q=f&_limit=20#${articleIds[0]}`
 	);
 	await page.getByRole('main').getByRole('article').nth(19).getByRole('link').first().click();
 	await expect(page).toHaveURL(articleIds[19]);
@@ -37,7 +37,7 @@ test('navigation between results works', async ({ page }) => {
 	await expect(
 		page,
 		'button for navigating to search results works when navigating to result which is part of other search results'
-	).toHaveURL('/find?_q=f&_offset=20&_limit=20');
+	).toHaveURL(`/find?_q=f&_offset=20&_limit=20#${articleIds[21]}`);
 	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
 	await expect(page).toHaveURL(articleIds[20]);
 	await page.getByRole('main').getByRole('link').getByText('Föregående').click();
@@ -48,7 +48,7 @@ test('navigation between results works', async ({ page }) => {
 	await expect(
 		page,
 		'button for navigating to search results works when navigating to result which is part of other search results'
-	).toHaveURL('/find?_q=f&_limit=20');
+	).toHaveURL(`/find?_q=f&_limit=20#${articleIds[19]}`);
 });
 
 test('navigation between results also works when changing _limit value', async ({ page }) => {
@@ -61,7 +61,7 @@ test('navigation between results also works when changing _limit value', async (
 	await page.getByRole('main').getByRole('link').getByText('Föregående').click();
 	await expect(page).toHaveURL(articleIds[9]);
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
-	await expect(page).toHaveURL('/find?_q=f&_offset=8&_limit=2');
+	await expect(page).toHaveURL(`/find?_q=f&_offset=8&_limit=2#${articleIds[9]}`);
 });
 
 test('resource is highlighted when navigating to search results', async ({ page }) => {
