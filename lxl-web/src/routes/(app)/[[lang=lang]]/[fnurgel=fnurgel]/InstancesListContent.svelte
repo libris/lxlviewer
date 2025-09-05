@@ -48,7 +48,7 @@
 				<ResourceImage
 					images={page.data.images.filter((i) => i.recordId === id)}
 					alt={page.data.t('general.instanceCover')}
-					type={page.data.type}
+					type={page.data.typeForIcon}
 					loading="lazy"
 					linkToFull
 				/>

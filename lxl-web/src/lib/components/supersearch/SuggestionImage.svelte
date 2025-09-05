@@ -10,7 +10,7 @@
 
 	const { item }: Props = $props();
 
-	const TypeIcon = $derived(getTypeIcon(item['@type']));
+	const TypeIcon = $derived(getTypeIcon(item.typeForIcon));
 </script>
 
 <div class="pointer-events-none relative flex">

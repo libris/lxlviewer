@@ -11,7 +11,7 @@
 
 	let { data, headerClass }: Props = $props();
 
-	const TypeIcon = $derived(getTypeIcon(data['@type']));
+	const TypeIcon = $derived(getTypeIcon(data.typeForIcon));
 </script>
 
 {#snippet image()}
@@ -35,7 +35,7 @@
 					class={[
 						'object-cover',
 						data?.['@type'] === 'Person' ? 'rounded-full' : 'rounded-lg',
-						data?.['@type'] === 'Text' && 'aspect-3/4'
+						(data?.typeForIcon === 'Text' || data?.typeForIcon === 'Literature') && 'aspect-3/4'
 					]}
 				/>
 				<TypeIcon class="absolute text-4xl text-neutral-300" />
@@ -57,7 +57,7 @@
 					<span class="font-medium">
 						{data.typeStr}
 					</span>
-					<span class="hidden has-[+*]:inline">{' · '}</span>
+					<span class="hidden has-[+*]:inline"> · </span>
 				{/if}
 				{#each data['web-card-header-top']?._display as displayObj, index (index)}
 					<span>
