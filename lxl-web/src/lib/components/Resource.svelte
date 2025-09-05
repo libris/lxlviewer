@@ -21,6 +21,7 @@
 		fnurgel: string;
 		uid?: string;
 		type?: string;
+		typeForIcon: string;
 		images: SecureImage[];
 		decoratedTypes: DecoratedData;
 		decoratedHeading: DecoratedData;
@@ -37,6 +38,7 @@
 		fnurgel,
 		uid,
 		type,
+		typeForIcon,
 		images,
 		decoratedTypes,
 		decoratedHeading,
@@ -51,7 +53,7 @@
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
-	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
+	let TypeIcon = $derived(type ? getTypeIcon(typeForIcon) : undefined);
 </script>
 
 {#if adjecentSearchResults}
@@ -79,7 +81,7 @@
 			<div class="sticky top-6 mx-auto @3xl:max-w-xs">
 				<ResourceImage
 					{images}
-					{type}
+					type={typeForIcon}
 					alt={page.data.t('general.latestInstanceCover')}
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
 					linkToFull

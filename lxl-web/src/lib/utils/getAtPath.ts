@@ -10,12 +10,15 @@ function getAtPath(thing, path: Array<string | number | object>, defaultTo = [])
 		if (p == '*') {
 			if (t instanceof Array) {
 				return t.flatMap((o) => getAtPath(o, path.slice(i + 1), []));
+			} else if (t instanceof Object) {
+				return Object.values(t).flatMap((o) => getAtPath(o, path.slice(i + 1), []));
 			} else {
 				return defaultTo;
 			}
 		} else if (typeof p == 'string' || typeof p == 'number') {
 			try {
 				t = t[p];
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (e) {
 				t = defaultTo;
 			}

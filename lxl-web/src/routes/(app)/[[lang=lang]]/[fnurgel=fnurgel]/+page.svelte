@@ -50,6 +50,7 @@
 	<Resource
 		fnurgel={page.params.fnurgel}
 		type={data.type}
+		typeForIcon={data.typeForIcon}
 		images={data.images}
 		decoratedTypes={data.types}
 		decoratedHeading={data.heading}
