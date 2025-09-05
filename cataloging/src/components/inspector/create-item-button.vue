@@ -60,7 +60,7 @@ export default {
       const fnurgel = locationParts[locationParts.length - 1];
       this.$router.push({ path: `/${fnurgel}` });
     },
-    reviewHolding() {
+    previewHolding() {
       const merged = DataUtil.getMergedItems(
         this.itemData.record,
         this.itemData.mainEntity,
@@ -72,11 +72,7 @@ export default {
 
       this.$router.push({
         path: '/new',
-        query: {
-          record: JSON.stringify(this.itemData.record),
-          entity: JSON.stringify(this.itemData.mainEntity),
-          quoted: this.itemData.quoted
-        }
+        query: this.newItemQuery
       });
     },
     performItemAction() {
@@ -107,14 +103,17 @@ export default {
     disabled() {
       return this.inspector && this.inspector.status.isNew;
     },
+    newItemQuery() {
+      return {
+        record: JSON.stringify(this.itemData.record),
+        entity: JSON.stringify(this.itemData.mainEntity),
+        quoted: this.itemData.quoted
+      };
+    },
     newItemUrl() {
       return this.$router.resolve({
         path: '/new',
-        query: {
-          record: JSON.stringify(this.itemData.record),
-          entity: JSON.stringify(this.itemData.mainEntity),
-          quoted: this.itemData.quoted
-        }
+        query: this.newItemQuery
       }).href;
     }
   },
@@ -148,7 +147,7 @@ export default {
     <a
       v-if="!hasHolding || checkingHolding"
       :href="newItemUrl"
-      @click="previewHolding"
+      @click.prevent="previewHolding"
       class="btn btn--md CreateItem-btn"
       :class="{ 'is-disabled': disabled, 'btn-primary': !disabled }"
       v-tooltip.top="keyBindText"
