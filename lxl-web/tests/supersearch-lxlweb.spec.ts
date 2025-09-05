@@ -59,7 +59,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
-	await page.getByRole('combobox').fill('a');
+	await page.getByRole('combobox').fill('Kallocain');
 	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');

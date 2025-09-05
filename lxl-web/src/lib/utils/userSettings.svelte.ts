@@ -4,13 +4,14 @@ import {
 	type LibraryItem,
 	type UserSettings as UserSettingsType
 } from '$lib/types/userSettings';
+import type { AvailableCitationFormat } from '$lib/types/citation';
 
 enum availableSettings {
 	facetSort = 'facetSort',
-
 	myLibraries = 'myLibraries',
 	leadingPane = 'leadingPane',
-	facetExpanded = 'facetExpanded'
+	facetExpanded = 'facetExpanded',
+	selectedCitationFormat = 'selectedCitationFormat'
 }
 
 export class UserSettings {
@@ -90,16 +91,20 @@ export class UserSettings {
 		this.update('leadingPane', leadingPane);
 	}
 
-	get leadingPane() {
-		return this.settings?.leadingPane;
-	}
-
 	saveFacetExpanded(facet: string, value: boolean) {
 		if (facet) {
 			const facetExpanded = { ...this.settings.facetExpanded };
 			facetExpanded[facet] = value ? ExpandedState.OPEN : ExpandedState.CLOSED;
 			this.update('facetExpanded', facetExpanded);
 		}
+	}
+
+	saveSelectedCitationFormat(format: AvailableCitationFormat) {
+		this.update('selectedCitationFormat', format);
+	}
+
+	get leadingPane() {
+		return this.settings?.leadingPane;
 	}
 
 	get myLibraries() {
@@ -112,5 +117,9 @@ export class UserSettings {
 
 	get facetExpanded() {
 		return this.settings?.facetExpanded;
+	}
+
+	get selectedCitationFormat() {
+		return this.settings?.selectedCitationFormat;
 	}
 }

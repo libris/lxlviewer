@@ -1,3 +1,4 @@
+import type { AvailableCitationFormat } from '$lib/types/citation';
 import { JsonLd } from './xl';
 
 export interface LibraryItem {
@@ -25,6 +26,7 @@ export type UserSettings = {
 		width?: number;
 		open?: boolean;
 	};
+	selectedCitationFormat?: AvailableCitationFormat | 'all';
 	debug?: DebugFlags[];
 };
 

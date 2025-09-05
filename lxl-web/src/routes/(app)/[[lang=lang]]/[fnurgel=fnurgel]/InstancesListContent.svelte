@@ -4,6 +4,7 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
@@ -66,6 +67,12 @@
 							? page.data.t('holdings.library')
 							: page.data.t('holdings.libraries')}
 					</a>
+					<a
+						class="link-subtle"
+						href={getCiteLink(page.url, id)}
+						onclick={(event) => handleClickCite(event, page.state, id)}
+						>{page.data.t('citations.createCitation')}</a
+					>
 					<a
 						class="link-subtle"
 						href={getPermalink(page.url, id)}

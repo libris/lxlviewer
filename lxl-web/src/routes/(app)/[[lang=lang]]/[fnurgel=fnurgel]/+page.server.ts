@@ -91,22 +91,8 @@ export const load = async ({ params, locals, fetch }) => {
 		},
 		{}
 	);
-	// TODO: Replace with a custom getProperty method (similar to pickProperty)
-	const instances = jmespath.search(overview, '*[].hasInstance[]');
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
-	const sortedInstances = getSortedInstances([...instances]);
 
 	const tableOfContents: TableOfContentsItem[] = [
-		...(instances.length > 1
-			? [
-					{
-						id: 'editions',
-						label: translate('resource.editions')
-					}
-				]
-			: []),
 		...(relations.length
 			? [
 					{
@@ -120,6 +106,14 @@ export const load = async ({ params, locals, fetch }) => {
 				]
 			: [])
 	];
+
+	// TODO: Replace with a custom getProperty method (similar to pickProperty)
+	const instances = jmespath.search(overview, '*[].hasInstance[]');
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
+	const sortedInstances = getSortedInstances([...instances]);
+
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const holdingsByType = getHoldingsByType(mainEntity);
@@ -130,6 +124,7 @@ export const load = async ({ params, locals, fetch }) => {
 	}
 
 	return {
+		uri: resource['@id'] as string,
 		workFnurgel: getUriSlug(resourceId || undefined),
 		type: mainEntity[JsonLd.TYPE],
 		types: types,

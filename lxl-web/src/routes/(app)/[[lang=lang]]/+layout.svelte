@@ -11,6 +11,7 @@
 <svelte:head>
 	<title>{getPageTitle()}</title>
 	<base href={data.base} />
+	<link rel="unapi-server" type="application/xml" href={`/api/${page.data.locale}/cite`} />
 </svelte:head>
 <AppBar />
 {#if isFindRoute}
