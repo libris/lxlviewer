@@ -5,8 +5,8 @@
 	"private": true,
 	"scripts": {
 		"prebuild-local-packages": "npm run prepare -w codemirror-lang-lxlquery && npm run build -w supersearch",
-		"dev": "npm run prebuild-local-packages && vite dev",
-		"dev:host": "npm run prebuild-local-packages && vite dev --host",
+		"dev": "vite dev",
+		"dev:host": "vite dev --host",
 		"build": "npm run prebuild-local-packages && vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
