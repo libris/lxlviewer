@@ -2,6 +2,8 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { page } from '$app/state';
+	import IconFeedback from '~icons/bi/chat-dots';
+	import IconGoto from '~icons/bi/chevron-right';
 
 	type Props = {
 		offsetHeight?: number | undefined;
@@ -36,29 +38,28 @@
 
 <div
 	aria-label="beta banner"
-	class="beta-banner text-2xs/3.5 bg-warning-300 flex min-h-11 place-content-between items-center gap-3 px-3 py-1 font-medium sm:px-6 md:text-xs"
+	class="beta-banner bg-warning-300 flex min-h-9 place-content-between items-center gap-1.5 px-3 py-1 font-medium"
 	bind:this={bannerElement}
 >
-	<span class="flex flex-1 items-center gap-2">
-		<span
-			class="text-3xs sm:text-2xs rounded-sm bg-black px-1.5 py-0.5 tracking-wide text-white uppercase"
-		>
-			Beta
-		</span>
-		<span class="sm:hidden">
-			{page.data.t('banner.messageMobile')}
-		</span>
-		<span class="hidden sm:inline">
-			{page.data.t('banner.messageDesktop')}
+	<span class="flex flex-1 items-center gap-1.5">
+		<span class="text-3xs rounded-sm bg-black px-1 py-0.5 text-white uppercase">Beta</span>
+		<span class="text-xs/3">
+			<span class="lg:hidden">
+				{page.data.t('banner.messageMobile')}
+			</span>
+			<span class="hidden lg:inline">
+				{page.data.t('banner.messageDesktop')}
+			</span>
 		</span>
 	</span>
-	<a
-		href={page.data.localizeHref?.('/about')}
-		class="link-subtle hidden whitespace-nowrap sm:inline"
-	>
-		{page.data.t('banner.feedback')}
-	</a>
-	<a href="https://libris.kb.se" class="link-subtle whitespace-nowrap">
-		{page.data.t('banner.old')}
-	</a>
+	<span class="flex gap-1.5 text-xs whitespace-nowrap sm:gap-3">
+		<a href={page.data.localizeHref?.('/about')} class="link-subtle hidden items-center sm:flex">
+			<IconFeedback class="mr-1 size-3" />
+			{page.data.t('banner.feedback')}
+		</a>
+		<a href="https://libris.kb.se" class="link-subtle hidden items-center sm:flex">
+			<IconGoto class="mr-0.75 size-3" />
+			{page.data.t('banner.old')}
+		</a>
+	</span>
 </div>

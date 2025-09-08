@@ -228,7 +228,7 @@
 			})}
 				<div
 					class={[
-						'supersearch-input rounded-d border-primary-200 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
+						'supersearch-input rounded-d border-primary-400/50 hover:border-primary-600/50 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
 						isFocusedRow() && [
 							'outline-primary-200 has-focus:border-primary-500 has-focus:outline-4',
 							expanded && 'has-focus:outline-primary-200'
@@ -341,25 +341,6 @@
 <style lang="postcss">
 	@reference "../../../app.css";
 
-	/* search */
-	:global(#supersearch) {
-		display: none;
-		@variant sm {
-			display: block;
-		}
-	}
-
-	:global(.find-page #supersearch) {
-		display: block;
-		padding-bottom: calc(var(--spacing) * 2);
-
-		@variant sm {
-			padding-bottom: 0;
-		}
-	}
-
-	/* dialog */
-
 	:global(.supersearch-dialog) {
 		position: static;
 		height: 100%;
@@ -378,8 +359,8 @@
 
 	:global(.supersearch-dialog-wrapper) {
 		display: grid;
-		grid-template-columns: 1fr minmax(0, 8fr) 1fr;
-		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
+		grid-template-areas: var(--grid-template-areas);
+		grid-template-columns: var(--grid-template-columns);
 		column-gap: calc(var(--spacing) * 8);
 
 		pointer-events: none;
@@ -388,22 +369,13 @@
 		position: fixed;
 
 		@variant sm {
-			grid-template-areas: '. supersearch-content .';
-			padding-inline: calc(var(--spacing) * 3);
+			//padding-inline: calc(var(--spacing) * 3);
 			height: auto;
-		}
-
-		@variant lg {
-			grid-template-columns: 1fr minmax(0, 4fr) 1fr;
-		}
-
-		@variant xl {
-			grid-template-columns: 1fr minmax(0, 3fr) 1fr;
 		}
 	}
 
 	:global(.supersearch-dialog-content) {
-		grid-area: supersearch-content;
+		grid-area: search;
 		background: var(--color-page);
 		pointer-events: auto;
 		max-height: 100vh;
@@ -471,16 +443,19 @@
 	}
 
 	:global(.supersearch-input .cm-line) {
-		padding-left: calc(var(--spacing, 0.25rem) * 12);
+		padding-left: calc(var(--spacing) * 11);
 		min-height: 28px;
 		line-height: 28px;
 		font-size: var(--text-xs);
+		@variant sm {
+			font-size: var(--text-sm);
+		}
 	}
 
 	:global(.supersearch-dialog .supersearch-input .cm-line) {
 		padding-left: 0;
 		@variant sm {
-			padding-left: calc(var(--spacing, 0.25rem) * 12);
+			padding-left: calc(var(--spacing) * 11);
 		}
 	}
 

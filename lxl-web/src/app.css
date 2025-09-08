@@ -44,12 +44,19 @@
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-success: #2ab061;
 
-	--app-bar-height: 71px;
+	--app-bar-height: 52px;
 	--toolbar-height: 48px;
 	--beta-banner-height: 44px;
 
 	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
 	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);
+
+	@variant lg {
+		--app-bar-height: 72px;
+	}
+	@variant 3xl {
+		--app-bar-height: 80px;
+	}
 }
 
 @theme inline {

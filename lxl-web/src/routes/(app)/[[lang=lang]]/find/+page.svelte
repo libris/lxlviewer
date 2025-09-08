@@ -69,7 +69,7 @@
 					<h1 class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar {searchResult} />
 					<SearchResultInfo {searchResult} />
-					<ol class="flex flex-col px-4">
+					<ol class="flex flex-col">
 						{#each searchResult.items as item (item['@id'])}
 							<li>
 								<SearchCard {item} />

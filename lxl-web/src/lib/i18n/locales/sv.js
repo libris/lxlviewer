@@ -3,18 +3,22 @@ export default {
 		searchPlaceholder: 'Titel, författare, ämne med mera'
 	},
 	header: {
+		menu: 'Meny',
 		help: 'Hjälp',
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
+		search: 'Sök',
+		login: 'Logga in',
+		saved: 'Sparat',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
 		openMenu: 'Öppna huvudmeny'
 	},
 	banner: {
-		messageMobile: 'Katalogen kan innehålla inaktuell information.',
+		messageMobile: 'Katalogen kan innehålla inaktuell information',
 		messageDesktop:
-			'Välkommen till nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
+			'Välkommen till nya Libris! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
 		feedback: 'Tyck till',
-		old: 'Gå till libris.kb.se'
+		old: 'Gå till gamla Libris'
 	},
 	about: {
 		pageTitle: 'Om betan'

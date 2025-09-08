@@ -4,18 +4,22 @@ export default {
 		searchPlaceholder: 'Title, author, subject etc'
 	},
 	header: {
+		menu: 'Menu',
 		help: 'Help',
 		myPages: 'My pages',
-		changeLang: 'På svenska',
+		changeLang: 'In Swedish',
+		search: 'Search',
+		login: 'Log in',
+		saved: 'Saved',
 		searchPlaceholder: 'Search for title, author, library, subject...',
 		openMenu: 'Open main menu'
 	},
 	banner: {
-		messageMobile: 'The catalogue may contain outdated information.',
+		messageMobile: 'The catalogue may contain outdated information',
 		messageDesktop:
 			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
-		feedback: 'Share your feedback',
-		old: 'Go to libris.kb.se'
+		feedback: 'Share feedback',
+		old: 'Go to old Libris'
 	},
 	about: {
 		pageTitle: 'About the beta'
