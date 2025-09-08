@@ -29,50 +29,21 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      itemData: {},
-    };
-  },
   emits: ['done'],
   methods: {
     translatePhrase,
-    buildItem() {
-      const embellishedReference = DisplayUtil.getCard(
-        this.mainEntity,
-        this.resources,
-        this.inspector.data.quoted,
-        this.settings,
-      );
-      embellishedReference['@id'] = this.mainEntity['@id'];
-      embellishedReference['@type'] = this.mainEntity['@type']; // fixes broken itemOf chip FIXME: why does getCard drop @type?
-
-      this.itemData = RecordUtil.getItemObject(
-        this.mainEntity['@id'],
-        this.user.getActiveLibraryUri(),
-        embellishedReference,
-      );
-
-      this.$emit('done');
-    },
     gotoHolding() {
       const locationParts = this.holdingId.split('/');
       const fnurgel = locationParts[locationParts.length - 1];
       this.$router.push({ path: `/${fnurgel}` });
     },
     previewHolding() {
-      const merged = DataUtil.getMergedItems(
-        this.itemData.record,
-        this.itemData.mainEntity,
-        null,
-        this.itemData.quoted
-      );
-
-      this.$store.dispatch('setInsertData', merged);
+      const locationParts = this.mainEntity['@id'].split('/');
+      const fnurgel = locationParts[locationParts.length - 1];
 
       this.$router.push({
-        path: '/new',
-        query: this.newItemQuery
+        name: 'NewHolding',
+        params: { fnurgel },
       });
     },
     performItemAction() {
@@ -107,23 +78,18 @@ export default {
       return {
         record: JSON.stringify(this.itemData.record),
         entity: JSON.stringify(this.itemData.mainEntity),
-        quoted: this.itemData.quoted
+        quoted: this.itemData.quoted,
       };
     },
-    newItemUrl() {
+    ewItemUrl() {
       return this.$router.resolve({
         path: '/new',
-        query: this.newItemQuery
+        query: this.newItemQuery,
       }).href;
-    }
+    },
   },
   components: {
     'rounded-button': RoundedButton,
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.buildItem();
-    });
   },
   watch: {
     'inspector.event'(val) {
@@ -144,19 +110,17 @@ export default {
   <div class="CreateItem create-item-button-container">
     <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
     <template v-if="!compact">
-    <a
-      v-if="!hasHolding || checkingHolding"
-      :href="newItemUrl"
-      @click.prevent="previewHolding"
-      class="btn btn--md CreateItem-btn"
-      :class="{ 'is-disabled': disabled, 'btn-primary': !disabled }"
-      v-tooltip.top="keyBindText"
-    >
-      <i class="fa fa-plus-circle" v-if="!hasHolding && !checkingHolding" />
-      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-if="checkingHolding" />
-      {{ translatePhrase("Add holding") }}
-      <span>({{ user.settings.activeSigel }})</span>
-    </a>
+      <a
+        v-if="!hasHolding || checkingHolding"
+        :href="newItemUrl" 
+        class="btn btn--md CreateItem-btn"
+        :class="{ 'is-disabled': disabled, 'btn-primary': !disabled }"
+        v-tooltip.top="keyBindText">
+        <i class="fa fa-plus-circle" v-if="!hasHolding && !checkingHolding" />
+        <i class="fa fa-fw fa-circle-o-notch fa-spin" v-if="checkingHolding" />
+        {{ translatePhrase("Add holding") }}
+        <span>({{ user.settings.activeSigel }})</span>
+      </a>
       <button
         class="btn btn--md CreateItem-btn"
         v-if="hasHolding"
@@ -164,34 +128,27 @@ export default {
         :disabled="disabled"
         @click.prevent="gotoHolding()"
         v-tooltip.top="keyBindText">
-        <i
-          class="fa fa-check-circle"
-          v-if="hasHolding && !checkingHolding" />
+        <i class="fa fa-check-circle" v-if="hasHolding && !checkingHolding" />
         {{ translatePhrase("Show holding") }}
-        <span>({{user.settings.activeSigel}})</span>
+        <span>({{ user.settings.activeSigel }})</span>
       </button>
     </template>
     <template v-if="compact">
-      <rounded-button
-        v-tooltip.top="tooltipText"
-        :icon="hasHolding ? 'check' : 'plus'"
-        :indicator="hasHolding"
-        :label="hasHolding
-          ? `${user.settings.activeSigel} ${translatePhrase('has holding')}`
-          : `${translatePhrase('Add holding for')} ${user.settings.activeSigel}`"
-        @click="performItemAction()" />
+      <rounded-button v-tooltip.top="tooltipText" :icon="hasHolding ? 'check' : 'plus'" :indicator="hasHolding" :label="hasHolding
+        ? `${user.settings.activeSigel} ${translatePhrase('has holding')}`
+        : `${translatePhrase('Add holding for')} ${user.settings.activeSigel}`" @click="performItemAction()" />
     </template>
   </div>
 </template>
 
 <style lang="less">
-
 .CreateItem {
   &-btn {
     box-shadow: none;
     background: @white;
     color: @brand-primary;
     border: 2px solid @brand-primary;
+
     &:hover,
     &:focus,
     &:active,
@@ -200,10 +157,12 @@ export default {
       background: @white;
       color: @btn-primary--hover;
     }
+
     &--hasHolding {
       background: @brand-primary;
       color: @white;
       border: none;
+
       &:hover,
       &:focus,
       &:active,
@@ -225,5 +184,4 @@ export default {
     }
   }
 }
-
 </style>

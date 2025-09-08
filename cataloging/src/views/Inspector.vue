@@ -112,6 +112,25 @@ export default {
       detailedEnrichmentModal.open = false;
       this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
     },
+
+    buildItem() {
+      const embellishedReference = DisplayUtil.getCard(
+        this.mainEntity,
+        this.resources,
+        this.inspector.data.quoted,
+        this.settings,
+      );
+      embellishedReference['@id'] = this.mainEntity['@id'];
+      embellishedReference['@type'] = this.mainEntity['@type'];
+
+      const itemData = RecordUtil.getItemObject(
+        this.mainEntity['@id'],
+        this.user.getActiveLibraryUri(),
+        embellishedReference,
+      );
+
+      this.$store.dispatch('setInsertData', itemData);
+    },
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
       this.$store.dispatch('pushNotification', {
@@ -243,6 +262,10 @@ export default {
       } else {
         console.log('Initializing view for new document');
         this.loadNewDocument();
+      }
+
+      if (this.$route.name === 'Inspector' || this.$route.name === 'NewHolding') {
+        this.loadDocument();
       }
     },
     confirmApplyRecordAsTemplate(detailed = false) {
@@ -465,6 +488,10 @@ export default {
     loadNewDocument() {
       const insertData = this.inspector.insertData;
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: true });
+
+      if (!this.inspector.insertData || Object.keys(this.inspector.insertData).length === 0) {
+        this.buildItem(); // <- move buildItem logic here from create-item-button.vue
+      }
 
       if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
         this.$store.dispatch('removeLoadingIndicator', 'Loading document');
