@@ -60,7 +60,7 @@ export const handle = async ({ event, resolve }) => {
 
 async function loadUtilCached() {
 	if (!utilCache) {
-		utilCache = loadUtil();
+		utilCache = await loadUtil();
 	}
 	return utilCache;
 }
