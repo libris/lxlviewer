@@ -8,6 +8,12 @@ Install dependencies with `npm install` (or `pnpm install` or `yarn`).
 
 Add an `.env` file (see `.env.example` for the required environment variables).
 
+Local packages (`supersearch` and `codemirror-lang-lxlquery`) also needs to be prebuilt, the easiest way is by running:
+
+```bash
+npm run prebuild-local-packages
+```
+
 Start a development server:
 
 ```bash
