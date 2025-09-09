@@ -6,12 +6,6 @@ import trimSiblingWhitespaces from './src/lib/preprocessors/trimSiblingWhitespac
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	// needed to perform $derived computations with streamed data in holdings modal
-	compilerOptions: {
-		experimental: {
-			async: true
-		}
-	},
 	extensions: ['.svelte', '.md'],
 	preprocess: [
 		vitePreprocess(),

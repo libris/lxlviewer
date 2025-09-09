@@ -1,23 +1,23 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
+	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import type { HoldersByType } from '$lib/types/holdings';
+	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
+	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
+	import type { Relation } from '$lib/utils/relations';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
 	import InstancesList from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/InstancesList.svelte';
-	import HoldingsModal from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/HoldingsModal.svelte';
-	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
-	import getTypeIcon from '$lib/utils/getTypeIcon';
-	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
-	import IconArrowRight from '~icons/bi/arrow-right-short';
-	import BiQuote from '~icons/bi/quote';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { HoldersByType } from '$lib/types/holdings';
-	import type { Relation } from '$lib/utils/relations';
-	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
+	import HoldingsModal from '$lib/components/HoldingsModal.svelte';
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
 	import CitationsModal from './CitationsModal.svelte';
+	import IconArrowRight from '~icons/bi/arrow-right-short';
+	import BiQuote from '~icons/bi/quote';
 
 	type Props = {
 		fnurgel: string;

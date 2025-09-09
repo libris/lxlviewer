@@ -105,7 +105,7 @@
 
 	.leading-pane,
 	.leading-pane-toolbar {
-		background: linear-gradient(90deg, var(--color-neutral-50) 95%, var(--color-neutral-100) 100%);
+		background: linear-gradient(90deg, var(--color-aside) 97%, var(--color-neutral-100) 100%);
 	}
 
 	.leading-pane-wrapper {

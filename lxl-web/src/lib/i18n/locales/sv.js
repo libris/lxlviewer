@@ -243,7 +243,9 @@ export default {
 		leadingPane: 'Vänsterpanel',
 		leadingPaneTabs: 'Vänsterpanelsflikar',
 		show: 'Visa sidopanel',
-		hide: 'Dölj sidopanel'
+		hide: 'Dölj sidopanel',
+		trailingPane: 'Högerpanel',
+		resizeMe: 'Dra för att ändra panelens storlek'
 	},
 	citations: {
 		cite: 'Referera',

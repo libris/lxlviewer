@@ -7,13 +7,13 @@
 		ItemLinksByBibId
 	} from '$lib/types/holdings';
 	import isFnurgel from '$lib/utils/isFnurgel';
-	import Holdings from '../../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/Holdings.svelte';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { page } from '$app/state';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
+	import Holdings from '$lib/components/Holdings.svelte';
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import Spinner from '$lib/components/Spinner.svelte';
 
 	type HoldingsModalData = {
 		holdingsByInstanceId: HoldingsByInstanceId;
@@ -31,200 +31,77 @@
 
 	let { holdings }: HoldingsModalProps = $props();
 
-	let _holdings = $derived(await holdings);
-
 	const ASIDE_SEARCH_CARD_MAX_HEIGHT = 140;
 	const userSettings = getUserSettings();
-
-	// let data: HoldingsModalProps | undefined = $state();
-	// let previousURL: URL;
 
 	// we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
 	const holdingUrl = $derived(page.state.holdings || page.url.searchParams.get('holdings') || null);
 
-	// working
-	const selectedHolding = $derived(
-		isFnurgel(holdingUrl || '') ? holdingUrl : (_holdings?.overview as string)
-	);
+	function getSelectedHolding(holdings) {
+		return isFnurgel(holdingUrl || '') ? holdingUrl : (holdings?.overview as string);
+	}
 
 	const latestHoldingUrl = $derived(holdingUrl ? holdingUrl : undefined);
 
-	// not working with promise
-	// NEED
-	let displayedHolders: DecoratedHolder[] = $derived.by(() => {
+	function getDisplayedHolders(holdings, selectedHolding): DecoratedHolder[] {
 		if (
 			latestHoldingUrl &&
 			isFnurgel(latestHoldingUrl) &&
 			selectedHolding &&
-			_holdings?.holdingsByInstanceId?.[selectedHolding]
+			holdings?.holdingsByInstanceId?.[selectedHolding]
 		) {
 			// show holdings for an instance
-			return _holdings?.holdingsByInstanceId[selectedHolding].map((holding) => holding.heldBy);
-		} else if (latestHoldingUrl && _holdings?.holdersByType?.[latestHoldingUrl]) {
+			return holdings?.holdingsByInstanceId[selectedHolding].map((holding) => holding.heldBy);
+		} else if (latestHoldingUrl && holdings?.holdersByType?.[latestHoldingUrl]) {
 			// show holdings by type
-			return _holdings?.holdersByType[latestHoldingUrl];
+			return holdings?.holdersByType[latestHoldingUrl];
 			// } else if (isFnurgel(latestHoldingUrl) && _holdings?.holdersByType) { ????
-		} else if (_holdings?.holdersByType) {
+		} else if (holdings?.holdersByType) {
 			// show all (associated with a work)
 			return [
 				...new Map(
-					Object.values(_holdings.holdersByType)
+					Object.values(holdings.holdersByType)
 						.flat()
 						.map((holder) => [holder.sigel, holder])
 				).values()
 			];
 		} else {
-			console.log('show nothing', _holdings, latestHoldingUrl);
+			console.log('show nothing', holdings, latestHoldingUrl);
 			return [];
 		}
-	});
-
-	// async function getDisplayedHolders(h: HoldingsModalData){
-	//   // let _h = await h;
-	//   let _h = h
-	//   if (
-	//       latestHoldingUrl &&
-	// 			isFnurgel(latestHoldingUrl) &&
-	// 			selectedHolding &&
-	// 			_h?.holdingsByInstanceId?.[selectedHolding]
-	// 		) {
-	// 			// show holdings for an instance
-	// 			return _h?.holdingsByInstanceId[selectedHolding].map(
-	// 				(holding) => holding.heldBy
-	// 			);
-	// 		} else if (latestHoldingUrl && _h?.holdersByType?.[latestHoldingUrl]) {
-	// 			// show holdings by type
-	// 			return _h?.holdersByType[latestHoldingUrl];
-	// 		} else if (_h?.holdersByType) {
-	//       console.log('show all')
-	// 			// show all (associated with a work)
-	// 			return [
-	// 				...new Map(
-	// 					Object.values(_h.holdersByType)
-	// 						.flat()
-	// 						.map((holder) => [holder.sigel, holder])
-	// 				).values()
-	// 			];
-	// 		} else {
-	//       console.log('show nothing', latestHoldingUrl, isFnurgel(latestHoldingUrl), _h?.holdersByType)
-	//       return [];
-	//     }
-	// }
-
-	// const displayedHolders: DecoratedHolder[] = $derived(await getDisplayedHolders(_holdings));
-
-	// $inspect('displayedHolders', displayedHolders);
+	}
 
 	let holdingsInstanceElement: HTMLElement | undefined = $state();
 	let expandedHoldingsInstance = $state(false);
 	let searchPhrase = $state('');
 
-	/// working
-	const selectedHoldingInstance = $derived(
-		selectedHolding
-			? _holdings?.instances?.find((instanceItem) =>
+	function getSelectedHoldingInstance(holdings, selectedHolding) {
+		return selectedHolding
+			? holdings?.instances?.find((instanceItem) =>
 					instanceItem['@id'].includes(selectedHolding)
-				) || _holdings?.overview
-			: undefined
-	);
-
-	// afterNavigate(({ to }) => {
-	// 	if (to) {
-	// 		previousURL = to.url;
-	// 	}
-	// });
+				) || holdings?.overview
+			: undefined;
+	}
 
 	const expandableHoldingsInstance = $derived(
 		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT
 	);
 
-	//TODO: duplicated + not working, is this really needed? Used in the "holding instance summary".
-	// const localizedInstanceTypes = $derived(
-	// 	Object.values(data?.instances).reduce((acc, instanceItem) => {
-	// 		if (instanceItem['@type'] && instanceItem?._label) {
-	// 			return {
-	// 				...acc,
-	// 				[instanceItem['@type'] as string]: instanceItem._label
-	// 			};
-	// 		}
-	// 		return acc;
-	// 	}, {})
-	// );
-
-	// NEED
-	const filteredHolders = $derived(
-		displayedHolders
+	function getFilteredHolders(displayedHolders) {
+		return displayedHolders
 			.filter((holder) => {
 				return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
 			})
-			.filter((h) => h.str)
-	);
+			.filter((h) => h.str);
+	}
 
-	// NEED
-	const myLibsHolders = $derived(
-		displayedHolders.filter((holder) => {
+	function getMylibsHolders(displayedHolders) {
+		return displayedHolders.filter((holder) => {
 			if (userSettings.myLibraries) {
 				return Object.values(userSettings.myLibraries).some((lib) => lib.sigel === holder.sigel);
 			} else return false;
-		})
-	);
-
-	// onMount(async () => {
-	// 	getDataForWork();
-	// });
-
-	// $effect(() => {
-	// 	getDataForWork();
-	// });
-
-	// function getDataForWork() {
-	// 	if (workFnurgel) {
-	// 		loading = true;
-	// 		fetch(`/api/holdings/${workFnurgel}`).then((res) => {
-	// 			res.json().then((d) => {
-	// 				data = d;
-	// 				loading = false;
-	// 			});
-	// 		});
-	// 	}
-	// }
-
-	// $effect(() => {
-	// 	if (holdingUrl) {
-	// 		selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : (holdings?.overview as string);
-	// 		latestHoldingUrl = holdingUrl;
-	// 	}
-	// });
-
-	// $effect(() => {
-	// if (latestHoldingUrl) {
-	// 	if (
-	// 		isFnurgel(latestHoldingUrl) &&
-	// 		selectedHolding &&
-	// 		holdings?.holdingsByInstanceId?.[selectedHolding]
-	// 	) {
-	// 		// show holdings for an instance
-	// 		displayedHolders = holdings?.holdingsByInstanceId[selectedHolding].map(
-	// 			(holding) => holding.heldBy
-	// 		);
-	// 	} else if (holdings?.holdersByType?.[latestHoldingUrl]) {
-	// 		// show holdings by type
-	// 		displayedHolders = holdings?.holdersByType[latestHoldingUrl];
-	// 	} else if (isFnurgel(latestHoldingUrl) && holdings?.holdersByType) {
-	//     console.log('show all')
-	// 		// show all (associated with a work)
-	// 		displayedHolders = [
-	// 			...new Map(
-	// 				Object.values(holdings.holdersByType)
-	// 					.flat()
-	// 					.map((holder) => [holder.sigel, holder])
-	// 			).values()
-	// 		];
-	// 	} else {
-	//     console.log('show nothing', holdings.holdersByType, latestHoldingUrl)
-	//   }
-	// }
-	// });
+		});
+	}
 </script>
 
 {#await holdings}
@@ -233,8 +110,12 @@
 			<Spinner />
 		</span>
 	</div>
-{:then data}
-	{console.log('DATA', data)}
+{:then holdings}
+	{@const selectedHolding = getSelectedHolding(holdings)}
+	{@const selectedHoldingInstance = getSelectedHoldingInstance(holdings, selectedHolding)}
+	{@const displayedHolders = getDisplayedHolders(holdings, selectedHolding)}
+	{@const filteredHolders = getFilteredHolders(displayedHolders)}
+	{@const myLibsHolders = getMylibsHolders(displayedHolders)}
 	<!-- {holdings = data} -->
 	<div class="flex flex-col px-4 py-2 text-sm">
 		<div
@@ -251,14 +132,14 @@
 				<h2 class="mb-2">
 					<span class="font-medium">
 						<DecoratedData
-							data={data?.title}
+							data={holdings?.title}
 							block
 							keyed={false}
 							allowPopovers={false}
 							allowLinks={false}
 						/>
 					</span>
-					{#if selectedHolding && data?.instances?.length !== 1}
+					{#if selectedHolding && holdings?.instances?.length !== 1}
 						<span> · </span>
 						{#if isFnurgel(selectedHolding)}
 							{selectedHoldingInstance?.['_label']}
@@ -289,14 +170,14 @@
 		<div>
 			<h2 class="font-medium">
 				{page.data.t('holdings.availableAt')}
-				{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && data?.holdingsByInstanceId[latestHoldingUrl]}
-					{data?.holdingsByInstanceId[latestHoldingUrl].length}
-					{data?.holdingsByInstanceId[latestHoldingUrl].length === 1
+				{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && holdings?.holdingsByInstanceId[latestHoldingUrl]}
+					{holdings?.holdingsByInstanceId[latestHoldingUrl].length}
+					{holdings?.holdingsByInstanceId[latestHoldingUrl].length === 1
 						? page.data.t('holdings.library')
 						: page.data.t('holdings.libraries')}
-				{:else if latestHoldingUrl && data?.holdersByType?.[latestHoldingUrl]}
-					{data?.holdersByType[latestHoldingUrl].length}
-					{data?.holdersByType[latestHoldingUrl].length === 1
+				{:else if latestHoldingUrl && holdings?.holdersByType?.[latestHoldingUrl]}
+					{holdings?.holdersByType[latestHoldingUrl].length}
+					{holdings?.holdersByType[latestHoldingUrl].length === 1
 						? page.data.t('holdings.library')
 						: page.data.t('holdings.libraries')}
 				{/if}
@@ -315,8 +196,8 @@
 							<Holdings
 								{holder}
 								{holdingUrl}
-								linksByBibId={data?.itemLinksByBibId}
-								bibIdsByInstanceId={data?.bibIdsByInstanceId}
+								linksByBibId={holdings?.itemLinksByBibId}
+								bibIdsByInstanceId={holdings?.bibIdsByInstanceId}
 							/>
 						{/each}
 					</ul>
@@ -337,8 +218,8 @@
 					<Holdings
 						{holder}
 						{holdingUrl}
-						linksByBibId={data?.itemLinksByBibId}
-						bibIdsByInstanceId={data?.bibIdsByInstanceId}
+						linksByBibId={holdings?.itemLinksByBibId}
+						bibIdsByInstanceId={holdings?.bibIdsByInstanceId}
 					/>
 				{/each}
 				{#if filteredHolders.length === 0}
@@ -349,6 +230,8 @@
 			</ul>
 		</div>
 	</div>
+{:catch err}
+	<p>{err}</p>
 {/await}
 
 <style>

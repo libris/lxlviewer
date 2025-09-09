@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { fade } from 'svelte/transition';
 	import type { BibIdObj, DecoratedHolder, ItemLinksByBibId } from '$lib/types/holdings';
 	import { BibDb } from '$lib/types/xl';
@@ -75,7 +76,7 @@
 	async function fetchHoldingStatus(ids: BibIdObj[]) {
 		const promises = ids.map((id) => {
 			if (id) {
-				const searchParams = new URLSearchParams();
+				const searchParams = new SvelteURLSearchParams();
 				searchParams.set('bib_id', id.bibId);
 				searchParams.set('sigel', sigel);
 				if (id.onr) {

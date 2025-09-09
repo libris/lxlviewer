@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { SearchResult } from '$lib/types/search';
 	import getPageTitle from '$lib/utils/getPageTitle';
+	import SiteFooter from '../SiteFooter.svelte';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import LeadingPane from '$lib/components/find/LeadingPane.svelte';
 	import Filters from '$lib/components/find/Filters.svelte';
 	import SearchResultToolbar from '$lib/components/find/SearchResultToolbar.svelte';
 	import SearchResultInfo from '$lib/components/find/SearchResultInfo.svelte';
 	import SearchCard from '$lib/components/find/SearchCard.svelte';
-	import TrailingPanes from '$lib/components/find/TrailingPanes.svelte';
+	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Pagination from '$lib/components/find/Pagination.svelte';
-	import SiteFooter from '../SiteFooter.svelte';
-	import HoldingsList from '$lib/components/supersearch/HoldingsList.svelte';
-	import { goto } from '$app/navigation';
-	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import HoldingsList from '$lib/components/HoldingsList.svelte';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const holdings = $derived(page.data.holdings);
@@ -82,19 +82,12 @@
 			</svelte:boundary>
 			</Modal> -->
 
-			<TrailingPanes close={handleCloseHoldings}>
+			<TrailingPane close={handleCloseHoldings}>
 				{#snippet title()}
 					{page.data.t('holdings.findAtYourNearestLibrary')}
 				{/snippet}
-				<!-- https://github.com/sveltejs/svelte/discussions/15845#discussioncomment-13766810 -->
-				<!-- this component can use await in the script -->
-				<svelte:boundary>
-					<HoldingsList {holdings} />
-					{#snippet pending()}
-						<p>loading...</p>
-					{/snippet}
-				</svelte:boundary>
-			</TrailingPanes>
+				<HoldingsList {holdings} />
+			</TrailingPane>
 		{/if}
 	</div>
 {/if}

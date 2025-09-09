@@ -7,6 +7,7 @@
 		ItemLinksByBibId
 	} from '$lib/types/holdings';
 	import { onMount } from 'svelte';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import Holdings from './Holdings.svelte';
 	import Modal from '$lib/components/Modal.svelte';
@@ -154,7 +155,9 @@
 		if (!previousURL?.searchParams.has('holdings')) {
 			history.back();
 		} else {
-			const newSearchParams = new URLSearchParams([...Array.from(page.url.searchParams.entries())]);
+			const newSearchParams = new SvelteURLSearchParams([
+				...Array.from(page.url.searchParams.entries())
+			]);
 			newSearchParams.delete('holdings');
 			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
 		}

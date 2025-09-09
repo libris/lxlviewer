@@ -30,10 +30,10 @@
 </script>
 
 <section
-	aria-label={page.data.t('panes.leadingPane')}
-	id="leading-pane"
+	aria-label={page.data.t('panes.trailingPane')}
+	id="trailing-pane"
 	class={[
-		'leading-pane relative hidden w-0 border-b border-b-neutral-200 sm:block',
+		'trailing-pane relative hidden w-0 border-b border-b-neutral-200 sm:block',
 		// Enable transition for the collapse animation. But disable it while resizing the panel!
 		!isDragging && 'transition-[padding] duration-150 ease-in motion-reduce:transition-none'
 	]}
@@ -41,12 +41,12 @@
 >
 	<div
 		class={[
-			'leading-pane-wrapper sticky top-0',
+			'trailing-pane-wrapper sticky top-0',
 			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none'
 		]}
 		style="width:{paneWidth}px"
 	>
-		<div class="leading-pane-toolbar">
+		<div class="trailing-pane-toolbar">
 			<Toolbar>
 				{#snippet leadingActions()}
 					<p class="text-xs">
@@ -60,7 +60,7 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div class="leading-pane-content mr-1.5 pt-2 pb-6">
+		<div class="trailing-pane-content mr-1.5 pt-2 pb-6">
 			{@render children?.()}
 		</div>
 	</div>
@@ -80,18 +80,18 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	.leading-pane,
-	.leading-pane-toolbar {
-		background: linear-gradient(90deg, var(--color-neutral-50) 95%, var(--color-neutral-100) 100%);
+	.trailing-pane,
+	.trailing-pane-toolbar {
+		background: linear-gradient(90deg, var(--color-neutral-100) 0%, var(--color-aside) 10px);
 	}
 
-	.leading-pane-wrapper {
+	.trailing-pane-wrapper {
 		@variant sm {
 			top: var(--app-bar-height);
 		}
 	}
 
-	.leading-pane-content {
+	.trailing-pane-content {
 		max-height: calc(100vh - var(--app-bar-height) - var(--toolbar-height));
 		overflow-y: auto;
 		scrollbar-width: thin;
