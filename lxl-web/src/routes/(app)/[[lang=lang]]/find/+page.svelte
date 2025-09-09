@@ -39,13 +39,13 @@
 	<title>{getPageTitle(page.url.searchParams.get('_q')?.trim())}</title>
 </svelte:head>
 {#if searchResult}
-	<div class="search-result flex w-full flex-1 [&_[id]]:scroll-mt-18 sm:[&_[id]]:scroll-mt-32">
+	<div class={['search-result flex w-full flex-1 [&_[id]]:scroll-mt-18 sm:[&_[id]]:scroll-mt-32', holdings && 'has-trailing-pane']}>
 		<LeadingPane>
 			<div id="filters" role="tabpanel" aria-labelledby="tab-filters">
 				<Filters facets={searchResult.facetGroups || []} />
 			</div>
 		</LeadingPane>
-		<div class="@container/content flex flex-1 flex-col">
+		<div class="search-result-content @container/content flex flex-1 flex-col">
 			<div class="flex flex-1 flex-col @5xl/content:flex-row">
 				<main class="flex-1">
 					<h1 class="sr-only">{page.data.t('search.searchResults')}</h1>
@@ -60,7 +60,7 @@
 					</ol>
 					<Pagination data={searchResult} />
 				</main>
-				<aside class="min-w-[300px]">
+				<aside class="search-result-aside min-w-[300px]">
 					<div class="hidden @5xl/content:block">
 						<Toolbar />
 					</div>
@@ -95,5 +95,21 @@
 <style>
 	.aside-content {
 		top: calc(var(--app-bar-height) + (var(--spacing) * 4));
+	}
+
+	.search-result {
+		max-height: calc(100vh - (var(--app-bar-height) + var(--beta-banner-height)));
+		overflow: hidden;
+
+		& .search-result-content {
+			overflow-y: auto;
+			scrollbar-width: thin;
+		}
+	}
+
+	.search-result.has-trailing-pane {
+		& aside {
+			display: none;
+		}
 	}
 </style>

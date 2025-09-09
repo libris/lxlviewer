@@ -41,7 +41,7 @@
 >
 	<div
 		class={[
-			'trailing-pane-wrapper sticky top-0',
+			'trailing-pane-wrapper',
 			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none'
 		]}
 		style="width:{paneWidth}px"
