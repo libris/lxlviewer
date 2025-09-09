@@ -278,6 +278,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 </div>
 
 <style lang="postcss">
+	@reference 'tailwindcss';
+
 	.search-card {
 		grid-template-areas:
 			'image content'

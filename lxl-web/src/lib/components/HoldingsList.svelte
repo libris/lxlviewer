@@ -105,7 +105,7 @@
 </script>
 
 {#await holdings}
-	<div class="flex h-screen items-center justify-center">
+	<div class="m-6 flex h-full items-center justify-center">
 		<span class="size-6">
 			<Spinner />
 		</span>
