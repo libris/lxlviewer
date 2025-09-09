@@ -1,6 +1,7 @@
 import js from "@eslint/js";
 import globals from "globals";
 import pluginVue from "eslint-plugin-vue";
+import pluginCypress from 'eslint-plugin-cypress';
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
@@ -58,6 +59,7 @@ export default defineConfig([
     }
   },
   pluginVue.configs["flat/essential"],
+  pluginCypress.configs.recommended
 ]);
 
 
