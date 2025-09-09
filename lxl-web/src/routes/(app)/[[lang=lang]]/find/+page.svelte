@@ -72,16 +72,6 @@
 		<!-- <HoldingsModal workFnurgel={page.state.holdings || page.url.searchParams.get('holdings')}
 		></HoldingsModal> -->
 		{#if holdings}
-			<!-- <Modal close={handleCloseHoldings}>
-			<span slot="title">{page.data.t('holdings.findAtYourNearestLibrary')}</span> -->
-			<!-- <svelte:boundary>
-				<HoldingsList {holdings} />
-				{#snippet pending()}
-					<p>loading...</p>
-				{/snippet}
-			</svelte:boundary>
-			</Modal> -->
-
 			<TrailingPane close={handleCloseHoldings}>
 				{#snippet title()}
 					{page.data.t('holdings.findAtYourNearestLibrary')}

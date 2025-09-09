@@ -54,7 +54,11 @@
 					</p>
 				{/snippet}
 				{#snippet trailingActions()}
-					<button class="btn my-2" aria-label={page.data.t('panes.hide')} onclick={close}>
+					<button
+						class="btn btn-primary my-2 border-0"
+						aria-label={page.data.t('panes.hide')}
+						onclick={close}
+					>
 						<BiXLg class="size-4" />
 					</button>
 				{/snippet}

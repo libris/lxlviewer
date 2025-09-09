@@ -63,7 +63,7 @@
 </script>
 
 <li class="border-neutral text-sm not-last:border-b">
-	<h2 class="mt-4 mb-2 line-clamp-2 text-base font-medium">
+	<h2 class="mt-4 mb-2 line-clamp-2 font-medium">
 		<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
 	</h2>
 	<div class="">
