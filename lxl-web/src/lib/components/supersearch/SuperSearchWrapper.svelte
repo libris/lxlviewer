@@ -300,7 +300,11 @@
 					<div role="rowgroup" aria-labelledby="supersearch-results-label">
 						{#if showQuerySuggestion}
 							<div role="row">
-								<QuerySuggestion isFocusedCell={isFocusedCell(1, 0)} cellId={getCellId(1, 0)} />
+								<QuerySuggestion
+									query={q}
+									isFocusedCell={isFocusedCell(1, 0)}
+									cellId={getCellId(1, 0)}
+								/>
 							</div>
 						{/if}
 						{@render resultsSnippet({

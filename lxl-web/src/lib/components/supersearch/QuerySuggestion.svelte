@@ -6,15 +6,21 @@
 	import { page } from '$app/state';
 
 	type Props = {
+		query: string;
 		cellId: string | undefined;
 		isFocusedCell: boolean;
 	};
 
-	const { cellId, isFocusedCell }: Props = $props();
+	const { query, cellId, isFocusedCell }: Props = $props();
 </script>
 
 <div class="suggestion flex h-14 w-full items-stretch">
-	<a href="#" id={cellId} class:focused-cell={isFocusedCell} class=" border-neutral border-b">
+	<a
+		href={`find?_q=${query}`}
+		id={cellId}
+		class:focused-cell={isFocusedCell}
+		class=" border-neutral border-b"
+	>
 		<span
 			class="text-subtle order-1 ml-auto hidden items-center rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline-flex"
 		>
