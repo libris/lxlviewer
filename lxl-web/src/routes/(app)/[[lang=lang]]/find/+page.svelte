@@ -75,8 +75,8 @@
 				{#snippet title()}
 					{page.data.t('holdings.findAtYourNearestLibrary')}
 				{/snippet}
-				<div class="p-4">
-					<HoldingsContent {holdings} />
+				<div class="px-4">
+					<HoldingsContent {holdings} showSummary={false} />
 				</div>
 			</TrailingPane>
 		{/if}

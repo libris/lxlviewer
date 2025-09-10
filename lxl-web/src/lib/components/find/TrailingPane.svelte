@@ -64,7 +64,7 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div class="trailing-pane-content mr-1.5 pt-2 pb-6">
+		<div class="trailing-pane-content">
 			{@render children?.()}
 		</div>
 	</div>

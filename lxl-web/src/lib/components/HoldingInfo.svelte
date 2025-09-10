@@ -6,7 +6,6 @@
 	import { BibDb } from '$lib/types/xl';
 	import type { HoldingStatus } from '$lib/types/api';
 	import BiChevronRight from '~icons/bi/chevron-right';
-	import BiChevronDown from '~icons/bi/chevron-down';
 	import Spinner from '$lib/components/Spinner.svelte';
 
 	type HoldingInfoProps = {
@@ -151,19 +150,14 @@
 		{#if hasStatusLink(id.bibId)}
 			<button onclick={holdingStatusClicked}>
 				<div class="text-subtle link-subtle flex cursor-pointer items-baseline">
-					{#if !expandedHoldingAvailability}
-						<span
-							class="text-3xs arrow text-subtle mr-0.5 h-3 origin-center rotate-0 transition-transform"
-						>
-							<BiChevronRight />
-						</span>
-					{:else}
-						<span
-							class="text-3xs arrow text-subtle mr-0.5 h-3 origin-center rotate-0 transition-transform"
-						>
-							<BiChevronDown />
-						</span>
-					{/if}
+					<span
+						class={[
+							'text-3xs arrow text-subtle mr-0.5 h-3 origin-center rotate-0 transition-transform',
+							expandedHoldingAvailability && 'rotate-90'
+						]}
+					>
+						<BiChevronRight />
+					</span>
 					{page.data.t('holdings.loanStatus')}
 				</div>
 			</button>
