@@ -46,7 +46,6 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 
 	const superSearchResult: SuperSearchResult = {
-		'@id': data['@id'],
 		...searchResult,
 		items: searchResult.items?.map((item, index) => {
 			return {
