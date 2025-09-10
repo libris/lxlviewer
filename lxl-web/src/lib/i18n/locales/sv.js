@@ -138,7 +138,7 @@ export default {
 		showAll: 'Visa alla träffar',
 		searchQueryType: 'Sökfråga',
 		useSearchQuery: 'Använd sökfråga',
-		querySuggestions: 'Förslag på sökfrågor'
+		querySuggestions: 'Förslag på sökfråga'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

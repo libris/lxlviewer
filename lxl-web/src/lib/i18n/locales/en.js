@@ -139,7 +139,7 @@ export default {
 		showAll: 'Show all results',
 		searchQueryType: 'Search query',
 		useSearchQuery: 'Use search query',
-		querySuggestions: 'Search query suggestions'
+		querySuggestions: 'Query suggestion'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
