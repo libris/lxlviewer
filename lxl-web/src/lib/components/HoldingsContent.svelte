@@ -155,7 +155,7 @@
 				>
 			</div>
 		{/if}
-		<h2 class="my-2 text-xs font-medium">
+		<h2 class="my-4 text-xs font-medium">
 			{page.data.t('holdings.availableAt')}
 			{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && holdings?.holdingsByInstanceId[latestHoldingUrl]}
 				{holdings?.holdingsByInstanceId[latestHoldingUrl].length}
@@ -171,7 +171,7 @@
 		</h2>
 		<!-- my libraries holdings -->
 		{#if myLibsHolders.length}
-			<div class="border-neutral bg-accent-50 rounded-sm border-b p-4 pb-0">
+			<div class="border-neutral bg-accent-50 mb-4 rounded-sm border-b p-4 pb-0">
 				<h3 class="flex items-center gap-2">
 					<span aria-hidden="true" class="text-primary-700 text-base">
 						<BiHouseHeart />
@@ -191,7 +191,7 @@
 			</div>
 		{/if}
 		<!-- search -->
-		<div class="relative my-2">
+		<div class="relative">
 			<input
 				bind:value={searchPhrase}
 				placeholder={page.data.t('holdings.findLibrary')}
