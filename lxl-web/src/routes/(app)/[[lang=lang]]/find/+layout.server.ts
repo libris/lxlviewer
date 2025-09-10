@@ -1,3 +1,4 @@
+import type { HoldingsData } from '$lib/types/holdings.js';
 import { redirect } from '@sveltejs/kit';
 
 export const load = async ({ url, fetch }) => {
@@ -10,7 +11,7 @@ export const load = async ({ url, fetch }) => {
 
 	const holdingParam = url.searchParams.get('holdings');
 
-	async function getHoldings(param: string) {
+	async function getHoldings(param: string): Promise<HoldingsData> {
 		const res = await fetch(`/api/holdings/${param}`);
 		const holdings = await res.json();
 		return holdings;

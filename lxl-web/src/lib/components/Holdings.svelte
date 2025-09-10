@@ -10,7 +10,7 @@
 
 	type HoldingsProps = {
 		holder: DecoratedHolder;
-		holdingUrl: string;
+		holdingUrl: string | null;
 		linksByBibId: ItemLinksByBibId;
 		bibIdsByInstanceId: Record<string, BibIdObj>;
 	};
@@ -22,9 +22,9 @@
 	// if holdingUrl is an instance fnurgel, add its mapped bibId object into arr,
 	// else add all ids of current type with holdings for current sigel
 	const bibIds = $derived.by(() => {
-		if (bibIdsByInstanceId?.[holdingUrl]) {
+		if (holdingUrl && bibIdsByInstanceId?.[holdingUrl]) {
 			return [bibIdsByInstanceId[holdingUrl]];
-		} else if (!isFnurgel(holdingUrl)) {
+		} else if (holdingUrl && !isFnurgel(holdingUrl)) {
 			// holdingUrl is type
 			return Object.keys(bibIdsByInstanceId)
 				.filter((i) => bibIdsByInstanceId[i]['@type'] === holdingUrl)
@@ -90,7 +90,7 @@
 		{/if}
 		<ul>
 			{#if bibIds.at(0) && missingAtLeastOneLinkToItem()}
-				{@const firstBibId = bibIds.at(0).bibId}
+				{@const firstBibId = bibIds[0]?.bibId}
 				<li>
 					{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.LinksToCatalog]}
 						<a
@@ -124,7 +124,7 @@
 			<div class="border-neutral bg-page my-3 max-w-md rounded-sm border p-2">
 				<span>
 					{#if bibIds.at(0)}
-						{@const firstBibId = bibIds.at(0).bibId}
+						{@const firstBibId = bibIds[0]?.bibId}
 						<ul style="white-space: pre-line">
 							{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.OpeningHours]}
 								<li>

@@ -42,3 +42,13 @@ export type ItemLinksForHolder = {
 export type ItemLinksByBibId = {
 	[id: string]: ItemLinksForHolder;
 };
+
+export type HoldingsData = {
+	bibIdsByInstanceId: Record<string, BibIdObj>;
+	holdingsByInstanceId: HoldingsByInstanceId;
+	itemLinksByBibId: ItemLinksByBibId;
+	holdersByType?: HoldersByType;
+	overview: unknown;
+	instances: Record<string, unknown>[];
+	title: string;
+};

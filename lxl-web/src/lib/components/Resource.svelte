@@ -12,10 +12,8 @@
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
 	import InstancesList from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/InstancesList.svelte';
-	import HoldingsModal from '$lib/components/HoldingsModal.svelte';
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
-	import CitationsModal from './CitationsModal.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import BiQuote from '~icons/bi/quote';
 
@@ -198,8 +196,6 @@
 		</div>
 	</div>
 </article>
-<HoldingsModal workFnurgel={fnurgel} />
-<CitationsModal />
 
 <style lang="postcss">
 	@reference 'tailwindcss';

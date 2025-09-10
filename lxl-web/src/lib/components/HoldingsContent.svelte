@@ -1,11 +1,5 @@
 <script lang="ts">
-	import type {
-		BibIdObj,
-		DecoratedHolder,
-		HoldersByType,
-		HoldingsByInstanceId,
-		ItemLinksByBibId
-	} from '$lib/types/holdings';
+	import type { DecoratedHolder, HoldingsData } from '$lib/types/holdings';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
@@ -15,35 +9,34 @@
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
 
-	type HoldingsModalData = {
-		holdingsByInstanceId: HoldingsByInstanceId;
-		itemLinksByBibId: ItemLinksByBibId;
-		instances: unknown;
-		title: unknown;
-		overview: unknown;
-		holdersByType?: HoldersByType;
-		bibIdsByInstanceId: Record<string, BibIdObj>;
-	};
+	type Props = { holdings: Promise<HoldingsData> | HoldingsData };
 
-	type HoldingsModalProps = {
-		holdings: Promise<HoldingsModalData>;
-	};
-
-	let { holdings }: HoldingsModalProps = $props();
+	let { holdings }: Props = $props();
 
 	const ASIDE_SEARCH_CARD_MAX_HEIGHT = 140;
 	const userSettings = getUserSettings();
 
-	// we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
-	const holdingUrl = $derived(page.state.holdings || page.url.searchParams.get('holdings') || null);
+	let holdingsInstanceElement: HTMLElement | undefined = $state();
+	let expandedHoldingsInstance = $state(false);
+	let searchPhrase = $state('');
 
-	function getSelectedHolding(holdings) {
+	// we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
+	const holdingUrl = $derived(page.state.holdings || page.url.searchParams.get('holdings'));
+	const latestHoldingUrl = $derived(holdingUrl ? holdingUrl : undefined);
+
+	const expandableHoldingsInstance = $derived(
+		holdingsInstanceElement?.scrollHeight &&
+			holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT
+	);
+
+	function getSelectedHolding(holdings: HoldingsData) {
 		return isFnurgel(holdingUrl || '') ? holdingUrl : (holdings?.overview as string);
 	}
 
-	const latestHoldingUrl = $derived(holdingUrl ? holdingUrl : undefined);
-
-	function getDisplayedHolders(holdings, selectedHolding): DecoratedHolder[] {
+	function getDisplayedHolders(
+		holdings: HoldingsData,
+		selectedHolding: string | null
+	): DecoratedHolder[] {
 		if (
 			latestHoldingUrl &&
 			isFnurgel(latestHoldingUrl) &&
@@ -71,23 +64,15 @@
 		}
 	}
 
-	let holdingsInstanceElement: HTMLElement | undefined = $state();
-	let expandedHoldingsInstance = $state(false);
-	let searchPhrase = $state('');
-
-	function getSelectedHoldingInstance(holdings, selectedHolding) {
+	function getSelectedHoldingInstance(holdings: HoldingsData, selectedHolding: string | null) {
 		return selectedHolding
 			? holdings?.instances?.find((instanceItem) =>
-					instanceItem['@id'].includes(selectedHolding)
+					(instanceItem?.['@id'] as string).includes(selectedHolding)
 				) || holdings?.overview
 			: undefined;
 	}
 
-	const expandableHoldingsInstance = $derived(
-		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT
-	);
-
-	function getFilteredHolders(displayedHolders) {
+	function getFilteredHolders(displayedHolders: DecoratedHolder[]) {
 		return displayedHolders
 			.filter((holder) => {
 				return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
@@ -95,7 +80,7 @@
 			.filter((h) => h.str);
 	}
 
-	function getMylibsHolders(displayedHolders) {
+	function getMylibsHolders(displayedHolders: DecoratedHolder[]) {
 		return displayedHolders.filter((holder) => {
 			if (userSettings.myLibraries) {
 				return Object.values(userSettings.myLibraries).some((lib) => lib.sigel === holder.sigel);
@@ -116,8 +101,8 @@
 	{@const displayedHolders = getDisplayedHolders(holdings, selectedHolding)}
 	{@const filteredHolders = getFilteredHolders(displayedHolders)}
 	{@const myLibsHolders = getMylibsHolders(displayedHolders)}
-	<!-- {holdings = data} -->
-	<div class="flex flex-col px-4 py-2 text-sm">
+	<div class="flex flex-col">
+		<!-- instance summary -->
 		<div
 			class="bg-page border-b-neutral relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-xs transition-shadow"
 		>
@@ -168,7 +153,7 @@
 			>
 		</div>
 		<div>
-			<h2 class="font-medium">
+			<h2 class="text-sm font-medium">
 				{page.data.t('holdings.availableAt')}
 				{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && holdings?.holdingsByInstanceId[latestHoldingUrl]}
 					{holdings?.holdingsByInstanceId[latestHoldingUrl].length}
@@ -203,6 +188,7 @@
 					</ul>
 				</div>
 			{/if}
+			<!-- search -->
 			<div class="relative mt-2 mb-4">
 				<input
 					bind:value={searchPhrase}
@@ -211,8 +197,9 @@
 					class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 					type="search"
 				/>
-				<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
+				<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm" />
 			</div>
+			<!-- list -->
 			<ul class="w-full">
 				{#each filteredHolders as holder, i (i)}
 					<Holdings
@@ -223,7 +210,7 @@
 					/>
 				{/each}
 				{#if filteredHolders.length === 0}
-					<li class="m-3">
+					<li class="m-3 text-sm">
 						<span role="alert">{page.data.t('search.noResults')}</span>
 					</li>
 				{/if}

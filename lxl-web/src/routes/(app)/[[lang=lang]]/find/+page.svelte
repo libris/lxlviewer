@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { SearchResult } from '$lib/types/search';
+	import type { HoldingsData } from '$lib/types/holdings';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import SiteFooter from '../SiteFooter.svelte';
 	import Toolbar from '$lib/components/Toolbar.svelte';
@@ -13,10 +14,10 @@
 	import SearchCard from '$lib/components/find/SearchCard.svelte';
 	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Pagination from '$lib/components/find/Pagination.svelte';
-	import HoldingsList from '$lib/components/HoldingsList.svelte';
+	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
-	const holdings = $derived(page.data.holdings);
+	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 
 	function handleCloseHoldings() {
 		// fixme
@@ -69,14 +70,14 @@
 			</div>
 			<SiteFooter />
 		</div>
-		<!-- <HoldingsModal workFnurgel={page.state.holdings || page.url.searchParams.get('holdings')}
-		></HoldingsModal> -->
 		{#if holdings}
 			<TrailingPane close={handleCloseHoldings}>
 				{#snippet title()}
 					{page.data.t('holdings.findAtYourNearestLibrary')}
 				{/snippet}
-				<HoldingsList {holdings} />
+				<div class="p-4">
+					<HoldingsContent {holdings} />
+				</div>
 			</TrailingPane>
 		{/if}
 	</div>
