@@ -36,8 +36,12 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	newSearchParams.set('cursor', withWildcard.cursor.toString());
 	newSearchParams.set('_sort', _sort);
 
-	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
-	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
+	const langModelSearchParams = new URLSearchParams([
+		['q', newSearchParams.get('_q') || ''],
+		['sort', newSearchParams.get('_sort') || '']
+	]);
+
+	console.log('Params sent to language model endpoint', langModelSearchParams);
 
 	const data = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`).then((res) =>
 		res.json()
