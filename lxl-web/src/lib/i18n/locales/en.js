@@ -138,7 +138,8 @@ export default {
 		suggestions: 'Suggestions',
 		showAll: 'Show all results',
 		searchQueryType: 'Search query',
-		useSearchQuery: 'Use search query'
+		useSearchQuery: 'Use search query',
+		querySuggestions: 'Search query suggestions'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

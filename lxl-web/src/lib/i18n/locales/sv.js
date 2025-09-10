@@ -137,7 +137,8 @@ export default {
 		suggestions: 'Förslag',
 		showAll: 'Visa alla träffar',
 		searchQueryType: 'Sökfråga',
-		useSearchQuery: 'Använd sökfråga'
+		useSearchQuery: 'Använd sökfråga',
+		querySuggestions: 'Förslag på sökfrågor'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

@@ -295,7 +295,7 @@
 				{/if}
 				{#if resultsCount && q.trim().length}
 					<div id="supersearch-results-label" class="text-2xs text-subtle px-4 font-medium">
-						{page.data.t('supersearch.suggestions')}
+						{page.data.t('supersearch.querySuggestions')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-results-label">
 						{#if showQuerySuggestion}

@@ -26,7 +26,9 @@
 			</span>
 		</span>
 		<div class="grid w-full grid-cols-[40px_minmax(0,_1fr)] items-center gap-2">
-			<div class="flex aspect-square items-center justify-center rounded-md bg-neutral-100">
+			<div
+				class="bg-primary-100 border-primary-200 flex aspect-square items-center justify-center rounded-md border"
+			>
 				<QuerySuggestionIcon class="text-primary-500 size-7" />
 			</div>
 			<div>
