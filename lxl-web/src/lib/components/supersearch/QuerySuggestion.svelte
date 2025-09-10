@@ -1,5 +1,6 @@
 <script lang="ts">
 	import QuerySuggestionIcon from '~icons/fluent/sparkle-16-regular';
+	// import QuerySuggestionIcon from '~icons/hugeicons/ai-search-02';
 	import GoIcon from '~icons/bi/chevron-right';
 
 	import { page } from '$app/state';
@@ -26,10 +27,8 @@
 			</span>
 		</span>
 		<div class="grid w-full grid-cols-[40px_minmax(0,_1fr)] items-center gap-2">
-			<div
-				class="bg-primary-100 border-primary-200 flex aspect-square items-center justify-center rounded-md border"
-			>
-				<QuerySuggestionIcon class="text-primary-500 size-7" />
+			<div class="flex aspect-square items-center justify-center">
+				<QuerySuggestionIcon class=" text-accent-300 size-7" />
 			</div>
 			<div>
 				<hgroup class="grid gap-1 overflow-hidden text-xs font-medium whitespace-nowrap">
