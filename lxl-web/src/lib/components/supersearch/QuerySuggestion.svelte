@@ -2,7 +2,7 @@
 	import QuerySuggestionIcon from '~icons/fluent/sparkle-16-regular';
 	// import QuerySuggestionIcon from '~icons/hugeicons/ai-search-02';
 	import GoIcon from '~icons/bi/chevron-right';
-
+	import QualifierPill from '$lib/components/supersearch/QualifierPill.svelte';
 	import { page } from '$app/state';
 
 	type Props = {
@@ -36,10 +36,16 @@
 			<div class="flex aspect-square items-center justify-center">
 				<QuerySuggestionIcon class=" text-accent-300 size-7" />
 			</div>
-			<div>
-				<hgroup class="grid gap-1 overflow-hidden text-xs font-medium whitespace-nowrap">
-					<h2 class="truncate">LÄGG IN SÖKFÖRSLAG HÄR</h2>
-				</hgroup>
+			<div
+				class="inline-flex items-center text-xs [&>*]:min-h-7 [&>*]:items-center [&>span]:inline-flex"
+			>
+				<QualifierPill
+					key="contributor"
+					keyLabel="Medverkan"
+					operator=":"
+					value={query}
+					valueLabel={query}
+				/>
 			</div>
 		</div>
 	</a>

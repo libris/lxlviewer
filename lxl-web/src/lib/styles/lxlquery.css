@@ -1,5 +1,5 @@
 .lxl-qualifier {
-	display: inline-block;
+	display: inline-flex;
 	color: var(--text-body);
 	background-color: var(--color-accent-50);
 }
