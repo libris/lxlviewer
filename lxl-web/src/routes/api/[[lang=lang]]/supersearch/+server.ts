@@ -43,9 +43,9 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	console.log('Params sent to language model endpoint', langModelSearchParams);
 
-	const data = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`).then((res) =>
-		res.json()
-	);
+	const [data] = await Promise.all([
+		await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`).then((res) => res.json())
+	]);
 
 	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 
