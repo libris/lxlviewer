@@ -1,6 +1,7 @@
 <script lang="ts">
 	import QuerySuggestionIcon from '~icons/fluent/sparkle-16-regular';
 	import GoIcon from '~icons/bi/chevron-right';
+
 	import { page } from '$app/state';
 
 	type Props = {
@@ -16,7 +17,10 @@
 		<span
 			class="text-subtle order-1 ml-auto hidden items-center rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline-flex"
 		>
-			{page.data.t('supersearch.useSearchQuery')}
+			<div class="flex flex-col">
+				{page.data.t('supersearch.useSearchQuery')}
+				<div class="text-3xs ml-auto">(314 träffar)</div>
+			</div>
 			<span class="ml-6 inline-flex h-10 items-center justify-center">
 				<GoIcon class="size-4" />
 			</span>
@@ -27,7 +31,7 @@
 			</div>
 			<div>
 				<hgroup class="grid gap-1 overflow-hidden text-xs font-medium whitespace-nowrap">
-					<h2 class="truncate">SÖKFÖRSLAG HÄR</h2>
+					<h2 class="truncate">LÄGG IN SÖKFÖRSLAG HÄR</h2>
 				</hgroup>
 			</div>
 		</div>
