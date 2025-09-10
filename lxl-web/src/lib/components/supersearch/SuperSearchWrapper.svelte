@@ -117,7 +117,9 @@
 	});
 
 	const showAddQualifiers = $derived(!q.length && editedParentNode !== 'QualifierValue');
-	const showQuerySuggestion = $derived(q.length && typeof langModelResult !== 'undefined');
+	const showQuerySuggestion = $derived(
+		q.length && typeof langModelResult !== 'undefined' && editedParentNode !== 'QualifierValue'
+	);
 
 	function handleTransform(data) {
 		suggestMapping = data.searchResult?.mapping;

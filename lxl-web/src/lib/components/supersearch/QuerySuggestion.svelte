@@ -32,20 +32,36 @@
 				<GoIcon class="size-4" />
 			</span>
 		</span>
-		<div class="grid w-full grid-cols-[40px_minmax(0,_1fr)] items-center gap-2">
+		<div class="query grid w-full grid-cols-[40px_minmax(0,_1fr)] items-center gap-2">
 			<div class="flex aspect-square items-center justify-center">
 				<QuerySuggestionIcon class=" text-accent-300 size-7" />
 			</div>
-			<div
-				class="inline-flex items-center text-xs [&>*]:min-h-7 [&>*]:items-center [&>span]:inline-flex"
-			>
-				<QualifierPill
-					key="contributor"
-					keyLabel="Medverkan"
-					operator=":"
-					value={query}
-					valueLabel={query}
-				/>
+			<div class="scrollbar-hidden flex gap-1 overflow-x-scroll">
+				<div
+					class="inline-flex items-center text-xs [&>*]:min-h-7 [&>*]:items-center [&>span]:inline-flex [&>span]:whitespace-nowrap"
+				>
+					<QualifierPill
+						key="contributor"
+						keyLabel="Författare/upphov"
+						operator=":"
+						value={query}
+						valueLabel={'August Strindberg, 1849-1912'}
+					/>
+				</div>
+
+				<!--
+				<div
+					class="inline-flex items-center text-xs [&>*]:min-h-7 [&>*]:items-center [&>span]:inline-flex [&>span]:whitespace-nowrap"
+				>
+					<QualifierPill
+						key="contributor"
+						keyLabel="Författare/upphov"
+						operator=":"
+						value={query}
+						valueLabel={'August Strindberg, 1849-1912'}
+					/>
+				</div>
+				-->
 			</div>
 		</div>
 	</a>
@@ -76,5 +92,20 @@
 		flex: 1;
 		padding: 0 calc(var(--spacing) * 4);
 		text-align: left;
+	}
+
+	.query {
+		position: relative;
+
+		/*
+		&::after {
+			content: '';
+			position: absolute;
+			height: 100%;
+			width: 12px;
+			background: linear-gradient(90deg, var(--color-neutral-50) 100%, rgba(0, 0, 0, 0) 0%);
+			right: 0;
+		}
+		*/
 	}
 </style>
