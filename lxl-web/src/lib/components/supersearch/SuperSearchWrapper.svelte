@@ -6,11 +6,12 @@
 	import QualifierPill from './QualifierPill.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
+	import QuerySuggestion from './QuerySuggestion.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping } from '$lib/types/search';
+	import type { DisplayMapping, LangModelResult } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
@@ -72,6 +73,7 @@
 		return p;
 	});
 	let suggestMapping: DisplayMapping[] | undefined = $state();
+	let langModelResult: LangModelResult | undefined = $state();
 
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
@@ -114,11 +116,13 @@
 		return null;
 	});
 
-	const showAddQualifiers = $derived(editedParentNode !== 'QualifierValue');
+	const showAddQualifiers = $derived(!q.length && editedParentNode !== 'QualifierValue');
+	const showQuerySuggestion = $derived(q.length && typeof langModelResult !== 'undefined');
 
 	function handleTransform(data) {
-		suggestMapping = data?.mapping;
-		return data;
+		suggestMapping = data.searchResult?.mapping;
+		langModelResult = data.langModelResult;
+		return data.searchResult;
 	}
 
 	function addQualifierKey(qualifierKey: string) {
@@ -294,10 +298,17 @@
 						{page.data.t('supersearch.suggestions')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-results-label">
-						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+						{#if showQuerySuggestion}
+							<div role="row">
+								<QuerySuggestion isFocusedCell={isFocusedCell(1, 0)} cellId={getCellId(1, 0)} />
+							</div>
+						{/if}
+						{@render resultsSnippet({
+							rowOffset: (showAddQualifiers ? 2 : 1) + 1 // use query suggestions length
+						})}
 					</div>
 				{/if}
-				{#if showAddQualifiers && resultsCount}
+				{#if resultsCount}
 					<div role="row" class="border-neutral border-t">
 						<button
 							type="submit"

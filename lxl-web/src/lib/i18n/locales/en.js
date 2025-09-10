@@ -136,7 +136,9 @@ export default {
 	supersearch: {
 		addQualifiers: 'Add filter',
 		suggestions: 'Suggestions',
-		showAll: 'Show all results'
+		showAll: 'Show all results',
+		searchQueryType: 'Search query',
+		useSearchQuery: 'Use search query'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

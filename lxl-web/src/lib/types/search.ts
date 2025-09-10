@@ -210,9 +210,15 @@ export interface EsExplain {
 	details: EsExplain[];
 }
 
-export interface SuperSearchResult extends SearchResult {
-	[JsonLd.ID]: string;
+export interface SearchResultWithQualifiers extends SearchResult {
 	items: SuperSearchResultItem[];
+}
+
+export type LangModelResult = unknown[];
+
+export interface SuperSearchResult {
+	searchResult: SearchResultWithQualifiers;
+	langModelResult: LangModelResult;
 }
 
 export interface SuperSearchResultItem extends SearchResultItem {

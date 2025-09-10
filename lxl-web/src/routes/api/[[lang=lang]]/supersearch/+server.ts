@@ -50,13 +50,16 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 
 	const superSearchResult: SuperSearchResult = {
-		...searchResult,
-		items: searchResult.items?.map((item, index) => {
-			return {
-				...item,
-				qualifiers: itemAsQualifiers(data.items[index], locale)
-			};
-		})
+		searchResult: {
+			...searchResult,
+			items: searchResult.items?.map((item, index) => {
+				return {
+					...item,
+					qualifiers: itemAsQualifiers(data.items[index], locale)
+				};
+			})
+		},
+		langModelResult: []
 	};
 
 	return json(superSearchResult);

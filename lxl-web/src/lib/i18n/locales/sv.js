@@ -135,7 +135,9 @@ export default {
 	supersearch: {
 		addQualifiers: 'Lägg till filter',
 		suggestions: 'Förslag',
-		showAll: 'Visa alla träffar'
+		showAll: 'Visa alla träffar',
+		searchQueryType: 'Sökfråga',
+		useSearchQuery: 'Använd sökfråga'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
