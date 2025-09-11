@@ -41,7 +41,7 @@
 >
 	<div
 		class={[
-			'trailing-pane-wrapper',
+			'trailing-pane-wrapper flex flex-col gap-4',
 			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none'
 		]}
 		style="width:{paneWidth}px"
@@ -64,7 +64,7 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div class="trailing-pane-content">
+		<div class="trailing-pane-content px-4">
 			{@render children?.()}
 		</div>
 	</div>

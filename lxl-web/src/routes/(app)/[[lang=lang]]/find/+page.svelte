@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
+	import { afterNavigate, goto } from '$app/navigation';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { SearchResult } from '$lib/types/search';
 	import type { HoldingsData } from '$lib/types/holdings';
@@ -12,27 +12,41 @@
 	import SearchResultToolbar from '$lib/components/find/SearchResultToolbar.svelte';
 	import SearchResultInfo from '$lib/components/find/SearchResultInfo.svelte';
 	import SearchCard from '$lib/components/find/SearchCard.svelte';
-	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Pagination from '$lib/components/find/Pagination.svelte';
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
+	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 
+	let innerWidth = $state(null);
+	let isSmallScreen = $derived(innerWidth && innerWidth <= 640);
+	const HoldingsComponent = $derived(isSmallScreen ? Modal : TrailingPane);
+
+	let previousURL: URL;
+
+	afterNavigate(({ to }) => {
+		if (to) {
+			previousURL = to.url;
+		}
+	});
+
 	function handleCloseHoldings() {
-		const newSearchParams = new SvelteURLSearchParams([
-			...Array.from(page.url.searchParams.entries())
-		]);
-		newSearchParams.delete('holdings');
-		goto(page.url.pathname + `?${newSearchParams.toString()}`, {
-			replaceState: true,
-			noScroll: true
-		});
-		// }
+		if (!previousURL?.searchParams.has('holdings')) {
+			history.back();
+		} else {
+			const newSearchParams = new SvelteURLSearchParams([
+				...Array.from(page.url.searchParams.entries())
+			]);
+			newSearchParams.delete('holdings');
+			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
+		}
 	}
 </script>
 
+<svelte:window bind:innerWidth />
 <svelte:head>
 	<title>{getPageTitle(page.url.searchParams.get('_q')?.trim())}</title>
 </svelte:head>
@@ -67,27 +81,23 @@
 			</div>
 			<SiteFooter />
 		</div>
-		{#if holdings}
-			<!-- holdings in pane -->
-			<TrailingPane close={handleCloseHoldings}>
+		{#if holdings && page.url.searchParams.get('holdings')}
+			<HoldingsComponent close={handleCloseHoldings}>
 				{#snippet title()}
-					{page.data.t('holdings.findAtYourNearestLibrary')}
+					<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
 				{/snippet}
-				<div class="p-4">
-					{#await holdings}
-						<div class="m-6 flex h-full items-center justify-center">
-							<span class="size-6">
-								<Spinner />
-							</span>
-						</div>
-					{:then holdings}
-						<HoldingsContent {holdings} showSummary={false} />
-					{:catch err}
-						<p>{err}</p>
-					{/await}
-				</div>
-			</TrailingPane>
-			<!-- todo holdings in modal -->
+				{#await holdings}
+					<div class="m-6 flex h-full items-center justify-center">
+						<span class="size-6">
+							<Spinner />
+						</span>
+					</div>
+				{:then holdings}
+					<HoldingsContent {holdings} showSummary={isSmallScreen ? true : false} />
+				{:catch err}
+					<p>{err}</p>
+				{/await}
+			</HoldingsComponent>
 		{/if}
 	</div>
 {/if}

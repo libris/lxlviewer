@@ -1,3 +1,4 @@
+<!-- only used in resource page atm, get rid of this component? -->
 <script lang="ts">
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { page } from '$app/state';
