@@ -15,15 +15,12 @@
 	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Pagination from '$lib/components/find/Pagination.svelte';
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 
 	function handleCloseHoldings() {
-		// fixme
-		// if (!previousURL?.searchParams.has('holdings')) {
-		// 	history.back();
-		// } else {
 		const newSearchParams = new SvelteURLSearchParams([
 			...Array.from(page.url.searchParams.entries())
 		]);
@@ -71,14 +68,26 @@
 			<SiteFooter />
 		</div>
 		{#if holdings}
+			<!-- holdings in pane -->
 			<TrailingPane close={handleCloseHoldings}>
 				{#snippet title()}
 					{page.data.t('holdings.findAtYourNearestLibrary')}
 				{/snippet}
 				<div class="px-4">
-					<HoldingsContent {holdings} showSummary={false} />
+					{#await holdings}
+						<div class="m-6 flex h-full items-center justify-center">
+							<span class="size-6">
+								<Spinner />
+							</span>
+						</div>
+					{:then holdings}
+						<HoldingsContent {holdings} showSummary={false} />
+					{:catch err}
+						<p>{err}</p>
+					{/await}
 				</div>
 			</TrailingPane>
+			<!-- todo holdings in modal -->
 		{/if}
 	</div>
 {/if}

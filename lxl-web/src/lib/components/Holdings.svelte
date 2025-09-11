@@ -125,7 +125,7 @@
 				<span>
 					{#if bibIds.at(0)}
 						{@const firstBibId = bibIds[0]?.bibId}
-						<ul style="white-space: pre-line">
+						<ul style="white-space: pre-line" class="text-xs">
 							{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.OpeningHours]}
 								<li>
 									{linksByBibId[firstBibId][holder.sigel][BibDb.OpeningHours].at(0)}

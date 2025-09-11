@@ -83,6 +83,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				class="btn btn-primary h-7 rounded-full md:h-8"
 				href={page.data.localizeHref(getHoldingsLink(page.url, id))}
 				data-sveltekit-noscroll
+				data-sveltekit-replacestate
 				data-testid="holding-link"
 			>
 				<span class="text-base">
