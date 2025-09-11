@@ -88,11 +88,11 @@
 	);
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col text-sm">
 	<!-- instance summary -->
 	{#if showSummary}
 		<div
-			class="bg-page border-b-neutral relative flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-xs transition-shadow"
+			class="bg-page border-b-neutral relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b p-5 text-xs transition-shadow"
 		>
 			<div
 				id="instance-details"
@@ -141,68 +141,70 @@
 			>
 		</div>
 	{/if}
-	<h2 class="my-4 text-xs font-medium">
-		{page.data.t('holdings.availableAt')}
-		{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && holdings?.holdingsByInstanceId[latestHoldingUrl]}
-			{holdings?.holdingsByInstanceId[latestHoldingUrl].length}
-			{holdings?.holdingsByInstanceId[latestHoldingUrl].length === 1
-				? page.data.t('holdings.library')
-				: page.data.t('holdings.libraries')}
-		{:else if latestHoldingUrl && holdings?.holdersByType?.[latestHoldingUrl]}
-			{holdings?.holdersByType[latestHoldingUrl].length}
-			{holdings?.holdersByType[latestHoldingUrl].length === 1
-				? page.data.t('holdings.library')
-				: page.data.t('holdings.libraries')}
+	<div>
+		<h2 class="font-medium">
+			{page.data.t('holdings.availableAt')}
+			{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && holdings?.holdingsByInstanceId[latestHoldingUrl]}
+				{holdings?.holdingsByInstanceId[latestHoldingUrl].length}
+				{holdings?.holdingsByInstanceId[latestHoldingUrl].length === 1
+					? page.data.t('holdings.library')
+					: page.data.t('holdings.libraries')}
+			{:else if latestHoldingUrl && holdings?.holdersByType?.[latestHoldingUrl]}
+				{holdings?.holdersByType[latestHoldingUrl].length}
+				{holdings?.holdersByType[latestHoldingUrl].length === 1
+					? page.data.t('holdings.library')
+					: page.data.t('holdings.libraries')}
+			{/if}
+		</h2>
+		<!-- my libraries holdings -->
+		{#if myLibsHolders.length}
+			<div class="border-neutral bg-accent-50 my-4 rounded-sm border-b p-4 pb-0">
+				<h3 class="flex items-center gap-2">
+					<span aria-hidden="true" class="text-primary-700 text-base">
+						<BiHouseHeart />
+					</span>
+					<span class="font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
+				</h3>
+				<ul class="w-full">
+					{#each myLibsHolders as holder, i (i)}
+						<Holdings
+							{holder}
+							{holdingUrl}
+							linksByBibId={holdings?.itemLinksByBibId}
+							bibIdsByInstanceId={holdings?.bibIdsByInstanceId}
+						/>
+					{/each}
+				</ul>
+			</div>
 		{/if}
-	</h2>
-	<!-- my libraries holdings -->
-	{#if myLibsHolders.length}
-		<div class="border-neutral bg-accent-50 mb-4 rounded-sm border-b p-4 pb-0">
-			<h3 class="flex items-center gap-2">
-				<span aria-hidden="true" class="text-primary-700 text-base">
-					<BiHouseHeart />
-				</span>
-				<span class="text-sm font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
-			</h3>
-			<ul class="w-full">
-				{#each myLibsHolders as holder, i (i)}
-					<Holdings
-						{holder}
-						{holdingUrl}
-						linksByBibId={holdings?.itemLinksByBibId}
-						bibIdsByInstanceId={holdings?.bibIdsByInstanceId}
-					/>
-				{/each}
-			</ul>
-		</div>
-	{/if}
-	<!-- search -->
-	<div class="relative">
-		<input
-			bind:value={searchPhrase}
-			placeholder={page.data.t('holdings.findLibrary')}
-			aria-label={page.data.t('holdings.findLibrary')}
-			class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
-			type="search"
-		/>
-		<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm" />
-	</div>
-	<!-- list -->
-	<ul class="w-full">
-		{#each filteredHolders as holder, i (i)}
-			<Holdings
-				{holder}
-				{holdingUrl}
-				linksByBibId={holdings?.itemLinksByBibId}
-				bibIdsByInstanceId={holdings?.bibIdsByInstanceId}
+		<!-- search -->
+		<div class="relative mt-2 mb-4">
+			<input
+				bind:value={searchPhrase}
+				placeholder={page.data.t('holdings.findLibrary')}
+				aria-label={page.data.t('holdings.findLibrary')}
+				class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
+				type="search"
 			/>
-		{/each}
-		{#if filteredHolders.length === 0}
-			<li class="m-3 text-sm">
-				<span role="alert">{page.data.t('search.noResults')}</span>
-			</li>
-		{/if}
-	</ul>
+			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
+		</div>
+		<!-- list -->
+		<ul class="w-full">
+			{#each filteredHolders as holder, i (i)}
+				<Holdings
+					{holder}
+					{holdingUrl}
+					linksByBibId={holdings?.itemLinksByBibId}
+					bibIdsByInstanceId={holdings?.bibIdsByInstanceId}
+				/>
+			{/each}
+			{#if filteredHolders.length === 0}
+				<li class="m-3">
+					<span role="alert">{page.data.t('search.noResults')}</span>
+				</li>
+			{/if}
+		</ul>
+	</div>
 </div>
 
 <style>

@@ -96,7 +96,9 @@
 	}
 
 	.trailing-pane-content {
-		max-height: calc(100vh - var(--app-bar-height) - var(--toolbar-height));
+		max-height: calc(
+			100vh - var(--app-bar-height) - var(--toolbar-height) - var(--beta-banner-height)
+		);
 		overflow-y: auto;
 		scrollbar-width: thin;
 	}

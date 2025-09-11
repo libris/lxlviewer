@@ -73,7 +73,7 @@
 				{#snippet title()}
 					{page.data.t('holdings.findAtYourNearestLibrary')}
 				{/snippet}
-				<div class="px-4">
+				<div class="p-4">
 					{#await holdings}
 						<div class="m-6 flex h-full items-center justify-center">
 							<span class="size-6">
