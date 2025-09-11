@@ -63,7 +63,7 @@
 </script>
 
 <li class="border-neutral text-sm not-last:border-b">
-	<h2 class="mt-4 mb-2 line-clamp-2 font-medium">
+	<h2 class="mt-4 mb-2 line-clamp-2 text-base font-medium">
 		<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
 	</h2>
 	<div class="">
@@ -89,7 +89,7 @@
 			</button>
 		{/if}
 		<ul>
-			{#if bibIds.at(0) && missingAtLeastOneLinkToItem()}
+			{#if bibIds[0] && missingAtLeastOneLinkToItem()}
 				{@const firstBibId = bibIds[0]?.bibId}
 				<li>
 					{#if linksByBibId[firstBibId]?.[holder.sigel]?.[BibDb.LinksToCatalog]}
