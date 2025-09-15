@@ -47,6 +47,7 @@
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
 	let prevLocale = page.data.locale;
+	let prevPageMapping: DisplayMapping[];
 
 	// debounce loading spinner
 	$effect(() => {
@@ -144,9 +145,15 @@
 		});
 	}
 
+	$effect(() => {
+		if (page.data.searchResult?.mapping) {
+			prevPageMapping = page.data.searchResult.mapping;
+		}
+	});
+
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
-			let pageMapping = page.data.searchResult?.mapping;
+			let pageMapping = page.data.searchResult?.mapping || prevPageMapping;
 			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
 		}
 		return lxlQualifierPlugin(QualifierPill, getLabels);
