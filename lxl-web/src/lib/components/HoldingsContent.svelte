@@ -144,7 +144,7 @@
 	<div>
 		<h2 class="font-medium">
 			{page.data.t('holdings.availableAt')}
-			{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && holdings?.holdingsByInstanceId[latestHoldingUrl]}
+			{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && holdings?.holdingsByInstanceId?.[latestHoldingUrl]}
 				{holdings?.holdingsByInstanceId[latestHoldingUrl].length}
 				{holdings?.holdingsByInstanceId[latestHoldingUrl].length === 1
 					? page.data.t('holdings.library')
