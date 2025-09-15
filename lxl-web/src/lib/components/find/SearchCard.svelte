@@ -79,6 +79,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 {#snippet holdingsButton()}
 	<div class="flex items-start pt-1">
 		{#if id}
+			<!-- todo: add id anchor to links when working again -->
 			<a
 				class="btn btn-primary h-7 rounded-full md:h-8"
 				href={page.data.localizeHref(getHoldingsLink(page.url, id))}

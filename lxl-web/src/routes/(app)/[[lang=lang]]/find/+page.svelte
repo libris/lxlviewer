@@ -108,18 +108,18 @@
 	}
 
 	.search-result {
-		max-height: calc(100vh - (var(--app-bar-height) + var(--beta-banner-height)));
-		overflow: hidden;
+		&.has-trailing-pane {
+			max-height: calc(100vh - (var(--app-bar-height) + var(--beta-banner-height)));
+			overflow: hidden;
 
-		& .search-result-content {
-			overflow-y: auto;
-			scrollbar-width: thin;
-		}
-	}
+			& .search-result-content {
+				overflow-y: auto;
+				scrollbar-width: thin;
+			}
 
-	.search-result.has-trailing-pane {
-		& aside {
-			display: none;
+			& aside {
+				display: none;
+			}
 		}
 	}
 </style>

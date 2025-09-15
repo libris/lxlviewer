@@ -66,7 +66,6 @@
 				).values()
 			];
 		} else {
-			console.log('show nothing', holdings, latestHoldingUrl);
 			return [];
 		}
 	});
