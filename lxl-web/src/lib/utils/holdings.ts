@@ -73,7 +73,7 @@ export function getHoldingsByInstanceId(
 	locale: LocaleCode
 ): HoldingsByInstanceId {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
-		const id = trimSlashes(relativizeUrl(instanceOfItem['@id']));
+		const id = stripAnchor(trimSlashes(relativizeUrl(instanceOfItem['@id'])));
 		if (!id) {
 			return acc;
 		}
