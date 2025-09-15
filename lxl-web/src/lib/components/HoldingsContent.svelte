@@ -81,7 +81,7 @@
 
 	const myLibsHolders = $derived(
 		displayedHolders.filter((holder) => {
-			if (userSettings.myLibraries) {
+			if (userSettings?.myLibraries) {
 				return Object.values(userSettings.myLibraries).some((lib) => lib.sigel === holder.sigel);
 			} else return false;
 		})
