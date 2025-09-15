@@ -658,13 +658,13 @@ export default {
         <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
           <a class="Toolbar-menuLink" @click="createMessage('inquiry')">
             <i class="fa fa-fw fa-question" aria-hidden="true" />
-            {{ translatePhrase("Inquiry") }}
+            {{ translatePhrase("Create CXZ Inquiry") }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
           <a class="Toolbar-menuLink" @click="createMessage('changeNotice'), hideToolsMenu()">
             <i class="fa fa-fw fa-exclamation" aria-hidden="true" />
-            {{ translatePhrase("Change notice") }}
+            {{ translatePhrase("Change CXZ Notice") }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="enableMarcPreview">
