@@ -2,8 +2,6 @@ import type { HoldingsData } from '$lib/types/holdings.js';
 import { redirect } from '@sveltejs/kit';
 
 export const load = async ({ url, fetch }) => {
-	console.log('layout load');
-
 	// makes load function run on every navigation
 	if (!url.searchParams.size) {
 		redirect(303, `/`); // redirect to home page if no search params are given

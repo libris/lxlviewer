@@ -9,7 +9,6 @@ import { DebugFlags } from '$lib/types/userSettings';
 import { MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets.js';
 
 export const load = async ({ params, url, locals, fetch }) => {
-	console.log('find load');
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
