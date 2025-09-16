@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 test('should not have any detectable a11y issues', async ({ page }) => {
 	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-	expect.soft(accessibilityScanResults.violations).toEqual([]);
+	await expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
 
 test('page displays the site header', async ({ page }) => {
@@ -52,23 +52,23 @@ test('expanded filters have no detectable a11y issues', async ({ page }) => {
 		await el.click();
 	}
 	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-	expect.soft(accessibilityScanResults.violations).toEqual([]);
+	await expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
 
 test('sorting the facet sets a cookie', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
-	expect(beforeCookies).toEqual([]);
+	await expect(beforeCookies).toEqual([]);
 	await page.getByTestId('facet-sort').nth(1).getByRole('combobox').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
-	expect(afterCookies[0].name).toEqual('userSettings');
-	expect(afterCookies[0].value).toEqual(
+	await expect(afterCookies[0].name).toEqual('userSettings');
+	await expect(afterCookies[0].value).toEqual(
 		'{%22leadingPane%22:{%22open%22:true}%2C%22facetSort%22:{%22rdf:type%22:%22alpha.asc%22}}'
 	);
 });
 
 test('facet opened/closed state is preserved', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
-	expect(beforeCookies).toEqual([]);
+	await expect(beforeCookies).toEqual([]);
 
 	const firstClosed = DEFAULT_FACETS_EXPANDED;
 

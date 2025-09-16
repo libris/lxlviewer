@@ -24,7 +24,7 @@ test('decorated data in holdings modal is not duplicated while closing modal', a
 	await expect(page.locator('dialog [data-type="Text"]')).toHaveCount(1);
 	await page.keyboard.press('Escape');
 	await page.waitForTimeout(10);
-	expect(page.locator('dialog [data-type="Text"]')).toHaveCount(1);
+	await expect(page.locator('dialog [data-type="Text"]')).toHaveCount(1);
 	await page.getByTestId('modal').waitFor({ state: 'hidden' });
 	await expect(page.getByTestId('modal')).toBeHidden();
 });

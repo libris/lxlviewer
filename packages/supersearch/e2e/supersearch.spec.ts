@@ -341,8 +341,8 @@ test('allows custom expanded content', async ({ page }) => {
 
 test('supports custom loading indicator snippet', async ({ page }) => {
 	await page.getByRole('combobox').fill('hello world');
-	await expect(async () =>
-		expect(page.getByTestId('loading-indicator')).toHaveText('Loading...')
+	await expect(
+		async () => await expect(page.getByTestId('loading-indicator')).toHaveText('Loading...')
 	).toPass();
 	await expect(page.getByTestId('loading-indicator')).not.toBeVisible();
 });
@@ -351,8 +351,8 @@ test('exports isLoading and hasResults as bindable props (should be treated as r
 	page
 }) => {
 	await page.getByRole('combobox').fill('hello world');
-	await expect(async () =>
-		expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: true')
+	await expect(
+		async () => await expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: true')
 	).toPass();
 	await expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: false');
 	await expect(page.getByTestId('has-data-bind')).toHaveText('has data: true');

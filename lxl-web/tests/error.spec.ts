@@ -24,7 +24,7 @@ test.describe('English 404 page', () => {
 	});
 	test('should not have any detectable a11y issues', async ({ page }) => {
 		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-		expect.soft(accessibilityScanResults.violations).toEqual([]);
+		await expect.soft(accessibilityScanResults.violations).toEqual([]);
 	});
 });
 
@@ -37,7 +37,7 @@ test.describe('Missing resource page', () => {
 	});
 	test('should not have any detectable a11y issues', async ({ page }) => {
 		const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-		expect.soft(accessibilityScanResults.violations).toEqual([]);
+		await expect.soft(accessibilityScanResults.violations).toEqual([]);
 	});
 });
 
