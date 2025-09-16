@@ -30,9 +30,9 @@
 
 	let previousURL: URL;
 
-	afterNavigate(({ to }) => {
-		if (to) {
-			previousURL = to.url;
+	afterNavigate(({ from }) => {
+		if (from) {
+			previousURL = from.url;
 		}
 	});
 
