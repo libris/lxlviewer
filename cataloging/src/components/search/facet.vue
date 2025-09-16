@@ -29,19 +29,19 @@ export default {
       return MathUtil.getCompactNumber(this.facet.amount);
     },
     label() {
-      if (this.facet.label.indexOf('•') >= 0 && this.alwaysShowLabelTail) {
+      if (this.facet.label.indexOf('·') >= 0 && this.alwaysShowLabelTail) {
         const label = this.facet.label;
-        return label.substring(0, label.lastIndexOf('•'));
+        return label.substring(0, label.lastIndexOf('·'));
       }
 
       return this.facet.label;
     },
     labelTail() {
-      if (this.facet.label.indexOf('•') >= 0 && this.alwaysShowLabelTail) {
+      if (this.facet.label.indexOf('·') >= 0 && this.alwaysShowLabelTail) {
         const label = this.facet.label;
-        const label2 = label.substring(label.lastIndexOf('•') + 1, label.length);
+        const label2 = label.substring(label.lastIndexOf('·') + 1, label.length);
         const nbsp = '\xa0';
-        return `${nbsp}• ${label2}`;
+        return `${nbsp}· ${label2}`;
       }
 
       return '';
