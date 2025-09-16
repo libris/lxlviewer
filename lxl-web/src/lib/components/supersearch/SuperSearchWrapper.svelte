@@ -46,8 +46,8 @@
 	let debouncedLoading: boolean | undefined = $state();
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
+	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
-	let prevPageMapping: DisplayMapping[];
 
 	// debounce loading spinner
 	$effect(() => {
@@ -88,6 +88,8 @@
 				const toQ = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
 				q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
 			}
+
+			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
 
 			superSearch?.hideExpandedSearch();
 			fetchOnExpand = true;
@@ -145,15 +147,8 @@
 		});
 	}
 
-	$effect(() => {
-		if (page.data.searchResult?.mapping) {
-			prevPageMapping = page.data.searchResult.mapping;
-		}
-	});
-
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
-			let pageMapping = page.data.searchResult?.mapping || prevPageMapping;
 			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
 		}
 		return lxlQualifierPlugin(QualifierPill, getLabels);
