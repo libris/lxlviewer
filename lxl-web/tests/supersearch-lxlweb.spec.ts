@@ -2,7 +2,7 @@
 import { test, expect } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'commit' });
 });
 
 test('click input expands dialog', async ({ page }) => {
@@ -37,7 +37,9 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'search results are shown after typing'
 	).toHaveCount(5);
-	await page.goto('/find?_limit=20&_offset=0&_q=language%3A"lang%3Aswe"&_sort=&_spell=true');
+	await page.goto('/find?_limit=20&_offset=0&_q=language%3A"lang%3Aswe"&_sort=&_spell=true', {
+		waitUntil: 'commit'
+	});
 	await page.getByTestId('main-search').click();
 	await expect(
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),

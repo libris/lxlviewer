@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 
 test.describe('404 page', async () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/not-found');
+		await page.goto('/not-found', { waitUntil: 'commit' });
 	});
 	test('has expected h1', async ({ page }) => {
 		await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
@@ -16,10 +16,10 @@ test.describe('404 page', async () => {
 
 test.describe('English 404 page', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/en/not-found');
+		await page.goto('/en/not-found', { waitUntil: 'commit' });
 	});
 	test('has expected h1', async ({ page }) => {
-		await page.goto('/en/not-found');
+		await page.goto('/en/not-found', { waitUntil: 'commit' });
 		await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
 	});
 	test('should not have any detectable a11y issues', async ({ page }) => {
@@ -30,7 +30,7 @@ test.describe('English 404 page', () => {
 
 test.describe('Missing resource page', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/5nxb2lhk30q35zdb');
+		await page.goto('/5nxb2lhk30q35zdb', { waitUntil: 'commit' });
 	});
 	test('has expected h1', async ({ page }) => {
 		await expect(page.getByRole('heading', { name: '404' })).toBeVisible();

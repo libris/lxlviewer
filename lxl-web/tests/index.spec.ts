@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'commit' });
 });
 
 test('should not have any detectable a11y issues', async ({ page }) => {

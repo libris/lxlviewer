@@ -4,7 +4,7 @@ let articleIds: string[] = [];
 
 test.beforeAll(async ({ browser }) => {
 	const page = await browser.newPage();
-	await page.goto('/find?_q=f&_offset=0&_limit=40');
+	await page.goto('/find?_q=f&_offset=0&_limit=40', { waitUntil: 'commit' });
 	articleIds = await page
 		.getByRole('main')
 		.getByRole('article')
@@ -16,7 +16,7 @@ test.beforeAll(async ({ browser }) => {
 });
 
 test('navigation between results works', async ({ page }) => {
-	await page.goto('/find?_q=f&_offset=0&_limit=20');
+	await page.goto('/find?_q=f&_offset=0&_limit=20', { waitUntil: 'commit' });
 	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
 	await expect(page).toHaveURL(articleIds[0]);
 	await page.getByRole('main').getByRole('link').getByText('Nästa').click();
@@ -52,7 +52,7 @@ test('navigation between results works', async ({ page }) => {
 });
 
 test('navigation between results also works when changing _limit value', async ({ page }) => {
-	await page.goto('/find?_q=f&_limit=2');
+	await page.goto('/find?_q=f&_limit=2', { waitUntil: 'commit' });
 	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
 	await page.getByRole('link').getByText('6', { exact: true }).click();
 	await expect(page).toHaveURL('/find?_q=f&_limit=2&_offset=10');

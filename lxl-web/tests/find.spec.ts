@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
+	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f', { waitUntil: 'commit' });
 });
 
 test('should not have any detectable a11y issues', async ({ page }) => {
@@ -81,7 +81,7 @@ test('facet opened/closed state is preserved', async ({ page, context }) => {
 	await expect(page.getByTestId('facet-list').first()).toBeHidden();
 	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeVisible();
 
-	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
+	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f', { waitUntil: 'commit' });
 
 	await expect(page.getByTestId('facet-list').first()).toBeHidden();
 	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeVisible();
