@@ -68,10 +68,7 @@
 			{page.data.t('banner.messageDesktop')}
 		</span>
 	</span>
-	<a
-		href={page.params?.lang === 'en' ? '/en/about' : '/about'}
-		class="link-subtle hidden whitespace-nowrap sm:inline"
-	>
+	<a href={page.data.localizeHref('/about')} class="link-subtle hidden whitespace-nowrap sm:inline">
 		{page.data.t('banner.feedback')}
 	</a>
 	<a href="https://libris.kb.se" class="link-subtle whitespace-nowrap">
@@ -87,7 +84,7 @@
 >
 	<div class="header-nav grid items-center gap-x-8 px-3 sm:min-h-18">
 		<div class="home flex sm:pl-3">
-			<a href={page.data.base} class="grow-0 no-underline">
+			<a href={page.data.localizeHref(page.data.base)} class="grow-0 no-underline">
 				<span class="font-heading text-2xl font-[600] lg:text-3xl">Libris</span>
 			</a>
 		</div>
@@ -118,7 +115,7 @@
 				<a
 					aria-label={page.data.t('header.openMenu')}
 					class="text-subtle flex items-center p-4"
-					href={`${page.url.pathname}?${page.url.search}#header-menu`}
+					href={page.data.localizeHref(`${page.url.pathname}?${page.url.search}#header-menu`)}
 					onclick={(e) => {
 						e.preventDefault();
 						toggleHeaderMenu();

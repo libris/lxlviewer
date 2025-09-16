@@ -11,7 +11,7 @@ import type {
 import { LensType, type FramedData, JsonLd, BibDb } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
-import { relativizeUrl, stripAnchor } from '$lib/utils/http';
+import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 import { DisplayUtil, toString } from '$lib/utils/xl.js';
 import getAtPath from '$lib/utils/getAtPath';
 import { holdersCache } from '$lib/utils/holdersCache.svelte';
@@ -73,7 +73,7 @@ export function getHoldingsByInstanceId(
 	locale: LocaleCode
 ): HoldingsByInstanceId {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
-		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
+		const id = stripAnchor(trimSlashes(relativizeUrl(instanceOfItem['@id'])));
 		if (!id) {
 			return acc;
 		}
@@ -102,7 +102,7 @@ export function getBibIdsByInstanceId(
 	locale: LocaleCode
 ): Record<string, BibIdObj> {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instance) => {
-		const id = relativizeUrl(instance['@id'])?.replace('#it', '');
+		const id = stripAnchor(trimSlashes(relativizeUrl(instance['@id'])));
 
 		const bibId = instance.meta?.controlNumber || record?.controlNumber;
 		const type = instance['@type'];

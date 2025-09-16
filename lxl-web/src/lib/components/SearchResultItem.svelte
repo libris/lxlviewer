@@ -47,7 +47,7 @@
 <article>
 	<header>
 		<a
-			href={relativizeUrl(data['@id'])}
+			href={page.data.localizeHref(relativizeUrl(data['@id']))}
 			class="flex flex-col items-center outline-0 hover:[&_h2]:underline focus:[&_h2]:underline"
 		>
 			{@render image()}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { relativizeUrl } from '$lib/utils/http';
+	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
@@ -18,7 +18,7 @@
 	};
 
 	const { item, getCellId, isFocusedCell }: Props = $props();
-	const resourceId = $derived(relativizeUrl(item?.['@id']));
+	const resourceId = $derived(trimSlashes(relativizeUrl(item?.['@id'])));
 	const primaryAddQualifierLink = $derived(item.qualifiers?.[0]?._q || resourceId);
 </script>
 
@@ -100,7 +100,11 @@
 
 <div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers.length}>
 	{#if item.qualifiers.length}
-		<a href={primaryAddQualifierLink} id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
+		<a
+			href={page.data.localizeHref(primaryAddQualifierLink)}
+			id={getCellId(0)}
+			class:focused-cell={isFocusedCell(0)}
+		>
 			{@render resourceSnippet(item)}
 		</a>
 		<button
@@ -131,7 +135,7 @@
 			{/key}
 		</button>
 	{:else}
-		<a href={resourceId} id={getCellId(0)}>
+		<a href={page.data.localizeHref(resourceId)} id={getCellId(0)}>
 			{@render resourceSnippet(item)}
 		</a>
 	{/if}

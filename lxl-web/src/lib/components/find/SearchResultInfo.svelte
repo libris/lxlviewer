@@ -51,7 +51,12 @@
 		<p class="suggest">
 			{#each searchResult._spell as suggestion (suggestion.label)}
 				{page.data.t('search.didYouMean')}
-				<a href={suggestion.view['@id'].replace('_spell=true', '_spell=false')} class="link-subtle">
+				<a
+					href={page.data.localizeHref(
+						suggestion.view['@id'].replace('_spell=true', '_spell=false')
+					)}
+					class="link-subtle"
+				>
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 					{@html suggestion.labelHtml}</a
 				>?
@@ -64,7 +69,9 @@
 	<div class="text-2xs mb-4 px-4" role="alert" data-testid="my-libraries-warning">
 		<BiInfo aria-hidden="true" class="text-subtle mb-0.5 inline align-middle" />
 		<p class="inline">{page.data.t('search.noAddedLibrariesText')}</p>
-		<a class="link inline" href="/my-pages">{page.data.t('search.addLibraries')}</a>
+		<a class="link inline" href={page.data.localizeHref('/my-pages')}
+			>{page.data.t('search.addLibraries')}</a
+		>
 	</div>
 {/if}
 

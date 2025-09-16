@@ -7,7 +7,7 @@
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getResourceId } from '$lib/utils/resourceData';
-	import { relativizeUrl } from '$lib/utils/http';
+	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
 
 	import InstancesListContent from './InstancesListContent.svelte';
@@ -103,7 +103,7 @@
 		</div>
 		<ul bind:this={instancesList}>
 			{#each data as item (item['@id'])}
-				{@const id = relativizeUrl(getResourceId(item))}
+				{@const id = trimSlashes(relativizeUrl(getResourceId(item)))}
 				<li {id} class="border-neutral border-t">
 					<details
 						open={page.state.expandedInstances?.includes(id) ||
@@ -158,7 +158,10 @@
 			{/each}
 		</ul>
 	{:else}
-		<InstancesListContent data={data[0]} id="{uidPrefix}{relativizeUrl(getResourceId(data[0]))}" />
+		<InstancesListContent
+			data={data[0]}
+			id="{uidPrefix}{trimSlashes(relativizeUrl(getResourceId(data[0])))}"
+		/>
 	{/if}
 </div>
 

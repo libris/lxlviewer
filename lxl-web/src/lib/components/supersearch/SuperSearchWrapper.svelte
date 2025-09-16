@@ -3,6 +3,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
+	import { baseLocale } from '$lib/i18n/locales';
 	import QualifierPill from './QualifierPill.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
@@ -18,7 +19,7 @@
 	import IconAddQualifierKey from '~icons/bi/plus-circle';
 	import '$lib/styles/lxlquery.css';
 
-	const QUALIFIER_SUGGESTIONS = [
+	const qualifierSuggestions = $derived([
 		{
 			key: page.data.t('qualifiers.contributorKey'),
 			label: page.data.t('qualifiers.contributorLabel')
@@ -27,7 +28,7 @@
 		{ key: page.data.t('qualifiers.languageKey'), label: page.data.t('qualifiers.languageLabel') },
 		{ key: page.data.t('qualifiers.subjectKey'), label: page.data.t('qualifiers.subjectLabel') },
 		{ key: page.data.t('qualifiers.yearKey'), label: page.data.t('qualifiers.yearLabel') }
-	];
+	]);
 
 	interface Props {
 		placeholder: string;
@@ -45,6 +46,8 @@
 	let debouncedLoading: boolean | undefined = $state();
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
+	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
+	let prevLocale = page.data.locale;
 
 	// debounce loading spinner
 	$effect(() => {
@@ -57,6 +60,9 @@
 		}, 300);
 	});
 
+	const actionUrl = $derived(
+		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
+	);
 	let cursor = $derived(selection?.head || 0);
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
@@ -82,6 +88,8 @@
 				const toQ = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
 				q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
 			}
+
+			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
 
 			superSearch?.hideExpandedSearch();
 			fetchOnExpand = true;
@@ -141,7 +149,6 @@
 
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
-			let pageMapping = page.data.searchResult?.mapping;
 			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
 		}
 		return lxlQualifierPlugin(QualifierPill, getLabels);
@@ -161,6 +168,13 @@
 			fetchOnExpand = false;
 		}
 	}
+
+	$effect(() => {
+		if (page.data.locale !== prevLocale) {
+			prevLocale = page.data.locale;
+			superSearch?.fetchData();
+		}
+	});
 </script>
 
 {#snippet loading()}
@@ -171,150 +185,152 @@
 
 <form
 	class={['relative w-full', isFindRoute && 'find-page']}
-	action="find"
+	action={actionUrl}
 	onsubmit={handleSubmit}
 	data-testid="main-search"
 >
-	<SuperSearch
-		name="_q"
-		bind:this={superSearch}
-		bind:value={q}
-		bind:selection
-		bind:isLoading
-		language={lxlQuery}
-		{placeholder}
-		endpoint={`/api/${page.data.locale}/supersearch`}
-		queryFn={(query, cursor) => {
-			return new URLSearchParams({
-				_q: query,
-				_limit: '5',
-				cursor: cursor.toString(),
-				_sort: page.url.searchParams.get('_sort') || ''
-			});
-		}}
-		transformFn={handleTransform}
-		extensions={[derivedLxlQualifierPlugin]}
-		toggleWithKeyboardShortcut
-		wrappingArrowKeyNavigation
-		comboboxAriaLabel={page.data.t('search.search')}
-		defaultInputCol={2}
-		debouncedWait={100}
-		onexpand={handleOnExpand}
-		onchange={handleOnChange}
-	>
-		{#snippet inputRow({
-			expanded,
-			inputField,
-			getCellId,
-			isFocusedCell,
-			isFocusedRow,
-			onclickClear,
-			onclickClose
-		})}
-			<div
-				class={[
-					'supersearch-input rounded-d border-primary-200 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
-					isFocusedRow() && [
-						'outline-primary-200 has-focus:border-primary-500 has-focus:outline-4',
-						expanded && 'has-focus:outline-primary-200'
-					]
-				]}
-			>
-				{#if expanded}
-					<button
-						type="button"
-						id={getCellId(0)}
-						class:focused-cell={isFocusedCell(0)}
-						aria-label={page.data.t('general.close')}
-						class="text-subtle p-4 sm:hidden"
-						onclick={onclickClose}
-					>
-						{#if debouncedLoading}
-							{@render loading()}
-						{:else}
-							<BiArrowLeft aria-hidden="true" />
-						{/if}
-					</button>
-				{/if}
-				<div class="flex-1 overflow-hidden">
-					<div class={['text-subtle absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
-						{#if debouncedLoading}
-							{@render loading()}
-						{:else}
-							<BiSearch aria-hidden="true" />
-						{/if}
-					</div>
-					{@render inputField()}
-				</div>
-				{#if q}
-					<button
-						type="reset"
-						id={getCellId(1)}
-						class:focused-cell={isFocusedCell(1)}
-						class="text-subtle p-4"
-						aria-label={page.data.t('search.clearFilters')}
-						onclick={onclickClear}
-					>
-						<BiXLg />
-					</button>
-				{/if}
-			</div>
-		{/snippet}
-		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav>
-				{#if showAddQualifiers}
-					<div
-						id="supersearch-add-qualifier-key-label"
-						class="text-2xs text-subtle px-4 font-medium"
-					>
-						{page.data.t('supersearch.addQualifiers')}
-					</div>
-					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
-							<IconAddQualifierKey class="text-subtle shrink-0" />
-							{#each QUALIFIER_SUGGESTIONS as { key, label }, cellIndex (key)}
-								<button
-									type="button"
-									id={getCellId(1, cellIndex)}
-									class={[
-										'text-body bg-accent-50 text-2xs border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
-										isFocusedCell(1, cellIndex) &&
-											'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
-									]}
-									onclick={() => addQualifierKey(key)}
-								>
-									{label}:
-								</button>
-							{/each}
-						</div>
-					</div>
-				{/if}
-				{#if resultsCount && q.trim().length}
-					<div id="supersearch-results-label" class="text-2xs text-subtle px-4 font-medium">
-						{page.data.t('supersearch.suggestions')}
-					</div>
-					<div role="rowgroup" aria-labelledby="supersearch-results-label">
-						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
-					</div>
-				{/if}
-				{#if showAddQualifiers && resultsCount}
-					<div role="row" class="border-neutral border-t">
+	{#key page.data.locale}
+		<SuperSearch
+			name="_q"
+			bind:this={superSearch}
+			bind:value={q}
+			bind:selection
+			bind:isLoading
+			language={lxlQuery}
+			{placeholder}
+			endpoint={`/api/${page.data.locale}/supersearch`}
+			queryFn={(query, cursor) => {
+				return new URLSearchParams({
+					_q: query,
+					_limit: '5',
+					cursor: cursor.toString(),
+					_sort: page.url.searchParams.get('_sort') || ''
+				});
+			}}
+			transformFn={handleTransform}
+			extensions={[derivedLxlQualifierPlugin]}
+			toggleWithKeyboardShortcut
+			wrappingArrowKeyNavigation
+			comboboxAriaLabel={page.data.t('search.search')}
+			defaultInputCol={2}
+			debouncedWait={100}
+			onexpand={handleOnExpand}
+			onchange={handleOnChange}
+		>
+			{#snippet inputRow({
+				expanded,
+				inputField,
+				getCellId,
+				isFocusedCell,
+				isFocusedRow,
+				onclickClear,
+				onclickClose
+			})}
+				<div
+					class={[
+						'supersearch-input rounded-d border-primary-200 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
+						isFocusedRow() && [
+							'outline-primary-200 has-focus:border-primary-500 has-focus:outline-4',
+							expanded && 'has-focus:outline-primary-200'
+						]
+					]}
+				>
+					{#if expanded}
 						<button
-							type="submit"
-							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs"
-							class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
-							>{page.data.t('supersearch.showAll')}</button
+							type="button"
+							id={getCellId(0)}
+							class:focused-cell={isFocusedCell(0)}
+							aria-label={page.data.t('general.close')}
+							class="text-subtle p-4 sm:hidden"
+							onclick={onclickClose}
 						>
+							{#if debouncedLoading}
+								{@render loading()}
+							{:else}
+								<BiArrowLeft aria-hidden="true" />
+							{/if}
+						</button>
+					{/if}
+					<div class="flex-1 overflow-hidden">
+						<div class={['text-subtle absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
+							{#if debouncedLoading}
+								{@render loading()}
+							{:else}
+								<BiSearch aria-hidden="true" />
+							{/if}
+						</div>
+						{@render inputField()}
 					</div>
+					{#if q}
+						<button
+							type="reset"
+							id={getCellId(1)}
+							class:focused-cell={isFocusedCell(1)}
+							class="text-subtle p-4"
+							aria-label={page.data.t('search.clearFilters')}
+							onclick={onclickClear}
+						>
+							<BiXLg />
+						</button>
+					{/if}
+				</div>
+			{/snippet}
+			{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
+				<nav>
+					{#if showAddQualifiers}
+						<div
+							id="supersearch-add-qualifier-key-label"
+							class="text-2xs text-subtle px-4 font-medium"
+						>
+							{page.data.t('supersearch.addQualifiers')}
+						</div>
+						<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
+							<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
+								<IconAddQualifierKey class="text-subtle shrink-0" />
+								{#each qualifierSuggestions as { key, label }, cellIndex (key)}
+									<button
+										type="button"
+										id={getCellId(1, cellIndex)}
+										class={[
+											'text-body bg-accent-50 text-2xs border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
+											isFocusedCell(1, cellIndex) &&
+												'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
+										]}
+										onclick={() => addQualifierKey(key)}
+									>
+										{label}:
+									</button>
+								{/each}
+							</div>
+						</div>
+					{/if}
+					{#if resultsCount && q.trim().length}
+						<div id="supersearch-results-label" class="text-2xs text-subtle px-4 font-medium">
+							{page.data.t('supersearch.suggestions')}
+						</div>
+						<div role="rowgroup" aria-labelledby="supersearch-results-label">
+							{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+						</div>
+					{/if}
+					{#if showAddQualifiers && resultsCount}
+						<div role="row" class="border-neutral border-t">
+							<button
+								type="submit"
+								class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs"
+								class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
+								>{page.data.t('supersearch.showAll')}</button
+							>
+						</div>
+					{/if}
+				</nav>
+			{/snippet}
+			{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
+				{#if resultItem}
+					<Suggestion item={resultItem} {getCellId} {isFocusedCell} />
 				{/if}
-			</nav>
-		{/snippet}
-		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
-			{#if resultItem}
-				<Suggestion item={resultItem} {getCellId} {isFocusedCell} />
-			{/if}
-		{/snippet}
-	</SuperSearch>
+			{/snippet}
+		</SuperSearch>
+	{/key}
 	{#each Array.from(pageParams) as [name, value] (name)}
 		{#if name !== '_q'}
 			<input type="hidden" {name} {value} />

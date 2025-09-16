@@ -163,7 +163,7 @@
 						<FacetValue {facet} {locale} />
 						{#if 'alias' in facet && facet.alias === MY_LIBRARIES_FILTER_ALIAS}
 							<a
-								href="/my-pages"
+								href={page.data.localizeHref('/my-pages')}
 								class="btn btn-primary mr-2 border-0"
 								aria-label={page.data.t('search.changeLibraries')}
 							>

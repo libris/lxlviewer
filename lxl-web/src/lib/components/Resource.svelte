@@ -158,7 +158,7 @@
 								<div class="border-b-neutral mb-6 flex place-content-between border-b pb-3">
 									<h3 class="font-medium">
 										<a
-											href={relationItem.findUrl}
+											href={page.data.localizeHref(relationItem.findUrl)}
 											class="hover:underline focus:underline"
 											tabindex={-1}
 										>
@@ -166,7 +166,7 @@
 										</a>
 									</h3>
 									<a
-										href={relationItem.findUrl}
+										href={page.data.localizeHref(relationItem.findUrl)}
 										class="flex items-center text-sm font-medium hover:underline focus:underline"
 									>
 										<IconArrowRight class="inline size-5 text-neutral-500" />

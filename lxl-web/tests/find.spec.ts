@@ -57,11 +57,11 @@ test('expanded filters have no detectable a11y issues', async ({ page }) => {
 
 test('sorting the facet sets a cookie', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
-	expect(beforeCookies).toEqual([]);
+	await expect(beforeCookies).toEqual([]);
 	await page.getByTestId('facet-sort').nth(1).getByRole('combobox').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
-	expect(afterCookies[0].name).toEqual('userSettings');
-	expect(afterCookies[0].value).toEqual(
+	await expect(afterCookies[0].name).toEqual('userSettings');
+	await expect(afterCookies[0].value).toEqual(
 		'{%22leadingPane%22:{%22open%22:true}%2C%22facetSort%22:{%22rdf:type%22:%22alpha.asc%22}}'
 	);
 });
