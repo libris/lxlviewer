@@ -19,7 +19,8 @@ import { holdersCache } from '$lib/utils/holdersCache.svelte';
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('holdings', value);
-	return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
+	const conditionallyAddAnchor = url.searchParams.has('holdings') ? '' : `#${value}`;
+	return `${url.origin}${url.pathname}?${newSearchParams.toString()}${conditionallyAddAnchor}`;
 }
 
 export function handleClickHoldings(

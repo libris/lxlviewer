@@ -32,7 +32,10 @@
 	let titleId = $derived(`card-title-${id}`);
 	let bodyId = $derived(`card-body-${id}`);
 	let footerId = $derived(`card-footer-${id}`);
-	let showHighlight = $derived(!page.state.dimissedHighlighting && page.url.hash === `#${id}`);
+	let showHighlight = $derived(
+		(!page.state.dimissedHighlighting && page.url.hash === `#${id}`) ||
+			page.url.searchParams.get('holdings') === id
+	);
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
 
@@ -79,7 +82,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 {#snippet holdingsButton()}
 	<div class="flex items-start pt-1">
 		{#if id}
-			<!-- todo: add id anchor to links when working again -->
 			<a
 				class="btn btn-primary h-7 rounded-full md:h-8"
 				href={page.data.localizeHref(getHoldingsLink(page.url, id))}
