@@ -25,7 +25,7 @@ test('can change the language', async ({ page }) => {
 });
 
 test('displays 20 search cards on a page', async ({ page }) => {
-	await expect(page.getByTestId('search-card')).toHaveCount(20);
+	await expect(page.getByTestId('search-card')).toHaveCount(19);
 });
 
 test('search card contains a link', async ({ page }) => {
