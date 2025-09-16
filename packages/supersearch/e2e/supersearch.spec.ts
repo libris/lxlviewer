@@ -351,9 +351,7 @@ test('exports isLoading and hasResults as bindable props (should be treated as r
 	page
 }) => {
 	await page.getByRole('combobox').fill('hello world');
-	await expect(
-		async () => await expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: true')
-	).toPass();
+	await expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: true');
 	await expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: false');
 	await expect(page.getByTestId('has-data-bind')).toHaveText('has data: true');
 });
