@@ -46,14 +46,14 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		'results are shown if there is an initial query'
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
-	await page.waitForURL(/\/[a-z0-9]{15,}$/); // fnurgel route
+	await page.waitForURL(/\/[a-z0-9]{15,}$/, { waitUntil: 'commit' }); // fnurgel route
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-key'),
 		'query is kept when navigating from find routes...'
 	).toContainText('Språk');
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-value')).toContainText('Svenska');
 	await page.locator('.home').getByRole('link').click(); // click on home link
-	await page.waitForURL('/'); // fnurgel route
+	await page.waitForURL('/', { waitUntil: 'commit' }); // fnurgel route
 	await expect(
 		page.getByRole('combobox'),
 		'...except when navigating to start/index (which should be seen as a reset)'
@@ -121,7 +121,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		'all suggestions are persons related to the query "jan"'
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
-	await page.waitForURL('**/find?**');
+	await page.waitForURL('**/find?**', { waitUntil: 'commit' });
 	await expect(page.url()).toContain('contributor');
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-key'),
@@ -144,7 +144,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByRole('combobox').pressSequentially('Swahili');
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
-	await page.waitForURL(/spr%C3%A5k/);
+	await page.waitForURL(/spr%C3%A5k/, { waitUntil: 'commit' });
 	await expect(page.url()).toContain('contributor');
 	await expect(page.url(), 'url contains both contributor and language').toContain(
 		encodeURIComponent('språk')
@@ -169,7 +169,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'ämne' })
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
-	await page.waitForURL(/A4mne/);
+	await page.waitForURL(/A4mne/, { waitUntil: 'commit' });
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-key').first(),
 		'qualifier is added in the beginning if the cursor is placed there'
