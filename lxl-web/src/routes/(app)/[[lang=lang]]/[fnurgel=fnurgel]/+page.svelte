@@ -1,11 +1,42 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import { afterNavigate, goto } from '$app/navigation';
 	import getPageTitle from '$lib/utils/getPageTitle';
+	import { type CitationsType } from '$lib/types/citation.js';
+	import type { HoldingsData } from '$lib/types/holdings.js';
 	import Resource from '$lib/components/Resource.svelte';
-	import CitationsModal from '$lib/components/CitationsModal.svelte';
-	import HoldingsModal from '$lib/components/HoldingsModal.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
+	import Citations from '$lib/components/Citations.svelte';
 
 	const { data } = $props();
+	const holdings: HoldingsData = $state({
+		...data.holdings,
+		instances: data.instances,
+		overview: data.overview,
+		title: data.title
+	});
+
+	let previousURL: URL;
+
+	afterNavigate(({ to }) => {
+		if (to) {
+			previousURL = to.url;
+		}
+	});
+
+	function handleCloseModal(param: string) {
+		if (!previousURL?.searchParams.has(param)) {
+			history.back();
+		} else {
+			const newSearchParams = new SvelteURLSearchParams([
+				...Array.from(page.url.searchParams.entries())
+			]);
+			newSearchParams.delete(param);
+			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
+		}
+	}
 </script>
 
 <svelte:head>
@@ -30,11 +61,22 @@
 		tableOfContents={data.tableOfContents}
 		adjecentSearchResults={page.state.adjecentSearchResults}
 	/>
-	<HoldingsModal
-		{...data.holdings}
-		instances={data.instances}
-		overview={data.overview}
-		title={data.title}
-	/>
-	<CitationsModal />
+	{#if page.state.holdings || page.url.searchParams.get('holdings')}
+		<Modal close={() => handleCloseModal('holdings')}>
+			{#snippet title()}
+				<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
+			{/snippet}
+			<HoldingsContent {holdings} />
+		</Modal>
+	{:else if page.state.citations || page.url.searchParams.get('cite')}
+		<Modal close={() => handleCloseModal('cite')}>
+			{#snippet title()}
+				<span>{page.data.t('citations.createCitation')}</span>
+			{/snippet}
+			<Citations
+				citations={(page.state.citations || page.data.citations) as Promise<CitationsType>}
+				id={page.state.citationId || page.url.searchParams.get('cite')}
+			/>
+		</Modal>
+	{/if}
 </div>
