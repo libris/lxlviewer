@@ -42,7 +42,8 @@ jobs:
         if: ${{ failure() }}
         with:
           name: playwright-traces
-          path: test-results
+          path: lxl-web/test-results/
+          include-hidden-files: true
           retention-days: 30
   lighthouseci:
     runs-on: ubuntu-latest
