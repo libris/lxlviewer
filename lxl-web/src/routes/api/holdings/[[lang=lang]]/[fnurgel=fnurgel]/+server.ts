@@ -5,7 +5,6 @@ import type { FramedData } from '$lib/types/xl';
 import { LxlLens } from '$lib/types/display';
 import { pickProperty, toString } from '$lib/utils/xl';
 import {
-	fetchHoldersIfAbsent,
 	getBibIdsByInstanceId,
 	getHoldersByType,
 	getHoldingsByInstanceId,
@@ -15,6 +14,7 @@ import {
 import { error, json } from '@sveltejs/kit';
 import jmespath from 'jmespath';
 import { centerOnWork } from '$lib/utils/centerOnWork';
+import { holdersCache } from '$lib/utils/holdersCache.svelte';
 
 export async function GET({ params, locals }) {
 	const displayUtil = locals.display;
@@ -55,7 +55,27 @@ export async function GET({ params, locals }) {
 
 	// FIXME: beware holdingsByInstanceId => has .heldBy.obj
 	// holdingsByType => has just .heldBy without .obj
-	await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
+	const allHolders = Object.values(holdersByType).flat();
+	const cachedHolders = holdersCache.holders;
+
+	for (const h of allHolders) {
+		const holdingsId = h.obj?.['@id'];
+
+		if (holdingsId && h.sigel && cachedHolders && !cachedHolders[h.sigel]) {
+			const response = await fetch(`${holdingsId}?framed=true`, {
+				headers: { Accept: 'application/ld+json' }
+			});
+			if (response.ok) {
+				const resJson = await response.json();
+				const libraryMainEntity = resJson['mainEntity'] as FramedData;
+				if (libraryMainEntity) {
+					cachedHolders[h.sigel] = libraryMainEntity;
+				}
+			} else {
+				console.error(`Could not fetch holder data for ${holdingsId}`);
+			}
+		}
+	}
 
 	//TODO: cache response for a short amount of time?
 	return json({
