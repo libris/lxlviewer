@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 test('should not have any detectable a11y issues', async ({ page }) => {
 	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-	expect.soft(accessibilityScanResults.violations).toEqual([]);
+	await expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
 
 test('page displays the site header', async ({ page }) => {
@@ -52,7 +52,7 @@ test('expanded filters have no detectable a11y issues', async ({ page }) => {
 		await el.click();
 	}
 	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-	expect.soft(accessibilityScanResults.violations).toEqual([]);
+	await expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
 
 test('sorting the facet sets a cookie', async ({ page, context }) => {
@@ -68,7 +68,7 @@ test('sorting the facet sets a cookie', async ({ page, context }) => {
 
 test('facet opened/closed state is preserved', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
-	expect(beforeCookies).toEqual([]);
+	await expect(beforeCookies).toEqual([]);
 
 	const firstClosed = DEFAULT_FACETS_EXPANDED;
 
