@@ -17,13 +17,16 @@
 	import Spinner from '$lib/components/Spinner.svelte';
 	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import { USE_HOLDING_PANE } from '$lib/constants/panels';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 
 	let innerWidth = $state(null);
 	let isSmallScreen = $derived(innerWidth && innerWidth <= 640);
-	const HoldingsComponent = $derived(isSmallScreen ? Modal : TrailingPane);
+	const HoldingsComponent = $derived(
+		isSmallScreen ? Modal : USE_HOLDING_PANE ? TrailingPane : Modal
+	);
 
 	let previousURL: URL;
 
@@ -51,7 +54,12 @@
 	<title>{getPageTitle(page.url.searchParams.get('_q')?.trim())}</title>
 </svelte:head>
 {#if searchResult}
-	<div class={['search-result flex w-full flex-1 [&_[id]]:scroll-mt-18 sm:[&_[id]]:scroll-mt-32', holdings && 'has-trailing-pane']}>
+	<div
+		class={[
+			'search-result flex w-full flex-1 [&_[id]]:scroll-mt-18 sm:[&_[id]]:scroll-mt-32',
+			holdings && USE_HOLDING_PANE && 'has-trailing-pane'
+		]}
+	>
 		<LeadingPane>
 			<div id="filters" role="tabpanel" aria-labelledby="tab-filters">
 				<Filters facets={searchResult.facetGroups || []} />
@@ -93,7 +101,10 @@
 						</span>
 					</div>
 				{:then holdings}
-					<HoldingsContent {holdings} showSummary={isSmallScreen ? true : false} />
+					<HoldingsContent
+						{holdings}
+						showSummary={isSmallScreen || !USE_HOLDING_PANE ? true : false}
+					/>
 				{:catch err}
 					<p>{err}</p>
 				{/await}

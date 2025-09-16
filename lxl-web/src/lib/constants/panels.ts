@@ -6,3 +6,5 @@ export const LEADING_PANE_COLLAPSE_WIDTH = 50;
 export const TRAILING_PANE_DEFAULT_WIDTH = 300;
 export const TRAILING_PANE_MAX_WIDTH = 600;
 export const TRAILING_PANE_MIN_WIDTH = 200;
+
+export const USE_HOLDING_PANE = false;
