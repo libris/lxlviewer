@@ -105,7 +105,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 <div class="@container/card">
 	<article
 		{id}
-		class="search-card border-neutral relative grid w-full gap-x-4 border-t px-3 py-3 font-normal transition-colors"
+		class={[
+			'search-card border-neutral relative grid w-full gap-x-4 border-t px-3 py-3 font-normal transition-colors',
+			showHighlight && 'bg-accent-50/75'
+		]}
 		aria-current={showHighlight || undefined}
 		data-testid="search-card"
 		bind:this={articleElement}
