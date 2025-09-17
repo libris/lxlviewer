@@ -139,9 +139,7 @@
 					: page.data.t('search.showDetails')}</button
 			>
 		</div>
-	{/if}
-	<div>
-		<h2 class="font-medium">
+		<h2 class="mb-2 font-medium">
 			{page.data.t('holdings.availableAt')}
 			{#if latestHoldingUrl && isFnurgel(latestHoldingUrl) && holdings?.holdingsByInstanceId?.[latestHoldingUrl]}
 				{holdings?.holdingsByInstanceId[latestHoldingUrl].length}
@@ -155,9 +153,11 @@
 					: page.data.t('holdings.libraries')}
 			{/if}
 		</h2>
+	{/if}
+	<div>
 		<!-- my libraries holdings -->
 		{#if myLibsHolders.length}
-			<div class="border-neutral bg-accent-50 my-4 rounded-sm border-b p-4 pb-0">
+			<div class="border-neutral bg-accent-50 mb-4 rounded-sm border-b p-4 pb-0">
 				<h3 class="flex items-center gap-2">
 					<span aria-hidden="true" class="text-primary-700 text-base">
 						<BiHouseHeart />
@@ -177,7 +177,7 @@
 			</div>
 		{/if}
 		<!-- search -->
-		<div class="relative mt-2 mb-4">
+		<div class="relative mb-4">
 			<input
 				bind:value={searchPhrase}
 				placeholder={page.data.t('holdings.findLibrary')}
