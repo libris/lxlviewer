@@ -58,7 +58,7 @@ export async function GET({ params, locals }) {
 
 	// Skip fetching holders in CI integration tests
 	// Due to rate limiting issues. TODO: build a more
-	// sustaiable solution for this...
+	// sustainable solution for this...
 	if (!env.CI) {
 		await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
 	}
