@@ -145,6 +145,9 @@ export default {
   warnOnSave: {
     'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
   },
+  warnOnSaveConcerning: {
+    concerning: 'concerning',
+  },
   propertyChains: {
     '@reverse.itemOf.heldBy.@id': {
       sv: 'Har bestånd',

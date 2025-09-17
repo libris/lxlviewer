@@ -781,20 +781,27 @@ export default {
           });
         }, 10);
         if (!this.documentId) {
+          if (this.warnOnSaveConcerning()) {
+            return;
+          }
+          this.warnOnSave();
+
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
-          this.warnOnSave();
           this.$router.push({ path: `/${fnurgel}` });
         } else {
-          this.fetchDocument();
+          if (this.warnOnSaveConcerning()) {
+            return;
+          }
           this.warnOnSave();
+
+          this.fetchDocument();
           this.removeOtherRecords();
           this.clearBackendValidationErrors();
           if (done) {
             this.stopEditing();
           } else {
-            // Reset original data that should be restored when you click cancel
             this.$store.dispatch('setOriginalData', LxlDataUtil.splitJson(obj));
           }
         }
@@ -868,6 +875,31 @@ export default {
           });
         }
       });
+    },
+    warnOnSaveConcerning() {
+      const warnArr = Object.keys(this.settings.warnOnSaveConcerning);
+      let hasMissing = false;
+
+      warnArr.forEach((element) => {
+        const value = get(this.inspector.data, element);
+        if (value === undefined || value === null || value === '') {
+          hasMissing = true;
+          this.$store.dispatch('pushNotification', {
+            type: 'warning',
+            message: `${StringUtil.getUiPhraseByLang(
+              'Attention',
+              this.user.settings.language,
+              this.resources.i18n
+            )}! ${StringUtil.getLabelByLang(
+              element,
+              this.user.settings.language,
+              this.resources
+            )} is missing.`,
+          });
+        }
+      });
+
+      return hasMissing;
     },
     removeEmbellishedHighlight() {
       if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
