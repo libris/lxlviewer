@@ -5,7 +5,7 @@ import type { FramedData } from '$lib/types/xl';
 import { LxlLens } from '$lib/types/display';
 import { pickProperty, toString } from '$lib/utils/xl';
 import {
-	fetchHoldersIfAbsent,
+	// fetchHoldersIfAbsent,
 	getBibIdsByInstanceId,
 	getHoldersByType,
 	getHoldingsByInstanceId,
@@ -55,7 +55,7 @@ export async function GET({ params, locals }) {
 
 	// FIXME: beware holdingsByInstanceId => has .heldBy.obj
 	// holdingsByType => has just .heldBy without .obj
-	await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
+	// await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
 
 	//TODO: cache response for a short amount of time?
 	return json({
