@@ -44,7 +44,7 @@
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-success: #2ab061;
 
-	--app-bar-height: 52px;
+	--app-bar-height: 56px;
 	--toolbar-height: 48px;
 	--beta-banner-height: 44px;
 
@@ -55,7 +55,7 @@
 		--app-bar-height: 72px;
 	}
 	@variant 3xl {
-		--app-bar-height: 80px;
+		--app-bar-height: 76px;
 	}
 }
 

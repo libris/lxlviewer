@@ -228,7 +228,7 @@
 			})}
 				<div
 					class={[
-						'supersearch-input rounded-d border-primary-400/50 hover:border-primary-600/50 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
+						'supersearch-input rounded-d border-primary-500/50 hover:border-primary-500 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
 						isFocusedRow() && [
 							'outline-primary-200 has-focus:border-primary-500 has-focus:outline-4',
 							expanded && 'has-focus:outline-primary-200'
