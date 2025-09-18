@@ -15,11 +15,14 @@
 	let bannerOffsetHeight: number = $state(0);
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
 
-	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
-
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale)
 	);
+
+	const showSearchInputOnMobile = $derived(
+		page.route.id === '/(app)/[[lang=lang]]' || page.route.id === '/(app)/[[lang=lang]]/find'
+	);
+
 	/*
 	const isLandingPage = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
@@ -57,12 +60,7 @@
 {/snippet}
 
 <BetaBanner bind:offsetHeight={bannerOffsetHeight} />
-<header
-	class={[
-		'app-bar bg-app-header top-0 grid items-stretch gap-x-3 px-2 pb-1 lg:px-3 lg:pb-0',
-		isFindRoute && 'z-20 sm:sticky'
-	]}
->
+<header class={['app-bar bg-app-header sticky top-0 z-20 grid items-stretch gap-x-3 px-2 lg:px-3']}>
 	<div class="leading-actions flex items-stretch">
 		<a href="menu" class="flex items-stretch">
 			{@render actionItemContents({
@@ -80,11 +78,18 @@
 				width={275}
 				height={75}
 				alt="Libris"
-				class="3xl:w-33 h-auto w-22 lg:mb-1 lg:w-28"
+				class="3xl:w-33 mb-1 h-auto w-22 lg:w-28"
 			/>
 		</a>
 	</div>
-	<search class="hidden items-center lg:flex">
+	<search
+		id="search"
+		class={[
+			showSearchInputOnMobile && 'flex pb-2 lg:pb-0',
+			!showSearchInputOnMobile && 'hidden target:flex target:pb-2 lg:flex target:lg:pb-0', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
+			'items-center'
+		]}
+	>
 		<div class="mx-auto w-full max-w-7xl">
 			<SuperSearchWrapper
 				placeholder={page.data.t('header.searchPlaceholder')}
@@ -161,7 +166,9 @@
 	@reference 'tailwindcss';
 
 	.app-bar {
-		grid-template-areas: 'leading-actions trailing-actions trailing-actions';
+		grid-template-areas:
+			'leading-actions trailing-actions trailing-actions'
+			'search search search';
 		grid-template-rows: var(--app-bar-height);
 		grid-template-columns: auto 1fr 1fr;
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
