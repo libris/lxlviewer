@@ -761,12 +761,19 @@ export default {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-      this.preSaveHook(obj).then((obj2) => requestMethod({
-        url: opts.url,
-        ETag: opts.ETag,
-        activeSigel: this.user.settings.activeSigel,
-        token: this.user.token,
-      }, obj2)).then((result) => {
+      if (this.warnOnSaveConcerning()) {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        return;
+      }
+
+      this.preSaveHook(obj).then((obj2) =>
+        requestMethod({
+          url: opts.url,
+          ETag: opts.ETag,
+          activeSigel: this.user.settings.activeSigel,
+          token: this.user.token,
+        }, obj2)
+      ).then((result) => {
         // eslint-disable-next-line no-nested-ternary
         const msgKey = this.isCxzMessage
           ? 'was sent'
@@ -780,10 +787,8 @@ export default {
             message: `${labelByLang(type)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
           });
         }, 10);
+
         if (!this.documentId) {
-          if (this.warnOnSaveConcerning()) {
-            return;
-          }
           this.warnOnSave();
 
           const location = `${result.getResponseHeader('Location')}`;
@@ -791,9 +796,6 @@ export default {
           const fnurgel = locationParts[locationParts.length - 1];
           this.$router.push({ path: `/${fnurgel}` });
         } else {
-          if (this.warnOnSaveConcerning()) {
-            return;
-          }
           this.warnOnSave();
 
           this.fetchDocument();
@@ -805,6 +807,7 @@ export default {
             this.$store.dispatch('setOriginalData', LxlDataUtil.splitJson(obj));
           }
         }
+
         this.$nextTick(() => {
           this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
           this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
@@ -815,6 +818,7 @@ export default {
         let errorMessage = '';
         switch (error.status) {
           case 412:
+            // eslint-disable-next-line vue/max-len
             errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             break;
@@ -823,7 +827,7 @@ export default {
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             break;
           case 400:
-            let errorJson = null;
+            { let errorJson = null;
             const responseHeader = error.getResponseHeader('Content-Type');
             if (responseHeader && responseHeader.indexOf('application/json') !== -1) {
               try {
@@ -838,14 +842,16 @@ export default {
               this.$store.dispatch('setBackendValidationErrors', errorJson['errors']);
               this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'expand-item' });
             } else {
+              // eslint-disable-next-line vue/max-len
               errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
               this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             }
-            break;
+            break; }
           case 401:
             localStorage.removeItem('lastPath');
             errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language, this.resources.i18n)}`;
-            this.$store.dispatch('pushNotification', { type: 'danger',
+            this.$store.dispatch('pushNotification', {
+              type: 'danger',
               message: `${errorBase}. ${errorMessage}.`,
               sticky: true,
               link: {
@@ -853,10 +859,12 @@ export default {
                 title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`,
                 newTab: true,
                 external: true,
-              } });
+              }
+            });
             break;
           default:
             console.error(error);
+            // eslint-disable-next-line vue/max-len
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         }
