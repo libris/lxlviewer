@@ -24,7 +24,8 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
     each(templateObject, (value, key) => {
       console.log('key', JSON.stringify(key));
       console.log('value', JSON.stringify(value));
-      if (!targetObject.hasOwnProperty(key) || targetObject[key] === null) {
+      if (!targetObject.hasOwnProperty(key) ||
+        (targetObject[key] === null && templateObject[key] !== null)) {
         const addAtPath = [...templatePath, key]
 
         console.log('adding', JSON.stringify(value));

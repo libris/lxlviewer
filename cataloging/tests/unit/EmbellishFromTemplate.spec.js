@@ -36,6 +36,40 @@ test('should add contribution if whole property is missing', () => {
   );
 });
 
+test('should not add if already present', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "Contribution",
+          "agent": null,
+          "role": []
+        }
+      ]
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "a" : {},
+      "contribution": [
+        {
+          "@type": "Contribution",
+          "agent": null,
+          "role": []
+        }
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([]);
+});
+
 test('should handle multiple properties', () => {
   const template = {
     "record": {},
@@ -47,7 +81,7 @@ test('should handle multiple properties', () => {
           "role": []
         }
       ],
-      "test" : {}
+      "a" : {}
     }
   };
 
@@ -70,7 +104,7 @@ test('should handle multiple properties', () => {
         }]
     },
     {
-      path: 'mainEntity.test',
+      path: 'mainEntity.a',
       value: {}
     }
     ]
