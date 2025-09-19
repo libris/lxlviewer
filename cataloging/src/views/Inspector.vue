@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, each, get } from 'lodash-es';
+import { cloneDeep, get } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
@@ -22,6 +22,7 @@ import TabMenu from '@/components/shared/tab-menu.vue';
 import ValidationSummary from '@/components/inspector/validation-summary.vue';
 import FullscreenPanel from '@/components/shared/fullscreen-panel.vue';
 import VersionHistory from '@/components/inspector/version-history.vue';
+import { getChangeList } from "@/utils/embellish.js";
 
 export default {
   name: 'Inspector',
@@ -359,37 +360,20 @@ export default {
         }
       }
 
-      const changeList = [];
-      function applyChangeList(templatePath, targetPath = null) {
-        if (targetPath === null) {
-          // targetPath is used when the target path differs from the templatePath
-          targetPath = templatePath;
-        }
-        const templateObject = get(template, templatePath);
-        let targetObject = get(baseRecordData, targetPath);
-        if (targetObject === null || typeof targetObject === 'undefined') {
-          targetObject = {};
-        }
-        each(templateObject, (value, key) => {
-          if (!targetObject.hasOwnProperty(key) || targetObject[key] === null) {
-            changeList.push({
-              path: `${targetPath}.${key}`,
-              value: value,
-            });
-          }
-        });
-      }
+      const changeList = [
+        ...getChangeList(template, baseRecordData, ['mainEntity']),
+        ...getChangeList(template, baseRecordData, ['record'])
+      ];
+      //TODO: Highlight properties in admin metadata/record when embellishing from Instance / mainEntity and vice versa!
 
-      applyChangeList('record');
-      applyChangeList('mainEntity');
       if (baseRecordData.hasOwnProperty('work') && baseRecordData.work === null) {
         delete baseRecordData.work;
       }
       if (!baseRecordData.hasOwnProperty('work')) {
-        applyChangeList('mainEntity.instanceOf');
+        // changeList = [...changeList, getChangeList(template, baseRecordData ['mainEntity.instanceOf']);
       } else {
         // If work property exists, put the work entity there
-        applyChangeList('mainEntity.instanceOf', 'work');
+        // addToChangeList(['mainEntity.instanceOf'], 'work');
       }
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {

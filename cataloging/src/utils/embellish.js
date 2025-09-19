@@ -1,4 +1,4 @@
-import {each, get, merge} from 'lodash-es';
+import { each, get } from 'lodash-es';
 import {arrayPathToString} from 'lxljs/string';
 
 export function getChangeList(source, target, templatePath, targetPath = null) {
@@ -26,13 +26,10 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
       // console.log('value', JSON.stringify(value));
       if (!targetObject.hasOwnProperty(key) ||
         (targetObject[key] === null && templateObject[key] !== null)) {
-        const addAtPath = [...templatePath, key]
-
         // console.log('adding', JSON.stringify(value));
         // console.log('for path', arrayPathToString(addAtPath));
-
         changeList.push({
-          path: arrayPathToString(addAtPath),
+          path: arrayPathToString([...templatePath, key]),
           value: value,
         });
       } else {
