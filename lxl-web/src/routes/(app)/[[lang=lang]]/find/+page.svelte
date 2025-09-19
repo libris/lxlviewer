@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
-	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { SearchResult } from '$lib/types/search';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import getPageTitle from '$lib/utils/getPageTitle';
@@ -21,11 +21,10 @@
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
+	const isSmallScreen = new MediaQuery('max-width: 640px', false);
 
-	let innerWidth = $state(null);
-	let isSmallScreen = $derived(innerWidth && innerWidth <= 640);
 	const HoldingsComponent = $derived(
-		isSmallScreen ? Modal : USE_HOLDING_PANE ? TrailingPane : Modal
+		USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
 	);
 
 	let previousURL: URL;
@@ -49,7 +48,6 @@
 	}
 </script>
 
-<svelte:window bind:innerWidth />
 <svelte:head>
 	<title>{getPageTitle(page.url.searchParams.get('_q')?.trim())}</title>
 </svelte:head>
@@ -103,7 +101,7 @@
 				{:then holdings}
 					<HoldingsContent
 						{holdings}
-						showSummary={isSmallScreen || !USE_HOLDING_PANE ? true : false}
+						showSummary={isSmallScreen.current || !USE_HOLDING_PANE ? true : false}
 					/>
 				{:catch err}
 					<p>{err}</p>

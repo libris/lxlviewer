@@ -14,11 +14,10 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const locale = getSupportedLocale(params?.lang);
 
 	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
-	// const searchParams = new URLSearchParams(url.searchParams.toString());
 
 	const searchParams = new URLSearchParams();
 
-	// find page load function reloads on change in these params
+	// find page load function reloads on change in these params:
 	const reactiveParams = ['_q', '_limit', '_offset', '_sort', '_spell'];
 	reactiveParams.forEach((p) => {
 		searchParams.set(p, url.searchParams.get(p) || '');
