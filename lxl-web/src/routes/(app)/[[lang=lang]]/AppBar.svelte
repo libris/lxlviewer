@@ -11,6 +11,7 @@
 	import IconLanguage from '~icons/bi/globe';
 	import BetaBanner from '$lib/components/BetaBanner.svelte';
 
+	let dismissedBanner: boolean = $state(false);
 	let bannerOffsetHeight: number = $state(0);
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
 
@@ -22,6 +23,9 @@
 		page.route.id === '/(app)/[[lang=lang]]' || page.route.id === '/(app)/[[lang=lang]]/find'
 	);
 
+	function handleDismissBanner() {
+		dismissedBanner = true;
+	}
 	/*
 	beforeNavigate(({ from, to }) => {
 		if (from?.url.pathname !== to?.url.pathname) {
@@ -53,7 +57,9 @@
 	{page.data.t('header.skipToContent')}
 </a>
 <header class="sticky top-0 z-40">
-	<BetaBanner />
+	{#if !dismissedBanner}
+		<BetaBanner ondismiss={handleDismissBanner} />
+	{/if}
 	<nav class="app-bar bg-app-header grid items-stretch gap-x-3 px-2">
 		<div class="leading-actions flex">
 			<a class="action lg:min-w-16" href="#menu">
