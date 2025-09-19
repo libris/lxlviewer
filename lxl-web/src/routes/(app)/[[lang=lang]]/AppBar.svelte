@@ -48,9 +48,9 @@
 
 <a
 	href="#content"
-	class="bg-primary-900 text-page fixed -top-full left-0 z-50 flex h-9 w-full items-center justify-center font-medium focus:top-0"
+	class="bg-primary-700 text-page fixed -top-full left-0 z-50 flex h-9 w-full items-center justify-center font-medium focus:top-0"
 >
-	{page.data.t('header.jumpToContents')}
+	{page.data.t('header.skipToContent')}
 </a>
 <header class="sticky top-0 z-40">
 	<BetaBanner />

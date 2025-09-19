@@ -4,7 +4,7 @@ export default {
 		searchPlaceholder: 'Title, author, subject etc'
 	},
 	header: {
-		jumpToContents: 'Skip to main content',
+		skipToContent: 'Skip to main content',
 		menu: 'Menu',
 		help: 'Help',
 		myPages: 'My pages',
