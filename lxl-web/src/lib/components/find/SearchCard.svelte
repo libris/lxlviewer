@@ -16,7 +16,7 @@
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getHoldingsLink } from '$lib/utils/holdings';
 	import BiHouse from '~icons/bi/house';
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 
@@ -32,7 +32,10 @@
 	let titleId = $derived(`card-title-${id}`);
 	let bodyId = $derived(`card-body-${id}`);
 	let footerId = $derived(`card-footer-${id}`);
-	let showHighlight = $derived(!page.state.dimissedHighlighting && page.url.hash === `#${id}`);
+	let showHighlight = $derived(
+		(!page.state.dimissedHighlighting && page.url.hash === `#${id}`) ||
+			page.url.searchParams.get('holdings') === id
+	);
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
 
@@ -82,9 +85,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			<a
 				class="btn btn-primary h-7 rounded-full md:h-8"
 				href={page.data.localizeHref(getHoldingsLink(page.url, id))}
-				data-sveltekit-preload-data="false"
+				data-sveltekit-noscroll
 				data-testid="holding-link"
-				onclick={(event) => handleClickHoldings(event, page.state, id)}
 			>
 				<span class="text-base">
 					{#if item.heldByMyLibraries?.length}
@@ -100,7 +102,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	</div>
 {/snippet}
 
-<div class="search-card-container">
+<div class="@container/card">
 	<article
 		{id}
 		class={[
@@ -157,7 +159,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				</div>
 			</a>
 		</div>
-		<div class="card-content">
+		<div class="card-content grid">
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
 					<TypeIcon class="text-2xs mb-0.25 inline" />
@@ -234,10 +236,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						</span>
 					{/if}
 				{/each}
-				<div class="md:hidden">
-					{@render holdingsButton()}
-				</div>
 			</footer>
+			<div class="card-actions self-end">
+				{@render holdingsButton()}
+			</div>
 		</div>
 
 		{#if item._debug}
@@ -275,24 +277,19 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				{/if}
 			{/key}
 		{/if}
-		<div class="hidden md:inline">
-			{@render holdingsButton()}
-		</div>
 	</article>
 </div>
 
 <style lang="postcss">
-	@reference "../../../app.css";
-
-	.search-card-container {
-		container-type: inline-size;
-	}
+	@reference 'tailwindcss';
 
 	.search-card {
-		grid-template-areas: 'image content debug';
-		grid-template-columns: 64px 1fr auto;
+		grid-template-areas:
+			'image content'
+			'debug .';
+		grid-template-columns: 64px 1fr;
 
-		@container (min-width: 768px) {
+		@container card (min-width: 768px) {
 			@apply gap-x-6 px-6 py-4;
 			grid-template-columns: 72px 1fr;
 		}
@@ -309,13 +306,41 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.card-content {
 		grid-area: content;
+
+		grid-template-areas:
+			'header header'
+			'body body'
+			'footer footer'
+			'actions actions';
+
+		grid-template-columns: 1fr auto;
+
+		@container card (min-width: 30rem) {
+			grid-template-areas:
+				'header header'
+				'body actions'
+				'footer actions';
+		}
 	}
 
 	.card-debug {
 		grid-area: extra;
 	}
 
+	.card-header {
+		grid-area: header;
+	}
+
+	.card-body {
+		grid-area: body;
+	}
+
+	.card-actions {
+		grid-area: actions;
+	}
+
 	.card-footer {
+		grid-area: footer;
 		/* hide dangling divider · */
 		& .divider {
 			display: none;

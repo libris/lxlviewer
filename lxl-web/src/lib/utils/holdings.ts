@@ -15,11 +15,13 @@ import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 import { DisplayUtil, toString } from '$lib/utils/xl.js';
 import getAtPath from '$lib/utils/getAtPath';
 import { holdersCache } from '$lib/utils/holdersCache.svelte';
+import { USE_HOLDING_PANE } from '$lib/constants/panels';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('holdings', value);
-	return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
+	const conditionallyAddAnchor = url.searchParams.has('holdings') ? '' : `#${value}`;
+	return `${url.origin}${url.pathname}?${newSearchParams.toString()}${USE_HOLDING_PANE ? conditionallyAddAnchor : ''}`;
 }
 
 export function handleClickHoldings(

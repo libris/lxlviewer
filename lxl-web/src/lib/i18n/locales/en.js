@@ -244,7 +244,9 @@ export default {
 		leadingPane: 'Leading pane',
 		leadingPaneTabs: 'Tabs for leading pane',
 		show: 'Show pane',
-		hide: 'Hide pane'
+		hide: 'Hide pane',
+		trailingPane: 'Trailing pane',
+		resizeMe: 'Drag to resize pane'
 	},
 	citations: {
 		cite: 'Cite',

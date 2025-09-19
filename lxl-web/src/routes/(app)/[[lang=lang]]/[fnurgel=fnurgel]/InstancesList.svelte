@@ -124,10 +124,10 @@
 								</div>
 							{/each}
 							<div class="text flex flex-1 items-center justify-end text-sm">
-								{#if id && page.data.holdingsByInstanceId[id]}
+								{#if id && page.data.holdings.holdingsByInstanceId[id]}
 									{@const myLibsWithHolding = getMyLibsFromHoldings(
 										userSettings.myLibraries,
-										page.data.holdingsByInstanceId[id]
+										page.data.holdings.holdingsByInstanceId[id]
 									)}
 									{#if myLibsWithHolding.length}
 										<span class="p-2">
@@ -140,8 +140,8 @@
 										data-sveltekit-preload-data="false"
 										onclick={(event) => handleClickHoldings(event, page.state, id)}
 									>
-										{page.data.holdingsByInstanceId[id].length}
-										{page.data.holdingsByInstanceId[id].length === 1
+										{page.data.holdings.holdingsByInstanceId[id].length}
+										{page.data.holdings.holdingsByInstanceId[id].length === 1
 											? page.data.t('holdings.library')
 											: page.data.t('holdings.libraries')}
 									</a>

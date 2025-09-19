@@ -53,7 +53,7 @@
 					linkToFull
 				/>
 			</div>
-			{#if id && page.data.holdingsByInstanceId[id]}
+			{#if id && page.data.holdings.holdingsByInstanceId[id]}
 				<div class="flex flex-col gap-1">
 					<a
 						class="link-subtle"
@@ -62,8 +62,8 @@
 						onclick={(event) => handleClickHoldings(event, page.state, id)}
 					>
 						{page.data.t('holdings.availableAt')}
-						{page.data.holdingsByInstanceId[id].length}
-						{page.data.holdingsByInstanceId[id].length === 1
+						{page.data.holdings.holdingsByInstanceId[id].length}
+						{page.data.holdings.holdingsByInstanceId[id].length === 1
 							? page.data.t('holdings.library')
 							: page.data.t('holdings.libraries')}
 					</a>

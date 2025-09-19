@@ -14,11 +14,12 @@ import getAtPath from '$lib/utils/getAtPath';
 import {
 	getHoldingsByInstanceId,
 	getHoldingsByType,
-	getHoldersByType
+	getHoldersByType,
+	getBibIdsByInstanceId,
+	getItemLinksByBibId
 } from '$lib/utils/holdings.js';
 import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
 import getTypeLike from '$lib/utils/getTypeLike';
-import { getUriSlug } from '$lib/utils/http';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
@@ -118,6 +119,8 @@ export const load = async ({ params, locals, fetch }) => {
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
+	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
+	const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
 
 	if (holdersCache.holders) {
 		console.log('Current number of cached holders:', Object.keys(holdersCache.holders).length);
@@ -125,7 +128,6 @@ export const load = async ({ params, locals, fetch }) => {
 
 	return {
 		uri: resource['@id'] as string,
-		workFnurgel: getUriSlug(resourceId || undefined),
 		type: mainEntity[JsonLd.TYPE],
 		types: types,
 		title: toString(heading),
@@ -134,8 +136,12 @@ export const load = async ({ params, locals, fetch }) => {
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances: sortedInstances,
-		holdingsByInstanceId,
-		holdersByType,
+		holdings: {
+			holdingsByInstanceId,
+			holdersByType,
+			itemLinksByBibId,
+			bibIdsByInstanceId
+		},
 		images,
 		tableOfContents
 	};

@@ -38,7 +38,7 @@
 					{#if id}
 						{@const favWithHolding = getMyLibsFromHoldings(
 							userSettings.myLibraries,
-							page.data.holdingsByInstanceId[id]
+							page.data.holdings.holdingsByInstanceId[id]
 						)}
 						{#if favWithHolding.length}
 							<div class="mr-1 text-lg">

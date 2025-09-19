@@ -46,6 +46,7 @@
 
 	--app-bar-height: 71px;
 	--toolbar-height: 48px;
+	--beta-banner-height: 44px;
 
 	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
 	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);
@@ -148,6 +149,8 @@
 	--color-input: var(--color-page);
 	--color-placeholder: var(--color-neutral-500);
 	--color-disabled: var(--color-neutral-400);
+
+	--color-aside: oklch(0.994 0 0);
 }
 
 @layer base {
