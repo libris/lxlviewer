@@ -47,7 +47,7 @@
 			<div
 				class="bg-warning-800/10 text-body has-focus:bg-error flex size-5 items-center justify-center rounded-sm"
 			>
-				<IconClose class="size-3.5" />
+				<IconClose class="size-3" />
 			</div>
 		</button>
 	</div>
