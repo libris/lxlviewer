@@ -146,7 +146,7 @@ export default {
     'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
   },
   warnOnSaveConcerning: {
-    concerning: 'concerning',
+    '@graph.1.concerning': ['concerning']
   },
   propertyChains: {
     '@reverse.itemOf.heldBy.@id': {
