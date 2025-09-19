@@ -18,7 +18,8 @@ export default {
 		messageDesktop:
 			'Välkommen till nya Libris! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
 		feedback: 'Tyck till',
-		old: 'Gå till gamla Libris'
+		old: 'Gå till gamla Libris',
+		dismiss: 'Dölj information om betan'
 	},
 	about: {
 		pageTitle: 'Om betan'

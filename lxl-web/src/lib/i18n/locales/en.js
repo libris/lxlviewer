@@ -19,7 +19,8 @@ export default {
 		messageDesktop:
 			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
 		feedback: 'Share feedback',
-		old: 'Go to old Libris'
+		old: 'Go to old Libris',
+		dismiss: 'Hide beta info'
 	},
 	about: {
 		pageTitle: 'About the beta'
