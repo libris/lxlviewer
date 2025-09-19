@@ -46,18 +46,24 @@
 	</div>
 {/snippet}
 
-<header class="sticky top-0 z-50">
+<a
+	href="#content"
+	class="bg-primary-900 text-page fixed -top-full left-0 z-50 flex h-9 w-full items-center justify-center font-medium focus:top-0"
+>
+	{page.data.t('header.jumpToContents')}
+</a>
+<header class="sticky top-0 z-40">
 	<BetaBanner />
-	<nav class="app-bar bg-app-header grid items-stretch gap-x-3 px-2 lg:px-3">
+	<nav class="app-bar bg-app-header grid items-stretch gap-x-3 px-2">
 		<div class="leading-actions flex">
-			<a class="action" href="#menu">
+			<a class="action lg:min-w-16" href="#menu">
 				{@render actionItemContents({
 					Icon: IconMenu,
 					label: page.data.t('header.menu')
 				})}
 			</a>
 			<a
-				class="action px-1.5 lg:px-3"
+				class="action px-1.5"
 				href={page.data.localizeHref(page.data.base)}
 				aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 			>

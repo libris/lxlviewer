@@ -3,6 +3,7 @@ export default {
 		searchPlaceholder: 'Titel, författare, ämne med mera'
 	},
 	header: {
+		jumpToContents: 'Hoppa till innehåll',
 		menu: 'Meny',
 		help: 'Hjälp',
 		myPages: 'Mina sidor',
