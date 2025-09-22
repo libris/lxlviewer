@@ -9,10 +9,14 @@
 	};
 
 	let { ondismiss }: Props = $props();
+	const dismissable = $derived(ondismiss);
 </script>
 
 <div
-	class="beta-banner bg-warning-300 flex min-h-9 place-content-between items-stretch gap-1.5 px-3 pr-0 font-medium"
+	class={[
+		'beta-banner bg-warning-300 flex min-h-9 place-content-between items-stretch gap-1.5 px-3 font-medium',
+		dismissable && 'pr-0'
+	]}
 >
 	<span class="flex flex-1 items-center gap-1.5">
 		<span class="text-3xs flex h-5 items-center rounded-sm bg-black px-1 text-white uppercase">
@@ -37,16 +41,18 @@
 			{page.data.t('banner.old')}
 		</a>
 	</span>
-	<button
-		type="button"
-		class="focus:[&>*]:bg-warning-800/25 hover:[&>*]:bg-warning-800/25 flex h-9 w-11 items-center justify-center"
-		aria-label={page.data.t('banner.dismiss')}
-		onclick={ondismiss}
-	>
-		<div
-			class="bg-warning-800/10 text-body has-focus:bg-error flex size-5 items-center justify-center rounded-sm"
+	{#if dismissable}
+		<button
+			type="button"
+			class="focus:[&>*]:bg-warning-800/25 hover:[&>*]:bg-warning-800/25 flex h-9 w-11 items-center justify-center"
+			aria-label={page.data.t('banner.dismiss')}
+			onclick={ondismiss}
 		>
-			<IconClose class="size-3" onclick={ondismiss} />
-		</div>
-	</button>
+			<div
+				class="bg-warning-800/10 text-body has-focus:bg-error flex size-5 items-center justify-center rounded-sm"
+			>
+				<IconClose class="size-3" onclick={ondismiss} />
+			</div>
+		</button>
+	{/if}
 </div>

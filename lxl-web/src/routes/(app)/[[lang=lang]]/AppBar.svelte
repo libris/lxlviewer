@@ -11,8 +11,8 @@
 	import IconLanguage from '~icons/bi/globe';
 	import BetaBanner from '$lib/components/BetaBanner.svelte';
 
+	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
-	let bannerOffsetHeight: number = $state(0);
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
 
 	const otherLangCode = $derived(
@@ -58,7 +58,7 @@
 </a>
 <header class="sticky top-0 z-40">
 	{#if !dismissedBanner}
-		<BetaBanner ondismiss={handleDismissBanner} />
+		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
 	<nav class="app-bar bg-app-header grid items-stretch gap-x-3 px-2">
 		<div class="leading-actions flex">
@@ -93,7 +93,6 @@
 			<div class="mx-auto w-full max-w-7xl">
 				<SuperSearchWrapper
 					placeholder={page.data.t('header.searchPlaceholder')}
-					--offset-top={`${bannerOffsetHeight}px`}
 					bind:this={superSearchWrapperComponent}
 				/>
 			</div>
