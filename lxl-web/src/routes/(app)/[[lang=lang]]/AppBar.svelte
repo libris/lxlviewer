@@ -128,6 +128,7 @@
 					aria-label={page.data.t('header.menu')}
 					aria-labelledby={IDs.appBarMenuLabel}
 					onclick={handleClickMenuAction}
+					onfocusout={handleMenuDialogFocusOut}
 					bind:this={menuToggleElement}
 				>
 					{@render actionItemContents({
