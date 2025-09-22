@@ -3,19 +3,16 @@
 	import { afterNavigate } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
-	import { baseLocale } from '$lib/i18n/locales';
 	import QualifierPill from './QualifierPill.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
-	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
-	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
 	import type { DisplayMapping } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
-	import BiXLg from '~icons/bi/x-lg';
-	import BiArrowLeft from '~icons/bi/arrow-left';
-	import BiSearch from '~icons/bi/search';
+	import IconClose from '~icons/bi/x-lg';
+	import IconBack from '~icons/bi/arrow-left-short';
+	import IconSearch from '~icons/bi/search';
 	import IconAddQualifierKey from '~icons/bi/plus-circle';
 	import '$lib/styles/lxlquery.css';
 
@@ -60,23 +57,10 @@
 		}, 300);
 	});
 
-	const actionUrl = $derived(
-		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
-	);
 	let cursor = $derived(selection?.head || 0);
-	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
-	let pageParams = $derived.by(() => {
-		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
-		// Always reset these params on new search
-		p.set('_offset', '0');
-		p.delete('_i');
-		p.delete('_o');
-		p.delete('_p');
-		return p;
-	});
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
 	afterNavigate(({ to }) => {
@@ -97,6 +81,7 @@
 		}
 	});
 
+	/*
 	function handleSubmit(event: SubmitEvent) {
 		if (!q || !q.trim()) {
 			event.preventDefault();
@@ -104,6 +89,7 @@
 			q = addSpaceIfEndingQualifier(q.trim());
 		}
 	}
+	*/
 
 	const editedParentNode = $derived.by(() => {
 		if (!q || !selection) {
@@ -183,163 +169,204 @@
 	</span>
 {/snippet}
 
-<form
-	class={['relative w-full', isFindRoute && 'find-page']}
-	action={actionUrl}
-	onsubmit={handleSubmit}
-	data-testid="main-search"
->
-	{#key page.data.locale}
-		<SuperSearch
-			name="_q"
-			bind:this={superSearch}
-			bind:value={q}
-			bind:selection
-			bind:isLoading
-			language={lxlQuery}
-			{placeholder}
-			endpoint={`/api/${page.data.locale}/supersearch`}
-			queryFn={(query, cursor) => {
-				return new URLSearchParams({
-					_q: query,
-					_limit: '5',
-					cursor: cursor.toString(),
-					_sort: page.url.searchParams.get('_sort') || ''
-				});
-			}}
-			transformFn={handleTransform}
-			extensions={[derivedLxlQualifierPlugin]}
-			toggleWithKeyboardShortcut
-			wrappingArrowKeyNavigation
-			comboboxAriaLabel={page.data.t('search.search')}
-			defaultInputCol={2}
-			debouncedWait={400}
-			onexpand={handleOnExpand}
-			onchange={handleOnChange}
-		>
-			{#snippet inputRow({
-				expanded,
-				inputField,
-				getCellId,
-				isFocusedCell,
-				isFocusedRow,
-				onclickClear,
-				onclickClose
-			})}
-				<div
-					class={[
-						'supersearch-input rounded-d border-primary-500/50 hover:border-primary-500 bg-input flex h-12 w-full cursor-text overflow-hidden rounded-md border focus-within:relative',
-						isFocusedRow() && [
-							'outline-primary-200 has-focus:border-primary-500 has-focus:outline-4',
-							expanded && 'has-focus:outline-primary-200'
-						]
-					]}
-				>
-					{#if expanded}
-						<button
-							type="button"
-							id={getCellId(0)}
-							class:focused-cell={isFocusedCell(0)}
-							aria-label={page.data.t('general.close')}
-							class="text-subtle p-4 sm:hidden"
-							onclick={onclickClose}
-						>
-							{#if debouncedLoading}
-								{@render loading()}
-							{:else}
-								<BiArrowLeft aria-hidden="true" />
-							{/if}
-						</button>
-					{/if}
-					<div class="flex-1 overflow-hidden">
-						<div class={['text-subtle absolute p-4', expanded ? 'hidden sm:block' : 'block']}>
-							{#if debouncedLoading}
-								{@render loading()}
-							{:else}
-								<BiSearch aria-hidden="true" />
-							{/if}
-						</div>
-						{@render inputField()}
-					</div>
-					{#if q}
-						<button
-							type="reset"
-							id={getCellId(1)}
-							class:focused-cell={isFocusedCell(1)}
-							class="text-subtle p-4"
-							aria-label={page.data.t('search.clearFilters')}
-							onclick={onclickClear}
-						>
-							<BiXLg />
-						</button>
-					{/if}
-				</div>
-			{/snippet}
-			{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-				<nav>
-					{#if showAddQualifiers}
-						<div
-							id="supersearch-add-qualifier-key-label"
-							class="text-2xs text-subtle px-4 font-medium"
-						>
-							{page.data.t('supersearch.addQualifiers')}
-						</div>
-						<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-							<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
-								<IconAddQualifierKey class="text-subtle shrink-0" />
-								{#each qualifierSuggestions as { key, label }, cellIndex (key)}
-									<button
-										type="button"
-										id={getCellId(1, cellIndex)}
-										class={[
-											'text-body bg-accent-50 text-2xs border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
-											isFocusedCell(1, cellIndex) &&
-												'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
-										]}
-										onclick={() => addQualifierKey(key)}
-									>
-										{label}:
-									</button>
-								{/each}
-							</div>
-						</div>
-					{/if}
-					{#if resultsCount && q.trim().length}
-						<div id="supersearch-results-label" class="text-2xs text-subtle px-4 font-medium">
-							{page.data.t('supersearch.suggestions')}
-						</div>
-						<div role="rowgroup" aria-labelledby="supersearch-results-label">
-							{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
-						</div>
-					{/if}
-					{#if showAddQualifiers && resultsCount}
-						<div role="row" class="border-neutral border-t">
-							<button
-								type="submit"
-								class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs"
-								class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
-								>{page.data.t('supersearch.showAll')}</button
-							>
-						</div>
-					{/if}
-				</nav>
-			{/snippet}
-			{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
-				{#if resultItem}
-					<Suggestion item={resultItem} {getCellId} {isFocusedCell} />
+{#key page.data.locale}
+	<SuperSearch
+		name="_q"
+		bind:this={superSearch}
+		bind:value={q}
+		bind:selection
+		bind:isLoading
+		language={lxlQuery}
+		{placeholder}
+		endpoint={`/api/${page.data.locale}/supersearch`}
+		queryFn={(query, cursor) => {
+			return new URLSearchParams({
+				_q: query,
+				_limit: '5',
+				cursor: cursor.toString(),
+				_sort: page.url.searchParams.get('_sort') || ''
+			});
+		}}
+		transformFn={handleTransform}
+		extensions={[derivedLxlQualifierPlugin]}
+		toggleWithKeyboardShortcut
+		wrappingArrowKeyNavigation
+		comboboxAriaLabel={page.data.t('search.search')}
+		defaultInputCol={2}
+		debouncedWait={400}
+		onexpand={handleOnExpand}
+		onchange={handleOnChange}
+	>
+		{#snippet inputRow({
+			expanded,
+			inputField,
+			getCellId,
+			isFocusedCell,
+			isFocusedRow,
+			onclickClear,
+			onclickClose
+		})}
+			<div
+				class={[
+					'supersearch-input bg-input flex w-full cursor-text overflow-hidden focus-within:relative lg:h-12',
+					expanded && 'expanded 3xl:mt-3.5 lg:mt-3',
+					isFocusedRow() && ['focused-row']
+				]}
+			>
+				{#if expanded}
+					<button
+						type="button"
+						id={getCellId(0)}
+						class:focused-cell={isFocusedCell(0)}
+						aria-label={page.data.t('general.close')}
+						class={[
+							'action text-subtle flex size-11 items-center justify-center lg:hidden',
+							expanded && 'h-14 w-13 lg:h-12 lg:w-11'
+						]}
+						onclick={onclickClose}
+					>
+						{#if debouncedLoading}
+							{@render loading()}
+						{:else}
+							<IconBack aria-hidden="true" class="size-7 lg:size-6" />
+						{/if}
+					</button>
 				{/if}
-			{/snippet}
-		</SuperSearch>
-	{/key}
-	{#each Array.from(pageParams) as [name, value] (name)}
-		{#if name !== '_q'}
-			<input type="hidden" {name} {value} />
-		{/if}
-	{/each}
-</form>
+				<div class="flex-1 overflow-hidden">
+					<div
+						class={[
+							'text-subtle absolute flex size-11 items-center justify-center lg:h-12',
+							expanded && 'bg-input z-50 hidden h-14 w-13 lg:flex lg:h-12 lg:w-11'
+						]}
+					>
+						{#if debouncedLoading}
+							{@render loading()}
+						{:else}
+							<IconSearch aria-hidden="true" class="size-3.5 lg:size-4" />
+						{/if}
+					</div>
+					{@render inputField()}
+				</div>
+				{#if q}
+					<button
+						type="reset"
+						id={getCellId(1)}
+						class:focused-cell={isFocusedCell(1)}
+						class={[
+							'action text-subtle flex size-11 items-center justify-center lg:h-12',
+							expanded && 'h-14 w-13 lg:h-11 lg:w-11'
+						]}
+						aria-label={page.data.t('search.clearFilters')}
+						onclick={onclickClear}
+					>
+						<IconClose />
+					</button>
+				{/if}
+			</div>
+		{/snippet}
+		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
+			<nav class="pt-3">
+				{#if showAddQualifiers}
+					<div
+						id="supersearch-add-qualifier-key-label"
+						class="text-subtle mt-1 mb-1 px-4 text-xs font-medium"
+					>
+						{page.data.t('supersearch.addQualifiers')}
+					</div>
+					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
+						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
+							<IconAddQualifierKey class="text-subtle shrink-0" />
+							{#each qualifierSuggestions as { key, label }, cellIndex (key)}
+								<button
+									type="button"
+									id={getCellId(1, cellIndex)}
+									class={[
+										'text-body bg-accent-50 text-2xs  border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
+										isFocusedCell(1, cellIndex) &&
+											'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
+									]}
+									onclick={() => addQualifierKey(key)}
+								>
+									{label}:
+								</button>
+							{/each}
+						</div>
+					</div>
+				{/if}
+				{#if resultsCount && q.trim().length}
+					<div id="supersearch-results-label" class="text-subtle mb-1 px-4 text-xs font-medium">
+						{page.data.t('supersearch.suggestions')}
+					</div>
+					<div role="rowgroup" aria-labelledby="supersearch-results-label">
+						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+					</div>
+				{/if}
+				{#if showAddQualifiers && resultsCount}
+					<div role="row" class="border-neutral border-t">
+						<button
+							type="submit"
+							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs"
+							class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
+							>{page.data.t('supersearch.showAll')}</button
+						>
+					</div>
+				{/if}
+			</nav>
+		{/snippet}
+		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
+			{#if resultItem}
+				<Suggestion item={resultItem} {getCellId} {isFocusedCell} />
+			{/if}
+		{/snippet}
+	</SuperSearch>
+{/key}
 
 <style lang="postcss">
 	@reference "../../../app.css";
+
+	.supersearch-input {
+		height: 100%;
+		min-height: var(--search-input-height);
+		font-size: var(--text-xs);
+		border-radius: var(--radius-md);
+		box-shadow: 0 0 0 1px var(--color-primary-200);
+		&:hover,
+		&:focus-within {
+			box-shadow: 0 0 0 1px var(--color-primary-500);
+		}
+		@variant lg {
+			&:hover {
+				box-shadow: 0 0 0 1px var(--color-primary-500);
+			}
+		}
+	}
+
+	.expanded.supersearch-input {
+		border-bottom: 1px solid var(--color-neutral);
+		border-radius: 0;
+		box-shadow: none;
+
+		@variant lg {
+			border-bottom: none;
+			border-radius: var(--radius-md);
+			margin-inline: calc(var(--spacing) * 4);
+			box-shadow: 0 0 0 1px var(--color-primary-200);
+
+			&.focused-row {
+				box-shadow: 0 0 0 1px var(--color-primary-500);
+			}
+		}
+	}
+
+	.action {
+		&:hover {
+			background: var(--color-primary-50);
+		}
+
+		&:focus {
+			background: var(--color-primary-100);
+		}
+	}
 
 	:global(.supersearch-dialog) {
 		position: static;
@@ -352,23 +379,24 @@
 		padding: 0;
 		top: 0;
 
-		@variant sm {
-			top: var(--offset-top, 0);
+		@variant lg {
+			top: calc(var(--banner-height, 0));
 		}
 	}
 
 	:global(.supersearch-dialog-wrapper) {
-		display: grid;
-		grid-template-areas: var(--grid-template-areas);
-		grid-template-columns: var(--grid-template-columns);
-		column-gap: calc(var(--spacing) * 8);
-
-		pointer-events: none;
 		height: 100%;
 		width: 100%;
-		position: fixed;
 
-		@variant sm {
+		@variant lg {
+			position: fixed;
+			pointer-events: none;
+
+			display: grid;
+			grid-template-areas: var(--search-grid-template-areas);
+			grid-template-columns: var(--search-grid-template-columns);
+			padding: var(--search-padding);
+			gap: var(--search-gap);
 			//padding-inline: calc(var(--spacing) * 3);
 			height: auto;
 		}
@@ -379,28 +407,19 @@
 		background: var(--color-page);
 		pointer-events: auto;
 		max-height: 100vh;
-		overflow-x: hidden;
 		overflow-y: scroll;
 		overscroll-behavior: contain;
 		scrollbar-width: none;
+		height: 100%;
 
-		@variant sm {
+		@variant lg {
 			border-radius: var(--radius-md);
 			@apply drop-shadow-md;
 		}
 	}
 
-	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-20 items-stretch px-4 pt-3 pb-3;
-		background-color: var(--color-page);
-	}
-
 	:global(.supersearch-suggestions) {
 		@apply min-h-2;
-	}
-
-	:global(.supersearch-dialog .supersearch-input) {
-		@apply overflow-hidden rounded-md sm:px-0;
 	}
 
 	:global(.supersearch-dialog .focused) {
@@ -417,12 +436,15 @@
 
 	/* suggestions */
 
+	/*
 	:global(.supersearch-suggestions [role='row']:last-child) {
-		border-color: var(--color-neutral);
+		border-color: var(--color-warning-600);
 	}
+	*/
 
 	/* snippets elements */
 
+	/*
 	:global(.supersearch-show-more) {
 		@apply flex min-h-11 w-full items-center px-4 text-left text-sm;
 
@@ -430,6 +452,7 @@
 			background-color: var(--color-primary-50);
 		}
 	}
+	*/
 
 	/* codemirror elements */
 
@@ -437,35 +460,63 @@
 		@apply block flex-1;
 	}
 
-	:global(.codemirror-container .cm-scroller) {
-		@apply min-h-12 font-sans outline-hidden;
+	.supersearch-input :global(.cm-scroller) {
+		font-family: var(--font-sans);
 		scrollbar-width: none;
+		min-height: calc(var(--spacing) * 11);
 	}
 
-	:global(.supersearch-input .cm-line) {
-		padding-left: calc(var(--spacing) * 11);
-		min-height: 28px;
-		line-height: 28px;
-		font-size: var(--text-xs);
-		@variant sm {
-			font-size: var(--text-sm);
+	.expanded.supersearch-input :global(.cm-scroller) {
+		min-height: calc(var(--spacing) * 14);
+		scrollbar-width: auto;
+		max-height: 96px;
+
+		@variant lg {
+			min-height: calc(var(--spacing) * 11);
 		}
+	}
+
+	.supersearch-input :global(.cm-line) {
+		min-height: calc(var(--spacing) * 11);
+		font-size: var(--text-xs);
+		line-height: 32px;
+		padding-left: calc(var(--spacing) * 11);
+		padding-block: calc(var(--spacing) * 1.5);
+
+		@variant lg {
+			padding-block: calc(var(--spacing) * 2);
+		}
+	}
+
+	.expanded.supersearch-input :global(.cm-line) {
+		min-height: calc(var(--spacing) * 12);
+		padding-block: calc(var(--spacing) * 3);
+		padding-left: 0;
+
+		@variant lg {
+			padding-block: calc(var(--spacing) * 2);
+
+			padding-left: calc(var(--spacing) * 11);
+		}
+	}
+
+	.supersearch-input :global(.cm-content) {
+		margin: 0;
+		padding: 0;
 	}
 
 	:global(.supersearch-dialog .supersearch-input .cm-line) {
 		padding-left: 0;
-		@variant sm {
+		@variant lg {
 			padding-left: calc(var(--spacing) * 11);
 		}
 	}
 
 	:global(.codemirror-container .cm-content) {
-		padding-top: 0.6125rem;
-		padding-bottom: 0.6125rem;
 		outline: none;
 	}
 
-	:global(.codemirror-container .cm-placeholder) {
+	.expanded :global(.codemirror-container .cm-placeholder) {
 		color: var(--color-placeholder);
 	}
 </style>

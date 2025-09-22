@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { onMount, type Component, type SvelteComponent } from 'svelte';
-	import { Locales, type LocaleCode } from '$lib/i18n/locales';
+	import { onMount, type Component } from 'svelte';
+	import { Locales, baseLocale, type LocaleCode } from '$lib/i18n/locales';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
+	import AppSearch from './AppSearch.svelte';
 	import IconMenu from '~icons/bi/list';
 	import IconCloseMenu from '~icons/bi/x-lg';
 	import IconBookmark from '~icons/bi/bookmark';
@@ -18,7 +19,6 @@
 	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
-	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -26,6 +26,10 @@
 
 	const showSearchInputOnMobile = $derived(
 		page.route.id === '/(app)/[[lang=lang]]' || page.route.id === '/(app)/[[lang=lang]]/find'
+	);
+
+	const findActionUrl = $derived(
+		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
 	);
 
 	function handleDismissBanner() {
@@ -115,7 +119,7 @@
 	{#if !dismissedBanner}
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
-	<nav class="app-bar bg-app-header grid items-stretch gap-x-3 px-2">
+	<nav class="app-bar bg-app-header grid items-stretch">
 		<ul class="leading-actions flex lg:gap-2">
 			<li>
 				<svelte:element
@@ -188,12 +192,9 @@
 				'items-center'
 			]}
 		>
-			<div class="mx-auto w-full max-w-7xl">
-				<SuperSearchWrapper
-					placeholder={page.data.t('header.searchPlaceholder')}
-					bind:this={superSearchWrapperComponent}
-				/>
-			</div>
+			<form action={findActionUrl} class="mx-auto w-full max-w-7xl lg:px-4">
+				<AppSearch id="search" name="_q" placeholder={page.data.t('header.searchPlaceholder')} />
+			</form>
 		</search>
 		<ul class="trailing-actions flex justify-end lg:gap-2">
 			<li class="lg:hidden">
@@ -252,20 +253,12 @@
 	@reference 'tailwindcss';
 
 	.app-bar {
-		grid-template-areas:
-			'leading-actions trailing-actions trailing-actions'
-			'search search search';
+		grid-template-areas: var(--search-grid-template-areas);
 		grid-template-rows: var(--app-bar-height);
-		grid-template-columns: auto 1fr 1fr;
+		grid-template-columns: var(--search-grid-template-columns);
+		padding: var(--search-padding);
+		gap: var(--search-gap);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
-
-		@variant lg {
-			--grid-template-areas: 'leading-actions search trailing-actions';
-			--grid-template-columns: 1fr minmax(0, 3fr) 1fr;
-			grid-template-areas: var(--grid-template-areas);
-			grid-template-rows: var(--app-bar-height);
-			grid-template-columns: var(--grid-template-columns);
-		}
 	}
 
 	.leading-actions {
