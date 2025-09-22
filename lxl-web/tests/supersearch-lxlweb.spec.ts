@@ -15,7 +15,7 @@ test('click input expands dialog', async ({ page }) => {
 test('type & enter performs search', async ({ page }) => {
 	await page.getByRole('combobox').fill('hej');
 	await page.keyboard.press('Enter');
-	await expect(page).toHaveURL('/find?_q=hej&_limit=20&_offset=0&_sort=&_spell=true');
+	await expect(page).toHaveURL('/find?_q=hej');
 });
 
 test('expanded content shows persistant items and results', async ({ page }) => {
@@ -37,7 +37,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'search results are shown after typing'
 	).toHaveCount(5);
-	await page.goto('/find?_limit=20&_offset=0&_q=language%3A"lang%3Aswe"&_sort=&_spell=true');
+	await page.goto('/find?_q=language%3A"lang%3Aswe"');
 	await page.getByTestId('main-search').click();
 	await expect(
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
