@@ -16,7 +16,7 @@
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
 	let menuDialogElement: HTMLDialogElement | undefined = $state();
-	let expandedMenu = $state(false);
+	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
@@ -87,6 +87,12 @@
 		appBarSearchLabel: 'app-bar-search-label',
 		appBarChangeLangLabel: 'app-bar-change-lang-label'
 	};
+
+	$effect(() => {
+		if (page.url.hash === '#menu' && mounted) {
+			showExpandedMenu();
+		}
+	});
 </script>
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
