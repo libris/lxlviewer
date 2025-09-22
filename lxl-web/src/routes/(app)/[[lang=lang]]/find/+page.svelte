@@ -118,7 +118,7 @@
 
 	.search-result {
 		&.has-trailing-pane {
-			max-height: calc(100vh - (var(--app-bar-height) + var(--beta-banner-height)));
+			max-height: calc(100vh - (var(--app-bar-height) + var(--banner-height, 0)));
 			overflow: hidden;
 
 			& .search-result-content {

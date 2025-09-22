@@ -4,7 +4,6 @@
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
-	import SuperSearchWrapper from '$lib/components/supersearch/SuperSearchWrapper.svelte';
 	import IconMenu from '~icons/bi/list';
 	import IconCloseMenu from '~icons/bi/x-lg';
 	import IconBookmark from '~icons/bi/bookmark';
@@ -117,7 +116,7 @@
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
 	<nav class="app-bar bg-app-header grid items-stretch gap-x-3 px-2">
-		<ul class="leading-actions flex gap-2">
+		<ul class="leading-actions flex lg:gap-2">
 			<li>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -146,7 +145,7 @@
 				{#if mounted}
 					<dialog
 						id={IDs.appBarMenu}
-						class="menu-dialog border-neutral border-t-primary fixed z-50 hidden w-full flex-col border-b text-sm shadow-md open:flex sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-tr-lg sm:rounded-b-lg sm:border"
+						class="menu-dialog border-neutral border-t-primary fixed z-50 hidden w-full flex-col overflow-hidden border-b text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-lg sm:rounded-b-lg sm:border"
 						closedby="any"
 						tabindex="-1"
 						bind:this={menuDialogElement}
@@ -157,7 +156,7 @@
 						<button
 							type="button"
 							onclick={closeExpandedMenu}
-							class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 border-neutral flex min-h-9 items-center justify-center gap-1 border-t text-xs sm:hidden"
+							class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 border-neutral flex min-h-9 items-center justify-center gap-2 border-t text-xs sm:hidden"
 						>
 							<IconCloseMenu />
 							{page.data.t('header.closeMenu')}
@@ -196,7 +195,7 @@
 				/>
 			</div>
 		</search>
-		<ul class="trailing-actions flex justify-end">
+		<ul class="trailing-actions flex justify-end lg:gap-2">
 			<li class="lg:hidden">
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -311,7 +310,8 @@
 		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px);
 
 		@variant sm {
-			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
+			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px);
+			border-top: 3px solid var(--color-primary);
 		}
 	}
 </style>
