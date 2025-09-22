@@ -16,6 +16,7 @@ import FieldAdder from '@/components/inspector/field-adder.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import FormMixin from '@/components/mixins/form-mixin.vue';
 import { JOB_TYPE } from "@/utils/bulk.js";
+import Spinner from "../shared/spinner.vue";
 
 export default {
   mixins: [LensMixin, FormMixin],
@@ -274,6 +275,7 @@ export default {
         name: 'apply-template',
         value: template.value,
       });
+      this.$store.dispatch('setInspectorStatusValue', {property: 'embellishing', value: template.value});
     },
     closeMarc() {
       this.showMarcPreview = false;
@@ -493,6 +495,7 @@ export default {
     },
   },
   components: {
+    Spinner,
     'field-adder': FieldAdder,
   },
   mounted() {
@@ -608,10 +611,13 @@ export default {
             {{ translatePhrase("No matching templates") }}
           </span>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showEmbellishTemplateSubMenu" :key="key">
-          <a class="Toolbar-menuLink" @click="applyTemplate(value)">
-            <i class="fa fa-fw fa-plus" />
-            {{ value.label }}
+        <li class="Toolbar-menuItem inSubMenu" v-for="(template, key) in validTemplates" v-show="showEmbellishTemplateSubMenu" :key="key">
+          <a class="Toolbar-menuLink" @click="applyTemplate(template)">
+
+            <Spinner v-if="inspector.status.embellishing === template.value" size="sm"></Spinner>
+            <i v-else class="fa fa-fw fa-plus" />
+<!--            <pre>{{ inspector.status.embellishing }}</pre>-->
+            {{ template.label }}
           </a>
         </li>
         <li class="Toolbar-menuItem" :class="{ 'is-active': showEmbellishFromRecordSubMenu }" v-if="user.isLoggedIn && inspector.status.editing">

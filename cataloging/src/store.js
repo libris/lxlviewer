@@ -66,6 +66,7 @@ const store = createStore({
         focus: 'mainEntity',
         removing: false,
         updating: false,
+        embellishing: '',
         isNew: false,
         readyForSave: true,
         embellished: [],

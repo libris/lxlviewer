@@ -329,6 +329,8 @@ export default {
       });
     },
     applyFieldsFromTemplate(template) {
+      // this.$store.dispatch('setInspectorStatusValue', { property: 'embellishing', value: true });
+
       if (template.hasOwnProperty('work')) {
         // DO NOT switch order of these lines :)
         delete template.work['@id'];
