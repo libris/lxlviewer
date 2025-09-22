@@ -7,7 +7,7 @@ export default {
 		findOnWebsite: 'Hitta på hemsidan',
 		home: 'Hem',
 		search: 'Sök i Libris',
-		subsets: 'Deldatabaser och avdelningar',
+		// subsets: 'Deldatabaser och avdelningar',
 		saved: 'Sparat',
 		help: 'Hjälp',
 		about: 'Om Libris',
@@ -24,7 +24,8 @@ export default {
 		login: 'Logga in',
 		saved: 'Sparat',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
-		openMenu: 'Öppna huvudmeny'
+		openMenu: 'Öppna huvudmeny',
+		closeMenu: 'Stäng meny'
 	},
 	banner: {
 		messageMobile: 'Katalogen kan innehålla inaktuell information',

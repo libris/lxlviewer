@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import AppMenu from '$lib/components/AppMenu.svelte';
+	import AppMenu from '$lib/components/AppMenuContent.svelte';
 </script>
 
 <nav id="menu" class="mx-auto w-full max-w-3xl">

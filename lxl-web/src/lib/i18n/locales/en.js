@@ -7,8 +7,8 @@ export default {
 		skipToContent: 'Skip to main content',
 		findOnWebsite: 'Find on Libris',
 		home: 'Home',
-		search: 'Search in Liris',
-		subsets: 'Subsets and sections',
+		search: 'Search in Libris',
+		// subsets: 'Subsets and sections',
 		saved: 'Saved',
 		help: 'Help',
 		about: 'About Libris',
@@ -25,7 +25,8 @@ export default {
 		login: 'Log in',
 		saved: 'Saved',
 		searchPlaceholder: 'Search for title, author, library, subject...',
-		openMenu: 'Open main menu'
+		openMenu: 'Open main menu',
+		closeMenu: 'Close menu'
 	},
 	banner: {
 		messageMobile: 'The catalogue may contain outdated information',

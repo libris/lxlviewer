@@ -2,10 +2,6 @@
 	import { type Component } from 'svelte';
 	import { page } from '$app/state';
 	import { Locales, type LocaleCode } from '$lib/i18n/locales';
-	import IconGoto from '~icons/bi/chevron-right';
-	import IconSearch from '~icons/bi/search';
-	import IconBookmark from '~icons/bi/bookmark';
-	import Iconlanguage from '~icons/bi/globe';
 
 	type Props = {
 		showSkipToContent?: boolean;
@@ -29,37 +25,32 @@
 			: []),
 		{
 			href: page.data.localizeHref(page.data.base),
-			label: page.data.t('appMenu.home'),
-			Icon: IconGoto,
-			currentPage: page.route.id === '/(app)/[[lang=lang]]'
+			label: page.data.t('appMenu.home')
 		},
 		{
 			href: page.data.localizeHref(page.data.base + '#search'),
-			Icon: IconSearch,
 			label: page.data.t('appMenu.search')
 		},
 		{
 			href: page.data.localizeHref('/my-pages'),
 			label: page.data.t('appMenu.saved'),
-			Icon: IconBookmark,
 			currentPage: page.route.id === '/(app)/[[lang=lang]]/my-pages'
 		},
+		/*
 		{
 			href: page.data.localizeHref('/subsets'),
 			label: page.data.t('appMenu.subsets'),
-			Icon: IconGoto,
 			currentPage: page.route.id === '/(app)/[[lang=lang]]/subsets'
 		},
+		*/
 		{
 			href: page.data.localizeHref('/help'),
 			label: page.data.t('appMenu.help'),
-			Icon: IconGoto,
 			currentPage: page.route.id === '/(app)/[[lang=lang]]/help'
 		},
 		{
 			href: page.data.localizeHref('/about'),
 			label: page.data.t('appMenu.about'),
-			Icon: IconGoto,
 			currentPage: page.route.id === '/(app)/[[lang=lang]]/about'
 		},
 		{
@@ -67,25 +58,44 @@
 				locale: otherLangCode
 			}),
 			hreflang: otherLangCode,
-			label: page.data.t('appMenu.changeLang'),
-			Icon: Iconlanguage,
-			currentPage: page.route.id === '/(app)/[[lang=lang]]/about'
+			label: page.data.t('appMenu.changeLang')
 		}
 	]);
 </script>
 
-<ul>
+<ul class="w-full">
 	{#each menuItems as { href, label, Icon, currentPage, hreflang } (href)}
-		<li class="border-neutral border-b first:border-t">
+		<li class="border-neutral not-last:border-b">
 			<a
 				{href}
 				aria-current={currentPage ? 'page' : undefined}
-				class="link-subtle flex min-h-11 items-center px-3"
+				class="link-subtle hover:bg-primary-50 focus-visible:bg-primary-50 focus-visible:hover:bg-primary-100 flex min-h-11 items-center px-3"
 				{hreflang}
 			>
 				{label}
-				<Icon class="ml-auto" />
+				{#if Icon}
+					<Icon class="ml-auto" />
+				{/if}
 			</a>
 		</li>
 	{/each}
 </ul>
+
+<style lang="postcss">
+	@reference 'tailwindcss';
+
+	a[aria-current] {
+		position: relative;
+
+		&::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 0;
+			height: 100%;
+			background: var(--color-primary);
+			width: 3px;
+			pointer-events: none;
+		}
+	}
+</style>

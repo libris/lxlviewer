@@ -46,7 +46,7 @@
 
 	--app-bar-height: 56px;
 	--toolbar-height: 48px;
-	--beta-banner-height: 44px;
+	--banner-height: 36px;
 
 	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
 	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);
