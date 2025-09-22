@@ -192,6 +192,12 @@ export default {
       }
       return false;
     },
+    embellished() {
+      const embellished = this.inspector.status.embellished;
+      if (embellished.length > 0) {
+        return embellished.some((el) => el.path === this.path);
+      } return false;
+    },
     isExtracting() {
       if (this.inspector.extractItemsOnSave.includes(this.path)) {
         return true;
@@ -543,7 +549,7 @@ export default {
     ref="container"
     :id="`formPath-${path}`"
     :class="{
-      'is-highlighted': isLastAdded,
+      'is-highlighted': isLastAdded || embellished,
       'is-extracting': isExtracting,
       'highlight-mark': highlights.indexOf('mark') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
