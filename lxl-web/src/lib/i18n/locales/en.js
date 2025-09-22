@@ -3,9 +3,21 @@ export default {
 	home: {
 		searchPlaceholder: 'Title, author, subject etc'
 	},
+	appMenu: {
+		skipToContent: 'Skip to main content',
+		findOnWebsite: 'Find on Libris',
+		home: 'Home',
+		search: 'Search in Liris',
+		subsets: 'Subsets and sections',
+		saved: 'Saved',
+		help: 'Help',
+		about: 'About Libris',
+		changeLang: 'In Swedish'
+	},
 	header: {
 		skipToContent: 'Skip to main content',
 		menu: 'Menu',
+		home: 'Home',
 		help: 'Help',
 		myPages: 'My pages',
 		changeLang: 'In Swedish',

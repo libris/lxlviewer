@@ -2,9 +2,21 @@ export default {
 	home: {
 		searchPlaceholder: 'Titel, författare, ämne med mera'
 	},
+	appMenu: {
+		skipToContent: 'Hoppa till innehåll',
+		findOnWebsite: 'Hitta på hemsidan',
+		home: 'Hem',
+		search: 'Sök i Libris',
+		subsets: 'Deldatabaser och avdelningar',
+		saved: 'Sparat',
+		help: 'Hjälp',
+		about: 'Om Libris',
+		changeLang: 'In English'
+	},
 	header: {
 		skipToContent: 'Hoppa till innehåll',
 		menu: 'Meny',
+		home: 'Hem',
 		help: 'Hjälp',
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
