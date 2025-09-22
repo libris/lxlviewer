@@ -89,7 +89,6 @@ export default {
         inputValue: '',
         detailed: false,
       },
-      justEmbellished: false,
     };
   },
   emits: ['ready'],
@@ -384,7 +383,6 @@ export default {
           property: 'embellished',
           value: changeList,
         });
-        this.justEmbellished = true;
         this.$store.dispatch('pushNotification', {
           type: 'success',
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
@@ -737,6 +735,7 @@ export default {
         console.log('ETag ', ETag);
         this.doUpdate(RecordId, obj, ETag, done);
       }
+      this.removeEmbellishedHighlight();
     },
     doUpdate(url, obj, ETag, done) {
       this.doSaveRequest(HttpUtil.put, obj, { url, ETag }, done);
@@ -854,15 +853,12 @@ export default {
       });
     },
     removeEmbellishedHighlight() {
-      if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
+      if (this.inspector.status.embellished.length) {
         this.$store.dispatch('setInspectorStatusValue', {
           property: 'embellished',
           value: [],
         });
       }
-      setTimeout(() => {
-        this.justEmbellished = false;
-      }, 5000);
     },
     async preSaveHook(obj) {
       await checkAutoShelfControlNumber(obj, this.settings, this.user, this.resources);
@@ -912,7 +908,6 @@ export default {
     'inspector.data'(val, oldVal) {
       if (val !== oldVal) {
         this.setTitle();
-        this.removeEmbellishedHighlight();
         this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: false });
       }
     },
@@ -1209,7 +1204,7 @@ export default {
           </div>
         </div>
       </template>
-    </modal-component>
+    </modal-component>  
 
     <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('Detailed enrichment')" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
       <template #modal-body>
