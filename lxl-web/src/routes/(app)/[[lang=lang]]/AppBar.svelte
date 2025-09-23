@@ -149,7 +149,7 @@
 				{#if mounted}
 					<dialog
 						id={IDs.appBarMenu}
-						class="menu-dialog border-neutral border-t-primary fixed z-50 hidden w-full flex-col overflow-hidden border-b text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-lg sm:rounded-b-lg sm:border"
+						class="menu-dialog border-neutral fixed z-50 hidden w-full flex-col overflow-hidden border-b text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-lg sm:border"
 						closedby="any"
 						tabindex="-1"
 						bind:this={menuDialogElement}
@@ -295,16 +295,18 @@
 			left: 0;
 			background: var(--color-primary);
 			width: 100%;
-			border-radius: 20px 20px 0 0;
+			border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 		}
 	}
 
 	.menu-dialog {
 		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px);
+		max-height: calc(100vh - calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px));
+		overflow-y: auto;
 
 		@variant sm {
 			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px);
-			border-top: 3px solid var(--color-primary);
+			max-height: calc(100vh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
 		}
 	}
 </style>

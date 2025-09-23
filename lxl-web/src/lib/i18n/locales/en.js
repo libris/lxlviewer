@@ -12,6 +12,10 @@ export default {
 		saved: 'Saved',
 		help: 'Help',
 		about: 'About Libris',
+		aboutBeta: 'About the beta',
+		contact: 'Contact',
+		cookies: 'About cookies on the website',
+		accessibility: 'Accessibility',
 		changeLang: 'In Swedish'
 	},
 	header: {

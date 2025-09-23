@@ -11,6 +11,10 @@ export default {
 		saved: 'Sparat',
 		help: 'Hjälp',
 		about: 'Om Libris',
+		aboutBeta: 'Frågor och svar om betan',
+		contact: 'Kontakt',
+		cookies: 'Om kakor på webbplatsen',
+		accessibility: 'Tillgänglighet',
 		changeLang: 'In English'
 	},
 	header: {
