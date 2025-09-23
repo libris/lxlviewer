@@ -356,11 +356,16 @@ export function getItemLinksBySigel(
 				[BibDb.ils, BibDb.isbnSearchUri],
 				[BibDb.ils, BibDb.issnSearchUri]
 			];
-			const lopacPaths = [[BibDb.lopac, BibDb.bibIdSearchUriByLang]];
+			const lopacPathsLoanReserve = [[BibDb.lopac, BibDb.bibIdSearchUriByLang]];
 
 			// item-specific links
 			let linksToItem = getLinksToItemFor(bibIdObj, fullHolderData, ilsPaths, locale);
-			const lopacLinksToItem = getLinksToItemFor(bibIdObj, fullHolderData, lopacPaths, locale);
+			const lopacLinksLoanReserve = getLinksToItemFor(
+				bibIdObj,
+				fullHolderData,
+				lopacPathsLoanReserve,
+				locale
+			);
 
 			const linkTemplateEod = getAtPath(fullHolderData, [BibDb.eodUri], []);
 			if (linkTemplateEod && linkTemplateEod.length) {
@@ -375,15 +380,22 @@ export function getItemLinksBySigel(
 				const linksToSite = getAtPath(fullHolderData, ['url', JsonLd.ID], undefined);
 				const openingHours = getAtPath(fullHolderData, [BibDb.openingHours], undefined);
 
+				const addresses: string[] = [];
 				const address = getAtPath(fullHolderData, [BibDb.address, '*'], undefined) || [];
 				const postalAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.postalAddress);
 				const visitingAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.visitingAddress);
 
-				linksBySigel[sigel] = {
-					address: [
-						toString(displayUtil.lensAndFormat(visitingAddress, LensType.Card, locale)) || '',
+				if (address && address.length) {
+					addresses.push(
+						toString(displayUtil.lensAndFormat(visitingAddress, LensType.Card, locale)) || ''
+					);
+					addresses.push(
 						toString(displayUtil.lensAndFormat(postalAddress, LensType.Card, locale)) || ''
-					].filter(Boolean),
+					);
+				}
+
+				linksBySigel[sigel] = {
+					address: addresses,
 					linksToSite: linksToSite?.length ? [linksToSite] : [],
 					linksToCatalog: linksToCatalog?.length ? [linksToCatalog] : [],
 					openingHours: openingHours?.length ? [openingHours] : [],
@@ -395,7 +407,7 @@ export function getItemLinksBySigel(
 			linksBySigel[sigel].bibIds[bibIdObj.bibId] = {
 				linksToItem: linksToItem || [],
 				itemStatus: itemStatusUri || null,
-				loanReserveLink: lopacLinksToItem || [],
+				loanReserveLink: lopacLinksLoanReserve || [],
 				str: bibIdObj.str
 			};
 		});
@@ -413,7 +425,7 @@ function getLinksToItemFor(
 	let linksToItem: string[] = [];
 	for (const path of paths) {
 		const linkTemplate = getAtPath(fullHolderData, path, []);
-		if (linkTemplate && linkTemplate.length) {
+		if (linkTemplate && Object.keys(linkTemplate).length) {
 			if (path.includes(BibDb.bibIdSearchUriByLang) && bibIdObj.bibId !== '') {
 				const linkTemplateLocalized =
 					linkTemplate[locale] || linkTemplate['sv'] || Object.values(linkTemplate)[0];

@@ -34,24 +34,6 @@
 		return null;
 	});
 
-	// const totalNumHolders = $derived.by(() => {
-	//   if (holdingSelection && holdingId) {
-	//     if (holdingSelection === 'instance') {
-	//       return holdings?.holdingsByInstanceId?.[holdingId].length;
-	//     }
-	//     else if (holdingSelection === 'type') {
-	//       return holdings?.holdersByType?.[holdingId].length
-	//     }
-	//     else if (holdingSelection === 'work') {
-	//       const uniqueIds = Object.values(holdings?.holdingsByInstanceId).reduce((set, instance) => {
-	//         instance?.forEach(item => set.add(item.heldBy.sigel));
-	//         return set;
-	//       }, new Set());
-	//       return uniqueIds.size;
-	//     }
-	//   } return null;
-	// })
-
 	const displayedHolders = $derived.by(() => {
 		if (holdingSelection && holdingId) {
 			if (holdingSelection === 'instance') {
@@ -114,7 +96,7 @@
 	{/if}
 	<!-- my libraries -->
 	{#if myLibsHolders.length}
-		<div class="border-neutral bg-accent-50 mb-2 flex flex-col gap-2 rounded-sm border-b p-4">
+		<div class="border-neutral bg-accent-50 mb-2 flex flex-col gap-2 rounded-sm border-b p-4 pb-1">
 			<h2 class="flex items-center gap-2">
 				<span aria-hidden="true" class="text-primary-700 text-base">
 					<BiHouseHeart />

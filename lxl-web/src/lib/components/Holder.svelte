@@ -47,7 +47,11 @@
 						<h4 class="text-subtle font-medium">{bibId.str || '-'}</h4>
 					{/if}
 					{#if bibId.loanReserveLink?.[0]}
-						<a href={bibId.loanReserveLink[0]} target="_blank" class="ext-link">
+						<a
+							href={bibId.loanReserveLink[0]}
+							target="_blank"
+							class="holder-cta-btn ext-link btn btn-cta"
+						>
 							{page.data.t('holdings.loanReserveLink')}
 						</a>
 					{:else if bibId.linksToItem?.[0]}
@@ -117,7 +121,7 @@
 						</span>
 						<span>{page.data.t('holdings.openingHoursEtc')}</span>
 					</summary>
-					<div class="border-neutral bg-page my-3 max-w-md rounded-sm border p-2">
+					<div class="border-neutral bg-page mt-2 max-w-md rounded-sm border p-2">
 						<ul class="whitespace-pre-line">
 							{#each holderData.openingHours as openingHours, i (i)}
 								<li>{openingHours}</li>
@@ -146,6 +150,19 @@
 		& > a,
 		:global(& > details) {
 			margin-left: calc(var(--spacing) * 2);
+		}
+	}
+
+	.holder-cta-btn {
+		color: var(--color-white);
+		text-decoration: none;
+		height: auto;
+		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+		border-radius: var(--spacing);
+		margin-bottom: calc(var(--spacing) * 2);
+
+		&::after {
+			background-color: var(--color-white);
 		}
 	}
 </style>
