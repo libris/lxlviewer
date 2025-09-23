@@ -10,6 +10,7 @@
 
 	type Props = {
 		showSkipToContent?: boolean;
+		onclickSearch?: (event: MouseEvent) => void;
 	};
 
 	type MenuItem = {
@@ -21,9 +22,10 @@
 		hreflang?: string;
 		children?: MenuItem[];
 		hasParent?: boolean;
+		onclick?: (event: MouseEvent) => void;
 	};
 
-	let { showSkipToContent = true }: Props = $props();
+	let { showSkipToContent = true, onclickSearch }: Props = $props();
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -42,7 +44,8 @@
 		{
 			href: page.data.localizeHref(page.data.base + '#search'),
 			label: page.data.t('appMenu.search'),
-			LeadingIcon: IconSearch
+			LeadingIcon: IconSearch,
+			onclick: onclickSearch
 		},
 		{
 			href: page.data.localizeHref('/my-pages'),
@@ -105,7 +108,8 @@
 		currentPage,
 		hreflang,
 		children,
-		hasParent
+		hasParent,
+		onclick
 	}: MenuItem)}
 		<li class={[!hasParent && 'border-neutral not-last:border-b', children && 'with-children']}>
 			<a
@@ -117,6 +121,7 @@
 					hasParent && 'pl-10 text-sm'
 				]}
 				{hreflang}
+				{onclick}
 			>
 				{#if LeadingIcon}
 					<span

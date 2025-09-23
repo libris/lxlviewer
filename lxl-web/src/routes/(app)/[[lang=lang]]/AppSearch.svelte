@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { type SvelteComponent } from 'svelte';
 	import { page } from '$app/state';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
@@ -13,6 +14,7 @@
 	let { id, name, placeholder }: Props = $props();
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
+	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -29,6 +31,10 @@
 			fallbackInputElement?.focus();
 		}
 	});
+
+	export function showExpandedSearch() {
+		superSearchWrapperComponent?.showExpandedSearch();
+	}
 </script>
 
 {#snippet fallbackInput()}
@@ -43,7 +49,7 @@
 {#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
 	{@render fallbackInput()}
 {:then { default: SuperSearchWrapper }}
-	<SuperSearchWrapper {placeholder} />
+	<SuperSearchWrapper {placeholder} bind:this={superSearchWrapperComponent} />
 {:catch}
 	{@render fallbackInput()}
 {/await}

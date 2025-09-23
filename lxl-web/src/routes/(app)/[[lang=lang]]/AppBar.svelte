@@ -16,6 +16,7 @@
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
 	let menuDialogElement: HTMLDialogElement | undefined = $state();
+	let appSearchComponent: AppSearch | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
@@ -35,12 +36,6 @@
 	function handleDismissBanner() {
 		dismissedBanner = true;
 	}
-
-	/*
-	function handleExpandSearch() {
-		superSearchWrapperComponent?.showExpandedSearch();
-	}
-	*/
 
 	function showExpandedMenu() {
 		menuDialogElement?.show();
@@ -73,6 +68,7 @@
 
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
+		appSearchComponent?.showExpandedSearch();
 	}
 
 	beforeNavigate(() => {
@@ -156,7 +152,7 @@
 						onclose={closeExpandedMenu}
 						onfocusout={handleMenuDialogFocusOut}
 					>
-						<AppMenuContent showSkipToContent={false} />
+						<AppMenuContent showSkipToContent={false} onclickSearch={handleClickSearchAction} />
 						<button
 							type="button"
 							onclick={closeExpandedMenu}
@@ -193,7 +189,12 @@
 			]}
 		>
 			<form action={findActionUrl} class="mx-auto w-full max-w-7xl lg:px-4">
-				<AppSearch id="search" name="_q" placeholder={page.data.t('header.searchPlaceholder')} />
+				<AppSearch
+					id="search"
+					name="_q"
+					placeholder={page.data.t('header.searchPlaceholder')}
+					bind:this={appSearchComponent}
+				/>
 			</form>
 		</search>
 		<ul class="trailing-actions flex justify-end lg:gap-2">
