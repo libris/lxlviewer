@@ -245,3 +245,80 @@ test('should add missing element to descriptionConventions for record part', () 
     ]
   );
 });
+
+test('should add independent of index', () => {
+  const template = {
+    "record": {
+      "descriptionConventions": [
+        {
+          "@id": "https://id.kb.se/term/enum/Rda"
+        },
+      ]
+    },
+    "mainEntity": {}
+  };
+
+  const record = {
+    "record": {
+      "descriptionConventions": [
+        {
+          "@id": "https://id.kb.se/marc/Isbd"
+        }
+      ]
+    },
+    "mainEntity": {}
+  }
+  const templatePath = ['record'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([
+        {
+          path: 'record.descriptionConventions[1]',
+          value: {'@id': "https://id.kb.se/term/enum/Rda"}
+        },
+      ]
+  );
+});
+
+test('should add multiple', () => {
+  const template = {
+    "record": {
+      "descriptionConventions": [
+        {
+          "@id": "https://id.kb.se/marc/Isbd"
+        },
+        {
+          "@id": "https://id.kb.se/term/enum/Rda"
+        },
+      ]
+    },
+    "mainEntity": {}
+  };
+
+  const record = {
+    "record": {
+      "descriptionConventions": [
+        {
+          "@id": "https://id.kb.se/marc/Aacr2"
+        }
+      ]
+    },
+    "mainEntity": {}
+  }
+  const templatePath = ['record'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([
+        {
+          path: 'record.descriptionConventions[1]',
+          value: {'@id': "https://id.kb.se/marc/Isbd"}
+        },
+        {
+          path: 'record.descriptionConventions[2]',
+          value: {'@id': "https://id.kb.se/term/enum/Rda"}
+        }
+      ]
+  );
+});

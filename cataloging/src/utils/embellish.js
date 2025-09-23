@@ -1,4 +1,4 @@
-import { each, get } from 'lodash-es';
+import {each, get, isEqual} from 'lodash-es';
 import {arrayPathToString} from 'lxljs/string';
 
 export function getChangeList(source, target, templatePath, targetPath = null) {
@@ -32,6 +32,20 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
           path: arrayPathToString([...templatePath, key]),
           value: value,
         });
+      }
+      // Add missing elements from template to arrays of linked entities
+      else if (targetObject.hasOwnProperty(key) && Array.isArray(value) && value[0]
+        && Object.keys(value[0]).length === 1 && value[0]['@id']) {
+        let countAdded = 0;
+        each (value, obj => {
+          if (!targetObject[key].some(el => isEqual(el, obj))) {
+            countAdded++;
+            changeList.push({
+              path: arrayPathToString([...templatePath, key, countAdded + targetObject[key].length - 1]),
+              value: obj,
+            });
+          }
+        })
       } else {
         if (typeof targetObject === 'object' && typeof templateObject === 'object') {
           addToChangeList(source, target, [...templatePath, key], targetPath, changeList);
