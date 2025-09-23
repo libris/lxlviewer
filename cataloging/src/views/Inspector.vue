@@ -328,12 +328,6 @@ export default {
       });
     },
     applyFieldsFromTemplate(template) {
-      if (template.hasOwnProperty('work')) {
-        // DO NOT switch order of these lines :)
-        delete template.work['@id'];
-        template.mainEntity.instanceOf = template.work;
-        delete template.work;
-      }
       const baseRecordType = this.inspector.data.mainEntity['@type'];
       const tempRecordType = template.mainEntity['@type'];
       const matching = (
@@ -363,17 +357,7 @@ export default {
         ...getChangeList(template, baseRecordData, ['mainEntity']),
         ...getChangeList(template, baseRecordData, ['record'])
       ];
-      //TODO: Highlight properties in admin metadata/record when embellishing from Instance / mainEntity and vice versa!
 
-      if (baseRecordData.hasOwnProperty('work') && baseRecordData.work === null) {
-        delete baseRecordData.work;
-      }
-      if (!baseRecordData.hasOwnProperty('work')) {
-        // changeList = [...changeList, getChangeList(template, baseRecordData ['mainEntity.instanceOf']);
-      } else {
-        // If work property exists, put the work entity there
-        // addToChangeList(['mainEntity.instanceOf'], 'work');
-      }
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
           changeList: changeList,
