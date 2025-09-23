@@ -13,7 +13,8 @@
 	import SearchResultInfo from '$lib/components/find/SearchResultInfo.svelte';
 	import SearchCard from '$lib/components/find/SearchCard.svelte';
 	import Pagination from '$lib/components/find/Pagination.svelte';
-	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
+	// import HoldingsContent from '$lib/components/HoldingsContent.svelte';
+	import HoldingsContent_2 from '$lib/components/HoldingsContent_2.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Modal from '$lib/components/Modal.svelte';
@@ -99,7 +100,11 @@
 						</span>
 					</div>
 				{:then holdings}
-					<HoldingsContent
+					<!-- <HoldingsContent
+						{holdings}
+						showSummary={isSmallScreen.current || !USE_HOLDING_PANE ? true : false}
+					/> -->
+					<HoldingsContent_2
 						{holdings}
 						showSummary={isSmallScreen.current || !USE_HOLDING_PANE ? true : false}
 					/>

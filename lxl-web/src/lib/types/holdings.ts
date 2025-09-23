@@ -1,4 +1,4 @@
-import type { DisplayDecorated, FramedData } from './xl';
+import type { BibDb, DisplayDecorated, FramedData } from './xl';
 
 export type BibIdObj = {
 	bibId: string;
@@ -9,6 +9,8 @@ export type BibIdObj = {
 	issn: string[];
 	str: string;
 };
+
+export type BibIdByInstanceId = { [instanceId: string]: BibIdObj };
 
 export type HoldingsByInstanceId = {
 	[id: string]: {
@@ -35,18 +37,42 @@ export type FullHolderBySigel = {
 	[sigel: string]: FramedData;
 };
 
-export type ItemLinksForHolder = {
-	[sigel: string]: { [linkType: string]: string[] };
+// todo remove
+// export type ItemLinksForHolder = {
+// 	[sigel: string]: { [linkType: string]: string[] };
+// };
+
+// // todo remove
+// export type ItemLinksByBibId = {
+// 	[id: string]: ItemLinksForHolder;
+// };
+
+export type ItemLinksBySigel = {
+	[sigel: string]: HolderLinks;
 };
 
-export type ItemLinksByBibId = {
-	[id: string]: ItemLinksForHolder;
+export type HolderLinks = {
+	[BibDb.Address]: string[];
+	[BibDb.LinksToSite]: string[];
+	[BibDb.LinksToCatalog]: string[];
+	[BibDb.OpeningHours]: string[];
+	bibIds: {
+		[bibId: string]: HoldingLinks;
+	};
+};
+
+type HoldingLinks = {
+	[BibDb.LinksToItem]: string[];
+	[BibDb.ItemStatus]: string | null;
+	[BibDb.LoanReserveLink]: string[];
+	str: string;
 };
 
 export type HoldingsData = {
-	bibIdsByInstanceId: Record<string, BibIdObj>;
+	bibIdsByInstanceId: BibIdByInstanceId;
 	holdingsByInstanceId: HoldingsByInstanceId;
-	itemLinksByBibId: ItemLinksByBibId;
+	// itemLinksByBibId: ItemLinksByBibId; // todo remove
+	itemLinksBySigel: ItemLinksBySigel;
 	holdersByType?: HoldersByType;
 	overview: unknown;
 	instances: Record<string, unknown>[];
