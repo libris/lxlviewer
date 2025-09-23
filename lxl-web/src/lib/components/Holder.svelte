@@ -36,13 +36,13 @@
 
 <li class="border-neutral flex flex-col gap-2 pb-3 not-last:border-b">
 	<h3 class="text-sm font-medium">{holderData.str}</h3>
-	<ul class="flex flex-col gap-2 [&>li]:flex [&>li]:flex-col [&>li]:items-start [&>li]:gap-1">
+	<ul class="flex flex-col gap-2 [&>li]:flex [&>li]:flex-col [&>li]:items-start">
 		{#if hasSomeItemLink}
 			<!-- instance-specific links -->
 			<!-- loan reserve link OR item link AND loan status  -->
 			{#each shownInstances as [key, bibId] (key)}
 				{@const manyInstances = Object.keys(holderData.bibIds).length > 1}
-				<li class={['flex flex-col gap-2', manyInstances && 'instance-one-of-many']}>
+				<li class={['flex flex-col', manyInstances ? 'instance-one-of-many gap-1' : 'gap-2']}>
 					{#if manyInstances}
 						<h4 class="text-subtle font-medium">{bibId.str || '-'}</h4>
 					{/if}
@@ -130,9 +130,9 @@
 			<li>
 				<!-- opening hours / adress -->
 				<details class="w-full">
-					<summary class="link-subtle flex cursor-pointer items-center">
+					<summary class="link-subtle flex cursor-pointer items-center gap-0.5">
 						<span
-							class="text-3xs arrow text-subtle mr-0.5 h-3 origin-center rotate-0 transition-transform"
+							class="text-3xs arrow text-subtle h-3 origin-center rotate-0 transition-transform"
 						>
 							<BiChevronRight />
 						</span>

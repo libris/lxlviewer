@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import type { HoldingsData } from '$lib/types/holdings';
+	import type { HolderLinks, HoldingsData } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import HoldingsResourceCard from './HoldingsResourceCard.svelte';
@@ -81,6 +81,39 @@
 	);
 
 	const numHolders = $derived(displayedHolders?.length);
+
+	// only include instance links applicable for the current holding selection
+	function getHolderLinksForType(holderlinks: HolderLinks): HolderLinks {
+		if (!holderlinks || Object.keys(holderlinks.bibIds).length <= 1) {
+			return holderlinks;
+		}
+
+		switch (holdingSelection) {
+			case 'instance': {
+				let bibId = holdingId && holdings.bibIdsByInstanceId?.[holdingId].bibId;
+				return bibId
+					? { ...holderlinks, ...{ bibIds: { [bibId]: holderlinks.bibIds?.[bibId] } } }
+					: holderlinks;
+			}
+
+			case 'type': {
+				let bibIds: Record<string, HolderLinks['bibIds'][string]> = {};
+				const bibIdsOfType = Object.values(holdings.bibIdsByInstanceId)
+					.filter((i) => i['@type'] === holdingId)
+					.map((i) => i.bibId);
+
+				bibIdsOfType.forEach((b) => {
+					if (holderlinks.bibIds?.[b]) {
+						bibIds[b] = holderlinks.bibIds?.[b];
+					}
+				});
+				return bibIds ? { ...holderlinks, ...{ bibIds } } : holderlinks;
+			}
+
+			default:
+				return holderlinks;
+		}
+	}
 </script>
 
 <div class="flex flex-col gap-2 text-sm">
@@ -104,11 +137,9 @@
 				<span class="font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
 			</h2>
 			<ul class="text-xs">
-				{#each myLibsHolders as holder (holder.sigel)}
-					<Holder
-						holderData={{ ...holder, ...holdings.itemLinksBySigel?.[holder.sigel] }}
-						bibIds={holdings.bibIdsByInstanceId}
-					/>
+				{#each myLibsHolders as holder (`mylibs-${holder.sigel}`)}
+					{@const holderLinks = getHolderLinksForType(holdings.itemLinksBySigel?.[holder.sigel])}
+					<Holder holderData={{ ...holder, ...holderLinks }} bibIds={holdings.bibIdsByInstanceId} />
 				{/each}
 			</ul>
 		</div>
@@ -126,11 +157,9 @@
 	</div>
 	<!-- list holders -->
 	<ul class="flex flex-col gap-2 text-xs">
-		{#each filteredHolders as holder (holder.sigel)}
-			<Holder
-				holderData={{ ...holder, ...holdings.itemLinksBySigel?.[holder.sigel] }}
-				bibIds={holdings.bibIdsByInstanceId}
-			/>
+		{#each filteredHolders as holder (`holder-${holder.sigel}`)}
+			{@const holderLinks = getHolderLinksForType(holdings.itemLinksBySigel?.[holder.sigel])}
+			<Holder holderData={{ ...holder, ...holderLinks }} bibIds={holdings.bibIdsByInstanceId} />
 		{/each}
 		{#if filteredHolders.length === 0}
 			<li>
