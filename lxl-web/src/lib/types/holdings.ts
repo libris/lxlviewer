@@ -57,6 +57,7 @@ export type HolderLinks = {
 	[BibDb.OpeningHours]: string[];
 	[BibDb.Address]: string[];
 	[BibDb.MyLoansLink]: string;
+	[BibDb.RegistrationLink]: string;
 	bibIds: {
 		[bibId: string]: HoldingLinks;
 	};

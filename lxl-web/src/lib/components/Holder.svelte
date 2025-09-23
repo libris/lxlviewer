@@ -89,15 +89,20 @@
 			{/if}
 		{/if}
 		<!-- Lopac general links -->
-		{#if holderData.myLoansLink}
-			<li class="flex gap-2">
-				<a
-					target="_blank"
-					class="holder-cta-btn ext-link btn btn-cta"
-					href={holderData.myLoansLink}
-				>
-					{page.data.t('holdings.myLoans')}
-				</a>
+		{#if holderData.myLoansLink || holderData.registrationLink}
+			<li>
+				<div class="flex flex-row gap-2">
+					{#if holderData.myLoansLink}
+						<a target="_blank" class="ext-link" href={holderData.myLoansLink}>
+							{page.data.t('holdings.myLoans')}
+						</a>
+					{/if}
+					{#if holderData.registrationLink}
+						<a target="_blank" class="ext-link" href={holderData.registrationLink}>
+							{page.data.t('holdings.applyForCard')}
+						</a>
+					{/if}
+				</div>
 			</li>
 		{/if}
 		{#if !hasEveryItemLink}

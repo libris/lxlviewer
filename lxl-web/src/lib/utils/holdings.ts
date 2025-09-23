@@ -384,6 +384,11 @@ export function getItemLinksBySigel(
 					locale
 				);
 
+				const registrationLink = pathByLang(
+					getAtPath(fullHolderData, [BibDb.lopac, BibDb.patronRegistrationUriByLang], undefined),
+					locale
+				);
+
 				const openingHours = getAtPath(fullHolderData, [BibDb.openingHours], undefined);
 				const addresses: string[] = [];
 				const address = getAtPath(fullHolderData, [BibDb.address, '*'], undefined) || [];
@@ -404,6 +409,7 @@ export function getItemLinksBySigel(
 					linksToSite: linksToSite?.length ? [linksToSite] : [],
 					linksToCatalog: linksToCatalog?.length ? [linksToCatalog] : [],
 					myLoansLink: myLoansLink || '',
+					registrationLink: registrationLink || '',
 					openingHours: openingHours?.length ? [openingHours] : [],
 					bibIds: {}
 				};

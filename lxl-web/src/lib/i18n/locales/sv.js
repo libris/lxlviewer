@@ -258,7 +258,8 @@ export default {
 		openingHoursEtc: 'Öppettider, adress m.m.',
 		showAll: 'Visa alla utgåvor',
 		showFewer: 'Visa färre utgåvor',
-		myLoans: 'Mina lån'
+		myLoans: 'Mina lån',
+		applyForCard: 'Ansök om lånekort'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'
