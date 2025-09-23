@@ -52,10 +52,11 @@ export type ItemLinksBySigel = {
 };
 
 export type HolderLinks = {
-	[BibDb.Address]: string[];
-	[BibDb.LinksToSite]: string[];
 	[BibDb.LinksToCatalog]: string[];
+	[BibDb.LinksToSite]: string[];
 	[BibDb.OpeningHours]: string[];
+	[BibDb.Address]: string[];
+	[BibDb.MyLoansLink]: string;
 	bibIds: {
 		[bibId: string]: HoldingLinks;
 	};

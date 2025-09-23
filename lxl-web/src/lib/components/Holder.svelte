@@ -42,7 +42,7 @@
 			<!-- loan reserve link OR item link AND loan status  -->
 			{#each shownInstances as [key, bibId] (key)}
 				{@const manyInstances = Object.keys(holderData.bibIds).length > 1}
-				<li class={['flex flex-col gap-2', manyInstances && 'many-instances']}>
+				<li class={['flex flex-col gap-2', manyInstances && 'instance-one-of-many']}>
 					{#if manyInstances}
 						<h4 class="text-subtle font-medium">{bibId.str || '-'}</h4>
 					{/if}
@@ -50,7 +50,7 @@
 						<a
 							href={bibId.loanReserveLink[0]}
 							target="_blank"
-							class="holder-cta-btn ext-link btn btn-cta"
+							class="holder-cta-btn ext-link btn btn-cta mb-1"
 						>
 							{page.data.t('holdings.loanReserveLink')}
 						</a>
@@ -87,6 +87,18 @@
 					</button>
 				</li>
 			{/if}
+		{/if}
+		<!-- Lopac general links -->
+		{#if holderData.myLoansLink}
+			<li class="flex gap-2">
+				<a
+					target="_blank"
+					class="holder-cta-btn ext-link btn btn-cta"
+					href={holderData.myLoansLink}
+				>
+					{page.data.t('holdings.myLoans')}
+				</a>
+			</li>
 		{/if}
 		{#if !hasEveryItemLink}
 			<!-- general holder links -->
@@ -144,13 +156,10 @@
 		}
 	}
 
-	.many-instances {
+	.instance-one-of-many {
 		margin-bottom: calc(var(--spacing) * 2);
-
-		& > a,
-		:global(& > details) {
-			margin-left: calc(var(--spacing) * 2);
-		}
+		border-left: 2px solid var(--color-neutral-300);
+		padding-left: calc(var(--spacing) * 2);
 	}
 
 	.holder-cta-btn {
@@ -159,7 +168,6 @@
 		height: auto;
 		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
 		border-radius: var(--spacing);
-		margin-bottom: calc(var(--spacing) * 2);
 
 		&::after {
 			background-color: var(--color-white);

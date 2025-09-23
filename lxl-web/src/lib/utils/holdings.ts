@@ -378,8 +378,13 @@ export function getItemLinksBySigel(
 			if (!linksBySigel[sigel]) {
 				const linksToCatalog = getAtPath(fullHolderData, [BibDb.ils, 'url'], undefined);
 				const linksToSite = getAtPath(fullHolderData, ['url', JsonLd.ID], undefined);
-				const openingHours = getAtPath(fullHolderData, [BibDb.openingHours], undefined);
 
+				const myLoansLink = pathByLang(
+					getAtPath(fullHolderData, [BibDb.lopac, BibDb.myLoansUriLang], undefined),
+					locale
+				);
+
+				const openingHours = getAtPath(fullHolderData, [BibDb.openingHours], undefined);
 				const addresses: string[] = [];
 				const address = getAtPath(fullHolderData, [BibDb.address, '*'], undefined) || [];
 				const postalAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.postalAddress);
@@ -398,6 +403,7 @@ export function getItemLinksBySigel(
 					address: addresses,
 					linksToSite: linksToSite?.length ? [linksToSite] : [],
 					linksToCatalog: linksToCatalog?.length ? [linksToCatalog] : [],
+					myLoansLink: myLoansLink || '',
 					openingHours: openingHours?.length ? [openingHours] : [],
 					bibIds: {}
 				};
@@ -444,4 +450,15 @@ function getLinksToItemFor(
 		}
 	}
 	return linksToItem;
+}
+
+function pathByLang(thing: Record<LocaleCode, string>, locale: LocaleCode) {
+	if (thing) {
+		if (thing?.[locale]) {
+			return thing[locale];
+		} else if (thing['sv']) {
+			return thing['sv'];
+		}
+	}
+	return null;
 }
