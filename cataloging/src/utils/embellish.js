@@ -1,22 +1,20 @@
 import {each, get, isEqual} from 'lodash-es';
 import {arrayPathToString} from 'lxljs/string';
 
-export function getChangeList(source, target, templatePath, targetPath = null) {
+export function getChangeList(source, target, templatePath, targetPath = templatePath) {
   const changeList = [];
   addToChangeList(source, target, templatePath, targetPath, changeList);
   return changeList;
 }
 
 function addToChangeList(source, target, templatePath, targetPath, changeList) {
-  if (targetPath === null) {
-    // targetPath is used when the target path differs from the templatePath
-    targetPath = templatePath;
-  }
   const templateObject = get(source, templatePath);
   let targetObject = get(target, targetPath);
+
   if (targetObject === null || typeof targetObject === 'undefined') {
     targetObject = {};
   }
+
   if (templateObject && typeof templateObject === "object" && !Array.isArray(templateObject)) {
     if (templateObject['@type'] && targetObject['@type'] &&
       templateObject['@type'] !== targetObject['@type']) {
@@ -24,6 +22,7 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
     }
 
     each(templateObject, (value, key) => {
+      // Properties missing in target
       if (!targetObject.hasOwnProperty(key) ||
         (targetObject[key] === null && templateObject[key] !== null)) {
         changeList.push({
@@ -31,7 +30,7 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
           value: value,
         });
       }
-      // Add missing elements from template to arrays of linked entities
+      // Arrays of linked entities
       else if (targetObject.hasOwnProperty(key) && Array.isArray(value) && value[0]
         && Object.keys(value[0]).length === 1 && value[0]['@id']) {
         let countAdded = 0;
@@ -45,7 +44,7 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
           }
         })
       }
-
+      // Arrays of typed objects
       else if (targetObject.hasOwnProperty(key) && Array.isArray(value) && value[0]) {
         const targetArray = asArray(targetObject[key]);
         each (value, obj => {
@@ -59,13 +58,11 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
             });
           } else { //There is an element in the list with the same type
             const indexInTarget = targetArray.indexOf(firstElementWithMatchingType);
-            //TODO loop with index instead, to optimize?
             const indexInTemplate = value.indexOf(obj);
-            const newTargetPath  = [...targetPath, key, indexInTarget];
-            addToChangeList(source, target, [...templatePath, key, indexInTemplate], newTargetPath, changeList);
+            addToChangeList(source, target, [...templatePath, key, indexInTemplate],  [...targetPath, key, indexInTarget], changeList);
           }
         })
-      }
+      } // Recurse if object is present both in source and target
       else {
         if (typeof targetObject === 'object' && typeof templateObject === 'object') {
           addToChangeList(source, target, [...templatePath, key], [...targetPath, key], changeList);
