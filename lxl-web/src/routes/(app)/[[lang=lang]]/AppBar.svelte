@@ -203,7 +203,7 @@
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
 					type={mounted ? 'button' : undefined}
-					href={mounted ? undefined : '#menu'}
+					href={mounted ? undefined : '#search'}
 					role={mounted ? undefined : 'button'}
 					tabindex={mounted ? undefined : 0}
 					class="action"
