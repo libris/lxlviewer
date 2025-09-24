@@ -135,8 +135,8 @@
 				</span>
 				<span class="font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
 			</h2>
-			<ul class="text-xs">
-				{#each myLibsHolders as holder (`mylibs-${holder.sigel}`)}
+			<ul class="flex flex-col gap-2 text-xs">
+				{#each myLibsHolders as holder, i (`mylibs-${holder.sigel}-${i}`)}
 					{@const holderLinks = getHolderLinksForType(holdings.itemLinksBySigel?.[holder.sigel])}
 					<Holder holderData={{ ...holder, ...holderLinks }} bibIds={holdings.bibIdsByInstanceId} />
 				{/each}
@@ -156,7 +156,7 @@
 	</div>
 	<!-- list holders -->
 	<ul class="flex flex-col gap-2 text-xs">
-		{#each filteredHolders as holder (`holder-${holder.sigel}`)}
+		{#each filteredHolders as holder, i (`holder-${holder.sigel}-${i}`)}
 			{@const holderLinks = getHolderLinksForType(holdings.itemLinksBySigel?.[holder.sigel])}
 			<Holder holderData={{ ...holder, ...holderLinks }} bibIds={holdings.bibIdsByInstanceId} />
 		{/each}
