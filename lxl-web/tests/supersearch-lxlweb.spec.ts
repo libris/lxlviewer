@@ -165,7 +165,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByText('Ämne')
 		.click();
 	await expect(
-		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'ämne' })
+		page.getByRole('dialog').getByRole('link').filter({ hasText: 'ämne' })
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL(/A4mne/);
