@@ -528,6 +528,7 @@ export default {
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
       this.clearBackendValidationErrors();
+      this.removeEmbellishedHighlight();
     },
     cancelEditing(callback) {
       if (this.inspector.status.editing) {
