@@ -580,4 +580,74 @@ test("Should not treat '@id' as a regular property", () => {
   expect(changeList).toEqual([]);
 });
 
+test('should add multiple entries to array', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "identifiedBy": [
+        {
+          "@type": "ISBN",
+          "qualifier": [
+            "CD audio"
+          ]
+        },
+        {
+          "@type": "EAN",
+          "value": ""
+        },
+        {
+          "@type": "AudioIssueNumber",
+          "value": "",
+          "agent": {
+            "@type": "Organization",
+            "name": ""
+          }
+        }
+      ]
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "identifiedBy": [
+        {
+          "@type": "ISBN",
+          "value": "9789180332804",
+        },
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([
+      {
+        path: 'mainEntity.identifiedBy[0].qualifier',
+        value: ["CD audio"]
+      },
+      {
+        path: 'mainEntity.identifiedBy[1]',
+        value: {
+          "@type": "EAN",
+          "value": ""
+        },
+      },
+      {
+        path: 'mainEntity.identifiedBy[2]',
+        value: {
+          "@type": "AudioIssueNumber",
+          "value": "",
+          "agent": {
+            "@type": "Organization",
+            "name": ""
+          },
+        },
+      }
+    ]
+  );
+});
+
+
 

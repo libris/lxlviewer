@@ -50,8 +50,8 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
       // Arrays of typed objects
       else if (targetObject.hasOwnProperty(key) && Array.isArray(value) && value[0]) {
         const targetArray = asArray(targetObject[key]);
+        let countAdded = 0;
         each (value, obj => {
-          let countAdded = 0;
           const firstElementWithMatchingType = targetArray.find(el => el['@type'] === obj['@type']);
           if (!firstElementWithMatchingType) {
             countAdded++;
