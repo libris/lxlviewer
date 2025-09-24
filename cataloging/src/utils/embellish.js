@@ -8,28 +8,26 @@ export function getChangeList(source, target, templatePath, targetPath = null) {
 }
 
 function addToChangeList(source, target, templatePath, targetPath, changeList) {
-  // console.log('templatePath', JSON.stringify(templatePath));
   if (targetPath === null) {
     // targetPath is used when the target path differs from the templatePath
     targetPath = templatePath;
   }
   const templateObject = get(source, templatePath);
-  let targetObject = get(target, templatePath);
+  let targetObject = get(target, targetPath);
   if (targetObject === null || typeof targetObject === 'undefined') {
     targetObject = {};
   }
-  // console.log('templateObject', JSON.stringify(templateObject));
-  // console.log('targetObject', JSON.stringify(targetObject));
-  if (typeof templateObject === "object") {
+  if (templateObject && typeof templateObject === "object") {
+    if (templateObject['@type'] && targetObject['@type'] &&
+      templateObject['@type'] !== targetObject['@type']) {
+      return;
+    }
+
     each(templateObject, (value, key) => {
-      // console.log('key', JSON.stringify(key));
-      // console.log('value', JSON.stringify(value));
       if (!targetObject.hasOwnProperty(key) ||
         (targetObject[key] === null && templateObject[key] !== null)) {
-        // console.log('adding', JSON.stringify(value));
-        // console.log('for path', arrayPathToString(addAtPath));
         changeList.push({
-          path: arrayPathToString([...templatePath, key]),
+          path: arrayPathToString([...targetPath, key]),
           value: value,
         });
       }
@@ -41,12 +39,34 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
           if (!targetObject[key].some(el => isEqual(el, obj))) {
             countAdded++;
             changeList.push({
-              path: arrayPathToString([...templatePath, key, countAdded + targetObject[key].length - 1]),
+              path: arrayPathToString([...targetPath, key, countAdded + targetObject[key].length - 1]),
               value: obj,
             });
           }
         })
-      } else {
+      }
+
+      else if (targetObject.hasOwnProperty(key) && Array.isArray(value) && value[0]) {
+        each (value, obj => {
+          let countAdded = 0;
+          const firstElementWithMatchingType = targetObject[key].find(el => el['@type'] === obj['@type']);
+          if (!firstElementWithMatchingType) {
+            countAdded++;
+            changeList.push({
+              path: arrayPathToString([...templatePath, key, countAdded + targetObject[key].length - 1]),
+              value: obj,
+            });
+          } else { //There is an element in the list with the same type
+            const indexInTarget = targetObject[key].indexOf(firstElementWithMatchingType);
+
+            //TODO loop with index instead, to optimize?
+            const indexInTemplate = value.indexOf(obj);
+            const newTargetPath  = [...targetPath, key, indexInTarget];
+            addToChangeList(source, target, [...templatePath, key, indexInTemplate], newTargetPath, changeList);
+          }
+        })
+      }
+      else {
         if (typeof targetObject === 'object' && typeof templateObject === 'object') {
           addToChangeList(source, target, [...templatePath, key], targetPath, changeList);
         }

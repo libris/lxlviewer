@@ -322,3 +322,140 @@ test('should add multiple', () => {
       ]
   );
 });
+
+// Case: it is a list, but the elements are of differing types
+test('should not add subproperties if mismatching types', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "Contribution",
+          "agent": null,
+          "role": []
+        }
+      ]
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "PrimaryContribution",
+          "agent": null,
+          "role": [{"@id" : "https://id.kb.se/term/relator/author"}]
+        }
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([
+    {
+      path: 'mainEntity.contribution[1]',
+      value: {
+        "@type": "Contribution",
+        "agent": null,
+        "role": []
+      }
+    },
+    ]);
+});
+
+test('should enrich list elements independent of order, if present', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "PrimaryContribution",
+          "agent": null,
+          "role": [{"@id": "https://id.kb.se/term/relator/author"}]
+        },
+        {
+          "@type": "Contribution",
+          "agent": null,
+          "role": []
+        }
+      ]
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "Contribution",
+          "role": []
+        },
+        {
+          "@type": "PrimaryContribution",
+          "agent": null,
+        }
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([
+      {
+        path: 'mainEntity.contribution[1].role',
+        value: [{"@id": "https://id.kb.se/term/relator/author"}]
+      },
+      {
+        path: 'mainEntity.contribution[0].agent',
+        value: null
+      }
+    ]
+  );
+});
+
+test('should add typed list element if missing', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "PrimaryContribution",
+          "agent": null,
+          "role": [{"@id": "https://id.kb.se/term/relator/author"}]
+        },
+      ]
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "Contribution",
+          "agent": null,
+          "role": []
+        }
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([
+        {
+          path: 'mainEntity.contribution[1]',
+          value: {
+            "@type": "PrimaryContribution",
+            "agent": null,
+            "role": [{"@id": "https://id.kb.se/term/relator/author"}]
+          }
+        }
+      ]
+  );
+});
