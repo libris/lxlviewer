@@ -16,11 +16,11 @@ test('page displays the site header', async ({ page }) => {
 });
 
 test('page has a search input', async ({ page }) => {
-	await expect(page.getByTestId('main-search').nth(0)).toBeVisible();
+	await expect(page.getByTestId('supersearch').nth(0)).toBeVisible();
 });
 
 test('can change the language', async ({ page }) => {
-	await page.getByTestId('current-lang').click();
+	await page.getByTestId('change-lang').click();
 	await expect(page).toHaveURL(/\/en\/find/);
 });
 

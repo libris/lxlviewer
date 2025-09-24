@@ -8,18 +8,18 @@ test.beforeEach(async ({ page }) => {
 test('click input expands dialog', async ({ page }) => {
 	const dialog = await page.locator('#supersearch-dialog');
 	await expect(dialog).not.toHaveAttribute('open');
-	await page.getByTestId('main-search').click();
+	await page.getByTestId('supersearch').click();
 	await expect(dialog).toHaveAttribute('open');
 });
 
 test('type & enter performs search', async ({ page }) => {
-	await page.getByRole('combobox').fill('hej');
+	await page.getByTestId('supersearch').getByRole('combobox').fill('hej');
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL('/find?_q=hej&_limit=20&_offset=0&_sort=&_spell=true');
 });
 
 test('expanded content shows persistant items and results', async ({ page }) => {
-	await page.getByTestId('main-search').click();
+	await page.getByTestId('supersearch').getByRole('combobox').click();
 	await expect(
 		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
 		'persistent items are shown on empty input'
@@ -38,7 +38,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		'search results are shown after typing'
 	).toHaveCount(5);
 	await page.goto('/find?_limit=20&_offset=0&_q=language%3A"lang%3Aswe"&_sort=&_spell=true');
-	await page.getByTestId('main-search').click();
+	await page.getByTestId('supersearch').click();
 	await expect(
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'results are shown if there is an initial query'
@@ -50,7 +50,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		'query is kept when navigating from find routes...'
 	).toContainText('Språk');
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-value')).toContainText('Svenska');
-	await page.locator('.home').getByRole('link').click(); // click on home link
+	await page.getByTestId('home').click(); // click on home link
 	await page.waitForURL('/'); // fnurgel route
 	await expect(
 		page.getByRole('combobox'),
@@ -59,7 +59,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
-	await page.getByRole('combobox').fill('Kallocain');
+	await page.getByTestId('supersearch').getByRole('combobox').fill('Kallocain');
 	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
@@ -72,7 +72,7 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 });
 
 test('user can jump from first row to bottom by pressing arrow up', async ({ page }) => {
-	await page.getByRole('combobox').fill('a');
+	await page.getByTestId('supersearch').getByRole('combobox').fill('a');
 	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowUp');
 	await page.keyboard.press('ArrowUp');
@@ -81,7 +81,7 @@ test('user can jump from first row to bottom by pressing arrow up', async ({ pag
 });
 
 test('qualifier keys can be added using the user interface', async ({ page }) => {
-	await page.getByTestId('main-search').click();
+	await page.getByTestId('supersearch').getByRole('combobox').click();
 	await page
 		.getByRole('dialog')
 		.getByLabel('Lägg till filter')
@@ -129,7 +129,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		page.getByRole('combobox').locator('.lxl-qualifier-value.atomic'),
 		'...and the value is related to the previous query'
 	).toContainText(/jan/i);
-	await page.getByTestId('main-search').click();
+	await page.getByTestId('supersearch').getByRole('combobox').click();
 	await page
 		.getByRole('dialog')
 		.getByLabel('Lägg till filter')
@@ -154,7 +154,10 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		page.getByRole('combobox').locator('.lxl-qualifier-key').last(),
 		'pills for both contributor and language exists'
 	).toContainText('Språk');
-	await page.getByTestId('main-search').click({ position: { x: 10, y: 10 } }); // Make sure to not accidentally click the remove button of a pill
+	await page
+		.getByTestId('supersearch')
+		.getByRole('combobox')
+		.click({ position: { x: 10, y: 10 } }); // Make sure to not accidentally click the remove button of a pill
 	await page.keyboard.press('Home'); // for PCs
 	await page.keyboard.press('Meta+ArrowLeft'); // for mac
 	await page
@@ -181,17 +184,17 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 });
 
 test('clear button clears input field', async ({ page }) => {
-	await page.getByTestId('main-search').click();
+	await page.getByTestId('supersearch').click();
 	await expect(
-		page.getByTestId('main-search').getByLabel('Rensa').last(),
+		page.getByTestId('supersearch').getByLabel('Rensa').last(),
 		'Clear button not visible initially'
 	).not.toBeVisible();
 	await page.getByRole('combobox').last().fill('hello');
 	await expect(
-		page.getByTestId('main-search').getByLabel('Rensa').last(),
+		page.getByTestId('supersearch').getByLabel('Rensa').last(),
 		'Clear button visible after typing'
 	).toBeVisible();
-	await page.getByTestId('main-search').getByLabel('Rensa').last().click();
+	await page.getByTestId('supersearch').getByLabel('Rensa').last().click();
 	await expect(page.getByRole('combobox').last(), 'Clear input after click').toContainText('');
 	await page.getByRole('combobox').last().fill('hello');
 	await expect(page.getByRole('combobox').last(), 'Can type again after clear').toContainText(
@@ -212,7 +215,7 @@ test('access filters can be added/removed', async ({ page }) => {
 	await expect(page).toHaveURL('/find?_q=hej+freeOnline');
 	await expect(page.getByRole('combobox').first()).toContainText('hej Fritt online');
 
-	await page.getByTestId('main-search').click();
+	await page.getByTestId('supersearch').click();
 	await page.keyboard.press('Backspace');
 	await page.keyboard.press('Backspace');
 	await expect(

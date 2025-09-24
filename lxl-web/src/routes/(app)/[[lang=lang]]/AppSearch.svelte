@@ -49,7 +49,9 @@
 {#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
 	{@render fallbackInput()}
 {:then { default: SuperSearchWrapper }}
-	<SuperSearchWrapper {placeholder} bind:this={superSearchWrapperComponent} />
+	<div class="contents" data-testid="supersearch">
+		<SuperSearchWrapper {placeholder} bind:this={superSearchWrapperComponent} />
+	</div>
 {:catch}
 	{@render fallbackInput()}
 {/await}

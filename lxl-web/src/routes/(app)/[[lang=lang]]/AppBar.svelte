@@ -169,6 +169,7 @@
 					class="action px-1.5"
 					href={page.data.localizeHref(page.data.base)}
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
+					data-testid="home"
 				>
 					<img
 						src={librisLogo}
@@ -226,6 +227,7 @@
 					hreflang={otherLangCode}
 					aria-label={page.data.t('header.changeLang')}
 					aria-labelledby={IDs.appBarChangeLangLabel}
+					data-testid="change-lang"
 				>
 					{@render actionItemContents({
 						Icon: IconLanguage,

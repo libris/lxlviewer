@@ -516,7 +516,7 @@
 		outline: none;
 	}
 
-	.expanded :global(.codemirror-container .cm-placeholder) {
+	:global(.codemirror-container .cm-placeholder) {
 		color: var(--color-placeholder);
 	}
 </style>
