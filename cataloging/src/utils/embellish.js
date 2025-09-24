@@ -17,7 +17,7 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
   if (targetObject === null || typeof targetObject === 'undefined') {
     targetObject = {};
   }
-  if (templateObject && typeof templateObject === "object") {
+  if (templateObject && typeof templateObject === "object" && !Array.isArray(templateObject)) {
     if (templateObject['@type'] && targetObject['@type'] &&
       templateObject['@type'] !== targetObject['@type']) {
       return;
@@ -36,7 +36,7 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
         && Object.keys(value[0]).length === 1 && value[0]['@id']) {
         let countAdded = 0;
         each (value, obj => {
-          if (!targetObject[key].some(el => isEqual(el, obj))) {
+          if (!asArray(targetObject[key]).some(el => isEqual(el, obj))) {
             countAdded++;
             changeList.push({
               path: arrayPathToString([...targetPath, key, countAdded + targetObject[key].length - 1]),
@@ -47,18 +47,18 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
       }
 
       else if (targetObject.hasOwnProperty(key) && Array.isArray(value) && value[0]) {
+        const targetArray = asArray(targetObject[key]);
         each (value, obj => {
           let countAdded = 0;
-          const firstElementWithMatchingType = targetObject[key].find(el => el['@type'] === obj['@type']);
+          const firstElementWithMatchingType = targetArray.find(el => el['@type'] === obj['@type']);
           if (!firstElementWithMatchingType) {
             countAdded++;
             changeList.push({
-              path: arrayPathToString([...templatePath, key, countAdded + targetObject[key].length - 1]),
+              path: arrayPathToString([...templatePath, key, countAdded + targetArray.length - 1]),
               value: obj,
             });
           } else { //There is an element in the list with the same type
-            const indexInTarget = targetObject[key].indexOf(firstElementWithMatchingType);
-
+            const indexInTarget = targetArray.indexOf(firstElementWithMatchingType);
             //TODO loop with index instead, to optimize?
             const indexInTemplate = value.indexOf(obj);
             const newTargetPath  = [...targetPath, key, indexInTarget];
@@ -68,10 +68,14 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
       }
       else {
         if (typeof targetObject === 'object' && typeof templateObject === 'object') {
-          addToChangeList(source, target, [...templatePath, key], targetPath, changeList);
+          addToChangeList(source, target, [...templatePath, key], [...targetPath, key], changeList);
         }
       }
     });
   }
+}
+
+function asArray(v) {
+  return Array.isArray(v) ? v : [v];
 }
 

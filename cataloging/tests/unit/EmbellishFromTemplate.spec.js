@@ -510,3 +510,52 @@ test('should add and enrich, independent of array index', () => {
     ]
   );
 });
+
+test('should handle nested properties', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "seriesMembership": [
+        {
+          "@type": "SeriesMembership",
+          "inSeries": {
+            "@type": "Instance",
+            "identifiedBy": [
+              {
+                "@type": "ISSN",
+                "value": ""
+              }
+            ]
+          }
+        }
+      ]
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "seriesMembership": [
+        {
+          "@type": "SeriesMembership",
+          "inSeries": {
+            "@type": "Instance"
+          }
+        }
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([
+      {
+        path: 'mainEntity.seriesMembership[0].inSeries.identifiedBy',
+        value:[{"@type": "ISSN", "value": ""}]
+      },
+    ]
+  );
+});
+
+
