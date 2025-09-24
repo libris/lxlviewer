@@ -102,7 +102,6 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await expect(
 		page
 			.getByRole('dialog')
-			.getByLabel('Förslag')
 			.getByRole('link')
 			.filter({ hasText: /Person|Organisation/ }),
 		'all suggestions are persons or organizations'
@@ -112,7 +111,6 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await expect(
 		await page
 			.getByRole('dialog')
-			.getByLabel('Förslag')
 			.getByRole('link')
 			.filter({ hasText: /Person|Organisation/ })
 			.filter({ hasText: /jan/i }),
