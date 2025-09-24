@@ -558,4 +558,26 @@ test('should handle nested properties', () => {
   );
 });
 
+test("Should not treat '@id' as a regular property", () => {
+  const template = {
+    "record": {},
+    "mainEntity": { "property" : {'@id' : 'uri'}}
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "property" : {
+        "@type" : "local",
+        "sub" : ""
+      }
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([]);
+});
+
 

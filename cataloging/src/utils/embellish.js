@@ -22,6 +22,9 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
     }
 
     each(templateObject, (value, key) => {
+      if (key === '@id') {
+        return;
+      }
       // Properties missing in target
       if (!targetObject.hasOwnProperty(key) ||
         (targetObject[key] === null && templateObject[key] !== null)) {
