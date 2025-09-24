@@ -15,11 +15,13 @@
 			(item) => item.linksToItem.length || item.loanReserveLink.length || item.itemStatus?.length
 		)
 	);
+
 	const hasEveryItemLink = $derived(
 		Object.values(holderData.bibIds || {}).every(
 			(item) => item.linksToItem.length || item.loanReserveLink.length
 		)
 	);
+
 	const hasOpeningHoursEtc = $derived(
 		!!(holderData.openingHours?.join('') + holderData.address?.join('').trim())
 	);
@@ -30,6 +32,7 @@
 	const shownInstances = $derived(
 		Object.entries(holderData?.bibIds || {}).filter((item, index) => index < currentInstanceLimit)
 	);
+
 	const instancesCanExpand = $derived(currentInstanceLimit < totalNumInstances);
 	const instancesCanCollapse = $derived(currentInstanceLimit > INSTANCE_LIMIT);
 </script>
@@ -107,7 +110,6 @@
 		{/if}
 		{#if !hasEveryItemLink}
 			<!-- general holder links -->
-			<!-- If no item links, catalog link OR site link -->
 			{#if holderData.linksToCatalog.length}
 				{#each holderData.linksToCatalog as linkToCatalog, i (i)}
 					<li>

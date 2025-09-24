@@ -16,7 +16,6 @@ import {
 	getHoldingsByType,
 	getHoldersByType,
 	getBibIdsByInstanceId,
-	// getItemLinksByBibId,
 	getItemLinksBySigel
 } from '$lib/utils/holdings.js';
 import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
@@ -142,7 +141,6 @@ export const load = async ({ params, locals, fetch }) => {
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
-	// const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
 	const itemLinksBySigel = getItemLinksBySigel(bibIdsByInstanceId, locale, displayUtil);
 
 	if (holdersCache.holders) {
@@ -163,7 +161,6 @@ export const load = async ({ params, locals, fetch }) => {
 		holdings: {
 			holdingsByInstanceId,
 			holdersByType,
-			// itemLinksByBibId, // todo remove
 			itemLinksBySigel,
 			bibIdsByInstanceId
 		},

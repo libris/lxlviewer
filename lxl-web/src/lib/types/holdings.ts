@@ -37,16 +37,6 @@ export type FullHolderBySigel = {
 	[sigel: string]: FramedData;
 };
 
-// todo remove
-// export type ItemLinksForHolder = {
-// 	[sigel: string]: { [linkType: string]: string[] };
-// };
-
-// // todo remove
-// export type ItemLinksByBibId = {
-// 	[id: string]: ItemLinksForHolder;
-// };
-
 export type ItemLinksBySigel = {
 	[sigel: string]: HolderLinks;
 };
@@ -73,7 +63,6 @@ type HoldingLinks = {
 export type HoldingsData = {
 	bibIdsByInstanceId: BibIdByInstanceId;
 	holdingsByInstanceId: HoldingsByInstanceId;
-	// itemLinksByBibId: ItemLinksByBibId; // todo remove
 	itemLinksBySigel: ItemLinksBySigel;
 	holdersByType?: HoldersByType;
 	overview: unknown;

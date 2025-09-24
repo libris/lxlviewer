@@ -10,7 +10,6 @@ import {
 	getHoldersByType,
 	getHoldingsByInstanceId,
 	getHoldingsByType,
-	// getItemLinksByBibId,
 	getItemLinksBySigel
 } from '$lib/utils/holdings';
 import { error, json } from '@sveltejs/kit';
@@ -48,7 +47,6 @@ export async function GET({ params, locals }) {
 
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
-	// const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
 	const itemLinksBySigel = getItemLinksBySigel(bibIdsByInstanceId, locale, displayUtil);
 
 	// Should this be passed as a parameter to HoldingsModal.svelte instead?
@@ -69,7 +67,6 @@ export async function GET({ params, locals }) {
 	return json({
 		bibIdsByInstanceId,
 		holdingsByInstanceId,
-		// itemLinksByBibId, // todo remove
 		itemLinksBySigel,
 		instances,
 		title: toString(heading),

@@ -7,9 +7,8 @@
 	import type { HoldingsData } from '$lib/types/holdings.js';
 	import Resource from '$lib/components/Resource.svelte';
 	import Modal from '$lib/components/Modal.svelte';
-	// import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 	import Citations from '$lib/components/Citations.svelte';
-	import HoldingsContent_2 from '$lib/components/HoldingsContent_2.svelte';
+	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 
 	const { data } = $props();
 	const holdings: HoldingsData = $state({
@@ -68,8 +67,7 @@
 			{#snippet title()}
 				<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
 			{/snippet}
-			<!-- <HoldingsContent {holdings} /> -->
-			<HoldingsContent_2 {holdings} />
+			<HoldingsContent {holdings} />
 		</Modal>
 	{:else if page.state.citations || page.url.searchParams.get('cite')}
 		<Modal close={() => handleCloseModal('cite')}>
