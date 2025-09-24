@@ -459,3 +459,54 @@ test('should add typed list element if missing', () => {
       ]
   );
 });
+
+test('should add and enrich, independent of array index', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "PrimaryContribution",
+          "agent": null,
+          "role": [{"@id": "https://id.kb.se/term/relator/author"}]
+        },
+        {
+          "@type": "Contribution",
+          "agent": null,
+          "role": []
+        }
+      ]
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "Contribution",
+          "role": []
+        }
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath)
+
+  expect(changeList).toEqual([
+      {
+        path: 'mainEntity.contribution[1]',
+        value: {
+          "@type": "PrimaryContribution",
+          "agent": null,
+          "role": [{"@id": "https://id.kb.se/term/relator/author"}]
+        }
+      },
+      {
+        path: 'mainEntity.contribution[0].agent',
+        value: null
+      },
+    ]
+  );
+});
