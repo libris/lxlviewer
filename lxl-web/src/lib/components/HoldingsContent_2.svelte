@@ -69,16 +69,15 @@
 		})
 	);
 
-	// pick a decorated instance or the work overview
-	const cardData = $derived(
-		isFnurgel(holdingId || '')
-			? holdings.instances.find((instance) => {
-					return (
-						(holdingId && (instance?.['@id'] as string).includes(holdingId)) || holdings.overview
-					);
-				})
-			: holdings.overview
-	);
+	// pick an instance instance or the work overview
+	const cardData = $derived.by(() => {
+		if (holdingSelection === 'instance') {
+			return (
+				holdingId &&
+				holdings.instances.find((instance) => (instance['@id'] as string).includes(holdingId))
+			);
+		} else return holdings.overview;
+	});
 
 	const numHolders = $derived(displayedHolders?.length);
 
