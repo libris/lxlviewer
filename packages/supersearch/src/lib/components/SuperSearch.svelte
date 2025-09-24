@@ -215,6 +215,7 @@
 
 	let expandedExtensions = $derived([
 		...extensionsWithDefaults,
+		EditorView.lineWrapping,
 		expandedContentAttributesCompartment.of(initialExpandedContentAttributes)
 	]);
 

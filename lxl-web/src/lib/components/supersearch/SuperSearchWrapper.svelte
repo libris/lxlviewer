@@ -468,7 +468,7 @@
 
 	.expanded.supersearch-input :global(.cm-scroller) {
 		min-height: calc(var(--spacing) * 14);
-		scrollbar-width: auto;
+		scrollbar-width: thin;
 		max-height: 96px;
 
 		@variant lg {
