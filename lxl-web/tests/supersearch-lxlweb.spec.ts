@@ -73,7 +73,7 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 
 test('user can jump from first row to bottom by pressing arrow up', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').fill('a');
-	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
+	await expect(page.getByRole('dialog').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowUp');
 	await page.keyboard.press('ArrowUp');
 	await page.keyboard.press('Enter');
