@@ -1,5 +1,5 @@
-import {each, get, isEqual} from 'lodash-es';
-import {arrayPathToString} from 'lxljs/string';
+import { each, get, isEqual } from 'lodash-es';
+import { arrayPathToString } from 'lxljs/string';
 
 export function getChangeList(source, target, templatePath, targetPath = templatePath) {
   const changeList = [];
@@ -8,7 +8,7 @@ export function getChangeList(source, target, templatePath, targetPath = templat
 }
 
 function addToChangeList(source, target, templatePath, targetPath, changeList) {
-  const templateObject = get(source, templatePath);
+  let templateObject = get(source, templatePath);
   let targetObject = get(target, targetPath);
 
   if (targetObject === null || typeof targetObject === 'undefined') {
@@ -21,37 +21,52 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
       return;
     }
 
-    each(templateObject, (value, key) => {
+    each(templateObject, (sourceValue, key) => {
       if (key === '@id') {
         return;
       }
+      let targetValue = targetObject[key];
+
+      // TODO! Either something like this, or normalize before?
+      // If either target or source is an array, it is a repeatable property
+      // => convert it
+      //
+      // if (Array.isArray(targetValue) && !Array.isArray(sourceValue) ||
+      //   Array.isArray(sourceValue) && ! Array.isArray(targetValue)) {
+      //   sourceValue = asArray(sourceValue);
+      //   targetValue = asArray(targetValue);
+      // }
+      //
+      // We also need to to add the change to array in the changeList
+      // but this is getting hairy... Prefer to normalize before?
+
       // Properties missing in target
       if (!targetObject.hasOwnProperty(key) ||
-        (targetObject[key] === null && templateObject[key] !== null)) {
+        (targetValue === null && templateObject[key] !== null)) {
         changeList.push({
           path: arrayPathToString([...targetPath, key]),
-          value: value,
+          value: sourceValue,
         });
       }
       // Arrays of linked entities
-      else if (targetObject.hasOwnProperty(key) && Array.isArray(value) && value[0]
-        && Object.keys(value[0]).length === 1 && value[0]['@id']) {
+      else if (targetObject.hasOwnProperty(key) && Array.isArray(sourceValue) && sourceValue[0]
+        && Object.keys(sourceValue[0]).length === 1 && sourceValue[0]['@id']) {
         let countAdded = 0;
-        each (value, obj => {
-          if (!asArray(targetObject[key]).some(el => isEqual(el, obj))) {
+        each (sourceValue, obj => {
+          if (!asArray(targetValue).some(el => isEqual(el, obj))) {
             countAdded++;
             changeList.push({
-              path: arrayPathToString([...targetPath, key, countAdded + targetObject[key].length - 1]),
+              path: arrayPathToString([...targetPath, key, countAdded + targetValue.length - 1]),
               value: obj,
             });
           }
         })
       }
       // Arrays of typed objects
-      else if (targetObject.hasOwnProperty(key) && Array.isArray(value) && value[0]) {
-        const targetArray = asArray(targetObject[key]);
+      else if (targetObject.hasOwnProperty(key) && Array.isArray(sourceValue) && sourceValue[0]) {
+        const targetArray = asArray(targetValue);
         let countAdded = 0;
-        each (value, obj => {
+        each (sourceValue, obj => {
           const firstElementWithMatchingType = targetArray.find(el => el['@type'] === obj['@type']);
           if (!firstElementWithMatchingType) {
             countAdded++;
@@ -61,8 +76,8 @@ function addToChangeList(source, target, templatePath, targetPath, changeList) {
             });
           } else { //There is an element in the list with the same type
             const indexInTarget = targetArray.indexOf(firstElementWithMatchingType);
-            const indexInTemplate = value.indexOf(obj);
-            addToChangeList(source, target, [...templatePath, key, indexInTemplate],  [...targetPath, key, indexInTarget], changeList);
+            const indexInSource = sourceValue.indexOf(obj);
+            addToChangeList(source, target, [...templatePath, key, indexInSource],  [...targetPath, key, indexInTarget], changeList);
           }
         })
       } // Recurse if object is present both in source and target

@@ -558,7 +558,7 @@ test('should handle nested properties', () => {
   );
 });
 
-test("Should not treat '@id' as a regular property", () => {
+test("should not treat '@id' as a regular property", () => {
   const template = {
     "record": {},
     "mainEntity": { "property" : {'@id' : 'uri'}}
@@ -649,5 +649,68 @@ test('should add multiple entries to array', () => {
   );
 });
 
+//TODO: Handle objects that are lists in _either_ source or target
 
-
+// test('list in record but not in template', () => {
+//   const template = {
+//     "record": {},
+//     "mainEntity": {
+//       "place": {
+//         "@type": "Place",
+//         "label": ""
+//       },
+//     }
+//   };
+//
+//   const record = {
+//     "record": {},
+//     "mainEntity": {
+//       "place": [
+//         {
+//           "@type": "Place",
+//           "label": [
+//             "[Stockholm]"
+//           ]
+//         }
+//       ]
+//     }
+//   }
+//   const templatePath = ['mainEntity'];
+//
+//   const changeList = getChangeList(template, record, templatePath)
+//
+//   expect(changeList).toEqual([]);
+// });
+//
+// test('should enrich place', () => {
+//   const template = {
+//     "record": {},
+//     "mainEntity": {
+//       "place": {
+//         "@type": "Place",
+//         "label": ""
+//       },
+//     }
+//   };
+//
+//   const record = {
+//     "record": {},
+//     "mainEntity": {
+//       "place": [
+//         {
+//           "@type": "Place",
+//         }
+//       ]
+//     }
+//   }
+//   const templatePath = ['mainEntity'];
+//
+//   const changeList = getChangeList(template, record, templatePath)
+//
+//   expect(changeList).toEqual([
+//     {
+//       path: 'mainEntity.place[0].label',
+//       value: ""
+//     }
+//   ]);
+// });
