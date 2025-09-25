@@ -47,7 +47,6 @@ export async function GET({ params, locals }) {
 
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
-	const itemLinksBySigel = getItemLinksBySigel(bibIdsByInstanceId, locale, displayUtil);
 
 	// Should this be passed as a parameter to HoldingsModal.svelte instead?
 	const holdingsByType = getHoldingsByType(mainEntity);
@@ -62,6 +61,8 @@ export async function GET({ params, locals }) {
 	if (!env.CI) {
 		await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
 	}
+
+	const itemLinksBySigel = getItemLinksBySigel(bibIdsByInstanceId, locale, displayUtil);
 
 	//TODO: cache response for a short amount of time?
 	return json({

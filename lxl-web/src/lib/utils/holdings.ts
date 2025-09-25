@@ -242,6 +242,9 @@ export async function fetchHoldersIfAbsent(allHolders: DecoratedHolder[]) {
 			}
 		}
 	}
+	if (holdersCache.holders) {
+		console.log('Current number of cached holders:', Object.keys(holdersCache.holders).length);
+	}
 }
 
 export function getItemLinksBySigel(

@@ -18,7 +18,6 @@ import {
 	getBibIdsByInstanceId,
 	getItemLinksBySigel
 } from '$lib/utils/holdings.js';
-import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
@@ -142,10 +141,6 @@ export const load = async ({ params, locals, fetch }) => {
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
 	const itemLinksBySigel = getItemLinksBySigel(bibIdsByInstanceId, locale, displayUtil);
-
-	if (holdersCache.holders) {
-		console.log('Current number of cached holders:', Object.keys(holdersCache.holders).length);
-	}
 
 	return {
 		uri: resource['@id'] as string,
