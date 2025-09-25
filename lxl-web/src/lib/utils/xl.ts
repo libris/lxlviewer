@@ -2,33 +2,33 @@ import * as lxljsVocab from 'lxljs/vocab';
 import * as lxljsString from 'lxljs/string';
 
 import {
-	JsonLd,
+	type AlternateProperties,
 	Base,
-	LensType,
-	Fresnel,
-	Platform,
-	Fmt,
-	type VocabData,
-	type ContextData,
-	type DerivedLensType,
-	type Lens,
 	type ClassName,
+	type ContextData,
 	type Data,
-	type FramedData,
-	type PropertyName,
-	type Format,
-	type FormatDetails,
-	type DisplayJsonLd,
+	type DerivedLensType,
 	type DerivedLensTypeDefinition,
 	type DisplayDecorated,
-	type LensedOrdered,
+	type DisplayDecoratedLite,
+	type DisplayJsonLd,
+	Fmt,
+	type Format,
+	type FormatDetails,
+	type FramedData,
+	Fresnel,
+	JsonLd,
 	type LangCode,
-	type ShowProperty,
-	type ShowProperties,
-	type RangeRestriction,
-	type AlternateProperties,
 	type LangContainer,
-	type DisplayDecoratedLite
+	type Lens,
+	type LensedOrdered,
+	LensType,
+	Platform,
+	type PropertyName,
+	type RangeRestriction,
+	type ShowProperties,
+	type ShowProperty,
+	type VocabData
 } from '$lib/types/xl';
 
 // TODO TESTS!
@@ -138,6 +138,11 @@ export class DisplayUtil {
 
 		// FIXME - hardcoded workaround to get the instance chip in these cases
 		if (propertyName === 'reproductionOf' || propertyName === 'hasReproduction') {
+			return LensType.Chip;
+		}
+
+		// FIXME - hardcoded workaround - exactMatch is integral
+		if (this.isDerivedLens(lensType) && propertyName === 'exactMatch') {
 			return LensType.Chip;
 		}
 
