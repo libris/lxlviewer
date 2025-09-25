@@ -448,6 +448,7 @@ export default {
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('saveLangTagSearch', '');
       this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+      this.removeEmbellishedHighlight();
 
       this.recordLoaded = true;
 
