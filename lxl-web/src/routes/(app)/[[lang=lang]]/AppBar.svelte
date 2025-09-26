@@ -270,6 +270,11 @@
 
 	search {
 		grid-area: search;
+
+		/* ensure an open dialog is visible when parent <search> is hidden */
+		:global(&:has(dialog[open])) {
+			display: flex;
+		}
 	}
 
 	.trailing-actions {
