@@ -213,7 +213,7 @@
 			wrappingArrowKeyNavigation
 			comboboxAriaLabel={page.data.t('search.search')}
 			defaultInputCol={2}
-			debouncedWait={100}
+			debouncedWait={400}
 			onexpand={handleOnExpand}
 			onchange={handleOnChange}
 		>
