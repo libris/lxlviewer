@@ -39,7 +39,6 @@ function localizeHref(href: string | URL, options: { locale: LocaleCode; baseUrl
 
 function localizeUrl(url: string | URL, options: { locale: LocaleCode; baseUrl: string | URL }) {
 	const urlObj = typeof url === 'string' ? new URL(url, options.baseUrl) : url;
-
 	const pathSegments = urlObj.pathname.split('/').filter(Boolean);
 	const localeFromUrl = isLocale(pathSegments[0]) ? pathSegments[0] : undefined;
 

@@ -3,19 +3,42 @@ export default {
 	home: {
 		searchPlaceholder: 'Title, author, subject etc'
 	},
+	appMenu: {
+		skipToContent: 'Skip to main content',
+		findOnWebsite: 'Find on Libris',
+		home: 'Home',
+		search: 'Search in Libris',
+		// subsets: 'Subsets and sections',
+		saved: 'Saved',
+		help: 'Help',
+		about: 'About Libris',
+		aboutBeta: 'About the beta',
+		contact: 'Contact',
+		cookies: 'About cookies on the website',
+		accessibility: 'Accessibility',
+		changeLang: 'In Swedish'
+	},
 	header: {
+		skipToContent: 'Skip to main content',
+		menu: 'Menu',
+		home: 'Home',
 		help: 'Help',
 		myPages: 'My pages',
-		changeLang: 'På svenska',
+		changeLang: 'In Swedish',
+		search: 'Search',
+		login: 'Log in',
+		saved: 'Saved',
 		searchPlaceholder: 'Search for title, author, library, subject...',
-		openMenu: 'Open main menu'
+		openMenu: 'Open main menu',
+		closeMenu: 'Close menu'
 	},
 	banner: {
-		messageMobile: 'The catalogue may contain outdated information.',
+		messageMobile: 'The catalogue may contain outdated information',
 		messageDesktop:
 			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
-		feedback: 'Share your feedback',
-		old: 'Go to libris.kb.se'
+		feedback: 'Share feedback',
+		old: 'Go to old Libris',
+		dismiss: 'Hide beta info'
 	},
 	about: {
 		pageTitle: 'About the beta'

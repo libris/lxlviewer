@@ -18,7 +18,7 @@
 		{@render children()}
 	</div>
 {:else}
-	<main class="flex flex-1 flex-col">
+	<main id="content" class="flex flex-1 flex-col">
 		{@render children()}
 	</main>
 	<SiteFooter />

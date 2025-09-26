@@ -65,11 +65,11 @@
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">
 			<div class="flex flex-1 flex-col @5xl/content:flex-row">
-				<main class="flex-1">
+				<main id="content" class="flex-1">
 					<h1 class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar {searchResult} />
 					<SearchResultInfo {searchResult} />
-					<ol class="flex flex-col px-4">
+					<ol class="flex flex-col">
 						{#each searchResult.items as item (item['@id'])}
 							<li>
 								<SearchCard {item} />
@@ -118,7 +118,7 @@
 
 	.search-result {
 		&.has-trailing-pane {
-			max-height: calc(100vh - (var(--app-bar-height) + var(--beta-banner-height)));
+			max-height: calc(100vh - (var(--app-bar-height) + var(--banner-height, 0)));
 			overflow: hidden;
 
 			& .search-result-content {

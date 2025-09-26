@@ -20,8 +20,9 @@
 </script>
 
 <div
-	class="search-result-info text-2xs flex items-center gap-1 px-4"
+	class="search-result-info text-2xs flex items-center gap-1 px-3"
 	role="status"
+	aria-atomic="true"
 	data-testid="result-info"
 >
 	{#if numHits && numHits > 0}

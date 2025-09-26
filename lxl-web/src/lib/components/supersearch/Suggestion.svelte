@@ -40,7 +40,7 @@
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<hgroup
-				class="resource-heading grid gap-1 overflow-hidden text-xs font-medium whitespace-nowrap"
+				class="resource-heading grid gap-1 overflow-hidden text-xs font-medium whitespace-nowrap sm:text-sm lg:text-xs"
 			>
 				<h2 class="truncate">
 					<DecoratedData
@@ -62,7 +62,7 @@
 					</p>
 				{/if}
 			</hgroup>
-			<div class="resource-footer text-3xs text-subtle truncate">
+			<div class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
 				<strong class="font-medium">
 					{item.typeStr}
 				</strong>
