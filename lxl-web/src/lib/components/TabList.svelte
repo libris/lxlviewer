@@ -30,7 +30,7 @@
 			background-color: transparent;
 			left: 0;
 			bottom: 0;
-			border-radius: 20px;
+			border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 		}
 	}
 
