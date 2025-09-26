@@ -29,6 +29,11 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		'search results are not visible on empty input'
 	).toBeHidden();
 	await page.getByRole('dialog').getByRole('combobox').fill('hej');
+
+	// wait for /supersearch api response before expecting any results
+	await page.waitForResponse(
+		(res) => res.url().includes('supersearch?_q=hej') && res.status() === 200
+	);
 	await expect(
 		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
 		'persistent items are also shown after typing'
@@ -39,6 +44,10 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 	).toHaveCount(5);
 	await page.goto('/find?_limit=20&_offset=0&_q=language%3A"lang%3Aswe"&_sort=&_spell=true');
 	await page.getByTestId('supersearch').click();
+
+	await page.waitForResponse(
+		(res) => res.url().includes('/supersearch?_q=language') && res.status() === 200
+	);
 	await expect(
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'results are shown if there is an initial query'
@@ -60,6 +69,10 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').fill('Kallocain');
+
+	await page.waitForResponse(
+		(res) => res.url().includes('/supersearch?_q=Kallocain') && res.status() === 200
+	);
 	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
@@ -73,6 +86,10 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 
 test('user can jump from first row to bottom by pressing arrow up', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').fill('a');
+
+	await page.waitForResponse(
+		(res) => res.url().includes('/supersearch?_q=a') && res.status() === 200
+	);
 	await expect(page.getByRole('dialog').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowUp');
 	await page.keyboard.press('ArrowUp');
@@ -99,6 +116,10 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier-value'),
 		'qualifier value is initially empty but has styling'
 	).toContainText('""');
+
+	await page.waitForResponse(
+		(res) => res.url().includes('/supersearch?_q=contributor') && res.status() === 200
+	);
 	await expect(
 		page
 			.getByRole('dialog')
@@ -108,6 +129,10 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	).toHaveCount(5);
 	await expect(page.getByRole('dialog').getByRole('combobox')).toContainText('Författare/upphov');
 	await page.getByRole('dialog').getByRole('combobox').pressSequentially('jan');
+
+	await page.waitForResponse(
+		(res) => res.url().includes('supersearch?_q=contributor%3A%22jan%') && res.status() === 200
+	);
 	await expect(
 		await page
 			.getByRole('dialog')
@@ -134,6 +159,13 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByRole('button')
 		.getByText('Språk')
 		.click();
+
+	await page.waitForResponse(
+		(res) =>
+			res.url().includes('/supersearch?') &&
+			res.url().includes('spr%C3%A5k') &&
+			res.status() === 200
+	);
 	await expect(
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'Språk' }),
 		'all suggestions are languages'
@@ -164,9 +196,14 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByRole('button')
 		.getByText('Ämne')
 		.click();
-	await expect(
-		page.getByRole('dialog').getByRole('link').filter({ hasText: 'ämne' })
-	).toHaveCount(5);
+
+	await page.waitForResponse(
+		(res) =>
+			res.url().includes('/supersearch?') && res.url().includes('A4mne') && res.status() === 200
+	);
+	await expect(page.getByRole('dialog').getByRole('link').filter({ hasText: 'ämne' })).toHaveCount(
+		5
+	);
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL(/A4mne/);
 	await expect(
