@@ -54,11 +54,13 @@ export default getTypeLike;
 
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 export function getTypeForIcon(typeLike: TypeLike) {
-	if (typeLike.identify.find((t) => slug(t[JsonLd.ID]) === 'Audiobook')) {
+	if (typeLike.identify.find((t) => t && slug(t[JsonLd.ID]) === 'Audiobook')) {
 		return 'Audiobook';
 	}
 
-	return typeLike.find.length > 0 ? slug(typeLike.find[0][JsonLd.ID]) : '';
+	return typeLike.find.length > 0 && typeLike.find[0] !== undefined
+		? slug(typeLike.find[0][JsonLd.ID])
+		: '';
 }
 
 function slug(s: string) {
