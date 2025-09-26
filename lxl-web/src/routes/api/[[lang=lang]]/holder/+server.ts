@@ -1,7 +1,7 @@
+import { error, json } from '@sveltejs/kit';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { type FramedData } from '$lib/types/xl';
 import { createHolderLinks } from '$lib/utils/holdings';
-import { json } from '@sveltejs/kit';
 
 export async function GET({ params, url, locals }) {
 	const displayUtil = locals.display;
@@ -34,6 +34,7 @@ export async function GET({ params, url, locals }) {
 			);
 		} else {
 			console.error(`Could not fetch holder data for ${id}`);
+			return error(response.status, response.statusText);
 		}
 	}
 }

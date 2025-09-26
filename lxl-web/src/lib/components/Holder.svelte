@@ -53,20 +53,24 @@
 		const holderId: string = holder.obj?.['@id'] || '';
 		try {
 			const res = await fetch(`/api/${page.data.locale}/holder?id=${holderId}`);
-			type HolderResponse = { links: HolderLinks; libraryMainEntity: FramedData };
-			const { links, libraryMainEntity }: HolderResponse = await res.json();
-			holderLinks = links;
+			if (res.ok) {
+				type HolderResponse = { links: HolderLinks; libraryMainEntity: FramedData };
+				const { links, libraryMainEntity }: HolderResponse = await res.json();
+				holderLinks = links;
 
-			// create holder-specific links for its held instances
-			let tempHoldingLinks: Record<string, HoldingLinks> = {};
-			for (const [key, bibIdObj] of Object.entries(instances)) {
-				tempHoldingLinks[key] = createHoldingLinks(bibIdObj, libraryMainEntity, page.data.locale);
+				// create holder-specific links for its held instances
+				let tempHoldingLinks: Record<string, HoldingLinks> = {};
+				for (const [key, bibIdObj] of Object.entries(instances)) {
+					tempHoldingLinks[key] = createHoldingLinks(bibIdObj, libraryMainEntity, page.data.locale);
+				}
+				holdingLinks = tempHoldingLinks;
+				loading = false;
+			} else {
+				error = true;
+				loading = false;
 			}
-			holdingLinks = tempHoldingLinks;
-
-			loading = false;
 		} catch (e) {
-			console.warn(e);
+			console.error(e);
 			loading = false;
 			error = true;
 		}
@@ -104,26 +108,18 @@
 	const instancesCanCollapse = $derived(currentInstanceLimit > INSTANCE_LIMIT);
 </script>
 
-{#snippet skeleton()}
-	<div role="status" class="max-w-sm animate-pulse">
-		<div class="mb-2.5 h-2 rounded-full bg-neutral-200 dark:bg-neutral-700"></div>
-		<div class="mb-2.5 h-2 max-w-[330px] rounded-full bg-neutral-200 dark:bg-neutral-700"></div>
-		<div class="mb-2.5 h-2 max-w-[300px] rounded-full bg-neutral-200 dark:bg-neutral-700"></div>
-		<div class="h-2 max-w-[360px] rounded-full bg-neutral-200 dark:bg-neutral-700"></div>
-		<span class="sr-only">{page.data.t('search.loading')}</span>
-	</div>
-{/snippet}
-
 <li
 	class={['border-neutral flex flex-col gap-2 pb-3 not-last:border-b', hidden && 'hidden']}
 	bind:this={root}
 >
 	<h3 class="text-sm font-medium">{holder.str}</h3>
 	{#if loading}
-		{@render skeleton()}
+		<p class="animate-pulse">{page.data.t('search.loading')}</p>
 	{/if}
 	{#if error}
-		<p class="text-severe">{page.data.t('errors.somethingWentWrong')}</p>
+		<div class="text-error bg-severe-50 rounded-sm p-2">
+			<p>{page.data.t('errors.somethingWentWrong')}</p>
+		</div>
 	{/if}
 	{#if holderLinks}
 		<ul class="flex flex-col gap-2 [&>li]:flex [&>li]:flex-col [&>li]:items-start">
