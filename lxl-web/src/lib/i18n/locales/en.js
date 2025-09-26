@@ -258,7 +258,9 @@ export default {
 		linkToSite: 'Library website',
 		openingHoursEtc: 'Opening hours, address etc',
 		showAll: 'Show all editions',
-		showFewer: 'Show fewer editions'
+		showFewer: 'Show fewer editions',
+		myLoans: 'My loans',
+		applyForCard: 'Apply for library card'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'

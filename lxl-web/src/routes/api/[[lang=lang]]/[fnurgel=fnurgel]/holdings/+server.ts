@@ -10,7 +10,7 @@ import {
 	getHoldersByType,
 	getHoldingsByInstanceId,
 	getHoldingsByType,
-	getItemLinksByBibId
+	getItemLinksBySigel
 } from '$lib/utils/holdings';
 import { error, json } from '@sveltejs/kit';
 import jmespath from 'jmespath';
@@ -47,7 +47,6 @@ export async function GET({ params, locals }) {
 
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
-	const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
 
 	// Should this be passed as a parameter to HoldingsModal.svelte instead?
 	const holdingsByType = getHoldingsByType(mainEntity);
@@ -63,14 +62,16 @@ export async function GET({ params, locals }) {
 		await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
 	}
 
+	const itemLinksBySigel = getItemLinksBySigel(bibIdsByInstanceId, locale, displayUtil);
+
 	//TODO: cache response for a short amount of time?
 	return json({
-		bibIdsByInstanceId: bibIdsByInstanceId,
-		holdingsByInstanceId: holdingsByInstanceId,
-		itemLinksByBibId: itemLinksByBibId,
-		instances: instances,
+		bibIdsByInstanceId,
+		holdingsByInstanceId,
+		itemLinksBySigel,
+		instances,
 		title: toString(heading),
 		overview: overviewWithoutHasInstance,
-		holdersByType: holdersByType
+		holdersByType
 	});
 }

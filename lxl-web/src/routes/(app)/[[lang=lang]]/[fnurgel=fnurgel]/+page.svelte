@@ -7,8 +7,8 @@
 	import type { HoldingsData } from '$lib/types/holdings.js';
 	import Resource from '$lib/components/Resource.svelte';
 	import Modal from '$lib/components/Modal.svelte';
-	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 	import Citations from '$lib/components/Citations.svelte';
+	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 
 	const { data } = $props();
 	const holdings: HoldingsData = $state({
