@@ -235,7 +235,7 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle absolute flex size-11 items-center justify-center lg:h-12',
+							'text-subtle absolute flex size-11 items-center justify-center rounded-md lg:h-12',
 							expanded && 'bg-input z-50 hidden h-14 w-13 lg:flex lg:h-12 lg:w-11'
 						]}
 					>
