@@ -1,4 +1,25 @@
-import {getChangeList} from "@/utils/embellish";
+import { getChangeList } from "@/utils/embellish";
+import { test, expect, vi } from 'vitest';
+import * as VocabUtil from 'lxljs/vocab';
+
+vi.mock('lxljs/vocab');
+
+beforeEach(() => {
+  const repeatableProps = [
+    'contribution',
+    'place',
+    'label',
+    'identifiedBy',
+    'role',
+    'descriptionConventions',
+    'seriesMembership',
+    'language'
+  ];
+  //hasDimensions is not repeatable
+  VocabUtil.propIsRepeatable.mockImplementation((key) =>
+    { return repeatableProps.includes(key) }
+  );
+});
 
 test('should add contribution if whole property is missing', () => {
   const template = {
@@ -20,7 +41,7 @@ test('should add contribution if whole property is missing', () => {
   }
   const templatePath = ['mainEntity'];
 
-  const changeList = getChangeList(template, record, templatePath)
+  const changeList = getChangeList(template, record, templatePath, templatePath, null)
 
   expect(changeList).toEqual([{
       path: 'mainEntity.contribution',
@@ -649,68 +670,107 @@ test('should add multiple entries to array', () => {
   );
 });
 
-//TODO: Handle objects that are lists in _either_ source or target
+test('should enrich place', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "place": {
+        "@type": "Place",
+        "label": ""
+      },
+    }
+  };
 
-// test('list in record but not in template', () => {
-//   const template = {
-//     "record": {},
-//     "mainEntity": {
-//       "place": {
-//         "@type": "Place",
-//         "label": ""
-//       },
-//     }
-//   };
-//
-//   const record = {
-//     "record": {},
-//     "mainEntity": {
-//       "place": [
-//         {
-//           "@type": "Place",
-//           "label": [
-//             "[Stockholm]"
-//           ]
-//         }
-//       ]
-//     }
-//   }
-//   const templatePath = ['mainEntity'];
-//
-//   const changeList = getChangeList(template, record, templatePath)
-//
-//   expect(changeList).toEqual([]);
-// });
-//
-// test('should enrich place', () => {
-//   const template = {
-//     "record": {},
-//     "mainEntity": {
-//       "place": {
-//         "@type": "Place",
-//         "label": ""
-//       },
-//     }
-//   };
-//
-//   const record = {
-//     "record": {},
-//     "mainEntity": {
-//       "place": [
-//         {
-//           "@type": "Place",
-//         }
-//       ]
-//     }
-//   }
-//   const templatePath = ['mainEntity'];
-//
-//   const changeList = getChangeList(template, record, templatePath)
-//
-//   expect(changeList).toEqual([
-//     {
-//       path: 'mainEntity.place[0].label',
-//       value: ""
-//     }
-//   ]);
-// });
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "place": [
+        {
+          "@type": "Place",
+        }
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+  const changeList = getChangeList(template, record, templatePath, templatePath, null)
+
+  expect(changeList).toEqual([
+    {
+      path: 'mainEntity.place[0].label',
+      value: [""]
+    }
+  ]);
+});
+
+// Does this work IRL? (It seems!)
+test('should change repeatable prop to array before adding', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "place": {
+        "@type": "Place",
+        "label": ""
+      },
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "place":
+        {
+          "@type": "AnotherPlaceType",
+          "label": "Something"
+        }
+    }
+  }
+
+  const templatePath = ['mainEntity'];
+  const changeList = getChangeList(template, record, templatePath, templatePath, null)
+
+  expect(changeList).toEqual([
+    {
+      path: 'mainEntity.place',
+      value:  [{
+        "@type": "AnotherPlaceType",
+        "label": "Something"
+      }]
+    },
+    {
+      path: 'mainEntity.place[1]',
+      value: {
+        "@type": "Place",
+        "label": ""
+      }
+    }
+  ]);
+});
+
+test('should NOP when target is array but not repeatable', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "hasDimensions": {
+          "@type": "Dimensions",
+          "label": ""
+        }
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "hasDimensions": [
+        {
+          "@type": "Dimensions",
+          "label": "22 cm"
+        }
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath, templatePath, null)
+
+  expect(changeList).toEqual([]);
+});

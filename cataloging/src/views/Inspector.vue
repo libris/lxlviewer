@@ -354,8 +354,8 @@ export default {
       }
 
       const changeList = [
-        ...getChangeList(template, baseRecordData, ['mainEntity']),
-        ...getChangeList(template, baseRecordData, ['record'])
+        ...getChangeList(template, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
+        ...getChangeList(template, baseRecordData, ['record'], ['record'], this.resources.context)
       ];
 
       if (changeList.length !== 0) {
