@@ -65,6 +65,8 @@ export default {
 	},
 	facet: {
 		q: 'Fritextsökning',
+		'_categoryByCollection.find': '« Find »',
+		'_categoryByCollection.identify': '« Identify »',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'instanceOf.@type': 'Verkstyp',
 		issuanceType: 'Utgivningssätt',

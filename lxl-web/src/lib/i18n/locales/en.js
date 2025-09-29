@@ -66,6 +66,8 @@ export default {
 	},
 	facet: {
 		q: 'Free text search',
+		'_categoryByCollection.find': '« Find »',
+		'_categoryByCollection.identify': '« Identify »',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
 		issuanceType: 'Issuance type',
