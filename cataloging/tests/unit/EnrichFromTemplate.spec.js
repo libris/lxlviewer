@@ -1,4 +1,4 @@
-import { getChangeList } from "@/utils/embellish";
+import { getChangeList } from "@/utils/enrich";
 import { test, expect, vi } from 'vitest';
 import * as VocabUtil from 'lxljs/vocab';
 

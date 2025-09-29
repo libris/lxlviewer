@@ -53,10 +53,10 @@ export default {
       }
       return false;
     },
-    embellished() {
-      const embellished = this.inspector.status.embellished;
-      if (embellished.length > 0) {
-        return embellished.some((el) => el.path === this.path);
+    enriched() {
+      const enriched = this.inspector.status.enriched;
+      if (enriched.length > 0) {
+        return enriched.some((el) => el.path === this.path);
       } return false;
     },
     isMarc() {
@@ -235,7 +235,7 @@ export default {
             'is-ext-link': !isLibrisResource,
             'is-removed': diffRemoved,
             'is-added': diffAdded,
-            'is-highlighted': embellished,
+            'is-highlighted': enriched,
           }">
           <span v-if="!isLocked && hasBackendValidationError">
             <i class="fa fa-warning fa-fw icon--warn icon--sm"

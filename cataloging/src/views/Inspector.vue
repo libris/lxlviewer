@@ -22,7 +22,7 @@ import TabMenu from '@/components/shared/tab-menu.vue';
 import ValidationSummary from '@/components/inspector/validation-summary.vue';
 import FullscreenPanel from '@/components/shared/fullscreen-panel.vue';
 import VersionHistory from '@/components/inspector/version-history.vue';
-import { getChangeList } from "@/utils/embellish.js";
+import { getChangeList } from "@/utils/enrich.js";
 
 export default {
   name: 'Inspector',
@@ -84,7 +84,7 @@ export default {
         active: false,
         error: null,
       },
-      embellishFromIdModal: {
+      enrichFromIdModal: {
         open: false,
         inputValue: '',
         detailed: false,
@@ -154,16 +154,16 @@ export default {
         toolbarTestEl.style.width = `${width}px`;
       }
     },
-    toggleEmbellishFromIdModal(open = true, detailed = false) {
+    toggleEnrichFromIdModal(open = true, detailed = false) {
       if (open) {
-        this.embellishFromIdModal.inputValue = '';
-        this.embellishFromIdModal.open = true;
-        this.embellishFromIdModal.detailed = detailed;
+        this.enrichFromIdModal.inputValue = '';
+        this.enrichFromIdModal.open = true;
+        this.enrichFromIdModal.detailed = detailed;
         this.$nextTick(() => {
-          this.$refs.EmbellishFromIdModalInput.focus();
+          this.$refs.EnrichFromIdModalInput.focus();
         });
       } else {
-        this.embellishFromIdModal.open = false;
+        this.enrichFromIdModal.open = false;
       }
     },
     openMarcPreview() {
@@ -246,12 +246,12 @@ export default {
       }
     },
     confirmApplyRecordAsTemplate(detailed = false) {
-      this.embellishFromIdModal.open = false;
-      const id = this.embellishFromIdModal.inputValue;
+      this.enrichFromIdModal.open = false;
+      const id = this.enrichFromIdModal.inputValue;
       if (detailed) {
         this.prepareDetailedEnrichment(id);
       } else if (id.length > 0) {
-        this.applyRecordAsTemplate(id, this.embellishFromIdModal.detailed);
+        this.applyRecordAsTemplate(id, this.enrichFromIdModal.detailed);
       }
     },
     prepareDetailedEnrichment(id = null, data = null) {
@@ -364,7 +364,7 @@ export default {
           addToHistory: false,
         });
         this.$store.dispatch('setInspectorStatusValue', {
-          property: 'embellished',
+          property: 'enriched',
           value: changeList,
         });
         this.$store.dispatch('pushNotification', {
@@ -448,7 +448,7 @@ export default {
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('saveLangTagSearch', '');
       this.$store.dispatch('removeLoadingIndicator', 'Loading document');
-      this.removeEmbellishedHighlight();
+      this.removeEnrichedHighlight();
 
       this.recordLoaded = true;
 
@@ -529,7 +529,7 @@ export default {
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
       this.clearBackendValidationErrors();
-      this.removeEmbellishedHighlight();
+      this.removeEnrichedHighlight();
     },
     cancelEditing(callback) {
       if (this.inspector.status.editing) {
@@ -721,7 +721,7 @@ export default {
         console.log('ETag ', ETag);
         this.doUpdate(RecordId, obj, ETag, done);
       }
-      this.removeEmbellishedHighlight();
+      this.removeEnrichedHighlight();
     },
     doUpdate(url, obj, ETag, done) {
       this.doSaveRequest(HttpUtil.put, obj, { url, ETag }, done);
@@ -838,10 +838,10 @@ export default {
         }
       });
     },
-    removeEmbellishedHighlight() {
-      if (this.inspector.status.embellished.length) {
+    removeEnrichedHighlight() {
+      if (this.inspector.status.enriched.length) {
         this.$store.dispatch('setInspectorStatusValue', {
-          property: 'embellished',
+          property: 'enriched',
           value: [],
         });
       }
@@ -947,10 +947,10 @@ export default {
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
-      } else if (val.name === 'open-embellish-from-id') {
-        this.toggleEmbellishFromIdModal(true);
-      } else if (val.name === 'open-detailed-embellish-from-id') {
-        this.toggleEmbellishFromIdModal(true, true);
+      } else if (val.name === 'open-enrich-from-id') {
+        this.toggleEnrichFromIdModal(true);
+      } else if (val.name === 'open-detailed-enrich-from-id') {
+        this.toggleEnrichFromIdModal(true, true);
       } else if (val.name === 'replace-data') {
         this.replaceData(val.value);
       } else if (val.name === 'apply-override') {
@@ -1155,13 +1155,13 @@ export default {
     </modal-component>
 
     <modal-component
-      class="EmbellishFromIdModal"
-      :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']"
-      v-if="embellishFromIdModal.open"
-      @close="embellishFromIdModal.open = false">
+      class="EnrichFromIdModal"
+      :title="[enrichFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']"
+      v-if="enrichFromIdModal.open"
+      @close="enrichFromIdModal.open = false">
       <template #modal-body>
-        <div class="EmbellishFromIdModal-body">
-          <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
+        <div class="EnrichFromIdModal-body">
+          <div class="EnrichFromIdModal-infoText" v-if="enrichFromIdModal.detailed === true">
             <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
             <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
             <p>
@@ -1170,22 +1170,22 @@ export default {
               <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
             </p>
           </div>
-          <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === false">
+          <div class="EnrichFromIdModal-infoText" v-if="enrichFromIdModal.detailed === false">
             Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
           </div>
-          <div class="input-group EmbellishFromIdModal-form">
-            <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
+          <div class="input-group EnrichFromIdModal-form">
+            <label class="input-group-addon EnrichFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
             <input
               name="id"
-              class="EmbellishFromIdModal-input form-control"
-              ref="EmbellishFromIdModalInput"
-              v-model="embellishFromIdModal.inputValue"
-              @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
+              class="EnrichFromIdModal-input form-control"
+              ref="EnrichFromIdModalInput"
+              v-model="enrichFromIdModal.inputValue"
+              @keyup.enter="confirmApplyRecordAsTemplate(enrichFromIdModal.detailed)" />
             <span class="input-group-btn">
               <button
-                class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton"
-                @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)"
-                @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
+                class="btn btn-primary btn--md EnrichFromIdModal-confirmButton"
+                @click="confirmApplyRecordAsTemplate(enrichFromIdModal.detailed)"
+                @keyup.enter="confirmApplyRecordAsTemplate(enrichFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
             </span>
           </div>
         </div>
@@ -1284,7 +1284,7 @@ export default {
   margin-right: 0.25em;
 }
 
-.EmbellishFromIdModal {
+.EnrichFromIdModal {
   .ModalComponent-container {
     width: 650px;
     top: 40%;

@@ -192,10 +192,10 @@ export default {
       }
       return false;
     },
-    embellished() {
-      const embellished = this.inspector.status.embellished;
-      if (embellished.length > 0) {
-        return embellished.some((el) => el.path === this.path);
+    enriched() {
+      const enriched = this.inspector.status.enriched;
+      if (enriched.length > 0) {
+        return enriched.some((el) => el.path === this.path);
       } return false;
     },
     isExtracting() {
@@ -549,7 +549,7 @@ export default {
     ref="container"
     :id="`formPath-${path}`"
     :class="{
-      'is-highlighted': isLastAdded || embellished,
+      'is-highlighted': isLastAdded || enriched,
       'is-extracting': isExtracting,
       'highlight-mark': highlights.indexOf('mark') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
