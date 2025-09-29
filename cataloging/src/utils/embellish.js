@@ -51,10 +51,9 @@ function addToChangeList(source, target, templatePath, targetPath, changeList, c
           value: sourceValue,
         });
       }
-      // Arrays of linked entities
+      // Arrays of linked entities and @type-label pairs
       else if (targetObject.hasOwnProperty(key) && Array.isArray(sourceValue) && sourceValue[0]
-        && Object.keys(sourceValue[0]).length === 1
-        && sourceValue[0]['@id']
+        && shouldNotEnrich(sourceValue[0])
         && VocabUtil.propIsRepeatable(key, context)) {
         let countAdded = 0;
         each (sourceValue, obj => {
@@ -103,3 +102,14 @@ function asArray(v) {
   return Array.isArray(v) ? v : [v];
 }
 
+function shouldNotEnrich(o) {
+  return isLinkedEntity(o) || isLabelObject(o);
+}
+
+function isLinkedEntity(o) {
+  return Object.keys(o).length === 1 && o['@id'];
+}
+
+function isLabelObject(o) {
+  return Object.keys(o).length === 2 && o['@type'] && o.label;
+}

@@ -13,7 +13,8 @@ beforeEach(() => {
     'role',
     'descriptionConventions',
     'seriesMembership',
-    'language'
+    'language',
+    'hasNote'
   ];
   //hasDimensions is not repeatable
   VocabUtil.propIsRepeatable.mockImplementation((key) =>
@@ -670,7 +671,7 @@ test('should add multiple entries to array', () => {
   );
 });
 
-test('should enrich place', () => {
+test('should enrich repeatable property which is not a list in template', () => {
   const template = {
     "record": {},
     "mainEntity": {
@@ -774,3 +775,59 @@ test('should NOP when target is array but not repeatable', () => {
 
   expect(changeList).toEqual([]);
 });
+
+test('should add to list, not enrich type-label pairs', () => {
+  const template = {
+    "record": {},
+    "mainEntity": {
+      "hasNote": [
+        {
+          "@type": "Note",
+          "label": "C"
+        },
+        {
+          "@type": "Note",
+          "label": "D"
+        }
+      ]
+    }
+  };
+
+  const record = {
+    "record": {},
+    "mainEntity": {
+      "hasNote": [
+        {
+          "@type": "Note",
+          "label": "A"
+        },
+        {
+          "@type": "Note",
+          "label": "B"
+        }
+      ]
+    }
+  }
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(template, record, templatePath, templatePath, null)
+
+  expect(changeList).toEqual([
+    {
+      "path": "mainEntity.hasNote[2]",
+      "value": {
+        "@type": "Note",
+        "label": "C",
+      },
+    },
+    {
+      "path": "mainEntity.hasNote[3]",
+      "value": {
+        "@type": "Note",
+        "label": "D",
+      },
+    },
+  ]);
+});
+
+
