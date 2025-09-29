@@ -397,7 +397,6 @@
 			grid-template-columns: var(--search-grid-template-columns);
 			padding: var(--search-padding);
 			gap: var(--search-gap);
-			//padding-inline: calc(var(--spacing) * 3);
 			height: auto;
 		}
 	}
