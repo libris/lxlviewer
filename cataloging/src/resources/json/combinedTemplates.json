@@ -74,7 +74,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "℗"
             }
           ],
           "extent": [
@@ -259,7 +259,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "℗"
             }
           ],
           "extent": [
@@ -458,7 +458,7 @@
           ],
           "copyright": [{
             "@type": "Copyright",
-            "date": ""
+            "date": "©"
           }],
           "carrierType": [
             {"@id": "https://id.kb.se/term/rda/OnlineResource"}
@@ -751,7 +751,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "©"
             }
           ],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
@@ -1421,7 +1421,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "©"
             }
           ],
           "extent": [
@@ -1604,7 +1604,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "℗"
             }
           ],
           "extent": [
@@ -2395,7 +2395,7 @@
           }],
           "copyright": [{
             "@type": "Copyright",
-            "date": ""
+            "date": "©"
           }],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
@@ -2716,7 +2716,7 @@
           "copyright": [
             {
             "@type": "Copyright",
-            "date": ""
+            "date": "©"
           }
         ],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
@@ -3368,7 +3368,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "©"
             }
           ],
           "extent": [
