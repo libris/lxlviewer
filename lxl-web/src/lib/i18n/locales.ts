@@ -18,13 +18,27 @@ export function isLocale(potentialLocale: string) {
 	return !!Locales?.[potentialLocale as keyof typeof Locales];
 }
 
-export function initLocalizeHref(locale: LocaleCode, baseUrl: string | URL) {
+export function initLocalizeHref(locale: LocaleCode, currentUrl: URL) {
 	return (url: string | URL, options?: { locale?: LocaleCode }) =>
-		localizeHref(url, { locale: options?.locale || locale, baseUrl });
+		localizeHref(
+			url,
+			{ locale: options?.locale || locale, baseUrl: currentUrl.origin },
+			currentUrl
+		);
 }
 
-function localizeHref(href: string | URL, options: { locale: LocaleCode; baseUrl: string | URL }) {
+function localizeHref(
+	href: string | URL,
+	options: { locale: LocaleCode; baseUrl: URL | string },
+	currentUrl: URL
+) {
 	const url = localizeUrl(href, options);
+
+	// hijacking this function to pass on 'r' param to all links,
+	// should we rename this function?
+	if (currentUrl.searchParams.has('r') && !url.searchParams.has('r')) {
+		url.searchParams.set('r', currentUrl.searchParams?.get('r') || '');
+	}
 
 	if (url.origin !== options.baseUrl) {
 		return href?.toString(); // return URLs with different origin as-is

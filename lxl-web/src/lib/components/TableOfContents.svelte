@@ -123,7 +123,7 @@
 			<li class={children && '[&>ul_a]:pl-7'}>
 				<div class={['border-l-2 border-l-neutral-200']}>
 					<a
-						href="{page.url.pathname}#{id}"
+						href={page.data.localizeHref(`${page.url.pathname}#${id}`)}
 						aria-current={id === currentSection || undefined}
 						class={[
 							'hover:text-body focus:text-body inline-flex min-h-8 items-center px-3 hover:underline focus:underline'

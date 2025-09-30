@@ -4,7 +4,7 @@ import { getSupportedLocale, initLocalizeHref, baseLocale } from '$lib/i18n/loca
 export async function load({ params, data, url }) {
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param
 	const t = await getTranslator(locale);
-	const localizeHref = initLocalizeHref(locale, url.origin);
+	const localizeHref = initLocalizeHref(locale, url);
 
 	const base = locale === baseLocale ? '/' : `/${locale}`;
 	const userSettings = data.userSettings;
