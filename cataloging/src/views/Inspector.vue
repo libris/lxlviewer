@@ -358,6 +358,10 @@ export default {
         ...getChangeList(template, baseRecordData, ['record'], ['record'], this.resources.context)
       ];
 
+      changeList.forEach((change) => {
+        DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
+      });
+
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
           changeList: changeList,
