@@ -22,7 +22,7 @@ They are all formatted in the same way with each template being assigned the fol
 
 `"value": "{<JSON-LD code for the template>}",`
 
-if the following status flag is set a template in progress will be ignored in both create view and embellish:
+if the following status flag is set a template in progress will be ignored in both create view and enrich:
 
 `"status": "draft"` 
 

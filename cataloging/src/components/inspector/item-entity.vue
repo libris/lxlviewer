@@ -53,6 +53,12 @@ export default {
       }
       return false;
     },
+    enriched() {
+      const enriched = this.inspector.status.enriched;
+      if (enriched.length > 0) {
+        return enriched.some((el) => el.path === this.path);
+      } return false;
+    },
     isMarc() {
       if (this.item.hasOwnProperty('@type') && this.item['@type'].startsWith('marc:')) {
         return true;
@@ -229,6 +235,7 @@ export default {
             'is-ext-link': !isLibrisResource,
             'is-removed': diffRemoved,
             'is-added': diffAdded,
+            'is-highlighted': enriched,
           }">
           <span v-if="!isLocked && hasBackendValidationError">
             <i class="fa fa-warning fa-fw icon--warn icon--sm"
@@ -379,6 +386,10 @@ export default {
   &.is-added {
     @base-color: @form-add;
     background-color: @base-color;
+  }
+
+  &.is-highlighted {
+    background-color: @form-highlight;
   }
 
   &.expanded {
