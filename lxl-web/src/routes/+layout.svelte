@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import '../themes.css';
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { setUserSettings } from '$lib/contexts/userSettings';
