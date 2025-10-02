@@ -103,13 +103,14 @@ function asArray(v) {
 }
 
 function shouldNotEnrich(o) {
-  return isLinkedEntity(o) || isLabelObject(o);
+  return isLinkedEntity(o) || hasNoEmptyValues(o);
 }
 
 function isLinkedEntity(o) {
   return Object.keys(o).length === 1 && o['@id'];
 }
 
-function isLabelObject(o) {
-  return Object.keys(o).length === 2 && o['@type'] && o.label;
+// Use a parameter for enrich from file vs enrich from template instead?
+function hasNoEmptyValues(o) {
+  return !Object.values(o).some(v => isEmpty(v)) && o['@type'];
 }
