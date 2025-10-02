@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import { onMount, type Component } from 'svelte';
 	import { Locales, baseLocale, type LocaleCode } from '$lib/i18n/locales';
 	import { page } from '$app/state';
@@ -20,6 +21,8 @@
 	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
+
+	const serviceName = env.PUBLIC_SERVICE_NAME;
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -175,13 +178,19 @@
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 					data-testid="home"
 				>
-					<img
-						src={librisLogo}
-						width={275}
-						height={75}
-						alt="Libris"
-						class="3xl:w-30.25 mb-1 h-auto w-22 lg:w-27.5"
-					/>
+					{#if serviceName}
+						<span class="text-2xl font-medium">
+							{serviceName}
+						</span>
+					{:else}
+						<img
+							src={librisLogo}
+							width={275}
+							height={75}
+							alt="Libris"
+							class="3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-27.5"
+						/>
+					{/if}
 				</a>
 			</li>
 		</ul>
