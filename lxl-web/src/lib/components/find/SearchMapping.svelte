@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiTrash from '~icons/bi/trash';
+	import { getRelationSymbol } from '$lib/utils/getRelationSymbol';
 
 	interface Props {
 		mapping: DisplayMapping[];
@@ -12,29 +13,6 @@
 	}
 
 	let { mapping, parentOperator = undefined, depth = 0 }: Props = $props();
-
-	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
-		switch (operator) {
-			case 'equals':
-				return ':';
-			case 'notEquals':
-				return '≠';
-			case 'greaterThan':
-				return '＞';
-			case 'greaterThanOrEquals':
-				return '⩾';
-			case 'lessThan':
-				return '＜';
-			case 'lessThanOrEquals':
-				return '⩽';
-			case 'existence':
-				return '∃';
-			case 'notExistence':
-				return '∄';
-			default:
-				return '';
-		}
-	}
 </script>
 
 <ul class="flex flex-wrap items-center gap-2 overflow-hidden">

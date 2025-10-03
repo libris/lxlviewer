@@ -4,7 +4,7 @@ import type { CitationsType } from '$lib/types/citation';
 import type { MatomoTracker } from '$lib/types/matomo';
 import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
-import type { AdjecentSearchResult } from '$lib/types/search';
+import type { AdjecentSearchResult, DisplayMapping } from '$lib/types/search';
 import 'unplugin-icons/types/svelte';
 
 declare global {
@@ -22,6 +22,7 @@ declare global {
 			t: Awaited<ReturnType<typeof import('$lib/i18n').getTranslator>>;
 			localizeHref: ReturnType<typeof import('$lib/i18n').initLocalizeHref>;
 			userSettings: UserSettings;
+			subset: DisplayMapping[];
 		}
 		interface PageState {
 			expandedInstances?: string[];

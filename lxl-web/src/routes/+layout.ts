@@ -8,6 +8,7 @@ export async function load({ params, data, url }) {
 
 	const base = locale === baseLocale ? '/' : `/${locale}`;
 	const userSettings = data.userSettings;
+	const subset = data.subset;
 
-	return { locale, t, localizeHref, base, userSettings };
+	return { locale, t, localizeHref, base, userSettings, subset };
 }

@@ -205,7 +205,8 @@
 				_q: query,
 				_limit: '5',
 				cursor: cursor.toString(),
-				_sort: page.url.searchParams.get('_sort') || ''
+				_sort: page.url.searchParams.get('_sort') || '',
+				_r: page.url.searchParams.get('_r') || ''
 			});
 		}}
 		transformFn={handleTransform}

@@ -36,8 +36,8 @@ function localizeHref(
 
 	// hijacking this function to pass on 'r' param to all links,
 	// should we rename this function?
-	if (currentUrl.searchParams.has('r') && !url.searchParams.has('r')) {
-		url.searchParams.set('r', currentUrl.searchParams?.get('r') || '');
+	if (currentUrl.searchParams.has('_r') && !url.searchParams.has('_r')) {
+		url.searchParams.set('_r', currentUrl.searchParams?.get('_r') || '');
 	}
 
 	if (url.origin !== options.baseUrl) {

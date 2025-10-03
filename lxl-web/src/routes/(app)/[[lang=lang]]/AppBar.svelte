@@ -13,6 +13,7 @@
 	import IconLanguage from '~icons/bi/globe';
 	import BetaBanner from '$lib/components/BetaBanner.svelte';
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
+	import AppSubset from './AppSubset.svelte';
 
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
@@ -35,6 +36,8 @@
 	const findActionUrl = $derived(
 		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
 	);
+
+	const subset = $derived(page.data.subset);
 
 	function handleDismissBanner() {
 		dismissedBanner = true;
@@ -118,7 +121,7 @@
 	{#if !dismissedBanner}
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
-	<nav class="app-bar bg-app-header grid items-stretch">
+	<nav class={['app-bar bg-app-header grid items-stretch', subset && 'with-subset']}>
 		<ul class="leading-actions ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
 				<svelte:element
@@ -193,6 +196,12 @@
 					{/if}
 				</a>
 			</li>
+			{#if subset}
+				<li class="flex items-center overflow-hidden">
+					<p class="pr-2">/</p>
+					<AppSubset {subset} />
+				</li>
+			{/if}
 		</ul>
 		<search
 			id={IDs.search}
@@ -207,7 +216,7 @@
 				<AppSearch
 					id="search"
 					name="_q"
-					placeholder={page.data.t('header.searchPlaceholder')}
+					placeholder={subset ? 'Sök inom avgränsning' : page.data.t('header.searchPlaceholder')}
 					--sm-dialog-top={showSearchInputOnMobile
 						? 'calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2)'
 						: 'calc(var(--banner-height, 0)'}
@@ -279,6 +288,11 @@
 		padding: var(--search-padding);
 		gap: var(--search-gap);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
+	}
+
+	.app-bar.with-subset {
+		--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 30);
+		grid-template-columns: var(--search-grid-template-columns);
 	}
 
 	.leading-actions {
