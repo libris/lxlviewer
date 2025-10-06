@@ -479,6 +479,12 @@ export default {
         return enriched.some((el) => el.path === this.path);
       } return false;
     },
+    enrichedChildren() {
+      if (this.isLocked) return false;
+      return this.inspector.status.enriched
+        .filter((e) => !isEqual(e.path, this.path))
+        .some((e) => e.path.includes(this.path));
+    },
     fieldRdfType() {
       return DisplayUtil.rdfDisplayType(this.fieldKey, this.resources);
     },
@@ -1112,7 +1118,7 @@ export default {
           :parent-path="path"
           :in-array="valueIsArray"
           :diff="diff"
-          :should-expand="expandChildren || enriched"
+          :should-expand="expandChildren || enrichedChildren"
           :bulk-context="bulkContext"
         />
       </div>
