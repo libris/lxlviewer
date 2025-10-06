@@ -107,7 +107,9 @@
 					"@id": "Concept-cards",
 					"classLensDomain": "Concept",
 					"showProperties": [
-						"prefLabel",
+						{
+							"alternateProperties": ["singularLabel", "prefLabel"]
+						},
 						"inScheme",
 						"altLabel",
 						"broader",
@@ -161,8 +163,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								"prefLabel",
 								"singularLabel",
+								"prefLabel",
 								"label",
 								"termComponentList",
 								"code"
