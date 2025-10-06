@@ -20,7 +20,8 @@ export type Relation = {
 export async function getRelations(
 	resourceId: string | null,
 	vocabUtil: VocabUtil,
-	locale: string
+	locale: string,
+	subsetFilter?: string | null
 ) {
 	if (!resourceId) {
 		return [];
@@ -33,7 +34,8 @@ export async function getRelations(
 			_limit: '0',
 			_offset: '0',
 			_sort: '',
-			_spell: 'false'
+			_spell: 'false',
+			...(subsetFilter && { _r: subsetFilter })
 		}).toString()}`
 	);
 
@@ -64,7 +66,8 @@ export async function getRelations(
 					new URLSearchParams({
 						_q: `${qualifierKey}:${qualifierValue}`,
 						_limit: '10',
-						_spell: 'false'
+						_spell: 'false',
+						...(subsetFilter && { _r: subsetFilter })
 					})
 				)
 			).toString()}`;

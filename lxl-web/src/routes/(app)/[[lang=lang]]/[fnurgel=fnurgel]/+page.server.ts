@@ -23,13 +23,14 @@ import { getRelations, type Relation } from '$lib/utils/relations';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 import { asResult } from '$lib/utils/search';
 
-export const load = async ({ params, locals, fetch }) => {
+export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 	const translate = await getTranslator(locale);
 
 	let resourceId: null | string = null;
+	const subsetFilter = url.searchParams.get('_r');
 
 	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
 		headers: { Accept: 'application/ld+json' }
@@ -80,7 +81,12 @@ export const load = async ({ params, locals, fetch }) => {
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
 
-	const relations: Relation[] | null = await getRelations(resourceId, vocabUtil, locale);
+	const relations: Relation[] | null = await getRelations(
+		resourceId,
+		vocabUtil,
+		locale,
+		subsetFilter
+	);
 
 	/** TODO: Better error handling while fetching relations previews */
 	const relationsPreviews = await Promise.all(

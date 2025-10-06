@@ -18,8 +18,9 @@
 	{@const fullLabel = `${s.label}${getRelationSymbol(s.operator)} ${s.displayStr}`}
 	<div
 		class="text-2xs bg-primary-200 flex h-8 items-center overflow-hidden rounded-sm lg:max-w-3xs"
+		title={fullLabel}
 	>
-		<span class="truncate px-1.5" title={fullLabel}>
+		<span class="truncate px-1.5">
 			{fullLabel}
 		</span>
 		<a

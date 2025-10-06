@@ -6,17 +6,24 @@ import { displayMappings } from '$lib/utils/search';
 export async function load({ locals, url, params }) {
 	const userSettings = locals.userSettings;
 	let subset = null;
+	const r = url.searchParams.get('_r');
+	// get the label for a subset filter on any page
+	if (r) {
+		const res = await fetch(
+			`${env.API_URL}/find.jsonld?${new URLSearchParams({
+				_q: r,
+				_limit: '0',
+				_stats: 'false',
+				_spell: 'false'
+			}).toString()}`
+		);
 
-	if (url.searchParams.has('_r')) {
-		// get the label for a subset on any page
-		const r = encodeURIComponent(url.searchParams.get('_r')?.toString() || '');
-		const response = await fetch(`${env.API_URL}/find.jsonld?_q=${r}&_limit=0&_stats=false`);
-		if (response.ok) {
-			const result = await response.json();
+		if (res.ok) {
+			const data = await res.json();
 
 			const locale = getSupportedLocale(params?.lang);
 			const translator = await getTranslator(locale);
-			subset = displayMappings(result, locals.display, locale, translator);
+			subset = displayMappings(data, locals.display, locale, translator);
 		}
 	}
 
