@@ -738,6 +738,12 @@
 			],
 			"fresnel:propertyStyle": ["sort()"]
 		},
+		"ContentType-format": {
+			"@id": "ContentType-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["ContentType"],
+			"fresnel:resourceStyle": ["link"]
+		},
 		"GenreForm-format": {
 			"@id": "GenreForm-format",
 			"@type": "fresnel:Format",
