@@ -363,14 +363,15 @@ export class DisplayUtil {
 				// This is incorrect semantically but keeps links within the platform for display purposes
 				// TODO revisit when we want to be able to display the correct id as well...
 				accumulate(src[Platform.meta], JsonLd.ID);
-			} else if (key in src) {
-				accumulate(src, key);
-			}
-			if (key in this.langContainerAlias) {
+			} else if (key in this.langContainerAlias) {
 				const alias = this.langContainerAlias[key];
 				if (alias in src) {
 					accumulate(src, alias);
+				} else if (key in src) {
+					accumulate(src, key); // TODO: do this as xByLang[@none] ??
 				}
+			} else if (key in src) {
+				accumulate(src, key);
 			}
 		};
 
