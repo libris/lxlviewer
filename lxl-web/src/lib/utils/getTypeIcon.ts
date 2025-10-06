@@ -45,16 +45,19 @@ const ICONS: Record<string, ConstructorOfATypedSvelteComponent> = {
 	StillImage: BiCardImage,
 
 	Audiobook: BiSoundWave,
+	'Ljudb%C3%B6cker': BiSoundWave,
+	NotatedMusic: BiMusicNoteList,
+	Kit: BiBoxSeam,
+	Databaser: BiDatabase,
 
 	// Old work types
 	Audio: BiSoundWave,
 	Dataset: BiDatabase,
-	Kit: BiBoxSeam,
 	ManuscriptNotatedMusic: BiMusicNoteList,
 	ManuscriptText: BiVectorPen,
 	MixedMaterial: BiBoxes,
 	Multimedia: BiLaptop,
-	NotatedMusic: BiMusicNoteList,
+
 	Text: BiBook,
 
 	// New work types

@@ -52,10 +52,17 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 
 export default getTypeLike;
 
+const IDENTIFY_ICONS = ['Audiobook', 'NotatedMusic', 'Ljudb%C3%B6cker', 'Kit', 'Databaser'];
+
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 export function getTypeForIcon(typeLike: TypeLike) {
-	if (typeLike.identify.find((t) => t && slug(t[JsonLd.ID]) === 'Audiobook')) {
-		return 'Audiobook';
+	for (const t of typeLike.identify) {
+		if (t) {
+			const slugStr = slug(t[JsonLd.ID]);
+			if (slugStr && IDENTIFY_ICONS.includes(slugStr)) {
+				return slugStr;
+			}
+		}
 	}
 
 	return typeLike.find.length > 0 && typeLike.find[0] !== undefined
