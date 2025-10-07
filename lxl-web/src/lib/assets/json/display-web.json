@@ -415,6 +415,12 @@
 					"classLensDomain": "Work",
 					"showProperties": ["language"]
 				},
+				"Instance": {
+					"@id": "Instance-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["identifiedBy"]
+				},
 				"Agent": {
 					"@id": "Agent-web-card-header-top",
 					"@type": "fresnel:Lens",

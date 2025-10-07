@@ -216,7 +216,9 @@
 				<AppSearch
 					id="search"
 					name="_q"
-					placeholder={subset ? 'Sök inom avgränsning' : page.data.t('header.searchPlaceholder')}
+					placeholder={subset
+						? `Sök inom ${subset[0].displayStr}`
+						: page.data.t('header.searchPlaceholder')}
 					--sm-dialog-top={showSearchInputOnMobile
 						? 'calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2)'
 						: 'calc(var(--banner-height, 0)'}

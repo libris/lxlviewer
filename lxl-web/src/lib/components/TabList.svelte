@@ -1,5 +1,15 @@
 <script lang="ts">
-	const { tabs, tabContent, ...restProps } = $props();
+	import type { Snippet } from 'svelte';
+
+	type Props = {
+		tabs: {
+			targetId: string;
+			active: boolean;
+		}[];
+		tabContent: Snippet;
+		onclick: (id: string) => void;
+	};
+	const { tabs, tabContent, onclick, ...restProps }: Props = $props();
 </script>
 
 <div class="flex gap-2" role="tablist" {...restProps}>
@@ -10,6 +20,7 @@
 			role="tab"
 			aria-controls={tab.targetId}
 			aria-selected={tab.active}
+			onclick={() => onclick(tab.targetId)}
 		>
 			{@render tabContent(tab)}
 		</button>

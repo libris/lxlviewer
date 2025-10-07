@@ -20,8 +20,8 @@ import {
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
+import { asResult, getWebCards } from '$lib/utils/search';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
-import { asResult } from '$lib/utils/search';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
@@ -81,6 +81,45 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
 
+	let instances;
+	let filteredInstances;
+
+	if (mainEntity?.['@reverse']?.instanceOf?.length === 1) {
+		// single instance -> pick from resource overview
+		// TODO: Replace with a custom getProperty method (similar to pickProperty)
+		instances = jmespath.search(overview, '*[].hasInstance[]');
+	} else if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
+		// multiple instances -> format as web cards and fetch filtered instances
+		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
+		instances = getWebCards(
+			sortedInstances,
+			displayUtil,
+			vocabUtil,
+			locale,
+			env.AUXD_SECRET,
+			locals.userSettings?.myLibraries,
+			undefined
+		);
+
+		// todo: use this to apply filters from search result on resource page
+		if (subsetFilter) {
+			const res = await fetch(
+				`${env.API_URL}/find.jsonld?${new URLSearchParams({
+					_o: `${env.API_URL}/${params.fnurgel}#it`,
+					_p: 'instanceOf',
+					_q: '*',
+					_r: subsetFilter,
+					_spell: 'false'
+				}).toString()}`
+			);
+
+			if (res.ok) {
+				const data = await res.json();
+				filteredInstances = data.items.map((item) => item['@id'].replace('#it', ''));
+			}
+		}
+	}
+
 	const relations: Relation[] | null = await getRelations(
 		resourceId,
 		vocabUtil,
@@ -129,12 +168,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 			: [])
 	];
 
-	// TODO: Replace with a custom getProperty method (similar to pickProperty)
-	const instances = jmespath.search(overview, '*[].hasInstance[]');
-
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
-	const sortedInstances = getSortedInstances([...instances]);
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
@@ -152,7 +187,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		overview: overviewWithoutHasInstance,
 		relations,
 		relationsPreviewsByQualifierKey,
-		instances: sortedInstances,
+		instances,
+		filteredInstances,
 		holdings: {
 			holdingsByInstanceId,
 			holdersByType,
@@ -165,14 +201,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 function getSortedInstances(instances: Record<string, unknown>[]) {
 	return instances.sort((a, b) => {
-		const yearA = parseInt(
-			jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
-			10
-		);
-		const yearB = parseInt(
-			jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity),
-			10
-		);
+		const yearA = parseInt(jmespath.search(a, 'publication[0].year'), 10);
+		const yearB = parseInt(jmespath.search(b, 'publication[0].year'), 10);
 
 		if (Number.isNaN(yearA)) {
 			return 1;

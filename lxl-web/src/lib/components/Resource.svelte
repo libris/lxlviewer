@@ -14,8 +14,11 @@
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
+	import SearchCard from './find/SearchCard.svelte';
+	import TabList from './TabList.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import BiQuote from '~icons/bi/quote';
+	import type { ResourceData } from '$lib/types/resourceData';
 
 	type Props = {
 		fnurgel: string;
@@ -27,7 +30,8 @@
 		decoratedOverview: DecoratedData;
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
-		instances: Record<string, unknown>[]; // TODO: fix better types
+		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
+		filteredInstances: SearchResultItem[];
 		holdersByType: HoldersByType;
 		tableOfContents: TableOfContentsItem[];
 		adjecentSearchResults?: AdjecentSearchResult[];
@@ -44,13 +48,52 @@
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
+		filteredInstances,
 		holdersByType,
 		tableOfContents,
 		adjecentSearchResults
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
+
+	let activeInstanceTab = $state(
+		filteredInstances?.length > 0 ? 'filtered-instances' : 'all-instances'
+	);
+	const derivedFilteredInstances = $derived.by(() => {
+		const idSet = new Set(filteredInstances);
+		return instances.filter((instance) => idSet.has(instance['@id']));
+	});
+
+	const displayedInstances = $derived(
+		activeInstanceTab === 'filtered-instances' ? derivedFilteredInstances : instances
+	);
+
+	const tabs = $derived.by(() => {
+		const filtered = filteredInstances
+			? {
+					label: `Matchande utgåvor (${filteredInstances.length})`,
+					targetId: 'filtered-instances',
+					active: activeInstanceTab === 'filtered-instances'
+				}
+			: null;
+
+		const all =
+			instances?.length > filteredInstances?.length
+				? {
+						label: `Alla utgåvor (${instances.length})`,
+						targetId: 'all-instances',
+						active: activeInstanceTab === 'all-instances'
+					}
+				: null;
+		return [filtered, all].filter((f) => !!f);
+	});
 </script>
+
+{#snippet tabContent(tab: (typeof tabs)[0])}
+	<div class={['tab flex gap-2', tab.active ? 'tab-highlighted' : 'tab-primary']}>
+		<span>{tab.label}</span>
+	</div>
+{/snippet}
 
 {#if adjecentSearchResults}
 	<div class="border-b-neutral @container border-b">
@@ -124,22 +167,38 @@
 				</div>
 			</section>
 			<section>
-				<div class="decorated-overview">
-					<InstancesList
-						data={instances}
-						columns={[
-							{
-								header: page.data.t('search.publicationYear'),
-								data: '*[].publication[].*[][?year].year'
-							},
-							{
-								header: page.data.t('search.publisher'),
-								data: '*[].publication.*[][?agent].agent'
-							},
-							{ header: page.data.t('search.type'), data: '_label' }
-						]}
-					/>
-				</div>
+				{#if instances.length === 1}
+					<!-- single instance -->
+					<div class="decorated-overview">
+						<InstancesList
+							data={instances}
+							columns={[
+								{
+									header: page.data.t('search.publicationYear'),
+									data: '*[].publication[].*[][?year].year'
+								},
+								{
+									header: page.data.t('search.publisher'),
+									data: '*[].publication.*[][?agent].agent'
+								},
+								{ header: page.data.t('search.type'), data: '_label' }
+							]}
+						/>
+					</div>
+				{:else if instances.length > 1}
+					<!-- multiple instances -->
+					<div class="border-b-neutral border-b">
+						<TabList
+							{tabContent}
+							{tabs}
+							aria-label=""
+							onclick={(id: string) => (activeInstanceTab = id)}
+						/>
+						{#each displayedInstances as instance (instance['@id'])}
+							<SearchCard item={instance} />
+						{/each}
+					</div>
+				{/if}
 			</section>
 			{#if relations.length}
 				<section class="mt-6">
