@@ -64,7 +64,7 @@ export async function asResult(
 		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
-		items: getWebCards(
+		items: asSearchResultItem(
 			view.items,
 			displayUtil,
 			vocabUtil,
@@ -88,7 +88,7 @@ export async function asResult(
 	};
 }
 
-export function getWebCards(
+export function asSearchResultItem(
 	items: FramedData[],
 	displayUtil: DisplayUtil,
 	vocabUtil: VocabUtil,

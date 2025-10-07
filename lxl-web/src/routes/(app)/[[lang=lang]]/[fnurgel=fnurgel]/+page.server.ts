@@ -20,7 +20,7 @@ import {
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
-import { asResult, getWebCards } from '$lib/utils/search';
+import { asResult, asSearchResultItem } from '$lib/utils/search';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 
 export const load = async ({ params, locals, fetch, url }) => {
@@ -91,7 +91,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	} else if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
 		// multiple instances -> format as web cards and fetch filtered instances
 		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
-		instances = getWebCards(
+		instances = asSearchResultItem(
 			sortedInstances,
 			displayUtil,
 			vocabUtil,
