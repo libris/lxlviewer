@@ -51,7 +51,7 @@ function addToChangeList(source, target, templatePath, targetPath, changeList, c
           value: sourceValue,
         });
       }
-      // Arrays of linked entities and @type-label pairs
+      // Arrays of linked entities and other entities that should be treated as atomic
       else if (targetObject.hasOwnProperty(key) && Array.isArray(sourceValue) && sourceValue[0]
         && shouldNotEnrich(sourceValue[0])
         && VocabUtil.propIsRepeatable(key, context)) {
@@ -112,5 +112,5 @@ function isLinkedEntity(o) {
 
 // Use a parameter for enrich from file vs enrich from template instead?
 function hasNoEmptyValues(o) {
-  return !Object.values(o).some(v => isEmpty(v)) && o['@type'];
+  return !Object.values(o).some(v => isEmpty(v));
 }
