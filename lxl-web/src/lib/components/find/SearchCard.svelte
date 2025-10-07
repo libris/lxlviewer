@@ -44,7 +44,9 @@
 		goto((event.currentTarget as HTMLAnchorElement).href, {
 			state: {
 				...page.state,
-				adjecentSearchResults: [asAdjecentSearchResult(page.data.searchResult)] // TODO: save adjecent results together with optional pane references so it will work with multiple panes
+				adjecentSearchResults: page.data.searchResult
+					? [asAdjecentSearchResult(page.data.searchResult)]
+					: [] // TODO: save adjecent results together with optional pane references so it will work with multiple panes
 			}
 		});
 	}
