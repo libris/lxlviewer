@@ -16,9 +16,11 @@
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import { getHoldingsLink } from '$lib/utils/holdings';
-	import BiHouse from '~icons/bi/house';
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
+	import BiHouse from '~icons/bi/house';
+	import BiQuote from '~icons/bi/quote';
 
 	interface Props {
 		item: SearchResultItem;
@@ -38,6 +40,9 @@
 	);
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
+
+	// safer way to check if data is an instance?
+	const isInstanceCard = $derived(!!page.params.fnurgel);
 
 	function passAlongAdjecentSearchResults(event: MouseEvent) {
 		event.preventDefault();
@@ -80,26 +85,24 @@
 see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c23e223cdda91b17a -->
 
 {#snippet holdingsButton()}
-	<div class="flex items-start pt-1">
-		{#if id}
-			<a
-				class="btn btn-primary h-7 rounded-full md:h-8"
-				href={page.data.localizeHref(getHoldingsLink(page.url, id))}
-				data-sveltekit-noscroll
-				data-testid="holding-link"
-			>
-				<span class="text-base">
-					{#if item.heldByMyLibraries?.length}
-						<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
-					{:else}
-						<BiHouse class="text-neutral-400" />
-					{/if}
-				</span>
-				{item.numberOfHolders}
-				{page.data.t('search.libraries')}
-			</a>
-		{/if}
-	</div>
+	{#if id}
+		<a
+			class="btn btn-primary h-7 rounded-full md:h-8"
+			href={page.data.localizeHref(getHoldingsLink(page.url, id))}
+			data-sveltekit-noscroll
+			data-testid="holding-link"
+		>
+			<span class="text-base">
+				{#if item.heldByMyLibraries?.length}
+					<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
+				{:else}
+					<BiHouse class="text-neutral-400" />
+				{/if}
+			</span>
+			{item.numberOfHolders}
+			{page.data.t('search.libraries')}
+		</a>
+	{/if}
 {/snippet}
 
 <div class="@container/card">
@@ -243,8 +246,20 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<span>{item.selectTypeStr}</span>
 				{/if}
 			</footer>
-			<div class="card-actions self-end">
+			<div class="card-actions flex gap-1 self-end pt-1">
 				{@render holdingsButton()}
+				{#if isInstanceCard}
+					<a
+						class="btn btn-primary h-7 rounded-full pt-1 md:h-8"
+						href={getCiteLink(page.url, id)}
+						onclick={(event) => handleClickCite(event, page.state, id)}
+					>
+						<div class="bg-subtle flex size-4 items-center justify-center rounded-full">
+							<BiQuote class="text-white" />
+						</div>
+						<span>{page.data.t('citations.cite')}</span>
+					</a>
+				{/if}
 			</div>
 		</div>
 
