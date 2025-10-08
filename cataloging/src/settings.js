@@ -146,11 +146,12 @@ export default {
     'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
   },
   warnOnSaveConcerning: {
-    '@graph.1.concerning': ['concerning']
+    'mainEntity.concerning': ['concerning']
   },
   propertyChains: {
     '@reverse.itemOf.heldBy.@id': {
       sv: 'Har bestånd',
+
       en: 'Has holding',
       facet: {
         order: -1,
