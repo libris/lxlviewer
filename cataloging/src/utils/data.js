@@ -82,14 +82,28 @@ export function getMergedItems(record, mainEntity, work, quoted) {
 }
 
 export function removeNullValues(inputObj) {
+  return stripKeysForEmptyValues(inputObj);
+}
+
+export function normalizeBeforeSave(inputObj) {
+  const emptySymbols = ['℗', '©']
+  return normalizeFromList(inputObj, emptySymbols);
+}
+
+// Consider properties empty when containing one and only one of the listed symbols
+export function normalizeFromList(inputObj, symbols) {
+  return stripKeysForEmptyValues(inputObj, symbols);
+}
+
+function stripKeysForEmptyValues(inputObj, emptySymbols = []) {
   const obj = cloneDeep(inputObj);
   // Strips away all null value keys
   let cleanObj;
   if (isArray(obj)) {
     cleanObj = [];
     for (let i = 0; i < obj.length; i++) {
-      const item = removeNullValues(obj[i]);
-      if (typeof item !== 'undefined' && item !== null) {
+      const item = stripKeysForEmptyValues(obj[i], emptySymbols);
+      if (typeof item !== 'undefined' && item !== null && !emptySymbols.includes(item)) {
         cleanObj.push(item);
       }
     }
@@ -97,10 +111,15 @@ export function removeNullValues(inputObj) {
     cleanObj = {};
     for (const key in obj) {
       if (obj.hasOwnProperty(key) && key !== '_uid') {
-        cleanObj[key] = removeNullValues(obj[key]);
+        cleanObj[key] = stripKeysForEmptyValues(obj[key], emptySymbols);
         if (cleanObj[key] === null || typeof cleanObj[key] === 'undefined' || cleanObj[key].length === 0) {
           delete cleanObj[key];
         }
+        forEach(emptySymbols, (symbol) => {
+          if (cleanObj[key] === symbol) {
+            delete cleanObj[key];
+          }
+        });
       }
     }
     if (Object.keys(cleanObj).length === 1 && cleanObj.hasOwnProperty('@type')) {
