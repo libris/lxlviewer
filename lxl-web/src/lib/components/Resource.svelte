@@ -78,7 +78,7 @@
 			: null;
 
 		const all =
-			instances?.length > filteredInstances?.length
+			instances?.length > filteredInstances?.length || !filteredInstances
 				? {
 						label: `Alla utgåvor (${instances.length})`,
 						targetId: 'all-instances',
@@ -121,7 +121,7 @@
 				<ResourceImage
 					{images}
 					type={typeForIcon}
-					alt={page.data.t('general.latestInstanceCover')}
+					alt={page.data.t('general.instanceCover')}
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
 					linkToFull
 				/>
