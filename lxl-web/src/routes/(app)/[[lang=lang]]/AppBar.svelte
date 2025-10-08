@@ -197,7 +197,7 @@
 				</a>
 			</li>
 			{#if subset}
-				<li class="flex items-center overflow-hidden">
+				<li class="subset-container relative flex items-center overflow-hidden">
 					<p class="pr-2">/</p>
 					<SearchMapping mapping={subset} />
 				</li>
@@ -292,11 +292,6 @@
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
 	}
 
-	.app-bar.with-subset {
-		--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 30);
-		grid-template-columns: var(--search-grid-template-columns);
-	}
-
 	.leading-actions {
 		grid-area: leading-actions;
 	}
@@ -360,5 +355,36 @@
 			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 4px);
 			max-height: calc(100vh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
 		}
+	}
+
+	/* subset in header */
+	.app-bar.with-subset {
+		--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 22);
+		@variant lg {
+			--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 30);
+		}
+		grid-template-columns: var(--search-grid-template-columns);
+	}
+
+	.app-bar :global(.search-mapping) {
+		overflow-x: auto;
+		scroll-behavior: smooth;
+		scrollbar-width: none;
+		padding-right: calc(var(--spacing) * 4);
+	}
+
+	.app-bar :global(.search-mapping .group) {
+		flex-wrap: nowrap;
+	}
+
+	.subset-container::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: calc(var(--spacing) * 4);
+		height: 100%;
+		pointer-events: none;
+		background: linear-gradient(to right, transparent, var(--color-primary-100));
 	}
 </style>

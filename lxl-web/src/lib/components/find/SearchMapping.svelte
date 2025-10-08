@@ -15,7 +15,10 @@
 </script>
 
 <ul
-	class={['flex flex-col items-start text-xs', depth === 0 ? 'flex-col-reverse gap-2' : 'flex-col']}
+	class={[
+		depth === 0 ? 'search-mapping flex-col-reverse gap-2' : 'flex-col',
+		'flex items-start text-xs'
+	]}
 >
 	{#each mapping as m, i (`outer-${i}-${depth}`)}
 		{@const { children, operator, up, variable, displayStr, label } = m}
