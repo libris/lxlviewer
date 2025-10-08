@@ -11,7 +11,7 @@
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 
 	const { data } = $props();
-	const holdings: HoldingsData = $state({
+	const holdings: HoldingsData = $derived({
 		...data.holdings,
 		instances: data.instances,
 		overview: data.overview,

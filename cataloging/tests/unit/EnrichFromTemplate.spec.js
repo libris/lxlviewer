@@ -782,7 +782,7 @@ test('should NOP when target is array but not repeatable', () => {
   expect(changeList).toEqual([]);
 });
 
-test('should add to list, not enrich type-label pairs', () => {
+test('should add to list, not enrich', () => {
   const template = {
     "record": {},
     "mainEntity": {
@@ -836,7 +836,7 @@ test('should add to list, not enrich type-label pairs', () => {
   ]);
 });
 
-test('should add to list', () => {
+test('should add hasVariant person to list', () => {
   const source = {
     "record": {},
     "mainEntity": {
@@ -886,5 +886,3 @@ test('should add to list', () => {
     }
   ]);
 });
-
-

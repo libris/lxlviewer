@@ -396,8 +396,12 @@ export default {
           type: 'success',
           message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`,
         });
-        // Force reload
-        this.$router.go(-1);
+
+        // Wait so that the change is available in the index when the search hitlist is loaded
+        setTimeout(() => {
+          this.$router.go(-1);
+        }, 1100);
+
       }, (error) => {
         if (error.status === 403) {
           this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.user.settings.language, this.resources.i18n)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.user.settings.language, this.resources.i18n)} - ${error.statusText}` });
