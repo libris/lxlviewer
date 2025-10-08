@@ -86,7 +86,9 @@ export function removeNullValues(inputObj) {
 }
 
 export function normalizeBeforeSave(inputObj) {
-  const emptySymbols = ['℗', '©']
+  // U+00A9 © COPYRIGHT SIGN
+  // U+2117 ℗ SOUND RECORDING COPYRIGHT
+  const emptySymbols = ['\u00A9', '\u2117']
   return normalizeFromList(inputObj, emptySymbols);
 }
 

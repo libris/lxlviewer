@@ -99,4 +99,13 @@ describe('removeNullValues and normalizeFromList', () => {
     const expectedObj = {};
     expect(cleanedObj).toEqual(expectedObj);
   });
+
+  it('normalizeFromList should remove phonogram symbol, copyright symbol and the resulting empty list', () => {
+    const cleanedObj = normalizeFromList({
+      copyright: ['℗', '©']
+    }, ['\u00A9', '\u2117']);
+    const expectedObj = {};
+    expect(cleanedObj).toEqual(expectedObj);
+  });
+
 });
