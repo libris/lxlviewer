@@ -10,39 +10,40 @@
 		mapping: DisplayMapping[];
 		parentOperator?: keyof typeof SearchOperators | undefined;
 		depth?: number;
+		variable?: string;
 	}
 
-	let { mapping, parentOperator = undefined, depth = 0 }: Props = $props();
+	let { mapping, parentOperator = undefined, depth = 0, variable }: Props = $props();
 </script>
 
-<ul class="flex flex-wrap items-center gap-2 overflow-hidden">
+<ul class="flex {depth === 0 ? 'flex-col-reverse' : 'flex-row'} text-2xs items-start gap-2">
 	{#each mapping as m, index (`${m['@id']}-${index}`)}
 		<li
-			class="mapping-item overflow-hidden {m.children
-				? 'pill-group'
-				: 'btn btn-accent'} pill-{m.operator}"
+			class="{m.children ? 'pill-group' : `pill pill-${variable || m.variable}`} pill-{m.operator}"
 			class:wildcard={m.operator === 'equals' && m.display === '*'}
 			class:outer={depth === 0}
 			class:free-text={m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
 		>
 			{#if 'children' in m}
-				<SearchMapping mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
+				<SearchMapping
+					mapping={m.children}
+					parentOperator={m.operator}
+					depth={depth + 1}
+					variable={m.variable || variable}
+				/>
 			{:else if m.operator === 'existence' || m.operator === 'notExistence'}
 				{@const symbol = getRelationSymbol(m.operator)}
-				<span class="pill-relation">{symbol}</span>
-				<div class="pill-label inline whitespace-nowrap">{m.label}</div>
+				<span class="pill-label pr-1">{symbol} {m.label}</span>
 			{:else if 'label' in m && 'display' in m}
 				{@const symbol = getRelationSymbol(m.operator)}
-				<div class="pill-label inline whitespace-nowrap">{m.label}</div>
-				<span class="pill-relation">{symbol}</span>
+				<span class="pill-label pr-1">{m.label}{symbol}</span>
 				<span class="pill-value truncate">
 					{m.displayStr}
 				</span>
 			{/if}
 			{#if 'up' in m && (!m.children || depth > 0)}
-				<span class="pill-remove inline-block align-sub">
+				<span class="pill-remove">
 					<a
-						class="float-right pl-2 text-[inherit] hover:text-[inherit]"
 						href={page.data.localizeHref(m.up?.['@id'])}
 						aria-label={page.data.t('search.removeFilter')}
 					>
@@ -50,44 +51,54 @@
 					</a>
 				</span>
 			{/if}
+			{#if 'up' in m && m.children && depth === 0}
+				<span class="pill-remove">
+					<a href={page.data.localizeHref(m.up?.['@id'])} class="btn btn-primary">
+						<BiTrash aria-hidden="true" />
+						{page.data.t('search.clearFilters')}
+					</a>
+				</span>
+			{/if}
 		</li>
 		{#if parentOperator}
-			<li class="pill-between pill-between-{parentOperator} text-xs">{parentOperator}</li>
-		{/if}
-		{#if 'up' in m && m.children && depth === 0}
-			<li class="pill-remove">
-				<a href={page.data.localizeHref(m.up?.['@id'])} class="btn btn-primary">
-					<BiTrash aria-hidden="true" />
-					{page.data.t('search.clearFilters')}
-				</a>
+			<li class="pill pill-between pill-between-{parentOperator} text-xs">
+				<span>{parentOperator}</span>
 			</li>
 		{/if}
 	{/each}
 </ul>
 
 <style lang="postcss">
-	/* TODO: add styles consistent with new design  */
-
-	.mapping-item {
-		/* @apply rounded-md px-4 py-2 brightness-100;
-		transition: filter 0.1s ease; */
-	}
-
-	.mapping-item:has(:global(> .pill-remove:hover)) {
-		/* @apply brightness-[.85]; */
-	}
+	@reference 'tailwindcss';
 
 	.pill {
-		& .pill-label,
-		.pill-relation {
+		display: flex;
+		align-items: center;
+		border-radius: var(--radius-sm);
+		padding: calc(var(--spacing) * 1.5);
+		gap: calc(var(--spacing) * 0.5);
+		transition: background-color 0.2s ease;
+	}
+
+	.pill-_q {
+		background-color: var(--color-accent-100);
+		& .pill-remove:hover {
+			background-color: var(--color-accent-200);
 		}
 	}
 
-	.pill-notEquals,
-	.pill-notExistence {
-		& .pill-label,
-		.pill-relation {
+	.pill-_r {
+		background-color: var(--color-primary-100);
+		border: 1px solid var(--color-primary-200);
+		& .pill-remove:hover {
+			background-color: var(--color-primary-200);
 		}
+	}
+
+	.pill-group:has(:global(> .pill-remove:hover)) {
+		outline: 1px solid var(--color-neutral-300);
+		outline-offset: 2px;
+		border-radius: var(--radius-sm);
 	}
 
 	.pill-equals.wildcard {
@@ -96,10 +107,9 @@
 
 	.pill-group {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		gap: calc(var(--spacing) * 2);
-		padding: 0;
-		padding-right: calc(var(--spacing) * 4);
 
 		&.outer {
 			background-color: transparent;
