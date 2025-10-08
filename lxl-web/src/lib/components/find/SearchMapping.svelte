@@ -1,68 +1,69 @@
 <script lang="ts">
+	import { getRelationSymbol } from '$lib/utils/getRelationSymbol';
 	import SearchMapping from './SearchMapping.svelte';
-	import type { DisplayMapping, SearchOperators } from '$lib/types/search';
+	import type { DisplayMapping } from '$lib/types/search';
 	import { page } from '$app/state';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiTrash from '~icons/bi/trash';
-	import { getRelationSymbol } from '$lib/utils/getRelationSymbol';
 
 	interface Props {
 		mapping: DisplayMapping[];
-		parentOperator?: keyof typeof SearchOperators | undefined;
 		depth?: number;
-		variable?: string;
 	}
 
-	let { mapping, parentOperator = undefined, depth = 0, variable }: Props = $props();
+	let { mapping, depth = 0 }: Props = $props();
 </script>
 
-<ul class="flex {depth === 0 ? 'flex-col-reverse' : 'flex-row'} text-2xs items-start gap-2">
-	{#each mapping as m, index (`${m['@id']}-${index}`)}
-		<li
-			class="{m.children ? 'pill-group' : `pill pill-${variable || m.variable}`} pill-{m.operator}"
-			class:wildcard={m.operator === 'equals' && m.display === '*'}
-			class:outer={depth === 0}
-			class:free-text={m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
-		>
-			{#if 'children' in m}
-				<SearchMapping
-					mapping={m.children}
-					parentOperator={m.operator}
-					depth={depth + 1}
-					variable={m.variable || variable}
-				/>
-			{:else if m.operator === 'existence' || m.operator === 'notExistence'}
-				{@const symbol = getRelationSymbol(m.operator)}
-				<span class="pill-label pr-1">{symbol} {m.label}</span>
-			{:else if 'label' in m && 'display' in m}
-				{@const symbol = getRelationSymbol(m.operator)}
-				<span class="pill-label pr-1">{m.label}{symbol}</span>
-				<span class="pill-value truncate">
-					{m.displayStr}
-				</span>
-			{/if}
-			{#if 'up' in m && (!m.children || depth > 0)}
-				<span class="pill-remove">
+<ul
+	class={['flex flex-col items-start text-xs', depth === 0 ? 'flex-col-reverse gap-2' : 'flex-col']}
+>
+	{#each mapping as m, i (`outer-${i}-${depth}`)}
+		{@const { children, operator, up, variable, displayStr, label } = m}
+		{#if displayStr}
+			<li
+				class={[
+					'pill bg-neutral flex h-8 items-center rounded-sm',
+					variable && `variable-${variable}`
+				]}
+			>
+				{#if label}
+					<span class="lxl-qualifier-key">{label}</span>
+				{/if}
+				{#if operator && operator !== 'none'}
+					<span class="lxl-qualifier-operator">{getRelationSymbol(m.operator)}</span>
+				{/if}
+				<span class={[operator === 'none' ? 'lxl-filter-alias' : 'lxl-qualifier-value']}
+					>{displayStr}</span
+				>
+				{#if up}
 					<a
+						class="lxl-qualifier-remove h-8 transition-colors"
 						href={page.data.localizeHref(m.up?.['@id'])}
 						aria-label={page.data.t('search.removeFilter')}
 					>
-						<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
+						<BiXLg fill="currentColor" />
 					</a>
-				</span>
-			{/if}
-			{#if 'up' in m && m.children && depth === 0}
-				<span class="pill-remove">
+				{/if}
+			</li>
+		{:else if children}
+			<li
+				class={[
+					'group flex flex-wrap items-center gap-1.5',
+					variable ? `variable-${variable}` : 'group-inner'
+				]}
+			>
+				{#each children as child, i (`${i}-${depth}`)}
+					<SearchMapping depth={depth + 1} mapping={[child]} />
+					{#if operator && i < children.length - 1}
+						<span class="operator-{operator} text-2xs uppercase">{operator}</span>
+					{/if}
+				{/each}
+				{#if up && variable}
 					<a href={page.data.localizeHref(m.up?.['@id'])} class="btn btn-primary">
 						<BiTrash aria-hidden="true" />
 						{page.data.t('search.clearFilters')}
 					</a>
-				</span>
-			{/if}
-		</li>
-		{#if parentOperator}
-			<li class="pill pill-between pill-between-{parentOperator} text-xs">
-				<span>{parentOperator}</span>
+				{/if}
 			</li>
 		{/if}
 	{/each}
@@ -71,70 +72,30 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	.pill {
-		display: flex;
-		align-items: center;
-		border-radius: var(--radius-sm);
-		padding: calc(var(--spacing) * 1.5);
-		gap: calc(var(--spacing) * 0.5);
-		transition: background-color 0.2s ease;
+	.operator-and {
+		display: none;
 	}
 
-	.pill-_q {
+	.variable-_q .pill,
+	.variable-_q.pill {
 		background-color: var(--color-accent-100);
-		& .pill-remove:hover {
-			background-color: var(--color-accent-200);
-		}
 	}
 
-	.pill-_r {
-		background-color: var(--color-primary-100);
-		border: 1px solid var(--color-primary-200);
-		& .pill-remove:hover {
-			background-color: var(--color-primary-200);
-		}
+	.variable-_r .pill,
+	.variable-_r.pill {
+		background-color: var(--color-primary-200);
+		border: 1px solid var(--color-primary-300);
 	}
 
-	.pill-group:has(:global(> .pill-remove:hover)) {
-		outline: 1px solid var(--color-neutral-300);
-		outline-offset: 2px;
-		border-radius: var(--radius-sm);
+	.group-inner::after {
+		content: ')';
 	}
 
-	.pill-equals.wildcard {
+	.group-inner::before {
+		content: '(';
+	}
+
+	/* .pill-equals.wildcard {
 		display: none;
-	}
-
-	.pill-group {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: calc(var(--spacing) * 2);
-
-		&.outer {
-			background-color: transparent;
-		}
-	}
-
-	.pill-between,
-	.pill-relation {
-		text-transform: uppercase;
-	}
-
-	.pill-between-and,
-	.pill-between:last-of-type {
-		display: none;
-	}
-
-	.free-text {
-		& > .pill-label,
-		.pill-relation {
-			display: none;
-		}
-
-		& > .pill-value::before,
-		& > .pill-value::after {
-			content: '"';
-		}
-	}
+	} */
 </style>
