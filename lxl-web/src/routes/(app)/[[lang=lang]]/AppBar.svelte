@@ -13,7 +13,7 @@
 	import IconLanguage from '~icons/bi/globe';
 	import BetaBanner from '$lib/components/BetaBanner.svelte';
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
-	import AppSubset from './AppSubset.svelte';
+	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
@@ -37,7 +37,7 @@
 		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
 	);
 
-	const subset = $derived(page.data.subset);
+	const subset = $derived(page.data.subsetMapping);
 
 	function handleDismissBanner() {
 		dismissedBanner = true;
@@ -199,7 +199,7 @@
 			{#if subset}
 				<li class="flex items-center overflow-hidden">
 					<p class="pr-2">/</p>
-					<AppSubset {subset} />
+					<SearchMapping mapping={subset} />
 				</li>
 			{/if}
 		</ul>
@@ -217,7 +217,7 @@
 					id="search"
 					name="_q"
 					placeholder={subset
-						? `Sök inom ${subset[0].displayStr}`
+						? `Sök inom avgränsning` // todo label
 						: page.data.t('header.searchPlaceholder')}
 					--sm-dialog-top={showSearchInputOnMobile
 						? 'calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2)'

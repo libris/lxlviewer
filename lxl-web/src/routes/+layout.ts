@@ -8,7 +8,7 @@ export async function load({ params, data, url }) {
 
 	const base = locale === baseLocale ? '/' : `/${locale}`;
 	const userSettings = data.userSettings;
-	const subset = data.subset;
+	const subsetMapping = data.subsetMapping;
 
-	return { locale, t, localizeHref, base, userSettings, subset };
+	return { locale, t, localizeHref, base, userSettings, subsetMapping };
 }

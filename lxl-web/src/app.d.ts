@@ -22,7 +22,7 @@ declare global {
 			t: Awaited<ReturnType<typeof import('$lib/i18n').getTranslator>>;
 			localizeHref: ReturnType<typeof import('$lib/i18n').initLocalizeHref>;
 			userSettings: UserSettings;
-			subset: DisplayMapping[];
+			subsetMapping: DisplayMapping[] | undefined;
 		}
 		interface PageState {
 			expandedInstances?: string[];

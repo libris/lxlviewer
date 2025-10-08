@@ -5,7 +5,7 @@ import { displayMappings } from '$lib/utils/search';
 
 export async function load({ locals, url, params }) {
 	const userSettings = locals.userSettings;
-	let subset = null;
+	let subsetMapping;
 	const r = url.searchParams.get('_r');
 	// get the label for a subset filter on any page
 	if (r) {
@@ -23,12 +23,12 @@ export async function load({ locals, url, params }) {
 
 			const locale = getSupportedLocale(params?.lang);
 			const translator = await getTranslator(locale);
-			subset = displayMappings(data, locals.display, locale, translator);
+			subsetMapping = displayMappings(data, locals.display, locale, translator, url.pathname);
 		}
 	}
 
 	return {
 		userSettings,
-		subset
+		subsetMapping
 	};
 }
