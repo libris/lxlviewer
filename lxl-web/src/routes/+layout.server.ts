@@ -11,7 +11,8 @@ export async function load({ locals, url, params }) {
 	if (r) {
 		const res = await fetch(
 			`${env.API_URL}/find.jsonld?${new URLSearchParams({
-				_q: r,
+				_r: r,
+				_q: '*',
 				_limit: '0',
 				_stats: 'false',
 				_spell: 'false'
@@ -23,7 +24,8 @@ export async function load({ locals, url, params }) {
 
 			const locale = getSupportedLocale(params?.lang);
 			const translator = await getTranslator(locale);
-			subsetMapping = displayMappings(data, locals.display, locale, translator, url.pathname);
+			const mappings = displayMappings(data, locals.display, locale, translator, url.pathname);
+			subsetMapping = mappings.filter((m) => m.variable === '_r');
 		}
 	}
 

@@ -183,6 +183,7 @@ export function displayMappings(
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('variable' in m && { variable: m.variable }),
 					_key: m._key,
 					_value: m._value
 				} as DisplayMapping;
@@ -191,7 +192,8 @@ export function displayMappings(
 				return {
 					children: _iterateMapping(mappingArr),
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) })
+					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('variable' in m && { variable: m.variable })
 				} as DisplayMapping;
 			} else if (m.object) {
 				const defaultType = { [JsonLd.TYPE]: Base.Resource };
@@ -208,6 +210,7 @@ export function displayMappings(
 					label: '',
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('variable' in m && { variable: m.variable }),
 					_value: m?.value
 				} as DisplayMapping;
 			} else {

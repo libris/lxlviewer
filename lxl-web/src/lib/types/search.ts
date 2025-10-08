@@ -92,6 +92,7 @@ export interface DisplayMapping {
 	label?: string;
 	operator: keyof typeof SearchOperators;
 	invalid?: string;
+	variable?: string;
 	_key?: string;
 	_value?: string;
 }
@@ -158,6 +159,7 @@ export interface SearchMapping extends MappingObj {
 	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom | InvalidProperty;
 	object?: FramedData;
 	value?: string;
+	variable?: string;
 	up: { '@id': string };
 	_key?: string;
 	_value?: string;
