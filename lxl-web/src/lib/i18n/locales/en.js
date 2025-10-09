@@ -231,6 +231,7 @@ export default {
 		occurrences: 'Occurrences',
 		show: 'Show',
 		all: 'all',
+		matching: 'Matching',
 		results: 'results',
 		result: 'result',
 		editions: 'Editions',

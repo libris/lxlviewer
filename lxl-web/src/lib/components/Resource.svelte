@@ -4,7 +4,9 @@
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
+	import type { ResourceData } from '$lib/types/resourceData';
 	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
+	import capitalize from '$lib/utils/capitalize';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import type { Relation } from '$lib/utils/relations';
 	import DecoratedData from './DecoratedData.svelte';
@@ -18,7 +20,6 @@
 	import TabList from './TabList.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import BiQuote from '~icons/bi/quote';
-	import type { ResourceData } from '$lib/types/resourceData';
 
 	type Props = {
 		fnurgel: string;
@@ -69,9 +70,9 @@
 	);
 
 	const tabs = $derived.by(() => {
-		const filtered = filteredInstances
+		const filtered = filteredInstances?.length
 			? {
-					label: `Matchande utgåvor (${filteredInstances.length})`,
+					label: `${page.data.t('resource.matching')} ${page.data.t('resource.editions').toLowerCase()} (${filteredInstances.length} ${filteredInstances.length === instances.length ? `${page.data.t('resource.resultOf')} ${instances.length}` : ''})`,
 					targetId: 'filtered-instances',
 					active: activeInstanceTab === 'filtered-instances'
 				}
@@ -80,7 +81,7 @@
 		const all =
 			instances?.length > filteredInstances?.length || !filteredInstances
 				? {
-						label: `Alla utgåvor (${instances.length})`,
+						label: `${capitalize(page.data.t('resource.all'))} ${page.data.t('resource.editions').toLowerCase()} (${instances.length})`,
 						targetId: 'all-instances',
 						active: activeInstanceTab === 'all-instances'
 					}

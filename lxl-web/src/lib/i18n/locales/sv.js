@@ -230,6 +230,7 @@ export default {
 		occurrences: 'Förekomster',
 		show: 'Visa',
 		all: 'alla',
+		matching: 'Matchande',
 		results: 'träffar',
 		result: 'träff',
 		editions: 'Utgåvor',
