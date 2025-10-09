@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getRelationSymbol } from '$lib/utils/getRelationSymbol';
+	import { isWildcardQuery } from '$lib/utils/displayMappingToString';
 	import SearchMapping from './SearchMapping.svelte';
 	import type { DisplayMapping } from '$lib/types/search';
 	import { page } from '$app/state';
@@ -21,8 +22,9 @@
 	]}
 >
 	{#each mapping as m, i (`outer-${i}-${depth}`)}
-		{@const { children, operator, up, variable, displayStr, label } = m}
-		{#if displayStr}
+		{@const { children, operator, up, variable, displayStr, label, display } = m}
+		{#if displayStr && !isWildcardQuery(m)}
+			{@const isLinked = !!display?.['@id']}
 			<li
 				class={[
 					'pill bg-neutral flex h-8 items-center rounded-sm',
@@ -30,17 +32,25 @@
 				]}
 			>
 				{#if label}
-					<span class="lxl-qualifier-key">{label}</span>
+					<span class="lxl-qualifier lxl-qualifier-key atomic h-full content-center">
+						{label}
+					</span>
 				{/if}
 				{#if operator && operator !== 'none'}
-					<span class="lxl-qualifier-operator pr-1.5">{getRelationSymbol(m.operator)}</span>
+					<span class="lxl-qualifier lxl-qualifier-operator atomic h-full content-center pr-1.5"
+						>{getRelationSymbol(m.operator)}</span
+					>
 				{/if}
-				<span class={[operator === 'none' ? 'lxl-filter-alias' : 'lxl-qualifier-value']}
-					>{displayStr}</span
+				<span
+					class={[
+						'lxl-qualifier h-full content-center',
+						operator === 'none' ? 'lxl-filter-alias' : 'lxl-qualifier-value',
+						isLinked && 'atomic'
+					]}>{displayStr}</span
 				>
 				{#if up}
 					<a
-						class="lxl-qualifier-remove h-8 transition-colors"
+						class="lxl-qualifier lxl-qualifier-remove h-8 transition-colors"
 						href={page.data.localizeHref(m.up?.['@id'])}
 						aria-label={page.data.t('search.removeFilter')}
 					>
@@ -79,15 +89,9 @@
 		display: none;
 	}
 
-	.variable-_q .pill,
-	.variable-_q.pill {
-		background-color: var(--color-accent-100);
-	}
-
+	/* we can give _r pills a special styling if we want */
 	.variable-_r .pill,
 	.variable-_r.pill {
-		background-color: var(--color-primary-200);
-		border: 1px solid var(--color-primary-300);
 	}
 
 	.group-inner::after {
@@ -97,8 +101,4 @@
 	.group-inner::before {
 		content: '(';
 	}
-
-	/* .pill-equals.wildcard {
-		display: none;
-	} */
 </style>

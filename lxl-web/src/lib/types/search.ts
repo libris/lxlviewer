@@ -20,6 +20,12 @@ export interface SearchResult {
 	_spell: SpellingSuggestion[] | [];
 }
 
+// minimal search result for filtered instances on resource pages
+export interface ResourceSearchResult {
+	items: string[];
+	mapping: DisplayMapping[];
+}
+
 export interface LibraryResult {
 	totalItems: number;
 	maxItems: number;

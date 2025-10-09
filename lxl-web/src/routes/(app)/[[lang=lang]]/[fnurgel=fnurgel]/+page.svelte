@@ -58,7 +58,7 @@
 		relations={data.relations}
 		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}
 		instances={data.instances}
-		filteredInstances={data.filteredInstances}
+		searchResult={data.searchResult}
 		holdersByType={data.holdings.holdersByType}
 		tableOfContents={data.tableOfContents}
 		adjecentSearchResults={page.state.adjecentSearchResults}

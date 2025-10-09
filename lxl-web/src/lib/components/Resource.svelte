@@ -5,7 +5,11 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
-	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
+	import type {
+		SearchResultItem,
+		AdjecentSearchResult,
+		ResourceSearchResult
+	} from '$lib/types/search';
 	import capitalize from '$lib/utils/capitalize';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import type { Relation } from '$lib/utils/relations';
@@ -18,6 +22,7 @@
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
 	import SearchCard from './find/SearchCard.svelte';
 	import TabList from './TabList.svelte';
+	import SearchMapping from './find/SearchMapping.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import BiQuote from '~icons/bi/quote';
 
@@ -32,7 +37,7 @@
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
 		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
-		filteredInstances: SearchResultItem[];
+		searchResult?: ResourceSearchResult;
 		holdersByType: HoldersByType;
 		tableOfContents: TableOfContentsItem[];
 		adjecentSearchResults?: AdjecentSearchResult[];
@@ -49,7 +54,7 @@
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
-		filteredInstances,
+		searchResult,
 		holdersByType,
 		tableOfContents,
 		adjecentSearchResults
@@ -57,12 +62,15 @@
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
-	let activeInstanceTab = $state(
-		filteredInstances?.length > 0 ? 'filtered-instances' : 'all-instances'
+	let filteredInstances = $derived(searchResult?.items);
+	let searchMapping = $derived(searchResult?.mapping);
+
+	let activeInstanceTab = $derived(
+		filteredInstances && filteredInstances.length > 0 ? 'filtered-instances' : 'all-instances'
 	);
 	const derivedFilteredInstances = $derived.by(() => {
 		const idSet = new Set(filteredInstances);
-		return instances.filter((instance) => idSet.has(instance['@id']));
+		return instances.filter((instance) => idSet.has(instance?.['@id']));
 	});
 
 	const displayedInstances = $derived(
@@ -188,17 +196,20 @@
 					</div>
 				{:else if instances.length > 1}
 					<!-- multiple instances -->
-					<div class="border-b-neutral border-b">
-						<TabList
-							{tabContent}
-							{tabs}
-							aria-label=""
-							onclick={(id: string) => (activeInstanceTab = id)}
-						/>
-						{#each displayedInstances as instance (instance['@id'])}
-							<SearchCard item={instance} />
-						{/each}
-					</div>
+					<TabList
+						{tabContent}
+						{tabs}
+						aria-label=""
+						onclick={(id: string) => (activeInstanceTab = id)}
+					/>
+					{#if searchMapping && activeInstanceTab === 'filtered-instances'}
+						<div class="border-t-neutral border-t py-2">
+							<SearchMapping mapping={searchMapping} />
+						</div>
+					{/if}
+					{#each displayedInstances as instance (instance?.['@id'])}
+						<SearchCard item={instance as SearchResultItem} />
+					{/each}
 				{/if}
 			</section>
 			{#if relations.length}

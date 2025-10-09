@@ -7,6 +7,7 @@ import { getTranslator } from '$lib/i18n';
 import { type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
+import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
 
 import { pickProperty, toString, asArray, first } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';
@@ -20,7 +21,7 @@ import {
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
-import { asResult, asSearchResultItem } from '$lib/utils/search';
+import { asResult, asSearchResultItem, displayMappings } from '$lib/utils/search';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 
 export const load = async ({ params, locals, fetch, url }) => {
@@ -82,7 +83,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
 
 	let instances;
-	let filteredInstances;
+	let searchResult: ResourceSearchResult | undefined;
 
 	if (mainEntity?.['@reverse']?.instanceOf?.length === 1) {
 		// single instance -> pick from resource overview
@@ -101,21 +102,24 @@ export const load = async ({ params, locals, fetch, url }) => {
 			undefined
 		);
 
-		// todo: use this to apply filters from search result on resource page
 		if (subsetFilter) {
 			const res = await fetch(
 				`${env.API_URL}/find.jsonld?${new URLSearchParams({
 					_o: `${env.API_URL}/${params.fnurgel}#it`,
 					_p: 'instanceOf',
-					_q: '*',
+					_q: '*', // todo: use this to apply filters from search result on resource page
 					_r: subsetFilter,
-					_spell: 'false'
+					_spell: 'false',
+					_stats: 'false'
 				}).toString()}`
 			);
 
 			if (res.ok) {
-				const data = await res.json();
-				filteredInstances = data.items.map((item) => item['@id'].replace('#it', ''));
+				const data = (await res.json()) as PartialCollectionView;
+				searchResult = {
+					items: data.items.map((item) => (item['@id'] as string).replace('#it', '')),
+					mapping: displayMappings(data, locals.display, locale, translate, url.pathname)
+				};
 			}
 		}
 	}
@@ -188,7 +192,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
-		filteredInstances,
+		searchResult,
 		holdings: {
 			holdingsByInstanceId,
 			holdersByType,
