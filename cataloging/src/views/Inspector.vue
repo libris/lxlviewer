@@ -624,9 +624,9 @@ export default {
         );
       } else {
         obj = DataUtil.getMergedItems(
-          DataUtil.removeNullValues(recordCopy),
-          DataUtil.removeNullValues(this.inspector.data.mainEntity),
-          DataUtil.removeNullValues(this.inspector.data.work),
+          DataUtil.normalizeBeforeSave(recordCopy),
+          DataUtil.normalizeBeforeSave(this.inspector.data.mainEntity),
+          DataUtil.normalizeBeforeSave(this.inspector.data.work),
         );
       }
       if (this.user.uriMinter && VocabUtil.isSubClassOf(this.inspector.data.mainEntity['@type'], 'Concept', this.resources.vocab, this.resources.context)) {
