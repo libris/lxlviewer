@@ -220,6 +220,7 @@
     "Invalid query": "Felaktig sökfråga",
     "Data is missing a reference, please verify file": "Datan saknar en referens, var god verifiera filen",
     "Detailed enrichment": "Detaljerad berikning",
+    "Merge records": "Slå ihop poster",
     "Enrich from": "Berika från",
     "Enrich from ID": "Berika från ID",
     "Enrich from template": "Berika från mall",

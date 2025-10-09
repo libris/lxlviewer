@@ -89,6 +89,10 @@ export default {
         inputValue: '',
         detailed: false,
       },
+      mergeRecordsModal: {
+        open: false,
+        inputId: '',
+      }
     };
   },
   emits: ['ready'],
@@ -111,6 +115,16 @@ export default {
       const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
       detailedEnrichmentModal.open = false;
       this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+    },
+    openMergeViewModal() {
+      const mergeViewModal = this.inspector.status.mergeViewModal;
+      mergeViewModal.open = true;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'mergeViewModal', value: mergeViewModal });
+    },
+    closeMergeViewModal() {
+      const mergeViewModal = this.inspector.status.mergeViewModal;
+      mergeViewModal.open = false;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'mergeViewModal', value: mergeViewModal });
     },
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
@@ -164,6 +178,17 @@ export default {
         });
       } else {
         this.enrichFromIdModal.open = false;
+      }
+    },
+    toggleMergeViewModal(open = true) {
+      if (open) {
+        this.mergeRecordsModal.inputId = '';
+        this.mergeRecordsModal.open = true;
+        this.$nextTick(() => {
+          this.$refs.MergeRecordsInput.focus();
+        });
+      } else {
+        this.mergeRecordsModal.open = false;
       }
     },
     openMarcPreview() {
@@ -254,7 +279,12 @@ export default {
         this.applyRecordAsTemplate(id, this.enrichFromIdModal.detailed);
       }
     },
-    prepareDetailedEnrichment(id = null, data = null) {
+    confirmOpenMergeView() {
+      this.mergeRecordsModal.open = false;
+      const id = this.mergeRecordsModal.inputId;
+      this.prepareDetailedEnrichment(id, true);
+    },
+    prepareDetailedEnrichment(id = null, openMergeView = false) {
       if (id !== null) {
         const fixedId = RecordUtil.extractFnurgel(id);
         const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
@@ -280,12 +310,14 @@ export default {
           });
         }).then((result) => {
           if (typeof result !== 'undefined') {
-            const template = LxlDataUtil.splitJson(result);
-            this.applyAsDetailedEnrichment(template);
+            const source = LxlDataUtil.splitJson(result);
+            if (openMergeView) {
+              this.openMergeViewFor(source);
+            } else {
+              this.applyAsDetailedEnrichment(source);
+            }
           }
         });
-      } else if (data !== null) {
-        this.applyAsDetailedEnrichment(data);
       } else {
         throw new Error('Failed to prepare data for detailed enrichment.');
       }
@@ -294,6 +326,11 @@ export default {
       this.setEnrichmentTarget(this.inspector.data);
       this.setEnrichmentSource(data);
       this.openDetailedEnrichmentModal();
+    },
+    openMergeViewFor(data) {
+      this.setEnrichmentTarget(this.inspector.data);
+      this.setEnrichmentSource(data);
+      this.openMergeViewModal();
     },
     applyRecordAsTemplate(id) {
       const fixedId = RecordUtil.extractFnurgel(id);
@@ -998,6 +1035,8 @@ export default {
         this.toggleEnrichFromIdModal(true);
       } else if (val.name === 'open-detailed-enrich-from-id') {
         this.toggleEnrichFromIdModal(true, true);
+      } else if (val.name === 'open-merge-view') {
+        this.toggleMergeViewModal(true);
       } else if (val.name === 'replace-data') {
         this.replaceData(val.value);
       } else if (val.name === 'apply-override') {
@@ -1237,11 +1276,47 @@ export default {
           </div>
         </div>
       </template>
-    </modal-component>  
+    </modal-component>
 
     <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('Detailed enrichment')" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
       <template #modal-body>
         <DetailedEnrichment :floating-dialogs="true" />
+      </template>
+    </modal-component>
+
+    <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('SLÅ IHOP')" v-if="inspector.status.mergeViewModal.open === true" @close="closeMergeViewModal" :backdrop-close="false">
+      <template #modal-body>
+<!--        <DetailedEnrichment :floating-dialogs="true" />-->
+        Inget att se här
+      </template>
+    </modal-component>
+
+    <modal-component
+      class="Merge"
+      :title="'Slå ihop'"
+      v-if="mergeRecordsModal.open"
+      @close="mergeRecordsModal.open = false">
+      <template #modal-body>
+        <div class="EnrichFromIdModal-body">
+          <div class="EnrichFromIdModal-infoText">
+            Slå ihop med
+          </div>
+          <div class="input-group EnrichFromIdModal-form">
+            <label class="input-group-addon EnrichFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
+            <input
+              name="id"
+              class="EnrichFromIdModal-input form-control"
+              ref="MergeRecordsInput"
+              v-model="mergeRecordsModal.inputId"
+              @keyup.enter="confirmOpenMergeView()" />
+            <span class="input-group-btn">
+              <button
+                class="btn btn-primary btn--md EnrichFromIdModal-confirmButton"
+                @click="confirmOpenMergeView()"
+                @keyup.enter="confirmOpenMergeView()">{{ translatePhrase('Continue') }}</button>
+            </span>
+          </div>
+        </div>
       </template>
     </modal-component>
 

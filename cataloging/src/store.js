@@ -59,6 +59,9 @@ const store = createStore({
         detailedEnrichmentModal: {
           open: false,
         },
+        mergeViewModal: {
+          open: false,
+        },
         saving: false,
         opening: false,
         lastAdded: '',
