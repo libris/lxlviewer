@@ -149,7 +149,10 @@
 
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
-			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
+			// Make sure supersearch doesn't use '_r' section of mapping
+			const filteredPageMapping = pageMapping?.filter((m) => m.variable === '_q');
+			const filteredSuggestMapping = suggestMapping?.filter((m) => m.variable === '_q');
+			return getLabelFromMappings(key, value, filteredPageMapping, filteredSuggestMapping);
 		}
 		return lxlQualifierPlugin(QualifierPill, getLabels);
 	});
