@@ -28,6 +28,7 @@ export default {
 		login: 'Logga in',
 		saved: 'Sparat',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
+		searchSubsetPlaceholder: 'Sök inom',
 		openMenu: 'Öppna huvudmeny',
 		closeMenu: 'Stäng meny'
 	},

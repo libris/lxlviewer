@@ -29,6 +29,7 @@ export default {
 		login: 'Log in',
 		saved: 'Saved',
 		searchPlaceholder: 'Search for title, author, library, subject...',
+		searchSubsetPlaceholder: 'Search within',
 		openMenu: 'Open main menu',
 		closeMenu: 'Close menu'
 	},

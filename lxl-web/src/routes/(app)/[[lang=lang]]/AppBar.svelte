@@ -2,6 +2,7 @@
 	import { env } from '$env/dynamic/public';
 	import { onMount, type Component } from 'svelte';
 	import { Locales, baseLocale, type LocaleCode } from '$lib/i18n/locales';
+	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
@@ -38,6 +39,7 @@
 	);
 
 	const subset = $derived(page.data.subsetMapping);
+	const subsetPlaceholder = $derived(subset && displayMappingToString(subset));
 
 	function handleDismissBanner() {
 		dismissedBanner = true;
@@ -216,8 +218,8 @@
 				<AppSearch
 					id="search"
 					name="_q"
-					placeholder={subset
-						? `Sök inom avgränsning` // todo label
+					placeholder={subsetPlaceholder
+						? `${page.data.t('header.searchSubsetPlaceholder')}: ${subsetPlaceholder}`
 						: page.data.t('header.searchPlaceholder')}
 					--sm-dialog-top={showSearchInputOnMobile
 						? 'calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2)'

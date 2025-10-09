@@ -33,7 +33,7 @@
 					<span class="lxl-qualifier-key">{label}</span>
 				{/if}
 				{#if operator && operator !== 'none'}
-					<span class="lxl-qualifier-operator">{getRelationSymbol(m.operator)}</span>
+					<span class="lxl-qualifier-operator pr-1.5">{getRelationSymbol(m.operator)}</span>
 				{/if}
 				<span class={[operator === 'none' ? 'lxl-filter-alias' : 'lxl-qualifier-value']}
 					>{displayStr}</span
