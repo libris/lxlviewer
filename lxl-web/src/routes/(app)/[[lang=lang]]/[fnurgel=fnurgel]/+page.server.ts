@@ -32,6 +32,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	let resourceId: null | string = null;
 	const subsetFilter = url.searchParams.get('_r');
+	const _q = url.searchParams.get('_q');
 
 	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
 		headers: { Accept: 'application/ld+json' }
@@ -85,8 +86,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 	let instances;
 	let searchResult: ResourceSearchResult | undefined;
 
+	// Format & sort instances; single instance -> pick from resource overview
 	if (mainEntity?.['@reverse']?.instanceOf?.length === 1) {
-		// single instance -> pick from resource overview
 		// TODO: Replace with a custom getProperty method (similar to pickProperty)
 		instances = jmespath.search(overview, '*[].hasInstance[]');
 	} else if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
@@ -102,13 +103,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 			undefined
 		);
 
-		if (subsetFilter) {
+		// Search for instances that matches query
+		if (subsetFilter || _q) {
 			const res = await fetch(
 				`${env.API_URL}/find.jsonld?${new URLSearchParams({
 					_o: `${env.API_URL}/${params.fnurgel}#it`,
 					_p: 'instanceOf',
-					_q: '*', // todo: use this to apply filters from search result on resource page
-					_r: subsetFilter,
+					_q: _q || '*',
+					_r: subsetFilter || '',
 					_spell: 'false',
 					_stats: 'false'
 				}).toString()}`

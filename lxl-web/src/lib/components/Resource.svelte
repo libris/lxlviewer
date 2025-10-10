@@ -70,7 +70,7 @@
 	);
 	const derivedFilteredInstances = $derived.by(() => {
 		const idSet = new Set(filteredInstances);
-		return instances.filter((instance) => idSet.has(instance?.['@id']));
+		return instances?.filter((instance) => idSet.has(instance?.['@id']));
 	});
 
 	const displayedInstances = $derived(
@@ -80,7 +80,7 @@
 	const tabs = $derived.by(() => {
 		const filtered = filteredInstances?.length
 			? {
-					label: `${page.data.t('resource.matching')} ${page.data.t('resource.editions').toLowerCase()} (${filteredInstances.length} ${filteredInstances.length === instances.length ? `${page.data.t('resource.resultOf')} ${instances.length}` : ''})`,
+					label: `${page.data.t('resource.matching')} ${page.data.t('resource.editions').toLowerCase()} (${filteredInstances.length}${filteredInstances.length === instances.length ? ` ${page.data.t('resource.resultOf')} ${instances.length}` : ''})`,
 					targetId: 'filtered-instances',
 					active: activeInstanceTab === 'filtered-instances'
 				}
@@ -89,7 +89,7 @@
 		const all =
 			instances?.length > filteredInstances?.length || !filteredInstances
 				? {
-						label: `${capitalize(page.data.t('resource.all'))} ${page.data.t('resource.editions').toLowerCase()} (${instances.length})`,
+						label: `${capitalize(page.data.t('resource.all'))} ${page.data.t('resource.editions').toLowerCase()} (${instances?.length})`,
 						targetId: 'all-instances',
 						active: activeInstanceTab === 'all-instances'
 					}
@@ -157,7 +157,7 @@
 						</hgroup>
 					</header>
 					<div class="header-actions self-end md:self-start">
-						{#if instances.length === 1}
+						{#if instances?.length === 1}
 							<a
 								class="btn btn-primary h-7"
 								href={getCiteLink(page.url, fnurgel)}
@@ -176,7 +176,7 @@
 				</div>
 			</section>
 			<section>
-				{#if instances.length === 1}
+				{#if instances?.length === 1}
 					<!-- single instance -->
 					<div class="decorated-overview">
 						<InstancesList
@@ -194,7 +194,7 @@
 							]}
 						/>
 					</div>
-				{:else if instances.length > 1}
+				{:else if instances?.length > 1}
 					<!-- multiple instances -->
 					<TabList
 						{tabContent}
@@ -203,7 +203,7 @@
 						onclick={(id: string) => (activeInstanceTab = id)}
 					/>
 					{#if searchMapping && activeInstanceTab === 'filtered-instances'}
-						<div class="border-t-neutral border-t py-2">
+						<div class="border-t-neutral border-t py-4">
 							<SearchMapping mapping={searchMapping} />
 						</div>
 					{/if}

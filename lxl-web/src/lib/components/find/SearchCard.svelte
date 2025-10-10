@@ -38,11 +38,22 @@
 		(!page.state.dimissedHighlighting && page.url.hash === `#${id}`) ||
 			page.url.searchParams.get('holdings') === id
 	);
-	let showDebugExplain = $state(false);
-	let showDebugHaystack = $state(false);
 
 	// safer way to check if data is an instance?
 	const isInstanceCard = $derived(!!page.params.fnurgel);
+	const resourceLink = $derived.by(() => {
+		const url = new URL(page.url.origin + page.data.localizeHref(id));
+		if (isInstanceCard) {
+			return url.toString();
+		} else {
+			// pass on _q to work resource page
+			url.searchParams.append('_q', page.url.searchParams.get('_q')?.trim() || '');
+			return url.toString();
+		}
+	});
+
+	let showDebugExplain = $state(false);
+	let showDebugHaystack = $state(false);
 
 	function passAlongAdjecentSearchResults(event: MouseEvent) {
 		event.preventDefault();
@@ -118,7 +129,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	>
 		<div class="card-image">
 			<a
-				href={page.data.localizeHref(id)}
+				href={resourceLink}
 				aria-labelledby={titleId}
 				aria-describedby={`${bodyId} ${footerId}`}
 				tabindex="-1"
@@ -183,7 +194,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				<hgroup>
 					<h2 class="card-header-title text-base font-medium">
 						<a
-							href={page.data.localizeHref(id)}
+							href={resourceLink}
 							class="hover:text-link focus:text-link block hover:underline focus:underline"
 							aria-describedby={`${bodyId} ${footerId}`}
 							onclick={passAlongAdjecentSearchResults}

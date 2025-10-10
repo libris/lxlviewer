@@ -44,13 +44,13 @@
 				<span
 					class={[
 						'lxl-qualifier h-full content-center',
-						operator === 'none' ? 'lxl-filter-alias' : 'lxl-qualifier-value',
+						operator === 'none' ? 'lxl-filter-alias atomic' : 'lxl-qualifier-value',
 						isLinked && 'atomic'
 					]}>{displayStr}</span
 				>
 				{#if up}
 					<a
-						class="lxl-qualifier lxl-qualifier-remove h-8 transition-colors"
+						class="lxl-qualifier lxl-qualifier-remove atomic h-8 transition-colors"
 						href={page.data.localizeHref(m.up?.['@id'])}
 						aria-label={page.data.t('search.removeFilter')}
 					>
@@ -84,6 +84,10 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	.search-mapping :global(.lxl-qualifier-value) {
+		background-color: var(--color-accent-100);
+	}
 
 	.operator-and {
 		display: none;

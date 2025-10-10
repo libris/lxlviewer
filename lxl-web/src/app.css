@@ -268,6 +268,7 @@
 		justify-content: center;
 		align-items: center;
 		gap: var(--spacing);
+		min-height: calc(var(--spacing) * 8);
 		font-size: var(--text-2xs);
 		font-weight: var(--font-weight-medium);
 		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
@@ -344,6 +345,7 @@
 
 	.tab {
 		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+		border-radius: var(--radius-md);
 	}
 
 	.tab-primary {
