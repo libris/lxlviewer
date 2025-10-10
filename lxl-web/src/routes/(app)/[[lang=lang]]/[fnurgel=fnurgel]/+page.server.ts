@@ -104,7 +104,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		);
 
 		// Search for instances that matches query
-		if (subsetFilter || _q) {
+		if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*')) {
 			const res = await fetch(
 				`${env.API_URL}/find.jsonld?${new URLSearchParams({
 					_o: `${env.API_URL}/${params.fnurgel}#it`,
