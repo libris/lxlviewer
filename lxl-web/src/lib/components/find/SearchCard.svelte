@@ -47,7 +47,11 @@
 			return url.toString();
 		} else {
 			// pass on _q to work resource page
-			url.searchParams.append('_q', page.url.searchParams.get('_q')?.trim() || '');
+			const _q = page.url.searchParams.get('_q')?.trim();
+			if (_q && _q !== '*') {
+				url.searchParams.append('_q', _q);
+				return url.toString();
+			}
 			return url.toString();
 		}
 	});

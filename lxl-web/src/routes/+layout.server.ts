@@ -8,7 +8,7 @@ export async function load({ locals, url, params }) {
 	let subsetMapping;
 	const r = url.searchParams.get('_r');
 	// get the label for a subset filter on any page
-	if (r) {
+	if (r && r !== '*') {
 		const res = await fetch(
 			`${env.API_URL}/find.jsonld?${new URLSearchParams({
 				_r: r,
