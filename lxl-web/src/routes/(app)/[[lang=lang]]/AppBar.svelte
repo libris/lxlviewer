@@ -377,12 +377,18 @@
 
 	.app-bar :global(.search-mapping .group) {
 		flex-wrap: nowrap;
+		max-width: none;
+	}
+
+	.app-bar :global(.search-mapping .pill),
+	.subset-container :global(ul) {
+		max-width: none;
 	}
 
 	.subset-container::after {
 		content: '';
 		position: absolute;
-		top: 0;
+		top: -1px;
 		right: 0;
 		width: calc(var(--spacing) * 4);
 		height: 100%;

@@ -17,6 +17,7 @@
 
 <ul
 	class={[
+		'max-w-full',
 		depth === 0 ? 'search-mapping flex-col-reverse gap-2' : 'flex-col',
 		'flex items-start text-xs'
 	]}
@@ -27,12 +28,14 @@
 			{@const isLinked = !!display?.['@id']}
 			<li
 				class={[
-					'pill bg-neutral flex h-8 items-center rounded-sm',
+					'pill bg-neutral flex h-8 max-w-full items-center rounded-sm',
 					variable && `variable-${variable}`
 				]}
 			>
 				{#if label}
-					<span class="lxl-qualifier lxl-qualifier-key atomic h-full content-center">
+					<span
+						class="lxl-qualifier lxl-qualifier-key atomic h-full content-center whitespace-nowrap"
+					>
 						{label}
 					</span>
 				{/if}
@@ -43,11 +46,13 @@
 				{/if}
 				<span
 					class={[
-						'lxl-qualifier h-full content-center',
+						'lxl-qualifier h-full content-center overflow-hidden',
 						operator === 'none' ? 'lxl-filter-alias atomic' : 'lxl-qualifier-value',
 						isLinked && 'atomic'
-					]}>{displayStr}</span
+					]}
 				>
+					<span class="block truncate">{displayStr}</span>
+				</span>
 				{#if up}
 					<a
 						class="lxl-qualifier lxl-qualifier-remove atomic h-8 transition-colors"
@@ -61,7 +66,7 @@
 		{:else if children}
 			<li
 				class={[
-					'group flex flex-wrap items-center gap-1.5',
+					'group flex max-w-full flex-wrap items-center gap-1.5',
 					variable ? `variable-${variable}` : 'group-inner'
 				]}
 			>
