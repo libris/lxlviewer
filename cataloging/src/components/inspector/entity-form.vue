@@ -50,6 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showEnriched: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -165,6 +169,7 @@ export default {
         :parent-path="editingObject"
         :bulk-context="bulkContext"
         :show-key="!hideTopLevelFieldNames"
+        :show-enriched="showEnriched"
       />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">

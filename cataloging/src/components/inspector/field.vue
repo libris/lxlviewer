@@ -135,6 +135,10 @@ export default {
       type: String,
       default: BulkContext.None,
     },
+    showEnriched: {
+      type: Boolean,
+      default: true,
+    }
   },
   data() {
     return {
@@ -746,7 +750,7 @@ export default {
       'is-locked': locked,
       'is-diff': isFieldDiff,
       'is-new': isFieldNew,
-      'is-highlighted': enriched,
+      'is-highlighted': enriched && showEnriched,
       'is-grouped': isGrouped,
     }"
     v-if="!this.isHidden">
@@ -1098,7 +1102,9 @@ export default {
           :field-key="fieldKey"
           :index="index"
           :diff="diff"
-          :parent-path="path" />
+          :parent-path="path"
+          :show-enriched="showEnriched"
+        />
 
         <!-- Not linked, local child objects OR inlined linked objects-->
         <item-local
@@ -1120,6 +1126,7 @@ export default {
           :diff="diff"
           :should-expand="expandChildren || enrichedChildren"
           :bulk-context="bulkContext"
+          :show-enriched="showEnriched"
         />
       </div>
       <portal-target :name="`typeSelect-${path}`" />

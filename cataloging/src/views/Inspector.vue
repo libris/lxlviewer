@@ -13,6 +13,7 @@ import { translatePhrase, labelByLang } from '@/utils/filters';
 import EntityForm from '@/components/inspector/entity-form.vue';
 import Toolbar from '@/components/inspector/toolbar.vue';
 import DetailedEnrichment from '@/components/care/detailed-enrichment.vue';
+import MergeRecords from '@/components/care/merge-records.vue';
 import EntityChangelog from '@/components/inspector/entity-changelog.vue';
 import EntityHeader from '@/components/inspector/entity-header.vue';
 import Breadcrumb from '@/components/inspector/breadcrumb.vue';
@@ -182,7 +183,7 @@ export default {
     },
     toggleMergeViewModal(open = true) {
       if (open) {
-        this.mergeRecordsModal.inputId = '';
+        this.mergeRecordsModal.inputId = 'bmlrfn0683955zqc';
         this.mergeRecordsModal.open = true;
         this.$nextTick(() => {
           this.$refs.MergeRecordsInput.focus();
@@ -333,6 +334,7 @@ export default {
       this.openMergeViewModal();
     },
     applyRecordAsTemplate(id) {
+      console.log('id', id);
       const fixedId = RecordUtil.extractFnurgel(id);
       const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
       fetch(fetchUrl).then((response) => {
@@ -1113,6 +1115,7 @@ export default {
     },
   },
   components: {
+    MergeRecords,
     'entity-header': EntityHeader,
     'entity-form': EntityForm,
     'modal-component': ModalComponent,
@@ -1287,7 +1290,9 @@ export default {
     <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('SLÅ IHOP')" v-if="inspector.status.mergeViewModal.open === true" @close="closeMergeViewModal" :backdrop-close="false">
       <template #modal-body>
 <!--        <DetailedEnrichment :floating-dialogs="true" />-->
-        Inget att se här
+        <MergeRecords
+          :floating-dialogs="true"
+        />
       </template>
     </modal-component>
 
@@ -1448,7 +1453,7 @@ export default {
 }
 
 .DetailedEnrichmentModal .ModalComponent-container {
-  width: 90vw;
+  width: 96vw;
 }
 
 .RemoveRecordModal {

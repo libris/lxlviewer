@@ -28,6 +28,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showEnriched: {
+      type: Boolean,
+      default: true,
+    }
   },
   data() {
     return {
@@ -235,7 +239,7 @@ export default {
             'is-ext-link': !isLibrisResource,
             'is-removed': diffRemoved,
             'is-added': diffAdded,
-            'is-highlighted': enriched,
+            'is-highlighted': enriched && showEnriched,
           }">
           <span v-if="!isLocked && hasBackendValidationError">
             <i class="fa fa-warning fa-fw icon--warn icon--sm"
