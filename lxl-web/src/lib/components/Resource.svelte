@@ -21,7 +21,7 @@
 	import AdjecentResults from './resource/AdjecentResults.svelte';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
 	import SearchCard from './find/SearchCard.svelte';
-	import TabList from './TabList.svelte';
+	import TabList, { type Tab } from './TabList.svelte';
 	import SearchMapping from './find/SearchMapping.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import BiQuote from '~icons/bi/quote';
@@ -61,47 +61,55 @@
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
-
-	let filteredInstances = $derived(searchResult?.items);
+	
 	let searchMapping = $derived(searchResult?.mapping);
+	let filteredInstances = $derived(searchResult?.items);
 
-	let activeInstanceTab = $derived(
-		filteredInstances && filteredInstances.length > 0 ? 'filtered-instances' : 'all-instances'
-	);
 	const derivedFilteredInstances = $derived.by(() => {
 		const idSet = new Set(filteredInstances);
 		return instances?.filter((instance) => idSet.has(instance?.['@id']));
 	});
 
-	const displayedInstances = $derived(
-		activeInstanceTab === 'filtered-instances' ? derivedFilteredInstances : instances
-	);
-
-	const tabs = $derived.by(() => {
-		const filtered = filteredInstances?.length
-			? {
-					label: `${page.data.t('resource.matching')} ${page.data.t('resource.editions').toLowerCase()} (${filteredInstances.length}${filteredInstances.length === instances.length ? ` ${page.data.t('resource.resultOf')} ${instances.length}` : ''})`,
-					targetId: 'filtered-instances',
-					active: activeInstanceTab === 'filtered-instances'
-				}
-			: null;
-
-		const all =
-			instances?.length > filteredInstances?.length || !filteredInstances
-				? {
-						label: `${capitalize(page.data.t('resource.all'))} ${page.data.t('resource.editions').toLowerCase()} (${instances?.length})`,
-						targetId: 'all-instances',
-						active: activeInstanceTab === 'all-instances'
-					}
-				: null;
-		return [filtered, all].filter((f) => !!f);
+	const tabMatchingInstances: Tab | null = $derived.by(() => {
+		if (filteredInstances?.length) {
+			return {
+				id: 'matching-instances',
+				label: `${page.data.t('resource.matching')} ${page.data.t('resource.editions').toLowerCase()} (${filteredInstances?.length}${filteredInstances?.length === instances.length ? ` ${page.data.t('resource.resultOf')} ${instances.length}` : ''})`,
+				content: panelMatchingInstances
+			};
+		}
+		return null;
 	});
+
+	const tabAllInstances: Tab | null = $derived.by(() => {
+		if (!filteredInstances || instances?.length > filteredInstances?.length) {
+			return {
+				id: 'all-instances',
+				label: `${capitalize(page.data.t('resource.all'))} ${page.data.t('resource.editions').toLowerCase()} (${instances?.length})`,
+				content: panelAllInstances
+			};
+		}
+		return null;
+	});
+
+	const instanceTabs = $derived([tabMatchingInstances, tabAllInstances].filter((f) => !!f));
 </script>
 
-{#snippet tabContent(tab: (typeof tabs)[0])}
-	<div class={['tab flex gap-2', tab.active ? 'tab-highlighted' : 'tab-primary']}>
-		<span>{tab.label}</span>
-	</div>
+{#snippet panelMatchingInstances()}
+	{#if searchMapping}
+		<div class="py-4">
+			<SearchMapping mapping={searchMapping} />
+		</div>
+	{/if}
+	{#each derivedFilteredInstances as instance (instance?.['@id'])}
+		<SearchCard item={instance as SearchResultItem} />
+	{/each}
+{/snippet}
+
+{#snippet panelAllInstances()}
+	{#each instances as instance (instance?.['@id'])}
+		<SearchCard item={instance as SearchResultItem} />
+	{/each}
 {/snippet}
 
 {#if adjecentSearchResults}
@@ -195,21 +203,7 @@
 						/>
 					</div>
 				{:else if instances?.length > 1}
-					<!-- multiple instances -->
-					<TabList
-						{tabContent}
-						{tabs}
-						aria-label=""
-						onclick={(id: string) => (activeInstanceTab = id)}
-					/>
-					{#if searchMapping && activeInstanceTab === 'filtered-instances'}
-						<div class="border-t-neutral border-t py-4">
-							<SearchMapping mapping={searchMapping} />
-						</div>
-					{/if}
-					{#each displayedInstances as instance (instance?.['@id'])}
-						<SearchCard item={instance as SearchResultItem} />
-					{/each}
+					<TabList ariaLabel={page.data.t('resource.editions')} tabs={instanceTabs} />
 				{/if}
 			</section>
 			{#if relations.length}
@@ -321,5 +315,9 @@
 			width: fit-content;
 			white-space: nowrap;
 		}
+	}
+
+	:global([role='tabpanel'] .\@container\/card:first-of-type .search-card) {
+		border-top: none;
 	}
 </style>

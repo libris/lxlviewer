@@ -345,6 +345,7 @@
 
 	.tab {
 		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+		min-height: calc(var(--spacing) * 7.5);
 		border-radius: var(--radius-md);
 	}
 
