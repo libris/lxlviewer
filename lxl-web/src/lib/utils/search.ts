@@ -26,7 +26,7 @@ import {
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { LibraryItem } from '$lib/types/userSettings';
+import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
@@ -507,4 +507,23 @@ function addMyLibrariesBoolFilter(
 		}
 	}
 	return boolFilters;
+}
+
+/**
+ * Conditionally append param specifying my libraries (from cookie)
+ */
+export function appendMyLibrariesParam(
+	searchParams: URLSearchParams,
+	userSettings: UserSettings
+): URLSearchParams {
+	if (['_q', '_r'].some((key) => searchParams.get(key)?.includes(MY_LIBRARIES_FILTER_ALIAS))) {
+		let sigelStr;
+		if (userSettings?.myLibraries) {
+			sigelStr = Object.values(userSettings?.myLibraries)
+				.map((lib) => `itemHeldBy:"sigel:${lib.sigel}"`)
+				.join(' OR ');
+		}
+		searchParams.append(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
+	}
+	return searchParams;
 }

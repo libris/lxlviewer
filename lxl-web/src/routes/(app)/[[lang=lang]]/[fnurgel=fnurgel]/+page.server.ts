@@ -21,7 +21,12 @@ import {
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
-import { asResult, asSearchResultItem, displayMappings } from '$lib/utils/search';
+import {
+	appendMyLibrariesParam,
+	asResult,
+	asSearchResultItem,
+	displayMappings
+} from '$lib/utils/search';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 
 export const load = async ({ params, locals, fetch, url }) => {
@@ -105,16 +110,19 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 		// Search for instances that matches query
 		if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*')) {
-			const res = await fetch(
-				`${env.API_URL}/find.jsonld?${new URLSearchParams({
+			const searchParams = appendMyLibrariesParam(
+				new URLSearchParams({
 					_o: `${env.API_URL}/${params.fnurgel}#it`,
 					_p: 'instanceOf',
 					_q: _q || '*',
 					_r: subsetFilter || '',
 					_spell: 'false',
 					_stats: 'false'
-				}).toString()}`
+				}),
+				locals.userSettings
 			);
+
+			const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
 
 			if (res.ok) {
 				const data = (await res.json()) as PartialCollectionView;
