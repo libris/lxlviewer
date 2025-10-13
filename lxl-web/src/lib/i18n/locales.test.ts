@@ -39,11 +39,11 @@ describe('initLocalizeHref', () => {
 	});
 
 	it('"r" search params are appended to links', () => {
-		const localizeHref = initLocalizeHref('en', new URL('https://libris.kb.se?r=howdy'));
-		expect(localizeHref('/')).toEqual('/en?r=howdy');
-		expect(localizeHref('/#top')).toEqual('/en?r=howdy#top');
-		expect(localizeHref('/?test')).toEqual('/en?test=&r=howdy');
-		expect(localizeHref('/test?hello=world#top')).toEqual('/en/test?hello=world&r=howdy#top');
+		const localizeHref = initLocalizeHref('en', new URL('https://libris.kb.se?_r=howdy'));
+		expect(localizeHref('/')).toEqual('/en?_r=howdy');
+		expect(localizeHref('/#top')).toEqual('/en?_r=howdy#top');
+		expect(localizeHref('/?test')).toEqual('/en?test=&_r=howdy');
+		expect(localizeHref('/test?hello=world#top')).toEqual('/en/test?hello=world&_r=howdy#top');
 		expect(localizeHref('https://www.wikipedia.org/')).toEqual('https://www.wikipedia.org/');
 	});
 });
