@@ -1,5 +1,4 @@
-[data-theme='arkdes'],
-[data-theme='swepub'] {
+[data-theme='accent'] {
 	--theme-primary-50: oklch(96.75% 0.017 242.42);
 	--theme-primary-100: oklch(93.47% 0.035 241.45);
 	--theme-primary-200: oklch(86.4% 0.074 241.98);

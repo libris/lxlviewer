@@ -53,10 +53,8 @@ export const handle = async ({ event, resolve }) => {
 		}
 	});
 
-	// set data-theme from subdomain
-	// maybe we simply want to get this from an env variable instead?
-	const hostname = event.url.hostname;
-	const dataTheme = hostname.split('.')?.[0] || 'libris';
+	// set data-theme defined in themes.css
+	const dataTheme = env.APP_THEME || 'libris';
 
 	return resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)
