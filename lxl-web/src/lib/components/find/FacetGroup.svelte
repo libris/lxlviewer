@@ -7,7 +7,6 @@
 		CUSTOM_FACET_SORT,
 		DEFAULT_FACET_SORT,
 		DEFAULT_FACET_VALUES_SHOWN,
-		HIDE_HEADER,
 		MY_LIBRARIES_FILTER_ALIAS
 	} from '$lib/constants/facets';
 	import { getUserSettings } from '$lib/contexts/userSettings';
@@ -58,8 +57,6 @@
 		{ value: 'alpha.asc', label: getAlphaLabel('Asc') },
 		{ value: 'alpha.desc', label: getAlphaLabel('Desc') }
 	];
-
-	let hiddenHeader = HIDE_HEADER.includes(group.dimension);
 
 	function getAlphaLabel(dir: 'Asc' | 'Desc' = 'Desc'): string {
 		let key = group.dimension === 'yearPublished' ? `sort.year${dir}` : `sort.alpha${dir}`;
@@ -129,7 +126,6 @@
 		<summary
 			class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
 			data-testid="facet-toggle"
-			hidden={hiddenHeader}
 			onclick={saveUserExpanded}
 		>
 			<span class="arrow text-subtle transition-transform">
@@ -138,24 +134,21 @@
 			<span class="flex-1 whitespace-nowrap">{group.label}</span>
 		</summary>
 		<!-- sorting -->
-		{#if !hiddenHeader}
-			<div class="facet-sort absolute top-0 right-2 size-8" data-testid="facet-sort">
-				<select
-					name={group.dimension}
-					bind:value={currentSort}
-					onchange={saveUserSort}
-					class="btn btn-primary size-full appearance-none border-0 text-transparent"
-					aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
-				>
-					{#each sortOptions as option (option.value)}
-						<option selected={option.value == currentSort} value={option.value}
-							>{option.label}</option
-						>
-					{/each}
-				</select>
-				<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
-			</div>
-		{/if}
+		<div class="facet-sort absolute top-0 right-2 size-8" data-testid="facet-sort">
+			<select
+				name={group.dimension}
+				bind:value={currentSort}
+				onchange={saveUserSort}
+				class="btn btn-primary size-full appearance-none border-0 text-transparent"
+				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
+			>
+				{#each sortOptions as option (option.value)}
+					<option selected={option.value == currentSort} value={option.value}>{option.label}</option
+					>
+				{/each}
+			</select>
+			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
+		</div>
 		<div class="text-2xs">
 			{#if group.search && !(searchPhrase && hasHits)}
 				<!-- facet range inputs; hide in filter search results -->
