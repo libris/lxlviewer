@@ -9,7 +9,7 @@
 </script>
 
 {#if Array.isArray(data)}
-	{#each data as arrayItem (arrayItem)}
+	{#each data as arrayItem, ix (`${arrayItem}${ix}`)}
 		{#if Array.isArray(arrayItem)}
 			<span class={arrayItem[1]}>{arrayItem[0]}</span>
 		{:else}
