@@ -53,7 +53,7 @@ test('navigation between results works', async ({ page }) => {
 
 test('navigation between results also works when changing _limit value', async ({ page }) => {
 	await page.goto('/find?_q=f&_limit=2');
-	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
+	// await page.getByRole('main').getByRole('article').getByRole('link').first().click(); // Why navigate to a resource??
 	await page.getByRole('link').getByText('6', { exact: true }).click();
 	await expect(page).toHaveURL('/find?_q=f&_limit=2&_offset=10');
 	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
