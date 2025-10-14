@@ -5,12 +5,10 @@ import type { FramedData } from '$lib/types/xl';
 import { LxlLens } from '$lib/types/display';
 import { pickProperty, toString } from '$lib/utils/xl';
 import {
-	fetchHoldersIfAbsent,
 	getBibIdsByInstanceId,
 	getHoldersByType,
 	getHoldingsByInstanceId,
-	getHoldingsByType,
-	getItemLinksBySigel
+	getHoldingsByType
 } from '$lib/utils/holdings';
 import { error, json } from '@sveltejs/kit';
 import jmespath from 'jmespath';
@@ -55,20 +53,10 @@ export async function GET({ params, locals }) {
 	// FIXME: beware holdingsByInstanceId => has .heldBy.obj
 	// holdingsByType => has just .heldBy without .obj
 
-	// Skip fetching holders in CI integration tests
-	// Due to rate limiting issues. TODO: build a more
-	// sustainable solution for this...
-	if (!env.CI) {
-		await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
-	}
-
-	const itemLinksBySigel = getItemLinksBySigel(bibIdsByInstanceId, locale, displayUtil);
-
 	//TODO: cache response for a short amount of time?
 	return json({
 		bibIdsByInstanceId,
 		holdingsByInstanceId,
-		itemLinksBySigel,
 		instances,
 		title: toString(heading),
 		overview: overviewWithoutHasInstance,

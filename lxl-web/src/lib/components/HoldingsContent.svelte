@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import type { HolderLinks, HoldingsData } from '$lib/types/holdings';
+	import type { BibIdByInstanceId, HoldingsData } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import HoldingsResourceCard from './HoldingsResourceCard.svelte';
@@ -81,37 +81,37 @@
 
 	const numHolders = $derived(displayedHolders?.length);
 
-	// only include instance links applicable for the current holding selection
-	function getHolderLinksForType(holderlinks: HolderLinks): HolderLinks {
-		if (!holderlinks || Object.keys(holderlinks.bibIds).length <= 1) {
-			return holderlinks;
-		}
+	// subset of instances applicable for the current holder/selection
+	function getInstancesForSigelAndSelection(sigel: string): BibIdByInstanceId {
+		if (sigel && holdingId) {
+			switch (holdingSelection) {
+				case 'instance': {
+					return { [holdingId]: holdings.bibIdsByInstanceId?.[holdingId] };
+				}
 
-		switch (holdingSelection) {
-			case 'instance': {
-				let bibId = holdingId && holdings.bibIdsByInstanceId?.[holdingId].bibId;
-				return bibId
-					? { ...holderlinks, ...{ bibIds: { [bibId]: holderlinks.bibIds?.[bibId] } } }
-					: holderlinks;
-			}
-
-			case 'type': {
-				let bibIds: Record<string, HolderLinks['bibIds'][string]> = {};
-				const bibIdsOfType = Object.values(holdings.bibIdsByInstanceId)
-					.filter((i) => i['@type'] === holdingId)
-					.map((i) => i.bibId);
-
-				bibIdsOfType.forEach((b) => {
-					if (holderlinks.bibIds?.[b]) {
-						bibIds[b] = holderlinks.bibIds?.[b];
+				case 'type': {
+					let instances: BibIdByInstanceId = {};
+					for (const [key, value] of Object.entries(holdings.bibIdsByInstanceId)) {
+						if (value && value['@type'] === holdingId && value.holders?.includes(sigel)) {
+							instances[key] = value;
+						}
 					}
-				});
-				return bibIds ? { ...holderlinks, ...{ bibIds } } : holderlinks;
-			}
+					return instances;
+				}
 
-			default:
-				return holderlinks;
+				case 'work':
+				default: {
+					let instances: BibIdByInstanceId = {};
+					for (const [key, value] of Object.entries(holdings.bibIdsByInstanceId)) {
+						if (value.holders && value.holders?.includes(sigel)) {
+							instances[key] = value;
+						}
+					}
+					return instances;
+				}
+			}
 		}
+		return holdings.bibIdsByInstanceId;
 	}
 </script>
 
@@ -137,8 +137,8 @@
 			</h2>
 			<ul class="flex flex-col gap-2 text-xs">
 				{#each myLibsHolders as holder, i (`mylibs-${holder.sigel}-${i}`)}
-					{@const holderLinks = getHolderLinksForType(holdings.itemLinksBySigel?.[holder.sigel])}
-					<Holder holderData={{ ...holder, ...holderLinks }} bibIds={holdings.bibIdsByInstanceId} />
+					{@const instances = getInstancesForSigelAndSelection(holder.sigel)}
+					<Holder {holder} {instances} />
 				{/each}
 			</ul>
 		</div>
@@ -156,9 +156,13 @@
 	</div>
 	<!-- list holders -->
 	<ul class="flex flex-col gap-2 text-xs">
-		{#each filteredHolders as holder, i (`holder-${holder.sigel}-${i}`)}
-			{@const holderLinks = getHolderLinksForType(holdings.itemLinksBySigel?.[holder.sigel])}
-			<Holder holderData={{ ...holder, ...holderLinks }} bibIds={holdings.bibIdsByInstanceId} />
+		{#each displayedHolders as holder, i (`holder-${holder.sigel}-${i}`)}
+			{@const instances = getInstancesForSigelAndSelection(holder.sigel)}
+			<Holder
+				{holder}
+				{instances}
+				hidden={!filteredHolders.find((h) => h.sigel === holder.sigel)}
+			/>
 		{/each}
 		{#if filteredHolders.length === 0}
 			<li>
