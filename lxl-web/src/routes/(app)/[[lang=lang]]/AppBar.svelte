@@ -145,22 +145,26 @@
 				{#if mounted}
 					<dialog
 						id={IDs.appBarMenu}
-						class="menu-dialog border-neutral fixed z-50 hidden w-full flex-col overflow-hidden border-b text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-lg sm:border"
+						class="menu-dialog sm:border-neutral fixed z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-md sm:border"
 						closedby="any"
 						tabindex="-1"
 						bind:this={menuDialogElement}
 						onclose={closeExpandedMenu}
 						onfocusout={handleMenuDialogFocusOut}
 					>
-						<AppMenuContent showSkipToContent={false} onclickSearch={handleClickSearchAction} />
-						<button
-							type="button"
-							onclick={closeExpandedMenu}
-							class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 border-neutral flex min-h-9 items-center justify-center gap-2 border-t text-xs sm:hidden"
-						>
-							<IconCloseMenu />
-							{page.data.t('header.closeMenu')}
-						</button>
+						<div class="px-1 pt-1 sm:pb-1">
+							<AppMenuContent showSkipToContent={false} onclickSearch={handleClickSearchAction} />
+						</div>
+						<div class="flex px-1 pb-1 sm:hidden">
+							<button
+								type="button"
+								onclick={closeExpandedMenu}
+								class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 flex min-h-9 w-full items-center justify-center gap-2 text-xs"
+							>
+								<IconCloseMenu />
+								{page.data.t('header.closeMenu')}
+							</button>
+						</div>
 					</dialog>
 				{/if}
 			</li>
@@ -293,27 +297,39 @@
 			background: var(--color-primary-200);
 		}
 
-		&:hover::after,
-		&:focus-visible::after,
-		&[aria-expanded]::after {
-			content: '';
-			position: absolute;
-			height: 3px;
-			bottom: 0;
-			left: 0;
-			background: var(--color-primary);
-			width: 100%;
-			border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+		@variant sm {
+			&:hover::after,
+			&:focus-visible::after,
+			&[aria-expanded]::after {
+				content: '';
+				position: absolute;
+				height: 3px;
+				bottom: 0;
+				left: 0;
+				background: var(--color-primary);
+				width: 100%;
+				border-radius: var(--radius-md) var(--radius-md) 0 0;
+			}
 		}
 	}
 
 	.menu-dialog {
-		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px);
+		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
 		max-height: calc(100vh - calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px));
 		overflow-y: auto;
 
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			width: 100%;
+			height: 3px;
+			background: var(--color-primary);
+			pointer-events: none;
+		}
+
 		@variant sm {
-			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px);
+			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 4px);
 			max-height: calc(100vh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
 		}
 	}

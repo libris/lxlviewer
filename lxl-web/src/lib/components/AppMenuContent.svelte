@@ -111,12 +111,17 @@
 		hasParent,
 		onclick
 	}: MenuItem)}
-		<li class={[!hasParent && 'border-neutral not-last:border-b', children && 'with-children']}>
+		<li
+			class={[
+				!hasParent && 'border-neutral border-b sm:last:border-0',
+				children && 'with-children'
+			]}
+		>
 			<a
 				{href}
 				aria-current={currentPage ? 'page' : undefined}
 				class={[
-					'text-body hover:bg-primary-50 focus-visible:bg-primary-50 focus-visible:hover:bg-primary-100 flex min-h-11 items-center px-3 hover:underline focus-visible:underline',
+					'text-body hover:bg-primary-50 focus-visible:bg-primary-50 focus-visible:hover:bg-primary-100 flex min-h-11 items-center px-3 whitespace-nowrap hover:underline focus-visible:underline',
 					LeadingIcon && 'pl-0',
 					hasParent && 'pl-10 text-sm'
 				]}
@@ -171,21 +176,6 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
-
-	a[aria-current] {
-		position: relative;
-
-		&::after {
-			content: '';
-			position: absolute;
-			left: 0;
-			top: 0;
-			height: 100%;
-			background: var(--color-primary);
-			width: 3px;
-			pointer-events: none;
-		}
-	}
 
 	details[open] {
 		& summary > :global(svg) {
