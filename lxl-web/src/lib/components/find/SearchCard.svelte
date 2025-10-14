@@ -15,7 +15,7 @@
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import { getHoldingsLink } from '$lib/utils/holdings';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
@@ -34,9 +34,14 @@
 	let titleId = $derived(`card-title-${id}`);
 	let bodyId = $derived(`card-body-${id}`);
 	let footerId = $derived(`card-footer-${id}`);
+	let modalParam = $derived(
+		page.url.searchParams.get('holdings') ||
+			page.state.holdings ||
+			page.url.searchParams.get('cite') ||
+			page.state.citationId
+	);
 	let showHighlight = $derived(
-		(!page.state.dimissedHighlighting && page.url.hash === `#${id}`) ||
-			page.url.searchParams.get('holdings') === id
+		(!page.state.dimissedHighlighting && page.url.hash === `#${id}`) || modalParam === id
 	);
 
 	// safer way to check if data is an instance?
@@ -104,8 +109,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		<a
 			class="btn btn-primary h-7 rounded-full md:h-8"
 			href={page.data.localizeHref(getHoldingsLink(page.url, id))}
+			data-sveltekit-preload-data={isInstanceCard ? 'false' : ''}
 			data-sveltekit-noscroll
 			data-testid="holding-link"
+			onclick={(event) => isInstanceCard && handleClickHoldings(event, page.state, id)}
 		>
 			<span class="text-base">
 				{#if item.heldByMyLibraries?.length}
