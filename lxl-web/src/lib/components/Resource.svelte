@@ -183,7 +183,7 @@
 					<DecoratedData data={decoratedOverview} block />
 				</div>
 			</section>
-			<section>
+			<section id="{uidPrefix}editions">
 				{#if instances?.length === 1}
 					<!-- single instance -->
 					<div class="decorated-overview">

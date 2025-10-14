@@ -168,6 +168,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 	);
 
 	const tableOfContents: TableOfContentsItem[] = [
+		...(instances?.length > 1
+			? [
+					{
+						id: 'editions',
+						label: translate('resource.editions')
+					}
+				]
+			: []),
 		...(relations.length
 			? [
 					{
