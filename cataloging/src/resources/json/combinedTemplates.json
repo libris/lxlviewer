@@ -344,6 +344,9 @@
           },
           "category": [ {
             "@id": "https://id.kb.se/term/rda/OnlineResource"
+          },
+        {
+            "@id": "https://id.kb.se/term/rda/Audio"
           }]
         }
       }
@@ -631,7 +634,7 @@
           },
           "category": [{"@id": "https://id.kb.se/term/rda/OnlineResource"},
             {
-              "@id": "https://id.kb.se/term/saogf/ComponentPart"
+              "@id": "https://id.kb.se/term/ktg/ComponentPart"
             }]
         }
       }
@@ -817,7 +820,8 @@
               "role": []
             }
           ],
-          "category": [{"@id": "https://id.kb.se/term/rda/OnlineResource"}]
+          "category": [
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"}, {"@id": "https://id.kb.se/term/ktg/EBook"}]
         }
       }
     },
@@ -1411,7 +1415,7 @@
             ],
             "language": [],
             "category": [{
-              "@id": "https://id.kb.se/term/rda/TwoDimensionalMovingImage"
+              "@id": "https://id.kb.se/term/ktg/MovingImage"
             }],
             "marc:subtitlesOrCaptions": {
               "@type": "marc:SubtitlesOrCaptions",
@@ -1596,9 +1600,7 @@
             }],
             "marc:arrangedStatementForMusic": "",
             "language": [],
-            "category": [{
-              "@id": "https://id.kb.se/term/rda/PerformedMusic"
-            },
+            "category": [
               {
                 "@id": "https://id.kb.se/term/saogf/Musikinspelningar"
               }],
@@ -1869,7 +1871,7 @@
             "subject": []
           },
           "category": [{
-            "@id": "https://id.kb.se/term/rda/Volume"
+            "@id": "https://id.kb.se/term/ktg/PrintedVolume"
           }]
         }
       }
@@ -2018,11 +2020,9 @@
                 "coordinates": "Måttenhet för koordinaterna: grader, minuter och sekunder (0-360°)"
               }
             ],
-            "category": [{
-              "@id": "https://id.kb.se/term/rda/CartographicImage"
-            },
+            "category": [
               {
-                "@id": "https://id.kb.se/term/gmgpc/swe/Kartor"
+                "@id": "https://id.kb.se/term/saogf/Kartor"
               }],
             "contribution": [{
               "@type": "PrimaryContribution",
@@ -2206,10 +2206,10 @@
             "subject": []
           },
           "category": [ {
-            "@id": "https://id.kb.se/term/rda/Volume"
+            "@id": "https://id.kb.se/term/ktg/Print"
           },
             {
-              "@id": "https://id.kb.se/term/saogf/ComponentPart"
+              "@id": "https://id.kb.se/term/ktg/ComponentPart"
             }]
         }
       }
@@ -2387,7 +2387,7 @@
           ],
           "category": [
             {
-              "@id": "https://id.kb.se/term/rda/Volume"
+              "@id": "https://id.kb.se/term/rda/PrintedVolume"
             }
           ]
         }
@@ -2515,7 +2515,7 @@
           },
           "category": [
             {
-              "@id": "https://id.kb.se/term/rda/Volume"
+              "@id": "https://id.kb.se/term/rda/PrintedVolume"
             }
           ]
         }
@@ -2850,7 +2850,7 @@
           },
           "category": [
             {
-              "@id": "https://id.kb.se/term/rda/Volume"
+              "@id": "https://id.kb.se/term/rda/PrintedVolume"
             }
           ]
         }
@@ -2970,10 +2970,7 @@
               "@id": "https://id.kb.se/term/rda/Text"
             },
               {
-                "@id": "https://id.kb.se/term/rda/StillImage"
-              },
-              {
-                "@id": "https://id.kb.se/term/gmgpc/swe/Affischer"
+                "@id": "https://id.kb.se/term/saogf/Affischer"
               }],
             "contribution": [{
               "@type": "Contribution",
