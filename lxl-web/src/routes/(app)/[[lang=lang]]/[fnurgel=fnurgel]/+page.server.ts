@@ -15,8 +15,7 @@ import {
 	getHoldingsByInstanceId,
 	getHoldingsByType,
 	getHoldersByType,
-	getBibIdsByInstanceId,
-	getItemLinksBySigel
+	getBibIdsByInstanceId
 } from '$lib/utils/holdings.js';
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
@@ -140,7 +139,6 @@ export const load = async ({ params, locals, fetch }) => {
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
-	const itemLinksBySigel = getItemLinksBySigel(bibIdsByInstanceId, locale, displayUtil);
 
 	return {
 		uri: resource['@id'] as string,
@@ -156,7 +154,6 @@ export const load = async ({ params, locals, fetch }) => {
 		holdings: {
 			holdingsByInstanceId,
 			holdersByType,
-			itemLinksBySigel,
 			bibIdsByInstanceId
 		},
 		images,
