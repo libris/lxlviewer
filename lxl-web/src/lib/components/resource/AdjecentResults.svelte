@@ -131,7 +131,7 @@
 			</span>
 		{/if}
 		<span class="ml-auto flex gap-2">
-			<span class="after:text-subtle after:ml-2 after:content-['·']">
+			<span class="after:text-subtle after:ml-2 after:content-['·'] [&>*]:whitespace-nowrap">
 				{#if previousItemFnurgel}
 					<a
 						href={page.data.localizeHref(previousItemFnurgel)}
@@ -146,7 +146,7 @@
 					</span>
 				{/if}
 			</span>
-			<span>
+			<span class="flex [&>*]:whitespace-nowrap">
 				{#if nextItemFnurgel}
 					<a
 						href={page.data.localizeHref(nextItemFnurgel)}
