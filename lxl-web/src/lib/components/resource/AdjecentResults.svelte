@@ -23,7 +23,7 @@
 
 	const currentSearchResult = $derived(
 		adjecentSearchResults?.find((searchResult) =>
-			searchResult.items.find((item) => item['@id'].includes(fnurgel))
+			searchResult.items.find((item) => item['@id']?.includes(fnurgel))
 		)
 	);
 
@@ -34,7 +34,7 @@
 	);
 
 	const itemIndex = $derived(
-		currentSearchResult?.items.findIndex((item) => item['@id'].includes(fnurgel))
+		currentSearchResult?.items.findIndex((item) => item['@id']?.includes(fnurgel))
 	);
 
 	const indexOfTotalSearchResults = $derived(
