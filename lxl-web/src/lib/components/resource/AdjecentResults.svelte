@@ -136,7 +136,7 @@
 			>
 				{#if previousItemFnurgel}
 					<a
-						href={page.data.localizeHref(previousItemFnurgel)}
+						href={page.data.localizeHref(previousItemFnurgel + page.url.search)}
 						class="link flex min-h-8 items-center @7xl:min-h-9"
 						onclick={passAlongAdjecentSearchResults}
 					>
@@ -151,7 +151,7 @@
 			<span class="flex [&>*]:whitespace-nowrap">
 				{#if nextItemFnurgel}
 					<a
-						href={page.data.localizeHref(nextItemFnurgel)}
+						href={page.data.localizeHref(nextItemFnurgel + page.url.search)}
 						class="link flex min-h-8 items-center @7xl:min-h-9"
 						onclick={passAlongAdjecentSearchResults}
 					>
