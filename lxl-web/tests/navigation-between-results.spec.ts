@@ -20,9 +20,13 @@ test('navigation between results works', async ({ page }) => {
 	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
 	await expect(page).toHaveURL(`${articleIds[0]}?_q=f`);
 	await page.getByRole('main').getByRole('link').getByText('Nästa').click();
-	await expect(page, 'button for navigating to next result works').toHaveURL(articleIds[1]);
+	await expect(page, 'button for navigating to next result works').toHaveURL(
+		`${articleIds[1]}?_q=f`
+	);
 	await page.getByRole('main').getByRole('link').getByText('Föregående').click();
-	await expect(page, 'button for navigating to previous result works').toHaveURL(articleIds[0]);
+	await expect(page, 'button for navigating to previous result works').toHaveURL(
+		`${articleIds[0]}?_q=f`
+	);
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
 	await expect(page, 'button for navigating to search results works').toHaveURL(
 		`/find?_q=f&_limit=20#${articleIds[0]}`
@@ -30,9 +34,13 @@ test('navigation between results works', async ({ page }) => {
 	await page.getByRole('main').getByRole('article').nth(19).getByRole('link').first().click();
 	await expect(page).toHaveURL(`${articleIds[19]}?_q=f`);
 	await page.getByRole('main').getByRole('link').getByText('Nästa').click();
-	await expect(page, 'navigating to result on next search results works').toHaveURL(articleIds[20]);
+	await expect(page, 'navigating to result on next search results works').toHaveURL(
+		`${articleIds[20]}?_q=f`
+	);
 	await page.getByRole('main').getByRole('link').getByText('Nästa').click();
-	await expect(page, 'navigating to result on next search results works').toHaveURL(articleIds[21]);
+	await expect(page, 'navigating to result on next search results works').toHaveURL(
+		`${articleIds[21]}?_q=f`
+	);
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
 	await expect(
 		page,
@@ -42,7 +50,7 @@ test('navigation between results works', async ({ page }) => {
 	await expect(page).toHaveURL(`${articleIds[20]}?_q=f`);
 	await page.getByRole('main').getByRole('link').getByText('Föregående').click();
 	await expect(page, 'navigating to result on previous search results works').toHaveURL(
-		articleIds[19]
+		`${articleIds[19]}?_q=f`
 	);
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
 	await expect(
@@ -59,7 +67,7 @@ test('navigation between results also works when changing _limit value', async (
 	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
 	await expect(page).toHaveURL(`${articleIds[10]}?_q=f`);
 	await page.getByRole('main').getByRole('link').getByText('Föregående').click();
-	await expect(page).toHaveURL(articleIds[9]);
+	await expect(page).toHaveURL(`${articleIds[9]}?_q=f`);
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
 	await expect(page).toHaveURL(`/find?_q=f&_offset=8&_limit=2#${articleIds[9]}`);
 });
