@@ -2387,7 +2387,7 @@
           ],
           "category": [
             {
-              "@id": "https://id.kb.se/term/rda/PrintedVolume"
+              "@id": "https://id.kb.se/term/ktg/PrintedVolume"
             }
           ]
         }
@@ -2515,7 +2515,7 @@
           },
           "category": [
             {
-              "@id": "https://id.kb.se/term/rda/PrintedVolume"
+              "@id": "https://id.kb.se/term/ktg/PrintedVolume"
             }
           ]
         }
@@ -2850,7 +2850,7 @@
           },
           "category": [
             {
-              "@id": "https://id.kb.se/term/rda/PrintedVolume"
+              "@id": "https://id.kb.se/term/ktg/PrintedVolume"
             }
           ]
         }
