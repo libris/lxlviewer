@@ -116,7 +116,7 @@
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
 	<nav class="app-bar bg-app-header grid items-stretch">
-		<ul class="leading-actions flex lg:gap-2">
+		<ul class="leading-actions flex items-center lg:gap-2">
 			<li>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -129,7 +129,7 @@
 						: (page.route.id === '/(app)/[[lang=lang]]/browse' && 'page') || undefined}
 					aria-controls={IDs.appBarMenu}
 					aria-expanded={(mounted && expandedMenu) || undefined}
-					class="action lg:min-w-16"
+					class="action max-sm:hover:bg-primary-200 lg:min-w-16"
 					aria-label={page.data.t('header.menu')}
 					aria-labelledby={IDs.appBarMenuLabel}
 					onclick={handleClickMenuAction}
@@ -202,7 +202,7 @@
 				/>
 			</form>
 		</search>
-		<ul class="trailing-actions flex justify-end lg:gap-2">
+		<ul class="trailing-actions flex items-center justify-end lg:gap-2">
 			<li class="lg:hidden">
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -210,7 +210,7 @@
 					href={mounted ? undefined : '#search'}
 					role={mounted ? undefined : 'button'}
 					tabindex={mounted ? undefined : 0}
-					class="action"
+					class="action max-sm:hover:bg-primary-200"
 					onclick={handleClickSearchAction}
 					aria-label={page.data.t('header.search')}
 					aria-labelledby={IDs.appBarSearchLabel}
@@ -242,7 +242,7 @@
 			</li>
 			<li>
 				<a
-					class="action"
+					class="action max-sm:hover:bg-primary-200"
 					href={page.data.localizeHref('/my-pages')}
 					aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
 				>
@@ -290,7 +290,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: var(--app-bar-height);
+		height: calc(var(--spacing) * 11);
+		border-radius: var(--radius-md);
 
 		&:focus-visible,
 		&[aria-expanded] {
@@ -298,6 +299,9 @@
 		}
 
 		@variant sm {
+			height: var(--app-bar-height);
+			border-radius: 0;
+
 			&:hover::after,
 			&:focus-visible::after,
 			&[aria-expanded]::after {
