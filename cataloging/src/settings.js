@@ -144,9 +144,7 @@ export default {
   ],
   warnOnSave: {
     'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
-  },
-  warnOnSaveConcerning: {
-    'mainEntity.concerning': ['concerning']
+    'mainEntity.concerning': null
   },
   propertyChains: {
     '@reverse.itemOf.heldBy.@id': {

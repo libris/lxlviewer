@@ -761,10 +761,6 @@ export default {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-      if (this.warnOnSaveConcerning()) {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        return;
-      }
 
       this.preSaveHook(obj).then((obj2) =>
         requestMethod({
@@ -872,42 +868,32 @@ export default {
     },
     warnOnSave() {
       const warnArr = Object.keys(this.settings.warnOnSave);
+
       warnArr.forEach((element) => {
         const keys = element.split('.');
         const value = get(this.inspector.data, element);
-        const warning = this.settings.warnOnSave[element].some((el) => el === value);
+
+        
+        const warning = this.settings.warnOnSave[element].some((el) => el === value) || (this.inspector.data.mainEntity.concerning === value);
+
         if (warning) {
+
+          const localizedValue =
+            typeof value === 'string'
+              ? value
+              : value?.label || value?.name || value?.[this.user.settings.language] || String(value);
+
           this.$store.dispatch('pushNotification', {
+            type: 'warning',
+            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(localizedValue, this.user.settings.language, this.resources)}`,
+          });
+
+          /*this.$store.dispatch('pushNotification', {
             type: 'warning',
             message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources)}`,
-          });
+          });*/
         }
       });
-    },
-    warnOnSaveConcerning() {
-      const warnArr = Object.keys(this.settings.warnOnSaveConcerning);
-      let hasMissing = false;
-
-      warnArr.forEach((element) => {
-        const value = get(this.inspector.data, element);
-        if (value === undefined || value === null || value === '') {
-          hasMissing = true;
-          this.$store.dispatch('pushNotification', {
-            type: 'warning',
-            message: `${StringUtil.getUiPhraseByLang(
-              'Attention',
-              this.user.settings.language,
-              this.resources.i18n
-            )}! ${StringUtil.getLabelByLang(
-              element,
-              this.user.settings.language,
-              this.resources
-            )} is missing.`,
-          });
-        }
-      });
-
-      return hasMissing;
     },
     removeEmbellishedHighlight() {
       if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
