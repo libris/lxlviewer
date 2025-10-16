@@ -3,19 +3,42 @@ export default {
 	home: {
 		searchPlaceholder: 'Title, author, subject etc'
 	},
+	appMenu: {
+		skipToContent: 'Skip to main content',
+		findOnWebsite: 'Find on Libris',
+		home: 'Home',
+		search: 'Search in Libris',
+		// subsets: 'Subsets and sections',
+		saved: 'Saved',
+		help: 'Help',
+		about: 'About Libris',
+		aboutBeta: 'About the beta',
+		contact: 'Contact',
+		cookies: 'About cookies on the website',
+		accessibility: 'Accessibility',
+		changeLang: 'In Swedish'
+	},
 	header: {
+		skipToContent: 'Skip to main content',
+		menu: 'Menu',
+		home: 'Home',
 		help: 'Help',
 		myPages: 'My pages',
-		changeLang: 'På svenska',
+		changeLang: 'In Swedish',
+		search: 'Search',
+		login: 'Log in',
+		saved: 'Saved',
 		searchPlaceholder: 'Search for title, author, library, subject...',
-		openMenu: 'Open main menu'
+		openMenu: 'Open main menu',
+		closeMenu: 'Close menu'
 	},
 	banner: {
-		messageMobile: 'The catalogue may contain outdated information.',
+		messageMobile: 'The catalogue may contain outdated information',
 		messageDesktop:
 			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
-		feedback: 'Share your feedback',
-		old: 'Go to libris.kb.se'
+		feedback: 'Share feedback',
+		old: 'Go to old Libris',
+		dismiss: 'Hide beta info'
 	},
 	about: {
 		pageTitle: 'About the beta'
@@ -43,6 +66,9 @@ export default {
 	},
 	facet: {
 		q: 'Free text search',
+		'_categoryByCollection.find': '"Find category" 🚧👷🏗️',
+		'_categoryByCollection.identify': '"Identifying category"  🚧👷🏗️',
+		category: '"Category"  🚧👷🏗️',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
 		issuanceType: 'Issuance type',
@@ -70,7 +96,6 @@ export default {
 		'rdf:type': 'Type',
 		hasInstanceType: 'Format', // 'Carrier',
 		hasInstanceCategory: 'Format',
-		category: 'Category',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
 		bibliography: 'Bibliography',
@@ -235,7 +260,9 @@ export default {
 		linkToSite: 'Library website',
 		openingHoursEtc: 'Opening hours, address etc',
 		showAll: 'Show all editions',
-		showFewer: 'Show fewer editions'
+		showFewer: 'Show fewer editions',
+		myLoans: 'My loans',
+		applyForCard: 'Apply for library card'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'
@@ -244,7 +271,9 @@ export default {
 		leadingPane: 'Leading pane',
 		leadingPaneTabs: 'Tabs for leading pane',
 		show: 'Show pane',
-		hide: 'Hide pane'
+		hide: 'Hide pane',
+		trailingPane: 'Trailing pane',
+		resizeMe: 'Drag to resize pane'
 	},
 	citations: {
 		cite: 'Cite',

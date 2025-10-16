@@ -44,11 +44,29 @@
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-success: #2ab061;
 
-	--app-bar-height: 71px;
+	--app-bar-height: 56px;
 	--toolbar-height: 48px;
+	--search-input-height: 44px;
+	--banner-height: 36px;
 
 	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
 	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);
+
+	--search-grid-template-areas: 'leading-actions trailing-actions trailing-actions'
+		'search search search';
+	--search-grid-template-columns: auto 1fr 1fr;
+	--search-padding: 0 calc(var(--spacing) * 2);
+	--search-gap: 0 calc(var(--spacing) * 3);
+
+	@variant lg {
+		--app-bar-height: 72px;
+		--search-input-height: 48px;
+		--search-grid-template-areas: 'leading-actions search trailing-actions';
+		--search-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
+	}
+	@variant 3xl {
+		--app-bar-height: 76px;
+	}
 }
 
 @theme inline {
@@ -148,6 +166,8 @@
 	--color-input: var(--color-page);
 	--color-placeholder: var(--color-neutral-500);
 	--color-disabled: var(--color-neutral-400);
+
+	--color-aside: oklch(0.994 0 0);
 }
 
 @layer base {

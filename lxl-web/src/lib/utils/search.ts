@@ -32,7 +32,7 @@ import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
-import getTypeLike from '$lib/utils/getTypeLike';
+import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 
@@ -88,9 +88,8 @@ export async function asResult(
 				),
 				[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
 				image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
-				typeStr: getTypeLike(i, vocabUtil)
-					.map((t) => toString(displayUtil.lensAndFormat(t, LensType.Chip, locale)))
-					.join(' · '),
+				typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
+				typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)), // FIXME
 				numberOfHolders: getHoldersCount(i)
 			})),
 		...('stats' in view && {
@@ -106,6 +105,16 @@ export async function asResult(
 				})
 			: []
 	};
+}
+
+function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode): string {
+	const t = {
+		'@type': '_Types',
+		...(typeLike.find.length > 0 && { _find: typeLike.find }),
+		...(typeLike.identify.length > 0 && { _identify: typeLike.identify }),
+		...(typeLike.select.length > 0 && { _select: typeLike.select })
+	};
+	return toString(displayUtil.lensAndFormat(t, LensType.Card, locale));
 }
 
 export function displayMappings(

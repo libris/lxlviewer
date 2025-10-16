@@ -31,7 +31,7 @@
 	>
 		<!--
 		{#if resourceLink}
-			<span class="hidden">{valueLabel}</span><a href={`/${resourceLink}`} class="link inline-block"
+			<span class="hidden">{valueLabel}</span><a href={page.data.localizeHref(`/${resourceLink}`)} class="link inline-block"
 				>{valueLabel}</a
 			>
 		{:else}
@@ -43,7 +43,7 @@
 {/if}
 {#if valueLabel && removeLink}
 	<a
-		href={removeLink}
+		href={page.data.localizeHref(removeLink)}
 		class="lxl-qualifier lxl-qualifier-remove atomic"
 		aria-label={page.data.t('search.clearFilters')}
 	>

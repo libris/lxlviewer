@@ -134,13 +134,14 @@
 			<span class="flex-1 whitespace-nowrap">{group.label}</span>
 		</summary>
 		<!-- sorting -->
-		<div class="facet-sort absolute top-0 right-2 size-8" data-testid="facet-sort">
+		<div class="facet-sort absolute top-0 right-2 size-8">
 			<select
 				name={group.dimension}
 				bind:value={currentSort}
 				onchange={saveUserSort}
 				class="btn btn-primary size-full appearance-none border-0 text-transparent"
 				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
+				data-testid={`facet-sort-${group.dimension}`}
 			>
 				{#each sortOptions as option (option.value)}
 					<option selected={option.value == currentSort} value={option.value}>{option.label}</option
@@ -163,7 +164,7 @@
 						<FacetValue {facet} {locale} />
 						{#if 'alias' in facet && facet.alias === MY_LIBRARIES_FILTER_ALIAS}
 							<a
-								href="/my-pages"
+								href={page.data.localizeHref('/my-pages')}
 								class="btn btn-primary mr-2 border-0"
 								aria-label={page.data.t('search.changeLibraries')}
 							>

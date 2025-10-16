@@ -13,12 +13,15 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 
-	if (!url.searchParams.size) {
-		redirect(303, `/`); // redirect to home page if no search params are given
-	}
-
 	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
-	const searchParams = new URLSearchParams(url.searchParams.toString());
+
+	const searchParams = new URLSearchParams();
+
+	// find page load function reloads on change in these params:
+	const reactiveParams = ['_q', '_limit', '_offset', '_sort', '_spell'];
+	reactiveParams.forEach((p) => {
+		searchParams.set(p, url.searchParams.get(p) || '');
+	});
 
 	// Add param with my libraries from cookie
 	if (searchParams.get('_q')?.includes(MY_LIBRARIES_FILTER_ALIAS)) {

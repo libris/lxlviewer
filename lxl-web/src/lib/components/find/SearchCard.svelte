@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { onDestroy } from 'svelte';
+	import { goto, onNavigate, replaceState } from '$app/navigation';
 	import type { SearchResultItem } from '$lib/types/search';
 	import { LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
-	import { relativizeUrl, stripAnchor } from '$lib/utils/http';
+	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
@@ -14,7 +16,7 @@
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getHoldingsLink } from '$lib/utils/holdings';
 	import BiHouse from '~icons/bi/house';
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 
@@ -23,17 +25,21 @@
 		uidPrefix?: string;
 	}
 
+	let articleElement: HTMLElement;
 	let { item, uidPrefix = '' }: Props = $props();
 
-	let id = $derived(`${uidPrefix}${stripAnchor(relativizeUrl(item['@id']))}`);
+	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
 	let titleId = $derived(`card-title-${id}`);
 	let bodyId = $derived(`card-body-${id}`);
 	let footerId = $derived(`card-footer-${id}`);
-
+	let showHighlight = $derived(
+		(!page.state.dimissedHighlighting && page.url.hash === `#${id}`) ||
+			page.url.searchParams.get('holdings') === id
+	);
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
 
-	const TypeIcon = $derived(getTypeIcon(item['@type']));
+	const TypeIcon = $derived(getTypeIcon(item.typeForIcon));
 
 	function passAlongAdjecentSearchResults(event: MouseEvent) {
 		event.preventDefault();
@@ -44,6 +50,30 @@
 			}
 		});
 	}
+
+	function handleRemoveHighlighting(event: MouseEvent) {
+		if (event.target && !articleElement.contains(event.target as Node)) {
+			document?.removeEventListener('click', handleRemoveHighlighting);
+			replaceState(page.url.pathname + page.url.search + page.url.hash, {
+				...page.state,
+				dimissedHighlighting: true
+			});
+		}
+	}
+
+	$effect(() => {
+		if (showHighlight && page.data.locale) {
+			document?.addEventListener('click', handleRemoveHighlighting);
+		}
+	});
+
+	onDestroy(() => {
+		if (browser) document?.removeEventListener('click', handleRemoveHighlighting);
+	});
+
+	onNavigate(() => {
+		document?.removeEventListener('click', handleRemoveHighlighting);
+	});
 </script>
 
 <!--//TODO: look into using grid template areas + container queries instead
@@ -54,10 +84,9 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		{#if id}
 			<a
 				class="btn btn-primary h-7 rounded-full md:h-8"
-				href={getHoldingsLink(page.url, id)}
-				data-sveltekit-preload-data="false"
+				href={page.data.localizeHref(getHoldingsLink(page.url, id))}
+				data-sveltekit-noscroll
 				data-testid="holding-link"
-				onclick={(event) => handleClickHoldings(event, page.state, id)}
 			>
 				<span class="text-base">
 					{#if item.heldByMyLibraries?.length}
@@ -73,15 +102,20 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	</div>
 {/snippet}
 
-<div class="search-card-container">
+<div class="@container/card">
 	<article
 		{id}
-		class="search-card border-neutral relative grid w-full gap-x-4 border-t px-0 py-3 font-normal transition-shadow md:px-4"
+		class={[
+			'search-card border-neutral relative grid w-full gap-x-4 border-t px-3 py-3 font-normal transition-colors',
+			showHighlight && 'bg-accent-50/75'
+		]}
+		aria-current={showHighlight || undefined}
 		data-testid="search-card"
+		bind:this={articleElement}
 	>
 		<div class="card-image">
 			<a
-				href={id}
+				href={page.data.localizeHref(id)}
 				aria-labelledby={titleId}
 				aria-describedby={`${bodyId} ${footerId}`}
 				tabindex="-1"
@@ -115,9 +149,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								alt=""
 								class:rounded-full={item['@type'] === 'Person'}
 								class:rounded-sm={item['@type'] !== 'Person'}
-								class="object-contain object-top"
+								class={[
+									'object-contain object-top'
+									//(item.typeForIcon === 'Text' || item.typeForIcon === 'Literature') && 'aspect-3/4'
+								]}
 							/>
-							{#if TypeIcon}
+							{#if !!TypeIcon}
 								<TypeIcon class="absolute text-2xl text-neutral-400" />
 							{/if}
 						</div>
@@ -125,10 +162,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				</div>
 			</a>
 		</div>
-		<div class="card-content">
+		<div class="card-content grid">
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
-					<TypeIcon class="text-2xs mb-0.25 inline" />
+					{#if !!TypeIcon}
+						<TypeIcon class="text-2xs mb-0.25 inline" />
+					{/if}
 					{#if item.typeStr}
 						<span class="font-medium">
 							{item.typeStr}
@@ -145,7 +184,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				<hgroup>
 					<h2 class="card-header-title text-base font-medium">
 						<a
-							href={id}
+							href={page.data.localizeHref(id)}
 							class="link-subtle block decoration-neutral-400"
 							aria-describedby={`${bodyId} ${footerId}`}
 							onclick={passAlongAdjecentSearchResults}
@@ -202,10 +241,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						</span>
 					{/if}
 				{/each}
-				<div class="md:hidden">
-					{@render holdingsButton()}
-				</div>
 			</footer>
+			<div class="card-actions self-end">
+				{@render holdingsButton()}
+			</div>
 		</div>
 
 		{#if item._debug}
@@ -243,24 +282,19 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				{/if}
 			{/key}
 		{/if}
-		<div class="hidden md:inline">
-			{@render holdingsButton()}
-		</div>
 	</article>
 </div>
 
 <style lang="postcss">
-	@reference "../../../app.css";
-
-	.search-card-container {
-		container-type: inline-size;
-	}
+	@reference 'tailwindcss';
 
 	.search-card {
-		grid-template-areas: 'image content debug';
-		grid-template-columns: 64px 1fr auto;
+		grid-template-areas:
+			'image content'
+			'debug .';
+		grid-template-columns: 64px 1fr;
 
-		@container (min-width: 768px) {
+		@container card (min-width: 768px) {
 			@apply gap-x-6 px-6 py-4;
 			grid-template-columns: 72px 1fr;
 		}
@@ -277,13 +311,41 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.card-content {
 		grid-area: content;
+
+		grid-template-areas:
+			'header header'
+			'body body'
+			'footer footer'
+			'actions actions';
+
+		grid-template-columns: 1fr auto;
+
+		@container card (min-width: 30rem) {
+			grid-template-areas:
+				'header header'
+				'body actions'
+				'footer actions';
+		}
 	}
 
 	.card-debug {
 		grid-area: extra;
 	}
 
+	.card-header {
+		grid-area: header;
+	}
+
+	.card-body {
+		grid-area: body;
+	}
+
+	.card-actions {
+		grid-area: actions;
+	}
+
 	.card-footer {
+		grid-area: footer;
 		/* hide dangling divider · */
 		& .divider {
 			display: none;

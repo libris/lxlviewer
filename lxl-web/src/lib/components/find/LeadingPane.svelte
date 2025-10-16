@@ -105,17 +105,19 @@
 
 	.leading-pane,
 	.leading-pane-toolbar {
-		background: linear-gradient(90deg, var(--color-neutral-50) 95%, var(--color-neutral-100) 100%);
+		background: linear-gradient(90deg, var(--color-aside) 97%, var(--color-neutral-100) 100%);
 	}
 
 	.leading-pane-wrapper {
 		@variant sm {
-			top: var(--app-bar-height);
+			top: calc(var(--app-bar-height) + var(--banner-height, 0));
 		}
 	}
 
 	.leading-pane-content {
-		max-height: calc(100vh - var(--app-bar-height) - var(--toolbar-height));
+		max-height: calc(
+			100vh - var(--app-bar-height) - var(--toolbar-height) - var(--banner-height, 0) - 1px
+		);
 		overflow-y: auto;
 		scrollbar-width: thin;
 	}

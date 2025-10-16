@@ -35,6 +35,7 @@ export interface SearchResultItem {
 	[LensType.WebCardHeaderTop]: DisplayDecorated;
 	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
+	typeForIcon: string; // FIXME
 	typeStr: string;
 	heldByMyLibraries?: LibraryItem[];
 	numberOfHolders: number;

@@ -87,7 +87,7 @@
 			</span>
 		</figcaption>
 	</figure>
-{:else if showPlaceholder && TypeIcon}
+{:else if showPlaceholder}
 	<div class="mb-6 flex items-center justify-center">
 		<img
 			src={placeholder}
@@ -95,9 +95,11 @@
 			class={[
 				'size-full max-w-40 object-cover @3xl:max-w-48',
 				geometry === 'circle' ? 'rounded-full' : 'rounded-lg',
-				type === 'Text' && 'aspect-3/4'
+				(type === 'Text' || type === 'Literature') && 'aspect-3/4'
 			]}
 		/>
-		<TypeIcon class="absolute text-4xl text-neutral-300 @3xl:text-6xl" />
+		{#if TypeIcon}
+			<TypeIcon class="absolute text-4xl text-neutral-300 @3xl:text-6xl" />
+		{/if}
 	</div>
 {/if}

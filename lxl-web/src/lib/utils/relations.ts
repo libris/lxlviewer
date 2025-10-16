@@ -89,7 +89,14 @@ function getQualifierValue(id: string) {
 	if (prefix && qId) {
 		return '"' + prefix + qId + '"';
 	}
+	if (looksLikeUri(id)) {
+		return '"' + id + '"';
+	}
 	return id;
+}
+
+function looksLikeUri(id: string) {
+	return id.startsWith('https://') || id.startsWith('http://');
 }
 
 function getPrefix(id: string) {

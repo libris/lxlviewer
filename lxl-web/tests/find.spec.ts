@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 test('should not have any detectable a11y issues', async ({ page }) => {
 	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-	expect.soft(accessibilityScanResults.violations).toEqual([]);
+	await expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
 
 test('page displays the site header', async ({ page }) => {
@@ -16,11 +16,11 @@ test('page displays the site header', async ({ page }) => {
 });
 
 test('page has a search input', async ({ page }) => {
-	await expect(page.getByTestId('main-search').nth(0)).toBeVisible();
+	await expect(page.getByTestId('supersearch').nth(0)).toBeVisible();
 });
 
 test('can change the language', async ({ page }) => {
-	await page.getByTestId('current-lang').click();
+	await page.getByTestId('change-lang').click();
 	await expect(page).toHaveURL(/\/en\/find/);
 });
 
@@ -52,23 +52,24 @@ test('expanded filters have no detectable a11y issues', async ({ page }) => {
 		await el.click();
 	}
 	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-	expect.soft(accessibilityScanResults.violations).toEqual([]);
+	await expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
 
-test('sorting the facet sets a cookie', async ({ page, context }) => {
+test('opening and sorting the facet sets a cookie', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
-	expect(beforeCookies).toEqual([]);
-	await page.getByTestId('facet-sort').nth(1).getByRole('combobox').selectOption('alpha.asc');
+	await expect(beforeCookies).toEqual([]);
+	await page.locator('summary').filter({ hasText: 'Språk' }).click();
+	await page.getByTestId('facet-sort-language').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
-	expect(afterCookies[0].name).toEqual('userSettings');
-	expect(afterCookies[0].value).toEqual(
-		'{%22leadingPane%22:{%22open%22:true}%2C%22facetSort%22:{%22rdf:type%22:%22alpha.asc%22}}'
+	await expect(afterCookies[0].name).toEqual('userSettings');
+	await expect(afterCookies[0].value).toEqual(
+		'{%22leadingPane%22:{%22open%22:true}%2C%22facetExpanded%22:{%22language%22:%22OPEN%22}%2C%22facetSort%22:{%22language%22:%22alpha.asc%22}}'
 	);
 });
 
 test('facet opened/closed state is preserved', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
-	expect(beforeCookies).toEqual([]);
+	await expect(beforeCookies).toEqual([]);
 
 	const firstClosed = DEFAULT_FACETS_EXPANDED;
 
@@ -103,20 +104,17 @@ test('myLibraries without favourite libraries shows a message', async ({ page })
 	await expect(page.getByTestId('my-libraries-warning')).toBeVisible();
 });
 
-// Comment out test that fails in CI
+test('user sorting is persisted after navigating', async ({ page }) => {
+	await page.locator('summary').filter({ hasText: 'Språk' }).click();
+	const langFacetSort = await page.getByTestId('facet-sort-language');
+	await expect(langFacetSort).toHaveValue('hits.desc');
+	await langFacetSort.selectOption('alpha.asc');
+	await page.goto('/find?_q=a&_limit=20&_offset=0&_sort=&_i=f');
 
-// test('user sorting is persisted after navigating', async ({ page }) => {
-// 	const firstSelect = await page
-// 		.getByTestId('facet-sort')
-// 		.first()
-// 		.getByRole('combobox')
-// 		.inputValue();
-// 	expect(firstSelect).toBe('hits.desc');
-// 	await page.getByTestId('facet-sort').first().getByRole('combobox').selectOption('alpha.asc');
-// 	await page.goto('/find?_q=a&_limit=20&_offset=0&_sort=&_i=f');
-// 	const newSelect = await page.getByTestId('facet-sort').first().getByRole('combobox').inputValue();
-// 	expect(newSelect).toBe('alpha.asc');
-// });
+	await page.locator('summary').filter({ hasText: 'Språk' }).click();
+	const langFacetSortNew = await page.getByTestId('facet-sort-language');
+	await expect(langFacetSortNew).toHaveValue('alpha.asc');
+});
 
 test('displays hits info', async ({ page }) => {
 	await expect(page.getByTestId('result-info')).toBeVisible();

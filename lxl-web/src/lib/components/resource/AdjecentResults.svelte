@@ -112,7 +112,10 @@
 {#if currentSearchResult}
 	<div class="text-2xs flex min-h-10 items-center gap-2 px-3 sm:px-6 @7xl:min-h-11 @7xl:text-xs">
 		{#if typeof indexOfTotalSearchResults === 'number'}
-			<a href={relativizeUrl(currentSearchResult['@id'])} class="link whitespace-nowrap">
+			<a
+				href={page.data.localizeHref(relativizeUrl(currentSearchResult['@id']) + `#${fnurgel}`)}
+				class="link whitespace-nowrap"
+			>
 				<span class="@xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>
 				<span class="hidden @xl:inline">{page.data.t('resource.showInSearchResults')}</span>
 			</a>
@@ -130,7 +133,11 @@
 		<span class="ml-auto flex gap-2">
 			<span class="after:text-subtle after:ml-2 after:content-['·']">
 				{#if previousItemFnurgel}
-					<a href={previousItemFnurgel} class="link" onclick={passAlongAdjecentSearchResults}>
+					<a
+						href={page.data.localizeHref(previousItemFnurgel)}
+						class="link"
+						onclick={passAlongAdjecentSearchResults}
+					>
 						{@render previousResultContent()}
 					</a>
 				{:else}
@@ -141,7 +148,11 @@
 			</span>
 			<span>
 				{#if nextItemFnurgel}
-					<a href={nextItemFnurgel} class="link" onclick={passAlongAdjecentSearchResults}>
+					<a
+						href={page.data.localizeHref(nextItemFnurgel)}
+						class="link"
+						onclick={passAlongAdjecentSearchResults}
+					>
 						{@render nextResultContent()}
 					</a>
 				{:else}

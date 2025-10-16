@@ -23,31 +23,45 @@ import BiClockHistory from '~icons/bi/clock-history';
 import BiBank from '~icons/bi/bank';
 
 const ICONS: Record<string, ConstructorOfATypedSvelteComponent> = {
-	Audio: BiSoundWave,
-	Cartography: BiMap,
-	Dataset: BiDatabase,
+	Country: BiGeoAlt,
+	GenreForm: BiTag,
+	Geographic: BiGeoAlt,
+	Language: BiGlobe,
+	Library: BiHouseHeart,
+	Organization: BiBank,
+	Person: BiPerson,
+	Temporal: BiClockHistory,
+	Topic: BiAlphabet,
+	Work: BiSlashLg,
 	Family: BiPeople,
+
+	// categories / old work types
+	Cartography: BiMap,
+	Literature: BiBook,
+	MovingImage: BiFilm,
+	Music: BiMusicNoteBeamed,
+	Object: BiBox,
+	Software: BiLaptop,
+	StillImage: BiCardImage,
+
+	Audiobook: BiSoundWave,
+
+	// Old work types
+	Audio: BiSoundWave,
+	Dataset: BiDatabase,
 	Kit: BiBoxSeam,
 	ManuscriptNotatedMusic: BiMusicNoteList,
 	ManuscriptText: BiVectorPen,
 	MixedMaterial: BiBoxes,
-	MovingImage: BiFilm,
 	Multimedia: BiLaptop,
-	Music: BiMusicNoteBeamed,
 	NotatedMusic: BiMusicNoteList,
-	Object: BiBox,
-	Person: BiPerson,
-	StillImage: BiCardImage,
 	Text: BiBook,
-	Work: BiSlashLg,
-	GenreForm: BiTag,
-	Topic: BiAlphabet,
-	Geographic: BiGeoAlt,
-	Temporal: BiClockHistory,
-	Language: BiGlobe,
-	Country: BiGeoAlt,
-	Organization: BiBank,
-	Library: BiHouseHeart
+
+	// New work types
+	Collection: BiBoxes,
+	Integrating: BiDatabase
+
+	//Serial: ???,
 };
 
 function getTypeIcon(type: string): ConstructorOfATypedSvelteComponent | undefined {

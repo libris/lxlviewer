@@ -89,12 +89,13 @@
 				</h1>
 				<!-- svelte-ignore a11y_autofocus -->
 				<button
+					class="btn btn-primary border-0"
 					onclick={handleClose}
 					autofocus
 					aria-label={page.data.t('general.close')}
 					data-testid="close-modal"
 				>
-					<IconClose class="text-subtle" />
+					<IconClose class="text-subtle text-base" />
 				</button>
 			</header>
 			<div class="px-4">

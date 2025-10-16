@@ -1,28 +1,27 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
+	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import type { HoldersByType } from '$lib/types/holdings';
+	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
+	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
+	import type { Relation } from '$lib/utils/relations';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
 	import InstancesList from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/InstancesList.svelte';
-	import HoldingsModal from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/HoldingsModal.svelte';
-	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
-	import getTypeIcon from '$lib/utils/getTypeIcon';
-	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
-	import IconArrowRight from '~icons/bi/arrow-right-short';
-	import BiQuote from '~icons/bi/quote';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { HoldersByType } from '$lib/types/holdings';
-	import type { Relation } from '$lib/utils/relations';
-	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
-	import CitationsModal from './CitationsModal.svelte';
+	import IconArrowRight from '~icons/bi/arrow-right-short';
+	import BiQuote from '~icons/bi/quote';
 
 	type Props = {
 		fnurgel: string;
 		uid?: string;
 		type?: string;
+		typeForIcon: string;
 		images: SecureImage[];
 		decoratedTypes: DecoratedData;
 		decoratedHeading: DecoratedData;
@@ -39,6 +38,7 @@
 		fnurgel,
 		uid,
 		type,
+		typeForIcon,
 		images,
 		decoratedTypes,
 		decoratedHeading,
@@ -53,7 +53,7 @@
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
-	let TypeIcon = $derived(type ? getTypeIcon(type) : undefined);
+	let TypeIcon = $derived(type ? getTypeIcon(typeForIcon) : undefined);
 </script>
 
 {#if adjecentSearchResults}
@@ -81,7 +81,7 @@
 			<div class="sticky top-6 mx-auto @3xl:max-w-xs">
 				<ResourceImage
 					{images}
-					{type}
+					type={typeForIcon}
 					alt={page.data.t('general.latestInstanceCover')}
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
 					linkToFull
@@ -96,7 +96,7 @@
 		</div>
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-6">
 			<section id="{uidPrefix}top">
-				<div class="flex flex-col-reverse items-center gap-2 md:flex-row md:items-start">
+				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
 					<header class="flex-1">
 						<hgroup>
 							<p class="text-subtle text-xs font-medium">
@@ -110,7 +110,7 @@
 							</h1>
 						</hgroup>
 					</header>
-					<div class="header-actions">
+					<div class="header-actions self-end md:self-start">
 						{#if instances.length === 1}
 							<a
 								class="btn btn-primary h-7"
@@ -158,7 +158,7 @@
 								<div class="border-b-neutral mb-6 flex place-content-between border-b pb-3">
 									<h3 class="font-medium">
 										<a
-											href={relationItem.findUrl}
+											href={page.data.localizeHref(relationItem.findUrl)}
 											class="hover:underline focus:underline"
 											tabindex={-1}
 										>
@@ -166,7 +166,7 @@
 										</a>
 									</h3>
 									<a
-										href={relationItem.findUrl}
+										href={page.data.localizeHref(relationItem.findUrl)}
 										class="flex items-center text-sm font-medium hover:underline focus:underline"
 									>
 										<IconArrowRight class="inline size-5 text-neutral-500" />
@@ -198,8 +198,6 @@
 		</div>
 	</div>
 </article>
-<HoldingsModal workFnurgel={fnurgel} />
-<CitationsModal />
 
 <style lang="postcss">
 	@reference 'tailwindcss';

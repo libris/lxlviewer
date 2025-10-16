@@ -54,6 +54,8 @@ export enum BibDb {
 	bibIdSearchUri = 'bibdb:bibIdSearchUri',
 	isbnSearchUri = 'bibdb:isbnSearchUri',
 	issnSearchUri = 'bibdb:issnSearchUri',
+	myLoansUriLang = 'bibdb:myLoansUriLang',
+	patronRegistrationUriByLang = 'bibdb:patronRegistrationUriByLang',
 	eodUri = 'bibdb:eodUri',
 	itemStatusUri = 'bibdb:itemStatusUri',
 	openingHours = 'bibdb:openingHours',
@@ -66,7 +68,9 @@ export enum BibDb {
 	Address = 'address',
 	ItemStatus = 'itemStatus',
 	OpeningHours = 'openingHours',
-	LoanReserveLink = 'loanReserveLink'
+	LoanReserveLink = 'loanReserveLink',
+	MyLoansLink = 'myLoansLink',
+	RegistrationLink = 'registrationLink'
 }
 
 export type ClassName = string;

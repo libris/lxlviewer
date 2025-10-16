@@ -5,7 +5,7 @@
 	import { page } from '$app/state';
 	import popover from '$lib/actions/popover';
 	import { hasStyle, getStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
-	import { relativizeUrl } from '$lib/utils/http';
+	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 
 	interface Props {
@@ -49,7 +49,7 @@
 			if (depth > 1 && hasStyle(data, 'link')) {
 				const id = getResourceId(value);
 				if (id) {
-					return relativizeUrl(id);
+					return page.data.localizeHref(trimSlashes(relativizeUrl(id)));
 				}
 			}
 			if (depth > 1 && hasStyle(data, 'ext-link')) {

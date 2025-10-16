@@ -8,17 +8,16 @@ import { type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 
-import { pickProperty, toString, asArray } from '$lib/utils/xl.js';
+import { pickProperty, toString, asArray, first } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import {
 	getHoldingsByInstanceId,
 	getHoldingsByType,
-	getHoldersByType
+	getHoldersByType,
+	getBibIdsByInstanceId
 } from '$lib/utils/holdings.js';
-import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
-import getTypeLike from '$lib/utils/getTypeLike';
-import { getUriSlug } from '$lib/utils/http';
+import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
@@ -56,10 +55,31 @@ export const load = async ({ params, locals, fetch }) => {
 
 	resourceId = resource.mainEntity['@id'];
 
-	// FIXME DisplayDecorated needs a dummy wrapper to get the styling right
-	//const types = getTypeLike(mainEntity, vocabUtil).map(t => displayUtil.lensAndFormat(t, LensType.Chip, locale));
-	const t = { '@type': 'Work', _category: getTypeLike(mainEntity, vocabUtil) };
+	const typeLike = getTypeLike(mainEntity, vocabUtil);
+	const t = {
+		'@type': '_Types', // FIXME? DisplayDecorated needs a dummy wrapper to get the styling right
+		...(typeLike.find.length > 0 && { _find: typeLike.find }),
+		...(typeLike.identify.length > 0 && { _identify: typeLike.identify }),
+		...(typeLike.select.length > 0 && { _select: typeLike.select }),
+		// FIXME: don't do this here
+		...(!!mainEntity['language'] && { language: mainEntity['language'] })
+	};
 	const types = displayUtil.lensAndFormat(t, LensType.Card, locale);
+
+	const typeLikeIds = getAtPath(typeLike, ['*', '*', '@id']);
+
+	if (mainEntity['category']) {
+		const category = asArray(mainEntity['category']).filter(
+			(c) => !typeLikeIds.includes(c['@id']) && first(asArray(c[JsonLd.TYPE])) !== 'ContentType'
+		);
+		if (category.length > 0) {
+			mainEntity['category'] = category;
+		} else {
+			delete mainEntity['category'];
+		}
+
+		delete mainEntity['language'];
+	}
 
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
@@ -118,24 +138,24 @@ export const load = async ({ params, locals, fetch }) => {
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
-
-	if (holdersCache.holders) {
-		console.log('Current number of cached holders:', Object.keys(holdersCache.holders).length);
-	}
+	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
 
 	return {
 		uri: resource['@id'] as string,
-		workFnurgel: getUriSlug(resourceId || undefined),
 		type: mainEntity[JsonLd.TYPE],
 		types: types,
+		typeForIcon: getTypeForIcon(typeLike), // FIXME
 		title: toString(heading),
 		heading,
 		overview: overviewWithoutHasInstance,
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances: sortedInstances,
-		holdingsByInstanceId,
-		holdersByType,
+		holdings: {
+			holdingsByInstanceId,
+			holdersByType,
+			bibIdsByInstanceId
+		},
 		images,
 		tableOfContents
 	};

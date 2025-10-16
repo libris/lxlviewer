@@ -20,12 +20,14 @@ declare global {
 		interface PageData {
 			locale: import('$lib/i18n/locales').LocaleCode;
 			t: Awaited<ReturnType<typeof import('$lib/i18n').getTranslator>>;
+			localizeHref: ReturnType<typeof import('$lib/i18n').initLocalizeHref>;
 			userSettings: UserSettings;
 		}
 		interface PageState {
 			expandedInstances?: string[];
 			holdings?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
+			dimissedHighlighting?: boolean;
 			citations?: CitationsType;
 			citationId?: string;
 		}

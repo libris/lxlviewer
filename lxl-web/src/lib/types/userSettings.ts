@@ -27,6 +27,9 @@ export type UserSettings = {
 		open?: boolean;
 	};
 	selectedCitationFormat?: AvailableCitationFormat | 'all';
+	trailingPane?: {
+		width?: number;
+	};
 	debug?: DebugFlags[];
 };
 
