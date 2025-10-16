@@ -1,6 +1,5 @@
 <script>
-import _ from "lodash";
-import { cloneDeep, each, get } from 'lodash-es';
+import { cloneDeep, each, get, isEqual } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
@@ -786,16 +785,14 @@ export default {
         }, 10);
 
         if (!this.documentId) {
-          this.warnOnSave();
-
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
+          this.warnOnSave();
           this.$router.push({ path: `/${fnurgel}` });
         } else {
-          this.warnOnSave();
-
           this.fetchDocument();
+          this.warnOnSave();
           this.removeOtherRecords();
           this.clearBackendValidationErrors();
           if (done) {
@@ -870,32 +867,11 @@ export default {
     warnOnSave() {
       const warnArr = Object.keys(this.settings.warnOnSave);
 
-      warnArr.forEach((element) => {
+      for (const element of warnArr) {
         const keys = element.split(".");
         const value = get(this.inspector.data, element);
-        const mainEntity = this.inspector.mainEntity; 
 
-        if (!mainEntity || mainEntity.concerning === undefined) {
-          this.$store.dispatch("pushNotification", {
-            type: "warning",
-            message: "mainEntity eller dess fält 'concerning' saknas.",
-          });
-          return; 
-        }
-
-        const concerning = mainEntity.concerning;
-
-        if (concerning === null || (_.isArray(concerning) && _.isEqual(concerning, []))) {
-          this.$store.dispatch("pushNotification", {
-            type: "warning",
-            message: "Fältet 'concerning' är tomt eller null.",
-          });
-          return;
-        }
-
-        const warning =
-          this.settings.warnOnSave[element].some((el) => _.isEqual(el, value)) ||
-          _.isEqual(concerning, value);
+        const warning = this.settings.warnOnSave[element].some((el) => el === value) || isEqual(this.settings.warnOnSave[element], value);
 
         if (warning) {
           const localizedValue =
@@ -922,8 +898,9 @@ export default {
               this.resources
             )}`,
           });
+          return; 
         }
-      });
+      }
     },
     removeEmbellishedHighlight() {
       if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
