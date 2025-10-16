@@ -68,6 +68,7 @@ export interface Facet {
 	object: DisplayDecorated;
 	str: string;
 	discriminator: string;
+	facetGroups?: FacetGroup[];
 }
 
 export interface MultiSelectFacet extends Facet {
