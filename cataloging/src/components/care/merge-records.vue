@@ -67,28 +67,22 @@ export default {
       'setEnrichmentResult',
       'setEnrichmentChanges'
     ]),
-    confirm() {
-      this.$store.dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path: '',
-            value: this.resultObject,
-          },
-        ],
-        addToHistory: true,
-      });
-      this.close();
-    },
     resetCachedChanges() {
       this.setEnrichmentChanges(null);
     },
     close() {
-      const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
-      detailedEnrichmentModal.open = false;
+      const mergeViewModal = this.inspector.status.mergeViewModal;
+      mergeViewModal.open = false;
       this.resetCachedChanges();
-      this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+      this.$store.dispatch('setInspectorStatusValue', { property: 'mergeViewModal', value: mergeViewModal });
     },
     cancel() {
+      this.resetCachedChanges();
+      this.close();
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
+      this.$store.dispatch('flushChangeHistory');
+    },
+    done() {
       this.resetCachedChanges();
       this.close();
     },
@@ -195,8 +189,8 @@ export default {
         <div class="DetailedEnrichment-sourceField sourceColumn">
           <div class="entityForm">
             <entity-form
-              :editing-object="'mainEntity'"
-              :key="'mainEntity'"
+              :editing-object="formFocus"
+              :key="formFocus"
               :is-active="true"
               :form-data="source"
               :locked="true"
@@ -213,8 +207,8 @@ export default {
           class="DetailedEnrichment-resultField resultColumn">
           <div class="entityForm">
             <entity-form
-              :editing-object="'mainEntity'"
-              :key="'mainEntity'"
+              :editing-object="formFocus"
+              :key="formFocus"
               :is-active="true"
               :form-data="target"
               :locked="true"
@@ -228,7 +222,7 @@ export default {
     </div>
     <div class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
       <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
-      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ translatePhrase('Enrich') }}</button>
+      <button class="btn btn--md btn-primary" @click="done" @keyup.enter="done">{{ translatePhrase('Back to editing form') }}</button>
     </div>
 </template>
 
