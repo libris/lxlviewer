@@ -1,4 +1,5 @@
 <script>
+import _ from "lodash";
 import { cloneDeep, each, get } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
@@ -870,28 +871,57 @@ export default {
       const warnArr = Object.keys(this.settings.warnOnSave);
 
       warnArr.forEach((element) => {
-        const keys = element.split('.');
+        const keys = element.split(".");
         const value = get(this.inspector.data, element);
+        const mainEntity = this.inspector.mainEntity; 
 
-        
-        const warning = this.settings.warnOnSave[element].some((el) => el === value) || (this.inspector.data.mainEntity.concerning === value);
+        if (!mainEntity || mainEntity.concerning === undefined) {
+          this.$store.dispatch("pushNotification", {
+            type: "warning",
+            message: "mainEntity eller dess fält 'concerning' saknas.",
+          });
+          return; 
+        }
+
+        const concerning = mainEntity.concerning;
+
+        if (concerning === null || (_.isArray(concerning) && _.isEqual(concerning, []))) {
+          this.$store.dispatch("pushNotification", {
+            type: "warning",
+            message: "Fältet 'concerning' är tomt eller null.",
+          });
+          return;
+        }
+
+        const warning =
+          this.settings.warnOnSave[element].some((el) => _.isEqual(el, value)) ||
+          _.isEqual(concerning, value);
 
         if (warning) {
-
           const localizedValue =
-            typeof value === 'string'
+            typeof value === "string"
               ? value
-              : value?.label || value?.name || value?.[this.user.settings.language] || String(value);
+              : value?.label ||
+                value?.name ||
+                value?.[this.user.settings.language] ||
+                String(value);
 
-          this.$store.dispatch('pushNotification', {
-            type: 'warning',
-            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(localizedValue, this.user.settings.language, this.resources)}`,
+          this.$store.dispatch("pushNotification", {
+            type: "warning",
+            message: `${StringUtil.getUiPhraseByLang(
+              "Attention",
+              this.user.settings.language,
+              this.resources.i18n
+            )}! ${StringUtil.getLabelByLang(
+              keys[keys.length - 1],
+              this.user.settings.language,
+              this.resources
+            )}: ${StringUtil.getLabelByLang(
+              localizedValue,
+              this.user.settings.language,
+              this.resources
+            )}`,
           });
-
-          /*this.$store.dispatch('pushNotification', {
-            type: 'warning',
-            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources)}`,
-          });*/
         }
       });
     },
