@@ -8,21 +8,21 @@ export function getChangeList(source, target, templatePath, targetPath = templat
   return changeList;
 }
 
-function addToChangeList(source, target, templatePath, targetPath, changeList, context) {
-  let templateObject = get(source, templatePath);
+function addToChangeList(source, target, sourcePath, targetPath, changeList, context) {
+  let sourceObject = get(source, sourcePath);
   let targetObject = get(target, targetPath);
 
   if (targetObject === null || typeof targetObject === 'undefined') {
     targetObject = {};
   }
 
-  if (templateObject && typeof templateObject === "object"
-    && !Array.isArray(templateObject) && !Array.isArray(targetObject)) {
-    if (templateObject['@type'] && targetObject['@type'] &&
-      templateObject['@type'] !== targetObject['@type']) {
+  if (sourceObject && typeof sourceObject === "object"
+    && !Array.isArray(sourceObject) && !Array.isArray(targetObject)) {
+    if (sourceObject['@type'] && targetObject['@type'] &&
+      sourceObject['@type'] !== targetObject['@type']) {
       return;
     }
-    each(templateObject, (sourceValue, key) => {
+    each(sourceObject, (sourceValue, key) => {
       if (key === '@id') {
         return;
       }
@@ -45,7 +45,7 @@ function addToChangeList(source, target, templatePath, targetPath, changeList, c
 
       // Properties missing in target
       if (!targetObject.hasOwnProperty(key) ||
-        (targetValue === null && templateObject[key] !== null)) {
+        (targetValue === null && sourceObject[key] !== null)) {
         changeList.push({
           path: arrayPathToString([...targetPath, key]),
           value: sourceValue,
@@ -78,20 +78,20 @@ function addToChangeList(source, target, templatePath, targetPath, changeList, c
           if (!firstElementWithMatchingType) {
             countAdded++;
             changeList.push({
-              path: arrayPathToString([...templatePath, key, countAdded + targetArray.length - 1]),
+              path: arrayPathToString([...sourcePath, key, countAdded + targetArray.length - 1]),
               value: obj,
             });
           } else { //There is an element in the list with the same type
             const indexInTarget = targetArray.indexOf(firstElementWithMatchingType);
             const indexInSource = sourceValue.indexOf(obj);
-            let path = sourceConvertedToArray ? [...templatePath, key] : [...templatePath, key, indexInSource];
+            let path = sourceConvertedToArray ? [...sourcePath, key] : [...sourcePath, key, indexInSource];
             addToChangeList(source, target, path,  [...targetPath, key, indexInTarget], changeList, context);
           }
         })
       } // Recurse if object is present both in source and target
       else {
-        if (typeof targetObject === 'object' && typeof templateObject === 'object') {
-          addToChangeList(source, target, [...templatePath, key], [...targetPath, key], changeList, context);
+        if (typeof targetObject === 'object' && typeof sourceObject === 'object') {
+          addToChangeList(source, target, [...sourcePath, key], [...targetPath, key], changeList, context);
         }
       }
     });
