@@ -50,9 +50,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    showEnriched: {
+    isSource: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   data() {
@@ -169,7 +169,7 @@ export default {
         :parent-path="editingObject"
         :bulk-context="bulkContext"
         :show-key="!hideTopLevelFieldNames"
-        :show-enriched="showEnriched"
+        :is-source="isSource"
       />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
@@ -244,7 +244,9 @@ export default {
               &:not(.is-diff-removed) {
                 &:not(.is-diff-added) {
                   &:not(.is-diff-modified) {
-                    background-color: @form-field;
+                    &:not(.is-selectable:hover) {
+                      background-color: @form-field;
+                    }
                   }
                 }
               }

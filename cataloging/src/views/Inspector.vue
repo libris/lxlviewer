@@ -366,6 +366,13 @@ export default {
         }
       });
     },
+    applyFromSource() {
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
+      this.$store.dispatch('flushChangeHistory');
+      this.removeEnrichedHighlight();
+      this.applyFieldsFromTemplate(this.enrichment.data.source);
+    },
+
     applyFieldsFromTemplate(template) {
       const baseRecordType = this.inspector.data.mainEntity['@type'];
       const tempRecordType = template.mainEntity['@type'];
@@ -397,28 +404,39 @@ export default {
         ...getChangeList(template, baseRecordData, ['record'], ['record'], this.resources.context)
       ];
 
-      changeList.forEach((change) => {
+      // This breaks the general case
+      // Add "enrich all" option / boolean
+      // can also be all keys on top level right?
+      // then it also works for "select all"
+      const filteredChangeList = changeList.filter(a =>
+        this.inspector.status.selected.some(b => a.path.startsWith(b.path))
+      );
+
+      // Don't need to do this every time something is clicked
+      filteredChangeList.forEach((change) => {
         DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
       });
 
-      if (changeList.length !== 0) {
+      if (filteredChangeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
-          changeList: changeList,
+          changeList: filteredChangeList,
           addToHistory: false,
         });
         this.$store.dispatch('setInspectorStatusValue', {
           property: 'enriched',
-          value: changeList,
+          value: filteredChangeList,
         });
-        this.$store.dispatch('pushNotification', {
-          type: 'success',
-          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
-        });
-      } else {
-        this.$store.dispatch('pushNotification', {
-          type: 'info',
-          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
-        });
+        //Conditionally
+        // this.$store.dispatch('pushNotification', {
+        //   type: 'success',
+        //   message: `${filteredChangeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
+        // });
+        // } else {
+        //   this.$store.dispatch('pushNotification', {
+        //     type: 'info',
+        //     message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
+        //   });
+        // }
       }
     },
     openRemoveModal() {
@@ -1033,6 +1051,8 @@ export default {
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
+      } else if (val.name === 'apply-source') {
+        this.applyFromSource();
       } else if (val.name === 'open-enrich-from-id') {
         this.toggleEnrichFromIdModal(true);
       } else if (val.name === 'open-detailed-enrich-from-id') {

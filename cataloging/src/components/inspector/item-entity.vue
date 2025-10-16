@@ -28,7 +28,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    showEnriched: {
+    isSource: {
       type: Boolean,
       default: true,
     }
@@ -239,7 +239,7 @@ export default {
             'is-ext-link': !isLibrisResource,
             'is-removed': diffRemoved,
             'is-added': diffAdded,
-            'is-highlighted': enriched && showEnriched,
+            'is-highlighted': enriched && !isSource,
           }">
           <span v-if="!isLocked && hasBackendValidationError">
             <i class="fa fa-warning fa-fw icon--warn icon--sm"

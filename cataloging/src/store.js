@@ -72,6 +72,7 @@ const store = createStore({
         isNew: false,
         readyForSave: true,
         enriched: [],
+        selected: []
       },
       validation: {
         numberOfViolations: 0,

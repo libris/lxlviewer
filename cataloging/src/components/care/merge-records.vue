@@ -6,7 +6,6 @@ import TabMenu from '@/components/shared/tab-menu.vue';
 import EntitySummary from '@/components/shared/entity-summary.vue';
 import EntityForm from "@/components/inspector/entity-form.vue";
 import Button from '@/components/shared/button.vue';
-import * as VocabUtil from "../../../../lxljs/vocab.js";
 import * as StringUtil from "../../../../lxljs/string.js";
 import {getChangeList} from "@/utils/enrich.js";
 import * as DataUtil from "@/utils/data.js";
@@ -142,6 +141,10 @@ export default {
     this.$nextTick(() => {
       // this.resultObject = cloneDeep(this.enrichment.data.target);
       this.resultObject = cloneDeep(this.inspector.data);
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'selected',
+        value: [],
+      });
     });
   },
 
@@ -178,15 +181,21 @@ export default {
           </div>
         </div>
       </div>
-      <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
-      <button-component
-        :inverted="true"
-        class="Button-default"
-        @click="enrich"
-        :label="'Enrich'"
-        icon="plus"
-        size="large"
-      />
+      <div class="DetailedEnrichment-fieldRow">
+        <div class="DetailedEnrichment-sourceField sourceColumn">
+          <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
+        </div>
+        <div class="DetailedEnrichment-buttonContainer actionColumn">
+          <button-component
+            :inverted="true"
+            class="Button-default"
+            @click="enrich"
+            :label="'Enrich'"
+            icon="arrow-right"
+            size="large"
+          />
+        </div>
+      </div>
       <div class="DetailedEnrichment-fieldRow">
         <div class="DetailedEnrichment-sourceField sourceColumn">
           <div class="entityForm">
@@ -197,8 +206,8 @@ export default {
               :form-data="source"
               :locked="true"
               :hide-top-level-properties="['@type']"
-              :hide-top-level-field-names="true"
-              :show-enriched="false"
+              :hide-top-level-field-names="false"
+              :is-source="true"
             />
           </div>
         </div>
@@ -213,9 +222,9 @@ export default {
               :key="'mainEntity'"
               :is-active="true"
               :form-data="target"
-              :locked="false"
+              :locked="true"
               :hide-top-level-properties="['@type']"
-              :hide-top-level-field-names="true"
+              :hide-top-level-field-names="false"
             />
           </div>
         </div>
