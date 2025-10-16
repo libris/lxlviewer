@@ -893,7 +893,7 @@ export default {
                           ${StringUtil.getUiPhraseByLang("is empty", this.user.settings.language, this.resources.i18n)}!`
           } else {
             message = `${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}:
-              ${StringUtil.getLabelByLang(localizedValue, this.user.settings.language, this.resources)}`
+                        ${StringUtil.getLabelByLang(localizedValue, this.user.settings.language, this.resources)}`
           }
 
           return alert + message 
