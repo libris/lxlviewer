@@ -78,6 +78,8 @@ export default {
     },
     selected(value, oldValue) {
       if (value !== oldValue && this.initialized && !this.isLocked) {
+        console.log('old value', oldValue)
+        console.log('new value', value)
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -94,6 +96,7 @@ export default {
     labelByLang,
     getPossibleValues() {
       let values = [];
+
       const possibleValues = [];
       each(this.range, (item) => {
         const type = StringUtil.getCompactUri(item, this.resources.context);
@@ -103,6 +106,9 @@ export default {
       each(values, (value) => {
         possibleValues.push(StringUtil.getCompactUri(value['@id'], this.resources.context));
       });
+      
+      console.log('VÄRDEN,', possibleValues)
+
       return sortBy(possibleValues, (value) => StringUtil.getLabelByLang(
         value,
         this.user.settings.language,
