@@ -1307,7 +1307,7 @@ export default {
       </template>
     </modal-component>
 
-    <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('SLÅ IHOP')" v-if="inspector.status.mergeViewModal.open === true" @close="closeMergeViewModal" :backdrop-close="false">
+    <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('Berika från post')" v-if="inspector.status.mergeViewModal.open === true" @close="closeMergeViewModal" :backdrop-close="false">
       <template #modal-body>
 <!--        <DetailedEnrichment :floating-dialogs="true" />-->
         <MergeRecords

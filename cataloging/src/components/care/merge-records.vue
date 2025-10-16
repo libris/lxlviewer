@@ -181,21 +181,13 @@ export default {
           </div>
         </div>
       </div>
+
+      <span class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></span>
+      <span class="DetailedEnrichment-description">Markera de delar i den vänstra posten som ska berika/flyttas över till den högra.</span>
       <div class="DetailedEnrichment-fieldRow">
-        <div class="DetailedEnrichment-sourceField sourceColumn">
           <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
-        </div>
-        <div class="DetailedEnrichment-buttonContainer actionColumn">
-          <button-component
-            :inverted="true"
-            class="Button-default"
-            @click="enrich"
-            :label="'Enrich'"
-            icon="arrow-right"
-            size="large"
-          />
-        </div>
       </div>
+
       <div class="DetailedEnrichment-fieldRow">
         <div class="DetailedEnrichment-sourceField sourceColumn">
           <div class="entityForm">
@@ -239,15 +231,15 @@ export default {
 
 <style lang="less">
 
-@actionCol: 4%;
-@actionColMd: 6%;
-@actionColSm: 8%;
-@actionColXs: 10%;
+@actionCol: 2%;
+@actionColMd: 4%;
+@actionColSm: 6%;
+@actionColXs: 8%;
 
-@sourceCol: 33%;
-@sourceColMd: 32%;
-@sourceColSm: 31%;
-@sourceColXs: 30%;
+@sourceCol: 35%;
+@sourceColMd: 34%;
+@sourceColSm: 33%;
+@sourceColXs: 32%;
 
 @targetCol: 63%;
 @targetColMd: 62%;
@@ -330,6 +322,9 @@ export default {
       border: 0;
     }
   }
+  &-description {
+    padding-left: 0.5rem;
+  }
   &-resultField {
     border: 1px solid @grey-lighter;
     &.is-diff {
@@ -343,6 +338,15 @@ export default {
       border-color: @base-color;
       background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
     }
+  }
+  .iconCircle {
+    border: 1px solid @grey-lighter;
+    border-radius: 1em;
+    width: 2em;
+    height: 2em;
+    line-height: 2em;
+    text-align: center;
+    color: @brand-primary;
   }
   .sourceColumn {
     width: @sourceColXs;
