@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, each, get, isEqual } from 'lodash-es';
+import { cloneDeep, each, get, isEqual, isEmpty } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
@@ -882,22 +882,28 @@ export default {
                 value?.[this.user.settings.language] ||
                 String(value);
 
+        const showMessage = (value) => {
+
+          const alert = `${StringUtil.getUiPhraseByLang("Attention", this.user.settings.language, this.resources.i18n)}! `
+          let message = ''
+
+          if (isEmpty(value)) {
+            message = `${StringUtil.getUiPhraseByLang("The property", this.user.settings.language, this.resources.i18n)}
+                        '${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}'
+                          ${StringUtil.getUiPhraseByLang("is empty", this.user.settings.language, this.resources.i18n)}!`
+          } else {
+            message = `${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}:
+              ${StringUtil.getLabelByLang(localizedValue, this.user.settings.language, this.resources)}`
+          }
+
+          return alert + message 
+        };
+
           this.$store.dispatch("pushNotification", {
             type: "warning",
-            message: `${StringUtil.getUiPhraseByLang(
-              "Attention",
-              this.user.settings.language,
-              this.resources.i18n
-            )}! ${StringUtil.getLabelByLang(
-              keys[keys.length - 1],
-              this.user.settings.language,
-              this.resources
-            )}: ${StringUtil.getLabelByLang(
-              localizedValue,
-              this.user.settings.language,
-              this.resources
-            )}`,
+            message: showMessage(value)
           });
+
           return; 
         }
       }
