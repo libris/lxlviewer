@@ -481,6 +481,8 @@
     "The property is locked for editing. Are you sure you want to unlock it?": "Egenskapen är låst för redigering. Är du säker på att du vill låsa upp?",
     "Manage cookies": "Hantera kakor",
     "is empty": "är tom",
-    "The property": "Egenskapen"
+    "The property": "Egenskapen",
+    "Mark all": "Markera alla",
+    "Unmark all": "Avmarkera alla"
   }
 }

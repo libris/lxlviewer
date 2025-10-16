@@ -486,7 +486,6 @@ export default {
     isSelected() {
       const selected = this.inspector.status.selected;
       if (selected.length > 0) {
-
         return selected.some((el) => el.path === this.path);
       } return false;
     },

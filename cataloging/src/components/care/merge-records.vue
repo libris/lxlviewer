@@ -1,14 +1,11 @@
 <script>
 import {mapActions, mapGetters} from 'vuex';
-import {cloneDeep} from 'lodash-es';
+import {cloneDeep, isEmpty} from 'lodash-es';
 import {capitalize, labelByLang, translatePhrase} from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import EntitySummary from '@/components/shared/entity-summary.vue';
 import EntityForm from "@/components/inspector/entity-form.vue";
 import Button from '@/components/shared/button.vue';
-import * as StringUtil from "../../../../lxljs/string.js";
-import {getChangeList} from "@/utils/enrich.js";
-import * as DataUtil from "@/utils/data.js";
 
 export default {
   name: 'MergeRecords',
@@ -39,6 +36,9 @@ export default {
       'user',
       'resources',
     ]),
+    allSelected() {
+      return Object.keys(this.sourceSelectable).length === this.inspector.status.selected.length;
+    },
     recordType() {
       return this.enrichment.data.source.mainEntity['@type'];
     },
@@ -47,6 +47,9 @@ export default {
         { id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' },
       ];
+    },
+    sourceSelectable() {
+      return Object.fromEntries(Object.entries(this.source).filter(([k]) => !k.startsWith('@')));
     },
     source() {
       return this.enrichment.data.source[this.formFocus];
@@ -86,65 +89,44 @@ export default {
     setFocus(focus) {
       this.formFocus = focus;
     },
-    undo(key) {
-      if (this.target.hasOwnProperty(key)) {
-        this.resultObject[this.formFocus][key] = this.target[key];
-      } else {
-        delete this.resultObject[this.formFocus][key];
-      }
-    },
-    enrich() {
-      this.applyFieldsFromTemplate(this.enrichment.data.source);
-    },
-    applyFieldsFromTemplate(source) {
-      const baseRecordData = cloneDeep(this.inspector.data);
-
-      // This part checks if the template should include the work or not (to not overwrite a link)
-      if (baseRecordData.mainEntity.hasOwnProperty('instanceOf')) {
-        const baseRecordWork = baseRecordData.mainEntity.instanceOf;
-        if (Object.keys(baseRecordWork).length === 1 && baseRecordWork.hasOwnProperty('@id')) {
-          delete source.mainEntity.instanceOf;
-        }
-      }
-
-      const changeList = [
-        ...getChangeList(source, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
-        ...getChangeList(source, baseRecordData, ['record'], ['record'], this.resources.context)
-      ];
-
-      changeList.forEach((change) => {
-        DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
+    selectAll() {
+      let selected = [];
+      Object.keys(this.sourceSelectable).forEach(k => {
+          selected = [...selected, {path: `${this.formFocus}.${k}`, value: {}}];
+      })
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'selected',
+        value: selected,
       });
-
-      if (changeList.length !== 0) {
-        this.$store.dispatch('updateInspectorData', {
-          changeList: changeList,
-          addToHistory: false,
-        });
+      // TODO: for each in form tabs?
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'apply-source',
+      });
+    },
+    clearSelected() {
+      if (!isEmpty(this.inspector.status.selected)) {
         this.$store.dispatch('setInspectorStatusValue', {
-          property: 'enriched',
-          value: changeList,
+          property: 'selected',
+          value: [],
         });
-        this.$store.dispatch('pushNotification', {
-          type: 'success',
-          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
-        });
-      } else {
-        this.$store.dispatch('pushNotification', {
-          type: 'info',
-          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
+        this.$store.dispatch('pushInspectorEvent', {
+          name: 'apply-source',
         });
       }
-    }
+    },
+    toggleAllSelected() {
+      if (this.allSelected) {
+        this.clearSelected();
+      } else {
+        this.selectAll();
+      }
+    },
   },
   mounted() {
     this.$nextTick(() => {
       // this.resultObject = cloneDeep(this.enrichment.data.target);
       this.resultObject = cloneDeep(this.inspector.data);
-      this.$store.dispatch('setInspectorStatusValue', {
-        property: 'selected',
-        value: [],
-      });
+      this.clearSelected();
     });
   },
 
@@ -184,8 +166,18 @@ export default {
 
       <span class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></span>
       <span class="DetailedEnrichment-description">Markera de delar i den vänstra posten som ska berika/flyttas över till den högra.</span>
+
       <div class="DetailedEnrichment-fieldRow">
           <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
+      </div>
+      <div>
+        <button
+          class="btn btn--md btn-light SelectAll-btn"
+          @click="toggleAllSelected">
+          <i class="fa fa-fw fa-square-o" v-show="!allSelected"/>
+          <i class="fa fa-fw fa-check-square-o" v-show="allSelected"/>
+          {{ allSelected ? translatePhrase('Unmark all') : translatePhrase('Mark all') }}
+        </button>
       </div>
 
       <div class="DetailedEnrichment-fieldRow">
