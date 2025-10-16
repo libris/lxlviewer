@@ -65,6 +65,7 @@ export default {
     capitalize,
     ...mapActions([
       'setEnrichmentResult',
+      'setEnrichmentChanges'
     ]),
     confirm() {
       this.$store.dispatch('updateInspectorData', {
@@ -78,12 +79,17 @@ export default {
       });
       this.close();
     },
+    resetCachedChanges() {
+      this.setEnrichmentChanges(null);
+    },
     close() {
       const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
       detailedEnrichmentModal.open = false;
+      this.resetCachedChanges();
       this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
     },
     cancel() {
+      this.resetCachedChanges();
       this.close();
     },
     setFocus(focus) {
@@ -126,7 +132,12 @@ export default {
     this.$nextTick(() => {
       // this.resultObject = cloneDeep(this.enrichment.data.target);
       this.resultObject = cloneDeep(this.inspector.data);
+      this.resetCachedChanges();
       this.clearSelected();
+      // To populate this.enrichment.data.changes
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'apply-source',
+      });
     });
   },
 

@@ -41,6 +41,7 @@ const store = createStore({
         source: null,
         target: null,
         result: null,
+        changes: null
       },
     },
     inspector: {
@@ -296,6 +297,9 @@ const store = createStore({
     },
     setEnrichmentResult(state, data) {
       state.enrichment.data.result = data;
+    },
+    setEnrichmentChanges(state, data) {
+      state.enrichment.data.changes = data;
     },
     setUserStorage(state, data) {
       if (data) {
@@ -678,6 +682,9 @@ const store = createStore({
     },
     setEnrichmentResult({ commit }, data) {
       commit('setEnrichmentResult', data);
+    },
+    setEnrichmentChanges({ commit }, data) {
+      commit('setEnrichmentChanges', data);
     },
     setGlobalMessages({ commit }, data) {
       commit('setGlobalMessages', data);

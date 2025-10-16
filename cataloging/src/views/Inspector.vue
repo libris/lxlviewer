@@ -103,6 +103,7 @@ export default {
     ...mapActions([
       'setEnrichmentSource',
       'setEnrichmentTarget',
+      'setEnrichmentChanges'
     ]),
     replaceData(data) {
       this.$store.dispatch('setInspectorData', data);
@@ -334,7 +335,6 @@ export default {
       this.openMergeViewModal();
     },
     applyRecordAsTemplate(id) {
-      console.log('id', id);
       const fixedId = RecordUtil.extractFnurgel(id);
       const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
       fetch(fetchUrl).then((response) => {
@@ -370,10 +370,9 @@ export default {
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
       this.removeEnrichedHighlight();
-      this.applyFieldsFromTemplate(this.enrichment.data.source);
+      this.applyFieldsFromTemplate(this.enrichment.data.source, true);
     },
-
-    applyFieldsFromTemplate(template) {
+    applyFieldsFromTemplate(template, mergeView = false) {
       const baseRecordType = this.inspector.data.mainEntity['@type'];
       const tempRecordType = template.mainEntity['@type'];
       const matching = (
@@ -398,47 +397,53 @@ export default {
           delete template.mainEntity.instanceOf;
         }
       }
+      let changeList;
+      if (!this.enrichment.data.changes) {
+        changeList = [
+          ...getChangeList(template, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
+          ...getChangeList(template, baseRecordData, ['record'], ['record'], this.resources.context)
+        ];
+        if (mergeView) {
+          this.setEnrichmentChanges(changeList)
+        }
+        changeList.forEach((change) => {
+          DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
+        });
+      } else {
+        changeList = this.enrichment.data.changes;
+      }
 
-      const changeList = [
-        ...getChangeList(template, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
-        ...getChangeList(template, baseRecordData, ['record'], ['record'], this.resources.context)
-      ];
+      let changesToBeApplied;
+      if (mergeView) {
+        changesToBeApplied = changeList.filter(a =>
+          this.inspector.status.selected.some(b => a.path.startsWith(b.path))
+        );
+      } else {
+        changesToBeApplied = changeList;
+      }
 
-      // This breaks the general case
-      // Add "enrich all" option / boolean
-      // can also be all keys on top level right?
-      // then it also works for "select all"
-      const filteredChangeList = changeList.filter(a =>
-        this.inspector.status.selected.some(b => a.path.startsWith(b.path))
-      );
-
-      // Don't need to do this every time something is clicked
-      filteredChangeList.forEach((change) => {
-        DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
-      });
-
-      if (filteredChangeList.length !== 0) {
+      if (changesToBeApplied.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
-          changeList: filteredChangeList,
+          changeList: changesToBeApplied,
           addToHistory: false,
         });
         this.$store.dispatch('setInspectorStatusValue', {
           property: 'enriched',
-          value: filteredChangeList,
+          value: changesToBeApplied,
         });
-        //Conditionally
-        // this.$store.dispatch('pushNotification', {
-        //   type: 'success',
-        //   message: `${filteredChangeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
-        // });
-        // } else {
-        //   this.$store.dispatch('pushNotification', {
-        //     type: 'info',
-        //     message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
-        //   });
-        // }
-      }
-    },
+        if (!mergeView) {
+          this.$store.dispatch('pushNotification', {
+            type: 'success',
+            message: `${changesToBeApplied.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
+          });
+        }
+        } else if (!mergeView){
+          this.$store.dispatch('pushNotification', {
+            type: 'info',
+            message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
+          });
+        }
+      },
     openRemoveModal() {
       this.removeInProgress = true;
     },
