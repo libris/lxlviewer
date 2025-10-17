@@ -150,7 +150,7 @@
 			</summary>
 		{/if}
 		<!-- sorting -->
-		<div class={`facet-sort absolute top-0 size-8 ${!parentFacet ? 'right-2' : 'right-15'}`}>
+		<div class={['facet-sort absolute top-0 size-8', parentFacet ? 'right-15' : 'right-2']}>
 			<select
 				name={group.dimension}
 				bind:value={currentSort}
