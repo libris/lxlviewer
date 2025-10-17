@@ -65,7 +65,7 @@ export default {
 	},
 	facet: {
 		q: 'Fritextsökning',
-		'_categoryByCollection.find': '"Övergripande kategori" 🚧👷🏗️',
+		'_categoryByCollection.find': 'Kategori',
 		'_categoryByCollection.identify': '"Identifierande kategori"  🚧👷🏗️',
 		category: '"Kategori"  🚧👷🏗️',
 		hasInstanceCategory: '"Format"  🚧👷🏗',
@@ -94,7 +94,7 @@ export default {
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Beskrivningsnivå',
 		'rdf:type': 'Typ',
-		hasInstanceType: '"Format', // 'Bärare',
+		hasInstanceType: 'Format', // 'Bärare',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Bibliotek',
 		bibliography: 'Bibliografi',
