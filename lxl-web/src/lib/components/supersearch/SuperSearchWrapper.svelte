@@ -301,7 +301,7 @@
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
-				{#if showAddQualifiers && resultsCount}
+				{#if showAddQualifiers && resultsCount && q.trim().length}
 					<div role="row" class="border-neutral border-t">
 						<button
 							type="submit"
