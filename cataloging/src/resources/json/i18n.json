@@ -484,6 +484,7 @@
     "The property": "Egenskapen",
     "Mark all": "Markera alla",
     "Unmark all": "Avmarkera alla",
-    "Back to editing form": "Till redigeringsläget"
+    "Back to editing form": "Till redigeringsläget",
+    "Select parts of the left record which should be moved to the right one." : "Markera de delar i den vänstra posten som ska berika/flyttas över till den högra."
   }
 }

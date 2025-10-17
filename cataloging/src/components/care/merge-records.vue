@@ -37,6 +37,8 @@ export default {
       'resources',
     ]),
     allSelected() {
+      // sourceSelectable is only the active part formfocus (mainEntity or record)
+      // this.inspector.status.selected is both
       return Object.keys(this.sourceSelectable).length === this.inspector.status.selected.length;
     },
     recordType() {
@@ -104,6 +106,7 @@ export default {
       });
     },
     clearSelected() {
+      this.formFocus
       if (!isEmpty(this.inspector.status.selected)) {
         this.$store.dispatch('setInspectorStatusValue', {
           property: 'selected',
@@ -149,7 +152,7 @@ export default {
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
-                :focus-data="source"
+                :focus-data="this.enrichment.data.source.mainEntity"
                 :should-link="false"
                 :exclude-components="[]" />
             </div>
@@ -161,7 +164,7 @@ export default {
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
-                :focus-data="target"
+                :focus-data="this.inspector.data.mainEntity"
                 :should-link="false"
                 :exclude-components="[]" />
             </div>
@@ -170,8 +173,9 @@ export default {
       </div>
 
       <span class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></span>
-      <span class="DetailedEnrichment-description">Markera de delar i den vänstra posten som ska berika/flyttas över till den högra.</span>
-
+      <span class="DetailedEnrichment-description">
+        {{translatePhrase('Select parts of the left record which should be moved to the right one.')}}
+      </span>
       <div class="DetailedEnrichment-fieldRow">
           <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
       </div>
