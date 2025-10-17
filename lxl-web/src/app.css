@@ -160,7 +160,7 @@
 	--color-page: var(--color-white);
 	--color-body: var(--color-neutral-800);
 	--color-subtle: var(--color-neutral-600);
-	--color-link: var(--color-accent);
+	--color-link: var(--color-accent-600);
 	--color-error: var(--color-severe);
 	--color-app-header: var(--color-primary-100);
 	--color-input: var(--color-page);
@@ -213,10 +213,10 @@
 	a.link,
 	a.ext-link {
 		color: var(--color-link);
-		text-decoration: underline;
-		text-decoration-style: dotted;
 
-		&:hover {
+		&:hover,
+		&:focus {
+			text-decoration: underline;
 			text-decoration-style: solid;
 		}
 	}
