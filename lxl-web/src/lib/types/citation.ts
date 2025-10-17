@@ -9,7 +9,7 @@ interface CSLDate {
 	raw?: string;
 }
 
-interface CSLName {
+export interface CSLName {
 	family: string;
 	given?: string;
 	literal?: string;
@@ -24,17 +24,35 @@ interface CSLName {
 	};
 }
 
-type CSLItemType = 'article' | 'book'; // TODO
+export type CSLType = 'book' | 'article' | 'periodical';
 
 export interface CSLJSON {
+	type: CSLType;
+	id: string;
+	language?: string;
+	shortTitle?: string;
 	author?: CSLName[];
-	id: string | number;
-	ISBN?: string;
+	composer?: CSLName[];
+	director?: CSLName[];
+	editor?: CSLName[];
+	interviewer?: CSLName[];
+	illustrator?: CSLName[];
+	translator?: CSLName[];
 	issued?: CSLDate;
+	abstract?: string;
+	'container-title'?: string;
+	DOI?: string;
+	edition?: string | number;
+	ISBN?: string;
+	ISSN?: string;
+	issue?: string | number;
+	keyword?: string;
+	'number-of-pages'?: string | number;
 	publisher?: string;
 	'publisher-place'?: string;
 	title?: string;
-	type: CSLItemType;
+	URL?: string;
+	volume?: string | number;
 }
 
 export interface CitationsType {

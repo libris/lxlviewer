@@ -1,6 +1,7 @@
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales';
-import { cslFromMainEntity, initCite } from '$lib/utils/citation';
+import { initCite } from '$lib/utils/citation';
+import { cslFromMainEntity } from '$lib/utils/getCslFromMainEntity';
 import { error } from '@sveltejs/kit';
 
 const supportedFormats = ['ris', 'bibtex', 'csl'];
