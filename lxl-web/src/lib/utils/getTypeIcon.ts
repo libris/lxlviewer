@@ -22,6 +22,8 @@ import BiGeoAlt from '~icons/bi/geo-alt';
 import BiClockHistory from '~icons/bi/clock-history';
 import BiBank from '~icons/bi/bank';
 
+import IconMissing from '$lib/components/IconMissing.svelte';
+
 const ICONS: Record<string, ConstructorOfATypedSvelteComponent> = {
 	Country: BiGeoAlt,
 	GenreForm: BiTag,
@@ -65,7 +67,7 @@ const ICONS: Record<string, ConstructorOfATypedSvelteComponent> = {
 };
 
 function getTypeIcon(type: string): ConstructorOfATypedSvelteComponent | undefined {
-	return ICONS[type];
+	return ICONS[type] || IconMissing;
 }
 
 export default getTypeIcon;
