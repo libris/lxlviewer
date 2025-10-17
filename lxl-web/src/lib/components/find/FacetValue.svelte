@@ -14,13 +14,13 @@
 	}
 
 	let { facet, locale, isEmbedded = false }: Props = $props();
-	const pad_margin = isEmbedded
-		? 'class="hover:bg-primary-100'
-		: ' ml-4.5 pr-3 pl-4 border-l border-l-neutral-200';
 </script>
 
 <a
-	class={`facet-link grid flex-1 grid-cols-[auto_auto] items-end justify-between gap-2 py-1.5 font-normal no-underline ${pad_margin}`}
+	class={[
+		`facet-link grid flex-1 grid-cols-[auto_auto] items-end justify-between gap-2 py-1.5 font-normal no-underline`,
+		isEmbedded ? 'hover:bg-primary-100' : 'ml-4.5 border-l border-l-neutral-200 pr-3 pl-4'
+	]}
 	href={page.data.localizeHref(facet.view['@id'])}
 	data-sveltekit-preload-data="false"
 >
