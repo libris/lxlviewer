@@ -185,7 +185,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<h2 class="card-header-title text-base font-medium">
 						<a
 							href={page.data.localizeHref(id)}
-							class="link-subtle block decoration-neutral-400"
+							class="hover:text-link focus:text-link block hover:underline focus:underline"
 							aria-describedby={`${bodyId} ${footerId}`}
 							onclick={passAlongAdjecentSearchResults}
 						>
