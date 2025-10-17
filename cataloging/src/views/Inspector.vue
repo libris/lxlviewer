@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, get, isEqual, isEmpty } from 'lodash-es';
+import {cloneDeep, each, get, isEmpty, unset} from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
@@ -126,6 +126,9 @@ export default {
     closeMergeViewModal() {
       const mergeViewModal = this.inspector.status.mergeViewModal;
       mergeViewModal.open = false;
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
+      this.$store.dispatch('flushChangeHistory');
+      this.setEnrichmentChanges(null);
       this.$store.dispatch('setInspectorStatusValue', { property: 'mergeViewModal', value: mergeViewModal });
     },
     applyOverride(data) {
@@ -370,7 +373,11 @@ export default {
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
       this.removeEnrichedHighlight();
-      this.applyFieldsFromTemplate(this.enrichment.data.source, true);
+      let source = cloneDeep(this.enrichment.data.source);
+      each(this.settings.keysToClear.duplication, (property) => {
+        unset(source, property);
+      });
+      this.applyFieldsFromTemplate(source, true);
     },
     applyFieldsFromTemplate(template, mergeView = false) {
       const baseRecordType = this.inspector.data.mainEntity['@type'];

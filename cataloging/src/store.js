@@ -1,12 +1,11 @@
 import { createStore } from 'vuex';
-import { cloneDeep, each, set, get, assign, filter, isObject, isEmpty } from 'lodash-es';
+import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import settings from './settings';
-import { arrayPathToString } from "lxljs/string.js";
 
 const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
 export const DELETE_ON_SAVE = '__DELETE_ON_SAVE__';

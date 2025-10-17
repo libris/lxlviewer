@@ -36,10 +36,21 @@ export default {
       'user',
       'resources',
     ]),
-    allSelected() {
-      // sourceSelectable is only the active part formfocus (mainEntity or record)
-      // this.inspector.status.selected is both
-      return Object.keys(this.sourceSelectable).length === this.inspector.status.selected.length;
+    isAllSelected() {
+      const noOfSelectable = Object.keys(this.sourceSelectable).length;
+      if (this.formFocus === 'mainEntity') {
+        return noOfSelectable === this.selectedForMainEntity.length;
+      } else if (this.formFocus === 'record') {
+        return noOfSelectable === this.selectedForRecord.length;
+      } else {
+        return false;
+      }
+    },
+    selectedForMainEntity() {
+      return this.inspector.status.selected.filter(s => s.path.startsWith('mainEntity.'));
+    },
+    selectedForRecord() {
+      return this.inspector.status.selected.filter(s => s.path.startsWith('record.'));
     },
     recordType() {
       return this.enrichment.data.source.mainEntity['@type'];
@@ -91,7 +102,7 @@ export default {
     setFocus(focus) {
       this.formFocus = focus;
     },
-    selectAll() {
+    selectAllForFocused() {
       let selected = [];
       Object.keys(this.sourceSelectable).forEach(k => {
           selected = [...selected, {path: `${this.formFocus}.${k}`, value: {}}];
@@ -105,23 +116,34 @@ export default {
         name: 'apply-source',
       });
     },
-    clearSelected() {
-      this.formFocus
+    clearAllSelected() {
       if (!isEmpty(this.inspector.status.selected)) {
-        this.$store.dispatch('setInspectorStatusValue', {
-          property: 'selected',
-          value: [],
-        });
-        this.$store.dispatch('pushInspectorEvent', {
-          name: 'apply-source',
-        });
+        this.setSelectedAndApply([])
       }
     },
-    toggleAllSelected() {
-      if (this.allSelected) {
-        this.clearSelected();
+    setSelectedAndApply(selectedToKeep) {
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'selected',
+        value: selectedToKeep,
+      });
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'apply-source',
+      });
+    },
+    clearSelectedForFocused() {
+      let keep = [];
+      if (this.formFocus === 'mainEntity') {
+        keep = this.inspector.status.selected.filter(s => s.path.startsWith('record'))
+      } else if (this.formFocus === 'record') {
+        keep = this.inspector.status.selected.filter(s => s.path.startsWith('mainEntity.'))
+      }
+      this.setSelectedAndApply(keep);
+    },
+    toggleSelected() {
+      if (this.isAllSelected) {
+        this.clearSelectedForFocused();
       } else {
-        this.selectAll();
+        this.selectAllForFocused();
       }
     },
   },
@@ -130,7 +152,7 @@ export default {
       // this.resultObject = cloneDeep(this.enrichment.data.target);
       this.resultObject = cloneDeep(this.inspector.data);
       this.resetCachedChanges();
-      this.clearSelected();
+      this.clearAllSelected();
       // To populate this.enrichment.data.changes
       this.$store.dispatch('pushInspectorEvent', {
         name: 'apply-source',
@@ -174,7 +196,7 @@ export default {
 
       <span class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></span>
       <span class="DetailedEnrichment-description">
-        {{translatePhrase('Select parts of the left record which should be moved to the right one.')}}
+        {{translatePhrase('Select parts of the left record which should be copied to the right one.')}}
       </span>
       <div class="DetailedEnrichment-fieldRow">
           <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
@@ -182,10 +204,10 @@ export default {
       <div>
         <button
           class="btn btn--md btn-light SelectAll-btn"
-          @click="toggleAllSelected">
-          <i class="fa fa-fw fa-square-o" v-show="!allSelected"/>
-          <i class="fa fa-fw fa-check-square-o" v-show="allSelected"/>
-          {{ allSelected ? translatePhrase('Unmark all') : translatePhrase('Mark all') }}
+          @click="toggleSelected">
+          <i class="fa fa-fw fa-square-o" v-show="!isAllSelected"/>
+          <i class="fa fa-fw fa-check-square-o" v-show="isAllSelected"/>
+          {{ isAllSelected ? translatePhrase('Unmark all') : translatePhrase('Mark all') }}
         </button>
       </div>
 

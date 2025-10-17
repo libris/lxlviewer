@@ -245,7 +245,9 @@ export default {
                 &:not(.is-diff-added) {
                   &:not(.is-diff-modified) {
                     &:not(.is-selectable:hover) {
-                      background-color: @form-field;
+                      &:not(.is-selected) {
+                        background-color: @form-field;
+                      }
                     }
                   }
                 }

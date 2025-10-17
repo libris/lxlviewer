@@ -779,7 +779,8 @@ export default {
       'is-locked': locked,
       'is-diff': isFieldDiff,
       'is-new': isFieldNew,
-      'is-highlighted': (enriched && !isSource) || (isSource && (isSelected || labelHover)),
+      'is-highlighted': enriched && !isSource,
+      'is-selected': isSource && (isSelected || labelHover),
       'is-grouped': isGrouped,
     }"
     v-if="!this.isHidden">
@@ -1379,6 +1380,10 @@ export default {
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
     background-color: @form-highlight;
+  }
+
+  &.is-selected {
+    background-color: @form-select;
   }
 
   &-selectable {
