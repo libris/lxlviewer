@@ -208,8 +208,8 @@
 		})}
 			<div
 				class={[
-					'supersearch-input bg-input flex w-full cursor-text overflow-hidden focus-within:relative lg:h-12',
-					expanded && 'expanded 3xl:mt-3.5 lg:mt-3',
+					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
+					expanded && 'expanded',
 					isFocusedRow() && ['focused-row']
 				]}
 			>
@@ -265,7 +265,7 @@
 			</div>
 		{/snippet}
 		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav class="pt-3">
+			<nav>
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
@@ -409,11 +409,22 @@
 		overflow-y: scroll;
 		overscroll-behavior: contain;
 		scrollbar-width: none;
+		width: 100%;
 		height: 100%;
+		margin: 0 auto;
+		@apply max-w-7xl;
 
 		@variant lg {
 			border-radius: var(--radius-md);
 			@apply drop-shadow-md;
+		}
+	}
+
+	:global(.supersearch-combobox) {
+		@variant lg {
+			min-height: var(--app-bar-height);
+			display: flex;
+			align-items: center;
 		}
 	}
 
