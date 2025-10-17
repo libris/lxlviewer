@@ -99,7 +99,7 @@
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
 					<header class="flex-1">
 						<hgroup>
-							<p class="text-subtle text-xs font-medium">
+							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
 								{#if TypeIcon}
 									<TypeIcon class="mr-0.5 inline text-sm" />
 								{/if}
