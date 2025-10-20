@@ -3,7 +3,7 @@ import { getTranslator } from '$lib/i18n/index.js';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { displayMappings } from '$lib/utils/search';
 
-export async function load({ locals, url, params }) {
+export async function load({ locals, url, params, fetch }) {
 	const userSettings = locals.userSettings;
 	let subsetMapping;
 	const r = url.searchParams.get('_r');
