@@ -17,6 +17,7 @@
 	let activeTabIndex = $state(0);
 
 	function handleKeyDown(e: KeyboardEvent) {
+		e.preventDefault();
 		const key = e.key;
 		const tabsEl = e.currentTarget as HTMLElement;
 		const tabButtons = Array.from(tabsEl.querySelectorAll('[role="tab"]')) as HTMLButtonElement[];
@@ -43,7 +44,6 @@
 				return;
 		}
 
-		e.preventDefault();
 		tabButtons[newIndex].focus();
 	}
 </script>
