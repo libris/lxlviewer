@@ -1,13 +1,19 @@
 import { type FramedData, JsonLd } from '$lib/types/xl';
 import { asArray, first, VocabUtil } from '$lib/utils/xl';
 
-export type TypeLike = { find: FramedData[]; identify: FramedData[]; select: FramedData[] };
+export type TypeLike = {
+	find: FramedData[];
+	identify: FramedData[];
+	none: FramedData[];
+	select: FramedData[];
+};
 
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	const result: TypeLike = {
 		find: [],
 		identify: [],
+		none: [],
 		select: []
 	};
 
@@ -18,9 +24,11 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	if (thing._categoryByCollection) {
 		const find: FramedData[] = thing._categoryByCollection['find'] || [];
 		const identify = thing._categoryByCollection['identify'] || [];
+		const none = thing._categoryByCollection[JsonLd.NONE] || [];
 
 		result.find.push(...find);
 		result.identify.push(...identify);
+		result.none.push(...none);
 
 		//const select = [...new Set(getAtPath(thing, ['@reverse', 'instanceOf', '*', 'category'], []))];
 		//result.select.push(...select);

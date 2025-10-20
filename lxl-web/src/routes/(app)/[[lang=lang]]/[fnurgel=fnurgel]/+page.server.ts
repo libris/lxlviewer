@@ -66,12 +66,8 @@ export const load = async ({ params, locals, fetch }) => {
 	};
 	const types = displayUtil.lensAndFormat(t, LensType.Card, locale);
 
-	const typeLikeIds = getAtPath(typeLike, ['*', '*', '@id']);
-
 	if (mainEntity['category']) {
-		const category = asArray(mainEntity['category']).filter(
-			(c) => !typeLikeIds.includes(c['@id']) && first(asArray(c[JsonLd.TYPE])) !== 'ContentType'
-		);
+		const category = typeLike.none.filter((c) => first(asArray(c[JsonLd.TYPE])) !== 'ContentType');
 		if (category.length > 0) {
 			mainEntity['category'] = category;
 		} else {
