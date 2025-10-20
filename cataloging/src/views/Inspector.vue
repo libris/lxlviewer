@@ -1,5 +1,5 @@
 <script>
-import {cloneDeep, each, get, isEmpty, unset} from 'lodash-es';
+import {cloneDeep, each, get, unset} from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';

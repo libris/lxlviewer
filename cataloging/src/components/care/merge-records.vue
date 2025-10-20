@@ -25,7 +25,10 @@ export default {
     return {
       selected: [],
       formFocus: 'mainEntity',
-      resultObject: null,
+      resultObject: null, //TODO: probably don't need this
+      enrichStep: true,
+      editStep: false,
+      mergeStep: false,
     };
   },
   computed: {
@@ -99,6 +102,22 @@ export default {
       this.resetCachedChanges();
       this.close();
     },
+    goToEditStep() {
+      this.resetCachedChanges();
+      this.enrichStep = false;
+      this.mergeStep = false;
+      this.editStep = true;
+    },
+    goToEnrichStep() {
+      this.enrichStep = true;
+      this.mergeStep = false;
+      this.editStep = false;
+    },
+    goToMergeStep() {
+      this.enrichStep = false;
+      this.mergeStep = true;
+      this.editStep = false;
+    },
     setFocus(focus) {
       this.formFocus = focus;
     },
@@ -165,6 +184,7 @@ export default {
 
 <template>
   <div class="DetailedEnrichment" :class="{ 'with-floating-dialog': floatingDialogs }">
+    <div v-if="enrichStep">
     <div class="DetailedEnrichment-rowContainer" v-if="resultObject">
       <div class="DetailedEnrichment-row">
         <div class="DetailedEnrichment-fieldRow">
@@ -246,10 +266,41 @@ export default {
       </div>
     </div>
     </div>
-    <div class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
+    <div v-if="enrichStep" class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
       <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
-      <button class="btn btn--md btn-primary" @click="done" @keyup.enter="done">{{ translatePhrase('Back to editing form') }}</button>
+      <button class="btn btn--md btn-primary" @click="goToEditStep" @keyup.enter="goToEditStep">{{ translatePhrase('Back to editing form') }}</button>
     </div>
+
+  <div v-if="editStep">
+    <div class="DetailedEnrichment-fieldRow">
+        <entity-summary
+          :focus-data="this.inspector.data.mainEntity"
+          :should-link="false"
+          :exclude-components="[]" />
+    </div>
+    <div class="DetailedEnrichment-fieldRow">
+      <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
+    </div>
+    <div class="DetailedEnrichment-fieldRow">
+        <div class="entityForm">
+          <entity-form
+            :editing-object="formFocus"
+            :key="formFocus"
+            :is-active="true"
+            :form-data="target"
+            :locked="false"
+            :hide-top-level-properties="['@type']"
+            :hide-top-level-field-names="false"
+          />
+        </div>
+    </div>
+  </div>
+  <div v-if="editStep" class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
+    <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
+    <button class="btn btn--md btn-primary" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">Tillbaka</button>
+    <button class="btn btn--md btn-primary" @click="goToMergeStep" @keyup.enter="goToMergeStep">Slå ihop</button>
+  </div>
+  </div>
 </template>
 
 <style lang="less">
