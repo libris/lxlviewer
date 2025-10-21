@@ -1001,10 +1001,14 @@
 			"fresnel:classFormatDomain": ["_Types"],
 			"fresnel:propertyFormatDomain": ["_select"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " (",
+				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": "",
-				"fresnel:contentAfter": ")",
-				"fresnel:contentLast": ")"
+				"fresnel:contentAfter": "",
+				"fresnel:contentLast": ""
+			},
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": " / ",
+				"fresnel:contentFirst": ""
 			},
 			"fresnel:propertyStyle": ["sort()"]
 		},

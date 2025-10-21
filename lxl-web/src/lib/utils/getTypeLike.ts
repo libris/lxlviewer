@@ -1,5 +1,6 @@
 import { type FramedData, JsonLd } from '$lib/types/xl';
 import { asArray, first, VocabUtil } from '$lib/utils/xl';
+import getAtPath from '$lib/utils/getAtPath';
 
 export type TypeLike = {
 	find: FramedData[];
@@ -30,8 +31,13 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		result.identify.push(...identify);
 		result.none.push(...none);
 
+		const s = {};
+		getAtPath(thing, ['@reverse', 'instanceOf', '*', '_categoryByCollection', JsonLd.NONE], [])
+			.filter((c: FramedData) => c[JsonLd.TYPE] === 'ManifestationForm')
+			.forEach((c: FramedData) => (s[c[JsonLd.ID]] = c));
+		const select = Object.values(s);
+		result.select.push(...select);
 		//const select = [...new Set(getAtPath(thing, ['@reverse', 'instanceOf', '*', 'category'], []))];
-		//result.select.push(...select);
 	} else {
 		const contentTypes: FramedData[] = [];
 		const categories: FramedData[] = [];

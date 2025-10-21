@@ -90,6 +90,7 @@ export async function asResult(
 				image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
 				typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
 				typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)), // FIXME
+				selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
 				numberOfHolders: getHoldersCount(i)
 			})),
 		...('stats' in view && {
@@ -111,7 +112,14 @@ function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode)
 	const t = {
 		'@type': '_Types',
 		...(typeLike.find.length > 0 && { _find: typeLike.find }),
-		...(typeLike.identify.length > 0 && { _identify: typeLike.identify }),
+		...(typeLike.identify.length > 0 && { _identify: typeLike.identify })
+	};
+	return toString(displayUtil.lensAndFormat(t, LensType.Card, locale));
+}
+
+function selectTypeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode): string {
+	const t = {
+		'@type': '_Types',
 		...(typeLike.select.length > 0 && { _select: typeLike.select })
 	};
 	return toString(displayUtil.lensAndFormat(t, LensType.Card, locale));

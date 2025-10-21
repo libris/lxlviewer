@@ -60,7 +60,7 @@ export const load = async ({ params, locals, fetch }) => {
 		'@type': '_Types', // FIXME? DisplayDecorated needs a dummy wrapper to get the styling right
 		...(typeLike.find.length > 0 && { _find: typeLike.find }),
 		...(typeLike.identify.length > 0 && { _identify: typeLike.identify }),
-		...(typeLike.select.length > 0 && { _select: typeLike.select }),
+		//...(typeLike.select.length > 0 && { _select: typeLike.select }),
 		// FIXME: don't do this here
 		...(!!mainEntity['language'] && { language: mainEntity['language'] })
 	};
