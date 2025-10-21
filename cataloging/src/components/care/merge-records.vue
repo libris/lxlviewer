@@ -5,12 +5,19 @@ import {capitalize, labelByLang, translatePhrase} from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import EntitySummary from '@/components/shared/entity-summary.vue';
 import EntityForm from "@/components/inspector/entity-form.vue";
-import Button from '@/components/shared/button.vue';
 
 export default {
   name: 'MergeRecords',
   props: {
-    floatingDialogs: {
+    enrichStep: {
+      type: Boolean,
+      default: true,
+    },
+    editStep: {
+      type: Boolean,
+      default: false,
+    },
+    mergeStep: {
       type: Boolean,
       default: false,
     },
@@ -19,16 +26,12 @@ export default {
     EntityForm,
     'tab-menu': TabMenu,
     'entity-summary': EntitySummary,
-    'button-component': Button,
   },
   data() {
     return {
       selected: [],
       formFocus: 'mainEntity',
       resultObject: null, //TODO: probably don't need this
-      enrichStep: true,
-      editStep: false,
-      mergeStep: false,
     };
   },
   computed: {
@@ -101,22 +104,6 @@ export default {
     done() {
       this.resetCachedChanges();
       this.close();
-    },
-    goToEditStep() {
-      this.resetCachedChanges();
-      this.enrichStep = false;
-      this.mergeStep = false;
-      this.editStep = true;
-    },
-    goToEnrichStep() {
-      this.enrichStep = true;
-      this.mergeStep = false;
-      this.editStep = false;
-    },
-    goToMergeStep() {
-      this.enrichStep = false;
-      this.mergeStep = true;
-      this.editStep = false;
     },
     setFocus(focus) {
       this.formFocus = focus;
@@ -266,10 +253,7 @@ export default {
       </div>
     </div>
     </div>
-    <div v-if="enrichStep" class="MergeView-dialog">
-      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
-      <button class="btn btn--md btn-primary" @click="goToEditStep" @keyup.enter="goToEditStep">{{ translatePhrase('Back to editing form') }}</button>
-    </div>
+
 
 <!--    USE INSPECTOR HERE INSTEAD (just hope enriched is not cleared on mount???)-->
   <div v-if="editStep">
@@ -296,11 +280,6 @@ export default {
         </div>
     </div>
   </div>
-  <div v-if="editStep" class="MergeView-dialog" :class="{ 'is-floating': floatingDialogs }">
-    <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
-    <button class="btn btn--md btn-primary" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">Tillbaka</button>
-    <button class="btn btn--md btn-primary" @click="goToMergeStep" @keyup.enter="goToMergeStep">Slå ihop</button>
-  </div>
   </div>
 </template>
 
@@ -323,7 +302,7 @@ export default {
 
 .MergeView {
   width: 100%;
-  padding: 2rem 2rem 0 2rem;
+  padding: 2rem 0;
   overflow-y: scroll;
 
 

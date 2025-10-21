@@ -20,6 +20,9 @@ export default {
   data() {
     return {
       recordLoaded: false,
+      enrichStep: true,
+      editStep: false,
+      mergeStep: false,
     };
   },
   computed: {
@@ -40,6 +43,7 @@ export default {
       }
   },
       methods: {
+        translatePhrase,
       ...mapActions([
           'setEnrichmentSource',
           'setEnrichmentTarget',
@@ -49,6 +53,25 @@ export default {
           this.$store.dispatch('setInspectorData', this.inspector.originalData);
           this.$store.dispatch('flushChangeHistory');
           this.setEnrichmentChanges(null);
+        },
+        resetCachedChanges() {
+          this.setEnrichmentChanges(null);
+        },
+        goToEditStep() {
+          this.resetCachedChanges();
+          this.enrichStep = false;
+          this.mergeStep = false;
+          this.editStep = true;
+        },
+        goToEnrichStep() {
+          this.enrichStep = true;
+          this.mergeStep = false;
+          this.editStep = false;
+        },
+        goToMergeStep() {
+          this.enrichStep = false;
+          this.mergeStep = true;
+          this.editStep = false;
         },
         applyFromSource() {
           this.$store.dispatch('setInspectorData', this.inspector.originalData);
@@ -193,12 +216,35 @@ export default {
 
 <template>
   <div class="MergeRecordsContainer">
-  <merge-records></merge-records>
+    <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.enrichStep }" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">1. Berika</button>
+    <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.editStep }" @click="goToEditStep" @keyup.enter="goToEditStep">2. Redigera</button>
+    <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.mergeStep }" @click="goToMergeStep" @keyup.enter="goToMergeStep">3. Slå ihop</button>
+  <merge-records :enrich-step="this.enrichStep" :edit-step="this.editStep" :merge-step="this.mergeStep"></merge-records>
   </div>
 </template>
 
 <style lang="less">
 .MergeRecordsContainer {
+  .btn-selectable {
+    border-radius: 0;
+    color: lighten(@black, 30%);
+    background-color: darken(@white, 5%);
+    &:focus {
+      color: lighten(@black, 15%);
+      background-color: darken(@white, 5%);
+    }
+    &:hover {
+      color: lighten(@black, 10%);
+      //background-color: darken(@white, 10%);
+      text-decoration: underline;
+
+    }
+  }
+  .selected {
+    color: lighten(@black, 10%);
+    text-decoration: underline;
+    background-color: darken(@white, 8%);
+  }
 
 }
 </style>
