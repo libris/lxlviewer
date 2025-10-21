@@ -188,9 +188,10 @@
 		<search
 			id={IDs.search}
 			class={[
-				showSearchInputOnMobile && 'flex',
-				!showSearchInputOnMobile && 'hidden target:flex lg:flex', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
-				'mx-2 mb-2 items-center lg:mx-0 lg:mb-0'
+				showSearchInputOnMobile && 'mb-2 flex lg:mb-0',
+				!showSearchInputOnMobile &&
+					'hidden target:flex has-[dialog:open]:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
+				'mx-2 items-center lg:mx-0'
 			]}
 		>
 			<form action={findActionUrl} class="mx-auto w-full max-w-7xl lg:px-4">
@@ -198,6 +199,9 @@
 					id="search"
 					name="_q"
 					placeholder={page.data.t('header.searchPlaceholder')}
+					--sm-dialog-top={showSearchInputOnMobile
+						? 'calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2)'
+						: 'calc(var(--banner-height, 0)'}
 					bind:this={appSearchComponent}
 				/>
 			</form>
@@ -274,11 +278,6 @@
 
 	search {
 		grid-area: search;
-
-		/* ensure an open dialog is visible when parent <search> is hidden */
-		:global(&:has(dialog[open])) {
-			display: flex;
-		}
 	}
 
 	.trailing-actions {

@@ -396,7 +396,7 @@
 		top: 0;
 
 		@variant sm {
-			top: calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2);
+			top: var(--sm-dialog-top);
 			height: fit-content;
 		}
 
