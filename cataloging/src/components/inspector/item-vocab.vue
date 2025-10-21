@@ -75,11 +75,13 @@ export default {
       if (value !== this.selected) {
         this.selected = this.fieldValue;
       }
+
+      console.log('field value', this.fieldValue)
     },
     selected(value, oldValue) {
       if (value !== oldValue && this.initialized && !this.isLocked) {
         console.log('old value', oldValue)
-        console.log('new value', value)
+        console.log('value', value)
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -108,6 +110,8 @@ export default {
       });
       
       console.log('VÄRDEN,', possibleValues)
+
+      console.log('recoursceececessss,',this.resources)
 
       return sortBy(possibleValues, (value) => StringUtil.getLabelByLang(
         value,
@@ -188,7 +192,6 @@ export default {
 .ItemVocab {
   &.is-locked {
     line-height: 2;
-    // padding-left: 5px;
   }
 
   &-text {

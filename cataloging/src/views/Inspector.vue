@@ -984,7 +984,6 @@ export default {
       'enrichment',
     ]),
     isDocumentAvailable() {
-      console.log('hallå', this.inspector.data)
       return this.inspector.data.hasOwnProperty('record');
     },
     isReadyForSave() {
