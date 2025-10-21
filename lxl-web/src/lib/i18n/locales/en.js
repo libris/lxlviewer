@@ -68,6 +68,7 @@ export default {
 		q: 'Free text search',
 		'_categoryByCollection.find': '"Find category" 🚧👷🏗️',
 		'_categoryByCollection.identify': '"Identifying category"  🚧👷🏗️',
+		'_categoryByCollection.@none': '"Category"  🚧👷🏗️',
 		category: '"Category"  🚧👷🏗️',
 		hasInstanceCategory: '"Format"  🚧👷🏗',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',

@@ -67,6 +67,7 @@ export default {
 		q: 'Fritextsökning',
 		'_categoryByCollection.find': 'Kategori',
 		'_categoryByCollection.identify': '"Identifierande kategori"  🚧👷🏗️',
+		'_categoryByCollection.@none': '"Kategori"  🚧👷🏗️',
 		category: '"Kategori"  🚧👷🏗️',
 		hasInstanceCategory: '"Format"  🚧👷🏗',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
