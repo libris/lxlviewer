@@ -116,7 +116,7 @@
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
 	<nav class="app-bar bg-app-header grid items-stretch">
-		<ul class="leading-actions flex items-center lg:gap-2">
+		<ul class="leading-actions ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -188,9 +188,9 @@
 		<search
 			id={IDs.search}
 			class={[
-				showSearchInputOnMobile && 'flex pb-2 sm:pb-0',
-				!showSearchInputOnMobile && 'hidden target:flex target:pb-2 lg:flex target:lg:pb-0', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
-				'items-center'
+				showSearchInputOnMobile && 'flex',
+				!showSearchInputOnMobile && 'hidden target:flex lg:flex', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
+				'mx-2 mb-2 items-center lg:mx-0 lg:mb-0'
 			]}
 		>
 			<form action={findActionUrl} class="mx-auto w-full max-w-7xl lg:px-4">
@@ -202,7 +202,7 @@
 				/>
 			</form>
 		</search>
-		<ul class="trailing-actions flex items-center justify-end lg:gap-2">
+		<ul class="trailing-actions mr-2 flex items-center justify-end lg:mr-0 lg:gap-2">
 			<li class="lg:hidden">
 				<svelte:element
 					this={mounted ? 'button' : 'a'}

@@ -163,7 +163,7 @@
 </script>
 
 {#snippet loading()}
-	<span class="-mt-0.5 block size-4" in:fade={{ duration: 200 }}>
+	<span class="block size-4" in:fade={{ duration: 200 }}>
 		<Spinner />
 	</span>
 {/snippet}
@@ -307,13 +307,14 @@
 					</div>
 				{/if}
 				{#if showAddQualifiers && resultsCount && q.trim().length}
-					<div role="row" class="border-neutral border-t">
+					<div role="row" class="border-neutral bg-page fixed bottom-0 w-full border-t sm:static">
 						<button
 							type="submit"
-							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs sm:px-2 lg:px-4"
+							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-sm sm:px-2 sm:text-xs lg:px-4"
 							class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
-							>{page.data.t('supersearch.showAll')}</button
 						>
+							{page.data.t('supersearch.showAll')}
+						</button>
 					</div>
 				{/if}
 			</nav>
@@ -364,8 +365,12 @@
 		}
 
 		@variant lg {
-			margin-block: calc((var(--spacing) * 3));
+			margin-block: calc(var(--spacing) * 3);
 			margin-inline: calc(var(--spacing) * 4);
+		}
+
+		@variant 3xl {
+			margin-block: calc(var(--spacing) * 3.5);
 		}
 	}
 
