@@ -107,7 +107,12 @@
 		return null;
 	});
 
-	const showAddQualifiers = $derived(editedParentNode !== 'QualifierValue');
+	const charBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
+	const charAfter = $derived(/\S/.test(q.charAt(cursor)));
+
+	const showAddQualifiers = $derived(
+		!charBefore && !charAfter && editedParentNode !== 'QualifierValue'
+	);
 
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
@@ -167,7 +172,6 @@
 		<Spinner />
 	</span>
 {/snippet}
-
 {#key page.data.locale}
 	<SuperSearch
 		name="_q"
