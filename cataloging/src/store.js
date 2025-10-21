@@ -62,6 +62,7 @@ const store = createStore({
         mergeViewModal: {
           open: false,
         },
+        mergeView: false,
         saving: false,
         opening: false,
         lastAdded: '',

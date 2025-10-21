@@ -12,6 +12,7 @@ import CreateBulkChange from '@/components/care/create-bulk-change.vue';
 import BulkChanges from '@/components/care/bulk-changes.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import AdminNotices from './AdminNotices.vue';
+import MergeRecordsContainer from "@/components/care/merge-records-container.vue";
 
 export default {
   name: 'DirectoryCare',
@@ -23,6 +24,7 @@ export default {
     'create-message': CreateMessage,
     'create-bulk-change': CreateBulkChange,
     'bulk-changes': BulkChanges,
+    'merge-records-container': MergeRecordsContainer,
   },
   data() {
     return {
@@ -51,7 +53,7 @@ export default {
         { id: 'changes', text: 'CXZ messages' },
         { id: 'message', text: 'Create message' },
         { id: 'holdings', text: 'Move holdings' },
-        // { 'id': 'merge', 'text': 'Merge records' },
+        { id: 'merge', text: 'Merge entities' },
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
       if (this.userIsAllowedToBulkChange) {
@@ -173,10 +175,7 @@ export default {
         <h1></h1>
         {{ translatePhrase("To see bulk changes you need to switch to a sigel with access.") }}
       </div>
-      <div class="" v-if="$route.params.tool === 'merge'">
-        <h1>merge records</h1>
-        <!-- replace this whole div with the component -->
-      </div>
+      <merge-records-container v-if="$route.params.tool === 'merge'"></merge-records-container>
       <modal-component
         v-if="showModal"
         title="Directory care list adjusted"

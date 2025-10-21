@@ -38,6 +38,7 @@ export default {
       'inspector',
       'user',
       'resources',
+      'status'
     ]),
     isAllSelected() {
       const noOfSelectable = Object.keys(this.sourceSelectable).length;
@@ -74,7 +75,6 @@ export default {
       return this.inspector.data[this.formFocus];
     },
   },
-  emits: ['onEnrich'],
   methods: {
     translatePhrase,
     labelByLang,
@@ -183,28 +183,28 @@ export default {
 </script>
 
 <template>
-  <div class="DetailedEnrichment" :class="{ 'with-floating-dialog': floatingDialogs }">
+  <div class="MergeView">
     <div v-if="enrichStep">
-    <div class="DetailedEnrichment-rowContainer" v-if="resultObject">
-      <div class="DetailedEnrichment-row">
-        <div class="DetailedEnrichment-fieldRow">
-          <div class="DetailedEnrichment-columnHeader sourceColumn">
-            <div class="DetailedEnrichment-summaryLabel">
+    <div class="MergeView-rowContainer" v-if="resultObject">
+      <div class="MergeView-row">
+        <div class="MergeView-fieldRow">
+          <div class="MergeView-columnHeader sourceColumn">
+            <div class="MergeView-summaryLabel">
               {{ translatePhrase('Enrich from') }}
             </div>
-            <div class="DetailedEnrichment-summaryContainer">
+            <div class="MergeView-summaryContainer">
               <entity-summary
                 :focus-data="this.enrichment.data.source.mainEntity"
                 :should-link="false"
                 :exclude-components="[]" />
             </div>
           </div>
-          <div class="DetailedEnrichment-actionHeader actionColumn" />
-          <div class="DetailedEnrichment-columnHeader resultColumn non-existing">
-            <div class="DetailedEnrichment-summaryLabel">
+          <div class="MergeView-actionHeader actionColumn" />
+          <div class="MergeView-columnHeader resultColumn non-existing">
+            <div class="MergeView-summaryLabel">
               {{ translatePhrase('Result') }}
             </div>
-            <div class="DetailedEnrichment-summaryContainer">
+            <div class="MergeView-summaryContainer">
               <entity-summary
                 :focus-data="this.inspector.data.mainEntity"
                 :should-link="false"
@@ -215,10 +215,10 @@ export default {
       </div>
 
       <span class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></span>
-      <span class="DetailedEnrichment-description">
+      <span class="MergeView-description">
         {{translatePhrase('Select parts of the left record which should be copied to the right one.')}}
       </span>
-      <div class="DetailedEnrichment-fieldRow">
+      <div class="MergeView-fieldRow">
           <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
       </div>
       <div>
@@ -231,8 +231,8 @@ export default {
         </button>
       </div>
 
-      <div class="DetailedEnrichment-fieldRow">
-        <div class="DetailedEnrichment-sourceField sourceColumn">
+      <div class="MergeView-fieldRow">
+        <div class="MergeView-sourceField sourceColumn">
           <div class="entityForm">
             <entity-form
               :editing-object="formFocus"
@@ -246,11 +246,11 @@ export default {
             />
           </div>
         </div>
-        <div class="DetailedEnrichment-buttonContainer actionColumn">
+        <div class="MergeView-buttonContainer actionColumn">
         </div>
 
         <div
-          class="DetailedEnrichment-resultField resultColumn">
+          class="MergeView-resultField resultColumn">
           <div class="entityForm">
             <entity-form
               :editing-object="formFocus"
@@ -266,22 +266,23 @@ export default {
       </div>
     </div>
     </div>
-    <div v-if="enrichStep" class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
+    <div v-if="enrichStep" class="MergeView-dialog">
       <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
       <button class="btn btn--md btn-primary" @click="goToEditStep" @keyup.enter="goToEditStep">{{ translatePhrase('Back to editing form') }}</button>
     </div>
 
+<!--    USE INSPECTOR HERE INSTEAD (just hope enriched is not cleared on mount???)-->
   <div v-if="editStep">
-    <div class="DetailedEnrichment-fieldRow">
+    <div class="MergeView-fieldRow">
         <entity-summary
           :focus-data="this.inspector.data.mainEntity"
           :should-link="false"
           :exclude-components="[]" />
     </div>
-    <div class="DetailedEnrichment-fieldRow">
+    <div class="MergeView-fieldRow">
       <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
     </div>
-    <div class="DetailedEnrichment-fieldRow">
+    <div class="MergeView-fieldRow">
         <div class="entityForm">
           <entity-form
             :editing-object="formFocus"
@@ -295,7 +296,7 @@ export default {
         </div>
     </div>
   </div>
-  <div v-if="editStep" class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
+  <div v-if="editStep" class="MergeView-dialog" :class="{ 'is-floating': floatingDialogs }">
     <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
     <button class="btn btn--md btn-primary" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">Tillbaka</button>
     <button class="btn btn--md btn-primary" @click="goToMergeStep" @keyup.enter="goToMergeStep">Slå ihop</button>
@@ -320,14 +321,11 @@ export default {
 @targetColSm: 61%;
 @targetColXs: 60%;
 
-.DetailedEnrichment {
+.MergeView {
   width: 100%;
-  height: 80vh;
   padding: 2rem 2rem 0 2rem;
   overflow-y: scroll;
-  &.with-floating-dialog {
-    margin-bottom: 5em;
-  }
+
 
   &-dialog {
     background-color: @neutral-color;
