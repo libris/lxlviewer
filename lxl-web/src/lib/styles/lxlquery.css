@@ -2,6 +2,7 @@
 	display: inline-block;
 	color: var(--text-body);
 	background-color: var(--color-accent-50);
+	margin-block: 1px;
 }
 
 .lxl-qualifier-key,

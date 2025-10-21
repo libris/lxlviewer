@@ -188,7 +188,7 @@
 		<search
 			id={IDs.search}
 			class={[
-				showSearchInputOnMobile && 'flex pb-2 lg:pb-0',
+				showSearchInputOnMobile && 'flex pb-2 sm:pb-0',
 				!showSearchInputOnMobile && 'hidden target:flex target:pb-2 lg:flex target:lg:pb-0', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
 				'items-center'
 			]}

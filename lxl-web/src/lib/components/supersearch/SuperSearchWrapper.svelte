@@ -13,7 +13,6 @@
 	import IconClose from '~icons/bi/x-lg';
 	import IconBack from '~icons/bi/arrow-left-short';
 	import IconSearch from '~icons/bi/search';
-	import IconAddQualifierKey from '~icons/bi/plus-circle';
 	import '$lib/styles/lxlquery.css';
 
 	const qualifierSuggestions = $derived([
@@ -220,15 +219,15 @@
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center lg:hidden',
-							expanded && 'h-14 w-13 lg:h-12 lg:w-11'
+							'action text-subtle flex size-11 items-center justify-center sm:hidden',
+							expanded && 'h-14 w-13 sm:size-11 lg:size-12'
 						]}
 						onclick={onclickClose}
 					>
 						{#if debouncedLoading}
 							{@render loading()}
 						{:else}
-							<IconBack aria-hidden="true" class="size-7 lg:size-6" />
+							<IconBack aria-hidden="true" class="size-7" />
 						{/if}
 					</button>
 				{/if}
@@ -236,13 +235,13 @@
 					<div
 						class={[
 							'text-subtle absolute flex size-11 items-center justify-center rounded-md lg:h-12',
-							expanded && 'bg-input z-50 hidden h-14 w-13 lg:flex lg:h-12 lg:w-11'
+							expanded && 'bg-input z-50 hidden sm:flex sm:h-11 sm:w-11 lg:h-12'
 						]}
 					>
 						{#if debouncedLoading}
 							{@render loading()}
 						{:else}
-							<IconSearch aria-hidden="true" class="size-3.5 lg:size-4" />
+							<IconSearch aria-hidden="true" class="size-4 lg:mt-[1px]" />
 						{/if}
 					</div>
 					{@render inputField()}
@@ -253,13 +252,14 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center lg:h-12',
-							expanded && 'h-14 w-13 lg:h-11 lg:w-11'
+							'action text-subtle flex size-11 items-center justify-center lg:size-12',
+							expanded && 'max-sm:h-14 max-sm:w-13'
 						]}
 						aria-label={page.data.t('search.clearFilters')}
 						onclick={onclickClear}
+						title={page.data.t('search.clearFilters')}
 					>
-						<IconClose />
+						<IconClose class="size-4" />
 					</button>
 				{/if}
 			</div>
@@ -269,13 +269,15 @@
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
-						class="text-subtle mt-1 mb-1 px-4 text-xs font-medium"
+						class="text-subtle mt-2 mb-1 px-4 text-xs font-medium sm:mt-1 sm:px-2 lg:mt-0 lg:px-4"
 					>
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
-							<IconAddQualifierKey class="text-subtle shrink-0" />
+						<div
+							role="row"
+							class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4 sm:pl-2 lg:pl-4"
+						>
 							{#each qualifierSuggestions as { key, label }, cellIndex (key)}
 								<button
 									type="button"
@@ -294,7 +296,10 @@
 					</div>
 				{/if}
 				{#if resultsCount && q.trim().length}
-					<div id="supersearch-results-label" class="text-subtle mb-1 px-4 text-xs font-medium">
+					<div
+						id="supersearch-results-label"
+						class="text-subtle mb-1 px-4 text-xs font-medium sm:px-2 lg:px-4"
+					>
 						{page.data.t('supersearch.suggestions')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-results-label">
@@ -305,7 +310,7 @@
 					<div role="row" class="border-neutral border-t">
 						<button
 							type="submit"
-							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs"
+							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-xs sm:px-2 lg:px-4"
 							class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
 							>{page.data.t('supersearch.showAll')}</button
 						>
@@ -334,7 +339,7 @@
 		&:focus-within {
 			box-shadow: 0 0 0 1px var(--color-primary-500);
 		}
-		@variant lg {
+		@variant sm {
 			&:hover {
 				box-shadow: 0 0 0 1px var(--color-primary-500);
 			}
@@ -346,15 +351,21 @@
 		border-radius: 0;
 		box-shadow: none;
 
-		@variant lg {
+		@variant sm {
 			border-bottom: none;
 			border-radius: var(--radius-md);
-			margin-inline: calc(var(--spacing) * 4);
+			margin-inline: calc(var(--spacing) * 2);
 			box-shadow: 0 0 0 1px var(--color-primary-200);
+			margin-block: calc((var(--spacing) * 2));
 
 			&.focused-row {
 				box-shadow: 0 0 0 1px var(--color-primary-500);
 			}
+		}
+
+		@variant lg {
+			margin-block: calc((var(--spacing) * 3));
+			margin-inline: calc(var(--spacing) * 4);
 		}
 	}
 
@@ -379,6 +390,11 @@
 		padding: 0;
 		top: 0;
 
+		@variant sm {
+			top: calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2);
+			height: fit-content;
+		}
+
 		@variant lg {
 			top: calc(var(--banner-height, 0));
 		}
@@ -388,16 +404,17 @@
 		height: 100%;
 		width: 100%;
 
-		@variant lg {
+		@variant sm {
 			position: fixed;
-			pointer-events: none;
+			height: auto;
+		}
 
+		@variant lg {
 			display: grid;
 			grid-template-areas: var(--search-grid-template-areas);
 			grid-template-columns: var(--search-grid-template-columns);
 			padding: var(--search-padding);
 			gap: var(--search-gap);
-			height: auto;
 		}
 	}
 
@@ -414,17 +431,9 @@
 		margin: 0 auto;
 		@apply max-w-7xl;
 
-		@variant lg {
-			border-radius: var(--radius-md);
+		@variant sm {
+			border-radius: var(--radius-lg);
 			@apply drop-shadow-md;
-		}
-	}
-
-	:global(.supersearch-combobox) {
-		@variant lg {
-			min-height: var(--app-bar-height);
-			display: flex;
-			align-items: center;
 		}
 	}
 
@@ -481,32 +490,34 @@
 		scrollbar-width: thin;
 		max-height: 96px;
 
-		@variant lg {
+		@variant sm {
 			min-height: calc(var(--spacing) * 11);
 		}
 	}
 
 	.supersearch-input :global(.cm-line) {
 		min-height: calc(var(--spacing) * 11);
-		font-size: var(--text-xs);
-		line-height: 32px;
+		line-height: 30px;
 		padding-left: calc(var(--spacing) * 11);
-		padding-block: calc(var(--spacing) * 1.5);
+		padding-block: calc(var(--spacing) * 2 - 2px);
 
 		@variant lg {
-			padding-block: calc(var(--spacing) * 2);
+			min-height: calc(var(--spacing) * 12);
+			padding-block: calc(var(--spacing) * 2.5 - 2px);
 		}
 	}
 
 	.expanded.supersearch-input :global(.cm-line) {
-		min-height: calc(var(--spacing) * 12);
-		padding-block: calc(var(--spacing) * 3);
 		padding-left: 0;
+		padding-block: calc(var(--spacing) * 3.5 - 2px);
+
+		@variant sm {
+			padding-block: calc(var(--spacing) * 2 - 2px);
+			padding-left: calc(var(--spacing) * 11);
+		}
 
 		@variant lg {
-			padding-block: calc(var(--spacing) * 2);
-
-			padding-left: calc(var(--spacing) * 11);
+			padding-block: calc(var(--spacing) * 2.5 - 2px);
 		}
 	}
 
@@ -517,8 +528,12 @@
 
 	:global(.supersearch-dialog .supersearch-input .cm-line) {
 		padding-left: 0;
-		@variant lg {
+		@variant sm {
 			padding-left: calc(var(--spacing) * 11);
+		}
+
+		@variant lg {
+			padding-left: calc(var(--spacing) * 12);
 		}
 	}
 
@@ -528,5 +543,6 @@
 
 	:global(.codemirror-container .cm-placeholder) {
 		color: var(--color-placeholder);
+		margin: 1px 0;
 	}
 </style>
