@@ -307,10 +307,10 @@
 					</div>
 				{/if}
 				{#if showAddQualifiers && resultsCount && q.trim().length}
-					<div role="row" class="border-neutral bg-page fixed bottom-0 w-full border-t sm:static">
+					<div role="row" class="show-all border-neutral bg-page fixed w-full border-t sm:static">
 						<button
 							type="submit"
-							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-sm sm:px-2 sm:text-xs lg:px-4"
+							class="hover:bg-primary-50 min-h-11 w-full px-4 text-left text-sm font-medium sm:px-2 sm:text-xs lg:px-4"
 							class:focused-cell={isFocusedCell(2 + (resultsCount || 0), 0)}
 						>
 							{page.data.t('supersearch.showAll')}
@@ -549,5 +549,12 @@
 	:global(.codemirror-container .cm-placeholder) {
 		color: var(--color-placeholder);
 		margin: 1px 0;
+	}
+
+	.show-all {
+		bottom: env(safe-area-inset-bottom, 0px);
+		@variant sm {
+			bottom: 0;
+		}
 	}
 </style>
