@@ -525,7 +525,7 @@
 	}
 
 	function handleClickOutsideDialog(event: MouseEvent) {
-		if (event.target === dialog) {
+		if (event.target === dialog || event.target === event.currentTarget) {
 			hideExpandedSearch();
 		}
 	}
@@ -701,7 +701,12 @@
 	</div>
 </div>
 <dialog class="supersearch-dialog" id={`${id}-dialog`} bind:this={dialog}>
-	<div class="supersearch-dialog-wrapper" role="presentation" onkeydown={handleExpandedKeyDown}>
+	<div
+		class="supersearch-dialog-wrapper"
+		role="presentation"
+		onkeydown={handleExpandedKeyDown}
+		onclick={handleClickOutsideDialog}
+	>
 		<div class="supersearch-dialog-content" role="grid">
 			<div class="supersearch-combobox" role="row">
 				{@render inputRow?.({
