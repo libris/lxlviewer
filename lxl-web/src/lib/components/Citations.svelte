@@ -7,6 +7,7 @@
 	import Spinner from './Spinner.svelte';
 	import BiCopy from '~icons/bi/copy';
 	import BiDownload from '~icons/bi/download';
+	import BiChevronDown from '~icons/bi/chevron-down';
 
 	type Props = {
 		citations: Promise<CitationsType>;
@@ -48,19 +49,25 @@
 </script>
 
 <div>
-	<label for="citation-format-select" class="sr-only">{page.data.t('citations.selectFormat')}</label
-	>
-	<select
-		class="btn btn-primary"
-		bind:value={selectedFormat}
-		id="citation-format-select"
-		onchange={handleChangeFormat}
-	>
-		<option value="all">{page.data.t('citations.allFormats')}</option>
-		{#each getAvailableFormats() as format (format.key)}
-			<option value={format.key}>{format.name}</option>
-		{/each}
-	</select>
+	<div class="relative w-min">
+		<label for="citation-format-select" class="sr-only"
+			>{page.data.t('citations.selectFormat')}</label
+		>
+		<select
+			class="btn btn-primary appearance-none pr-8"
+			bind:value={selectedFormat}
+			id="citation-format-select"
+			onchange={handleChangeFormat}
+		>
+			<option value="all">{page.data.t('citations.allFormats')}</option>
+			{#each getAvailableFormats() as format (format.key)}
+				<option value={format.key}>{format.name}</option>
+			{/each}
+		</select>
+		<span class="text-subtle pointer-events-none absolute top-0 right-1.5 py-2.5 text-xs">
+			<BiChevronDown aria-hidden="true" />
+		</span>
+	</div>
 	{#await citations}
 		<div class="flex h-36 items-center justify-center" in:fade={{ duration: 200 }}>
 			<span class="size-6">
