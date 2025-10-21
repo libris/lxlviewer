@@ -469,7 +469,6 @@
     "Remove records": "Ta bort poster",
     "Remove record": "Radera post",
     "Create records": "Skapa poster",
-    "Create record": "Skapa post",
     "Merge": "Slå ihop",
     "Change": "Ändring",
     "Fetching preview": "Hämtar förhandsgranskning",
@@ -480,6 +479,8 @@
     "This might take a while...": "Det här verkar ta lite tid...",
     "Edit locked property": "Redigera låst egenskap",
     "The property is locked for editing. Are you sure you want to unlock it?": "Egenskapen är låst för redigering. Är du säker på att du vill låsa upp?",
-    "Manage cookies": "Hantera kakor"
+    "Manage cookies": "Hantera kakor",
+    "is empty": "är tom",
+    "The property": "Egenskapen"
   }
 }

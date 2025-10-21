@@ -4,14 +4,12 @@
 	import { relativizeUrl } from '$lib/utils/http';
 	import DecoratedData from './DecoratedData.svelte';
 	import placeholderImage from '$lib/assets/img/placeholder.svg';
-	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import getInstanceData from '$lib/utils/getInstanceData';
+	import TypeIcon from './TypeIcon.svelte';
 
 	type Props = { data: SearchResultItem; headerClass?: string };
 
 	let { data, headerClass }: Props = $props();
-
-	const TypeIcon = $derived(getTypeIcon(data.typeForIcon));
 </script>
 
 {#snippet image()}
@@ -38,7 +36,7 @@
 						(data?.typeForIcon === 'Text' || data?.typeForIcon === 'Literature') && 'aspect-3/4'
 					]}
 				/>
-				<TypeIcon class="absolute text-4xl text-neutral-300" />
+				<TypeIcon type={data.typeForIcon} class="absolute text-4xl text-neutral-300" />
 			</div>
 		{/if}
 	</div>
@@ -52,7 +50,7 @@
 		>
 			{@render image()}
 			<p class="decorated-card-header-top">
-				<TypeIcon class="text-3xs mb-0.25 inline" />
+				<TypeIcon type={data.typeForIcon} class="text-3xs mb-0.25 inline" />
 				{#if data.typeStr}
 					<span class="font-medium">
 						{data.typeStr}
