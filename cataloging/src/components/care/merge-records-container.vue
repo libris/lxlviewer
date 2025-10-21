@@ -104,7 +104,6 @@ export default {
             this.inspector.status.selected.some(b => a.path.startsWith(b.path))
           );
 
-
           if (changesToBeApplied.length !== 0) {
             this.$store.dispatch('updateInspectorData', {
               changeList: changesToBeApplied,
@@ -127,7 +126,6 @@ export default {
         },
         fetchId(id = 'bmlrfn0683955zqc', fetchingSource=false) {
           if (id !== null) {
-            console.log('ASDNKAJDSKJANSDKJANDS')
             const fixedId = RecordUtil.extractFnurgel(id);
             const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
             fetch(fetchUrl).then((response) => {
@@ -157,7 +155,6 @@ export default {
                   this.setEnrichmentSource(data);
                   DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
                 } else {
-                  console.log('HEJ')
                   this.$store.dispatch('setInspectorData', data);
                   this.setEnrichmentTarget(data);
                   this.$store.dispatch('removeLoadingIndicator', 'Loading document');
