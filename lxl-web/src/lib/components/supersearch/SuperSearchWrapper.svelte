@@ -21,6 +21,7 @@
 			key: page.data.t('qualifiers.contributorKey'),
 			label: page.data.t('qualifiers.contributorLabel')
 		},
+		{ key: page.data.t('qualifiers.categoryKey'), label: page.data.t('qualifiers.categoryLabel') },
 		{ key: page.data.t('qualifiers.titleKey'), label: page.data.t('qualifiers.titleLabel') },
 		{ key: page.data.t('qualifiers.languageKey'), label: page.data.t('qualifiers.languageLabel') },
 		{ key: page.data.t('qualifiers.subjectKey'), label: page.data.t('qualifiers.subjectLabel') },

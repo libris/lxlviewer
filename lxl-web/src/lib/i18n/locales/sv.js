@@ -166,6 +166,8 @@ export default {
 		contributorKey: 'contributor',
 		contributorLabel: 'Författare/upphov',
 		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
+		categoryKey: 'category',
+		categoryLabel: 'Kategori',
 		titleKey: 'titel',
 		titleLabel: 'Titel',
 		titlePlaceholder: 'Röda rummet, Casablanca',
