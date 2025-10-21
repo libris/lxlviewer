@@ -5,7 +5,6 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
-	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import type { Relation } from '$lib/utils/relations';
 	import DecoratedData from './DecoratedData.svelte';
@@ -14,13 +13,13 @@
 	import InstancesList from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/InstancesList.svelte';
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
+	import TypeIcon from '$lib/components/TypeIcon.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import BiQuote from '~icons/bi/quote';
 
 	type Props = {
 		fnurgel: string;
 		uid?: string;
-		type?: string;
 		typeForIcon: string;
 		images: SecureImage[];
 		decoratedTypes: DecoratedData;
@@ -37,7 +36,6 @@
 	const {
 		fnurgel,
 		uid,
-		type,
 		typeForIcon,
 		images,
 		decoratedTypes,
@@ -52,8 +50,6 @@
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
-
-	let TypeIcon = $derived(type ? getTypeIcon(typeForIcon) : undefined);
 </script>
 
 {#if adjecentSearchResults}
@@ -100,9 +96,7 @@
 					<header class="flex-1">
 						<hgroup>
 							<p class="text-subtle text-xs font-medium">
-								{#if TypeIcon}
-									<TypeIcon class="mr-0.5 inline text-sm" />
-								{/if}
+								<TypeIcon type={typeForIcon} class="mr-0.5 inline text-sm" />
 								<DecoratedData data={decoratedTypes} showLabels={ShowLabelsOptions.Never} />
 							</p>
 							<h1 class="decorated-heading my-3 text-3xl font-medium @3xl:text-3xl">
