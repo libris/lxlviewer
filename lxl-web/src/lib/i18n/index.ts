@@ -35,7 +35,7 @@ export async function getTranslator(locale: LocaleCode) {
 		}
 
 		// @ts-expect-error - how to typecheck??
-		const fallbackResult = loadedTranslations[defaultLocale][section][item];
+		const fallbackResult = loadedTranslations?.[defaultLocale]?.[section]?.[item];
 
 		if (fallbackResult) {
 			return interpolate(fallbackResult, values);
