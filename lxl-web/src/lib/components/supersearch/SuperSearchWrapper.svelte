@@ -114,6 +114,8 @@
 		!charBefore && !charAfter && editedParentNode !== 'QualifierValue'
 	);
 
+	const showAllResultsButton = $derived(editedParentNode !== 'QualifierValue');
+
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
 		return data;
@@ -310,7 +312,7 @@
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
-				{#if showAddQualifiers && resultsCount && q.trim().length}
+				{#if showAllResultsButton && resultsCount && q.trim().length}
 					<div role="row" class="show-all border-neutral bg-page fixed w-full border-t sm:static">
 						<button
 							type="submit"
