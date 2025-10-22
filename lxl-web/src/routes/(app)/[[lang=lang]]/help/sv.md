@@ -36,7 +36,7 @@ När du skriver i sökfältet kommer du bli presenterad med förslag på antinge
 
 Ett sätt att utforska katalogen eller avgränsa sökningen är att klicka på de filter (eller facetter) som finns i vänsterkolumnen. Filtrena motsvarar/speglar den information som finns tillgänglig i ditt sökresultat. För att underlätta att hitta i filtren så går dessa att sortera individuellt på antal träffar, a-ö eller ö-a. Aktiva filter visas direkt i sökrutan.
 
-- En smidig funktion är att det går att söka bland alla synliga filter i sökrutan ovanför filtrena. Observera att det endast är de filter som finns “laddade” för sökfrågan som går att söka bland, dessa är dessutom begränsat till de *100 mest förekommande* för vardera filterkategori. Det innebär att om fler än 100 ämnesord finns representerade i sökträffmängden så kommer bara de 100 första att visas, avgränsa sökningen ytterligare för att komma under denna gräns om det är något ämnesord som saknas.
+- En smidig funktion är att det går att söka bland alla synliga filter i sökrutan ovanför filtrena. Observera att det endast är de filter som finns “laddade” för sökfrågan som går att söka bland, dessa är dessutom begränsat till de _100 mest förekommande_ för vardera filterkategori. Det innebär att om fler än 100 ämnesord finns representerade i sökträffmängden så kommer bara de 100 första att visas, avgränsa sökningen ytterligare för att komma under denna gräns om det är något ämnesord som saknas.
 
 <b>Åtkomst</b> - Avgränsa till favoritbibliotek eller fritt tillgängligt online<br>
 <b>Format</b> (under arbete) - Fysiskt eller digitalt material<br>
@@ -65,10 +65,10 @@ Utöver vanlig fritextsökning och de synliga filtren finns också möjligheten 
 Här följer några exempel som går att skriva in som sökfrågor direkt i sökrutan. Klicka på de olika exemplen för att öppna dem i söktjänsten.
 
 Engelskt och franskt material som matchar sökfrasen `“pippi långstrump”` som `givits ut efter år 2002`:<br>
-[pippi långstrump språk:(engelska OR franska) ÅR>2002](https://beta.libris-qa.kb.se/find?_i=pippi+l%C3%A5ngstrump&_q=pippi+l%C3%A5ngstrump+SPR%C3%85K:(engelska%20OR%20franska)&_limit=20&_x=advanced)
+[pippi långstrump språk:(engelska OR franska) ÅR>2002](<https://beta.libris-qa.kb.se/find?_i=pippi+l%C3%A5ngstrump&_q=pippi+l%C3%A5ngstrump+SPR%C3%85K:(engelska%20OR%20franska)&_limit=20&_x=advanced>)
 
 Material med `utgivning mellan 2010 och 2024`, som är på `svenska` och har [drakar](https://id.kb.se/term/sao/Drakar) som ämne:<br>
-[språk:svenska ÅR>2010 ÅR<=2024 ämne:"sao:Drakar"](https://beta.libris-qa.kb.se/find?_i=&_q=SPR%C3%85K:svenska+%C3%85R%3E2010+%C3%85R%3C%3D2024+subject:%22sao:Drakar%22&_limit=20&_x=advanced)
+[`språk:svenska ÅR>2010 ÅR<=2024 ämne:"sao:Drakar"`](https://beta.libris-qa.kb.se/find?_i=&_q=SPR%C3%85K:svenska+%C3%85R%3E2010+%C3%85R%3C%3D2024+subject:%22sao:Drakar%22&_limit=20&_x=advanced)
 
 ### Detaljvyn/resurssidan
 
