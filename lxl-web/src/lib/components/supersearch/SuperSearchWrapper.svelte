@@ -271,11 +271,11 @@
 			</div>
 		{/snippet}
 		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav>
+			<nav class="mt-2 sm:mt-1 lg:mt-0">
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
-						class="text-subtle mt-2 mb-1 px-4 text-xs font-medium sm:mt-1 sm:px-2 lg:mt-0 lg:px-4"
+						class="text-subtle mb-1 px-4 text-xs font-medium sm:px-2 lg:px-4"
 					>
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
