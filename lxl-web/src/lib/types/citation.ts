@@ -24,7 +24,14 @@ export interface CSLName {
 	};
 }
 
-export type CSLType = 'book' | 'article' | 'periodical';
+export type CSLType =
+	| 'book'
+	| 'article'
+	| 'periodical'
+	| 'map'
+	| 'software'
+	| 'graphic'
+	| 'motion_picture';
 
 export interface CSLJSON {
 	type: CSLType;

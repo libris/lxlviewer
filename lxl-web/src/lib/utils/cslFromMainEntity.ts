@@ -1,6 +1,8 @@
 import jmespath from 'jmespath';
 import type { CSLJSON, CSLName, CSLType } from '$lib/types/citation';
 import type { FramedData } from '$lib/types/xl';
+import getTypeLike, { getTypeForIcon } from './getTypeLike';
+import type { VocabUtil } from './xl';
 
 const CSL_KBV_MAPPING: Record<keyof CSLJSON, string> = {
 	id: `"@id"`,
@@ -32,13 +34,13 @@ const CSL_KBV_MAPPING: Record<keyof CSLJSON, string> = {
 	translator: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/translator')].{family: agent.familyName, given: agent.givenName}`
 };
 
-const TYPE_MAP: Record<string, CSLType> = {
-	Monograph: 'book',
-	Serial: 'periodical'
-	// more...
-};
+// const TYPE_MAP: Record<string, CSLType> = {
+// 	Monograph: 'book',
+// 	Serial: 'periodical'
+// 	// more...
+// };
 
-export function cslFromMainEntity(mainEntity: FramedData): CSLJSON[] {
+export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil): CSLJSON[] {
 	const result: Partial<CSLJSON> = {};
 
 	for (const [key, expr] of Object.entries(CSL_KBV_MAPPING) as [keyof CSLJSON, string][]) {
@@ -69,7 +71,45 @@ export function cslFromMainEntity(mainEntity: FramedData): CSLJSON[] {
 		}
 	}
 
-	result.type = TYPE_MAP[result.type as string] ?? 'book';
+	const typeForIcon = getTypeForIcon(getTypeLike(mainEntity.instanceOf, vocabUtil));
+	console.log(typeForIcon); // use this instead?
+	// result.type = TYPE_MAP[typeForIcon as string] ?? 'book';
+	// console.log(mainEntity.instanceOf._categoryByCollection?.find?.[0]?.['@id']);
+
+	result.type = getCslType(mainEntity);
 
 	return [result as CSLJSON];
+}
+
+function getCslType(mainEntity: FramedData): CSLType | undefined {
+	const type = mainEntity?.instanceOf?.['@type'] as string;
+	const category = mainEntity?.instanceOf?.category;
+	if (type === 'Monograph') {
+		if (category && Array.isArray(category)) {
+			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/Text')) {
+				if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/ktg/ComponentPart')) {
+					return 'article';
+				} else return 'book';
+			}
+
+			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/saogf/Kartor')) {
+				return 'map';
+			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/ktg/MovingImage')) {
+				// not correct for all moving image?
+				return 'motion_picture';
+			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/ComputerProgram')) {
+				return 'software';
+			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/StillImage')) {
+				return 'graphic';
+			}
+		}
+	} else if (type === 'Serial') {
+		// periodical
+		if (category && Array.isArray(category)) {
+			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/Text')) {
+				return 'periodical';
+			}
+		}
+	}
+	return 'unknown';
 }

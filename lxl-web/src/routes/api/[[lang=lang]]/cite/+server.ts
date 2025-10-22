@@ -8,7 +8,7 @@ const supportedFormats = ['ris', 'bibtex', 'csl'];
 
 // UNAPI - see v1 spec
 // https://web.archive.org/web/20140331070802/http://unapi.info/specs/
-export async function GET({ params, url, fetch }) {
+export async function GET({ params, url, fetch, locals }) {
 	const lang = getSupportedLocale(params?.lang);
 	const id = url.searchParams.get('id');
 	const format = url.searchParams.get('format');
@@ -25,7 +25,7 @@ export async function GET({ params, url, fetch }) {
 			const res = await fetch(`${url}/data.jsonld?framed=true&computedLabel=${lang}`);
 			if (res.ok) {
 				const record = await res.json();
-				const csl = cslFromMainEntity(record.mainEntity);
+				const csl = cslFromMainEntity(record.mainEntity, locals.vocab);
 				const cite = await initCite(lang);
 				cite.add(csl);
 
