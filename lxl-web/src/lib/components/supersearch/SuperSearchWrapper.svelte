@@ -240,8 +240,8 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle absolute flex size-11 items-center justify-center rounded-md lg:h-12',
-							expanded && 'bg-input z-50 hidden sm:flex sm:h-11 sm:w-11 lg:h-12'
+							'text-subtle bg-input absolute z-50 flex size-11 items-center justify-center rounded-md sm:h-11 sm:w-11 lg:h-12',
+							expanded && 'hidden sm:flex'
 						]}
 					>
 						{#if debouncedLoading}
