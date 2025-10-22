@@ -2,7 +2,12 @@
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { fade } from 'svelte/transition';
-	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
+	import {
+		SuperSearch,
+		lxlQualifierPlugin,
+		type Selection,
+		type ViewUpdateSuperSearchEvent
+	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
@@ -40,6 +45,8 @@
 
 	let isLoading: boolean | undefined = $state();
 	let debouncedLoading: boolean | undefined = $state();
+	let wrappedLines: boolean | undefined = $state();
+
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
 	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
@@ -161,6 +168,14 @@
 		}
 	}
 
+	function handleOnExpandedViewUpdate(event: ViewUpdateSuperSearchEvent) {
+		if (event.lineHeight >= 60) {
+			wrappedLines = true;
+		} else {
+			wrappedLines = false;
+		}
+	}
+
 	$effect(() => {
 		if (page.data.locale !== prevLocale) {
 			prevLocale = page.data.locale;
@@ -201,6 +216,7 @@
 		debouncedWait={400}
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
+		onexpandedviewupdate={handleOnExpandedViewUpdate}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -215,7 +231,8 @@
 				class={[
 					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
 					expanded && 'expanded',
-					isFocusedRow() && ['focused-row']
+					isFocusedRow() && ['focused-row'],
+					wrappedLines && 'wrapped'
 				]}
 			>
 				{#if expanded}
@@ -240,7 +257,7 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:h-11 sm:w-11 lg:h-12',
+							'text-subtle bg-input pointer-events-none absolute z-30 flex size-11 items-center justify-center rounded-md sm:h-11 sm:w-11 lg:h-12',
 							expanded && 'hidden sm:flex'
 						]}
 					>
@@ -490,6 +507,10 @@
 		@apply block flex-1;
 	}
 
+	:global(.cm-editor.cm-focused) {
+		outline: none;
+	}
+
 	.supersearch-input :global(.cm-scroller) {
 		font-family: var(--font-sans);
 		scrollbar-width: none;
@@ -499,7 +520,7 @@
 	.expanded.supersearch-input :global(.cm-scroller) {
 		min-height: calc(var(--spacing) * 14);
 		scrollbar-width: thin;
-		max-height: 96px;
+		max-height: 100px;
 
 		@variant sm {
 			min-height: calc(var(--spacing) * 11);
@@ -507,34 +528,49 @@
 	}
 
 	.supersearch-input :global(.cm-line) {
-		min-height: calc(var(--spacing) * 11);
 		line-height: 30px;
 		padding-left: calc(var(--spacing) * 11);
-		padding-block: calc(var(--spacing) * 2 - 2px);
-
-		@variant lg {
-			min-height: calc(var(--spacing) * 12);
-			padding-block: calc(var(--spacing) * 2.5 - 2px);
-		}
 	}
 
 	.expanded.supersearch-input :global(.cm-line) {
 		padding-left: 0;
-		padding-block: calc(var(--spacing) * 3.5 - 2px);
 
 		@variant sm {
-			padding-block: calc(var(--spacing) * 2 - 2px);
 			padding-left: calc(var(--spacing) * 11);
-		}
-
-		@variant lg {
-			padding-block: calc(var(--spacing) * 2.5 - 2px);
 		}
 	}
 
 	.supersearch-input :global(.cm-content) {
 		margin: 0;
-		padding: 0;
+		padding: calc(var(--spacing) * 1.5) 0;
+
+		@variant lg {
+			padding: calc(var(--spacing) * 2) 0;
+		}
+	}
+
+	.expanded.supersearch-input :global(.cm-content) {
+		padding: calc(var(--spacing) * 3) 0;
+
+		@variant sm {
+			padding: calc(var(--spacing) * 1.5) 0;
+		}
+
+		@variant lg {
+			padding: calc(var(--spacing) * 2) 0;
+		}
+	}
+
+	.expanded.supersearch-input.wrapped :global(.cm-content) {
+		padding: calc(var(--spacing) * 0.5) 0;
+
+		@variant sm {
+			padding: calc(var(--spacing) * 0.5) 0;
+		}
+
+		@variant lg {
+			padding: calc(var(--spacing) * 0.5) 0;
+		}
 	}
 
 	:global(.supersearch-dialog .supersearch-input .cm-line) {

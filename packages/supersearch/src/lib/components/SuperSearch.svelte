@@ -4,9 +4,10 @@
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
+		type ViewUpdateCodeMirrorEvent,
 		type Selection
 	} from '$lib/components/CodeMirror.svelte';
-	import type { ChangeSuperSearchEvent } from '$lib/index.js';
+	import type { ChangeSuperSearchEvent, ViewUpdateSuperSearchEvent } from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
@@ -84,6 +85,7 @@
 		onexpand?: () => void;
 		oncollapse?: () => void;
 		onchange?: (event: ChangeSuperSearchEvent) => void;
+		onexpandedviewupdate?: (event: ViewUpdateSuperSearchEvent) => void;
 	}
 
 	let {
@@ -115,7 +117,8 @@
 		loadMoreLabel = 'Load more',
 		onexpand,
 		oncollapse,
-		onchange
+		onchange,
+		onexpandedviewupdate
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -261,6 +264,10 @@
 
 	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
 		selection = event;
+	}
+
+	function handleExpandedViewUpdate(event: ViewUpdateCodeMirrorEvent) {
+		onexpandedviewupdate?.(event);
 	}
 
 	export function dispatchChange({
@@ -680,6 +687,7 @@
 		extensions={expandedExtensions}
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
+		onviewupdate={handleExpandedViewUpdate}
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
