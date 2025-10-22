@@ -167,6 +167,8 @@ export default {
 		contributorKey: 'contributor',
 		contributorLabel: 'Author/Contributor',
 		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
+		categoryKey: 'category',
+		categoryLabel: 'Category',
 		titleKey: 'title',
 		titleLabel: 'Title',
 		titlePlaceholder: 'The Serious Game, Casablanca',

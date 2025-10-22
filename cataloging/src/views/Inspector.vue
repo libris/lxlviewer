@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, get } from 'lodash-es';
+import { cloneDeep, get, isEqual, isEmpty } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
@@ -738,12 +738,15 @@ export default {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-      this.preSaveHook(obj).then((obj2) => requestMethod({
-        url: opts.url,
-        ETag: opts.ETag,
-        activeSigel: this.user.settings.activeSigel,
-        token: this.user.token,
-      }, obj2)).then((result) => {
+
+      this.preSaveHook(obj).then((obj2) =>
+        requestMethod({
+          url: opts.url,
+          ETag: opts.ETag,
+          activeSigel: this.user.settings.activeSigel,
+          token: this.user.token,
+        }, obj2)
+      ).then((result) => {
         // eslint-disable-next-line no-nested-ternary
         const msgKey = this.isCxzMessage
           ? 'was sent'
@@ -757,6 +760,7 @@ export default {
             message: `${labelByLang(type)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
           });
         }, 10);
+
         if (!this.documentId) {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
@@ -771,10 +775,10 @@ export default {
           if (done) {
             this.stopEditing();
           } else {
-            // Reset original data that should be restored when you click cancel
             this.$store.dispatch('setOriginalData', LxlDataUtil.splitJson(obj));
           }
         }
+
         this.$nextTick(() => {
           this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
           this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
@@ -785,6 +789,7 @@ export default {
         let errorMessage = '';
         switch (error.status) {
           case 412:
+            // eslint-disable-next-line vue/max-len
             errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             break;
@@ -793,7 +798,7 @@ export default {
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             break;
           case 400:
-            let errorJson = null;
+            { let errorJson = null;
             const responseHeader = error.getResponseHeader('Content-Type');
             if (responseHeader && responseHeader.indexOf('application/json') !== -1) {
               try {
@@ -808,14 +813,16 @@ export default {
               this.$store.dispatch('setBackendValidationErrors', errorJson['errors']);
               this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'expand-item' });
             } else {
+              // eslint-disable-next-line vue/max-len
               errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
               this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             }
-            break;
+            break; }
           case 401:
             localStorage.removeItem('lastPath');
             errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language, this.resources.i18n)}`;
-            this.$store.dispatch('pushNotification', { type: 'danger',
+            this.$store.dispatch('pushNotification', {
+              type: 'danger',
               message: `${errorBase}. ${errorMessage}.`,
               sticky: true,
               link: {
@@ -823,10 +830,12 @@ export default {
                 title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`,
                 newTab: true,
                 external: true,
-              } });
+              }
+            });
             break;
           default:
             console.error(error);
+            // eslint-disable-next-line vue/max-len
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         }
@@ -834,17 +843,47 @@ export default {
     },
     warnOnSave() {
       const warnArr = Object.keys(this.settings.warnOnSave);
-      warnArr.forEach((element) => {
-        const keys = element.split('.');
+
+      for (const element of warnArr) {
+        const keys = element.split(".");
         const value = get(this.inspector.data, element);
-        const warning = this.settings.warnOnSave[element].some((el) => el === value);
+
+        const warning = this.settings.warnOnSave[element].some((el) => el === value) || isEqual(this.settings.warnOnSave[element], value);
+
         if (warning) {
-          this.$store.dispatch('pushNotification', {
-            type: 'warning',
-            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources)}`,
+          const localizedValue =
+            typeof value === "string"
+              ? value
+              : value?.label ||
+                value?.name ||
+                value?.[this.user.settings.language] ||
+                String(value);
+
+        const showMessage = (value) => {
+
+          const alert = `${StringUtil.getUiPhraseByLang("Attention", this.user.settings.language, this.resources.i18n)}! `
+          let message = ''
+
+          if (isEmpty(value)) {
+            message = `${StringUtil.getUiPhraseByLang("The property", this.user.settings.language, this.resources.i18n)}
+                        '${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}'
+                          ${StringUtil.getUiPhraseByLang("is empty", this.user.settings.language, this.resources.i18n)}!`
+          } else {
+            message = `${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}:
+                        ${StringUtil.getLabelByLang(localizedValue, this.user.settings.language, this.resources)}`
+          }
+
+          return alert + message 
+        };
+
+          this.$store.dispatch("pushNotification", {
+            type: "warning",
+            message: showMessage(value)
           });
+
+          return; 
         }
-      });
+      }
     },
     removeEnrichedHighlight() {
       if (this.inspector.status.enriched.length) {

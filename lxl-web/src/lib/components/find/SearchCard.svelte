@@ -7,7 +7,6 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
 	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
-	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
@@ -19,6 +18,7 @@
 	import { getHoldingsLink } from '$lib/utils/holdings';
 	import BiHouse from '~icons/bi/house';
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
+	import TypeIcon from '$lib/components/TypeIcon.svelte';
 
 	interface Props {
 		item: SearchResultItem;
@@ -38,8 +38,6 @@
 	);
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
-
-	const TypeIcon = $derived(getTypeIcon(item.typeForIcon));
 
 	function passAlongAdjecentSearchResults(event: MouseEvent) {
 		event.preventDefault();
@@ -154,9 +152,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 									//(item.typeForIcon === 'Text' || item.typeForIcon === 'Literature') && 'aspect-3/4'
 								]}
 							/>
-							{#if !!TypeIcon}
-								<TypeIcon class="absolute text-2xl text-neutral-400" />
-							{/if}
+							<TypeIcon type={item.typeForIcon} class="absolute text-2xl text-neutral-400" />
 						</div>
 					{/if}
 				</div>
@@ -165,9 +161,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		<div class="card-content grid">
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
-					{#if !!TypeIcon}
-						<TypeIcon class="text-2xs mb-0.25 inline" />
-					{/if}
+					<TypeIcon type={item.typeForIcon} class="text-2xs mb-0.25 inline" />
 					{#if item.typeStr}
 						<span class="font-medium">
 							{item.typeStr}
