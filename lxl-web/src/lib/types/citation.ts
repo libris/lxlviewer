@@ -31,7 +31,8 @@ export type CSLType =
 	| 'map'
 	| 'software'
 	| 'graphic'
-	| 'motion_picture';
+	| 'motion_picture'
+	| 'document';
 
 export interface CSLJSON {
 	type: CSLType;

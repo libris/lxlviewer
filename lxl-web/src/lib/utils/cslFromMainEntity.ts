@@ -1,7 +1,7 @@
 import jmespath from 'jmespath';
 import type { CSLJSON, CSLName, CSLType } from '$lib/types/citation';
-import type { FramedData } from '$lib/types/xl';
-import getTypeLike, { getTypeForIcon } from './getTypeLike';
+import { JsonLd, type FramedData } from '$lib/types/xl';
+import getTypeLike, { slug } from './getTypeLike';
 import type { VocabUtil } from './xl';
 
 const CSL_KBV_MAPPING: Record<keyof CSLJSON, string> = {
@@ -71,45 +71,68 @@ export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil):
 		}
 	}
 
-	const typeForIcon = getTypeForIcon(getTypeLike(mainEntity.instanceOf, vocabUtil));
-	console.log(typeForIcon); // use this instead?
+	const typeLike = getTypeLike(mainEntity.instanceOf as FramedData, vocabUtil);
+	const types = Object.values(typeLike)?.flatMap((value) =>
+		value.flatMap((v) => slug(v?.[JsonLd.ID]))
+	);
+	result.type = getCslType(types);
+
+	// const instaceTypes = mainEntity.category?.map(c => slug(c?.[JsonLd.ID]));
+	// const workTypes = mainEntity.instanceOf?.category?.map(c => slug(c?.[JsonLd.ID]));
+	// const allTypes = [...instaceTypes, ...workTypes];
+	// allTypes.push(mainEntity.instanceOf[JsonLd.TYPE])
+
 	// result.type = TYPE_MAP[typeForIcon as string] ?? 'book';
 	// console.log(mainEntity.instanceOf._categoryByCollection?.find?.[0]?.['@id']);
 
-	result.type = getCslType(mainEntity);
+	result.type = getCslType(allTypes);
 
 	return [result as CSLJSON];
 }
 
-function getCslType(mainEntity: FramedData): CSLType | undefined {
-	const type = mainEntity?.instanceOf?.['@type'] as string;
-	const category = mainEntity?.instanceOf?.category;
-	if (type === 'Monograph') {
-		if (category && Array.isArray(category)) {
-			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/Text')) {
-				if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/ktg/ComponentPart')) {
-					return 'article';
-				} else return 'book';
-			}
+function getCslType(types: (string | undefined)[]): CSLType {
+	// if (types && Array.isArray(types)) {
+	// 	if (types.includes('Monograph')) {
 
-			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/saogf/Kartor')) {
-				return 'map';
-			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/ktg/MovingImage')) {
-				// not correct for all moving image?
-				return 'motion_picture';
-			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/ComputerProgram')) {
-				return 'software';
-			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/StillImage')) {
-				return 'graphic';
-			}
-		}
-	} else if (type === 'Serial') {
-		// periodical
-		if (category && Array.isArray(category)) {
-			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/Text')) {
-				return 'periodical';
-			}
-		}
-	}
-	return 'unknown';
+	// 	} else if (types.includes('Serial') && types.includes('Text')) {
+	// 		return 'periodical';
+	// 	}
+	// }
+	console.log(types);
+
+	// fallback?
+	return 'document';
 }
+
+// function getCslType(mainEntity: FramedData): CSLType | undefined {
+// 	const type = mainEntity?.instanceOf?.['@type'] as string;
+// 	const category = mainEntity?.instanceOf?.category;
+// 	if (type === 'Monograph') {
+// 		if (category && Array.isArray(category)) {
+// 			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/Text')) {
+// 				if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/ktg/ComponentPart')) {
+// 					return 'article';
+// 				} else return 'book';
+// 			}
+
+// 			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/saogf/Kartor')) {
+// 				return 'map';
+// 			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/ktg/MovingImage')) {
+// 				// not correct for all moving image?
+// 				return 'motion_picture';
+// 			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/ComputerProgram')) {
+// 				return 'software';
+// 			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/StillImage')) {
+// 				return 'graphic';
+// 			}
+// 		}
+// 	} else if (type === 'Serial') {
+// 		// periodical
+// 		if (category && Array.isArray(category)) {
+// 			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/Text')) {
+// 				return 'periodical';
+// 			}
+// 		}
+// 	}
+// 	return 'unknown';
+// }
