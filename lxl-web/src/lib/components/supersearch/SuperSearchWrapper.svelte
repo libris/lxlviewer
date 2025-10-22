@@ -240,7 +240,7 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input absolute z-50 flex size-11 items-center justify-center rounded-md sm:h-11 sm:w-11 lg:h-12',
+							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:h-11 sm:w-11 lg:h-12',
 							expanded && 'hidden sm:flex'
 						]}
 					>
