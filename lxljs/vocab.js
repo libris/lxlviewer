@@ -513,6 +513,10 @@ export function propIsRepeatable(propertyId, context) {
   return false;
 }
 
+export function propIsIndex(propertyId, context) {
+  return getContextValue(propertyId, '@container', context) === '@index';
+}
+
 export function getPropertiesFromArray(typeArray, vocabClasses, vocabProperties, context) {
   let types = typeArray;
   if (!isArray(types)) {

@@ -90,6 +90,7 @@ export async function asResult(
 				image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
 				typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
 				typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)), // FIXME
+				selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
 				numberOfHolders: getHoldersCount(i)
 			})),
 		...('stats' in view && {
@@ -111,7 +112,14 @@ function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode)
 	const t = {
 		'@type': '_Types',
 		...(typeLike.find.length > 0 && { _find: typeLike.find }),
-		...(typeLike.identify.length > 0 && { _identify: typeLike.identify }),
+		...(typeLike.identify.length > 0 && { _identify: typeLike.identify })
+	};
+	return toString(displayUtil.lensAndFormat(t, LensType.Card, locale));
+}
+
+function selectTypeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode): string {
+	const t = {
+		'@type': '_Types',
 		...(typeLike.select.length > 0 && { _select: typeLike.select })
 	};
 	return toString(displayUtil.lensAndFormat(t, LensType.Card, locale));
@@ -326,26 +334,7 @@ function displayFacetGroups(
 		)
 	);
 
-	result.push(
-		...Object.values(slices).map((g) => {
-			return {
-				label: translate(`facet.${g.alias || g.dimension}`),
-				dimension: g.dimension,
-				maxItems: g.maxItems,
-				...('search' in g && { search: g.search }),
-				facets: g.observation.map((o) => {
-					return {
-						...('_selected' in o && { selected: o._selected }),
-						totalItems: o.totalItems,
-						view: replacePath(o.view, usePath),
-						object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
-						str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-						discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
-					};
-				})
-			};
-		})
-	);
+	result.push(...mapSlices(slices, displayUtil, locale, translate));
 
 	result.push(
 		displayBoolFilters(
@@ -360,6 +349,46 @@ function displayFacetGroups(
 	);
 
 	return result;
+}
+
+function mapSlices(
+	slices: Record<string, Slice>,
+	displayUtil: DisplayUtil,
+	locale: LangCode,
+	translate: TranslateFn,
+	usePath?: string,
+	parentDimension?: string
+): FacetGroup[] {
+	return Object.values(slices).map((g) => {
+		const dimension = parentDimension ? `${parentDimension}/${g.dimension}` : g.dimension;
+		return {
+			label: translate(`facet.${g.alias || g.dimension}`),
+			dimension: dimension,
+			maxItems: g.maxItems,
+			...('search' in g && { search: g.search }),
+			facets: g.observation.map((o) => {
+				const str = toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '';
+				return {
+					...('_selected' in o && { selected: o._selected }),
+					...('sliceByDimension' in o && {
+						facetGroups: mapSlices(
+							o.sliceByDimension,
+							displayUtil,
+							locale,
+							translate,
+							undefined,
+							dimension + '/' + str
+						)
+					}),
+					totalItems: o.totalItems,
+					view: replacePath(o.view, usePath),
+					object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+					str: str,
+					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
+				};
+			})
+		};
+	});
 }
 
 export function displayPredicates(

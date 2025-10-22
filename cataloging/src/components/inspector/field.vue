@@ -422,7 +422,7 @@ export default {
       return this.isLangMap && this.hasProp;
     },
     isHidden() {
-      return this.isLangMapWithPartner && this.diff == null;
+      return (this.isLangMapWithPartner && this.diff == null) || VocabUtil.propIsIndex(this.fieldKey, this.resources.context);
     },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(

@@ -60,18 +60,14 @@ export const load = async ({ params, locals, fetch }) => {
 		'@type': '_Types', // FIXME? DisplayDecorated needs a dummy wrapper to get the styling right
 		...(typeLike.find.length > 0 && { _find: typeLike.find }),
 		...(typeLike.identify.length > 0 && { _identify: typeLike.identify }),
-		...(typeLike.select.length > 0 && { _select: typeLike.select }),
+		//...(typeLike.select.length > 0 && { _select: typeLike.select }),
 		// FIXME: don't do this here
 		...(!!mainEntity['language'] && { language: mainEntity['language'] })
 	};
 	const types = displayUtil.lensAndFormat(t, LensType.Card, locale);
 
-	const typeLikeIds = getAtPath(typeLike, ['*', '*', '@id']);
-
 	if (mainEntity['category']) {
-		const category = asArray(mainEntity['category']).filter(
-			(c) => !typeLikeIds.includes(c['@id']) && first(asArray(c[JsonLd.TYPE])) !== 'ContentType'
-		);
+		const category = typeLike.none.filter((c) => first(asArray(c[JsonLd.TYPE])) !== 'ContentType');
 		if (category.length > 0) {
 			mainEntity['category'] = category;
 		} else {

@@ -107,7 +107,9 @@
 					"@id": "Concept-cards",
 					"classLensDomain": "Concept",
 					"showProperties": [
-						"prefLabel",
+						{
+							"alternateProperties": ["singularLabel", "prefLabel"]
+						},
 						"inScheme",
 						"altLabel",
 						"broader",
@@ -161,8 +163,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								"prefLabel",
 								"singularLabel",
+								"prefLabel",
 								"label",
 								"termComponentList",
 								"code"
@@ -736,6 +738,12 @@
 			],
 			"fresnel:propertyStyle": ["sort()"]
 		},
+		"ContentType-format": {
+			"@id": "ContentType-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["ContentType"],
+			"fresnel:resourceStyle": ["link"]
+		},
 		"GenreForm-format": {
 			"@id": "GenreForm-format",
 			"@type": "fresnel:Format",
@@ -993,10 +1001,14 @@
 			"fresnel:classFormatDomain": ["_Types"],
 			"fresnel:propertyFormatDomain": ["_select"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " (",
+				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": "",
-				"fresnel:contentAfter": ")",
-				"fresnel:contentLast": ")"
+				"fresnel:contentAfter": "",
+				"fresnel:contentLast": ""
+			},
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": " / ",
+				"fresnel:contentFirst": ""
 			},
 			"fresnel:propertyStyle": ["sort()"]
 		},

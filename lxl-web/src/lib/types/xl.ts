@@ -8,6 +8,7 @@ export enum JsonLd {
 	ID = '@id',
 	LANGUAGE = '@language',
 	LIST = '@list',
+	NONE = '@none',
 	REVERSE = '@reverse',
 	SET = '@set',
 	TYPE = '@type',

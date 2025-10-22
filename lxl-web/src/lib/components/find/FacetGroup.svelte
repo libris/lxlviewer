@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type { LocaleCode } from '$lib/i18n/locales';
-	import type { FacetGroup } from '$lib/types/search';
+	import type { Facet, FacetGroup } from '$lib/types/search';
 	import { ExpandedState } from '$lib/types/userSettings';
 	import {
 		CUSTOM_FACET_SORT,
@@ -26,9 +26,10 @@
 		locale: LocaleCode;
 		searchPhrase: string;
 		isDefaultExpanded: boolean;
+		parentFacet?: Facet;
 	};
 
-	let { group, locale, searchPhrase, isDefaultExpanded }: FacetGroupProps = $props();
+	let { group, locale, searchPhrase, isDefaultExpanded, parentFacet }: FacetGroupProps = $props();
 
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
@@ -118,23 +119,38 @@
 </script>
 
 <li
+	class="w-full"
 	class:hidden={searchPhrase && !hasHits}
 	class:has-hits={hasHits}
 	data-dimension={group.dimension}
 >
 	<details class="relative" open={!!expanded} bind:this={detailsEl}>
-		<summary
-			class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
-			data-testid="facet-toggle"
-			onclick={saveUserExpanded}
-		>
-			<span class="arrow text-subtle transition-transform">
-				<BiChevronRight />
-			</span>
-			<span class="flex-1 whitespace-nowrap">{group.label}</span>
-		</summary>
+		{#if !parentFacet}
+			<summary
+				class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
+				data-testid="facet-toggle"
+				onclick={saveUserExpanded}
+			>
+				<span class="arrow text-subtle transition-transform">
+					<BiChevronRight />
+				</span>
+				<span class="flex-1 whitespace-nowrap">{group.label}</span>
+			</summary>
+		{:else}
+			<summary
+				class="hover:bg-primary-100 flex w-full cursor-pointer items-center gap-2 pr-3 pl-3 text-xs font-medium"
+				data-testid="facet-toggle"
+			>
+				<span class="arrow text-subtle transition-transform">
+					<button onclick={saveUserExpanded}>
+						<BiChevronRight />
+					</button>
+				</span>
+				<FacetValue facet={parentFacet} {locale} isEmbedded={true} />
+			</summary>
+		{/if}
 		<!-- sorting -->
-		<div class="facet-sort absolute top-0 right-2 size-8">
+		<div class={['facet-sort absolute top-0 size-8', parentFacet ? 'right-15' : 'right-2']}>
 			<select
 				name={group.dimension}
 				bind:value={currentSort}
@@ -160,18 +176,34 @@
 				data-testid="facet-list"
 			>
 				{#each shownItems as facet (facet.view['@id'])}
-					<li class="facet-group-list-value hover:bg-primary-100 flex">
-						<FacetValue {facet} {locale} />
-						{#if 'alias' in facet && facet.alias === MY_LIBRARIES_FILTER_ALIAS}
-							<a
-								href={page.data.localizeHref('/my-pages')}
-								class="btn btn-primary mr-2 border-0"
-								aria-label={page.data.t('search.changeLibraries')}
-							>
-								<BiPencil />
-							</a>
-						{/if}
-					</li>
+					{#if !facet.facetGroups}
+						<li class="facet-group-list-value hover:bg-primary-100 flex">
+							<FacetValue {facet} {locale} />
+							{#if 'alias' in facet && facet.alias === MY_LIBRARIES_FILTER_ALIAS}
+								<a
+									href={page.data.localizeHref('/my-pages')}
+									class="btn btn-primary mr-2 border-0"
+									aria-label={page.data.t('search.changeLibraries')}
+								>
+									<BiPencil />
+								</a>
+							{/if}
+						</li>
+					{:else}
+						<li class="flex w-full">
+							<ol class="ml-4.5 flex w-full border-l border-l-neutral-200">
+								{#each facet.facetGroups as group (group.dimension)}
+									<svelte:self
+										{group}
+										locale={page.data.locale}
+										{searchPhrase}
+										isDefaultExpanded={false}
+										parentFacet={facet}
+									/>
+								{/each}
+							</ol>
+						</li>
+					{/if}
 				{/each}
 			</ol>
 			<div class="text-2xs flex flex-col justify-start">
@@ -211,7 +243,7 @@
 </li>
 
 <style lang="postcss">
-	details[open] {
+	details[open] > summary {
 		& .arrow {
 			rotate: 90deg;
 		}

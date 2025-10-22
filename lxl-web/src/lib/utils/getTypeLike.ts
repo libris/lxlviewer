@@ -1,13 +1,20 @@
 import { type FramedData, JsonLd } from '$lib/types/xl';
 import { asArray, first, VocabUtil } from '$lib/utils/xl';
+import getAtPath from '$lib/utils/getAtPath';
 
-export type TypeLike = { find: FramedData[]; identify: FramedData[]; select: FramedData[] };
+export type TypeLike = {
+	find: FramedData[];
+	identify: FramedData[];
+	none: FramedData[];
+	select: FramedData[];
+};
 
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	const result: TypeLike = {
 		find: [],
 		identify: [],
+		none: [],
 		select: []
 	};
 
@@ -18,12 +25,19 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	if (thing._categoryByCollection) {
 		const find: FramedData[] = thing._categoryByCollection['find'] || [];
 		const identify = thing._categoryByCollection['identify'] || [];
+		const none = thing._categoryByCollection[JsonLd.NONE] || [];
 
 		result.find.push(...find);
 		result.identify.push(...identify);
+		result.none.push(...none);
 
+		const s = {};
+		getAtPath(thing, ['@reverse', 'instanceOf', '*', '_categoryByCollection', JsonLd.NONE], [])
+			.filter((c: FramedData) => c[JsonLd.TYPE] === 'ManifestationForm')
+			.forEach((c: FramedData) => (s[c[JsonLd.ID]] = c));
+		const select = Object.values(s);
+		result.select.push(...select);
 		//const select = [...new Set(getAtPath(thing, ['@reverse', 'instanceOf', '*', 'category'], []))];
-		//result.select.push(...select);
 	} else {
 		const contentTypes: FramedData[] = [];
 		const categories: FramedData[] = [];
@@ -52,10 +66,17 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 
 export default getTypeLike;
 
+const IDENTIFY_ICONS = ['Audiobook', 'NotatedMusic', 'Ljudb%C3%B6cker', 'Kit', 'Databaser'];
+
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 export function getTypeForIcon(typeLike: TypeLike) {
-	if (typeLike.identify.find((t) => t && slug(t[JsonLd.ID]) === 'Audiobook')) {
-		return 'Audiobook';
+	for (const t of typeLike.identify) {
+		if (t) {
+			const slugStr = slug(t[JsonLd.ID]);
+			if (slugStr && IDENTIFY_ICONS.includes(slugStr)) {
+				return slugStr;
+			}
+		}
 	}
 
 	return typeLike.find.length > 0 && typeLike.find[0] !== undefined

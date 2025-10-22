@@ -235,6 +235,11 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						</span>
 					{/if}
 				{/each}
+				{#if item.selectTypeStr}
+					<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+					<span class="divider">{' · '}</span>
+					<span>{item.selectTypeStr}</span>
+				{/if}
 			</footer>
 			<div class="card-actions self-end">
 				{@render holdingsButton()}
@@ -344,7 +349,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		& .divider {
 			display: none;
 		}
-		& :global(.divider:has(+ span)) {
+		& :global(.divider:has(+ span:not(.divider))) {
 			display: inline;
 		}
 	}

@@ -2,7 +2,7 @@
   "instance": {
     "audiobookDisc": {
       "label": "Ljudbok (fysisk bärare)",
-      "description": "Ljudinspelning - RDA",
+      "description": "Ljudinspelning",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -30,8 +30,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "SoundRecording",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -83,19 +82,6 @@
               "label": ""
             }
           ],
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/AudioDisc"
-            },
-            {
-              "@id": "https://id.kb.se/marc/SoundDisc"
-            }
-          ],
-          "mediaType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Audio"
-            }
-          ],
           "physicalDetailsNote": "",
           "digitalCharacteristic": [
             {
@@ -136,16 +122,23 @@
             }
           ],
           "instanceOf": {
-            "@type": "Audio",
+            "@type": "Monograph",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/SpokenWord"
+            },
+              {
+                "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
+              }],
+
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -158,28 +151,18 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/author"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
                 "role": [{
                   "@id": "https://id.kb.se/relator/nrt"
                 }]
-              }
-            ],
-            "contentType": [
-              {
-                "@id": "https://id.kb.se/term/rda/SpokenWord"
-              }
-            ],
-            "genreForm": [
-              {
-                "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
               }
             ],
             "subject": [],
@@ -189,13 +172,14 @@
                 "label": ""
               }
             ]
-          }
+          },
+          "category": [{"@id":"https://id.kb.se/term/rda/AudioDisc"} ]
         }
       }
     },
     "audiobookStreaming": {
       "label": "Ljudbok (strömmande)",
-      "description": "Elektronisk - RDA",
+      "description": "Digital",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -223,8 +207,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Electronic",
-          "issuanceType": "Monograph",
+          "@type": "DigitalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -268,22 +251,6 @@
               "label": ""
             }
           ],
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/OnlineResource"
-            },
-            {
-              "@id": "https://id.kb.se/marc/Online"
-            },
-            {
-              "@id": "https://id.kb.se/marc/OnlineResource"
-            }
-          ],
-          "mediaType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Computer"
-            }
-          ],
           "physicalDetailsNote": "",
           "digitalCharacteristic": [
             {
@@ -323,17 +290,24 @@
               "label": ""
             }
           ],
+
           "instanceOf": {
-            "@type": "Audio",
+            "@type": "Monograph",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/SpokenWord"
+            },
+              {
+                "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
+              }],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -346,28 +320,18 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/author"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
                 "role": [{
                   "@id": "https://id.kb.se/relator/nrt"
                 }]
-              }
-            ],
-            "contentType": [
-              {
-                "@id": "https://id.kb.se/term/rda/SpokenWord"
-              }
-            ],
-            "genreForm": [
-              {
-                "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
               }
             ],
             "subject": [],
@@ -377,13 +341,19 @@
                 "label": ""
               }
             ]
-          }
+          },
+          "category": [ {
+            "@id": "https://id.kb.se/term/rda/OnlineResource"
+          },
+        {
+            "@id": "https://id.kb.se/term/rda/Audio"
+          }]
         }
       }
     },
     "digitizedMonographText": {
       "label": "Digital reproduktion - bok",
-      "description": "Digitalt reproducerad monografi - RDA",
+      "description": "Digitalt reproducerad monografi",
       "key": "digitizedMonographText",
       "value": {
         "record": {
@@ -428,8 +398,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Electronic",
-          "issuanceType": "Monograph",
+          "@type": "DigitalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -460,9 +429,6 @@
             "@type": "Copyright",
             "date": "©"
           }],
-          "carrierType": [
-            {"@id": "https://id.kb.se/term/rda/OnlineResource"}
-          ],
           "hasNote": [{
             "@type": "Note",
             "label": ""
@@ -487,9 +453,12 @@
             }
           ],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Monograph",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
+            }],
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/Text"
             }],
             "genreForm": [],
             "classification": [
@@ -524,7 +493,6 @@
                 "role": []
               }
             ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
             "hasNote": [
               {
                 "@type": "marc:LanguageNote",
@@ -532,13 +500,14 @@
               }
             ],
             "subject": []
-          }
+          },
+          "category": [{"@id": "https://id.kb.se/term/rda/OnlineResource"}]
         }
       }
     },
     "electronicComponentPartText": {
-      "label": "Elektroniskt bidrag",
-      "description": "RDA",
+      "label": "Digitalt bidrag",
+      "description": "",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -566,7 +535,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Electronic",
+          "@type": "DigitalResource",
           "isPartOf": [
             {
               "@type": "Instance",
@@ -601,23 +570,6 @@
               ]
             }
           ],
-          "issuanceType": "ComponentPart",
-          "mediaType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Computer"
-            }
-          ],
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/OnlineResource"
-            },
-            {
-              "@id": "https://id.kb.se/marc/Online"
-            },
-            {
-              "@id": "https://id.kb.se/marc/OnlineResource"
-            }
-          ],
           "hasTitle": [
             {
               "@type": "Title",
@@ -641,7 +593,7 @@
             }
           ],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Monograph",
             "classification": [
               {
                 "@type": "ClassificationDdc",
@@ -672,21 +624,24 @@
                 "role": []
               }
             ],
-            "genreForm": [],
             "language": [],
-            "subject": [],
-            "contentType": [
+            "category": [
               {
                 "@id": "https://id.kb.se/term/rda/Text"
               }
-            ]
-          }
+            ],
+            "subject": []
+          },
+          "category": [{"@id": "https://id.kb.se/term/rda/OnlineResource"},
+            {
+              "@id": "https://id.kb.se/term/ktg/ComponentPart"
+            }]
         }
       }
     },
     "electronicMonographText": {
       "label": "E-bok",
-      "description": "Elektroniskt utgiven monografi - RDA",
+      "description": "Digitalt utgiven monografi",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -714,8 +669,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Electronic",
-          "issuanceType": "Monograph",
+          "@type": "DigitalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -753,12 +707,6 @@
               "@type": "Copyright",
               "date": "©"
             }
-          ],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
-          "carrierType": [
-            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
-            {"@id": "https://id.kb.se/marc/Online"},
-            {"@id": "https://id.kb.se/marc/OnlineResource"}
           ],
           "extent": [
             {
@@ -818,11 +766,13 @@
           ],
           "otherPhysicalFormat": [],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Monograph",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
-            "genreForm": [],
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/Text"
+            }],
             "classification": [
               {
                 "@type": "ClassificationDdc",
@@ -855,7 +805,6 @@
                 "role": []
               }
             ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
             "hasNote": [
               {
                 "@type": "marc:LanguageNote",
@@ -863,20 +812,22 @@
               }
             ],
             "subject": []
-            },
-           "contribution": [
-        {
-          "@type": "Contribution",
-          "agent": null,      
-          "role": []
-        }
-      ]
+          },
+          "contribution": [
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": []
+            }
+          ],
+          "category": [
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"}, {"@id": "https://id.kb.se/term/ktg/EBook"}]
         }
       }
     },
     "electronicPeriodicalText": {
-      "label": "Elektronisk seriell resurs",
-      "description": "RDA",
+      "label": "Digital seriell resurs",
+      "description": "",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -904,8 +855,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Electronic",
-          "issuanceType": "Serial",
+          "@type": "DigitalResource",
           "frequency": [],
           "hasTitle": [
             {
@@ -946,12 +896,6 @@
               }
             }
           ],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
-          "carrierType": [
-            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
-            {"@id": "https://id.kb.se/marc/Online"},
-            {"@id": "https://id.kb.se/marc/OnlineResource"}
-          ],
           "hasNote": [{
             "@type": "Note",
             "label": ""
@@ -975,10 +919,14 @@
           ],
           "otherPhysicalFormat": [],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Serial",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/Text"
+            },
+              {"@id": "https://id.kb.se/term/saogf/Periodika"}],
             "contribution": [
               {
                 "@type": "Contribution",
@@ -986,16 +934,12 @@
                 "role": []
               }
             ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
-            "genreForm": [{
-              "@id": "https://id.kb.se/marc/Periodical"
-            }],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -1008,13 +952,14 @@
               }
             ],
             "subject": []
-          }
+          },
+          "category": [ {"@id": "https://id.kb.se/term/rda/OnlineResource"}]
         }
       }
     },
     "electronicIntegratingText": {
       "label": "Databas / Webbplats",
-      "description": "Elektronisk integrerande resurs - RDA",
+      "description": "Digital integrerande resurs",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1042,8 +987,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Electronic",
-          "issuanceType": "Integrating",
+          "@type": "DigitalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -1079,14 +1023,6 @@
               }
             }
           ],
-          "mediaType": [
-            {"@id": "https://id.kb.se/term/rda/Computer"}
-          ],
-          "carrierType": [
-            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
-            {"@id": "https://id.kb.se/marc/Online"},
-            {"@id": "https://id.kb.se/marc/OnlineResource"}
-          ],
           "frequency": [
             {
               "@id": "https://id.kb.se/marc/ContinuouslyUpdated"
@@ -1116,11 +1052,13 @@
             "@id": "https://id.kb.se/marc/IntegratingEntry"
           },
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Integrating",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
-            "genreForm": [],
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/Text"
+            }],
             "classification": [
               {
                 "@type": "ClassificationDdc",
@@ -1146,7 +1084,6 @@
                 "role": []
               }
             ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
             "subject": [],
             "summary": [
               {
@@ -1154,13 +1091,14 @@
                 "label": ""
               }
             ]
-          }
+          },
+          "category": [ {"@id": "https://id.kb.se/term/rda/OnlineResource"}]
         }
       }
     },
     "manuscriptMonographText": {
       "label": "Handskrift",
-      "description": "Handskrift monografi - RDA",
+      "description": "Handskrift monografi",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1187,8 +1125,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Manuscript",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -1228,8 +1165,6 @@
               ]
             }
           ],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
-          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
           "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
           "extent": [
             {
@@ -1269,17 +1204,18 @@
             }
           ],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Monograph",
             "language": [
               {
                 "@id": "https://id.kb.se/language/swe"
               }
             ],
-            "genreForm": [
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/Text"
+            },
               {
                 "@id": "https://id.kb.se/term/saogf/Handskrifter"
-              }
-            ],
+              }],
             "contribution": [
               {
                 "@type": "PrimaryContribution",
@@ -1299,11 +1235,6 @@
                 "@type": "Contribution",
                 "agent": null,
                 "role": []
-              }
-            ],
-            "contentType": [
-              {
-                "@id": "https://id.kb.se/term/rda/Text"
               }
             ],
             "hasNote": [
@@ -1340,13 +1271,14 @@
                 ]
               }
             ]
-          }
+          },
+          "category": [{"@id": "https://id.kb.se/term/rda/Volume"}]
         }
       }
     },
     "movie": {
       "label": "Film",
-      "description": "Videoinspelning - RDA",
+      "description": "Videoinspelning",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1374,8 +1306,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "VideoRecording",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -1431,16 +1362,6 @@
             }
           ],
           "physicalDetailsNote": "",
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Videodisc"
-            }
-          ],
-          "mediaType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Video"
-            }
-          ],
           "videoCharacteristic": [],
           "accompaniedBy": [
             {
@@ -1461,13 +1382,13 @@
             }
           ],
           "instanceOf": {
-            "@type": "MovingImage",
+            "@type": "Monograph",
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -1493,6 +1414,9 @@
               }
             ],
             "language": [],
+            "category": [{
+              "@id": "https://id.kb.se/term/ktg/MovingImage"
+            }],
             "marc:subtitlesOrCaptions": {
               "@type": "marc:SubtitlesOrCaptions",
               "language": [
@@ -1501,12 +1425,6 @@
                 }
               ]
             },
-            "contentType": [
-              {
-                "@id": "https://id.kb.se/term/rda/TwoDimensionalMovingImage"
-              }
-            ],
-            "genreForm": [],
             "capture": [
               {
                 "@type": "Capture",
@@ -1527,13 +1445,16 @@
                 "label": ""
               }
             ]
-          }
+          },
+          "category": [{
+            "@id": "https://id.kb.se/term/rda/Videodisc"
+          }]
         }
       }
     },
     "music-cd": {
       "label": "Musik-CD",
-      "description": "Ljudinspelning - RDA",
+      "description": "Ljudinspelning",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1561,8 +1482,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "SoundRecording",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -1613,19 +1533,6 @@
               "label": ""
             }
           ],
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/AudioDisc"
-            },
-            {
-              "@id": "https://id.kb.se/marc/SoundDisc"
-            }
-          ],
-          "mediaType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Audio"
-            }
-          ],
           "physicalDetailsNote": "",
           "editionStatement": [""],
           "accompaniedBy": [
@@ -1673,32 +1580,36 @@
             }
           ],
           "instanceOf": {
-            "@type": "Music",
-             "hasTitle": [
+            "@type": "Monograph",
+            "hasTitle": [
               {
                 "@type": "Title",
                 "mainTitle": "",
                 "partName": [
-                ""
+                  ""
                 ],
                 "partNumber": [
                   ""
                 ]
               }
             ],
-          "musicKey": "",
-          "musicMedium": [{
-            "@type": "MusicMedium",
-            "label": ""
-          }],
-          "marc:arrangedStatementForMusic": "",
+            "musicKey": "",
+            "musicMedium": [{
+              "@type": "MusicMedium",
+              "label": ""
+            }],
+            "marc:arrangedStatementForMusic": "",
             "language": [],
+            "category": [
+              {
+                "@id": "https://id.kb.se/term/saogf/Musikinspelningar"
+              }],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -1711,24 +1622,14 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": []
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": []
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
                 "role": []
-              }
-            ],
-            "contentType": [
-              {
-                "@id": "https://id.kb.se/term/rda/PerformedMusic"
-              }
-            ],
-            "genreForm": [
-              {
-                "@id": "https://id.kb.se/term/saogf/Musikinspelningar"
               }
             ],
             "capture": [
@@ -1797,7 +1698,10 @@
                 }]
               }
             ]
-          }
+          },
+          "category": [{
+            "@id": "https://id.kb.se/term/rda/AudioDisc"
+          }]
         }
       }
     },
@@ -1834,8 +1738,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Print",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -1861,8 +1764,6 @@
               }
             }
           ],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
-          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
           "extent": [{
             "@type": "Extent",
             "label": ""
@@ -1923,17 +1824,19 @@
             }
           ],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Monograph",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
-            "genreForm": [],
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/Text"
+            }],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -1959,7 +1862,6 @@
                 "role": []
               }
             ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
             "hasNote": [
               {
                 "@type": "marc:LanguageNote",
@@ -1967,13 +1869,16 @@
               }
             ],
             "subject": []
-          }
+          },
+          "category": [{
+            "@id": "https://id.kb.se/term/ktg/PrintedVolume"
+          }]
         }
       }
     },
     "printedCartograph": {
       "label": "Karta",
-      "description": "Tryckt kartmaterial - RDA",
+      "description": "Tryckt kartmaterial",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -2001,8 +1906,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Map",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -2056,8 +1960,6 @@
               "label": ""
             }
           ],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
-          "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
           "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
           "colorContent": [
             {
@@ -2068,14 +1970,6 @@
             {
               "@type": "Extent",
               "label": "1 karta"
-            }
-          ],
-          "genreForm": [
-            {
-              "@id": "https://id.kb.se/marc/MapATwoDimensionalMap"
-            },
-            {
-              "@id": "https://id.kb.se/marc/SingleMap"
             }
           ],
           "physicalDetailsNote": "",
@@ -2096,7 +1990,7 @@
             }
           ],
           "instanceOf": {
-            "@type": "Cartography",
+            "@type": "Monograph",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
@@ -2126,25 +2020,23 @@
                 "coordinates": "Måttenhet för koordinaterna: grader, minuter och sekunder (0-360°)"
               }
             ],
-            "genreForm": [
+            "category": [
               {
-                "@id": "https://id.kb.se/term/gmgpc/swe/Kartor"
-              }
-            ],
+                "@id": "https://id.kb.se/term/saogf/Kartor"
+              }],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/cartographer"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/cartographer"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
                 "role": []
               }
             ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/CartographicImage"}],
             "subject": [
               {
                 "@type": "ComplexSubject",
@@ -2174,13 +2066,22 @@
               "@type": "marc:LanguageNote",
               "label": ""
             }]
-          }
+          },
+          "category": [{
+            "@id": "https://id.kb.se/term/rda/Sheet"
+          },
+            {
+              "@id": "https://id.kb.se/marc/MapATwoDimensionalMap"
+            },
+            {
+              "@id": "https://id.kb.se/marc/SingleMap"
+            }]
         }
       }
     },
     "printedComponentPartText": {
       "label": "Tryckt bidrag",
-      "description": "RDA",
+      "description": "",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -2208,7 +2109,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Print",
+          "@type": "PhysicalResource",
           "isPartOf": [
             {
               "@type": "Instance",
@@ -2243,17 +2144,6 @@
               ]
             }
           ],
-          "issuanceType": "ComponentPart",
-          "mediaType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Unmediated"
-            }
-          ],
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Volume"
-            }
-          ],
           "hasTitle": [
             {
               "@type": "Title",
@@ -2277,7 +2167,7 @@
             }
           ],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Monograph",
             "classification": [
               {
                 "@type": "ClassificationDdc",
@@ -2308,21 +2198,25 @@
                 "role": []
               }
             ],
-            "genreForm": [],
             "language": [],
-            "subject": [],
-            "contentType": [
-              {
-                "@id": "https://id.kb.se/term/rda/Text"
-              }
-            ]
-          }
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/Text"
+            }
+            ],
+            "subject": []
+          },
+          "category": [ {
+            "@id": "https://id.kb.se/term/ktg/Print"
+          },
+            {
+              "@id": "https://id.kb.se/term/ktg/ComponentPart"
+            }]
         }
       }
     },
     "printedMonographText": {
       "label": "Bok",
-      "description": "Tryckt monografi - RDA",
+      "description": "Tryckt monografi",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -2350,13 +2244,12 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Print",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [{
-              "@type": "Title",
-              "mainTitle": "",
-              "subtitle": ""
-            }
+            "@type": "Title",
+            "mainTitle": "",
+            "subtitle": ""
+          }
           ],
           "responsibilityStatement": "",
           "identifiedBy": [{
@@ -2397,8 +2290,6 @@
             "@type": "Copyright",
             "date": "©"
           }],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
-          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
           "extent": [{
             "@type": "Extent",
             "label": ""
@@ -2439,17 +2330,21 @@
             "label": ""
           }],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Monograph",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
-            "genreForm": [],
+            "category": [
+              {
+                "@id": "https://id.kb.se/term/rda/Text"
+              }
+            ],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -2462,19 +2357,18 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/author"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
                 "role": []
               }
             ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
             "hasNote": [
               {
                 "@type": "marc:LanguageNote",
@@ -2484,19 +2378,24 @@
             "subject": [],
             "intendedAudience": []
           },
-           "contribution": [
-        {
-          "@type": "Contribution",
-          "agent": null,      
-          "role": []
-        }
-      ]
+          "contribution": [
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": []
+            }
+          ],
+          "category": [
+            {
+              "@id": "https://id.kb.se/term/ktg/PrintedVolume"
+            }
+          ]
         }
       }
     },
     "printedPeriodicalText": {
       "label": "Tryckt seriell resurs",
-      "description": "RDA",
+      "description": "",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -2524,8 +2423,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Print",
-          "issuanceType": "Serial",
+          "@type": "PhysicalResource",
           "frequency": [],
           "hasTitle": [
             {
@@ -2534,10 +2432,10 @@
               "subtitle": ""
             },
             {
-             "@type": "VariantTitle",
-             "mainTitle": "",
-             "subtitle": ""
-           }
+              "@type": "VariantTitle",
+              "mainTitle": "",
+              "subtitle": ""
+            }
           ],
           "marc:alphabet": {
             "@id": "https://id.kb.se/marc/SerialsAlphabetType-b"
@@ -2566,8 +2464,6 @@
               }
             }
           ],
-          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "hasNote": [{
             "@type": "Note",
             "label": ""
@@ -2579,10 +2475,18 @@
             }
           ],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Serial",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
+            "category": [
+              {
+                "@id": "https://id.kb.se/term/rda/Text"
+              },
+              {
+                "@id": "https://id.kb.se/term/saogf/Periodika"
+              }
+            ],
             "contribution": [
               {
                 "@type": "Contribution",
@@ -2590,16 +2494,12 @@
                 "role": []
               }
             ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
-            "genreForm": [{
-              "@id": "https://id.kb.se/marc/Periodical"
-            }],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -2612,13 +2512,18 @@
               }
             ],
             "subject": []
-          }
+          },
+          "category": [
+            {
+              "@id": "https://id.kb.se/term/ktg/PrintedVolume"
+            }
+          ]
         }
       }
     },
     "printedNotatedMusic": {
       "label": "Noterad musik",
-      "description": "Musiktryck - RDA",
+      "description": "Musiktryck",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -2646,8 +2551,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Print",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -2675,8 +2579,8 @@
               "@type": "MusicPublisherNumber",
               "value": "",
               "agent": {
-                  "@type": "Organization",
-                  "name": ""
+                "@type": "Organization",
+                "name": ""
               }
             }
           ],
@@ -2701,26 +2605,24 @@
           ],
           "manufacture": [
             {
-            "@type": "Manufacture",
-            "agent": [{
-              "@type": "Agent",
-              "label": ""
-            }],
-            "date": "",
-            "place": [{
-              "@type": "Place",
-              "label": ""
-            }]
-          }
-        ],
+              "@type": "Manufacture",
+              "agent": [{
+                "@type": "Agent",
+                "label": ""
+              }],
+              "date": "",
+              "place": [{
+                "@type": "Place",
+                "label": ""
+              }]
+            }
+          ],
           "copyright": [
             {
-            "@type": "Copyright",
-            "date": "©"
-          }
-        ],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
-          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+              "@type": "Copyright",
+              "date": "©"
+            }
+          ],
           "extent": [
             {
               "@type": "Extent",
@@ -2807,13 +2709,13 @@
             }
           ],
           "instanceOf": {
-            "@type": "NotatedMusic",
+            "@type": "Monograph",
             "hasTitle": [
               {
                 "@type": "Title",
                 "mainTitle": "",
                 "partName": [
-                ""
+                  ""
                 ],
                 "partNumber": [
                   ""
@@ -2829,7 +2731,9 @@
             "language": [{
               "@id": "https://id.kb.se/language/zxx"
             }],
-            "genreForm": [],
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/NotatedMusic"
+            }],
             "hasNotation": [
               {"@id": "https://id.kb.se/term/rda/musnotation/StaffNotation"}
             ],
@@ -2841,11 +2745,11 @@
             ],
             "intendedAudience": [],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -2868,10 +2772,10 @@
               }
             ],
             "additionalClassificationDdc": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
             }],
             "contribution": [
               {
@@ -2887,7 +2791,6 @@
                 "role": []
               }
             ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/NotatedMusic"}],
             "hasPart": [
               {
                 "@type": "Work",
@@ -2905,7 +2808,7 @@
                       ""
                     ],
                     "partName": [
-                    ""
+                      ""
                     ]
                   }
                 ],
@@ -2932,7 +2835,7 @@
                       ""
                     ],
                     "partName": [
-                    ""
+                      ""
                     ]
                   }
                 ],
@@ -2944,13 +2847,18 @@
                 }]
               }
             ]
-          }
+          },
+          "category": [
+            {
+              "@id": "https://id.kb.se/term/ktg/PrintedVolume"
+            }
+          ]
         }
       }
     },
     "printedPoster": {
       "label": "Affisch",
-      "description": "Tryckt affisch - RDA",
+      "description": "Tryckt affisch",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -2978,22 +2886,21 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Print",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [{
-              "@type": "Title",
-              "mainTitle": "",
-              "subtitle": ""
-            }
+            "@type": "Title",
+            "mainTitle": "",
+            "subtitle": ""
+          }
           ],
           "responsibilityStatement": "",
           "contribution": [
-          {
-            "@type": "Contribution",
-            "agent": null,
-            "role": []
-          }
-        ],
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": []
+            }
+          ],
           "publication": [
             {
               "@type": "Publication",
@@ -3039,8 +2946,6 @@
               "label": "plantryck"
             }
           ],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
-          "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
           "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
           "colorContent": [],
           "extent": [{
@@ -3052,43 +2957,28 @@
             "@type": "Dimensions",
             "label": ""
           },
-          "genreForm": [
-            {
-              "@id": "https://id.kb.se/marc/Poster"
-            }
-          ],
           "hasNote": [{
             "@type": "Note",
             "label": ""
           }],
           "instanceOf": {
-            "@type": "Text",
+            "@type": "Monograph",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
-            "genreForm": [
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/Text"
+            },
               {
-                "@id": "https://id.kb.se/term/gmgpc/swe/Affischer"
-              },
-              {
-                "@id": "https://id.kb.se/marc/Graphic"
-              }
-            ],
+                "@id": "https://id.kb.se/term/saogf/Affischer"
+              }],
             "contribution": [{
-                "@type": "Contribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/artist"
-                }]
-              }
-            ],
-            "contentType": [
-              {
-                "@id": "https://id.kb.se/term/rda/Text"
-              },
-              {
-                "@id": "https://id.kb.se/term/rda/StillImage"
-              }
+              "@type": "Contribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/artist"
+              }]
+            }
             ],
             "subject": [
               {
@@ -3108,13 +2998,19 @@
                 ]
               }
             ]
-          }
+          },
+          "category": [
+            {
+              "@id": "https://id.kb.se/term/rda/Sheet"
+            }
+
+          ]
         }
       }
     },
     "printedStillImage": {
       "label": "Stillbild",
-      "description": "Tryckt stillbild - RDA",
+      "description": "Tryckt stillbild",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -3142,13 +3038,12 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Instance",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [{
-              "@type": "Title",
-              "mainTitle": "",
-              "subtitle": ""
-            }
+            "@type": "Title",
+            "mainTitle": "",
+            "subtitle": ""
+          }
           ],
           "responsibilityStatement": "",
           "publication": [
@@ -3198,8 +3093,6 @@
               "label": ""
             }
           ],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
-          "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
           "appliedMaterial": [],
           "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
           "colorContent": [
@@ -3216,11 +3109,6 @@
             "@type": "Dimensions",
             "label": ""
           },
-          "genreForm": [
-            {
-              "@id": "https://id.kb.se/marc/Picture"
-            }
-          ],
           "polarity": [
             {
               "@type": "Polarity",
@@ -3238,34 +3126,30 @@
             }
           ],
           "instanceOf": {
-            "@type": "StillImage",
+            "@type": "Monograph",
             "language": [{
               "@id": "https://id.kb.se/language/zxx"
             }],
-            "genreForm": [
+            "category": [{
+              "@id": "https://id.kb.se/term/rda/StillImage"
+            },
               {
                 "@id": "https://id.kb.se/marc/Picture"
               },
               {
                 "@id": "https://id.kb.se/term/gmgpc/swe/Bilder"
-              }
-            ],
+              }],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/artist"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/artist"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
                 "role": []
-              }
-            ],
-            "contentType": [
-              {
-                "@id": "https://id.kb.se/term/rda/StillImage"
               }
             ],
             "subject": [
@@ -3292,13 +3176,21 @@
                 "label": ""
               }
             ]
-          }
+          },
+          "category": [
+            {
+              "@id": "https://id.kb.se/term/rda/Sheet"
+            },
+            {
+              "@id": "https://id.kb.se/marc/Picture"
+            }
+          ]
         }
       }
     },
     "videogame": {
       "label": "Datorspel",
-      "description": "Multimedia - RDA",
+      "description": "Multimedia",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -3326,8 +3218,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Electronic",
-          "issuanceType": "Monograph",
+          "@type": "PhysicalResource",
           "hasTitle": [
             {
               "@type": "Title",
@@ -3377,16 +3268,6 @@
               "label": ""
             }
           ],
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/ComputerDisc"
-            }
-          ],
-          "mediaType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Computer"
-            }
-          ],
           "accompaniedBy": [
             {
               "@type": "Instance",
@@ -3409,14 +3290,14 @@
             }
           ],
           "instanceOf": {
-            "@type": "Multimedia",
+            "@type": "Monograph",
             "language": [],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -3442,19 +3323,12 @@
                 "label": ""
               }
             ],
-            "contentType": [
-              {
-                "@id": "https://id.kb.se/term/rda/ComputerProgram"
-              }
-            ],
-            "genreForm": [
+            "category":[{
+              "@id": "https://id.kb.se/term/rda/ComputerProgram"
+            },
               {
                 "@id": "https://id.kb.se/term/saogf/Datorspel"
-              },
-              {
-                "@id": "https://id.kb.se/marc/ComputerTypeOfFileType-g"
-              }
-            ],
+              }],
             "hasNote": [{
               "@type": "marc:LanguageNote",
               "label": ""
@@ -3466,7 +3340,10 @@
                 "label": ""
               }
             ]
-          }
+          },
+          "category":[   {
+            "@id": "https://id.kb.se/term/rda/ComputerDisc"
+          }]
         }
       }
     }
@@ -3489,7 +3366,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Text",
+          "@type": "Monograph",
           "hasTitle": [
             {
               "@type": "Title",
@@ -3510,11 +3387,10 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "genreForm": [
+          "category":[{"@id":"https://id.kb.se/term/rda/Text"},
             {
-              "@id": "https://id.kb.se/marc/FictionNotFurtherSpecified"
-            }
-          ],
+              "@id": "https://id.kb.se/term/saogf/Sk%C3%B6nlitteratur"
+            }],
           "classification": [
             {
               "@type": "ClassificationDdc",
@@ -3533,8 +3409,7 @@
               }
             }
           ],
-          "subject": [],
-          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}]
+          "subject": []
         }
       }
     },
@@ -3555,7 +3430,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Text",
+          "@type": "Monograph",
           "hasTitle": [
             {
               "@type": "Title",
@@ -3587,11 +3462,10 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "genreForm": [
+          "category":[{"@id":"https://id.kb.se/term/rda/Text"},
             {
-              "@id": "https://id.kb.se/marc/FictionNotFurtherSpecified"
-            }
-          ],
+              "@id": "https://id.kb.se/term/saogf/Sk%C3%B6nlitteratur"
+            }],
           "classification": [
             {
               "@type": "ClassificationDdc",
@@ -3611,7 +3485,6 @@
             }
           ],
           "subject": [],
-          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
           "hasNote": [
             {
               "@type": "marc:LanguageNote",
@@ -3729,18 +3602,18 @@
           "description": "",
           "hasVariant": [
             {
-            "@type": "Organization",
-            "name": ""
-          },
-          {
-          "@type": "Organization",
-          "isPartOf": {
-            "@type": "Organization",
-            "name": ""
-          },
-          "marc:subordinateUnit": [ "" ]
-        }
-        ],
+              "@type": "Organization",
+              "name": ""
+            },
+            {
+              "@type": "Organization",
+              "isPartOf": {
+                "@type": "Organization",
+                "name": ""
+              },
+              "marc:subordinateUnit": [ "" ]
+            }
+          ],
           "seeAlso": [],
           "identifiedBy": [{
             "@type": "ISNI",
