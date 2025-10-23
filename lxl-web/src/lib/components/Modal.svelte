@@ -89,7 +89,7 @@
 				</h1>
 				<!-- svelte-ignore a11y_autofocus -->
 				<button
-					class="btn btn-primary border-0"
+					class="btn btn-primary size-8 border-none p-0"
 					onclick={handleClose}
 					autofocus
 					aria-label={page.data.t('general.close')}

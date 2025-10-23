@@ -44,7 +44,7 @@
 </svelte:head>
 <div data-testid="resource-page" class="contents">
 	<!-- Zotero tag -->
-	{#if data.instances.length}
+	{#if data.instances?.length}
 		<abbr class="unapi-id hidden" title={data.uri}></abbr>
 	{/if}
 	<Resource
@@ -58,6 +58,7 @@
 		relations={data.relations}
 		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}
 		instances={data.instances}
+		searchResult={data.searchResult}
 		holdersByType={data.holdings.holdersByType}
 		tableOfContents={data.tableOfContents}
 		adjecentSearchResults={page.state.adjecentSearchResults}
@@ -72,7 +73,7 @@
 	{:else if page.state.citations || page.url.searchParams.get('cite')}
 		<Modal close={() => handleCloseModal('cite')}>
 			{#snippet title()}
-				<span>{page.data.t('citations.createCitation')}</span>
+				<span>{page.data.t('citations.cite')}</span>
 			{/snippet}
 			<Citations
 				citations={(page.state.citations || page.data.citations) as Promise<CitationsType>}

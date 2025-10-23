@@ -41,6 +41,20 @@
 }
 
 :root {
+	/* default primary color */
+	/* can be overridden by themes.css */
+	--theme-primary-50: oklch(97.93% 0.014 124.55);
+	--theme-primary-100: oklch(95.92% 0.029 121.98);
+	--theme-primary-200: oklch(90.73% 0.063 123.24);
+	--theme-primary-300: oklch(85.59% 0.097 124.19);
+	--theme-primary-400: oklch(79.68% 0.136 125.41);
+	--theme-primary-500: oklch(72.74% 0.156 126.68);
+	--theme-primary-600: oklch(66.86% 0.143 126.48);
+	--theme-primary-700: oklch(61.09% 0.129 126.63);
+	--theme-primary-800: oklch(54% 0.113 126.21);
+	--theme-primary-900: oklch(42.94% 0.087 126.62);
+	--theme-primary-950: oklch(33.73% 0.064 125.83);
+
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-success: #2ab061;
 
@@ -52,7 +66,7 @@
 	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
 	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);
 
-	--search-grid-template-areas: 'leading-actions trailing-actions trailing-actions'
+	--search-grid-template-areas: 'leading-actions leading-actions trailing-actions'
 		'search search search';
 	--search-grid-template-columns: auto 1fr 1fr;
 	--search-padding: 0;
@@ -90,17 +104,17 @@
 
 	--color-*: initial;
 
-	--color-primary-50: oklch(97.93% 0.014 124.55);
-	--color-primary-100: oklch(95.92% 0.029 121.98);
-	--color-primary-200: oklch(90.73% 0.063 123.24);
-	--color-primary-300: oklch(85.59% 0.097 124.19);
-	--color-primary-400: oklch(79.68% 0.136 125.41);
-	--color-primary-500: oklch(72.74% 0.156 126.68);
-	--color-primary-600: oklch(66.86% 0.143 126.48);
-	--color-primary-700: oklch(61.09% 0.129 126.63);
-	--color-primary-800: oklch(54% 0.113 126.21);
-	--color-primary-900: oklch(42.94% 0.087 126.62);
-	--color-primary-950: oklch(33.73% 0.064 125.83);
+	--color-primary-50: var(--theme-primary-50);
+	--color-primary-100: var(--theme-primary-100);
+	--color-primary-200: var(--theme-primary-200);
+	--color-primary-300: var(--theme-primary-300);
+	--color-primary-400: var(--theme-primary-400);
+	--color-primary-500: var(--theme-primary-500);
+	--color-primary-600: var(--theme-primary-600);
+	--color-primary-700: var(--theme-primary-700);
+	--color-primary-800: var(--theme-primary-800);
+	--color-primary-900: var(--theme-primary-900);
+	--color-primary-950: var(--theme-primary-950);
 	--color-primary: var(--color-primary-500);
 
 	--color-accent-50: oklch(96.75% 0.017 242.42);
@@ -194,6 +208,11 @@
 		cursor: pointer;
 	}
 
+	button:disabled,
+	[role='button']:disabled {
+		cursor: not-allowed;
+	}
+
 	summary {
 		list-style-type: none;
 	}
@@ -249,6 +268,7 @@
 		justify-content: center;
 		align-items: center;
 		gap: var(--spacing);
+		min-height: calc(var(--spacing) * 8);
 		font-size: var(--text-2xs);
 		font-weight: var(--font-weight-medium);
 		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
@@ -257,18 +277,19 @@
 			var(--default-transition-duration);
 	}
 
-	.btn-primary,
-	.tab-primary {
+	.btn-primary {
 		background-color: transparent;
 		color: var(--color-body);
 		border: 1px solid var(--color-neutral-300);
 
-		&:hover {
-			background-color: var(--color-primary-100);
-		}
+		&:not(:disabled) {
+			&:hover {
+				background-color: var(--color-primary-100);
+			}
 
-		& svg {
-			color: var(--color-subtle);
+			& svg {
+				color: var(--color-subtle);
+			}
 		}
 	}
 
@@ -277,12 +298,14 @@
 		color: var(--color-body);
 		border: 1px solid var(--color-accent-200);
 
-		&:hover {
-			background-color: var(--color-accent-100);
-		}
+		&:not(:disabled) {
+			&:hover {
+				background-color: var(--color-accent-100);
+			}
 
-		& svg {
-			color: var(--color-subtle);
+			& svg {
+				color: var(--color-subtle);
+			}
 		}
 	}
 
@@ -321,16 +344,30 @@
 
 	.tab {
 		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+		min-height: calc(var(--spacing) * 7.5);
+		border-radius: var(--radius-md);
+		border: 1px solid transparent;
+		color: var(--color-subtle);
+		background-color: transparent;
+
+		&:hover {
+			background-color: var(--color-primary-100);
+		}
+
+		& svg {
+			color: var(--color-subtle);
+		}
 	}
 
-	.tab-primary {
-		border: none;
-	}
-
-	.tab-highlighted {
+	.tab-active {
 		background-color: var(--color-accent-50);
 		color: var(--color-body);
-		border: 1px solid var(--color-accent-200);
+		border-color: var(--color-accent-200);
+		color: var(--color-body);
+
+		&:hover {
+			background-color: var(--color-accent-50);
+		}
 
 		& svg {
 			color: var(--color-accent);

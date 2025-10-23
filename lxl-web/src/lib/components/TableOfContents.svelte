@@ -37,7 +37,7 @@
 		selectedAnchor = window.location.hash?.substring(1);
 
 		if (!mobile) {
-			const closestArticle = tocElement.closest('article');
+			const closestArticle = tocElement?.closest('article');
 			if (closestArticle) {
 				const sections = itemsWithTop
 					.flatMap((item) => [
@@ -94,7 +94,7 @@
 				if (visibleSections.size) {
 					firstVisibleSection =
 						tocElement
-							.closest('article')
+							?.closest('article')
 							?.querySelector(`:scope #${Array.from(visibleSections).join(', :scope #')}`) // find first visible section by generating a selector string using the ids of visible sections
 							?.getAttribute('id') || firstVisibleSection; // fallback to previous visible section
 				}
@@ -123,7 +123,7 @@
 			<li class={children && '[&>ul_a]:pl-7'}>
 				<div class={['border-l-2 border-l-neutral-200']}>
 					<a
-						href="{page.url.pathname}#{id}"
+						href={page.data.localizeHref(`${page.url.pathname}${page.url.search}#${id}`)}
 						aria-current={id === currentSection || undefined}
 						class={[
 							'hover:text-body focus:text-body inline-flex min-h-8 items-center px-3 hover:underline focus:underline'

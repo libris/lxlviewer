@@ -20,12 +20,13 @@ import {
 	type PartialCollectionView,
 	type SearchMapping,
 	SearchOperators,
-	type SearchResult
+	type SearchResult,
+	type SearchResultItem
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { LibraryItem } from '$lib/types/userSettings';
+import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
@@ -63,36 +64,15 @@ export async function asResult(
 		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
-		items: view.items
-			?.map((i) => cleanUpItem(i))
-			.map((i) => ({
-				...(myLibraries && {
-					heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
-				}),
-				...('_debug' in i && {
-					_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
-				}),
-				[JsonLd.ID]: i.meta[JsonLd.ID] as string,
-				[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
-				[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
-				[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-				[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(
-					i,
-					LensType.WebCardHeaderTop,
-					locale
-				),
-				[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
-					i,
-					LensType.WebCardHeaderExtra,
-					locale
-				),
-				[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
-				image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
-				typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
-				typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)), // FIXME
-				selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
-				numberOfHolders: getHoldersCount(i)
-			})),
+		items: asSearchResultItem(
+			view.items,
+			displayUtil,
+			vocabUtil,
+			locale,
+			auxdSecret,
+			myLibraries,
+			maxScores
+		),
 		...('stats' in view && {
 			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 		}),
@@ -106,6 +86,43 @@ export async function asResult(
 				})
 			: []
 	};
+}
+
+export function asSearchResultItem(
+	items: FramedData[],
+	displayUtil: DisplayUtil,
+	vocabUtil: VocabUtil,
+	locale: LangCode,
+	auxdSecret: string,
+	myLibraries?: Record<string, LibraryItem>,
+	maxScores?: Record<string, number>
+): SearchResultItem[] {
+	return items
+		?.map((i) => cleanUpItem(i))
+		.map((i) => ({
+			...(myLibraries && {
+				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
+			}),
+			...('_debug' in i && {
+				_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
+			}),
+			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
+			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
+			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
+			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
+			[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(i, LensType.WebCardHeaderTop, locale),
+			[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
+				i,
+				LensType.WebCardHeaderExtra,
+				locale
+			),
+			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
+			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
+			typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
+			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
+			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
+			numberOfHolders: getHoldersCount(i)
+		}));
 }
 
 function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode): string {
@@ -166,6 +183,7 @@ export function displayMappings(
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('variable' in m && { variable: m.variable }),
 					_key: m._key,
 					_value: m._value
 				} as DisplayMapping;
@@ -174,7 +192,8 @@ export function displayMappings(
 				return {
 					children: _iterateMapping(mappingArr),
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) })
+					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('variable' in m && { variable: m.variable })
 				} as DisplayMapping;
 			} else if (m.object) {
 				const defaultType = { [JsonLd.TYPE]: Base.Resource };
@@ -191,6 +210,7 @@ export function displayMappings(
 					label: '',
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('variable' in m && { variable: m.variable }),
 					_value: m?.value
 				} as DisplayMapping;
 			} else {
@@ -487,4 +507,23 @@ function addMyLibrariesBoolFilter(
 		}
 	}
 	return boolFilters;
+}
+
+/**
+ * Conditionally append param specifying my libraries (from cookie)
+ */
+export function appendMyLibrariesParam(
+	searchParams: URLSearchParams,
+	userSettings: UserSettings
+): URLSearchParams {
+	if (['_q', '_r'].some((key) => searchParams.get(key)?.includes(MY_LIBRARIES_FILTER_ALIAS))) {
+		let sigelStr;
+		if (userSettings?.myLibraries) {
+			sigelStr = Object.values(userSettings?.myLibraries)
+				.map((lib) => `itemHeldBy:"sigel:${lib.sigel}"`)
+				.join(' OR ');
+		}
+		searchParams.append(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
+	}
+	return searchParams;
 }

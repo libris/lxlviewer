@@ -37,11 +37,7 @@
 	}
 
 	let { placeholder = '' }: Props = $props();
-	let q = $state(
-		page.params.fnurgel
-			? ''
-			: addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || '')
-	);
+	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
@@ -77,7 +73,7 @@
 				q = ''; // reset query if navigating to start/index page
 			} else if (to.url.searchParams.has('_q')) {
 				const toQ = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
-				q = page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
+				q = toQ !== '*' ? toQ : ''; // hide wildcard in input field
 			}
 
 			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
@@ -149,7 +145,10 @@
 
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
-			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
+			// Make sure supersearch doesn't use '_r' section of mapping
+			const filteredPageMapping = pageMapping?.filter((m) => m.variable === '_q');
+			const filteredSuggestMapping = suggestMapping?.filter((m) => m.variable === '_q');
+			return getLabelFromMappings(key, value, filteredPageMapping, filteredSuggestMapping);
 		}
 		return lxlQualifierPlugin(QualifierPill, getLabels);
 	});
@@ -205,7 +204,8 @@
 				_q: query,
 				_limit: '5',
 				cursor: cursor.toString(),
-				_sort: page.url.searchParams.get('_sort') || ''
+				_sort: page.url.searchParams.get('_sort') || '',
+				_r: page.url.searchParams.get('_r') || ''
 			});
 		}}
 		transformFn={handleTransform}

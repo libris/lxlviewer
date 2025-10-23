@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import { onMount, type Component } from 'svelte';
 	import { Locales, baseLocale, type LocaleCode } from '$lib/i18n/locales';
+	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
@@ -12,6 +14,7 @@
 	import IconLanguage from '~icons/bi/globe';
 	import BetaBanner from '$lib/components/BetaBanner.svelte';
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
+	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
@@ -20,6 +23,8 @@
 	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
+
+	const serviceName = env.PUBLIC_SERVICE_NAME;
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -32,6 +37,9 @@
 	const findActionUrl = $derived(
 		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
 	);
+
+	const subset = $derived(page.data.subsetMapping);
+	const subsetPlaceholder = $derived(subset && displayMappingToString(subset));
 
 	function handleDismissBanner() {
 		dismissedBanner = true;
@@ -115,7 +123,7 @@
 	{#if !dismissedBanner}
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
-	<nav class="app-bar bg-app-header grid items-stretch">
+	<nav class={['app-bar bg-app-header grid items-stretch', subset && 'with-subset']}>
 		<ul class="leading-actions ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
 				<svelte:element
@@ -175,15 +183,27 @@
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 					data-testid="home"
 				>
-					<img
-						src={librisLogo}
-						width={275}
-						height={75}
-						alt="Libris"
-						class="3xl:w-30.25 mb-1 h-auto w-22 lg:w-27.5"
-					/>
+					{#if serviceName}
+						<span class="text-2xl font-medium">
+							{serviceName}
+						</span>
+					{:else}
+						<img
+							src={librisLogo}
+							width={275}
+							height={75}
+							alt="Libris"
+							class="3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-27.5"
+						/>
+					{/if}
 				</a>
 			</li>
+			{#if subset}
+				<li class="subset-container relative flex items-center overflow-hidden">
+					<p class="pr-2">/</p>
+					<SearchMapping mapping={subset} />
+				</li>
+			{/if}
 		</ul>
 		<search
 			id={IDs.search}
@@ -198,7 +218,9 @@
 				<AppSearch
 					id="search"
 					name="_q"
-					placeholder={page.data.t('header.searchPlaceholder')}
+					placeholder={subsetPlaceholder
+						? `${page.data.t('header.searchSubsetPlaceholder')}: ${subsetPlaceholder}`
+						: page.data.t('header.searchPlaceholder')}
 					--sm-dialog-top={showSearchInputOnMobile
 						? 'calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2)'
 						: 'calc(var(--banner-height, 0)'}
@@ -335,5 +357,42 @@
 			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 4px);
 			max-height: calc(100vh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
 		}
+	}
+
+	/* subset in header */
+	.app-bar.with-subset {
+		--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 22);
+		@variant lg {
+			--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 30);
+		}
+		grid-template-columns: var(--search-grid-template-columns);
+	}
+
+	.app-bar :global(.search-mapping) {
+		overflow-x: auto;
+		scroll-behavior: smooth;
+		scrollbar-width: none;
+		padding-right: calc(var(--spacing) * 4);
+	}
+
+	.app-bar :global(.search-mapping .group) {
+		flex-wrap: nowrap;
+		max-width: none;
+	}
+
+	.app-bar :global(.search-mapping .pill),
+	.subset-container :global(ul) {
+		max-width: none;
+	}
+
+	.subset-container::after {
+		content: '';
+		position: absolute;
+		top: -1px;
+		right: 0;
+		width: calc(var(--spacing) * 4);
+		height: 100%;
+		pointer-events: none;
+		background: linear-gradient(to right, transparent, var(--color-primary-100));
 	}
 </style>

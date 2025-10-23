@@ -1,152 +1,113 @@
 <script lang="ts">
+	import { getRelationSymbol } from '$lib/utils/getRelationSymbol';
+	import { isWildcardQuery } from '$lib/utils/displayMappingToString';
 	import SearchMapping from './SearchMapping.svelte';
-	import type { DisplayMapping, SearchOperators } from '$lib/types/search';
+	import type { DisplayMapping } from '$lib/types/search';
 	import { page } from '$app/state';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiTrash from '~icons/bi/trash';
 
 	interface Props {
 		mapping: DisplayMapping[];
-		parentOperator?: keyof typeof SearchOperators | undefined;
 		depth?: number;
 	}
 
-	let { mapping, parentOperator = undefined, depth = 0 }: Props = $props();
-
-	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
-		switch (operator) {
-			case 'equals':
-				return ':';
-			case 'notEquals':
-				return '≠';
-			case 'greaterThan':
-				return '＞';
-			case 'greaterThanOrEquals':
-				return '⩾';
-			case 'lessThan':
-				return '＜';
-			case 'lessThanOrEquals':
-				return '⩽';
-			case 'existence':
-				return '∃';
-			case 'notExistence':
-				return '∄';
-			default:
-				return '';
-		}
-	}
+	let { mapping, depth = 0 }: Props = $props();
 </script>
 
-<ul class="flex flex-wrap items-center gap-2 overflow-hidden">
-	{#each mapping as m, index (`${m['@id']}-${index}`)}
-		<li
-			class="mapping-item overflow-hidden {m.children
-				? 'pill-group'
-				: 'btn btn-accent'} pill-{m.operator}"
-			class:wildcard={m.operator === 'equals' && m.display === '*'}
-			class:outer={depth === 0}
-			class:free-text={m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
-		>
-			{#if 'children' in m}
-				<SearchMapping mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
-			{:else if m.operator === 'existence' || m.operator === 'notExistence'}
-				{@const symbol = getRelationSymbol(m.operator)}
-				<span class="pill-relation">{symbol}</span>
-				<div class="pill-label inline whitespace-nowrap">{m.label}</div>
-			{:else if 'label' in m && 'display' in m}
-				{@const symbol = getRelationSymbol(m.operator)}
-				<div class="pill-label inline whitespace-nowrap">{m.label}</div>
-				<span class="pill-relation">{symbol}</span>
-				<span class="pill-value truncate">
-					{m.displayStr}
+<ul
+	class={[
+		'max-w-full',
+		depth === 0 ? 'search-mapping flex-col-reverse gap-2' : 'flex-col',
+		'flex items-start text-xs'
+	]}
+>
+	{#each mapping as m, i (`outer-${i}-${depth}`)}
+		{@const { children, operator, up, variable, displayStr, label, display } = m}
+		{#if displayStr && !isWildcardQuery(m)}
+			{@const isLinked = !!display?.['@id']}
+			<li
+				class={[
+					'pill bg-neutral flex h-8 max-w-full items-center rounded-sm',
+					variable && `variable-${variable}`
+				]}
+			>
+				{#if label}
+					<span
+						class="lxl-qualifier lxl-qualifier-key atomic h-full content-center whitespace-nowrap"
+					>
+						{label}
+					</span>
+				{/if}
+				{#if operator && operator !== 'none'}
+					<span class="lxl-qualifier lxl-qualifier-operator atomic h-full content-center pr-1.5"
+						>{getRelationSymbol(m.operator)}</span
+					>
+				{/if}
+				<span
+					class={[
+						'lxl-qualifier h-full content-center overflow-hidden',
+						operator === 'none' ? 'lxl-filter-alias atomic' : 'lxl-qualifier-value',
+						isLinked && 'atomic'
+					]}
+				>
+					<span class="block truncate">{displayStr}</span>
 				</span>
-			{/if}
-			{#if 'up' in m && (!m.children || depth > 0)}
-				<span class="pill-remove inline-block align-sub">
+				{#if up}
 					<a
-						class="float-right pl-2 text-[inherit] hover:text-[inherit]"
+						class="lxl-qualifier lxl-qualifier-remove atomic h-8 transition-colors"
 						href={page.data.localizeHref(m.up?.['@id'])}
 						aria-label={page.data.t('search.removeFilter')}
 					>
-						<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
+						<BiXLg fill="currentColor" />
 					</a>
-				</span>
-			{/if}
-		</li>
-		{#if parentOperator}
-			<li class="pill-between pill-between-{parentOperator} text-xs">{parentOperator}</li>
-		{/if}
-		{#if 'up' in m && m.children && depth === 0}
-			<li class="pill-remove">
-				<a href={page.data.localizeHref(m.up?.['@id'])} class="btn btn-primary">
-					<BiTrash aria-hidden="true" />
-					{page.data.t('search.clearFilters')}
-				</a>
+				{/if}
+			</li>
+		{:else if children}
+			<li
+				class={[
+					'group flex max-w-full flex-wrap items-center gap-1.5',
+					variable ? `variable-${variable}` : 'group-inner'
+				]}
+			>
+				{#each children as child, i (`${i}-${depth}`)}
+					<SearchMapping depth={depth + 1} mapping={[child]} />
+					{#if operator && i < children.length - 1}
+						<span class="operator-{operator} text-2xs uppercase">{operator}</span>
+					{/if}
+				{/each}
+				{#if up && variable}
+					<a href={page.data.localizeHref(m.up?.['@id'])} class="btn btn-primary">
+						<BiTrash aria-hidden="true" />
+						{page.data.t('search.clearFilters')}
+					</a>
+				{/if}
 			</li>
 		{/if}
 	{/each}
 </ul>
 
 <style lang="postcss">
-	/* TODO: add styles consistent with new design  */
+	@reference 'tailwindcss';
 
-	.mapping-item {
-		/* @apply rounded-md px-4 py-2 brightness-100;
-		transition: filter 0.1s ease; */
+	.search-mapping :global(.lxl-qualifier-value) {
+		background-color: var(--color-accent-100);
 	}
 
-	.mapping-item:has(:global(> .pill-remove:hover)) {
-		/* @apply brightness-[.85]; */
-	}
-
-	.pill {
-		& .pill-label,
-		.pill-relation {
-		}
-	}
-
-	.pill-notEquals,
-	.pill-notExistence {
-		& .pill-label,
-		.pill-relation {
-		}
-	}
-
-	.pill-equals.wildcard {
+	.operator-and {
 		display: none;
 	}
 
-	.pill-group {
-		display: flex;
-		align-items: center;
-		gap: calc(var(--spacing) * 2);
-		padding: 0;
-		padding-right: calc(var(--spacing) * 4);
-
-		&.outer {
-			background-color: transparent;
-		}
+	/* we can give _r pills a special styling if we want */
+	.variable-_r .pill,
+	.variable-_r.pill {
 	}
 
-	.pill-between,
-	.pill-relation {
-		text-transform: uppercase;
+	.group-inner::after {
+		content: ')';
 	}
 
-	.pill-between-and,
-	.pill-between:last-of-type {
-		display: none;
-	}
-
-	.free-text {
-		& > .pill-label,
-		.pill-relation {
-			display: none;
-		}
-
-		& > .pill-value::before,
-		& > .pill-value::after {
-			content: '"';
-		}
+	.group-inner::before {
+		content: '(';
 	}
 </style>

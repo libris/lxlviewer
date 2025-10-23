@@ -9,7 +9,7 @@
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { Snippet } from 'svelte';
 	import Draggable from '../Draggable.svelte';
-	import TabList from '../TabList.svelte';
+	import TabList, { type Tab } from '../TabList.svelte';
 	import Toolbar from '../Toolbar.svelte';
 	import BiArrowBarLeft from '~icons/bi/arrow-bar-left';
 	import IconSliders from '~icons/bi/sliders';
@@ -29,24 +29,14 @@
 		userSettings.setLeadingPaneWidth(paneWidth);
 	}
 
-	const tabs = [
+	const tabs: Tab[] = [
 		{
 			label: 'Filter',
-			targetId: 'filters',
-			active: true,
-			leadingIcon: IconSliders
+			id: 'filters',
+			icon: IconSliders
 		}
 	];
 </script>
-
-{#snippet tabContent(tab: (typeof tabs)[0])}
-	<div class={['tab flex gap-2', tab.active ? 'tab-highlighted' : 'tab-primary']}>
-		{#if tab.leadingIcon}
-			<tab.leadingIcon />
-		{/if}
-		<span>{tab.label}</span>
-	</div>
-{/snippet}
 
 <nav
 	aria-label={page.data.t('panes.leadingPane')}
@@ -70,7 +60,7 @@
 		<div class="leading-pane-toolbar">
 			<Toolbar>
 				{#snippet leadingActions()}
-					<TabList {tabContent} {tabs} aria-label={page.data.t('panes.leadingPaneTabs')} />
+					<TabList {tabs} ariaLabel={page.data.t('panes.leadingPaneTabs')} />
 				{/snippet}
 				{#snippet trailingActions()}
 					<button

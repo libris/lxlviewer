@@ -4,8 +4,13 @@
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldersByType } from '$lib/types/holdings';
-	import type { SearchResultItem, AdjecentSearchResult } from '$lib/types/search';
-	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
+	import type { ResourceData } from '$lib/types/resourceData';
+	import type {
+		SearchResultItem,
+		AdjecentSearchResult,
+		ResourceSearchResult
+	} from '$lib/types/search';
+	import capitalize from '$lib/utils/capitalize';
 	import type { Relation } from '$lib/utils/relations';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
@@ -14,8 +19,10 @@
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
+	import SearchCard from './find/SearchCard.svelte';
+	import TabList, { type Tab } from './TabList.svelte';
+	import SearchMapping from './find/SearchMapping.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
-	import BiQuote from '~icons/bi/quote';
 
 	type Props = {
 		fnurgel: string;
@@ -27,7 +34,8 @@
 		decoratedOverview: DecoratedData;
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
-		instances: Record<string, unknown>[]; // TODO: fix better types
+		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
+		searchResult?: ResourceSearchResult;
 		holdersByType: HoldersByType;
 		tableOfContents: TableOfContentsItem[];
 		adjecentSearchResults?: AdjecentSearchResult[];
@@ -44,13 +52,66 @@
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
+		searchResult,
 		holdersByType,
 		tableOfContents,
 		adjecentSearchResults
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
+
+	let searchMapping = $derived(searchResult?.mapping);
+	let filteredInstances = $derived(searchResult?.items);
+
+	const derivedFilteredInstances = $derived.by(() => {
+		const idSet = new Set(filteredInstances);
+		return instances?.filter((instance) => idSet.has(instance?.['@id']));
+	});
+
+	const tabMatchingInstances: Tab | null = $derived.by(() => {
+		if (filteredInstances?.length) {
+			return {
+				id: 'matching-instances',
+				label: `${page.data.t('resource.matching')} (${filteredInstances?.length})`,
+				content: panelMatchingInstances
+			};
+		}
+		return null;
+	});
+
+	const tabAllInstances: Tab | null = $derived.by(() => {
+		if (!filteredInstances || instances?.length > filteredInstances?.length) {
+			return {
+				id: 'all-instances',
+				label: `${capitalize(page.data.t('resource.all'))} (${instances?.length})`,
+				content: panelAllInstances
+			};
+		}
+		return null;
+	});
+
+	const instanceTabs = $derived([tabMatchingInstances, tabAllInstances].filter((f) => !!f));
+	const showTabs = $derived(
+		derivedFilteredInstances?.length && derivedFilteredInstances?.length !== instances?.length
+	);
 </script>
+
+{#snippet panelMatchingInstances()}
+	{#if searchMapping}
+		<div class="py-4">
+			<SearchMapping mapping={searchMapping} />
+		</div>
+	{/if}
+	{#each derivedFilteredInstances as instance (instance?.['@id'])}
+		<SearchCard item={instance as SearchResultItem} />
+	{/each}
+{/snippet}
+
+{#snippet panelAllInstances()}
+	{#each instances as instance (instance?.['@id'])}
+		<SearchCard item={instance as SearchResultItem} />
+	{/each}
+{/snippet}
 
 {#if adjecentSearchResults}
 	<div class="border-b-neutral @container border-b">
@@ -78,14 +139,14 @@
 				<ResourceImage
 					{images}
 					type={typeForIcon}
-					alt={page.data.t('general.latestInstanceCover')}
+					alt={page.data.t('general.instanceCover')}
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
 					linkToFull
 				/>
 				{#if holdersByType && Object.keys(holdersByType).length && instances}
 					<section class="mt-5">
 						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
-						<ResourceHoldings {holdersByType} {instances} />
+						<ResourceHoldings {holdersByType} {instances} {fnurgel} />
 					</section>
 				{/if}
 			</div>
@@ -104,42 +165,40 @@
 							</h1>
 						</hgroup>
 					</header>
-					<div class="header-actions self-end md:self-start">
-						{#if instances.length === 1}
-							<a
-								class="btn btn-primary h-7"
-								href={getCiteLink(page.url, fnurgel)}
-								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
-							>
-								<div class="bg-subtle flex size-4 items-center justify-center rounded-full">
-									<BiQuote class="text-white" />
-								</div>
-								<span>{page.data.t('citations.createCitation')}</span>
-							</a>
-						{/if}
-					</div>
 				</div>
 				<div class="decorated-overview">
 					<DecoratedData data={decoratedOverview} block />
 				</div>
 			</section>
 			<section>
-				<div class="decorated-overview">
-					<InstancesList
-						data={instances}
-						columns={[
-							{
-								header: page.data.t('search.publicationYear'),
-								data: '*[].publication[].*[][?year].year'
-							},
-							{
-								header: page.data.t('search.publisher'),
-								data: '*[].publication.*[][?agent].agent'
-							},
-							{ header: page.data.t('search.type'), data: '_label' }
-						]}
-					/>
-				</div>
+				{#if instances?.length === 1}
+					<!-- single instance -->
+					<div class="decorated-overview">
+						<InstancesList
+							data={instances}
+							columns={[
+								{
+									header: page.data.t('search.publicationYear'),
+									data: '*[].publication[].*[][?year].year'
+								},
+								{
+									header: page.data.t('search.publisher'),
+									data: '*[].publication.*[][?agent].agent'
+								},
+								{ header: page.data.t('search.type'), data: '_label' }
+							]}
+						/>
+					</div>
+				{:else if instances?.length > 1}
+					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
+						{page.data.t('resource.editions')}
+					</h2>
+					{#if showTabs}
+						<TabList ariaLabel={page.data.t('resource.editions')} tabs={instanceTabs} />
+					{:else}
+						{@render panelAllInstances()}
+					{/if}
+				{/if}
 			</section>
 			{#if relations.length}
 				<section class="mt-6">
@@ -250,5 +309,9 @@
 			width: fit-content;
 			white-space: nowrap;
 		}
+	}
+
+	:global([role='tabpanel'] .\@container\/card:first-of-type .search-card) {
+		border-top: none;
 	}
 </style>

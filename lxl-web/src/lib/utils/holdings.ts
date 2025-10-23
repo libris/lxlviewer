@@ -53,8 +53,9 @@ function sortHoldings(holdings) {
 	});
 }
 
-export function getHoldersCount(mainEntity): number {
-	const instances = mainEntity['@reverse']?.instanceOf;
+export function getHoldersCount(data: FramedData): number {
+	// data can be a work mainEntity or an instance
+	const instances = data['@reverse']?.instanceOf || [data];
 	const holders = new Set();
 	instances?.forEach((instance) => {
 		const holdings = instance['@reverse']?.itemOf;
@@ -68,11 +69,11 @@ export function getHoldersCount(mainEntity): number {
 }
 
 export function getHoldingsByInstanceId(
-	mainEntity,
+	data: FramedData,
 	displayUtil: DisplayUtil,
 	locale: LocaleCode
 ): HoldingsByInstanceId {
-	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
+	return (data?.['@reverse']?.instanceOf || [data])?.reduce((acc, instanceOfItem) => {
 		const id = stripAnchor(trimSlashes(relativizeUrl(instanceOfItem['@id'])));
 		if (!id) {
 			return acc;

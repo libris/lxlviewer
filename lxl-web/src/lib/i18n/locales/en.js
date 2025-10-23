@@ -29,6 +29,7 @@ export default {
 		login: 'Log in',
 		saved: 'Saved',
 		searchPlaceholder: 'Search for title, author, library, subject...',
+		searchSubsetPlaceholder: 'Search within',
 		openMenu: 'Open main menu',
 		closeMenu: 'Close menu'
 	},
@@ -230,6 +231,7 @@ export default {
 		occurrences: 'Occurrences',
 		show: 'Show',
 		all: 'all',
+		matching: 'Matching your search',
 		results: 'results',
 		result: 'result',
 		editions: 'Editions',

@@ -53,8 +53,11 @@ export const handle = async ({ event, resolve }) => {
 		}
 	});
 
+	// set data-theme defined in themes.css
+	const dataTheme = env.APP_THEME || 'libris';
+
 	return resolve(event, {
-		transformPageChunk: ({ html }) => html.replace('%lang%', lang)
+		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)
 	});
 };
 

@@ -59,7 +59,7 @@
 		]}
 	>
 		<LeadingPane>
-			<div id="filters" role="tabpanel" aria-labelledby="tab-filters">
+			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
 				<Filters facets={searchResult.facetGroups || []} />
 			</div>
 		</LeadingPane>

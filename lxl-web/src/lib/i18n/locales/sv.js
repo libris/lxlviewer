@@ -28,6 +28,7 @@ export default {
 		login: 'Logga in',
 		saved: 'Sparat',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
+		searchSubsetPlaceholder: 'Sök inom',
 		openMenu: 'Öppna huvudmeny',
 		closeMenu: 'Stäng meny'
 	},
@@ -229,6 +230,7 @@ export default {
 		occurrences: 'Förekomster',
 		show: 'Visa',
 		all: 'alla',
+		matching: 'Matchar din sökning',
 		results: 'träffar',
 		result: 'träff',
 		editions: 'Utgåvor',

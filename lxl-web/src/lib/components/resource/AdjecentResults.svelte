@@ -23,7 +23,7 @@
 
 	const currentSearchResult = $derived(
 		adjecentSearchResults?.find((searchResult) =>
-			searchResult.items.find((item) => item['@id'].includes(fnurgel))
+			searchResult.items.find((item) => item['@id']?.includes(fnurgel))
 		)
 	);
 
@@ -34,7 +34,7 @@
 	);
 
 	const itemIndex = $derived(
-		currentSearchResult?.items.findIndex((item) => item['@id'].includes(fnurgel))
+		currentSearchResult?.items.findIndex((item) => item['@id']?.includes(fnurgel))
 	);
 
 	const indexOfTotalSearchResults = $derived(
@@ -136,7 +136,7 @@
 			>
 				{#if previousItemFnurgel}
 					<a
-						href={page.data.localizeHref(previousItemFnurgel)}
+						href={page.data.localizeHref(previousItemFnurgel + page.url.search)}
 						class="link flex min-h-8 items-center @7xl:min-h-9"
 						onclick={passAlongAdjecentSearchResults}
 					>
@@ -151,7 +151,7 @@
 			<span class="flex [&>*]:whitespace-nowrap">
 				{#if nextItemFnurgel}
 					<a
-						href={page.data.localizeHref(nextItemFnurgel)}
+						href={page.data.localizeHref(nextItemFnurgel + page.url.search)}
 						class="link flex min-h-8 items-center @7xl:min-h-9"
 						onclick={passAlongAdjecentSearchResults}
 					>
