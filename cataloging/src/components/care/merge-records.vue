@@ -173,7 +173,6 @@ export default {
         property: 'selected',
         value: selected,
       });
-      // TODO: for each in form tabs?
       this.$store.dispatch('pushInspectorEvent', {
         name: 'apply-source',
       });
@@ -266,23 +265,8 @@ export default {
       this.applyFieldsFromSource(source);
     },
     applyFieldsFromSource(source) {
-      const baseRecordType = this.inspector.data.mainEntity['@type'];
-      const tempRecordType = source.mainEntity['@type'];
-      const matching = (
-        VocabUtil.isSubClassOf(tempRecordType, baseRecordType, this.resources.vocab, this.resources.context)
-        || VocabUtil.isSubClassOf(baseRecordType, tempRecordType, this.resources.vocab, this.resources.context)
-      );
-      if (matching === false) {
-        const baseRecordLabel = StringUtil.getLabelByLang(baseRecordType, this.user.settings.language, this.resources);
-        const tempRecordLabel = StringUtil.getLabelByLang(tempRecordType, this.user.settings.language, this.resources);
-        const errorBase = `${StringUtil.getUiPhraseByLang('The types do not match', this.user.settings.language, this.resources.i18n)}`;
-        const errorMessage = `"${tempRecordLabel}" ${StringUtil.getUiPhraseByLang('is not compatible with', this.user.settings.language, this.resources.i18n)} "${baseRecordLabel}"`;
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}! ${errorMessage}` });
-        return;
-      }
 
       const baseRecordData = cloneDeep(this.inspector.data);
-
       // This part checks if the template should include the work or not (to not overwrite a link)
       if (baseRecordData.mainEntity.hasOwnProperty('instanceOf')) {
         const baseRecordWork = baseRecordData.mainEntity.instanceOf;
