@@ -269,19 +269,17 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				{/if}
 			</footer>
 			<div class="card-actions flex gap-1 self-end pt-1">
-				{@render holdingsButton()}
 				{#if isInstanceCard}
 					<a
-						class="btn btn-primary h-7 rounded-full pt-1 md:h-8"
+						class="btn btn-primary h-7 rounded-full md:h-8"
 						href={getCiteLink(page.url, id)}
 						onclick={(event) => handleClickCite(event, page.state, id)}
 					>
-						<div class="bg-subtle flex size-4 items-center justify-center rounded-full">
-							<BiQuote class="text-white" />
-						</div>
+						<BiQuote class="size-4 text-neutral-400" />
 						<span>{page.data.t('citations.cite')}</span>
 					</a>
 				{/if}
+				{@render holdingsButton()}
 			</div>
 		</div>
 

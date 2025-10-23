@@ -3,18 +3,21 @@
 	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
 	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import { getResourceId } from '$lib/utils/resourceData';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { JsonLd } from '$lib/types/xl';
+	import BiQuote from '~icons/bi/quote';
 
 	interface Props {
 		instances: Record<string, unknown>[]; // TODO: fix better types
 		holdersByType: HoldersByType;
+		fnurgel: string;
 	}
 
-	let { holdersByType, instances }: Props = $props();
+	let { holdersByType, instances, fnurgel }: Props = $props();
 
 	const userSettings = getUserSettings();
 
@@ -25,9 +28,9 @@
 
 <ul class="@container flex flex-col gap-2">
 	{#each Object.keys(holdersByType) as type (type)}
-		<li>
+		<li class="@lg:self-center">
 			<a
-				class="btn btn-cta"
+				class="btn btn-cta max-w-sm"
 				href={page.data.localizeHref(getHoldingsLink(page.url, type))}
 				data-sveltekit-preload-data="false"
 				data-testid="holding-link"
@@ -47,7 +50,7 @@
 						{/if}
 					{/if}
 				{/if}
-				{getLocalizedType(type)}
+				<span class="text-nowrap">{getLocalizedType(type)}</span>
 				<span class="text-2xs truncate font-normal opacity-90">
 					{' · '}
 					<span class="hidden @3xs:inline">{page.data.t('holdings.availableAt').toLowerCase()}</span
@@ -60,4 +63,14 @@
 			</a>
 		</li>
 	{/each}
+	{#if instances?.length === 1}
+		<a
+			class="btn btn-primary h-7 self-center rounded-full px-6 py-1.5"
+			href={getCiteLink(page.url, fnurgel)}
+			onclick={(event) => handleClickCite(event, page.state, fnurgel)}
+		>
+			<BiQuote class="size-4 text-neutral-400" />
+			<span>{page.data.t('citations.createCitation')}</span>
+		</a>
+	{/if}
 </ul>

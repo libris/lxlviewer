@@ -11,7 +11,6 @@
 		ResourceSearchResult
 	} from '$lib/types/search';
 	import capitalize from '$lib/utils/capitalize';
-	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import type { Relation } from '$lib/utils/relations';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
@@ -24,7 +23,6 @@
 	import TabList, { type Tab } from './TabList.svelte';
 	import SearchMapping from './find/SearchMapping.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
-	import BiQuote from '~icons/bi/quote';
 
 	type Props = {
 		fnurgel: string;
@@ -148,7 +146,7 @@
 				{#if holdersByType && Object.keys(holdersByType).length && instances}
 					<section class="mt-5">
 						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
-						<ResourceHoldings {holdersByType} {instances} />
+						<ResourceHoldings {holdersByType} {instances} {fnurgel} />
 					</section>
 				{/if}
 			</div>
@@ -167,20 +165,6 @@
 							</h1>
 						</hgroup>
 					</header>
-					<div class="header-actions self-end md:self-start">
-						{#if instances?.length === 1}
-							<a
-								class="btn btn-primary h-7"
-								href={getCiteLink(page.url, fnurgel)}
-								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
-							>
-								<div class="bg-subtle flex size-4 items-center justify-center rounded-full">
-									<BiQuote class="text-white" />
-								</div>
-								<span>{page.data.t('citations.createCitation')}</span>
-							</a>
-						{/if}
-					</div>
 				</div>
 				<div class="decorated-overview">
 					<DecoratedData data={decoratedOverview} block />
