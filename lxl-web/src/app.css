@@ -186,12 +186,7 @@
 
 	html:has(dialog[open]),
 	body:has(dialog[open]) {
-		height: 100%;
 		overflow: clip;
-
-		@variant sm {
-			height: auto;
-		}
 	}
 
 	button:not(:disabled),
