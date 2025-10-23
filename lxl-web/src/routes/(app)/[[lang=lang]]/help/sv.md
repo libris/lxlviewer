@@ -37,7 +37,7 @@ När du skriver i sökfältet kommer du bli presenterad med förslag på antinge
 Ett sätt att utforska katalogen eller avgränsa sökningen är att klicka på de filter (eller facetter) som finns i vänsterkolumnen. Filtrena motsvarar/speglar den information som finns tillgänglig i ditt sökresultat. För att underlätta att hitta i filtren så går dessa att sortera individuellt på antal träffar, a-ö eller ö-a. Aktiva filter visas direkt i sökrutan.
 
 - En smidig funktion är att det går att söka bland alla synliga filter i sökrutan ovanför filtrena. Observera att det endast är de filter som finns “laddade” för sökfrågan som går att söka bland, dessa är dessutom begränsat till de _100 mest förekommande_ för vardera filterkategori. Det innebär att om fler än 100 ämnesord finns representerade i sökträffmängden så kommer bara de 100 första att visas, avgränsa sökningen ytterligare för att komma under denna gräns om det är något ämnesord som saknas.
-
+<br>
 <b>Åtkomst</b> - Avgränsa till favoritbibliotek eller fritt tillgängligt online<br>
 <b>Format</b> (under arbete) - Fysiskt eller digitalt material<br>
 <b>Kategori</b> - Beskrivning vad ett objekt är: Litteratur, stillbild, musik osv<br>
