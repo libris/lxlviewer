@@ -39,22 +39,22 @@ When you type in the search field, you will be presented with suggestions for ei
 One way to explore the catalog or narrow your search is to click on the filters (or facets) in the left column. The filters correspond to the information available in your search results. To make it easier to find the filters, they can be sorted individually by number of hits, a-z or z-a. Active filters are displayed directly in the search box.
 
 - A handy feature is that you can search through all visible filters in the search box above the filters . Please note that only the filters that are “loaded” for the search query can be searched through, and these are also limited to the 100 most common for each filter category. This means that if more than 100 subject words are represented in the search result, only the first 100 will be displayed. Narrow down the search further to get below this limit if any subject words are missing.
-<br>
-<b>Access</b> - Limit to favorite library or freely available online<br>
-<b>Format (in progress)</b> - Physical or digital material<br>
-<b>Category</b> - Description of what an object is: Literature, still image, music, etc.<br>
-<b>“Category 🚧👷🏗️”</b> - Categories that are not yet classified under overarching categories<br>
-<b>“Format 🚧👷🏗️“</b> - What form a material has: printed volume, audio disc, e-book, etc.<br>
-<b>Language</b> - The language used in the item<br>
-<b>Library</b> - Libraries that have the item in their collections<br>
-<b>Year of publication</b> - The year the item was published (eventually also when a series started or ended.)<br>
-<b>Author/originator</b> - People or organizations that created or contributed to the creation of the item<br>
-<b>Genre/form</b> - Description of what the item is that has not yet been moved to Category<br>
-<b>Subject</b> - Subject words that the item is described with<br>
-<b>Bibliography</b> - List of materials within a specific area, such as person, subject or geographical area<br>
-<b>Type</b> - Whether a material is a single item, part of a series, collection or combination<br>
-<b>Target group</b> - The intended target group for the item, usually most covering “children/youth”<br>
-<b>Other</b> - Inclusion of upcoming titles (advance information) or electronic mandatory delivered resources and for delimiting resources with images<br>
+  <br>
+  <b>Access</b> - Limit to favorite library or freely available online<br>
+  <b>Format (in progress)</b> - Physical or digital material<br>
+  <b>Category</b> - Description of what an object is: Literature, still image, music, etc.<br>
+  <b>“Category 🚧👷🏗️”</b> - Categories that are not yet classified under overarching categories<br>
+  <b>“Format 🚧👷🏗️“</b> - What form a material has: printed volume, audio disc, e-book, etc.<br>
+  <b>Language</b> - The language used in the item<br>
+  <b>Library</b> - Libraries that have the item in their collections<br>
+  <b>Year of publication</b> - The year the item was published (eventually also when a series started or ended.)<br>
+  <b>Author/originator</b> - People or organizations that created or contributed to the creation of the item<br>
+  <b>Genre/form</b> - Description of what the item is that has not yet been moved to Category<br>
+  <b>Subject</b> - Subject words that the item is described with<br>
+  <b>Bibliography</b> - List of materials within a specific area, such as person, subject or geographical area<br>
+  <b>Type</b> - Whether a material is a single item, part of a series, collection or combination<br>
+  <b>Target group</b> - The intended target group for the item, usually most covering “children/youth”<br>
+  <b>Other</b> - Inclusion of upcoming titles (advance information) or electronic mandatory delivered resources and for delimiting resources with images<br>
 
 ### More advanced exploration
 
@@ -66,11 +66,11 @@ In addition to the standard free text search and the visible filters, there is a
 
 Here are some examples that can be entered as search queries directly into the search box. Click on the different examples to open them in the search service.
 
-English and French works matching the search phrase “Pippi Longstocking ” published after 2002:<br>
-[Pippi Longstocking language: (English OR French) YEAR>2002](https://beta.libris-qa.kb.se/find?_i=pippi+l%C3%A5ngstrump&_q=pippi+l%C3%A5ngstrump+SPR%C3%85K:(engelska%20OR%20franska)&_limit=20&_x=advanced)
+English and French works matching the search phrase “Pippi Longstocking” published after 2002:<br>
+[`Pippi Longstocking language: (English OR French) YEAR>2002`](<https://beta.libris-qa.kb.se/find?_i=pippi+l%C3%A5ngstrump&_q=pippi+l%C3%A5ngstrump+SPR%C3%85K:(engelska%20OR%20franska)&_limit=20&_x=advanced>)
 
 Material published between 2010 and 2024, which is in Swedish and has [dragons](https://id.kb.se/term/sao/Drakar) as a topic:<br>
-[language:swedish YEAR>2010 YEAR<=2024 topic:"sao:Dragons"](https://beta.libris-qa.kb.se/find?_i=&_q=SPR%C3%85K:svenska+%C3%85R%3E2010+%C3%85R%3C%3D2024+subject:%22sao:Drakar%22&_limit=20&_x=advanced)
+[`language:swedish YEAR>2010 YEAR<=2024 topic:"sao:Dragons"`](https://beta.libris-qa.kb.se/find?_i=&_q=SPR%C3%85K:svenska+%C3%85R%3E2010+%C3%85R%3C%3D2024+subject:%22sao:Drakar%22&_limit=20&_x=advanced)
 
 ### Details view/resource page
 
