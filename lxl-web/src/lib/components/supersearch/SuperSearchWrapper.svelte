@@ -412,7 +412,7 @@
 	}
 
 	:global(.supersearch-dialog) {
-		position: static;
+		position: fixed;
 		height: 100%;
 		max-height: 100vh;
 		width: 100%;
@@ -423,6 +423,7 @@
 		top: 0;
 
 		@variant sm {
+			position: static;
 			top: var(--sm-dialog-top);
 			height: fit-content;
 		}
