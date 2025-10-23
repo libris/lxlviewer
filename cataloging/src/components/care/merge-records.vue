@@ -63,7 +63,10 @@ export default {
       return this.sourceLoaded && this.targetLoaded;
     },
     anyRecordSelected() {
-      return !!(this.directoryCare.sender || this.directoryCare.reciever);
+      return !!(this.directoryCare.sender || this.directoryCare.receiver);
+    },
+    bothRecordsSelected() {
+      return this.directoryCare.sender && this.directoryCare.receiver;
     },
     isAllSelected() {
       if (this.sourceLoaded) {
@@ -357,7 +360,7 @@ export default {
 <template>
   <div class="MergeView">
     <div v-if="enrichStep">
-      <div class="MergeView-pickers">
+      <div class="MergeView-mergeRow ">
         <record-picker
           name="sender"
           opposite="receiver"
@@ -411,7 +414,7 @@ export default {
 <!--          </div>-->
 <!--        </div>-->
 <!--      </div>-->
-
+        <div v-if="bothRecordsSelected" class="MergeView-recordsContainer" :class="{ 'is-empty': !bothRecordsSelected }">
       <span class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></span>
       <span class="MergeView-description">
         {{translatePhrase('Select parts of the left record which should be copied to the right one.')}}
@@ -429,8 +432,7 @@ export default {
         </button>
       </div>
 
-      <div class="MergeView-fieldRow">
-        <div class="MergeView-sourceField sourceColumn">
+      <div class="MergeView-mergeRow">
           <div class="entityForm">
             <entity-form v-if="bothRecordsLoaded"
               :editing-object="formFocus"
@@ -443,12 +445,8 @@ export default {
               :is-source="true"
             />
           </div>
-        </div>
         <div class="MergeView-buttonContainer actionColumn">
         </div>
-
-        <div
-          class="MergeView-resultField resultColumn">
           <div class="entityForm">
             <entity-form v-if="bothRecordsLoaded"
               :editing-object="formFocus"
@@ -460,8 +458,8 @@ export default {
               :hide-top-level-field-names="false"
             />
           </div>
-        </div>
       </div>
+        </div>
     </div>
     </div>
 
@@ -523,16 +521,17 @@ export default {
 @inspectorCol: 85%;
 
 .MergeView {
-  width: 100%;
+  //width: 100%;
   padding: 2rem 0;
-  overflow-y: scroll;
+  //Not needed? Breaks dropdown in record-picker.
+  //overflow-y: scroll;
 
   .header {
     border: 1px solid @grey-lighter;
     border-radius: 4px;
     background: @site-body-background
   }
-  &-pickers {
+  &-mergeRow {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -543,6 +542,7 @@ export default {
       align-items: center;
     }
   }
+
   &-separator {
     display: flex;
     align-items: baseline;
@@ -590,6 +590,18 @@ export default {
   }
   &-columnHeader {
     display: block;
+  }
+
+  &-recordsContainer {
+    margin-top: 1em;
+    background-color: @white;
+    border: 1px solid @grey-lighter;
+    padding: 2rem;
+    &.is-empty {
+      background-color: unset;
+      border-color: transparent;
+      height: 30vh;
+    }
   }
 
   &-summaryLabel {
