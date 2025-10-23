@@ -141,6 +141,10 @@ export default {
         receiver: this.directoryCare.sender };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...switchObj });
       this.resetCachedChanges();
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'selected',
+        value: [],
+      });
       //this.$store.dispatch('setOriginalData', this.source);
 
     },
