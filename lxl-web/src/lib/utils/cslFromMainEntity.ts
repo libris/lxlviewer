@@ -70,6 +70,7 @@ export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil):
 	return [result as CSLJSON];
 }
 
+// see https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
 function getCslType(mainEntity: FramedData, vocabUtil: VocabUtil): CSLType {
 	const instanceTypes = typeLikeArr(getTypeLike(mainEntity as FramedData, vocabUtil));
 	const workTypes = mainEntity?.instanceOf
@@ -83,19 +84,26 @@ function getCslType(mainEntity: FramedData, vocabUtil: VocabUtil): CSLType {
 		if (allTypes.includes('Text')) {
 			if (allTypes.includes('ComponentPart')) {
 				return 'article';
+			}
+			if (allTypes.includes('Thesis')) {
+				return 'thesis';
 			} else {
 				return 'book';
 			}
 		} else if (allTypes.includes('Ljudb%C3%B6cker')) {
 			return 'book';
+		} else if (allTypes.includes('Software')) {
+			return 'software';
+		} else if (allTypes.includes('Music') && allTypes.includes('NotatedMusic')) {
+			return 'musical_score';
 		} else if (allTypes.includes('StillImage')) {
 			return 'graphic';
 		} else if (allTypes.includes('MovingImage')) {
-			return 'motion_picture';
+			if (allTypes.includes('Tv-program')) {
+				return 'broadcast';
+			} else return 'motion_picture';
 		} else if (allTypes.includes('Cartography')) {
 			return 'map';
-		} else if (allTypes.includes('Software')) {
-			return 'software';
 		}
 	} else if (allTypes.includes('Serial') && allTypes.includes('Text')) {
 		return 'periodical';

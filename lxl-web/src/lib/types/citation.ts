@@ -27,11 +27,14 @@ export interface CSLName {
 export type CSLType =
 	| 'book'
 	| 'article'
+	| 'thesis'
 	| 'periodical'
 	| 'map'
 	| 'software'
+	| 'musical_score'
 	| 'graphic'
 	| 'motion_picture'
+	| 'broadcast'
 	| 'document';
 
 export interface CSLJSON {
