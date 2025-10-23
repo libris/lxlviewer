@@ -330,13 +330,13 @@
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
-				{#if showAllResultsButton && resultsCount && q.trim().length}
+				{#if showAllResultsButton && q.trim().length}
 					<div role="row" class="show-all border-neutral bg-page fixed w-full border-t sm:static">
 						<button
 							type="submit"
 							class="hover:bg-primary-50 focus:bg-primary-50 min-h-11 w-full px-4 text-left text-sm font-medium sm:px-2 sm:text-xs lg:px-4"
 							class:focused-cell={isFocusedCell(
-								2 + (resultsCount ? resultsCount - 1 : 0) + (showAddQualifiers ? 1 : 0),
+								1 + (resultsCount ? resultsCount : 0) + (showAddQualifiers ? 1 : 0),
 								0
 							)}
 						>
