@@ -61,7 +61,7 @@
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
-	
+
 	let searchMapping = $derived(searchResult?.mapping);
 	let filteredInstances = $derived(searchResult?.items);
 
@@ -74,7 +74,7 @@
 		if (filteredInstances?.length) {
 			return {
 				id: 'matching-instances',
-				label: `${page.data.t('resource.matching')} ${page.data.t('resource.editions').toLowerCase()} (${filteredInstances?.length}${filteredInstances?.length === instances.length ? ` ${page.data.t('resource.resultOf')} ${instances.length}` : ''})`,
+				label: `${page.data.t('resource.matching')} (${filteredInstances?.length})`,
 				content: panelMatchingInstances
 			};
 		}
@@ -85,7 +85,7 @@
 		if (!filteredInstances || instances?.length > filteredInstances?.length) {
 			return {
 				id: 'all-instances',
-				label: `${capitalize(page.data.t('resource.all'))} ${page.data.t('resource.editions').toLowerCase()} (${instances?.length})`,
+				label: `${capitalize(page.data.t('resource.all'))} (${instances?.length})`,
 				content: panelAllInstances
 			};
 		}
@@ -93,6 +93,9 @@
 	});
 
 	const instanceTabs = $derived([tabMatchingInstances, tabAllInstances].filter((f) => !!f));
+	const showTabs = $derived(
+		derivedFilteredInstances.length && derivedFilteredInstances.length !== instances.length
+	);
 </script>
 
 {#snippet panelMatchingInstances()}
@@ -183,7 +186,7 @@
 					<DecoratedData data={decoratedOverview} block />
 				</div>
 			</section>
-			<section id="{uidPrefix}editions">
+			<section>
 				{#if instances?.length === 1}
 					<!-- single instance -->
 					<div class="decorated-overview">
@@ -203,7 +206,14 @@
 						/>
 					</div>
 				{:else if instances?.length > 1}
-					<TabList ariaLabel={page.data.t('resource.editions')} tabs={instanceTabs} />
+					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
+						{page.data.t('resource.editions')}
+					</h2>
+					{#if showTabs}
+						<TabList ariaLabel={page.data.t('resource.editions')} tabs={instanceTabs} />
+					{:else}
+						{@render panelAllInstances()}
+					{/if}
 				{/if}
 			</section>
 			{#if relations.length}

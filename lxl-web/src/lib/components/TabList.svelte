@@ -60,7 +60,7 @@
 		<div class={['tab-wrapper relative flex h-full items-center', isActive && 'active']}>
 			<button
 				id={`tab-${tab.id}`}
-				class={['tab relative flex gap-2', isActive ? 'tab-highlighted' : 'tab-primary']}
+				class={['tab relative flex gap-2', isActive && 'tab-active']}
 				type="button"
 				role="tab"
 				aria-selected={isActive}

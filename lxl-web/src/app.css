@@ -277,8 +277,7 @@
 			var(--default-transition-duration);
 	}
 
-	.btn-primary,
-	.tab-primary {
+	.btn-primary {
 		background-color: transparent;
 		color: var(--color-body);
 		border: 1px solid var(--color-neutral-300);
@@ -347,16 +346,28 @@
 		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
 		min-height: calc(var(--spacing) * 7.5);
 		border-radius: var(--radius-md);
+		border: 1px solid transparent;
+		color: var(--color-subtle);
+		background-color: transparent;
+
+		&:hover {
+			background-color: var(--color-primary-100);
+		}
+
+		& svg {
+			color: var(--color-subtle);
+		}
 	}
 
-	.tab-primary {
-		border: none;
-	}
-
-	.tab-highlighted {
+	.tab-active {
 		background-color: var(--color-accent-50);
 		color: var(--color-body);
-		border: 1px solid var(--color-accent-200);
+		border-color: var(--color-accent-200);
+		color: var(--color-body);
+
+		&:hover {
+			background-color: var(--color-accent-50);
+		}
 
 		& svg {
 			color: var(--color-accent);
