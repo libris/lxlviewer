@@ -1,7 +1,7 @@
 import jmespath from 'jmespath';
 import type { CSLJSON, CSLName, CSLType } from '$lib/types/citation';
 import { JsonLd, type FramedData } from '$lib/types/xl';
-import getTypeLike, { slug } from './getTypeLike';
+import getTypeLike, { slug, type TypeLike } from './getTypeLike';
 import type { VocabUtil } from './xl';
 
 const CSL_KBV_MAPPING: Record<keyof CSLJSON, string> = {
@@ -34,12 +34,6 @@ const CSL_KBV_MAPPING: Record<keyof CSLJSON, string> = {
 	translator: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/translator')].{family: agent.familyName, given: agent.givenName}`
 };
 
-// const TYPE_MAP: Record<string, CSLType> = {
-// 	Monograph: 'book',
-// 	Serial: 'periodical'
-// 	// more...
-// };
-
 export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil): CSLJSON[] {
 	const result: Partial<CSLJSON> = {};
 
@@ -71,68 +65,46 @@ export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil):
 		}
 	}
 
-	const typeLike = getTypeLike(mainEntity.instanceOf as FramedData, vocabUtil);
-	const types = Object.values(typeLike)?.flatMap((value) =>
-		value.flatMap((v) => slug(v?.[JsonLd.ID]))
-	);
-	result.type = getCslType(types);
-
-	// const instaceTypes = mainEntity.category?.map(c => slug(c?.[JsonLd.ID]));
-	// const workTypes = mainEntity.instanceOf?.category?.map(c => slug(c?.[JsonLd.ID]));
-	// const allTypes = [...instaceTypes, ...workTypes];
-	// allTypes.push(mainEntity.instanceOf[JsonLd.TYPE])
-
-	// result.type = TYPE_MAP[typeForIcon as string] ?? 'book';
-	// console.log(mainEntity.instanceOf._categoryByCollection?.find?.[0]?.['@id']);
-
-	result.type = getCslType(allTypes);
+	result.type = getCslType(mainEntity, vocabUtil);
 
 	return [result as CSLJSON];
 }
 
-function getCslType(types: (string | undefined)[]): CSLType {
-	// if (types && Array.isArray(types)) {
-	// 	if (types.includes('Monograph')) {
+function getCslType(mainEntity: FramedData, vocabUtil: VocabUtil): CSLType {
+	const instanceTypes = typeLikeArr(getTypeLike(mainEntity as FramedData, vocabUtil));
+	const workTypes = mainEntity?.instanceOf
+		? typeLikeArr(getTypeLike(mainEntity?.instanceOf as FramedData, vocabUtil))
+		: [];
+	const allTypes = [...instanceTypes, ...workTypes];
 
-	// 	} else if (types.includes('Serial') && types.includes('Text')) {
-	// 		return 'periodical';
-	// 	}
-	// }
-	console.log(types);
+	allTypes.push(mainEntity?.instanceOf?.[JsonLd.TYPE]);
+
+	if (allTypes.includes('Monograph')) {
+		if (allTypes.includes('Text')) {
+			if (allTypes.includes('ComponentPart')) {
+				return 'article';
+			} else {
+				return 'book';
+			}
+		} else if (allTypes.includes('Ljudb%C3%B6cker')) {
+			return 'book';
+		} else if (allTypes.includes('StillImage')) {
+			return 'graphic';
+		} else if (allTypes.includes('MovingImage')) {
+			return 'motion_picture';
+		} else if (allTypes.includes('Cartography')) {
+			return 'map';
+		} else if (allTypes.includes('Software')) {
+			return 'software';
+		}
+	} else if (allTypes.includes('Serial') && allTypes.includes('Text')) {
+		return 'periodical';
+	}
 
 	// fallback?
 	return 'document';
 }
 
-// function getCslType(mainEntity: FramedData): CSLType | undefined {
-// 	const type = mainEntity?.instanceOf?.['@type'] as string;
-// 	const category = mainEntity?.instanceOf?.category;
-// 	if (type === 'Monograph') {
-// 		if (category && Array.isArray(category)) {
-// 			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/Text')) {
-// 				if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/ktg/ComponentPart')) {
-// 					return 'article';
-// 				} else return 'book';
-// 			}
-
-// 			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/saogf/Kartor')) {
-// 				return 'map';
-// 			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/ktg/MovingImage')) {
-// 				// not correct for all moving image?
-// 				return 'motion_picture';
-// 			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/ComputerProgram')) {
-// 				return 'software';
-// 			} else if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/StillImage')) {
-// 				return 'graphic';
-// 			}
-// 		}
-// 	} else if (type === 'Serial') {
-// 		// periodical
-// 		if (category && Array.isArray(category)) {
-// 			if (category.some((c) => c?.['@id'] === 'https://id.kb.se/term/rda/Text')) {
-// 				return 'periodical';
-// 			}
-// 		}
-// 	}
-// 	return 'unknown';
-// }
+function typeLikeArr(typeLike: TypeLike): (string | undefined)[] {
+	return Object.values(typeLike)?.flatMap((value) => value.flatMap((v) => slug(v?.[JsonLd.ID])));
+}
