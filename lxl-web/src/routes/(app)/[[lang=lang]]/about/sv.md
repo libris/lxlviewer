@@ -18,7 +18,7 @@ Här hittar du [vanliga frågor och svar](https://www.kb.se/samverkan-och-utveck
 
 ### Allmänt om söktjänsten och initiativet
 
-Libris nya söktjänst ska på sikt ersätta [libris.kb.se](https://www.libris.kb.se/). Den nuvarande tjänsten är tekniskt utdaterad och behöver bytas ut inte minst bland annat för att möta de lagkrav som finns på tillgänglighet inom digital offentlig service. Den här betaversionen är ett första steg mot en tjänst som kommer medföra flera förbättringar för användarna.
+Libris nya söktjänst ska på sikt ersätta [libris.kb.se](https://libris.kb.se/). Den nuvarande tjänsten är tekniskt utdaterad och behöver bytas ut inte minst bland annat för att möta de lagkrav som finns på tillgänglighet inom digital offentlig service. Den här betaversionen är ett första steg mot en tjänst som kommer medföra flera förbättringar för användarna.
 
 En grundsten i Libris är den informationsmodell baserad på länkade data som används för att beskriva materialet i katalogen. Den nya tjänsten är byggd med en mer direkt koppling till denna modell, vilket gör den både enklare och tekniskt mer robust. Det innebär också att ändringar som görs med hjälp av [Libris katalogiseringsverktyg (QA-miljö)](https://libris-qa.kb.se/katalogisering/) syns i söktjänsten utan fördröjning och materialet kan utforskas på nya sätt.
 
