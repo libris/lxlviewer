@@ -4,6 +4,7 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import IconSearch from '~icons/bi/search';
+	import type { ShowExpandedSearchOptions } from 'supersearch';
 
 	type Props = {
 		id?: string;
@@ -32,8 +33,8 @@
 		}
 	});
 
-	export function showExpandedSearch() {
-		superSearchWrapperComponent?.showExpandedSearch();
+	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
+		superSearchWrapperComponent?.showExpandedSearch(options);
 	}
 </script>
 

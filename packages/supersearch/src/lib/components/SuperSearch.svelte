@@ -20,7 +20,8 @@
 		QueryFunction,
 		PaginationQueryFunction,
 		TransformFunction,
-		ResultItem
+		ResultItem,
+		ShowExpandedSearchOptions
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
 
@@ -309,10 +310,13 @@
 		});
 	}
 
-	export function showExpandedSearch() {
+	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		if (!expanded) {
 			expandedEditorView?.dispatch({
-				selection: collapsedEditorView?.state.selection.main
+				selection:
+					options?.cursorAtEnd && collapsedEditorView
+						? { anchor: collapsedEditorView?.state.doc.length }
+						: collapsedEditorView?.state.selection.main
 			});
 			dialog?.showModal();
 			setDefaultRowAndCols();

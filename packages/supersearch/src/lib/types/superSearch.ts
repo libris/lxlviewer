@@ -14,3 +14,7 @@ export interface ResultItem {
 	'@id'?: string;
 	heading: string;
 }
+
+export type ShowExpandedSearchOptions = {
+	cursorAtEnd: boolean;
+};

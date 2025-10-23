@@ -6,6 +6,7 @@
 		SuperSearch,
 		lxlQualifierPlugin,
 		type Selection,
+		type ShowExpandedSearchOptions,
 		type ViewUpdateSuperSearchEvent
 	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
@@ -154,8 +155,8 @@
 		return lxlQualifierPlugin(QualifierPill, getLabels);
 	});
 
-	export function showExpandedSearch() {
-		superSearch?.showExpandedSearch();
+	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
+		superSearch?.showExpandedSearch(options);
 	}
 
 	function handleOnChange() {

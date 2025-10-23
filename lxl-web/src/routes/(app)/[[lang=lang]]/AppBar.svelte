@@ -68,7 +68,7 @@
 
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
-		appSearchComponent?.showExpandedSearch();
+		appSearchComponent?.showExpandedSearch({ cursorAtEnd: true });
 	}
 
 	beforeNavigate(() => {
