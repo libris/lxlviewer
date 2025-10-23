@@ -41,6 +41,7 @@ export default {
       possibleValues: [],
       selected: '',
       initialized: false,
+      originalFieldValue: '', 
     };
   },
   computed: {
@@ -51,6 +52,12 @@ export default {
       'settings',
       'status',
     ]),
+
+    // boolean: true if current selected differs from original API value
+    hasChangedFromOriginal() {
+      return this.selected !== this.originalFieldValue;
+    },
+
     range() {
       const types = VocabUtil.getRangeFull(
         this.fieldKey,
@@ -65,6 +72,7 @@ export default {
     this.$nextTick(() => {
       this.possibleValues = this.getPossibleValues();
       this.selected = this.fieldValue;
+      this.originalFieldValue = this.fieldValue; 
       this.$nextTick(() => {
         this.initialized = true;
       });
@@ -73,15 +81,19 @@ export default {
   watch: {
     fieldValue(value) {
       if (value !== this.selected) {
-        this.selected = this.fieldValue;
-      }
 
-      console.log('field value', this.fieldValue)
+        this.selected = this.fieldValue;
+        this.originalFieldValue = this.fieldValue; 
+      }
     },
+
     selected(value, oldValue) {
-      if (value !== oldValue && this.initialized && !this.isLocked) {
-        console.log('old value', oldValue)
-        console.log('value', value)
+      if (
+        value !== oldValue &&
+        this.initialized &&
+        !this.isLocked &&
+        this.hasChangedFromOriginal
+      ) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -91,6 +103,10 @@ export default {
           ],
           addToHistory: true,
         });
+
+        return;
+      } else {
+        return;
       }
     },
   },
@@ -108,10 +124,6 @@ export default {
       each(values, (value) => {
         possibleValues.push(StringUtil.getCompactUri(value['@id'], this.resources.context));
       });
-      
-      console.log('VÄRDEN,', possibleValues)
-
-      console.log('recoursceececessss,',this.resources)
 
       return sortBy(possibleValues, (value) => StringUtil.getLabelByLang(
         value,
@@ -132,9 +144,7 @@ export default {
       return '';
     },
   },
-  components: {
-
-  },
+  components: {},
 };
 </script>
 
@@ -188,80 +198,78 @@ export default {
 </template>
 
 <style lang="less">
+  .ItemVocab {
+    &.is-locked {
+      line-height: 2;
+    }
 
-.ItemVocab {
-  &.is-locked {
-    line-height: 2;
-  }
+    &-text {
+      word-break: break-word;
+    }
 
-  &-text {
-    word-break: break-word;
-  }
-
-  &-select {
-    width: 100%;
-    margin-top: 0.2em;
-    border: 1px solid @grey-light;
-    background-color: @white;
-  }
-}
-
-.RadioPill {
-  display: inline-block;
-  position: relative;
-  margin: 2px 5px 5px 0px;
-
-  &-input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background: none;
-    cursor: pointer;
-    border: 2px solid;
-    height: 100%;
-    left: 0;
-    opacity: .00001;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 2;
-  }
-
-  &-label {
-    display: block;
-    height: 33px;
-    background-color: @grey-lightest;
-    border: 1px solid transparent;
-    color: @grey-dark;
-    border-radius: 2em;
-    line-height: 1.6;
-    padding: 3px 14px;
-    margin: 0;
-    font-weight: 400;
-
-    .icon {
-      display: none;
+    &-select {
+      width: 100%;
+      margin-top: 0.2em;
+      border: 1px solid @grey-light;
+      background-color: @white;
     }
   }
 
-  &-input:hover + &-label {
-    color: @black;
-  }
+  .RadioPill {
+    display: inline-block;
+    position: relative;
+    margin: 2px 5px 5px 0px;
 
-  &-input:checked + &-label {
-    background: @brand-primary;
-    color: @grey-lightest;
+    &-input {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background: none;
+      cursor: pointer;
+      border: 2px solid;
+      height: 100%;
+      left: 0;
+      opacity: .00001;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 2;
+    }
 
-    .icon {
-      display: inline-block;
-      color: @grey-lightest !important;
+    &-label {
+      display: block;
+      height: 33px;
+      background-color: @grey-lightest;
+      border: 1px solid transparent;
+      color: @grey-dark;
+      border-radius: 2em;
+      line-height: 1.6;
+      padding: 3px 14px;
+      margin: 0;
+      font-weight: 400;
+
+      .icon {
+        display: none;
+      }
+    }
+
+    &-input:hover + &-label {
+      color: @black;
+    }
+
+    &-input:checked + &-label {
+      background: @brand-primary;
+      color: @grey-lightest;
+
+      .icon {
+        display: inline-block;
+        color: @grey-lightest !important;
+      }
+    }
+
+    .user-is-tabbing &-input:focus + label {
+      outline: 2px solid #8cc9c9;
+      outline: auto darkcyan;
     }
   }
-
-  .user-is-tabbing &-input:focus + label {
-    outline: 2px solid #8cc9c9;
-    outline: auto darkcyan;
-  }
-}
-
 </style>

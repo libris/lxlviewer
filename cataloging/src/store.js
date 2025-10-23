@@ -1,12 +1,11 @@
 import { createStore } from 'vuex';
-import { cloneDeep, each, set, get, assign, filter, isObject, isEmpty } from 'lodash-es';
+import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import settings from './settings';
-import { arrayPathToString } from "lxljs/string.js";
 
 const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
 export const DELETE_ON_SAVE = '__DELETE_ON_SAVE__';
@@ -84,6 +83,7 @@ const store = createStore({
       magicShelfMarks: [],
       otherRecordsToDeleteOnSave: [],
       extractItemsOnSave: [],
+      fieldChangedMap: {}
     },
     status: {
       userIdle: false,
@@ -382,6 +382,9 @@ const store = createStore({
     removeExtractItemOnSave(state, path) {
       state.inspector.extractItemsOnSave = state.inspector.extractItemsOnSave.filter((key) => key !== path);
     },
+    setFieldChanged(state, { path, changed }) {
+      state.fieldChangedMap[path] = changed;
+    },
   },
   getters: {
     inspector: (state) => state.inspector,
@@ -484,7 +487,7 @@ const store = createStore({
         const extractedHasTitle = [{
           '@type': 'Title',
           mainTitle: extractedMainTitle,
-          'marc:nonfilingChars': mainEntityHasTitle['marc:nonfilingChars'] || undefined,
+          'marc:nonfilingChars': mainEntityHasTitle['marc:nonfilingChars'] || undefined,
         }];
 
         commit('updateInspectorData', {
@@ -510,12 +513,14 @@ const store = createStore({
           )}.`,
         });
       } else {
-        dispatch('pushNotification', { type: 'success',
+        dispatch('pushNotification', {
+          type: 'success',
           message: `${StringUtil.getUiPhraseByLang(
             'Link was created',
             state.settings.language,
             state.resources.i18n,
-          )}.` });
+          )}.`
+        });
       }
     },
     removeExtractItemOnSave({ commit, state }, { path }) {
@@ -615,7 +620,7 @@ const store = createStore({
       let collections = cloneDeep(state.userDatabase.notificationCollections) || [];
       collections = collections.filter(c => c['@id'] !== libraryId);
       if (checked) {
-        collections.push({'@id': libraryId});
+        collections.push({ '@id': libraryId });
       }
       dispatch('modifyUserDatabase', { property: 'notificationCollections', value: collections });
     },
@@ -623,7 +628,7 @@ const store = createStore({
       let categories = cloneDeep(state.userDatabase.notificationCategories) || [];
       categories = categories.filter(c => c['@id'] !== categoryId);
       if (checked) {
-        categories.push({'@id': categoryId});
+        categories.push({ '@id': categoryId });
       }
       dispatch('modifyUserDatabase', { property: 'notificationCategories', value: categories });
     },
@@ -997,6 +1002,10 @@ const store = createStore({
       });
 
       return promise;
+    },
+
+    setFieldChanged({ commit }, payload) {
+      commit('setFieldChanged', payload);
     },
   },
 });
