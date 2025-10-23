@@ -186,7 +186,7 @@
 </script>
 
 {#snippet loading()}
-	<span class="block size-4" in:fade={{ duration: 200 }}>
+	<span class="pointer-events-none block size-4" in:fade={{ duration: 200 }}>
 		<Spinner />
 	</span>
 {/snippet}
@@ -262,7 +262,7 @@
 							expanded && 'hidden sm:flex'
 						]}
 					>
-						{#if debouncedLoading}
+						{#if expanded && debouncedLoading}
 							{@render loading()}
 						{:else}
 							<IconSearch aria-hidden="true" class="size-4 lg:mt-[1px]" />
