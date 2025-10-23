@@ -66,7 +66,7 @@ export default {
       return !!(this.directoryCare.sender || this.directoryCare.receiver);
     },
     bothRecordsSelected() {
-      return this.directoryCare.sender && this.directoryCare.receiver;
+      return !isEmpty(this.directoryCare.sender) && !isEmpty(this.directoryCare.receiver);
     },
     isAllSelected() {
       if (this.sourceLoaded) {
@@ -103,7 +103,7 @@ export default {
     },
     sourceSelectable() {
       if (this.sourceLoaded) {
-        return Object.fromEntries(Object.entries(this.source).filter(([k]) => !k.startsWith('@')));
+        return Object.fromEntries(Object.entries(this.source[this.formFocus]).filter(([k]) => !k.startsWith('@')));
       } else {
         return undefined;
       }
@@ -387,33 +387,6 @@ export default {
           :flaggedInstances="flagged" />
       </div>
       <div>
-<!--      <div class="MergeView-row">-->
-<!--        <div class="MergeView-fieldRow">-->
-<!--          <div class="MergeView-columnHeader sourceColumn">-->
-<!--            <div class="MergeView-summaryLabel">-->
-<!--              {{ translatePhrase('Enrich from') }}-->
-<!--            </div>-->
-<!--            <div class="MergeView-summaryContainer">-->
-<!--              <entity-summary-->
-<!--                :focus-data="this.enrichment.data.source.mainEntity"-->
-<!--                :should-link="false"-->
-<!--                :exclude-components="[]" />-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="MergeView-actionHeader actionColumn" />-->
-<!--          <div class="MergeView-columnHeader resultColumn non-existing">-->
-<!--            <div class="MergeView-summaryLabel">-->
-<!--              {{ translatePhrase('Result') }}-->
-<!--            </div>-->
-<!--            <div class="MergeView-summaryContainer">-->
-<!--              <entity-summary-->
-<!--                :focus-data="this.inspector.data.mainEntity"-->
-<!--                :should-link="false"-->
-<!--                :exclude-components="[]" />-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
         <div v-if="bothRecordsSelected" class="MergeView-recordsContainer" :class="{ 'is-empty': !bothRecordsSelected }">
       <span class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></span>
       <span class="MergeView-description">
