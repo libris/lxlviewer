@@ -70,7 +70,7 @@
 			onclick={(event) => handleClickCite(event, page.state, fnurgel)}
 		>
 			<BiQuote class="size-4 text-neutral-400" />
-			<span>{page.data.t('citations.createCitation')}</span>
+			<span>{page.data.t('citations.cite')}</span>
 		</a>
 	{/if}
 </ul>
