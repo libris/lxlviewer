@@ -39,7 +39,7 @@ When you type in the search field, you will be presented with suggestions for ei
 One way to explore the catalog or narrow your search is to click on the filters (or facets) in the left column. The filters correspond to the information available in your search results. To make it easier to find the filters, they can be sorted individually by number of hits, a-z or z-a. Active filters are displayed directly in the search box.
 
 - A handy feature is that you can search through all visible filters in the search box above the filters . Please note that only the filters that are “loaded” for the search query can be searched through, and these are also limited to the 100 most common for each filter category. This means that if more than 100 subject words are represented in the search result, only the first 100 will be displayed. Narrow down the search further to get below this limit if any subject words are missing.
-
+<br>
 <b>Access</b> - Limit to favorite library or freely available online<br>
 <b>Format (in progress)</b> - Physical or digital material<br>
 <b>Category</b> - Description of what an object is: Literature, still image, music, etc.<br>
