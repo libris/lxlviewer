@@ -28,9 +28,9 @@
 
 <ul class="@container flex flex-col gap-2">
 	{#each Object.keys(holdersByType) as type (type)}
-		<li class="@lg:self-center">
+		<li class="@md:self-center">
 			<a
-				class="btn btn-cta max-w-sm"
+				class="btn btn-cta @md:max-w-sm"
 				href={page.data.localizeHref(getHoldingsLink(page.url, type))}
 				data-sveltekit-preload-data="false"
 				data-testid="holding-link"
@@ -65,7 +65,7 @@
 	{/each}
 	{#if instances?.length === 1}
 		<a
-			class="btn btn-primary h-7 self-center rounded-full px-6 py-1.5"
+			class="btn btn-primary h-8 self-center rounded-full px-6 py-1.5"
 			href={getCiteLink(page.url, fnurgel)}
 			onclick={(event) => handleClickCite(event, page.state, fnurgel)}
 		>
