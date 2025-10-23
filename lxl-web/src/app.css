@@ -187,11 +187,10 @@
 	html:has(dialog[open]),
 	body:has(dialog[open]) {
 		height: 100%;
-		overflow: hidden;
+		overflow: clip;
 
 		@variant sm {
 			height: auto;
-			overflow: clip;
 		}
 	}
 
