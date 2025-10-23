@@ -73,7 +73,7 @@
 	{:else if page.state.citations || page.url.searchParams.get('cite')}
 		<Modal close={() => handleCloseModal('cite')}>
 			{#snippet title()}
-				<span>{page.data.t('citations.cite')}</span>
+				<span>{page.data.t('citations.cite')} {data.title}</span>
 			{/snippet}
 			<Citations
 				citations={(page.state.citations || page.data.citations) as Promise<CitationsType>}
