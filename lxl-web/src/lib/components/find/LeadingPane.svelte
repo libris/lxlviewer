@@ -110,14 +110,24 @@
 
 	.leading-pane-wrapper {
 		@variant sm {
-			top: calc(var(--app-bar-height) + var(--banner-height, 0));
+			top: calc(var(--app-bar-height) * 2 + var(--banner-height, 0));
+
+			@variant lg {
+				top: calc(var(--app-bar-height) + var(--banner-height, 0));
+			}
 		}
 	}
 
 	.leading-pane-content {
 		max-height: calc(
-			100vh - var(--app-bar-height) - var(--toolbar-height) - var(--banner-height, 0) - 1px
+			100vh - var(--app-bar-height) * 2 - var(--toolbar-height) - var(--banner-height, 0) - 1px
 		);
+
+		@variant lg {
+			max-height: calc(
+				100vh - var(--app-bar-height) - var(--toolbar-height) - var(--banner-height, 0) - 1px
+			);
+		}
 		overflow-y: auto;
 		scrollbar-width: thin;
 	}

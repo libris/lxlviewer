@@ -40,7 +40,7 @@
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<hgroup
-				class="resource-heading grid gap-1 overflow-hidden text-xs font-medium whitespace-nowrap sm:text-sm lg:text-xs"
+				class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap sm:text-sm lg:text-xs"
 			>
 				<h2 class="truncate">
 					<DecoratedData
@@ -181,8 +181,6 @@
 	}
 
 	.resource-heading {
-		grid-template-columns: auto auto;
-
 		& :global(.transliteration) {
 			display: none;
 		}

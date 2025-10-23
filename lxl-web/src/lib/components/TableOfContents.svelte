@@ -143,10 +143,10 @@
 
 <div bind:this={tocElement} class="contents">
 	{#if mobile}
-		<div class="border-b-neutral border-b">
+		<div class="border-b-neutral border-b p-1">
 			<label
 				id={`${uidPrefix}toc-label`}
-				class="bg-page text-2xs text-subtle flex min-h-10 cursor-pointer items-center gap-1.5 px-3 sm:px-6 has-checked:[&+nav]:block"
+				class="bg-page text-2xs text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2 sm:px-5 has-checked:[&+nav]:block"
 			>
 				<IconToC class="size-4" />
 				<h2>{page.data.t('tableOfContents.onThisPage')}</h2>

@@ -55,7 +55,7 @@
 	--search-grid-template-areas: 'leading-actions trailing-actions trailing-actions'
 		'search search search';
 	--search-grid-template-columns: auto 1fr 1fr;
-	--search-padding: 0 calc(var(--spacing) * 2);
+	--search-padding: 0;
 	--search-gap: 0 calc(var(--spacing) * 3);
 
 	@variant lg {
@@ -63,6 +63,7 @@
 		--search-input-height: 48px;
 		--search-grid-template-areas: 'leading-actions search trailing-actions';
 		--search-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
+		--search-padding: 0 calc(var(--spacing) * 2);
 	}
 	@variant 3xl {
 		--app-bar-height: 76px;
@@ -186,11 +187,10 @@
 	html:has(dialog[open]),
 	body:has(dialog[open]) {
 		height: 100%;
-		overflow: hidden;
+		overflow: clip;
 
 		@variant sm {
 			height: auto;
-			overflow: clip;
 		}
 	}
 

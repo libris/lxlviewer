@@ -40,7 +40,7 @@
 {#snippet fallbackInput()}
 	<div class="relative">
 		<span class="text-subtle absolute flex h-full w-11 items-center justify-center">
-			<IconSearch class="size-3.5 lg:size-4" aria-hidden="true" />
+			<IconSearch class="size-4 lg:mt-[1px]" aria-hidden="true" />
 		</span>
 		<input type="search" {id} {name} {placeholder} bind:this={fallbackInputElement} />
 	</div>
@@ -74,6 +74,9 @@
 		font-size: var(--text-xs);
 		padding-left: 44px;
 
+		&::placeholder {
+			color: var(--color-placeholder);
+		}
 		&:hover,
 		&:focus {
 			box-shadow: 0 0 0 1px var(--color-primary-500);

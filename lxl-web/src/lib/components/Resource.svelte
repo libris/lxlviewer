@@ -57,24 +57,24 @@
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	</div>
 {/if}
-<article class="@container [&_[id]]:scroll-mt-3 sm:[&_[id]]:scroll-mt-6">
+<article class="@container @3xl:[&_[id]]:scroll-mt-36">
 	{#if tableOfContents.length}
 		<section data-testid="toc-mobile" class="contents @7xl:hidden">
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
 		</section>
 	{/if}
 	<div
-		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 p-3 sm:gap-6 sm:p-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"
+		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 px-3 @sm:gap-6 @sm:px-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"
 	>
 		{#if tableOfContents.length}
 			<div class="order-last hidden @7xl:block">
-				<section data-testid="toc" class="sticky top-6">
+				<section data-testid="toc" class="sticky py-3 @sm:py-6">
 					<TableOfContents items={tableOfContents} />
 				</section>
 			</div>
 		{/if}
 		<div>
-			<div class="sticky top-6 mx-auto @3xl:max-w-xs">
+			<div class="sticky mx-auto pt-3 @sm:pt-6 @3xl:max-w-xs @3xl:pb-6">
 				<ResourceImage
 					{images}
 					type={typeForIcon}
@@ -90,12 +90,12 @@
 				{/if}
 			</div>
 		</div>
-		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-6">
+		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 @sm:gap-6 @3xl:py-6">
 			<section id="{uidPrefix}top">
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
 					<header class="flex-1">
 						<hgroup>
-							<p class="text-subtle text-xs font-medium">
+							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
 								<TypeIcon type={typeForIcon} class="mr-0.5 inline text-sm" />
 								<DecoratedData data={decoratedTypes} showLabels={ShowLabelsOptions.Never} />
 							</p>
@@ -169,7 +169,7 @@
 											{#if relationItem.totalItems > 10}
 												{page.data.t('resource.all')}
 											{/if}
-											{relationItem.totalItems}
+											{relationItem.totalItems.toLocaleString()}
 											{#if relationItem.totalItems === 1}
 												{page.data.t('resource.result')}
 											{:else}
@@ -178,7 +178,7 @@
 										</span>
 									</a>
 								</div>
-								<div class="-mx-3 sm:-mx-6 @3xl:mx-0">
+								<div class="-mx-3 @sm:-mx-6 @3xl:mx-0">
 									<SearchResultList
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
@@ -195,6 +195,10 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	.sticky {
+		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
+	}
 
 	.decorated-heading {
 		& :global(.transliteration) {

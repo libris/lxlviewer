@@ -4,9 +4,10 @@
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
+		type ViewUpdateCodeMirrorEvent,
 		type Selection
 	} from '$lib/components/CodeMirror.svelte';
-	import type { ChangeSuperSearchEvent } from '$lib/index.js';
+	import type { ChangeSuperSearchEvent, ViewUpdateSuperSearchEvent } from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
@@ -84,6 +85,7 @@
 		onexpand?: () => void;
 		oncollapse?: () => void;
 		onchange?: (event: ChangeSuperSearchEvent) => void;
+		onexpandedviewupdate?: (event: ViewUpdateSuperSearchEvent) => void;
 	}
 
 	let {
@@ -115,7 +117,8 @@
 		loadMoreLabel = 'Load more',
 		onexpand,
 		oncollapse,
-		onchange
+		onchange,
+		onexpandedviewupdate
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -239,7 +242,7 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (!dialog?.open && value !== event.value) {
+		if (!dialog?.open && event.value && value !== event.value) {
 			showExpandedSearch();
 		}
 		value = event.value;
@@ -261,6 +264,10 @@
 
 	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
 		selection = event;
+	}
+
+	function handleExpandedViewUpdate(event: ViewUpdateCodeMirrorEvent) {
+		onexpandedviewupdate?.(event);
 	}
 
 	export function dispatchChange({
@@ -525,7 +532,7 @@
 	}
 
 	function handleClickOutsideDialog(event: MouseEvent) {
-		if (event.target === dialog) {
+		if (event.target === dialog || event.target === event.currentTarget) {
 			hideExpandedSearch();
 		}
 	}
@@ -553,7 +560,11 @@
 			userEvent: 'delete'
 		});
 		search.resetData();
-		showExpandedSearch();
+		if (dialog?.open) {
+			expandedEditorView?.focus();
+		} else {
+			collapsedEditorView?.focus();
+		}
 	}
 
 	onMount(() => {
@@ -676,6 +687,7 @@
 		extensions={expandedExtensions}
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
+		onviewupdate={handleExpandedViewUpdate}
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
@@ -697,7 +709,12 @@
 	</div>
 </div>
 <dialog class="supersearch-dialog" id={`${id}-dialog`} bind:this={dialog}>
-	<div class="supersearch-dialog-wrapper" role="presentation" onkeydown={handleExpandedKeyDown}>
+	<div
+		class="supersearch-dialog-wrapper"
+		role="presentation"
+		onkeydown={handleExpandedKeyDown}
+		onclick={handleClickOutsideDialog}
+	>
 		<div class="supersearch-dialog-content" role="grid">
 			<div class="supersearch-combobox" role="row">
 				{@render inputRow?.({

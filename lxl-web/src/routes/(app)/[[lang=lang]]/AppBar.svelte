@@ -116,7 +116,7 @@
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
 	<nav class="app-bar bg-app-header grid items-stretch">
-		<ul class="leading-actions flex lg:gap-2">
+		<ul class="leading-actions ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -129,7 +129,7 @@
 						: (page.route.id === '/(app)/[[lang=lang]]/browse' && 'page') || undefined}
 					aria-controls={IDs.appBarMenu}
 					aria-expanded={(mounted && expandedMenu) || undefined}
-					class="action lg:min-w-16"
+					class="action max-sm:hover:bg-primary-200 lg:min-w-16"
 					aria-label={page.data.t('header.menu')}
 					aria-labelledby={IDs.appBarMenuLabel}
 					onclick={handleClickMenuAction}
@@ -145,22 +145,26 @@
 				{#if mounted}
 					<dialog
 						id={IDs.appBarMenu}
-						class="menu-dialog border-neutral fixed z-50 hidden w-full flex-col overflow-hidden border-b text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-lg sm:border"
+						class="menu-dialog sm:border-neutral fixed z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-md sm:border"
 						closedby="any"
 						tabindex="-1"
 						bind:this={menuDialogElement}
 						onclose={closeExpandedMenu}
 						onfocusout={handleMenuDialogFocusOut}
 					>
-						<AppMenuContent showSkipToContent={false} onclickSearch={handleClickSearchAction} />
-						<button
-							type="button"
-							onclick={closeExpandedMenu}
-							class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 border-neutral flex min-h-9 items-center justify-center gap-2 border-t text-xs sm:hidden"
-						>
-							<IconCloseMenu />
-							{page.data.t('header.closeMenu')}
-						</button>
+						<div class="px-1 pt-1 sm:pb-1">
+							<AppMenuContent showSkipToContent={false} onclickSearch={handleClickSearchAction} />
+						</div>
+						<div class="flex px-1 pb-1 sm:hidden">
+							<button
+								type="button"
+								onclick={closeExpandedMenu}
+								class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 flex min-h-9 w-full items-center justify-center gap-2 text-xs"
+							>
+								<IconCloseMenu />
+								{page.data.t('header.closeMenu')}
+							</button>
+						</div>
 					</dialog>
 				{/if}
 			</li>
@@ -184,9 +188,10 @@
 		<search
 			id={IDs.search}
 			class={[
-				showSearchInputOnMobile && 'flex pb-2 lg:pb-0',
-				!showSearchInputOnMobile && 'hidden target:flex target:pb-2 lg:flex target:lg:pb-0', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
-				'items-center'
+				showSearchInputOnMobile && 'mb-2 flex lg:mb-0',
+				!showSearchInputOnMobile &&
+					'hidden target:flex has-[dialog:open]:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
+				'mx-2 items-center lg:mx-0'
 			]}
 		>
 			<form action={findActionUrl} class="mx-auto w-full max-w-7xl lg:px-4">
@@ -194,11 +199,14 @@
 					id="search"
 					name="_q"
 					placeholder={page.data.t('header.searchPlaceholder')}
+					--sm-dialog-top={showSearchInputOnMobile
+						? 'calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2)'
+						: 'calc(var(--banner-height, 0)'}
 					bind:this={appSearchComponent}
 				/>
 			</form>
 		</search>
-		<ul class="trailing-actions flex justify-end lg:gap-2">
+		<ul class="trailing-actions mr-2 flex items-center justify-end lg:mr-0 lg:gap-2">
 			<li class="lg:hidden">
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -206,7 +214,7 @@
 					href={mounted ? undefined : '#search'}
 					role={mounted ? undefined : 'button'}
 					tabindex={mounted ? undefined : 0}
-					class="action"
+					class="action max-sm:hover:bg-primary-200"
 					onclick={handleClickSearchAction}
 					aria-label={page.data.t('header.search')}
 					aria-labelledby={IDs.appBarSearchLabel}
@@ -238,7 +246,7 @@
 			</li>
 			<li>
 				<a
-					class="action"
+					class="action max-sm:hover:bg-primary-200"
 					href={page.data.localizeHref('/my-pages')}
 					aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
 				>
@@ -270,11 +278,6 @@
 
 	search {
 		grid-area: search;
-
-		/* ensure an open dialog is visible when parent <search> is hidden */
-		:global(&:has(dialog[open])) {
-			display: flex;
-		}
 	}
 
 	.trailing-actions {
@@ -286,34 +289,50 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: var(--app-bar-height);
+		height: calc(var(--spacing) * 11);
+		border-radius: var(--radius-md);
 
 		&:focus-visible,
 		&[aria-expanded] {
 			background: var(--color-primary-200);
 		}
 
-		&:hover::after,
-		&:focus-visible::after,
-		&[aria-expanded]::after {
-			content: '';
-			position: absolute;
-			height: 3px;
-			bottom: 0;
-			left: 0;
-			background: var(--color-primary);
-			width: 100%;
-			border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+		@variant sm {
+			height: var(--app-bar-height);
+			border-radius: 0;
+
+			&:hover::after,
+			&:focus-visible::after,
+			&[aria-expanded]::after {
+				content: '';
+				position: absolute;
+				height: 3px;
+				bottom: 0;
+				left: 0;
+				background: var(--color-primary);
+				width: 100%;
+				border-radius: var(--radius-md) var(--radius-md) 0 0;
+			}
 		}
 	}
 
 	.menu-dialog {
-		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px);
+		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
 		max-height: calc(100vh - calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px));
 		overflow-y: auto;
 
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			width: 100%;
+			height: 3px;
+			background: var(--color-primary);
+			pointer-events: none;
+		}
+
 		@variant sm {
-			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px);
+			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 4px);
 			max-height: calc(100vh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
 		}
 	}

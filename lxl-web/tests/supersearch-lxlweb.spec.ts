@@ -28,7 +28,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag'),
 		'search results are not visible on empty input'
 	).toBeHidden();
-	await page.getByRole('dialog').getByRole('combobox').fill('hej');
+	await page.getByRole('dialog').getByRole('combobox').fill('hej '); // add space for now until showAddQualifiers is even smarter
 
 	// wait for /supersearch api response before expecting any results
 	await page.waitForResponse(
@@ -190,6 +190,8 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.click({ position: { x: 10, y: 10 } }); // Make sure to not accidentally click the remove button of a pill
 	await page.keyboard.press('Home'); // for PCs
 	await page.keyboard.press('Meta+ArrowLeft'); // for mac
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially(' ');
+	await page.keyboard.press('ArrowLeft');
 	await page
 		.getByRole('dialog')
 		.getByLabel('Lägg till filter')
