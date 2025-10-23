@@ -17,6 +17,12 @@ export default {
   components: {
     MergeRecords,
   },
+  props: {
+    //TODO: not only instances
+    flagged: {
+      type: Array,
+    },
+  },
   data() {
     return {
       recordLoaded: false,
@@ -59,6 +65,10 @@ export default {
         },
         goToEditStep() {
           this.resetCachedChanges();
+          this.$store.dispatch('setInspectorStatusValue', {
+            property: 'editing',
+            value: true,
+          });
           this.enrichStep = false;
           this.mergeStep = false;
           this.editStep = true;
@@ -147,62 +157,12 @@ export default {
             });
           }
         },
-        fetchId(id = 'bmlrfn0683955zqc', fetchingSource=false) {
-          if (id !== null) {
-            const fixedId = RecordUtil.extractFnurgel(id);
-            const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
-            fetch(fetchUrl).then((response) => {
-              if (response.status === 200) {
-                return response.json();
-              } if (response.status === 404 || response.status === 410) {
-                this.$store.dispatch('pushNotification', {
-                  type: 'danger',
-                  message: `${StringUtil.getUiPhraseByLang('The record was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
-                });
-              } else {
-                this.$store.dispatch('pushNotification', {
-                  type: 'danger',
-                  message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
-                });
-              }
-              return false;
-            }, (error) => {
-              this.$store.dispatch('pushNotification', {
-                type: 'danger',
-                message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
-              });
-            }).then((result) => {
-              if (typeof result !== 'undefined') {
-                const data = LxlDataUtil.splitJson(result);
-                if (fetchingSource) {
-                  this.setEnrichmentSource(data);
-                  DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
-                } else {
-                  this.$store.dispatch('setInspectorData', data);
-                  this.setEnrichmentTarget(data);
-                  this.$store.dispatch('removeLoadingIndicator', 'Loading document');
-                  this.removeEnrichedHighlight();
-                  this.recordLoaded = true;
-                  this.$store.dispatch('setOriginalData', data);
-                  DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
-                }
-              }
-            });
-          } else {
-            throw new Error('Failed to prepare data for detailed enrichment.');
-          }
-        },
       },
   mounted() {
     this.$nextTick(() => {
-      this.$store.dispatch('pushLoadingIndicator', 'Loading document');
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('flushExtractItemsOnSave');
       this.$store.dispatch('setInspectorStatusValue', {property: 'focus', value: 'mainEntity'});
-      const sourceId = 'bmlrfn0683955zqc';
-      const targetId = 'qb343vrwn13cwxj7';
-      this.fetchId(sourceId, true);
-      this.fetchId(targetId);
       this.$store.dispatch('setInspectorStatusValue', {property: 'mergeView', value: true});
     });
   },
@@ -219,7 +179,7 @@ export default {
     <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.enrichStep }" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">1. Berika</button>
     <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.editStep }" @click="goToEditStep" @keyup.enter="goToEditStep">2. Redigera</button>
     <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.mergeStep }" @click="goToMergeStep" @keyup.enter="goToMergeStep">3. Slå ihop</button>
-  <merge-records :enrich-step="this.enrichStep" :edit-step="this.editStep" :merge-step="this.mergeStep"></merge-records>
+  <merge-records :flagged="flagged" :enrich-step="this.enrichStep" :edit-step="this.editStep" :merge-step="this.mergeStep"></merge-records>
   </div>
 </template>
 

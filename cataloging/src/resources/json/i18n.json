@@ -486,6 +486,10 @@
     "Mark all": "Markera alla",
     "Unmark all": "Avmarkera alla",
     "Back to editing form": "Till redigeringsläget",
-    "Select parts of the left record which should be copied to the right one." : "Markera de delar i den vänstra posten som ska berika/kopieras över till den högra."
+    "Select parts of the left record which should be copied to the right one." : "Markera de delar i den vänstra posten som ska berika/kopieras över till den högra.",
+    "entity to keep" :  "entitet som ska behållas",
+    "entity to remove": "entitet som ska tas bort",
+    "Receiver": "Mottagare",
+    "Keep": "Behåll"
   }
 }

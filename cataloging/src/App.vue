@@ -2,7 +2,7 @@
   <GlobalMessages />
   <EnvironmentBanner />
   <navbar-component />
-  <search-bar v-if="resourcesLoaded && !inspector.status.mergeView" :class="{ 'stick-to-top': stickToTop }" />
+  <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
 
   <main
     class="MainContent"

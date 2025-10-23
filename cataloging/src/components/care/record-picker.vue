@@ -27,6 +27,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    label: {
+      type: String,
+      default: '',
+    },
+    topLabel: {
+      type: String,
+      default: '',
+    }
   },
   components: {
   },
@@ -71,6 +79,12 @@ export default {
         .indexOf(this.filterPhrase.trim().toLowerCase()) > -1);
       return this.flaggedInstances.filter((instance) => filteredTitles.some((el) => el['@id'] === instance['@id']));
     },
+    nameLabel() {
+      return this.label.length === 0 ? translatePhrase(this.name) : translatePhrase(this.label);
+    },
+    upperLabel() {
+      return this.topLabel.length === 0 ? translatePhrase(this.name) : translatePhrase(this.topLabel);
+    }
   },
   watch: {
     userFlagged(newVal) {
@@ -143,7 +157,7 @@ export default {
     <div
       class="RecordPicker-label uppercaseHeading"
       :class="{ 'has-selection': selected }">
-      {{ translatePhrase(name) }}</div>
+      {{ this.upperLabel }}</div>
     <div class="RecordPicker-body" :class="{ 'has-selection': selected, 'is-expanded': expanded }">
       <div class="RecordPicker-dropdownWrapper">
         <div class="RecordPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
@@ -152,7 +166,7 @@ export default {
             @click="toggleDropdown"
             @keyup.enter="toggleDropdown"
             tabIndex="0">
-            <span class="RecordPicker-toggleLabel">{{ `${translatePhrase('Choose')} ${translatePhrase(name)}` }}</span>
+            <span class="RecordPicker-toggleLabel">{{ `${translatePhrase('Choose')} ${this.nameLabel}` }}</span>
             <span class="RecordPicker-toggleIcon" :class="{ expanded: expanded }">
               <i class="fa fa-fw fa-chevron-down" />
             </span>

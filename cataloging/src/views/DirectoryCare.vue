@@ -175,7 +175,7 @@ export default {
         <h1></h1>
         {{ translatePhrase("To see bulk changes you need to switch to a sigel with access.") }}
       </div>
-      <merge-records-container v-if="$route.params.tool === 'merge'"></merge-records-container>
+      <merge-records-container :flagged="flaggedInstances" v-if="$route.params.tool === 'merge'"></merge-records-container>
       <modal-component
         v-if="showModal"
         title="Directory care list adjusted"
