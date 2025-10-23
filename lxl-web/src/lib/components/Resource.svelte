@@ -92,7 +92,7 @@
 
 	const instanceTabs = $derived([tabMatchingInstances, tabAllInstances].filter((f) => !!f));
 	const showTabs = $derived(
-		derivedFilteredInstances.length && derivedFilteredInstances.length !== instances.length
+		derivedFilteredInstances?.length && derivedFilteredInstances?.length !== instances?.length
 	);
 </script>
 
