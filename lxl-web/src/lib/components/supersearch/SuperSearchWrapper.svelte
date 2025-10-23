@@ -15,7 +15,7 @@
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
 	import type { DisplayMapping } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
-	import IconClose from '~icons/bi/x-lg';
+	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
@@ -283,7 +283,7 @@
 						onclick={onclickClear}
 						title={page.data.t('search.clearFilters')}
 					>
-						<IconClose class="size-4" />
+						<IconClear class="size-4.5 sm:size-4" />
 					</button>
 				{/if}
 			</div>
