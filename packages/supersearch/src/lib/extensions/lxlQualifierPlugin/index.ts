@@ -16,7 +16,7 @@ import {
 import { syntaxTree } from '@codemirror/language';
 import { mount, type Component } from 'svelte';
 // import insertQuotes from './insertQuotes.js';
-import insertParens from './insertQuotes.js';
+import { insertParens, jumpPastParens, insertParensWildcard } from './invisibleParens.js';
 import { messages } from '$lib/constants/messages.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
@@ -181,6 +181,8 @@ function lxlQualifierPlugin(
 		provide: () => [
 			EditorView.atomicRanges.of(() => atomicRangeSet),
 			EditorState.transactionFilter.of(insertParens),
+			EditorState.transactionFilter.of(insertParensWildcard),
+			EditorState.transactionFilter.of(jumpPastParens),
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]
 	});
