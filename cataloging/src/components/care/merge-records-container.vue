@@ -75,6 +75,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.$store.dispatch('flushChangeHistory');
+      this.setEnrichmentChanges(null);
       this.$store.dispatch('flushExtractItemsOnSave');
       this.$store.dispatch('setInspectorStatusValue', {property: 'focus', value: 'mainEntity'});
       this.$store.dispatch('setInspectorStatusValue', {property: 'mergeView', value: true});

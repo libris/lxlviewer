@@ -44,7 +44,6 @@ export default {
     return {
       selected: [],
       formFocus: 'mainEntity',
-      resultObject: null, //TODO: probably don't need this
       sourceLoaded: false,
       targetLoaded: false,
     };
@@ -141,6 +140,9 @@ export default {
       const switchObj = { sender: this.directoryCare.receiver,
         receiver: this.directoryCare.sender };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...switchObj });
+      this.resetCachedChanges();
+      //this.$store.dispatch('setOriginalData', this.source);
+
     },
     resetCachedChanges() {
       this.setEnrichmentChanges(null);
@@ -173,9 +175,7 @@ export default {
         property: 'selected',
         value: selected,
       });
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'apply-source',
-      });
+      this.applyFromSource();
     },
     clearAllSelected() {
       if (!isEmpty(this.inspector.status.selected)) {
@@ -187,9 +187,7 @@ export default {
         property: 'selected',
         value: selectedToKeep,
       });
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'apply-source',
-      });
+      this.applyFromSource();
     },
     clearSelectedForFocused() {
       let keep = [];
@@ -255,17 +253,18 @@ export default {
       }
     },
     applyFromSource() {
-      this.$store.dispatch('setInspectorData', this.inspector.originalData);
-      this.$store.dispatch('flushChangeHistory');
-      this.removeEnrichedHighlight();
-      let source = cloneDeep(this.enrichment.data.source);
-      each(this.settings.keysToClear.duplication, (property) => {
-        unset(source, property);
-      });
-      this.applyFieldsFromSource(source);
+      if (this.bothRecordsLoaded) {
+        this.$store.dispatch('setInspectorData', this.inspector.originalData);
+        this.$store.dispatch('flushChangeHistory');
+        this.removeEnrichedHighlight();
+        let source = cloneDeep(this.enrichment.data.source);
+        each(this.settings.keysToClear.duplication, (property) => {
+          unset(source, property);
+        });
+        this.applyFieldsFromSource(source);
+      }
     },
     applyFieldsFromSource(source) {
-
       const baseRecordData = cloneDeep(this.inspector.data);
       // This part checks if the template should include the work or not (to not overwrite a link)
       if (baseRecordData.mainEntity.hasOwnProperty('instanceOf')) {
@@ -276,18 +275,19 @@ export default {
       }
       let changeList;
       if (!this.enrichment.data.changes) {
+
         changeList = [
           ...getChangeList(source, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
           ...getChangeList(source, baseRecordData, ['record'], ['record'], this.resources.context)
         ];
 
         this.setEnrichmentChanges(changeList)
-        changeList.forEach((change) => {
-          DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
-        });
       } else {
         changeList = this.enrichment.data.changes;
       }
+      changeList.forEach((change) => {
+        DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
+      });
 
       const changesToBeApplied = changeList.filter(a =>
         this.inspector.status.selected.some(b => a.path.startsWith(b.path))
@@ -328,13 +328,10 @@ export default {
   mounted() {
     this.$nextTick(() => {
       // this.resultObject = cloneDeep(this.enrichment.data.target);
-      this.resultObject = cloneDeep(this.inspector.data);
       this.resetCachedChanges();
       this.clearAllSelected();
-      // To populate this.enrichment.data.changes
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'apply-source',
-      });
+      this.sourceLoaded = false;
+      this.targetLoaded = false;
     });
   },
 
@@ -438,20 +435,22 @@ export default {
           :should-link="false"
           :exclude-components="[]" />
     </div>
-    <div class="MergeView-fieldRow">
-      <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
-    </div>
-    <div class="MergeView-fieldRow">
-        <div class="entityForm">
-          <entity-form
-            :editing-object="formFocus"
-            :key="formFocus"
-            :is-active="true"
-            :form-data="target"
-            :locked="false"
-          />
+      <div class="MergeView-recordsContainer">
+        <div class="MergeView-fieldRow">
+          <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus"/>
         </div>
-    </div>
+        <div class="MergeView-fieldRow">
+          <div class="entityForm">
+            <entity-form
+                :editing-object="formFocus"
+                :key="formFocus"
+                :is-active="true"
+                :form-data="target"
+                :locked="false"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   </div>
