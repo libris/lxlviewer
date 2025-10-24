@@ -2,15 +2,17 @@
 	import { page } from '$app/state';
 	import { getModalContext } from '$lib/contexts/modal';
 	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
-	import FacetGroup from './FacetGroup.svelte';
 	import SearchMapping from './SearchMapping.svelte';
-	import BiSearch from '~icons/bi/search';
-	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
+	import TreeView, { type TreeItem } from '$lib/components/TreeView.svelte';
 
 	type filtersPropsType = {
 		facets: TypedFacetGroup[];
 		mapping?: DisplayMapping[];
 	};
+
+	interface FacetTreeItem extends TreeItem {
+		str: string;
+	}
 
 	const { facets, mapping }: filtersPropsType = $props();
 
@@ -27,10 +29,19 @@
 	}
 
 	const inModal = getModalContext();
-
-	let searchPhrase = $state('');
 </script>
 
+{#snippet facetGroupSnippet(data, items)}
+	<div class="flex min-h-8 items-center pl-2 text-sm font-medium">
+		{data.label}
+		{#if items}
+			<span class="text-3xs text-subtle ml-auto">{items.length}</span>
+		{/if}
+	</div>
+{/snippet}
+{#snippet facetItemSnippet(data: FacetTreeItem)}
+	<div class="text-subtle text-2xs flex min-h-8 items-center pl-4">{data.str}</div>
+{/snippet}
 <div class="flex flex-col gap-4">
 	{#if mapping && inModal && shouldShowMapping()}
 		<nav aria-label={page.data.t('search.selectedFilters')}>
@@ -43,29 +54,13 @@
 			aria-label={page.data.t('search.filters')}
 			data-testid="facets"
 		>
-			<div class="px-3">
-				<input
-					bind:value={searchPhrase}
-					placeholder={page.data.t('search.findFilter')}
-					aria-label={page.data.t('search.findFilter')}
-					class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
-					type="search"
-				/>
-				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
-			</div>
-			<ol>
-				{#each facets as group, i (group.dimension)}
-					<FacetGroup
-						{group}
-						locale={page.data.locale}
-						{searchPhrase}
-						isDefaultExpanded={i < DEFAULT_FACETS_EXPANDED}
-					/>
-				{/each}
-			</ol>
-			<span role="status" class="no-hits-msg px-4 text-xs" aria-atomic="true"
-				>{page.data.t('search.noResults')}</span
-			>
+			<TreeView
+				ariaLabelledby="panel-filters"
+				items={facets}
+				groupSnippet={facetGroupSnippet}
+				treeItemSnippet={facetItemSnippet}
+				itemsPropertyKey="facets"
+			/>
 		</nav>
 	{/if}
 </div>
