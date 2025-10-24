@@ -1,4 +1,4 @@
-import { Transaction } from '@codemirror/state';
+import type { Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 
@@ -165,40 +165,55 @@ export const jumpInsideHiddenGroup = (tr: Transaction) => {
 };
 
 /**
- * Prevents breaking a hidden group by select and delete part of it
+ * Repairs a hidden group when user selects and deletes portion of it
  */
 export const repairHiddenGroup = (tr: Transaction) => {
 	if (
 		!tr.isUserEvent('delete') &&
 		!tr.isUserEvent('delete.backward') &&
 		!tr.isUserEvent('delete.forward')
-	) {
+	)
 		return tr;
-	}
 
 	const start = tr.startState;
 	const after = tr.state;
-
 	if (!tr.changes || tr.changes.empty) return tr;
 
 	let fix = null;
 
-	tr.changes.iterChanges((fromA) => {
-		const node = syntaxTree(start).resolveInner(fromA, 0);
-		const group = isInsideHiddenGroup(node);
-		if (!group) return;
+	tr.changes.iterChanges((fromA, toA) => {
+		// User deleted the start of a hidden group, add ) and jump inside
+		const startNode = syntaxTree(start).resolveInner(fromA, 1); // look forward
+		const groupStart = isInsideHiddenGroup(startNode);
+		if (groupStart) {
+			const newFrom = tr.changes.mapPos(groupStart.from);
+			const newTo = tr.changes.mapPos(groupStart.to);
+			const afterText = after.sliceDoc(newFrom, newTo);
+			if (!afterText.startsWith('(')) {
+				fix = {
+					changes: { from: newFrom, insert: '(' },
+					sequential: true,
+					selection: { anchor: newFrom + 1 },
+					userEvent: 'input'
+				};
+				return;
+			}
+		}
 
-		// Map the positions to the after state
-		const newFrom = tr.changes.mapPos(group.from);
-		const newTo = tr.changes.mapPos(group.to);
-
-		const afterText = after.sliceDoc(newFrom, newTo);
-
-		if (afterText.startsWith('(') && !afterText.endsWith(')')) {
-			fix = {
-				changes: { from: newTo, insert: ')' },
-				sequential: true
-			};
+		// User deleted the end of a hidden group, add new )
+		const endNode = syntaxTree(start).resolveInner(toA, -1); // look backward
+		const groupEnd = isInsideHiddenGroup(endNode);
+		if (groupEnd) {
+			const newFrom = tr.changes.mapPos(groupEnd.from);
+			const newTo = tr.changes.mapPos(groupEnd.to);
+			const afterText = after.sliceDoc(newFrom, newTo);
+			if (!afterText.endsWith(')')) {
+				fix = {
+					changes: { from: newTo, insert: ')' },
+					sequential: true
+				};
+				return;
+			}
 		}
 	});
 
