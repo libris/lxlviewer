@@ -264,7 +264,7 @@
 						]}
 					>
 						{#if expanded && debouncedLoading}
-							<span class=" pointer-events-none">
+							<span class="pointer-events-none">
 								{@render loading()}
 							</span>
 						{:else}
