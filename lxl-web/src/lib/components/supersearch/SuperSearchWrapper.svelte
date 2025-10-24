@@ -273,6 +273,7 @@
 								tabindex="-1"
 								onclick={() => showExpandedSearch({ cursorAtEnd: true })}
 								class="flex h-full w-full cursor-default items-center justify-center"
+								aria-hidden="true"
 							>
 								<IconSearch aria-hidden="true" class="flex size-4 lg:mt-[1px]" />
 							</button>
