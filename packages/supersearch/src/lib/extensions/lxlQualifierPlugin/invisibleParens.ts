@@ -1,5 +1,6 @@
 import { Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
+import type { SyntaxNode } from '@lezer/common';
 
 /**
  * Moves cursor into an empty () after typing the QualifierOperator
@@ -56,7 +57,7 @@ export const insertParensWildcard = (tr: Transaction) => {
 	let changes = null;
 
 	const node = syntaxTree(state).resolveInner(head, 0);
-	if (node.name === 'Group') {
+	if (isHiddenGroup(node)) {
 		const groupBefore = start.sliceDoc(node.from, node.to);
 		const groupAfter = state.sliceDoc(node.from, node.to);
 
@@ -103,7 +104,7 @@ export const jumpPastParens = (tr: Transaction) => {
 	if (isBackspace) {
 		// 1) Backspace after a group -> jump inside
 		const nodeBefore = syntaxTree(state).resolveInner(head, -1);
-		if (nodeBefore.name === 'Group' && nodeBefore.to === head) {
+		if (isHiddenGroup(nodeBefore) && nodeBefore.to === head) {
 			return {
 				changes: [],
 				sequential: true,
@@ -114,7 +115,7 @@ export const jumpPastParens = (tr: Transaction) => {
 
 		// 2) Backspace at beginning of group -> jump outside
 		const nodeInside = syntaxTree(state).resolveInner(head, 0);
-		if (nodeInside.name === 'Group') {
+		if (isHiddenGroup(nodeInside)) {
 			const openPos = nodeInside.from;
 			if (head === openPos + 1) {
 				return {
@@ -130,7 +131,7 @@ export const jumpPastParens = (tr: Transaction) => {
 	if (isDelete) {
 		// 3) Delete before a group -> jump inside
 		const nodeAfter = syntaxTree(state).resolveInner(head, 1);
-		if (nodeAfter.name === 'Group' && nodeAfter.from === head) {
+		if (isHiddenGroup(nodeAfter) && nodeAfter.from === head) {
 			return {
 				changes: [],
 				sequential: true,
@@ -141,7 +142,7 @@ export const jumpPastParens = (tr: Transaction) => {
 
 		// 4) delete at end of group -> jump outside
 		const nodeInside = syntaxTree(state).resolveInner(head, 0);
-		if (nodeInside.name === 'Group') {
+		if (isHiddenGroup(nodeInside)) {
 			const closePos = nodeInside.to;
 			if (head === closePos - 1) {
 				return {
@@ -156,3 +157,21 @@ export const jumpPastParens = (tr: Transaction) => {
 
 	return tr;
 };
+
+/**
+ * Returns true if the given node or position matches definition of
+ * a Hidden Group (Group & direct child of QualifierValue)
+ */
+function isHiddenGroup(node: SyntaxNode) {
+	if (node.name !== 'Group') return false;
+
+	const parent = node.parent;
+	if (!parent || parent.name !== 'QualifierValue') return false;
+
+	const firstChild = parent.firstChild;
+	if (!firstChild || firstChild.name !== 'Group' || firstChild.from !== node.from) {
+		return false;
+	}
+
+	return true;
+}

@@ -181,8 +181,8 @@ function lxlQualifierPlugin(
 		provide: () => [
 			EditorView.atomicRanges.of(() => atomicRangeSet),
 			EditorState.transactionFilter.of(insertParens),
-			EditorState.transactionFilter.of(insertParensWildcard),
 			EditorState.transactionFilter.of(jumpPastParens),
+			EditorState.transactionFilter.of(insertParensWildcard),
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]
 	});
