@@ -6,6 +6,7 @@
 		SuperSearch,
 		lxlQualifierPlugin,
 		type Selection,
+		type ShowExpandedSearchOptions,
 		type ViewUpdateSuperSearchEvent
 	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
@@ -153,8 +154,8 @@
 		return lxlQualifierPlugin(QualifierPill, getLabels);
 	});
 
-	export function showExpandedSearch() {
-		superSearch?.showExpandedSearch();
+	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
+		superSearch?.showExpandedSearch(options);
 	}
 
 	function handleOnChange() {
@@ -258,14 +259,24 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input pointer-events-none absolute z-30 flex size-11 items-center justify-center rounded-md sm:h-11 sm:w-11 lg:h-12',
+							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:h-11 sm:w-11 lg:h-12',
 							expanded && 'hidden sm:flex'
 						]}
 					>
 						{#if expanded && debouncedLoading}
-							{@render loading()}
+							<span class="pointer-events-none">
+								{@render loading()}
+							</span>
 						{:else}
-							<IconSearch aria-hidden="true" class="size-4 lg:mt-[1px]" />
+							<button
+								type="button"
+								tabindex="-1"
+								onclick={() => showExpandedSearch({ cursorAtEnd: true })}
+								class="flex h-full w-full cursor-default items-center justify-center"
+								aria-hidden="true"
+							>
+								<IconSearch aria-hidden="true" class="flex size-4 lg:mt-[1px]" />
+							</button>
 						{/if}
 					</div>
 					{@render inputField()}
