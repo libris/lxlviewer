@@ -190,8 +190,8 @@ function lxlQualifierPlugin(
 			EditorState.transactionFilter.of(insertGroup),
 			EditorState.transactionFilter.of(handleInput),
 			EditorState.transactionFilter.of(handleBackspace),
-			EditorState.transactionFilter.of(insertGroupWildcard),
 			EditorState.transactionFilter.of(handleSelection),
+			EditorState.transactionFilter.of(insertGroupWildcard),
 			//
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]

@@ -40,6 +40,7 @@ export const insertGroup = (tr: Transaction) => {
  * Add a wildcard in an empty enclosing Group. Remove wildcard when user starts typing
  */
 export const insertGroupWildcard = (tr: Transaction) => {
+	if (!tr.changes || tr.changes.empty) return tr;
 	if (
 		!tr.isUserEvent('input') &&
 		!tr.isUserEvent('delete') &&
@@ -98,6 +99,8 @@ export const insertGroupWildcard = (tr: Transaction) => {
  * Prevents deletion of enclosing Groups parenthesis. Instead, jump past them.
  */
 export const handleBackspace = (tr: Transaction) => {
+	if (!tr.changes || tr.changes.empty) return tr;
+
 	const isBackspace = tr.isUserEvent('delete.backward');
 	const isDelete = tr.isUserEvent('delete.forward');
 
@@ -105,6 +108,10 @@ export const handleBackspace = (tr: Transaction) => {
 
 	const state = tr.startState;
 	const head = state.selection.main.head;
+
+	if (state.selection.main.from !== state.selection.main.to) {
+		return tr;
+	}
 
 	if (isBackspace) {
 		// 1) Backspace after a group -> jump inside
@@ -168,16 +175,19 @@ export const handleBackspace = (tr: Transaction) => {
  * Repairs enclosing group when user selects and deletes portion of it
  */
 export const handleSelection = (tr: Transaction) => {
+	if (!tr.changes || tr.changes.empty) return tr;
 	if (
 		!tr.isUserEvent('delete') &&
 		!tr.isUserEvent('delete.backward') &&
 		!tr.isUserEvent('delete.forward')
-	)
+	) {
 		return tr;
+	}
 
 	const start = tr.startState;
 	const after = tr.state;
-	if (!tr.changes || tr.changes.empty) return tr;
+
+	if (start.selection.main.from === start.selection.main.to) return tr;
 
 	let fix = null;
 
@@ -224,6 +234,7 @@ export const handleSelection = (tr: Transaction) => {
  * Prevents breaking the enclosing group by typing between the operator and group start
  */
 export const handleInput = (tr: Transaction) => {
+	if (!tr.changes || tr.changes.empty) return tr;
 	if (!tr.isUserEvent('input') && !tr.isUserEvent('paste')) return tr;
 
 	const start = tr.startState;
