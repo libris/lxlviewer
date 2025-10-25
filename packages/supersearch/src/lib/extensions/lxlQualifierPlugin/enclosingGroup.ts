@@ -7,6 +7,7 @@ import type { SyntaxNode } from '@lezer/common';
  * Inserts a wildcard if empty () - (empty groups are disallowed)
  */
 export const insertGroup = (tr: Transaction) => {
+	if (!tr.changes || tr.changes.empty) return tr;
 	if (!tr.isUserEvent('input')) return tr;
 
 	const start = tr.startState;
@@ -173,6 +174,7 @@ export const handleBackspace = (tr: Transaction) => {
 
 /**
  * Repairs enclosing group when user selects and deletes portion of it
+ * given that the qualifier is still valid after change
  */
 export const handleSelection = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
@@ -187,17 +189,52 @@ export const handleSelection = (tr: Transaction) => {
 	const start = tr.startState;
 	const after = tr.state;
 
+	// Only handle range deletions
 	if (start.selection.main.from === start.selection.main.to) return tr;
 
 	let fix = null;
 
 	tr.changes.iterChanges((fromA, toA) => {
-		// User deleted the start of an enclosing group, add ) and jump inside
-		const startNode = syntaxTree(start).resolveInner(fromA, 1); // look forward
-		const groupStart = getEnclosingGroup(startNode);
-		if (groupStart) {
-			const newFrom = tr.changes.mapPos(groupStart.from);
-			const newTo = tr.changes.mapPos(groupStart.to);
+		const startNode = syntaxTree(start).resolveInner(fromA, 1);
+		const endNode = syntaxTree(start).resolveInner(toA, -1);
+
+		const groupAtStart = getEnclosingGroup(startNode);
+		const groupAtEnd = getEnclosingGroup(endNode);
+
+		// selection starts inside group, ends outside → repair with ')'
+		if (groupAtStart && (!groupAtEnd || groupAtEnd !== groupAtStart)) {
+			console.log('a');
+			// Map group position into after state
+			const newFrom = tr.changes.mapPos(groupAtStart.from);
+			const newTo = tr.changes.mapPos(groupAtStart.to);
+
+			// verify that the group still exists in the after tree
+			const verifyNode = syntaxTree(after).resolveInner(newFrom, 1);
+			const stillExists = getEnclosingGroup(verifyNode);
+			if (!stillExists) return;
+
+			const afterText = after.sliceDoc(newFrom, newTo);
+			if (!afterText.endsWith(')')) {
+				fix = {
+					changes: { from: newTo, insert: ')' },
+					sequential: true,
+					userEvent: 'input'
+				};
+			}
+			return;
+		}
+
+		// starts outside group, ends inside → repair with '('
+		if (groupAtEnd && (!groupAtStart || groupAtEnd !== groupAtStart)) {
+			console.log('b');
+			const newFrom = tr.changes.mapPos(groupAtEnd.from);
+			const newTo = tr.changes.mapPos(groupAtEnd.to);
+
+			// Verify group still exists
+			const verifyNode = syntaxTree(after).resolveInner(newFrom, 1);
+			const stillExists = getEnclosingGroup(verifyNode);
+			if (!stillExists) return;
+
 			const afterText = after.sliceDoc(newFrom, newTo);
 			if (!afterText.startsWith('(')) {
 				fix = {
@@ -206,24 +243,8 @@ export const handleSelection = (tr: Transaction) => {
 					selection: { anchor: newFrom + 1 },
 					userEvent: 'input'
 				};
-				return;
 			}
-		}
-
-		// User deleted the end of an enclosing group, add new )
-		const endNode = syntaxTree(start).resolveInner(toA, -1); // look backward
-		const groupEnd = getEnclosingGroup(endNode);
-		if (groupEnd) {
-			const newFrom = tr.changes.mapPos(groupEnd.from);
-			const newTo = tr.changes.mapPos(groupEnd.to);
-			const afterText = after.sliceDoc(newFrom, newTo);
-			if (!afterText.endsWith(')')) {
-				fix = {
-					changes: { from: newTo, insert: ')' },
-					sequential: true
-				};
-				return;
-			}
+			return;
 		}
 	});
 
