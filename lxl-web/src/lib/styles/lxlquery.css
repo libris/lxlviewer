@@ -10,27 +10,27 @@
 .lxl-filter-alias {
 	font-weight: var(--font-weight-medium);
 	font-size: var(--text-2xs);
-	padding-left: calc(var(--spacing) * 1.5);
-	border-top-left-radius: calc(var(--spacing) * 1);
-	border-bottom-left-radius: calc(var(--spacing) * 1);
+	/* padding-left: calc(var(--spacing) * 1.5); */
+	/* border-top-left-radius: calc(var(--spacing) * 1);
+	border-bottom-left-radius: calc(var(--spacing) * 1); */
 }
 
 .lxl-filter-alias {
-	padding-right: calc(var(--spacing) * 1.5);
+	/* padding-right: calc(var(--spacing) * 1.5); */
 }
 
 .lxl-qualifier-remove,
 .lxl-qualifier-value:not(:has(+ .lxl-qualifier-value)) {
-	padding-right: calc(var(--spacing) * 1.5);
-	border-top-right-radius: calc(var(--spacing) * 1);
-	border-bottom-right-radius: calc(var(--spacing) * 1);
+	/* padding-right: calc(var(--spacing) * 1.5); */
+	/* border-top-right-radius: calc(var(--spacing) * 1);
+	border-bottom-right-radius: calc(var(--spacing) * 1); */
 }
 
 .lxl-qualifier-remove {
 	color: var(--color-subtle);
 	display: flex;
 	align-items: center;
-	padding-left: calc(var(--spacing) * 1.5);
+	/* padding-left: calc(var(--spacing) * 1.5); */
 }
 
 .lxl-qualifier-remove:hover {
@@ -52,7 +52,7 @@
 }
 
 .lxl-qualifier-operator.atomic {
-	padding-right: calc(var(--spacing) * 1.5);
+	/* padding-right: calc(var(--spacing) * 1.5); */
 }
 
 .lxl-invalid,

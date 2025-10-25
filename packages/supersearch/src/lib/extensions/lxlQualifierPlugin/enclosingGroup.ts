@@ -1,4 +1,4 @@
-import type { Transaction } from '@codemirror/state';
+import { Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 
@@ -6,7 +6,7 @@ import type { SyntaxNode } from '@lezer/common';
  * Moves cursor into an empty () after typing the QualifierOperator
  * Inserts a wildcard if empty () - (empty groups are disallowed)
  */
-export const insertHiddenGroup = (tr: Transaction) => {
+export const insertGroup = (tr: Transaction) => {
 	if (!tr.isUserEvent('input')) return tr;
 
 	const start = tr.startState;
@@ -37,7 +37,7 @@ export const insertHiddenGroup = (tr: Transaction) => {
 };
 
 /**
- * Add a wildcard in an empty Hidden Group. Remove wildcard when user starts typing
+ * Add a wildcard in an empty enclosing Group. Remove wildcard when user starts typing
  */
 export const insertGroupWildcard = (tr: Transaction) => {
 	if (
@@ -57,7 +57,7 @@ export const insertGroupWildcard = (tr: Transaction) => {
 
 	// Resolve the node at the cursor in the AFTER state
 	const resolvedNode = syntaxTree(state).resolveInner(head, 0);
-	const groupNode = isInsideHiddenGroup(resolvedNode);
+	const groupNode = getEnclosingGroup(resolvedNode);
 	if (!groupNode) return tr;
 
 	// Get the text of the group in start and after states
@@ -77,7 +77,7 @@ export const insertGroupWildcard = (tr: Transaction) => {
 		return [tr, changes];
 	}
 
-	// 2) If the group is empty after edits, insert '*' to maintain a valid hidden group
+	// 2) If the group is empty after edits, insert '*' to maintain a valid enclosing group
 	if (groupBefore !== '()' && groupAfter === '()') {
 		changes = {
 			changes: {
@@ -95,9 +95,9 @@ export const insertGroupWildcard = (tr: Transaction) => {
 };
 
 /**
- * Prevents deletion of Hidden Groups parenthesis. Instead, jump past them.
+ * Prevents deletion of enclosing Groups parenthesis. Instead, jump past them.
  */
-export const jumpInsideHiddenGroup = (tr: Transaction) => {
+export const handleBackspace = (tr: Transaction) => {
 	const isBackspace = tr.isUserEvent('delete.backward');
 	const isDelete = tr.isUserEvent('delete.forward');
 
@@ -109,7 +109,7 @@ export const jumpInsideHiddenGroup = (tr: Transaction) => {
 	if (isBackspace) {
 		// 1) Backspace after a group -> jump inside
 		const resolvedBefore = syntaxTree(state).resolveInner(head, -1);
-		const groupBefore = isInsideHiddenGroup(resolvedBefore);
+		const groupBefore = getEnclosingGroup(resolvedBefore);
 		if (groupBefore && head === groupBefore.to) {
 			return {
 				changes: [],
@@ -121,7 +121,7 @@ export const jumpInsideHiddenGroup = (tr: Transaction) => {
 
 		// 2) Backspace at beginning of group -> jump outside
 		const resolvedInside = syntaxTree(state).resolveInner(head, 0);
-		const groupInside = isInsideHiddenGroup(resolvedInside);
+		const groupInside = getEnclosingGroup(resolvedInside);
 		if (groupInside) {
 			const openPos = groupInside.from;
 			if (head === openPos + 1) {
@@ -138,7 +138,7 @@ export const jumpInsideHiddenGroup = (tr: Transaction) => {
 	if (isDelete) {
 		// 3) Delete before a group -> jump inside
 		const resolvedAfter = syntaxTree(state).resolveInner(head, 1);
-		const groupAfter = isInsideHiddenGroup(resolvedAfter);
+		const groupAfter = getEnclosingGroup(resolvedAfter);
 		if (groupAfter && head === groupAfter.from) {
 			return {
 				changes: [],
@@ -150,7 +150,7 @@ export const jumpInsideHiddenGroup = (tr: Transaction) => {
 
 		// 4) Delete at end of group -> jump outside
 		const resolvedInside = syntaxTree(state).resolveInner(head, 0);
-		const groupInside = isInsideHiddenGroup(resolvedInside);
+		const groupInside = getEnclosingGroup(resolvedInside);
 		if (groupInside && head === groupInside.to - 1) {
 			return {
 				changes: [],
@@ -165,9 +165,9 @@ export const jumpInsideHiddenGroup = (tr: Transaction) => {
 };
 
 /**
- * Repairs a hidden group when user selects and deletes portion of it
+ * Repairs enclosing group when user selects and deletes portion of it
  */
-export const repairHiddenGroup = (tr: Transaction) => {
+export const handleSelection = (tr: Transaction) => {
 	if (
 		!tr.isUserEvent('delete') &&
 		!tr.isUserEvent('delete.backward') &&
@@ -182,9 +182,9 @@ export const repairHiddenGroup = (tr: Transaction) => {
 	let fix = null;
 
 	tr.changes.iterChanges((fromA, toA) => {
-		// User deleted the start of a hidden group, add ) and jump inside
+		// User deleted the start of an enclosing group, add ) and jump inside
 		const startNode = syntaxTree(start).resolveInner(fromA, 1); // look forward
-		const groupStart = isInsideHiddenGroup(startNode);
+		const groupStart = getEnclosingGroup(startNode);
 		if (groupStart) {
 			const newFrom = tr.changes.mapPos(groupStart.from);
 			const newTo = tr.changes.mapPos(groupStart.to);
@@ -200,9 +200,9 @@ export const repairHiddenGroup = (tr: Transaction) => {
 			}
 		}
 
-		// User deleted the end of a hidden group, add new )
+		// User deleted the end of an enclosing group, add new )
 		const endNode = syntaxTree(start).resolveInner(toA, -1); // look backward
-		const groupEnd = isInsideHiddenGroup(endNode);
+		const groupEnd = getEnclosingGroup(endNode);
 		if (groupEnd) {
 			const newFrom = tr.changes.mapPos(groupEnd.from);
 			const newTo = tr.changes.mapPos(groupEnd.to);
@@ -221,10 +221,51 @@ export const repairHiddenGroup = (tr: Transaction) => {
 };
 
 /**
- * Check if the node is loocated inside a Hidden Group (Group direct child of QualifierValue)
+ * Prevents breaking the enclosing group by typing between the operator and group start
+ */
+export const handleInput = (tr: Transaction) => {
+	if (!tr.isUserEvent('input') && !tr.isUserEvent('paste')) return tr;
+
+	const start = tr.startState;
+	const head = start.selection.main.head;
+
+	// Detect enclosing group directly after cursor
+	const nodeAfter = syntaxTree(start).resolveInner(head, +1);
+	const groupNode = getEnclosingGroup(nodeAfter);
+	if (!groupNode) return tr;
+
+	if (head !== groupNode.from) return tr;
+
+	// shift text changes +1 position to the right
+	const shiftedChanges: { from: number; to: number; insert: string }[] = [];
+	let totalInsertedLength = 0;
+
+	tr.changes.iterChanges((fromA, toA, _fromB, _toB, inserted) => {
+		shiftedChanges.push({
+			from: fromA + 1,
+			to: toA + 1,
+			insert: inserted.toString()
+		});
+		totalInsertedLength += inserted.length;
+	});
+
+	const newSelection = { anchor: head + 1 + totalInsertedLength };
+
+	return [
+		{
+			changes: shiftedChanges,
+			sequential: true,
+			selection: newSelection,
+			userEvent: tr.annotation(Transaction.userEvent) || 'input'
+		}
+	];
+};
+
+/**
+ * Check if the node is loocated inside an enclosing Group (Group direct child of QualifierValue)
  * If so, return the group node
  */
-function isInsideHiddenGroup(node: SyntaxNode): SyntaxNode | false {
+function getEnclosingGroup(node: SyntaxNode): SyntaxNode | false {
 	if (!node) return false;
 
 	let current: SyntaxNode | null = node;

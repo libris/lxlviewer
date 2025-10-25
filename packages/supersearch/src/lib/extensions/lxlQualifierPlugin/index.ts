@@ -17,11 +17,12 @@ import { syntaxTree } from '@codemirror/language';
 import { mount, type Component } from 'svelte';
 // import insertQuotes from './insertQuotes.js';
 import {
-	insertHiddenGroup,
-	jumpInsideHiddenGroup,
+	insertGroup,
+	handleBackspace,
 	insertGroupWildcard,
-	repairHiddenGroup
-} from './hiddenGroup.js';
+	handleSelection,
+	handleInput
+} from './enclosingGroup.js';
 import { messages } from '$lib/constants/messages.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
@@ -185,10 +186,13 @@ function lxlQualifierPlugin(
 		decorations: (instance) => instance.qualifiers,
 		provide: () => [
 			EditorView.atomicRanges.of(() => atomicRangeSet),
-			EditorState.transactionFilter.of(insertHiddenGroup),
-			EditorState.transactionFilter.of(jumpInsideHiddenGroup),
+			// enclosing group filters
+			EditorState.transactionFilter.of(insertGroup),
+			EditorState.transactionFilter.of(handleInput),
+			EditorState.transactionFilter.of(handleBackspace),
 			EditorState.transactionFilter.of(insertGroupWildcard),
-			EditorState.transactionFilter.of(repairHiddenGroup),
+			EditorState.transactionFilter.of(handleSelection),
+			//
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]
 	});
