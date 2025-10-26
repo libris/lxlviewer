@@ -15,17 +15,9 @@ import {
 } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount, type Component } from 'svelte';
-// import insertQuotes from './insertQuotes.js';
-import {
-	// insertGroup,
-	handleBackspace,
-	// insertGroupWildcard,
-	// handleSelection,
-	handleInput
-} from './enclosingGroup.js';
+import { jumpPastParens, handleInputBeforeGroup, enforceQValueGroup } from './qValueGroup.js';
 import { messages } from '$lib/constants/messages.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
-import { enforceQualifierGroups } from './enforceQualifierGroups.js';
 
 export type Qualifier = {
 	key: string;
@@ -187,13 +179,10 @@ function lxlQualifierPlugin(
 		decorations: (instance) => instance.qualifiers,
 		provide: () => [
 			EditorView.atomicRanges.of(() => atomicRangeSet),
-			// enclosing group filters
-			// EditorState.transactionFilter.of(insertGroup),
-			EditorState.transactionFilter.of(handleBackspace),
-			// EditorState.transactionFilter.of(handleSelection),
-			EditorState.transactionFilter.of(enforceQualifierGroups),
-			EditorState.transactionFilter.of(handleInput),
-			// EditorState.transactionFilter.of(insertGroupWildcard),
+			// grouping the qualifier value
+			EditorState.transactionFilter.of(jumpPastParens),
+			EditorState.transactionFilter.of(enforceQValueGroup),
+			EditorState.transactionFilter.of(handleInputBeforeGroup),
 			//
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]

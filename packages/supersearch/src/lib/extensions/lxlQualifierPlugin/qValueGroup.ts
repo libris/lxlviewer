@@ -3,6 +3,91 @@ import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 
 /**
+ * QualifierOperator's first sibling must be a QualifierValue,
+ * and that QualifierValue's first child must be a Group. If it is not - fix it.
+ * Exception: quoted qualifier values
+ */
+export const enforceQValueGroup = (tr: Transaction) => {
+	if (
+		!tr.isUserEvent('input') &&
+		!tr.isUserEvent('paste') &&
+		!tr.isUserEvent('delete') &&
+		!tr.isUserEvent('delete.backward') &&
+		!tr.isUserEvent('delete.forward')
+	) {
+		return tr;
+	}
+
+	const start = tr.startState;
+	const after = tr.state;
+
+	// don't touch groups within the outer group
+	const from = start.selection.main.from;
+	const to = start.selection.main.to;
+	const nodeAtHead = syntaxTree(start).resolveInner(from, 0);
+	const enclosingGroup = getEnclosingGroup(nodeAtHead);
+
+	if (enclosingGroup && from > enclosingGroup.from && to < enclosingGroup.to) {
+		return tr;
+	}
+
+	const changes: { from: number; to?: number; insert?: string }[] = [];
+	let selection: { anchor: number } | undefined;
+
+	syntaxTree(after).iterate({
+		enter(node) {
+			if (node.name !== 'Qualifier') return;
+
+			const operatorNode = node.node.getChild('QualifierOperator');
+			if (!operatorNode) return;
+
+			const valueNode = node.node.getChild('QualifierValue');
+			const opEnd = operatorNode.to;
+
+			// skip quoted values - keep atomic ranges intact
+			if (valueNode) {
+				const valText = after.sliceDoc(valueNode.from, valueNode.to);
+				if (valText.startsWith('"') && valText.endsWith('"')) {
+					return;
+				}
+			}
+
+			// missing QualifierValue → insert (*) and jump inside
+			if (!valueNode) {
+				changes.push({ from: opEnd, insert: '()' });
+				selection = { anchor: opEnd + 1 };
+				return;
+			}
+
+			let valText = after.sliceDoc(valueNode.from, valueNode.to);
+
+			// qualifierValue exists but missing opening '('
+			if (!valText.startsWith('(')) {
+				changes.push({ from: valueNode.from, insert: '(' });
+				valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
+			}
+
+			// qualifierValue exists but missing closing ')'
+			if (!valText.endsWith(')')) {
+				changes.push({ from: valueNode.to, insert: ')' });
+			}
+		}
+	});
+
+	if (!changes.length) return tr;
+
+	return [
+		tr,
+		{
+			changes,
+			sequential: true,
+			selection,
+			userEvent: 'input.repair'
+		}
+	];
+};
+
+/**
  * Moves cursor into an empty () after typing the QualifierOperator
  * Inserts a wildcard if empty () - (empty groups are disallowed)
  */
@@ -99,7 +184,7 @@ import type { SyntaxNode } from '@lezer/common';
 /**
  * Prevents deletion of enclosing Groups parenthesis. Instead, jump past them.
  */
-export const handleBackspace = (tr: Transaction) => {
+export const jumpPastParens = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
 
 	const isBackspace = tr.isUserEvent('delete.backward');
@@ -256,9 +341,9 @@ export const handleBackspace = (tr: Transaction) => {
 // };
 
 /**
- * Prevents breaking the enclosing group by typing between the operator and group start
+ * Prevents breaking the outer group by typing between the operator and group
  */
-export const handleInput = (tr: Transaction) => {
+export const handleInputBeforeGroup = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
 	if (!tr.isUserEvent('input') && !tr.isUserEvent('paste')) return tr;
 
@@ -298,7 +383,7 @@ export const handleInput = (tr: Transaction) => {
 };
 
 /**
- * Check if the node is loocated inside an enclosing Group (Group direct child of QualifierValue)
+ * Check if the node is located inside an enclosing (outer) QualifierValue Group.
  * If so, return the group node
  */
 function getEnclosingGroup(node: SyntaxNode): SyntaxNode | false {
