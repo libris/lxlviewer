@@ -1,8 +1,12 @@
 import { Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 
+/**
+ * QualifierOperator:s first sibling must be a QualifierValue,
+ * and that QualifierValue's first child must be a Group. If it is not - fix it.
+ * Exception quoted qualifier values
+ */
 export const enforceQualifierGroups = (tr: Transaction) => {
-	// Only run on relevant user events
 	if (
 		!tr.isUserEvent('input') &&
 		!tr.isUserEvent('paste') &&
@@ -13,7 +17,6 @@ export const enforceQualifierGroups = (tr: Transaction) => {
 		return tr;
 	}
 
-	// const start = tr.startState;
 	const after = tr.state;
 	const tree = syntaxTree(after);
 
@@ -30,30 +33,30 @@ export const enforceQualifierGroups = (tr: Transaction) => {
 			const valueNode = node.node.getChild('QualifierValue');
 			const opEnd = operatorNode.to;
 
-			// Skip quoted values
+			// skip quoted values - keep atomic ranges intact
 			if (valueNode) {
 				const valText = after.sliceDoc(valueNode.from, valueNode.to);
 				if (valText.startsWith('"') && valText.endsWith('"')) {
-					// Quoted value detected, do nothing
 					return;
 				}
 			}
 
-			// Missing QualifierValue → insert (*) and jump inside
+			// missing QualifierValue → insert (*) and jump inside
 			if (!valueNode) {
 				changes.push({ from: opEnd, insert: '(*)' });
 				selection = { anchor: opEnd + 2 }; // cursor after '('
 				return;
 			}
 
-			const valText = after.sliceDoc(valueNode.from, valueNode.to);
+			let valText = after.sliceDoc(valueNode.from, valueNode.to);
 
-			// QualifierValue exists but missing opening '('
+			// qualifierValue exists but missing opening '('
 			if (!valText.startsWith('(')) {
 				changes.push({ from: valueNode.from, insert: '(' });
+				valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
 			}
 
-			// CASE 3: QualifierValue exists but missing closing ')'
+			// qualifierValue exists but missing closing ')'
 			if (!valText.endsWith(')')) {
 				changes.push({ from: valueNode.to, insert: ')' });
 			}
