@@ -18,8 +18,8 @@ import { mount, type Component } from 'svelte';
 // import insertQuotes from './insertQuotes.js';
 import {
 	// insertGroup,
-	// handleBackspace,
-	insertGroupWildcard,
+	handleBackspace,
+	// insertGroupWildcard,
 	// handleSelection,
 	handleInput
 } from './enclosingGroup.js';
@@ -189,11 +189,11 @@ function lxlQualifierPlugin(
 			EditorView.atomicRanges.of(() => atomicRangeSet),
 			// enclosing group filters
 			// EditorState.transactionFilter.of(insertGroup),
-			// EditorState.transactionFilter.of(handleBackspace),
+			EditorState.transactionFilter.of(handleBackspace),
 			// EditorState.transactionFilter.of(handleSelection),
-			EditorState.transactionFilter.of(insertGroupWildcard),
 			EditorState.transactionFilter.of(enforceQualifierGroups),
 			EditorState.transactionFilter.of(handleInput),
+			// EditorState.transactionFilter.of(insertGroupWildcard),
 			//
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]

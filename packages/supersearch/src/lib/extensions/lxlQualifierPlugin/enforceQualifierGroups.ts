@@ -43,8 +43,10 @@ export const enforceQualifierGroups = (tr: Transaction) => {
 
 			// missing QualifierValue → insert (*) and jump inside
 			if (!valueNode) {
-				changes.push({ from: opEnd, insert: '(*)' });
-				selection = { anchor: opEnd + 2 }; // cursor after '('
+				// changes.push({ from: opEnd, insert: '(*)' });
+				// selection = { anchor: opEnd + 2 };
+				changes.push({ from: opEnd, insert: '()' });
+				selection = { anchor: opEnd + 1 };
 				return;
 			}
 
