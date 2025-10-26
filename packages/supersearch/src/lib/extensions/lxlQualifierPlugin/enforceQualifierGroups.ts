@@ -45,6 +45,7 @@ export const enforceQualifierGroups = (tr: Transaction) => {
 			if (!valueNode) {
 				// changes.push({ from: opEnd, insert: '(*)' });
 				// selection = { anchor: opEnd + 2 };
+				console.log('enforceQualifierGroups adding ()');
 				changes.push({ from: opEnd, insert: '()' });
 				selection = { anchor: opEnd + 1 };
 				return;
@@ -54,12 +55,14 @@ export const enforceQualifierGroups = (tr: Transaction) => {
 
 			// qualifierValue exists but missing opening '('
 			if (!valText.startsWith('(')) {
+				console.log('enforceQualifierGroups adding (');
 				changes.push({ from: valueNode.from, insert: '(' });
 				valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
 			}
 
 			// qualifierValue exists but missing closing ')'
 			if (!valText.endsWith(')')) {
+				console.log('enforceQualifierGroups adding )');
 				changes.push({ from: valueNode.to, insert: ')' });
 			}
 		}
