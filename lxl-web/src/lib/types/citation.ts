@@ -35,7 +35,8 @@ export type CSLType =
 	| 'graphic'
 	| 'motion_picture'
 	| 'broadcast'
-	| 'document';
+	| 'document'
+	| 'collection';
 
 export interface CSLJSON {
 	type: CSLType;

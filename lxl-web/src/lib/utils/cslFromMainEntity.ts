@@ -112,8 +112,8 @@ function getCslType(mainEntity: FramedData, vocabUtil: VocabUtil): CSLType {
 		}
 	} else if (allTypes.includes('Serial') && allTypes.includes('Text')) {
 		return 'periodical';
-	} else if (allTypes.includes('Collection') {
-	  return 'collection';
+	} else if (allTypes.includes('Collection')) {
+		return 'collection';
 	}
 
 	// fallback?
