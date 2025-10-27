@@ -332,6 +332,16 @@ export default {
       if (val.name === 'apply-source' && this.bothRecordsLoaded) {
         this.applyFromSource();
       }
+    },
+    editStep(val) {
+      if (val) {
+        this.$nextTick(() => {
+          this.$store.dispatch('pushInspectorEvent', {
+            name: 'form-control',
+            value: 'collapse-item',
+          });
+        });
+      }
     }
   },
   mounted() {
