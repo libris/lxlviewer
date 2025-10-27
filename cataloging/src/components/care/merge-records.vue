@@ -240,6 +240,7 @@ export default {
               this.setEnrichmentSource(data);
               DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
               this.sourceLoaded = true;
+              this.applyFromSource(); // To populate everything with nothing selected
               this.$store.dispatch('removeLoadingIndicator', 'Loading document');
             } else {
               this.$store.dispatch('setInspectorData', data);
@@ -248,6 +249,7 @@ export default {
               this.$store.dispatch('setOriginalData', data);
               DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
               this.targetLoaded = true;
+              this.applyFromSource(); // To populate everything with nothing selected
               this.$store.dispatch('removeLoadingIndicator', 'Loading document');
             }
           }
@@ -258,7 +260,11 @@ export default {
     },
     applyFromSource() {
       if (this.bothRecordsLoaded) {
-        this.$store.dispatch('setInspectorData', this.inspector.originalData);
+        const originalDataPreservedQuoted = {
+          ...this.inspector.originalData,
+          quoted: this.inspector.data.quoted
+        };
+        this.$store.dispatch('setInspectorData', originalDataPreservedQuoted);
         this.$store.dispatch('flushChangeHistory');
         this.removeEnrichedHighlight();
         let source = cloneDeep(this.enrichment.data.source);
@@ -279,19 +285,17 @@ export default {
       }
       let changeList;
       if (!this.enrichment.data.changes) {
-
         changeList = [
           ...getChangeList(source, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
           ...getChangeList(source, baseRecordData, ['record'], ['record'], this.resources.context)
         ];
-
+        changeList.forEach((change) => {
+          DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
+        });
         this.setEnrichmentChanges(changeList)
       } else {
         changeList = this.enrichment.data.changes;
       }
-      changeList.forEach((change) => {
-        DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
-      });
 
       const changesToBeApplied = changeList.filter(a =>
         this.inspector.status.selected.some(b => a.path.startsWith(b.path))
