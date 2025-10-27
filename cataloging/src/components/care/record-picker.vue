@@ -145,6 +145,12 @@ export default {
         this.expandAndFocus();
       }
     });
+
+    if (this.directoryCare[this.name]) {
+      const match = this.flaggedInstances.filter((el) => el['@id'] === this.directoryCare[this.name]);
+      this.selected = match[0];
+    }
+
     if (this.expand) {
       this.expandAndFocus();
     }

@@ -33,7 +33,9 @@ const store = createStore({
       holdingsMoved: [],
       bulkChange: {
         initData: null
-      }
+      },
+      mergeSourceId: null,
+      mergeTargetId: null
     },
     enrichment: {
       data: {

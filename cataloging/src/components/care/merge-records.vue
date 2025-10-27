@@ -61,10 +61,10 @@ export default {
       return this.sourceLoaded && this.targetLoaded;
     },
     anyRecordSelected() {
-      return !!(this.directoryCare.sender || this.directoryCare.receiver);
+      return !!(this.directoryCare.mergeSourceId || this.directoryCare.mergeTargetId);
     },
     bothRecordsSelected() {
-      return !isEmpty(this.directoryCare.sender) && !isEmpty(this.directoryCare.receiver);
+      return !isEmpty(this.directoryCare.mergeSourceId) && !isEmpty(this.directoryCare.mergeTargetId);
     },
     isAllSelected() {
       if (this.sourceLoaded) {
@@ -136,8 +136,10 @@ export default {
       }
     },
     switchRecords() {
-      const switchObj = { sender: this.directoryCare.receiver,
-        receiver: this.directoryCare.sender };
+      const switchObj = {
+        mergeSourceId: this.directoryCare.mergeTargetId,
+        mergeTargetId: this.directoryCare.mergeSourceId
+      };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...switchObj });
       this.resetCachedChanges();
       this.$store.dispatch('setInspectorStatusValue', {
@@ -312,14 +314,14 @@ export default {
 
   },
   watch: {
-    'directoryCare.receiver'(id) {
+    'directoryCare.mergeTargetId'(id) {
       if (id !== null) {
         this.targetLoaded = false;
         this.$store.dispatch('pushLoadingIndicator', 'Loading document');
         this.fetchId(RecordUtil.extractFnurgel(id));
       }
     },
-    'directoryCare.sender'(id) {
+    'directoryCare.mergeSourceId'(id) {
       if (id !== null) {
         this.sourceLoaded = false;
         this.$store.dispatch('pushLoadingIndicator', 'Loading document');
@@ -350,8 +352,8 @@ export default {
     <div v-if="enrichStep">
       <div class="MergeView-mergeRow ">
         <record-picker
-          name="sender"
-          opposite="receiver"
+          name="mergeSourceId"
+          opposite="mergeTargetId"
           label="entity to remove"
           top-label="Remove"
           :flaggedInstances="flagged"
@@ -368,8 +370,8 @@ export default {
         </div>
         <record-picker
           v-if="flagged.length > 0"
-          name="receiver"
-          opposite="sender"
+          name="mergeTargetId"
+          opposite="mergeSourceId"
           label="entity to keep"
           top-label="Keep"
           :flaggedInstances="flagged" />
