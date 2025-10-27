@@ -4,6 +4,8 @@ import { JsonLd, type FramedData } from '$lib/types/xl';
 import getTypeLike, { slug, type TypeLike } from './getTypeLike';
 import type { VocabUtil } from './xl';
 
+const agentPicker = `{family: agent.familyName, given: agent.givenName, literal: agent.name}`;
+
 const CSL_KBV_MAPPING: Record<keyof CSLJSON, string> = {
 	id: `"@id"`,
 	type: `instanceOf."@type"`,
@@ -25,13 +27,13 @@ const CSL_KBV_MAPPING: Record<keyof CSLJSON, string> = {
 	issue: `part`,
 	volume: `join(', ', [?"@type"=='Serial'].part[?"@type"=='Monograph'].mainEntity.hasTitle[].hasPart[].partNumber)`,
 
-	author: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/author')].{family: agent.familyName, given: agent.givenName}`,
-	editor: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/editor')].{family: agent.familyName, given: agent.givenName}`,
-	composer: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/composer')].{family: agent.familyName, given: agent.givenName}`,
-	director: `instanceOf.contribution[?(contains((role[]."@id" || [role."@id"]),'https://id.kb.se/relator/filmDirector') || contains((role[]."@id" || [role."@id"]),'https://id.kb.se/relator/director') || contains((role[]."@id" || [role."@id"]),'https://id.kb.se/relator/televisionDirector'))].{family: agent.familyName, given: agent.givenName}`,
-	illustrator: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/illustrator')].{family: agent.familyName, given: agent.givenName}`,
-	interviewer: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/interviewer')].{family: agent.familyName, given: agent.givenName}`,
-	translator: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/translator')].{family: agent.familyName, given: agent.givenName}`
+	author: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/author')].${agentPicker}`,
+	editor: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/editor')].${agentPicker}`,
+	composer: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/composer')].${agentPicker}`,
+	director: `instanceOf.contribution[?(contains((role[]."@id" || [role."@id"]),'https://id.kb.se/relator/filmDirector') || contains((role[]."@id" || [role."@id"]),'https://id.kb.se/relator/director') || contains((role[]."@id" || [role."@id"]),'https://id.kb.se/relator/televisionDirector'))].${agentPicker}`,
+	illustrator: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/illustrator')].${agentPicker}`,
+	interviewer: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/interviewer')].${agentPicker}`,
+	translator: `instanceOf.contribution[?contains((role[]."@id" || [role."@id"]), 'https://id.kb.se/relator/translator')].${agentPicker}`
 };
 
 export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil): CSLJSON[] {
@@ -48,20 +50,23 @@ export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil):
 		}
 	}
 
-	// Look for PrimaryContribution to put as author as fallback
+	// Put other contributors as author fallback
 	if (!result?.author?.length) {
-		let PrimaryContribution: CSLName[] | undefined;
+		let constributors: CSLName[] | undefined;
 		try {
-			PrimaryContribution = jmespath.search(
+			constributors = jmespath.search(
 				mainEntity,
-				`instanceOf.contribution[?"@type"=='PrimaryContribution'].{family: agent.familyName, given: agent.givenName}`
+				`instanceOf.contribution[?"@type"=='PrimaryContribution'].${agentPicker}`
 			);
+			if (!constributors?.length) {
+				constributors = jmespath.search(
+					mainEntity,
+					`instanceOf.contribution[?"@type"=='Contribution'].${agentPicker}`
+				);
+				result.author = constributors;
+			}
 		} catch {
 			// do nothing
-		}
-
-		if (PrimaryContribution) {
-			result.author = PrimaryContribution;
 		}
 	}
 
