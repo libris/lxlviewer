@@ -15,7 +15,12 @@ import {
 } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount, type Component } from 'svelte';
-import { jumpPastParens, handleInputBeforeGroup, enforceQValueGroup } from './qValueGroup.js';
+import {
+	jumpPastParens,
+	handleInputBeforeGroup,
+	enforceQValueGroup,
+	removeQValueGroup
+} from './qValueGroup.js';
 import { messages } from '$lib/constants/messages.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
@@ -183,6 +188,7 @@ function lxlQualifierPlugin(
 			EditorState.transactionFilter.of(jumpPastParens),
 			EditorState.transactionFilter.of(enforceQValueGroup),
 			EditorState.transactionFilter.of(handleInputBeforeGroup),
+			EditorState.transactionFilter.of(removeQValueGroup),
 			//
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]

@@ -3,18 +3,11 @@ import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 
 /**
- * QualifierOperator's first sibling must be a QualifierValue,
- * and that QualifierValue's first child must be a Group. If it is not - fix it.
- * Exception: quoted qualifier values
+ * QualifierValue's first child must be a Group.
+ * If not - add/repair it. Exception: quoted qualifier values
  */
 export const enforceQValueGroup = (tr: Transaction) => {
-	if (
-		!tr.isUserEvent('input') &&
-		!tr.isUserEvent('paste') &&
-		!tr.isUserEvent('delete') &&
-		!tr.isUserEvent('delete.backward') &&
-		!tr.isUserEvent('delete.forward')
-	) {
+	if (!tr.isUserEvent('input') && !tr.isUserEvent('delete')) {
 		return tr;
 	}
 
@@ -52,7 +45,7 @@ export const enforceQValueGroup = (tr: Transaction) => {
 				}
 			}
 
-			// missing QualifierValue → insert (*) and jump inside
+			// missing QualifierValue; insert () and jump inside
 			if (!valueNode) {
 				changes.push({ from: opEnd, insert: '()' });
 				selection = { anchor: opEnd + 1 };
@@ -82,56 +75,81 @@ export const enforceQValueGroup = (tr: Transaction) => {
 			changes,
 			sequential: true,
 			selection,
-			userEvent: 'input.repair'
+			userEvent: 'input.complete'
 		}
 	];
 };
 
 /**
- * Moves cursor into an empty () after typing the QualifierOperator
- * Inserts a wildcard if empty () - (empty groups are disallowed)
+ * If a Qualifier cease to exist as a result of transaction,
+ * remove the qualifierValue enclosing group
  */
-// export const insertGroup = (tr: Transaction) => {
-// 	if (!tr.changes || tr.changes.empty) return tr;
-// 	if (!tr.isUserEvent('input')) return tr;
+export const removeQValueGroup = (tr: Transaction) => {
+	if (!tr.changes || tr.changes.empty) return tr;
+	if (!tr.isUserEvent('input') && !tr.isUserEvent('delete')) {
+		return tr;
+	}
 
-// 	const start = tr.startState;
-// 	const state = tr.state;
-// 	const head = state.selection.main.head;
+	const start = tr.startState;
+	const after = tr.state;
+	const startTree = syntaxTree(start);
+	const afterTree = syntaxTree(after);
 
-// 	let changes = null;
+	const removals: { from: number; to: number }[] = [];
 
-// 	// Detect typing right after a QualifierOperator
-// 	const nodeBefore = syntaxTree(state).resolveInner(head, -1);
-// 	if (nodeBefore.name === 'QualifierOperator') {
-// 		const textAfter = start.sliceDoc(nodeBefore.to);
-// 		if (!textAfter || /^\s/.test(textAfter)) {
-// 			changes = {
-// 				changes: {
-// 					from: head,
-// 					to: head,
-// 					insert: '(*)'
-// 				},
-// 				sequential: true,
-// 				selection: { anchor: head + 2 }
-// 			};
-// 			return [tr, changes];
-// 		}
-// 	}
+	startTree.iterate({
+		enter(node) {
+			if (node.name !== 'Qualifier') return;
 
-// 	return tr;
-// };
+			// if this qualifier still exists in the afterTree, skip
+			const maybeQualifier = afterTree.resolve(node.from, 1);
+			for (let cur: SyntaxNode | null = maybeQualifier; cur; cur = cur.parent) {
+				if (cur.name === 'Qualifier') {
+					return;
+				}
+			}
+
+			const groupNode = node.node.getChild('QualifierValue')?.getChild('Group');
+			// no enclosing group to remove
+			if (!groupNode) return;
+
+			const valueText = start.sliceDoc(groupNode.from, groupNode.to);
+			if (!valueText.startsWith('(') || !valueText.endsWith(')')) return;
+
+			// map group positions into the "after" document space
+			const openPos = tr.changes.mapPos(groupNode.from, 1);
+			const closePos = tr.changes.mapPos(groupNode.to, -1);
+
+			// sanity check — don’t remove if text is already gone
+			const afterText = after.sliceDoc(openPos, closePos);
+			if (!afterText.includes('(') && !afterText.includes(')')) return;
+
+			// remove both parens
+			removals.push({ from: openPos, to: openPos + 1 }); // '('
+			removals.push({ from: closePos - 1, to: closePos }); // ')'
+		}
+	});
+
+	if (!removals.length) return tr;
+
+	return [
+		tr,
+		{
+			changes: removals,
+			sequential: true,
+			userEvent: 'delete.complete'
+		}
+	];
+};
 
 /**
- * Add a wildcard in an empty enclosing Group. Remove wildcard when user starts typing
+ * Add a wildcard to an empty enclosing Group. Remove wildcard when user starts typing
  */
 // export const insertGroupWildcard = (tr: Transaction) => {
 // 	if (!tr.changes || tr.changes.empty) return tr;
 // 	if (
 // 		!tr.isUserEvent('input') &&
-// 		!tr.isUserEvent('delete') &&
-// 		!tr.isUserEvent('delete.backward') &&
-// 		!tr.isUserEvent('delete.forward')
+// 		!tr.isUserEvent('delete')
 // 	) {
 // 		return tr;
 // 	}
@@ -151,7 +169,7 @@ export const enforceQValueGroup = (tr: Transaction) => {
 // 	const groupBefore = start.sliceDoc(groupNode.from, groupNode.to);
 // 	const groupAfter = state.sliceDoc(groupNode.from, groupNode.to);
 
-// 	// 1) If the group contains only (*) and user types, remove the '*'
+// 	// If the group contains only (*) and user types, remove the '*'
 // 	if (groupBefore === '(*)') {
 // 		changes = {
 // 			changes: {
@@ -164,7 +182,7 @@ export const enforceQValueGroup = (tr: Transaction) => {
 // 		return [tr, changes];
 // 	}
 
-// 	// 2) If the group is empty after edits, insert '*' to maintain a valid enclosing group
+// 	// If the group is empty after edits, insert '*' to maintain a valid enclosing group
 // 	if (groupBefore !== '()' && groupAfter === '()') {
 // 		changes = {
 // 			changes: {
@@ -182,7 +200,8 @@ export const enforceQValueGroup = (tr: Transaction) => {
 // };
 
 /**
- * Prevents deletion of enclosing Groups parenthesis. Instead, jump past them.
+ * When encountering a qValue outer () on backspace,
+ * jump past it
  */
 export const jumpPastParens = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
@@ -200,60 +219,56 @@ export const jumpPastParens = (tr: Transaction) => {
 	}
 
 	if (isBackspace) {
-		// Backspace after a group -> jump inside
+		// backspace after a group -> jump inside
 		const resolvedBefore = syntaxTree(state).resolveInner(head, -1);
 		const groupBefore = getEnclosingGroup(resolvedBefore);
 		if (groupBefore && head === groupBefore.to) {
-			console.log('handleBackspace jumping inside');
 			return {
 				changes: [],
 				sequential: true,
 				selection: { anchor: groupBefore.to - 1 },
-				userEvent: 'input'
+				userEvent: 'select'
 			};
 		}
 
-		// Backspace at beginning of group -> jump outside
+		// backspace at beginning of group -> jump outside
 		const resolvedInside = syntaxTree(state).resolveInner(head, 0);
 		const groupInside = getEnclosingGroup(resolvedInside);
 		if (groupInside) {
 			const openPos = groupInside.from;
 			if (head === openPos + 1) {
-				console.log('handleBackspace jumping outside');
 				return {
 					changes: [],
 					sequential: true,
 					selection: { anchor: openPos },
-					userEvent: 'input'
+					userEvent: 'select'
 				};
 			}
 		}
 	}
 
 	if (isDelete) {
-		// Delete before a group -> jump inside
+		// delete before a group -> jump inside
 		const resolvedAfter = syntaxTree(state).resolveInner(head, 1);
 		const groupAfter = getEnclosingGroup(resolvedAfter);
 		if (groupAfter && head === groupAfter.from) {
-			console.log('handleBackspace jumping inside');
 			return {
 				changes: [],
 				sequential: true,
 				selection: { anchor: groupAfter.from + 1 },
-				userEvent: 'input'
+				userEvent: 'select'
 			};
 		}
 
-		// Delete at end of group -> jump outside
+		// delete at end of group -> jump outside
 		const resolvedInside = syntaxTree(state).resolveInner(head, 0);
 		const groupInside = getEnclosingGroup(resolvedInside);
 		if (groupInside && head === groupInside.to - 1) {
-			console.log('handleBackspace outside');
 			return {
 				changes: [],
 				sequential: true,
 				selection: { anchor: groupInside.to },
-				userEvent: 'input'
+				userEvent: 'select'
 			};
 		}
 	}
@@ -262,86 +277,7 @@ export const jumpPastParens = (tr: Transaction) => {
 };
 
 /**
- * Repairs enclosing group when user selects and deletes portion of it
- * given that the qualifier is still valid after change
- */
-// export const handleSelection = (tr: Transaction) => {
-// 	if (!tr.changes || tr.changes.empty) return tr;
-// 	if (
-// 		!tr.isUserEvent('delete') &&
-// 		!tr.isUserEvent('delete.backward') &&
-// 		!tr.isUserEvent('delete.forward')
-// 	) {
-// 		return tr;
-// 	}
-
-// 	const start = tr.startState;
-// 	const after = tr.state;
-
-// 	// Only handle range deletions
-// 	if (start.selection.main.from === start.selection.main.to) return tr;
-
-// 	let fix = null;
-
-// 	tr.changes.iterChanges((fromA, toA) => {
-// 		const startNode = syntaxTree(start).resolveInner(fromA, 1);
-// 		const endNode = syntaxTree(start).resolveInner(toA, -1);
-
-// 		const groupAtStart = getEnclosingGroup(startNode);
-// 		const groupAtEnd = getEnclosingGroup(endNode);
-
-// 		// selection starts inside group, ends outside → repair with ')'
-// 		if (groupAtStart && (!groupAtEnd || groupAtEnd !== groupAtStart)) {
-// 			console.log('a');
-// 			// Map group position into after state
-// 			const newFrom = tr.changes.mapPos(groupAtStart.from);
-// 			const newTo = tr.changes.mapPos(groupAtStart.to);
-
-// 			// verify that the group still exists in the after tree
-// 			const verifyNode = syntaxTree(after).resolveInner(newFrom, 1);
-// 			const stillExists = getEnclosingGroup(verifyNode);
-// 			if (!stillExists) return;
-
-// 			const afterText = after.sliceDoc(newFrom, newTo);
-// 			if (!afterText.endsWith(')')) {
-// 				fix = {
-// 					changes: { from: newTo, insert: ')' },
-// 					sequential: true,
-// 					userEvent: 'input'
-// 				};
-// 			}
-// 			return;
-// 		}
-
-// 		// starts outside group, ends inside → repair with '('
-// 		if (groupAtEnd && (!groupAtStart || groupAtEnd !== groupAtStart)) {
-// 			console.log('b');
-// 			const newFrom = tr.changes.mapPos(groupAtEnd.from);
-// 			const newTo = tr.changes.mapPos(groupAtEnd.to);
-
-// 			// Verify group still exists
-// 			const verifyNode = syntaxTree(after).resolveInner(newFrom, 1);
-// 			const stillExists = getEnclosingGroup(verifyNode);
-// 			if (!stillExists) return;
-
-// 			const afterText = after.sliceDoc(newFrom, newTo);
-// 			if (!afterText.startsWith('(')) {
-// 				fix = {
-// 					changes: { from: newFrom, insert: '(' },
-// 					sequential: true,
-// 					selection: { anchor: newFrom + 1 },
-// 					userEvent: 'input'
-// 				};
-// 			}
-// 			return;
-// 		}
-// 	});
-
-// 	return fix ? [tr, fix] : tr;
-// };
-
-/**
- * Prevents breaking the outer group by typing between the operator and group
+ * Prevents dislocating the outer group by typing between the operator and group
  */
 export const handleInputBeforeGroup = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
@@ -350,7 +286,7 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 	const start = tr.startState;
 	const head = start.selection.main.head;
 
-	// Detect enclosing group directly after cursor
+	// detect enclosing group directly after cursor
 	const nodeAfter = syntaxTree(start).resolveInner(head, +1);
 	const groupNode = getEnclosingGroup(nodeAfter);
 	if (!groupNode) return tr;
@@ -383,8 +319,7 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 };
 
 /**
- * Check if the node is located inside an enclosing (outer) QualifierValue Group.
- * If so, return the group node
+ * Get the enclosing qualifierValue group that this node belongs to.
  */
 function getEnclosingGroup(node: SyntaxNode): SyntaxNode | false {
 	if (!node) return false;
