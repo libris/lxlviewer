@@ -168,9 +168,9 @@ export default {
       this.formFocus = focus;
     },
     selectAllForFocused() {
-      let selected = [];
+      let selected = this.inspector.status.selected;
       Object.keys(this.sourceSelectable).forEach(k => {
-          selected = [...selected, {path: `${this.formFocus}.${k}`, value: {}}];
+        selected = [...selected, {path: `${this.formFocus}.${k}`, value: {}}];
       })
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'selected',
