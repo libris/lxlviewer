@@ -11,7 +11,6 @@ import * as RecordUtil from "@/utils/record.js";
 import * as StringUtil from "../../../../lxljs/string.js";
 import * as LxlDataUtil from "../../../../lxljs/data.js";
 import * as DataUtil from "@/utils/data.js";
-import * as VocabUtil from "../../../../lxljs/vocab.js";
 import {getChangeList} from "@/utils/enrich.js";
 
 export default {
@@ -145,8 +144,6 @@ export default {
         property: 'selected',
         value: [],
       });
-      //this.$store.dispatch('setOriginalData', this.source);
-
     },
     resetCachedChanges() {
       this.setEnrichmentChanges(null);
@@ -315,18 +312,20 @@ export default {
 
   },
   watch: {
-  'directoryCare.receiver'(id) {
-    if (id !== null) {
-      this.$store.dispatch('pushLoadingIndicator', 'Loading document');
-      this.fetchId(RecordUtil.extractFnurgel(id));
-    }
-  },
-  'directoryCare.sender'(id) {
-    if (id !== null) {
-    this.$store.dispatch('pushLoadingIndicator', 'Loading document');
-    this.fetchId(RecordUtil.extractFnurgel(id), true);
-    }
-  },
+    'directoryCare.receiver'(id) {
+      if (id !== null) {
+        this.targetLoaded = false;
+        this.$store.dispatch('pushLoadingIndicator', 'Loading document');
+        this.fetchId(RecordUtil.extractFnurgel(id));
+      }
+    },
+    'directoryCare.sender'(id) {
+      if (id !== null) {
+        this.sourceLoaded = false;
+        this.$store.dispatch('pushLoadingIndicator', 'Loading document');
+        this.fetchId(RecordUtil.extractFnurgel(id), true);
+      }
+    },
     'inspector.event'(val) {
       if (val.name === 'apply-source' && this.bothRecordsLoaded) {
         this.applyFromSource();
