@@ -30,13 +30,15 @@ const expected = [
 		author: [
 			{
 				family: 'Holmberg',
-				given: 'Åke'
+				given: 'Åke',
+				literal: null
 			}
 		],
 		illustrator: [
 			{
 				family: 'Hemmel',
-				given: 'Sven'
+				given: 'Sven',
+				literal: null
 			}
 		],
 		translator: [],
