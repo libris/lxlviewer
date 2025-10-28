@@ -4,6 +4,8 @@ type SizePx = `${number}px`;
 
 type SecureLink = string;
 
+export const IMAGE_OBJECT_TYPE: string = 'ImageObject';
+
 export interface KbvImageObject {
 	[JsonLd.ID]?: string;
 	[Owl.SAME_AS]?: Link[];

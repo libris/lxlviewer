@@ -1,10 +1,11 @@
 import crypto from 'crypto';
-import type {
-	SecureImage,
-	SecureImageResolution,
-	Image,
-	KbvImageObject,
-	ImageResolution
+import {
+	type SecureImage,
+	type SecureImageResolution,
+	type Image,
+	type KbvImageObject,
+	type ImageResolution,
+	IMAGE_OBJECT_TYPE
 } from '$lib/types/auxd';
 import { Concepts, type FramedData, JsonLd, Owl } from '$lib/types/xl';
 import { first, isObject, asArray } from '$lib/utils/xl';
@@ -40,6 +41,10 @@ export function bestSize(from: Image | undefined, minWidthPx: number): ImageReso
 }
 
 export function getImages(thing: FramedData, lang: LocaleCode): Image[] {
+	if (thing[JsonLd.TYPE] === IMAGE_OBJECT_TYPE) {
+		return asArray(toImage(thing, thing[JsonLd.TYPE], lang));
+	}
+
 	return [
 		...asArray(thing.image).map((i) =>
 			toImage(i as KbvImageObject, stripAnchor(trimSlashes(relativizeUrl(thing['@id']))), lang)
