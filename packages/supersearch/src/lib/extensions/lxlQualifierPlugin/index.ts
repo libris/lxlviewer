@@ -19,7 +19,8 @@ import {
 	jumpPastParens,
 	handleInputBeforeGroup,
 	enforceGhostGroup,
-	removeGhostGroup
+	removeGhostGroup,
+	repairGhostGroupClosing
 } from './ghostGroup.js';
 import { messages } from '$lib/constants/messages.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
@@ -221,6 +222,7 @@ function lxlQualifierPlugin(
 			EditorState.transactionFilter.of(enforceGhostGroup),
 			EditorState.transactionFilter.of(handleInputBeforeGroup),
 			EditorState.transactionFilter.of(removeGhostGroup),
+			EditorState.transactionFilter.of(repairGhostGroupClosing),
 			// <--
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]

@@ -329,6 +329,63 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 };
 
 /**
+ * Preserve ghost group integrity: If we remove a ')' that belonged to a ghost group
+ * while the '(' still exists, re-add it.
+ * Prevents any following qualifiers being parsed as belonging to the same group...
+ */
+export const repairGhostGroupClosing = (tr: Transaction) => {
+	if (!tr.changes || tr.changes.empty) return tr;
+	if (!tr.isUserEvent('delete') && !tr.isUserEvent('delete.selection') && !tr.isUserEvent('cut')) {
+		return tr;
+	}
+
+	const start = tr.startState;
+	const after = tr.state;
+	const startTree = syntaxTree(start);
+	const afterDoc = after.doc;
+
+	const repairs: { from: number; insert: string }[] = [];
+
+	tr.changes.iterChanges((fromA, toA) => {
+		// only react to larger deletions (backspaces jumps over ')')
+		if (toA - fromA <= 1) return;
+
+		const deletedText = start.sliceDoc(fromA, toA);
+		if (!deletedText.includes(')')) return;
+
+		// Find if this ')' belonged to a ghost group
+		const nodeBefore = startTree.resolveInner(fromA, -1);
+		const ghostGroup = getGhostGroup(nodeBefore);
+		if (!ghostGroup) return;
+
+		// Map ghost group to after-state
+		const mappedFrom = tr.changes.mapPos(ghostGroup.from, 1);
+		const mappedTo = tr.changes.mapPos(ghostGroup.to, -1);
+
+		// Confirm that the opening '(' still exists
+		const openChar = afterDoc.sliceString(mappedFrom, mappedFrom + 1);
+		if (openChar !== '(') return;
+
+		// Confirm that closing ')' is now missing
+		const closeChar = afterDoc.sliceString(mappedTo - 1, mappedTo);
+		if (closeChar !== ')') {
+			repairs.push({ from: mappedTo, insert: ')' });
+		}
+	});
+
+	if (!repairs.length) return tr;
+
+	return [
+		tr,
+		{
+			changes: repairs,
+			sequential: true,
+			userEvent: 'input.complete'
+		}
+	];
+};
+
+/**
  * If a node belongs to a qualifier value ghost group, return the group.
  */
 function getGhostGroup(node: SyntaxNode): SyntaxNode | false {
