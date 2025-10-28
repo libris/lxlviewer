@@ -71,3 +71,11 @@
 .lxl-boolean-operator {
 	color: var(--color-accent-800);
 }
+
+.lxl-hidden-parens {
+	/* display: none; */
+	width: 5px;
+	height: 10px;
+	background-color: red;
+	display: inline-block;
+}

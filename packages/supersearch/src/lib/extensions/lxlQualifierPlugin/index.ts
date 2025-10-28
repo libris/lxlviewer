@@ -91,11 +91,23 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
+class hiddenParensWidget extends WidgetType {
+	eq(): boolean {
+		return true;
+	}
+	toDOM(): HTMLElement {
+		const container = document.createElement('span');
+		container.classList.add('lxl-hidden-parens');
+		return container;
+	}
+}
+
 function lxlQualifierPlugin(
 	qualifierWidget: QualifierWidgetComponent,
 	getLabelFn?: GetLabelFunction
 ) {
 	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
+	const SHOW_ENCLOSING_GROUP = false;
 
 	function getQualifiers(view: EditorView) {
 		const widgets: Range<Decoration>[] = [];
@@ -118,6 +130,26 @@ function lxlQualifierPlugin(
 						const value = valueNode ? doc.slice(valueNode?.from, valueNode?.to) : undefined;
 
 						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
+
+						// find qualifier value enclosing group and mark parens
+						if (valueNode?.firstChild?.name === 'Group' && !SHOW_ENCLOSING_GROUP) {
+							const parensMark = Decoration.replace({
+								widget: new hiddenParensWidget()
+								// inclusive: true
+							});
+
+							const openingParens = valueNode.firstChild.from;
+							const closingParens = valueNode.firstChild.to;
+
+							// check so we don't hide the wrong char...
+							if (
+								doc.slice(openingParens, openingParens + 1) === '(' &&
+								doc.slice(closingParens - 1, closingParens) === ')'
+							) {
+								widgets.push(parensMark.range(openingParens, openingParens + 1));
+								widgets.push(parensMark.range(closingParens - 1, closingParens));
+							}
+						}
 
 						// Add qualifier widget
 						if (keyLabel || valueLabel) {
