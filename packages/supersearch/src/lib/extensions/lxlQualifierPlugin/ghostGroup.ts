@@ -85,14 +85,12 @@ export const enforceGhostGroup = (tr: Transaction) => {
 };
 
 /**
- * If a Qualifier cease to exist as a result of transaction,
- * remove the qualifierValue ghost group
+ * If a Qualifier ceases to exist as a result of the transaction,
+ * remove the qualifierValue ghost group.
  */
 export const removeGhostGroup = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
-	if (!tr.isUserEvent('input') && !tr.isUserEvent('delete')) {
-		return tr;
-	}
+	if (!tr.isUserEvent('input') && !tr.isUserEvent('delete')) return tr;
 
 	const start = tr.startState;
 	const after = tr.state;
@@ -105,32 +103,41 @@ export const removeGhostGroup = (tr: Transaction) => {
 		enter(node) {
 			if (node.name !== 'Qualifier') return;
 
-			// if this qualifier still exists in the afterTree, skip
-			const maybeQualifier = afterTree.resolve(node.from, 1);
-			for (let cur: SyntaxNode | null = maybeQualifier; cur; cur = cur.parent) {
-				if (cur.name === 'Qualifier') {
-					return;
-				}
-			}
+			// map approximate qualifier position into new document
+			const mappedFrom = tr.changes.mapPos(node.from, 1);
+			const mappedTo = tr.changes.mapPos(node.to, -1);
 
+			// look for any remaining Qualifier overlapping this region
+			let stillExists = false;
+			afterTree.iterate({
+				from: mappedFrom,
+				to: mappedTo,
+				enter(inner) {
+					if (inner.name === 'Qualifier') {
+						stillExists = true;
+						return false; // stop scanning
+					}
+				}
+			});
+			if (stillExists) return;
+
+			// qualifier is gone, check if it has a ghost group to remove
 			const ghostGroup = node.node.getChild('QualifierValue')?.getChild('Group');
-			// no group to remove
 			if (!ghostGroup) return;
 
 			const valueText = start.sliceDoc(ghostGroup.from, ghostGroup.to);
 			if (!valueText.startsWith('(') || !valueText.endsWith(')')) return;
 
-			// map group positions into the "after" document space
+			// map group positions into the "after" document
 			const openPos = tr.changes.mapPos(ghostGroup.from, 1);
 			const closePos = tr.changes.mapPos(ghostGroup.to, -1);
 
-			// sanity check — don’t remove if text is already gone
-			const afterText = after.sliceDoc(openPos, closePos);
-			if (!afterText.includes('(') && !afterText.includes(')')) return;
-
-			// remove both parens
-			removals.push({ from: openPos, to: openPos + 1 }); // '('
-			removals.push({ from: closePos - 1, to: closePos }); // ')'
+			if (after.sliceDoc(openPos, openPos + 1) === '(') {
+				removals.push({ from: openPos, to: openPos + 1 });
+			}
+			if (after.sliceDoc(closePos - 1, closePos) === ')') {
+				removals.push({ from: closePos - 1, to: closePos });
+			}
 		}
 	});
 
