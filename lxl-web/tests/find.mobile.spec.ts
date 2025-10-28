@@ -22,7 +22,7 @@ test('mapping displays the correct search query', async ({ page }) => {
 
 test('mapping displays the correct search query 2', async ({ page }) => {
 	await page.goto(
-		'find?_q=%28contribution:*+OR+%28category:"https://id.kb.se/term/ktg/Literature"+NOT+titel:"pirater"%29%29+existsImage'
+		'/find?_q=%28contribution:*+OR+%28category:"https://id.kb.se/term/ktg/Literature"+NOT+titel:"pirater"%29%29+existsImage'
 	);
 	await page.getByRole('link', { name: 'Sökfilter' }).click();
 	const mapping = page.getByRole('navigation', { name: 'Valda filter' });

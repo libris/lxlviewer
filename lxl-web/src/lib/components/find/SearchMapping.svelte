@@ -45,15 +45,17 @@
 							'existence' && 'pl-1.5'}">{getRelationSymbol(m.operator)}</span
 					>
 				{/if}
-				<span
-					class={[
-						'lxl-qualifier h-full content-center overflow-hidden',
-						operator === 'none' ? 'lxl-filter-alias atomic' : 'lxl-qualifier-value',
-						isLinked && 'atomic'
-					]}
-				>
-					<span class="block truncate">{displayStr}</span>
-				</span>
+				{#if displayStr}
+					<span
+						class={[
+							'lxl-qualifier h-full content-center overflow-hidden',
+							operator === 'none' ? 'lxl-filter-alias atomic' : 'lxl-qualifier-value',
+							isLinked && 'atomic'
+						]}
+					>
+						<span class="block truncate">{displayStr}</span>
+					</span>
+				{/if}
 				{#if up}
 					<a
 						class="lxl-qualifier lxl-qualifier-remove atomic h-8 transition-colors"
