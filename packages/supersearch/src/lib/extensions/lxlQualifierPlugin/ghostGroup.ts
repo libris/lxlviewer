@@ -9,7 +9,7 @@ import type { SyntaxNode } from '@lezer/common';
  * QualifierValue's first child must be a Group.
  * If not - add/repair it. Exception: quoted qualifier values
  */
-export const enforceGhostGroup = (tr: Transaction) => {
+export const createGhostGroup = (tr: Transaction) => {
 	if (!tr.isUserEvent('input') && !tr.isUserEvent('delete')) {
 		return tr;
 	}
@@ -54,11 +54,16 @@ export const enforceGhostGroup = (tr: Transaction) => {
 				return;
 			}
 
-			const valText = after.sliceDoc(valueNode.from, valueNode.to);
+			let valText = after.sliceDoc(valueNode.from, valueNode.to);
 
-			// qualifierValue exists but missing opening '('
+			// case: qualifierValue exists but is missing group
 			if (!valText.startsWith('(')) {
 				changes.push({ from: valueNode.from, insert: '(' });
+				valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
+			}
+
+			if (!valText.endsWith(')')) {
+				changes.push({ from: valueNode.to, insert: ')' });
 			}
 		}
 	});
@@ -321,13 +326,12 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 };
 
 /**
- * Preserve ghost group integrity: If we remove a ')' that belonged to a ghost group
- * while the '(' still exists, re-add it.
+ * Preserve ghost group integrity by re-adding parens on bulk changes
  * Prevents any following qualifiers being parsed as belonging to the same group...
  */
-export const repairGhostGroupClosing = (tr: Transaction) => {
+export const repairGhostGroup = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
-	if (!tr.isUserEvent('delete') && !tr.isUserEvent('delete.selection') && !tr.isUserEvent('cut')) {
+	if (!tr.isUserEvent('delete') && !tr.isUserEvent('input')) {
 		return tr;
 	}
 
@@ -343,26 +347,25 @@ export const repairGhostGroupClosing = (tr: Transaction) => {
 		if (toA - fromA <= 1) return;
 
 		const deletedText = start.sliceDoc(fromA, toA);
-		if (!deletedText.includes(')')) return;
+		if (!deletedText.includes(')') && !deletedText.includes('(')) return;
 
-		// Find if this ')' belonged to a ghost group
+		// Find if deleted parens belonged to a ghost group
 		const nodeBefore = startTree.resolveInner(fromA, -1);
-		const ghostGroup = getGhostGroup(nodeBefore);
+		const nodeAfter = startTree.resolveInner(toA, 1);
+
+		const ghostGroup = getGhostGroup(nodeBefore) || getGhostGroup(nodeAfter);
 		if (!ghostGroup) return;
 
 		// Map ghost group to after-state
 		const mappedFrom = tr.changes.mapPos(ghostGroup.from, 1);
 		const mappedTo = tr.changes.mapPos(ghostGroup.to, -1);
 
-		// Confirm that the opening '(' still exists
+		// Repair
 		const openChar = afterDoc.sliceString(mappedFrom, mappedFrom + 1);
-		if (openChar !== '(') return;
+		if (openChar !== '(') repairs.push({ from: mappedFrom, insert: '(' });
 
-		// Confirm that closing ')' is now missing
 		const closeChar = afterDoc.sliceString(mappedTo - 1, mappedTo);
-		if (closeChar !== ')') {
-			repairs.push({ from: mappedTo, insert: ')' });
-		}
+		if (closeChar !== ')') repairs.push({ from: mappedTo, insert: ')' });
 	});
 
 	if (!repairs.length) return tr;

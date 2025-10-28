@@ -18,9 +18,9 @@ import { mount, type Component } from 'svelte';
 import {
 	jumpPastParens,
 	handleInputBeforeGroup,
-	enforceGhostGroup,
+	createGhostGroup,
 	removeGhostGroup,
-	repairGhostGroupClosing
+	repairGhostGroup
 } from './ghostGroup.js';
 import { messages } from '$lib/constants/messages.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
@@ -219,10 +219,10 @@ function lxlQualifierPlugin(
 			EditorView.atomicRanges.of(() => atomicRangeSet),
 			// ghost group filters -->
 			EditorState.transactionFilter.of(jumpPastParens),
-			EditorState.transactionFilter.of(enforceGhostGroup),
+			EditorState.transactionFilter.of(createGhostGroup),
 			EditorState.transactionFilter.of(handleInputBeforeGroup),
 			EditorState.transactionFilter.of(removeGhostGroup),
-			EditorState.transactionFilter.of(repairGhostGroupClosing),
+			EditorState.transactionFilter.of(repairGhostGroup),
 			// <--
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]
