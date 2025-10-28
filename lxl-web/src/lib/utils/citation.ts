@@ -1,10 +1,8 @@
 import { Cite, plugins } from '@citation-js/core';
 import { goto, preloadData, pushState } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
-import type { FramedData } from '$lib/types/xl';
 import type { CSLJSON, AvailableCitationFormat } from '$lib/types/citation';
 import type { LocaleCode } from '$lib/i18n/locales';
-import { centerOnWork } from './centerOnWork';
 
 export const availableFormats = {
 	chicago: {
@@ -35,43 +33,6 @@ export const availableFormats = {
 };
 
 let loaded = false;
-
-// TODO more accurate mapping
-export function cslFromMainEntity(data: FramedData): CSLJSON[] {
-	const mainEntity = centerOnWork(data);
-
-	if (mainEntity?.['@reverse']?.instanceOf) {
-		// map one of many
-		return mainEntity?.['@reverse']?.instanceOf.map((i) => mapCsl(i, mainEntity));
-	} else {
-		// map work + instance
-		return [mapCsl(mainEntity, mainEntity)];
-	}
-
-	function mapCsl(instance: FramedData, mainEntity: FramedData): CSLJSON {
-		return {
-			id: instance['@id'] as string,
-			type: 'book', // TODO type mapping
-			title: instance?.hasTitle?.map((t) => t?.computedLabel).join('; '),
-			author: [
-				{
-					family: mainEntity.contribution?.[0]?.agent?.familyName,
-					given: mainEntity.contribution?.[0]?.agent?.givenName
-				}
-			],
-			ISBN: instance?.identifiedBy
-				?.map((i) => {
-					if (i?.['@type'] === 'ISBN') {
-						return i?.value;
-					}
-				})
-				.join('; '),
-			issued: { 'date-parts': [instance?.publication?.[0]?.year] },
-			publisher: instance?.publication?.[0]?.agent?.computedLabel,
-			'publisher-place': instance?.publication?.[0]?.place?.[0]?.computedLabel
-		};
-	}
-}
 
 // Create a more managable wrapper around citation.js + get some typestafety
 export async function initCite(locale: LocaleCode) {

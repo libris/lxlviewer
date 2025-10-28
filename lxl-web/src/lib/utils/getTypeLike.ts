@@ -84,6 +84,6 @@ export function getTypeForIcon(typeLike: TypeLike) {
 		: '';
 }
 
-function slug(s: string) {
+export function slug(s: string) {
 	return s === undefined ? undefined : s.split('/').pop();
 }
