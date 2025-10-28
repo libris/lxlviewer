@@ -56,7 +56,7 @@
 {:catch}
 	{@render fallbackInput()}
 {/await}
-{#each Array.from(pageParams) as [name, value] (name)}
+{#each Array.from(pageParams) as [name, value], i (name + i)}
 	{#if name !== '_q'}
 		<input type="hidden" {name} {value} />
 	{/if}
