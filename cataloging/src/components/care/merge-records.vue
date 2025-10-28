@@ -12,6 +12,7 @@ import * as StringUtil from "../../../../lxljs/string.js";
 import * as LxlDataUtil from "../../../../lxljs/data.js";
 import * as DataUtil from "@/utils/data.js";
 import {getChangeList} from "@/utils/enrich.js";
+import MergeToolbar from "@/components/inspector/merge-toolbar.vue";
 
 export default {
   name: 'MergeRecords',
@@ -33,6 +34,7 @@ export default {
     },
   },
   components: {
+    'merge-toolbar': MergeToolbar,
     'record-picker': RecordPicker,
     toolbar,
     EntityForm,
@@ -443,7 +445,7 @@ export default {
       :class="{ 'toolbarColumn': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
       <div class="Toolbar-placeholder" ref="ToolbarPlaceholder" />
       <div class="Toolbar-container">
-        <toolbar />
+        <merge-toolbar />
       </div>
       </div>
     <div class="inspectorColumn">
