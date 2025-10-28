@@ -18,9 +18,9 @@ import { mount, type Component } from 'svelte';
 import {
 	jumpPastParens,
 	handleInputBeforeGroup,
-	enforceQValueGroup,
-	removeQValueGroup
-} from './qValueGroup.js';
+	enforceGhostGroup,
+	removeGhostGroup
+} from './ghostGroup.js';
 import { messages } from '$lib/constants/messages.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
@@ -91,13 +91,13 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-class hiddenParensWidget extends WidgetType {
+class ghostGroupWidget extends WidgetType {
 	eq(): boolean {
 		return true;
 	}
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
-		container.classList.add('lxl-hidden-parens');
+		container.classList.add('lxl-ghost-group');
 		return container;
 	}
 }
@@ -107,7 +107,7 @@ function lxlQualifierPlugin(
 	getLabelFn?: GetLabelFunction
 ) {
 	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
-	const SHOW_ENCLOSING_GROUP = false;
+	const SHOW_GHOST_GROUP = false;
 
 	function getQualifiers(view: EditorView) {
 		const widgets: Range<Decoration>[] = [];
@@ -131,10 +131,10 @@ function lxlQualifierPlugin(
 
 						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
 
-						// find qualifier value enclosing group and mark parens
-						if (valueNode?.firstChild?.name === 'Group' && !SHOW_ENCLOSING_GROUP) {
+						// find a qualifier value ghost group and mark parens
+						if (valueNode?.firstChild?.name === 'Group' && !SHOW_GHOST_GROUP) {
 							const parensMark = Decoration.replace({
-								widget: new hiddenParensWidget()
+								widget: new ghostGroupWidget()
 								// inclusive: true
 							});
 
@@ -216,12 +216,12 @@ function lxlQualifierPlugin(
 		decorations: (instance) => instance.qualifiers,
 		provide: () => [
 			EditorView.atomicRanges.of(() => atomicRangeSet),
-			// grouping the qualifier value
+			// ghost group filters -->
 			EditorState.transactionFilter.of(jumpPastParens),
-			EditorState.transactionFilter.of(enforceQValueGroup),
+			EditorState.transactionFilter.of(enforceGhostGroup),
 			EditorState.transactionFilter.of(handleInputBeforeGroup),
-			EditorState.transactionFilter.of(removeQValueGroup),
-			//
+			EditorState.transactionFilter.of(removeGhostGroup),
+			// <--
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]
 	});

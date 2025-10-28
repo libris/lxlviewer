@@ -72,7 +72,7 @@
 	color: var(--color-accent-800);
 }
 
-.lxl-hidden-parens {
+.lxl-ghost-group {
 	/* display: none; */
 	width: 5px;
 	height: 10px;

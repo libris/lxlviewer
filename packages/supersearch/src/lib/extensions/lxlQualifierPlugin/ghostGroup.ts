@@ -2,11 +2,14 @@ import { Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 
+// ghostGroup refers to an outer enclosing group of the qualifier value that
+// will be hidden to the user and that have to appear, be maintained and disappear automatically
+
 /**
  * QualifierValue's first child must be a Group.
  * If not - add/repair it. Exception: quoted qualifier values
  */
-export const enforceQValueGroup = (tr: Transaction) => {
+export const enforceGhostGroup = (tr: Transaction) => {
 	if (!tr.isUserEvent('input') && !tr.isUserEvent('delete')) {
 		return tr;
 	}
@@ -14,13 +17,14 @@ export const enforceQValueGroup = (tr: Transaction) => {
 	const start = tr.startState;
 	const after = tr.state;
 
-	// don't touch groups within the outer group
 	const from = start.selection.main.from;
 	const to = start.selection.main.to;
-	const nodeAtHead = syntaxTree(start).resolveInner(from, 0);
-	const enclosingGroup = getEnclosingGroup(nodeAtHead);
 
-	if (enclosingGroup && from > enclosingGroup.from && to < enclosingGroup.to) {
+	const nodeAtHead = syntaxTree(start).resolveInner(from, 0);
+	const ghostGroup = getGhostGroup(nodeAtHead);
+
+	// don't touch other groups within the ghost group
+	if (ghostGroup && from > ghostGroup.from && to < ghostGroup.to) {
 		return tr;
 	}
 
@@ -82,9 +86,9 @@ export const enforceQValueGroup = (tr: Transaction) => {
 
 /**
  * If a Qualifier cease to exist as a result of transaction,
- * remove the qualifierValue enclosing group
+ * remove the qualifierValue ghost group
  */
-export const removeQValueGroup = (tr: Transaction) => {
+export const removeGhostGroup = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
 	if (!tr.isUserEvent('input') && !tr.isUserEvent('delete')) {
 		return tr;
@@ -109,16 +113,16 @@ export const removeQValueGroup = (tr: Transaction) => {
 				}
 			}
 
-			const groupNode = node.node.getChild('QualifierValue')?.getChild('Group');
-			// no enclosing group to remove
-			if (!groupNode) return;
+			const ghostGroup = node.node.getChild('QualifierValue')?.getChild('Group');
+			// no group to remove
+			if (!ghostGroup) return;
 
-			const valueText = start.sliceDoc(groupNode.from, groupNode.to);
+			const valueText = start.sliceDoc(ghostGroup.from, ghostGroup.to);
 			if (!valueText.startsWith('(') || !valueText.endsWith(')')) return;
 
 			// map group positions into the "after" document space
-			const openPos = tr.changes.mapPos(groupNode.from, 1);
-			const closePos = tr.changes.mapPos(groupNode.to, -1);
+			const openPos = tr.changes.mapPos(ghostGroup.from, 1);
+			const closePos = tr.changes.mapPos(ghostGroup.to, -1);
 
 			// sanity check — don’t remove if text is already gone
 			const afterText = after.sliceDoc(openPos, closePos);
@@ -143,7 +147,7 @@ export const removeQValueGroup = (tr: Transaction) => {
 };
 
 /**
- * Add a wildcard to an empty enclosing Group. Remove wildcard when user starts typing
+ * Add a wildcard to an empty ghost group. Remove wildcard when user starts typing
  */
 // export const insertGroupWildcard = (tr: Transaction) => {
 // 	if (!tr.changes || tr.changes.empty) return tr;
@@ -162,7 +166,7 @@ export const removeQValueGroup = (tr: Transaction) => {
 
 // 	// Resolve the node at the cursor in the AFTER state
 // 	const resolvedNode = syntaxTree(state).resolveInner(head, 0);
-// 	const groupNode = getEnclosingGroup(resolvedNode);
+// 	const groupNode = getQualifierValueGroup(resolvedNode);
 // 	if (!groupNode) return tr;
 
 // 	// Get the text of the group in start and after states
@@ -200,8 +204,7 @@ export const removeQValueGroup = (tr: Transaction) => {
 // };
 
 /**
- * When encountering a qValue outer () on backspace,
- * jump past it
+ * When encountering a ghost group edge on backspace, jump past it
  */
 export const jumpPastParens = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
@@ -221,7 +224,7 @@ export const jumpPastParens = (tr: Transaction) => {
 	if (isBackspace) {
 		// backspace after a group -> jump inside
 		const resolvedBefore = syntaxTree(state).resolveInner(head, -1);
-		const groupBefore = getEnclosingGroup(resolvedBefore);
+		const groupBefore = getGhostGroup(resolvedBefore);
 		if (groupBefore && head === groupBefore.to) {
 			return {
 				changes: [],
@@ -233,7 +236,7 @@ export const jumpPastParens = (tr: Transaction) => {
 
 		// backspace at beginning of group -> jump outside
 		const resolvedInside = syntaxTree(state).resolveInner(head, 0);
-		const groupInside = getEnclosingGroup(resolvedInside);
+		const groupInside = getGhostGroup(resolvedInside);
 		if (groupInside) {
 			const openPos = groupInside.from;
 			if (head === openPos + 1) {
@@ -250,7 +253,7 @@ export const jumpPastParens = (tr: Transaction) => {
 	if (isDelete) {
 		// delete before a group -> jump inside
 		const resolvedAfter = syntaxTree(state).resolveInner(head, 1);
-		const groupAfter = getEnclosingGroup(resolvedAfter);
+		const groupAfter = getGhostGroup(resolvedAfter);
 		if (groupAfter && head === groupAfter.from) {
 			return {
 				changes: [],
@@ -262,7 +265,7 @@ export const jumpPastParens = (tr: Transaction) => {
 
 		// delete at end of group -> jump outside
 		const resolvedInside = syntaxTree(state).resolveInner(head, 0);
-		const groupInside = getEnclosingGroup(resolvedInside);
+		const groupInside = getGhostGroup(resolvedInside);
 		if (groupInside && head === groupInside.to - 1) {
 			return {
 				changes: [],
@@ -277,7 +280,7 @@ export const jumpPastParens = (tr: Transaction) => {
 };
 
 /**
- * Prevents dislocating the outer group by typing between the operator and group
+ * Prevents dislocating the ghost group by typing between the operator and group
  */
 export const handleInputBeforeGroup = (tr: Transaction) => {
 	if (!tr.changes || tr.changes.empty) return tr;
@@ -286,12 +289,12 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 	const start = tr.startState;
 	const head = start.selection.main.head;
 
-	// detect enclosing group directly after cursor
+	// detect ghost group directly after cursor
 	const nodeAfter = syntaxTree(start).resolveInner(head, +1);
-	const groupNode = getEnclosingGroup(nodeAfter);
-	if (!groupNode) return tr;
+	const ghostGroup = getGhostGroup(nodeAfter);
+	if (!ghostGroup) return tr;
 
-	if (head !== groupNode.from) return tr;
+	if (head !== ghostGroup.from) return tr;
 
 	// shift text changes +1 position to the right
 	const shiftedChanges: { from: number; to: number; insert: string }[] = [];
@@ -319,9 +322,9 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 };
 
 /**
- * Get the enclosing qualifierValue group that this node belongs to.
+ * If a node belongs to a qualifier value ghost group, return the group.
  */
-function getEnclosingGroup(node: SyntaxNode): SyntaxNode | false {
+function getGhostGroup(node: SyntaxNode): SyntaxNode | false {
 	if (!node) return false;
 
 	let current: SyntaxNode | null = node;
