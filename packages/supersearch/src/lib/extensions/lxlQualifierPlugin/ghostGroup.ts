@@ -23,7 +23,7 @@ export const enforceGhostGroup = (tr: Transaction) => {
 	const nodeAtHead = syntaxTree(start).resolveInner(from, 0);
 	const ghostGroup = getGhostGroup(nodeAtHead);
 
-	// don't touch other groups within the ghost group
+	// Don't touch inner groups
 	if (ghostGroup && from > ghostGroup.from && to < ghostGroup.to) {
 		return tr;
 	}
@@ -44,9 +44,7 @@ export const enforceGhostGroup = (tr: Transaction) => {
 			// skip quoted values - keep atomic ranges intact
 			if (valueNode) {
 				const valText = after.sliceDoc(valueNode.from, valueNode.to);
-				if (valText.startsWith('"') && valText.endsWith('"')) {
-					return;
-				}
+				if (valText.startsWith('"') && valText.endsWith('"')) return;
 			}
 
 			// missing QualifierValue; insert () and jump inside
@@ -56,17 +54,11 @@ export const enforceGhostGroup = (tr: Transaction) => {
 				return;
 			}
 
-			let valText = after.sliceDoc(valueNode.from, valueNode.to);
+			const valText = after.sliceDoc(valueNode.from, valueNode.to);
 
 			// qualifierValue exists but missing opening '('
 			if (!valText.startsWith('(')) {
 				changes.push({ from: valueNode.from, insert: '(' });
-				valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
-			}
-
-			// qualifierValue exists but missing closing ')'
-			if (!valText.endsWith(')')) {
-				changes.push({ from: valueNode.to, insert: ')' });
 			}
 		}
 	});
