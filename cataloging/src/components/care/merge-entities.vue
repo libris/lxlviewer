@@ -50,6 +50,7 @@ export default {
       targetLoaded: false,
       targetETag: null,
       targetId: null,
+      sourceId: null,
       recordSuccessfullySaved: false
     };
   },
@@ -348,7 +349,7 @@ export default {
     getMergeBulkChange() {
       const mt = this.templates.combined.bulk.find(t => t['@id'] === 'merge');
       const mBulkChange = RecordUtil.prepareDuplicateFor(mt.value, this.user, []);
-      mBulkChange['@graph'][1]['label'] = `🐱 Slå ihop ${this.targetId} ${this.getDateString()}`;
+      mBulkChange['@graph'][1]['label'] = `🐱 Slå ihop ${this.targetId} (behåll) och ${this.sourceId} (ta bort)  ${this.getDateString()}`;
       mBulkChange['@graph'][1][CHANGE_SPEC_KEY][DEPRECATE_KEY] = { '@id' : this.directoryCare.mergeSourceId };
       mBulkChange['@graph'][1][CHANGE_SPEC_KEY][KEEP_KEY] = { '@id' : this.directoryCare.mergeTargetId };
       return mBulkChange;
@@ -498,7 +499,8 @@ export default {
       if (id !== null) {
         this.sourceLoaded = false;
         this.$store.dispatch('pushLoadingIndicator', 'Loading document');
-        this.fetchId(RecordUtil.extractFnurgel(id), true);
+        this.sourceId = RecordUtil.extractFnurgel(id);
+        this.fetchId(this.sourceId, true);
       }
     },
     'inspector.event'(val) {
