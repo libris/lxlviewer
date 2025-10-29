@@ -5,7 +5,6 @@ import {capitalize, labelByLang, translatePhrase} from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import EntitySummary from '@/components/shared/entity-summary.vue';
 import EntityForm from "@/components/inspector/entity-form.vue";
-import toolbar from "@/components/inspector/toolbar.vue";
 import RecordPicker from '@/components/care/record-picker.vue';
 import * as RecordUtil from "@/utils/record.js";
 import * as StringUtil from "../../../../lxljs/string.js";
@@ -14,9 +13,11 @@ import * as DataUtil from "@/utils/data.js";
 import {getChangeList} from "@/utils/enrich.js";
 import MergeToolbar from "@/components/inspector/merge-toolbar.vue";
 import * as HttpUtil from "@/utils/http.js";
+import {CHANGE_SPEC_KEY, DEPRECATE_KEY, KEEP_KEY} from "@/utils/bulk.js";
+import * as DisplayUtil from "../../../../lxljs/display.js";
 
 export default {
-  name: 'MergeRecords',
+  name: 'MergeEntities',
   props: {
     flagged: {
       type: Array
@@ -48,7 +49,8 @@ export default {
       sourceLoaded: false,
       targetLoaded: false,
       targetETag: null,
-      targetId: null
+      targetId: null,
+      recordSuccessfullySaved: false
     };
   },
   computed: {
@@ -320,20 +322,20 @@ export default {
       }
     },
     createMergeBulkChangeAndSave() {
-      const mt = this.templates.combined.bulk.find(t => t['@id'] === 'merge');
-      const mergeTemplate = RecordUtil.prepareDuplicateFor(mt.value, this.user, []);
-      const label = 'ABC' + this.getDateString();
-      mergeTemplate['@graph'][0]['label'] = label;
-      let recordSuccessfullySaved = false;
+      const mergeBulkChange = this.getMergeBulkChange();
+      this.recordSuccessfullySaved = false;
       try {
         const target = DataUtil.getMergedItems(
           DataUtil.normalizeBeforeSave(cloneDeep(this.inspector.data.record)),
           DataUtil.normalizeBeforeSave(this.inspector.data.mainEntity),
           DataUtil.normalizeBeforeSave(this.inspector.data.work),
         );
-        recordSuccessfullySaved = true;
-        console.log('target', JSON.stringify(target));
-
+        this.saveTargetRecord(target).then(() => {
+            if (this.recordSuccessfullySaved) {
+              this.saveNewBulkChange(mergeBulkChange);
+            }
+          }
+        );
       } catch (e) {
         const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
         const errorMessage = `${StringUtil.getUiPhraseByLang(e.message, this.user.settings.language, this.resources.i18n)}`;
@@ -342,10 +344,14 @@ export default {
         return;
       }
 
-      if (recordSuccessfullySaved) {
-        console.log('mergeTemplate', JSON.stringify(mergeTemplate));
-        this.createBulkChange(mergeTemplate);
-      }
+    },
+    getMergeBulkChange() {
+      const mt = this.templates.combined.bulk.find(t => t['@id'] === 'merge');
+      const mBulkChange = RecordUtil.prepareDuplicateFor(mt.value, this.user, []);
+      mBulkChange['@graph'][1]['label'] = `🐱 Slå ihop ${this.targetId} ${this.getDateString()}`;
+      mBulkChange['@graph'][1][CHANGE_SPEC_KEY][DEPRECATE_KEY] = { '@id' : this.directoryCare.mergeSourceId };
+      mBulkChange['@graph'][1][CHANGE_SPEC_KEY][KEEP_KEY] = { '@id' : this.directoryCare.mergeTargetId };
+      return mBulkChange;
     },
     getDateString() {
       const date = new Date();
@@ -375,6 +381,7 @@ export default {
         token: this.user.token,
       }, obj).then(() => {
         console.log('Bulk change saved!')
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
@@ -410,7 +417,7 @@ export default {
     },
     async saveTargetRecord(obj) {
       try {
-        this.update(this.targetId, obj, this.targetETag);
+        await this.update(this.inspector.data.record['@id'], obj, this.targetETag);
       } catch (error) {
         console.error(error);
         this.$store.dispatch('pushNotification', {
@@ -422,10 +429,10 @@ export default {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
     },
     update(url, obj, ETag) {
-      this.doSaveTarget(HttpUtil.put, obj, { url, ETag });
+      return this.doSaveTarget(HttpUtil.put, obj, { url, ETag });
     },
     doSaveTarget(requestMethod, obj, opts) {
-      requestMethod({
+      return requestMethod({
         url: opts.url,
         ETag: opts.ETag,
         activeSigel: this.user.settings.activeSigel,
@@ -440,11 +447,9 @@ export default {
             message: `${labelByLang(type)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
           });
         }, 10);
-
+        this.recordSuccessfullySaved = true;
         console.log('Saved record with id:', this.targetId);
-        this.$nextTick(() => {
-          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);

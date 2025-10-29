@@ -10,6 +10,8 @@ import {convertResourceLink, labelByLang, translatePhrase} from '@/utils/filters
 import FieldAdder from '@/components/inspector/field-adder.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import FormMixin from '@/components/mixins/form-mixin.vue';
+import * as RecordUtil from "@/utils/record.js";
+import * as StringUtil from "../../../../lxljs/string.js";
 
 export default {
   mixins: [LensMixin, FormMixin],
@@ -66,6 +68,7 @@ export default {
       this.formControl(value[value.length - 1]);
     },
   },
+  emits: ['createAndSave'],
   methods: {
     translatePhrase,
     labelByLang,
@@ -73,18 +76,15 @@ export default {
     getKeybindText(eventName) {
       return LayoutUtil.getKeybindingText(eventName);
     },
+    createAndSave() {
+      this.$emit('createAndSave');
+    },
     openFieldAdder() {
       if (!this.fieldAdderActive) {
         this.fieldAdderActive = true;
       } else {
         this.fieldAdderActive = false;
       }
-    },
-    showOtherFormatMenu() {
-      this.otherFormatMenuActive = !this.otherFormatMenuActive;
-    },
-    hideOtherFormatMenu() {
-      this.otherFormatMenuActive = false;
     },
     hideToolsMenu() {
       this.toolsMenuActive = false;
@@ -200,12 +200,6 @@ export default {
             {{ translatePhrase("Collapse all") }}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" @click="recordControl('download-json'), hideToolsMenu()">
-            <i class="fa fa-fw fa-download" aria-hidden="true" />
-            {{ translatePhrase("Download") }} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{ translatePhrase('Incl. unsaved changes') }})</span>
-          </a>
-        </li>
       </ul>
     </div>
 
@@ -230,6 +224,15 @@ export default {
       @mouseout="showUndo = false"
       :aria-label="translatePhrase('Undo')">
       <i class="fa fa-undo" aria-hidden="true" />
+    </button>
+    <button
+      class="Toolbar-btn btn btn-primary"
+      id="createAndSave"
+      v-tooltip.left="translatePhrase('Merge')"
+      @click="createAndSave"
+      :aria-label="translatePhrase('Merge')">
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving" />
+      <i class="fa fa-fw fa-compress" v-show="!inspector.status.saving" />
     </button>
   </div>
 </template>

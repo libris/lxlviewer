@@ -2,13 +2,13 @@
 import {mapActions, mapGetters} from 'vuex';
 import {translatePhrase} from '@/utils/filters';
 
-import MergeRecords from "@/components/care/merge-records.vue";
+import MergeEntities from "@/components/care/merge-entities.vue";
 
 export default {
   name: 'MergeRecordsContainer',
 
   components: {
-    MergeRecords,
+    'merge-entities': MergeEntities
   },
   props: {
     //TODO: not only instances
@@ -93,8 +93,7 @@ export default {
   <div class="MergeRecordsContainer">
     <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.enrichStep }" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">1. Berika</button>
     <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.editStep }" @click="goToEditStep" @keyup.enter="goToEditStep">2. Redigera</button>
-    <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.mergeStep }" @click="goToMergeStep" @keyup.enter="goToMergeStep">3. Slå ihop</button>
-  <merge-records :flagged="flagged" :enrich-step="this.enrichStep" :edit-step="this.editStep" :merge-step="this.mergeStep"></merge-records>
+  <merge-entities :flagged="flagged" :enrich-step="this.enrichStep" :edit-step="this.editStep" :merge-step="this.mergeStep"></merge-entities>
   </div>
 </template>
 

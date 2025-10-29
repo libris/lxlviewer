@@ -13,7 +13,6 @@ import { translatePhrase, labelByLang } from '@/utils/filters';
 import EntityForm from '@/components/inspector/entity-form.vue';
 import Toolbar from '@/components/inspector/toolbar.vue';
 import DetailedEnrichment from '@/components/care/detailed-enrichment.vue';
-import MergeRecords from '@/components/care/merge-records.vue';
 import EntityChangelog from '@/components/inspector/entity-changelog.vue';
 import EntityHeader from '@/components/inspector/entity-header.vue';
 import Breadcrumb from '@/components/inspector/breadcrumb.vue';
@@ -807,7 +806,6 @@ export default {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-
       this.preSaveHook(obj).then((obj2) =>
         requestMethod({
           url: opts.url,
@@ -1147,7 +1145,6 @@ export default {
     },
   },
   components: {
-    MergeRecords,
     'entity-header': EntityHeader,
     'entity-form': EntityForm,
     'modal-component': ModalComponent,
@@ -1326,9 +1323,9 @@ export default {
                      :backdrop-close="false">
       <template #modal-body>
 <!--        <DetailedEnrichment :floating-dialogs="true" />-->
-        <MergeRecords
-          :floating-dialogs="true"
-        />
+<!--        <MergeRecords-->
+<!--          :floating-dialogs="true"-->
+<!--        />-->
       </template>
     </modal-component>
 
