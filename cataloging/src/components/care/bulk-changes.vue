@@ -52,6 +52,7 @@ export default {
   },
   data() {
     return {
+      documentETag: null,
       showOverview: true,
       inlinedIds: [],
       activeStep: '',
@@ -687,7 +688,7 @@ export default {
     create(obj, done) {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
-    doSaveRequest(requestMethod, obj, opts, done) {
+    doSaveRequest(requestMethod, obj, opts) {
       this.preSaveHook(obj).then((obj2) => requestMethod({
         url: opts.url,
         ETag: opts.ETag,

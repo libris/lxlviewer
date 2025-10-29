@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapGetters} from 'vuex';
-import {cloneDeep, each, isEmpty, unset} from 'lodash-es';
+import {cloneDeep, each, get, isEmpty, unset} from 'lodash-es';
 import {capitalize, labelByLang, translatePhrase} from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import EntitySummary from '@/components/shared/entity-summary.vue';
@@ -13,6 +13,7 @@ import * as LxlDataUtil from "../../../../lxljs/data.js";
 import * as DataUtil from "@/utils/data.js";
 import {getChangeList} from "@/utils/enrich.js";
 import MergeToolbar from "@/components/inspector/merge-toolbar.vue";
+import * as HttpUtil from "@/utils/http.js";
 
 export default {
   name: 'MergeRecords',
@@ -36,7 +37,6 @@ export default {
   components: {
     'merge-toolbar': MergeToolbar,
     'record-picker': RecordPicker,
-    toolbar,
     EntityForm,
     'tab-menu': TabMenu,
     'entity-summary': EntitySummary,
@@ -47,6 +47,8 @@ export default {
       formFocus: 'mainEntity',
       sourceLoaded: false,
       targetLoaded: false,
+      targetETag: null,
+      targetId: null
     };
   },
   computed: {
@@ -57,7 +59,8 @@ export default {
       'inspector',
       'user',
       'resources',
-      'status'
+      'status',
+      'templates'
     ]),
     bothRecordsLoaded() {
       return this.sourceLoaded && this.targetLoaded;
@@ -216,6 +219,9 @@ export default {
         const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
         fetch(fetchUrl).then((response) => {
           if (response.status === 200) {
+            if (!fetchingSource) {
+              this.targetETag = response.headers.get('ETag');
+            }
             return response.json();
           } if (response.status === 404 || response.status === 410) {
             this.$store.dispatch('pushNotification', {
@@ -313,6 +319,165 @@ export default {
         });
       }
     },
+    createMergeBulkChangeAndSave() {
+      const mt = this.templates.combined.bulk.find(t => t['@id'] === 'merge');
+      const mergeTemplate = RecordUtil.prepareDuplicateFor(mt.value, this.user, []);
+      const label = 'ABC' + this.getDateString();
+      mergeTemplate['@graph'][0]['label'] = label;
+      let recordSuccessfullySaved = false;
+      try {
+        const target = DataUtil.getMergedItems(
+          DataUtil.normalizeBeforeSave(cloneDeep(this.inspector.data.record)),
+          DataUtil.normalizeBeforeSave(this.inspector.data.mainEntity),
+          DataUtil.normalizeBeforeSave(this.inspector.data.work),
+        );
+        recordSuccessfullySaved = true;
+        console.log('target', JSON.stringify(target));
+
+      } catch (e) {
+        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
+        const errorMessage = `${StringUtil.getUiPhraseByLang(e.message, this.user.settings.language, this.resources.i18n)}`;
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        return;
+      }
+
+      if (recordSuccessfullySaved) {
+        console.log('mergeTemplate', JSON.stringify(mergeTemplate));
+        this.createBulkChange(mergeTemplate);
+      }
+    },
+    getDateString() {
+      const date = new Date();
+      return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    },
+    async saveNewBulkChange(obj) {
+      try {
+        this.createBulkChange(obj);
+      } catch (error) {
+        console.error(error);
+        this.$store.dispatch('pushNotification', {
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
+        });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+      }
+      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
+    },
+    createBulkChange(obj) {
+      this.doCreateBulkChange(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` });
+    },
+    doCreateBulkChange(requestMethod, obj, opts) {
+      requestMethod({
+        url: opts.url,
+        ETag: opts.ETag,
+        activeSigel: this.user.settings.activeSigel,
+        token: this.user.token,
+      }, obj).then(() => {
+        console.log('Bulk change saved!')
+      }, (error) => {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
+        let errorMessage = '';
+        switch (error.status) {
+          case 412:
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            break;
+          case 409:
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource already exists', this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            break;
+          case 401:
+            localStorage.removeItem('lastPath');
+            errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger',
+              message: `${errorBase}. ${errorMessage}.`,
+              sticky: true,
+              link: {
+                to: this.$store.getters.oauth2Client.token.getUri(),
+                title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`,
+                newTab: true,
+                external: true,
+              } });
+            break;
+          default:
+            console.error(error);
+            errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+        }
+      });
+    },
+    async saveTargetRecord(obj) {
+      try {
+        this.update(this.targetId, obj, this.targetETag);
+      } catch (error) {
+        console.error(error);
+        this.$store.dispatch('pushNotification', {
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
+        });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+      }
+      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
+    },
+    update(url, obj, ETag) {
+      this.doSaveTarget(HttpUtil.put, obj, { url, ETag });
+    },
+    doSaveTarget(requestMethod, obj, opts) {
+      requestMethod({
+        url: opts.url,
+        ETag: opts.ETag,
+        activeSigel: this.user.settings.activeSigel,
+        token: this.user.token,
+      }, obj).then(() => {
+        const msgKey = 'was saved';
+        const type = get(obj, ['@graph', 1, '@type'], '');
+
+        setTimeout(() => {
+          this.$store.dispatch('pushNotification', {
+            type: 'success',
+            message: `${labelByLang(type)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
+          });
+        }, 10);
+
+        console.log('Saved record with id:', this.targetId);
+        this.$nextTick(() => {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        });
+      }, (error) => {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
+        let errorMessage = '';
+        switch (error.status) {
+          case 412:
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            break;
+          case 409:
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource already exists', this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            break;
+          case 401:
+            localStorage.removeItem('lastPath');
+            errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger',
+              message: `${errorBase}. ${errorMessage}.`,
+              sticky: true,
+              link: {
+                to: this.$store.getters.oauth2Client.token.getUri(),
+                title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`,
+                newTab: true,
+                external: true,
+              } });
+            break;
+          default:
+            console.error(error);
+            errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+        }
+      });
+    },
 
   },
   watch: {
@@ -320,7 +485,8 @@ export default {
       if (id !== null) {
         this.targetLoaded = false;
         this.$store.dispatch('pushLoadingIndicator', 'Loading document');
-        this.fetchId(RecordUtil.extractFnurgel(id));
+        this.targetId = RecordUtil.extractFnurgel(id);
+        this.fetchId(this.targetId);
       }
     },
     'directoryCare.mergeSourceId'(id) {
@@ -348,7 +514,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      // this.resultObject = cloneDeep(this.enrichment.data.target);
       this.resetCachedChanges();
       this.clearAllSelected();
       this.sourceLoaded = false;
@@ -445,7 +610,9 @@ export default {
       :class="{ 'toolbarColumn': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
       <div class="Toolbar-placeholder" ref="ToolbarPlaceholder" />
       <div class="Toolbar-container">
-        <merge-toolbar />
+        <merge-toolbar
+          @createAndSave="createMergeBulkChangeAndSave"
+        />
       </div>
       </div>
     <div class="inspectorColumn">
@@ -474,6 +641,19 @@ export default {
       </div>
     </div>
   </div>
+    <div v-if="mergeStep">
+      <p>För instanser:
+        * den här kommer tas bort
+        * den här kommer behållas. Ev. ändringar kommer sparas.
+        * Dessa 42 bestånd kommer länkas om till behåll.
+      </p>
+      <p>För koncept: den här kommer tas bort, den här kommer behållas + ändringar. All x Förekomster av * kommer länkas till.</p>
+      <p>För verk: den här kommer tas bort, den här kommer behållas. All x Förekomster av * kommer länkas till.</p>
+      <p>Ska det stå i en modal bara? När man klickar OK, kommer man till posten som behölls? Den modalen kan dyka upp när man
+        trycker på slå-ihopknapp?
+        Bulk-change:n kan sparas med ngt namn så den är sökbar för pros.
+      </p>
+    </div>
   </div>
 </template>
 
@@ -498,10 +678,7 @@ export default {
 @inspectorCol: 85%;
 
 .MergeView {
-  //width: 100%;
   padding: 2rem 0;
-  //Not needed? Breaks dropdown in record-picker.
-  //overflow-y: scroll;
 
   .header {
     border: 1px solid @grey-lighter;
