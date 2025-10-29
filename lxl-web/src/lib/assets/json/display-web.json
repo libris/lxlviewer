@@ -6,7 +6,7 @@
 					"@type": "fresnel:Lens",
 					"@id": "_Types-cards",
 					"classLensDomain": "_Types",
-					"showProperties": ["_find", "_identify", "_select", "_category", "language"]
+					"showProperties": ["_find", "_identify", "_none", "_select", "_category", "language"]
 				},
 				"Work": {
 					"@type": "fresnel:Lens",

@@ -126,10 +126,17 @@ export function asSearchResultItem(
 }
 
 function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode): string {
+	const noIdentify = typeLike.identify.length == 0;
+	const noFind = typeLike.find.length == 0;
+	const manyFind = typeLike.find.length > 1;
+	const showFind = manyFind || (!noFind && noIdentify);
+	const showNone = noFind && noIdentify && typeLike.none.length > 0;
+
 	const t = {
 		'@type': '_Types',
-		...(typeLike.find.length > 0 && { _find: typeLike.find }),
-		...(typeLike.identify.length > 0 && { _identify: typeLike.identify })
+		...(showFind && { _find: typeLike.find }),
+		...(!noIdentify && { _identify: typeLike.identify }),
+		...(showNone && { _none: typeLike.none })
 	};
 	return toString(displayUtil.lensAndFormat(t, LensType.Card, locale));
 }
