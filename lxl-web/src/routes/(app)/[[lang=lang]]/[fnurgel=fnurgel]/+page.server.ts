@@ -112,7 +112,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*')) {
 			const searchParams = appendMyLibrariesParam(
 				new URLSearchParams({
-					_o: `${env.API_URL}/${params.fnurgel}#it`,
+					_o: resourceId || '',
 					_p: 'instanceOf',
 					_q: _q || '*',
 					_r: subsetFilter || '',
