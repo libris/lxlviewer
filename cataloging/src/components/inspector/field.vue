@@ -70,6 +70,11 @@ export default {
       type: [Object, String, Array, Boolean, Number],
       default: null,
     },
+    filteredItem:{
+      type:[Object, Array],
+      default:null
+
+    },
     isLocked: {
       type: Boolean,
       default: false,
@@ -724,6 +729,25 @@ export default {
         });
       }
     },
+     hasFind() {
+       if(this.filteredItem?.instanceOf?._categoryByCollection?.find){
+          return true;
+        }
+       
+      
+      return false;
+    },
+    hasIdentify() {
+
+       if(this.filteredItem?.instanceOf?._categoryByCollection?.identify){
+
+          return true;
+        }
+       
+      
+      return false;
+    },
+    
     toggleMatchSubtypes() {
       let update = cloneDeep(get(this.inspector.data, this.parentPath))
       if (typeof update[MATCHING_MODE_KEY] !== 'undefined') {
@@ -1186,6 +1210,13 @@ export default {
           :is-enrichment-source="isEnrichmentSource"
         />
       </div>
+       <span v-if="this.fieldKey == 'category' && (hasFind && hasIdentify)">
+          <i 
+            class="fa fa-warning fa-fw icon--warn icon--sm"
+            tabindex="0"
+          />
+          <span class="Field-commentText">hejsan</span>
+        </span>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
 

@@ -173,7 +173,9 @@ export default {
         :bulk-context="bulkContext"
         :show-key="!hideTopLevelFieldNames"
         :isEnrichmentSource="isEnrichmentSource"
+        :filtered-item="filteredItem"
       />
+      
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formObj }}

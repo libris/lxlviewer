@@ -310,11 +310,12 @@ return true;}
       </div>
     </div>
   </div>
-      <span v-if="!hasFindOrIdentify">
+      <span v-if="false && !hasFindOrIdentify">
       <i 
         class="fa fa-warning fa-fw icon--warn icon--sm"
         tabindex="0"
       />
+       <span class="Field-commentText">hejsan</span>
     </span>
 </template>
 
