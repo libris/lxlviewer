@@ -29,7 +29,7 @@
 			.get('_q')
 			?.replace(
 				`{?${search.mapping.variable}}`,
-				`${rangeFrom ? `${search.mapping.variable}>=${rangeFrom}` : ''} ${rangeTo ? `${search.mapping.variable}<=${rangeTo}` : ''}`
+				`${search.mapping.variable}:${rangeFrom ? rangeFrom : ''}-${rangeTo ? rangeTo : ''}`
 			)
 	);
 </script>
