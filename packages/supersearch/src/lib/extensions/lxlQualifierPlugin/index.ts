@@ -144,7 +144,7 @@ function lxlQualifierPlugin(
 						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
 
 						// find a qualifier value ghost group and mark parens
-						if (valueNode?.firstChild?.name === 'Group' && !SHOW_GHOST_GROUP) {
+						if (valueNode?.firstChild?.name === 'QualifierOuterGroup' && !SHOW_GHOST_GROUP) {
 							const parensMark = Decoration.replace({
 								widget: new ghostGroupWidget()
 								// inclusive: true

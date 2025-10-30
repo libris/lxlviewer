@@ -2,11 +2,11 @@ import { Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 
-// ghostGroup refers to an outer enclosing group of the qualifier value that
-// will be hidden to the user and that have to appear, be maintained and disappear automatically
+// ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
+// This will hidden to the user and that have to appear, be maintained and disappear automatically
 
 /**
- * QualifierValue's first child must be a Group.
+ * QualifierValue's first child must be a QualifierOuterGroup.
  * If not - add/repair it. Exception: quoted qualifier values
  */
 export const createGhostGroup = (tr: Transaction) => {
@@ -41,29 +41,26 @@ export const createGhostGroup = (tr: Transaction) => {
 			const valueNode = node.node.getChild('QualifierValue');
 			const opEnd = operatorNode.to;
 
-			// skip quoted values - keep atomic ranges intact
-			if (valueNode) {
-				const valText = after.sliceDoc(valueNode.from, valueNode.to);
-				if (valText.startsWith('"') && valText.endsWith('"')) return;
-			}
-
 			// missing QualifierValue; insert () and jump inside
 			if (!valueNode) {
 				changes.push({ from: opEnd, insert: '()' });
 				selection = { anchor: opEnd + 1 };
 				return;
-			}
+			} else {
+				let valText = after.sliceDoc(valueNode.from, valueNode.to);
 
-			let valText = after.sliceDoc(valueNode.from, valueNode.to);
+				// skip quoted values - keep atomic ranges intact
+				if (valText.startsWith('"') && valText.endsWith('"')) return;
 
-			// case: qualifierValue exists but is missing group
-			if (!valText.startsWith('(')) {
-				changes.push({ from: valueNode.from, insert: '(' });
-				valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
-			}
+				// case: qualifierValue exists but is missing group
+				if (!valText.startsWith('(')) {
+					changes.push({ from: valueNode.from, insert: '(' });
+					valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
+				}
 
-			if (!valText.endsWith(')')) {
-				changes.push({ from: valueNode.to, insert: ')' });
+				if (!valText.endsWith(')')) {
+					changes.push({ from: valueNode.to, insert: ')' });
+				}
 			}
 		}
 	});
@@ -104,7 +101,7 @@ export const removeGhostGroup = (tr: Transaction) => {
 			const mappedFrom = tr.changes.mapPos(node.from, 1);
 			const mappedTo = tr.changes.mapPos(node.to, -1);
 
-			// look for any remaining Qualifier overlapping this region
+			// check if this qualifier still exists in the after tree
 			let stillExists = false;
 			afterTree.iterate({
 				from: mappedFrom,
@@ -119,7 +116,7 @@ export const removeGhostGroup = (tr: Transaction) => {
 			if (stillExists) return;
 
 			// qualifier is gone, check if it has a ghost group to remove
-			const ghostGroup = node.node.getChild('QualifierValue')?.getChild('Group');
+			const ghostGroup = node.node.getChild('QualifierValue')?.getChild('QualifierOuterGroup');
 			if (!ghostGroup) return;
 
 			const valueText = start.sliceDoc(ghostGroup.from, ghostGroup.to);
@@ -129,6 +126,7 @@ export const removeGhostGroup = (tr: Transaction) => {
 			const openPos = tr.changes.mapPos(ghostGroup.from, 1);
 			const closePos = tr.changes.mapPos(ghostGroup.to, -1);
 
+			// remove parens
 			if (after.sliceDoc(openPos, openPos + 1) === '(') {
 				removals.push({ from: openPos, to: openPos + 1 });
 			}
@@ -149,63 +147,6 @@ export const removeGhostGroup = (tr: Transaction) => {
 		}
 	];
 };
-
-/**
- * Add a wildcard to an empty ghost group. Remove wildcard when user starts typing
- */
-// export const insertGroupWildcard = (tr: Transaction) => {
-// 	if (!tr.changes || tr.changes.empty) return tr;
-// 	if (
-// 		!tr.isUserEvent('input') &&
-// 		!tr.isUserEvent('delete')
-// 	) {
-// 		return tr;
-// 	}
-
-// 	const start = tr.startState;
-// 	const state = tr.state;
-// 	const head = state.selection.main.head;
-
-// 	let changes = null;
-
-// 	// Resolve the node at the cursor in the AFTER state
-// 	const resolvedNode = syntaxTree(state).resolveInner(head, 0);
-// 	const groupNode = getQualifierValueGroup(resolvedNode);
-// 	if (!groupNode) return tr;
-
-// 	// Get the text of the group in start and after states
-// 	const groupBefore = start.sliceDoc(groupNode.from, groupNode.to);
-// 	const groupAfter = state.sliceDoc(groupNode.from, groupNode.to);
-
-// 	// If the group contains only (*) and user types, remove the '*'
-// 	if (groupBefore === '(*)') {
-// 		changes = {
-// 			changes: {
-// 				from: groupNode.from + 1,
-// 				to: groupNode.from + 2,
-// 				insert: ''
-// 			},
-// 			sequential: true
-// 		};
-// 		return [tr, changes];
-// 	}
-
-// 	// If the group is empty after edits, insert '*' to maintain a valid enclosing group
-// 	if (groupBefore !== '()' && groupAfter === '()') {
-// 		changes = {
-// 			changes: {
-// 				from: groupNode.from + 1,
-// 				to: groupNode.from + 1,
-// 				insert: '*'
-// 			},
-// 			sequential: true,
-// 			selection: { anchor: groupNode.from + 2 } // place cursor after '*'
-// 		};
-// 		return [tr, changes];
-// 	}
-
-// 	return tr;
-// };
 
 /**
  * When encountering a ghost group edge on backspace, jump past it
@@ -381,24 +322,16 @@ export const repairGhostGroup = (tr: Transaction) => {
 };
 
 /**
- * If a node belongs to a qualifier value ghost group, return the group.
+ * If a node belongs to a qualifier value "ghost group", return the group.
  */
 function getGhostGroup(node: SyntaxNode): SyntaxNode | false {
 	if (!node) return false;
 
 	let current: SyntaxNode | null = node;
 
-	while (current && current.name !== 'Group') {
+	while (current && current.name !== 'QualifierOuterGroup') {
 		current = current.parent;
 	}
 
-	if (!current) return false;
-
-	const valueParent = current.parent;
-	if (!valueParent || valueParent.name !== 'QualifierValue') return false;
-
-	const firstChild = valueParent.firstChild;
-	if (!firstChild || firstChild.name !== 'Group') return false;
-
-	return firstChild;
+	return current?.name === 'QualifierOuterGroup' ? current : false;
 }

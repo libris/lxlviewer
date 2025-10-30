@@ -14,8 +14,9 @@ Qualifier {
   QualifierValue { FilterAlias { filterAlias } }
 }
 
-# 'internal' Qualifier grammar is basically a copy, but disallow qualifiers within qualifiers
-# And exporting Outer and Inner groups to facilitate ghost group functionality
+// # 'internal' Qualifier grammar is basically a copy, but disallowing qualifiers within qualifiers
+// # And exporting Outer and Inner groups to facilitate ghost group functionality
+
 qualifierTerm { String | QualifierOuterGroup | QualifierUTerm }
 QualifierUTerm { UOperator qualifierInnerTerm }
 QualifierOuterGroup { "(" qualifierOrcomb? ")" }
