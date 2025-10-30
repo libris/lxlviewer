@@ -734,17 +734,14 @@ export default {
           return true;
         }
        
-      
       return false;
     },
     hasIdentify() {
 
        if(this.filteredItem?.instanceOf?._categoryByCollection?.identify){
-
           return true;
         }
        
-      
       return false;
     },
     
@@ -1215,7 +1212,7 @@ export default {
             class="fa fa-warning fa-fw icon--warn icon--sm"
             tabindex="0"
           />
-          <span class="Field-commentText">hejsan</span>
+          <span class="Field-commentText">VARNING TEST</span>
         </span>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
