@@ -78,6 +78,6 @@ const queryLinter = ViewPlugin.fromClass(
 	}
 );
 
-const lxlLinter = Prec.default(queryLinter);
+const lxlLinter = Prec.highest(queryLinter);
 
 export default lxlLinter;

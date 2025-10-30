@@ -28,43 +28,43 @@
 			{@const isLinked = !!display?.['@id']}
 			<li
 				class={[
-					'pill bg-neutral flex h-8 max-w-full items-center rounded-sm',
+					'lxl-qualifier pill bg-neutral flex h-8 max-w-full items-center rounded-sm',
 					variable && `variable-${variable}`
 				]}
 			>
-				{#if label}
-					<span
-						class="lxl-qualifier lxl-qualifier-key atomic h-full content-center whitespace-nowrap"
-					>
-						{label}
-					</span>
-				{/if}
-				{#if operator && operator !== 'none'}
-					<span
-						class="lxl-qualifier lxl-qualifier-operator atomic h-full content-center pr-1.5 {operator ===
-							'existence' && 'pl-1.5'}">{getRelationSymbol(m.operator)}</span
-					>
-				{/if}
-				{#if displayStr}
-					<span
-						class={[
-							'lxl-qualifier h-full content-center overflow-hidden',
-							operator === 'none' ? 'lxl-qualifier-alias atomic' : 'lxl-qualifier-value',
-							isLinked && 'atomic'
-						]}
-					>
-						<span class="block truncate">{displayStr}</span>
-					</span>
-				{/if}
-				{#if up}
-					<a
-						class="lxl-qualifier lxl-qualifier-remove atomic h-8 transition-colors"
-						href={page.data.localizeHref(m.up?.['@id'])}
-						aria-label={page.data.t('search.removeFilter')}
-					>
-						<BiXLg fill="currentColor" />
-					</a>
-				{/if}
+				<span class="atomic">
+					{#if label}
+						<span class="lxl-qualifier-key atomic h-full content-center whitespace-nowrap">
+							{label}
+						</span>
+					{/if}
+					{#if operator && operator !== 'none'}
+						<span
+							class="lxl-qualifier-operator atomic h-full content-center pr-1.5 {operator ===
+								'existence' && 'pl-1.5'}">{getRelationSymbol(m.operator)}</span
+						>
+					{/if}
+					{#if displayStr}
+						<span
+							class={[
+								'h-full content-center overflow-hidden',
+								operator === 'none' ? 'lxl-qualifier-alias atomic' : 'lxl-qualifier-value',
+								isLinked && 'atomic'
+							]}
+						>
+							<span class="block truncate">{displayStr}</span>
+						</span>
+					{/if}
+					{#if up}
+						<a
+							class="lxl-qualifier-remove atomic h-8 transition-colors"
+							href={page.data.localizeHref(m.up?.['@id'])}
+							aria-label={page.data.t('search.removeFilter')}
+						>
+							<BiXLg fill="currentColor" />
+						</a>
+					{/if}
+				</span>
 			</li>
 		{:else if children}
 			<li
@@ -95,16 +95,13 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	.search-mapping :global(.lxl-qualifier-value) {
-		background-color: var(--color-accent-100);
-	}
-
 	.operator-and {
 		display: none;
 	}
 
 	.group-not :global(.lxl-qualifier) {
 		background-color: var(--color-severe-100);
+		border: 1px solid var(--color-severe-200);
 	}
 
 	.group-not :global(.lxl-qualifier-remove:hover) {

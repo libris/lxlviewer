@@ -1,6 +1,5 @@
 .lxl-qualifier {
 	position: relative;
-	display: inline-block;
 	height: calc(var(--spacing) * 8);
 	color: var(--text-body);
 	background-color: var(--color-accent-50);
