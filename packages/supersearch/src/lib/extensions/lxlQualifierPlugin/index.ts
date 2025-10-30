@@ -76,7 +76,7 @@ class QualifierWidget extends WidgetType {
 	}
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
-		container.style.cssText = `position: relative; display:inline-flex; margin: 0 1px;`;
+		container.className = 'atomic';
 		mount(this.qualifierWidget, {
 			props: {
 				key: this.key,
@@ -120,7 +120,18 @@ function lxlQualifierPlugin(
 				from,
 				to,
 				enter: (node) => {
+					// add qualfier mark
 					if (node.name === 'Qualifier') {
+						const qualifierMark = Decoration.mark({
+							class: 'lxl-qualifier',
+							attributes: { style: 'display: inline-block; margin-left: 1px; margin-right: 1px;' },
+							inclusive: true
+						});
+						const qualifierFrom = node.from;
+						const qualifierTo = node.to;
+
+						widgets.push(qualifierMark.range(qualifierFrom, qualifierTo));
+
 						const keyNode = node.node.getChild('QualifierKey');
 						const key = keyNode ? doc.slice(keyNode?.from, keyNode?.to) : '';
 
@@ -172,14 +183,14 @@ function lxlQualifierPlugin(
 							widgets.push(qualifierDecoration.range(decorationRangeFrom, decorationRangeTo));
 						} else if (invalid) {
 							// Add invalid key mark decoration
-							const qualifierMark = Decoration.mark({
+							const invalidKey = Decoration.mark({
 								class: 'lxl-invalid',
-								inclusive: true
+								inclusive: false
 							});
 							const invalidRangeFrom = keyNode ? keyNode.from : node.from;
 							const invalidRangeTo = keyNode ? keyNode.to : operatorNode?.from;
 
-							widgets.push(qualifierMark.range(invalidRangeFrom, invalidRangeTo));
+							widgets.push(invalidKey.range(invalidRangeFrom, invalidRangeTo));
 						}
 					}
 				}

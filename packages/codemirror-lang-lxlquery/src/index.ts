@@ -9,7 +9,6 @@ import lxlLinter from './lxlLinter';
  * for the matching syntax
  */
 const tags = {
-	Qualifier: Tag.define('Qualifier'),
 	QualifierKey: Tag.define('QualifierKey'),
 	QualifierOperator: Tag.define('QualifierOperator'),
 	QualifierValue: Tag.define('QualifierValue'),
@@ -18,7 +17,6 @@ const tags = {
 };
 
 const tagMatcher = {
-	'Qualifier/...': tags.Qualifier,
 	'QualifierKey!': tags.QualifierKey,
 	'QualifierOperator!': tags.QualifierOperator,
 	'QualifierValue/...': tags.QualifierValue,
@@ -27,7 +25,6 @@ const tagMatcher = {
 };
 
 const highlighter = tagHighlighter([
-	{ tag: tags.Qualifier, class: 'lxl-qualifier' },
 	{ tag: tags.QualifierKey, class: 'lxl-qualifier-key' },
 	{ tag: tags.QualifierOperator, class: 'lxl-qualifier-operator' },
 	{ tag: tags.QualifierValue, class: 'lxl-qualifier-value' },

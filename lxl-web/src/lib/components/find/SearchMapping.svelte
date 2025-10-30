@@ -49,7 +49,7 @@
 					<span
 						class={[
 							'lxl-qualifier h-full content-center overflow-hidden',
-							operator === 'none' ? 'lxl-filter-alias atomic' : 'lxl-qualifier-value',
+							operator === 'none' ? 'lxl-qualifier-alias atomic' : 'lxl-qualifier-value',
 							isLinked && 'atomic'
 						]}
 					>
