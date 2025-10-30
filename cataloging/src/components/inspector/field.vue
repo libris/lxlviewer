@@ -73,7 +73,6 @@ export default {
     filteredItem:{
       type:[Object, Array],
       default:null
-
     },
     isLocked: {
       type: Boolean,
@@ -518,6 +517,24 @@ export default {
     },
     isAnyType() {
       return this.entityType === ANY_TYPE;
+    },
+    hasFind() {
+      const find = this.filteredItem?.instanceOf?._categoryByCollection?.find;
+      return !!find;
+    },
+    hasIdentify() {
+      const identify = this.filteredItem?.instanceOf?._categoryByCollection?.identify;
+      return !!identify;
+    },
+    shouldShowWarning() {
+      if (this.archType === 'Instance') {
+        return this.path === 'mainEntity.instanceOf.category' && (!this.hasFind || !this.hasIdentify);
+      }
+      if (this.archType === 'Work') {
+        return this.fieldKey === 'category' && (!this.hasFind || !this.hasIdentify);
+      }
+      return null
+
     }
   },
   methods: {
@@ -729,22 +746,6 @@ export default {
         });
       }
     },
-     hasFind() {
-       if(this.filteredItem?.instanceOf?._categoryByCollection?.find){
-          return true;
-        }
-       
-      return false;
-    },
-    hasIdentify() {
-
-       if(this.filteredItem?.instanceOf?._categoryByCollection?.identify){
-          return true;
-        }
-       
-      return false;
-    },
-    
     toggleMatchSubtypes() {
       let update = cloneDeep(get(this.inspector.data, this.parentPath))
       if (typeof update[MATCHING_MODE_KEY] !== 'undefined') {
@@ -1207,12 +1208,8 @@ export default {
           :is-enrichment-source="isEnrichmentSource"
         />
       </div>
-       <span v-if="this.fieldKey == 'category' && (hasFind && hasIdentify)">
-          <i 
-            class="fa fa-warning fa-fw icon--warn icon--sm"
-            tabindex="0"
-          />
-          <span class="Field-commentText">VARNING TEST</span>
+         <span v-if="shouldShowWarning"> 
+          <i class="fa fa-warning fa-fw icon--warn icon--sm" tabindex="0" />
         </span>
       <portal-target :name="`typeSelect-${path}`" />
     </div>

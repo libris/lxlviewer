@@ -87,19 +87,6 @@ export default {
     },
     isCardWithData() {
       return this.isCard && this.focusData && Object.keys(this.focusData).length > 1;
-    },
-    hasFindOrIdentify() {
-      
-            if(this.focusData?._categoryByCollection?.find){
-              console.log("find:", this.focusData);
-               return true;
-               }
-            if(this.focusData?._categoryByCollection?.identify) {
-                                          console.log("identify:",this.focusData);
-
-return true;}
-            
-      return false;
     },  
     isDiffView() {
       return this.diff != null;
@@ -310,13 +297,6 @@ return true;}
       </div>
     </div>
   </div>
-      <span v-if="false && !hasFindOrIdentify">
-      <i 
-        class="fa fa-warning fa-fw icon--warn icon--sm"
-        tabindex="0"
-      />
-       <span class="Field-commentText">hejsan</span>
-    </span>
 </template>
 
 <style lang="less">
