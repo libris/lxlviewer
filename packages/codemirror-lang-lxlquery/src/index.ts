@@ -12,24 +12,21 @@ const tags = {
 	QualifierKey: Tag.define('QualifierKey'),
 	QualifierOperator: Tag.define('QualifierOperator'),
 	QualifierValue: Tag.define('QualifierValue'),
-	BooleanOperator: Tag.define('BooleanOperator'),
-	UTerm: Tag.define('UTerm')
+	BooleanOperator: Tag.define('BooleanOperator')
 };
 
 const tagMatcher = {
 	'QualifierKey!': tags.QualifierKey,
 	'QualifierOperator!': tags.QualifierOperator,
 	'QualifierValue/...': tags.QualifierValue,
-	'AndOperator OrOperator': tags.BooleanOperator,
-	'UTerm/...': tags.UTerm
+	'AndOperator OrOperator': tags.BooleanOperator
 };
 
 const highlighter = tagHighlighter([
 	{ tag: tags.QualifierKey, class: 'lxl-qualifier-key' },
 	{ tag: tags.QualifierOperator, class: 'lxl-qualifier-operator' },
 	{ tag: tags.QualifierValue, class: 'lxl-qualifier-value' },
-	{ tag: tags.BooleanOperator, class: 'lxl-boolean-operator' },
-	{ tag: tags.UTerm, class: 'lxl-not-term' }
+	{ tag: tags.BooleanOperator, class: 'lxl-boolean-operator' }
 ]);
 
 export const lxlQueryLanguage = LRLanguage.define({

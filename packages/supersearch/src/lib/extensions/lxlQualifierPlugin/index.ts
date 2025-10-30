@@ -120,7 +120,13 @@ function lxlQualifierPlugin(
 				from,
 				to,
 				enter: (node) => {
-					if (node.name === 'Qualifier') {
+					if (node.name === 'UTerm' || node.name === 'QualifierUTerm') {
+						const notMark = Decoration.mark({
+							class: 'lxl-not-term',
+							inclusive: true
+						});
+						widgets.push(notMark.range(node.from, node.to));
+					} else if (node.name === 'Qualifier') {
 						const keyNode = node.node.getChild('QualifierKey');
 						const key = keyNode ? doc.slice(keyNode?.from, keyNode?.to) : '';
 

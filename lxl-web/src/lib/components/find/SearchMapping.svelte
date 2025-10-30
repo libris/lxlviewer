@@ -71,6 +71,7 @@
 				class={[
 					'group flex max-w-full flex-wrap items-center gap-1.5',
 					`group-${operator}`,
+					`${operator === 'not' && 'lxl-not-term'}`,
 					variable ? `variable-${variable}` : `${children.length > 1 ? 'group-inner' : ''}`
 				]}
 			>
@@ -97,15 +98,6 @@
 
 	.operator-and {
 		display: none;
-	}
-
-	.group-not :global(.lxl-qualifier) {
-		background-color: var(--color-severe-100);
-		border: 1px solid var(--color-severe-200);
-	}
-
-	.group-not :global(.lxl-qualifier-remove:hover) {
-		background-color: var(--color-severe-200);
 	}
 
 	.group-or .operator-or:first-of-type {
