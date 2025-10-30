@@ -73,7 +73,7 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div class="leading-pane-content mr-1.5 pt-2 pb-6">
+		<div class="leading-pane-content">
 			{@render children?.()}
 		</div>
 	</div>
@@ -109,6 +109,7 @@
 	}
 
 	.leading-pane-content {
+		overflow-x: hidden;
 		max-height: calc(
 			100vh - var(--app-bar-height) * 2 - var(--toolbar-height) - var(--banner-height, 0) - 1px
 		);
@@ -120,5 +121,6 @@
 		}
 		overflow-y: auto;
 		scrollbar-width: thin;
+		scrollbar-gutter: stable;
 	}
 </style>
