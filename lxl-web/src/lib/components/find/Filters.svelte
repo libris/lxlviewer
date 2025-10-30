@@ -3,16 +3,15 @@
 	import { getModalContext } from '$lib/contexts/modal';
 	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
 	import SearchMapping from './SearchMapping.svelte';
-	import TreeView, { type TreeItem } from '$lib/components/TreeView.svelte';
+	import TreeView, {
+		type TreeItemSnippetParams,
+		type GetChildItemsFnParams
+	} from '$lib/components/TreeView.svelte';
 
 	type filtersPropsType = {
 		facets: TypedFacetGroup[];
 		mapping?: DisplayMapping[];
 	};
-
-	interface FacetTreeItem extends TreeItem {
-		str: string;
-	}
 
 	const { facets, mapping }: filtersPropsType = $props();
 
@@ -29,19 +28,24 @@
 	}
 
 	const inModal = getModalContext();
+
+	function getFacetChildItems({ data }: GetChildItemsFnParams) {
+		const childItemsKey =
+			(Object.hasOwn(data, 'facetGroups') && 'facetGroups') ||
+			(Object.hasOwn(data, 'facets') && 'facets') ||
+			'items';
+
+		return data?.[childItemsKey];
+	}
 </script>
 
-{#snippet facetGroupSnippet(data, items)}
-	<div class="flex min-h-8 items-center pl-2 text-sm font-medium">
-		{data.label}
-		{#if items}
-			<span class="text-3xs text-subtle ml-auto">{items.length}</span>
-		{/if}
-	</div>
+{#snippet facetItemSnippet({ data }: TreeItemSnippetParams)}
+	<span class="truncate">{data.label || data.str}</span>
+	{#if data.totalItems}
+		<span class="badge ml-auto">{data?.totalItems.toLocaleString(page.data.locale)}</span>
+	{/if}
 {/snippet}
-{#snippet facetItemSnippet(data: FacetTreeItem)}
-	<div class="text-subtle text-2xs flex min-h-8 items-center pl-4">{data.str}</div>
-{/snippet}
+
 <div class="flex flex-col gap-4">
 	{#if mapping && inModal && shouldShowMapping()}
 		<nav aria-label={page.data.t('search.selectedFilters')}>
@@ -57,12 +61,15 @@
 			<TreeView
 				ariaLabelledby="panel-filters"
 				items={facets}
-				groupSnippet={facetGroupSnippet}
 				treeItemSnippet={facetItemSnippet}
-				itemsPropertyKey="facets"
+				getChildItems={getFacetChildItems}
 			/>
 		</nav>
 	{/if}
+	<details class="text-2xs">
+		<summary>JSON</summary>
+		<pre>{JSON.stringify(facets, null, 2)}</pre>
+	</details>
 </div>
 
 <style lang="postcss">

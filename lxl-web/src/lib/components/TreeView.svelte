@@ -5,68 +5,48 @@
 	}
 
 	export interface TreeItemSnippetParams {
-		items?: TreeItem[];
+		data: unknown;
+		level: number;
+		setsize?: number;
+		posinset: number;
 	}
 
-	export interface GroupSnippetParams {
-		items?: TreeItem[];
-	}
+	export type TreeItemSnippet = Snippet<[TreeItemSnippetParams]>;
+
+	export type GetChildItemsFn = ({ data, level, posinset }: GetChildItemsFnParams) => TreeItem[];
+
+	export type GetChildItemsFnParams = {
+		data: TreeItem;
+		level: number;
+		posinset: number;
+	};
 </script>
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import TreeViewItem from './TreeViewItem.svelte';
 
 	type Props = {
+		// uid?: string;
 		ariaLabelledby?: string;
 		ariaLabel?: string;
 		items: TreeItem[];
-		groupSnippet: Snippet<[GroupSnippetParams]>;
-		treeItemSnippet: Snippet<[TreeItemSnippetParams]>;
-		itemsPropertyKey?: string;
-		// labelPropertyKey?: string;
+		treeItemSnippet: TreeItemSnippet;
+		getChildItems?: GetChildItemsFn;
 	};
 
 	let {
+		// uid,
 		ariaLabelledby,
 		ariaLabel,
 		items = [],
-		itemsPropertyKey = 'items',
-		// labelPropertyKey = 'label',
-		groupSnippet,
-		treeItemSnippet
+		treeItemSnippet,
+		getChildItems
 	}: Props = $props();
 </script>
 
 <ul role="tree" aria-labelledby={ariaLabelledby} aria-label={ariaLabel}>
-	<!-- items should be dynamic -->
 	{#each items as item, index (index)}
-		{#if Object.hasOwn(item, itemsPropertyKey)}
-			{@render group(item, item[itemsPropertyKey as keyof TreeItem] as TreeItem[])}
-		{:else}
-			{@render treeItem(item)}
-		{/if}
+		<TreeViewItem data={item} level={1} posinset={index + 1} {treeItemSnippet} {getChildItems} />
 	{/each}
 </ul>
-
-{#snippet group(data, items?: TreeItem[])}
-	<ul role="group">
-		<details>
-			<summary class="bg-page sticky top-0 cursor-pointer"
-				>{@render groupSnippet(data, items)}</summary
-			>
-			{#each items as item, index (index)}
-				{@render treeItem(item)}
-			{/each}
-		</details>
-	</ul>
-{/snippet}
-
-{#snippet treeItem(data: TreeItem)}
-	<li role="treeitem" aria-selected={data.ariaSelected}>
-		{#if Object.hasOwn(data, itemsPropertyKey)}
-			{@render group(data, data[itemsPropertyKey as keyof TreeItem] as TreeItem[])}
-		{:else}
-			{@render treeItemSnippet(data)}
-		{/if}
-	</li>
-{/snippet}
