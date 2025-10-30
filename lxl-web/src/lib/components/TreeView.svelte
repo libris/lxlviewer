@@ -13,10 +13,14 @@
 
 	export type TreeItemSnippet = Snippet<[TreeItemSnippetParams]>;
 
-	export type GetChildItemsFn = ({ data, level, posinset }: GetChildItemsFnParams) => TreeItem[];
+	export type GetChildItemsFn = ({
+		data,
+		level,
+		posinset
+	}: GetChildItemsFnParams) => TreeItem[] | undefined;
 
 	export type GetChildItemsFnParams = {
-		data: TreeItem;
+		data: unknown;
 		level: number;
 		posinset: number;
 	};

@@ -24,8 +24,7 @@
 	}: Props = $props();
 
 	const childItems = $derived(getChildItems?.({ data, level, posinset }));
-
-	const hasChildItems = $derived(Array.isArray(childItems));
+	const isGroup = $derived(Array.isArray(childItems));
 
 	let expanded = $state(false);
 
@@ -40,11 +39,11 @@
 	aria-setsize={setsize}
 	aria-posinset={posinset}
 	aria-selected={selected}
-	aria-expanded={hasChildItems ? expanded : undefined}
-	style={hasChildItems ? `--level:${level}` : undefined}
+	aria-expanded={isGroup ? expanded : undefined}
+	style={isGroup ? `--level:${level}` : undefined}
 	class={['flex min-h-9 w-full']}
 >
-	{#if hasChildItems}
+	{#if isGroup}
 		<details open={!!expanded} ontoggle={handleToggle} class="flex flex-1 flex-col">
 			<summary
 				class="bg-aside hover:bg-primary-100 focus-visible:bg-accent-100 sticky top-0 z-10 flex min-h-9 w-full cursor-pointer items-center pl-8 font-medium"
