@@ -13,8 +13,9 @@ import * as DataUtil from "@/utils/data.js";
 import {getChangeList} from "@/utils/enrich.js";
 import MergeToolbar from "@/components/inspector/merge-toolbar.vue";
 import * as HttpUtil from "@/utils/http.js";
-import {CHANGE_SPEC_KEY, DEPRECATE_KEY, KEEP_KEY} from "@/utils/bulk.js";
+import {CHANGE_SPEC_KEY, DEPRECATE_KEY, KEEP_KEY, Status} from "@/utils/bulk.js";
 import * as DisplayUtil from "../../../../lxljs/display.js";
+import ModalComponent from '@/components/shared/modal-component.vue';
 
 export default {
   name: 'MergeEntities',
@@ -29,11 +30,7 @@ export default {
     editStep: {
       type: Boolean,
       default: false,
-    },
-    mergeStep: {
-      type: Boolean,
-      default: false,
-    },
+    }
   },
   components: {
     'merge-toolbar': MergeToolbar,
@@ -41,6 +38,7 @@ export default {
     EntityForm,
     'tab-menu': TabMenu,
     'entity-summary': EntitySummary,
+    'modal-component': ModalComponent,
   },
   data() {
     return {
@@ -51,7 +49,8 @@ export default {
       targetETag: null,
       targetId: null,
       sourceId: null,
-      recordSuccessfullySaved: false
+      recordSuccessfullySaved: false,
+      showConfirmMergeModal: false
     };
   },
   computed: {
@@ -216,7 +215,21 @@ export default {
         this.selectAllForFocused();
       }
     },
-    fetchId(id, fetchingSource=false) {
+    run() {
+      this.openConfirmMergeModal();
+    },
+    openConfirmMergeModal() {
+      this.showConfirmMergeModal = true;
+    },
+    closeConfirmMergeModal() {
+      this.showConfirmMergeModal = false;
+    },
+    doMerge() {
+      this.createMergeBulkChangeAndSave();
+      //TODO: remove source from flagged?
+      // this.setRunStatus(Status.Ready);
+    },
+    fetchId(id, fetchingSource = false) {
       if (id !== null) {
         const fixedId = RecordUtil.extractFnurgel(id);
         const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
@@ -344,9 +357,9 @@ export default {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         return;
       }
-
     },
     getMergeBulkChange() {
+      //TODO: always loud or silent or selectable from modal?
       const mt = this.templates.combined.bulk.find(t => t['@id'] === 'merge');
       const mBulkChange = RecordUtil.prepareDuplicateFor(mt.value, this.user, []);
       mBulkChange['@graph'][1]['label'] = `🐱 Slå ihop ${this.targetId} (behåll) och ${this.sourceId} (ta bort)  ${this.getDateString()}`;
@@ -618,15 +631,21 @@ export default {
       <div class="Toolbar-placeholder" ref="ToolbarPlaceholder" />
       <div class="Toolbar-container">
         <merge-toolbar
-          @createAndSave="createMergeBulkChangeAndSave"
+          @openConfirmMergeModal="openConfirmMergeModal"
         />
       </div>
       </div>
     <div class="inspectorColumn">
-    <div class="MergeView-fieldRow ">
+      <div>
+        <span class="iconCircle"><i class="fa fa-fw fa-pencil"/></span>
+        <span class="MergeView-description">
+          Gör slutgiltiga ändringar för den entitet som ska behållas. Tryck på ihopslagningsknappen i verktygsmenyn när du är klar!
+      </span>
+      </div>
+    <div class="MergeView-fieldRow">
         <entity-summary
           class="header"
-          :focus-data="this.inspector.data.mainEntity"
+          :focus-data="target"
           :should-link="false"
           :exclude-components="[]" />
     </div>
@@ -648,19 +667,37 @@ export default {
       </div>
     </div>
   </div>
-    <div v-if="mergeStep">
-      <p>För instanser:
-        * den här kommer tas bort
-        * den här kommer behållas. Ev. ändringar kommer sparas.
-        * Dessa 42 bestånd kommer länkas om till behåll.
-      </p>
-      <p>För koncept: den här kommer tas bort, den här kommer behållas + ändringar. All x Förekomster av * kommer länkas till.</p>
-      <p>För verk: den här kommer tas bort, den här kommer behållas. All x Förekomster av * kommer länkas till.</p>
-      <p>Ska det stå i en modal bara? När man klickar OK, kommer man till posten som behölls? Den modalen kan dyka upp när man
-        trycker på slå-ihopknapp?
-        Bulk-change:n kan sparas med ngt namn så den är sökbar för pros.
-      </p>
-    </div>
+    <modal-component
+      :title="'Confirm run'"
+      :width="'600px'"
+      @close="closeConfirmMergeModal"
+      v-if="showConfirmMergeModal">
+      <template #modal-header>
+        <div class="Modal-header">
+          <header>
+            {{ translatePhrase('Confirm merge') }}
+          </header>
+        </div>
+      </template>
+      <template #modal-body>
+        <div class="Modal-body">
+          <div>
+            <div class="MergeView-modalText">
+              <p>• Entitet med ID <strong> {{ sourceId }}</strong> kommer <em>tas bort</em>. </p>
+              <p>• Entitet med ID <strong> {{ targetId }}</strong> kommer <em>behållas</em> och sparas med eventuella ändringar som gjorts.</p>
+              <p>• <strong>43</strong> bestånd kommer länkas om till <strong>{{ targetId }}</strong>.</p>
+            </div>
+<!--            <p>För koncept: den här kommer tas bort, den här kommer behållas + ändringar. All x Förekomster av * kommer länkas till.</p>&ndash;&gt;-->
+<!--            <p>För verk: den här kommer tas bort, den här kommer behållas. All x Förekomster av * kommer länkas till.</p>&ndash;&gt;-->
+          </div>
+          <div class="Modal-buttonContainer">
+            <button class="btn btn-primary btn--md" @click="doMerge()">
+              {{ translatePhrase('Merge') }}</button>
+            <button class="btn btn-info btn--md" @click="closeConfirmMergeModal()">{{ translatePhrase('Cancel') }}</button>
+          </div>
+        </div>
+      </template>
+    </modal-component>
   </div>
 </template>
 
@@ -910,6 +947,31 @@ export default {
       border: solid @grey-light;
       border-width: 1px;
       margin: -1px -4px 0px 0px;
+    }
+  }
+}
+.Modal {
+  &-body {
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1em;
+  }
+  &-buttonContainerCol {
+    display: grid;
+    justify-content: center;
+
+    margin: 10px 0;
+    & > * {
+      margin-right: 15px;
+    }
+  }
+
+  &-buttonContainer {
+    margin: 10px 0;
+    & > * {
+      margin-right: 15px;
     }
   }
 }

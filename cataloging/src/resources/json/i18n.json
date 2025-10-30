@@ -490,6 +490,7 @@
     "entity to keep" :  "entitet som ska behållas",
     "entity to remove": "entitet som ska tas bort",
     "Receiver": "Mottagare",
-    "Keep": "Behåll"
+    "Keep": "Behåll",
+    "Confirm merge": "Bekräfta ihopslagning"
   }
 }

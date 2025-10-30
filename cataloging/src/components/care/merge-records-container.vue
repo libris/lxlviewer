@@ -3,6 +3,7 @@ import {mapActions, mapGetters} from 'vuex';
 import {translatePhrase} from '@/utils/filters';
 
 import MergeEntities from "@/components/care/merge-entities.vue";
+import {isEmpty} from "lodash-es";
 
 export default {
   name: 'MergeRecordsContainer',
@@ -31,8 +32,15 @@ export default {
       'inspector',
       'user',
       'resources',
-      'status'
+      'status',
+      'directoryCare'
     ]),
+    stepNumber() {
+      return this.enrichStep ? 1 : 2;
+    },
+    bothRecordsSelected() {
+      return !isEmpty(this.directoryCare.mergeSourceId) && !isEmpty(this.directoryCare.mergeTargetId);
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -58,17 +66,10 @@ export default {
             value: true,
           });
           this.enrichStep = false;
-          this.mergeStep = false;
           this.editStep = true;
         },
         goToEnrichStep() {
           this.enrichStep = true;
-          this.mergeStep = false;
-          this.editStep = false;
-        },
-        goToMergeStep() {
-          this.enrichStep = false;
-          this.mergeStep = true;
           this.editStep = false;
         },
       },
@@ -91,34 +92,37 @@ export default {
 
 <template>
   <div class="MergeRecordsContainer">
-    <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.enrichStep }" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">1. Berika</button>
-    <button class="btn btn--md btn-selectable" :class="{ 'selected' : this.editStep }" @click="goToEditStep" @keyup.enter="goToEditStep">2. Redigera</button>
-  <merge-entities :flagged="flagged" :enrich-step="this.enrichStep" :edit-step="this.editStep" :merge-step="this.mergeStep"></merge-entities>
+    <div class="MergeRecordsContainer-stepSelection">
+      <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
+      <div v-if="bothRecordsSelected">
+        <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
+        <button class="btn--as-link" v-if="this.enrichStep" @click="goToEditStep" @keyup.enter="goToEditStep">{{ translatePhrase('Next') }}</button>
+      </div>
+    </div>
+  <merge-entities :flagged="flagged" :enrich-step="this.enrichStep" :edit-step="this.editStep"></merge-entities>
+    <div v-if="bothRecordsSelected" class="MergeRecordsContainer-stepSelection">
+      <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
+      <div>
+        <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
+        <button class="btn--as-link" v-if="this.enrichStep" @click="goToEditStep" @keyup.enter="goToEditStep">{{ translatePhrase('Next') }}</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="less">
 .MergeRecordsContainer {
-  .btn-selectable {
-    border-radius: 0;
-    color: lighten(@black, 30%);
-    background-color: darken(@white, 5%);
-    &:focus {
-      color: lighten(@black, 15%);
-      background-color: darken(@white, 5%);
-    }
-    &:hover {
-      color: lighten(@black, 10%);
-      //background-color: darken(@white, 10%);
-      text-decoration: underline;
 
-    }
+  &-stepSelection {
+    gap: 20px;
+    border-bottom:  1px solid @grey-lighter;
+    padding-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin: 0 0 0.5em 0;
   }
-  .selected {
-    color: lighten(@black, 10%);
-    text-decoration: underline;
-    background-color: darken(@white, 8%);
-  }
+
 
 }
 </style>

@@ -68,7 +68,7 @@ export default {
       this.formControl(value[value.length - 1]);
     },
   },
-  emits: ['createAndSave'],
+  emits: ['openConfirmMergeModal'],
   methods: {
     translatePhrase,
     labelByLang,
@@ -76,8 +76,8 @@ export default {
     getKeybindText(eventName) {
       return LayoutUtil.getKeybindingText(eventName);
     },
-    createAndSave() {
-      this.$emit('createAndSave');
+    openConfirmMergeModal() {
+      this.$emit('openConfirmMergeModal');
     },
     openFieldAdder() {
       if (!this.fieldAdderActive) {
@@ -229,7 +229,7 @@ export default {
       class="Toolbar-btn btn btn-primary"
       id="createAndSave"
       v-tooltip.left="translatePhrase('Merge')"
-      @click="createAndSave"
+      @click="openConfirmMergeModal"
       :aria-label="translatePhrase('Merge')">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving" />
       <i class="fa fa-fw fa-compress" v-show="!inspector.status.saving" />
