@@ -44,12 +44,12 @@
 	class={['flex min-h-9 w-full']}
 >
 	{#if isGroup}
-		<details open={!!expanded} ontoggle={handleToggle} class="flex flex-1 flex-col">
+		<details open={!!expanded} ontoggle={handleToggle} class="top-0 flex flex-1 flex-col">
 			<summary
-				class="bg-aside hover:bg-primary-100 focus-visible:bg-accent-100 sticky top-0 z-10 flex min-h-9 w-full cursor-pointer items-center pl-8 font-medium"
+				class="bg-aside hover:bg-primary-100 focus-visible:bg-accent-100 sticky top-0 z-10 flex min-h-9 w-full cursor-pointer items-center font-medium"
 			>
 				<span
-					class="chevron pointer-events-none absolute left-0 flex h-full w-8 origin-center items-center justify-center transition-transform"
+					class="chevron pointer-events-none left-0 flex h-full w-8 origin-center items-center justify-center transition-transform"
 				>
 					<IconChevron class="text-subtle size-3.5" />
 				</span>
@@ -82,11 +82,30 @@
 	@reference 'tailwindcss';
 
 	[role='treeitem']:not([aria-expanded]) > * {
-		padding-left: calc(var(--level) * (var(--spacing) * 8));
+		padding-left: calc(var(--level) * (var(--spacing) * 6));
 	}
 
-	details[open] .chevron:first-of-type {
+	[role='treeitem'] > details > summary {
+		top: calc((var(--level) - 1) * (var(--spacing) * 9));
+		padding-left: calc((var(--level) - 1) * (var(--spacing) * 4));
+		z-index: 110;
+	}
+
+	[role='treeitem']:has(details[open]) > details > summary .chevron:first-of-type {
 		transform: rotate(90deg);
+		left: calc(--var(--level) * var(--spacing) * 4);
+	}
+
+	details > summary {
+		&::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			height: 100%;
+			width: calc((var(--level) - 1) * var(--spacing) * 4);
+			background: red;
+			pointer-events: none;
+		}
 	}
 
 	details[open] > summary + * {
@@ -95,9 +114,10 @@
 		&::before {
 			content: '';
 			position: absolute;
-			left: calc(var(--spacing) * 4);
-			border-left: 1px solid var(--color-neutral-300);
+			left: 0;
 			height: 100%;
+			width: calc(var(--level) * var(--spacing) * 4);
+			background: red;
 			pointer-events: none;
 		}
 	}
