@@ -120,18 +120,7 @@ function lxlQualifierPlugin(
 				from,
 				to,
 				enter: (node) => {
-					// add qualfier mark
 					if (node.name === 'Qualifier') {
-						const qualifierMark = Decoration.mark({
-							class: 'lxl-qualifier',
-							attributes: { style: 'display: inline-block; margin-left: 1px; margin-right: 1px;' },
-							inclusive: true
-						});
-						const qualifierFrom = node.from;
-						const qualifierTo = node.to;
-
-						widgets.push(qualifierMark.range(qualifierFrom, qualifierTo));
-
 						const keyNode = node.node.getChild('QualifierKey');
 						const key = keyNode ? doc.slice(keyNode?.from, keyNode?.to) : '';
 
@@ -143,23 +132,34 @@ function lxlQualifierPlugin(
 
 						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
 
-						// find a qualifier value ghost group and mark parens
-						if (valueNode?.firstChild?.name === 'QualifierOuterGroup' && !SHOW_GHOST_GROUP) {
-							const parensMark = Decoration.replace({
-								widget: new ghostGroupWidget()
-								// inclusive: true
-							});
+						// add qualfier mark
+						const qualifierMark = Decoration.mark({
+							class: 'lxl-qualifier',
+							attributes: { style: 'display: inline-block; margin-left: 1px; margin-right: 1px;' },
+							inclusive: true
+						});
+						widgets.push(qualifierMark.range(node.from, node.to));
 
-							const openingParens = valueNode.firstChild.from;
-							const closingParens = valueNode.firstChild.to;
+						if (valueNode) {
+							const ghostGroup = valueNode.getChild('QualifierOuterGroup');
 
-							// check so we don't hide the wrong char...
-							if (
-								doc.slice(openingParens, openingParens + 1) === '(' &&
-								doc.slice(closingParens - 1, closingParens) === ')'
-							) {
-								widgets.push(parensMark.range(openingParens, openingParens + 1));
-								widgets.push(parensMark.range(closingParens - 1, closingParens));
+							if (ghostGroup && !SHOW_GHOST_GROUP) {
+								// add ghost parens mark
+								const parensMark = Decoration.replace({
+									widget: new ghostGroupWidget(),
+									inclusive: false
+								});
+
+								const openingParens = ghostGroup.from;
+								const closingParens = ghostGroup.to;
+
+								if (
+									doc.slice(openingParens, openingParens + 1) === '(' &&
+									doc.slice(closingParens - 1, closingParens) === ')'
+								) {
+									widgets.push(parensMark.range(openingParens, openingParens + 1));
+									widgets.push(parensMark.range(closingParens - 1, closingParens));
+								}
 							}
 						}
 

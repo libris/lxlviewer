@@ -1,11 +1,11 @@
 .lxl-qualifier {
 	position: relative;
 	display: inline-block;
+	height: calc(var(--spacing) * 8);
 	color: var(--text-body);
 	background-color: var(--color-accent-50);
-	height: calc(var(--spacing) * 8);
-	border-radius: var(--radius-md);
 	border: 1px solid var(--color-accent-200);
+	border-radius: var(--radius-md);
 	z-index: 1;
 }
 
@@ -17,17 +17,23 @@
 	position: relative;
 }
 
+.lxl-qualifier-value:not(:has(~ .lxl-ghost-group)) {
+	/* make of for missing ghost group width with padding */
+	padding-right: calc(var(--spacing) * 1.5);
+	padding-left: calc(var(--spacing) * 1.5);
+}
+
 .lxl-qualifier-remove {
-	color: var(--color-subtle);
 	display: flex;
 	align-items: center;
 	height: 100%;
 	padding-right: calc(var(--spacing) * 1.5);
 	padding-left: calc(var(--spacing) * 1.5);
+	color: var(--color-subtle);
+	background-color: inherit;
+	transition: background-color 0.1s ease;
 	border-top-right-radius: var(--radius-md);
 	border-bottom-right-radius: var(--radius-md);
-	transition: background-color 0.1s ease;
-	background-color: inherit;
 }
 
 .lxl-qualifier-remove:hover {
@@ -61,12 +67,12 @@
 
 .atomic .lxl-qualifier-operator::after {
 	content: '';
+	position: absolute;
+	top: -1px;
+	right: 0;
 	height: calc(var(--spacing) * 8);
 	width: 1px;
 	background-color: var(--color-accent-200);
-	top: -1px;
-	right: 0;
-	position: absolute;
 	z-index: -1;
 }
 
@@ -84,11 +90,8 @@
 }
 
 .lxl-ghost-group {
-	/* display: none; */
+	display: inline-block;
 	width: 6px;
 	height: 10px;
 	background-color: transparent;
-	display: inline-block;
-	/* display: inline; */
-	padding-right: 6px;
 }
