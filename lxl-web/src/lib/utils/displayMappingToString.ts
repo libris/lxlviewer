@@ -1,5 +1,4 @@
 import type { DisplayMapping } from '$lib/types/search';
-import { getRelationSymbol } from './getRelationSymbol';
 
 export function displayMappingToString(mapping: DisplayMapping[]): string {
 	if (mapping) {
@@ -7,25 +6,26 @@ export function displayMappingToString(mapping: DisplayMapping[]): string {
 		mapping.forEach((m) => _iterate(m));
 
 		function _iterate(mapping: DisplayMapping) {
-			const { children, operator, variable, displayStr, label } = mapping;
-			if (displayStr && !isWildcardQuery(mapping)) {
-				result.push(`${label}${getRelationSymbol(operator)} ${displayStr}`);
+			const { children, operator, variable, displayStr, label, _key, _value } = mapping;
+			if ((displayStr || label) && !isWildcardQuery(mapping)) {
+				result.push(`${label || _key}: ${displayStr || _value}`);
 			} else if (children) {
-				if (!variable) {
+				if (children.length > 1 && !variable) {
 					result.push('(');
 				}
-				children.forEach((m, i) => {
+				result.push(formatBooleanOperator(operator));
+				children.forEach((m) => {
 					_iterate(m);
-					if (i === 0) {
-						result.push(formatBooleanOperator(operator));
-					}
 				});
-				if (!variable) {
+				if (children.length > 1 && !variable) {
 					result.push(')');
 				}
 			}
 		}
-		return result.join('').trim();
+		return result
+			.filter((m) => !!m)
+			.join(', ')
+			.trim();
 	}
 	return '';
 }
@@ -33,7 +33,7 @@ export function displayMappingToString(mapping: DisplayMapping[]): string {
 function formatBooleanOperator(operator: string) {
 	switch (operator) {
 		case 'and':
-			return ', ';
+			return '';
 		default:
 			return ` ${operator.toUpperCase()} `;
 	}

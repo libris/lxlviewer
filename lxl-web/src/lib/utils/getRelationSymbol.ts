@@ -4,7 +4,7 @@ export function getRelationSymbol(operator: keyof typeof SearchOperators): strin
 	switch (operator) {
 		case 'equals':
 			return ':';
-		case 'notEquals':
+		case 'not':
 			return '≠';
 		case 'greaterThan':
 			return '＞';

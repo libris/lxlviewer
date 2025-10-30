@@ -194,10 +194,10 @@ export function displayMappings(
 					_key: m._key,
 					_value: m._value
 				} as DisplayMapping;
-			} else if (operator && operator in m && Array.isArray(m[operator])) {
-				const mappingArr = m[operator] as SearchMapping[];
+			} else if (operator && operator in m) {
+				const mappingArr = Array.isArray(m[operator]) ? m[operator] : [m[operator]];
 				return {
-					children: _iterateMapping(mappingArr),
+					children: _iterateMapping(mappingArr as SearchMapping[]),
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
 					...('variable' in m && { variable: m.variable })

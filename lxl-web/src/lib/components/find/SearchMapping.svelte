@@ -24,7 +24,7 @@
 >
 	{#each mapping as m, i (`outer-${i}-${depth}`)}
 		{@const { children, operator, up, variable, displayStr, label, display } = m}
-		{#if displayStr && !isWildcardQuery(m)}
+		{#if (displayStr || label) && !isWildcardQuery(m)}
 			{@const isLinked = !!display?.['@id']}
 			<li
 				class={[
@@ -40,19 +40,22 @@
 					</span>
 				{/if}
 				{#if operator && operator !== 'none'}
-					<span class="lxl-qualifier lxl-qualifier-operator atomic h-full content-center pr-1.5"
-						>{getRelationSymbol(m.operator)}</span
+					<span
+						class="lxl-qualifier lxl-qualifier-operator atomic h-full content-center pr-1.5 {operator ===
+							'existence' && 'pl-1.5'}">{getRelationSymbol(m.operator)}</span
 					>
 				{/if}
-				<span
-					class={[
-						'lxl-qualifier h-full content-center overflow-hidden',
-						operator === 'none' ? 'lxl-filter-alias atomic' : 'lxl-qualifier-value',
-						isLinked && 'atomic'
-					]}
-				>
-					<span class="block truncate">{displayStr}</span>
-				</span>
+				{#if displayStr}
+					<span
+						class={[
+							'lxl-qualifier h-full content-center overflow-hidden',
+							operator === 'none' ? 'lxl-filter-alias atomic' : 'lxl-qualifier-value',
+							isLinked && 'atomic'
+						]}
+					>
+						<span class="block truncate">{displayStr}</span>
+					</span>
+				{/if}
 				{#if up}
 					<a
 						class="lxl-qualifier lxl-qualifier-remove atomic h-8 transition-colors"
@@ -67,14 +70,16 @@
 			<li
 				class={[
 					'group flex max-w-full flex-wrap items-center gap-1.5',
-					variable ? `variable-${variable}` : 'group-inner'
+					`group-${operator}`,
+					variable ? `variable-${variable}` : `${children.length > 1 ? 'group-inner' : ''}`
 				]}
 			>
 				{#each children as child, i (`${i}-${depth}`)}
-					<SearchMapping depth={depth + 1} mapping={[child]} />
-					{#if operator && i < children.length - 1}
+					{@const _child = Array.isArray(child) ? child : [child]}
+					{#if operator}
 						<span class="operator-{operator} text-2xs uppercase">{operator}</span>
 					{/if}
+					<SearchMapping depth={depth + 1} mapping={_child} />
 				{/each}
 				{#if up && variable}
 					<a href={page.data.localizeHref(m.up?.['@id'])} class="btn btn-primary">
@@ -95,6 +100,18 @@
 	}
 
 	.operator-and {
+		display: none;
+	}
+
+	.group-not :global(.lxl-qualifier) {
+		background-color: var(--color-severe-100);
+	}
+
+	.group-not :global(.lxl-qualifier-remove:hover) {
+		background-color: var(--color-severe-200);
+	}
+
+	.group-or .operator-or:first-of-type {
 		display: none;
 	}
 
