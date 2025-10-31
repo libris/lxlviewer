@@ -101,6 +101,9 @@
 		}
 	}
 
+	/**
+		Styling for multiple indenting lines
+	*/
 	[role='treeitem'] > details > summary::before,
 	details[open] > summary + [role='group']::before {
 		content: '';
