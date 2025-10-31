@@ -104,7 +104,7 @@ class ghostGroupWidget extends WidgetType {
 }
 
 function lxlQualifierPlugin(
-	qualifierWidget: QualifierWidgetComponent,
+	qualifierWidget?: QualifierWidgetComponent,
 	getLabelFn?: GetLabelFunction
 ) {
 	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
@@ -170,7 +170,7 @@ function lxlQualifierPlugin(
 						}
 
 						// Add qualifier widget
-						if (keyLabel || valueLabel) {
+						if ((keyLabel || valueLabel) && qualifierWidget) {
 							const qualifierDecoration = Decoration.replace({
 								widget: new QualifierWidget(
 									key,

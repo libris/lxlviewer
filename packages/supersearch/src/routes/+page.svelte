@@ -6,6 +6,8 @@
 	import clearIconSvg from './icon-clear.svg';
 	import backIconSvg from './icon-arrow-left.svg';
 	import type { ExpandedContentParams } from '$lib/components/SuperSearch.svelte';
+	import { lxlQualifierPlugin } from '$lib/index.js';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	let isLoading: boolean | undefined = $state();
 	let hasData: boolean | undefined = $state();
@@ -16,7 +18,7 @@
 	let useWrappingArrowKeyNavigation = $state(false);
 
 	function handlePaginationQuery(searchParams: URLSearchParams, prevData: JSONValue) {
-		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
+		const paginatedSearchParams = new SvelteURLSearchParams(Array.from(searchParams.entries()));
 		const limit = parseInt(searchParams.get('_limit')!, 10);
 		const offset = limit + parseInt(searchParams.get('_offset') || '0', 10);
 		if (prevData && offset < (prevData as unknown as MockQueryResponse).totalItems) {
@@ -99,6 +101,7 @@
 			form={useFormAttribute ? 'form-outside' : undefined}
 			expandedContent={useCustomExpandedContent ? expandedContent : undefined}
 			wrappingArrowKeyNavigation={useWrappingArrowKeyNavigation}
+			extensions={[lxlQualifierPlugin()]}
 		>
 			{#snippet inputRow({
 				expanded,
@@ -190,6 +193,9 @@
 		</div>
 		<div data-testid="has-data-bind">
 			has data: {hasData}
+		</div>
+		<div>
+			value: <span data-testid="supersearch-input-value">{value}</span>
 		</div>
 	</fieldset>
 </form>
@@ -348,5 +354,9 @@
 		@media screen and (min-width: 640px) {
 			display: none;
 		}
+	}
+
+	:global(.supersearch-dialog-wrapper) {
+		height: 100vh;
 	}
 </style>
