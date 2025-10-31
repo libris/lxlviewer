@@ -111,7 +111,9 @@
 		left: 0;
 		height: 100%;
 		width: calc((var(--level) - 1) * var(--spacing) * 4);
-		background: red;
+		background: var(--color-neutral-300);
+		mask-image: url('$lib/assets/img/treeview-indent.svg');
+		mask-repeat: repeat;
 		pointer-events: none;
 	}
 
