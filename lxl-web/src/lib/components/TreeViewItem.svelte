@@ -82,7 +82,7 @@
 	@reference 'tailwindcss';
 
 	[role='treeitem']:not([aria-expanded]) > * {
-		padding-left: calc(var(--level) * (var(--spacing) * 6));
+		padding-left: calc((var(--level) + 1) * (var(--spacing) * 4));
 	}
 
 	[role='treeitem'] > details > summary {
