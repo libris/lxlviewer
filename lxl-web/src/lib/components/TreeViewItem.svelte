@@ -101,7 +101,8 @@
 		}
 	}
 
-	[role='treeitem'] > details > summary::before {
+	[role='treeitem'] > details > summary::before,
+	details[open] > summary + [role='group']::before {
 		content: '';
 		position: absolute;
 		left: 0;
@@ -112,12 +113,6 @@
 	}
 
 	details[open] > summary + [role='group']::before {
-		content: '';
-		position: absolute;
-		left: 0;
-		height: 100%;
 		width: calc(var(--level) * var(--spacing) * 4);
-		background: red;
-		pointer-events: none;
 	}
 </style>
