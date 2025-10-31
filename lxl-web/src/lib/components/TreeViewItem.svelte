@@ -59,7 +59,7 @@
 				</span>
 				{@render treeItemSnippet({ data, level, posinset, setsize })}
 			</summary>
-			<ul role="group">
+			<ul role="group" class="relative">
 				{#each childItems as item, index (index)}
 					<TreeViewItem
 						data={item}
@@ -94,36 +94,30 @@
 			transform: rotate(90deg);
 			left: calc(--var(--level) * var(--spacing) * 4);
 		}
-	}
 
-	[role='treeitem'] > details {
-		& > summary {
+		& > details > summary {
 			top: calc((var(--level) - 1) * (var(--spacing) * 9));
 			padding-left: calc((var(--level) - 1) * (var(--spacing) * 4));
-
-			&::before {
-				content: '';
-				position: absolute;
-				left: 0;
-				height: 100%;
-				width: calc((var(--level) - 1) * var(--spacing) * 4);
-				background: red;
-				pointer-events: none;
-			}
 		}
 	}
 
-	details[open] > summary + [role='group'] {
-		position: relative;
+	[role='treeitem'] > details > summary::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		height: 100%;
+		width: calc((var(--level) - 1) * var(--spacing) * 4);
+		background: red;
+		pointer-events: none;
+	}
 
-		&::before {
-			content: '';
-			position: absolute;
-			left: 0;
-			height: 100%;
-			width: calc(var(--level) * var(--spacing) * 4);
-			background: red;
-			pointer-events: none;
-		}
+	details[open] > summary + [role='group']::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		height: 100%;
+		width: calc(var(--level) * var(--spacing) * 4);
+		background: red;
+		pointer-events: none;
 	}
 </style>
