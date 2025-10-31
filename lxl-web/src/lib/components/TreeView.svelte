@@ -9,6 +9,7 @@
 		level: number;
 		setsize?: number;
 		posinset: number;
+		isGroup: boolean;
 	}
 
 	export type TreeItemSnippet = Snippet<[TreeItemSnippetParams]>;

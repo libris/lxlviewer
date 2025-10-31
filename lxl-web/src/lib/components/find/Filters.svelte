@@ -30,19 +30,33 @@
 	const inModal = getModalContext();
 
 	function getFacetChildItems({ data }: GetChildItemsFnParams) {
-		const childItemsKey =
-			(Object.hasOwn(data, 'facetGroups') && 'facetGroups') ||
-			(Object.hasOwn(data, 'facets') && 'facets') ||
-			'items';
+		/** Can we simplify this in some way? */
+		if (Object.hasOwn(data, 'facetGroups')) {
+			return data.facetGroups?.[0]?.facets;
+		}
 
-		return data?.[childItemsKey];
+		if (Object.hasOwn(data, 'facets')) {
+			return data?.facets;
+		}
 	}
 </script>
 
-{#snippet facetItemSnippet({ data }: TreeItemSnippetParams)}
-	<span class="truncate">{data.label || data.str}</span>
-	{#if data.totalItems}
-		<span class="badge ml-auto">{data?.totalItems.toLocaleString(page.data.locale)}</span>
+{#snippet facetItemSnippet({ data, isGroup }: TreeItemSnippetParams)}
+	{#if isGroup}
+		<div class="flex w-full items-center">
+			<span class="truncate">{data.label || data.str}</span>
+		</div>
+	{:else}
+		<a
+			href={data?.view?.['@id']}
+			class="hover:bg-primary-100 focus-visible:bg-accent-100 flex w-full items-center"
+			onclick={() => console.log('data', data)}
+		>
+			<span class="truncate">{data.str}</span>
+			{#if data.totalItems}
+				<span class="badge ml-auto">{data?.totalItems.toLocaleString(page.data.locale)}</span>
+			{/if}
+		</a>
 	{/if}
 {/snippet}
 

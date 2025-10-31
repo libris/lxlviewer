@@ -57,7 +57,7 @@
 				>
 					<IconChevron class="text-subtle size-3.5" />
 				</span>
-				{@render treeItemSnippet({ data, level, posinset, setsize })}
+				{@render treeItemSnippet({ data, level, posinset, setsize, isGroup })}
 			</summary>
 			<ul role="group" class="relative">
 				{#each childItems as item, index (index)}
@@ -72,13 +72,7 @@
 			</ul>
 		</details>
 	{:else}
-		<a
-			href="#"
-			class="hover:bg-primary-100 focus-visible:bg-accent-100 flex w-full items-center"
-			onclick={() => console.log('click', data)}
-		>
-			{@render treeItemSnippet({ data, level, posinset, setsize })}
-		</a>
+		{@render treeItemSnippet({ data, level, posinset, setsize, isGroup })}
 	{/if}
 </li>
 
@@ -86,7 +80,7 @@
 	@reference 'tailwindcss';
 
 	[role='treeitem'] {
-		&:not([aria-expanded]) > * {
+		&:not([aria-expanded]) > :global(*) {
 			padding-left: calc((var(--level) + 1) * (var(--spacing) * 4));
 		}
 
