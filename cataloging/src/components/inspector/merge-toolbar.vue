@@ -68,7 +68,7 @@ export default {
       this.formControl(value[value.length - 1]);
     },
   },
-  emits: ['openConfirmMergeModal'],
+  emits: ['openConfirmMergeModal', 'cancel'],
   methods: {
     translatePhrase,
     labelByLang,
@@ -112,11 +112,7 @@ export default {
       });
     },
     cancel() {
-      this.$store.dispatch('flushExtractItemsOnSave');
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'record-control',
-        value: 'cancel',
-      });
+      this.$emit('cancel');
     },
     undo() {
       this.showUndo = false;
@@ -224,6 +220,15 @@ export default {
       @mouseout="showUndo = false"
       :aria-label="translatePhrase('Undo')">
       <i class="fa fa-undo" aria-hidden="true" />
+    </button>
+    <button
+      class="Toolbar-btn btn btn-default toolbar-button"
+      @click="cancel"
+      v-tooltip.left="translatePhrase('Cancel merge')"
+      @mouseover="showCancel = true"
+      @mouseout="showCancel = false"
+      :aria-label="translatePhrase('Cancel merge')">
+      <i class="fa fa-close" aria-hidden="true" />
     </button>
     <button
       class="Toolbar-btn btn btn-primary"

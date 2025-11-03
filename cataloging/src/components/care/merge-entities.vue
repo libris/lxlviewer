@@ -15,6 +15,7 @@ import MergeToolbar from "@/components/inspector/merge-toolbar.vue";
 import * as HttpUtil from "@/utils/http.js";
 import {CHANGE_SPEC_KEY, DEPRECATE_KEY, KEEP_KEY} from "@/utils/bulk.js";
 import ModalComponent from '@/components/shared/modal-component.vue';
+import * as VocabUtil from "../../../../lxljs/vocab.js";
 
 export default {
   name: 'MergeEntities',
@@ -47,7 +48,8 @@ export default {
       targetId: null,
       sourceId: null,
       recordSuccessfullySaved: false,
-      showConfirmMergeModal: false
+      showConfirmMergeModal: false,
+      numberOfReverseLinks: 0,
     };
   },
   computed: {
@@ -90,6 +92,16 @@ export default {
     selectedForRecord() {
       return this.inspector.status.selected.filter(s => s.path.startsWith('record.'));
     },
+    entityType() {
+      return VocabUtil.getRecordType(
+        this.source['mainEntity']['@type'],
+        this.resources.vocab,
+        this.resources.context,
+      );
+    },
+    isNonInstanceType() {
+      return this.entityType !== 'Instance';
+    },
     recordType() {
       if (this.sourceLoaded) {
         return this.source['mainEntity']['@type'];
@@ -131,8 +143,9 @@ export default {
         return this.source['mainEntity']['@reverse'].itemOf.length || 0;
       }
       return 0;
-    }
+    },
   },
+  emits: ['cancel'],
   methods: {
     translatePhrase,
     labelByLang,
@@ -161,25 +174,10 @@ export default {
         property: 'selected',
         value: [],
       });
+      this.getNumberOfReverseLinks();
     },
     resetCachedChanges() {
       this.setEnrichmentChanges(null);
-    },
-    close() {
-      const mergeViewModal = this.inspector.status.mergeViewModal;
-      mergeViewModal.open = false;
-      this.resetCachedChanges();
-      this.$store.dispatch('setInspectorStatusValue', { property: 'mergeViewModal', value: mergeViewModal });
-    },
-    cancel() {
-      this.resetCachedChanges();
-      this.close();
-      this.$store.dispatch('setInspectorData', this.inspector.originalData);
-      this.$store.dispatch('flushChangeHistory');
-    },
-    done() {
-      this.resetCachedChanges();
-      this.close();
     },
     setFocus(focus) {
       this.formFocus = focus;
@@ -234,8 +232,25 @@ export default {
     },
     doMerge() {
       this.createMergeBulkChangeAndSave();
+      this.showConfirmMergeModal = false;
       //TODO: remove source from flagged?
       // this.setRunStatus(Status.Ready);
+    },
+    getNumberOfReverseLinks() {
+      const query = {
+        _limit: 0,
+        _sort: `_sortKeyByLang.${this.user.settings.language || 'sv'}`,
+        o: this.directoryCare.mergeSourceId
+      };
+
+      HttpUtil.getRelatedRecords(query, this.settings.apiPath)
+        .then((response) => {
+          this.numberOfReverseLinks = response.totalItems;
+        }, (error) => {
+          console.log('Error checking for relations', error);
+        });
+
+      return 0;
     },
     fetchId(id, fetchingSource = false) {
       if (id !== null) {
@@ -542,6 +557,7 @@ export default {
     this.$nextTick(() => {
       this.resetCachedChanges();
       this.clearAllSelected();
+      this.getNumberOfReverseLinks();
     });
   },
 
@@ -626,8 +642,7 @@ export default {
         </div>
     </div>
     </div>
-
-  <div v-if="editStep">
+    <div v-if="editStep">
     <div
       class="col-12 col-sm-12"
       :class="{ 'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
@@ -635,23 +650,24 @@ export default {
       <div class="Toolbar-container">
         <merge-toolbar
           @openConfirmMergeModal="openConfirmMergeModal"
+          @cancel="this.$emit('cancel');"
         />
       </div>
     </div>
     <div class="col-sm-12" :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
-    <div class="MergeView-descriptionText">
+      <div class="MergeView-descriptionText">
         <span class="iconCircle"><i class="fa fa-fw fa-pencil"/></span>
         <span class="MergeView-description">
           Gör slutgiltiga ändringar för den entitet som ska behållas. Tryck på ihopslagningsknappen i verktygsmenyn när du är klar!
       </span>
       </div>
-    <div>
+      <div>
         <entity-summary
           class="header"
           :focus-data="target"
           :should-link="false"
           :exclude-components="[]" />
-    </div>
+      </div>
       <div class="MergeView-recordsContainer">
         <div class="MergeView-fieldRow">
           <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus"/>
@@ -659,17 +675,17 @@ export default {
         <div class="MergeView-fieldRow">
           <div class="entityForm">
             <entity-form
-                :editing-object="formFocus"
-                :key="formFocus"
-                :is-active="true"
-                :form-data="target"
-                :locked="false"
+              :editing-object="formFocus"
+              :key="formFocus"
+              :is-active="true"
+              :form-data="target"
+              :locked="false"
             />
           </div>
         </div>
       </div>
     </div>
-  </div>
+
     <modal-component
       :title="'Confirm run'"
       :width="'600px'"
@@ -688,11 +704,9 @@ export default {
             <div class="MergeView-modalText">
               <p>• Entitet med ID <strong> {{ sourceId }}</strong> kommer <em>tas bort</em>. </p>
               <p>• Entitet med ID <strong> {{ targetId }}</strong> kommer <em>behållas</em> och sparas med eventuella ändringar som gjorts.</p>
-
               <p v-if="sourceNumberOfHoldings !== 0">• <strong>{{ sourceNumberOfHoldings }}</strong> bestånd kommer länkas om till <strong>{{ targetId }}</strong>.</p>
+              <p v-if="isNonInstanceType">• <strong>{{ numberOfReverseLinks }}</strong> länkar kommer pekas om till <strong>{{ targetId }}</strong>.</p>
             </div>
-<!--            <p>För koncept: den här kommer tas bort, den här kommer behållas + ändringar. All x Förekomster av * kommer länkas till.</p>&ndash;&gt;-->
-<!--            <p>För verk: den här kommer tas bort, den här kommer behållas. All x Förekomster av * kommer länkas till.</p>&ndash;&gt;-->
           </div>
           <div class="Modal-buttonContainer">
             <button class="btn btn-primary btn--md" @click="doMerge()">
@@ -702,6 +716,7 @@ export default {
         </div>
       </template>
     </modal-component>
+  </div>
   </div>
 </template>
 
@@ -797,6 +812,7 @@ export default {
     background-color: @white;
     border: 1px solid @grey-lighter;
     padding: 2rem;
+    margin-bottom: 1rem;
     &.is-empty {
       background-color: unset;
       border-color: transparent;
@@ -839,7 +855,6 @@ export default {
 
   &-descriptionText {
     padding-bottom: 2rem;
-    padding-top: 1rem;
   }
 
   &-resultField {

@@ -491,6 +491,7 @@
     "entity to remove": "entitet som ska tas bort",
     "Receiver": "Mottagare",
     "Keep": "Behåll",
+    "Cancel merge": "Avbryt ihopslagning",
     "Confirm merge": "Bekräfta ihopslagning"
   }
 }

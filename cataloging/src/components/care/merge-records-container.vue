@@ -62,8 +62,20 @@ export default {
         resetCachedChanges() {
           this.setEnrichmentChanges(null);
         },
+        restart() {
+          console.log('restart');
+          this.$router.go(0);
+          this.resetEverything(); //Implicit by unmount?
+        },
+        resetEverything() {
+          this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
+          this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...{ mergeSourceId: null, mergeTargetId: null } });
+          this.setEnrichmentChanges(null);
+          this.setEnrichmentTarget(null);
+          this.setEnrichmentSource(null);
+          this.$store.dispatch('flushChangeHistory');
+        },
         goToEditStep() {
-          this.$store.dispatch('pushLoadingIndicator', 'Loading document');
           this.resetCachedChanges();
           this.$store.dispatch('setInspectorStatusValue', {
             property: 'editing',
@@ -72,6 +84,7 @@ export default {
           this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
           this.enrichStep = false;
           this.editStep = true;
+          this.$store.dispatch('pushLoadingIndicator', 'Loading document');
         },
         goToEnrichStep() {
           this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: true});
@@ -86,19 +99,15 @@ export default {
     });
   },
   unmounted() {
-    this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
-    this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...{ mergeSourceId: null, mergeTargetId: null } });
-    this.setEnrichmentChanges(null);
-    this.setEnrichmentTarget(null);
-    this.setEnrichmentSource(null);
-    this.$store.dispatch('flushChangeHistory');
+    console.log('HERE!!!');
+    this.resetEverything();
   },
   };
 </script>
 
 <template>
   <div class="MergeRecordsContainer">
-    <div class="MergeRecordsContainer-stepSelection"
+    <div class="MergeRecordsContainer-stepSelection underline"
          :class="{'col-md-12': sideBySide, 'col-md-11': !status.panelOpen && !sideBySide,
                   'col-md-7': status.panelOpen }">
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
@@ -107,7 +116,11 @@ export default {
         <button class="btn--as-link" v-if="this.enrichStep" @click="goToEditStep" @keyup.enter="goToEditStep">{{ translatePhrase('Next') }}</button>
       </div>
     </div>
-  <merge-entities :flagged="flagged" :enrich-step="this.enrichStep" :edit-step="this.editStep"></merge-entities>
+    <merge-entities :flagged="flagged"
+                    :enrich-step="this.enrichStep"
+                    :edit-step="this.editStep"
+                    @cancel="restart">
+    </merge-entities>
     <div v-if="bothRecordsSelected" class="MergeRecordsContainer-stepSelection"
          :class="{'col-md-12': !status.panelOpen && sideBySide, 'col-md-11': !status.panelOpen && !sideBySide,
                   'col-md-7': status.panelOpen }">
@@ -125,7 +138,10 @@ export default {
   padding:0;
   &-stepSelection {
     gap: 20px;
-    border-bottom:  1px solid @grey-lighter;
+    &.underline {
+      border-bottom:  1px solid @grey-lighter;
+      margin-bottom: 1em;
+    }
     padding-bottom: 10px;
     display: flex;
     flex-wrap: wrap;
