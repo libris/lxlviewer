@@ -80,6 +80,12 @@ export default {
         this.resources.context,
       );
     },
+    flaggable() {
+     return this.recordType === 'Instance' ||
+     this.recordType === 'Work' ||
+     this.recordType === 'Concept' ||
+     this.recordType === 'Agent';
+    },
     state() {
       const state = this.inspector.status.level;
       if (state === 'mainEntity') {
@@ -148,7 +154,7 @@ export default {
           <!-- <tag-switch :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Bookmark" /> -->
           <tag-switch
             :document="focusData"
-            v-if="recordType === 'Instance'"
+            v-if="flaggable"
             class=""
             :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
             tag="Flagged" />

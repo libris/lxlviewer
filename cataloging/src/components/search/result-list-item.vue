@@ -48,6 +48,12 @@ export default {
         this.resources.context,
       );
     },
+    flaggable() {
+      return this.recordType === 'Instance' ||
+        this.recordType === 'Work' ||
+        this.recordType === 'Concept' ||
+        this.recordType === 'Agent';
+    },
     user() {
       return this.$store.getters.user;
     },
@@ -136,6 +142,7 @@ export default {
         <!-- <tag-switch :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Bookmark" /> -->
         <tag-switch
           :document="focusData"
+          v-if="flaggable"
           class=""
           :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
           tag="Flagged" />
