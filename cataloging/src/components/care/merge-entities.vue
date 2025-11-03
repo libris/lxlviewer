@@ -669,20 +669,14 @@ export default {
           :exclude-components="[]" />
       </div>
       <div class="MergeView-recordsContainer">
-        <div class="MergeView-fieldRow">
-          <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus"/>
-        </div>
-        <div class="MergeView-fieldRow">
-          <div class="entityForm">
-            <entity-form
-              :editing-object="formFocus"
-              :key="formFocus"
-              :is-active="true"
-              :form-data="target"
-              :locked="false"
-            />
-          </div>
-        </div>
+        <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus"/>
+        <entity-form
+          :editing-object="formFocus"
+          :key="formFocus"
+          :is-active="true"
+          :form-data="target"
+          :locked="false"
+        />
       </div>
     </div>
 
