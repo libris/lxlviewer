@@ -169,12 +169,10 @@ export default {
         mergeTargetId: this.directoryCare.mergeSourceId
       };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...switchObj });
-      this.resetCachedChanges();
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'selected',
         value: [],
       });
-      this.getNumberOfReverseLinks();
     },
     resetCachedChanges() {
       this.setEnrichmentChanges(null);
@@ -336,7 +334,9 @@ export default {
         changeList.forEach((change) => {
           DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
         });
-        this.setEnrichmentChanges(changeList)
+        if (!isEmpty(changeList)) {
+          this.setEnrichmentChanges(changeList)
+        }
       } else {
         changeList = this.enrichment.data.changes;
       }
@@ -523,6 +523,8 @@ export default {
   watch: {
     'directoryCare.mergeTargetId'(id) {
       if (id !== null) {
+        this.clearAllSelected();
+        this.resetCachedChanges();
         this.$store.dispatch('pushLoadingIndicator', 'Loading document');
         this.targetId = RecordUtil.extractFnurgel(id);
         this.fetchId(this.targetId);
@@ -530,6 +532,9 @@ export default {
     },
     'directoryCare.mergeSourceId'(id) {
       if (id !== null) {
+        this.getNumberOfReverseLinks();
+        this.clearAllSelected();
+        this.resetCachedChanges();
         this.$store.dispatch('pushLoadingIndicator', 'Loading document');
         this.sourceId = RecordUtil.extractFnurgel(id);
         this.fetchId(this.sourceId, true);
@@ -557,7 +562,6 @@ export default {
     this.$nextTick(() => {
       this.resetCachedChanges();
       this.clearAllSelected();
-      this.getNumberOfReverseLinks();
     });
   },
 
