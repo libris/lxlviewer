@@ -152,7 +152,7 @@ export default {
       }
     },
   },
-  emits: ['add-lang-tag', 'romanize', 'add-to-cache', 'update', 'remove', 'removeval', 'update:model-value'],
+  emits: ['romanize', 'addToCache', 'update', 'remove', 'removeval', 'update:model-value'],
   methods: {
     translatePhrase,
     onLangTaggerEvent(langTag) {
