@@ -65,6 +65,7 @@
 						data={item}
 						level={level + 1}
 						posinset={index + 1}
+						selected={item?.selected}
 						{getChildItems}
 						{treeItemSnippet}
 					/>
@@ -113,5 +114,18 @@
 
 	details[open] > summary + [role='group']::before {
 		width: calc(var(--level) * var(--spacing) * 4);
+	}
+
+	[role='treeitem'][aria-selected='true']::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		width: calc(var(--spacing) * var(--level) * 4);
+		height: calc(var(--spacing) * 9);
+		background: var(--color-accent);
+		mask-repeat: repeat-y;
+		mask-image: url('$lib/assets/img/treeview-indent.svg');
+		mask-position: center right;
+		pointer-events: none;
 	}
 </style>

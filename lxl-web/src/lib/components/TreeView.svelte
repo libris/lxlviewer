@@ -1,6 +1,6 @@
 <script module lang="ts">
 	export interface TreeItem {
-		ariaSelected?: boolean; // indicates if the tree item is currently selected
+		selected?: boolean; // indicates if the tree item is currently selected
 		items?: TreeItem[];
 	}
 
@@ -52,6 +52,13 @@
 
 <ul role="tree" aria-labelledby={ariaLabelledby} aria-label={ariaLabel}>
 	{#each items as item, index (index)}
-		<TreeViewItem data={item} level={1} posinset={index + 1} {treeItemSnippet} {getChildItems} />
+		<TreeViewItem
+			data={item}
+			level={1}
+			posinset={index + 1}
+			selected={item?.selected}
+			{treeItemSnippet}
+			{getChildItems}
+		/>
 	{/each}
 </ul>
