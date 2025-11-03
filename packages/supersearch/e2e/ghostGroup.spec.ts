@@ -18,10 +18,14 @@ test('place the cursor inside the group', async ({ page }) => {
 
 test('re-add group when deleting it', async ({ page }) => {
 	await page.getByRole('combobox').click();
-	await page.getByRole('dialog').getByRole('combobox').fill('titel:pippi');
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.fill('titel:pippi');
+	await page.keyboard.down('Shift');
 	for (let i = 0; i < 6; i++) {
-		await page.getByRole('dialog').getByRole('combobox').press('Backspace');
+		await combo.press('ArrowLeft');
 	}
+	await page.keyboard.up('Shift');
+	await combo.press('Backspace');
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:()');
 });
 
@@ -33,6 +37,18 @@ test('add a group when typing a qualifierOperator in the middle of a string', as
 		await combo.press('ArrowLeft');
 	}
 	await combo.press(':');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi)');
+});
+
+test('add the group when pasting text', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.evaluate((el) => {
+		const data = new DataTransfer();
+		data.setData('text/plain', 'titel:pippi');
+		const event = new ClipboardEvent('paste', { clipboardData: data, bubbles: true });
+		el.dispatchEvent(event);
+	});
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi)');
 });
 
@@ -130,9 +146,7 @@ test('pressing delete before a group jumps forward into the group instead of des
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi)');
 });
 
-test('when user selects and deletes from the start of a ghost group, repair start', async ({
-	page
-}) => {
+test('user selects and deletes the start of a group; repair start', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.pressSequentially('titel:pippi långstrump');
@@ -148,9 +162,7 @@ test('when user selects and deletes from the start of a ghost group, repair star
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:( långstrump)');
 });
 
-test('when user selects and deletes from the end of a ghost group, repair end', async ({
-	page
-}) => {
+test('user selects and deletes the end of a group; repair end', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.pressSequentially('titel:pippi långstrump');
@@ -164,9 +176,7 @@ test('when user selects and deletes from the end of a ghost group, repair end', 
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi )');
 });
 
-test('when user selects and inserts from the start of a ghost group, repair start', async ({
-	page
-}) => {
+test('user selects start of a group and inserts text; repair start', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.pressSequentially('titel:pippi långstrump');
@@ -182,9 +192,7 @@ test('when user selects and inserts from the start of a ghost group, repair star
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(a långstrump)');
 });
 
-test('when user selects and inserts from the end of a ghost group, repair end', async ({
-	page
-}) => {
+test('user selects end of a group and inserts text; repair end', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.pressSequentially('titel:pippi långstrump');
@@ -196,4 +204,129 @@ test('when user selects and inserts from the end of a ghost group, repair end', 
 	await page.keyboard.up('Shift');
 	await combo.pressSequentially('a');
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi a)');
+});
+
+test('deletion includes end of a group with qualifier after; keep integrity if qualifiers', async ({
+	page
+}) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('titel:pippi långstrump');
+	await page.keyboard.down('ArrowRight');
+	await combo.pressSequentially('key:value');
+	for (let i = 0; i < 10; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await page.keyboard.down('Shift');
+	for (let i = 0; i < 7; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await page.keyboard.up('Shift');
+	await combo.press('Delete');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText(
+		'titel:(pippi lång)key:(value)'
+	);
+});
+
+test('select end of a group and insert text with qualifier after; keep integrity if qualifiers', async ({
+	page
+}) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('titel:pippi långstrump');
+	await page.keyboard.down('ArrowRight');
+	await combo.pressSequentially('key:value');
+	for (let i = 0; i < 10; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await page.keyboard.down('Shift');
+	for (let i = 0; i < 7; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await page.keyboard.up('Shift');
+	await combo.pressSequentially('a');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText(
+		'titel:(pippi långa)key:(value)'
+	);
+});
+
+test('deletion includes end of grup AND subsequent text, keep integrity of group', async ({
+	page
+}) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('titel:pippi långstrump');
+	await page.keyboard.down('ArrowRight');
+	await combo.pressSequentially('moretext');
+	for (let i = 0; i < 4; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await page.keyboard.down('Shift');
+	for (let i = 0; i < 11; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await page.keyboard.up('Shift');
+	await combo.press('Delete');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi lång)text');
+});
+
+test('typing text between the operator and group ends up inside the group', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.fill('title:pippi');
+	for (let i = 0; i < 6; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await combo.pressSequentially('hej');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(hejpippi)');
+});
+
+test('pasting text between the operator and group ends up inside the group', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.fill('title:pippi');
+	for (let i = 0; i < 6; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await combo.pressSequentially('hej');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(hejpippi)');
+});
+
+test('No longer a valid qualifier; remove group', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.fill('title:pippi');
+	for (let i = 0; i < 6; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await combo.press('Backspace');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titlepippi');
+});
+
+test('No longer a valid qualifier; remove group 2', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('titel:pippi');
+	for (let i = 0; i < 3; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await page.keyboard.down('Shift');
+	for (let i = 0; i < 5; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await page.keyboard.up('Shift');
+	await combo.press('Backspace');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titeppi');
+});
+
+test('dont touch a quoted qualifier value', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.evaluate((el) => {
+		const data = new DataTransfer();
+		data.setData('text/plain', 'titel:"pippi"');
+		const event = new ClipboardEvent('paste', { clipboardData: data, bubbles: true });
+		el.dispatchEvent(event);
+	});
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:"pippi"');
 });
