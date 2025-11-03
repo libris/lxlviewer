@@ -64,7 +64,7 @@ const store = createStore({
         mergeViewModal: {
           open: false,
         },
-        mergeView: false,
+        sideBySide: false,
         saving: false,
         opening: false,
         lastAdded: '',
@@ -294,7 +294,9 @@ const store = createStore({
       state.enrichment.data.target = data;
     },
     setEnrichmentSource(state, data) {
-      state.inspector.data.quoted = assign(data.quoted, state.inspector.data.quoted);
+      if (data !== null) {
+        state.inspector.data.quoted = assign(data.quoted, state.inspector.data.quoted);
+      }
       state.enrichment.data.source = data;
     },
     setEnrichmentResult(state, data) {

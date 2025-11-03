@@ -13,8 +13,7 @@ import * as DataUtil from "@/utils/data.js";
 import {getChangeList} from "@/utils/enrich.js";
 import MergeToolbar from "@/components/inspector/merge-toolbar.vue";
 import * as HttpUtil from "@/utils/http.js";
-import {CHANGE_SPEC_KEY, DEPRECATE_KEY, KEEP_KEY, Status} from "@/utils/bulk.js";
-import * as DisplayUtil from "../../../../lxljs/display.js";
+import {CHANGE_SPEC_KEY, DEPRECATE_KEY, KEEP_KEY} from "@/utils/bulk.js";
 import ModalComponent from '@/components/shared/modal-component.vue';
 
 export default {
@@ -44,8 +43,6 @@ export default {
     return {
       selected: [],
       formFocus: 'mainEntity',
-      sourceLoaded: false,
-      targetLoaded: false,
       targetETag: null,
       targetId: null,
       sourceId: null,
@@ -113,6 +110,12 @@ export default {
         return undefined;
       }
     },
+    sourceLoaded() {
+      return this.enrichment.data.source !== null;
+    },
+    targetLoaded() {
+      return this.enrichment.data.target !== null;
+    },
     source() {
       if (this.sourceLoaded) {
         return this.enrichment.data.source;
@@ -123,13 +126,18 @@ export default {
     target() {
       return this.inspector.data[this.formFocus];
     },
+    sourceNumberOfHoldings() {
+      if (this.source['mainEntity']['@reverse']) {
+        return this.source['mainEntity']['@reverse'].itemOf.length || 0;
+      }
+      return 0;
+    }
   },
   methods: {
     translatePhrase,
     labelByLang,
     capitalize,
     ...mapActions([
-      'setEnrichmentResult',
       'setEnrichmentTarget',
       'setEnrichmentChanges',
       'setEnrichmentSource'
@@ -262,7 +270,6 @@ export default {
             if (fetchingSource) {
               this.setEnrichmentSource(data);
               DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
-              this.sourceLoaded = true;
               this.applyFromSource(); // To populate everything with nothing selected
               this.$store.dispatch('removeLoadingIndicator', 'Loading document');
             } else {
@@ -271,7 +278,6 @@ export default {
               this.removeEnrichedHighlight();
               this.$store.dispatch('setOriginalData', data);
               DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
-              this.targetLoaded = true;
               this.applyFromSource(); // To populate everything with nothing selected
               this.$store.dispatch('removeLoadingIndicator', 'Loading document');
             }
@@ -362,7 +368,7 @@ export default {
       //TODO: always loud or silent or selectable from modal?
       const mt = this.templates.combined.bulk.find(t => t['@id'] === 'merge');
       const mBulkChange = RecordUtil.prepareDuplicateFor(mt.value, this.user, []);
-      mBulkChange['@graph'][1]['label'] = `🐱 Slå ihop ${this.targetId} (behåll) och ${this.sourceId} (ta bort)  ${this.getDateString()}`;
+      mBulkChange['@graph'][1]['label'] = `Slå ihop ${this.targetId} (behåll) och ${this.sourceId} (ta bort)  ${this.getDateString()}`;
       mBulkChange['@graph'][1][CHANGE_SPEC_KEY][DEPRECATE_KEY] = { '@id' : this.directoryCare.mergeSourceId };
       mBulkChange['@graph'][1][CHANGE_SPEC_KEY][KEEP_KEY] = { '@id' : this.directoryCare.mergeTargetId };
       return mBulkChange;
@@ -502,7 +508,6 @@ export default {
   watch: {
     'directoryCare.mergeTargetId'(id) {
       if (id !== null) {
-        this.targetLoaded = false;
         this.$store.dispatch('pushLoadingIndicator', 'Loading document');
         this.targetId = RecordUtil.extractFnurgel(id);
         this.fetchId(this.targetId);
@@ -510,13 +515,13 @@ export default {
     },
     'directoryCare.mergeSourceId'(id) {
       if (id !== null) {
-        this.sourceLoaded = false;
         this.$store.dispatch('pushLoadingIndicator', 'Loading document');
         this.sourceId = RecordUtil.extractFnurgel(id);
         this.fetchId(this.sourceId, true);
       }
     },
     'inspector.event'(val) {
+      // Live update on field label click
       if (val.name === 'apply-source' && this.bothRecordsLoaded) {
         this.applyFromSource();
       }
@@ -528,6 +533,7 @@ export default {
             name: 'form-control',
             value: 'collapse-item',
           });
+          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         });
       }
     }
@@ -536,8 +542,6 @@ export default {
     this.$nextTick(() => {
       this.resetCachedChanges();
       this.clearAllSelected();
-      this.sourceLoaded = false;
-      this.targetLoaded = false;
     });
   },
 
@@ -625,24 +629,23 @@ export default {
 
   <div v-if="editStep">
     <div
-      ref="componentFocusTarget"
-      class="toolbarColumn"
-      :class="{ 'toolbarColumn': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
+      class="col-12 col-sm-12"
+      :class="{ 'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
       <div class="Toolbar-placeholder" ref="ToolbarPlaceholder" />
       <div class="Toolbar-container">
         <merge-toolbar
           @openConfirmMergeModal="openConfirmMergeModal"
         />
       </div>
-      </div>
-    <div class="inspectorColumn">
-      <div>
+    </div>
+    <div class="col-sm-12" :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
+    <div class="MergeView-descriptionText">
         <span class="iconCircle"><i class="fa fa-fw fa-pencil"/></span>
         <span class="MergeView-description">
           Gör slutgiltiga ändringar för den entitet som ska behållas. Tryck på ihopslagningsknappen i verktygsmenyn när du är klar!
       </span>
       </div>
-    <div class="MergeView-fieldRow">
+    <div>
         <entity-summary
           class="header"
           :focus-data="target"
@@ -685,7 +688,8 @@ export default {
             <div class="MergeView-modalText">
               <p>• Entitet med ID <strong> {{ sourceId }}</strong> kommer <em>tas bort</em>. </p>
               <p>• Entitet med ID <strong> {{ targetId }}</strong> kommer <em>behållas</em> och sparas med eventuella ändringar som gjorts.</p>
-              <p>• <strong>43</strong> bestånd kommer länkas om till <strong>{{ targetId }}</strong>.</p>
+
+              <p v-if="sourceNumberOfHoldings !== 0">• <strong>{{ sourceNumberOfHoldings }}</strong> bestånd kommer länkas om till <strong>{{ targetId }}</strong>.</p>
             </div>
 <!--            <p>För koncept: den här kommer tas bort, den här kommer behållas + ändringar. All x Förekomster av * kommer länkas till.</p>&ndash;&gt;-->
 <!--            <p>För verk: den här kommer tas bort, den här kommer behållas. All x Förekomster av * kommer länkas till.</p>&ndash;&gt;-->
@@ -718,12 +722,10 @@ export default {
 @targetColSm: 61%;
 @targetColXs: 60%;
 
-@toolbarCol: 20%;
+@toolbarCol: 15%;
 @inspectorCol: 85%;
 
 .MergeView {
-  padding: 2rem 0;
-
   .header {
     border: 1px solid @grey-lighter;
     border-radius: 4px;
@@ -834,6 +836,12 @@ export default {
   &-description {
     padding-left: 0.5rem;
   }
+
+  &-descriptionText {
+    padding-bottom: 2rem;
+    padding-top: 1rem;
+  }
+
   &-resultField {
     border: 1px solid @grey-lighter;
     &.is-diff {
@@ -898,20 +906,6 @@ export default {
     @media (min-width: 1500px) {
       width: @actionCol;
     }
-  }
-
-  .toolbarColumn {
-    margin-left: 87%;
-    width: @toolbarCol;
-  }
-
-  .toolbarColumn {
-    margin-left: 87%;
-    width: @toolbarCol;
-  }
-
-  .inspectorColumn {
-    width: @inspectorCol;
   }
 
   &-sourceField {

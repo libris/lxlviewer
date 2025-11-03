@@ -35,6 +35,9 @@ export default {
       'status',
       'directoryCare'
     ]),
+    sideBySide() {
+      return this.inspector.status.sideBySide;
+    },
     stepNumber() {
       return this.enrichStep ? 1 : 2;
     },
@@ -60,31 +63,34 @@ export default {
           this.setEnrichmentChanges(null);
         },
         goToEditStep() {
+          this.$store.dispatch('pushLoadingIndicator', 'Loading document');
           this.resetCachedChanges();
           this.$store.dispatch('setInspectorStatusValue', {
             property: 'editing',
             value: true,
           });
+          this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
           this.enrichStep = false;
           this.editStep = true;
         },
         goToEnrichStep() {
+          this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: true});
           this.enrichStep = true;
           this.editStep = false;
         },
       },
   mounted() {
     this.$nextTick(() => {
-      this.$store.dispatch('flushChangeHistory');
-      this.setEnrichmentChanges(null);
-      this.$store.dispatch('flushExtractItemsOnSave');
       this.$store.dispatch('setInspectorStatusValue', {property: 'focus', value: 'mainEntity'});
-      this.$store.dispatch('setInspectorStatusValue', {property: 'mergeView', value: true});
+      this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: true});
     });
   },
   unmounted() {
-    this.$store.dispatch('setInspectorStatusValue', {property: 'mergeView', value: false});
+    this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
+    this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...{ mergeSourceId: null, mergeTargetId: null } });
     this.setEnrichmentChanges(null);
+    this.setEnrichmentTarget(null);
+    this.setEnrichmentSource(null);
     this.$store.dispatch('flushChangeHistory');
   },
   };
@@ -92,7 +98,9 @@ export default {
 
 <template>
   <div class="MergeRecordsContainer">
-    <div class="MergeRecordsContainer-stepSelection">
+    <div class="MergeRecordsContainer-stepSelection"
+         :class="{'col-md-12': sideBySide, 'col-md-11': !status.panelOpen && !sideBySide,
+                  'col-md-7': status.panelOpen }">
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
       <div v-if="bothRecordsSelected">
         <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
@@ -100,7 +108,9 @@ export default {
       </div>
     </div>
   <merge-entities :flagged="flagged" :enrich-step="this.enrichStep" :edit-step="this.editStep"></merge-entities>
-    <div v-if="bothRecordsSelected" class="MergeRecordsContainer-stepSelection">
+    <div v-if="bothRecordsSelected" class="MergeRecordsContainer-stepSelection"
+         :class="{'col-md-12': !status.panelOpen && sideBySide, 'col-md-11': !status.panelOpen && !sideBySide,
+                  'col-md-7': status.panelOpen }">
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
       <div>
         <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
@@ -112,7 +122,7 @@ export default {
 
 <style lang="less">
 .MergeRecordsContainer {
-
+  padding:0;
   &-stepSelection {
     gap: 20px;
     border-bottom:  1px solid @grey-lighter;
@@ -122,7 +132,5 @@ export default {
     justify-content: flex-end;
     margin: 0 0 0.5em 0;
   }
-
-
 }
 </style>

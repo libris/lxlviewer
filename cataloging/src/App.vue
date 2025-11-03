@@ -8,10 +8,10 @@
     class="MainContent"
     :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }"
     :class="{
-      container: (!status.panelOpen && user.settings.fullSiteWidth === false && !inspector.status.mergeView),
+      container: (!status.panelOpen && user.settings.fullSiteWidth === false && !inspector.status.sideBySide),
       'container-fluid': (status.panelOpen || user.settings.fullSiteWidth),
       'debug-mode': user.settings.appTech,
-      'container-wide' :inspector.status.mergeView
+      'container-wide' :inspector.status.sideBySide
     }">
     <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
       {{ translatePhrase('Debug mode activated. Click here to disable.') }}
