@@ -495,6 +495,7 @@ function addMyLibrariesBoolFilter(
 		});
 
 		if (existingBoolFilter) {
+			delete existingBoolFilter.object.prefLabelByLang;
 			existingBoolFilter.object.prefLabel = translate(`facet.${MY_LIBRARIES_FILTER_ALIAS}`);
 			return [...[existingBoolFilter], ...rest];
 		} else {
