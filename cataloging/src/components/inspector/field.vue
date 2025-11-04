@@ -1075,7 +1075,7 @@ export default {
     <pre class="path-code" v-show="user.settings.appTech && isInner">{{path}}</pre>
 
     <div
-      class="Field-content FieldContent"
+      class="Field-content"
       :class="{ 'is-locked': locked }"
       v-if="fieldKey === '@type'">
       <div
@@ -1109,11 +1109,10 @@ export default {
     </div>
 
     <div
-      class="Field-content FieldContent"
-      v-bind:class="{ 'is-locked': locked }"
+      class="Field-content"
+      v-bind:class="{ 'is-locked': locked, 'warning-wrapper': shouldShowWarning }"
       v-if="fieldKey !== '@type' && isObjectArray">
       <div class="Field-contentItem">
-
         <item-bylang
           v-if="getDatatype(firstInValueAsArray) == 'language'"
           :is-locked="locked"
@@ -1209,8 +1208,8 @@ export default {
         />
       </div>
       <div
-        class="Field-label-top-right"
         v-if="shouldShowWarning"
+        class="warning-triangle"
       >
          <i class="fa fa-warning fa-fw icon--warn icon--sm" />
       </div>
@@ -1332,7 +1331,6 @@ export default {
 </template>
 
 <style lang="less">
-
 .Field {
   border-bottom: 1px solid;
   border-color: @form-border;
@@ -1342,7 +1340,6 @@ export default {
   opacity: 1;
   position: relative;
   transition: background-color .3s ease;
-  border: 1px solid red;
 
   &.has-failed-validations {
     outline: 1px dotted red;
@@ -1603,10 +1600,6 @@ export default {
       }
     }
 
-    &.top-right {
-      border: 1px solid blue;
-    }
-
     @media (min-width: 768px) {
       text-align: right;
     }
@@ -1818,5 +1811,20 @@ export default {
       }
     }
   }
+}
+
+.warning-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.warning-triangle {
+  position: absolute;
+  right: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
