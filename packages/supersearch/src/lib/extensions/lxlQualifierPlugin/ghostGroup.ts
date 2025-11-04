@@ -365,9 +365,11 @@ export const balanceInnerParens = (tr: Transaction) => {
 
 		// autocomplete ')'
 		if (isInput && insertedText.includes(')')) {
-			if (afterClose > afterOpen) {
+			const imbalance = afterClose - afterOpen;
+			if (imbalance > 0) {
+				// insert missing '(' equal to imbalance
 				const insertPos = fromB;
-				edits.push({ from: insertPos, insert: '(' });
+				edits.push({ from: insertPos, insert: '('.repeat(imbalance) });
 
 				// single ')' -> move caret one step back inside the pair
 				if (insertedText === ')') {
@@ -378,12 +380,26 @@ export const balanceInnerParens = (tr: Transaction) => {
 		}
 
 		// cleanup stray ')'
-		if (isDelete && deletedText.includes('(')) {
-			if (afterOpen < afterClose) {
-				const firstClose = afterContent.indexOf(')');
-				if (firstClose >= 0) {
-					const removePos = innerFrom + firstClose;
-					edits.push({ from: removePos, to: removePos + 1 });
+		if (isDelete) {
+			const deletedOpens = (deletedText.match(/\(/g) || []).length;
+			const deletedCloses = (deletedText.match(/\)/g) || []).length;
+
+			// ff we removed multiple '(', try to balance by removing extra ')'
+			if (deletedOpens > deletedCloses) {
+				const afterContent = after.doc.sliceString(innerFrom, innerTo);
+				const afterOpen = count(afterContent, '(');
+				const afterClose = count(afterContent, ')');
+
+				if (afterClose > afterOpen) {
+					let toRemove = afterClose - afterOpen;
+					let pos = innerTo;
+					while (toRemove > 0 && pos > innerFrom) {
+						pos--;
+						if (after.doc.sliceString(pos, pos + 1) === ')') {
+							edits.push({ from: pos, to: pos + 1 });
+							toRemove--;
+						}
+					}
 				}
 			}
 		}

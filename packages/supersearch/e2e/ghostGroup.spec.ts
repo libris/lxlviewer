@@ -330,3 +330,92 @@ test('dont touch a quoted qualifier value', async ({ page }) => {
 	});
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:"pippi"');
 });
+
+test('autocomplete ) inside the group', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi)');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi())');
+});
+
+test('autocomplete multiple ) inside the group', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi)))');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi((())))');
+});
+
+test('cursor ends up inside an autocompleted group', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi)');
+	await combo.pressSequentially('more');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi(more))');
+});
+
+test('reverses autocompletion of group, remove stray )', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi)');
+	await combo.press('Backspace');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi)');
+});
+
+test('reverses autocompletion of group, remove multiple stray )', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi)))');
+	for (let i = 0; i < 3; i++) await combo.press('Backspace');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi)');
+});
+
+test('can handle bulk deletion by removing multiple stray )))', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi)))');
+	await page.keyboard.down('Shift');
+	for (let i = 0; i < 3; i++) await combo.press('ArrowLeft');
+	await page.keyboard.up('Shift');
+	await combo.press('Delete');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi)');
+});
+
+test('reverses autocompletion of group, remove stray ) far away in the group', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi)');
+	await combo.pressSequentially('more');
+	for (let i = 0; i < 4; i++) await combo.press('ArrowLeft');
+	await combo.press('Backspace');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippimore)');
+});
+
+test('handles autocomplete when pasting', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi');
+
+	await combo.evaluate((el) => {
+		const data = new DataTransfer();
+		data.setData('text/plain', 'lång)');
+		const event = new ClipboardEvent('paste', { clipboardData: data, bubbles: true });
+		el.dispatchEvent(event);
+	});
+
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi(lång))');
+});
+
+test('handles autocomplete when pasting multiple ))', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi');
+
+	await combo.evaluate((el) => {
+		const data = new DataTransfer();
+		data.setData('text/plain', 'lång)))');
+		const event = new ClipboardEvent('paste', { clipboardData: data, bubbles: true });
+		el.dispatchEvent(event);
+	});
+
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi(((lång))))');
+});
