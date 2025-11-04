@@ -1207,11 +1207,11 @@ export default {
           :is-enrichment-source="isEnrichmentSource"
         />
       </div>
-      <div
+      <div 
         v-if="shouldShowWarning"
-        class="warning-triangle"
-      >
-         <i class="fa fa-warning fa-fw icon--warn icon--sm" />
+        class="Field-comment warning-triangle">
+          <i class="fa fa-warning fa-fw icon--warn icon--sm" />
+          <span class="Field-commentText">heeej</span>
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
@@ -1816,6 +1816,7 @@ export default {
 .warning-wrapper {
   position: relative;
   cursor: pointer;
+  z-index: 99;
 }
 
 .warning-triangle {
@@ -1827,4 +1828,5 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 </style>
