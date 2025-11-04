@@ -23,6 +23,10 @@
 	padding-left: calc(var(--spacing) * 1.5);
 }
 
+.lxl-ghost-group ~ .lxl-not-term > .lxl-qualifier-value {
+	padding: 0;
+}
+
 .lxl-qualifier-remove {
 	display: flex;
 	align-items: center;
