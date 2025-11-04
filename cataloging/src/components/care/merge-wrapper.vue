@@ -6,13 +6,11 @@ import MergeEntities from "@/components/care/merge-entities.vue";
 import {isEmpty} from "lodash-es";
 
 export default {
-  name: 'MergeRecordsContainer',
-
+  name: 'Merge-wrapper',
   components: {
     'merge-entities': MergeEntities
   },
   props: {
-    //TODO: not only instances
     flagged: {
       type: Array,
     },
@@ -22,7 +20,6 @@ export default {
       recordLoaded: false,
       enrichStep: true,
       editStep: false,
-      mergeStep: false,
     };
   },
   computed: {
@@ -98,15 +95,14 @@ export default {
     });
   },
   unmounted() {
-    console.log('HERE!!!');
     this.resetEverything();
   },
   };
 </script>
 
 <template>
-  <div class="MergeRecordsContainer">
-    <div class="MergeRecordsContainer-stepSelection underline"
+  <div class="Merge">
+    <div class="Merge-stepSelection underline"
          :class="{'col-md-12': sideBySide, 'col-md-11': !status.panelOpen && !sideBySide,
                   'col-md-7': status.panelOpen }">
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
@@ -118,9 +114,13 @@ export default {
     <merge-entities :flagged="flagged"
                     :enrich-step="this.enrichStep"
                     :edit-step="this.editStep"
+                    source-picker-label="entity to remove"
+                    source-top-label="Remove"
+                    target-picker-label="entity to keep"
+                    target-top-label="Keep"
                     @cancel="restart">
     </merge-entities>
-    <div v-if="bothRecordsSelected" class="MergeRecordsContainer-stepSelection"
+    <div v-if="bothRecordsSelected" class="Merge-stepSelection"
          :class="{'col-md-12': !status.panelOpen && sideBySide, 'col-md-11': !status.panelOpen && !sideBySide,
                   'col-md-7': status.panelOpen }">
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
@@ -133,7 +133,7 @@ export default {
 </template>
 
 <style lang="less">
-.MergeRecordsContainer {
+.Merge {
   padding:0;
   &-stepSelection {
     gap: 20px;

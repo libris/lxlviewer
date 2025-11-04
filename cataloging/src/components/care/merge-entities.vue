@@ -18,7 +18,6 @@ import {
   DEPRECATE_KEY,
   KEEP_KEY,
   SHOULD_UPDATE_TIMESTAMP_KEY,
-  STATUS_KEY
 } from "@/utils/bulk.js";
 import ModalComponent from '@/components/shared/modal-component.vue';
 import * as VocabUtil from "../../../../lxljs/vocab.js";
@@ -37,7 +36,23 @@ export default {
     editStep: {
       type: Boolean,
       default: false,
-    }
+    },
+    sourcePickerLabel: {
+      type: String,
+      default: '',
+    },
+    targetPickerLabel: {
+      type: String,
+      default: '',
+    },
+    sourceTopLabel: {
+      type: String,
+      default: '',
+    },
+    targetTopLabel: {
+      type: String,
+      default: '',
+    },
   },
   components: {
     'merge-toolbar': MergeToolbar,
@@ -152,7 +167,7 @@ export default {
       return 0;
     },
   },
-  emits: ['cancel'],
+  emits: ['cancel', 'etag'],
   methods: {
     translatePhrase,
     labelByLang,
@@ -265,6 +280,7 @@ export default {
           if (response.status === 200) {
             if (!fetchingSource) {
               this.targetETag = response.headers.get('ETag');
+              this.$emit('etag', this.targetETag); //Save handling outside for enrich
             }
             return response.json();
           } if (response.status === 404 || response.status === 410) {
@@ -376,6 +392,7 @@ export default {
             if (this.recordSuccessfullySaved) {
               this.saveNewBulkChange(mergeBulkChange);
             }
+            this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
           }
         );
       } catch (e) {
@@ -589,8 +606,8 @@ export default {
         <record-picker
           name="mergeSourceId"
           opposite="mergeTargetId"
-          label="entity to remove"
-          top-label="Remove"
+          :label="sourcePickerLabel"
+          :top-label="sourceTopLabel"
           :flaggedInstances="flagged"
           :expand="false">
         </record-picker>
@@ -607,8 +624,8 @@ export default {
           v-if="flagged.length > 0"
           name="mergeTargetId"
           opposite="mergeSourceId"
-          label="entity to keep"
-          top-label="Keep"
+          :label="targetPickerLabel"
+          :top-label="targetTopLabel"
           :flaggedInstances="flagged" />
       </div>
       <div>
@@ -622,7 +639,7 @@ export default {
       </div>
       <div>
         <button
-          class="btn btn--md btn-light SelectAll-btn"
+          class="btn btn--md btn-light"
           @click="toggleSelected">
           <i class="fa fa-fw fa-square-o" v-show="!isAllSelected"/>
           <i class="fa fa-fw fa-check-square-o" v-show="isAllSelected"/>

@@ -12,11 +12,14 @@ import CreateBulkChange from '@/components/care/create-bulk-change.vue';
 import BulkChanges from '@/components/care/bulk-changes.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import AdminNotices from './AdminNotices.vue';
-import MergeRecordsContainer from "@/components/care/merge-records-container.vue";
+import MergeWrapper from "@/components/care/merge-wrapper.vue";
+import EnrichWrapper from "@/components/care/enrich-wrapper.vue";
 
 export default {
   name: 'DirectoryCare',
   components: {
+    EnrichWrapper,
+    MergeWrapper,
     AdminNotices,
     'tab-menu': TabMenu,
     'holding-mover': HoldingMover,
@@ -24,7 +27,7 @@ export default {
     'create-message': CreateMessage,
     'create-bulk-change': CreateBulkChange,
     'bulk-changes': BulkChanges,
-    'merge-records-container': MergeRecordsContainer,
+    'merge-wrapper': MergeWrapper,
   },
   data() {
     return {
@@ -57,6 +60,7 @@ export default {
         { id: 'message', text: 'Create message' },
         { id: 'holdings', text: 'Move holdings' },
         { id: 'merge', text: 'Merge entities' },
+        { id: 'enrich', text: 'Enrich from selection' },
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
       if (this.userIsAllowedToBulkChange) {
@@ -178,7 +182,8 @@ export default {
         <h1></h1>
         {{ translatePhrase("To see bulk changes you need to switch to a sigel with access.") }}
       </div>
-      <merge-records-container :flagged="allFlagged" v-if="$route.params.tool === 'merge'"></merge-records-container>
+      <merge-wrapper :flagged="allFlagged" v-if="$route.params.tool === 'merge'"></merge-wrapper>
+      <enrich-wrapper :flagged="allFlagged" v-if="$route.params.tool === 'enrich'"></enrich-wrapper>
       <modal-component
         v-if="showModal"
         title="Directory care list adjusted"

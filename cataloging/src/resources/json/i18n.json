@@ -492,6 +492,10 @@
     "Receiver": "Mottagare",
     "Keep": "Behåll",
     "Cancel merge": "Avbryt ihopslagning",
-    "Confirm merge": "Bekräfta ihopslagning"
+    "Confirm merge": "Bekräfta ihopslagning",
+    "receiver": "mottagare",
+    "to": "till",
+    "Save receiver": "Spara mottagare",
+    "Enrich from selection": "Berika från urval"
   }
 }
