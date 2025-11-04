@@ -23,7 +23,7 @@ export const createGhostGroup = (tr: Transaction) => {
 	const nodeAtHead = syntaxTree(start).resolveInner(from, 0);
 	const ghostGroup = getGhostGroup(nodeAtHead);
 
-	// inside a ghost group - don't do anyhing
+	// inside a ghost group - don't do anything
 	if (ghostGroup && from > ghostGroup.from && to < ghostGroup.to) {
 		return tr;
 	}
@@ -46,21 +46,30 @@ export const createGhostGroup = (tr: Transaction) => {
 				changes.push({ from: opEnd, insert: '()' });
 				selection = { anchor: opEnd + 1 };
 				return;
-			} else {
-				let valText = after.sliceDoc(valueNode.from, valueNode.to);
+			}
 
-				// skip quoted values - keep atomic ranges intact
-				if (valText.startsWith('"') && valText.endsWith('"')) return;
+			let valText = after.sliceDoc(valueNode.from, valueNode.to);
 
-				// case: qualifierValue exists but is missing group
-				if (!valText.startsWith('(')) {
-					changes.push({ from: valueNode.from, insert: '(' });
-					valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
-				}
+			// skip quoted values - keep atomic ranges intact
+			if (valText.startsWith('"') && valText.endsWith('"')) return;
 
-				if (!valText.endsWith(')')) {
-					changes.push({ from: valueNode.to, insert: ')' });
-				}
+			const startTree = syntaxTree(start);
+			const overlappingQualifier = startTree.resolveInner(valueNode.from, 1)?.parent;
+			if (overlappingQualifier && overlappingQualifier.name === 'QualifierKey') {
+				// the value was actually a key from a pre-exsting qualifier -> just insert ()
+				changes.push({ from: opEnd, insert: '()' });
+				selection = { anchor: opEnd + 1 };
+				return;
+			}
+
+			// qualifierValue exists but is missing outer group
+			if (!valText.startsWith('(')) {
+				changes.push({ from: valueNode.from, insert: '(' });
+				valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
+			}
+
+			if (!valText.endsWith(')')) {
+				changes.push({ from: valueNode.to, insert: ')' });
 			}
 		}
 	});

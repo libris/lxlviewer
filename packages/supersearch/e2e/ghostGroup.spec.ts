@@ -40,6 +40,19 @@ test('add a group when typing a qualifierOperator in the middle of a string', as
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi)');
 });
 
+test("don't destroy succeeding qualifiers by treating them as a qualifier value ", async ({
+	page
+}) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:pippi');
+	await combo.press('Home');
+	await combo.pressSequentially('contributor:');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText(
+		'contributor:()title:(pippi)'
+	);
+});
+
 test('add the group when pasting text', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
