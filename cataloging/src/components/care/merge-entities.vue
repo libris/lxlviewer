@@ -203,7 +203,7 @@ export default {
       this.formFocus = focus;
     },
     selectAllForFocused() {
-      let selected = this.inspector.status.selected;
+      let selected = this.inspector.status.selected.filter(s => !s.path.startsWith(this.formFocus));
       Object.keys(this.sourceSelectable).forEach(k => {
         selected = [...selected, {path: `${this.formFocus}.${k}`, value: {}}];
       })

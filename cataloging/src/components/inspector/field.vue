@@ -325,7 +325,6 @@ export default {
     },
     ...mapGetters([
       'inspector',
-      'enrichment',
       'resources',
       'user',
       'settings',
@@ -536,7 +535,7 @@ export default {
       if (this.isSource) {
         const fieldPathAndValue = {
           path: this.path,
-          value: get(this.enrichment.data.source, this.path),
+          value: {},
         }
         const selected = cloneDeep(this.inspector.status.selected);
         if (!this.isSelected) {
