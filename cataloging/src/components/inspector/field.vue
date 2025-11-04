@@ -1208,9 +1208,12 @@ export default {
           :is-enrichment-source="isEnrichmentSource"
         />
       </div>
-         <span v-if="shouldShowWarning"> 
-          <i class="fa fa-warning fa-fw icon--warn icon--sm" tabindex="0" />
-        </span>
+      <div
+        class="Field-label-top-right"
+        v-if="shouldShowWarning"
+      >
+         <i class="fa fa-warning fa-fw icon--warn icon--sm" />
+      </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
 
@@ -1339,6 +1342,7 @@ export default {
   opacity: 1;
   position: relative;
   transition: background-color .3s ease;
+  border: 1px solid red;
 
   &.has-failed-validations {
     outline: 1px dotted red;
@@ -1597,6 +1601,10 @@ export default {
         left: 0px;
         top: 0px;
       }
+    }
+
+    &.top-right {
+      border: 1px solid blue;
     }
 
     @media (min-width: 768px) {
