@@ -225,7 +225,7 @@ export const jumpPastParens = (tr: Transaction) => {
  * Prevents dislocating the ghost group by typing between the operator and group
  */
 export const handleInputBeforeGroup = (tr: Transaction) => {
-	if (!tr.docChanged || (!tr.isUserEvent('input') && !tr.isUserEvent('paste'))) return tr;
+	if (!tr.docChanged || !tr.isUserEvent('input')) return tr;
 
 	const start = tr.startState;
 	const head = start.selection.main.head;
@@ -238,10 +238,14 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 	if (head !== ghostGroup.from) return tr;
 
 	// shift text changes +1 position to the right
-	const shiftedChanges: { from: number; to: number; insert: string }[] = [];
+	const shiftedChanges: { from: number; to?: number; insert?: string }[] = [];
 	let totalInsertedLength = 0;
 
 	tr.changes.iterChanges((fromA, toA, _fromB, _toB, inserted) => {
+		if (inserted.toString() === ')') {
+			// don't shift ')' and break the group
+			return;
+		}
 		shiftedChanges.push({
 			from: fromA + 1,
 			to: toA + 1,

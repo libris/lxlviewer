@@ -292,6 +292,17 @@ test('pasting text between the operator and group ends up inside the group', asy
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(hejpippi)');
 });
 
+test('typing ")" between the operator and group is skipped', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.fill('title:pippi');
+	for (let i = 0; i < 6; i++) {
+		await combo.press('ArrowLeft');
+	}
+	await combo.pressSequentially(')');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi)');
+});
+
 test('No longer a valid qualifier; remove group', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
