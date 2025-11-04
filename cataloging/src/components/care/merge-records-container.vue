@@ -63,7 +63,6 @@ export default {
           this.setEnrichmentChanges(null);
         },
         restart() {
-          console.log('restart');
           this.$router.go(0);
           this.resetEverything(); //Implicit by unmount?
         },

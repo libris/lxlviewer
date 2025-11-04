@@ -13,9 +13,16 @@ import * as DataUtil from "@/utils/data.js";
 import {getChangeList} from "@/utils/enrich.js";
 import MergeToolbar from "@/components/inspector/merge-toolbar.vue";
 import * as HttpUtil from "@/utils/http.js";
-import {CHANGE_SPEC_KEY, DEPRECATE_KEY, KEEP_KEY} from "@/utils/bulk.js";
+import {
+  CHANGE_SPEC_KEY,
+  DEPRECATE_KEY,
+  KEEP_KEY,
+  SHOULD_UPDATE_TIMESTAMP_KEY,
+  STATUS_KEY
+} from "@/utils/bulk.js";
 import ModalComponent from '@/components/shared/modal-component.vue';
 import * as VocabUtil from "../../../../lxljs/vocab.js";
+import * as DisplayUtil from "../../../../lxljs/display.js";
 
 export default {
   name: 'MergeEntities',
@@ -35,7 +42,7 @@ export default {
   components: {
     'merge-toolbar': MergeToolbar,
     'record-picker': RecordPicker,
-    EntityForm,
+    'entity-form': EntityForm,
     'tab-menu': TabMenu,
     'entity-summary': EntitySummary,
     'modal-component': ModalComponent,
@@ -383,9 +390,16 @@ export default {
       //TODO: always loud or silent or selectable from modal?
       const mt = this.templates.combined.bulk.find(t => t['@id'] === 'merge');
       const mBulkChange = RecordUtil.prepareDuplicateFor(mt.value, this.user, []);
-      mBulkChange['@graph'][1]['label'] = `Slå ihop ${this.targetId} (behåll) och ${this.sourceId} (ta bort)  ${this.getDateString()}`;
+      const label = DisplayUtil.getItemLabel(
+        this.inspector.data.mainEntity,
+        this.resources,
+        this.inspector.data.quoted,
+        this.settings,
+      );
+      mBulkChange['@graph'][1]['label'] = `Slå ihop: ${label} ${this.getDateString()}`;
       mBulkChange['@graph'][1][CHANGE_SPEC_KEY][DEPRECATE_KEY] = { '@id' : this.directoryCare.mergeSourceId };
       mBulkChange['@graph'][1][CHANGE_SPEC_KEY][KEEP_KEY] = { '@id' : this.directoryCare.mergeTargetId };
+      mBulkChange['@graph'][1][SHOULD_UPDATE_TIMESTAMP_KEY] = true;
       return mBulkChange;
     },
     getDateString() {
