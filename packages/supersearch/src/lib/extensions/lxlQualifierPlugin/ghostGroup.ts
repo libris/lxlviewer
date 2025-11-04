@@ -3,14 +3,14 @@ import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
-// This will hidden to the user and that have to appear, be maintained and disappear automatically
+// It will hidden to the user and have to appear, be maintained and disappear automatically
 
 /**
  * QualifierValue's first child must be a QualifierOuterGroup.
  * If not - add/repair it. Exception: quoted qualifier values
  */
 export const createGhostGroup = (tr: Transaction) => {
-	if (!tr.isUserEvent('input') && !tr.isUserEvent('delete')) {
+	if (!tr.docChanged || (!tr.isUserEvent('input') && !tr.isUserEvent('delete'))) {
 		return tr;
 	}
 
@@ -23,7 +23,7 @@ export const createGhostGroup = (tr: Transaction) => {
 	const nodeAtHead = syntaxTree(start).resolveInner(from, 0);
 	const ghostGroup = getGhostGroup(nodeAtHead);
 
-	// Don't touch inner groups
+	// inside a ghost group - don't do anyhing
 	if (ghostGroup && from > ghostGroup.from && to < ghostGroup.to) {
 		return tr;
 	}
@@ -80,11 +80,10 @@ export const createGhostGroup = (tr: Transaction) => {
 
 /**
  * If a Qualifier ceases to exist as a result of the transaction,
- * remove the qualifierValue ghost group.
+ * remove the group.
  */
 export const removeGhostGroup = (tr: Transaction) => {
-	if (!tr.changes || tr.changes.empty) return tr;
-	if (!tr.isUserEvent('input') && !tr.isUserEvent('delete')) return tr;
+	if (!tr.docChanged || (!tr.isUserEvent('input') && !tr.isUserEvent('delete'))) return tr;
 
 	const start = tr.startState;
 	const after = tr.state;
@@ -152,12 +151,10 @@ export const removeGhostGroup = (tr: Transaction) => {
  * When encountering a ghost group edge on backspace, jump past it
  */
 export const jumpPastParens = (tr: Transaction) => {
-	if (!tr.changes || tr.changes.empty) return tr;
-
 	const isBackspace = tr.isUserEvent('delete.backward');
 	const isDelete = tr.isUserEvent('delete.forward');
 
-	if (!isBackspace && !isDelete) return tr;
+	if (!tr.docChanged || (!isBackspace && !isDelete)) return tr;
 
 	const state = tr.startState;
 	const head = state.selection.main.head;
@@ -228,8 +225,7 @@ export const jumpPastParens = (tr: Transaction) => {
  * Prevents dislocating the ghost group by typing between the operator and group
  */
 export const handleInputBeforeGroup = (tr: Transaction) => {
-	if (!tr.changes || tr.changes.empty) return tr;
-	if (!tr.isUserEvent('input') && !tr.isUserEvent('paste')) return tr;
+	if (!tr.docChanged || (!tr.isUserEvent('input') && !tr.isUserEvent('paste'))) return tr;
 
 	const start = tr.startState;
 	const head = start.selection.main.head;
@@ -267,12 +263,11 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 };
 
 /**
- * Preserve ghost group integrity by re-adding parens on bulk changes
+ * Re-add parens on bulk changes (select - delete)
  * Prevents any following qualifiers being parsed as belonging to the same group...
  */
 export const repairGhostGroup = (tr: Transaction) => {
-	if (!tr.changes || tr.changes.empty) return tr;
-	if (!tr.isUserEvent('delete') && !tr.isUserEvent('input')) {
+	if (!tr.docChanged || (!tr.isUserEvent('delete') && !tr.isUserEvent('input'))) {
 		return tr;
 	}
 
@@ -317,6 +312,92 @@ export const repairGhostGroup = (tr: Transaction) => {
 			changes: repairs,
 			sequential: true,
 			userEvent: 'input.complete'
+		}
+	];
+};
+
+/**
+ * Prevents destroying the ghost group by typing ) inside the group, parsed as end of group.
+ * Autocompletes ')' with '(' and reverse; removes any stray ')' when deleting '('.
+ */
+export const balanceInnerParens = (tr: Transaction) => {
+	if (!tr.docChanged) return tr;
+
+	const isInput = tr.isUserEvent('input');
+	const isDelete = tr.isUserEvent('delete');
+	if (!isInput && !isDelete) return tr;
+
+	const edits: { from: number; to?: number; insert?: string }[] = [];
+	let selection: { anchor: number } | undefined;
+
+	const startTree = syntaxTree(tr.startState);
+	const after = tr.state;
+
+	tr.changes.iterChanges((fromA, toA, fromB, toB, inserted) => {
+		const insertedText = inserted.toString();
+		const deletedText = tr.startState.sliceDoc(fromA, toA);
+		const parenChanged =
+			insertedText.includes('(') ||
+			insertedText.includes(')') ||
+			deletedText.includes('(') ||
+			deletedText.includes(')');
+		if (!parenChanged) return;
+
+		const node = startTree.resolveInner(fromA, 0);
+		const ghostGroup = getGhostGroup(node);
+		if (!ghostGroup) return;
+
+		const mappedFrom = tr.changes.mapPos(ghostGroup.from, 1);
+		const mappedTo = tr.changes.mapPos(ghostGroup.to, -1);
+
+		// only operate inside group
+		if (fromB <= mappedFrom || fromB > mappedTo) return;
+
+		const innerFrom = mappedFrom + 1;
+		const innerTo = mappedTo - 1;
+		const afterContent = after.doc.sliceString(innerFrom, innerTo);
+
+		// count parens
+		const count = (text: string, char: string) =>
+			(text.match(new RegExp(`\\${char}`, 'g')) || []).length;
+		const afterOpen = count(afterContent, '(');
+		const afterClose = count(afterContent, ')');
+
+		// autocomplete ')'
+		if (isInput && insertedText.includes(')')) {
+			if (afterClose > afterOpen) {
+				const insertPos = fromB;
+				edits.push({ from: insertPos, insert: '(' });
+
+				// single ')' -> move caret one step back inside the pair
+				if (insertedText === ')') {
+					const mappedCaret = tr.changes.mapPos(toB, 1);
+					selection = { anchor: mappedCaret - 1 };
+				}
+			}
+		}
+
+		// cleanup stray ')'
+		if (isDelete && deletedText.includes('(')) {
+			if (afterOpen < afterClose) {
+				const firstClose = afterContent.indexOf(')');
+				if (firstClose >= 0) {
+					const removePos = innerFrom + firstClose;
+					edits.push({ from: removePos, to: removePos + 1 });
+				}
+			}
+		}
+	});
+
+	if (!edits.length) return tr;
+
+	return [
+		tr,
+		{
+			changes: edits,
+			sequential: true,
+			userEvent: 'input.complete',
+			selection
 		}
 	];
 };
