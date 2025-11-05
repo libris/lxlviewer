@@ -175,7 +175,6 @@ export default {
         :isEnrichmentSource="isEnrichmentSource"
         :filtered-item="filteredItem"
       />
-          <!--{{ console.log('DATA:', this.inspector.data.mainEntity) }}-->
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formObj }}

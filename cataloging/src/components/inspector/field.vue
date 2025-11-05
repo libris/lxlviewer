@@ -555,18 +555,22 @@ export default {
       return !this.hasFind || !this.hasIdentify;
     },
     warningMessage() {
-      const missingI18n = `${StringUtil.getUiPhraseByLang("missing", this.user.settings.language, this.resources.i18n)}`
-      const andI18n = `${StringUtil.getUiPhraseByLang("och", this.user.settings.language, this.resources.i18n)}`
-
       if (!this.isCategoryField) return '';
+
+      const missingI18n = `${StringUtil.getUiPhraseByLang("missing", this.user.settings.language, this.resources.i18n)}`;
+
+      const customMessages = {
+        Find: `${StringUtil.getUiPhraseByLang("Add a content type according to RDA's controlled vocabulary, e.g., text", this.user.settings.language, this.resources.i18n)}`,
+        Identify: `${StringUtil.getUiPhraseByLang("Add a category at the identify level", this.user.settings.language, this.resources.i18n)}`
+      };
 
       const missing = [];
       if (!this.hasFind) missing.push('Find');
       if (!this.hasIdentify) missing.push('Identify');
 
       if (missing.length === 0) return '';
-      if (missing.length === 1) return `${missing[0]} is ${missingI18n}`;
-      return `${missing.join(` ${andI18n} `)} ${missingI18n}`;
+
+      return missing.map(field => `${field} ${missingI18n}. ${customMessages[field]}`).join('<br>');
     },
   },
   methods: {
@@ -1243,7 +1247,7 @@ export default {
         v-if="shouldShowWarning"
         class="Field-comment warning-triangle">
           <i class="fa fa-warning fa-fw icon--warn icon--sm" />
-          <span class="Field-commentText">{{ warningMessage }}</span>
+          <span class="Field-commentText" v-html="warningMessage"></span>
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>

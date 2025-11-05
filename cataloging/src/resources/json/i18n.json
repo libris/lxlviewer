@@ -483,6 +483,7 @@
     "Manage cookies": "Hantera kakor",
     "is empty": "är tom",
     "The property": "Egenskapen",
+<<<<<<< HEAD
     "Mark all": "Markera alla",
     "Unmark all": "Avmarkera alla",
     "Back to editing form": "Till redigeringsläget",
@@ -511,6 +512,8 @@
     "To be able to enrich, the selected entities need to be of the same type." : "För att berika behöver de valda entiterna vara av samma typ.",
     "To be able to merge entities, switch to a sigel with access." : "För att slå ihop entiter, byt till en sigel med rättigheter.",
     "One or more sigels have holdings on both the record to remove and the record to keep. Before merge, one of these holdings has to be manually removed, for each sigel:" : " En eller flera sigel har bestånd på både den post som ska behållas och den som ska tas bort. Innan ihopslagning behöver ett av dessa bestånd tas bort manuellt, för varje sigel:"
-    "and": "och"
+    "and": "och",
+    "Add a category at the identify level": "Lägg till en kategori på identify-nivå",
+    "Add a content type according to RDA's controlled vocabulary, e.g., text": "Lägg till en innehållstyp enligt RDAs termlista, t.ex. text"
   }
 }
