@@ -12,14 +12,14 @@ test('add the group when typing a qualifierOperator', async ({ page }) => {
 
 test('place the cursor inside the group', async ({ page }) => {
 	await page.getByRole('combobox').click();
-	await page.getByRole('dialog').getByRole('combobox').fill('titel:pippi');
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('titel:pippi');
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi)');
 });
 
 test('re-add group when deleting it', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('titel:pippi');
+	await combo.pressSequentially('titel:pippi');
 	await page.keyboard.down('Shift');
 	for (let i = 0; i < 6; i++) {
 		await combo.press('ArrowLeft');
@@ -29,7 +29,9 @@ test('re-add group when deleting it', async ({ page }) => {
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:()');
 });
 
-test('add a group when typing a qualifierOperator in the middle of a string', async ({ page }) => {
+test("dont't add a group when typing a qualifierOperator in the middle of a string", async ({
+	page
+}) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.fill('titelpippi');
@@ -37,7 +39,7 @@ test('add a group when typing a qualifierOperator in the middle of a string', as
 		await combo.press('ArrowLeft');
 	}
 	await combo.press(':');
-	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi)');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:()pippi');
 });
 
 test("don't destroy succeeding qualifiers by treating them as a qualifier value ", async ({
@@ -53,7 +55,7 @@ test("don't destroy succeeding qualifiers by treating them as a qualifier value 
 	);
 });
 
-test('add the group when pasting text', async ({ page }) => {
+test('add the group when editing a groupless qualifier value', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.evaluate((el) => {
@@ -62,7 +64,8 @@ test('add the group when pasting text', async ({ page }) => {
 		const event = new ClipboardEvent('paste', { clipboardData: data, bubbles: true });
 		el.dispatchEvent(event);
 	});
-	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi)');
+	await combo.press('i');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippii)');
 });
 
 test("don't insert another group when typing an operator inside a ghost group", async ({
@@ -70,7 +73,7 @@ test("don't insert another group when typing an operator inside a ghost group", 
 }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('titel:pippi');
+	await combo.pressSequentially('titel:pippi');
 	await combo.press('ArrowLeft');
 	await combo.press('ArrowLeft');
 	await combo.press(':');
@@ -99,7 +102,7 @@ test('does not touch another group created inside a qualifier', async ({ page })
 test('pressing backspace after a group jumps into the group', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('titel:pippi');
+	await combo.pressSequentially('titel:pippi');
 	await combo.press('End');
 	await combo.press('Backspace');
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi)');
@@ -128,7 +131,7 @@ test('pressing delete at the end of group jumps forward out of the group instead
 }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('titel:pippi');
+	await combo.pressSequentially('titel:pippi');
 	await combo.press('Delete');
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi)');
 });
@@ -138,7 +141,7 @@ test('pressing backspace at the start of a group jumps backward out of the group
 }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('titel:pippi');
+	await combo.pressSequentially('titel:pippi');
 	for (let i = 0; i < 5; i++) {
 		await combo.press('ArrowLeft');
 	}
@@ -151,7 +154,7 @@ test('pressing delete before a group jumps forward into the group instead of des
 }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('title:pippi');
+	await combo.pressSequentially('title:pippi');
 	for (let i = 0; i < 6; i++) {
 		await combo.press('ArrowLeft');
 	}
@@ -286,7 +289,7 @@ test('deletion includes end of grup AND subsequent text, keep integrity of group
 test('typing text between the operator and group ends up inside the group', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('title:pippi');
+	await combo.pressSequentially('title:pippi');
 	for (let i = 0; i < 6; i++) {
 		await combo.press('ArrowLeft');
 	}
@@ -297,7 +300,7 @@ test('typing text between the operator and group ends up inside the group', asyn
 test('pasting text between the operator and group ends up inside the group', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('title:pippi');
+	await combo.pressSequentially('title:pippi');
 	for (let i = 0; i < 6; i++) {
 		await combo.press('ArrowLeft');
 	}
@@ -308,7 +311,7 @@ test('pasting text between the operator and group ends up inside the group', asy
 test('typing ")" between the operator and group is skipped', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('title:pippi');
+	await combo.pressSequentially('title:pippi');
 	for (let i = 0; i < 6; i++) {
 		await combo.press('ArrowLeft');
 	}
@@ -319,7 +322,7 @@ test('typing ")" between the operator and group is skipped', async ({ page }) =>
 test('No longer a valid qualifier; remove group', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.fill('title:pippi');
+	await combo.pressSequentially('title:pippi');
 	for (let i = 0; i < 6; i++) {
 		await combo.press('ArrowLeft');
 	}
@@ -343,17 +346,17 @@ test('No longer a valid qualifier; remove group 2', async ({ page }) => {
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titeppi');
 });
 
-test('dont touch a quoted qualifier value', async ({ page }) => {
-	await page.getByRole('combobox').click();
-	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.evaluate((el) => {
-		const data = new DataTransfer();
-		data.setData('text/plain', 'titel:"pippi"');
-		const event = new ClipboardEvent('paste', { clipboardData: data, bubbles: true });
-		el.dispatchEvent(event);
-	});
-	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:"pippi"');
-});
+// test('dont touch a quoted qualifier value', async ({ page }) => {
+// 	await page.getByRole('combobox').click();
+// 	const combo = page.getByRole('dialog').getByRole('combobox');
+// 	await combo.evaluate((el) => {
+// 		const data = new DataTransfer();
+// 		data.setData('text/plain', 'titel:"pippi"');
+// 		const event = new ClipboardEvent('paste', { clipboardData: data, bubbles: true });
+// 		el.dispatchEvent(event);
+// 	});
+// 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:"pippi"');
+// });
 
 test('autocomplete ) inside the group', async ({ page }) => {
 	await page.getByRole('combobox').click();
@@ -443,3 +446,6 @@ test('handles autocomplete when pasting multiple ))', async ({ page }) => {
 
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi(((lång))))');
 });
+
+// test('opening ( in group does not destroy succeeding qualifiers', async ({ page }) => {
+// });

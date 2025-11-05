@@ -10,69 +10,42 @@ import type { SyntaxNode } from '@lezer/common';
  * If not - add/repair it. Exception: quoted qualifier values
  */
 export const createGhostGroup = (tr: Transaction) => {
-	if (!tr.docChanged || (!tr.isUserEvent('input') && !tr.isUserEvent('delete'))) {
-		return tr;
-	}
-
-	const start = tr.startState;
-	const after = tr.state;
-
-	const from = start.selection.main.from;
-	const to = start.selection.main.to;
-
-	const nodeAtHead = syntaxTree(start).resolveInner(from, 0);
-	const ghostGroup = getGhostGroup(nodeAtHead);
-
-	// inside a ghost group - don't do anything
-	if (ghostGroup && from > ghostGroup.from && to < ghostGroup.to) {
+	if (!tr.docChanged || !tr.isUserEvent('input')) {
 		return tr;
 	}
 
 	const changes: { from: number; to?: number; insert?: string }[] = [];
 	let selection: { anchor: number } | undefined;
 
-	syntaxTree(after).iterate({
-		enter(node) {
-			if (node.name !== 'Qualifier') return;
+	const prevNode = syntaxTree(tr.state).resolveInner(tr.state.selection.main.head, -1);
+	if (prevNode.name === 'QualifierOperator') {
+		const operator = tr.state.sliceDoc(prevNode.from, prevNode.to);
+		if (operator === ':' || operator === '=') {
+			// insert group after typing equality operator
+			changes.push({ from: prevNode.to, insert: '()' });
+			selection = { anchor: prevNode.to + 1 };
+		}
+	} else {
+		const currentNode = syntaxTree(tr.state).resolve(tr.state.selection.main.head, -1);
+		const qualifierValue = getParent(currentNode, 'QualifierValue');
 
-			const operatorNode = node.node.getChild('QualifierOperator');
-			if (!operatorNode) return;
+		if (qualifierValue && qualifierValue.node.firstChild?.name !== 'QualifierOuterGroup') {
+			// we are editing a groupless qualifier value
+			const operator = tr.state.sliceDoc(
+				qualifierValue.node.prevSibling?.from,
+				qualifierValue.node.prevSibling?.to
+			);
+			if (operator === ':' || operator === '=') {
+				// if the operator is equality, add ()
+				const { from, to } = qualifierValue;
+				changes.push({ from, insert: '(' });
+				changes.push({ from: to, insert: ')' });
 
-			const valueNode = node.node.getChild('QualifierValue');
-			const opEnd = operatorNode.to;
-
-			// missing QualifierValue; insert () and jump inside
-			if (!valueNode) {
-				changes.push({ from: opEnd, insert: '()' });
-				selection = { anchor: opEnd + 1 };
-				return;
-			}
-
-			let valText = after.sliceDoc(valueNode.from, valueNode.to);
-
-			// skip quoted values - keep atomic ranges intact
-			if (valText.startsWith('"') && valText.endsWith('"')) return;
-
-			const startTree = syntaxTree(start);
-			const overlappingQualifier = startTree.resolveInner(valueNode.from, 1)?.parent;
-			if (overlappingQualifier && overlappingQualifier.name === 'QualifierKey') {
-				// the value was actually a key from a pre-exsting qualifier -> just insert ()
-				changes.push({ from: opEnd, insert: '()' });
-				selection = { anchor: opEnd + 1 };
-				return;
-			}
-
-			// qualifierValue exists but is missing outer group
-			if (!valText.startsWith('(')) {
-				changes.push({ from: valueNode.from, insert: '(' });
-				valText = after.sliceDoc(valueNode.from + 1, valueNode.to + 1);
-			}
-
-			if (!valText.endsWith(')')) {
-				changes.push({ from: valueNode.to, insert: ')' });
+				const offset = tr.state.selection.main.head + 1;
+				selection = { anchor: offset };
 			}
 		}
-	});
+	}
 
 	if (!changes.length) return tr;
 
@@ -175,7 +148,7 @@ export const jumpPastParens = (tr: Transaction) => {
 	if (isBackspace) {
 		// backspace after a group -> jump inside
 		const resolvedBefore = syntaxTree(state).resolveInner(head, -1);
-		const groupBefore = getGhostGroup(resolvedBefore);
+		const groupBefore = getParent(resolvedBefore, 'QualifierOuterGroup');
 		if (groupBefore && head === groupBefore.to) {
 			return {
 				changes: [],
@@ -187,7 +160,7 @@ export const jumpPastParens = (tr: Transaction) => {
 
 		// backspace at beginning of group -> jump outside
 		const resolvedInside = syntaxTree(state).resolveInner(head, 0);
-		const groupInside = getGhostGroup(resolvedInside);
+		const groupInside = getParent(resolvedInside, 'QualifierOuterGroup');
 		if (groupInside) {
 			const openPos = groupInside.from;
 			if (head === openPos + 1) {
@@ -204,7 +177,7 @@ export const jumpPastParens = (tr: Transaction) => {
 	if (isDelete) {
 		// delete before a group -> jump inside
 		const resolvedAfter = syntaxTree(state).resolveInner(head, 1);
-		const groupAfter = getGhostGroup(resolvedAfter);
+		const groupAfter = getParent(resolvedAfter, 'QualifierOuterGroup');
 		if (groupAfter && head === groupAfter.from) {
 			return {
 				changes: [],
@@ -216,7 +189,7 @@ export const jumpPastParens = (tr: Transaction) => {
 
 		// delete at end of group -> jump outside
 		const resolvedInside = syntaxTree(state).resolveInner(head, 0);
-		const groupInside = getGhostGroup(resolvedInside);
+		const groupInside = getParent(resolvedInside, 'QualifierOuterGroup');
 		if (groupInside && head === groupInside.to - 1) {
 			return {
 				changes: [],
@@ -241,7 +214,7 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 
 	// detect ghost group directly after cursor
 	const nodeAfter = syntaxTree(start).resolveInner(head, +1);
-	const ghostGroup = getGhostGroup(nodeAfter);
+	const ghostGroup = getParent(nodeAfter, 'QualifierOuterGroup');
 	if (!ghostGroup) return tr;
 
 	if (head !== ghostGroup.from) return tr;
@@ -270,7 +243,7 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 			changes: shiftedChanges,
 			sequential: true,
 			selection: newSelection,
-			userEvent: tr.annotation(Transaction.userEvent) || 'input'
+			userEvent: tr.annotation(Transaction.userEvent) || 'input.complete'
 		}
 	];
 };
@@ -302,7 +275,8 @@ export const repairGhostGroup = (tr: Transaction) => {
 		const nodeBefore = startTree.resolveInner(fromA, -1);
 		const nodeAfter = startTree.resolveInner(toA, 1);
 
-		const ghostGroup = getGhostGroup(nodeBefore) || getGhostGroup(nodeAfter);
+		const ghostGroup =
+			getParent(nodeBefore, 'QualifierOuterGroup') || getParent(nodeAfter, 'QualifierOuterGroup');
 		if (!ghostGroup) return;
 
 		// Map ghost group to after-state
@@ -357,7 +331,7 @@ export const balanceInnerParens = (tr: Transaction) => {
 		if (!parenChanged) return;
 
 		const node = startTree.resolveInner(fromA, 0);
-		const ghostGroup = getGhostGroup(node);
+		const ghostGroup = getParent(node, 'QualifierOuterGroup');
 		if (!ghostGroup) return;
 
 		const mappedFrom = tr.changes.mapPos(ghostGroup.from, 1);
@@ -434,14 +408,14 @@ export const balanceInnerParens = (tr: Transaction) => {
 /**
  * If a node belongs to a qualifier value "ghost group", return the group.
  */
-function getGhostGroup(node: SyntaxNode): SyntaxNode | false {
-	if (!node) return false;
+function getParent(node: SyntaxNode, name: string): SyntaxNode | false {
+	if (!node || !name) return false;
 
 	let current: SyntaxNode | null = node;
 
-	while (current && current.name !== 'QualifierOuterGroup') {
+	while (current && current.name !== name) {
 		current = current.parent;
 	}
 
-	return current?.name === 'QualifierOuterGroup' ? current : false;
+	return current?.name === name ? current : false;
 }
