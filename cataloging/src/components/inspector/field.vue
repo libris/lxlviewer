@@ -554,37 +554,54 @@ export default {
       if (!this.isCategoryField) return false;
       return !this.hasFind || !this.hasIdentify;
     },
-warningMessage() {
-  if (!this.isCategoryField) return '';
+    warningMessage() {
+      if (!this.isCategoryField) return { text: '', missing: [] };
 
-  const missingI18n = StringUtil.getUiPhraseByLang("missing", this.user.settings.language, this.resources.i18n);
+      const missingI18n = StringUtil.getUiPhraseByLang(
+        "missing",
+        this.user.settings.language,
+        this.resources.i18n
+      );
 
-  const customMessages = {
-    Find: StringUtil.getUiPhraseByLang(
-      "Add a content type according to RDA's controlled vocabulary, e.g., text",
-      this.user.settings.language,
-      this.resources.i18n
-    ),
-    Identify: StringUtil.getUiPhraseByLang(
-      "Add a category at the identify level",
-      this.user.settings.language,
-      this.resources.i18n
-    )
-  };
+      const andI18n = StringUtil.getUiPhraseByLang(
+        "and",
+        this.user.settings.language,
+        this.resources.i18n
+      );
 
-  const missing = [];
-  if (!this.hasFind) missing.push('Find');     
-  if (!this.hasIdentify) missing.push('Identify');
+      const customMessages = {
+        Find: StringUtil.getUiPhraseByLang(
+          "Add a content type according to RDA's controlled vocabulary, e.g., text",
+          this.user.settings.language,
+          this.resources.i18n
+        ),
+        Identify: StringUtil.getUiPhraseByLang(
+          "Add a category at the identify level",
+          this.user.settings.language,
+          this.resources.i18n
+        )
+      };
 
-  if (missing.length === 0) return '';
+      const missing = [];
+      if (!this.hasFind) missing.push('Find');
+      if (!this.hasIdentify) missing.push('Identify');
 
-  return missing
-    .map(field => {
-      const fieldI18n = StringUtil.getUiPhraseByLang(field, this.user.settings.language, this.resources.i18n);
-      return `${fieldI18n} ${missingI18n}. ${customMessages[field]}`;
-    })
-    .join('<br>');
-},
+      if (missing.length === 0) return { text: '', missing: [] };
+
+      const translatedFields = missing.map(field =>
+        StringUtil.getUiPhraseByLang(field, this.user.settings.language, this.resources.i18n)
+      );
+
+      const fieldList =
+        translatedFields.length > 1
+          ? `${translatedFields.slice(0, -1).join(', ')} ${andI18n} ${translatedFields.slice(-1)} ${missingI18n}`
+          : `${translatedFields[0]} ${missingI18n}` ;
+
+      const text = missing.map(field => customMessages[field]).join('<br>');
+
+      return { text, fieldList, missing: translatedFields };
+    },
+
 
   },
   methods: {
@@ -1162,6 +1179,7 @@ warningMessage() {
       class="Field-content"
       v-bind:class="{ 'is-locked': locked, 'warning-wrapper': shouldShowWarning }"
       v-if="fieldKey !== '@type' && isObjectArray">
+      <div   v-bind:class="{ 'warning-inner': shouldShowWarning }">
       <div class="Field-contentItem">
         <item-bylang
           v-if="getDatatype(firstInValueAsArray) == 'language'"
@@ -1257,12 +1275,15 @@ warningMessage() {
           :is-enrichment-source="isEnrichmentSource"
         />
       </div>
+      </div>
       <div 
         v-if="shouldShowWarning"
-        class="Field-comment warning-triangle">
-          <i class="fa fa-warning fa-fw icon--warn icon--sm" />
-          <span class="Field-commentText" v-html="warningMessage"></span>
+        class="Field-comment warning-triangle"
+      >
+        <i class="fa fa-warning fa-fw icon--warn icon--sm" />
+        <span class="Field-commentText" v-html="warningMessage.text"></span>
       </div>
+      <span v-if="shouldShowWarning" class="warning-text" v-html="warningMessage.fieldList"></span>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
 
@@ -1869,9 +1890,21 @@ warningMessage() {
   z-index: 99;
 }
 
+.warning-Inner {
+  max-width: 85%;
+}
+
+.warning-text {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+}
+
 .warning-triangle {
   position: absolute;
-  right: 0.5em;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
