@@ -93,10 +93,11 @@ test('does not touch another group created inside a qualifier', async ({ page })
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.pressSequentially('titel:(a OR b)');
-	for (let i = 0; i < 6; i++) {
+	await combo.press('ArrowRight');
+	for (let i = 0; i < 7; i++) {
 		await combo.press('Backspace');
 	}
-	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:((a)');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(a)');
 });
 
 test('pressing backspace after a group jumps into the group', async ({ page }) => {
