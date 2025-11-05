@@ -70,10 +70,6 @@ export default {
       type: [Object, String, Array, Boolean, Number],
       default: null,
     },
-    filteredItem:{
-      type:[Object, Array],
-      default:null
-    },
     isLocked: {
       type: Boolean,
       default: false,
@@ -519,11 +515,33 @@ export default {
       return this.entityType === ANY_TYPE;
     },
     hasFind() {
-      const find = this.filteredItem?.instanceOf?._categoryByCollection?.find;
+      if (!this.itemData) return false
+
+      let find = null
+
+      if(this.archType === 'Instance') {
+        find = this.itemData?.instanceOf?._categoryByCollection?.find;
+      }
+
+      if(this.archType === 'Work') {
+        find = this.itemData._categoryByCollection?.find;
+      }
+
       return !!find;
     },
     hasIdentify() {
-      const identify = this.filteredItem?.instanceOf?._categoryByCollection?.identify;
+      if (!this.itemData) return false
+
+      let identify = null
+
+      if(this.archType === 'Instance') {
+        identify = this.itemData?.instanceOf?._categoryByCollection?.identify;
+      }
+
+      if(this.archType === 'Work') {
+        identify = this.itemData._categoryByCollection?.identify;
+      }
+
       return !!identify;
     },
     isCategoryField() {
@@ -532,12 +550,10 @@ export default {
         (this.archType === 'Work' && this.fieldKey === 'category')
       );
     },
-
     shouldShowWarning() {
       if (!this.isCategoryField) return false;
       return !this.hasFind || !this.hasIdentify;
     },
-
     warningMessage() {
       const missingI18n = `${StringUtil.getUiPhraseByLang("missing", this.user.settings.language, this.resources.i18n)}`
       const andI18n = `${StringUtil.getUiPhraseByLang("och", this.user.settings.language, this.resources.i18n)}`
