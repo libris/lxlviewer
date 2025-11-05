@@ -514,6 +514,7 @@
     "One or more sigels have holdings on both the record to remove and the record to keep. Before merge, one of these holdings has to be manually removed, for each sigel:" : " En eller flera sigel har bestånd på både den post som ska behållas och den som ska tas bort. Innan ihopslagning behöver ett av dessa bestånd tas bort manuellt, för varje sigel:"
     "and": "och",
     "Add a category at the identify level": "Lägg till en kategori på identify-nivå",
-    "Add a content type according to RDA's controlled vocabulary, e.g., text": "Lägg till en innehållstyp enligt RDAs termlista, t.ex. text"
+    "Add a content type according to RDA's controlled vocabulary, e.g., text": "Lägg till en innehållstyp enligt RDAs termlista, t.ex. text",
+    "Find": "Innehållstyp"
   }
 }

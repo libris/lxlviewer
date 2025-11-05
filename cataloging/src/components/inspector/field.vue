@@ -554,24 +554,38 @@ export default {
       if (!this.isCategoryField) return false;
       return !this.hasFind || !this.hasIdentify;
     },
-    warningMessage() {
-      if (!this.isCategoryField) return '';
+warningMessage() {
+  if (!this.isCategoryField) return '';
 
-      const missingI18n = `${StringUtil.getUiPhraseByLang("missing", this.user.settings.language, this.resources.i18n)}`;
+  const missingI18n = StringUtil.getUiPhraseByLang("missing", this.user.settings.language, this.resources.i18n);
 
-      const customMessages = {
-        Find: `${StringUtil.getUiPhraseByLang("Add a content type according to RDA's controlled vocabulary, e.g., text", this.user.settings.language, this.resources.i18n)}`,
-        Identify: `${StringUtil.getUiPhraseByLang("Add a category at the identify level", this.user.settings.language, this.resources.i18n)}`
-      };
+  const customMessages = {
+    Find: StringUtil.getUiPhraseByLang(
+      "Add a content type according to RDA's controlled vocabulary, e.g., text",
+      this.user.settings.language,
+      this.resources.i18n
+    ),
+    Identify: StringUtil.getUiPhraseByLang(
+      "Add a category at the identify level",
+      this.user.settings.language,
+      this.resources.i18n
+    )
+  };
 
-      const missing = [];
-      if (!this.hasFind) missing.push('Find');
-      if (!this.hasIdentify) missing.push('Identify');
+  const missing = [];
+  if (!this.hasFind) missing.push('Find');     
+  if (!this.hasIdentify) missing.push('Identify');
 
-      if (missing.length === 0) return '';
+  if (missing.length === 0) return '';
 
-      return missing.map(field => `${field} ${missingI18n}. ${customMessages[field]}`).join('<br>');
-    },
+  return missing
+    .map(field => {
+      const fieldI18n = StringUtil.getUiPhraseByLang(field, this.user.settings.language, this.resources.i18n);
+      return `${fieldI18n} ${missingI18n}. ${customMessages[field]}`;
+    })
+    .join('<br>');
+},
+
   },
   methods: {
     HAS_ID_KEY() {
