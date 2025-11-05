@@ -526,16 +526,32 @@ export default {
       const identify = this.filteredItem?.instanceOf?._categoryByCollection?.identify;
       return !!identify;
     },
-    shouldShowWarning() {
-      if (this.archType === 'Instance') {
-        return this.path === 'mainEntity.instanceOf.category' && (!this.hasFind || !this.hasIdentify);
-      }
-      if (this.archType === 'Work') {
-        return this.fieldKey === 'category' && (!this.hasFind || !this.hasIdentify);
-      }
-      return null
+    isCategoryField() {
+      return (
+        (this.archType === 'Instance' && this.path === 'mainEntity.instanceOf.category') ||
+        (this.archType === 'Work' && this.fieldKey === 'category')
+      );
+    },
 
-    }
+    shouldShowWarning() {
+      if (!this.isCategoryField) return false;
+      return !this.hasFind || !this.hasIdentify;
+    },
+
+    warningMessage() {
+      const missingI18n = `${StringUtil.getUiPhraseByLang("missing", this.user.settings.language, this.resources.i18n)}`
+      const andI18n = `${StringUtil.getUiPhraseByLang("och", this.user.settings.language, this.resources.i18n)}`
+
+      if (!this.isCategoryField) return '';
+
+      const missing = [];
+      if (!this.hasFind) missing.push('Find');
+      if (!this.hasIdentify) missing.push('Identify');
+
+      if (missing.length === 0) return '';
+      if (missing.length === 1) return `${missing[0]} is ${missingI18n}`;
+      return `${missing.join(` ${andI18n} `)} ${missingI18n}`;
+    },
   },
   methods: {
     HAS_ID_KEY() {
@@ -1211,7 +1227,7 @@ export default {
         v-if="shouldShowWarning"
         class="Field-comment warning-triangle">
           <i class="fa fa-warning fa-fw icon--warn icon--sm" />
-          <span class="Field-commentText">heeej</span>
+          <span class="Field-commentText">{{ warningMessage }}</span>
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
