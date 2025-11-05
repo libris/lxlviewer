@@ -447,5 +447,24 @@ test('handles autocomplete when pasting multiple ))', async ({ page }) => {
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi(((lång))))');
 });
 
-// test('opening ( in group does not destroy succeeding qualifiers', async ({ page }) => {
-// });
+test('opening ( in group does not destroy succeeding qualifiers', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('a:aa');
+	await combo.press('ArrowRight');
+	await combo.pressSequentially('b:bb');
+	for (let i = 0; i < 7; i++) await combo.press('ArrowLeft');
+	await combo.pressSequentially('(');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('a:(a()a)b:(bb)');
+});
+
+test('multiple opening ( in group does not destroy succeeding qualifiers', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('a:aa');
+	await combo.press('ArrowRight');
+	await combo.pressSequentially('b:bb');
+	for (let i = 0; i < 7; i++) await combo.press('ArrowLeft');
+	await combo.pressSequentially('(((');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('a:(a((()))a)b:(bb)');
+});

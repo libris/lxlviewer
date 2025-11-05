@@ -304,7 +304,8 @@ export const repairGhostGroup = (tr: Transaction) => {
 };
 
 /**
- * Prevents destroying the ghost group by typing ) inside the group, parsed as end of group.
+ * Prevents destroying the ghost group by typing ')' inside the group, parsed as end of group.
+ * Or typing '(' which can interfere with succeeding qualifiers
  * Autocompletes ')' with '(' and reverse; removes any stray ')' when deleting '('.
  */
 export const balanceInnerParens = (tr: Transaction) => {
@@ -338,23 +339,30 @@ export const balanceInnerParens = (tr: Transaction) => {
 		const mappedTo = tr.changes.mapPos(ghostGroup.to, -1);
 
 		// only operate inside group
-		if (fromB <= mappedFrom || fromB > mappedTo) return;
+		if (fromB <= mappedFrom || fromB >= mappedTo) return;
 
 		const innerFrom = mappedFrom + 1;
 		const innerTo = mappedTo - 1;
 		const afterContent = after.doc.sliceString(innerFrom, innerTo);
 
-		// count parens
 		const count = (text: string, char: string) =>
 			(text.match(new RegExp(`\\${char}`, 'g')) || []).length;
 		const afterOpen = count(afterContent, '(');
 		const afterClose = count(afterContent, ')');
 
+		// autocomplete '('
+		if (isInput && insertedText.includes('(')) {
+			const imbalance = afterOpen - afterClose;
+			if (imbalance > 0) {
+				const insertPos = fromB + insertedText.length;
+				edits.push({ from: insertPos, insert: ')'.repeat(imbalance) });
+			}
+		}
+
 		// autocomplete ')'
 		if (isInput && insertedText.includes(')')) {
 			const imbalance = afterClose - afterOpen;
 			if (imbalance > 0) {
-				// insert missing '(' equal to imbalance
 				const insertPos = fromB;
 				edits.push({ from: insertPos, insert: '('.repeat(imbalance) });
 
@@ -366,27 +374,36 @@ export const balanceInnerParens = (tr: Transaction) => {
 			}
 		}
 
-		// cleanup stray ')'
 		if (isDelete) {
 			const deletedOpens = (deletedText.match(/\(/g) || []).length;
 			const deletedCloses = (deletedText.match(/\)/g) || []).length;
 
-			// ff we removed multiple '(', try to balance by removing extra ')'
-			if (deletedOpens > deletedCloses) {
-				const afterContent = after.doc.sliceString(innerFrom, innerTo);
-				const afterOpen = count(afterContent, '(');
-				const afterClose = count(afterContent, ')');
+			const afterInner = after.doc.sliceString(innerFrom, innerTo);
+			const strayOpen = count(afterInner, '(');
+			const strayClose = count(afterInner, ')');
 
-				if (afterClose > afterOpen) {
-					let toRemove = afterClose - afterOpen;
-					let pos = innerTo;
-					while (toRemove > 0 && pos > innerFrom) {
-						pos--;
-						if (after.doc.sliceString(pos, pos + 1) === ')') {
-							edits.push({ from: pos, to: pos + 1 });
-							toRemove--;
-						}
+			// remove stray ')'
+			if (deletedOpens > deletedCloses && strayClose > strayOpen) {
+				let toRemove = strayClose - strayOpen;
+				let pos = innerTo;
+				while (toRemove > 0 && pos > innerFrom) {
+					pos--;
+					if (after.doc.sliceString(pos, pos + 1) === ')') {
+						edits.push({ from: pos, to: pos + 1 });
+						toRemove--;
 					}
+				}
+			}
+			// remove stray '('
+			if (deletedCloses > deletedOpens && strayOpen > strayClose) {
+				let toRemove = strayOpen - strayClose;
+				let pos = innerFrom;
+				while (toRemove > 0 && pos < innerTo) {
+					if (after.doc.sliceString(pos, pos + 1) === '(') {
+						edits.push({ from: pos, to: pos + 1 });
+						toRemove--;
+					}
+					pos++;
 				}
 			}
 		}
