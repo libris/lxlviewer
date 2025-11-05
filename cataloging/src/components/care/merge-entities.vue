@@ -253,6 +253,8 @@ export default {
     doMerge() {
       this.createMergeBulkChangeAndSave();
       this.showConfirmMergeModal = false;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+
       //TODO: remove source from flagged?
       // this.setRunStatus(Status.Ready);
     },
@@ -693,7 +695,7 @@ export default {
       <div class="MergeView-descriptionText">
         <span class="iconCircle"><i class="fa fa-fw fa-pencil"/></span>
         <span class="MergeView-description">
-          Gör slutgiltiga ändringar för den entitet som ska behållas. Tryck på ihopslagningsknappen i verktygsmenyn när du är klar!
+          Gör slutgiltiga ändringar för den entitet som ska behållas.
       </span>
       </div>
       <div>
@@ -739,7 +741,7 @@ export default {
           </div>
           <div class="Modal-buttonContainer">
             <button class="btn btn-primary btn--md" @click="doMerge()">
-              {{ translatePhrase('Merge') }}</button>
+              {{ translatePhrase('Continue') }}</button>
             <button class="btn btn-info btn--md" @click="closeConfirmMergeModal()">{{ translatePhrase('Cancel') }}</button>
           </div>
         </div>

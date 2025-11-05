@@ -236,8 +236,7 @@ export default {
       v-tooltip.left="translatePhrase('Merge')"
       @click="openConfirmMergeModal"
       :aria-label="translatePhrase('Merge')">
-      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving" />
-      <i class="fa fa-fw fa-compress" v-show="!inspector.status.saving" />
+      <i class="fa fa-fw fa-check"/>
     </button>
   </div>
 </template>
