@@ -1,7 +1,7 @@
 <script>
 import {mapActions, mapGetters} from 'vuex';
 import {cloneDeep, each, get, isEmpty, unset} from 'lodash-es';
-import {capitalize, labelByLang, translatePhrase} from '@/utils/filters';
+import {asFnurgelLink, capitalize, labelByLang, translatePhrase} from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import EntitySummary from '@/components/shared/entity-summary.vue';
 import EntityForm from "@/components/inspector/entity-form.vue";
@@ -393,6 +393,7 @@ export default {
         this.saveTargetRecord(target).then(() => {
             if (this.recordSuccessfullySaved) {
               this.saveNewBulkChange(mergeBulkChange);
+              this.$router.push({ path: asFnurgelLink(this.inspector.data.record['@id']) });
             }
             this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
           }
