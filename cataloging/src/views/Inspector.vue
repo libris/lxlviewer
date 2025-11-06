@@ -23,6 +23,7 @@ import ValidationSummary from '@/components/inspector/validation-summary.vue';
 import FullscreenPanel from '@/components/shared/fullscreen-panel.vue';
 import VersionHistory from '@/components/inspector/version-history.vue';
 import { getChangeList } from "@/utils/enrich.js";
+import EnrichWrapper from "@/components/care/enrich-wrapper.vue";
 
 export default {
   name: 'Inspector',
@@ -92,6 +93,10 @@ export default {
       mergeRecordsModal: {
         open: false,
         inputId: '',
+      },
+      enrichFromSelectionModal: {
+        open: false,
+        inputId: '',
       }
     };
   },
@@ -122,13 +127,13 @@ export default {
       mergeViewModal.open = true;
       this.$store.dispatch('setInspectorStatusValue', { property: 'mergeViewModal', value: mergeViewModal });
     },
-    closeMergeViewModal() {
-      const mergeViewModal = this.inspector.status.mergeViewModal;
-      mergeViewModal.open = false;
+    closeEnrichFromSelectionModal() {
+      const modal = this.inspector.status.enrichFromSelection;
+      modal.open = false;
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
       this.setEnrichmentChanges(null);
-      this.$store.dispatch('setInspectorStatusValue', { property: 'mergeViewModal', value: mergeViewModal });
+      this.$store.dispatch('setInspectorStatusValue', { property: 'enrichFromSelection', value: modal });
     },
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
@@ -282,6 +287,12 @@ export default {
       } else if (id.length > 0) {
         this.applyRecordAsTemplate(id, this.enrichFromIdModal.detailed);
       }
+    },
+    openEnrichFromSelectionModal() {
+      this.setEnrichmentTarget(this.inspector.data);
+      const enrichFromSelection = this.inspector.status.enrichFromSelection;
+      enrichFromSelection.open = true;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'enrichFromSelection', value: enrichFromSelection });
     },
     confirmOpenMergeView() {
       this.mergeRecordsModal.open = false;
@@ -1069,6 +1080,8 @@ export default {
         this.toggleEnrichFromIdModal(true, true);
       } else if (val.name === 'open-merge-view') {
         this.toggleMergeViewModal(true);
+      } else if (val.name === 'open-enrich-from-selection') {
+        this.openEnrichFromSelectionModal()
       } else if (val.name === 'replace-data') {
         this.replaceData(val.value);
       } else if (val.name === 'apply-override') {
@@ -1145,6 +1158,7 @@ export default {
     },
   },
   components: {
+    EnrichWrapper,
     'entity-header': EntityHeader,
     'entity-form': EntityForm,
     'modal-component': ModalComponent,
@@ -1316,18 +1330,16 @@ export default {
       </template>
     </modal-component>
 
-    <modal-component :class="{ 'DetailedEnrichmentModal': !status.panelOpen, 'DetailedEnrichmentModal-panelOpen': status.panelOpen }"
-                     :title="translatePhrase('Berika från post')"
-                     v-if="inspector.status.mergeViewModal.open === true"
-                     @close="closeMergeViewModal"
+    <modal-component class="EnrichFromSelectionModal"
+                     :title="translatePhrase('Enrich from selection')"
+                     v-if="inspector.status.enrichFromSelection.open === true"
+                     @close="closeEnrichFromSelectionModal"
                      :backdrop-close="false">
       <template #modal-body>
-<!--        <DetailedEnrichment :floating-dialogs="true" />-->
-<!--        <MergeRecords-->
-<!--          :floating-dialogs="true"-->
-<!--        />-->
+        <enrich-wrapper></enrich-wrapper>
       </template>
     </modal-component>
+
 
     <modal-component
       class="Merge"
@@ -1486,6 +1498,10 @@ export default {
 }
 
 .DetailedEnrichmentModal .ModalComponent-container {
+  width: 96vw;
+}
+
+.EnrichFromSelectionModal .ModalComponent-container {
   width: 96vw;
 }
 

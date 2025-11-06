@@ -53,6 +53,10 @@ export default {
       type: String,
       default: '',
     },
+    targetLocked: {
+      type: Boolean,
+      default: false,
+    }
   },
   components: {
     'merge-toolbar': MergeToolbar,
@@ -612,9 +616,9 @@ export default {
           :label="sourcePickerLabel"
           :top-label="sourceTopLabel"
           :flaggedInstances="flagged"
-          :expand="false">
+        >
         </record-picker>
-        <div class="MergeView-separator" v-if="flagged.length > 0">
+        <div class="MergeView-separator" v-if="flagged.length > 0 && !targetLocked">
           <button
             class="btn btn-primary"
             @click="switchRecords"
@@ -624,12 +628,23 @@ export default {
           </button>
         </div>
         <record-picker
-          v-if="flagged.length > 0"
+          v-if="!targetLocked"
           name="mergeTargetId"
           opposite="mergeSourceId"
           :label="targetPickerLabel"
           :top-label="targetTopLabel"
-          :flaggedInstances="flagged" />
+          :flaggedInstances="flagged"
+          :locked="targetLocked"
+        />
+        <record-picker
+          v-if="targetLocked"
+          name="mergeTargetId"
+          opposite="mergeSourceId"
+          :label="targetPickerLabel"
+          :top-label="targetTopLabel"
+          :flaggedInstances="[this.inspector.data.mainEntity]"
+          :locked="targetLocked"
+        />
       </div>
       <div>
         <div v-if="bothRecordsSelected" class="MergeView-recordsContainer" :class="{ 'is-empty': !bothRecordsSelected }">

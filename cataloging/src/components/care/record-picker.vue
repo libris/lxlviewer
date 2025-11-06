@@ -34,6 +34,10 @@ export default {
     topLabel: {
       type: String,
       default: '',
+    },
+    locked: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -88,7 +92,7 @@ export default {
   },
   watch: {
     userFlagged(newVal) {
-      if (this.selected) {
+      if (this.selected && !this.locked) {
         const selectedIsFlagged = newVal.filter((item) => item['@id'] === this.selected['@id']);
         if (selectedIsFlagged.length === 0) {
           this.unselectThis();
@@ -108,6 +112,7 @@ export default {
       }
     },
     unselectThis() {
+      console.log('explicitly unselecting')
       const changeObj = { [this.name]: null };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj })
         .then(() => this.focusInput());
@@ -213,6 +218,7 @@ export default {
             :valueDisplayLimit=1
             :encodingLevel="selected.encodingLevel" />
           <span
+            v-if="!locked"
             class="RecordPicker-closeBtn"
             role="button"
             @click="unselectThis"

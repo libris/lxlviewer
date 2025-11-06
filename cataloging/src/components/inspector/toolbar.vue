@@ -155,6 +155,12 @@ export default {
         name: 'open-merge-view',
       });
     },
+    openEnrichFromSelection() {
+      this.hideToolsMenu();
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'open-enrich-from-selection',
+      });
+    },
     initOverridePicker() {
       this.hideToolsMenu();
       const self = this;
@@ -649,6 +655,12 @@ export default {
           <a class="Toolbar-menuLink" @click="openMergeView">
             <i class="fa fa-fw fa-clipboard" />
             {{ translatePhrase('Merge records') }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="openEnrichFromSelection">
+            <i class="fa fa-fw fa-clipboard" />
+            {{ translatePhrase('Enrich from selection') }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">

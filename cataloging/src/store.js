@@ -64,6 +64,9 @@ const store = createStore({
         mergeViewModal: {
           open: false,
         },
+        enrichFromSelection: {
+          open: false,
+        },
         sideBySide: false,
         saving: false,
         opening: false,
