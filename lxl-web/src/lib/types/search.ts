@@ -52,11 +52,14 @@ export interface SearchResultItem {
 
 type FacetGroupId = string;
 
+type FacetLabel = { decorated: DisplayDecoratedLite; str: string; discriminator?: string } | string;
+
 export interface FacetValue {
-	label: { decorated: DisplayDecoratedLite; str: string; discriminator?: string };
+	label: FacetLabel;
 	totalItems: number;
 	view: Link;
 	facets?: Facet[];
+	selected?: boolean;
 	values?: (FacetValue | FacetRange)[];
 }
 
@@ -83,8 +86,9 @@ export interface FacetGroup {
 }
 
 export interface Facet {
-	label: string;
 	dimension: string;
+	view?: Link;
+	label: FacetLabel;
 	operator: string;
 	maxItems: number;
 	values: (FacetValue | FacetRange)[];

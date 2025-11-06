@@ -380,6 +380,28 @@ function displayFacetGroups(
 	return result;
 }
 
+function getFacetLabel({
+	data,
+	displayUtil,
+	locale,
+	translate
+}: {
+	data: Slice | Observation;
+	displayUtil: DisplayUtil;
+	locale: LocaleCode;
+	translate: TranslateFn;
+}) {
+	if ('object' in data) {
+		const decorated = toLite(displayUtil.lensAndFormat(data.object, LensType.Chip, locale));
+		return {
+			decorated,
+			str: toString(decorated),
+			discriminator: getUriSlug(getAtPath(data.object, ['inScheme', JsonLd.ID], ''))
+		};
+	} else {
+		return translate(`facet.${data.alias || data.dimension}`);
+	}
+}
 function getFacetValue({
 	observation,
 	dimension,
@@ -395,20 +417,23 @@ function getFacetValue({
 	translate: TranslateFn;
 	usePath?: string;
 }): FacetValue | FacetRange {
-	const decorated = toLite(displayUtil.lensAndFormat(observation.object, LensType.Chip, locale));
-
 	return {
-		label: {
-			decorated,
-			str: toString(decorated),
-			discriminator: getUriSlug(getAtPath(observation.object, ['inScheme', JsonLd.ID], ''))
-		},
+		label: getFacetLabel({ data: observation, displayUtil, locale, translate }),
 		view: replacePath(observation.view, usePath),
 		totalItems: observation.totalItems,
+		selected: observation._selected,
 		facets: observation.sliceByDimension
 			? Object.values(observation.sliceByDimension).map(
 					(slice) =>
-						getFacet({ slice, parentDimension: dimension, displayUtil, locale, translate, usePath }) // we should probably add parentDimension here...
+						getFacet({
+							slice,
+							observation,
+							parentDimension: dimension,
+							displayUtil,
+							locale,
+							translate,
+							usePath
+						}) // we should probably add parentDimension here...
 				)
 			: undefined
 	};
@@ -416,6 +441,7 @@ function getFacetValue({
 
 function getFacet({
 	slice,
+	observation,
 	parentDimension,
 	displayUtil,
 	locale,
@@ -423,19 +449,23 @@ function getFacet({
 	usePath
 }: {
 	slice: Slice;
+	observation?: Observation;
 	parentDimension?: string;
 	displayUtil: DisplayUtil;
 	locale: LocaleCode;
 	translate: TranslateFn;
 	usePath?: string;
-}): Facet {
+}): Facet | MultiSelectFacet {
 	const dimension = (parentDimension ? `${parentDimension}/` : '') + slice.dimension;
 	return {
 		dimension,
-		label: translate(`facet.${slice.alias || slice.dimension}`),
+		view: observation ? replacePath(observation.view, usePath) : undefined,
+		label: getFacetLabel({ data: slice, displayUtil, locale, translate }),
 		operator: slice._connective,
 		maxItems: slice.maxItems,
 		search: slice.search,
+		alias: slice.alias, // is alias needed?
+		selected: observation?._selected, // should facets be aware of selected?
 		values: slice.observation.map((observationItem) =>
 			getFacetValue({
 				observation: observationItem,
