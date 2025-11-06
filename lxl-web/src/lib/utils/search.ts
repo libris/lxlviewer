@@ -14,6 +14,8 @@ import {
 	type DatatypeProperty,
 	type DisplayMapping,
 	type FacetGroup,
+	type FacetValue,
+	type FacetRange,
 	type ItemDebugInfo,
 	type MultiSelectFacet,
 	type Observation,
@@ -21,11 +23,13 @@ import {
 	type SearchMapping,
 	SearchOperators,
 	type SearchResult,
-	type SearchResultItem
+	type SearchResultItem,
+	type Slice,
+	type Facet
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
-import { type LocaleCode as LangCode } from '$lib/i18n/locales';
+import { type LocaleCode as LangCode, type LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
@@ -73,6 +77,11 @@ export async function asResult(
 			myLibraries,
 			maxScores
 		),
+		...(view?.stats?.sliceByDimension && {
+			facets: Object.values(view.stats.sliceByDimension).map((slice) =>
+				getFacet({ slice, displayUtil, locale, translate, usePath })
+			)
+		}),
 		...('stats' in view && {
 			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 		}),
@@ -369,6 +378,75 @@ function displayFacetGroups(
 	);
 
 	return result;
+}
+
+function getFacetValue({
+	observation,
+	dimension,
+	displayUtil,
+	locale,
+	translate,
+	usePath
+}: {
+	observation: Observation;
+	dimension: string;
+	displayUtil: DisplayUtil;
+	locale: LangCode;
+	translate: TranslateFn;
+	usePath?: string;
+}): FacetValue | FacetRange {
+	const decorated = toLite(displayUtil.lensAndFormat(observation.object, LensType.Chip, locale));
+
+	return {
+		label: {
+			decorated,
+			str: toString(decorated),
+			discriminator: getUriSlug(getAtPath(observation.object, ['inScheme', JsonLd.ID], ''))
+		},
+		view: replacePath(observation.view, usePath),
+		totalItems: observation.totalItems,
+		facets: observation.sliceByDimension
+			? Object.values(observation.sliceByDimension).map(
+					(slice) =>
+						getFacet({ slice, parentDimension: dimension, displayUtil, locale, translate, usePath }) // we should probably add parentDimension here...
+				)
+			: undefined
+	};
+}
+
+function getFacet({
+	slice,
+	parentDimension,
+	displayUtil,
+	locale,
+	translate,
+	usePath
+}: {
+	slice: Slice;
+	parentDimension?: string;
+	displayUtil: DisplayUtil;
+	locale: LocaleCode;
+	translate: TranslateFn;
+	usePath?: string;
+}): Facet {
+	const dimension = (parentDimension ? `${parentDimension}/` : '') + slice.dimension;
+	return {
+		dimension,
+		label: translate(`facet.${slice.alias || slice.dimension}`),
+		operator: slice._connective,
+		maxItems: slice.maxItems,
+		search: slice.search,
+		values: slice.observation.map((observationItem) =>
+			getFacetValue({
+				observation: observationItem,
+				dimension,
+				displayUtil,
+				locale,
+				translate,
+				usePath
+			})
+		)
+	};
 }
 
 function mapSlices(
