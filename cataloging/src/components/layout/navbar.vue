@@ -53,6 +53,7 @@ export default {
         { id: 'Search', text: 'Search', link: '/search/libris', icon: 'search' },
         ...loggedInTabs,
         { id: 'Help', text: 'Help', link: '/help', icon: 'question-circle' },
+        { id: 'Mdb', text: 'Metadatabyrån', link: 'https://metadatabyran.kb.se/', icon: 'external-link'},
       ];
       return tabs;
     },
