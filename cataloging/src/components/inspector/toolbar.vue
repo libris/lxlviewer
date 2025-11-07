@@ -149,12 +149,6 @@ export default {
         name: 'open-detailed-enrich-from-id',
       });
     },
-    openMergeView() {
-      this.hideToolsMenu();
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'open-merge-view',
-      });
-    },
     openEnrichFromSelection() {
       this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', {
@@ -649,12 +643,6 @@ export default {
           <a class="Toolbar-menuLink" @click="detailedApplyRecordAsTemplate">
             <i class="fa fa-fw fa-clipboard" />
             {{ translatePhrase('Detailed enrichment') }}
-          </a>
-        </li>
-        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
-          <a class="Toolbar-menuLink" @click="openMergeView">
-            <i class="fa fa-fw fa-clipboard" />
-            {{ translatePhrase('Merge records') }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
