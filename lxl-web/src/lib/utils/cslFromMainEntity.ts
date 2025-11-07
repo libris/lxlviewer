@@ -41,6 +41,7 @@ interface Agent {
 export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil): CSLJSON[] {
 	let result: Partial<CSLJSON> = {};
 
+	// for each mapping field, try to get the data
 	for (const [key, expr] of Object.entries(CSL_KBV_MAPPING) as [keyof CSLJSON, string][]) {
 		try {
 			const value = jmespath.search(mainEntity, expr);
@@ -52,6 +53,7 @@ export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil):
 		}
 	}
 
+	// for each contributor, assign a role
 	const contributors = mapContribution(mainEntity.instanceOf?.contribution as Contributor[]);
 	result = { ...result, ...contributors };
 	result.type = getCslType(mainEntity, vocabUtil);
@@ -118,7 +120,6 @@ function getRole(contributor: Contributor): Partial<CSLRoles> | false {
 				case 'performer':
 				case 'musician':
 				case 'singer':
-				case 'arranger':
 					return { performer: name };
 				case 'compiler':
 					return { compiler: name };

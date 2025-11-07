@@ -30,21 +30,14 @@ const expected = [
 		author: [
 			{
 				family: 'Holmberg',
-				given: 'Åke',
-				literal: null
+				given: 'Åke'
 			}
 		],
 		illustrator: [
 			{
 				family: 'Hemmel',
-				given: 'Sven',
-				literal: null
+				given: 'Sven'
 			}
-		],
-		translator: [],
-		interviewer: [],
-		composer: [],
-		director: [],
-		editor: []
+		]
 	}
 ];
