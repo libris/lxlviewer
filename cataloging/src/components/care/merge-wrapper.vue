@@ -102,6 +102,7 @@ export default {
 
 <template>
   <div class="Merge">
+    <div v-if="this.flagged.length !== 0">
     <div class="Merge-stepSelection underline"
          :class="{'col-md-12': sideBySide, 'col-md-11': !status.panelOpen && !sideBySide,
                   'col-md-7': status.panelOpen }">
@@ -130,6 +131,13 @@ export default {
       </div>
     </div>
   </div>
+    <div class="Merge-infoBox" v-if="flagged.length === 0">
+      <div class="iconCircle"><i class="fa fa-fw fa-flag" /></div>
+      <div class="Merge-description">
+        För att kunna slå ihop entiteter behöver du först flagga de entiteter du vill slå ihop.
+      </div>
+    </div>
+  </div>
 </template>
 
 <style lang="less">
@@ -146,6 +154,26 @@ export default {
     flex-wrap: wrap;
     justify-content: flex-end;
     margin: 0 0 0.5em 0;
+  }
+  &-description {
+    padding-left: 1rem;
+  }
+  &-infoBox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+    background-color: @white;
+    border: 1px solid @grey-lighter;
+    padding: 2rem;
+  }
+  .iconCircle {
+    border: 1px solid @grey-lighter;
+    border-radius: 1em;
+    width: 2em;
+    height: 2em;
+    line-height: 2em;
+    text-align: center;
+    color: @brand-primary;
   }
 }
 </style>

@@ -648,10 +648,12 @@ export default {
       </div>
       <div>
         <div v-if="bothRecordsSelected" class="MergeView-recordsContainer" :class="{ 'is-empty': !bothRecordsSelected }">
-      <span class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></span>
-      <span class="MergeView-description">
-        {{translatePhrase('Select parts of the left record which should be copied to the right one.')}}
-      </span>
+      <div class="MergeView-descriptionContainer">
+          <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
+          <div class="MergeView-description">
+            {{translatePhrase('Select parts of the left record which should be copied to the right one.')}}
+          </div>
+      </div>
       <div class="MergeView-fieldRow">
           <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
       </div>
@@ -708,11 +710,11 @@ export default {
       </div>
     </div>
     <div class="col-sm-12" :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
-      <div class="MergeView-descriptionText">
-        <span class="iconCircle"><i class="fa fa-fw fa-pencil"/></span>
-        <span class="MergeView-description">
+      <div class="MergeView-descriptionContainer withBottomPadding">
+        <div class="iconCircle"><i class="fa fa-fw fa-pencil"/></div>
+        <div class="MergeView-description">
           Gör slutgiltiga ändringar för den entitet som ska behållas.
-      </span>
+      </div>
       </div>
       <div>
         <entity-summary
@@ -752,7 +754,7 @@ export default {
               <p>• Entitet med ID <strong> {{ sourceId }}</strong> kommer <em>tas bort</em>. </p>
               <p>• Entitet med ID <strong> {{ targetId }}</strong> kommer <em>behållas</em> och sparas med eventuella ändringar som gjorts.</p>
               <p v-if="sourceNumberOfHoldings !== 0">• <strong>{{ sourceNumberOfHoldings }}</strong> bestånd kommer länkas om till <strong>{{ targetId }}</strong>.</p>
-              <p v-if="isNonInstanceType">• <strong>{{ numberOfReverseLinks }}</strong> länkar kommer pekas om till <strong>{{ targetId }}</strong>.</p>
+              <p v-if="isNonInstanceType && numberOfReverseLinks !== 0">• <strong>{{ numberOfReverseLinks }}</strong> länkar kommer pekas om till <strong>{{ targetId }}</strong>.</p>
             </div>
           </div>
           <div class="Modal-buttonContainer">
@@ -896,11 +898,17 @@ export default {
       border: 0;
     }
   }
-  &-description {
-    padding-left: 0.5rem;
+
+  &-descriptionContainer {
+    display: flex;
+    align-items: center;
   }
 
-  &-descriptionText {
+  &-description {
+    padding-left: 1rem;
+  }
+
+  .withBottomPadding {
     padding-bottom: 2rem;
   }
 

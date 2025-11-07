@@ -163,7 +163,8 @@ export default {
 
 <template>
   <div class="Enrich">
-    <merge-entities :flagged="allFlagged"
+    <merge-entities v-if="allFlagged.length !== 0"
+                    :flagged="allFlagged"
                     :enrich-step=true
                     :target-locked=true
                     source-picker-label="sender"
@@ -172,9 +173,17 @@ export default {
                     target-top-label="to"
     >
     </merge-entities>
+    <div class="Enrich-infoBox" v-if="allFlagged.length === 0">
+      <div class="iconCircle"><i class="fa fa-fw fa-flag" /></div>
+      <div class="Merge-description">
+        För att kunna berika behöver du först välja en entitet att berika från genom att flagga den.
+      </div>
+    </div>
+
   <div class="Enrich-dialog is-floating">
-      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
-      <button class="btn btn--md btn-primary" @click="done" @keyup.enter="done">{{ translatePhrase('Done') }}</button>
+      <button v-if="allFlagged.length !== 0" class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
+      <button v-if="allFlagged.length !== 0" class="btn btn--md btn-primary" @click="done" @keyup.enter="done">{{ translatePhrase('Done') }}</button>
+      <button v-if="allFlagged.length === 0" class="btn btn--md btn-primary" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Back') }}</button>
   </div>
   </div>
 </template>
@@ -222,6 +231,26 @@ export default {
     flex-wrap: wrap;
     justify-content: flex-end;
     margin: 0 0 0.5em 0;
+  }
+  &-description {
+    padding-left: 1rem;
+  }
+  &-infoBox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+    //background-color: @white;
+    //border: 1px solid @grey-lighter;
+    padding: 2rem;
+  }
+  .iconCircle {
+    border: 1px solid @grey-lighter;
+    border-radius: 1em;
+    width: 2em;
+    height: 2em;
+    line-height: 2em;
+    text-align: center;
+    color: @brand-primary;
   }
 
 }
