@@ -495,6 +495,9 @@ function addMyLibrariesBoolFilter(
 		});
 
 		if (existingBoolFilter) {
+			// need to remove prefLabelByLang: {}, or lensAndFormat will use it (nothing) as label
+			// and entire filter will be disregarded
+			delete existingBoolFilter.object.prefLabelByLang;
 			existingBoolFilter.object.prefLabel = translate(`facet.${MY_LIBRARIES_FILTER_ALIAS}`);
 			return [...[existingBoolFilter], ...rest];
 		} else {
