@@ -266,7 +266,8 @@ export default {
 		showAll: 'Visa alla utgåvor',
 		showFewer: 'Visa färre utgåvor',
 		myLoans: 'Mina lån',
-		applyForCard: 'Ansök om lånekort'
+		applyForCard: 'Ansök om lånekort',
+		refinedLibraries: 'Avgränsade bibliotek'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'

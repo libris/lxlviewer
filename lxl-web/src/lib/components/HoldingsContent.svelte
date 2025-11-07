@@ -9,8 +9,8 @@
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
 
-	type Props = { holdings: HoldingsData; showSummary?: boolean };
-	let { holdings, showSummary = true }: Props = $props();
+	type Props = { holdings: HoldingsData; refinedLibraries?: string[]; showSummary?: boolean };
+	let { holdings, refinedLibraries = [], showSummary = true }: Props = $props();
 	const userSettings = getUserSettings();
 	let searchPhrase = $state('');
 
@@ -69,6 +69,27 @@
 		})
 	);
 
+	const refinedHolders = $derived(
+		displayedHolders.filter((holder) => {
+			return refinedLibraries.some((lib) => lib === holder.sigel);
+		})
+	);
+
+	const specialSections = $derived([
+		{
+			id: 'refined-libraries-section',
+			title: page.data.t(`holdings.refinedLibraries`),
+			data: refinedHolders,
+			icon: BiSearch
+		},
+		{
+			id: 'my-libraries-section',
+			title: page.data.t('myPages.favouriteLibraries'),
+			data: myLibsHolders,
+			icon: BiHouseHeart
+		}
+	]);
+
 	// pick an instance instance or the work overview
 	const cardData = $derived.by(() => {
 		if (holdingSelection === 'instance') {
@@ -126,23 +147,28 @@
 			{numHolders === 1 ? page.data.t('holdings.library') : page.data.t('holdings.libraries')}
 		</h2>
 	{/if}
-	<!-- my libraries -->
-	{#if myLibsHolders.length}
-		<div class="border-neutral bg-accent-50 mb-2 flex flex-col gap-2 rounded-sm border-b p-4 pb-1">
-			<h2 class="flex items-center gap-2">
-				<span aria-hidden="true" class="text-primary-700 text-base">
-					<BiHouseHeart />
-				</span>
-				<span class="font-medium">{page.data.t('myPages.favouriteLibraries')}</span>
-			</h2>
-			<ul class="flex flex-col gap-2 text-xs">
-				{#each myLibsHolders as holder, i (`mylibs-${holder.sigel}-${i}`)}
-					{@const instances = getInstancesForSigelAndSelection(holder.sigel)}
-					<Holder {holder} {instances} />
-				{/each}
-			</ul>
-		</div>
-	{/if}
+	<!-- refined libraries & my libraries -->
+	{#each specialSections as section (section.id)}
+		{#if section.data.length}
+			{@const Icon = section.icon}
+			<div
+				class="border-neutral bg-accent-50 mb-2 flex flex-col gap-2 rounded-sm border-b p-4 pb-1"
+			>
+				<h2 class="flex items-center gap-2">
+					<span aria-hidden="true" class="text-subtle text-base">
+						<Icon />
+					</span>
+					<span class="font-medium">{section.title}</span>
+				</h2>
+				<ul class="flex flex-col gap-2 text-xs">
+					{#each section.data as holder, i (`mylibs-${holder.sigel}-${i}`)}
+						{@const instances = getInstancesForSigelAndSelection(holder.sigel)}
+						<Holder {holder} {instances} />
+					{/each}
+				</ul>
+			</div>
+		{/if}
+	{/each}
 	<!-- search -->
 	<div class="relative mb-2">
 		<input

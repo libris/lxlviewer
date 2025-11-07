@@ -18,9 +18,13 @@
 	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import { USE_HOLDING_PANE } from '$lib/constants/panels';
+	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
+	const refinedLibraries = $derived(
+		getSigelsFromMapping([searchResult.mapping, page.data.subsetMapping])
+	);
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
 
 	const HoldingsComponent = $derived(
@@ -101,6 +105,7 @@
 				{:then holdings}
 					<HoldingsContent
 						{holdings}
+						{refinedLibraries}
 						showSummary={isSmallScreen.current || !USE_HOLDING_PANE ? true : false}
 					/>
 				{:catch err}

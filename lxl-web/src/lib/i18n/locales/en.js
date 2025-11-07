@@ -267,7 +267,8 @@ export default {
 		showAll: 'Show all editions',
 		showFewer: 'Show fewer editions',
 		myLoans: 'My loans',
-		applyForCard: 'Apply for library card'
+		applyForCard: 'Apply for library card',
+		refinedLibraries: 'Refined libraries'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'
