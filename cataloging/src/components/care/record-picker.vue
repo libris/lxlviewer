@@ -84,7 +84,7 @@ export default {
       return this.flaggedInstances.filter((instance) => filteredTitles.some((el) => el['@id'] === instance['@id']));
     },
     nameLabel() {
-      return this.label.length === 0 ? translatePhrase(this.name) : translatePhrase(this.label);
+      return this.label.length !== 0 ? translatePhrase(this.label) : '';
     },
     upperLabel() {
       return this.topLabel.length === 0 ? translatePhrase(this.name) : translatePhrase(this.topLabel);

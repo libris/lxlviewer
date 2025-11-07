@@ -167,9 +167,8 @@ export default {
                     :flagged="allFlagged"
                     :enrich-step=true
                     :target-locked=true
-                    source-picker-label="sender"
+                    source-picker-label="entity to enrich from"
                     source-top-label="from"
-                    target-picker-label="receiver"
                     target-top-label="to"
     >
     </merge-entities>

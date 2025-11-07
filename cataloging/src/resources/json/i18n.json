@@ -496,6 +496,7 @@
     "receiver": "mottagare",
     "to": "till",
     "Save receiver": "Spara mottagare",
-    "Enrich from selection": "Berika från urval"
+    "Enrich from selection": "Berika från urval",
+    "entity to enrich from": "entitet att berika från"
   }
 }

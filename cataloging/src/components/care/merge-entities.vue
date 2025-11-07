@@ -719,9 +719,9 @@ export default {
       <div>
         <entity-summary
           class="header"
-          :focus-data="target"
+          :focus-data="this.inspector.data.mainEntity"
           :should-link="false"
-          :exclude-components="[]" />
+        />
       </div>
       <div class="MergeView-recordsContainer">
         <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus"/>

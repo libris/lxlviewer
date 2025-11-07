@@ -65,10 +65,7 @@ export default {
       return tabs;
     },
     userIsAllowedToBulkChange() {
-      if (this.user.isLoggedIn === false) {
-        return false;
-      }
-      return this.user.settings.activeSigel === 'SEK';
+      return this.user.isLoggedIn && this.user.settings.activeSigel === 'SEK';
     },
     isBulkChangeOne() {
       return (this.$route.params.tool === 'bulkchanges' || this.$route.name === 'Bulkchanges') && this.$route.params.fnurgel;
