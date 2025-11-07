@@ -468,6 +468,7 @@
 		pointer-events: auto;
 		max-height: 100vh;
 		overflow-y: scroll;
+		overflow-x: hidden;
 		overscroll-behavior: contain;
 		scrollbar-width: none;
 		width: 100%;
@@ -537,6 +538,7 @@
 		min-height: calc(var(--spacing) * 14);
 		scrollbar-width: thin;
 		max-height: 100px;
+		overflow-x: hidden;
 
 		@variant sm {
 			min-height: calc(var(--spacing) * 11);

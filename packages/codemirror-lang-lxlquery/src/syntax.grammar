@@ -5,14 +5,25 @@
 orcomb { andcomb ( OrOperator andcomb )* }
 andcomb { term ( AndOperator term | term )* }
 term { String | Group | UTerm | Qualifier }
-Group { "(" orcomb ")" }
+Group { "(" orcomb? ")" }
 UTerm { UOperator term }
 String { strliteral | str }
 Qualifier { 
   ( QualifierKey { String } QualifierOperator { bOperator } QualifierValue { String } ) | 
-  ( QualifierKey { String } QualifierOperator { bOperatorEq } QualifierValue { term } ) |
+  ( QualifierKey { String } QualifierOperator { bOperatorEq } QualifierValue { qualifierTerm } ) |
   QualifierValue { FilterAlias { filterAlias } }
 }
+
+// # 'internal' Qualifier grammar is basically a copy, but disallowing qualifiers within qualifiers
+// # And exporting Outer and Inner groups to facilitate ghost group functionality
+
+qualifierTerm { String | QualifierOuterGroup | QualifierUTerm }
+QualifierUTerm { UOperator qualifierInnerTerm }
+QualifierOuterGroup { "(" qualifierOrcomb? ")" }
+qualifierOrcomb { qualifierAndcomb ( OrOperator qualifierAndcomb )* }
+qualifierAndcomb { qualifierInnerTerm ( AndOperator qualifierInnerTerm | qualifierInnerTerm )* }
+qualifierInnerTerm { String | QualifierInnerGroup | QualifierUTerm }
+QualifierInnerGroup { "(" qualifierOrcomb? ")" }
 
 @tokens {
   OrOperator { "OR" }

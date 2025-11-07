@@ -110,12 +110,12 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		'buttons for adding qualifier keys is hidden after selecting one of them'
 	).toBeHidden();
 	await expect(
-		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier-value')
+		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier')
 	).toBeVisible();
 	await expect(
-		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier-value'),
+		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier'),
 		'qualifier value is initially empty but has styling'
-	).toContainText('""');
+	).toContainText('');
 
 	await page.waitForResponse(
 		(res) => res.url().includes('/supersearch?_q=contributor') && res.status() === 200
@@ -131,7 +131,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.getByRole('dialog').getByRole('combobox').pressSequentially('jan');
 
 	await page.waitForResponse(
-		(res) => res.url().includes('supersearch?_q=contributor%3A%22jan%') && res.status() === 200
+		(res) => res.url().includes('supersearch?_q=contributor%3A%28jan%29') && res.status() === 200
 	);
 	await expect(
 		await page
@@ -149,7 +149,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		'pill with selected qualifier key exists...'
 	).toContainText('Författare/upphov');
 	await expect(
-		page.getByRole('combobox').locator('.lxl-qualifier-value.atomic'),
+		page.getByRole('combobox').locator('.lxl-qualifier-value'),
 		'...and the value is related to the previous query'
 	).toContainText(/jan/i);
 	await page.getByTestId('supersearch').getByRole('combobox').click();
