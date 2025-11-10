@@ -26,7 +26,7 @@ const CSL_KBV_MAPPING: Partial<Record<keyof CSLJSON, string>> = {
 	volume: `join(', ', [?"@type"=='Serial'].part[?"@type"=='Monograph'].mainEntity.hasTitle[].hasPart[].partNumber)`
 };
 
-interface Contributor {
+interface Contribution {
 	'@type'?: string;
 	role?: { '@id'?: string }[];
 	agent: Agent | Agent[];
@@ -54,14 +54,14 @@ export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil):
 	}
 
 	// for each contributor, assign a role
-	const contributors = mapContribution(mainEntity.instanceOf?.contribution as Contributor[]);
+	const contributors = mapContribution(mainEntity.instanceOf?.contribution as Contribution[]);
 	result = { ...result, ...contributors };
 	result.type = getCslType(mainEntity, vocabUtil);
 
 	return [result as CSLJSON];
 }
 
-function mapContribution(contribution: Contributor[]): Partial<CSLJSON> {
+function mapContribution(contribution: Contribution[]): Partial<CSLJSON> {
 	const result: Partial<CSLJSON> = {};
 
 	if (contribution && Array.isArray(contribution)) {
@@ -90,12 +90,12 @@ function addContributor(result: Partial<CSLJSON>, role: keyof CSLRoles, names: C
 	}
 }
 
-function getRole(contributor: Contributor): Partial<CSLRoles> | false {
-	if (contributor.role) {
-		let role: string | undefined = contributor.role?.[0]?.['@id'];
+function getRole(contribution: Contribution): Partial<CSLRoles> | false {
+	if (contribution.role) {
+		let role: string | undefined = contribution.role?.[0]?.['@id'];
 		if (role) {
 			role = role.replace('https://id.kb.se/relator/', '');
-			const name = getName(contributor.agent);
+			const name = getName(contribution.agent);
 			switch (role) {
 				case 'author':
 					return { author: name };
@@ -133,9 +133,9 @@ function getRole(contributor: Contributor): Partial<CSLRoles> | false {
 	return false;
 }
 
-function getFallbackRole(contributor: Contributor) {
-	if (contributor['@type'] === 'PrimaryContribution' || contributor['@type'] === 'Contribution') {
-		const name = getName(contributor.agent);
+function getFallbackRole(contribution: Contribution) {
+	if (contribution['@type'] === 'PrimaryContribution' || contribution['@type'] === 'Contribution') {
+		const name = getName(contribution.agent);
 		if (name) {
 			return name;
 		}
