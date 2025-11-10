@@ -175,7 +175,7 @@
 				class="flex max-h-72 flex-col overflow-x-clip overflow-y-auto sm:max-h-[453px]"
 				data-testid="facet-list"
 			>
-				{#each shownItems as facet (facet.view['@id'])}
+				{#each shownItems as facet (facet.str + facet.view['@id'])}
 					{#if !facet.facetGroups}
 						<li class="facet-group-list-value hover:bg-primary-100 flex">
 							<FacetValue {facet} {locale} />
