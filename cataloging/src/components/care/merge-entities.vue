@@ -101,6 +101,18 @@ export default {
     bothRecordsSelected() {
       return !isEmpty(this.directoryCare.mergeSourceId) && !isEmpty(this.directoryCare.mergeTargetId);
     },
+    mismatchingTypes() {
+      if (this.bothRecordsLoaded) {
+        const targetType = this.inspector.data.mainEntity['@type'];
+        const sourceType = this.source.mainEntity['@type'];
+        const matching = (
+          VocabUtil.isSubClassOf(targetType, sourceType, this.resources.vocab, this.resources.context)
+          || VocabUtil.isSubClassOf(sourceType, targetType, this.resources.vocab, this.resources.context)
+        );
+        return !matching;
+      }
+      return false;
+    },
     isAllSelected() {
       if (this.sourceLoaded) {
       const noOfSelectable = Object.keys(this.sourceSelectable).length;
@@ -174,7 +186,7 @@ export default {
       return 0;
     },
   },
-  emits: ['cancel', 'etag'],
+  emits: ['cancel', 'mismatchingTypes'],
   methods: {
     translatePhrase,
     labelByLang,
@@ -292,7 +304,6 @@ export default {
           if (response.status === 200) {
             if (!fetchingSource) {
               this.targetETag = response.headers.get('ETag');
-              this.$emit('etag', this.targetETag); //Save handling outside for enrich
             }
             return response.json();
           } if (response.status === 404 || response.status === 410) {
@@ -317,22 +328,26 @@ export default {
             const data = LxlDataUtil.splitJson(result);
             if (fetchingSource) {
               this.setEnrichmentSource(data);
-              DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
-              this.applyFromSource(); // To populate everything with nothing selected
-              this.loadingContent(false);
+              this.onFetchFinished();
             } else {
               this.$store.dispatch('setInspectorData', data);
               this.setEnrichmentTarget(data);
               this.removeEnrichedHighlight();
               this.$store.dispatch('setOriginalData', data);
-              DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
-              this.applyFromSource(); // To populate everything with nothing selected
-              this.loadingContent(false);
+              this.onFetchFinished(data);
             }
           }
         });
       } else {
         throw new Error('Failed to prepare data for detailed enrichment.');
+      }
+    },
+    onFetchFinished(data) {
+      DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
+      this.applyFromSource(); // To populate everything with no properties selected
+      this.loadingContent(false);
+      if (this.bothRecordsSelected) {
+        this.$emit('mismatchingTypes', this.mismatchingTypes);
       }
     },
     applyFromSource() {
@@ -653,13 +668,19 @@ export default {
         <div v-if="bothRecordsSelected" class="MergeView-recordsContainer"
              :class="{ 'is-empty': !bothRecordsSelected }">
 
-          <div class="MergeView-descriptionContainer">
-            <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
-            <div class="MergeView-description">
-              {{ translatePhrase('Select parts of the left record which should be copied to the right one.') }}
+            <div class="MergeView-descriptionContainer" v-if="!mismatchingTypes">
+              <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
+              <div class="MergeView-description">
+                {{ translatePhrase('Select parts of the left record which should be copied to the right one.') }}
+              </div>
             </div>
-          </div>
-          <div v-if="!this.loadingRecords">
+            <div class="MergeView-descriptionContainer" v-if="mismatchingTypes && !loadingRecords">
+              <div class="iconCircle"><i class="fa fa-fw fa-exclamation"/></div>
+              <div class="MergeView-description">
+                {{ translatePhrase('To be able to enrich, the selected entities need to be of the same type.') }}
+              </div>
+            </div>
+          <div v-if="!this.loadingRecords && !mismatchingTypes">
           <div class="MergeView-fieldRow">
             <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus"/>
           </div>

@@ -4,6 +4,7 @@ import {translatePhrase} from '@/utils/filters';
 
 import MergeEntities from "@/components/care/merge-entities.vue";
 import {isEmpty} from "lodash-es";
+import * as VocabUtil from "../../../../lxljs/vocab.js";
 
 export default {
   name: 'Merge-wrapper',
@@ -19,6 +20,7 @@ export default {
     return {
       enrichStep: true,
       editStep: false,
+      mismatchingTypes: false,
     };
   },
   computed: {
@@ -61,6 +63,9 @@ export default {
         restart() {
           this.$router.go(0);
           this.resetEverything(); //Implicit by unmount?
+        },
+        setMismatchingTypes(val) {
+          this.mismatchingTypes = val;
         },
         resetEverything() {
           this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
@@ -106,7 +111,12 @@ export default {
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
       <div v-if="bothRecordsSelected">
         <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
-        <button class="btn--as-link" v-if="this.enrichStep" @click="goToEditStep" @keyup.enter="goToEditStep">{{ translatePhrase('Next') }}</button>
+        <button class="btn--as-link" v-if="this.enrichStep"
+                @click="goToEditStep"
+                @keyup.enter="goToEditStep"
+                :disabled="mismatchingTypes">
+          {{ translatePhrase('Next') }}
+        </button>
       </div>
     </div>
     <merge-entities :flagged="flagged"
@@ -116,7 +126,9 @@ export default {
                     source-top-label="Remove"
                     target-picker-label="entity to keep"
                     target-top-label="Keep"
-                    @cancel="restart">
+                    @cancel="restart"
+                    @mismatchingTypes="setMismatchingTypes"
+    >
     </merge-entities>
     <div v-if="bothRecordsSelected" class="Merge-stepSelection"
          :class="{'col-md-12': !status.panelOpen && sideBySide, 'col-md-11': !status.panelOpen && !sideBySide,
@@ -124,11 +136,16 @@ export default {
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
       <div>
         <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
-        <button class="btn--as-link" v-if="this.enrichStep" @click="goToEditStep" @keyup.enter="goToEditStep">{{ translatePhrase('Next') }}</button>
+        <button class="btn--as-link" v-if="this.enrichStep"
+                @click="goToEditStep"
+                @keyup.enter="goToEditStep"
+                :disabled="mismatchingTypes">
+          {{ translatePhrase('Next') }}
+        </button>
       </div>
     </div>
   </div>
-    <div class="Merge-infoBox" v-if="flagged.length === 0">
+    <div class="Merge-infoBox" v-if="flagged.length === 0 && !mismatchingTypes">
       <div class="iconCircle"><i class="fa fa-fw fa-flag" /></div>
       <div class="Merge-description">
         {{ translatePhrase('To be able to merge entities, you first need to select those entities you want to merge by flagging them.') }}

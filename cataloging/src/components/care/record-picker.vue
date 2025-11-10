@@ -112,7 +112,6 @@ export default {
       }
     },
     unselectThis() {
-      console.log('explicitly unselecting')
       const changeObj = { [this.name]: null };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj })
         .then(() => this.focusInput());

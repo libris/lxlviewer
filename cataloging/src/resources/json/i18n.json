@@ -507,6 +507,7 @@
     "be kept": "behållas",
     "and will be saved with any changes that have been made.": "och sparas med eventuella ändringar som gjorts.",
     "holdings will be re-linked to": "bestånd kommer länkas om till",
-    "links will be pointed to": "länkar kommer pekas om till"
+    "links will be pointed to": "länkar kommer pekas om till",
+    "To be able to enrich, the selected entities need to be of the same type." : "För att berika behöver de valda entiterna vara av samma typ."
   }
 }
