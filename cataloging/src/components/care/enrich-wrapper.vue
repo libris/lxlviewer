@@ -60,6 +60,7 @@ export default {
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...target });
     },
     cancel() {
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.resetEverything();
       this.close();
     },
@@ -78,7 +79,6 @@ export default {
           mergeTargetId: null
         }
       });
-      this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.setEnrichmentChanges(null);
       this.setEnrichmentTarget(null);
       this.setEnrichmentSource(null);
