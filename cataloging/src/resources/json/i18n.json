@@ -497,6 +497,16 @@
     "to": "till",
     "Save receiver": "Spara mottagare",
     "Enrich from selection": "Berika från urval",
-    "entity to enrich from": "entitet att berika från"
+    "entity to enrich from": "entitet att berika från",
+    "Add any final changes for the entity to keep.": "Gör slutgiltiga ändringar för den entitet som ska behållas.",
+    "To be able to enrich, you first need to select an entity to enrich from by flagging it.": "För att kunna berika behöver du först välja en entitet att berika från genom att flagga den.",
+    "To be able to merge entities, you first need to select those entities you want to merge by flagging them.": "För att kunna slå ihop entiteter behöver du först välja de entiteter du vill slå ihop genom att flagga dem. ",
+    "Entity with ID": "Entitet med ID",
+    "will": "kommer",
+    "be removed": "tas bort",
+    "be kept": "behållas",
+    "and will be saved with any changes that have been made.": "och sparas med eventuella ändringar som gjorts.",
+    "holdings will be re-linked to": "bestånd kommer länkas om till",
+    "links will be pointed to": "länkar kommer pekas om till"
   }
 }

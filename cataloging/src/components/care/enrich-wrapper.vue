@@ -176,7 +176,7 @@ export default {
     <div class="Enrich-infoBox" v-if="allFlagged.length === 0">
       <div class="iconCircle"><i class="fa fa-fw fa-flag" /></div>
       <div class="Merge-description">
-        För att kunna berika behöver du först välja en entitet att berika från genom att flagga den.
+        {{ translatePhrase('To be able to enrich, you first need to select an entity to enrich from by flagging it.') }}
       </div>
     </div>
 

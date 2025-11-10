@@ -724,8 +724,8 @@ export default {
       <div class="MergeView-descriptionContainer withBottomPadding">
         <div class="iconCircle"><i class="fa fa-fw fa-pencil"/></div>
         <div class="MergeView-description">
-          Gör slutgiltiga ändringar för den entitet som ska behållas.
-      </div>
+          {{ translatePhrase('Add any final changes for the entity to keep.') }}
+        </div>
       </div>
       <div>
         <entity-summary
@@ -762,10 +762,10 @@ export default {
         <div class="Modal-body">
           <div>
             <div class="MergeView-modalText">
-              <p>• Entitet med ID <strong> {{ sourceId }}</strong> kommer <em>tas bort</em>. </p>
-              <p>• Entitet med ID <strong> {{ targetId }}</strong> kommer <em>behållas</em> och sparas med eventuella ändringar som gjorts.</p>
-              <p v-if="sourceNumberOfHoldings !== 0">• <strong>{{ sourceNumberOfHoldings }}</strong> bestånd kommer länkas om till <strong>{{ targetId }}</strong>.</p>
-              <p v-if="isNonInstanceType && numberOfReverseLinks !== 0">• <strong>{{ numberOfReverseLinks }}</strong> länkar kommer pekas om till <strong>{{ targetId }}</strong>.</p>
+              <p>• {{ translatePhrase('Entity with ID') }} <strong> {{ sourceId }}</strong> {{ translatePhrase('will') }} <em>{{ translatePhrase('be removed') }}</em>. </p>
+              <p>• {{ translatePhrase('Entity with ID') }} <strong> {{ targetId }}</strong> {{ translatePhrase('will') }} <em>{{ translatePhrase('be kept') }}</em> {{ translatePhrase('and will be saved with any changes that have been made.') }}</p>
+              <p v-if="sourceNumberOfHoldings !== 0">• <strong>{{ sourceNumberOfHoldings }}</strong> {{ translatePhrase('holdings will be re-linked to') }} <strong>{{ targetId }}</strong>.</p>
+              <p v-if="isNonInstanceType && numberOfReverseLinks !== 0">• <strong>{{ numberOfReverseLinks }}</strong> {{ translatePhrase('links will be pointed to') }} <strong>{{ targetId }}</strong>.</p>
             </div>
           </div>
           <div class="Modal-buttonContainer">

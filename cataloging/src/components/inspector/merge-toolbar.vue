@@ -10,8 +10,6 @@ import {convertResourceLink, labelByLang, translatePhrase} from '@/utils/filters
 import FieldAdder from '@/components/inspector/field-adder.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import FormMixin from '@/components/mixins/form-mixin.vue';
-import * as RecordUtil from "@/utils/record.js";
-import * as StringUtil from "../../../../lxljs/string.js";
 
 export default {
   mixins: [LensMixin, FormMixin],

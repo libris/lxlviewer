@@ -131,7 +131,7 @@ export default {
     <div class="Merge-infoBox" v-if="flagged.length === 0">
       <div class="iconCircle"><i class="fa fa-fw fa-flag" /></div>
       <div class="Merge-description">
-        För att kunna slå ihop entiteter behöver du först välja de entiteter du vill slå ihop genom att flagga dem.
+        {{ translatePhrase('To be able to merge entities, you first need to select those entities you want to merge by flagging them.') }}
       </div>
     </div>
   </div>
