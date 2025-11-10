@@ -26,7 +26,7 @@ export interface CSLName {
 
 export type CSLType =
 	| 'book'
-	| 'article'
+	| 'article-journal'
 	| 'thesis'
 	| 'periodical'
 	| 'map'
@@ -38,11 +38,7 @@ export type CSLType =
 	| 'document'
 	| 'collection';
 
-export interface CSLJSON {
-	type: CSLType;
-	id: string;
-	language?: string;
-	shortTitle?: string;
+export interface CSLRoles {
 	author?: CSLName[];
 	composer?: CSLName[];
 	director?: CSLName[];
@@ -50,6 +46,18 @@ export interface CSLJSON {
 	interviewer?: CSLName[];
 	illustrator?: CSLName[];
 	translator?: CSLName[];
+	producer?: CSLName[];
+	narrator?: CSLName[];
+	performer?: CSLName[];
+	compiler?: CSLName[];
+	curator?: CSLName[];
+}
+
+export interface CSLJSON extends CSLRoles {
+	type: CSLType;
+	id: string;
+	language?: string;
+	shortTitle?: string;
 	issued?: CSLDate;
 	abstract?: string;
 	'container-title'?: string;
