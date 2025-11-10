@@ -30,7 +30,12 @@
 		"hidden": ["shelfMarkStatus"]
 	},
 	"reverse": {
-		"mainForm": ["@reverse/broader", "@reverse/continues", "@reverse/continuedBy"],
+		"mainForm": [
+			"@reverse/broader",
+			"@reverse/broadMatch",
+			"@reverse/continues",
+			"@reverse/continuedBy"
+		],
 		"hidden": ["@reverse/itemOf"]
 	}
 }

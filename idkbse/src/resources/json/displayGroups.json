@@ -33,6 +33,7 @@
   "reverse": {
     "mainForm": [
       "@reverse/broader",
+      "@reverse/broadMatch",
       "@reverse/continues",
       "@reverse/continuedBy"
     ],
