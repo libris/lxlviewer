@@ -36,6 +36,7 @@ interface Agent {
 	familyName?: string;
 	givenName?: string;
 	name?: string;
+	computedLabel: string;
 }
 
 export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil): CSLJSON[] {
@@ -153,7 +154,8 @@ function getName(agent: Agent | Agent[]): CSLName[] {
 		name.given = flattenedAgent.givenName;
 	}
 	if (flattenedAgent.name) {
-		name.literal = flattenedAgent.name;
+		// use computedLabel to include "marc:numeration" and "marc:titlesAndOtherWordsAssociatedWithAName"
+		name.literal = flattenedAgent.computedLabel;
 	}
 	return [name as CSLName];
 }
