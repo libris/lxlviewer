@@ -36,6 +36,8 @@ interface Agent {
 	familyName?: string;
 	givenName?: string;
 	name?: string;
+	'marc:numeration'?: string;
+	'marc:titlesAndOtherWordsAssociatedWithAName'?: string[];
 	computedLabel: string;
 }
 
@@ -153,11 +155,24 @@ function getName(agent: Agent | Agent[]): CSLName[] {
 	if (flattenedAgent.givenName) {
 		name.given = flattenedAgent.givenName;
 	}
+	const suffix = getSuffix(flattenedAgent);
 	if (flattenedAgent.name) {
-		// use computedLabel to include "marc:numeration" and "marc:titlesAndOtherWordsAssociatedWithAName"
-		name.literal = flattenedAgent.computedLabel;
+		name.literal = `${flattenedAgent.name} ${suffix}`.trim();
+	} else if (suffix) {
+		name.suffix = suffix;
 	}
 	return [name as CSLName];
+}
+
+function getSuffix(agent: Agent): string {
+	let result: string[] = [];
+	if (agent['marc:numeration']) {
+		result = [agent['marc:numeration']];
+	}
+	if (agent['marc:titlesAndOtherWordsAssociatedWithAName']) {
+		result = [...result, ...agent['marc:titlesAndOtherWordsAssociatedWithAName']];
+	}
+	return result.join(', ');
 }
 
 // see https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
