@@ -192,14 +192,17 @@
 					{:else}
 						<li class="flex w-full">
 							<ol class="ml-4.5 flex w-full border-l border-l-neutral-200">
-								{#each facet.facetGroups as group (group.dimension)}
-									<svelte:self
-										{group}
-										locale={page.data.locale}
-										{searchPhrase}
-										isDefaultExpanded={false}
-										parentFacet={facet}
-									/>
+								{#each facet.facetGroups as group, index (group.dimension)}
+									{#if index < 1}
+										<!-- for now hide category @none directly under find -->
+										<svelte:self
+											{group}
+											locale={page.data.locale}
+											{searchPhrase}
+											isDefaultExpanded={false}
+											parentFacet={facet}
+										/>
+									{/if}
 								{/each}
 							</ol>
 						</li>
