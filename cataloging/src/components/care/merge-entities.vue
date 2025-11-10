@@ -22,6 +22,7 @@ import {
 import ModalComponent from '@/components/shared/modal-component.vue';
 import * as VocabUtil from "../../../../lxljs/vocab.js";
 import * as DisplayUtil from "../../../../lxljs/display.js";
+import Spinner from "@/components/shared/spinner.vue";
 
 export default {
   name: 'MergeEntities',
@@ -59,6 +60,7 @@ export default {
     }
   },
   components: {
+    Spinner,
     'merge-toolbar': MergeToolbar,
     'record-picker': RecordPicker,
     'entity-form': EntityForm,
@@ -76,6 +78,7 @@ export default {
       recordSuccessfullySaved: false,
       showConfirmMergeModal: false,
       numberOfReverseLinks: 0,
+      loadingRecords: false,
     };
   },
   computed: {
@@ -181,6 +184,9 @@ export default {
       'setEnrichmentChanges',
       'setEnrichmentSource'
     ]),
+    loadingContent(value) {
+      this.loadingRecords = value;
+    },
     removeEnrichedHighlight() {
       if (this.inspector.status.enriched.length) {
         this.$store.dispatch('setInspectorStatusValue', {
@@ -313,7 +319,7 @@ export default {
               this.setEnrichmentSource(data);
               DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
               this.applyFromSource(); // To populate everything with nothing selected
-              this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+              this.loadingContent(false);
             } else {
               this.$store.dispatch('setInspectorData', data);
               this.setEnrichmentTarget(data);
@@ -321,7 +327,7 @@ export default {
               this.$store.dispatch('setOriginalData', data);
               DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
               this.applyFromSource(); // To populate everything with nothing selected
-              this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+              this.loadingContent(false);
             }
           }
         });
@@ -382,7 +388,7 @@ export default {
         this.$store.dispatch('setInspectorStatusValue', {
           property: 'enriched',
           value: changesToBeApplied,
-        });
+        })
       }
     },
     createMergeBulkChangeAndSave() {
@@ -563,7 +569,7 @@ export default {
       if (id !== null) {
         this.clearAllSelected();
         this.resetCachedChanges();
-        this.$store.dispatch('pushLoadingIndicator', 'Loading document');
+        this.loadingContent(true);
         this.targetId = RecordUtil.extractFnurgel(id);
         this.fetchId(this.targetId);
       }
@@ -573,7 +579,7 @@ export default {
         this.getNumberOfReverseLinks();
         this.clearAllSelected();
         this.resetCachedChanges();
-        this.$store.dispatch('pushLoadingIndicator', 'Loading document');
+        this.loadingContent(true);
         this.sourceId = RecordUtil.extractFnurgel(id);
         this.fetchId(this.sourceId, true);
       }
@@ -590,17 +596,14 @@ export default {
           this.$store.dispatch('pushInspectorEvent', {
             name: 'form-control',
             value: 'collapse-item',
-          });
-          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+          })
         });
       }
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.resetCachedChanges();
-      this.clearAllSelected();
-    });
+    this.resetCachedChanges();
+    this.clearAllSelected();
   },
 
 };
@@ -647,54 +650,62 @@ export default {
         />
       </div>
       <div>
-        <div v-if="bothRecordsSelected" class="MergeView-recordsContainer" :class="{ 'is-empty': !bothRecordsSelected }">
-      <div class="MergeView-descriptionContainer">
-          <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
-          <div class="MergeView-description">
-            {{translatePhrase('Select parts of the left record which should be copied to the right one.')}}
-          </div>
-      </div>
-      <div class="MergeView-fieldRow">
-          <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
-      </div>
-      <div>
-        <button
-          class="btn btn--md btn-light"
-          @click="toggleSelected">
-          <i class="fa fa-fw fa-square-o" v-show="!isAllSelected"/>
-          <i class="fa fa-fw fa-check-square-o" v-show="isAllSelected"/>
-          {{ isAllSelected ? translatePhrase('Unmark all') : translatePhrase('Mark all') }}
-        </button>
-      </div>
+        <div v-if="bothRecordsSelected" class="MergeView-recordsContainer"
+             :class="{ 'is-empty': !bothRecordsSelected }">
 
-      <div class="MergeView-mergeRow">
-          <div class="entityForm">
-            <entity-form v-if="bothRecordsLoaded"
-              :editing-object="formFocus"
-              :key="formFocus"
-              :is-active="true"
-              :form-data="source[this.formFocus]"
-              :locked="true"
-              :hide-top-level-properties="['@type']"
-              :hide-top-level-field-names="false"
-              :is-source="true"
-            />
+          <div class="MergeView-descriptionContainer">
+            <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
+            <div class="MergeView-description">
+              {{ translatePhrase('Select parts of the left record which should be copied to the right one.') }}
+            </div>
           </div>
-        <div class="MergeView-buttonContainer actionColumn">
-        </div>
-          <div class="entityForm">
-            <entity-form v-if="bothRecordsLoaded"
-              :editing-object="formFocus"
-              :key="formFocus"
-              :is-active="true"
-              :form-data="target"
-              :locked="true"
-              :hide-top-level-properties="['@type']"
-              :hide-top-level-field-names="false"
-            />
+          <div v-if="!this.loadingRecords">
+          <div class="MergeView-fieldRow">
+            <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus"/>
           </div>
-      </div>
+          <div>
+            <button
+              class="btn btn--md btn-light"
+              @click="toggleSelected">
+              <i class="fa fa-fw fa-square-o" v-show="!isAllSelected"/>
+              <i class="fa fa-fw fa-check-square-o" v-show="isAllSelected"/>
+              {{ isAllSelected ? translatePhrase('Unmark all') : translatePhrase('Mark all') }}
+            </button>
+          </div>
+
+          <div class="MergeView-mergeRow">
+            <div class="entityForm">
+              <entity-form v-if="bothRecordsLoaded"
+                           :editing-object="formFocus"
+                           :key="formFocus"
+                           :is-active="true"
+                           :form-data="source[this.formFocus]"
+                           :locked="true"
+                           :hide-top-level-properties="['@type']"
+                           :hide-top-level-field-names="false"
+                           :is-source="true"
+              />
+            </div>
+            <div class="MergeView-buttonContainer actionColumn">
+            </div>
+            <div class="entityForm">
+              <entity-form v-if="bothRecordsLoaded"
+                           :editing-object="formFocus"
+                           :key="formFocus"
+                           :is-active="true"
+                           :form-data="target"
+                           :locked="true"
+                           :hide-top-level-properties="['@type']"
+                           :hide-top-level-field-names="false"
+              />
+            </div>
+          </div>
         </div>
+          <div class="MergeView-spinner" v-if="loadingRecords">
+            <Spinner size="2x" :message="translatePhrase('Loading')" />
+          </div>
+        </div>
+
     </div>
     </div>
     <div v-if="editStep">
@@ -867,6 +878,14 @@ export default {
       border-color: transparent;
       height: 30vh;
     }
+  }
+
+  &-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 30vh;
   }
 
   &-summaryLabel {

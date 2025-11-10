@@ -17,7 +17,6 @@ export default {
   },
   data() {
     return {
-      recordLoaded: false,
       enrichStep: true,
       editStep: false,
     };
@@ -44,7 +43,7 @@ export default {
   },
   watch: {
     'inspector.event'(val) {
-        if (val.name === 'apply-source' && this.recordLoaded) {
+        if (val.name === 'apply-source') {
           this.applyFromSource();
         }
       }
@@ -66,6 +65,7 @@ export default {
         resetEverything() {
           this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
           this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...{ mergeSourceId: null, mergeTargetId: null } });
+          this.$store.dispatch('setInspectorData', {});
           this.setEnrichmentChanges(null);
           this.setEnrichmentTarget(null);
           this.setEnrichmentSource(null);
@@ -80,7 +80,6 @@ export default {
           this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
           this.enrichStep = false;
           this.editStep = true;
-          this.$store.dispatch('pushLoadingIndicator', 'Loading document');
         },
         goToEnrichStep() {
           this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: true});
@@ -89,10 +88,8 @@ export default {
         },
       },
   mounted() {
-    this.$nextTick(() => {
-      this.$store.dispatch('setInspectorStatusValue', {property: 'focus', value: 'mainEntity'});
-      this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: true});
-    });
+    this.$store.dispatch('setInspectorStatusValue', {property: 'focus', value: 'mainEntity'});
+    this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: true});
   },
   unmounted() {
     this.resetEverything();
@@ -102,7 +99,7 @@ export default {
 
 <template>
   <div class="Merge">
-    <div v-if="this.flagged.length !== 0">
+    <div v-show="this.flagged.length !== 0">
     <div class="Merge-stepSelection underline"
          :class="{'col-md-12': sideBySide, 'col-md-11': !status.panelOpen && !sideBySide,
                   'col-md-7': status.panelOpen }">
@@ -142,22 +139,28 @@ export default {
 
 <style lang="less">
 .Merge {
-  padding:0;
+  padding: 0;
+  height: 40vh;
+
   &-stepSelection {
     gap: 20px;
+
     &.underline {
-      border-bottom:  1px solid @grey-lighter;
+      border-bottom: 1px solid @grey-lighter;
       margin-bottom: 1em;
     }
+
     padding-bottom: 10px;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     margin: 0 0 0.5em 0;
   }
+
   &-description {
     padding-left: 1rem;
   }
+
   &-infoBox {
     display: flex;
     align-items: center;
@@ -166,6 +169,7 @@ export default {
     border: 1px solid @grey-lighter;
     padding: 2rem;
   }
+
   .iconCircle {
     border: 1px solid @grey-lighter;
     border-radius: 1em;

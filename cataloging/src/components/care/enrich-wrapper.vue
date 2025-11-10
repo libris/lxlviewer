@@ -78,6 +78,7 @@ export default {
           mergeTargetId: null
         }
       });
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.setEnrichmentChanges(null);
       this.setEnrichmentTarget(null);
       this.setEnrichmentSource(null);
