@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 .lxl-qualifier {
 	position: relative;
 	height: calc(var(--spacing) * 8);
@@ -121,4 +123,14 @@
 	width: 6px;
 	height: 10px;
 	background-color: transparent;
+}
+
+/* hide key and operator for linked values on small screens */
+.atomic .lxl-qualifier-key:has(~ .lxl-qualifier-value),
+.atomic .lxl-qualifier-operator:has(~ .lxl-qualifier-value) {
+	display: none;
+
+	@variant sm {
+		display: block;
+	}
 }
