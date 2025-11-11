@@ -56,16 +56,21 @@ export default {
         { id: 'changes', text: 'CXZ messages' },
         { id: 'message', text: 'Create message' },
         { id: 'holdings', text: 'Move holdings' },
-        { id: 'merge', text: 'Merge entities' },
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
       if (this.userIsAllowedToBulkChange) {
         tabs.push({ id: 'bulkchanges', text: 'Create bulk change' })
       }
+      if (this.userIsAllowedToMergeEntities) {
+        tabs.push({ id: 'merge', text: 'Merge entities' });
+      }
       return tabs;
     },
     userIsAllowedToBulkChange() {
       return this.user.isLoggedIn && this.user.settings.activeSigel === 'SEK';
+    },
+    userIsAllowedToMergeEntities() {
+      return this.user.isLoggedIn && this.user.settings.activeSigel === 'SEK' || this.user.settings.activeSigel === 'S';
     },
     isBulkChangeOne() {
       return (this.$route.params.tool === 'bulkchanges' || this.$route.name === 'Bulkchanges') && this.$route.params.fnurgel;
@@ -175,7 +180,10 @@ export default {
         <h1></h1>
         {{ translatePhrase("To see bulk changes you need to switch to a sigel with access.") }}
       </div>
-      <merge-wrapper :flagged="allFlagged" v-if="$route.params.tool === 'merge'"></merge-wrapper>
+      <merge-wrapper :flagged="allFlagged" v-if="$route.params.tool === 'merge' && this.userIsAllowedToMergeEntities && !$route.params.fnurgel"></merge-wrapper>
+      <div v-if="!this.userIsAllowedToMergeEntities && $route.params.tool === 'merge'">
+        {{ translatePhrase("To be able to merge entities, switch to a sigel with access.") }}
+      </div>
       <modal-component
         v-if="showModal"
         title="Directory care list adjusted"

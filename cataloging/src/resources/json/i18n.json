@@ -404,7 +404,7 @@
     "Attention": "OBS",
     "To result list": "Till träfflistan",
     "Create concept": "Skapa koncept",
-    "To create concepts, you need to switch to a seal with correct authority.": "För att skapa koncept behöver du växla till ett sigel med rättigheter.",
+    "To create concepts, you need to switch to a seal with correct authority.": "För att skapa koncept behöver du växla till en sigel med rättigheter.",
     "Switch sigel": "Växla sigel",
     "Accessibility statement": "Tillgänglighetsredogörelse",
     "Generate control number when item is saved": "Generera löpnummer när bestånd sparas",
@@ -508,6 +508,7 @@
     "and will be saved with any changes that have been made.": "och sparas med eventuella ändringar som gjorts.",
     "holdings will be re-linked to": "bestånd kommer länkas om till",
     "links will be pointed to": "länkar kommer pekas om till",
-    "To be able to enrich, the selected entities need to be of the same type." : "För att berika behöver de valda entiterna vara av samma typ."
+    "To be able to enrich, the selected entities need to be of the same type." : "För att berika behöver de valda entiterna vara av samma typ.",
+    "To be able to merge entities, switch to a sigel with access." : "För att slå ihop entiter, byt till en sigel med rättigheter."
   }
 }
