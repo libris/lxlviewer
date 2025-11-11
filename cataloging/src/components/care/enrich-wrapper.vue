@@ -217,21 +217,6 @@ export default {
     }
   }
 
-  &-stepSelection {
-    gap: 20px;
-
-    &.underline {
-      border-bottom: 1px solid @grey-lighter;
-      margin-bottom: 1em;
-    }
-
-    padding-bottom: 1em;
-    padding-top: 0.5em;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    margin: 0 0 0.5em 0;
-  }
   &-description {
     padding-left: 1rem;
   }

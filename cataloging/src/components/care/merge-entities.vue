@@ -658,7 +658,7 @@ export default {
           opposite="mergeSourceId"
           :label="targetPickerLabel"
           :top-label="targetTopLabel"
-          :flaggedInstances="[this.inspector.data.mainEntity]"
+          :flaggedInstances="[inspector.data.mainEntity]"
           :locked="targetLocked"
         />
       </div>
@@ -704,8 +704,7 @@ export default {
                            :is-source="true"
               />
             </div>
-            <div class="MergeView-buttonContainer actionColumn">
-            </div>
+            <div class="MergeView-entitySeparator"></div>
             <div class="entityForm">
               <entity-form v-if="bothRecordsLoaded"
                            :editing-object="formFocus"
@@ -800,24 +799,6 @@ export default {
 
 <style lang="less">
 
-@actionCol: 2%;
-@actionColMd: 4%;
-@actionColSm: 6%;
-@actionColXs: 8%;
-
-@sourceCol: 35%;
-@sourceColMd: 34%;
-@sourceColSm: 33%;
-@sourceColXs: 32%;
-
-@targetCol: 63%;
-@targetColMd: 62%;
-@targetColSm: 61%;
-@targetColXs: 60%;
-
-@toolbarCol: 15%;
-@inspectorCol: 85%;
-
 .MergeView {
   .header {
     border: 1px solid @grey-lighter;
@@ -847,36 +828,10 @@ export default {
     }
   }
 
-  &-dialog {
-    background-color: @neutral-color;
-    margin: 0 -1em;
-    padding: 1.5rem 2.5rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    border: solid @grey-light;
-    border-width: 1px 0px 0px 0px;
-    button {
-      margin-left: 1rem;
-    }
-    &.is-floating {
-      position: absolute;
-      bottom: 0px;
-      left: 0;
-      right: 0;
-      margin: 0;
-    }
+  &-entitySeparator {
+    margin: 0 1.8rem;
   }
 
-  &-table {
-    width: 100%;
-    td {
-      vertical-align: top;
-    }
-    .Field {
-      border-width: 1px;
-    }
-  }
   &-labelContainer {
     margin-bottom: 0.2rem;
     display: flex;
@@ -920,13 +875,7 @@ export default {
     border: 1px solid @grey-lighter;
     background-color: @neutral-color;
   }
-  &-rowContainer {
-    width: 100%;
-  }
-  &-row {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
+
   &-fieldRow {
     width: 100%;
     display: flex;
@@ -949,20 +898,6 @@ export default {
     padding-bottom: 2rem;
   }
 
-  &-resultField {
-    border: 1px solid @grey-lighter;
-    &.is-diff {
-      @base-color: @brand-accent3;
-      border-color: @base-color;
-      background-color: hsl(hue(@base-color), saturation(@base-color), lightness(@base-color)+51);
-    }
-    &.is-new {
-      @base-color: @brand-success;
-      border: 1px solid;
-      border-color: @base-color;
-      background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
-    }
-  }
   .iconCircle {
     border: 1px solid @grey-lighter;
     border-radius: 1em;
@@ -972,60 +907,15 @@ export default {
     text-align: center;
     color: @brand-primary;
   }
-  .sourceColumn {
-    width: @sourceColXs;
-    @media (min-width: 900px) {
-      width: @sourceColSm;
-    }
-    @media (min-width: 1200px) {
-      width: @sourceColMd;
-    }
-    @media (min-width: 1500px) {
-      width: @sourceCol;
-    }
-  }
-
-  .resultColumn {
-    width: @targetCol;
-    @media (min-width: 900px) {
-      width: @targetColSm;
-    }
-    @media (min-width: 1200px) {
-      width: @targetColMd;
-    }
-    @media (min-width: 1500px) {
-      width: @targetCol;
-    }
-  }
 
   .entityForm {
     width: 100%;
-  }
-
-  .actionColumn {
-    width: @actionColXs;
-    @media (min-width: 900px) {
-      width: @actionColSm;
-    }
-    @media (min-width: 1200px) {
-      width: @actionColMd;
-    }
-    @media (min-width: 1500px) {
-      width: @actionCol;
-    }
   }
 
   &-sourceField {
     border: 1px solid @grey-lighter;
   }
 
-  &-sourceField, &-resultField, &-buttonContainer {
-    &.non-existing {
-      background-color: @grey-lightest;
-    }
-    min-height: 2em;
-    display: flex;
-  }
   &-buttonContainer {
     padding: 0 1%;
     display: flex;
