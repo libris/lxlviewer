@@ -41,18 +41,6 @@ export function getSelectedHolding(value: string, instanceIdsByType: { [key: str
 	return undefined;
 }
 
-function sortHoldings(holdings) {
-	return [...holdings].sort((a, b) => {
-		if (a?.heldBy?.name < b?.heldBy?.name) {
-			return -1;
-		}
-		if (a?.heldBy?.name > b?.heldBy?.name) {
-			return 1;
-		}
-		return 0;
-	});
-}
-
 export function getHoldersCount(data: FramedData, vocabUtil: VocabUtil): number {
 	const type = vocabUtil.getType(data);
 	if (
@@ -91,7 +79,7 @@ export function getHoldingsByInstanceId(
 		}
 		return {
 			...acc,
-			[id]: sortHoldings(instanceOfItem?.['@reverse']?.itemOf || []).map((holding) => {
+			[id]: (instanceOfItem?.['@reverse']?.itemOf || []).map((holding) => {
 				return {
 					...holding,
 					heldBy: {
@@ -175,13 +163,7 @@ export function getHoldingsByType(mainEntity: FramedData) {
 	if (!holdingsByType) {
 		return {};
 	}
-	const sortedHoldingsByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
-		return {
-			...acc,
-			[type]: sortHoldings(holdings)
-		};
-	}, {});
-	return sortedHoldingsByType;
+	return holdingsByType;
 }
 
 export function getHoldersByType(
