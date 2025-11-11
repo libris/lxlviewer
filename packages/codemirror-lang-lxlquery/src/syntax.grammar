@@ -33,7 +33,7 @@ QualifierInnerGroup { "(" qualifierOrcomb? ")" }
   bOperatorEq { ":" | "=" }
   strliteral { '"' (!["\\] | "\\" _)* '"' }
   str { ![:><=()~!"\ ]+ }
-  filterAlias { "includeEplikt" | "includePreliminary" | "existsImage" | "alias-myLibraries" | "freeOnline"}
+  filterAlias { "includeEplikt" | "includePreliminary" | "existsImage" | "alias-myLibraries" | "freeOnline" | "_suecia" }
   space { @whitespace+ }
 
   @precedence { OrOperator, AndOperator, UOperator, bOperator, bOperatorEq, filterAlias, str, space}
