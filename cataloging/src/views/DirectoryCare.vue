@@ -58,11 +58,11 @@ export default {
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
-      if (this.userIsAllowedToBulkChange) {
-        tabs.push({ id: 'bulkchanges', text: 'Create bulk change' })
-      }
       if (this.userIsAllowedToMergeEntities) {
         tabs.push({ id: 'merge', text: 'Merge entities' });
+      }
+      if (this.userIsAllowedToBulkChange) {
+        tabs.push({ id: 'bulkchanges', text: 'Create bulk change' })
       }
       return tabs;
     },
