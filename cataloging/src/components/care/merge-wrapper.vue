@@ -4,7 +4,6 @@ import {translatePhrase} from '@/utils/filters';
 
 import MergeEntities from "@/components/care/merge-entities.vue";
 import {isEmpty} from "lodash-es";
-import * as VocabUtil from "../../../../lxljs/vocab.js";
 
 export default {
   name: 'Merge-wrapper',
@@ -43,55 +42,53 @@ export default {
       return !isEmpty(this.directoryCare.mergeSourceId) && !isEmpty(this.directoryCare.mergeTargetId);
     },
   },
-  watch: {
-    'inspector.event'(val) {
-        if (val.name === 'apply-source') {
-          this.applyFromSource();
+  methods: {
+    translatePhrase,
+    ...mapActions([
+      'setEnrichmentSource',
+      'setEnrichmentTarget',
+      'setEnrichmentChanges'
+    ]),
+    resetCachedChanges() {
+      this.setEnrichmentChanges(null);
+    },
+    restart() {
+      this.$router.go(0);
+      this.resetEverything();
+    },
+    setMismatchingTypes(val) {
+      this.mismatchingTypes = val;
+    },
+    resetEverything() {
+      this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
+      this.$store.dispatch('setDirectoryCare', {
+        ...this.directoryCare, ...{
+          mergeSourceId: null,
+          mergeTargetId: null
         }
-      }
+      });
+      this.$store.dispatch('setInspectorData', {});
+      this.setEnrichmentChanges(null);
+      this.setEnrichmentTarget(null);
+      this.setEnrichmentSource(null);
+      this.$store.dispatch('flushChangeHistory');
+    },
+    goToEditStep() {
+      this.resetCachedChanges();
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'editing',
+        value: true,
+      });
+      this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
+      this.enrichStep = false;
+      this.editStep = true;
+    },
+    goToEnrichStep() {
+      this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: true});
+      this.enrichStep = true;
+      this.editStep = false;
+    },
   },
-      methods: {
-        translatePhrase,
-      ...mapActions([
-          'setEnrichmentSource',
-          'setEnrichmentTarget',
-          'setEnrichmentChanges'
-        ]),
-        resetCachedChanges() {
-          this.setEnrichmentChanges(null);
-        },
-        restart() {
-          this.$router.go(0);
-          this.resetEverything(); //Implicit by unmount?
-        },
-        setMismatchingTypes(val) {
-          this.mismatchingTypes = val;
-        },
-        resetEverything() {
-          this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
-          this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...{ mergeSourceId: null, mergeTargetId: null } });
-          this.$store.dispatch('setInspectorData', {});
-          this.setEnrichmentChanges(null);
-          this.setEnrichmentTarget(null);
-          this.setEnrichmentSource(null);
-          this.$store.dispatch('flushChangeHistory');
-        },
-        goToEditStep() {
-          this.resetCachedChanges();
-          this.$store.dispatch('setInspectorStatusValue', {
-            property: 'editing',
-            value: true,
-          });
-          this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
-          this.enrichStep = false;
-          this.editStep = true;
-        },
-        goToEnrichStep() {
-          this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: true});
-          this.enrichStep = true;
-          this.editStep = false;
-        },
-      },
   mounted() {
     this.$store.dispatch('setInspectorStatusValue', {property: 'focus', value: 'mainEntity'});
     this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: true});

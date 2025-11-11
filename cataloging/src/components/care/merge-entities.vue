@@ -293,7 +293,7 @@ export default {
         }, (error) => {
           console.log('Error checking for relations', error);
         });
-
+      
       return 0;
     },
     fetchId(id, fetchingSource = false) {
@@ -418,9 +418,9 @@ export default {
         this.saveTargetRecord(target).then(() => {
             if (this.recordSuccessfullySaved) {
               this.saveNewBulkChange(mergeBulkChange);
-              this.$router.push({ path: asFnurgelLink(this.inspector.data.record['@id']) });
+              this.$router.push({path: asFnurgelLink(this.inspector.data.record['@id'])});
             }
-            this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+            this.$store.dispatch('setInspectorStatusValue', {property: 'saving', value: false});
           }
         );
       } catch (e) {
@@ -667,19 +667,18 @@ export default {
       <div>
         <div v-if="bothRecordsSelected" class="MergeView-recordsContainer"
              :class="{ 'is-empty': !bothRecordsSelected }">
-
-            <div class="MergeView-descriptionContainer" v-if="!mismatchingTypes">
-              <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
-              <div class="MergeView-description">
-                {{ translatePhrase('Select parts of the left record which should be copied to the right one.') }}
-              </div>
+          <div class="MergeView-descriptionContainer" v-if="!mismatchingTypes">
+            <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
+            <div class="MergeView-description">
+              {{ translatePhrase('Select parts of the left record which should be copied to the right one.') }}
             </div>
-            <div class="MergeView-descriptionContainer" v-if="mismatchingTypes && !loadingRecords">
-              <div class="iconCircle"><i class="fa fa-fw fa-exclamation"/></div>
-              <div class="MergeView-description">
-                {{ translatePhrase('To be able to enrich, the selected entities need to be of the same type.') }}
-              </div>
+          </div>
+          <div class="MergeView-descriptionContainer" v-if="mismatchingTypes && !loadingRecords">
+            <div class="iconCircle"><i class="fa fa-fw fa-exclamation"/></div>
+            <div class="MergeView-description">
+              {{ translatePhrase('To be able to enrich, the selected entities need to be of the same type.') }}
             </div>
+          </div>
           <div v-if="!this.loadingRecords && !mismatchingTypes">
           <div class="MergeView-fieldRow">
             <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus"/>
@@ -1079,5 +1078,4 @@ export default {
     }
   }
 }
-
 </style>
