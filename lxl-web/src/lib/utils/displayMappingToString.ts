@@ -8,7 +8,9 @@ export function displayMappingToString(mapping: DisplayMapping[]): string {
 		function _iterate(mapping: DisplayMapping) {
 			const { children, operator, variable, displayStr, label, _key, _value } = mapping;
 			if ((displayStr || label) && !isWildcardQuery(mapping)) {
-				result.push(`${label || _key}: ${displayStr || _value}`);
+				result.push(
+					`${label || _key || ''}${operator !== 'none' ? ':' : ''} ${displayStr || _value}`
+				);
 			} else if (children) {
 				if (children.length > 1 && !variable) {
 					result.push('(');

@@ -392,6 +392,7 @@
 		right: 0;
 		width: calc(var(--spacing) * 4);
 		height: 100%;
+		z-index: 1;
 		pointer-events: none;
 		background: linear-gradient(to right, transparent, var(--color-primary-100));
 	}

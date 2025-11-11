@@ -6,6 +6,10 @@ describe('displayMappingToString', () => {
 	it('returns a readable text string from a DisplayMapping object', () => {
 		expect(displayMappingToString(mapping)).toBe('Typ: Stillbild, Format: Elektronisk');
 	});
+
+	it('handles filter aliases correctly (no key)', () => {
+		expect(displayMappingToString(mappingFilterAlias)).toBe('Suecia');
+	});
 });
 
 const mapping: DisplayMapping[] = [
@@ -52,5 +56,28 @@ const mapping: DisplayMapping[] = [
 		],
 		operator: 'and',
 		variable: '_r'
+	}
+];
+
+const mappingFilterAlias: DisplayMapping[] = [
+	{
+		display: {
+			'@type': 'Resource',
+			_display: [
+				{
+					prefLabel: 'Suecia',
+					_label: 'föredragen benämning'
+				}
+			],
+			_label: 'Resurs'
+		},
+		displayStr: 'Suecia',
+		label: '',
+		operator: 'none',
+		up: {
+			'@id': '/find?_q=*&_r=*'
+		},
+		variable: '_r',
+		_value: '_suecia'
 	}
 ];
