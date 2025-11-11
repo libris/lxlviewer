@@ -121,7 +121,7 @@ export function asSearchResultItem(
 			typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
 			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
-			numberOfHolders: getHoldersCount(i)
+			numberOfHolders: getHoldersCount(i, vocabUtil)
 		}));
 }
 

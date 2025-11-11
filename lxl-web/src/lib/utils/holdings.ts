@@ -7,11 +7,11 @@ import type {
 	HoldingLinks,
 	HoldingsByInstanceId
 } from '$lib/types/holdings';
-import { LensType, type FramedData, JsonLd, BibDb } from '$lib/types/xl';
+import { LensType, type FramedData, JsonLd, BibDb, Bibframe } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-import { DisplayUtil, toString } from '$lib/utils/xl.js';
+import { DisplayUtil, toString, VocabUtil } from '$lib/utils/xl.js';
 import getAtPath from '$lib/utils/getAtPath';
 import { USE_HOLDING_PANE } from '$lib/constants/panels';
 
@@ -53,9 +53,20 @@ function sortHoldings(holdings) {
 	});
 }
 
-export function getHoldersCount(data: FramedData): number {
+export function getHoldersCount(data: FramedData, vocabUtil: VocabUtil): number {
+	const type = vocabUtil.getType(data);
+	if (
+		!type ||
+		!(
+			vocabUtil.isSubClassOf(type, Bibframe.Work) || vocabUtil.isSubClassOf(type, Bibframe.Instance)
+		)
+	) {
+		return -1;
+	}
+
 	// data can be a work mainEntity or an instance
 	const instances = data['@reverse']?.instanceOf || [data];
+
 	const holders = new Set();
 	instances?.forEach((instance) => {
 		const holdings = instance['@reverse']?.itemOf;
