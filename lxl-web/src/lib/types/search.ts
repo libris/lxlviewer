@@ -59,6 +59,7 @@ export interface FacetValue {
 	totalItems: number;
 	view: Link;
 	facets?: Facet[];
+	parentFacet?: Omit<Facet, 'values'>;
 	selected?: boolean;
 	values?: (FacetValue | FacetRange)[];
 }

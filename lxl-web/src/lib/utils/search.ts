@@ -83,7 +83,7 @@ export async function asResult(
 			)
 		}),
 		...('stats' in view && {
-			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
+			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath) // should be removed in favour of facets above...
 		}),
 		...('stats' in view && { predicates: displayPredicates(view, displayUtil, locale, usePath) }),
 		_spell: view._spell
@@ -408,7 +408,8 @@ function getFacetValue({
 	displayUtil,
 	locale,
 	translate,
-	usePath
+	usePath,
+	parentFacet
 }: {
 	observation: Observation;
 	dimension: string;
@@ -416,24 +417,25 @@ function getFacetValue({
 	locale: LangCode;
 	translate: TranslateFn;
 	usePath?: string;
+	parentFacet?: Facet;
 }): FacetValue | FacetRange {
 	return {
 		label: getFacetLabel({ data: observation, displayUtil, locale, translate }),
 		view: replacePath(observation.view, usePath),
 		totalItems: observation.totalItems,
 		selected: observation._selected,
+		parentFacet,
 		facets: observation.sliceByDimension
-			? Object.values(observation.sliceByDimension).map(
-					(slice) =>
-						getFacet({
-							slice,
-							observation,
-							parentDimension: dimension,
-							displayUtil,
-							locale,
-							translate,
-							usePath
-						}) // we should probably add parentDimension here...
+			? Object.values(observation.sliceByDimension).map((slice) =>
+					getFacet({
+						slice,
+						observation,
+						parentDimension: dimension,
+						displayUtil,
+						locale,
+						translate,
+						usePath
+					})
 				)
 			: undefined
 	};
@@ -457,7 +459,8 @@ function getFacet({
 	usePath?: string;
 }): Facet | MultiSelectFacet {
 	const dimension = (parentDimension ? `${parentDimension}/` : '') + slice.dimension;
-	return {
+
+	const facet = {
 		dimension,
 		view: observation ? replacePath(observation.view, usePath) : undefined,
 		label: getFacetLabel({ data: slice, displayUtil, locale, translate }),
@@ -465,17 +468,25 @@ function getFacet({
 		maxItems: slice.maxItems,
 		search: slice.search,
 		alias: slice.alias, // is alias needed?
-		selected: observation?._selected, // should facets be aware of selected?
-		values: slice.observation.map((observationItem) =>
-			getFacetValue({
+		selected: observation?._selected // should facets be aware of selected?
+	};
+	return {
+		...facet,
+		values: slice.observation.map((observationItem) => {
+			if (parentDimension) {
+				console.log('obsItem', observationItem);
+			}
+
+			return getFacetValue({
 				observation: observationItem,
 				dimension,
 				displayUtil,
 				locale,
 				translate,
-				usePath
-			})
-		)
+				usePath,
+				parentFacet: facet
+			});
+		})
 	};
 }
 
