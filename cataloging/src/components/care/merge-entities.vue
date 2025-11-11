@@ -276,9 +276,8 @@ export default {
       this.createMergeBulkChangeAndSave();
       this.showConfirmMergeModal = false;
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-
       //TODO: remove source from flagged?
-      // this.setRunStatus(Status.Ready);
+      //TODO: set bulkchange Status.Ready
     },
     getNumberOfReverseLinks() {
       const query = {
@@ -432,7 +431,6 @@ export default {
       }
     },
     getMergeBulkChange() {
-      //TODO: always loud or silent or selectable from modal?
       const mt = this.templates.combined.bulk.find(t => t['@id'] === 'merge');
       const mBulkChange = RecordUtil.prepareDuplicateFor(mt.value, this.user, []);
       const label = DisplayUtil.getItemLabel(
