@@ -1,7 +1,9 @@
 import type { DisplayMapping } from '$lib/types/search';
 
-// accepts an array of DisplayMappings (search and subset)
-// and returns a list of unique sigels that exist in user's search refinement
+/**
+ * accepts an array of DisplayMappings (search and subset)
+ * and returns a list of unique sigels that exist in user's search refinement
+ */
 export function getSigelsFromMapping(mappings: (DisplayMapping[] | undefined)[]): string[] | [] {
 	const result: string[] = [];
 	for (const mapping of mappings) {
