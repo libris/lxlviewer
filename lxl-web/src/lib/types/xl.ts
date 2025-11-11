@@ -48,6 +48,11 @@ export enum Platform {
 	meta = 'meta'
 }
 
+export enum Bibframe {
+	Work = 'Work',
+	Instance = 'Instance'
+}
+
 export enum BibDb {
 	ils = 'bibdb:ils',
 	lopac = 'bibdb:lopac',
