@@ -96,7 +96,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		// TODO: Replace with a custom getProperty method (similar to pickProperty)
 		instances = jmespath.search(overview, '*[].hasInstance[]');
 	} else if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
-		// multiple instances -> format as web cards and fetch filtered instances
+		// multiple instances -> format as web cards
 		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
 		instances = asSearchResultItem(
 			sortedInstances,
@@ -107,30 +107,30 @@ export const load = async ({ params, locals, fetch, url }) => {
 			locals.userSettings?.myLibraries,
 			undefined
 		);
+	}
 
-		// Search for instances that matches query
-		if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*')) {
-			const searchParams = appendMyLibrariesParam(
-				new URLSearchParams({
-					_o: resourceId || '',
-					_p: 'instanceOf',
-					_q: _q || '*',
-					_r: subsetFilter || '',
-					_spell: 'false',
-					_stats: 'false'
-				}),
-				locals.userSettings
-			);
+	// Search for instances that matches query
+	if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*')) {
+		const searchParams = appendMyLibrariesParam(
+			new URLSearchParams({
+				_o: resourceId || '',
+				_p: 'instanceOf',
+				_q: _q || '*',
+				_r: subsetFilter || '',
+				_spell: 'false',
+				_stats: 'false'
+			}),
+			locals.userSettings
+		);
 
-			const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+		const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
 
-			if (res.ok) {
-				const data = (await res.json()) as PartialCollectionView;
-				searchResult = {
-					items: data.items.map((item) => (item['@id'] as string).replace('#it', '')),
-					mapping: displayMappings(data, locals.display, locale, translate, url.pathname)
-				};
-			}
+		if (res.ok) {
+			const data = (await res.json()) as PartialCollectionView;
+			searchResult = {
+				items: data.items.map((item) => (item['@id'] as string).replace('#it', '')),
+				mapping: displayMappings(data, locals.display, locale, translate, url.pathname)
+			};
 		}
 	}
 

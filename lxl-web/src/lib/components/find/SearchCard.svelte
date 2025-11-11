@@ -48,17 +48,13 @@
 	const isInstanceCard = $derived(!!page.params.fnurgel);
 	const resourceLink = $derived.by(() => {
 		const url = new URL(page.url.origin + page.data.localizeHref(id));
-		if (isInstanceCard) {
-			return url.toString();
-		} else {
-			// pass on _q to work resource page
-			const _q = page.url.searchParams.get('_q')?.trim();
-			if (_q && _q !== '*') {
-				url.searchParams.append('_q', _q);
-				return url.toString();
-			}
+		// pass on _q to resource page
+		const _q = page.url.searchParams.get('_q')?.trim();
+		if (_q && _q !== '*') {
+			url.searchParams.append('_q', _q);
 			return url.toString();
 		}
+		return url.toString();
 	});
 
 	let showDebugExplain = $state(false);

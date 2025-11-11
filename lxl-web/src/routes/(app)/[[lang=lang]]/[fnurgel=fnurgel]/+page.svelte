@@ -9,6 +9,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import Citations from '$lib/components/Citations.svelte';
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
+	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping.js';
 
 	const { data } = $props();
 	const holdings: HoldingsData = $derived({
@@ -19,6 +20,9 @@
 	});
 
 	let previousURL: URL;
+	const refinedLibraries = $derived(
+		getSigelsFromMapping([data.searchResult?.mapping, data.subsetMapping])
+	);
 
 	afterNavigate(({ to }) => {
 		if (to) {
@@ -68,7 +72,7 @@
 			{#snippet title()}
 				<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
 			{/snippet}
-			<HoldingsContent {holdings} />
+			<HoldingsContent {holdings} {refinedLibraries} />
 		</Modal>
 	{:else if page.state.citations || page.url.searchParams.get('cite')}
 		<Modal close={() => handleCloseModal('cite')}>
