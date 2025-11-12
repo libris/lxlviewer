@@ -13,12 +13,7 @@ import * as DataUtil from "@/utils/data.js";
 import {getChangeList} from "@/utils/enrich.js";
 import MergeToolbar from "@/components/inspector/merge-toolbar.vue";
 import * as HttpUtil from "@/utils/http.js";
-import {
-  CHANGE_SPEC_KEY,
-  DEPRECATE_KEY,
-  KEEP_KEY,
-  SHOULD_UPDATE_TIMESTAMP_KEY,
-} from "@/utils/bulk.js";
+import { CHANGE_SPEC_KEY, DEPRECATE_KEY, KEEP_KEY, SHOULD_UPDATE_TIMESTAMP_KEY, STATUS_KEY, Status } from "@/utils/bulk.js";
 import ModalComponent from '@/components/shared/modal-component.vue';
 import * as VocabUtil from "../../../../lxljs/vocab.js";
 import * as DisplayUtil from "../../../../lxljs/display.js";
@@ -275,9 +270,6 @@ export default {
     doMerge() {
       this.createMergeBulkChangeAndSave();
       this.showConfirmMergeModal = false;
-      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-      //TODO: remove source from flagged?
-      //TODO: set bulkchange Status.Ready
     },
     getNumberOfReverseLinks() {
       const query = {
@@ -443,6 +435,7 @@ export default {
       mBulkChange['@graph'][1][CHANGE_SPEC_KEY][DEPRECATE_KEY] = { '@id' : this.directoryCare.mergeSourceId };
       mBulkChange['@graph'][1][CHANGE_SPEC_KEY][KEEP_KEY] = { '@id' : this.directoryCare.mergeTargetId };
       mBulkChange['@graph'][1][SHOULD_UPDATE_TIMESTAMP_KEY] = true;
+      mBulkChange['@graph'][1][STATUS_KEY] = Status.Ready;
       return mBulkChange;
     },
     getDateString() {
@@ -473,6 +466,8 @@ export default {
         token: this.user.token,
       }, obj).then(() => {
         console.log('Bulk change saved!')
+        this.triggerRunBulkChange();
+        this.$store.dispatch('unmark', { tag: 'Flagged', documentId: this.directoryCare.mergeSourceId });
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -506,6 +501,14 @@ export default {
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         }
       });
+    },
+    async triggerRunBulkChange() {
+      const nonEmpty = {'a' : 'b'};
+      setTimeout(() => {
+         HttpUtil.post({
+          url: `${this.settings.apiPath}/_bulk-change/poll-ready`
+        }, nonEmpty);
+      }, 1000);
     },
     async saveTargetRecord(obj) {
       try {
