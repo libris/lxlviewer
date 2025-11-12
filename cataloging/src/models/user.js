@@ -3,11 +3,6 @@ import md5 from 'md5';
 import URIMinter from '@/utils/uriminter';
 import * as StringUtil from 'lxljs/string';
 
-async function createUriMinter(findContainerUrl) {
-  const found = await (await fetch(findContainerUrl)).json();
-  return found.items ? new URIMinter(found.items) : null;
-}
-
 function getLibraryUri(sigel) {
   return StringUtil.getLibraryUri(sigel);
 }
@@ -114,11 +109,27 @@ export class User {
   }
 
   async loadUserData(apiPath) {
-    const findUrl = `${apiPath}/find.jsonld?@type=EntityContainer&${
-      this.collections.map((it) => `administeredBy.@id=${getLibraryUri(it.code)}`).join('&')
-    }`;
-    const uriMinter = await createUriMinter(findUrl);
-    this.uriMinter = uriMinter;
+    // Chunking requests is necessary because for users with a *lot* of sigels
+    // the request URI can get so large that our backend responds with a 431.
+    const CHUNK_SIZE = 40;
+    const chunks = [];
+
+    for (let i = 0; i < this.collections.length; i += CHUNK_SIZE) {
+      chunks.push(this.collections.slice(i, i + CHUNK_SIZE));
+    }
+
+    const allItems = [];
+    for (const chunk of chunks) {
+      const findUrl = `${apiPath}/find.jsonld?@type=EntityContainer&${
+        chunk.map((it) => `administeredBy.@id=${getLibraryUri(it.code)}`).join('&')
+      }`;
+      const found = await (await fetch(findUrl)).json();
+      if (found.items) {
+        allItems.push(...found.items);
+      }
+    }
+
+    this.uriMinter = allItems.length > 0 ? new URIMinter(allItems) : null;
   }
 
   isGlobalRegistrant() {
