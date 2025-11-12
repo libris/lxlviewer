@@ -110,7 +110,9 @@ export class User {
 
   async loadUserData(apiPath) {
     // Chunking requests is necessary because for users with a *lot* of sigels
-    // the request URI can get so large that our backend responds with a 431.
+    // the request URI can get so large that it causes problems, either on its
+    // own (HTTP 414) or because it ends up somewhere in some header field,
+    // causing the header payload to be excessively large (HTTP 431).
     const CHUNK_SIZE = 40;
     const chunks = [];
 
