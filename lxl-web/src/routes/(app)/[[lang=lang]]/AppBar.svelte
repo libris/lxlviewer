@@ -210,7 +210,7 @@
 			class={[
 				showSearchInputOnMobile && 'mb-2 flex lg:mb-0',
 				!showSearchInputOnMobile &&
-					'hidden target:flex has-[dialog:open]:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
+					'hidden target:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit', // enable toggling using target/anchor (so it also works when JavaScript is disabled)
 				'mx-2 items-center lg:mx-0'
 			]}
 		>
@@ -300,6 +300,11 @@
 
 	search {
 		grid-area: search;
+	}
+
+	/* has-[dialog:open]:flex does not seem to work for Safari */
+	search:global(:has(dialog[open])) {
+		display: flex;
 	}
 
 	.trailing-actions {
