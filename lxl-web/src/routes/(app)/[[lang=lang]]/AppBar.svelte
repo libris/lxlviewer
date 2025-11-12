@@ -395,10 +395,4 @@
 		pointer-events: none;
 		background: linear-gradient(to right, transparent, var(--color-primary-100));
 	}
-
-	/* hide key/operator for subset pills */
-	.subset-container :global(.atomic .lxl-qualifier-key:has(~ .lxl-qualifier-value)),
-	.subset-container :global(.atomic .lxl-qualifier-operator:has(~ .lxl-qualifier-value)) {
-		display: none;
-	}
 </style>
