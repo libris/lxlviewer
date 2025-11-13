@@ -118,6 +118,8 @@ async function loadUtil() {
 }
 
 function getSite(event: RequestEvent): Site | null {
+	console.info(`got HOSTNAME ${event.url.hostname}`);
+
 	// TODO replace this with proper domain matching
 	const deepestSubDomain = event.url.hostname.split('.')[0];
 
