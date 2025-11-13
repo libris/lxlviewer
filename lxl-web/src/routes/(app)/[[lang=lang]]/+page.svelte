@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>{getPageTitle()}</title>
+	<title>{getPageTitle(undefined, page.data.siteName)}</title>
 </svelte:head>
 
 <article class="mx-auto mt-8 mb-12 max-w-3xl p-4">

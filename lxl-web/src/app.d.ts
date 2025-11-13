@@ -6,6 +6,7 @@ import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import type { AdjecentSearchResult, DisplayMapping } from '$lib/types/search';
 import 'unplugin-icons/types/svelte';
+import type { Site } from '$lib/types/site';
 
 declare global {
 	namespace App {
@@ -16,6 +17,7 @@ declare global {
 			vocab: VocabUtil;
 			display: DisplayUtil;
 			userSettings: UserSettings;
+			site?: Site;
 		}
 		interface PageData {
 			locale: import('$lib/i18n/locales').LocaleCode;
@@ -23,6 +25,7 @@ declare global {
 			localizeHref: ReturnType<typeof import('$lib/i18n').initLocalizeHref>;
 			userSettings: UserSettings;
 			subsetMapping: DisplayMapping[] | undefined;
+			siteName?: string;
 		}
 		interface PageState {
 			expandedInstances?: string[];

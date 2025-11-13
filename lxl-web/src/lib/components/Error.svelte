@@ -6,9 +6,9 @@
 
 	function getErrorPageTitle() {
 		if (page.status === 404) {
-			return getPageTitle(page.data.t('errors.notFound'));
+			return getPageTitle(page.data.t('errors.notFound'), page.data.siteName);
 		}
-		return getPageTitle(page.data.t('errors.somethingWentWrong'));
+		return getPageTitle(page.data.t('errors.somethingWentWrong'), page.data.siteName);
 	}
 </script>
 

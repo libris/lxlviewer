@@ -1,5 +1,5 @@
 import { getTranslator } from '$lib/i18n/index.js';
-import { getSupportedLocale, initLocalizeHref, baseLocale } from '$lib/i18n/locales';
+import { baseLocale, getSupportedLocale, initLocalizeHref } from '$lib/i18n/locales';
 
 export async function load({ params, data, url }) {
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param
@@ -9,6 +9,7 @@ export async function load({ params, data, url }) {
 	const base = locale === baseLocale ? '/' : `/${locale}`;
 	const userSettings = data.userSettings;
 	const subsetMapping = data.subsetMapping;
+	const siteName = data.siteName;
 
-	return { locale, t, localizeHref, base, userSettings, subsetMapping };
+	return { locale, t, localizeHref, base, userSettings, subsetMapping, siteName };
 }

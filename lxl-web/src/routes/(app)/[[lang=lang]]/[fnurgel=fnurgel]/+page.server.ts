@@ -110,7 +110,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	// Search for instances that matches query
-	if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*')) {
+	if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*') || locals.site) {
 		const searchParams = appendMyLibrariesParam(
 			new URLSearchParams({
 				_o: resourceId || '',
@@ -118,7 +118,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 				_q: _q || '*',
 				_r: subsetFilter || '',
 				_spell: 'false',
-				_stats: 'false'
+				_stats: 'false',
+				_site: locals.site?.searchSite || ''
 			}),
 			locals.userSettings
 		);
@@ -138,7 +139,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		resourceId,
 		vocabUtil,
 		locale,
-		subsetFilter
+		subsetFilter,
+		locals.site?.searchSite
 	);
 
 	/** TODO: Better error handling while fetching relations previews */

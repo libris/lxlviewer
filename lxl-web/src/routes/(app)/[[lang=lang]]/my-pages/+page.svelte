@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>{getPageTitle(page.data.t('header.myPages'))}</title>
+	<title>{getPageTitle(page.data.t('header.myPages'), page.data.siteName)}</title>
 </svelte:head>
 
 <div class="mx-auto mt-8 w-full max-w-screen p-4 sm:px-6 lg:max-w-5xl">

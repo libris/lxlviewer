@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
-	import { onMount, type Component } from 'svelte';
-	import { Locales, baseLocale, type LocaleCode } from '$lib/i18n/locales';
+	import { type Component, onMount } from 'svelte';
+	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
@@ -23,8 +22,6 @@
 	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
-
-	const serviceName = env.PUBLIC_SERVICE_NAME;
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -183,9 +180,9 @@
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 					data-testid="home"
 				>
-					{#if serviceName}
+					{#if page.data.siteName}
 						<span class="text-2xl font-medium">
-							{serviceName}
+							{page.data.siteName}
 						</span>
 					{:else}
 						<img

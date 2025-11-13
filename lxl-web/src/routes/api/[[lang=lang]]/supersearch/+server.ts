@@ -36,6 +36,10 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	newSearchParams.set('cursor', withWildcard.cursor.toString());
 	newSearchParams.set('_sort', _sort);
 
+	if (locals.site?.searchSite) {
+		newSearchParams.set('_site', locals.site?.searchSite);
+	}
+
 	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
 	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
 
