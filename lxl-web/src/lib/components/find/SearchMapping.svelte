@@ -66,7 +66,7 @@
 					{/if}
 				</span>
 			</li>
-		{:else if children}
+		{:else if children && variable !== 'defaultSiteFilters'}
 			<li
 				class={[
 					'group flex max-w-full flex-wrap items-center gap-1.5',
