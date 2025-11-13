@@ -622,7 +622,6 @@ export default {
     this.resetCachedChanges();
     this.clearAllSelected();
   },
-
 };
 </script>
 

@@ -108,10 +108,9 @@ export default {
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
       <div v-if="bothRecordsSelected">
         <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
-        <button class="btn--as-link" v-if="this.enrichStep"
+        <button class="btn--as-link" v-if="this.enrichStep && !mismatchingTypes"
                 @click="goToEditStep"
-                @keyup.enter="goToEditStep"
-                :disabled="mismatchingTypes">
+                @keyup.enter="goToEditStep">
           {{ translatePhrase('Next') }}
         </button>
       </div>
@@ -133,10 +132,9 @@ export default {
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
       <div>
         <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
-        <button class="btn--as-link" v-if="this.enrichStep"
+        <button class="btn--as-link" v-if="this.enrichStep && !mismatchingTypes"
                 @click="goToEditStep"
-                @keyup.enter="goToEditStep"
-                :disabled="mismatchingTypes">
+                @keyup.enter="goToEditStep">
           {{ translatePhrase('Next') }}
         </button>
       </div>
