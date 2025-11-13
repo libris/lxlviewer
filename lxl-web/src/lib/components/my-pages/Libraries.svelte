@@ -48,10 +48,12 @@
 		{#if searchPhrase && search.data}
 			{@const searchResult = search.data as LibraryResult}
 			<span class="text-2xs my-3 block" role="status">
-				{#if searchResult?.totalItems && searchResult?.totalItems !== 0}
+				{#if search.isLoading}
+					{page.data.t('search.loading')}
+				{:else if searchResult?.totalItems && searchResult?.totalItems !== 0}
 					{searchResult?.totalItems}
 					{page.data.t('myPages.hitsFor')} "{searchPhrase}"
-				{:else}
+				{:else if !search.isLoading && searchResult.totalItems === 0}
 					{page.data.t('myPages.noResultsFor')} "{searchPhrase}"
 				{/if}
 			</span>
