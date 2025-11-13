@@ -20,6 +20,8 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	const findRes = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`);
+	newSearchParams.set('_stats', 'false');
+	newSearchParams.set('_spell', 'false');
 	const data = await findRes.json();
 	const result = await asLibraryResult(data, displayUtil, locale);
 
