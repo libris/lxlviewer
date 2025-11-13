@@ -97,6 +97,7 @@ export default {
 		'meta.encodingLevel': 'Beskrivningsnivå',
 		'rdf:type': 'Typ',
 		hasInstanceType: 'Format', // 'Bärare',
+		instanceOfType: 'Verkstyp',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Bibliotek',
 		bibliography: 'Bibliografi',
