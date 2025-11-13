@@ -128,6 +128,15 @@ export interface PartialCollectionView {
 	_spell: SpellingSuggestion[] | [];
 }
 
+export interface MappingsOnlyPartialCollectionView {
+	[JsonLd.TYPE]: 'PartialCollectionView';
+	[JsonLd.ID]: string;
+	[JsonLd.CONTEXT]: string;
+	search: {
+		mapping: SearchMapping[];
+	};
+}
+
 interface Slice {
 	alias: string;
 	dimension: FacetGroupId;

@@ -15,6 +15,7 @@ import {
 	type DisplayMapping,
 	type FacetGroup,
 	type ItemDebugInfo,
+	type MappingsOnlyPartialCollectionView,
 	type MultiSelectFacet,
 	type Observation,
 	type PartialCollectionView,
@@ -150,7 +151,7 @@ function selectTypeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: Lan
 }
 
 export function displayMappings(
-	view: PartialCollectionView,
+	view: PartialCollectionView | MappingsOnlyPartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
