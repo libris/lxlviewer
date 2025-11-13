@@ -53,8 +53,11 @@
 		return [];
 	});
 
+	const sortedHolders = $derived(
+		displayedHolders.sort((a, b) => a.str.localeCompare(b.str, page.data.locale))
+	);
 	const filteredHolders = $derived(
-		displayedHolders
+		sortedHolders
 			.filter((holder) => {
 				return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
 			})
@@ -62,7 +65,7 @@
 	);
 
 	const myLibsHolders = $derived(
-		displayedHolders.filter((holder) => {
+		sortedHolders.filter((holder) => {
 			if (userSettings?.myLibraries) {
 				return Object.values(userSettings.myLibraries).some((lib) => lib.sigel === holder.sigel);
 			} else return false;
@@ -100,7 +103,7 @@
 		} else return holdings.overview;
 	});
 
-	const numHolders = $derived(displayedHolders?.length);
+	const numHolders = $derived(sortedHolders?.length);
 
 	// subset of instances applicable for the current holder/selection
 	function getInstancesForSigelAndSelection(sigel: string): BibIdByInstanceId {
@@ -182,7 +185,7 @@
 	</div>
 	<!-- list holders -->
 	<ul class="flex flex-col gap-2 text-xs">
-		{#each displayedHolders as holder, i (`holder-${holder.sigel}-${i}`)}
+		{#each sortedHolders as holder (holder.obj['@id'])}
 			{@const instances = getInstancesForSigelAndSelection(holder.sigel)}
 			<Holder
 				{holder}
