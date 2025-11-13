@@ -218,6 +218,7 @@ export default {
     },
     setFocus(focus) {
       this.formFocus = focus;
+      this.$store.dispatch('setInspectorStatusValue', {property: 'focus', value: focus});
     },
     selectAllForFocused() {
       let selected = this.inspector.status.selected.filter(s => !s.path.startsWith(this.formFocus));

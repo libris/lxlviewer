@@ -26,13 +26,9 @@ export default {
     return {
       toolsMenuActive: false,
       loadingEdit: false,
-      showEdit: false,
       showTools: false,
-      showDisplayAs: false,
       showUndo: false,
-      showSave: false,
       showCancel: false,
-      showFieldAdderTooltip: false,
       fieldAdderActive: false,
     };
   },
@@ -45,18 +41,11 @@ export default {
     'inspector.event'(val) {
       if (val.name === 'form-control') {
         switch (val.value) {
-          case 'edit-item':
-            this.edit();
-            break;
           case 'open-field-adder':
             this.openFieldAdder();
             break;
           case 'undo':
             this.undo();
-            break;
-
-          case 'open-help':
-            this.openHelpWindow();
             break;
           default:
         }
@@ -92,20 +81,9 @@ export default {
     showToolsMenu() {
       this.toolsMenuActive = !this.toolsMenuActive;
     },
-    openHelpWindow() {
-      const helpUrl = 'https://libris.kb.se/katalogisering/help';
-      window.open(helpUrl);
-    },
     formControl(control) {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'form-control',
-        value: control,
-      });
-    },
-    recordControl(control) {
-      this.hideToolsMenu();
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'record-control',
         value: control,
       });
     },
@@ -361,11 +339,6 @@ export default {
       max-height: none;
     }
   }
-  .TemplatePicker, .OverridePicker {
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-  }
 }
 
 .dropdown.tools,
@@ -373,14 +346,6 @@ export default {
   li > a {
     cursor: pointer;
     padding: 3px 5px;
-  }
-  .remove-option {
-    a {
-      &:hover {
-        color: @white;
-        background-color: #c55252;
-      }
-    }
   }
 }
 
