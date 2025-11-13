@@ -30,8 +30,11 @@ export async function load({ locals, url, params, fetch }) {
 		}
 	}
 
+	const siteName = locals.site?.name;
+
 	return {
 		userSettings,
-		subsetMapping
+		subsetMapping,
+		siteName
 	};
 }

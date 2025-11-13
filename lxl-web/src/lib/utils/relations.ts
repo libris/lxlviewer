@@ -21,7 +21,8 @@ export async function getRelations(
 	resourceId: string | null,
 	vocabUtil: VocabUtil,
 	locale: string,
-	subsetFilter?: string | null
+	subsetFilter?: string | null,
+	searchSite?: string | null
 ) {
 	if (!resourceId) {
 		return [];
@@ -35,7 +36,8 @@ export async function getRelations(
 			_offset: '0',
 			_sort: '',
 			_spell: 'false',
-			...(subsetFilter && { _r: subsetFilter })
+			...(subsetFilter && { _r: subsetFilter }),
+			...(searchSite && { _site: searchSite })
 		}).toString()}`
 	);
 
@@ -67,7 +69,8 @@ export async function getRelations(
 						_q: `${qualifierKey}:${qualifierValue}`,
 						_limit: '10',
 						_spell: 'false',
-						...(subsetFilter && { _r: subsetFilter })
+						...(subsetFilter && { _r: subsetFilter }),
+						...(searchSite && { _site: searchSite })
 					})
 				)
 			).toString()}`;

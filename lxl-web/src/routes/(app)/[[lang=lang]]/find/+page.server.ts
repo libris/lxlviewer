@@ -22,6 +22,10 @@ export const load = async ({ params, url, locals, fetch }) => {
 		searchParams.set(p, url.searchParams.get(p) || '');
 	});
 
+	if (locals.site?.searchSite) {
+		searchParams.set('_site', locals.site?.searchSite);
+	}
+
 	const recordsRes = await fetch(
 		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, locals.userSettings).toString()}${debug}`,
 		{

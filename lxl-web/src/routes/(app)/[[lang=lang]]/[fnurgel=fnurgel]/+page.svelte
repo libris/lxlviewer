@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>{getPageTitle(data.title)}</title>
+	<title>{getPageTitle(data.title, page.data.siteName)}</title>
 </svelte:head>
 <div data-testid="resource-page" class="contents">
 	<!-- Zotero tag -->

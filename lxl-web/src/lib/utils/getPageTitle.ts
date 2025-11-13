@@ -6,9 +6,10 @@ import { TITLE_SEPARATOR, TITLE_SUFFIX, TITLE_MAX_LENGTH } from '$lib/constants/
  * Future: the constants should be set in a site config file / environment variables
  */
 
-function getPageTitle(title?: string) {
+function getPageTitle(title?: string, siteName?: string): string {
+	const name = siteName || TITLE_SUFFIX;
 	if (title) {
-		const separatorAndSuffix = TITLE_SEPARATOR + TITLE_SUFFIX;
+		const separatorAndSuffix = TITLE_SEPARATOR + name;
 
 		// Truncate the title and add an ellipsis if the total length is greater than the max length
 		if (title.length > TITLE_MAX_LENGTH - separatorAndSuffix.length) {
@@ -17,7 +18,7 @@ function getPageTitle(title?: string) {
 
 		return `${title}${separatorAndSuffix}`;
 	}
-	return TITLE_SUFFIX;
+	return name;
 }
 
 export default getPageTitle;

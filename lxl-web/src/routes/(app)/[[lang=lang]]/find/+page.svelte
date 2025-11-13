@@ -53,7 +53,7 @@
 </script>
 
 <svelte:head>
-	<title>{getPageTitle(page.url.searchParams.get('_q')?.trim())}</title>
+	<title>{getPageTitle(page.url.searchParams.get('_q')?.trim(), page.data.siteName)}</title>
 </svelte:head>
 {#if searchResult}
 	<div
