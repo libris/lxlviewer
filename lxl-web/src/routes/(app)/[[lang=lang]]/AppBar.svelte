@@ -219,7 +219,7 @@
 						? `${page.data.t('header.searchSubsetPlaceholder')}: ${subsetPlaceholder}`
 						: page.data.t('header.searchPlaceholder')}
 					--sm-dialog-top={showSearchInputOnMobile
-						? 'calc(var(--banner-height, 0) + var(--app-bar-height, 0) - var(--spacing) * 2)'
+						? 'calc(var(--banner-height, 0) + var(--app-bar-height, 0) / 2 - var(--spacing) * 2)'
 						: 'calc(var(--banner-height, 0)'}
 					bind:this={appSearchComponent}
 				/>
