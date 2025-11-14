@@ -342,6 +342,15 @@
 		}
 	}
 
+	.btn-ghost {
+		&:not(:disabled) {
+			&:hover,
+			&:focus {
+				@apply bg-accent-50;
+			}
+		}
+	}
+
 	.tab {
 		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
 		min-height: calc(var(--spacing) * 7.5);

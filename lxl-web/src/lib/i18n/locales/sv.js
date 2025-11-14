@@ -127,6 +127,8 @@ export default {
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
 		removeFilter: 'Ta bort filter',
+		clearAll: 'Rensa alla',
+		noFilters: 'Inga filter hittades',
 		noResults: 'Inga resultat',
 		hitsOf: 'av',
 		hits: 'träffar',

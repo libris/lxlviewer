@@ -128,6 +128,8 @@ export default {
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		removeFilter: 'Remove filter',
+		clearAll: 'Clear all',
+		noFilters: 'No filters found',
 		noResults: 'No results',
 		hitsOf: 'of',
 		hits: 'hits',

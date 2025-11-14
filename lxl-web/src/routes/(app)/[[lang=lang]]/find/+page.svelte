@@ -63,7 +63,7 @@
 	>
 		<LeadingPane>
 			<div role="tabpanel" aria-labelledby="tab-filters">
-				<Filters facets={searchResult.facets} />
+				<Filters facets={searchResult.facets} mapping={searchResult.mapping} />
 			</div>
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">
