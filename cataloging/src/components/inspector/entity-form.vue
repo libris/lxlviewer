@@ -50,6 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideReverseSection: {
+      type: Boolean,
+      default: false,
+    },
     isSource: {
       type: Boolean,
       default: false,
@@ -115,9 +119,8 @@ export default {
       return false;
     },
     showIncomingLinksSection() {
-      return Object.keys(this.reverseItemStandalone).length > 0;
+      return Object.keys(this.reverseItemStandalone).length > 0 && !this.hideReverseSection;
     },
-
     formObj() {
       return this.formData;
     },

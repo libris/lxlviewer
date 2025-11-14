@@ -175,6 +175,9 @@ export default {
       return this.inspector.data[this.formFocus];
     },
     sourceNumberOfHoldings() {
+      if (this.isNonInstanceType) {
+        return 0;
+      }
       if (this.source['mainEntity']['@reverse']) {
         return this.source['mainEntity']['@reverse'].itemOf.length || 0;
       }
@@ -705,6 +708,7 @@ export default {
                            :hide-top-level-properties="['@type']"
                            :hide-top-level-field-names="false"
                            :is-source="true"
+                           :hide-reverse-section="true"
               />
             </div>
             <div class="MergeView-entitySeparator"></div>
@@ -717,6 +721,7 @@ export default {
                            :locked="true"
                            :hide-top-level-properties="['@type']"
                            :hide-top-level-field-names="false"
+                           :hide-reverse-section="true"
               />
             </div>
           </div>
