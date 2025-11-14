@@ -2,6 +2,8 @@
 	import { page } from '$app/state';
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
+	import TreeView, { type TreeItemSnippetParams } from '$lib/components/TreeView.svelte';
+	import FacetItem from './FacetItem.svelte';
 
 	type Props = {
 		facets?: Facet[];
@@ -11,6 +13,8 @@
 
 	const { facets, mapping, showHeader = true }: Props = $props();
 
+	const uid = $props.id();
+	const filterHeadingId = $derived(`${uid}-filters-heading`);
 	const filtersLength = $derived(
 		mapping?.[0].children?.filter((m) => m['@id']?.includes('textQuery')).length ||
 			(mapping?.[0]['@id'] && !mapping[0]['@id'].includes('textQuery') && 1) ||
@@ -23,12 +27,20 @@
 			'/find?' + new URLSearchParams([['_q', textQuery?.displayStr || '*']]).toString()
 		);
 	}
+
+	function getFacetChildren({ data }) {
+		const nestedValues = data.facets?.find((facet) => Object.hasOwn(facet, 'values'))?.values;
+		if (nestedValues) {
+			return nestedValues;
+		}
+		return data.values;
+	}
 </script>
 
 <nav class="filters" data-testid="filters">
 	{#if showHeader}
 		<Toolbar>
-			<h2 class="font-medium">
+			<h2 id={filterHeadingId} class="text-subtle text-xs tracking-widest uppercase">
 				{page.data.t('search.filters')}
 			</h2>
 			{#snippet trailingActions()}
@@ -42,11 +54,15 @@
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
 		{#if facets?.length}
-			<ol>
-				{#each facets as facet (facet.dimension)}
-					<pre class="text-4xs">{JSON.stringify(facet, null, 2)}</pre>
-				{/each}
-			</ol>
+			{#snippet treeItemSnippet({ data, level, isGroup }: TreeItemSnippetParams)}
+				<FacetItem {data} {level} {isGroup} />
+			{/snippet}
+			<TreeView
+				ariaLabelledby={filterHeadingId}
+				items={facets}
+				{treeItemSnippet}
+				getChildItems={getFacetChildren}
+			/>
 		{:else}
 			<p role="status" aria-atomic="true" class="text-subtle my-3 px-3 text-sm">
 				{page.data.t('search.noFilters')}
