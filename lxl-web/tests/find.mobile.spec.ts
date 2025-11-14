@@ -7,7 +7,7 @@ test('can toggle filters and show facets and mapping', async ({ page }) => {
 	await expect(filterButton).toBeVisible;
 	await filterButton.click();
 	await expect(page.getByTestId('modal')).toBeVisible();
-	await expect(page.getByTestId('modal').getByTestId('facets')).toBeVisible();
+	await expect(page.getByTestId('modal').getByTestId('filters')).toBeVisible();
 	await expect(page.getByRole('navigation', { name: 'Valda filter' })).toBeVisible();
 });
 

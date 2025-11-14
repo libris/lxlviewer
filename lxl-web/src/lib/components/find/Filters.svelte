@@ -41,7 +41,7 @@
 		<nav
 			class="facet-nav relative flex flex-col gap-2 text-sm"
 			aria-label={page.data.t('search.filters')}
-			data-testid="facets"
+			data-testid="filters"
 		>
 			<div class="px-3">
 				<input

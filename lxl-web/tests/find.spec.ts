@@ -34,8 +34,8 @@ test('search card contains a link', async ({ page }) => {
 	);
 });
 
-test('displays facets', async ({ page }) => {
-	await expect(page.getByTestId('facets')).toBeVisible();
+test('displays filters', async ({ page }) => {
+	await expect(page.getByTestId('filters')).toBeVisible();
 });
 
 test('facet groups can toggle', async ({ page }) => {
