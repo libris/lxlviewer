@@ -6,6 +6,8 @@ import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
 import { appendMyLibrariesParam, asResult } from '$lib/utils/search';
 import { DebugFlags } from '$lib/types/userSettings';
+import { displayMappingToString } from '$lib/utils/displayMappingToString.js';
+import getPageTitle from '$lib/utils/getPageTitle';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -62,5 +64,12 @@ export const load = async ({ params, url, locals, fetch }) => {
 		locals.userSettings?.myLibraries
 	);
 
-	return { searchResult };
+	const pageTitle = getPageTitle(
+		displayMappingToString(
+			searchResult.mapping.filter((f) => f?.variable !== 'defaultSiteFilters')
+		),
+		locals.site?.name
+	);
+
+	return { searchResult, pageTitle };
 };

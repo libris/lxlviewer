@@ -4,7 +4,6 @@
 	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { SearchResult } from '$lib/types/search';
 	import type { HoldingsData } from '$lib/types/holdings';
-	import getPageTitle from '$lib/utils/getPageTitle';
 	import SiteFooter from '../SiteFooter.svelte';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import LeadingPane from '$lib/components/find/LeadingPane.svelte';
@@ -19,7 +18,6 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import { USE_HOLDING_PANE } from '$lib/constants/panels';
 	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping';
-	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
@@ -54,14 +52,7 @@
 </script>
 
 <svelte:head>
-	<title
-		>{getPageTitle(
-			displayMappingToString(
-				searchResult.mapping.filter((f) => f?.variable !== 'defaultSiteFilters')
-			),
-			page.data.siteName
-		)}</title
-	>
+	<title>{page.data.pageTitle}</title>
 </svelte:head>
 {#if searchResult}
 	<div
