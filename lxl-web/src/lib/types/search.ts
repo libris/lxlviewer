@@ -1,4 +1,11 @@
-import { type DisplayDecorated, type FramedData, JsonLd, LensType, type Link } from '$lib/types/xl';
+import {
+	type FramedData,
+	type Link,
+	type DisplayDecorated,
+	type DisplayDecoratedLite,
+	JsonLd,
+	LensType
+} from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
 import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
@@ -15,6 +22,7 @@ export interface SearchResult {
 	next?: Link;
 	previous?: Link;
 	items: SearchResultItem[];
+	facets?: Facet[];
 	facetGroups?: FacetGroup[];
 	predicates?: MultiSelectFacet[];
 	_spell: SpellingSuggestion[] | [];
@@ -49,33 +57,56 @@ export interface SearchResultItem {
 	_debug?: ItemDebugInfo;
 }
 
-type FacetGroupId = string;
+export interface Facet {
+	dimension: FacetId;
+	view?: Link;
+	label: FacetLabel;
+	operator: string;
+	maxItems: number;
+	values?: (FacetValue | FacetRange)[];
+	search?: FacetSearch;
+	alias?: string; // is alias needed?
+	selected?: boolean; // should facets be aware of selected?
+}
+
+type FacetId = string;
+
+type FacetLabel = { decorated: DisplayDecoratedLite; str: string; discriminator?: string } | string;
+
+export interface FacetValue {
+	label: FacetLabel;
+	totalItems: number;
+	view: Link;
+	facets?: Facet[];
+	parentFacet?: ParentFacet;
+	selected?: boolean;
+	values?: (FacetValue | FacetRange)[];
+}
+
+export interface FacetRange extends FacetValue {
+	search: FacetSearch;
+}
 
 export type FacetSearch = {
 	mapping: {
 		greaterThanOrEquals: string;
 		lessThanOrEquals: string;
-		variable: FacetGroupId;
+		variable: FacetId;
 	};
 	template: string;
 };
 
+export type ParentFacet = Omit<Facet, 'values'>;
+/*
+	TODO: Replace all instances of FacetGroup with Facet
+*/
 export interface FacetGroup {
 	label: string;
-	dimension: FacetGroupId;
+	dimension: FacetId;
 	search?: FacetSearch;
 	maxItems?: number;
 	// TODO better to do this distinction on the group level?
 	facets: (Facet | MultiSelectFacet)[];
-}
-
-export interface Facet {
-	totalItems: number;
-	view: Link;
-	object: DisplayDecorated;
-	str: string;
-	discriminator: string;
-	facetGroups?: FacetGroup[];
 }
 
 export interface MultiSelectFacet extends Facet {
@@ -121,7 +152,7 @@ export interface PartialCollectionView {
 	items: FramedData[];
 	stats?: {
 		[JsonLd.ID]: '#stats';
-		sliceByDimension: Record<FacetGroupId, Slice>;
+		sliceByDimension: Record<FacetId, Slice>;
 		_predicates: Observation[];
 		_boolFilters?: Observation[];
 	};
@@ -137,12 +168,13 @@ export interface MappingsOnlyPartialCollectionView {
 	};
 }
 
-interface Slice {
+export interface Slice {
 	alias: string;
-	dimension: FacetGroupId;
+	dimension: FacetId;
 	observation: Observation[];
 	search?: FacetSearch;
 	maxItems: number;
+	_connective: string;
 }
 
 export interface Observation {
@@ -150,6 +182,7 @@ export interface Observation {
 	view: Link;
 	object: FramedData;
 	_selected?: boolean;
+	sliceByDimension: Record<FacetId, Slice>;
 }
 
 export enum SearchOperators {
