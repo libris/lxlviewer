@@ -19,6 +19,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import { USE_HOLDING_PANE } from '$lib/constants/panels';
 	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping';
+	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
@@ -53,7 +54,14 @@
 </script>
 
 <svelte:head>
-	<title>{getPageTitle(page.url.searchParams.get('_q')?.trim(), page.data.siteName)}</title>
+	<title
+		>{getPageTitle(
+			displayMappingToString(
+				searchResult.mapping.filter((f) => f?.variable !== 'defaultSiteFilters')
+			),
+			page.data.siteName
+		)}</title
+	>
 </svelte:head>
 {#if searchResult}
 	<div
