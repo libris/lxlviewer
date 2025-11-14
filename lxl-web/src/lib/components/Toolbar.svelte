@@ -11,7 +11,7 @@
 </script>
 
 <div
-	class="flex h-[var(--toolbar-height)] place-content-between items-center gap-2 overflow-hidden border-b border-b-neutral-200 px-2 lg:px-3"
+	class="toolbar flex place-content-between items-center gap-2 overflow-hidden border-b border-b-neutral-200 px-2 lg:px-3"
 >
 	{#if leadingActions}
 		<div class="flex gap-1">
@@ -26,3 +26,11 @@
 		</div>
 	{/if}
 </div>
+
+<style lang="postcss">
+	@reference 'tailwindcss';
+
+	.toolbar {
+		height: var(--toolbar-height);
+	}
+</style>

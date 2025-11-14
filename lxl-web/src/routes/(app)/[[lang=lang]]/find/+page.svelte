@@ -10,7 +10,6 @@
 	import LeadingPane from '$lib/components/find/LeadingPane.svelte';
 	import Filters from '$lib/components/find/Filters.svelte';
 	import SearchResultToolbar from '$lib/components/find/SearchResultToolbar.svelte';
-	import SearchResultInfo from '$lib/components/find/SearchResultInfo.svelte';
 	import SearchCard from '$lib/components/find/SearchCard.svelte';
 	import Pagination from '$lib/components/find/Pagination.svelte';
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
@@ -63,19 +62,18 @@
 		]}
 	>
 		<LeadingPane>
-			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
-				<Filters facets={searchResult.facetGroups || []} />
+			<div role="tabpanel" aria-labelledby="tab-filters">
+				<Filters facets={searchResult.facetGroups || []} mapping={searchResult.mapping} />
 			</div>
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">
-			<div class="flex flex-1 flex-col @5xl/content:flex-row">
+			<div class="flex flex-1 flex-col @7xl/content:flex-row">
 				<main id="content" class="flex-1">
 					<h1 class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar {searchResult} />
-					<SearchResultInfo {searchResult} />
-					<ol class="flex flex-col">
+					<ol>
 						{#each searchResult.items as item (item['@id'])}
-							<li>
+							<li class="border-neutral border-b">
 								<SearchCard {item} />
 							</li>
 						{/each}

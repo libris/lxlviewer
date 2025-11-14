@@ -9,6 +9,7 @@
 	import SearchResultSort from './SearchResultSort.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiLayoutSidebar from '~icons/bi/layout-sidebar';
+	import SearchResultInfo from './SearchResultInfo.svelte';
 
 	type SearchResultToolbarProps = {
 		searchResult: SearchResult;
@@ -32,48 +33,47 @@
 	}
 </script>
 
-<div class="bg-page sticky top-0 z-10 sm:static">
-	<Toolbar>
-		{#snippet leadingActions()}
-			<!-- mobile modal filter btn -->
-			<a
-				href={page.data.localizeHref(
-					`${page.url.pathname}?${page.url.searchParams.toString()}#filters`
-				)}
-				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
-				aria-label={page.data.t('search.filters')}
-				onclick={(e) => {
-					e.preventDefault();
-					toggleFiltersModal();
-				}}
+<Toolbar>
+	{#snippet leadingActions()}
+		<!-- mobile modal filter btn -->
+		<a
+			href={page.data.localizeHref(
+				`${page.url.pathname}?${page.url.searchParams.toString()}#filters`
+			)}
+			class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
+			aria-label={page.data.t('search.filters')}
+			onclick={(e) => {
+				e.preventDefault();
+				toggleFiltersModal();
+			}}
+		>
+			<IconSliders class="text-base" />
+			{page.data.t('search.filters')}
+			{#if filterCount}
+				<span class="badge badge-accent">
+					{filterCount}
+				</span>
+			{/if}
+		</a>
+		<!-- expand leadingPane btn -->
+		{#if !userSettings.leadingPane?.open}
+			<button
+				class="btn btn-primary hidden sm:block"
+				aria-label={page.data.t('panes.show')}
+				in:fade={{ duration: 200 }}
+				onclick={() => userSettings.openLeadingPane()}
 			>
-				<IconSliders class="text-base" />
-				{page.data.t('search.filters')}
-				{#if filterCount}
-					<span class="badge badge-accent">
-						{filterCount}
-					</span>
-				{/if}
-			</a>
-			<!-- expand leadingPane btn -->
-			{#if !userSettings.leadingPane?.open}
-				<button
-					class="btn btn-primary hidden sm:block"
-					aria-label={page.data.t('panes.show')}
-					in:fade={{ duration: 200 }}
-					onclick={() => userSettings.openLeadingPane()}
-				>
-					<BiLayoutSidebar class="size-4" />
-				</button>
-			{/if}
-		{/snippet}
-		{#snippet trailingActions()}
-			{#if numHits > 0}
-				<SearchResultSort />
-			{/if}
-		{/snippet}
-	</Toolbar>
-</div>
+				<BiLayoutSidebar class="size-4" />
+			</button>
+		{/if}
+	{/snippet}
+	<SearchResultInfo {searchResult} />
+	{#snippet trailingActions()}
+		{#if numHits > 0}
+			<SearchResultSort />
+		{/if}
+	{/snippet}
+</Toolbar>
 
 {#if showFiltersModal}
 	<Modal position="left" close={toggleFiltersModal}>

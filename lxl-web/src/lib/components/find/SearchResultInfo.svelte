@@ -20,7 +20,7 @@
 </script>
 
 <div
-	class="search-result-info text-2xs flex items-center gap-1 px-3"
+	class="search-result-info text-subtle flex items-center gap-1 text-xs"
 	role="status"
 	aria-atomic="true"
 	data-testid="result-info"
