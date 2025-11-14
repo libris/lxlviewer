@@ -83,6 +83,6 @@
 				{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
 			</span>
 		{/snippet}
-		<Filters facets={searchResult.facetGroups || []} mapping={searchResult.mapping} />
+		<Filters facets={searchResult.facets} showHeader={false} />
 	</Modal>
 {/if}
