@@ -37,6 +37,7 @@ import { getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from 
 import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
+import { getFacet } from '$lib/utils/facet';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -74,6 +75,11 @@ export async function asResult(
 			myLibraries,
 			maxScores
 		),
+		...(view?.stats?.sliceByDimension && {
+			facets: Object.values(view.stats.sliceByDimension).map((slice) =>
+				getFacet({ slice, displayUtil, locale, translate, usePath })
+			)
+		}),
 		...('stats' in view && {
 			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 		}),
@@ -471,7 +477,7 @@ function displayBoolFilters(
 /**
  * prevent links on resource page from pointing to /find
  */
-function replacePath(view: Link, usePath: string | undefined) {
+export function replacePath(view: Link, usePath: string | undefined) {
 	if (usePath) {
 		return {
 			'@id': view['@id'].replace('/find', usePath)
