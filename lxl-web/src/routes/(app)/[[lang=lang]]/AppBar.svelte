@@ -284,11 +284,15 @@
 
 	.app-bar {
 		grid-template-areas: var(--search-grid-template-areas);
-		grid-template-rows: var(--app-bar-height);
+		grid-template-rows: calc(var(--app-bar-height) / 2);
 		grid-template-columns: var(--search-grid-template-columns);
 		padding: var(--search-padding);
 		gap: var(--search-gap);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
+
+		@variant lg {
+			grid-template-rows: var(--app-bar-height);
+		}
 	}
 
 	.leading-actions {
