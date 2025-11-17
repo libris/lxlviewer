@@ -2,7 +2,7 @@
 	import TreeViewItem from '$lib/components/TreeViewItem.svelte';
 	import {
 		type GetChildItemsFn,
-		type GetIndexFn,
+		type GetKeyFn,
 		type GetLimitFn,
 		type TreeItemSnippet
 	} from './TreeView.svelte';
@@ -15,7 +15,7 @@
 		selected?: boolean;
 		treeItemSnippet: TreeItemSnippet;
 		getChildItems?: GetChildItemsFn;
-		getIndex: GetIndexFn;
+		getKey: GetKeyFn;
 		getLimit?: GetLimitFn;
 	};
 
@@ -27,7 +27,7 @@
 		selected,
 		treeItemSnippet,
 		getChildItems,
-		getIndex,
+		getKey,
 		getLimit
 	}: Props = $props();
 
@@ -63,7 +63,7 @@
 				{@render treeItemSnippet({ data, level, posinset, setsize, isGroup })}
 			</summary>
 			<ul role="group" class={['relative min-w-0 flex-1 grow-0 overflow-hidden']}>
-				{#each childItems as item, index (getIndex({ data: item, index }))}
+				{#each childItems as item, index (getKey({ data: item, index }))}
 					<TreeViewItem
 						data={item}
 						level={level + 1}
@@ -71,7 +71,7 @@
 						selected={item?.selected}
 						{treeItemSnippet}
 						{getChildItems}
-						{getIndex}
+						{getKey}
 						{getLimit}
 					/>
 				{/each}

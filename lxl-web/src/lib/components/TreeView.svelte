@@ -35,8 +35,8 @@
 		posinset: number;
 	};
 
-	export type GetIndexFn = ({ data, index }: GetIndexFnParams) => string | number;
-	export type GetIndexFnParams = {
+	export type GetKeyFn = ({ data, index }: GetKeyFnParams) => string;
+	export type GetKeyFnParams = {
 		data: unknown;
 		index: number;
 	};
@@ -67,7 +67,7 @@
 		items: TreeItem[];
 		treeItemSnippet: TreeItemSnippet;
 		getChildItems: GetChildItemsFn;
-		getIndex?: GetIndexFn;
+		getKey?: GetKeyFn;
 		getLimit?: GetLimitFn;
 	};
 
@@ -78,13 +78,13 @@
 		items = [],
 		treeItemSnippet,
 		getChildItems,
-		getIndex = ({ index }) => index,
+		getKey = ({ index }) => index.toString(),
 		getLimit
 	}: Props = $props();
 </script>
 
 <ul role="tree" aria-labelledby={ariaLabelledby} aria-label={ariaLabel}>
-	{#each items as item, index (getIndex({ data: item, index }))}
+	{#each items as item, index (getKey({ data: item, index }))}
 		<TreeViewItem
 			data={item}
 			level={1}
@@ -92,7 +92,7 @@
 			selected={item?.selected}
 			{treeItemSnippet}
 			{getChildItems}
-			{getIndex}
+			{getKey}
 			{getLimit}
 		/>
 	{/each}
