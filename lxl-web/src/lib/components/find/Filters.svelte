@@ -61,8 +61,8 @@
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
 		{#if facets?.length}
-			{#snippet treeItemSnippet({ data, level, isGroup }: TreeItemSnippetParams)}
-				<FacetItem {data} {level} {isGroup} />
+			{#snippet treeItemSnippet({ data, level }: TreeItemSnippetParams)}
+				<FacetItem {data} {level} />
 			{/snippet}
 			<TreeView
 				ariaLabelledby={filterHeadingId}
