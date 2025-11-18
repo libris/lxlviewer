@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
+	import IconClear from '~icons/bi/x-lg';
 
 	let { data, level }: { data: unknown; level: number } = $props();
 
@@ -40,7 +41,7 @@
 	class={[
 		'flex min-h-9 w-full items-stretch justify-between text-sm',
 		level === 1 && 'text-subtle hover:text-body min-h-10 font-medium',
-		level > 1 && 'text-subtle/85 hover:text-subtle focus-within:text-subtle pl-4'
+		level > 1 && 'text-subtle/85 hover:text-subtle focus-within:text-subtle pl-6'
 	]}
 >
 	{#if data.view}
@@ -70,6 +71,9 @@
 							{/if}
 						</span>
 					</span>
+				{/if}
+				{#if selected && !hasCheckbox}
+					<IconClear class="size-3.5" />
 				{/if}
 			</a>
 		</div>
