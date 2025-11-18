@@ -39,7 +39,19 @@
 			]}
 			data-sveltekit-preload-data="false"
 		>
-			{@render label(data)}
+			{@render label()}
+			{#if data.totalItems && (data.parentFacet?.operator === 'OR' || (data.parentFacet?.operator === 'AND' && !data.selected))}
+				<span class="badge">
+					{data.totalItems.toLocaleString(page.data.locale)}
+					<span class="sr-only">
+						{#if data.totalItems === 1}
+							{page.data.t('search.hitsOne')}
+						{:else}
+							{page.data.t('search.hits')}
+						{/if}
+					</span>
+				</span>
+			{/if}
 		</a>
 	{:else}
 		<div class={['flex items-center justify-between px-3']}>
