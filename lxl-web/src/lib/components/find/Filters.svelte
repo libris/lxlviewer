@@ -22,6 +22,7 @@
 	);
 
 	function getClearAllHref() {
+		// TODO: Fix clear all links on AND filters
 		const textQuery = mapping?.[0].children?.find((m) => m['@id']?.includes('textQuery'));
 		return page.data.localizeHref(
 			'/find?' + new URLSearchParams([['_q', textQuery?.displayStr || '*']]).toString()
@@ -34,6 +35,12 @@
 			return nestedValues;
 		}
 		return data.values;
+	}
+
+	function getFacetKey({ data }) {
+		return [data.dimension, data.label?.str || data.label, data.label?.discriminator]
+			.filter(Boolean)
+			.join('/');
 	}
 </script>
 
@@ -59,9 +66,12 @@
 			{/snippet}
 			<TreeView
 				ariaLabelledby={filterHeadingId}
-				items={facets}
+				items={facets.filter(
+					(slice) => slice.dimension !== 'hasInstanceCategory' // temporarily filter out hasInstanceCategory as it has problems with duplicate keys
+				)}
 				{treeItemSnippet}
 				getChildItems={getFacetChildren}
+				getKey={getFacetKey}
 			/>
 		{:else}
 			<p role="status" aria-atomic="true" class="text-subtle my-3 px-3 text-sm">

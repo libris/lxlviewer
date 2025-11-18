@@ -8,31 +8,16 @@
 		data: unknown;
 		level: number;
 		setsize?: number;
-		posinset: number;
-		isGroup: boolean;
 		expandedGroup?: boolean;
 		groupSnippet?: Snippet;
 	}
 
 	export type TreeItemSnippet = Snippet<[TreeItemSnippetParams]>;
 
-	export interface GroupContainerSnippetParams {
-		data: unknown;
-		level: number;
-		expanded: boolean;
-		groupSnippet: Snippet;
-	}
-	export type GroupContainerSnippet = Snippet<[GroupContainerSnippetParams]>;
-
-	export type GetChildItemsFn = ({
-		data,
-		level,
-		posinset
-	}: GetChildItemsFnParams) => TreeItem[] | undefined;
+	export type GetChildItemsFn = ({ data, level }: GetChildItemsFnParams) => TreeItem[] | undefined;
 	export type GetChildItemsFnParams = {
 		data: unknown;
 		level: number;
-		posinset: number;
 	};
 
 	export type GetKeyFn = ({ data, index }: GetKeyFnParams) => string;
@@ -47,18 +32,13 @@
 		level: number;
 		posinset: number;
 	};
-
-	export type GetGroupExpandedFn = ({ data, level, posinset }: GetGroupExpandedFnParams) => boolean;
-	export type GetGroupExpandedFnParams = {
-		data: unknown;
-		level: number;
-		posinset: number;
-	};
 </script>
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import TreeViewItem from '$lib/components/TreeViewItem.svelte';
+	import { prefersReducedMotion } from 'svelte/motion';
+	import { flip } from 'svelte/animate';
+	import { send, receive } from '$lib/utils/transition';
 
 	type Props = {
 		// uid?: string;
@@ -68,7 +48,6 @@
 		treeItemSnippet: TreeItemSnippet;
 		getChildItems: GetChildItemsFn;
 		getKey?: GetKeyFn;
-		getLimit?: GetLimitFn;
 	};
 
 	let {
@@ -78,22 +57,49 @@
 		items = [],
 		treeItemSnippet,
 		getChildItems,
-		getKey = ({ index }) => index.toString(),
-		getLimit
+		getKey = ({ index }) => index.toString()
 	}: Props = $props();
+
+	function handleToggle(event: Event & { currentTarget: HTMLDetailsElement }) {
+		if (!event.currentTarget.open) {
+			event.currentTarget.scrollIntoView({ block: 'nearest' });
+		}
+	}
 </script>
 
-<ul role="tree" aria-labelledby={ariaLabelledby} aria-label={ariaLabel}>
+{#snippet treeItems({ items, level }: { items: unknown[]; level: number })}
 	{#each items as item, index (getKey({ data: item, index }))}
-		<TreeViewItem
-			data={item}
-			level={1}
-			posinset={index + 1}
-			selected={item?.selected}
-			{treeItemSnippet}
-			{getChildItems}
-			{getKey}
-			{getLimit}
-		/>
+		{@const key = getKey({ data: item, index })}
+		{@const childItems = getChildItems?.({ data: item, level })}
+		{@const isGroup = Array.isArray(childItems)}
+		<li
+			role="treeitem"
+			aria-level={level}
+			aria-setsize={items.length}
+			aria-posinset={index + 1}
+			style={isGroup ? `--level:${level}` : undefined}
+			in:receive={{ key }}
+			out:send={{ key }}
+			animate:flip={{
+				duration: prefersReducedMotion.current || isGroup ? 0 : 250
+			}}
+		>
+			{#if isGroup}
+				<details ontoggle={handleToggle} class="relative top-0 z-10 flex flex-1 flex-col">
+					<summary class="sticky top-0 z-20 flex w-full items-stretch">
+						{@render treeItemSnippet({ data: item, level })}
+					</summary>
+					<ul role="group" class="relative min-w-0 flex-1 grow-0 overflow-hidden">
+						{@render treeItems({ items: childItems, level: level + 1 })}
+					</ul>
+				</details>
+			{:else}
+				{@render treeItemSnippet({ data: item, level })}
+			{/if}
+		</li>
 	{/each}
+{/snippet}
+
+<ul role="tree" aria-labelledby={ariaLabelledby} aria-label={ariaLabel}>
+	{@render treeItems({ items, level: 1 })}
 </ul>

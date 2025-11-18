@@ -27,7 +27,8 @@
 	class={[
 		'flex min-h-9 w-full items-stretch justify-between text-sm',
 		level === 1 && 'text-subtle hover:text-body min-h-10 font-medium',
-		level > 1 && 'text-subtle/85 hover:text-subtle focus-within:text-subtle pl-4'
+		level > 1 && 'text-subtle/85 hover:text-subtle focus-within:text-subtle pl-4',
+		data?.selected && 'underline'
 	]}
 >
 	{#if data.view}
