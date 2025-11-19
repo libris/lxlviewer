@@ -707,7 +707,7 @@ export default {
                            :locked="true"
                            :hide-top-level-properties="['@type']"
                            :hide-top-level-field-names="false"
-                           :is-source="true"
+                           :is-enrichment-source="true"
                            :hide-reverse-section="true"
               />
             </div>

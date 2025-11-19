@@ -70,7 +70,7 @@ export default {
       type: String,
       default: BulkContext.None,
     },
-    isSource: {
+    isEnrichmentSource: {
       type: Boolean,
       default: true,
     },
@@ -553,7 +553,7 @@ export default {
     ref="container"
     :id="`formPath-${path}`"
     :class="{
-      'is-highlighted': isLastAdded || (enriched && !isSource),
+      'is-highlighted': isLastAdded || (enriched && !isEnrichmentSource),
       'is-extracting': isExtracting,
       'highlight-mark': highlights.indexOf('mark') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
@@ -772,7 +772,7 @@ export default {
         :expand-children="expandChildren"
         :is-expanded="expanded"
         :bulk-context="bulkContext"
-        :is-source="isSource"
+        :is-enrichment-source="isEnrichmentSource"
       />
     </ul>
 

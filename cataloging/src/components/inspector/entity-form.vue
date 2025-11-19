@@ -54,7 +54,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    isSource: {
+    isEnrichmentSource: {
       type: Boolean,
       default: false,
     },
@@ -172,7 +172,7 @@ export default {
         :parent-path="editingObject"
         :bulk-context="bulkContext"
         :show-key="!hideTopLevelFieldNames"
-        :is-source="isSource"
+        :isEnrichmentSource="isEnrichmentSource"
       />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">

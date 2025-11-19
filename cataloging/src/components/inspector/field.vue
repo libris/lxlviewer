@@ -134,7 +134,7 @@ export default {
       type: String,
       default: BulkContext.None,
     },
-    isSource: {
+    isEnrichmentSource: {
       type: Boolean,
       default: true,
     }
@@ -532,7 +532,7 @@ export default {
       });
     },
     onFieldSelected() {
-      if (this.isSource) {
+      if (this.isEnrichmentSource) {
         const fieldPathAndValue = {
           path: this.path,
           value: {},
@@ -778,8 +778,8 @@ export default {
       'is-locked': locked,
       'is-diff': isFieldDiff,
       'is-new': isFieldNew,
-      'is-highlighted': enriched && !isSource,
-      'is-selected': isSource && (isSelected || labelHover),
+      'is-highlighted': enriched && !isEnrichmentSource,
+      'is-selected': isEnrichmentSource && (isSelected || labelHover),
       'is-grouped': isGrouped,
     }"
     v-if="!this.isHidden">
@@ -889,13 +889,13 @@ export default {
           <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
           <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
           <span
-            v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !isSource"
+            v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !isEnrichmentSource"
             :title="fieldKey"
             @click="onLabelClick">
             {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
           </span>
           <span
-            v-if="fieldKey !== '@id' && fieldKey !== '@type' && !diff && isSource"
+            v-if="fieldKey !== '@id' && fieldKey !== '@type' && !diff && isEnrichmentSource"
             :title="fieldKey"
             class="Field-selectable"
             @click="onFieldSelected"
@@ -939,9 +939,9 @@ export default {
       </span>
       <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
       <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !isSource" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !isEnrichmentSource" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
       <span
-        v-if="fieldKey !== '@id' && fieldKey !== '@type' && !diff && isSource"
+        v-if="fieldKey !== '@id' && fieldKey !== '@type' && !diff && isEnrichmentSource"
         :title="fieldKey"
         class="Field-selectable"
         @click="onFieldSelected"
@@ -1160,7 +1160,7 @@ export default {
           :index="index"
           :diff="diff"
           :parent-path="path"
-          :is-source="isSource"
+          :is-enrichment-source="isEnrichmentSource"
         />
 
         <!-- Not linked, local child objects OR inlined linked objects-->
@@ -1183,7 +1183,7 @@ export default {
           :diff="diff"
           :should-expand="expandChildren || enrichedChildren"
           :bulk-context="bulkContext"
-          :is-source="isSource"
+          :is-enrichment-source="isEnrichmentSource"
         />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
