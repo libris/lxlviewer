@@ -61,18 +61,18 @@
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
 		{#if facets?.length}
-			{#snippet treeItemSnippet({ data, level }: TreeItemSnippetParams)}
-				<FacetItem {data} {level} />
-			{/snippet}
 			<TreeView
 				ariaLabelledby={filterHeadingId}
 				items={facets.filter(
 					(slice) => slice.dimension !== 'hasInstanceCategory' // temporarily filter out hasInstanceCategory as it has problems with duplicate keys
 				)}
-				{treeItemSnippet}
 				getChildItems={getFacetChildren}
 				getKey={getFacetKey}
-			/>
+			>
+				{#snippet treeItemSnippet({ data, level }: TreeItemSnippetParams)}
+					<FacetItem {data} {level} />
+				{/snippet}
+			</TreeView>
 		{:else}
 			<p role="status" aria-atomic="true" class="text-subtle my-3 px-3 text-sm">
 				{page.data.t('search.noFilters')}
