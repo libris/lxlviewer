@@ -39,6 +39,7 @@
 	import { prefersReducedMotion } from 'svelte/motion';
 	import { flip } from 'svelte/animate';
 	import { send, receive } from '$lib/utils/transition';
+	import IconChevron from '~icons/bi/chevron-right';
 
 	type Props = {
 		// uid?: string;
@@ -86,7 +87,18 @@
 		>
 			{#if isGroup}
 				<details ontoggle={handleToggle} class="relative top-0 z-10 flex flex-1 flex-col">
-					<summary class="sticky top-0 z-20 flex w-full items-stretch">
+					<summary
+						class="hover:bg-primary-100 sticky top-0 z-20 flex w-full cursor-pointer items-stretch"
+					>
+						<div
+							class="chevron pointer-events-none flex w-8 origin-center items-center justify-center"
+						>
+							<div
+								class="flex h-full w-8 origin-center items-center justify-center transition-transform"
+							>
+								<IconChevron class={['text-subtle size-3.5']} />
+							</div>
+						</div>
 						{@render treeItemSnippet({ data: item, level })}
 					</summary>
 					<ul role="group" class="relative min-w-0 flex-1 grow-0 overflow-hidden">
@@ -103,3 +115,11 @@
 <ul role="tree" aria-labelledby={ariaLabelledby} aria-label={ariaLabel}>
 	{@render treeItems({ items, level: 1 })}
 </ul>
+
+<style lang="postcss">
+	@reference 'tailwindcss';
+
+	details[open] > summary > .chevron > * {
+		transform: rotate(90deg);
+	}
+</style>
