@@ -4,7 +4,6 @@
 	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { SearchResult } from '$lib/types/search';
 	import type { HoldingsData } from '$lib/types/holdings';
-	import getPageTitle from '$lib/utils/getPageTitle';
 	import SiteFooter from '../SiteFooter.svelte';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import LeadingPane from '$lib/components/find/LeadingPane.svelte';
@@ -53,7 +52,7 @@
 </script>
 
 <svelte:head>
-	<title>{getPageTitle(page.url.searchParams.get('_q')?.trim(), page.data.siteName)}</title>
+	<title>{page.data.pageTitle}</title>
 </svelte:head>
 {#if searchResult}
 	<div
