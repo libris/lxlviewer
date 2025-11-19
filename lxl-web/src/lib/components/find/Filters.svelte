@@ -90,5 +90,6 @@
 	.filters-list {
 		height: calc(var(--leading-pane-height) - var(--toolbar-height) * 2);
 		scrollbar-width: thin;
+		scrollbar-gutter: stable;
 	}
 </style>
