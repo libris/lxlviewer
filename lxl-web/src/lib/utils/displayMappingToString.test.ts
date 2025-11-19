@@ -10,6 +10,10 @@ describe('displayMappingToString', () => {
 	it('handles filter aliases correctly (no key)', () => {
 		expect(displayMappingToString(mappingFilterAlias)).toBe('Suecia');
 	});
+
+	it('does not show label for free text query', () => {
+		expect(displayMappingToString(mappingOnlyFreeText)).toBe('hej hej');
+	});
 });
 
 const mapping: DisplayMapping[] = [
@@ -79,5 +83,19 @@ const mappingFilterAlias: DisplayMapping[] = [
 		},
 		variable: '_r',
 		_value: '_suecia'
+	}
+];
+
+const mappingOnlyFreeText: DisplayMapping[] = [
+	{
+		'@id': 'https://id.kb.se/vocab/textQuery',
+		display: 'hej hej',
+		displayStr: 'hej hej',
+		label: 'Fritextsökning',
+		operator: 'equals',
+		up: { '@id': '/find?_q=*' },
+		variable: '_q',
+		_key: undefined,
+		_value: undefined
 	}
 ];

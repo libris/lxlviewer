@@ -8,9 +8,14 @@ export function displayMappingToString(mapping: DisplayMapping[]): string {
 		function _iterate(mapping: DisplayMapping) {
 			const { children, operator, variable, displayStr, label, _key, _value } = mapping;
 			if ((displayStr || label) && !isWildcardQuery(mapping)) {
-				result.push(
-					`${label || _key || ''}${operator !== 'none' ? ':' : ''} ${displayStr || _value}`
-				);
+				if (!_key && !_value && displayStr) {
+					// don't show 'free text search' label
+					result.push(displayStr);
+				} else {
+					result.push(
+						`${label || _key || ''}${operator !== 'none' ? ':' : ''} ${displayStr || _value}`
+					);
+				}
 			} else if (children) {
 				if (children.length > 1 && !variable) {
 					result.push('(');
