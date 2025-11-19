@@ -18,6 +18,12 @@
 			goto(href);
 		}
 	}
+
+	function handleCheckboxKeydown(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			handleToggleSelected();
+		}
+	}
 </script>
 
 {#snippet label()}
@@ -47,7 +53,13 @@
 	{#if data.view}
 		<div class="flex w-full items-center">
 			{#if hasCheckbox}
-				<input type="checkbox" bind:checked={selected} onclick={handleToggleSelected} />
+				<input
+					type="checkbox"
+					class="cursor-pointer hover:[&+a]:underline"
+					bind:checked={selected}
+					onclick={handleToggleSelected}
+					onkeydown={handleCheckboxKeydown}
+				/>
 			{/if}
 			<a
 				{href}
