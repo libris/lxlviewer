@@ -339,7 +339,7 @@ export default {
             const data = LxlDataUtil.splitJson(result);
             if (fetchingSource) {
               this.setEnrichmentSource(data);
-              this.onFetchFinished();
+              this.onFetchFinished(data);
             } else {
               this.$store.dispatch('setInspectorData', data);
               this.setEnrichmentTarget(data);
@@ -356,8 +356,9 @@ export default {
     onFetchFinished(data) {
       DataUtil.fetchMissingLinkedToQuoted(data, this.$store);
       this.applyFromSource(); // To populate everything with no properties selected
-      this.loadingContent(false);
-      if (this.bothRecordsSelected) {
+
+      if (this.bothRecordsLoaded) {
+        this.loadingContent(false);
         if (this.isInstanceType) {
           this.duplicateHoldings = this.getDuplicateHoldings();
         }
@@ -630,6 +631,8 @@ export default {
       if (id !== null) {
         this.clearAllSelected();
         this.resetCachedChanges();
+        this.setEnrichmentTarget(null);
+        this.duplicateHoldings = [];
         this.loadingContent(true);
         this.targetId = RecordUtil.extractFnurgel(id);
         this.fetchId(this.targetId);
@@ -640,6 +643,8 @@ export default {
         this.getNumberOfReverseLinks();
         this.clearAllSelected();
         this.resetCachedChanges();
+        this.setEnrichmentSource(null);
+        this.duplicateHoldings = [];
         this.loadingContent(true);
         this.sourceId = RecordUtil.extractFnurgel(id);
         this.fetchId(this.sourceId, true);
