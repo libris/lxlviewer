@@ -46,8 +46,8 @@
 <div
 	class={[
 		'flex min-h-9 w-full items-stretch justify-between text-sm',
-		level === 1 && 'text-subtle hover:text-body min-h-10 font-medium',
-		level > 1 && 'text-subtle/85 hover:text-subtle focus-within:text-subtle pl-6'
+		level === 1 && 'text-subtle hover:text-body font-medium',
+		level > 1 && 'text-subtle/85 hover:text-subtle focus-within:text-subtle'
 	]}
 >
 	{#if data.view}
@@ -63,10 +63,7 @@
 			{/if}
 			<a
 				{href}
-				class={[
-					'hover:bg-accent-50/50 flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-3',
-					selected && 'bg-accent-50'
-				]}
+				class={['flex w-full min-w-0 items-center justify-between gap-2', selected && 'underline']}
 				tabindex={hasCheckbox ? -1 : undefined}
 				onclick={handleToggleSelected}
 				data-sveltekit-preload-data="false"
@@ -90,7 +87,7 @@
 			</a>
 		</div>
 	{:else}
-		<div class={['flex items-center justify-between px-3']}>
+		<div class={['flex items-center justify-between']}>
 			{@render label()}
 		</div>
 	{/if}

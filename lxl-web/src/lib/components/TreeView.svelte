@@ -49,6 +49,7 @@
 		treeItemSnippet: TreeItemSnippet;
 		getChildItems: GetChildItemsFn;
 		getKey?: GetKeyFn;
+		showChevrons?: boolean;
 	};
 
 	let {
@@ -58,7 +59,8 @@
 		items = [],
 		treeItemSnippet,
 		getChildItems,
-		getKey = ({ index }) => index.toString()
+		getKey = ({ index }) => index.toString(),
+		showChevrons = false
 	}: Props = $props();
 
 	function handleToggle(event: Event & { currentTarget: HTMLDetailsElement }) {
@@ -71,7 +73,7 @@
 {#snippet chevron()}
 	<div class="chevron pointer-events-none flex w-8 origin-center items-center justify-center">
 		<div class="flex h-full w-8 origin-center items-center justify-center transition-transform">
-			<IconChevron class={['text-subtle size-3.5']} />
+			<IconChevron class={['text-subtle size-3']} />
 		</div>
 	</div>
 {/snippet}
@@ -98,7 +100,9 @@
 					<summary
 						class="hover:bg-primary-100 sticky top-0 z-20 flex w-full cursor-pointer items-stretch"
 					>
-						{@render chevron()}
+						{#if showChevrons}
+							{@render chevron()}
+						{/if}
 						{@render treeItemSnippet({ data: item, level })}
 					</summary>
 					<ul role="group" class="relative min-w-0 flex-1 grow-0 overflow-hidden">
@@ -121,5 +125,9 @@
 
 	details[open] > summary > .chevron > * {
 		transform: rotate(90deg);
+	}
+
+	[role='group'] {
+		padding-left: calc(var(--level, 0) * var(--spacing) * 6);
 	}
 </style>
