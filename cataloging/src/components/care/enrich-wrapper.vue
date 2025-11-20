@@ -168,6 +168,7 @@ export default {
                     :flagged="allFlagged"
                     :enrich-step=true
                     :target-locked=true
+                    :enrich-only="true"
                     source-picker-label="entity to enrich from"
                     source-top-label="from"
                     target-top-label="to"

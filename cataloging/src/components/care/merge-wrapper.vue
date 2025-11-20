@@ -19,7 +19,7 @@ export default {
     return {
       enrichStep: true,
       editStep: false,
-      mismatchingTypes: false,
+      invalidSelection: false,
     };
   },
   computed: {
@@ -56,8 +56,8 @@ export default {
       this.$router.go(0);
       this.resetEverything();
     },
-    setMismatchingTypes(val) {
-      this.mismatchingTypes = val;
+    setInvalidSelection(val) {
+      this.invalidSelection = val;
     },
     resetEverything() {
       this.$store.dispatch('setInspectorStatusValue', {property: 'sideBySide', value: false});
@@ -108,7 +108,7 @@ export default {
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
       <div v-if="bothRecordsSelected">
         <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
-        <button class="btn--as-link" v-if="this.enrichStep && !mismatchingTypes"
+        <button class="btn--as-link" v-if="this.enrichStep && !invalidSelection"
                 @click="goToEditStep"
                 @keyup.enter="goToEditStep">
           {{ translatePhrase('Next') }}
@@ -123,7 +123,7 @@ export default {
                     target-picker-label="entity to keep"
                     target-top-label="Keep"
                     @cancel="restart"
-                    @mismatchingTypes="setMismatchingTypes"
+                    @invalidSelection="setInvalidSelection"
     >
     </merge-entities>
     <div v-if="bothRecordsSelected" class="Merge-stepSelection"
@@ -132,7 +132,7 @@ export default {
       <span>{{ translatePhrase('Step') }} {{ this.stepNumber }} {{ translatePhrase('of') }} 2 </span>
       <div>
         <button class="btn--as-link" v-if="this.editStep" @click="goToEnrichStep" @keyup.enter="goToEnrichStep">{{ translatePhrase('Previous') }}</button>
-        <button class="btn--as-link" v-if="this.enrichStep && !mismatchingTypes"
+        <button class="btn--as-link" v-if="this.enrichStep && !invalidSelection"
                 @click="goToEditStep"
                 @keyup.enter="goToEditStep">
           {{ translatePhrase('Next') }}
@@ -140,7 +140,7 @@ export default {
       </div>
     </div>
   </div>
-    <div class="Merge-infoBox" v-if="flagged.length === 0 && !mismatchingTypes">
+    <div class="Merge-infoBox" v-if="flagged.length === 0 && !invalidSelection">
       <div class="iconCircle"><i class="fa fa-fw fa-flag" /></div>
       <div class="Merge-description">
         {{ translatePhrase('To be able to merge entities, you first need to select those entities you want to merge by flagging them.') }}

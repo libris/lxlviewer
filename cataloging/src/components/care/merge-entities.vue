@@ -1,7 +1,7 @@
 <script>
 import {mapActions, mapGetters} from 'vuex';
 import {cloneDeep, each, get, isEmpty, unset} from 'lodash-es';
-import {asFnurgelLink, capitalize, labelByLang, translatePhrase} from '@/utils/filters';
+import {asFnurgelLink, capitalize, labelByLang, translatePhrase, } from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import EntitySummary from '@/components/shared/entity-summary.vue';
 import EntityForm from "@/components/inspector/entity-form.vue";
@@ -18,6 +18,7 @@ import ModalComponent from '@/components/shared/modal-component.vue';
 import * as VocabUtil from "../../../../lxljs/vocab.js";
 import * as DisplayUtil from "../../../../lxljs/display.js";
 import Spinner from "@/components/shared/spinner.vue";
+import ItemEntity from "@/components/inspector/item-entity.vue";
 
 export default {
   name: 'MergeEntities',
@@ -52,9 +53,14 @@ export default {
     targetLocked: {
       type: Boolean,
       default: false,
+    },
+    enrichOnly: {
+      type: Boolean,
+      default: false,
     }
   },
   components: {
+    'item-entity': ItemEntity,
     Spinner,
     'merge-toolbar': MergeToolbar,
     'record-picker': RecordPicker,
@@ -74,6 +80,7 @@ export default {
       showConfirmMergeModal: false,
       numberOfReverseLinks: 0,
       loadingRecords: false,
+      duplicateHoldings: [],
     };
   },
   computed: {
@@ -108,6 +115,12 @@ export default {
       }
       return false;
     },
+    hasDuplicates() {
+      return !isEmpty(this.duplicateHoldings);
+    },
+    isValid() {
+      return this.enrichOnly ? !this.mismatchingTypes : !(this.hasDuplicates || this.mismatchingTypes);
+    },
     isAllSelected() {
       if (this.sourceLoaded) {
       const noOfSelectable = Object.keys(this.sourceSelectable).length;
@@ -137,6 +150,9 @@ export default {
     },
     isNonInstanceType() {
       return this.entityType !== 'Instance';
+    },
+    isInstanceType() {
+      return this.entityType === 'Instance';
     },
     recordType() {
       if (this.sourceLoaded) {
@@ -184,7 +200,7 @@ export default {
       return 0;
     },
   },
-  emits: ['cancel', 'mismatchingTypes'],
+  emits: ['cancel', 'invalidSelection'],
   methods: {
     translatePhrase,
     labelByLang,
@@ -342,8 +358,33 @@ export default {
       this.applyFromSource(); // To populate everything with no properties selected
       this.loadingContent(false);
       if (this.bothRecordsSelected) {
-        this.$emit('mismatchingTypes', this.mismatchingTypes);
+        if (this.isInstanceType) {
+          this.duplicateHoldings = this.getDuplicateHoldings();
+        }
+        this.$emit('invalidSelection', !this.isValid);
       }
+    },
+    getDuplicateHoldings() {
+      let duplicates = [];
+      const sourceHoldings = get(this.source, ['mainEntity', '@reverse', 'itemOf'], []);
+      const targetHoldings = get(this.inspector.data, ['mainEntity', '@reverse', 'itemOf'], []);
+      sourceHoldings.forEach(sh => {
+        const sourceHoldingId = sh['@id'];
+        const sourceHeldById = get(this.source.quoted || {}, [sourceHoldingId, 'heldBy', '@id'])
+        const targetDuplicateHoldingId = targetHoldings.find((h) => {
+          return get(this.inspector.data.quoted || {}, [h['@id'], 'heldBy', '@id']) === sourceHeldById;
+        });
+        if (targetDuplicateHoldingId) {
+          const dup = {
+            sigel: sourceHeldById,
+            targetHolding: targetDuplicateHoldingId,
+            sourceHolding: sh
+          };
+          DataUtil.fetchMissingLinkedToQuoted(dup, this.$store);
+          duplicates = [...duplicates, dup];
+        }
+      })
+      return duplicates;
     },
     applyFromSource() {
       if (this.bothRecordsLoaded) {
@@ -671,19 +712,40 @@ export default {
       <div>
         <div v-if="bothRecordsSelected" class="MergeView-recordsContainer"
              :class="{ 'is-empty': !bothRecordsSelected }">
-          <div class="MergeView-descriptionContainer" v-if="!mismatchingTypes">
-            <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
-            <div class="MergeView-description">
-              {{ translatePhrase('Select parts of the left record which should be copied to the right one.') }}
-            </div>
-          </div>
+
           <div class="MergeView-descriptionContainer" v-if="mismatchingTypes && !loadingRecords">
             <div class="iconCircle"><i class="fa fa-fw fa-exclamation"/></div>
             <div class="MergeView-description">
               {{ translatePhrase('To be able to enrich, the selected entities need to be of the same type.') }}
             </div>
           </div>
-          <div v-if="!this.loadingRecords && !mismatchingTypes">
+          <div v-if="hasDuplicates && !mismatchingTypes && !enrichOnly && !loadingRecords">
+            <div class="MergeView-descriptionContainer">
+              <div class="iconCircle"><i class="fa fa-fw fa-exclamation"/></div>
+              <div class="MergeView-description">
+                {{ translatePhrase("One or more sigels have holdings on both the record to remove and the record to keep. Before merge, one of these holdings has to be manually removed, for each sigel:") }}
+              </div>
+            </div>
+            <div class="withTopPadding">
+              <div v-for="duplicate in duplicateHoldings" :key="duplicate.sigel">
+                <item-entity
+                  :is-locked="true"
+                  :item="duplicate.targetHolding">
+                </item-entity>
+                <item-entity
+                  :is-locked="true"
+                  :item="duplicate.sourceHolding">
+                </item-entity>
+              </div>
+            </div>
+          </div>
+          <div class="MergeView-descriptionContainer" v-if="isValid">
+            <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
+            <div class="MergeView-description">
+              {{ translatePhrase('Select parts of the left record which should be copied to the right one.') }}
+            </div>
+          </div>
+          <div v-if="!this.loadingRecords && isValid">
           <div class="MergeView-fieldRow">
             <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus"/>
           </div>
@@ -904,6 +966,10 @@ export default {
 
   .withBottomPadding {
     padding-bottom: 2rem;
+  }
+
+  .withTopPadding {
+    padding-top: 2rem;
   }
 
   .iconCircle {
