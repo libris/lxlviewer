@@ -50,6 +50,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideReverseSection: {
+      type: Boolean,
+      default: false,
+    },
+    isEnrichmentSource: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -111,9 +119,8 @@ export default {
       return false;
     },
     showIncomingLinksSection() {
-      return Object.keys(this.reverseItemStandalone).length > 0;
+      return Object.keys(this.reverseItemStandalone).length > 0 && !this.hideReverseSection;
     },
-
     formObj() {
       return this.formData;
     },
@@ -165,6 +172,7 @@ export default {
         :parent-path="editingObject"
         :bulk-context="bulkContext"
         :show-key="!hideTopLevelFieldNames"
+        :isEnrichmentSource="isEnrichmentSource"
       />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
@@ -239,7 +247,11 @@ export default {
               &:not(.is-diff-removed) {
                 &:not(.is-diff-added) {
                   &:not(.is-diff-modified) {
-                    background-color: @form-field;
+                    &:not(.is-selectable:hover) {
+                      &:not(.is-selected) {
+                        background-color: @form-field;
+                      }
+                    }
                   }
                 }
               }

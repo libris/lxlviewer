@@ -2,14 +2,13 @@
 import EntityForm from '@/components/inspector/entity-form.vue';
 import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
-import ItemEntity from "@/components/inspector/item-entity.vue";
 import EntitySummary from "@/components/shared/entity-summary.vue";
 import { translatePhrase } from "@/utils/filters.js";
 import Spinner from "../shared/spinner.vue";
 
 export default {
   name: 'preview',
-  components: {Spinner, EntitySummary, ItemEntity, EntityForm },
+  components: {Spinner, EntitySummary, EntityForm },
   data() {
     return {
       selected: true,

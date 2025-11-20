@@ -27,7 +27,6 @@ import ItemShelfControlNumber from './item-shelf-control-number.vue';
 import ItemBylang from './item-bylang.vue';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 import LanguageMixin from '../mixins/language-mixin.vue';
-import FieldMarker from "@/components/inspector/field-marker.vue";
 import IdList from '@/components/care/id-list.vue';
 import ModalComponent from "@/components/shared/modal-component.vue";
 import {
@@ -135,12 +134,17 @@ export default {
       type: String,
       default: BulkContext.None,
     },
+    isEnrichmentSource: {
+      type: Boolean,
+      default: true,
+    }
   },
   data() {
     return {
       activeModal: false,
       removeHover: false,
       pasteHover: false,
+      labelHover: false,
       removed: false,
       uniqueIds: [],
       unlockedByUser: false,
@@ -149,7 +153,6 @@ export default {
     };
   },
   components: {
-    FieldMarker,
     IdList,
     ItemType,
     'item-entity': ItemEntity,
@@ -479,6 +482,12 @@ export default {
         return enriched.some((el) => el.path === this.path);
       } return false;
     },
+    isSelected() {
+      const selected = this.inspector.status.selected;
+      if (selected.length > 0) {
+        return selected.some((el) => el.path === this.path);
+      } return false;
+    },
     enrichedChildren() {
       if (this.isLocked) return false;
       return this.inspector.status.enriched
@@ -521,6 +530,29 @@ export default {
         name: 'field-label-clicked',
         value: this.path,
       });
+    },
+    onFieldSelected() {
+      if (this.isEnrichmentSource) {
+        const fieldPathAndValue = {
+          path: this.path,
+          value: {},
+        }
+        const selected = cloneDeep(this.inspector.status.selected);
+        if (!this.isSelected) {
+          this.$store.dispatch('setInspectorStatusValue', {
+            property: 'selected',
+            value: [...selected, fieldPathAndValue],
+          });
+        } else {
+          this.$store.dispatch('setInspectorStatusValue', {
+            property: 'selected',
+            value: selected.filter((el) => el.path !== this.path),
+          });
+        }
+        this.$store.dispatch('pushInspectorEvent', {
+          name: 'apply-source',
+        });
+      }
     },
     pasteClipboardItem() {
       const obj = this.clipboardValue;
@@ -746,7 +778,8 @@ export default {
       'is-locked': locked,
       'is-diff': isFieldDiff,
       'is-new': isFieldNew,
-      'is-highlighted': enriched,
+      'is-highlighted': enriched && !isEnrichmentSource,
+      'is-selected': isEnrichmentSource && (isSelected || labelHover),
       'is-grouped': isGrouped,
     }"
     v-if="!this.isHidden">
@@ -856,9 +889,23 @@ export default {
           <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
           <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
           <span
-            v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff"
+            v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !isEnrichmentSource"
             :title="fieldKey"
             @click="onLabelClick">
+            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
+          </span>
+          <span
+            v-if="fieldKey !== '@id' && fieldKey !== '@type' && !diff && isEnrichmentSource"
+            :title="fieldKey"
+            class="Field-selectable"
+            @click="onFieldSelected"
+            @keyup.enter="onFieldSelected"
+            @focus="labelHover = true"
+            @blur="labelHover = false"
+            @mouseover="labelHover = true"
+            @mouseout="labelHover = false"
+            tabindex="0"
+          >
             {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
           </span>
           <span
@@ -892,7 +939,21 @@ export default {
       </span>
       <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
       <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !isEnrichmentSource" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
+      <span
+        v-if="fieldKey !== '@id' && fieldKey !== '@type' && !diff && isEnrichmentSource"
+        :title="fieldKey"
+        class="Field-selectable"
+        @click="onFieldSelected"
+        @keyup.enter="onFieldSelected"
+        @focus="labelHover = true"
+        @blur="labelHover = false"
+        @mouseover="labelHover = true"
+        @mouseout="labelHover = false"
+        tabindex="0"
+      >
+            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
+          </span>
       <span
         class="Field-navigateHistory"
         v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff"
@@ -1098,7 +1159,9 @@ export default {
           :field-key="fieldKey"
           :index="index"
           :diff="diff"
-          :parent-path="path" />
+          :parent-path="path"
+          :is-enrichment-source="isEnrichmentSource"
+        />
 
         <!-- Not linked, local child objects OR inlined linked objects-->
         <item-local
@@ -1120,6 +1183,7 @@ export default {
           :diff="diff"
           :should-expand="expandChildren || enrichedChildren"
           :bulk-context="bulkContext"
+          :is-enrichment-source="isEnrichmentSource"
         />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
@@ -1315,6 +1379,17 @@ export default {
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
     background-color: @form-highlight;
+  }
+
+  &.is-selected {
+    background-color: @form-select;
+  }
+
+  &-selectable {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &.is-grouped {

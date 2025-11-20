@@ -27,6 +27,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    label: {
+      type: String,
+      default: '',
+    },
+    topLabel: {
+      type: String,
+      default: '',
+    },
+    locked: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
   },
@@ -71,10 +83,16 @@ export default {
         .indexOf(this.filterPhrase.trim().toLowerCase()) > -1);
       return this.flaggedInstances.filter((instance) => filteredTitles.some((el) => el['@id'] === instance['@id']));
     },
+    nameLabel() {
+      return this.label.length !== 0 ? translatePhrase(this.label) : '';
+    },
+    upperLabel() {
+      return this.topLabel.length === 0 ? translatePhrase(this.name) : translatePhrase(this.topLabel);
+    }
   },
   watch: {
     userFlagged(newVal) {
-      if (this.selected) {
+      if (this.selected && !this.locked) {
         const selectedIsFlagged = newVal.filter((item) => item['@id'] === this.selected['@id']);
         if (selectedIsFlagged.length === 0) {
           this.unselectThis();
@@ -131,6 +149,12 @@ export default {
         this.expandAndFocus();
       }
     });
+
+    if (this.directoryCare[this.name]) {
+      const match = this.flaggedInstances.filter((el) => el['@id'] === this.directoryCare[this.name]);
+      this.selected = match[0];
+    }
+
     if (this.expand) {
       this.expandAndFocus();
     }
@@ -143,7 +167,7 @@ export default {
     <div
       class="RecordPicker-label uppercaseHeading"
       :class="{ 'has-selection': selected }">
-      {{ translatePhrase(name) }}</div>
+      {{ this.upperLabel }}</div>
     <div class="RecordPicker-body" :class="{ 'has-selection': selected, 'is-expanded': expanded }">
       <div class="RecordPicker-dropdownWrapper">
         <div class="RecordPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
@@ -152,7 +176,7 @@ export default {
             @click="toggleDropdown"
             @keyup.enter="toggleDropdown"
             tabIndex="0">
-            <span class="RecordPicker-toggleLabel">{{ `${translatePhrase('Choose')} ${translatePhrase(name)}` }}</span>
+            <span class="RecordPicker-toggleLabel">{{ `${translatePhrase('Choose')} ${this.nameLabel}` }}</span>
             <span class="RecordPicker-toggleIcon" :class="{ expanded: expanded }">
               <i class="fa fa-fw fa-chevron-down" />
             </span>
@@ -193,6 +217,7 @@ export default {
             :valueDisplayLimit=1
             :encodingLevel="selected.encodingLevel" />
           <span
+            v-if="!locked"
             class="RecordPicker-closeBtn"
             role="button"
             @click="unselectThis"

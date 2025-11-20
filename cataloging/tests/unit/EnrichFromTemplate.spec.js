@@ -17,7 +17,6 @@ beforeEach(() => {
     'hasNote',
     'hasVariant'
   ];
-  //hasDimensions is not repeatable
   VocabUtil.propIsRepeatable.mockImplementation((key) =>
     { return repeatableProps.includes(key) }
   );

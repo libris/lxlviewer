@@ -70,6 +70,10 @@ export default {
       type: String,
       default: BulkContext.None,
     },
+    isEnrichmentSource: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -549,7 +553,7 @@ export default {
     ref="container"
     :id="`formPath-${path}`"
     :class="{
-      'is-highlighted': isLastAdded || enriched,
+      'is-highlighted': isLastAdded || (enriched && !isEnrichmentSource),
       'is-extracting': isExtracting,
       'highlight-mark': highlights.indexOf('mark') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
@@ -768,6 +772,7 @@ export default {
         :expand-children="expandChildren"
         :is-expanded="expanded"
         :bulk-context="bulkContext"
+        :is-enrichment-source="isEnrichmentSource"
       />
     </ul>
 

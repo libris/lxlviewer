@@ -1,6 +1,5 @@
 <script>
 import {translatePhrase} from "@/utils/filters.js";
-import FormBuilder from "@/components/care/form-builder.vue";
 import IdPill from "@/components/shared/id-pill.vue";
 import * as StringUtil from 'lxljs/string.js';
 import {mapGetters} from "vuex";
@@ -11,7 +10,7 @@ import {
 
 export default {
   name: 'bulk-changes-header.vue',
-  components: {IdPill, FormBuilder},
+  components: {IdPill},
   data() {
     return {
       editing: false,

@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, get, isEqual, isEmpty } from 'lodash-es';
+import {cloneDeep, each, get, unset, isEqual, isEmpty} from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
@@ -23,6 +23,7 @@ import ValidationSummary from '@/components/inspector/validation-summary.vue';
 import FullscreenPanel from '@/components/shared/fullscreen-panel.vue';
 import VersionHistory from '@/components/inspector/version-history.vue';
 import { getChangeList } from "@/utils/enrich.js";
+import EnrichWrapper from "@/components/care/enrich-wrapper.vue";
 
 export default {
   name: 'Inspector',
@@ -89,6 +90,10 @@ export default {
         inputValue: '',
         detailed: false,
       },
+      enrichFromSelectionModal: {
+        open: false,
+        inputId: '',
+      }
     };
   },
   emits: ['ready'],
@@ -98,6 +103,7 @@ export default {
     ...mapActions([
       'setEnrichmentSource',
       'setEnrichmentTarget',
+      'setEnrichmentChanges'
     ]),
     replaceData(data) {
       this.$store.dispatch('setInspectorData', data);
@@ -111,6 +117,14 @@ export default {
       const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
       detailedEnrichmentModal.open = false;
       this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+    },
+    closeEnrichFromSelectionModal() {
+      const modal = this.inspector.status.enrichFromSelection;
+      modal.open = false;
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
+      this.$store.dispatch('flushChangeHistory');
+      this.setEnrichmentChanges(null);
+      this.$store.dispatch('setInspectorStatusValue', { property: 'enrichFromSelection', value: modal });
     },
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
@@ -254,7 +268,13 @@ export default {
         this.applyRecordAsTemplate(id, this.enrichFromIdModal.detailed);
       }
     },
-    prepareDetailedEnrichment(id = null, data = null) {
+    openEnrichFromSelectionModal() {
+      this.setEnrichmentTarget(this.inspector.data);
+      const enrichFromSelection = this.inspector.status.enrichFromSelection;
+      enrichFromSelection.open = true;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'enrichFromSelection', value: enrichFromSelection });
+    },
+    prepareDetailedEnrichment(id = null) {
       if (id !== null) {
         const fixedId = RecordUtil.extractFnurgel(id);
         const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
@@ -280,12 +300,10 @@ export default {
           });
         }).then((result) => {
           if (typeof result !== 'undefined') {
-            const template = LxlDataUtil.splitJson(result);
-            this.applyAsDetailedEnrichment(template);
+            const source = LxlDataUtil.splitJson(result);
+            this.applyAsDetailedEnrichment(source);
           }
         });
-      } else if (data !== null) {
-        this.applyAsDetailedEnrichment(data);
       } else {
         throw new Error('Failed to prepare data for detailed enrichment.');
       }
@@ -327,6 +345,16 @@ export default {
         }
       });
     },
+    applyFromSource() {
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
+      this.$store.dispatch('flushChangeHistory');
+      this.removeEnrichedHighlight();
+      let source = cloneDeep(this.enrichment.data.source);
+      each(this.settings.keysToClear.duplication, (property) => {
+        unset(source, property);
+      });
+      this.applyFieldsFromTemplate(source, true);
+    },
     applyFieldsFromTemplate(template) {
       const baseRecordType = this.inspector.data.mainEntity['@type'];
       const tempRecordType = template.mainEntity['@type'];
@@ -352,15 +380,18 @@ export default {
           delete template.mainEntity.instanceOf;
         }
       }
-
-      const changeList = [
-        ...getChangeList(template, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
-        ...getChangeList(template, baseRecordData, ['record'], ['record'], this.resources.context)
-      ];
-
-      changeList.forEach((change) => {
-        DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
-      });
+      let changeList;
+      if (!this.enrichment.data.changes) {
+        changeList = [
+          ...getChangeList(template, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
+          ...getChangeList(template, baseRecordData, ['record'], ['record'], this.resources.context)
+        ];
+        changeList.forEach((change) => {
+          DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
+        });
+      } else {
+        changeList = this.enrichment.data.changes;
+      }
 
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
@@ -375,13 +406,13 @@ export default {
           type: 'success',
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
         });
-      } else {
-        this.$store.dispatch('pushNotification', {
-          type: 'info',
-          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
-        });
-      }
-    },
+        } else {
+          this.$store.dispatch('pushNotification', {
+            type: 'info',
+            message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
+          });
+        }
+      },
     openRemoveModal() {
       this.removeInProgress = true;
     },
@@ -738,7 +769,6 @@ export default {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-
       this.preSaveHook(obj).then((obj2) =>
         requestMethod({
           url: opts.url,
@@ -994,10 +1024,14 @@ export default {
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
+      } else if (val.name === 'apply-source') {
+        this.applyFromSource();
       } else if (val.name === 'open-enrich-from-id') {
         this.toggleEnrichFromIdModal(true);
       } else if (val.name === 'open-detailed-enrich-from-id') {
         this.toggleEnrichFromIdModal(true, true);
+      } else if (val.name === 'open-enrich-from-selection') {
+        this.openEnrichFromSelectionModal()
       } else if (val.name === 'replace-data') {
         this.replaceData(val.value);
       } else if (val.name === 'apply-override') {
@@ -1074,6 +1108,7 @@ export default {
     },
   },
   components: {
+    EnrichWrapper,
     'entity-header': EntityHeader,
     'entity-form': EntityForm,
     'modal-component': ModalComponent,
@@ -1237,11 +1272,21 @@ export default {
           </div>
         </div>
       </template>
-    </modal-component>  
+    </modal-component>
 
     <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('Detailed enrichment')" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
       <template #modal-body>
         <DetailedEnrichment :floating-dialogs="true" />
+      </template>
+    </modal-component>
+
+    <modal-component class="EnrichFromSelectionModal"
+                     :title="translatePhrase('Enrich from selection')"
+                     v-if="inspector.status.enrichFromSelection.open === true"
+                     @close="closeEnrichFromSelectionModal"
+                     :backdrop-close="false">
+      <template #modal-body>
+        <enrich-wrapper></enrich-wrapper>
       </template>
     </modal-component>
 
@@ -1373,7 +1418,11 @@ export default {
 }
 
 .DetailedEnrichmentModal .ModalComponent-container {
-  width: 90vw;
+  width: 96vw;
+}
+
+.EnrichFromSelectionModal .ModalComponent-container {
+  width: 96vw;
 }
 
 .RemoveRecordModal {
