@@ -220,7 +220,8 @@ export default {
 		to: 'To',
 		year: 'year',
 		usagePolicy: 'License terms',
-		cropped: 'Cropped'
+		cropped: 'Cropped',
+		more: 'more'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',

@@ -15,8 +15,7 @@
 		allowPopovers?: boolean; // used for preventing nested popovers
 		allowLinks?: boolean;
 		block?: boolean;
-		truncate?: boolean;
-		remainder?: ResourceData | undefined;
+		limitTo?: number;
 		keyed?: boolean;
 	}
 
@@ -27,8 +26,7 @@
 		allowPopovers = true,
 		allowLinks = true,
 		block = false,
-		truncate = false,
-		remainder = undefined,
+		limitTo = undefined,
 		keyed = true
 	}: Props = $props();
 
@@ -43,6 +41,8 @@
 		'_contentBefore',
 		'_contentAfter'
 	];
+
+	let delimitedShown = $state(false);
 
 	function getLink(value: ResourceData) {
 		if (allowLinks) {
@@ -146,34 +146,18 @@
 {#key key}
 	{#if data && typeof data === 'object'}
 		{#if Array.isArray(data)}
-			{#if truncate && depth === 1 && data.length > 1}
-				<!-- truncate option; use only first item as data and keep the remainder for tooltip -->
-				{@const [first, ...remainder] = data}
+			{#each data as arrayItem (arrayItem)}
 				<DecoratedData
-					data={first}
+					data={arrayItem}
 					depth={depth + 1}
 					{showLabels}
 					{block}
 					{allowLinks}
 					{allowPopovers}
-					truncate={false}
-					{remainder}
+					{limitTo}
 					{keyed}
 				/>
-			{:else}
-				{#each data as arrayItem (arrayItem)}
-					<DecoratedData
-						data={arrayItem}
-						depth={depth + 1}
-						{showLabels}
-						{block}
-						{allowLinks}
-						{allowPopovers}
-						{truncate}
-						{keyed}
-					/>
-				{/each}
-			{/if}
+			{/each}
 		{:else}
 			{#if shouldShowContentBefore()}
 				<span class={`_contentBefore ${getStyleClasses(data)}`}>
@@ -196,19 +180,9 @@
 						{block}
 						{allowLinks}
 						{allowPopovers}
-						{truncate}
+						{limitTo}
 						{keyed}
 					/>
-					{#if remainder && Array.isArray(remainder)}
-						<span
-							use:popover={{
-								resource: { data: remainder, lang: getSupportedLocale(page.params.lang) }
-							}}
-							class="ml-2 rounded-full px-2 py-0.5 whitespace-nowrap"
-						>
-							+ {remainder.length}
-						</span>
-					{/if}
 				</svelte:element>
 			{:else if data['@value']}
 				<DecoratedData
@@ -228,12 +202,14 @@
 					{block}
 					{allowLinks}
 					{allowPopovers}
-					{truncate}
 					{keyed}
 				/>
 			{:else}
 				{@const [propertyName, propertyData] = getProperty(data)}
 				{#if propertyName && propertyData}
+					<!-- don't use 'show more' when exceeding limit by one -->
+					{@const delimited =
+						limitTo && Array.isArray(propertyData) && propertyData.length > limitTo + 1}
 					<svelte:element
 						this={getElementType(propertyData)}
 						data-property={propertyName}
@@ -250,15 +226,28 @@
 							</svelte:element>
 						{/if}
 						<DecoratedData
-							data={propertyData}
+							data={delimited && !delimitedShown ? propertyData.slice(0, limitTo) : propertyData}
 							depth={depth + 1}
 							{showLabels}
 							{block}
 							{allowLinks}
 							{allowPopovers}
-							{truncate}
 							{keyed}
 						/>
+						{#if delimited}
+							{#if allowLinks}
+								{@const delimitText = delimitedShown
+									? page.data.t('search.showFewer')
+									: `${page.data.t('search.showMore')} (+${propertyData.length - limitTo})`}
+								<button
+									class="link-subtle delimiter ml-2"
+									type="button"
+									onclick={() => (delimitedShown = !delimitedShown)}>{delimitText}</button
+								>
+							{:else}
+								<span>{` + ${propertyData.length - limitTo} ${page.data.t('general.more')}`}</span>
+							{/if}
+						{/if}
 					</svelte:element>
 				{/if}
 			{/if}
