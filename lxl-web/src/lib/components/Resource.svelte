@@ -166,7 +166,7 @@
 					</header>
 				</div>
 				<div class="decorated-overview">
-					<DecoratedData data={decoratedOverview} block limitTo={5} />
+					<DecoratedData data={decoratedOverview} block limit={{ contribution: 5 }} />
 				</div>
 			</section>
 			<section>

@@ -224,7 +224,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				<div class="card-body mt-1 text-xs" id={bodyId}>
 					{#each item[LxlLens.CardBody]?._display as obj, index (index)}
 						<div>
-							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block limitTo={3} />
+							<DecoratedData
+								data={obj}
+								showLabels={ShowLabelsOptions.Never}
+								block
+								limit={{ contribution: 3 }}
+							/>
 						</div>
 					{/each}
 				</div>

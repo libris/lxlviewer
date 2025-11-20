@@ -130,7 +130,7 @@
 				</span>
 			</span>
 		{/if}
-		<span class="ml-auto flex gap-2">
+		<span class="ml-auto flex items-center gap-2">
 			<span
 				class="after:text-subtle flex items-center after:ml-2 after:content-['·'] [&>*]:whitespace-nowrap"
 			>

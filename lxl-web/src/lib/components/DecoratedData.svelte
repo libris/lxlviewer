@@ -15,7 +15,7 @@
 		allowPopovers?: boolean; // used for preventing nested popovers
 		allowLinks?: boolean;
 		block?: boolean;
-		limitTo?: number;
+		limit?: Record<string, number>;
 		keyed?: boolean;
 	}
 
@@ -26,7 +26,7 @@
 		allowPopovers = true,
 		allowLinks = true,
 		block = false,
-		limitTo = undefined,
+		limit = undefined,
 		keyed = true
 	}: Props = $props();
 
@@ -154,7 +154,7 @@
 					{block}
 					{allowLinks}
 					{allowPopovers}
-					{limitTo}
+					{limit}
 					{keyed}
 				/>
 			{/each}
@@ -180,7 +180,7 @@
 						{block}
 						{allowLinks}
 						{allowPopovers}
-						{limitTo}
+						{limit}
 						{keyed}
 					/>
 				</svelte:element>
@@ -208,6 +208,7 @@
 				{@const [propertyName, propertyData] = getProperty(data)}
 				{#if propertyName && propertyData}
 					<!-- don't use 'show more' when exceeding limit by one -->
+					{@const limitTo = limit?.[propertyName]}
 					{@const delimited =
 						limitTo && Array.isArray(propertyData) && propertyData.length > limitTo + 1}
 					<svelte:element
@@ -240,12 +241,12 @@
 									? page.data.t('search.showFewer')
 									: `${page.data.t('search.showMore')} (+${propertyData.length - limitTo})`}
 								<button
-									class="link-subtle delimiter ml-2"
+									class="link-subtle"
 									type="button"
 									onclick={() => (delimitedShown = !delimitedShown)}>{delimitText}</button
 								>
 							{:else}
-								<span>{` + ${propertyData.length - limitTo} ${page.data.t('general.more')}`}</span>
+								<span>{` +${propertyData.length - limitTo} ${page.data.t('general.more')}`}</span>
 							{/if}
 						{/if}
 					</svelte:element>

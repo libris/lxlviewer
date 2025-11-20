@@ -46,7 +46,7 @@
 				keyed={false}
 				allowPopovers={false}
 				allowLinks={false}
-				limitTo={3}
+				limit={{ contribution: 3 }}
 			/>
 		{:else}
 			{@const cardParts = [
@@ -62,7 +62,7 @@
 					keyed={false}
 					allowPopovers={false}
 					allowLinks={false}
-					limitTo={3}
+					limit={{ contribution: 3 }}
 				/>
 			{/each}
 		{/if}

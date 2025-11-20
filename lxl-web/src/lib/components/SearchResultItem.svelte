@@ -83,7 +83,7 @@
 		<div class="decorated-card-body">
 			{#each data['card-body']?._display as obj, index (index)}
 				<div>
-					<DecoratedData data={obj} showLabels="never" block limitTo={3} />
+					<DecoratedData data={obj} showLabels="never" block limit={{ contribution: 3 }} />
 				</div>
 			{/each}
 		</div>
