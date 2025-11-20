@@ -68,6 +68,14 @@
 	}
 </script>
 
+{#snippet chevron()}
+	<div class="chevron pointer-events-none flex w-8 origin-center items-center justify-center">
+		<div class="flex h-full w-8 origin-center items-center justify-center transition-transform">
+			<IconChevron class={['text-subtle size-3.5']} />
+		</div>
+	</div>
+{/snippet}
+
 {#snippet treeItems({ items, level }: { items: unknown[]; level: number })}
 	{#each items as item, index (getKey({ data: item, index }))}
 		{@const key = getKey({ data: item, index })}
@@ -90,15 +98,7 @@
 					<summary
 						class="hover:bg-primary-100 sticky top-0 z-20 flex w-full cursor-pointer items-stretch"
 					>
-						<div
-							class="chevron pointer-events-none flex w-8 origin-center items-center justify-center"
-						>
-							<div
-								class="flex h-full w-8 origin-center items-center justify-center transition-transform"
-							>
-								<IconChevron class={['text-subtle size-3.5']} />
-							</div>
-						</div>
+						{@render chevron()}
 						{@render treeItemSnippet({ data: item, level })}
 					</summary>
 					<ul role="group" class="relative min-w-0 flex-1 grow-0 overflow-hidden">
