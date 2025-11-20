@@ -4,7 +4,8 @@ import { JsonLd } from './xl';
 export interface LibraryItem {
 	[JsonLd.ID]: string;
 	label: string;
-	sigel: string;
+	sigel?: string;
+	code?: string;
 }
 
 export enum ExpandedState {

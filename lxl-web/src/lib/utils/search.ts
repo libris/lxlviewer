@@ -531,7 +531,9 @@ export function appendMyLibrariesParam(
 		let sigelStr;
 		if (userSettings?.myLibraries) {
 			sigelStr = Object.values(userSettings?.myLibraries)
-				.map((lib) => `itemHeldBy:"sigel:${lib.sigel}"`)
+				.map((lib) =>
+					lib.sigel ? `itemHeldBy:"sigel:${lib.sigel}"` : `itemHeldByOrg:"sigel:org/${lib.code}"`
+				)
 				.join(' OR ');
 		}
 		searchParams.append(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
