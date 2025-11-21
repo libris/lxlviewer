@@ -45,7 +45,7 @@
 
 <div
 	class={[
-		'flex min-h-9 w-full items-stretch justify-between text-sm',
+		'flex min-h-10 w-full items-stretch justify-between text-[15px]',
 		level === 1 && 'text-subtle hover:text-body font-medium',
 		level > 1 && 'text-subtle/85 hover:text-subtle focus-within:text-subtle'
 	]}
@@ -63,7 +63,11 @@
 			{/if}
 			<a
 				{href}
-				class={['flex w-full min-w-0 items-center justify-between gap-2', selected && 'underline']}
+				class={[
+					'flex w-full min-w-0 items-center justify-between gap-2 hover:underline',
+					selected && 'underline',
+					hasCheckbox && 'pl-1.5'
+				]}
 				tabindex={hasCheckbox ? -1 : undefined}
 				onclick={handleToggleSelected}
 				data-sveltekit-preload-data="false"

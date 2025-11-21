@@ -2,8 +2,14 @@
 	import { page } from '$app/state';
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
-	import TreeView, { type TreeItemSnippetParams } from '$lib/components/TreeView.svelte';
+	import TreeView from '$lib/components/treeview/TreeView.svelte';
 	import FacetItem from './FacetItem.svelte';
+	import type {
+		TreeItemSnippetParams,
+		GetKeyParams,
+		GetSelectedParams,
+		GetGroupItemsParams
+	} from '$lib/types/treeview';
 
 	type Props = {
 		facets?: Facet[];
@@ -21,6 +27,14 @@
 			0
 	);
 
+	const treeViewFacets = $derived(
+		facets?.filter(
+			(slice) => slice.dimension !== 'hasInstanceCategory' // temporarily filter out hasInstanceCategory as it has problems with duplicate keys
+		)
+	);
+
+	$inspect(treeViewFacets);
+
 	function getClearAllHref() {
 		// TODO: Fix clear all links on AND filters
 		const textQuery = mapping?.[0].children?.find((m) => m['@id']?.includes('textQuery'));
@@ -29,7 +43,7 @@
 		);
 	}
 
-	function getFacetChildren({ data }) {
+	function getFacetChildren({ data }: GetGroupItemsParams) {
 		const nestedValues = data.facets?.find((facet) => Object.hasOwn(facet, 'values'))?.values;
 		if (nestedValues) {
 			return nestedValues;
@@ -37,10 +51,19 @@
 		return data.values;
 	}
 
-	function getFacetKey({ data }) {
+	function getFacetKey({ data }: GetKeyParams) {
 		return [data.dimension, data.label?.str || data.label, data.label?.discriminator]
 			.filter(Boolean)
 			.join('/');
+	}
+
+	function getSelected({ data, level }: GetSelectedParams) {
+		if (level > 1) {
+			if (data.selected) {
+				return true;
+			}
+			return false;
+		}
 	}
 </script>
 
@@ -60,14 +83,13 @@
 		</Toolbar>
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
-		{#if facets?.length}
+		{#if treeViewFacets?.length}
 			<TreeView
 				ariaLabelledby={filterHeadingId}
-				items={facets.filter(
-					(slice) => slice.dimension !== 'hasInstanceCategory' // temporarily filter out hasInstanceCategory as it has problems with duplicate keys
-				)}
-				getChildItems={getFacetChildren}
+				items={treeViewFacets}
 				getKey={getFacetKey}
+				{getSelected}
+				getGroupItems={getFacetChildren}
 			>
 				{#snippet treeItemSnippet({ data, level }: TreeItemSnippetParams)}
 					<FacetItem {data} {level} />
