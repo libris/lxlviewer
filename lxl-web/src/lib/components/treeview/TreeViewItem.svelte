@@ -35,7 +35,6 @@
 	aria-posinset={posinset}
 	aria-expanded={isGroup ? expanded : undefined}
 	aria-selected={selected}
-	style={isGroup ? `--level:${level}` : undefined}
 >
 	{#if isGroup}
 		<details ontoggle={handleToggleGroup} class="relative top-0 z-10 flex flex-1 flex-col">
@@ -44,7 +43,11 @@
 			>
 				{@render treeItemSnippet({ data, level })}
 			</summary>
-			<ul role="group" class="relative min-w-0 flex-1 grow-0 overflow-hidden">
+			<ul
+				role="group"
+				class="relative min-w-0 flex-1 grow-0 overflow-hidden"
+				style={`--level:${level + 1}`}
+			>
 				{@render treeItems({ ...treeItemParams, items: groupItems, level: level + 1 })}
 			</ul>
 		</details>
