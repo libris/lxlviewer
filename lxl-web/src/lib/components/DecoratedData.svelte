@@ -241,7 +241,7 @@
 									? page.data.t('search.showFewer')
 									: `${page.data.t('search.showMore')} (+${propertyData.length - limitTo})`}
 								<button
-									class="link-subtle"
+									class="delimiter link-subtle"
 									type="button"
 									onclick={() => (delimitedShown = !delimitedShown)}>{delimitText}</button
 								>
@@ -320,5 +320,10 @@
 		& div[data-property]:not(:last-child) {
 			margin-bottom: calc(var(--spacing) * 1);
 		}
+	}
+
+	/* delimiter toggle */
+	:global([data-property]:not([data-property='contribution']) > button.delimiter) {
+		margin-left: calc(var(--spacing) * 1.5);
 	}
 </style>
