@@ -82,9 +82,9 @@ export default {
     },
     flaggable() {
      return this.recordType === 'Instance' ||
-     this.recordType === 'Work' ||
-     this.recordType === 'Concept' ||
-     this.recordType === 'Agent';
+       this.recordType === 'Work' ||
+       this.recordType === 'Agent' ||
+       (this.recordType === 'Concept' && (this.user.settings.activeSigel === 'Ssao' || this.user.settings.activeSigel === 'Sbi'));
     },
     state() {
       const state = this.inspector.status.level;

@@ -51,8 +51,8 @@ export default {
     flaggable() {
       return this.recordType === 'Instance' ||
         this.recordType === 'Work' ||
-        this.recordType === 'Concept' ||
-        this.recordType === 'Agent';
+        this.recordType === 'Agent' ||
+        (this.recordType === 'Concept' && (this.user.settings.activeSigel === 'Ssao' || this.user.settings.activeSigel === 'Sbi'));
     },
     user() {
       return this.$store.getters.user;

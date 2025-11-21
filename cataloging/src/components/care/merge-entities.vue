@@ -309,8 +309,7 @@ export default {
     },
     fetchId(id, fetchingSource = false) {
       if (id !== null) {
-        const fixedId = RecordUtil.extractFnurgel(id);
-        const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
+        const fetchUrl = `${id.split('#')[0]}/data.jsonld`;
         fetch(fetchUrl).then((response) => {
           if (response.status === 200) {
             if (!fetchingSource) {
@@ -634,8 +633,8 @@ export default {
         this.setEnrichmentTarget(null);
         this.duplicateHoldings = [];
         this.loadingContent(true);
-        this.targetId = RecordUtil.extractFnurgel(id);
-        this.fetchId(this.targetId);
+        this.targetId = RecordUtil.extractFnurgel(id) || id;
+        this.fetchId(id);
       }
     },
     'directoryCare.mergeSourceId'(id) {
@@ -646,8 +645,8 @@ export default {
         this.setEnrichmentSource(null);
         this.duplicateHoldings = [];
         this.loadingContent(true);
-        this.sourceId = RecordUtil.extractFnurgel(id);
-        this.fetchId(this.sourceId, true);
+        this.sourceId = RecordUtil.extractFnurgel(id) || id;
+        this.fetchId(id, true);
       }
     },
     'inspector.event'(val) {
