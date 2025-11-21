@@ -58,6 +58,7 @@
 							showLabels={ShowLabelsOptions.Never}
 							allowLinks={false}
 							allowPopovers={false}
+							limit={{ contribution: 3 }}
 						/>
 					</p>
 				{/if}

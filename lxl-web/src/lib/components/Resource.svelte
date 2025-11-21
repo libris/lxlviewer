@@ -15,7 +15,6 @@
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
-	import InstancesList from '../../routes/(app)/[[lang=lang]]/[fnurgel=fnurgel]/InstancesList.svelte';
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
@@ -167,27 +166,20 @@
 					</header>
 				</div>
 				<div class="decorated-overview">
-					<DecoratedData data={decoratedOverview} block />
+					<DecoratedData
+						data={decoratedOverview}
+						block
+						limit={{ contribution: 10, hasVariant: 10 }}
+					/>
 				</div>
 			</section>
 			<section>
 				{#if instances?.length === 1}
 					<!-- single instance -->
 					<div class="decorated-overview">
-						<InstancesList
-							data={instances}
-							columns={[
-								{
-									header: page.data.t('search.publicationYear'),
-									data: '*[].publication[].*[][?year].year'
-								},
-								{
-									header: page.data.t('search.publisher'),
-									data: '*[].publication.*[][?agent].agent'
-								},
-								{ header: page.data.t('search.type'), data: '_label' }
-							]}
-						/>
+						<div class="instance-details columns col-span-3">
+							<DecoratedData data={instances[0]} block showLabels={ShowLabelsOptions.Always} />
+						</div>
 					</div>
 				{:else if instances?.length > 1}
 					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">

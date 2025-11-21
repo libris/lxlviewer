@@ -40,7 +40,14 @@
 			{/if}
 		</h2>
 		{#if data?._display}
-			<DecoratedData {data} block keyed={false} allowPopovers={false} allowLinks={false} />
+			<DecoratedData
+				{data}
+				block
+				keyed={false}
+				allowPopovers={false}
+				allowLinks={false}
+				limit={{ contribution: 3 }}
+			/>
 		{:else}
 			{@const cardParts = [
 				LensType.WebCardHeaderTop,
@@ -55,6 +62,7 @@
 					keyed={false}
 					allowPopovers={false}
 					allowLinks={false}
+					limit={{ contribution: 3 }}
 				/>
 			{/each}
 		{/if}
