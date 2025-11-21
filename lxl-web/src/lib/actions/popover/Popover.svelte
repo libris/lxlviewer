@@ -92,7 +92,12 @@
 >
 	<div class="p-2">
 		{#if resourceData}
-			<DecoratedData data={resourceData} block allowPopovers={false} />
+			<DecoratedData
+				data={resourceData}
+				block
+				allowPopovers={false}
+				limit={{ hasVariant: 5, narrower: 5, related: 5 }}
+			/>
 		{:else if title}
 			{title}
 		{/if}
