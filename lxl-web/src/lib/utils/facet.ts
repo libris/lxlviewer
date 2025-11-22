@@ -35,6 +35,7 @@ export function getFacet({
 	const dimension = (parentDimension ? `${parentDimension}/` : '') + slice.dimension;
 
 	const facet = {
+		key: dimension,
 		dimension,
 		view: observation ? replacePath(observation.view, usePath) : undefined,
 		label: getFacetLabel({ data: slice, displayUtil, locale, translate }),
@@ -46,7 +47,7 @@ export function getFacet({
 	};
 
 	const sortedObservations =
-		facet.operator === 'AND'
+		facet.operator === 'AND' && slice.dimension !== '_categoryByCollection.find'
 			? [
 					...slice.observation.filter((observationItem) => observationItem._selected),
 					...slice.observation.filter((observationItem) => !observationItem._selected)

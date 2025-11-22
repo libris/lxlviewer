@@ -1,37 +1,21 @@
 import type { Snippet } from 'svelte';
 
 export interface TreeItem {
-	selected?: boolean; // indicates if the tree item is currently selected
+	key: string;
+	id?: string;
 	items?: TreeItem[];
+	expanded?: boolean;
+	selected?: boolean; // indicates if the tree item is currently selected
+	level?: number;
+	setsize?: number;
+	posinset?: number;
+	ownsId?: string;
+	data?: unknown;
 }
 
 export interface TreeItemSnippetParams {
-	data: TreeItem;
-	level: number;
-	setsize?: number;
-	expandedGroup?: boolean;
-	groupSnippet?: Snippet;
-}
-
-export interface TreeItemsParams {
-	items: TreeItem[];
-	level: number;
-	treeItemSnippet: TreeItemSnippet;
-	getKey: GetKeyFn;
-	getSelected?: GetSelectedFn;
-	getGroupItems: GetGroupItemsFn;
+	data: unknown;
+	onselecttreeitem?: (selected: boolean) => void;
 }
 
 export type TreeItemSnippet = Snippet<[TreeItemSnippetParams]>;
-
-export type GetKeyFn = ({ data, index }: GetKeyParams) => string;
-export type GetKeyParams = { data: TreeItem; index: number };
-
-export type GetSelectedFn = ({ data, level }: GetSelectedParams) => boolean | undefined;
-export type GetSelectedParams = { data: TreeItem; level: number };
-
-export type GetGroupItemsFn = ({ data, level }: GetGroupItemsParams) => TreeItem[] | undefined;
-export type GetGroupItemsParams = {
-	data: TreeItem;
-	level: number;
-};

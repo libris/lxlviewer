@@ -3,13 +3,8 @@
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import TreeView from '$lib/components/treeview/TreeView.svelte';
-	import FacetItem from './FacetItem.svelte';
-	import type {
-		TreeItemSnippetParams,
-		GetKeyParams,
-		GetSelectedParams,
-		GetGroupItemsParams
-	} from '$lib/types/treeview';
+	// import FacetItem from './FacetItem.svelte';
+	import type { TreeItem } from '$lib/types/treeview';
 
 	type Props = {
 		facets?: Facet[];
@@ -29,11 +24,50 @@
 
 	const treeViewFacets = $derived(
 		facets?.filter(
-			(slice) => slice.dimension !== 'hasInstanceCategory' // temporarily filter out hasInstanceCategory as it has problems with duplicate keys
+			(slice) => slice.dimension !== 'hasInstanceType' && slice.dimension !== 'hasInstanceCategory' // temporarily filter out hasInstanceCategory as it has problems with duplicate keys
 		)
 	);
 
 	$inspect(treeViewFacets);
+
+	const testItems: TreeItem[] = [
+		{
+			key: 'key 1',
+			data: 'Item 1',
+			id: 'aaaa',
+			items: [
+				{
+					key: 'childkey1',
+					data: 'data'
+				}
+			]
+		},
+		{
+			key: 'key 2',
+			data: 'Item 2',
+			id: 'bbbb',
+			items: [
+				{
+					key: 'childkey1',
+					data: 'data'
+				}
+			]
+		},
+		{
+			key: 'key 3',
+			data: 'Item 3',
+			items: [
+				{
+					key: 'childkey1',
+					data: 'data'
+				},
+				{
+					key: 'childkey12',
+					data: 'data'
+				}
+			]
+		}
+	];
 
 	function getClearAllHref() {
 		// TODO: Fix clear all links on AND filters
@@ -42,30 +76,11 @@
 			'/find?' + new URLSearchParams([['_q', textQuery?.displayStr || '*']]).toString()
 		);
 	}
-
-	function getFacetChildren({ data }: GetGroupItemsParams) {
-		const nestedValues = data.facets?.find((facet) => Object.hasOwn(facet, 'values'))?.values;
-		if (nestedValues) {
-			return nestedValues;
-		}
-		return data.values;
-	}
-
-	function getFacetKey({ data }: GetKeyParams) {
-		return [data.dimension, data.label?.str || data.label, data.label?.discriminator]
-			.filter(Boolean)
-			.join('/');
-	}
-
-	function getSelected({ data, level }: GetSelectedParams) {
-		if (level > 1) {
-			if (data.selected) {
-				return true;
-			}
-			return false;
-		}
-	}
 </script>
+
+{#snippet testSnippet()}
+	<p>Hej</p>
+{/snippet}
 
 <nav class="filters" data-testid="filters">
 	{#if showHeader}
@@ -83,14 +98,10 @@
 		</Toolbar>
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
+		<TreeView items={testItems} treeItemSnippet={testSnippet} animated />
+		<!--
 		{#if treeViewFacets?.length}
-			<TreeView
-				ariaLabelledby={filterHeadingId}
-				items={treeViewFacets}
-				getKey={getFacetKey}
-				{getSelected}
-				getGroupItems={getFacetChildren}
-			>
+			<TreeView ariaLabelledby={filterHeadingId} items={treeViewFacets}>
 				{#snippet treeItemSnippet({ data, level }: TreeItemSnippetParams)}
 					<FacetItem {data} {level} />
 				{/snippet}
@@ -100,6 +111,7 @@
 				{page.data.t('search.noFilters')}
 			</p>
 		{/if}
+		-->
 	</div>
 </nav>
 

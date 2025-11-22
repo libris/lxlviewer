@@ -1,16 +1,9 @@
 import { createContext } from 'svelte';
-import type {
-	TreeItemSnippet,
-	GetGroupItemsFn,
-	GetKeyFn,
-	GetSelectedFn
-} from '$lib/types/treeview';
+import type { TreeItemSnippet } from '$lib/types/treeview';
 
 type TreeViewContext = {
 	treeItemSnippet: TreeItemSnippet;
-	getKey: GetKeyFn;
-	getSelected?: GetSelectedFn;
-	getGroupItems: GetGroupItemsFn;
+	animated?: boolean;
 };
 
 export const [getTreeViewContext, setTreeViewContext] = createContext<TreeViewContext>();

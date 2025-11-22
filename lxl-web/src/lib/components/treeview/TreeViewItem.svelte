@@ -2,59 +2,82 @@
 	import type { TreeItem } from '$lib/types/treeview';
 	import { getTreeViewContext } from '$lib/contexts/treeview';
 	import { treeItems } from './TreeView.svelte';
-	type Props = {
-		data: TreeItem;
+
+	interface Props extends TreeItem {
+		elementTag?: string;
+		ownsId?: string;
 		level: number;
-		setsize: number;
-		posinset: number;
-	};
+	}
 
-	const { data, level, setsize, posinset }: Props = $props();
+	const {
+		elementTag = 'li',
+		id,
+		items,
+		expanded: _expanded,
+		selected: _selected,
+		level,
+		setsize,
+		posinset,
+		ownsId,
+		data
+	}: Props = $props();
 
-	const treeItemParams = getTreeViewContext();
-	const { treeItemSnippet, getSelected, getGroupItems } = treeItemParams;
+	const fallbackUid = $props.id();
+	const { treeItemSnippet, animated } = getTreeViewContext();
 
-	let expanded: boolean = $state(false);
-	let selected = $derived(getSelected?.({ data, level }));
-
-	const groupItems = $derived(getGroupItems({ data, level }));
-	const isGroup = $derived(Array.isArray(groupItems));
+	const useGeneratedId = $derived(animated && Array.isArray(items)); // generated IDs are used for `aria-owns` to identify the contextual relationship between parent/child elements when the DOM hierarchy cannot be used to represent the relationship (which is the case when with animated treeviews)
+	let expanded = $derived(_expanded); // derived expanded state is used to enable optimistic updates
+	let selected = $derived(_selected); // derived selected state is used to enable optimistic updates
 
 	function handleToggleGroup(event: Event & { currentTarget: HTMLDetailsElement }) {
-		expanded = !!event.currentTarget.open;
+		expanded = event.currentTarget.open;
 		if (!expanded) {
 			event.currentTarget.scrollIntoView({ block: 'nearest' });
 		}
 	}
+
+	function handleSelectTreeItem(selectedFromEvent: boolean) {
+		selected = selectedFromEvent;
+	}
 </script>
 
-<li
+<svelte:element
+	this={elementTag}
 	role="treeitem"
+	id={id || (useGeneratedId && fallbackUid) || undefined}
 	aria-level={level}
 	aria-setsize={setsize}
 	aria-posinset={posinset}
-	aria-expanded={isGroup ? expanded : undefined}
+	aria-expanded={expanded}
 	aria-selected={selected}
+	aria-owns={ownsId}
 >
-	{#if isGroup}
-		<details ontoggle={handleToggleGroup} class="relative top-0 z-10 flex flex-1 flex-col">
-			<summary
-				class="hover:bg-primary-100 sticky top-0 z-20 flex w-full cursor-pointer items-stretch"
-			>
-				{@render treeItemSnippet({ data, level })}
+	{#if Array.isArray(items)}
+		<details
+			open={expanded}
+			ontoggle={handleToggleGroup}
+			class="relative top-0 z-10 flex flex-col"
+			role="none"
+		>
+			<summary class="sticky top-0 z-20 items-stretch">
+				{@render treeItemSnippet({ data, onselecttreeitem: handleSelectTreeItem })}
 			</summary>
 			<ul
 				role="group"
 				class="relative min-w-0 flex-1 grow-0 overflow-hidden"
 				style={`--level:${level + 1}`}
 			>
-				{@render treeItems({ ...treeItemParams, items: groupItems, level: level + 1 })}
+				{@render treeItems(items, {
+					level: level + 1,
+					animated,
+					ownsId: id || (useGeneratedId && fallbackUid)
+				})}
 			</ul>
 		</details>
 	{:else}
-		{@render treeItemSnippet({ data, level })}
+		{@render treeItemSnippet({ data, onselecttreeitem: handleSelectTreeItem })}
 	{/if}
-</li>
+</svelte:element>
 
 <style lang="postcss">
 	@reference 'tailwindcss';
