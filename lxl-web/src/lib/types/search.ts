@@ -9,6 +9,7 @@ import {
 import { type SecureImageResolution } from '$lib/types/auxd';
 import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
+import type { TreeItem } from './treeview';
 
 export interface SearchResult {
 	[JsonLd.ID]: string;
@@ -69,18 +70,49 @@ export interface Facet {
 	selected?: boolean; // should facets be aware of selected?
 }
 
+/*
+	export interface TreeItem {
+		key: string;
+		id?: string;
+		items?: TreeItem[];
+		expanded?: boolean;
+		selected?: boolean; // indicates if the tree item is currently selected
+		level?: number;
+		setsize?: number;
+		posinset?: number;
+		ownsId?: string;
+		data?: unknown;
+	}
+*/
+export interface FacetTreeItem extends TreeItem {
+	data: {
+		dimension: FacetId;
+		view?: Link;
+		label: FacetLabel;
+		operator: string;
+		maxItems: number;
+		search?: FacetSearch;
+		alias?: string; // is alias needed?
+	};
+}
+
+export interface FacetTreeItemValue extends TreeItem {
+	data: {
+		view?: Link;
+		label: FacetLabel;
+		totalItems?: number;
+	};
+}
+
 type FacetId = string;
 
 type FacetLabel = { decorated: DisplayDecoratedLite; str: string; discriminator?: string } | string;
 
-export interface FacetValue {
+export interface FacetValue extends TreeItem {
 	label: FacetLabel;
 	totalItems: number;
 	view: Link;
-	facets?: Facet[];
-	parentFacet?: ParentFacet;
-	selected?: boolean;
-	values?: (FacetValue | FacetRange)[];
+	items?: Facet[];
 }
 
 export interface FacetRange extends FacetValue {

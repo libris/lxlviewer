@@ -2,7 +2,7 @@ import { createContext } from 'svelte';
 import type { TreeItemSnippet } from '$lib/types/treeview';
 
 type TreeViewContext = {
-	treeItemSnippet: TreeItemSnippet;
+	treeItem: TreeItemSnippet;
 	animated?: boolean;
 };
 

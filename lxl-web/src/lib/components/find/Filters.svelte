@@ -3,8 +3,7 @@
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import TreeView from '$lib/components/treeview/TreeView.svelte';
-	// import FacetItem from './FacetItem.svelte';
-	import type { TreeItem } from '$lib/types/treeview';
+	import FacetItem from './FacetItem.svelte';
 
 	type Props = {
 		facets?: Facet[];
@@ -22,52 +21,7 @@
 			0
 	);
 
-	const treeViewFacets = $derived(
-		facets?.filter(
-			(slice) => slice.dimension !== 'hasInstanceType' && slice.dimension !== 'hasInstanceCategory' // temporarily filter out hasInstanceCategory as it has problems with duplicate keys
-		)
-	);
-
-	$inspect(treeViewFacets);
-
-	const testItems: TreeItem[] = [
-		{
-			key: 'key 1',
-			data: 'Item 1',
-			id: 'aaaa',
-			items: [
-				{
-					key: 'childkey1',
-					data: 'data'
-				}
-			]
-		},
-		{
-			key: 'key 2',
-			data: 'Item 2',
-			id: 'bbbb',
-			items: [
-				{
-					key: 'childkey1',
-					data: 'data'
-				}
-			]
-		},
-		{
-			key: 'key 3',
-			data: 'Item 3',
-			items: [
-				{
-					key: 'childkey1',
-					data: 'data'
-				},
-				{
-					key: 'childkey12',
-					data: 'data'
-				}
-			]
-		}
-	];
+	const treeViewFacets = $derived(facets);
 
 	function getClearAllHref() {
 		// TODO: Fix clear all links on AND filters
@@ -77,10 +31,6 @@
 		);
 	}
 </script>
-
-{#snippet testSnippet()}
-	<p>Hej</p>
-{/snippet}
 
 <nav class="filters" data-testid="filters">
 	{#if showHeader}
@@ -98,7 +48,11 @@
 		</Toolbar>
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
-		<TreeView items={testItems} treeItemSnippet={testSnippet} animated />
+		<TreeView items={treeViewFacets}>
+			{#snippet treeItem({ level, data, onchangeselected })}
+				<FacetItem {level} {data} {onchangeselected} />
+			{/snippet}
+		</TreeView>
 		<!--
 		{#if treeViewFacets?.length}
 			<TreeView ariaLabelledby={filterHeadingId} items={treeViewFacets}>

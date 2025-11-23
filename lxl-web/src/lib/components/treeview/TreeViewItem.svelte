@@ -9,25 +9,16 @@
 		level: number;
 	}
 
-	const {
-		elementTag = 'li',
-		id,
-		items,
-		expanded: _expanded,
-		selected: _selected,
-		level,
-		setsize,
-		posinset,
-		ownsId,
-		data
-	}: Props = $props();
+	const { elementTag, ...restProps }: Props = $props();
 
 	const fallbackUid = $props.id();
-	const { treeItemSnippet, animated } = getTreeViewContext();
+	const { treeItem, animated } = getTreeViewContext();
 
-	const useGeneratedId = $derived(animated && Array.isArray(items)); // generated IDs are used for `aria-owns` to identify the contextual relationship between parent/child elements when the DOM hierarchy cannot be used to represent the relationship (which is the case when with animated treeviews)
-	let expanded = $derived(_expanded); // derived expanded state is used to enable optimistic updates
-	let selected = $derived(_selected); // derived selected state is used to enable optimistic updates
+	const { level, setsize, posinset, ownsId, items } = $derived(restProps);
+	const useGeneratedId = $derived(animated && Array.isArray(restProps.items)); // generated IDs are used for `aria-owns` to identify the contextual relationship between parent/child elements when the DOM hierarchy cannot be used to represent the relationship (which is the case when with animated treeviews)
+	const id = $derived(restProps.id || (useGeneratedId && fallbackUid) || undefined);
+	let expanded = $derived(restProps.expanded); // derived expanded state is used to enable optimistic updates
+	let selected = $derived(restProps.selected); // same as above...
 
 	function handleToggleGroup(event: Event & { currentTarget: HTMLDetailsElement }) {
 		expanded = event.currentTarget.open;
@@ -36,15 +27,22 @@
 		}
 	}
 
-	function handleSelectTreeItem(selectedFromEvent: boolean) {
-		selected = selectedFromEvent;
+	function handleChangeSelected(_selected: boolean) {
+		selected = _selected;
 	}
 </script>
+
+{#snippet contents()}
+	{@render treeItem({
+		...restProps,
+		onchangeselected: handleChangeSelected
+	})}
+{/snippet}
 
 <svelte:element
 	this={elementTag}
 	role="treeitem"
-	id={id || (useGeneratedId && fallbackUid) || undefined}
+	{id}
 	aria-level={level}
 	aria-setsize={setsize}
 	aria-posinset={posinset}
@@ -60,7 +58,7 @@
 			role="none"
 		>
 			<summary class="sticky top-0 z-20 items-stretch">
-				{@render treeItemSnippet({ data, onselecttreeitem: handleSelectTreeItem })}
+				{@render contents()}
 			</summary>
 			<ul
 				role="group"
@@ -70,12 +68,12 @@
 				{@render treeItems(items, {
 					level: level + 1,
 					animated,
-					ownsId: id || (useGeneratedId && fallbackUid)
+					ownsId: id
 				})}
 			</ul>
 		</details>
 	{:else}
-		{@render treeItemSnippet({ data, onselecttreeitem: handleSelectTreeItem })}
+		{@render contents()}
 	{/if}
 </svelte:element>
 

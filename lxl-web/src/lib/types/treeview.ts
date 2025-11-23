@@ -13,9 +13,9 @@ export interface TreeItem {
 	data?: unknown;
 }
 
-export interface TreeItemSnippetParams {
-	data: unknown;
-	onselecttreeitem?: (selected: boolean) => void;
+export interface TreeItemSnippetParams extends Omit<TreeItem, 'key'> {
+	level: number; // level is always passed on
+	onchangeselected: (selected: boolean) => void;
 }
 
 export type TreeItemSnippet = Snippet<[TreeItemSnippetParams]>;

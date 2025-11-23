@@ -14,13 +14,13 @@
 		id?: string;
 		ariaLabelledby?: string;
 		ariaLabel?: string;
-		treeItemSnippet: TreeItemSnippet;
+		treeItem: TreeItemSnippet;
 		animated?: boolean;
 	}
 
-	let { id, ariaLabelledby, ariaLabel, items = [], treeItemSnippet, animated }: Props = $props();
+	let { id, ariaLabelledby, ariaLabel, items = [], treeItem, animated = true }: Props = $props();
 
-	setTreeViewContext({ treeItemSnippet, animated });
+	setTreeViewContext({ treeItem, animated });
 </script>
 
 {#snippet treeItems(

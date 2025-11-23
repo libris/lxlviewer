@@ -37,7 +37,7 @@ import { getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from 
 import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
-import { getFacet } from '$lib/utils/facet';
+import { getFacetTreeItem } from '$lib/utils/facet';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -77,7 +77,7 @@ export async function asResult(
 		),
 		...(view?.stats?.sliceByDimension && {
 			facets: Object.values(view.stats.sliceByDimension).map((slice) =>
-				getFacet({ slice, displayUtil, locale, translate, usePath })
+				getFacetTreeItem({ slice, displayUtil, locale, translate, usePath })
 			)
 		}),
 		...('stats' in view && {
