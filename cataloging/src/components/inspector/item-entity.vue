@@ -87,7 +87,7 @@ export default {
     },
     isCardWithData() {
       return this.isCard && this.focusData && Object.keys(this.focusData).length > 1;
-    },
+    },  
     isDiffView() {
       return this.diff != null;
     },

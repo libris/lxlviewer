@@ -513,7 +513,92 @@ export default {
     },
     isAnyType() {
       return this.entityType === ANY_TYPE;
-    }
+    },
+    hasFind() {
+      let find = null
+
+      if (this.archType === 'Instance') {
+        find = this.inspector.data.mainEntity?.instanceOf?._categoryByCollection?.find;
+      }
+
+      if (this.archType === 'Work') {
+        find = this.inspector.data.mainEntity._categoryByCollection?.find;
+      }
+
+      return !!find;
+    },
+    hasIdentify() {
+      let identify = null
+
+      if (this.archType === 'Instance') {
+        identify = this.inspector.data.mainEntity?.instanceOf?._categoryByCollection?.identify;
+      }
+
+      if (this.archType === 'Work') {
+        identify = this.inspector.data.mainEntity._categoryByCollection?.identify;
+      }
+
+      return !!identify;
+    },
+    isCategoryField() {
+      return (
+        (this.archType === 'Instance' && this.path === 'mainEntity.instanceOf.category') ||
+        (this.archType === 'Work' && this.fieldKey === 'category')
+      );
+    },
+    shouldShowWarning() {
+      if (!this.isCategoryField) return false;
+      return !this.hasFind || !this.hasIdentify;
+    },
+    warningMessage() {
+      if (!this.isCategoryField) return { text: '', missing: [] };
+
+      const missingI18n = StringUtil.getUiPhraseByLang(
+        "missing",
+        this.user.settings.language,
+        this.resources.i18n
+      );
+
+      const andI18n = StringUtil.getUiPhraseByLang(
+        "and",
+        this.user.settings.language,
+        this.resources.i18n
+      );
+
+      const customMessages = {
+        Find: StringUtil.getUiPhraseByLang(
+          "Add a content type according to RDA's controlled vocabulary, e.g., text",
+          this.user.settings.language,
+          this.resources.i18n
+        ),
+        Identify: StringUtil.getUiPhraseByLang(
+          "Add a category at the identify level",
+          this.user.settings.language,
+          this.resources.i18n
+        )
+      };
+
+      const missing = [];
+      if (!this.hasFind) missing.push('Find');
+      if (!this.hasIdentify) missing.push('Identify');
+
+      if (missing.length === 0) return { text: '', missing: [] };
+
+      const translatedFields = missing.map(field =>
+        StringUtil.getUiPhraseByLang(field, this.user.settings.language, this.resources.i18n)
+      );
+
+      const fieldList =
+        translatedFields.length > 1
+          ? `${translatedFields.slice(0, -1).join(', ')} ${andI18n} ${translatedFields.slice(-1)} ${missingI18n}`
+          : `${translatedFields[0]} ${missingI18n}` ;
+
+      const text = missing.map(field => customMessages[field]).join('<br>');
+
+      return { text, fieldList, missing: translatedFields };
+    },
+
+
   },
   methods: {
     HAS_ID_KEY() {
@@ -1053,7 +1138,7 @@ export default {
     <pre class="path-code" v-show="user.settings.appTech && isInner">{{path}}</pre>
 
     <div
-      class="Field-content FieldContent"
+      class="Field-content"
       :class="{ 'is-locked': locked }"
       v-if="fieldKey === '@type'">
       <div
@@ -1087,11 +1172,10 @@ export default {
     </div>
 
     <div
-      class="Field-content FieldContent"
+      class="Field-content"
       v-bind:class="{ 'is-locked': locked }"
       v-if="fieldKey !== '@type' && isObjectArray">
       <div class="Field-contentItem">
-
         <item-bylang
           v-if="getDatatype(firstInValueAsArray) == 'language'"
           :is-locked="locked"
@@ -1186,6 +1270,14 @@ export default {
           :is-enrichment-source="isEnrichmentSource"
         />
       </div>
+      <div 
+        v-if="shouldShowWarning"
+        class="Field-comment warning-triangle warning-wrapper"
+      >
+        <i class="fa fa-warning fa-fw icon--warn icon--sm" />
+        <span class="Field-commentText" v-html="warningMessage.text"></span>
+      </div>
+      <span v-if="shouldShowWarning" class="warning-text" v-html="warningMessage.fieldList"></span>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
 
@@ -1304,7 +1396,6 @@ export default {
 </template>
 
 <style lang="less">
-
 .Field {
   border-bottom: 1px solid;
   border-color: @form-border;
@@ -1786,4 +1877,33 @@ export default {
     }
   }
 }
+
+.warning-wrapper {
+  position: relative;
+  cursor: pointer;
+  z-index: 99;
+}
+
+.warning-Inner {
+  max-width: 85%;
+}
+
+.warning-text {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+}
+
+.warning-triangle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 </style>
