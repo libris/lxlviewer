@@ -515,31 +515,27 @@ export default {
       return this.entityType === ANY_TYPE;
     },
     hasFind() {
-      if (!this.itemData) return false
-
       let find = null
 
-      if(this.archType === 'Instance') {
-        find = this.itemData?.instanceOf?._categoryByCollection?.find;
+      if (this.archType === 'Instance') {
+        find = this.inspector.data.mainEntity?.instanceOf?._categoryByCollection?.find;
       }
 
-      if(this.archType === 'Work') {
-        find = this.itemData._categoryByCollection?.find;
+      if (this.archType === 'Work') {
+        find = this.inspector.data.mainEntity._categoryByCollection?.find;
       }
 
       return !!find;
     },
     hasIdentify() {
-      if (!this.itemData) return false
-
       let identify = null
 
-      if(this.archType === 'Instance') {
-        identify = this.itemData?.instanceOf?._categoryByCollection?.identify;
+      if (this.archType === 'Instance') {
+        identify = this.inspector.data.mainEntity?.instanceOf?._categoryByCollection?.identify;
       }
 
-      if(this.archType === 'Work') {
-        identify = this.itemData._categoryByCollection?.identify;
+      if (this.archType === 'Work') {
+        identify = this.inspector.data.mainEntity._categoryByCollection?.identify;
       }
 
       return !!identify;
@@ -1177,9 +1173,8 @@ export default {
 
     <div
       class="Field-content"
-      v-bind:class="{ 'is-locked': locked, 'warning-wrapper': shouldShowWarning }"
+      v-bind:class="{ 'is-locked': locked }"
       v-if="fieldKey !== '@type' && isObjectArray">
-      <div   v-bind:class="{ 'warning-inner': shouldShowWarning }">
       <div class="Field-contentItem">
         <item-bylang
           v-if="getDatatype(firstInValueAsArray) == 'language'"
@@ -1275,10 +1270,9 @@ export default {
           :is-enrichment-source="isEnrichmentSource"
         />
       </div>
-      </div>
       <div 
         v-if="shouldShowWarning"
-        class="Field-comment warning-triangle"
+        class="Field-comment warning-triangle warning-wrapper"
       >
         <i class="fa fa-warning fa-fw icon--warn icon--sm" />
         <span class="Field-commentText" v-html="warningMessage.text"></span>
