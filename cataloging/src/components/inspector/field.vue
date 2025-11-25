@@ -1100,7 +1100,9 @@ export default {
           :field-key="fieldKey"
           :parent-path="path"
           :diff="diff"
-          :is-expanded="isExpanded" />
+          :is-expanded="isExpanded"
+          :is-enrichment-source="isEnrichmentSource"
+        />
       </div>
       <div
         class="Field-contentItem"
@@ -1203,7 +1205,9 @@ export default {
           :field-key="fieldKey"
           :parent-path="path"
           :diff="diff"
-          :is-expanded="isExpanded" />
+          :is-expanded="isExpanded"
+          :is-enrichment-source="isEnrichmentSource"
+        />
       </div>
 
       <div

@@ -65,6 +65,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isEnrichmentSource: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     ...mapGetters([
@@ -106,6 +110,12 @@ export default {
     diffModified() {
       if (this.diff == null) return false;
       return this.diff.modified.some((p) => isEqual(p, this.exactPath));
+    },
+    enriched() {
+      const enriched = this.inspector.status.enriched;
+      if (enriched.length > 0) {
+        return enriched.some((el) => el.path === this.exactPath);
+      } return false;
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;
@@ -306,6 +316,7 @@ export default {
         'LanguageEntry-is-diff-removed': diffRemoved && !diffAdded,
         'LanguageEntry-is-diff-added': diffAdded && !diffRemoved,
         'LanguageEntry-is-diff-modified': diffModified,
+        'LanguageEntry-is-highlighted': enriched && !isEnrichmentSource,
       }">
       <div class="LanguageEntry-textcontainer">
         <div class="LanguageEntry-key">
@@ -414,6 +425,10 @@ export default {
     border-color: @base-color;
     background-color: @form-modified;
     margin-bottom: 3px;
+  }
+
+  &-is-highlighted {
+    background-color: @form-highlight;
   }
 
   &-text {
