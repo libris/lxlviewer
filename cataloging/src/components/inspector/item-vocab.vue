@@ -1,5 +1,5 @@
 <script>
-import { each, uniq, sortBy } from 'lodash-es';
+import {each, uniq, sortBy, get, isArray, isEqual} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -51,6 +51,9 @@ export default {
       'settings',
       'status',
     ]),
+    originalValue() {
+      return get(this.inspector.originalData, ['record', 'encodingLevel'], '');
+    },
     range() {
       const types = VocabUtil.getRangeFull(
         this.fieldKey,
@@ -87,6 +90,45 @@ export default {
           ],
           addToHistory: true,
         });
+        if (this.originalValue !== value) {
+          const value = {
+            "@type": "Library",
+            "sigel": this.user.settings.activeSigel
+          }
+          let upgraderList = this.asArray(get(this.inspector.data, ['record', 'descriptionUpgrader'], []));
+          upgraderList = upgraderList.some(o => isEqual(o, value)) ? upgraderList : [...upgraderList, value];
+          this.$store.dispatch('updateInspectorData', {
+            changeList:  [
+              {
+                path: 'record.descriptionUpgrader',
+                value: upgraderList,
+              },
+            ],
+          });
+        } else {
+          const originalDescriptionUpgrader = get(this.inspector.originalData, ['record', 'descriptionUpgrader'], null);
+          if (originalDescriptionUpgrader) {
+            this.$store.dispatch('updateInspectorData', {
+              changeList:  [
+                {
+                  path: 'record.descriptionUpgrader',
+                  value: originalDescriptionUpgrader,
+                },
+              ],
+            });
+          } else {
+            const currentData = get(this.inspector.data, ['record'], null);
+            const { descriptionUpgrader, ...updated } = currentData;
+            this.$store.dispatch('updateInspectorData', {
+              changeList: [
+                {
+                  path: 'record',
+                  value: updated,
+                },
+              ],
+            });
+          }
+        }
       }
     },
   },
@@ -121,6 +163,10 @@ export default {
 
       return '';
     },
+    asArray(o) {
+      if (Array.isArray(o)) return o;
+      return o != null ? [o] : [];
+    }
   },
   components: {
 
