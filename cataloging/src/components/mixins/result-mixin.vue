@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
-import {get, isEqual} from "lodash-es";
+import { get, isEqual } from "lodash-es";
 
 export default {
   data() {
@@ -17,14 +17,14 @@ export default {
         const original = LxlDataUtil.splitJson(this.importItem);
         const duplicate = RecordUtil.prepareDuplicateFor(original, this.user, this.settings.keysToClear.remoteImport);
 
+        // Automatically add current sigel to record.descriptionUpgrader to remove this manual step.
         const value = {
           "@type": "Library",
           "sigel": this.user.settings.activeSigel
         }
-        let upgraderList = this.asArray(get(duplicate, ['record', 'descriptionUpgrader'], []));
+        let upgraderList = this.asArray(get(duplicate, ['@graph', 0, 'descriptionUpgrader'], []));
         upgraderList = upgraderList.some(o => isEqual(o, value)) ? upgraderList : [...upgraderList, value];
-
-        duplicate.record.descriptionUpgrader = upgraderList;
+        duplicate['@graph'][0].descriptionUpgrader = upgraderList;
 
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
