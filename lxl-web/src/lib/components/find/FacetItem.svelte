@@ -5,10 +5,11 @@
 	import IconClear from '~icons/bi/x-lg';
 	import type { TreeItemSnippetParams } from '$lib/types/treeview';
 
-	let { data, level, onchangeselected, ...props }: TreeItemSnippetParams = $props();
+	let { key, data, level, hasSelected, onchangeselected, ...restProps }: TreeItemSnippetParams =
+		$props();
 
 	const href = $derived(data.view ? page.data.localizeHref(data.view['@id']) : undefined);
-	let selected = $derived(props?.selected);
+	let selected = $derived(restProps?.selected);
 	const hasCheckbox = $derived(true);
 
 	function toggleSelected() {
@@ -49,6 +50,7 @@
 		level === 1 && 'text-subtle hover:text-body font-medium',
 		level > 1 && 'text-subtle/85 hover:text-subtle focus-within:text-subtle'
 	]}
+	data-key={key}
 >
 	{#if data.view}
 		<div class="flex w-full items-center">
@@ -96,6 +98,10 @@
 	{:else}
 		<div class={['flex items-center justify-between']}>
 			{@render label()}
+			{#if hasSelected}
+				<!--<input type="checkbox" bind:indeterminate={hasSelected} />-->
+				{JSON.stringify(data)}
+			{/if}
 		</div>
 	{/if}
 </div>

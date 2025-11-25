@@ -1,47 +1,87 @@
 <script module lang="ts">
 	export { treeItems };
+
+	export class TreePath extends Array {
+		constructor(path: string[]) {
+			// @ts-expect-error: Argument of type 'string' is not assignable to parameter of type 'number'
+			console.log('ppp', path);
+			super(...path);
+		}
+
+		isEqualPath(otherPath: TreePath) {
+			return (
+				this.length === otherPath.length && this.every((part, index) => part === otherPath[index])
+			);
+		}
+	}
+
+	export interface TreeItem {
+		path: TreePath;
+		children?: TreeItem[]; // should we support nested tree data as well? Or just rely on TreePath directly?
+	}
 </script>
 
 <script lang="ts">
-	import type { TreeItem, TreeItemSnippet } from '$lib/types/treeview';
+	import { prefersReducedMotion } from 'svelte/motion';
+	import { type TreeItemSnippet } from '$lib/types/treeview';
 	import { setTreeViewContext } from '$lib/contexts/treeview';
+	import { send, receive } from '$lib/utils/transition';
 	import TreeViewItem from './TreeViewItem.svelte';
 
-	import { prefersReducedMotion } from 'svelte/motion';
-	import { send, receive } from '$lib/utils/transition';
-
-	interface Props extends Omit<TreeItem, 'key'> {
+	interface Props {
 		id?: string;
 		ariaLabelledby?: string;
 		ariaLabel?: string;
-		treeItem: TreeItemSnippet;
+		selectable?: 'single' | 'multiple';
 		animated?: boolean;
+		data: TreeItem[];
+		treeItem?: TreeItemSnippet;
+		// tabblablePath?: TreePath;
 	}
 
-	let { id, ariaLabelledby, ariaLabel, items = [], treeItem, animated = true }: Props = $props();
+	let {
+		id,
+		ariaLabelledby,
+		ariaLabel,
+		selectable,
+		treeItem,
+		animated = true,
+		data
+	}: Props = $props();
 
-	setTreeViewContext({ treeItem, animated });
+	setTreeViewContext({
+		treeItem,
+		selectable,
+		//tabbablePath: getRootItems(data)?.[0].path, // data.find((item) => item.path.length === 1)?.path,
+		animated: !prefersReducedMotion.current && animated
+	});
 </script>
 
-{#snippet treeItems(
-	items: TreeItem[],
-	options: { level: number; animated?: boolean; ownsId?: string } = { level: 1 }
-)}
-	{#if options.animated}
-		{#each items as item (item.key)}
-			<li role="none" in:receive={{ key: item.key }} out:send={{ key: item.key }}>
-				<TreeViewItem elementTag="div" level={options.level} ownsId={options.ownsId} {...item} />
+{#snippet treeItems(data: TreeItem[], path?: TreePath, options?: { animated?: boolean })}
+	{#if path}
+		{@const dataFromPath: TreeItem[] = data.filter((item) => [...path].every((part, index) => part === item.path[index]))}
+		{#if options?.animated}
+			<li role="none" in:receive={{ key: path }} out:send={{ key: path }}>
+				<TreeViewItem elementTag="div" data={dataFromPath} {path} />
 			</li>
-		{/each}
+		{:else}
+			<TreeViewItem elementTag="li" data={dataFromPath} {path} />
+		{/if}
 	{:else}
-		{#each items as item (item.key)}
-			<TreeViewItem elementTag="li" level={options.level} ownsId={options.ownsId} {...item} />
+		{#each data.filter((item) => item.path.length === 1) as rootItem (rootItem.path)}
+			{@render treeItems(data, rootItem.path)}
 		{/each}
 	{/if}
 {/snippet}
 
-<ul role="tree" {id} aria-labelledby={ariaLabelledby} aria-label={ariaLabel}>
-	{@render treeItems(items, { level: 1, animated: !prefersReducedMotion.current && animated })}
+<ul
+	role="tree"
+	{id}
+	aria-labelledby={ariaLabelledby}
+	aria-label={ariaLabel}
+	aria-multiselectable={selectable === 'multiple' || undefined}
+>
+	{@render treeItems(data, undefined, { animated })}
 </ul>
 
 <style lang="postcss">

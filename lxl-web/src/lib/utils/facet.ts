@@ -85,11 +85,12 @@ function getFacetTreeItemValue({
 	translate: TranslateFn;
 	usePath?: string;
 }): FacetTreeItemValue {
+	const label = getFacetLabel({ data: observation, displayUtil, locale, translate });
 	return {
-		key: replacePath(observation.view, usePath)?.['@id'],
+		key: (typeof label === 'object' && label.str + label.discriminator) || label, // replacePath(observation.view, usePath)?.['@id'], // id used up...
 		selected: observation._selected,
 		data: {
-			label: getFacetLabel({ data: observation, displayUtil, locale, translate }),
+			label,
 			view: replacePath(observation.view, usePath),
 			totalItems: observation.totalItems
 		}
@@ -122,8 +123,8 @@ export function getFacet({
 		operator: slice._connective,
 		maxItems: slice.maxItems,
 		search: slice.search,
-		alias: slice.alias,
-		selected: observation?._selected
+		alias: slice.alias
+		// selected: observation?._selected
 	};
 
 	const sortedObservations =

@@ -2,8 +2,7 @@
 	import { page } from '$app/state';
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
-	import TreeView from '$lib/components/treeview/TreeView.svelte';
-	import FacetItem from './FacetItem.svelte';
+	import TreeView, { type TreeItem, TreePath } from '$lib/components/treeview/TreeView.svelte';
 
 	type Props = {
 		facets?: Facet[];
@@ -21,7 +20,7 @@
 			0
 	);
 
-	const treeViewFacets = $derived(facets);
+	// const treeViewFacets = $derived(facets);
 
 	function getClearAllHref() {
 		// TODO: Fix clear all links on AND filters
@@ -30,6 +29,22 @@
 			'/find?' + new URLSearchParams([['_q', textQuery?.displayStr || '*']]).toString()
 		);
 	}
+
+	const flatData: TreeItem[] = [
+		{ path: new TreePath(['language']) },
+		{ path: new TreePath(['language', 'swedish']) },
+		{ path: new TreePath(['language', 'english']) },
+		{ path: new TreePath(['language', 'spanish']) },
+		{ path: new TreePath(['categories']) },
+		{ path: new TreePath(['categories', 'litterature']) },
+		{ path: new TreePath(['categories', 'litterature', 'skönlitteratur']) },
+		{ path: new TreePath(['categories', 'litterature', 'poesi']) },
+		{ path: new TreePath(['categories', 'music']) },
+		{ path: new TreePath(['categories', 'film']) },
+		{ path: new TreePath(['contributor']) },
+		{ path: new TreePath(['contributor', 'Astrid Lindgren']) },
+		{ path: new TreePath(['contributor', 'Hjalmar Söderberg']) }
+	];
 </script>
 
 <nav class="filters" data-testid="filters">
@@ -48,11 +63,11 @@
 		</Toolbar>
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
-		<TreeView items={treeViewFacets}>
-			{#snippet treeItem({ level, data, onchangeselected })}
-				<FacetItem {level} {data} {onchangeselected} />
-			{/snippet}
-		</TreeView>
+		<TreeView data={flatData} selectable="multiple" ariaLabelledby={filterHeadingId}></TreeView>
+		<details>
+			<summary>JSON</summary>
+			{JSON.stringify(facets)}
+		</details>
 		<!--
 		{#if treeViewFacets?.length}
 			<TreeView ariaLabelledby={filterHeadingId} items={treeViewFacets}>
@@ -79,5 +94,9 @@
 		height: calc(var(--leading-pane-height) - var(--toolbar-height) * 2);
 		scrollbar-width: thin;
 		scrollbar-gutter: stable;
+	}
+
+	:global([role='group']) {
+		padding-left: calc(var(--spacing) * 6);
 	}
 </style>

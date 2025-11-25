@@ -1,75 +1,85 @@
 <script lang="ts">
-	import type { TreeItem } from '$lib/types/treeview';
+	import { TreePath, type TreeItem } from './TreeView.svelte';
+
 	import { getTreeViewContext } from '$lib/contexts/treeview';
 	import { treeItems } from './TreeView.svelte';
+	import { TreeViewKeys } from '$lib/types/treeview';
 
-	interface Props extends TreeItem {
+	interface Props {
+		data: TreeItem[];
+		path: TreePath;
 		elementTag?: string;
-		ownsId?: string;
-		level: number;
 	}
 
-	const { elementTag, ...restProps }: Props = $props();
+	const { data, path, elementTag = 'li' }: Props = $props();
 
-	const fallbackUid = $props.id();
-	const { treeItem, animated } = getTreeViewContext();
+	const {
+		treeItem,
+		animated,
+		getId,
+		getSetsize,
+		getPosinset,
+		getExpanded,
+		getSelected,
+		getOwnsId,
+		getHasSelected,
+		tabbablePath
+	} = getTreeViewContext();
 
-	const { level, setsize, posinset, ownsId, items } = $derived(restProps);
-	const useGeneratedId = $derived(animated && Array.isArray(restProps.items)); // generated IDs are used for `aria-owns` to identify the contextual relationship between parent/child elements when the DOM hierarchy cannot be used to represent the relationship (which is the case when with animated treeviews)
-	const id = $derived(restProps.id || (useGeneratedId && fallbackUid) || undefined);
-	let expanded = $derived(restProps.expanded); // derived expanded state is used to enable optimistic updates
-	let selected = $derived(restProps.selected); // same as above...
+	const groupItems = $derived(data.filter((item) => item.path.length === path.length + 1));
+	const level = $derived(path.length);
 
-	function handleToggleGroup(event: Event & { currentTarget: HTMLDetailsElement }) {
-		expanded = event.currentTarget.open;
-		if (!expanded) {
-			event.currentTarget.scrollIntoView({ block: 'nearest' });
+	let expanded = $derived(getExpanded?.(path) || false);
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (Object.values(TreeViewKeys).includes(event.key as TreeViewKeys)) {
+			event.preventDefault();
+			const closestTreeItem = document.activeElement?.closest('[role="treeitem"]');
+			console.log(
+				'pressed treeview key',
+				event.key,
+				closestTreeItem?.hasAttribute('aria-expanded') ? 'is expandedable' : 'is not expandable'
+			);
 		}
-	}
-
-	function handleChangeSelected(_selected: boolean) {
-		selected = _selected;
 	}
 </script>
 
+{#snippet fallbackContents()}
+	<span>{JSON.stringify(path)}</span>
+{/snippet}
+
 {#snippet contents()}
-	{@render treeItem({
-		...restProps,
-		onchangeselected: handleChangeSelected
-	})}
+	{#if treeItem}
+		{@render treeItem({ path, level })}
+	{:else}
+		{@render fallbackContents()}
+	{/if}
 {/snippet}
 
 <svelte:element
 	this={elementTag}
 	role="treeitem"
-	{id}
+	id={getId?.(path)}
 	aria-level={level}
-	aria-setsize={setsize}
-	aria-posinset={posinset}
-	aria-expanded={expanded}
-	aria-selected={selected}
-	aria-owns={ownsId}
+	aria-setsize={getSetsize?.(path)}
+	aria-posinset={getPosinset?.(path)}
+	aria-expanded={groupItems.length ? expanded : undefined}
+	aria-selected={getSelected?.(path)}
+	aria-owns={getOwnsId?.(path)}
+	data-has-selected={getHasSelected?.(path)}
 >
-	{#if Array.isArray(items)}
-		<details
-			open={expanded}
-			ontoggle={handleToggleGroup}
-			class="relative top-0 z-10 flex flex-col"
-			role="none"
-		>
-			<summary class="sticky top-0 z-20 items-stretch">
+	{#if groupItems.length}
+		<details role="none" bind:open={expanded}>
+			<summary
+				tabindex={tabbablePath && path.isEqualPath(tabbablePath) ? 0 : -1}
+				onkeydown={handleKeyDown}
+			>
 				{@render contents()}
 			</summary>
-			<ul
-				role="group"
-				class="relative min-w-0 flex-1 grow-0 overflow-hidden"
-				style={`--level:${level + 1}`}
-			>
-				{@render treeItems(items, {
-					level: level + 1,
-					animated,
-					ownsId: id
-				})}
+			<ul role="group" style="--level:{level + 1}">
+				{#each groupItems as item (item.path)}
+					{@render treeItems(data, item.path, { animated })}
+				{/each}
 			</ul>
 		</details>
 	{:else}
@@ -79,4 +89,9 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	summary {
+		cursor: default;
+		outline-offset: -2px;
+	}
 </style>
