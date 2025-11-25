@@ -64,9 +64,9 @@
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
 		<TreeView data={flatData} selectable="multiple" ariaLabelledby={filterHeadingId}></TreeView>
-		<details>
+		<details class="text-4xs">
 			<summary tabindex="-1">JSON</summary>
-			{JSON.stringify(facets)}
+			<pre>{JSON.stringify(facets)}</pre>
 		</details>
 		<!--
 		{#if treeViewFacets?.length}
