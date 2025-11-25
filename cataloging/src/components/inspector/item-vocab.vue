@@ -51,7 +51,7 @@ export default {
       'settings',
       'status',
     ]),
-    originalValue() {
+    savedEncodingLevel() {
       return get(this.inspector.originalData, ['record', 'encodingLevel'], '');
     },
     range() {
@@ -90,44 +90,8 @@ export default {
           ],
           addToHistory: true,
         });
-        if (this.originalValue !== value) {
-          const value = {
-            "@type": "Library",
-            "sigel": this.user.settings.activeSigel
-          }
-          let upgraderList = this.asArray(get(this.inspector.data, ['record', 'descriptionUpgrader'], []));
-          upgraderList = upgraderList.some(o => isEqual(o, value)) ? upgraderList : [...upgraderList, value];
-          this.$store.dispatch('updateInspectorData', {
-            changeList:  [
-              {
-                path: 'record.descriptionUpgrader',
-                value: upgraderList,
-              },
-            ],
-          });
-        } else {
-          const originalDescriptionUpgrader = get(this.inspector.originalData, ['record', 'descriptionUpgrader'], null);
-          if (originalDescriptionUpgrader) {
-            this.$store.dispatch('updateInspectorData', {
-              changeList:  [
-                {
-                  path: 'record.descriptionUpgrader',
-                  value: originalDescriptionUpgrader,
-                },
-              ],
-            });
-          } else {
-            const currentData = get(this.inspector.data, ['record'], null);
-            const { descriptionUpgrader, ...updated } = currentData;
-            this.$store.dispatch('updateInspectorData', {
-              changeList: [
-                {
-                  path: 'record',
-                  value: updated,
-                },
-              ],
-            });
-          }
+        if (this.fieldKey === 'encodingLevel') {
+          this.updateDescriptionUpgrader(value);
         }
       }
     },
@@ -150,6 +114,47 @@ export default {
         this.user.settings.language,
         this.resources,
       ));
+    },
+    updateDescriptionUpgrader(value) {
+      if (this.savedEncodingLevel !== value) {
+        const value = {
+          "@type": "Library",
+          "sigel": this.user.settings.activeSigel
+        }
+        let upgraderList = this.asArray(get(this.inspector.data, ['record', 'descriptionUpgrader'], []));
+        upgraderList = upgraderList.some(o => isEqual(o, value)) ? upgraderList : [...upgraderList, value];
+        this.$store.dispatch('updateInspectorData', {
+          changeList:  [
+            {
+              path: 'record.descriptionUpgrader',
+              value: upgraderList,
+            },
+          ],
+        });
+      } else {
+        const originalDescriptionUpgrader = get(this.inspector.originalData, ['record', 'descriptionUpgrader'], null);
+        if (originalDescriptionUpgrader) {
+          this.$store.dispatch('updateInspectorData', {
+            changeList:  [
+              {
+                path: 'record.descriptionUpgrader',
+                value: originalDescriptionUpgrader,
+              },
+            ],
+          });
+        } else {
+          const currentData = get(this.inspector.data, ['record'], null);
+          const { descriptionUpgrader, ...updated } = currentData;
+          this.$store.dispatch('updateInspectorData', {
+            changeList: [
+              {
+                path: 'record',
+                value: updated,
+              },
+            ],
+          });
+        }
+      }
     },
     setTooltipComment(value) {
       const termObject = VocabUtil.getTermObject(value, this.resources.vocab, this.resources.context);
