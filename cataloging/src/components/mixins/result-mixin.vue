@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
+import {get, isEqual} from "lodash-es";
 
 export default {
   data() {
@@ -15,6 +16,16 @@ export default {
       if (this.user.isLoggedIn) {
         const original = LxlDataUtil.splitJson(this.importItem);
         const duplicate = RecordUtil.prepareDuplicateFor(original, this.user, this.settings.keysToClear.remoteImport);
+
+        const value = {
+          "@type": "Library",
+          "sigel": this.user.settings.activeSigel
+        }
+        let upgraderList = this.asArray(get(duplicate, ['record', 'descriptionUpgrader'], []));
+        upgraderList = upgraderList.some(o => isEqual(o, value)) ? upgraderList : [...upgraderList, value];
+
+        duplicate.record.descriptionUpgrader = upgraderList;
+
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       } else {
@@ -25,6 +36,10 @@ export default {
         );
       }
     },
+    asArray(o) {
+      if (Array.isArray(o)) return o;
+      return o != null ? [o] : [];
+    }
   },
   events: {
     'import-this'() {
