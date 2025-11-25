@@ -4,7 +4,6 @@
 	export class TreePath extends Array {
 		constructor(path: string[]) {
 			// @ts-expect-error: Argument of type 'string' is not assignable to parameter of type 'number'
-			console.log('ppp', path);
 			super(...path);
 		}
 
@@ -36,7 +35,7 @@
 		animated?: boolean;
 		data: TreeItem[];
 		treeItem?: TreeItemSnippet;
-		// tabblablePath?: TreePath;
+		tabbablePath?: TreePath;
 	}
 
 	let {
@@ -46,13 +45,14 @@
 		selectable,
 		treeItem,
 		animated = true,
-		data
+		data,
+		tabbablePath
 	}: Props = $props();
 
 	setTreeViewContext({
 		treeItem,
 		selectable,
-		//tabbablePath: getRootItems(data)?.[0].path, // data.find((item) => item.path.length === 1)?.path,
+		tabbablePath: tabbablePath || data.filter((item) => item.path.length === 1)?.[0].path, // data.find((item) => item.path.length === 1)?.path,
 		animated: !prefersReducedMotion.current && animated
 	});
 </script>

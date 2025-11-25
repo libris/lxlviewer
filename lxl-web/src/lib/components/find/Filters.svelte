@@ -65,7 +65,7 @@
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
 		<TreeView data={flatData} selectable="multiple" ariaLabelledby={filterHeadingId}></TreeView>
 		<details>
-			<summary>JSON</summary>
+			<summary tabindex="-1">JSON</summary>
 			{JSON.stringify(facets)}
 		</details>
 		<!--
