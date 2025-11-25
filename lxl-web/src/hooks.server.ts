@@ -3,12 +3,22 @@ import { env } from '$env/dynamic/private';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
 import { DERIVED_LENSES } from '$lib/types/display';
+import type { Site } from '$lib/types/site';
 import displayWeb from '$lib/assets/json/display-web.json';
 import { DebugFlags, type UserSettings } from '$lib/types/userSettings';
-import type { RequestEvent } from '@sveltejs/kit';
-import type { Site } from '$lib/types/site';
+import type { RequestEvent, ServerInit } from '@sveltejs/kit';
+import { refreshLibraries } from '$lib/utils/getLibraries';
 
 let utilCache;
+
+export const init: ServerInit = async () => {
+	// get libraries at startup
+	try {
+		refreshLibraries();
+	} catch (err) {
+		console.error('Refreshing libraries failed at server init', err);
+	}
+};
 
 export const handle = async ({ event, resolve }) => {
 	const [vocabUtil, displayUtil] = await loadUtilCached();
