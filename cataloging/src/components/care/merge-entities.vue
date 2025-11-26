@@ -746,7 +746,7 @@ export default {
           <div class="MergeView-descriptionContainer" v-if="isValid">
             <div class="iconCircle"><i class="fa fa-fw fa-hand-pointer-o"/></div>
             <div class="MergeView-description">
-              {{ translatePhrase('Select parts of the left record which should be copied to the right one.') }}
+              {{ translatePhrase('Select properties of the left record which should be copied to the right one.') }}
             </div>
           </div>
           <div v-if="!this.loadingRecords && isValid">
