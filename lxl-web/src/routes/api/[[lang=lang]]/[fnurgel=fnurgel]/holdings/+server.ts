@@ -5,12 +5,10 @@ import type { FramedData } from '$lib/types/xl';
 import { LxlLens } from '$lib/types/display';
 import { pickProperty, toString } from '$lib/utils/xl';
 import {
-	fetchHoldersIfAbsent,
 	getBibIdsByInstanceId,
 	getHoldersByType,
 	getHoldingsByInstanceId,
-	getHoldingsByType,
-	getItemLinksByBibId
+	getHoldingsByType
 } from '$lib/utils/holdings';
 import { error, json } from '@sveltejs/kit';
 import jmespath from 'jmespath';
@@ -47,7 +45,6 @@ export async function GET({ params, locals }) {
 
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
-	const itemLinksByBibId = getItemLinksByBibId(bibIdsByInstanceId, locale, displayUtil);
 
 	// Should this be passed as a parameter to HoldingsModal.svelte instead?
 	const holdingsByType = getHoldingsByType(mainEntity);
@@ -55,16 +52,14 @@ export async function GET({ params, locals }) {
 
 	// FIXME: beware holdingsByInstanceId => has .heldBy.obj
 	// holdingsByType => has just .heldBy without .obj
-	await fetchHoldersIfAbsent(Object.values(holdersByType).flat());
 
 	//TODO: cache response for a short amount of time?
 	return json({
-		bibIdsByInstanceId: bibIdsByInstanceId,
-		holdingsByInstanceId: holdingsByInstanceId,
-		itemLinksByBibId: itemLinksByBibId,
-		instances: instances,
+		bibIdsByInstanceId,
+		holdingsByInstanceId,
+		instances,
 		title: toString(heading),
 		overview: overviewWithoutHasInstance,
-		holdersByType: holdersByType
+		holdersByType
 	});
 }

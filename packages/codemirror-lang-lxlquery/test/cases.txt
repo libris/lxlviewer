@@ -169,7 +169,7 @@ Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
 
 ==>
 
-Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(Group(String OrOperator String))))
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(QualifierOuterGroup(String OrOperator String))))
 
 
 # code group
@@ -178,7 +178,7 @@ förf:(AAA)
 
 ==>
 
-Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(Group(String))))
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(QualifierOuterGroup(String))))
 
 
 # code group 2
@@ -194,7 +194,7 @@ Query(
     ),
     QualifierOperator,
     QualifierValue(
-      Group(
+      QualifierOuterGroup(
         String,
         OrOperator,
         String,
@@ -387,13 +387,13 @@ Query(UTerm(UOperator ⚠))
 Query(⚠ String String)
 
 
-# fail empty paren
+# allow empty paren
 
 ()
 
 ==>
 
-Query(Group(String(⚠)))
+Query(Group)
 
 
 # uterm code
@@ -411,7 +411,7 @@ key:(NOT value)
 
 ==>
 
-Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(Group(UTerm(UOperator String)))))
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(QualifierOuterGroup(QualifierUTerm(UOperator String)))))
 
 
 # other filters: include E-plikt

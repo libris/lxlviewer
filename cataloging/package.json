@@ -1,6 +1,6 @@
 {
   "name": "cataloging",
-  "version": "1.40.2",
+  "version": "1.41.0",
   "type": "module",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "postinstall": "yarn --cwd ../lxljs/ install --frozen-lockfile",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
+    "lint": "eslint .",
     "test:unit": "vitest",
     "test:e2e": "cypress open --e2e",
     "test:e2e_ci": "server-test 'vite --port 8080 --mode e2e' http://localhost:8080 'cypress run --headless'"
@@ -19,7 +19,6 @@
     "@babel/polyfill": "^7.8.3",
     "@kungbib/cookie-consent": "^0.9.1",
     "@vitejs/plugin-vue": "^5.1.2",
-    "@vue/eslint-config-airbnb": "^8.0.0",
     "@vueuse/components": "^11.0.1",
     "@vueuse/core": "^11.0.1",
     "autoprefixer": "^10.4.20",
@@ -31,8 +30,8 @@
     "core-js": "^3.38.1",
     "crypto-browserify": "^3.12.0",
     "dompurify": "^3.1.6",
-    "eslint": "^9.9.0",
-    "eslint-plugin-vue": "^9.27.0",
+    "eslint": "^9.35.0",
+    "eslint-plugin-vue": "^10.4.0",
     "floating-vue": "^5.2.2",
     "focus-trap": "^7.0.0",
     "focus-trap-vue": "^4.0.3",
@@ -63,14 +62,17 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.1",
     "@babel/preset-env": "^7.25.4",
+    "@eslint/js": "^9.35.0",
     "@rushstack/eslint-patch": "^1.10.4",
     "@testing-library/vue": "^8.1.0",
     "cypress": "^13.13.3",
-    "eslint-plugin-cypress": "^3.5.0",
+    "eslint-plugin-cypress": "^5.1.1",
+    "globals": "^16.3.0",
     "happy-dom": "^15.0.0",
     "less": "^4.2.0",
     "start-server-and-test": "^2.0.5",
-    "vitest": "^2.0.5"
+    "vitest": "^2.0.5",
+    "vue-eslint-parser": "^10.2.0"
   },
   "packageManager": "yarn@1.22.19",
   "engines": {

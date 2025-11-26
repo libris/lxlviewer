@@ -40,19 +40,6 @@ function findErrors(view: EditorView) {
 					}
 					widgets.push(invalidMark.range(from, to));
 				}
-
-				// A qualifier within a qualifier passes parsing but should be considered bad query
-				// See https://github.com/libris/librisxl/blob/develop/whelk-core/src/main/groovy/whelk/search2/parse/Analysis.java#L11
-				if (node.name === 'Qualifier') {
-					let n = node.node;
-					while (n && n.parent) {
-						n = n.parent;
-						if (n.name === 'Qualifier') {
-							widgets.push(invalidMark.range(node.from, node.to));
-							break;
-						}
-					}
-				}
 			}
 		});
 	}
@@ -78,6 +65,6 @@ const queryLinter = ViewPlugin.fromClass(
 	}
 );
 
-const lxlLinter = Prec.low(queryLinter);
+const lxlLinter = Prec.highest(queryLinter);
 
 export default lxlLinter;

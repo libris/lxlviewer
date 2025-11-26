@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, each, get } from 'lodash-es';
+import {cloneDeep, each, get, unset, isEqual, isEmpty} from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
@@ -22,6 +22,8 @@ import TabMenu from '@/components/shared/tab-menu.vue';
 import ValidationSummary from '@/components/inspector/validation-summary.vue';
 import FullscreenPanel from '@/components/shared/fullscreen-panel.vue';
 import VersionHistory from '@/components/inspector/version-history.vue';
+import { getChangeList } from "@/utils/enrich.js";
+import EnrichWrapper from "@/components/care/enrich-wrapper.vue";
 
 export default {
   name: 'Inspector',
@@ -83,12 +85,15 @@ export default {
         active: false,
         error: null,
       },
-      embellishFromIdModal: {
+      enrichFromIdModal: {
         open: false,
         inputValue: '',
         detailed: false,
       },
-      justEmbellished: false,
+      enrichFromSelectionModal: {
+        open: false,
+        inputId: '',
+      }
     };
   },
   emits: ['ready'],
@@ -98,6 +103,7 @@ export default {
     ...mapActions([
       'setEnrichmentSource',
       'setEnrichmentTarget',
+      'setEnrichmentChanges'
     ]),
     replaceData(data) {
       this.$store.dispatch('setInspectorData', data);
@@ -111,6 +117,14 @@ export default {
       const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
       detailedEnrichmentModal.open = false;
       this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+    },
+    closeEnrichFromSelectionModal() {
+      const modal = this.inspector.status.enrichFromSelection;
+      modal.open = false;
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
+      this.$store.dispatch('flushChangeHistory');
+      this.setEnrichmentChanges(null);
+      this.$store.dispatch('setInspectorStatusValue', { property: 'enrichFromSelection', value: modal });
     },
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
@@ -154,16 +168,16 @@ export default {
         toolbarTestEl.style.width = `${width}px`;
       }
     },
-    toggleEmbellishFromIdModal(open = true, detailed = false) {
+    toggleEnrichFromIdModal(open = true, detailed = false) {
       if (open) {
-        this.embellishFromIdModal.inputValue = '';
-        this.embellishFromIdModal.open = true;
-        this.embellishFromIdModal.detailed = detailed;
+        this.enrichFromIdModal.inputValue = '';
+        this.enrichFromIdModal.open = true;
+        this.enrichFromIdModal.detailed = detailed;
         this.$nextTick(() => {
-          this.$refs.EmbellishFromIdModalInput.focus();
+          this.$refs.EnrichFromIdModalInput.focus();
         });
       } else {
-        this.embellishFromIdModal.open = false;
+        this.enrichFromIdModal.open = false;
       }
     },
     openMarcPreview() {
@@ -246,15 +260,21 @@ export default {
       }
     },
     confirmApplyRecordAsTemplate(detailed = false) {
-      this.embellishFromIdModal.open = false;
-      const id = this.embellishFromIdModal.inputValue;
+      this.enrichFromIdModal.open = false;
+      const id = this.enrichFromIdModal.inputValue;
       if (detailed) {
         this.prepareDetailedEnrichment(id);
       } else if (id.length > 0) {
-        this.applyRecordAsTemplate(id, this.embellishFromIdModal.detailed);
+        this.applyRecordAsTemplate(id, this.enrichFromIdModal.detailed);
       }
     },
-    prepareDetailedEnrichment(id = null, data = null) {
+    openEnrichFromSelectionModal() {
+      this.setEnrichmentTarget(this.inspector.data);
+      const enrichFromSelection = this.inspector.status.enrichFromSelection;
+      enrichFromSelection.open = true;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'enrichFromSelection', value: enrichFromSelection });
+    },
+    prepareDetailedEnrichment(id = null) {
       if (id !== null) {
         const fixedId = RecordUtil.extractFnurgel(id);
         const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
@@ -280,12 +300,10 @@ export default {
           });
         }).then((result) => {
           if (typeof result !== 'undefined') {
-            const template = LxlDataUtil.splitJson(result);
-            this.applyAsDetailedEnrichment(template);
+            const source = LxlDataUtil.splitJson(result);
+            this.applyAsDetailedEnrichment(source);
           }
         });
-      } else if (data !== null) {
-        this.applyAsDetailedEnrichment(data);
       } else {
         throw new Error('Failed to prepare data for detailed enrichment.');
       }
@@ -327,13 +345,17 @@ export default {
         }
       });
     },
+    applyFromSource() {
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
+      this.$store.dispatch('flushChangeHistory');
+      this.removeEnrichedHighlight();
+      let source = cloneDeep(this.enrichment.data.source);
+      each(this.settings.keysToClear.duplication, (property) => {
+        unset(source, property);
+      });
+      this.applyFieldsFromTemplate(source, true);
+    },
     applyFieldsFromTemplate(template) {
-      if (template.hasOwnProperty('work')) {
-        // DO NOT switch order of these lines :)
-        delete template.work['@id'];
-        template.mainEntity.instanceOf = template.work;
-        delete template.work;
-      }
       const baseRecordType = this.inspector.data.mainEntity['@type'];
       const tempRecordType = template.mainEntity['@type'];
       const matching = (
@@ -358,60 +380,39 @@ export default {
           delete template.mainEntity.instanceOf;
         }
       }
-
-      const changeList = [];
-      function applyChangeList(templatePath, targetPath = null) {
-        if (targetPath === null) {
-          // targetPath is used when the target path differs from the templatePath
-          targetPath = templatePath;
-        }
-        const templateObject = get(template, templatePath);
-        let targetObject = get(baseRecordData, targetPath);
-        if (targetObject === null || typeof targetObject === 'undefined') {
-          targetObject = {};
-        }
-        each(templateObject, (value, key) => {
-          if (!targetObject.hasOwnProperty(key) || targetObject[key] === null) {
-            changeList.push({
-              path: `${targetPath}.${key}`,
-              value: value,
-            });
-          }
+      let changeList;
+      if (!this.enrichment.data.changes) {
+        changeList = [
+          ...getChangeList(template, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
+          ...getChangeList(template, baseRecordData, ['record'], ['record'], this.resources.context)
+        ];
+        changeList.forEach((change) => {
+          DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
         });
+      } else {
+        changeList = this.enrichment.data.changes;
       }
 
-      applyChangeList('record');
-      applyChangeList('mainEntity');
-      if (baseRecordData.hasOwnProperty('work') && baseRecordData.work === null) {
-        delete baseRecordData.work;
-      }
-      if (!baseRecordData.hasOwnProperty('work')) {
-        applyChangeList('mainEntity.instanceOf');
-      } else {
-        // If work property exists, put the work entity there
-        applyChangeList('mainEntity.instanceOf', 'work');
-      }
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
           changeList: changeList,
           addToHistory: false,
         });
         this.$store.dispatch('setInspectorStatusValue', {
-          property: 'embellished',
+          property: 'enriched',
           value: changeList,
         });
-        this.justEmbellished = true;
         this.$store.dispatch('pushNotification', {
           type: 'success',
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
         });
-      } else {
-        this.$store.dispatch('pushNotification', {
-          type: 'info',
-          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
-        });
-      }
-    },
+        } else {
+          this.$store.dispatch('pushNotification', {
+            type: 'info',
+            message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
+          });
+        }
+      },
     openRemoveModal() {
       this.removeInProgress = true;
     },
@@ -426,8 +427,12 @@ export default {
           type: 'success',
           message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`,
         });
-        // Force reload
-        this.$router.go(-1);
+
+        // Wait so that the change is available in the index when the search hitlist is loaded
+        setTimeout(() => {
+          this.$router.go(-1);
+        }, 1100);
+
       }, (error) => {
         if (error.status === 403) {
           this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.user.settings.language, this.resources.i18n)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.user.settings.language, this.resources.i18n)} - ${error.statusText}` });
@@ -482,6 +487,7 @@ export default {
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('saveLangTagSearch', '');
       this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+      this.removeEnrichedHighlight();
 
       this.recordLoaded = true;
 
@@ -562,6 +568,7 @@ export default {
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
       this.clearBackendValidationErrors();
+      this.removeEnrichedHighlight();
     },
     cancelEditing(callback) {
       if (this.inspector.status.editing) {
@@ -648,9 +655,9 @@ export default {
         );
       } else {
         obj = DataUtil.getMergedItems(
-          DataUtil.removeNullValues(recordCopy),
-          DataUtil.removeNullValues(this.inspector.data.mainEntity),
-          DataUtil.removeNullValues(this.inspector.data.work),
+          DataUtil.normalizeBeforeSave(recordCopy),
+          DataUtil.normalizeBeforeSave(this.inspector.data.mainEntity),
+          DataUtil.normalizeBeforeSave(this.inspector.data.work),
         );
       }
       if (this.user.uriMinter && VocabUtil.isSubClassOf(this.inspector.data.mainEntity['@type'], 'Concept', this.resources.vocab, this.resources.context)) {
@@ -753,6 +760,7 @@ export default {
         console.log('ETag ', ETag);
         this.doUpdate(RecordId, obj, ETag, done);
       }
+      this.removeEnrichedHighlight();
     },
     doUpdate(url, obj, ETag, done) {
       this.doSaveRequest(HttpUtil.put, obj, { url, ETag }, done);
@@ -761,12 +769,14 @@ export default {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-      this.preSaveHook(obj).then((obj2) => requestMethod({
-        url: opts.url,
-        ETag: opts.ETag,
-        activeSigel: this.user.settings.activeSigel,
-        token: this.user.token,
-      }, obj2)).then((result) => {
+      this.preSaveHook(obj).then((obj2) =>
+        requestMethod({
+          url: opts.url,
+          ETag: opts.ETag,
+          activeSigel: this.user.settings.activeSigel,
+          token: this.user.token,
+        }, obj2)
+      ).then((result) => {
         // eslint-disable-next-line no-nested-ternary
         const msgKey = this.isCxzMessage
           ? 'was sent'
@@ -780,6 +790,7 @@ export default {
             message: `${labelByLang(type)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
           });
         }, 10);
+
         if (!this.documentId) {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
@@ -794,10 +805,10 @@ export default {
           if (done) {
             this.stopEditing();
           } else {
-            // Reset original data that should be restored when you click cancel
             this.$store.dispatch('setOriginalData', LxlDataUtil.splitJson(obj));
           }
         }
+
         this.$nextTick(() => {
           this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
           this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
@@ -808,6 +819,7 @@ export default {
         let errorMessage = '';
         switch (error.status) {
           case 412:
+            // eslint-disable-next-line vue/max-len
             errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             break;
@@ -816,7 +828,7 @@ export default {
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             break;
           case 400:
-            let errorJson = null;
+            { let errorJson = null;
             const responseHeader = error.getResponseHeader('Content-Type');
             if (responseHeader && responseHeader.indexOf('application/json') !== -1) {
               try {
@@ -831,14 +843,16 @@ export default {
               this.$store.dispatch('setBackendValidationErrors', errorJson['errors']);
               this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'expand-item' });
             } else {
+              // eslint-disable-next-line vue/max-len
               errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
               this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             }
-            break;
+            break; }
           case 401:
             localStorage.removeItem('lastPath');
             errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language, this.resources.i18n)}`;
-            this.$store.dispatch('pushNotification', { type: 'danger',
+            this.$store.dispatch('pushNotification', {
+              type: 'danger',
               message: `${errorBase}. ${errorMessage}.`,
               sticky: true,
               link: {
@@ -846,10 +860,12 @@ export default {
                 title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`,
                 newTab: true,
                 external: true,
-              } });
+              }
+            });
             break;
           default:
             console.error(error);
+            // eslint-disable-next-line vue/max-len
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         }
@@ -857,28 +873,55 @@ export default {
     },
     warnOnSave() {
       const warnArr = Object.keys(this.settings.warnOnSave);
-      warnArr.forEach((element) => {
-        const keys = element.split('.');
+
+      for (const element of warnArr) {
+        const keys = element.split(".");
         const value = get(this.inspector.data, element);
-        const warning = this.settings.warnOnSave[element].some((el) => el === value);
+
+        const warning = this.settings.warnOnSave[element].some((el) => el === value) || isEqual(this.settings.warnOnSave[element], value);
+
         if (warning) {
-          this.$store.dispatch('pushNotification', {
-            type: 'warning',
-            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources)}`,
+          const localizedValue =
+            typeof value === "string"
+              ? value
+              : value?.label ||
+                value?.name ||
+                value?.[this.user.settings.language] ||
+                String(value);
+
+        const showMessage = (value) => {
+
+          const alert = `${StringUtil.getUiPhraseByLang("Attention", this.user.settings.language, this.resources.i18n)}! `
+          let message = ''
+
+          if (isEmpty(value)) {
+            message = `${StringUtil.getUiPhraseByLang("The property", this.user.settings.language, this.resources.i18n)}
+                        '${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}'
+                          ${StringUtil.getUiPhraseByLang("is empty", this.user.settings.language, this.resources.i18n)}!`
+          } else {
+            message = `${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}:
+                        ${StringUtil.getLabelByLang(localizedValue, this.user.settings.language, this.resources)}`
+          }
+
+          return alert + message 
+        };
+
+          this.$store.dispatch("pushNotification", {
+            type: "warning",
+            message: showMessage(value)
           });
+
+          return; 
         }
-      });
+      }
     },
-    removeEmbellishedHighlight() {
-      if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
+    removeEnrichedHighlight() {
+      if (this.inspector.status.enriched.length) {
         this.$store.dispatch('setInspectorStatusValue', {
-          property: 'embellished',
+          property: 'enriched',
           value: [],
         });
       }
-      setTimeout(() => {
-        this.justEmbellished = false;
-      }, 5000);
     },
     async preSaveHook(obj) {
       await checkAutoShelfControlNumber(obj, this.settings, this.user, this.resources);
@@ -928,7 +971,6 @@ export default {
     'inspector.data'(val, oldVal) {
       if (val !== oldVal) {
         this.setTitle();
-        this.removeEmbellishedHighlight();
         this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: false });
       }
     },
@@ -982,10 +1024,14 @@ export default {
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
-      } else if (val.name === 'open-embellish-from-id') {
-        this.toggleEmbellishFromIdModal(true);
-      } else if (val.name === 'open-detailed-embellish-from-id') {
-        this.toggleEmbellishFromIdModal(true, true);
+      } else if (val.name === 'apply-source') {
+        this.applyFromSource();
+      } else if (val.name === 'open-enrich-from-id') {
+        this.toggleEnrichFromIdModal(true);
+      } else if (val.name === 'open-detailed-enrich-from-id') {
+        this.toggleEnrichFromIdModal(true, true);
+      } else if (val.name === 'open-enrich-from-selection') {
+        this.openEnrichFromSelectionModal()
       } else if (val.name === 'replace-data') {
         this.replaceData(val.value);
       } else if (val.name === 'apply-override') {
@@ -1062,6 +1108,7 @@ export default {
     },
   },
   components: {
+    EnrichWrapper,
     'entity-header': EntityHeader,
     'entity-form': EntityForm,
     'modal-component': ModalComponent,
@@ -1190,13 +1237,13 @@ export default {
     </modal-component>
 
     <modal-component
-      class="EmbellishFromIdModal"
-      :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']"
-      v-if="embellishFromIdModal.open"
-      @close="embellishFromIdModal.open = false">
+      class="EnrichFromIdModal"
+      :title="[enrichFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']"
+      v-if="enrichFromIdModal.open"
+      @close="enrichFromIdModal.open = false">
       <template #modal-body>
-        <div class="EmbellishFromIdModal-body">
-          <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
+        <div class="EnrichFromIdModal-body">
+          <div class="EnrichFromIdModal-infoText" v-if="enrichFromIdModal.detailed === true">
             <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
             <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
             <p>
@@ -1205,22 +1252,22 @@ export default {
               <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
             </p>
           </div>
-          <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === false">
+          <div class="EnrichFromIdModal-infoText" v-if="enrichFromIdModal.detailed === false">
             Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
           </div>
-          <div class="input-group EmbellishFromIdModal-form">
-            <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
+          <div class="input-group EnrichFromIdModal-form">
+            <label class="input-group-addon EnrichFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
             <input
               name="id"
-              class="EmbellishFromIdModal-input form-control"
-              ref="EmbellishFromIdModalInput"
-              v-model="embellishFromIdModal.inputValue"
-              @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
+              class="EnrichFromIdModal-input form-control"
+              ref="EnrichFromIdModalInput"
+              v-model="enrichFromIdModal.inputValue"
+              @keyup.enter="confirmApplyRecordAsTemplate(enrichFromIdModal.detailed)" />
             <span class="input-group-btn">
               <button
-                class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton"
-                @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)"
-                @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
+                class="btn btn-primary btn--md EnrichFromIdModal-confirmButton"
+                @click="confirmApplyRecordAsTemplate(enrichFromIdModal.detailed)"
+                @keyup.enter="confirmApplyRecordAsTemplate(enrichFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
             </span>
           </div>
         </div>
@@ -1230,6 +1277,16 @@ export default {
     <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('Detailed enrichment')" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
       <template #modal-body>
         <DetailedEnrichment :floating-dialogs="true" />
+      </template>
+    </modal-component>
+
+    <modal-component class="EnrichFromSelectionModal"
+                     :title="translatePhrase('Enrich from selection')"
+                     v-if="inspector.status.enrichFromSelection.open === true"
+                     @close="closeEnrichFromSelectionModal"
+                     :backdrop-close="false">
+      <template #modal-body>
+        <enrich-wrapper></enrich-wrapper>
       </template>
     </modal-component>
 
@@ -1319,7 +1376,7 @@ export default {
   margin-right: 0.25em;
 }
 
-.EmbellishFromIdModal {
+.EnrichFromIdModal {
   .ModalComponent-container {
     width: 650px;
     top: 40%;
@@ -1361,7 +1418,11 @@ export default {
 }
 
 .DetailedEnrichmentModal .ModalComponent-container {
-  width: 90vw;
+  width: 96vw;
+}
+
+.EnrichFromSelectionModal .ModalComponent-container {
+  width: 96vw;
 }
 
 .RemoveRecordModal {

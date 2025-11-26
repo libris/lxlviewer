@@ -72,4 +72,21 @@ describe('userSettings util', () => {
 			language: 'alpha.desc'
 		});
 	});
+
+	it('can save the leading pane width', () => {
+		userSettings.setLeadingPaneWidth(245);
+		expect(userSettings.leadingPane?.width).toEqual(245);
+	});
+
+	it('can save closing and opening the leading pane', () => {
+		userSettings.closeLeadingPane();
+		expect(userSettings.leadingPane?.open).toEqual(false);
+		userSettings.openLeadingPane();
+		expect(userSettings.leadingPane?.open).toEqual(true);
+	});
+
+	it('can save the trailing pane width', () => {
+		userSettings.setTrailingPaneWidth(248);
+		expect(userSettings.trailingPane?.width).toEqual(248);
+	});
 });

@@ -2,24 +2,24 @@ import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
 import type {
 	BibIdObj,
-	DecoratedHolder,
+	HolderLinks,
 	HoldersByType,
-	HoldingsByInstanceId,
-	ItemLinksByBibId,
-	ItemLinksForHolder
+	HoldingLinks,
+	HoldingsByInstanceId
 } from '$lib/types/holdings';
-import { LensType, type FramedData, JsonLd, BibDb } from '$lib/types/xl';
+import { LensType, type FramedData, JsonLd, BibDb, Bibframe } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
-import { relativizeUrl, stripAnchor } from '$lib/utils/http';
-import { DisplayUtil, toString } from '$lib/utils/xl.js';
+import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
+import { DisplayUtil, toString, VocabUtil } from '$lib/utils/xl.js';
 import getAtPath from '$lib/utils/getAtPath';
-import { holdersCache } from '$lib/utils/holdersCache.svelte';
+import { USE_HOLDING_PANE } from '$lib/constants/panels';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('holdings', value);
-	return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
+	const conditionallyAddAnchor = url.searchParams.has('holdings') ? '' : `#${value}`;
+	return `${url.origin}${url.pathname}?${newSearchParams.toString()}${USE_HOLDING_PANE ? conditionallyAddAnchor : ''}`;
 }
 
 export function handleClickHoldings(
@@ -41,20 +41,20 @@ export function getSelectedHolding(value: string, instanceIdsByType: { [key: str
 	return undefined;
 }
 
-function sortHoldings(holdings) {
-	return [...holdings].sort((a, b) => {
-		if (a?.heldBy?.name < b?.heldBy?.name) {
-			return -1;
-		}
-		if (a?.heldBy?.name > b?.heldBy?.name) {
-			return 1;
-		}
-		return 0;
-	});
-}
+export function getHoldersCount(data: FramedData, vocabUtil: VocabUtil): number {
+	const type = vocabUtil.getType(data);
+	if (
+		!type ||
+		!(
+			vocabUtil.isSubClassOf(type, Bibframe.Work) || vocabUtil.isSubClassOf(type, Bibframe.Instance)
+		)
+	) {
+		return -1;
+	}
 
-export function getHoldersCount(mainEntity): number {
-	const instances = mainEntity['@reverse']?.instanceOf;
+	// data can be a work mainEntity or an instance
+	const instances = data['@reverse']?.instanceOf || [data];
+
 	const holders = new Set();
 	instances?.forEach((instance) => {
 		const holdings = instance['@reverse']?.itemOf;
@@ -68,18 +68,18 @@ export function getHoldersCount(mainEntity): number {
 }
 
 export function getHoldingsByInstanceId(
-	mainEntity,
+	data: FramedData,
 	displayUtil: DisplayUtil,
 	locale: LocaleCode
 ): HoldingsByInstanceId {
-	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
-		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
+	return (data?.['@reverse']?.instanceOf || [data])?.reduce((acc, instanceOfItem) => {
+		const id = stripAnchor(trimSlashes(relativizeUrl(instanceOfItem['@id'])));
 		if (!id) {
 			return acc;
 		}
 		return {
 			...acc,
-			[id]: sortHoldings(instanceOfItem?.['@reverse']?.itemOf || []).map((holding) => {
+			[id]: (instanceOfItem?.['@reverse']?.itemOf || []).map((holding) => {
 				return {
 					...holding,
 					heldBy: {
@@ -102,7 +102,7 @@ export function getBibIdsByInstanceId(
 	locale: LocaleCode
 ): Record<string, BibIdObj> {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instance) => {
-		const id = relativizeUrl(instance['@id'])?.replace('#it', '');
+		const id = stripAnchor(trimSlashes(relativizeUrl(instance['@id'])));
 
 		const bibId = instance.meta?.controlNumber || record?.controlNumber;
 		const type = instance['@type'];
@@ -163,13 +163,7 @@ export function getHoldingsByType(mainEntity: FramedData) {
 	if (!holdingsByType) {
 		return {};
 	}
-	const sortedHoldingsByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
-		return {
-			...acc,
-			[type]: sortHoldings(holdings)
-		};
-	}, {});
-	return sortedHoldingsByType;
+	return holdingsByType;
 }
 
 export function getHoldersByType(
@@ -221,117 +215,81 @@ export function getMyLibsFromHoldings(
 	return Object.values(result);
 }
 
-export async function fetchHoldersIfAbsent(allHolders: DecoratedHolder[]) {
-	const cachedHolders = holdersCache.holders;
-	for (const h of allHolders) {
-		const id = h.obj?.['@id'];
-
-		if (h.sigel && cachedHolders && !cachedHolders[h.sigel]) {
-			const response = await fetch(`${id}?framed=true`, {
-				headers: { Accept: 'application/ld+json' }
-			});
-			if (response.ok) {
-				const resJson = await response.json();
-				const libraryMainEntity = resJson['mainEntity'] as FramedData;
-				if (libraryMainEntity) {
-					cachedHolders[h.sigel] = libraryMainEntity;
-				}
-			} else {
-				console.error(`Could not fetch holder data for ${id}`);
-			}
-		}
-	}
-}
-
-export function getItemLinksByBibId(
-	bibIdsByInstanceId: Record<string, BibIdObj>,
+// create holding links on holder level
+export function createHolderLinks(
+	fullHolderData: FramedData,
 	locale: LocaleCode,
 	displayUtil: DisplayUtil
-): ItemLinksByBibId {
-	const linksByInstanceId: ItemLinksByBibId = {};
-	for (const bibIdObj of Object.values(bibIdsByInstanceId || [])) {
-		const linksForHolder: ItemLinksForHolder = {};
-		bibIdObj.holders?.forEach((sigel) => {
-			if (holdersCache.holders) {
-				const fullHolderData = holdersCache.holders[sigel];
+): HolderLinks {
+	const linksToCatalog = getAtPath(fullHolderData, [BibDb.ils, 'url'], undefined);
+	const linksToSite = getAtPath(fullHolderData, ['url', JsonLd.ID], undefined);
 
-				const ilsPaths = [
-					[BibDb.ils, BibDb.bibIdSearchUri],
-					[BibDb.ils, BibDb.isbnSearchUri],
-					[BibDb.ils, BibDb.issnSearchUri]
-				];
+	const myLoansLink =
+		pathByLang(getAtPath(fullHolderData, [BibDb.lopac, BibDb.myLoansUriLang], undefined), locale) ||
+		'';
 
-				const lopacPaths = [[BibDb.lopac, BibDb.bibIdSearchUriByLang]];
+	const registrationLink =
+		pathByLang(
+			getAtPath(fullHolderData, [BibDb.lopac, BibDb.patronRegistrationUriByLang], undefined),
+			locale
+		) || '';
 
-				let linksToItem = getLinksToItemFor(bibIdObj, fullHolderData, ilsPaths, locale);
-				const lopacLinksToItem = getLinksToItemFor(bibIdObj, fullHolderData, lopacPaths, locale);
+	const openingHours = getAtPath(fullHolderData, [BibDb.openingHours], undefined);
+	const addresses: string[] = [];
+	const address = getAtPath(fullHolderData, [BibDb.address, '*'], undefined) || [];
+	const postalAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.postalAddress);
+	const visitingAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.visitingAddress);
 
-				const linkTemplateEod = getAtPath(fullHolderData, [BibDb.eodUri], []);
-				if (linkTemplateEod && linkTemplateEod.length) {
-					linksToItem = [linkTemplateEod.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
-				}
-
-				//TODO: rename
-				const allLinks: { [linkType: string]: string[] } = {};
-
-				const itemStatusUri = getAtPath(fullHolderData, [BibDb.ils, BibDb.itemStatusUri], []);
-
-				if (itemStatusUri && itemStatusUri.length) {
-					allLinks[BibDb.ItemStatus] = [itemStatusUri];
-				}
-
-				const linksToCatalog: string[] = [];
-				const linkToCatalog = getAtPath(fullHolderData, [BibDb.ils, 'url'], undefined);
-				if (linkToCatalog && linkToCatalog.length) {
-					linksToCatalog.push(linkToCatalog);
-					allLinks[BibDb.LinksToCatalog] = linksToCatalog;
-				}
-
-				const linksToSite: string[] = [];
-				const linkToSite = getAtPath(fullHolderData, ['url', JsonLd.ID], undefined);
-				if (linkToSite && linkToSite.length) {
-					linksToSite.push(linkToSite);
-					allLinks[BibDb.LinksToSite] = linksToSite;
-				}
-
-				const openingHoursList: string[] = [];
-				const openingHours = getAtPath(fullHolderData, [BibDb.openingHours], undefined);
-				if (openingHours && openingHours !== '') {
-					openingHoursList.push(openingHours);
-					allLinks[BibDb.OpeningHours] = openingHoursList;
-				}
-
-				const addresses: string[] = [];
-				const address = getAtPath(fullHolderData, [BibDb.address, '*'], undefined);
-				const postalAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.postalAddress);
-				const visitingAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.visitingAddress);
-
-				if (address && address.length) {
-					addresses.push(
-						toString(displayUtil.lensAndFormat(visitingAddress, LensType.Card, locale)) || ''
-					);
-					addresses.push(
-						toString(displayUtil.lensAndFormat(postalAddress, LensType.Card, locale)) || ''
-					);
-					allLinks[BibDb.Address] = addresses;
-				}
-
-				if (linksToItem.length) {
-					allLinks[BibDb.LinksToItem] = linksToItem;
-				}
-
-				if (lopacLinksToItem.length) {
-					allLinks[BibDb.LoanReserveLink] = lopacLinksToItem;
-				}
-
-				if (Object.keys(allLinks).length) {
-					linksForHolder[sigel] = allLinks;
-				}
-			}
-		});
-		linksByInstanceId[bibIdObj.bibId] = linksForHolder;
+	if (address && address.length) {
+		addresses.push(
+			toString(displayUtil.lensAndFormat(visitingAddress, LensType.Card, locale)) || ''
+		);
+		addresses.push(toString(displayUtil.lensAndFormat(postalAddress, LensType.Card, locale)) || '');
 	}
-	return linksByInstanceId;
+	return {
+		address: addresses,
+		linksToSite: linksToSite?.length ? [linksToSite] : [],
+		linksToCatalog: linksToCatalog?.length ? [linksToCatalog] : [],
+		myLoansLink,
+		registrationLink,
+		openingHours: openingHours?.length ? [openingHours] : []
+	};
+}
+
+// create holding links on the holder-instance level
+export function createHoldingLinks(
+	bibIdObj: BibIdObj,
+	fullHolderData: FramedData,
+	locale: LocaleCode
+): HoldingLinks {
+	const ilsPaths = [
+		[BibDb.ils, BibDb.bibIdSearchUri],
+		[BibDb.ils, BibDb.isbnSearchUri],
+		[BibDb.ils, BibDb.issnSearchUri]
+	];
+	const lopacPathsLoanReserve = [[BibDb.lopac, BibDb.bibIdSearchUriByLang]];
+
+	let linksToItem = getLinksToItemFor(bibIdObj, fullHolderData, ilsPaths, locale);
+	const lopacLinksLoanReserve = getLinksToItemFor(
+		bibIdObj,
+		fullHolderData,
+		lopacPathsLoanReserve,
+		locale
+	);
+
+	const linkTemplateEod = getAtPath(fullHolderData, [BibDb.eodUri], []);
+	if (linkTemplateEod && linkTemplateEod.length) {
+		linksToItem = [linkTemplateEod.replace(/%BIB_*ID%/, bibIdObj.bibId), ...linksToItem];
+	}
+
+	const itemStatusUri = getAtPath(fullHolderData, [BibDb.ils, BibDb.itemStatusUri], []);
+
+	return {
+		linksToItem: linksToItem || [],
+		itemStatus: itemStatusUri || null,
+		loanReserveLink: lopacLinksLoanReserve || [],
+		str: bibIdObj.str
+	};
 }
 
 function getLinksToItemFor(
@@ -343,7 +301,7 @@ function getLinksToItemFor(
 	let linksToItem: string[] = [];
 	for (const path of paths) {
 		const linkTemplate = getAtPath(fullHolderData, path, []);
-		if (linkTemplate && linkTemplate.length) {
+		if (linkTemplate && Object.keys(linkTemplate).length) {
 			if (path.includes(BibDb.bibIdSearchUriByLang) && bibIdObj.bibId !== '') {
 				const linkTemplateLocalized =
 					linkTemplate[locale] || linkTemplate['sv'] || Object.values(linkTemplate)[0];
@@ -362,4 +320,15 @@ function getLinksToItemFor(
 		}
 	}
 	return linksToItem;
+}
+
+function pathByLang(thing: Record<LocaleCode, string>, locale: LocaleCode) {
+	if (thing) {
+		if (thing?.[locale]) {
+			return thing[locale];
+		} else if (thing['sv']) {
+			return thing['sv'];
+		}
+	}
+	return null;
 }

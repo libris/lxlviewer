@@ -37,7 +37,7 @@
 		selectedAnchor = window.location.hash?.substring(1);
 
 		if (!mobile) {
-			const closestArticle = tocElement.closest('article');
+			const closestArticle = tocElement?.closest('article');
 			if (closestArticle) {
 				const sections = itemsWithTop
 					.flatMap((item) => [
@@ -94,7 +94,7 @@
 				if (visibleSections.size) {
 					firstVisibleSection =
 						tocElement
-							.closest('article')
+							?.closest('article')
 							?.querySelector(`:scope #${Array.from(visibleSections).join(', :scope #')}`) // find first visible section by generating a selector string using the ids of visible sections
 							?.getAttribute('id') || firstVisibleSection; // fallback to previous visible section
 				}
@@ -123,7 +123,7 @@
 			<li class={children && '[&>ul_a]:pl-7'}>
 				<div class={['border-l-2 border-l-neutral-200']}>
 					<a
-						href="{page.url.pathname}#{id}"
+						href={page.data.localizeHref(`${page.url.pathname}${page.url.search}#${id}`)}
 						aria-current={id === currentSection || undefined}
 						class={[
 							'hover:text-body focus:text-body inline-flex min-h-8 items-center px-3 hover:underline focus:underline'
@@ -143,10 +143,10 @@
 
 <div bind:this={tocElement} class="contents">
 	{#if mobile}
-		<div class="border-b-neutral border-b">
+		<div class="border-b-neutral border-b p-1">
 			<label
 				id={`${uidPrefix}toc-label`}
-				class="bg-page text-2xs text-subtle flex h-11 cursor-pointer items-center gap-1.5 px-3 sm:px-6 has-checked:[&+nav]:block"
+				class="bg-page text-2xs text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2 sm:px-5 has-checked:[&+nav]:block"
 			>
 				<IconToC class="size-4" />
 				<h2>{page.data.t('tableOfContents.onThisPage')}</h2>

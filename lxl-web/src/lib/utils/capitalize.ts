@@ -1,5 +1,8 @@
 function capitalize(str: string) {
-	return str[0].toUpperCase() + str.slice(1);
+	if (str) {
+		return str[0].toUpperCase() + str?.slice(1);
+	}
+	return str;
 }
 
 export default capitalize;

@@ -4,11 +4,13 @@ title: 'Help'
 
 # About
 
-<i>WARNING: Automated machine translation</i>
+<i>ATTENTION: Automated machine translation</i>
+
+Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog. Right now, an initiative is underway to replace the already existing and well-used service [libris.kb.se](gttps://libris.kb.se) and this is our public beta version of the upcoming service. This new service is based on the new information infrastructure that was launched seven years ago and now it is time to replace the public search service. Both services will be available in parallel until we are ready to phase out the old infrastructure.
 
 ### Why a Public Beta?
 
-This public beta version of the upcoming service is a step toward gathering valuable feedback from real users. We are working toward transparency and inclusion to achieve a successful result. This means that the beta version is being shared before all functionality is in place or fully developed.
+We work for transparency and participation to achieve a successful outcome. This public beta version of the upcoming service is a step to get important feedback from real users. This means that the beta version is shown before all functionality is available or fully completed.
 
 ### Share Your Thoughts on the New Libris
 
@@ -16,39 +18,52 @@ You're welcome to try out the service and [share your feedback through this form
 
 You can find [answers to frequently asked questions in the FAQ](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html).
 
-### General Information About the Search Service
+### General information about the search service and the initiative
 
-The new Libris search service will eventually replace libris.kb.se. The old service is technically outdated and needs to be replaced, not least to meet legal requirements for accessibility in digital public services.
+Libris' new search service will eventually replace [libris.kb.se](gttps://libris.kb.se). The old service is technically outdated and needs to be replaced, not least to meet the legal requirements for accessibility in digital public services. This beta version is a first step towards a service that will bring several improvements for users.
 
-This beta version is a first step toward a service that will bring several improvements for users.
+A cornerstone of Libris is the information model based on linked data that is used to describe the material in the catalog. The new service is built with a more direct connection to this model, making it both simpler and technically more robust. It also means that changes made using Libris' cataloging tools are reflected in the search service without delay and the material can be explored in new ways.
 
-A cornerstone of Libris is the information model based on linked data used to describe the content of the catalogue. The new service is built with a more direct connection to this model, making it both simpler and technically more robust. It also means that changes made using the Libris cataloguing tool are reflected in the search service without delay.
+The goal is also to build a more user-friendly interface while improving and expanding many of the features that are available today. With a more computer-friendly design, some text may initially be perceived as more technical than before. This is something we will continue to work on to improve. The service's design language and graphic expression will also change and improve along the way.
 
-The goal is also to build a more user-friendly interface while improving and expanding many of the existing features.
-With a more data-oriented design, some of the text may initially feel more technical than before. This is something we will continue to refine. The visual style and graphic design of the service will also evolve and improve over time.
+The goals for the service are: "everyone can be inspired to explore the collections of the Swedish Library , get a comprehensive overview of its materials and access them." This is done by: Providing an overview, being easy to use, reliable, accessible, flexible and inspiring.
 
 ### A Selection of Planned Improvements
 
-- Improved layout and information in the search result list
+- Better layout and information content in the search results list
 - Better presentation and selection of information on detail pages
-- Improved categorization of material (types), such as book, e-book, poster, newspaper instead of “text, electronic” (see below)
-- Enhanced interface for advanced search functionality
-- Ability to save searches and material lists
-- Citation tools
-- Searching within specific subsets
-- Libris as a local library catalogue
+- Better material categorization (types) such as novel, newspaper, computer game, and physical and digital instead of “text, electronic” (see below).
+- Improved interface for advanced search functionality
+- Ability to save searches and lists of materials
+- Reference tool with additional data mappings
+- Searching in different subsets
+- Libris as a local library catalog
 
 ### Improved material categorization:
 
-The material categories (or "types") visible in the current beta version will eventually be replaced if they are not clear enough. Terms like "Text, print", "Instance", "Monographic resource", and so on will be replaced with clearer terms such as "Journal", "Audiobook", "Poster", and "Postcard". The goal is understandable and usable types that will stand the test of time.
+The material categories (or “types”) that are visible in the beta version today will eventually be replaced where they are not clear enough. Concepts such as “Text, print”, “ Instance“ , “Monographic resource” and so on will be replaced with clearer concepts such as “ Magazine“ , “ Audiobook“ , “ Poster“ and “ Postcard“ . The goal is understandable and usable types that will last over time.
 
-In today’s libris.kb.se, labels like “book”, “e-book”, and “poster” are calculated in the search service in a complicated way, based on a multitude of data points. This unnecessary complexity is partly due to the limitations that existed in the catalog when the service was developed. Alongside the development of the new search service, we are now working to improve the catalog's data and information model. Because the new search service more directly reflects the catalog, improvements will be visible as soon as they are made.
+In today's libris.kb.se, labels such as "book", "e-book" and "poster" are calculated in the search service in a complicated way, based on a number of data points. This unnecessary complexity is due, among other things, to the limitations that existed in the catalog when the service was developed. In parallel with the development of the new search service, we are now working on improving the catalog's data and information model. Since the new search service more directly reflects the catalog, improvements will be visible as soon as they are made.
 
-Different terms and degrees of precision may still be needed in different contexts. However, these differences can largely be captured in the common catalog model instead of being tightly bound to different services, as they are today.
+Different concepts and degrees of precision may still be needed in different contexts. But these differences can largely be captured in the common catalog model instead of being, as is the case today, tightly tied to different services.
 
 ## Version Information
 
 Here we will continuously provide information about newly added features and planned developments:
+
+### 2025-10-20
+
+- First iteration of improved material types
+- Ability to generate references for materials in a number of different formats, additional data mapping remains.
+- Mobile experience improvements
+- Updated relevance calculation
+- Ability to navigate to the next and previous hit from the resource page
+- Improved inventory panel
+- New logo
+- Improved menu
+- Bug fixes
+- Ability to search by ISBN with and without dashes
+- Borrow buttons for libraries that have Libris as their local library catalog
 
 ### 2025-06-23
 

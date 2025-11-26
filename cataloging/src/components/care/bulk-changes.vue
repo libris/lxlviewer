@@ -9,7 +9,6 @@ import { cloneDeep, get, isEmpty, isEqual, pickBy } from 'lodash-es';
 import toolbar from "@/components/inspector/bulkchange-toolbar.vue";
 import { labelByLang, translatePhrase } from "@/utils/filters.js";
 import * as LayoutUtil from '@/utils/layout';
-import Inspector from "@/views/Inspector.vue";
 import ModalComponent from '@/components/shared/modal-component.vue';
 import * as DataUtil from "@/utils/data.js";
 import * as StringUtil from 'lxljs/string.js';
@@ -38,7 +37,6 @@ export default {
   components: {
     EntityForm,
     ReverseRelations,
-    Inspector,
     toolbar,
     FormBuilder,
     TargetFormBuilder,
@@ -52,6 +50,7 @@ export default {
   },
   data() {
     return {
+      documentETag: null,
       showOverview: true,
       inlinedIds: [],
       activeStep: '',
@@ -687,7 +686,7 @@ export default {
     create(obj, done) {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
-    doSaveRequest(requestMethod, obj, opts, done) {
+    doSaveRequest(requestMethod, obj, opts) {
       this.preSaveHook(obj).then((obj2) => requestMethod({
         url: opts.url,
         ETag: opts.ETag,

@@ -1,12 +1,11 @@
 <script>
 import EntityForm from '@/components/inspector/entity-form.vue';
-import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
 import {convertResourceLink, translatePhrase} from "../../utils/filters.js";
 
 export default {
   name: 'merge-spec.vue',
-  components: {FieldAdder, EntityForm},
+  components: { EntityForm },
   data() {
     return {
       selected: true,

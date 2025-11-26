@@ -3,9 +3,12 @@ import type { Selection } from './components/CodeMirror.svelte';
 import lxlQualifierPlugin, {
 	type QualifierWidgetProps
 } from '$lib/extensions/lxlQualifierPlugin/index.js';
-import type { ResultItem } from './types/superSearch.js';
+import type { ResultItem, ShowExpandedSearchOptions } from './types/superSearch.js';
 import useSearchRequest from './utils/useSearchRequest.svelte';
-import type { ChangeCodeMirrorEvent as ChangeSuperSearchEvent } from './components/CodeMirror.svelte';
+import type {
+	ChangeCodeMirrorEvent as ChangeSuperSearchEvent,
+	ViewUpdateCodeMirrorEvent as ViewUpdateSuperSearchEvent
+} from './components/CodeMirror.svelte';
 
 export {
 	SuperSearch,
@@ -14,5 +17,7 @@ export {
 	type ResultItem,
 	type Selection,
 	type QualifierWidgetProps,
-	type ChangeSuperSearchEvent
+	type ChangeSuperSearchEvent,
+	type ViewUpdateSuperSearchEvent,
+	type ShowExpandedSearchOptions
 };

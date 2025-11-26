@@ -12,26 +12,23 @@
 </script>
 
 {#if keyLabel}
-	<span class="lxl-qualifier lxl-qualifier-key atomic" data-qualifier-key={key}>
+	<span class="lxl-qualifier-key" data-qualifier-key={key}>
 		{keyLabel}
 	</span>
 {/if}
 {#if operator}
-	<span class="lxl-qualifier lxl-qualifier-operator atomic" data-qualifier-operator={operator}>
+	<span class="lxl-qualifier-operator" data-qualifier-operator={operator}>
 		{operator}
 	</span>
 {/if}
 {#if valueLabel}
 	<span
-		class={[
-			'lxl-qualifier atomic',
-			keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-filter-alias'
-		]}
+		class={keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias'}
 		data-qualifier-value={value}
 	>
 		<!--
 		{#if resourceLink}
-			<span class="hidden">{valueLabel}</span><a href={`/${resourceLink}`} class="link inline-block"
+			<span class="hidden">{valueLabel}</span><a href={page.data.localizeHref(`/${resourceLink}`)} class="link inline-block"
 				>{valueLabel}</a
 			>
 		{:else}
@@ -43,8 +40,8 @@
 {/if}
 {#if valueLabel && removeLink}
 	<a
-		href={removeLink}
-		class="lxl-qualifier lxl-qualifier-remove atomic"
+		href={page.data.localizeHref(removeLink)}
+		class="lxl-qualifier-remove"
 		aria-label={page.data.t('search.clearFilters')}
 	>
 		<IconClose />

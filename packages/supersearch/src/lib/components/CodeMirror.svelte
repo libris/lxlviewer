@@ -12,6 +12,10 @@
 	};
 
 	export type SelectCodeMirrorEvent = Selection;
+
+	export type ViewUpdateCodeMirrorEvent = {
+		lineHeight: number;
+	};
 </script>
 
 <script lang="ts">
@@ -28,6 +32,7 @@
 		onclick?: (event: MouseEvent) => void;
 		onselect?: (event: SelectCodeMirrorEvent) => void;
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
+		onviewupdate?: (event: ViewUpdateCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
 		syncedEditorView?: EditorView | undefined;
 	};
@@ -38,11 +43,19 @@
 		onclick = () => {},
 		onselect = () => {},
 		onchange = () => {},
+		onviewupdate = () => {},
 		editorView = $bindable(),
 		syncedEditorView
 	}: CodeMirrorProps = $props();
 
+	let prevLineHeight = $state();
+
 	const updateHandler = EditorView.updateListener.of((update) => {
+		// TODO: do better more generic equality check
+		if (prevLineHeight !== update.view.lineBlockAt(0).height) {
+			onviewupdate({ lineHeight: update.view.lineBlockAt(0).height });
+			prevLineHeight = update.view.lineBlockAt(0).height;
+		}
 		if (isViewUpdateFromUserInput(update)) {
 			syncedEditorView?.dispatch({
 				changes: update.changes,

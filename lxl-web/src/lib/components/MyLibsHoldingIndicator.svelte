@@ -16,5 +16,15 @@
 		title: `${page.data.t('holdings.availableAt')}: ${librariesString}`
 	}}
 >
-	<BiHouseHeart class="text-primary-700" />
+	<BiHouseHeart class="libraries-indicator" />
 </span>
+
+<style>
+	:global(.libraries-indicator) {
+		color: var(--color-primary-700);
+	}
+
+	:global(.btn-cta .libraries-indicator) {
+		color: var(--color-primary-50);
+	}
+</style>

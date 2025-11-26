@@ -74,7 +74,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "℗"
             }
           ],
           "extent": [
@@ -141,11 +141,11 @@
               "@id": "https://id.kb.se/language/swe"
             }],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -158,12 +158,12 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/author"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
@@ -259,7 +259,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "℗"
             }
           ],
           "extent": [
@@ -329,11 +329,11 @@
               "@id": "https://id.kb.se/language/swe"
             }],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -346,12 +346,12 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/author"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
@@ -458,7 +458,7 @@
           ],
           "copyright": [{
             "@type": "Copyright",
-            "date": ""
+            "date": "©"
           }],
           "carrierType": [
             {"@id": "https://id.kb.se/term/rda/OnlineResource"}
@@ -751,7 +751,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "©"
             }
           ],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
@@ -863,14 +863,14 @@
               }
             ],
             "subject": []
-            },
-           "contribution": [
-        {
-          "@type": "Contribution",
-          "agent": null,      
-          "role": []
-        }
-      ]
+          },
+          "contribution": [
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": []
+            }
+          ]
         }
       }
     },
@@ -991,11 +991,11 @@
               "@id": "https://id.kb.se/marc/Periodical"
             }],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -1421,7 +1421,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "©"
             }
           ],
           "extent": [
@@ -1463,11 +1463,11 @@
           "instanceOf": {
             "@type": "MovingImage",
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -1604,7 +1604,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "℗"
             }
           ],
           "extent": [
@@ -1674,31 +1674,31 @@
           ],
           "instanceOf": {
             "@type": "Music",
-             "hasTitle": [
+            "hasTitle": [
               {
                 "@type": "Title",
                 "mainTitle": "",
                 "partName": [
-                ""
+                  ""
                 ],
                 "partNumber": [
                   ""
                 ]
               }
             ],
-          "musicKey": "",
-          "musicMedium": [{
-            "@type": "MusicMedium",
-            "label": ""
-          }],
-          "marc:arrangedStatementForMusic": "",
+            "musicKey": "",
+            "musicMedium": [{
+              "@type": "MusicMedium",
+              "label": ""
+            }],
+            "marc:arrangedStatementForMusic": "",
             "language": [],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -1711,10 +1711,10 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": []
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": []
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
@@ -1929,11 +1929,11 @@
             }],
             "genreForm": [],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -2132,12 +2132,12 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/cartographer"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/cartographer"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
@@ -2353,10 +2353,10 @@
           "@type": "Print",
           "issuanceType": "Monograph",
           "hasTitle": [{
-              "@type": "Title",
-              "mainTitle": "",
-              "subtitle": ""
-            }
+            "@type": "Title",
+            "mainTitle": "",
+            "subtitle": ""
+          }
           ],
           "responsibilityStatement": "",
           "identifiedBy": [{
@@ -2395,7 +2395,7 @@
           }],
           "copyright": [{
             "@type": "Copyright",
-            "date": ""
+            "date": "©"
           }],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
@@ -2445,11 +2445,11 @@
             }],
             "genreForm": [],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -2462,12 +2462,12 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/author"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
@@ -2484,13 +2484,13 @@
             "subject": [],
             "intendedAudience": []
           },
-           "contribution": [
-        {
-          "@type": "Contribution",
-          "agent": null,      
-          "role": []
-        }
-      ]
+          "contribution": [
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": []
+            }
+          ]
         }
       }
     },
@@ -2534,10 +2534,10 @@
               "subtitle": ""
             },
             {
-             "@type": "VariantTitle",
-             "mainTitle": "",
-             "subtitle": ""
-           }
+              "@type": "VariantTitle",
+              "mainTitle": "",
+              "subtitle": ""
+            }
           ],
           "marc:alphabet": {
             "@id": "https://id.kb.se/marc/SerialsAlphabetType-b"
@@ -2595,11 +2595,11 @@
               "@id": "https://id.kb.se/marc/Periodical"
             }],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -2675,8 +2675,8 @@
               "@type": "MusicPublisherNumber",
               "value": "",
               "agent": {
-                  "@type": "Organization",
-                  "name": ""
+                "@type": "Organization",
+                "name": ""
               }
             }
           ],
@@ -2701,22 +2701,22 @@
           ],
           "manufacture": [
             {
-            "@type": "Manufacture",
-            "agent": [{
-              "@type": "Agent",
-              "label": ""
-            }],
-            "date": "",
-            "place": [{
-              "@type": "Place",
-              "label": ""
-            }]
-          }
-        ],
+              "@type": "Manufacture",
+              "agent": [{
+                "@type": "Agent",
+                "label": ""
+              }],
+              "date": "",
+              "place": [{
+                "@type": "Place",
+                "label": ""
+              }]
+            }
+          ],
           "copyright": [
             {
             "@type": "Copyright",
-            "date": ""
+            "date": "©"
           }
         ],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
@@ -2813,7 +2813,7 @@
                 "@type": "Title",
                 "mainTitle": "",
                 "partName": [
-                ""
+                  ""
                 ],
                 "partNumber": [
                   ""
@@ -2841,11 +2841,11 @@
             ],
             "intendedAudience": [],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -2868,10 +2868,10 @@
               }
             ],
             "additionalClassificationDdc": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
             }],
             "contribution": [
               {
@@ -2905,7 +2905,7 @@
                       ""
                     ],
                     "partName": [
-                    ""
+                      ""
                     ]
                   }
                 ],
@@ -2932,7 +2932,7 @@
                       ""
                     ],
                     "partName": [
-                    ""
+                      ""
                     ]
                   }
                 ],
@@ -2981,19 +2981,19 @@
           "@type": "Print",
           "issuanceType": "Monograph",
           "hasTitle": [{
-              "@type": "Title",
-              "mainTitle": "",
-              "subtitle": ""
-            }
+            "@type": "Title",
+            "mainTitle": "",
+            "subtitle": ""
+          }
           ],
           "responsibilityStatement": "",
           "contribution": [
-          {
-            "@type": "Contribution",
-            "agent": null,
-            "role": []
-          }
-        ],
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": []
+            }
+          ],
           "publication": [
             {
               "@type": "Publication",
@@ -3075,12 +3075,12 @@
               }
             ],
             "contribution": [{
-                "@type": "Contribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/artist"
-                }]
-              }
+              "@type": "Contribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/artist"
+              }]
+            }
             ],
             "contentType": [
               {
@@ -3145,10 +3145,10 @@
           "@type": "Instance",
           "issuanceType": "Monograph",
           "hasTitle": [{
-              "@type": "Title",
-              "mainTitle": "",
-              "subtitle": ""
-            }
+            "@type": "Title",
+            "mainTitle": "",
+            "subtitle": ""
+          }
           ],
           "responsibilityStatement": "",
           "publication": [
@@ -3251,12 +3251,12 @@
               }
             ],
             "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/artist"
-                }]
-              },
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/artist"
+              }]
+            },
               {
                 "@type": "Contribution",
                 "agent": null,
@@ -3368,7 +3368,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": ""
+              "date": "©"
             }
           ],
           "extent": [
@@ -3412,11 +3412,11 @@
             "@type": "Multimedia",
             "language": [],
             "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": "full",
-                "editionEnumeration": "23/swe"
-              },
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
               {
                 "@type": "Classification",
                 "code": "",
@@ -3729,18 +3729,18 @@
           "description": "",
           "hasVariant": [
             {
-            "@type": "Organization",
-            "name": ""
-          },
-          {
-          "@type": "Organization",
-          "isPartOf": {
-            "@type": "Organization",
-            "name": ""
-          },
-          "marc:subordinateUnit": [ "" ]
-        }
-        ],
+              "@type": "Organization",
+              "name": ""
+            },
+            {
+              "@type": "Organization",
+              "isPartOf": {
+                "@type": "Organization",
+                "name": ""
+              },
+              "marc:subordinateUnit": [ "" ]
+            }
+          ],
           "seeAlso": [],
           "identifiedBy": [{
             "@type": "ISNI",

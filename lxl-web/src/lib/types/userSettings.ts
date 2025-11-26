@@ -1,9 +1,11 @@
+import type { AvailableCitationFormat } from '$lib/types/citation';
 import { JsonLd } from './xl';
 
 export interface LibraryItem {
 	[JsonLd.ID]: string;
 	label: string;
-	sigel: string;
+	sigel?: string;
+	code?: string;
 }
 
 export enum ExpandedState {
@@ -24,6 +26,10 @@ export type UserSettings = {
 	leadingPane?: {
 		width?: number;
 		open?: boolean;
+	};
+	selectedCitationFormat?: AvailableCitationFormat | 'all';
+	trailingPane?: {
+		width?: number;
 	};
 	debug?: DebugFlags[];
 };

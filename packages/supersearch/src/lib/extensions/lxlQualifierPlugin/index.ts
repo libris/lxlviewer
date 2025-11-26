@@ -15,7 +15,14 @@ import {
 } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount, type Component } from 'svelte';
-import insertQuotes from './insertQuotes.js';
+import {
+	jumpPastParens,
+	handleInputBeforeGroup,
+	createGhostGroup,
+	removeGhostGroup,
+	repairGhostGroup,
+	balanceInnerParens
+} from './ghostGroup.js';
 import { messages } from '$lib/constants/messages.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
@@ -70,7 +77,7 @@ class QualifierWidget extends WidgetType {
 	}
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
-		container.style.cssText = `position: relative; display:inline-flex; margin: 0 1px;`;
+		container.className = 'atomic';
 		mount(this.qualifierWidget, {
 			props: {
 				key: this.key,
@@ -86,11 +93,23 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
+class ghostGroupWidget extends WidgetType {
+	eq(): boolean {
+		return true;
+	}
+	toDOM(): HTMLElement {
+		const container = document.createElement('span');
+		container.classList.add('lxl-ghost-group');
+		return container;
+	}
+}
+
 function lxlQualifierPlugin(
-	qualifierWidget: QualifierWidgetComponent,
+	qualifierWidget?: QualifierWidgetComponent,
 	getLabelFn?: GetLabelFunction
 ) {
 	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
+	const SHOW_GHOST_GROUP = false;
 
 	function getQualifiers(view: EditorView) {
 		const widgets: Range<Decoration>[] = [];
@@ -102,7 +121,13 @@ function lxlQualifierPlugin(
 				from,
 				to,
 				enter: (node) => {
-					if (node.name === 'Qualifier') {
+					if (node.name === 'UTerm' || node.name === 'QualifierUTerm') {
+						const notMark = Decoration.mark({
+							class: 'lxl-not-term',
+							inclusive: true
+						});
+						widgets.push(notMark.range(node.from, node.to));
+					} else if (node.name === 'Qualifier') {
 						const keyNode = node.node.getChild('QualifierKey');
 						const key = keyNode ? doc.slice(keyNode?.from, keyNode?.to) : '';
 
@@ -114,8 +139,39 @@ function lxlQualifierPlugin(
 
 						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
 
+						// add qualfier mark
+						const qualifierMark = Decoration.mark({
+							class: 'lxl-qualifier',
+							attributes: { style: 'display: inline-block; margin-left: 1px; margin-right: 1px;' },
+							inclusive: true
+						});
+						widgets.push(qualifierMark.range(node.from, node.to));
+
+						if (valueNode) {
+							const ghostGroup = valueNode.getChild('QualifierOuterGroup');
+
+							if (ghostGroup && !SHOW_GHOST_GROUP) {
+								// add ghost parens mark
+								const parensMark = Decoration.replace({
+									widget: new ghostGroupWidget(),
+									inclusive: false
+								});
+
+								const openingParens = ghostGroup.from;
+								const closingParens = ghostGroup.to;
+
+								if (
+									doc.slice(openingParens, openingParens + 1) === '(' &&
+									doc.slice(closingParens - 1, closingParens) === ')'
+								) {
+									widgets.push(parensMark.range(openingParens, openingParens + 1));
+									widgets.push(parensMark.range(closingParens - 1, closingParens));
+								}
+							}
+						}
+
 						// Add qualifier widget
-						if (keyLabel || valueLabel) {
+						if ((keyLabel || valueLabel) && qualifierWidget) {
 							const qualifierDecoration = Decoration.replace({
 								widget: new QualifierWidget(
 									key,
@@ -134,14 +190,14 @@ function lxlQualifierPlugin(
 							widgets.push(qualifierDecoration.range(decorationRangeFrom, decorationRangeTo));
 						} else if (invalid) {
 							// Add invalid key mark decoration
-							const qualifierMark = Decoration.mark({
+							const invalidKey = Decoration.mark({
 								class: 'lxl-invalid',
-								inclusive: true
+								inclusive: false
 							});
 							const invalidRangeFrom = keyNode ? keyNode.from : node.from;
 							const invalidRangeTo = keyNode ? keyNode.to : operatorNode?.from;
 
-							widgets.push(qualifierMark.range(invalidRangeFrom, invalidRangeTo));
+							widgets.push(invalidKey.range(invalidRangeFrom, invalidRangeTo));
 						}
 					}
 				}
@@ -179,7 +235,14 @@ function lxlQualifierPlugin(
 		decorations: (instance) => instance.qualifiers,
 		provide: () => [
 			EditorView.atomicRanges.of(() => atomicRangeSet),
-			EditorState.transactionFilter.of(insertQuotes),
+			// ghost group filters -->
+			EditorState.transactionFilter.of(jumpPastParens),
+			EditorState.transactionFilter.of(createGhostGroup),
+			EditorState.transactionFilter.of(handleInputBeforeGroup),
+			EditorState.transactionFilter.of(removeGhostGroup),
+			EditorState.transactionFilter.of(repairGhostGroup),
+			EditorState.transactionFilter.of(balanceInnerParens),
+			// <--
 			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]
 	});

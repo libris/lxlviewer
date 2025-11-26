@@ -70,6 +70,10 @@ export default {
       type: String,
       default: BulkContext.None,
     },
+    isEnrichmentSource: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -191,6 +195,12 @@ export default {
         return true;
       }
       return false;
+    },
+    enriched() {
+      const enriched = this.inspector.status.enriched;
+      if (enriched.length > 0) {
+        return enriched.some((el) => el.path === this.path);
+      } return false;
     },
     isExtracting() {
       if (this.inspector.extractItemsOnSave.includes(this.path)) {
@@ -543,7 +553,7 @@ export default {
     ref="container"
     :id="`formPath-${path}`"
     :class="{
-      'is-highlighted': isLastAdded,
+      'is-highlighted': isLastAdded || (enriched && !isEnrichmentSource),
       'is-extracting': isExtracting,
       'highlight-mark': highlights.indexOf('mark') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
@@ -762,6 +772,7 @@ export default {
         :expand-children="expandChildren"
         :is-expanded="expanded"
         :bulk-context="bulkContext"
+        :is-enrichment-source="isEnrichmentSource"
       />
     </ul>
 

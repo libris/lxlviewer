@@ -11,7 +11,7 @@
 </script>
 
 <div
-	class="flex h-[var(--toolbar-height)] place-content-between items-center gap-2 overflow-hidden border-b border-b-neutral-200 px-3"
+	class="flex h-[var(--toolbar-height)] place-content-between items-center gap-2 overflow-hidden border-b border-b-neutral-200 px-2 lg:px-3"
 >
 	{#if leadingActions}
 		<div class="flex gap-1">

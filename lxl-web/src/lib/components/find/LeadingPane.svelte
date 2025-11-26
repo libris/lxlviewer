@@ -9,7 +9,7 @@
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { Snippet } from 'svelte';
 	import Draggable from '../Draggable.svelte';
-	import TabList from '../TabList.svelte';
+	import TabList, { type Tab } from '../TabList.svelte';
 	import Toolbar from '../Toolbar.svelte';
 	import BiArrowBarLeft from '~icons/bi/arrow-bar-left';
 	import IconSliders from '~icons/bi/sliders';
@@ -29,24 +29,14 @@
 		userSettings.setLeadingPaneWidth(paneWidth);
 	}
 
-	const tabs = [
+	const tabs: Tab[] = [
 		{
 			label: 'Filter',
-			targetId: 'filters',
-			active: true,
-			leadingIcon: IconSliders
+			id: 'filters',
+			icon: IconSliders
 		}
 	];
 </script>
-
-{#snippet tabContent(tab: (typeof tabs)[0])}
-	<div class={['tab flex gap-2', tab.active ? 'tab-highlighted' : 'tab-primary']}>
-		{#if tab.leadingIcon}
-			<tab.leadingIcon />
-		{/if}
-		<span>{tab.label}</span>
-	</div>
-{/snippet}
 
 <nav
 	aria-label={page.data.t('panes.leadingPane')}
@@ -70,7 +60,7 @@
 		<div class="leading-pane-toolbar">
 			<Toolbar>
 				{#snippet leadingActions()}
-					<TabList {tabContent} {tabs} aria-label={page.data.t('panes.leadingPaneTabs')} />
+					<TabList {tabs} ariaLabel={page.data.t('panes.leadingPaneTabs')} />
 				{/snippet}
 				{#snippet trailingActions()}
 					<button
@@ -105,17 +95,29 @@
 
 	.leading-pane,
 	.leading-pane-toolbar {
-		background: linear-gradient(90deg, var(--color-neutral-50) 95%, var(--color-neutral-100) 100%);
+		background: linear-gradient(90deg, var(--color-aside) 97%, var(--color-neutral-100) 100%);
 	}
 
 	.leading-pane-wrapper {
 		@variant sm {
-			top: var(--app-bar-height);
+			top: calc(var(--app-bar-height) * 2 + var(--banner-height, 0));
+
+			@variant lg {
+				top: calc(var(--app-bar-height) + var(--banner-height, 0));
+			}
 		}
 	}
 
 	.leading-pane-content {
-		max-height: calc(100vh - var(--app-bar-height) - var(--toolbar-height));
+		max-height: calc(
+			100vh - var(--app-bar-height) * 2 - var(--toolbar-height) - var(--banner-height, 0) - 1px
+		);
+
+		@variant lg {
+			max-height: calc(
+				100vh - var(--app-bar-height) - var(--toolbar-height) - var(--banner-height, 0) - 1px
+			);
+		}
 		overflow-y: auto;
 		scrollbar-width: thin;
 	}

@@ -2,19 +2,43 @@ export default {
 	home: {
 		searchPlaceholder: 'Titel, författare, ämne med mera'
 	},
+	appMenu: {
+		skipToContent: 'Hoppa till innehåll',
+		findOnWebsite: 'Hitta på hemsidan',
+		home: 'Hem',
+		search: 'Sök i Libris',
+		// subsets: 'Deldatabaser och avdelningar',
+		saved: 'Sparat',
+		help: 'Hjälp',
+		about: 'Om Libris',
+		aboutBeta: 'Frågor och svar om betan',
+		contact: 'Kontakt',
+		cookies: 'Om kakor på webbplatsen',
+		accessibility: 'Tillgänglighet',
+		changeLang: 'In English'
+	},
 	header: {
+		skipToContent: 'Hoppa till innehåll',
+		menu: 'Meny',
+		home: 'Hem',
 		help: 'Hjälp',
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
+		search: 'Sök',
+		login: 'Logga in',
+		saved: 'Sparat',
 		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
-		openMenu: 'Öppna huvudmeny'
+		searchSubsetPlaceholder: 'Sök inom',
+		openMenu: 'Öppna huvudmeny',
+		closeMenu: 'Stäng meny'
 	},
 	banner: {
-		messageMobile: 'Katalogen kan innehålla inaktuell information.',
+		messageMobile: 'Katalogen kan innehålla inaktuell information',
 		messageDesktop:
-			'Välkommen till nya libris.kb.se! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
+			'Välkommen till nya Libris! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
 		feedback: 'Tyck till',
-		old: 'Gå till libris.kb.se'
+		old: 'Gå till gamla Libris',
+		dismiss: 'Dölj information om betan'
 	},
 	about: {
 		pageTitle: 'Om betan'
@@ -42,6 +66,11 @@ export default {
 	},
 	facet: {
 		q: 'Fritextsökning',
+		'_categoryByCollection.find': 'Kategori',
+		'_categoryByCollection.identify': '"Identifierande kategori"  🚧👷🏗️',
+		'_categoryByCollection.@none': '"Kategori"  🚧👷🏗️',
+		category: '"Kategori"  🚧👷🏗️',
+		hasInstanceCategory: '"Format"  🚧👷🏗',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'instanceOf.@type': 'Verkstyp',
 		issuanceType: 'Utgivningssätt',
@@ -68,8 +97,7 @@ export default {
 		'meta.encodingLevel': 'Beskrivningsnivå',
 		'rdf:type': 'Typ',
 		hasInstanceType: 'Format', // 'Bärare',
-		hasInstanceCategory: 'Format',
-		category: 'Kategori',
+		instanceOfType: 'Verkstyp',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Bibliotek',
 		bibliography: 'Bibliografi',
@@ -141,6 +169,8 @@ export default {
 		contributorKey: 'contributor',
 		contributorLabel: 'Författare/upphov',
 		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
+		categoryKey: 'category',
+		categoryLabel: 'Kategori',
 		titleKey: 'titel',
 		titleLabel: 'Titel',
 		titlePlaceholder: 'Röda rummet, Casablanca',
@@ -189,7 +219,8 @@ export default {
 		to: 'Till',
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
-		cropped: 'Beskuren'
+		cropped: 'Beskuren',
+		more: 'fler'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
@@ -201,9 +232,15 @@ export default {
 		occurrences: 'Förekomster',
 		show: 'Visa',
 		all: 'alla',
+		matching: 'Matchar din sökning',
 		results: 'träffar',
 		result: 'träff',
-		editions: 'Utgåvor'
+		editions: 'Utgåvor',
+		previous: 'Föregående',
+		next: 'Nästa',
+		resultOf: 'av',
+		showInSearchResults: 'Visa i träfflista',
+		showInSearchResultsShort: 'Visa träfflista'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',
@@ -229,7 +266,10 @@ export default {
 		linkToSite: 'Bibliotekets webbplats',
 		openingHoursEtc: 'Öppettider, adress m.m.',
 		showAll: 'Visa alla utgåvor',
-		showFewer: 'Visa färre utgåvor'
+		showFewer: 'Visa färre utgåvor',
+		myLoans: 'Mina lån',
+		applyForCard: 'Ansök om lånekort',
+		refinedLibraries: 'Avgränsade bibliotek'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'
@@ -238,6 +278,17 @@ export default {
 		leadingPane: 'Vänsterpanel',
 		leadingPaneTabs: 'Vänsterpanelsflikar',
 		show: 'Visa sidopanel',
-		hide: 'Dölj sidopanel'
+		hide: 'Dölj sidopanel',
+		trailingPane: 'Högerpanel',
+		resizeMe: 'Dra för att ändra panelens storlek'
+	},
+	citations: {
+		cite: 'Referera',
+		createCitation: 'Skapa referens',
+		selectFormat: 'Välj format',
+		allFormats: 'Alla format',
+		copyToClipboard: 'Kopiera till urklipp',
+		copied: 'Kopierad!',
+		saveAsFile: 'Spara som fil'
 	}
 };

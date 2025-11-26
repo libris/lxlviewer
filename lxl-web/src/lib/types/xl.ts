@@ -8,6 +8,7 @@ export enum JsonLd {
 	ID = '@id',
 	LANGUAGE = '@language',
 	LIST = '@list',
+	NONE = '@none',
 	REVERSE = '@reverse',
 	SET = '@set',
 	TYPE = '@type',
@@ -47,6 +48,11 @@ export enum Platform {
 	meta = 'meta'
 }
 
+export enum Bibframe {
+	Work = 'Work',
+	Instance = 'Instance'
+}
+
 export enum BibDb {
 	ils = 'bibdb:ils',
 	lopac = 'bibdb:lopac',
@@ -54,6 +60,8 @@ export enum BibDb {
 	bibIdSearchUri = 'bibdb:bibIdSearchUri',
 	isbnSearchUri = 'bibdb:isbnSearchUri',
 	issnSearchUri = 'bibdb:issnSearchUri',
+	myLoansUriLang = 'bibdb:myLoansUriLang',
+	patronRegistrationUriByLang = 'bibdb:patronRegistrationUriByLang',
 	eodUri = 'bibdb:eodUri',
 	itemStatusUri = 'bibdb:itemStatusUri',
 	openingHours = 'bibdb:openingHours',
@@ -66,7 +74,9 @@ export enum BibDb {
 	Address = 'address',
 	ItemStatus = 'itemStatus',
 	OpeningHours = 'openingHours',
-	LoanReserveLink = 'loanReserveLink'
+	LoanReserveLink = 'loanReserveLink',
+	MyLoansLink = 'myLoansLink',
+	RegistrationLink = 'registrationLink'
 }
 
 export type ClassName = string;

@@ -20,7 +20,9 @@ export type Relation = {
 export async function getRelations(
 	resourceId: string | null,
 	vocabUtil: VocabUtil,
-	locale: string
+	locale: string,
+	subsetFilter?: string | null,
+	searchSite?: string | null
 ) {
 	if (!resourceId) {
 		return [];
@@ -33,7 +35,9 @@ export async function getRelations(
 			_limit: '0',
 			_offset: '0',
 			_sort: '',
-			_spell: 'false'
+			_spell: 'false',
+			...(subsetFilter && { _r: subsetFilter }),
+			...(searchSite && { _site: searchSite })
 		}).toString()}`
 	);
 
@@ -64,7 +68,9 @@ export async function getRelations(
 					new URLSearchParams({
 						_q: `${qualifierKey}:${qualifierValue}`,
 						_limit: '10',
-						_spell: 'false'
+						_spell: 'false',
+						...(subsetFilter && { _r: subsetFilter }),
+						...(searchSite && { _site: searchSite })
 					})
 				)
 			).toString()}`;
@@ -89,7 +95,14 @@ function getQualifierValue(id: string) {
 	if (prefix && qId) {
 		return '"' + prefix + qId + '"';
 	}
+	if (looksLikeUri(id)) {
+		return '"' + id + '"';
+	}
 	return id;
+}
+
+function looksLikeUri(id: string) {
+	return id.startsWith('https://') || id.startsWith('http://');
 }
 
 function getPrefix(id: string) {

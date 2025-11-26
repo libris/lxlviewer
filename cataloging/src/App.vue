@@ -8,9 +8,10 @@
     class="MainContent"
     :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }"
     :class="{
-      container: (!status.panelOpen && user.settings.fullSiteWidth === false),
+      container: (!status.panelOpen && user.settings.fullSiteWidth === false && !inspector.status.sideBySide),
       'container-fluid': (status.panelOpen || user.settings.fullSiteWidth),
       'debug-mode': user.settings.appTech,
+      'container-wide' :inspector.status.sideBySide
     }">
     <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
       {{ translatePhrase('Debug mode activated. Click here to disable.') }}
@@ -527,6 +528,11 @@ h4 {
   &.container-fluid {
     margin-right: 0px;
     margin-left: 0px;
+  }
+
+  &.container-wide {
+    margin-right: 120px;
+    margin-left: 120px;
   }
 
   &-spinner {

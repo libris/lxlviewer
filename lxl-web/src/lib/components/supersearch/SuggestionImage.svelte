@@ -1,16 +1,14 @@
 <script lang="ts">
-	import type { SuperSearchResultItem } from '$lib/types/search';
-	import getTypeIcon from '$lib/utils/getTypeIcon';
-	import placeholder from '$lib/assets/img/placeholder.svg';
 	import { page } from '$app/state';
+	import type { SuperSearchResultItem } from '$lib/types/search';
+	import placeholder from '$lib/assets/img/placeholder.svg';
+	import TypeIcon from '$lib/components/TypeIcon.svelte';
 
 	type Props = {
 		item: SuperSearchResultItem;
 	};
 
 	const { item }: Props = $props();
-
-	const TypeIcon = $derived(getTypeIcon(item['@type']));
 </script>
 
 <div class="pointer-events-none relative flex">
@@ -25,10 +23,10 @@
 				item['@type'] === 'Person' && 'rounded-full'
 			]}
 		/>
-		{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && TypeIcon}
-			<div class="absolute -top-2 -left-2">
-				<div class="rounded-md p-1.5">
-					<TypeIcon class="size-3" />
+		{#if item['@type'] !== 'Text' && item['@type'] !== 'Person'}
+			<div class="absolute -top-1.5 -left-1.5">
+				<div class="bg-page rounded-sm border border-neutral-100 p-1">
+					<TypeIcon type={item.typeForIcon} class="size-3" />
 				</div>
 			</div>
 		{/if}
@@ -42,9 +40,7 @@
 					item['@type'] === 'Person' ? 'rounded-full' : 'rounded-sm'
 				]}
 			/>
-			{#if TypeIcon}
-				<TypeIcon class="absolute text-lg text-neutral-400" />
-			{/if}
+			<TypeIcon type={item.typeForIcon} class="absolute text-lg text-neutral-400" />
 		</div>
 	{/if}
 </div>

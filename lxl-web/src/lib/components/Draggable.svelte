@@ -2,6 +2,7 @@
 	import { onDestroy } from 'svelte';
 	import { throttleRAF } from '$lib/utils/throttle';
 	import { browser } from '$app/environment';
+	import { page } from '$app/state';
 	/**
 	 * Create a resizable panel by adding this component inside a relative positioned element
 	 * and pass the 'side' you want to add the drag handle to. Use bindable 'width' to set parent size.
@@ -107,7 +108,7 @@
 	]}
 	aria-disabled={disabled}
 	tabindex="0"
-	aria-label="resize me"
+	aria-label={page.data.t('panes.resizeMe')}
 	role="slider"
 	aria-valuenow={width}
 	aria-valuemin={minWidth}

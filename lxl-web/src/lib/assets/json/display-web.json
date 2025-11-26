@@ -2,6 +2,12 @@
 	"lensGroups": {
 		"cards": {
 			"lenses": {
+				"_Types": {
+					"@type": "fresnel:Lens",
+					"@id": "_Types-cards",
+					"classLensDomain": "_Types",
+					"showProperties": ["_find", "_identify", "_none", "_select", "_category", "language"]
+				},
 				"Work": {
 					"@type": "fresnel:Lens",
 					"@id": "Work-cards",
@@ -24,6 +30,7 @@
 						"hasNotation",
 						"hasVariant",
 						"inCollection",
+						"category",
 						"genreForm",
 						"subject",
 						"classification",
@@ -33,7 +40,6 @@
 						"isPartOf",
 						"associatedMedia",
 						"isPrimaryTopicOf",
-						"_category",
 						{ "inverseOf": "instanceOf" }
 					]
 				},
@@ -101,7 +107,9 @@
 					"@id": "Concept-cards",
 					"classLensDomain": "Concept",
 					"showProperties": [
-						"prefLabel",
+						{
+							"alternateProperties": ["singularLabel", "prefLabel"]
+						},
 						"inScheme",
 						"altLabel",
 						"broader",
@@ -155,8 +163,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								"prefLabel",
 								"singularLabel",
+								"prefLabel",
 								"label",
 								"termComponentList",
 								"code"
@@ -406,6 +414,12 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
 					"showProperties": ["language"]
+				},
+				"Instance": {
+					"@id": "Instance-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["identifiedBy"]
 				},
 				"Agent": {
 					"@id": "Agent-web-card-header-top",
@@ -710,7 +724,7 @@
 		"genreForm-format": {
 			"@id": "genreForm-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["genreForm"],
+			"fresnel:propertyFormatDomain": ["genreForm", "category"],
 			"fresnel:propertyStyle": ["nolabel", "genre-form"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
@@ -729,6 +743,12 @@
 				"seeAlso"
 			],
 			"fresnel:propertyStyle": ["sort()"]
+		},
+		"ContentType-format": {
+			"@id": "ContentType-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["ContentType"],
+			"fresnel:resourceStyle": ["link"]
 		},
 		"GenreForm-format": {
 			"@id": "GenreForm-format",
@@ -966,13 +986,49 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"Work-dummy": {
-			"@id": "Work-dummy",
+		"_Types-identify": {
+			"@id": "_Types-identify",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Work"],
-			"fresnel:propertyFormatDomain": ["_category"],
+			"fresnel:classFormatDomain": ["_Types"],
+			"fresnel:propertyFormatDomain": ["_identify"],
 			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			},
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " › ",
+				"fresnel:contentFirst": ""
+			},
+			"fresnel:propertyStyle": ["sort()"]
+		},
+		"_Types-select": {
+			"@id": "_Types-select",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["_Types"],
+			"fresnel:propertyFormatDomain": ["_select"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": "",
+				"fresnel:contentAfter": "",
+				"fresnel:contentLast": ""
+			},
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": " / ",
+				"fresnel:contentFirst": ""
+			},
+			"fresnel:propertyStyle": ["sort()"]
+		},
+		"_Types": {
+			"@id": "_Types",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["_Types"],
+			"fresnel:propertyFormatDomain": ["*"],
+			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " · ",
+				"fresnel:contentFirst": ""
+			},
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ", ",
 				"fresnel:contentFirst": ""
 			}
 		},

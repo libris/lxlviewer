@@ -15,24 +15,26 @@ import {
 	type DisplayMapping,
 	type FacetGroup,
 	type ItemDebugInfo,
+	type MappingsOnlyPartialCollectionView,
 	type MultiSelectFacet,
 	type Observation,
 	type PartialCollectionView,
 	type SearchMapping,
 	SearchOperators,
-	type SearchResult
+	type SearchResult,
+	type SearchResultItem
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { LibraryItem } from '$lib/types/userSettings';
+import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
-import getTypeLike from '$lib/utils/getTypeLike';
+import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 
@@ -53,6 +55,7 @@ export async function asResult(
 		: {};
 
 	return {
+		'@id': view['@id'],
 		...('next' in view && { next: replacePath(view.next as Link, usePath) }),
 		...('previous' in view && { previous: replacePath(view.previous as Link, usePath) }),
 		itemOffset: view.itemOffset,
@@ -62,36 +65,15 @@ export async function asResult(
 		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
-		items: view.items
-			?.map((i) => cleanUpItem(i))
-			.map((i) => ({
-				...(myLibraries && {
-					heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
-				}),
-				...('_debug' in i && {
-					_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
-				}),
-				[JsonLd.ID]: i.meta[JsonLd.ID] as string,
-				[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
-				[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
-				[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-				[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(
-					i,
-					LensType.WebCardHeaderTop,
-					locale
-				),
-				[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
-					i,
-					LensType.WebCardHeaderExtra,
-					locale
-				),
-				[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
-				image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
-				typeStr: getTypeLike(i, vocabUtil)
-					.map((t) => toString(displayUtil.lensAndFormat(t, LensType.Chip, locale)))
-					.join(' · '),
-				numberOfHolders: getHoldersCount(i)
-			})),
+		items: asSearchResultItem(
+			view.items,
+			displayUtil,
+			vocabUtil,
+			locale,
+			auxdSecret,
+			myLibraries,
+			maxScores
+		),
 		...('stats' in view && {
 			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 		}),
@@ -107,8 +89,69 @@ export async function asResult(
 	};
 }
 
+export function asSearchResultItem(
+	items: FramedData[],
+	displayUtil: DisplayUtil,
+	vocabUtil: VocabUtil,
+	locale: LangCode,
+	auxdSecret: string,
+	myLibraries?: Record<string, LibraryItem>,
+	maxScores?: Record<string, number>
+): SearchResultItem[] {
+	return items
+		?.map((i) => cleanUpItem(i))
+		.map((i) => ({
+			...(myLibraries && {
+				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
+			}),
+			...('_debug' in i && {
+				_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
+			}),
+			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
+			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
+			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
+			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
+			[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(i, LensType.WebCardHeaderTop, locale),
+			[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
+				i,
+				LensType.WebCardHeaderExtra,
+				locale
+			),
+			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
+			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
+			typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
+			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
+			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
+			numberOfHolders: getHoldersCount(i, vocabUtil)
+		}));
+}
+
+function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode): string {
+	const noIdentify = typeLike.identify.length == 0;
+	const noFind = typeLike.find.length == 0;
+	const manyFind = typeLike.find.length > 1;
+	const showFind = manyFind || (!noFind && noIdentify);
+	const showNone = noFind && noIdentify && typeLike.none.length > 0;
+
+	const t = {
+		'@type': '_Types',
+		...(showFind && { _find: typeLike.find }),
+		...(!noIdentify && { _identify: typeLike.identify }),
+		...(showNone && { _none: typeLike.none })
+	};
+	return toString(displayUtil.lensAndFormat(t, LensType.Card, locale));
+}
+
+function selectTypeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode): string {
+	const t = {
+		'@type': '_Types',
+		...(typeLike.select.length > 0 && { _select: typeLike.select })
+	};
+	return toString(displayUtil.lensAndFormat(t, LensType.Card, locale));
+}
+
 export function displayMappings(
-	view: PartialCollectionView,
+	view: PartialCollectionView | MappingsOnlyPartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
@@ -148,15 +191,17 @@ export function displayMappings(
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('variable' in m && { variable: m.variable }),
 					_key: m._key,
 					_value: m._value
 				} as DisplayMapping;
-			} else if (operator && operator in m && Array.isArray(m[operator])) {
-				const mappingArr = m[operator] as SearchMapping[];
+			} else if (operator && operator in m) {
+				const mappingArr = Array.isArray(m[operator]) ? m[operator] : [m[operator]];
 				return {
-					children: _iterateMapping(mappingArr),
+					children: _iterateMapping(mappingArr as SearchMapping[]),
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) })
+					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('variable' in m && { variable: m.variable })
 				} as DisplayMapping;
 			} else if (m.object) {
 				const defaultType = { [JsonLd.TYPE]: Base.Resource };
@@ -173,6 +218,7 @@ export function displayMappings(
 					label: '',
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('variable' in m && { variable: m.variable }),
 					_value: m?.value
 				} as DisplayMapping;
 			} else {
@@ -316,26 +362,7 @@ function displayFacetGroups(
 		)
 	);
 
-	result.push(
-		...Object.values(slices).map((g) => {
-			return {
-				label: translate(`facet.${g.alias || g.dimension}`),
-				dimension: g.dimension,
-				maxItems: g.maxItems,
-				...('search' in g && { search: g.search }),
-				facets: g.observation.map((o) => {
-					return {
-						...('_selected' in o && { selected: o._selected }),
-						totalItems: o.totalItems,
-						view: replacePath(o.view, usePath),
-						object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
-						str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-						discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
-					};
-				})
-			};
-		})
-	);
+	result.push(...mapSlices(slices, displayUtil, locale, translate));
 
 	result.push(
 		displayBoolFilters(
@@ -350,6 +377,46 @@ function displayFacetGroups(
 	);
 
 	return result;
+}
+
+function mapSlices(
+	slices: Record<string, Slice>,
+	displayUtil: DisplayUtil,
+	locale: LangCode,
+	translate: TranslateFn,
+	usePath?: string,
+	parentDimension?: string
+): FacetGroup[] {
+	return Object.values(slices).map((g) => {
+		const dimension = parentDimension ? `${parentDimension}/${g.dimension}` : g.dimension;
+		return {
+			label: translate(`facet.${g.alias || g.dimension}`),
+			dimension: dimension,
+			maxItems: g.maxItems,
+			...('search' in g && { search: g.search }),
+			facets: g.observation.map((o) => {
+				const str = toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '';
+				return {
+					...('_selected' in o && { selected: o._selected }),
+					...('sliceByDimension' in o && {
+						facetGroups: mapSlices(
+							o.sliceByDimension,
+							displayUtil,
+							locale,
+							translate,
+							undefined,
+							dimension + '/' + str
+						)
+					}),
+					totalItems: o.totalItems,
+					view: replacePath(o.view, usePath),
+					object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+					str: str,
+					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
+				};
+			})
+		};
+	});
 }
 
 export function displayPredicates(
@@ -429,6 +496,9 @@ function addMyLibrariesBoolFilter(
 		});
 
 		if (existingBoolFilter) {
+			// need to remove prefLabelByLang: {}, or lensAndFormat will use it (nothing) as label
+			// and entire filter will be disregarded
+			delete existingBoolFilter.object.prefLabelByLang;
 			existingBoolFilter.object.prefLabel = translate(`facet.${MY_LIBRARIES_FILTER_ALIAS}`);
 			return [...[existingBoolFilter], ...rest];
 		} else {
@@ -448,4 +518,25 @@ function addMyLibrariesBoolFilter(
 		}
 	}
 	return boolFilters;
+}
+
+/**
+ * Conditionally append param specifying my libraries (from cookie)
+ */
+export function appendMyLibrariesParam(
+	searchParams: URLSearchParams,
+	userSettings: UserSettings
+): URLSearchParams {
+	if (['_q', '_r'].some((key) => searchParams.get(key)?.includes(MY_LIBRARIES_FILTER_ALIAS))) {
+		let sigelStr;
+		if (userSettings?.myLibraries) {
+			sigelStr = Object.values(userSettings?.myLibraries)
+				.map((lib) =>
+					lib.sigel ? `itemHeldBy:"sigel:${lib.sigel}"` : `itemHeldByOrg:"sigel:org/${lib.code}"`
+				)
+				.join(' OR ');
+		}
+		searchParams.append(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
+	}
+	return searchParams;
 }

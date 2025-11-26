@@ -1,15 +1,16 @@
 import crypto from 'crypto';
-import type {
-	SecureImage,
-	SecureImageResolution,
-	Image,
-	KbvImageObject,
-	ImageResolution
+import {
+	type SecureImage,
+	type SecureImageResolution,
+	type Image,
+	type KbvImageObject,
+	type ImageResolution,
+	IMAGE_OBJECT_TYPE
 } from '$lib/types/auxd';
 import { Concepts, type FramedData, JsonLd, Owl } from '$lib/types/xl';
 import { first, isObject, asArray } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
-import { relativizeUrl, stripAnchor } from '$lib/utils/http';
+import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 import type { LocaleCode } from '$lib/i18n/locales';
 
 function toImage(imageObject: KbvImageObject, recordId: string, lang: LocaleCode): Image {
@@ -40,9 +41,13 @@ export function bestSize(from: Image | undefined, minWidthPx: number): ImageReso
 }
 
 export function getImages(thing: FramedData, lang: LocaleCode): Image[] {
+	if (thing[JsonLd.TYPE] === IMAGE_OBJECT_TYPE) {
+		return asArray(toImage(thing, thing[JsonLd.TYPE], lang));
+	}
+
 	return [
 		...asArray(thing.image).map((i) =>
-			toImage(i as KbvImageObject, stripAnchor(relativizeUrl(thing['@id']) as string), lang)
+			toImage(i as KbvImageObject, stripAnchor(trimSlashes(relativizeUrl(thing['@id']))), lang)
 		),
 		...getInstances(thing).flatMap((instance) => getImages(instance, lang))
 	];

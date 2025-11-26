@@ -5,6 +5,8 @@ import fs from 'fs';
 import { DERIVED_LENSES } from '$lib/types/display';
 import displayWeb from '$lib/assets/json/display-web.json';
 import { DebugFlags, type UserSettings } from '$lib/types/userSettings';
+import type { RequestEvent } from '@sveltejs/kit';
+import type { Site } from '$lib/types/site';
 
 let utilCache;
 
@@ -12,6 +14,12 @@ export const handle = async ({ event, resolve }) => {
 	const [vocabUtil, displayUtil] = await loadUtilCached();
 	event.locals.vocab = vocabUtil;
 	event.locals.display = displayUtil;
+
+	const site = getSite(event);
+
+	if (site) {
+		event.locals.site = site;
+	}
 
 	// Parse & return settings cookie
 	let userSettings: UserSettings = {};
@@ -53,14 +61,17 @@ export const handle = async ({ event, resolve }) => {
 		}
 	});
 
+	// set data-theme defined in themes.css
+	const dataTheme = site?.themeName || 'libris';
+
 	return resolve(event, {
-		transformPageChunk: ({ html }) => html.replace('%lang%', lang)
+		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)
 	});
 };
 
 async function loadUtilCached() {
 	if (!utilCache) {
-		utilCache = loadUtil();
+		utilCache = await loadUtil();
 	}
 	return utilCache;
 }
@@ -104,4 +115,25 @@ async function loadUtil() {
 	DERIVED_LENSES.forEach((l) => displayUtil.registerDerivedLens(l));
 
 	return [vocabUtil, displayUtil];
+}
+
+function getSite(event: RequestEvent): Site | null {
+	// TODO replace this with proper domain matching
+	const deepestSubDomain = event.url.hostname.split('.')[0];
+
+	if (configuredSubDomains().includes(deepestSubDomain)) {
+		// TODO fetch from backend?
+		const site = deepestSubDomain;
+		return {
+			name: env[`SUBSITE.${site}.NAME`] || site,
+			themeName: env[`SUBSITE.${site}.APP_THEME`],
+			searchSite: env[`SUBSITE.${site}.SEARCH_SITE`]
+		};
+	}
+
+	return null;
+}
+
+function configuredSubDomains(): string[] {
+	return env.SUBSITES?.split(',').map((s) => s.trim()) || [];
 }

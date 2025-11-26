@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { type Image, type ImageResolution, Width } from '$lib/types/auxd';
 	import placeholder from '$lib/assets/img/placeholder.svg';
-	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { bestSize } from '$lib/utils/auxd';
 	import { first } from '$lib/utils/xl';
 	import { page } from '$app/state';
 	import { popover } from '$lib/actions/popover';
 	import InfoIcon from '~icons/bi/info-circle';
+	import TypeIcon from './TypeIcon.svelte';
 
 	interface Props {
 		images: Image[];
@@ -32,7 +32,6 @@
 	let thumb = $derived(image ? bestSize(image, thumbnailTargetWidth) : undefined);
 	let full = $derived(image ? bestSize(image, Width.FULL) : undefined);
 	let geometry = $derived(type === 'Person' ? 'circle' : 'rectangle');
-	let TypeIcon = $derived(!image ? getTypeIcon(type) : undefined);
 </script>
 
 {#snippet img(res: ImageResolution, imgClass?: string | string[])}
@@ -87,7 +86,7 @@
 			</span>
 		</figcaption>
 	</figure>
-{:else if showPlaceholder && TypeIcon}
+{:else if showPlaceholder}
 	<div class="mb-6 flex items-center justify-center">
 		<img
 			src={placeholder}
@@ -95,9 +94,11 @@
 			class={[
 				'size-full max-w-40 object-cover @3xl:max-w-48',
 				geometry === 'circle' ? 'rounded-full' : 'rounded-lg',
-				type === 'Text' && 'aspect-3/4'
+				(type === 'Text' || type === 'Literature') && 'aspect-3/4'
 			]}
 		/>
-		<TypeIcon class="absolute text-4xl text-neutral-300 @3xl:text-6xl" />
+		{#if !image}
+			<TypeIcon {type} class="absolute text-4xl text-neutral-300 @3xl:text-6xl" />
+		{/if}
 	</div>
 {/if}

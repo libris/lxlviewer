@@ -14,12 +14,14 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	if (_q.length !== 0) {
 		const queryWithWildCard = _q + (_q.match(/[^*]$/) ? '*' : '');
-		const query = `${queryWithWildCard} "rdf:type":Library`;
+		const query = `${queryWithWildCard} ("rdf:type":Library OR "rdf:type":"bibdb:Organization")`;
 		url.searchParams.set('_q', query);
 	}
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	const findRes = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`);
+	newSearchParams.set('_stats', 'false');
+	newSearchParams.set('_spell', 'false');
 	const data = await findRes.json();
 	const result = await asLibraryResult(data, displayUtil, locale);
 
@@ -37,7 +39,8 @@ async function asLibraryResult(
 		items: view.items?.map((i) => ({
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			label: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale)) as string,
-			sigel: i.sigel as string
+			sigel: i.sigel as string,
+			code: i.code as string
 		}))
 	};
 }

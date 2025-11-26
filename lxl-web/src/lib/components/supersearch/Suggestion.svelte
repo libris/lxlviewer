@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { relativizeUrl } from '$lib/utils/http';
+	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
@@ -18,7 +18,7 @@
 	};
 
 	const { item, getCellId, isFocusedCell }: Props = $props();
-	const resourceId = $derived(relativizeUrl(item?.['@id']));
+	const resourceId = $derived(trimSlashes(relativizeUrl(item?.['@id'])));
 	const primaryAddQualifierLink = $derived(item.qualifiers?.[0]?._q || resourceId);
 </script>
 
@@ -40,7 +40,7 @@
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<hgroup
-				class="resource-heading grid gap-1 overflow-hidden text-xs font-medium whitespace-nowrap"
+				class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap sm:text-sm lg:text-xs"
 			>
 				<h2 class="truncate">
 					<DecoratedData
@@ -58,11 +58,12 @@
 							showLabels={ShowLabelsOptions.Never}
 							allowLinks={false}
 							allowPopovers={false}
+							limit={{ contribution: 3 }}
 						/>
 					</p>
 				{/if}
 			</hgroup>
-			<div class="resource-footer text-3xs text-subtle truncate">
+			<div class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
 				<strong class="font-medium">
 					{item.typeStr}
 				</strong>
@@ -100,7 +101,11 @@
 
 <div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers.length}>
 	{#if item.qualifiers.length}
-		<a href={primaryAddQualifierLink} id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
+		<a
+			href={page.data.localizeHref(primaryAddQualifierLink)}
+			id={getCellId(0)}
+			class:focused-cell={isFocusedCell(0)}
+		>
 			{@render resourceSnippet(item)}
 		</a>
 		<button
@@ -131,7 +136,7 @@
 			{/key}
 		</button>
 	{:else}
-		<a href={resourceId} id={getCellId(0)}>
+		<a href={page.data.localizeHref(resourceId)} id={getCellId(0)}>
 			{@render resourceSnippet(item)}
 		</a>
 	{/if}
@@ -177,8 +182,6 @@
 	}
 
 	.resource-heading {
-		grid-template-columns: auto auto;
-
 		& :global(.transliteration) {
 			display: none;
 		}

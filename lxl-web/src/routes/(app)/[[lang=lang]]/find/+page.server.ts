@@ -4,37 +4,37 @@ import { getSupportedLocale } from '$lib/i18n/locales.js';
 
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
-import { asResult } from '$lib/utils/search';
+import { appendMyLibrariesParam, asResult } from '$lib/utils/search';
 import { DebugFlags } from '$lib/types/userSettings';
-import { MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets.js';
+import { displayMappingToString } from '$lib/utils/displayMappingToString.js';
+import getPageTitle from '$lib/utils/getPageTitle';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 
-	if (!url.searchParams.size) {
-		redirect(303, `/`); // redirect to home page if no search params are given
-	}
-
 	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
-	const searchParams = new URLSearchParams(url.searchParams.toString());
 
-	// Add param with my libraries from cookie
-	if (searchParams.get('_q')?.includes(MY_LIBRARIES_FILTER_ALIAS)) {
-		let sigelStr;
-		if (locals.userSettings?.myLibraries) {
-			sigelStr = Object.values(locals.userSettings?.myLibraries)
-				.map((lib) => `itemHeldBy:"sigel:${lib.sigel}"`)
-				.join(' OR ');
-		}
-		searchParams.append(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
+	const searchParams = new URLSearchParams();
+
+	// find page load function reloads on change in these params:
+	const reactiveParams = ['_q', '_limit', '_offset', '_sort', '_spell', '_r'];
+	reactiveParams.forEach((p) => {
+		searchParams.set(p, url.searchParams.get(p) || '');
+	});
+
+	if (locals.site?.searchSite) {
+		searchParams.set('_site', locals.site?.searchSite);
 	}
 
-	const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}${debug}`, {
-		// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
-		redirect: 'manual'
-	});
+	const recordsRes = await fetch(
+		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, locals.userSettings).toString()}${debug}`,
+		{
+			// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
+			redirect: 'manual'
+		}
+	);
 
 	if (!recordsRes.ok) {
 		if (recordsRes.status > 299 && recordsRes.status < 400) {
@@ -64,5 +64,12 @@ export const load = async ({ params, url, locals, fetch }) => {
 		locals.userSettings?.myLibraries
 	);
 
-	return { searchResult };
+	const pageTitle = getPageTitle(
+		displayMappingToString(
+			searchResult.mapping.filter((f) => f?.variable !== 'defaultSiteFilters')
+		),
+		locals.site?.name
+	);
+
+	return { searchResult, pageTitle };
 };

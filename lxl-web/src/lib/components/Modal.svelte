@@ -82,19 +82,20 @@
 			class="flex flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto overscroll-contain pb-4"
 		>
 			<header
-				class="border-neutral sticky top-0 z-10 flex min-h-14 items-center justify-between border-b bg-neutral-50 px-4"
+				class="border-neutral sticky top-0 z-10 flex min-h-14 items-center justify-between gap-2 border-b bg-neutral-50 px-4"
 			>
-				<h1 class="font-heading">
+				<h1 class="font-heading truncate">
 					{@render title?.()}
 				</h1>
 				<!-- svelte-ignore a11y_autofocus -->
 				<button
+					class="btn btn-primary size-8 min-w-8 border-none p-0"
 					onclick={handleClose}
 					autofocus
 					aria-label={page.data.t('general.close')}
 					data-testid="close-modal"
 				>
-					<IconClose class="text-subtle" />
+					<IconClose class="text-subtle text-base" />
 				</button>
 			</header>
 			<div class="px-4">

@@ -7,30 +7,37 @@ import { getTranslator } from '$lib/i18n';
 import { type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
+import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
 
-import { pickProperty, toString, asArray } from '$lib/utils/xl.js';
+import { pickProperty, toString, asArray, first } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import {
 	getHoldingsByInstanceId,
 	getHoldingsByType,
-	getHoldersByType
+	getHoldersByType,
+	getBibIdsByInstanceId
 } from '$lib/utils/holdings.js';
-import { holdersCache } from '$lib/utils/holdersCache.svelte.js';
-import getTypeLike from '$lib/utils/getTypeLike';
-import { getUriSlug } from '$lib/utils/http';
+import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
+import {
+	appendMyLibrariesParam,
+	asResult,
+	asSearchResultItem,
+	displayMappings
+} from '$lib/utils/search';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
-import { asResult } from '$lib/utils/search';
 
-export const load = async ({ params, locals, fetch }) => {
+export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 	const translate = await getTranslator(locale);
 
 	let resourceId: null | string = null;
+	const subsetFilter = url.searchParams.get('_r');
+	const _q = url.searchParams.get('_q');
 
 	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
 		headers: { Accept: 'application/ld+json' }
@@ -56,15 +63,85 @@ export const load = async ({ params, locals, fetch }) => {
 
 	resourceId = resource.mainEntity['@id'];
 
-	// FIXME DisplayDecorated needs a dummy wrapper to get the styling right
-	//const types = getTypeLike(mainEntity, vocabUtil).map(t => displayUtil.lensAndFormat(t, LensType.Chip, locale));
-	const t = { '@type': 'Work', _category: getTypeLike(mainEntity, vocabUtil) };
+	const typeLike = getTypeLike(mainEntity, vocabUtil);
+	const t = {
+		'@type': '_Types', // FIXME? DisplayDecorated needs a dummy wrapper to get the styling right
+		...(typeLike.find.length > 0 && { _find: typeLike.find }),
+		...(typeLike.identify.length > 0 && { _identify: typeLike.identify }),
+		//...(typeLike.select.length > 0 && { _select: typeLike.select }),
+		// FIXME: don't do this here
+		...(!!mainEntity['language'] && { language: mainEntity['language'] })
+	};
 	const types = displayUtil.lensAndFormat(t, LensType.Card, locale);
+
+	if (mainEntity['category']) {
+		const category = typeLike.none.filter((c) => first(asArray(c[JsonLd.TYPE])) !== 'ContentType');
+		if (category.length > 0) {
+			mainEntity['category'] = category;
+		} else {
+			delete mainEntity['category'];
+		}
+
+		delete mainEntity['language'];
+	}
 
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
 
-	const relations: Relation[] | null = await getRelations(resourceId, vocabUtil, locale);
+	let instances;
+	let searchResult: ResourceSearchResult | undefined;
+
+	// Format & sort instances; single instance -> pick from resource overview
+	if (mainEntity?.['@reverse']?.instanceOf?.length === 1) {
+		// TODO: Replace with a custom getProperty method (similar to pickProperty)
+		instances = jmespath.search(overview, '*[].hasInstance[]');
+	} else if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
+		// multiple instances -> format as web cards
+		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
+		instances = asSearchResultItem(
+			sortedInstances,
+			displayUtil,
+			vocabUtil,
+			locale,
+			env.AUXD_SECRET,
+			locals.userSettings?.myLibraries,
+			undefined
+		);
+	}
+
+	// Search for instances that matches query
+	if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*') || locals.site) {
+		const searchParams = appendMyLibrariesParam(
+			new URLSearchParams({
+				_o: resourceId || '',
+				_p: 'instanceOf',
+				_q: _q || '*',
+				_r: subsetFilter || '',
+				_spell: 'false',
+				_stats: 'false',
+				_site: locals.site?.searchSite || ''
+			}),
+			locals.userSettings
+		);
+
+		const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+
+		if (res.ok) {
+			const data = (await res.json()) as PartialCollectionView;
+			searchResult = {
+				items: data.items.map((item) => (item['@id'] as string).replace('#it', '')),
+				mapping: displayMappings(data, locals.display, locale, translate, url.pathname)
+			};
+		}
+	}
+
+	const relations: Relation[] | null = await getRelations(
+		resourceId,
+		vocabUtil,
+		locale,
+		subsetFilter,
+		locals.site?.searchSite
+	);
 
 	/** TODO: Better error handling while fetching relations previews */
 	const relationsPreviews = await Promise.all(
@@ -91,15 +168,9 @@ export const load = async ({ params, locals, fetch }) => {
 		},
 		{}
 	);
-	// TODO: Replace with a custom getProperty method (similar to pickProperty)
-	const instances = jmespath.search(overview, '*[].hasInstance[]');
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
-	const sortedInstances = getSortedInstances([...instances]);
 
 	const tableOfContents: TableOfContentsItem[] = [
-		...(instances.length > 1
+		...(instances?.length > 1
 			? [
 					{
 						id: 'editions',
@@ -120,27 +191,33 @@ export const load = async ({ params, locals, fetch }) => {
 				]
 			: [])
 	];
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
+
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
-
-	if (holdersCache.holders) {
-		console.log('Current number of cached holders:', Object.keys(holdersCache.holders).length);
-	}
+	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
 
 	return {
-		workFnurgel: getUriSlug(resourceId || undefined),
+		uri: resource['@id'] as string,
 		type: mainEntity[JsonLd.TYPE],
 		types: types,
+		typeForIcon: getTypeForIcon(typeLike), // FIXME
 		title: toString(heading),
 		heading,
 		overview: overviewWithoutHasInstance,
 		relations,
 		relationsPreviewsByQualifierKey,
-		instances: sortedInstances,
-		holdingsByInstanceId,
-		holdersByType,
+		instances,
+		searchResult,
+		holdings: {
+			holdingsByInstanceId,
+			holdersByType,
+			bibIdsByInstanceId
+		},
 		images,
 		tableOfContents
 	};
@@ -148,14 +225,8 @@ export const load = async ({ params, locals, fetch }) => {
 
 function getSortedInstances(instances: Record<string, unknown>[]) {
 	return instances.sort((a, b) => {
-		const yearA = parseInt(
-			jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
-			10
-		);
-		const yearB = parseInt(
-			jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity),
-			10
-		);
+		const yearA = parseInt(jmespath.search(a, 'publication[0].year'), 10);
+		const yearB = parseInt(jmespath.search(b, 'publication[0].year'), 10);
 
 		if (Number.isNaN(yearA)) {
 			return 1;

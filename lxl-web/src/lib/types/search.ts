@@ -1,9 +1,10 @@
-import { JsonLd, type Link, type DisplayDecorated, type FramedData, LensType } from '$lib/types/xl';
+import { type DisplayDecorated, type FramedData, JsonLd, LensType, type Link } from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
 import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 
 export interface SearchResult {
+	[JsonLd.ID]: string;
 	itemOffset: number;
 	itemsPerPage: number;
 	totalItems: number;
@@ -17,6 +18,12 @@ export interface SearchResult {
 	facetGroups?: FacetGroup[];
 	predicates?: MultiSelectFacet[];
 	_spell: SpellingSuggestion[] | [];
+}
+
+// minimal search result for filtered instances on resource pages
+export interface ResourceSearchResult {
+	items: string[];
+	mapping: DisplayMapping[];
 }
 
 export interface LibraryResult {
@@ -34,7 +41,9 @@ export interface SearchResultItem {
 	[LensType.WebCardHeaderTop]: DisplayDecorated;
 	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
+	typeForIcon: string; // FIXME
 	typeStr: string;
+	selectTypeStr: string; // FIXME
 	heldByMyLibraries?: LibraryItem[];
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
@@ -66,6 +75,7 @@ export interface Facet {
 	object: DisplayDecorated;
 	str: string;
 	discriminator: string;
+	facetGroups?: FacetGroup[];
 }
 
 export interface MultiSelectFacet extends Facet {
@@ -88,6 +98,7 @@ export interface DisplayMapping {
 	label?: string;
 	operator: keyof typeof SearchOperators;
 	invalid?: string;
+	variable?: string;
 	_key?: string;
 	_value?: string;
 }
@@ -105,6 +116,7 @@ export interface PartialCollectionView {
 	};
 	first: Link;
 	last: Link;
+	previous?: Link;
 	next?: Link;
 	items: FramedData[];
 	stats?: {
@@ -114,6 +126,15 @@ export interface PartialCollectionView {
 		_boolFilters?: Observation[];
 	};
 	_spell: SpellingSuggestion[] | [];
+}
+
+export interface MappingsOnlyPartialCollectionView {
+	[JsonLd.TYPE]: 'PartialCollectionView';
+	[JsonLd.ID]: string;
+	[JsonLd.CONTEXT]: string;
+	search: {
+		mapping: SearchMapping[];
+	};
 }
 
 interface Slice {
@@ -153,6 +174,7 @@ export interface SearchMapping extends MappingObj {
 	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom | InvalidProperty;
 	object?: FramedData;
 	value?: string;
+	variable?: string;
 	up: { '@id': string };
 	_key?: string;
 	_value?: string;
@@ -221,4 +243,16 @@ export interface QualifierSuggestion {
 	label: string;
 	_q: string;
 	cursor: number;
+}
+
+export interface AdjecentSearchResult {
+	[JsonLd.ID]: string;
+	itemOffset: number;
+	itemsPerPage: number;
+	totalItems: number;
+	first: Link;
+	last: Link;
+	previous?: Link;
+	next?: Link;
+	items: Link[];
 }

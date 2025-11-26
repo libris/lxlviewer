@@ -43,8 +43,8 @@ export default {
       showFieldAdderTooltip: false,
       showClarifySave: false,
       showMarcPreview: false,
-      showEmbellishTemplateSubMenu: false,
-      showEmbellishFromRecordSubMenu: false,
+      showEnrichTemplateSubMenu: false,
+      showEnrichFromRecordSubMenu: false,
       fieldAdderActive: false,
     };
   },
@@ -140,13 +140,19 @@ export default {
     applyRecordAsTemplate() {
       this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', {
-        name: 'open-embellish-from-id',
+        name: 'open-enrich-from-id',
       });
     },
     detailedApplyRecordAsTemplate() {
       this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', {
-        name: 'open-detailed-embellish-from-id',
+        name: 'open-detailed-enrich-from-id',
+      });
+    },
+    openEnrichFromSelection() {
+      this.hideToolsMenu();
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'open-enrich-from-selection',
       });
     },
     initOverridePicker() {
@@ -204,8 +210,8 @@ export default {
     },
     hideToolsMenu() {
       this.toolsMenuActive = false;
-      this.showEmbellishTemplateSubMenu = false;
-      this.showEmbellishFromRecordSubMenu = false;
+      this.showEnrichTemplateSubMenu = false;
+      this.showEnrichFromRecordSubMenu = false;
     },
     showToolsMenu() {
       this.toolsMenuActive = !this.toolsMenuActive;
@@ -595,39 +601,39 @@ export default {
             {{ translatePhrase("Create digital reproduction") }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem" :class="{ 'is-active': showEmbellishTemplateSubMenu }" v-if="user.isLoggedIn && inspector.status.editing">
-          <a class="Toolbar-menuLink" @click="showEmbellishTemplateSubMenu = !showEmbellishTemplateSubMenu">
+        <li class="Toolbar-menuItem" :class="{ 'is-active': showEnrichTemplateSubMenu }" v-if="user.isLoggedIn && inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="showEnrichTemplateSubMenu = !showEnrichTemplateSubMenu">
             <i class="fa fa-fw fa-clipboard" />
-            <span>{{ translatePhrase("Embellish from template") }}{{ getKeybindText('embellish-from-template') ? ` (${getKeybindText('embellish-from-template')})` : ''}}</span>
-            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishTemplateSubMenu, 'fa-caret-right': !showEmbellishTemplateSubMenu }" /></span>
+            <span>{{ translatePhrase("Enrich from template") }}{{ getKeybindText('enrich-from-template') ? ` (${getKeybindText('enrich-from-template')})` : ''}}</span>
+            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEnrichTemplateSubMenu, 'fa-caret-right': !showEnrichTemplateSubMenu }" /></span>
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishTemplateSubMenu && validTemplates.length === 0">
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEnrichTemplateSubMenu && validTemplates.length === 0">
           <span class="Toolbar-menuLink">
             <i class="fa fa-fw fa-exclamation" />
             {{ translatePhrase("No matching templates") }}
           </span>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showEmbellishTemplateSubMenu" :key="key">
+        <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showEnrichTemplateSubMenu" :key="key">
           <a class="Toolbar-menuLink" @click="applyTemplate(value)">
             <i class="fa fa-fw fa-plus" />
             {{ value.label }}
           </a>
         </li>
-        <li class="Toolbar-menuItem" :class="{ 'is-active': showEmbellishFromRecordSubMenu }" v-if="user.isLoggedIn && inspector.status.editing">
-          <a class="Toolbar-menuLink" @click="showEmbellishFromRecordSubMenu = !showEmbellishFromRecordSubMenu">
+        <li class="Toolbar-menuItem" :class="{ 'is-active': showEnrichFromRecordSubMenu }" v-if="user.isLoggedIn && inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="showEnrichFromRecordSubMenu = !showEnrichFromRecordSubMenu">
             <i class="fa fa-fw fa-clipboard" />
-            <span>{{ translatePhrase("Embellish from record") }}{{ getKeybindText('embellish-from-record') ? ` (${getKeybindText('embellish-from-record')})` : ''}}</span>
-            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishFromRecordSubMenu, 'fa-caret-right': !showEmbellishFromRecordSubMenu }" /></span>
+            <span>{{ translatePhrase("Enrich from record") }}{{ getKeybindText('enrich-from-record') ? ` (${getKeybindText('enrich-from-record')})` : ''}}</span>
+            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEnrichFromRecordSubMenu, 'fa-caret-right': !showEnrichFromRecordSubMenu }" /></span>
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEnrichFromRecordSubMenu">
           <a class="Toolbar-menuLink" @click="applyRecordAsTemplate">
             <i class="fa fa-fw fa-chain" />
             {{ translatePhrase('From ID') }}
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEnrichFromRecordSubMenu">
           <a class="Toolbar-menuLink" @click="openTemplatePicker">
             <i class="fa fa-fw fa-upload" />
             {{ translatePhrase('From file') }}
@@ -637,6 +643,12 @@ export default {
           <a class="Toolbar-menuLink" @click="detailedApplyRecordAsTemplate">
             <i class="fa fa-fw fa-clipboard" />
             {{ translatePhrase('Detailed enrichment') }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="openEnrichFromSelection">
+            <i class="fa fa-fw fa-clipboard" />
+            {{ translatePhrase('Enrich from selection') }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
@@ -658,13 +670,13 @@ export default {
         <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
           <a class="Toolbar-menuLink" @click="createMessage('inquiry')">
             <i class="fa fa-fw fa-question" aria-hidden="true" />
-            {{ translatePhrase("Inquiry") }}
+            {{ translatePhrase("Create CXZ Inquiry") }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
           <a class="Toolbar-menuLink" @click="createMessage('changeNotice'), hideToolsMenu()">
             <i class="fa fa-fw fa-exclamation" aria-hidden="true" />
-            {{ translatePhrase("Change notice") }}
+            {{ translatePhrase("Change CXZ Notice") }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="enableMarcPreview">

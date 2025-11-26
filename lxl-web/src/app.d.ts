@@ -1,9 +1,12 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
+import type { CitationsType } from '$lib/types/citation';
 import type { MatomoTracker } from '$lib/types/matomo';
 import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
+import type { AdjecentSearchResult, DisplayMapping } from '$lib/types/search';
 import 'unplugin-icons/types/svelte';
+import type { Site } from '$lib/types/site';
 
 declare global {
 	namespace App {
@@ -14,15 +17,23 @@ declare global {
 			vocab: VocabUtil;
 			display: DisplayUtil;
 			userSettings: UserSettings;
+			site?: Site;
 		}
 		interface PageData {
 			locale: import('$lib/i18n/locales').LocaleCode;
 			t: Awaited<ReturnType<typeof import('$lib/i18n').getTranslator>>;
+			localizeHref: ReturnType<typeof import('$lib/i18n').initLocalizeHref>;
 			userSettings: UserSettings;
+			subsetMapping: DisplayMapping[] | undefined;
+			siteName?: string;
 		}
 		interface PageState {
 			expandedInstances?: string[];
 			holdings?: string;
+			adjecentSearchResults?: AdjecentSearchResult[];
+			dimissedHighlighting?: boolean;
+			citations?: CitationsType;
+			citationId?: string;
 		}
 		// interface Platform {}
 	}

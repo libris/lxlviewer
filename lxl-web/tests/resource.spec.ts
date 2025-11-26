@@ -5,7 +5,7 @@ test('decorated data label visibilty is correct after page navigations', async (
 	await page.goto('/h08ndxddfg5v2pjf');
 	await expect(page.getByText('Medverkan och funktion')).toBeHidden();
 	await page.getByText('Jonas Hassen Khemiri, 1978-').first().click();
-	await expect(page.getByRole('article').getByText('Språk')).toBeVisible();
+	await expect(page.getByRole('article').getByText('Svenska')).toBeVisible();
 });
 
 test('initially opened holdings modals are closable', async ({ page }) => {
@@ -21,10 +21,10 @@ test('initially opened holdings modals are closable', async ({ page }) => {
 test('decorated data in holdings modal is not duplicated while closing modal', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
 	await page.getByTestId('holding-link').first().click();
-	await expect(page.locator('dialog [data-type="Text"]')).toHaveCount(1);
+	await expect(page.locator('dialog [data-type="Monograph"]')).toHaveCount(1);
 	await page.keyboard.press('Escape');
 	await page.waitForTimeout(10);
-	expect(page.locator('dialog [data-type="Text"]')).toHaveCount(1);
+	await expect(page.locator('dialog [data-type="Monograph"]')).toHaveCount(1);
 	await page.getByTestId('modal').waitFor({ state: 'hidden' });
 	await expect(page.getByTestId('modal')).toBeHidden();
 });

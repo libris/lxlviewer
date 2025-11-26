@@ -39,7 +39,7 @@
 		<select
 			id="search-sort"
 			class="btn btn-primary w-px sm:w-auto"
-			form="main-search"
+			form="search"
 			onchange={handleSortChange}
 		>
 			{#each sortOptions as option (option.value)}

@@ -31,6 +31,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isEnrichmentSource: {
+      type: Boolean,
+      default: true,
+    }
   },
   components: {
     'language-entry': LanguageEntry,
@@ -339,6 +343,7 @@ export default {
         :diff="diff"
         :item-path="getParentPath()"
         :is-expanded="isExpanded"
+        :is-enrichment-source="isEnrichmentSource"
         @romanize="romanize(entry.tag, entry.val)"
         @remove="remove(entry.tag, entry.val)"
         @removeval="removeVal(entry.tag, entry.val)"

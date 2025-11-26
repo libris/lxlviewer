@@ -4,14 +4,12 @@
 	import { relativizeUrl } from '$lib/utils/http';
 	import DecoratedData from './DecoratedData.svelte';
 	import placeholderImage from '$lib/assets/img/placeholder.svg';
-	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import getInstanceData from '$lib/utils/getInstanceData';
+	import TypeIcon from './TypeIcon.svelte';
 
 	type Props = { data: SearchResultItem; headerClass?: string };
 
 	let { data, headerClass }: Props = $props();
-
-	const TypeIcon = $derived(getTypeIcon(data['@type']));
 </script>
 
 {#snippet image()}
@@ -35,10 +33,10 @@
 					class={[
 						'object-cover',
 						data?.['@type'] === 'Person' ? 'rounded-full' : 'rounded-lg',
-						data?.['@type'] === 'Text' && 'aspect-3/4'
+						(data?.typeForIcon === 'Text' || data?.typeForIcon === 'Literature') && 'aspect-3/4'
 					]}
 				/>
-				<TypeIcon class="absolute text-4xl text-neutral-300" />
+				<TypeIcon type={data.typeForIcon} class="absolute text-4xl text-neutral-300" />
 			</div>
 		{/if}
 	</div>
@@ -47,17 +45,17 @@
 <article>
 	<header>
 		<a
-			href={relativizeUrl(data['@id'])}
+			href={page.data.localizeHref(relativizeUrl(data['@id']))}
 			class="flex flex-col items-center outline-0 hover:[&_h2]:underline focus:[&_h2]:underline"
 		>
 			{@render image()}
 			<p class="decorated-card-header-top">
-				<TypeIcon class="text-3xs mb-0.25 inline" />
+				<TypeIcon type={data.typeForIcon} class="text-3xs mb-0.25 inline" />
 				{#if data.typeStr}
 					<span class="font-medium">
 						{data.typeStr}
 					</span>
-					<span class="hidden has-[+*]:inline">{' · '}</span>
+					<span class="hidden has-[+*]:inline"> · </span>
 				{/if}
 				{#each data['web-card-header-top']?._display as displayObj, index (index)}
 					<span>
@@ -85,7 +83,7 @@
 		<div class="decorated-card-body">
 			{#each data['card-body']?._display as obj, index (index)}
 				<div>
-					<DecoratedData data={obj} showLabels="never" block />
+					<DecoratedData data={obj} showLabels="never" block limit={{ contribution: 3 }} />
 				</div>
 			{/each}
 		</div>
