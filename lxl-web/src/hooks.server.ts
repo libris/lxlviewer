@@ -14,7 +14,7 @@ let utilCache;
 export const init: ServerInit = async () => {
 	// get libraries at startup
 	try {
-		refreshLibraries();
+		await refreshLibraries(); // await this??
 	} catch (err) {
 		console.error('Refreshing libraries failed at server init', err);
 	}
