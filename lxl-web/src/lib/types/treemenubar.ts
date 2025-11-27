@@ -8,13 +8,11 @@ export interface TreeMenuItem {
 
 export interface TreeMenuItemSnippetParams {
 	data: TreeMenuItem;
-	onchange?: ChangeHandler;
+	onmenuitemchange?: (event: Event) => void;
+	onmenuitemkeydown: (event: KeyboardEvent) => void;
 }
 
 export type TreeMenuItemSnippet = Snippet<[TreeMenuItemSnippetParams]>;
-
-export type ChangeHandler = (params: ChangeHandlerParams) => void;
-export type ChangeHandlerParams = { data: TreeMenuItem; checked?: boolean | 'mixed' };
 
 export type ToggleHandler = (params: ToggleHandlerParams) => void;
 export type ToggleHandlerParams = {
@@ -22,6 +20,9 @@ export type ToggleHandlerParams = {
 	expanded: boolean;
 	expandedItems?: TreeMenuItem[];
 };
+
+export type KeyDownHandler = (params: KeyDownHandler) => void;
+export type KeyDownHandlerParams = { data: TreeMenuItem; event: KeyboardEvent };
 
 export enum TreeMenuBarKeys {
 	Enter = 'Enter',

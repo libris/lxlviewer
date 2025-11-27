@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getTreeMenuBarContext } from '$lib/contexts/treemenubar';
 	import { send, receive } from '$lib/utils/transition';
-	import type { TreeMenuItem, TreePath } from '$lib/types/treemenubar';
+	import { TreeMenuBarKeys, type TreeMenuItem, type TreePath } from '$lib/types/treemenubar';
 	import { getNestedDataByPath, getChildrenByPath, getDataByPath } from './utils';
 	import TreeMenuBarItem from './TreeMenuBarItem.svelte';
 
@@ -12,14 +12,30 @@
 
 	const { data, path }: Props = $props();
 
-	const { menuItem, animated, toggle, onchange } = getTreeMenuBarContext();
+	const { menuItem, animated, toggle } = getTreeMenuBarContext();
 
 	const dataByPath = $derived(getDataByPath(data, path));
 	const hasChildren = $derived(!!getChildrenByPath(data, path).length);
+
+	function handleMenuItemKeyDown(data: TreeMenuItem, event: KeyboardEvent) {
+		if (Object.keys(TreeMenuBarKeys).includes(event.key) || event.key === TreeMenuBarKeys.Space) {
+			event.preventDefault();
+			event.stopPropagation();
+			console.log('handleMenuItemKeyDown', data, event.key);
+		}
+	}
+
+	function handleMenuItemChange(data: TreeMenuItem, event: Event) {
+		console.log('handleMenuItemChange data:', data, 'event:', event);
+	}
 </script>
 
 {#snippet _menuItem(dataByPath: TreeMenuItem)}
-	{@render menuItem({ data: dataByPath, onchange })}
+	{@render menuItem({
+		data: dataByPath,
+		onmenuitemchange: (event: Event) => handleMenuItemChange(dataByPath, event),
+		onmenuitemkeydown: (event: KeyboardEvent) => handleMenuItemKeyDown(dataByPath, event)
+	})}
 {/snippet}
 
 {#snippet _menuItemWrapper(dataByPath: TreeMenuItem)}
