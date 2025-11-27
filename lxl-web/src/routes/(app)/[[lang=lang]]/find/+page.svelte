@@ -23,11 +23,12 @@
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 
+	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
 	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
 	const description = $derived(
 		searchQuery
-			? `${page.data.t('search.searchResults')} ${searchQuery} - ${page.data.siteName}`
-			: `${page.data.t('search.searchResults')} - ${page.data.siteName}`
+			? `${page.data.t('search.searchResults')} ${searchQuery} - ${siteName}`
+			: `${page.data.t('search.searchResults')} - ${siteName}`
 	);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 	const refinedLibraries = $derived(
@@ -64,12 +65,7 @@
 	<title>{page.data.pageTitle}</title>
 </svelte:head>
 
-<Meta
-	title={page.data.pageTitle}
-	{description}
-	url={page.url.href}
-	siteName={getPageTitle(undefined, page.data.siteName)}
-/>
+<Meta title={page.data.pageTitle} {description} url={page.url.href} {siteName} />
 
 {#if searchResult}
 	<div
