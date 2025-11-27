@@ -6,12 +6,14 @@ export interface TreeMenuItem {
 	path: TreePath;
 }
 
-export interface TreeMenuItemSnippetParams extends TreeMenuItem {
-	hasSelected?: boolean;
-	oonchangeselected?: (selected: boolean) => void;
+export interface TreeMenuItemSnippetParams {
+	data: TreeMenuItem;
+	onchange?: ChangeHandler;
 }
 
-export type TreeMenuItemSnippet = Snippet<[TreeMenuItem]>;
+export type TreeMenuItemSnippet = Snippet<[TreeMenuItemSnippetParams]>;
+
+export type ChangeHandler = (data: TreeMenuItem) => void;
 
 export enum TreeMenuBarKeys {
 	Enter = 'Enter',

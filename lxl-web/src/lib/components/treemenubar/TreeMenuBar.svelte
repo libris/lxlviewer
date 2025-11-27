@@ -3,11 +3,12 @@
 	import type {
 		TreeMenuItem,
 		TreeMenuItemSnippet,
-		TreeMenuItemSnippetParams
+		TreeMenuItemSnippetParams,
+		ChangeHandler
 	} from '$lib/types/treemenubar';
 	import { setTreeMenuBarContext } from '$lib/contexts/treemenubar';
 	import TreeMenuBarItem from './TreeMenuBarItem.svelte';
-	import { getDataByPath } from './utils';
+	import { getNestedDataByPath } from './utils';
 	import { page } from '$app/state';
 
 	interface Props {
@@ -17,6 +18,7 @@
 		ariaLabel?: string;
 		animated?: boolean;
 		menuItem?: TreeMenuItemSnippet;
+		onchange?: ChangeHandler;
 	}
 
 	let {
@@ -25,14 +27,16 @@
 		ariaLabelledby,
 		ariaLabel,
 		animated = true,
-		menuItem = fallbackMenuItem
+		menuItem = fallbackMenuItem,
+		onchange
 	}: Props = $props();
 
 	const rootItems = $derived(data.filter((item) => item.path.length === 1));
 
 	setTreeMenuBarContext({
 		menuItem,
-		animated: !prefersReducedMotion.current && animated
+		animated: !prefersReducedMotion.current && animated,
+		onchange
 	});
 </script>
 
@@ -49,13 +53,17 @@ and https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/menu
 	aria-orientation="vertical"
 >
 	{#each rootItems as { path } (path)}
-		<TreeMenuBarItem data={getDataByPath(data, path)} {path} />
+		<TreeMenuBarItem data={getNestedDataByPath(data, path)} {path} />
 	{/each}
 </menu>
 
-{#snippet fallbackMenuItem({ path }: TreeMenuItemSnippetParams)}
-	<a role="menuitem" href={page.url.pathname + page.url.search + page.url.hash}>
-		{JSON.stringify(path)}
+{#snippet fallbackMenuItem({ data, onchange }: TreeMenuItemSnippetParams)}
+	<a
+		role="menuitem"
+		href={page.url.pathname + page.url.search + page.url.hash}
+		onclick={() => onchange?.(data)}
+	>
+		{JSON.stringify(data?.path)}
 	</a>
 {/snippet}
 

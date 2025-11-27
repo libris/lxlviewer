@@ -1,9 +1,10 @@
 import { createContext } from 'svelte';
-import type { TreeMenuItemSnippet } from '$lib/types/treemenubar';
+import type { ChangeHandler, TreeMenuItemSnippet } from '$lib/types/treemenubar';
 
 type TreeMenuBarContext = {
 	menuItem: TreeMenuItemSnippet;
-	animated?: boolean;
+	animated: boolean;
+	onchange?: ChangeHandler;
 };
 
 export const [getTreeMenuBarContext, setTreeMenuBarContext] = createContext<TreeMenuBarContext>();

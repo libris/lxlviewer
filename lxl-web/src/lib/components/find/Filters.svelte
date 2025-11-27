@@ -46,6 +46,10 @@
 		{ path: ['contributor', 'Astrid Lindgren'] },
 		{ path: ['contributor', 'Hjalmar Söderberg'] }
 	];
+
+	function handleChangeMenuBar(data: TreeMenuItem) {
+		console.log('handleChangeMenuBar', data);
+	}
 </script>
 
 <nav class="filters" data-testid="filters">
@@ -64,7 +68,7 @@
 		</Toolbar>
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
-		<MenuBar data={flatData} ariaLabelledby={filterHeadingId} />
+		<MenuBar data={flatData} ariaLabelledby={filterHeadingId} onchange={handleChangeMenuBar} />
 		<details class="text-5xs text-subtle">
 			<summary tabindex="-1">JSON</summary>
 			<pre>{JSON.stringify(facets)}</pre>

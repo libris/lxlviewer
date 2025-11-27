@@ -1,6 +1,13 @@
 import type { TreeMenuItem, TreePath } from '$lib/types/treemenubar';
 
 export function getDataByPath(data: TreeMenuItem[], path: TreePath) {
+	return data.find(
+		({ path: otherPath }) =>
+			path.length === otherPath.length && path.every((part, index) => part === otherPath[index])
+	);
+}
+
+export function getNestedDataByPath(data: TreeMenuItem[], path: TreePath) {
 	return data.filter(({ path: otherPath }) =>
 		path.every((part, index) => part === otherPath[index])
 	);
