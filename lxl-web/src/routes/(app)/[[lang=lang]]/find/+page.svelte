@@ -19,6 +19,7 @@
 	import Meta from '$lib/components/Meta.svelte';
 	import { USE_HOLDING_PANE } from '$lib/constants/panels';
 	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping';
+	import getPageTitle from '$lib/utils/getPageTitle';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 
@@ -63,7 +64,12 @@
 	<title>{page.data.pageTitle}</title>
 </svelte:head>
 
-<Meta title={page.data.pageTitle} {description} url={page.url.href} />
+<Meta
+	title={page.data.pageTitle}
+	{description}
+	url={page.url.href}
+	siteName={getPageTitle(undefined, page.data.siteName)}
+/>
 
 {#if searchResult}
 	<div

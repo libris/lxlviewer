@@ -4,7 +4,7 @@ import type { DisplayDecorated } from '$lib/types/xl';
 const META_DESCRIPTION_MAX_LENGTH = 155;
 
 export function getMetaDescription(
-	data: DisplayDecorated | undefined,
+	data: DisplayDecorated | string | undefined,
 	maxLength = META_DESCRIPTION_MAX_LENGTH
 ): string {
 	if (!data) {

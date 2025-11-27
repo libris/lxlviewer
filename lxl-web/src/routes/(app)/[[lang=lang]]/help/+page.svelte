@@ -18,7 +18,7 @@
 	title={pageTitle}
 	description={page.data.t('help.pageDescription')}
 	url={page.url.origin + page.url.pathname}
-	siteName={page.data.siteName}
+	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
 <article class="mx-auto mt-8 mb-12 max-w-3xl p-4 sm:px-6">

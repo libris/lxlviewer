@@ -44,7 +44,9 @@ export default {
 		dismiss: 'Hide beta info'
 	},
 	about: {
-		pageTitle: 'About the beta'
+		pageTitle: 'About the beta',
+		pageDescription:
+			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog. Right now, an initiative is underway to replace the already existing and well-used service libris.kb.se and this is our public beta version of the upcoming service.'
 	},
 	help: {
 		pageTitle: 'Help',
@@ -52,6 +54,8 @@ export default {
 			'Help and documentation for using Libris, the Swedish national union catalogue.'
 	},
 	myPages: {
+		pageTitle: 'My pages',
+		pageDescription: 'Here you can manage your favourite libraries, among other things.',
 		myPages: 'My pages',
 		libraries: 'Libraries',
 		favouriteLibraries: 'My libraries',

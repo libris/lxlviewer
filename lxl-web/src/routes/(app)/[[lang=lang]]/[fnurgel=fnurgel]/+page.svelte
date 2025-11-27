@@ -66,7 +66,7 @@
 	{description}
 	image={ogImage}
 	url={page.url.origin + page.url.pathname}
-	siteName={page.data.siteName}
+	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
 <div data-testid="resource-page" class="contents">

@@ -43,7 +43,9 @@ export default {
 		dismiss: 'Dölj information om betan'
 	},
 	about: {
-		pageTitle: 'Om betan'
+		pageTitle: 'Om betan',
+		pageDescription:
+			'Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog. Just nu pågår ett initiativ att ersätta den redan existerande och välanvända tjänsten libris.kb.se och detta är vår publika betaversion av den kommande tjänsten.'
 	},
 	help: {
 		pageTitle: 'Hjälp',
@@ -51,6 +53,8 @@ export default {
 			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.'
 	},
 	myPages: {
+		pageTitle: 'My pages',
+		pageDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Mina bibliotek',

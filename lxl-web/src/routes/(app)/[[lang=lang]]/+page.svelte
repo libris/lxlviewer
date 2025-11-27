@@ -14,6 +14,7 @@
 	title={page.data.siteName}
 	description={page.data.t('home.pageDescription')}
 	url={page.url.href}
+	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
 <article class="mx-auto mt-8 mb-12 max-w-3xl p-4">
