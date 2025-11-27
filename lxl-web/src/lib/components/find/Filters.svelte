@@ -3,7 +3,11 @@
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import MenuBar from '../treemenubar/TreeMenuBar.svelte';
-	import type { TreeMenuItem } from '$lib/types/treemenubar';
+	import type {
+		ChangeHandlerParams,
+		ToggleHandlerParams,
+		TreeMenuItem
+	} from '$lib/types/treemenubar';
 
 	type Props = {
 		facets?: Facet[];
@@ -47,8 +51,12 @@
 		{ path: ['contributor', 'Hjalmar Söderberg'] }
 	];
 
-	function handleChangeMenuBar(data: TreeMenuItem) {
-		console.log('handleChangeMenuBar', data);
+	function handleChangeMenuBar({ data, checked }: ChangeHandlerParams) {
+		console.log('handleChangeMenuBar', data, 'checked:', checked);
+	}
+
+	function handleToggle({ data, expanded, expandedItems }: ToggleHandlerParams) {
+		console.log('handleToggle', data, 'expanded:', expanded, 'expandedItems:', expandedItems);
 	}
 </script>
 
@@ -68,7 +76,12 @@
 		</Toolbar>
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
-		<MenuBar data={flatData} ariaLabelledby={filterHeadingId} onchange={handleChangeMenuBar} />
+		<MenuBar
+			data={flatData}
+			ariaLabelledby={filterHeadingId}
+			onchange={handleChangeMenuBar}
+			ontoggle={handleToggle}
+		/>
 		<details class="text-5xs text-subtle">
 			<summary tabindex="-1">JSON</summary>
 			<pre>{JSON.stringify(facets)}</pre>

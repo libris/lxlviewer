@@ -4,11 +4,13 @@
 		TreeMenuItem,
 		TreeMenuItemSnippet,
 		TreeMenuItemSnippetParams,
-		ChangeHandler
+		ChangeHandler,
+		ToggleHandler,
+		ToggleHandlerParams
 	} from '$lib/types/treemenubar';
 	import { setTreeMenuBarContext } from '$lib/contexts/treemenubar';
 	import TreeMenuBarItem from './TreeMenuBarItem.svelte';
-	import { getNestedDataByPath } from './utils';
+	import { areEqualPaths, getNestedDataByPath } from './utils';
 	import { page } from '$app/state';
 
 	interface Props {
@@ -19,6 +21,7 @@
 		animated?: boolean;
 		menuItem?: TreeMenuItemSnippet;
 		onchange?: ChangeHandler;
+		ontoggle?: ToggleHandler;
 	}
 
 	let {
@@ -28,15 +31,27 @@
 		ariaLabel,
 		animated = true,
 		menuItem = fallbackMenuItem,
-		onchange
+		onchange,
+		ontoggle
 	}: Props = $props();
 
 	const rootItems = $derived(data.filter((item) => item.path.length === 1));
+	let expandedItems: TreeMenuItem[] = $derived([]); // TODO: set initially opened paths using getExpanded function?
+
+	function toggle({ data, expanded }: ToggleHandlerParams) {
+		if (expanded && !expandedItems.find((item) => areEqualPaths(data.path, item.path))) {
+			expandedItems = [...expandedItems, data];
+		} else if (!expanded) {
+			expandedItems = [...expandedItems.filter((item) => areEqualPaths(data.path, item.path))];
+		}
+		ontoggle?.({ data, expanded, expandedItems });
+	}
 
 	setTreeMenuBarContext({
 		menuItem,
 		animated: !prefersReducedMotion.current && animated,
-		onchange
+		onchange,
+		toggle
 	});
 </script>
 
@@ -61,7 +76,7 @@ and https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/menu
 	<a
 		role="menuitem"
 		href={page.url.pathname + page.url.search + page.url.hash}
-		onclick={() => onchange?.(data)}
+		onclick={() => onchange?.({ data })}
 	>
 		{JSON.stringify(data?.path)}
 	</a>

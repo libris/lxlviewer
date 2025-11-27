@@ -13,7 +13,15 @@ export interface TreeMenuItemSnippetParams {
 
 export type TreeMenuItemSnippet = Snippet<[TreeMenuItemSnippetParams]>;
 
-export type ChangeHandler = (data: TreeMenuItem) => void;
+export type ChangeHandler = (params: ChangeHandlerParams) => void;
+export type ChangeHandlerParams = { data: TreeMenuItem; checked?: boolean | 'mixed' };
+
+export type ToggleHandler = (params: ToggleHandlerParams) => void;
+export type ToggleHandlerParams = {
+	data: TreeMenuItem;
+	expanded: boolean;
+	expandedItems?: TreeMenuItem[];
+};
 
 export enum TreeMenuBarKeys {
 	Enter = 'Enter',

@@ -12,7 +12,7 @@
 
 	const { data, path }: Props = $props();
 
-	const { menuItem, animated, onchange } = getTreeMenuBarContext();
+	const { menuItem, animated, toggle, onchange } = getTreeMenuBarContext();
 
 	const dataByPath = $derived(getDataByPath(data, path));
 	const hasChildren = $derived(!!getChildrenByPath(data, path).length);
@@ -24,7 +24,11 @@
 
 {#snippet _menuItemWrapper(dataByPath: TreeMenuItem)}
 	{#if hasChildren}
-		<details>
+		<details
+			ontoggle={(event: Event & { currentTarget: HTMLDetailsElement }) => {
+				toggle({ data: dataByPath, expanded: event.currentTarget.open });
+			}}
+		>
 			<summary>{@render _menuItem(dataByPath)}</summary>
 			<ul style={`--level:${path.length + 1}`}>
 				{#each data.filter((item) => item.path.length === path.length + 1) as item (item.path)}

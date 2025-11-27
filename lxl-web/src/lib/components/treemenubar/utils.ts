@@ -19,3 +19,7 @@ export function getChildrenByPath(data: TreeMenuItem[], path: TreePath) {
 			otherPath.length !== path.length && path.every((part, index) => part === otherPath[index])
 	);
 }
+
+export function areEqualPaths(a: TreePath, b: TreePath) {
+	return a.length === b.length && a.every((part, index) => part === b[index]);
+}
