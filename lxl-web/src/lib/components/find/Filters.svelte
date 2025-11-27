@@ -32,16 +32,16 @@
 	}
 
 	const flatData: TreeMenuItem[] = [
-		{ path: ['language'] },
-		{ path: ['language', 'swedish'] },
-		{ path: ['language', 'english'] },
-		{ path: ['language', 'spanish'] },
 		{ path: ['categories'] },
 		{ path: ['categories', 'litterature'] },
 		{ path: ['categories', 'litterature', 'skönlitteratur'] },
 		{ path: ['categories', 'litterature', 'poesi'] },
 		{ path: ['categories', 'music'] },
 		{ path: ['categories', 'film'] },
+		{ path: ['language'] },
+		{ path: ['language', 'swedish'] },
+		{ path: ['language', 'english'] },
+		{ path: ['language', 'spanish'] },
 		{ path: ['contributor'] },
 		{ path: ['contributor', 'Astrid Lindgren'] },
 		{ path: ['contributor', 'Hjalmar Söderberg'] }
