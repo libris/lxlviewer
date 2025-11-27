@@ -115,11 +115,36 @@ export default {
       }
       return false;
     },
+    bothAreHoldings() {
+      if (this.bothRecordsLoaded) {
+        return this.isHolding(this.source.mainEntity) && this.isHolding(this.inspector.data.mainEntity);
+      }
+      return false;
+    },
+    isAllowedToMergeHoldings() {
+      if (this.bothRecordsLoaded) {
+        const source = this.source.mainEntity;
+        const target = this.inspector.data.mainEntity;
+        return (this.isHeldByActiveSigel(source) && this.isHeldByActiveSigel(target)) || this.user.isGlobalRegistrant();
+      } else {
+        return true;
+      }
+    },
     hasDuplicates() {
       return !isEmpty(this.duplicateHoldings);
     },
     isValid() {
-      return this.enrichOnly ? !this.mismatchingTypes : !(this.hasDuplicates || this.mismatchingTypes);
+      return this.enrichOnly ? this.isValidForEnrich : this.isValidForMerge;
+    },
+    isValidForEnrich() {
+      return !this.mismatchingTypes;
+    },
+    isValidForMerge() {
+      if (this.bothAreHoldings) {
+        return this.isAllowedToMergeHoldings;
+      } else {
+        return !(this.hasDuplicates || this.mismatchingTypes);
+      }
     },
     isAllSelected() {
       if (this.sourceLoaded) {
@@ -385,6 +410,24 @@ export default {
         }
       })
       return duplicates;
+    },
+    isHolding(mainEntity) {
+      const type = mainEntity['@type'];
+      return VocabUtil.isSubClassOf(type, 'Item', this.resources.vocab, this.resources.context);
+    },
+    isHeldByActiveSigel(mainEntity) {
+      if (mainEntity.heldBy && mainEntity.heldBy['@id'] === this.user.getActiveLibraryUri()) {
+        return true;
+      }
+      const componentList = mainEntity.hasComponent;
+      if (typeof componentList !== 'undefined') {
+        for (const component of componentList) {
+          if (component.heldBy && component.heldBy['@id'] === this.user.getActiveLibraryUri()) {
+            return true;
+          }
+        }
+      }
+      return false;
     },
     applyFromSource() {
       if (this.bothRecordsLoaded) {
@@ -721,6 +764,12 @@ export default {
             <div class="iconCircle"><i class="fa fa-fw fa-exclamation"/></div>
             <div class="MergeView-description">
               {{ translatePhrase('To be able to enrich, the selected entities need to be of the same type.') }}
+            </div>
+          </div>
+          <div class="MergeView-descriptionContainer" v-if="this.bothAreHoldings && !isAllowedToMergeHoldings && !loadingRecords">
+            <div class="iconCircle"><i class="fa fa-fw fa-exclamation"/></div>
+            <div class="MergeView-description">
+              {{ translatePhrase('Switch to a sigel with permission to edit both the selected holdings.') }}
             </div>
           </div>
           <div v-if="hasDuplicates && !mismatchingTypes && !enrichOnly && !loadingRecords">

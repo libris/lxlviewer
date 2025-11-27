@@ -1192,7 +1192,7 @@ export default {
           :full="true"
           :focus-data="inspector.data.mainEntity"
           :record-data="inspector.data.record"
-          v-if="!isItem" />
+        />
         <validation-summary v-if="user.settings.appTech" />
         <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
         <entity-form
