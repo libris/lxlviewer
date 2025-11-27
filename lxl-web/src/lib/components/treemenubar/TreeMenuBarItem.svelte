@@ -25,6 +25,18 @@
 		}
 	}
 
+	function handleSummaryKeyDown(event: KeyboardEvent) {
+		switch (event.key) {
+			case TreeMenuBarKeys.ArrowUp:
+			case TreeMenuBarKeys.ArrowRight:
+			case TreeMenuBarKeys.ArrowDown:
+			case TreeMenuBarKeys.ArrowLeft: {
+				event.preventDefault();
+				console.log('handleSummaryKeyDown', dataByPath, event.key);
+			}
+		}
+	}
+
 	function handleMenuItemChange(data: TreeMenuItem, event: Event) {
 		console.log('handleMenuItemChange data:', data, 'event:', event);
 	}
@@ -45,7 +57,7 @@
 				toggle({ data: dataByPath, expanded: event.currentTarget.open });
 			}}
 		>
-			<summary>{@render _menuItem(dataByPath)}</summary>
+			<summary onkeydown={handleSummaryKeyDown}>{@render _menuItem(dataByPath)}</summary>
 			<ul style={`--level:${path.length + 1}`}>
 				{#each data.filter((item) => item.path.length === path.length + 1) as item (item.path)}
 					<TreeMenuBarItem data={getNestedDataByPath(data, item.path)} path={item.path} />
