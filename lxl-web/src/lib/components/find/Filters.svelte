@@ -2,7 +2,8 @@
 	import { page } from '$app/state';
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
-	import TreeView, { type TreeItem, TreePath } from '$lib/components/treeview/TreeView.svelte';
+	import MenuBar from '../treemenubar/TreeMenuBar.svelte';
+	import type { TreeMenuItem } from '$lib/types/treemenubar';
 
 	type Props = {
 		facets?: Facet[];
@@ -30,20 +31,20 @@
 		);
 	}
 
-	const flatData: TreeItem[] = [
-		{ path: new TreePath(['language']) },
-		{ path: new TreePath(['language', 'swedish']) },
-		{ path: new TreePath(['language', 'english']) },
-		{ path: new TreePath(['language', 'spanish']) },
-		{ path: new TreePath(['categories']) },
-		{ path: new TreePath(['categories', 'litterature']) },
-		{ path: new TreePath(['categories', 'litterature', 'skönlitteratur']) },
-		{ path: new TreePath(['categories', 'litterature', 'poesi']) },
-		{ path: new TreePath(['categories', 'music']) },
-		{ path: new TreePath(['categories', 'film']) },
-		{ path: new TreePath(['contributor']) },
-		{ path: new TreePath(['contributor', 'Astrid Lindgren']) },
-		{ path: new TreePath(['contributor', 'Hjalmar Söderberg']) }
+	const flatData: TreeMenuItem[] = [
+		{ path: ['language'] },
+		{ path: ['language', 'swedish'] },
+		{ path: ['language', 'english'] },
+		{ path: ['language', 'spanish'] },
+		{ path: ['categories'] },
+		{ path: ['categories', 'litterature'] },
+		{ path: ['categories', 'litterature', 'skönlitteratur'] },
+		{ path: ['categories', 'litterature', 'poesi'] },
+		{ path: ['categories', 'music'] },
+		{ path: ['categories', 'film'] },
+		{ path: ['contributor'] },
+		{ path: ['contributor', 'Astrid Lindgren'] },
+		{ path: ['contributor', 'Hjalmar Söderberg'] }
 	];
 </script>
 
@@ -63,12 +64,12 @@
 		</Toolbar>
 	{/if}
 	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
-		<TreeView data={flatData} selectable="multiple" ariaLabelledby={filterHeadingId}></TreeView>
-		<details class="text-4xs">
+		<MenuBar data={flatData} ariaLabelledby={filterHeadingId} />
+		<details class="text-5xs text-subtle">
 			<summary tabindex="-1">JSON</summary>
 			<pre>{JSON.stringify(facets)}</pre>
 		</details>
-		<!--
+		<!--	
 		{#if treeViewFacets?.length}
 			<TreeView ariaLabelledby={filterHeadingId} items={treeViewFacets}>
 				{#snippet treeItemSnippet({ data, level }: TreeItemSnippetParams)}
@@ -96,7 +97,7 @@
 		scrollbar-gutter: stable;
 	}
 
-	:global([role='group']) {
+	:global(summary + ul) {
 		padding-left: calc(var(--spacing) * 6);
 	}
 </style>
