@@ -16,10 +16,20 @@
 	import Spinner from '$lib/components/Spinner.svelte';
 	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import Meta from '$lib/components/Meta.svelte';
 	import { USE_HOLDING_PANE } from '$lib/constants/panels';
 	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping';
+	import getPageTitle from '$lib/utils/getPageTitle';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
+
+	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
+	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
+	const description = $derived(
+		searchQuery
+			? `${page.data.t('search.searchResults')} ${searchQuery} - ${siteName}`
+			: `${page.data.t('search.searchResults')} - ${siteName}`
+	);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 	const refinedLibraries = $derived(
 		getSigelsFromMapping([searchResult.mapping, page.data.subsetMapping])
@@ -54,6 +64,9 @@
 <svelte:head>
 	<title>{page.data.pageTitle}</title>
 </svelte:head>
+
+<Meta title={page.data.pageTitle} {description} url={page.url.href} {siteName} />
+
 {#if searchResult}
 	<div
 		class={[

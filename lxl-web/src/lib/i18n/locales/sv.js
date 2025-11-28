@@ -1,6 +1,8 @@
 export default {
 	home: {
-		searchPlaceholder: 'Titel, författare, ämne med mera'
+		searchPlaceholder: 'Titel, författare, ämne med mera',
+		pageDescription:
+			'Libris är en nationell söktjänst med information om titlar på cirka 600 svenska bibliotek, däribland KB. Med hjälp av tjänsten kan du hitta det du söker på ett bibliotek nära dig. Här finns närmare 13 miljoner objekt: böcker, tidskrifter, bilder, kartor, noter, e-böcker med mera. Libris innehåller även digitalt material som är fritt att ta del av hemifrån.'
 	},
 	appMenu: {
 		skipToContent: 'Hoppa till innehåll',
@@ -41,9 +43,18 @@ export default {
 		dismiss: 'Dölj information om betan'
 	},
 	about: {
-		pageTitle: 'Om betan'
+		pageTitle: 'Om betan',
+		pageDescription:
+			'Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog. Just nu pågår ett initiativ att ersätta den redan existerande och välanvända tjänsten libris.kb.se och detta är vår publika betaversion av den kommande tjänsten.'
+	},
+	help: {
+		pageTitle: 'Hjälp',
+		pageDescription:
+			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.'
 	},
 	myPages: {
+		pageTitle: 'My pages',
+		pageDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Mina bibliotek',

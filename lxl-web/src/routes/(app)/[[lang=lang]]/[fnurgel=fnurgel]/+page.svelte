@@ -3,15 +3,29 @@
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { afterNavigate, goto } from '$app/navigation';
 	import getPageTitle from '$lib/utils/getPageTitle';
+	import getMetaDescription from '$lib/utils/getMetaDescription';
 	import { type CitationsType } from '$lib/types/citation.js';
 	import type { HoldingsData } from '$lib/types/holdings.js';
 	import Resource from '$lib/components/Resource.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import Meta from '$lib/components/Meta.svelte';
 	import Citations from '$lib/components/Citations.svelte';
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping.js';
+	import { bestSize } from '$lib/utils/auxd';
+	import { first } from '$lib/utils/xl';
+	import { Width } from '$lib/types/auxd';
 
 	const { data } = $props();
+
+	const description = $derived(getMetaDescription(data.overview));
+	const ogImage = $derived(
+		data.images?.length ? bestSize(first(data.images), Width.MEDIUM)?.url : undefined
+	);
+
+	// TODO: Possibly figure out some mapping and set og:type,
+	// see https://ogp.me/#types. Unclear how meaningful this would be.
+
 	const holdings: HoldingsData = $derived({
 		...data.holdings,
 		instances: data.instances,
@@ -46,6 +60,15 @@
 <svelte:head>
 	<title>{getPageTitle(data.title, page.data.siteName)}</title>
 </svelte:head>
+
+<Meta
+	title={data.title}
+	{description}
+	image={ogImage}
+	url={page.url.origin + page.url.pathname}
+	siteName={getPageTitle(undefined, page.data.siteName)}
+/>
+
 <div data-testid="resource-page" class="contents">
 	<!-- Zotero tag -->
 	{#if data.instances?.length}

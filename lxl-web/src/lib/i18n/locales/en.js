@@ -1,7 +1,9 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
 	home: {
-		searchPlaceholder: 'Title, author, subject etc'
+		searchPlaceholder: 'Title, author, subject etc',
+		pageDescription:
+			'Libris is a national search service with information about titles in about 600 Swedish libraries, including the National Library. With Libris you can find what you are looking for at a library near you. The search service contains almost 13 million items: books, journals, pictures, maps, notes, e-books and more. Libris also contains digital material that is free to access from home.'
 	},
 	appMenu: {
 		skipToContent: 'Skip to main content',
@@ -42,9 +44,18 @@ export default {
 		dismiss: 'Hide beta info'
 	},
 	about: {
-		pageTitle: 'About the beta'
+		pageTitle: 'About the beta',
+		pageDescription:
+			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog. Right now, an initiative is underway to replace the already existing and well-used service libris.kb.se and this is our public beta version of the upcoming service.'
+	},
+	help: {
+		pageTitle: 'Help',
+		pageDescription:
+			'Help and documentation for using Libris, the Swedish national union catalogue.'
 	},
 	myPages: {
+		pageTitle: 'My pages',
+		pageDescription: 'Here you can manage your favourite libraries, among other things.',
 		myPages: 'My pages',
 		libraries: 'Libraries',
 		favouriteLibraries: 'My libraries',
