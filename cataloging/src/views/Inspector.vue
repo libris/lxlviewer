@@ -345,16 +345,6 @@ export default {
         }
       });
     },
-    applyFromSource() {
-      this.$store.dispatch('setInspectorData', this.inspector.originalData);
-      this.$store.dispatch('flushChangeHistory');
-      this.removeEnrichedHighlight();
-      let source = cloneDeep(this.enrichment.data.source);
-      each(this.settings.keysToClear.duplication, (property) => {
-        unset(source, property);
-      });
-      this.applyFieldsFromTemplate(source, true);
-    },
     applyFieldsFromTemplate(template) {
       const baseRecordType = this.inspector.data.mainEntity['@type'];
       const tempRecordType = template.mainEntity['@type'];
@@ -1024,8 +1014,6 @@ export default {
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
-      } else if (val.name === 'apply-source') {
-        this.applyFromSource();
       } else if (val.name === 'open-enrich-from-id') {
         this.toggleEnrichFromIdModal(true);
       } else if (val.name === 'open-detailed-enrich-from-id') {
