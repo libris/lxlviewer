@@ -84,6 +84,7 @@ export default {
      return this.recordType === 'Instance' ||
        this.recordType === 'Work' ||
        this.recordType === 'Agent' ||
+       this.recordType === 'Item' ||
        (this.recordType === 'Concept' && (this.user.settings.activeSigel === 'Ssao' || this.user.settings.activeSigel === 'Sbi'));
     },
     state() {
@@ -257,6 +258,7 @@ export default {
   &-tags {
     display: flex;
     align-items: center;
+    min-height: 40px;
     .TagSwitch {
       display: flex;
     }
