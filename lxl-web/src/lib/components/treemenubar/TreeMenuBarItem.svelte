@@ -17,27 +17,17 @@
 	const dataByPath = $derived(getDataByPath(data, path));
 	const hasChildren = $derived(!!getChildrenByPath(data, path).length);
 
-	function handleMenuItemKeyDown(data: TreeMenuItem, event: KeyboardEvent) {
-		if (Object.keys(TreeMenuBarKeys).includes(event.key) || event.key === TreeMenuBarKeys.Space) {
+	function handleKeyDown(data: TreeMenuItem, event: KeyboardEvent) {
+		if (
+			Object.keys(TreeMenuBarKeys).includes(event.key) ||
+			((event.target as HTMLElement).tagName !== 'SUMMARY' && event.key === TreeMenuBarKeys.Space)
+		) {
 			event.preventDefault();
 			event.stopPropagation();
-			console.log('handleMenuItemKeyDown', data, event.key);
 		}
 	}
 
-	function handleSummaryKeyDown(event: KeyboardEvent) {
-		switch (event.key) {
-			case TreeMenuBarKeys.ArrowUp:
-			case TreeMenuBarKeys.ArrowRight:
-			case TreeMenuBarKeys.ArrowDown:
-			case TreeMenuBarKeys.ArrowLeft: {
-				event.preventDefault();
-				console.log('handleSummaryKeyDown', dataByPath, event.key);
-			}
-		}
-	}
-
-	function handleMenuItemChange(data: TreeMenuItem, event: Event) {
+	function handleChange(data: TreeMenuItem, event: Event) {
 		console.log('handleMenuItemChange data:', data, 'event:', event);
 	}
 </script>
@@ -45,8 +35,8 @@
 {#snippet _menuItem(dataByPath: TreeMenuItem)}
 	{@render menuItem({
 		data: dataByPath,
-		onmenuitemchange: (event: Event) => handleMenuItemChange(dataByPath, event),
-		onmenuitemkeydown: (event: KeyboardEvent) => handleMenuItemKeyDown(dataByPath, event)
+		onmenuitemchange: (event: Event) => handleChange(dataByPath, event),
+		onmenuitemkeydown: (event: KeyboardEvent) => handleKeyDown(dataByPath, event)
 	})}
 {/snippet}
 
@@ -57,7 +47,9 @@
 				toggle({ data: dataByPath, expanded: event.currentTarget.open });
 			}}
 		>
-			<summary onkeydown={handleSummaryKeyDown}>{@render _menuItem(dataByPath)}</summary>
+			<summary onkeydown={(event) => handleKeyDown(dataByPath, event)}>
+				{@render _menuItem(dataByPath)}
+			</summary>
 			<ul style={`--level:${path.length + 1}`}>
 				{#each data.filter((item) => item.path.length === path.length + 1) as item (item.path)}
 					<TreeMenuBarItem data={getNestedDataByPath(data, item.path)} path={item.path} />
