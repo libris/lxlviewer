@@ -14,7 +14,6 @@ export interface TreeMenuItemSnippetParams {
 
 export type TreeMenuItemSnippet = Snippet<[TreeMenuItemSnippetParams]>;
 
-export type ToggleHandler = (params: ToggleHandlerParams) => void;
 export type ToggleHandlerParams = {
 	data: TreeMenuItem;
 	expanded: boolean;

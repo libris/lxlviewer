@@ -4,7 +4,6 @@
 		TreeMenuItem,
 		TreeMenuItemSnippet,
 		TreeMenuItemSnippetParams,
-		ToggleHandler,
 		ToggleHandlerParams
 	} from '$lib/types/treemenubar';
 	import { setTreeMenuBarContext } from '$lib/contexts/treemenubar';
@@ -19,7 +18,6 @@
 		ariaLabel?: string;
 		animated?: boolean;
 		menuItem?: TreeMenuItemSnippet;
-		ontoggle?: ToggleHandler;
 	}
 
 	let {
@@ -28,8 +26,7 @@
 		ariaLabelledby,
 		ariaLabel,
 		animated = true,
-		menuItem = fallbackMenuItem,
-		ontoggle
+		menuItem = fallbackMenuItem
 	}: Props = $props();
 
 	const rootItems = $derived(data.filter((item) => item.path.length === 1));
@@ -41,7 +38,6 @@
 		} else if (!expanded) {
 			expandedItems = [...expandedItems.filter((item) => areEqualPaths(data.path, item.path))];
 		}
-		ontoggle?.({ data, expanded, expandedItems });
 	}
 
 	setTreeMenuBarContext({
