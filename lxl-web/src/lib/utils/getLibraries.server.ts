@@ -1,10 +1,14 @@
 import { env } from '$env/dynamic/private';
-import { JsonLd } from '$lib/types/xl';
+import type { LibraryFull, LibraryId, LibraryWithLinks } from '$lib/types/holdings';
+import { BibDb, JsonLd } from '$lib/types/xl';
 import { gunzipSync } from 'node:zlib';
+import { createHolderLinks } from './holdings.server';
+import type { DisplayUtil } from './xl';
+import type { LocaleCode } from '$lib/i18n/locales';
 
 type Data = {
 	[JsonLd.CONTEXT]: string[];
-	[JsonLd.GRAPH]?: Record[] | Library[];
+	[JsonLd.GRAPH]?: Record[] | LibraryFull[];
 }[];
 
 type Record = {
@@ -15,22 +19,11 @@ type Record = {
 	};
 };
 
-type Library = {
-	[JsonLd.ID]: string;
-	[JsonLd.TYPE]: string;
-};
-
-type FramedLibrary = {
-	[JsonLd.ID]: string;
-	[JsonLd.TYPE]: string;
-	mainEntity: Library;
-};
-
-let librariesCache: Map<string, FramedLibrary> = new Map();
+let librariesCache: Map<LibraryId, LibraryWithLinks> = new Map();
 let cacheExpires = 0;
 const timeToLive = 24 * 60 * 1000; // 24h
 
-async function fetchLibraries() {
+async function fetchLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	const start = Date.now();
 
 	const res = await fetch(
@@ -44,44 +37,52 @@ async function fetchLibraries() {
 		.map((line) => JSON.parse(line));
 
 	const libraryArr = buildData(data);
-	const libraryMap = new Map(libraryArr.map((lib) => [lib[JsonLd.ID], lib]));
+	const libraryMap = new Map(
+		libraryArr.map((lib) => [lib[JsonLd.ID], withLinks(lib, displayUtil, locale)])
+	);
 
 	const end = Date.now();
 	console.log(`Fetching all libraries took ${(end - start).toFixed(1)} ms`);
 	return libraryMap;
 }
 
+function withLinks(
+	lib: LibraryFull,
+	displayUtil: DisplayUtil,
+	locale: LocaleCode
+): LibraryWithLinks {
+	console.log(lib);
+	const links = createHolderLinks(lib, locale, displayUtil);
+	const library = { ...lib, ...links };
+	delete library[BibDb.address];
+
+	return library;
+}
+
 function buildData(data: Data) {
-	const libraries: FramedLibrary[] = [];
+	const libraries: LibraryFull[] = [];
 
 	for (const lib of data) {
 		const graph = lib?.[JsonLd.GRAPH];
 		if (!graph) continue;
 
-		let record: Record | null = null;
-		let mainEntity = null;
+		let library: LibraryFull | null = null;
 
 		for (const item of graph) {
 			const type = item[JsonLd.TYPE];
-			if (type === 'Record') {
-				record = item as Record;
-			} else if (type === 'Library') {
-				mainEntity = item as Library;
+			if (type === 'Library') {
+				library = item as LibraryFull;
 			}
 		}
 
-		if (record && mainEntity) {
-			// imitate "framed" data
-			libraries.push({
-				...record,
-				mainEntity
-			});
+		if (library) {
+			libraries.push(library);
 		}
 	}
 	return libraries;
 }
 
-export function getAllLibraries() {
+export function getAllLibraries(displayutil: DisplayUtil, locale: LocaleCode) {
 	const now = Date.now();
 
 	if (librariesCache && now < cacheExpires) {
@@ -90,17 +91,17 @@ export function getAllLibraries() {
 	}
 
 	// cache expired, refresh libs in background & return stale data meanwhile
-	refreshLibraries();
+	refreshLibraries(displayutil, locale);
 	return librariesCache ?? [];
 }
 
 export function getLibrary(id: string) {
-	return librariesCache.get(id) || null;
+	return librariesCache.get(id) ?? null;
 }
 
-export async function refreshLibraries() {
+export async function refreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	try {
-		const libraries = await fetchLibraries();
+		const libraries = await fetchLibraries(displayUtil, locale);
 		librariesCache = libraries;
 		cacheExpires = Date.now() + timeToLive;
 	} catch (error) {

@@ -1,20 +1,23 @@
-import { defaultLocale, Locales } from '$lib/i18n/locales';
-import { env } from '$env/dynamic/private';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
+import type { RequestEvent, ServerInit } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
+import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
 import type { Site } from '$lib/types/site';
-import displayWeb from '$lib/assets/json/display-web.json';
 import { DebugFlags, type UserSettings } from '$lib/types/userSettings';
-import type { RequestEvent, ServerInit } from '@sveltejs/kit';
-import { refreshLibraries } from '$lib/utils/getLibraries';
+import displayWeb from '$lib/assets/json/display-web.json';
+import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
+import { refreshLibraries } from '$lib/utils/getLibraries.server';
 
-let utilCache;
+type Util = [VocabUtil, DisplayUtil];
+let utilCache: Util | undefined;
 
 export const init: ServerInit = async () => {
-	// get libraries at startup
+	/* eslint-disable @typescript-eslint/no-unused-vars */
+	const [_, displayUtil] = await loadUtilCached();
 	try {
-		await refreshLibraries(); // await this??
+		// get libraries at startup
+		await refreshLibraries(displayUtil, defaultLocale);
 	} catch (err) {
 		console.error('Refreshing libraries failed at server init', err);
 	}
@@ -51,6 +54,13 @@ export const handle = async ({ event, resolve }) => {
 		}
 
 		userSettings.debug = flags;
+
+		// TODO wipe myLibraries cookie if wrong format
+		// const myLibraries = userSettings.myLibraries;
+		// if (!Array.isArray(myLibraries) || myLibraries.some(v => typeof v === "object")) {
+		// 	console.log('wipe my libraries')
+		// 	// delete userSettings.myLibraries
+		// }
 		event.cookies.set('userSettings', JSON.stringify(userSettings), {
 			maxAge: 365,
 			secure: true,
@@ -88,7 +98,7 @@ async function loadUtilCached() {
 
 // TODO move
 // TODO error handling
-async function loadUtil() {
+async function loadUtil(): Promise<Util> {
 	const [contextRes, vocabRes, displayRes] = await Promise.all([
 		fetch(`${env.ID_URL}/context.jsonld`),
 		fetch(`${env.ID_URL}/vocab/data.jsonld`),

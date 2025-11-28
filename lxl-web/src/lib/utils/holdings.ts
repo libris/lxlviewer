@@ -1,17 +1,14 @@
 import { pushState } from '$app/navigation';
-import isFnurgel from '$lib/utils/isFnurgel';
 import type {
 	BibIdObj,
-	HolderLinks,
-	HoldersByType,
 	HoldingLinks,
-	HoldingsByInstanceId
+	HoldersByInstanceId,
+	LibraryWithLinks
 } from '$lib/types/holdings';
-import { LensType, type FramedData, JsonLd, BibDb, Bibframe } from '$lib/types/xl';
+import { BibDb } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
-import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-import { DisplayUtil, toString, VocabUtil } from '$lib/utils/xl.js';
+import { stripAnchor } from '$lib/utils/http';
 import getAtPath from '$lib/utils/getAtPath';
 import { USE_HOLDING_PANE } from '$lib/constants/panels';
 
@@ -31,180 +28,27 @@ export function handleClickHoldings(
 	pushState(event.currentTarget.href, { ...state, holdings: stripAnchor(id) });
 }
 
-export function getSelectedHolding(value: string, instanceIdsByType: { [key: string]: string[] }) {
-	if (isFnurgel(value)) {
-		return value;
-	}
-	if (instanceIdsByType[value]?.[0]) {
-		return instanceIdsByType[value][0]; // get first instance if showing holdings by type
-	}
-	return undefined;
-}
-
-export function getHoldersCount(data: FramedData, vocabUtil: VocabUtil): number {
-	const type = vocabUtil.getType(data);
-	if (
-		!type ||
-		!(
-			vocabUtil.isSubClassOf(type, Bibframe.Work) || vocabUtil.isSubClassOf(type, Bibframe.Instance)
-		)
-	) {
-		return -1;
-	}
-
-	// data can be a work mainEntity or an instance
-	const instances = data['@reverse']?.instanceOf || [data];
-
-	const holders = new Set();
-	instances?.forEach((instance) => {
-		const holdings = instance['@reverse']?.itemOf;
-		holdings?.forEach((h) => {
-			if (h.heldBy) {
-				holders.add(h.heldBy['@id']);
-			}
-		});
-	});
-	return holders.size;
-}
-
-export function getHoldingsByInstanceId(
-	data: FramedData,
-	displayUtil: DisplayUtil,
-	locale: LocaleCode
-): HoldingsByInstanceId {
-	return (data?.['@reverse']?.instanceOf || [data])?.reduce((acc, instanceOfItem) => {
-		const id = stripAnchor(trimSlashes(relativizeUrl(instanceOfItem['@id'])));
-		if (!id) {
-			return acc;
-		}
-		return {
-			...acc,
-			[id]: (instanceOfItem?.['@reverse']?.itemOf || []).map((holding) => {
-				return {
-					...holding,
-					heldBy: {
-						obj: displayUtil.lensAndFormat(holding.heldBy, LensType.Chip, locale),
-						sigel:
-							holding.heldBy?.sigel ||
-							holding.heldBy['@id'].replace('https://libris.kb.se/library/', ''),
-						str: toString(displayUtil.lensAndFormat(holding.heldBy, LensType.Chip, locale)) || ''
-					}
-				};
-			})
-		};
-	}, {});
-}
-
-export function getBibIdsByInstanceId(
-	mainEntity,
-	displayUtil: DisplayUtil,
-	record,
-	locale: LocaleCode
-): Record<string, BibIdObj> {
-	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instance) => {
-		const id = stripAnchor(trimSlashes(relativizeUrl(instance['@id'])));
-
-		const bibId = instance.meta?.controlNumber || record?.controlNumber;
-		const type = instance['@type'];
-		const holders = instance['@reverse']?.itemOf?.map((i) => i?.heldBy?.sigel);
-		const publication = instance.publication;
-		let str = '';
-		if (publication) {
-			str =
-				toString(displayUtil.lensAndFormat(instance.publication[0], LensType.Token, locale)) || '';
-		}
-
-		// add Legacy Libris III system number for ONR param
-		let onr = null;
-		record?.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
-			if (el['@type'] === 'LibrisIIINumber') {
-				onr = el.value;
-			}
-		});
-
-		const isbn: string[] = [];
-		const issn: string[] = [];
-		instance.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
-			if (el['@type'] === 'ISBN') {
-				isbn.push(el.value);
-			}
-
-			if (el['@type'] === 'ISSN') {
-				issn.push(el.value);
-			}
-		});
-
-		if (!id) {
-			return acc;
-		}
-		return {
-			...acc,
-			[id]: {
-				bibId,
-				'@type': type,
-				holders,
-				onr,
-				isbn,
-				issn,
-				str
-			}
-		};
-	}, {});
-}
-
-export function getHoldingsByType(mainEntity: FramedData) {
-	const holdingsByType = mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
-		const type = instanceOfItem['@type'];
-		return {
-			...acc,
-			[type]: [...(acc[type] || []), ...(instanceOfItem?.['@reverse']?.itemOf || [])]
-		};
-	}, {});
-	if (!holdingsByType) {
-		return {};
-	}
-	return holdingsByType;
-}
-
-export function getHoldersByType(
-	holdingsByType,
-	displayUtil: DisplayUtil,
-	locale: LocaleCode
-): HoldersByType {
-	return Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
-		const heldBys = holdings.map((holdingItem) => {
-			return {
-				obj: displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale),
-				sigel: holdingItem.heldBy.sigel,
-				str: toString(displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale)) || ''
-			};
-		});
-		const uniqueHeldBys = [
-			...new Map(heldBys.map((heldByItem) => [heldByItem.obj['@id'], heldByItem])).values()
-		];
-		return { ...acc, [type]: uniqueHeldBys };
-	}, {});
-}
-
+// todo working
 export function getMyLibsFromHoldings(
 	myLibraries: UserSettings['myLibraries'],
-	holdings: HoldingsByInstanceId | HoldingsByInstanceId[string]
+	holdings: HoldersByInstanceId | HoldersByInstanceId[string]
 ): LibraryItem[] {
 	const result: Record<string, LibraryItem> = {};
 
 	if (myLibraries) {
+		// const result = Array.isArray(holdings) ? holdings.filter
+
 		if (Array.isArray(holdings)) {
 			findLib(holdings);
 		} else if (holdings && typeof holdings === 'object') {
 			Object.values(holdings).forEach((holding) => findLib(holding));
 		}
 
-		function findLib(holding: HoldingsByInstanceId[string]) {
+		function findLib(holding: HoldersByInstanceId[string]) {
 			if (myLibraries) {
 				holding.forEach((holder) => {
-					const found = Object.values(myLibraries).find(
-						(library) => library.sigel === holder.heldBy.sigel
-					);
+					// console.log('HOLDER', holder)
+					const found = Object.values(myLibraries).find((library) => library.sigel === holder);
 					if (found) {
 						result[found['@id']] = found;
 					}
@@ -215,51 +59,12 @@ export function getMyLibsFromHoldings(
 	return Object.values(result);
 }
 
-// create holding links on holder level
-export function createHolderLinks(
-	fullHolderData: FramedData,
-	locale: LocaleCode,
-	displayUtil: DisplayUtil
-): HolderLinks {
-	const linksToCatalog = getAtPath(fullHolderData, [BibDb.ils, 'url'], undefined);
-	const linksToSite = getAtPath(fullHolderData, ['url', JsonLd.ID], undefined);
-
-	const myLoansLink =
-		pathByLang(getAtPath(fullHolderData, [BibDb.lopac, BibDb.myLoansUriLang], undefined), locale) ||
-		'';
-
-	const registrationLink =
-		pathByLang(
-			getAtPath(fullHolderData, [BibDb.lopac, BibDb.patronRegistrationUriByLang], undefined),
-			locale
-		) || '';
-
-	const openingHours = getAtPath(fullHolderData, [BibDb.openingHours], undefined);
-	const addresses: string[] = [];
-	const address = getAtPath(fullHolderData, [BibDb.address, '*'], undefined) || [];
-	const postalAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.postalAddress);
-	const visitingAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.visitingAddress);
-
-	if (address && address.length) {
-		addresses.push(
-			toString(displayUtil.lensAndFormat(visitingAddress, LensType.Card, locale)) || ''
-		);
-		addresses.push(toString(displayUtil.lensAndFormat(postalAddress, LensType.Card, locale)) || '');
-	}
-	return {
-		address: addresses,
-		linksToSite: linksToSite?.length ? [linksToSite] : [],
-		linksToCatalog: linksToCatalog?.length ? [linksToCatalog] : [],
-		myLoansLink,
-		registrationLink,
-		openingHours: openingHours?.length ? [openingHours] : []
-	};
-}
-
-// create holding links on the holder-instance level
+/**
+ * Create holder-instance-specific links
+ */
 export function createHoldingLinks(
 	bibIdObj: BibIdObj,
-	fullHolderData: FramedData,
+	fullHolderData: LibraryWithLinks,
 	locale: LocaleCode
 ): HoldingLinks {
 	const ilsPaths = [
@@ -294,7 +99,7 @@ export function createHoldingLinks(
 
 function getLinksToItemFor(
 	bibIdObj: BibIdObj,
-	fullHolderData: FramedData,
+	fullHolderData: LibraryWithLinks,
 	paths: string[][],
 	locale: LocaleCode
 ): string[] {
@@ -320,15 +125,4 @@ function getLinksToItemFor(
 		}
 	}
 	return linksToItem;
-}
-
-function pathByLang(thing: Record<LocaleCode, string>, locale: LocaleCode) {
-	if (thing) {
-		if (thing?.[locale]) {
-			return thing[locale];
-		} else if (thing['sv']) {
-			return thing['sv'];
-		}
-	}
-	return null;
 }

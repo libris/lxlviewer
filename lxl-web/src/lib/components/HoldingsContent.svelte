@@ -1,16 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import type { BibIdByInstanceId, HoldingsData } from '$lib/types/holdings';
-	import type { ResourceData } from '$lib/types/resourceData';
+	import type { BibIdData, HoldingsData } from '$lib/types/holdings';
 	import isFnurgel from '$lib/utils/isFnurgel';
-	import HoldingsResourceCard from './HoldingsResourceCard.svelte';
 	import Holder from './Holder.svelte';
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
+	import { JsonLd } from '$lib/types/xl';
 
-	type Props = { holdings: HoldingsData; refinedLibraries?: string[]; showSummary?: boolean };
-	let { holdings, refinedLibraries = [], showSummary = true }: Props = $props();
+	type Props = {
+		holdings: HoldingsData;
+		refinedLibraries?: string[];
+	};
+
+	let { holdings, refinedLibraries = [] }: Props = $props();
+	let { byInstanceId, byType, bibIdData, holdingLibraries } = holdings;
 	const userSettings = getUserSettings();
 	let searchPhrase = $state('');
 
@@ -19,10 +23,10 @@
 
 	const holdingSelection = $derived.by(() => {
 		if (holdingId) {
-			if (isFnurgel(holdingId) && holdings?.holdingsByInstanceId?.[holdingId]) {
+			if (isFnurgel(holdingId) && byInstanceId?.[holdingId]) {
 				return 'instance';
 			}
-			if (holdings?.holdersByType?.[holdingId]) {
+			if (byType?.[holdingId]) {
 				return 'type';
 			}
 			if (isFnurgel(holdingId)) {
@@ -34,47 +38,48 @@
 		return null;
 	});
 
-	const displayedHolders = $derived.by(() => {
+	const derivedHolders = $derived.by(() => {
 		if (holdingSelection && holdingId) {
 			if (holdingSelection === 'instance') {
-				return holdings?.holdingsByInstanceId[holdingId].map((holding) => holding.heldBy);
-			} else if (holdingSelection === 'type' && holdings?.holdersByType) {
-				return holdings?.holdersByType?.[holdingId];
-			} else if (holdingSelection === 'work' && holdings?.holdersByType) {
-				return [
-					...new Map(
-						Object.values(holdings.holdersByType)
-							.flat()
-							.map((holder) => [holder.sigel, holder])
-					).values()
-				];
-			} else return [];
+				return byInstanceId[holdingId];
+			} else if (holdingSelection === 'type' && byType) {
+				return byType?.[holdingId];
+			} else if (holdingSelection === 'work' && byType) {
+				return Array.from(new Set(Object.values(byType).flat()));
+			}
+			return [];
 		}
 		return [];
 	});
 
-	const sortedHolders = $derived(
-		displayedHolders.sort((a, b) => a.str.localeCompare(b.str, page.data.locale))
-	);
-	const filteredHolders = $derived(
-		sortedHolders
-			.filter((holder) => {
-				return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
-			})
-			.filter((h) => h.str)
+	// filtering out null libraries, maybe we should show them?
+	const derivedHoldersFull = $derived(
+		derivedHolders.map((holder) => holdingLibraries[holder]).filter((holder) => !!holder)
 	);
 
+	const sortedHolders = $derived(
+		derivedHoldersFull.sort((a, b) => a.name.localeCompare(b.name, page.data.locale))
+	);
+
+	const filteredHolders = $derived(
+		sortedHolders.filter((holder) => {
+			return holder.name.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
+		})
+	);
+
+	// not working unit new cookie format
 	const myLibsHolders = $derived(
 		sortedHolders.filter((holder) => {
 			if (userSettings?.myLibraries) {
-				return Object.values(userSettings.myLibraries).some((lib) => lib.sigel === holder.sigel);
+				return Object.values(userSettings.myLibraries).some((lib) => lib === holder[JsonLd.ID]);
 			} else return false;
 		})
 	);
 
+	// not working unil new refinedLibraries
 	const refinedHolders = $derived(
-		displayedHolders.filter((holder) => {
-			return refinedLibraries.some((lib) => lib === holder.sigel);
+		derivedHoldersFull.filter((holder) => {
+			return refinedLibraries.some((lib) => lib === holder[JsonLd.ID]);
 		})
 	);
 
@@ -94,29 +99,29 @@
 	]);
 
 	// pick an instance instance or the work overview
-	const cardData = $derived.by(() => {
-		if (holdingSelection === 'instance') {
-			return (
-				holdingId &&
-				holdings.instances.find((instance) => (instance['@id'] as string).includes(holdingId))
-			);
-		} else return holdings.overview;
-	});
+	// const cardData = $derived.by(() => {
+	// 	if (holdingSelection === 'instance') {
+	// 		return (
+	// 			holdingId &&
+	// 			holdings.instances.find((instance) => (instance['@id'] as string).includes(holdingId))
+	// 		);
+	// 	} else return holdings.overview;
+	// });
 
 	const numHolders = $derived(sortedHolders?.length);
 
 	// subset of instances applicable for the current holder/selection
-	function getInstancesForSigelAndSelection(sigel: string): BibIdByInstanceId {
-		if (sigel && holdingId) {
+	function getInstancesForLibAndSelection(id: string): BibIdData {
+		if (id && holdingId) {
 			switch (holdingSelection) {
 				case 'instance': {
-					return { [holdingId]: holdings.bibIdsByInstanceId?.[holdingId] };
+					return { [holdingId]: bibIdData?.[holdingId] };
 				}
 
 				case 'type': {
-					let instances: BibIdByInstanceId = {};
-					for (const [key, value] of Object.entries(holdings.bibIdsByInstanceId)) {
-						if (value && value['@type'] === holdingId && value.holders?.includes(sigel)) {
+					let instances: BibIdData = {};
+					for (const [key, value] of Object.entries(bibIdData)) {
+						if (value && value['@type'] === holdingId && byInstanceId[key].includes(id)) {
 							instances[key] = value;
 						}
 					}
@@ -125,9 +130,9 @@
 
 				case 'work':
 				default: {
-					let instances: BibIdByInstanceId = {};
-					for (const [key, value] of Object.entries(holdings.bibIdsByInstanceId)) {
-						if (value.holders && value.holders?.includes(sigel)) {
+					let instances: BibIdData = {};
+					for (const [key, value] of Object.entries(bibIdData)) {
+						if (value && byInstanceId[key].includes(id)) {
 							instances[key] = value;
 						}
 					}
@@ -135,14 +140,14 @@
 				}
 			}
 		}
-		return holdings.bibIdsByInstanceId;
+		return bibIdData;
 	}
 </script>
 
 <div class="flex flex-col gap-2 text-sm">
-	{#if showSummary}
+	<!-- {#if showSummary}
 		<HoldingsResourceCard title={holdings.title} data={cardData as ResourceData} />
-	{/if}
+	{/if} -->
 	{#if numHolders}
 		<h2 class="font-medium">
 			{page.data.t('holdings.availableAt')}
@@ -164,8 +169,8 @@
 					<span class="font-medium">{section.title}</span>
 				</h2>
 				<ul class="flex flex-col gap-2 text-xs">
-					{#each section.data as holder, i (`mylibs-${holder.sigel}-${i}`)}
-						{@const instances = getInstancesForSigelAndSelection(holder.sigel)}
+					{#each section.data as holder, i (`mylibs-${holder['@id']}-${i}`)}
+						{@const instances = getInstancesForLibAndSelection(holder[JsonLd.ID])}
 						<Holder {holder} {instances} />
 					{/each}
 				</ul>
@@ -185,13 +190,9 @@
 	</div>
 	<!-- list holders -->
 	<ul class="flex flex-col gap-2 text-xs">
-		{#each sortedHolders as holder (holder.obj['@id'])}
-			{@const instances = getInstancesForSigelAndSelection(holder.sigel)}
-			<Holder
-				{holder}
-				{instances}
-				hidden={!filteredHolders.find((h) => h.sigel === holder.sigel)}
-			/>
+		{#each sortedHolders as holder (holder['@id'])}
+			{@const instances = getInstancesForLibAndSelection(holder[JsonLd.ID])}
+			<Holder {holder} {instances} hidden={!filteredHolders.find((h) => h === holder)} />
 		{/each}
 		{#if filteredHolders.length === 0}
 			<li>

@@ -5,7 +5,6 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import getMetaDescription from '$lib/utils/getMetaDescription';
 	import { type CitationsType } from '$lib/types/citation.js';
-	import type { HoldingsData } from '$lib/types/holdings.js';
 	import Resource from '$lib/components/Resource.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import Meta from '$lib/components/Meta.svelte';
@@ -26,12 +25,6 @@
 	// TODO: Possibly figure out some mapping and set og:type,
 	// see https://ogp.me/#types. Unclear how meaningful this would be.
 
-	const holdings: HoldingsData = $derived({
-		...data.holdings,
-		instances: data.instances,
-		overview: data.overview,
-		title: data.title
-	});
 
 	let previousURL: URL;
 	const refinedLibraries = $derived(
@@ -95,7 +88,7 @@
 			{#snippet title()}
 				<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
 			{/snippet}
-			<HoldingsContent {holdings} {refinedLibraries} />
+			<HoldingsContent holdings={data.holdings} {refinedLibraries} />
 		</Modal>
 	{:else if page.state.citations || page.url.searchParams.get('cite')}
 		<Modal close={() => handleCloseModal('cite')}>

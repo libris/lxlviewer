@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { getBibIdsByInstanceId, getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
+import { getMyLibsFromHoldings } from './holdings';
+import { getHoldingsByInstanceId, getBibIdsByInstanceId } from './holdings.server';
 import mainEntity from '$lib/assets/json/test-data/main-entity.json';
 import record from '$lib/assets/json/test-data/record.json';
 import { UserSettings } from './userSettings.svelte';
@@ -31,8 +32,7 @@ describe('getMyLibsFromHoldings', () => {
 		const userSettings = new UserSettings({});
 		userSettings.addLibrary({ '@id': '434566', label: 'Kungliga biblioteket', sigel: 'S' });
 		userSettings.addLibrary({ '@id': '54345', label: 'Mitt bibliotek', sigel: 'Mitt' });
-		const DisplayUtil = { lensAndFormat: (a: unknown) => a };
-		const instances = getHoldingsByInstanceId(workCenteredMainEntity, DisplayUtil, 'sv');
+		const instances = getHoldingsByInstanceId(workCenteredMainEntity);
 
 		expect(getMyLibsFromHoldings(userSettings.myLibraries, instances)).toStrictEqual([
 			{

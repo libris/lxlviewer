@@ -5,7 +5,7 @@
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
+	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import type { HoldersByType } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { JsonLd } from '$lib/types/xl';
@@ -45,7 +45,7 @@
 						)}
 						{#if favWithHolding.length}
 							<div class="mr-1 text-lg">
-								<MyLibrariesIndicator libraries={favWithHolding} />
+								<MyLibsHoldingIndicator libraries={favWithHolding} />
 							</div>
 						{/if}
 					{/if}
