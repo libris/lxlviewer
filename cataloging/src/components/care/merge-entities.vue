@@ -19,6 +19,7 @@ import * as VocabUtil from "../../../../lxljs/vocab.js";
 import * as DisplayUtil from "../../../../lxljs/display.js";
 import Spinner from "@/components/shared/spinner.vue";
 import ItemEntity from "@/components/inspector/item-entity.vue";
+import {translateAliasedUri} from "@/utils/data.js";
 
 export default {
   name: 'MergeEntities',
@@ -335,7 +336,7 @@ export default {
     fetchId(id, fetchingSource = false) {
       if (id !== null) {
         const fetchUrl = `${id.split('#')[0]}/data.jsonld`;
-        fetch(fetchUrl).then((response) => {
+        fetch(translateAliasedUri(fetchUrl)).then((response) => {
           if (response.status === 200) {
             if (!fetchingSource) {
               this.targetETag = response.headers.get('ETag');
@@ -359,7 +360,7 @@ export default {
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
           });
         }).then((result) => {
-          if (typeof result !== 'undefined') {
+          if (result && typeof result !== 'undefined') {
             const data = LxlDataUtil.splitJson(result);
             if (fetchingSource) {
               this.setEnrichmentSource(data);
