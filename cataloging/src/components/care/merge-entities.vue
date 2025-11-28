@@ -691,10 +691,6 @@ export default {
         this.duplicateHoldings = [];
         this.loadingContent(true);
         this.sourceId = RecordUtil.extractFnurgel(id) || id;
-        if (this.enrichOnly) {
-          this.setEnrichmentOriginalData(this.inspector.data);
-          this.setEnrichmentTarget(this.inspector.data);
-        }
         this.fetchId(id, true);
       }
     },
@@ -721,6 +717,10 @@ export default {
   mounted() {
     this.resetCachedChanges();
     this.clearAllSelected();
+    if (this.enrichOnly) {
+      this.setEnrichmentOriginalData(this.inspector.data);
+      this.setEnrichmentTarget(this.inspector.data);
+    }
   },
 };
 </script>
