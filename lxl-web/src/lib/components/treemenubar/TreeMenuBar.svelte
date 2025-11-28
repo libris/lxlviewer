@@ -72,6 +72,7 @@ and https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/menu
 		href={page.url.pathname + page.url.search + page.url.hash}
 		onclick={onmenuitemchange}
 		onkeydown={onmenuitemkeydown}
+		data-sveltekit-noscroll
 	>
 		{JSON.stringify(data?.path)}
 	</a>

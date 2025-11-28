@@ -161,7 +161,8 @@ export default {
 		addLibraries: 'Add libraries',
 		changeLibraries: 'Change libraries',
 		noAddedLibrariesText: 'You have not chosen any favourite libraries.',
-		libraries: 'libraries'
+		libraries: 'libraries',
+		skipToFilterList: 'Skip to filter list'
 	},
 	supersearch: {
 		addQualifiers: 'Add filter',

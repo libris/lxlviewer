@@ -3,11 +3,7 @@
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import MenuBar from '../treemenubar/TreeMenuBar.svelte';
-	import type {
-		ChangeHandlerParams,
-		ToggleHandlerParams,
-		TreeMenuItem
-	} from '$lib/types/treemenubar';
+	import { TreeMenuBarKeys, type TreeMenuItem } from '$lib/types/treemenubar';
 
 	type Props = {
 		facets?: Facet[];
@@ -51,12 +47,11 @@
 		{ path: ['contributor', 'Hjalmar Söderberg'] }
 	];
 
-	function handleChangeMenuBar({ data, checked }: ChangeHandlerParams) {
-		console.log('handleChangeMenuBar', data, 'checked:', checked);
-	}
-
-	function handleToggle({ data, expanded, expandedItems }: ToggleHandlerParams) {
-		console.log('handleToggle', data, 'expanded:', expanded, 'expandedItems:', expandedItems);
+	function handleFiltersListKeyDown(event: KeyboardEvent) {
+		if (event.key === TreeMenuBarKeys.ArrowDown || event.key === TreeMenuBarKeys.ArrowUp) {
+			event.preventDefault();
+		}
+		// TODO: add typeahead support here
 	}
 </script>
 
@@ -75,18 +70,24 @@
 			{/snippet}
 		</Toolbar>
 	{/if}
-	<div class="filters-list mr-1.5 overflow-x-hidden overflow-y-auto overscroll-contain">
-		<MenuBar
-			data={flatData}
-			ariaLabelledby={filterHeadingId}
-			onchange={handleChangeMenuBar}
-			ontoggle={handleToggle}
-		/>
-		<details class="text-5xs text-subtle">
-			<summary tabindex="-1">JSON</summary>
-			<pre>{JSON.stringify(facets)}</pre>
-		</details>
-		<!--	
+	<div class="filters-list relative overflow-x-hidden overflow-y-auto overscroll-contain">
+		<a
+			id={`${uid}-filters-list`}
+			href={`#${uid}-filters-list`}
+			class="outline-accent-400 absolute h-full w-full cursor-default -outline-offset-2 focus:outline-2"
+			draggable="false"
+			onclick={(event) => event.preventDefault()}
+			onkeydown={handleFiltersListKeyDown}
+		>
+			<span class="sr-only">{page.data.t('search.skipToFilterList')}</span>
+		</a>
+		<div class="absolute h-fit w-full">
+			<MenuBar data={flatData} ariaLabelledby={filterHeadingId} />
+			<details class="text-5xs text-subtle">
+				<summary tabindex="-1">JSON</summary>
+				<pre>{JSON.stringify(facets)}</pre>
+			</details>
+			<!--	
 		{#if treeViewFacets?.length}
 			<TreeView ariaLabelledby={filterHeadingId} items={treeViewFacets}>
 				{#snippet treeItemSnippet({ data, level }: TreeItemSnippetParams)}
@@ -99,6 +100,7 @@
 			</p>
 		{/if}
 		-->
+		</div>
 	</div>
 </nav>
 

@@ -160,7 +160,8 @@ export default {
 		addLibraries: 'Lägg till bibliotek',
 		changeLibraries: 'Ändra bibliotek',
 		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek.',
-		libraries: 'bibliotek'
+		libraries: 'bibliotek',
+		skipToFilterList: 'Hoppa till filterlista'
 	},
 	supersearch: {
 		addQualifiers: 'Lägg till filter',
