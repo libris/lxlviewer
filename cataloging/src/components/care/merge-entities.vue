@@ -234,7 +234,8 @@ export default {
     ...mapActions([
       'setEnrichmentTarget',
       'setEnrichmentChanges',
-      'setEnrichmentSource'
+      'setEnrichmentSource',
+      'setEnrichmentOriginalData'
     ]),
     loadingContent(value) {
       this.loadingRecords = value;
@@ -369,7 +370,7 @@ export default {
               this.$store.dispatch('setInspectorData', data);
               this.setEnrichmentTarget(data);
               this.removeEnrichedHighlight();
-              this.$store.dispatch('setOriginalData', data);
+              this.setEnrichmentOriginalData(data);
               this.onFetchFinished(data);
             }
           }
@@ -433,7 +434,7 @@ export default {
     applyFromSource() {
       if (this.bothRecordsLoaded) {
         const originalDataPreservedQuoted = {
-          ...this.inspector.originalData,
+          ...this.enrichment.data.original,
           quoted: this.inspector.data.quoted
         };
         this.$store.dispatch('setInspectorData', originalDataPreservedQuoted);
@@ -671,7 +672,7 @@ export default {
   },
   watch: {
     'directoryCare.mergeTargetId'(id) {
-      if (id !== null) {
+      if (id !== null && !this.enrichOnly) {
         this.clearAllSelected();
         this.resetCachedChanges();
         this.setEnrichmentTarget(null);
@@ -690,6 +691,10 @@ export default {
         this.duplicateHoldings = [];
         this.loadingContent(true);
         this.sourceId = RecordUtil.extractFnurgel(id) || id;
+        if (this.enrichOnly) {
+          this.setEnrichmentOriginalData(this.inspector.data);
+          this.setEnrichmentTarget(this.inspector.data);
+        }
         this.fetchId(id, true);
       }
     },

@@ -42,7 +42,8 @@ const store = createStore({
         source: null,
         target: null,
         result: null,
-        changes: null
+        changes: null,
+        original: null
       },
     },
     inspector: {
@@ -301,6 +302,9 @@ const store = createStore({
         state.inspector.data.quoted = assign(data.quoted, state.inspector.data.quoted);
       }
       state.enrichment.data.source = data;
+    },
+    setEnrichmentOriginalData(state, data) {
+      state.enrichment.data.original = data;
     },
     setEnrichmentResult(state, data) {
       state.enrichment.data.result = data;
@@ -686,6 +690,9 @@ const store = createStore({
     },
     setEnrichmentSource({ commit }, data) {
       commit('setEnrichmentSource', data);
+    },
+    setEnrichmentOriginalData({ commit }, data) {
+      commit('setEnrichmentOriginalData', data);
     },
     setEnrichmentResult({ commit }, data) {
       commit('setEnrichmentResult', data);

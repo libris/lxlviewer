@@ -53,16 +53,19 @@ export default {
     ...mapActions([
       'setEnrichmentSource',
       'setEnrichmentTarget',
-      'setEnrichmentChanges'
+      'setEnrichmentChanges',
+      'setEnrichmentOriginalData',
     ]),
     selectTarget() {
       const target = { 'mergeTargetId': this.inspector.data.record['@id'] + '#it' };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...target });
     },
     cancel() {
-      this.$store.dispatch('setInspectorData', this.inspector.originalData);
-      this.resetEverything();
-      this.close();
+      this.$store.dispatch('setInspectorData', this.enrichment.data.original)
+        .then(() => {
+          this.resetEverything();
+          this.close();
+        });
     },
     done() {
       this.close();
