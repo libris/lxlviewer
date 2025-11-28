@@ -18,10 +18,7 @@ function addToChangeList(source, target, sourcePath, targetPath, changeList, con
 
   if (sourceObject && typeof sourceObject === "object"
     && !Array.isArray(sourceObject) && !Array.isArray(targetObject)) {
-    if (sourceObject['@type'] && targetObject['@type'] &&
-      sourceObject['@type'] !== targetObject['@type']) {
-      return;
-    }
+
     each(sourceObject, (sourceValue, key) => {
       if (key === '@id') {
         return;
