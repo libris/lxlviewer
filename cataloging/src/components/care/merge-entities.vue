@@ -699,6 +699,9 @@ export default {
         this.applyFromSource();
       }
     },
+    isValid(val) {
+      this.$emit('invalidSelection', !val);
+    },
     editStep(val) {
       if (val) {
         this.$nextTick(() => {
