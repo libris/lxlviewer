@@ -33,7 +33,7 @@ import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-import { getMyLibsFromHoldings } from '$lib/utils/holdings';
+import { getMyLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
 import { getHoldersCount, getHoldingsByInstanceId } from '$lib/utils/holdings.server';
 import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
@@ -523,12 +523,15 @@ export function appendMyLibrariesParam(
 		let sigelStr;
 		if (userSettings?.myLibraries) {
 			sigelStr = Object.keys(userSettings?.myLibraries)
-				.map((lib) =>
-					lib.sigel ? `itemHeldBy:"sigel:${lib.sigel}"` : `itemHeldByOrg:"sigel:org/${lib.code}"`
-				)
+				.map((id) => {
+					const slug = getUriSlug(id);
+					return isLibraryOrg(id)
+						? `itemHeldByOrg:"sigel:org/${slug}"`
+						: `itemHeldBy:"sigel:${slug}"`;
+				})
 				.join(' OR ');
 		}
-		searchParams.append(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
+		searchParams.set(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
 	}
 	return searchParams;
 }

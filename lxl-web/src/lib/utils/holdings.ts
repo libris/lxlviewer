@@ -1,5 +1,11 @@
 import { pushState } from '$app/navigation';
-import type { BibIdObj, HoldingLinks, HoldersByInstanceId, LibraryFull } from '$lib/types/holdings';
+import type {
+	BibIdObj,
+	HoldingLinks,
+	HoldersByInstanceId,
+	LibraryFull,
+	LibraryId
+} from '$lib/types/holdings';
 import { BibDb } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { MyLibrariesType } from '$lib/types/userSettings';
@@ -120,4 +126,11 @@ function getLinksToItemFor(
 		}
 	}
 	return linksToItem;
+}
+
+export function isLibraryOrg(id: LibraryId): boolean {
+	if (id && typeof id === 'string' && id.startsWith('https://libris.kb.se/library/org/')) {
+		return true;
+	}
+	return false;
 }
