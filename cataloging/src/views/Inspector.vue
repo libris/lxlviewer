@@ -90,10 +90,6 @@ export default {
         inputValue: '',
         detailed: false,
       },
-      enrichFromSelectionModal: {
-        open: false,
-        inputId: '',
-      }
     };
   },
   emits: ['ready'],

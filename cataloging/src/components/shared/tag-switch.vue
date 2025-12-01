@@ -37,7 +37,9 @@ export default {
       }
     },
     mark() {
-      this.$store.dispatch('mark', { tag: this.tag, documentId: this.documentId, documentTitle: this.documentTitle });
+      if (this.userFlagged.length < 50) {
+        this.$store.dispatch('mark', { tag: this.tag, documentId: this.documentId, documentTitle: this.documentTitle });
+      }
     },
     unmark() {
       this.$store.dispatch('unmark', { tag: this.tag, documentId: this.documentId });
