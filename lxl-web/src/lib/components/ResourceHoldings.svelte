@@ -7,12 +7,14 @@
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import type { HoldersByType } from '$lib/types/holdings';
+	import type { SearchResultItem } from '$lib/types/search';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { JsonLd } from '$lib/types/xl';
 	import BiQuote from '~icons/bi/quote';
+	import { LxlLens } from '$lib/types/display';
 
 	interface Props {
-		instances: Record<string, unknown>[]; // TODO: fix better types
+		instances: SearchResultItem[] | ResourceData[];
 		holdersByType: HoldersByType;
 		fnurgel: string;
 	}
@@ -22,7 +24,10 @@
 	const userSettings = getUserSettings();
 
 	function getLocalizedType(type: string) {
-		return instances.find((instanceItem) => type === instanceItem[JsonLd.TYPE])?._label || type;
+		const found = instances.find((instanceItem) => type === instanceItem[JsonLd.TYPE]);
+
+		// instance can be a formatted search result
+		return found?._label ?? found?.[LxlLens.CardHeading]?._label ?? type;
 	}
 </script>
 
@@ -41,7 +46,7 @@
 					{#if id}
 						{@const favWithHolding = getMyLibsFromHoldings(
 							userSettings.myLibraries,
-							page.data.holdings.holdingsByInstanceId[id]
+							page.data.holdings.byInstanceId[id]
 						)}
 						{#if favWithHolding}
 							<div class="mr-1 text-lg">

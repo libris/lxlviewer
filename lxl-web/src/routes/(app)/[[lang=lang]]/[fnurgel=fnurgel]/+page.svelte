@@ -79,7 +79,7 @@
 		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}
 		instances={data.instances}
 		searchResult={data.searchResult}
-		holdersByType={data.holdings.holdersByType}
+		holdersByType={data.holdings.byType}
 		tableOfContents={data.tableOfContents}
 		adjecentSearchResults={page.state.adjecentSearchResults}
 	/>

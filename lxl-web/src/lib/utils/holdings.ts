@@ -37,7 +37,6 @@ export function getMyLibsFromHoldings(
 	if (!myLibraries) return null;
 
 	const holdingIds = Array.isArray(holdings) ? holdings : Object.values(holdings).flat();
-
 	const result: MyLibrariesType = {};
 
 	for (const id of holdingIds) {
