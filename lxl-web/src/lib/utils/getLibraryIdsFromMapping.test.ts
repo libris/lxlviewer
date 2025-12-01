@@ -1,26 +1,26 @@
 import { describe, it, expect } from 'vitest';
 import type { DisplayMapping } from '$lib/types/search';
-import { getSigelsFromMapping } from './getSigelsFromMapping';
+import { getLibraryIdsFromMapping } from './getLibraryIdsFromMapping';
 
 describe('getSigelsFromMapping', () => {
 	it('it returns an array of sigels included in mapping', () => {
-		expect(getSigelsFromMapping([mappingOneLib])).toStrictEqual(['Alve']);
+		expect(getLibraryIdsFromMapping([mappingOneLib])).toStrictEqual(['Alve']);
 	});
 
 	it('it returns an array of sigels included in mapping 2', () => {
-		expect(getSigelsFromMapping([mappingTwoLibs])).toStrictEqual(['Boln', 'Hagf']);
+		expect(getLibraryIdsFromMapping([mappingTwoLibs])).toStrictEqual(['Boln', 'Hagf']);
 	});
 
 	it('does not include explicitly excluded libraries', () => {
-		expect(getSigelsFromMapping([mappingExcludedLib])).toStrictEqual(['Boln']);
+		expect(getLibraryIdsFromMapping([mappingExcludedLib])).toStrictEqual(['Boln']);
 	});
 
 	it('it returns an empty array if none found', () => {
-		expect(getSigelsFromMapping([mappingNoLibs])).toStrictEqual([]);
+		expect(getLibraryIdsFromMapping([mappingNoLibs])).toStrictEqual([]);
 	});
 
 	it('returns an empty array if passed a random thing', () => {
-		expect(getSigelsFromMapping('hello')).toStrictEqual([]);
+		expect(getLibraryIdsFromMapping('hello')).toStrictEqual([]);
 	});
 });
 

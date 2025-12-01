@@ -1,10 +1,14 @@
+import type { LibraryId } from '$lib/types/holdings';
 import type { DisplayMapping } from '$lib/types/search';
+import { JsonLd } from '$lib/types/xl';
 
 /**
  * accepts an array of DisplayMappings (search and subset)
- * and returns a list of unique sigels that exist in user's search refinement
+ * and returns a list of unique library id:s that exist in user's search refinement
  */
-export function getSigelsFromMapping(mappings: (DisplayMapping[] | undefined)[]): string[] | [] {
+export function getLibraryIdsFromMapping(
+	mappings: (DisplayMapping[] | undefined)[]
+): LibraryId[] | [] {
 	const result: string[] = [];
 	for (const mapping of mappings) {
 		if (mapping) {
@@ -19,9 +23,8 @@ export function getSigelsFromMapping(mappings: (DisplayMapping[] | undefined)[])
 			for (const child of mapping.children) {
 				_iterate(child);
 			}
-		} else if (mapping._key === 'itemHeldBy' && mapping._value) {
-			const sigel = mapping._value.split(':')[1]?.replace('"', '');
-			if (sigel) result.push(sigel);
+		} else if (mapping._key === 'itemHeldBy' && mapping.display) {
+			result.push(mapping.display[JsonLd.ID]);
 		}
 	}
 	return [...new Set(result)];

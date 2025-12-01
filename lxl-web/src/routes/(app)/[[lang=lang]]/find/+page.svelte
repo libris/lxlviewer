@@ -18,8 +18,8 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import Meta from '$lib/components/Meta.svelte';
 	import { USE_HOLDING_PANE } from '$lib/constants/panels';
-	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping';
 	import getPageTitle from '$lib/utils/getPageTitle';
+	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 
@@ -32,7 +32,7 @@
 	);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 	const refinedLibraries = $derived(
-		getSigelsFromMapping([searchResult.mapping, page.data.subsetMapping])
+		getLibraryIdsFromMapping([searchResult.mapping, page.data.subsetMapping])
 	);
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
 
@@ -115,11 +115,7 @@
 						</span>
 					</div>
 				{:then holdings}
-					<HoldingsContent
-						{holdings}
-						{refinedLibraries}
-						showSummary={isSmallScreen.current || !USE_HOLDING_PANE ? true : false}
-					/>
+					<HoldingsContent {holdings} {refinedLibraries} />
 				{:catch err}
 					<p>{err}</p>
 				{/await}

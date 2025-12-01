@@ -10,10 +10,10 @@
 	import Meta from '$lib/components/Meta.svelte';
 	import Citations from '$lib/components/Citations.svelte';
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
-	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping.js';
 	import { bestSize } from '$lib/utils/auxd';
 	import { first } from '$lib/utils/xl';
 	import { Width } from '$lib/types/auxd';
+	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 
 	const { data } = $props();
 
@@ -28,7 +28,7 @@
 
 	let previousURL: URL;
 	const refinedLibraries = $derived(
-		getSigelsFromMapping([data.searchResult?.mapping, data.subsetMapping])
+		getLibraryIdsFromMapping([data.searchResult?.mapping, data.subsetMapping])
 	);
 
 	afterNavigate(({ to }) => {
