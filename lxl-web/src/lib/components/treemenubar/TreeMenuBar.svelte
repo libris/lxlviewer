@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { beforeNavigate } from '$app/navigation';
 	import { prefersReducedMotion } from 'svelte/motion';
 	import {
 		type TreeMenuItem,
@@ -38,7 +40,6 @@
 	let searchString: string = $state('');
 	let typeaheadTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	$inspect(searchString);
 	const rootItems = $derived(data.filter((item) => item.path.length === 1));
 	let expandedItems: TreeMenuItem[] = $derived([]); // TODO: set initially opened paths using getExpanded function?
 	let visibleItems: TreeMenuItem[] = $derived(getVisibleItems(data, expandedItems));
@@ -194,6 +195,18 @@
 		toggle,
 		handleKeyDown,
 		expandedItems: () => expandedItems // is this the right way to fix reactivity?
+	});
+
+	beforeNavigate(() => {
+		if (typeaheadTimeout) clearTimeout(typeaheadTimeout);
+		clearTypehead();
+	});
+
+	onMount(() => {
+		return () => {
+			if (typeaheadTimeout) clearTimeout(typeaheadTimeout);
+			clearTypehead();
+		};
 	});
 </script>
 
