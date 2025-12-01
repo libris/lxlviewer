@@ -1,10 +1,5 @@
 import { pushState } from '$app/navigation';
-import type {
-	BibIdObj,
-	HoldingLinks,
-	HoldersByInstanceId,
-	LibraryWithLinks
-} from '$lib/types/holdings';
+import type { BibIdObj, HoldingLinks, HoldersByInstanceId, LibraryFull } from '$lib/types/holdings';
 import { BibDb } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
@@ -64,7 +59,7 @@ export function getMyLibsFromHoldings(
  */
 export function createHoldingLinks(
 	bibIdObj: BibIdObj,
-	fullHolderData: LibraryWithLinks,
+	fullHolderData: LibraryFull,
 	locale: LocaleCode
 ): HoldingLinks {
 	const ilsPaths = [
@@ -99,7 +94,7 @@ export function createHoldingLinks(
 
 function getLinksToItemFor(
 	bibIdObj: BibIdObj,
-	fullHolderData: LibraryWithLinks,
+	fullHolderData: LibraryFull,
 	paths: string[][],
 	locale: LocaleCode
 ): string[] {

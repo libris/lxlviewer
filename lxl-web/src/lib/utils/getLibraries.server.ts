@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/private';
-import type { LibraryFull, LibraryId, LibraryWithLinks } from '$lib/types/holdings';
+import type { LibraryFull, LibraryId, LibraryRecord, LibraryWithLinks } from '$lib/types/holdings';
 import { BibDb, JsonLd } from '$lib/types/xl';
 import { gunzipSync } from 'node:zlib';
 import { createHolderLinks } from './holdings.server';
@@ -8,16 +8,8 @@ import type { LocaleCode } from '$lib/i18n/locales';
 
 type Data = {
 	[JsonLd.CONTEXT]: string[];
-	[JsonLd.GRAPH]?: Record[] | LibraryFull[];
+	[JsonLd.GRAPH]?: LibraryRecord[] | LibraryFull[];
 }[];
-
-type Record = {
-	[JsonLd.ID]: string;
-	[JsonLd.TYPE]: string;
-	mainEntity: {
-		[JsonLd.ID]: string;
-	};
-};
 
 let librariesCache: Map<LibraryId, LibraryWithLinks> = new Map();
 let cacheExpires = 0;
@@ -51,9 +43,8 @@ function withLinks(
 	displayUtil: DisplayUtil,
 	locale: LocaleCode
 ): LibraryWithLinks {
-	console.log(lib);
 	const links = createHolderLinks(lib, locale, displayUtil);
-	const library = { ...lib, ...links };
+	const library = { ...lib, ...{ _links: links } };
 	delete library[BibDb.address];
 
 	return library;
@@ -66,17 +57,23 @@ function buildData(data: Data) {
 		const graph = lib?.[JsonLd.GRAPH];
 		if (!graph) continue;
 
+		let record: LibraryRecord | null = null;
 		let library: LibraryFull | null = null;
 
 		for (const item of graph) {
 			const type = item[JsonLd.TYPE];
-			if (type === 'Library') {
+			if (type === 'Record') {
+				record = item as LibraryRecord;
+			} else if (type === 'Library') {
 				library = item as LibraryFull;
 			}
 		}
 
-		if (library) {
-			libraries.push(library);
+		if (record && library) {
+			libraries.push({
+				...library,
+				meta: record
+			});
 		}
 	}
 	return libraries;

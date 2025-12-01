@@ -27,7 +27,7 @@ import {
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
+import type { LibraryItem, MyLibrariesType, UserSettings } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
@@ -46,7 +46,7 @@ export async function asResult(
 	locale: LangCode,
 	auxdSecret: string,
 	usePath?: string,
-	myLibraries?: Record<string, LibraryItem>
+	myLibraries?: MyLibrariesType
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
 
@@ -96,7 +96,7 @@ export function asSearchResultItem(
 	vocabUtil: VocabUtil,
 	locale: LangCode,
 	auxdSecret: string,
-	myLibraries?: Record<string, LibraryItem>,
+	myLibraries?: MyLibrariesType,
 	maxScores?: Record<string, number>
 ): SearchResultItem[] {
 	return items

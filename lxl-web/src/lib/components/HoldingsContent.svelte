@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import type { BibIdData, HoldingsData } from '$lib/types/holdings';
+	import type { BibIdData, HoldingsData, LibraryId } from '$lib/types/holdings';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import Holder from './Holder.svelte';
 	import BiSearch from '~icons/bi/search';
@@ -111,8 +111,8 @@
 	const numHolders = $derived(sortedHolders?.length);
 
 	// subset of instances applicable for the current holder/selection
-	function getInstancesForLibAndSelection(id: string): BibIdData {
-		if (id && holdingId) {
+	function getInstancesForLibAndSelection(libraryId: LibraryId): BibIdData {
+		if (libraryId && holdingId) {
 			switch (holdingSelection) {
 				case 'instance': {
 					return { [holdingId]: bibIdData?.[holdingId] };
@@ -121,7 +121,7 @@
 				case 'type': {
 					let instances: BibIdData = {};
 					for (const [key, value] of Object.entries(bibIdData)) {
-						if (value && value['@type'] === holdingId && byInstanceId[key].includes(id)) {
+						if (value && value['@type'] === holdingId && byInstanceId[key].includes(libraryId)) {
 							instances[key] = value;
 						}
 					}
@@ -132,7 +132,7 @@
 				default: {
 					let instances: BibIdData = {};
 					for (const [key, value] of Object.entries(bibIdData)) {
-						if (value && byInstanceId[key].includes(id)) {
+						if (value && byInstanceId[key].includes(libraryId)) {
 							instances[key] = value;
 						}
 					}
@@ -169,7 +169,7 @@
 					<span class="font-medium">{section.title}</span>
 				</h2>
 				<ul class="flex flex-col gap-2 text-xs">
-					{#each section.data as holder, i (`mylibs-${holder['@id']}-${i}`)}
+					{#each section.data as holder, i (`mylibs-${holder[JsonLd.ID]}-${i}`)}
 						{@const instances = getInstancesForLibAndSelection(holder[JsonLd.ID])}
 						<Holder {holder} {instances} />
 					{/each}
@@ -190,9 +190,13 @@
 	</div>
 	<!-- list holders -->
 	<ul class="flex flex-col gap-2 text-xs">
-		{#each sortedHolders as holder (holder['@id'])}
+		{#each sortedHolders as holder (holder[JsonLd.ID])}
 			{@const instances = getInstancesForLibAndSelection(holder[JsonLd.ID])}
-			<Holder {holder} {instances} hidden={!filteredHolders.find((h) => h === holder)} />
+			<Holder
+				{holder}
+				{instances}
+				hidden={!filteredHolders.find((h) => h[JsonLd.ID] === holder[JsonLd.ID])}
+			/>
 		{/each}
 		{#if filteredHolders.length === 0}
 			<li>

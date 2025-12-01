@@ -1,19 +1,7 @@
 import Cookies from 'js-cookie';
-import {
-	ExpandedState,
-	type LibraryItem,
-	type UserSettings as UserSettingsType
-} from '$lib/types/userSettings';
+import { ExpandedState, type UserSettings as UserSettingsType } from '$lib/types/userSettings';
 import type { AvailableCitationFormat } from '$lib/types/citation';
-
-enum availableSettings {
-	facetSort = 'facetSort',
-	myLibraries = 'myLibraries',
-	leadingPane = 'leadingPane',
-	facetExpanded = 'facetExpanded',
-	selectedCitationFormat = 'selectedCitationFormat',
-	trailingPane = 'trailingPane'
-}
+import type { LibraryId } from '$lib/types/holdings';
 
 export class UserSettings {
 	private settings: UserSettingsType = $state({});
@@ -30,16 +18,13 @@ export class UserSettings {
 		}
 	}
 
-	private update(setting: keyof typeof availableSettings, v: Partial<UserSettings>) {
-		if (setting in availableSettings) {
-			const settingsObj = {
-				...this.settings,
-				...{ [setting]: v }
-			};
+	private update<K extends keyof UserSettingsType>(key: K, value: UserSettingsType[K]) {
+		this.settings = {
+			...this.settings,
+			[key]: value
+		};
 
-			this.settings = settingsObj;
-			this.setCookie(settingsObj);
-		}
+		this.setCookie(this.settings);
 	}
 
 	private setCookie(value: UserSettingsType) {
@@ -50,10 +35,10 @@ export class UserSettings {
 		});
 	}
 
-	addLibrary(library: LibraryItem) {
+	addLibrary(libraryId: LibraryId, label: string) {
 		const myLibs = { ...this.settings?.myLibraries };
-		if (!myLibs[library['@id']]) {
-			myLibs[library['@id']] = library;
+		if (!myLibs[libraryId]) {
+			myLibs[libraryId] = label;
 			this.update('myLibraries', myLibs);
 		}
 	}

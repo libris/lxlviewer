@@ -4,7 +4,7 @@ import { env } from '$env/dynamic/private';
 import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
 import type { Site } from '$lib/types/site';
-import { DebugFlags, type UserSettings } from '$lib/types/userSettings';
+import { DebugFlags, type MyLibrariesType, type UserSettings } from '$lib/types/userSettings';
 import displayWeb from '$lib/assets/json/display-web.json';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import { refreshLibraries } from '$lib/utils/getLibraries.server';
@@ -44,6 +44,8 @@ export const handle = async ({ event, resolve }) => {
 			console.warn('Failed to parse user settings', e);
 		}
 	}
+	let cookieEdit = false;
+
 	if (event.url.searchParams.has('_debug')) {
 		let flags = event.url.searchParams
 			.getAll('_debug')
@@ -54,13 +56,17 @@ export const handle = async ({ event, resolve }) => {
 		}
 
 		userSettings.debug = flags;
+		cookieEdit = true;
+	}
 
-		// TODO wipe myLibraries cookie if wrong format
-		// const myLibraries = userSettings.myLibraries;
-		// if (!Array.isArray(myLibraries) || myLibraries.some(v => typeof v === "object")) {
-		// 	console.log('wipe my libraries')
-		// 	// delete userSettings.myLibraries
-		// }
+	const myLibraries = userSettings.myLibraries;
+	if (myLibraries && !isValidMyLibraries(myLibraries)) {
+		// wipe myLibraries if wrong format
+		userSettings.myLibraries = {};
+		cookieEdit = true;
+	}
+
+	if (cookieEdit) {
 		event.cookies.set('userSettings', JSON.stringify(userSettings), {
 			maxAge: 365,
 			secure: true,
@@ -88,6 +94,19 @@ export const handle = async ({ event, resolve }) => {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)
 	});
 };
+
+function isValidMyLibraries(value: unknown): value is MyLibrariesType {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) {
+		return false;
+	}
+
+	for (const [key, val] of Object.entries(value)) {
+		if (typeof key !== 'string') return false;
+		if (typeof val !== 'string') return false;
+	}
+
+	return true;
+}
 
 async function loadUtilCached() {
 	if (!utilCache) {

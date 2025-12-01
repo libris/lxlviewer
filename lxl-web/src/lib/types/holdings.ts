@@ -38,13 +38,22 @@ type HoldingItem = {
 
 export type LibraryId = string;
 export type OrgId = string;
+type RecordId = string;
+
+export type LibraryRecord = {
+	[JsonLd.ID]: RecordId;
+	[JsonLd.TYPE]: 'Record';
+	mainEntity: {
+		[JsonLd.ID]: string;
+	};
+};
 
 type LibraryChip = {
 	[JsonLd.ID]: LibraryId;
 	[JsonLd.TYPE]: 'Library';
 	name: string;
 	sigel: string;
-	meta: Record<string, unknown>;
+	meta: LibraryRecord;
 };
 
 export interface LibraryFull extends LibraryChip {
@@ -54,7 +63,9 @@ export interface LibraryFull extends LibraryChip {
 	[BibDb.address]?: Record<string, string>[];
 }
 
-export interface LibraryWithLinks extends Omit<LibraryFull, BibDb.address>, HolderLinks {}
+export interface LibraryWithLinks extends LibraryFull {
+	_links: HolderLinks;
+}
 
 export type BibIdObj = {
 	bibId: string;

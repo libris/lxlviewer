@@ -13,17 +13,7 @@
 		hidden?: boolean;
 	};
 	const { holder, instances, hidden = false }: Props = $props();
-	const name = holder.name;
-	const { linksToCatalog, linksToSite, openingHours, address, myLoansLink, registrationLink } =
-		holder;
-	const holderLinks: HolderLinks = $state({
-		linksToCatalog,
-		linksToSite,
-		openingHours,
-		address,
-		myLoansLink,
-		registrationLink
-	});
+	const holderLinks: HolderLinks = $state(holder._links);
 
 	let holdingLinks: Record<string, HoldingLinks> = $state({});
 	for (const [key, bibIdObj] of Object.entries(instances)) {
@@ -119,7 +109,7 @@
 	class={['border-neutral flex flex-col gap-2 pb-3 not-last:border-b', hidden && 'hidden']}
 	bind:this={root}
 >
-	<h3 class="text-sm font-medium">{name}</h3>
+	<h3 class="text-sm font-medium">{holder.name}</h3>
 	<!-- {#if loading}
 		<p class="animate-pulse">{page.data.t('search.loading')}</p>
 	{/if} -->
