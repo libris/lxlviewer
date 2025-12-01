@@ -145,6 +145,13 @@
 					focusItem(visibleItems[visibleItems.length - 1]);
 					break;
 			}
+		} else if (event.key.match(/\w/)) {
+			const firstItem = visibleItems.find((item) => item.searchString?.startsWith(event.key));
+			if (firstItem) {
+				focusItem(firstItem);
+			} else {
+				focusItem(visibleItems[0]);
+			}
 		}
 	}
 

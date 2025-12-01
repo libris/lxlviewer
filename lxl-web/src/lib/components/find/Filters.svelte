@@ -33,24 +33,24 @@
 	}
 
 	const flatData: TreeMenuItem[] = [
-		{ path: ['categories'] },
-		{ path: ['categories', 'litterature'] },
-		{ path: ['categories', 'litterature', 'skönlitteratur'] },
-		{ path: ['categories', 'litterature', 'skönlitteratur', 'A'] },
-		{ path: ['categories', 'litterature', 'skönlitteratur', 'B'] },
+		{ path: ['categories'], searchString: 'categories' },
+		{ path: ['categories', 'litterature'], searchString: 'litterature' },
+		{ path: ['categories', 'litterature', 'skönlitteratur'], searchString: 'skönlitteratur' },
+		{ path: ['categories', 'litterature', 'skönlitteratur', 'A'], searchString: 'a' },
+		{ path: ['categories', 'litterature', 'skönlitteratur', 'B'], searchString: 'b' },
 
-		{ path: ['categories', 'litterature', 'poesi'] },
-		{ path: ['categories', 'litterature', 'poesi', 'C'] },
-		{ path: ['categories', 'litterature', 'poesi', 'D'] },
-		{ path: ['categories', 'music'] },
-		{ path: ['categories', 'film'] },
-		{ path: ['language'] },
-		{ path: ['language', 'swedish'] },
-		{ path: ['language', 'english'] },
-		{ path: ['language', 'spanish'] },
-		{ path: ['contributor'] },
-		{ path: ['contributor', 'Astrid Lindgren'] },
-		{ path: ['contributor', 'Hjalmar Söderberg'] }
+		{ path: ['categories', 'litterature', 'poesi'], searchString: 'poesi' },
+		{ path: ['categories', 'litterature', 'poesi', 'C'], searchString: 'c' },
+		{ path: ['categories', 'litterature', 'poesi', 'D'], searchString: 'd' },
+		{ path: ['categories', 'music'], searchString: 'music' },
+		{ path: ['categories', 'film'], searchString: 'film' },
+		{ path: ['language'], searchString: 'language' },
+		{ path: ['language', 'swedish'], searchString: 'swedish' },
+		{ path: ['language', 'english'], searchString: 'english' },
+		{ path: ['language', 'spanish'], searchString: 'spanish' },
+		{ path: ['contributor'], searchString: 'contributor' },
+		{ path: ['contributor', 'Astrid Lindgren'], searchString: 'Astrid Lindgren' },
+		{ path: ['contributor', 'Hjalmar Söderberg'], searchString: 'Hjalmar Söderberg' }
 	];
 
 	function handleFiltersListKeyDown(event: KeyboardEvent) {
