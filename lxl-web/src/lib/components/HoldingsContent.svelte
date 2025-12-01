@@ -67,11 +67,10 @@
 		})
 	);
 
-	// not working unit new cookie format
 	const myLibsHolders = $derived(
 		sortedHolders.filter((holder) => {
 			if (userSettings?.myLibraries) {
-				return Object.values(userSettings.myLibraries).some((lib) => lib === holder[JsonLd.ID]);
+				return Object.keys(userSettings.myLibraries).some((lib) => lib === holder[JsonLd.ID]);
 			} else return false;
 		})
 	);
@@ -97,16 +96,6 @@
 			icon: BiHouseHeart
 		}
 	]);
-
-	// pick an instance instance or the work overview
-	// const cardData = $derived.by(() => {
-	// 	if (holdingSelection === 'instance') {
-	// 		return (
-	// 			holdingId &&
-	// 			holdings.instances.find((instance) => (instance['@id'] as string).includes(holdingId))
-	// 		);
-	// 	} else return holdings.overview;
-	// });
 
 	const numHolders = $derived(sortedHolders?.length);
 

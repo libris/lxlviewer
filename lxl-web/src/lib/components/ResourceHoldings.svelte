@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
-	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
-	import { getResourceId } from '$lib/utils/resourceData';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
@@ -33,6 +31,7 @@
 
 <ul class="@container flex flex-col gap-2">
 	{#each Object.keys(holdersByType) as type (type)}
+		{@const heldByFav = getMyLibsFromHoldings(userSettings.myLibraries, holdersByType[type])}
 		<li class="@md:self-center">
 			<a
 				class="btn btn-cta @md:max-w-sm"
@@ -41,19 +40,10 @@
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, type)}
 			>
-				{#if instances.length === 1}
-					{@const id = trimSlashes(relativizeUrl(getResourceId(instances[0] as ResourceData)))}
-					{#if id}
-						{@const favWithHolding = getMyLibsFromHoldings(
-							userSettings.myLibraries,
-							page.data.holdings.byInstanceId[id]
-						)}
-						{#if favWithHolding}
-							<div class="mr-1 text-lg">
-								<MyLibsHoldingIndicator libraries={favWithHolding} />
-							</div>
-						{/if}
-					{/if}
+				{#if heldByFav}
+					<div class="mr-1 text-lg">
+						<MyLibsHoldingIndicator libraries={heldByFav} />
+					</div>
 				{/if}
 				<span class="text-nowrap">{getLocalizedType(type)}</span>
 				<span class="text-2xs truncate font-normal opacity-90">
