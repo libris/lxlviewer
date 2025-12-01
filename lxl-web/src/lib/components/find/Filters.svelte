@@ -3,7 +3,7 @@
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import MenuBar from '../treemenubar/TreeMenuBar.svelte';
-	import { TreeMenuBarKeys, type TreeMenuItem } from '$lib/types/treemenubar';
+	import { type TreeMenuItem } from '$lib/types/treemenubar';
 
 	type Props = {
 		facets?: Facet[];
@@ -21,6 +21,7 @@
 			0
 	);
 
+	let menuBar: MenuBar | undefined = $state();
 	// const treeViewFacets = $derived(facets);
 
 	function getClearAllHref() {
@@ -35,7 +36,12 @@
 		{ path: ['categories'] },
 		{ path: ['categories', 'litterature'] },
 		{ path: ['categories', 'litterature', 'skönlitteratur'] },
+		{ path: ['categories', 'litterature', 'skönlitteratur', 'A'] },
+		{ path: ['categories', 'litterature', 'skönlitteratur', 'B'] },
+
 		{ path: ['categories', 'litterature', 'poesi'] },
+		{ path: ['categories', 'litterature', 'poesi', 'C'] },
+		{ path: ['categories', 'litterature', 'poesi', 'D'] },
 		{ path: ['categories', 'music'] },
 		{ path: ['categories', 'film'] },
 		{ path: ['language'] },
@@ -48,10 +54,7 @@
 	];
 
 	function handleFiltersListKeyDown(event: KeyboardEvent) {
-		if (event.key === TreeMenuBarKeys.ArrowDown || event.key === TreeMenuBarKeys.ArrowUp) {
-			event.preventDefault();
-		}
-		// TODO: add typeahead support here
+		menuBar?.handleKeyDown(null, event);
 	}
 </script>
 
@@ -79,10 +82,10 @@
 			onclick={(event) => event.preventDefault()}
 			onkeydown={handleFiltersListKeyDown}
 		>
-			<span class="sr-only">{page.data.t('search.skipToFilterList')}</span>
+			<span class="sr-only">{page.data.t('search.filterList')}</span>
 		</a>
 		<div class="absolute h-fit w-full">
-			<MenuBar data={flatData} ariaLabelledby={filterHeadingId} />
+			<MenuBar bind:this={menuBar} data={flatData} ariaLabelledby={filterHeadingId} />
 			<details class="text-5xs text-subtle">
 				<summary tabindex="-1">JSON</summary>
 				<pre>{JSON.stringify(facets)}</pre>
@@ -116,7 +119,7 @@
 		scrollbar-gutter: stable;
 	}
 
-	:global(summary + ul) {
+	:global(summary + menu) {
 		padding-left: calc(var(--spacing) * 6);
 	}
 </style>

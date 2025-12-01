@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { getTreeMenuBarContext } from '$lib/contexts/treemenubar';
 	import { send, receive } from '$lib/utils/transition';
-	import { TreeMenuBarKeys, type TreeMenuItem, type TreePath } from '$lib/types/treemenubar';
-	import { getNestedDataByPath, getChildrenByPath, getDataByPath } from './utils';
+	import { type TreeMenuItem, type TreePath } from '$lib/types/treemenubar';
+	import { getNestedDataByPath, getChildrenByPath, getDataByPath, areEqualPaths } from './utils';
 	import TreeMenuBarItem from './TreeMenuBarItem.svelte';
 
 	interface Props {
@@ -12,20 +12,10 @@
 
 	const { data, path }: Props = $props();
 
-	const { menuItem, animated, toggle } = getTreeMenuBarContext();
+	const { menuItem, animated, toggle, handleKeyDown, expandedItems } = getTreeMenuBarContext();
 
 	const dataByPath = $derived(getDataByPath(data, path));
 	const hasChildren = $derived(!!getChildrenByPath(data, path).length);
-
-	function handleKeyDown(data: TreeMenuItem, event: KeyboardEvent) {
-		if (
-			Object.keys(TreeMenuBarKeys).includes(event.key) ||
-			((event.target as HTMLElement).tagName !== 'SUMMARY' && event.key === TreeMenuBarKeys.Space)
-		) {
-			event.preventDefault();
-			event.stopPropagation();
-		}
-	}
 
 	function handleChange(data: TreeMenuItem, event: Event) {
 		console.log('handleMenuItemChange data:', data, 'event:', event);
@@ -46,15 +36,17 @@
 			ontoggle={(event: Event & { currentTarget: HTMLDetailsElement }) => {
 				toggle({ data: dataByPath, expanded: event.currentTarget.open });
 			}}
+			open={!!expandedItems().find(({ path: expandedPath }) => areEqualPaths(expandedPath, path))}
 		>
 			<summary onkeydown={(event) => handleKeyDown(dataByPath, event)}>
 				{@render _menuItem(dataByPath)}
 			</summary>
-			<ul style={`--level:${path.length + 1}`}>
+			<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
+			<menu role="menu" style={`--level:${path.length + 1}`}>
 				{#each data.filter((item) => item.path.length === path.length + 1) as item (item.path)}
 					<TreeMenuBarItem data={getNestedDataByPath(data, item.path)} path={item.path} />
 				{/each}
-			</ul>
+			</menu>
 		</details>
 	{:else}
 		{@render _menuItem(dataByPath)}
