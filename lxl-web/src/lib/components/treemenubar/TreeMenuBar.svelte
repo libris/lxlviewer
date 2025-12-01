@@ -117,6 +117,15 @@
 		}
 	}
 
+	function toggleItem(currentItem: TreeMenuItem | null) {
+		if (currentItem && getChildrenByPath(data, currentItem.path).length) {
+			const expanded = !expandedItems.find(({ path: expandedPath }) =>
+				areEqualPaths(expandedPath, currentItem.path)
+			);
+			toggle({ data: currentItem, expanded });
+		}
+	}
+
 	export function handleKeyDown(item: TreeMenuItem | null, event: KeyboardEvent) {
 		if (
 			Object.keys(TreeMenuBarKeys).includes(event.key) ||
@@ -144,8 +153,11 @@
 				case TreeMenuBarKeys.End:
 					focusItem(visibleItems[visibleItems.length - 1]);
 					break;
+				case TreeMenuBarKeys.Space:
+					toggleItem(item);
+					break;
 			}
-		} else if (event.key.match(/\w/)) {
+		} else if (String.fromCharCode(event.keyCode).toLowerCase().match(/[a-z]/g)) {
 			const firstItem = visibleItems.find((item) => item.searchString?.startsWith(event.key));
 			if (firstItem) {
 				focusItem(firstItem);
