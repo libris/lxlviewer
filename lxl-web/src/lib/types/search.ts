@@ -50,7 +50,7 @@ export interface SearchResultItem {
 	typeForIcon: string; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
-	heldByMyLibraries?: MyLibrariesType[];
+	heldByMyLibraries?: MyLibrariesType | null;
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }

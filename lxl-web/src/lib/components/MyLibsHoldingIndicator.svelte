@@ -5,10 +5,10 @@
 	import BiHouseHeart from '~icons/bi/house-heart';
 
 	type IndicatorProps = {
-		libraries: MyLibrariesType[];
+		libraries: MyLibrariesType;
 	};
 	const { libraries }: IndicatorProps = $props();
-	const librariesString = $derived(libraries.map((lib) => lib.label).join(', '));
+	const librariesString = $derived(Object.values(libraries).join(', '));
 </script>
 
 <span

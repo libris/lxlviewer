@@ -43,7 +43,7 @@
 							userSettings.myLibraries,
 							page.data.holdings.holdingsByInstanceId[id]
 						)}
-						{#if favWithHolding.length}
+						{#if favWithHolding}
 							<div class="mr-1 text-lg">
 								<MyLibsHoldingIndicator libraries={favWithHolding} />
 							</div>

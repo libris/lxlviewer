@@ -80,7 +80,7 @@ export type BibIdObj = {
 export type BibIdData = { [instanceId: string]: BibIdObj };
 
 export type HoldersByInstanceId = {
-	[id: string]: string[];
+	[id: LibraryId]: string[];
 };
 
 export type HoldingsByType = {

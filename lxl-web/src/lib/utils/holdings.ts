@@ -29,35 +29,24 @@ export function handleClickHoldings(
 	pushState(event.currentTarget.href, { ...state, holdings: stripAnchor(id) });
 }
 
-// todo working
+// todo get libs from orgs
 export function getMyLibsFromHoldings(
-	myLibraries: MyLibrariesType,
+	myLibraries: MyLibrariesType | undefined,
 	holdings: HoldersByInstanceId | HoldersByInstanceId[string]
-): MyLibrariesType[] {
+): MyLibrariesType | null {
+	if (!myLibraries) return null;
+
+	const holdingIds = Array.isArray(holdings) ? holdings : Object.values(holdings).flat();
+
 	const result: MyLibrariesType = {};
 
-	if (myLibraries) {
-		// const result = Array.isArray(holdings) ? holdings.filter
-
-		if (Array.isArray(holdings)) {
-			findLib(holdings);
-		} else if (holdings && typeof holdings === 'object') {
-			Object.values(holdings).forEach((holding) => findLib(holding));
-		}
-
-		function findLib(holding: HoldersByInstanceId[string]) {
-			if (myLibraries) {
-				holding.forEach((holder) => {
-					// console.log('HOLDER', holder)
-					const found = Object.values(myLibraries).find((library) => library.sigel === holder);
-					if (found) {
-						result[found['@id']] = found;
-					}
-				});
-			}
+	for (const id of holdingIds) {
+		if (id in myLibraries) {
+			result[id] = myLibraries[id];
 		}
 	}
-	return Object.values(result);
+
+	return Object.keys(result).length > 0 ? result : null;
 }
 
 /**

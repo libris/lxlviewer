@@ -111,7 +111,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			onclick={(event) => isInstanceCard && handleClickHoldings(event, page.state, id)}
 		>
 			<span class="text-base">
-				{#if item.heldByMyLibraries?.length}
+				{#if item.heldByMyLibraries}
 					<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
 				{:else}
 					<BiHouse class="text-neutral-400" />
