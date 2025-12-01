@@ -138,6 +138,12 @@
 				case TreeMenuBarKeys.ArrowLeft:
 					collapseOrGotoParent(item);
 					break;
+				case TreeMenuBarKeys.Home:
+					focusItem(visibleItems[0]);
+					break;
+				case TreeMenuBarKeys.End:
+					focusItem(visibleItems[visibleItems.length - 1]);
+					break;
 			}
 		}
 	}
