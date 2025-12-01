@@ -167,7 +167,7 @@ export default {
 
 <template>
   <div class="Enrich">
-    <merge-entities v-if="allFlagged.length !== 0"
+    <merge-entities v-show="allFlagged.length !== 0"
                     :flagged="allFlagged"
                     :enrich-step=true
                     :target-locked=true
