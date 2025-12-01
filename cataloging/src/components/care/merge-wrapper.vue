@@ -47,7 +47,8 @@ export default {
     ...mapActions([
       'setEnrichmentSource',
       'setEnrichmentTarget',
-      'setEnrichmentChanges'
+      'setEnrichmentChanges',
+      'setEnrichmentOriginalData',
     ]),
     resetCachedChanges() {
       this.setEnrichmentChanges(null);
@@ -71,6 +72,7 @@ export default {
       this.setEnrichmentChanges(null);
       this.setEnrichmentTarget(null);
       this.setEnrichmentSource(null);
+      this.setEnrichmentOriginalData(null);
       this.$store.dispatch('flushChangeHistory');
     },
     goToEditStep() {

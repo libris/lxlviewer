@@ -74,7 +74,7 @@ export default class URIMinter {
     return null;
   }
 
-  assignUri(data, library) {
+  assignUri(data, library, propToLangContainerFn) {
     const [record, mainEntity] = data[GRAPH];
 
     const container = this.findContainerForEntity(mainEntity, library);
@@ -82,7 +82,11 @@ export default class URIMinter {
       throw new Error(`<${library[ID]}> cannot assign URI for <${mainEntity[ID]}>`);
     }
 
-    const slugValue = mainEntity[container.slugProperty];
+    let slugValue = mainEntity[container.slugProperty];
+    if (!slugValue) {
+      const lang = 'sv'; // FIXME where should we load XL locale?
+      slugValue = (mainEntity[propToLangContainerFn(container.slugProperty)] || {})[lang];
+    }
     if (!slugValue) {
       throw new Error(`Missing slugProperty ${container.slugProperty} for ${mainEntity[ID]}`);
     }

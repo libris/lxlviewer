@@ -19,6 +19,7 @@ import * as VocabUtil from "../../../../lxljs/vocab.js";
 import * as DisplayUtil from "../../../../lxljs/display.js";
 import Spinner from "@/components/shared/spinner.vue";
 import ItemEntity from "@/components/inspector/item-entity.vue";
+import {translateAliasedUri} from "@/utils/data.js";
 
 export default {
   name: 'MergeEntities',
@@ -115,11 +116,36 @@ export default {
       }
       return false;
     },
+    bothAreHoldings() {
+      if (this.bothRecordsLoaded) {
+        return this.isHolding(this.source.mainEntity) && this.isHolding(this.inspector.data.mainEntity);
+      }
+      return false;
+    },
+    isAllowedToMergeHoldings() {
+      if (this.bothRecordsLoaded) {
+        const source = this.source.mainEntity;
+        const target = this.inspector.data.mainEntity;
+        return (this.isHeldByActiveSigel(source) && this.isHeldByActiveSigel(target)) || this.user.isGlobalRegistrant();
+      } else {
+        return true;
+      }
+    },
     hasDuplicates() {
       return !isEmpty(this.duplicateHoldings);
     },
     isValid() {
-      return this.enrichOnly ? !this.mismatchingTypes : !(this.hasDuplicates || this.mismatchingTypes);
+      return this.enrichOnly ? this.isValidForEnrich : this.isValidForMerge;
+    },
+    isValidForEnrich() {
+      return !this.mismatchingTypes;
+    },
+    isValidForMerge() {
+      if (this.bothAreHoldings) {
+        return this.isAllowedToMergeHoldings;
+      } else {
+        return !(this.hasDuplicates || this.mismatchingTypes);
+      }
     },
     isAllSelected() {
       if (this.sourceLoaded) {
@@ -208,7 +234,8 @@ export default {
     ...mapActions([
       'setEnrichmentTarget',
       'setEnrichmentChanges',
-      'setEnrichmentSource'
+      'setEnrichmentSource',
+      'setEnrichmentOriginalData'
     ]),
     loadingContent(value) {
       this.loadingRecords = value;
@@ -310,7 +337,7 @@ export default {
     fetchId(id, fetchingSource = false) {
       if (id !== null) {
         const fetchUrl = `${id.split('#')[0]}/data.jsonld`;
-        fetch(fetchUrl).then((response) => {
+        fetch(translateAliasedUri(fetchUrl)).then((response) => {
           if (response.status === 200) {
             if (!fetchingSource) {
               this.targetETag = response.headers.get('ETag');
@@ -334,7 +361,7 @@ export default {
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
           });
         }).then((result) => {
-          if (typeof result !== 'undefined') {
+          if (result && typeof result !== 'undefined') {
             const data = LxlDataUtil.splitJson(result);
             if (fetchingSource) {
               this.setEnrichmentSource(data);
@@ -343,7 +370,7 @@ export default {
               this.$store.dispatch('setInspectorData', data);
               this.setEnrichmentTarget(data);
               this.removeEnrichedHighlight();
-              this.$store.dispatch('setOriginalData', data);
+              this.setEnrichmentOriginalData(data);
               this.onFetchFinished(data);
             }
           }
@@ -386,10 +413,28 @@ export default {
       })
       return duplicates;
     },
+    isHolding(mainEntity) {
+      const type = mainEntity['@type'];
+      return VocabUtil.isSubClassOf(type, 'Item', this.resources.vocab, this.resources.context);
+    },
+    isHeldByActiveSigel(mainEntity) {
+      if (mainEntity.heldBy && mainEntity.heldBy['@id'] === this.user.getActiveLibraryUri()) {
+        return true;
+      }
+      const componentList = mainEntity.hasComponent;
+      if (typeof componentList !== 'undefined') {
+        for (const component of componentList) {
+          if (component.heldBy && component.heldBy['@id'] === this.user.getActiveLibraryUri()) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
     applyFromSource() {
       if (this.bothRecordsLoaded) {
         const originalDataPreservedQuoted = {
-          ...this.inspector.originalData,
+          ...this.enrichment.data.original,
           quoted: this.inspector.data.quoted
         };
         this.$store.dispatch('setInspectorData', originalDataPreservedQuoted);
@@ -627,7 +672,7 @@ export default {
   },
   watch: {
     'directoryCare.mergeTargetId'(id) {
-      if (id !== null) {
+      if (id !== null && !this.enrichOnly) {
         this.clearAllSelected();
         this.resetCachedChanges();
         this.setEnrichmentTarget(null);
@@ -655,6 +700,9 @@ export default {
         this.applyFromSource();
       }
     },
+    isValid(val) {
+      this.$emit('invalidSelection', !val);
+    },
     editStep(val) {
       if (val) {
         this.$nextTick(() => {
@@ -669,6 +717,10 @@ export default {
   mounted() {
     this.resetCachedChanges();
     this.clearAllSelected();
+    if (this.enrichOnly) {
+      this.setEnrichmentOriginalData(this.inspector.data);
+      this.setEnrichmentTarget(this.inspector.data);
+    }
   },
 };
 </script>
@@ -721,6 +773,12 @@ export default {
             <div class="iconCircle"><i class="fa fa-fw fa-exclamation"/></div>
             <div class="MergeView-description">
               {{ translatePhrase('To be able to enrich, the selected entities need to be of the same type.') }}
+            </div>
+          </div>
+          <div class="MergeView-descriptionContainer" v-if="this.bothAreHoldings && !isAllowedToMergeHoldings && !loadingRecords">
+            <div class="iconCircle"><i class="fa fa-fw fa-exclamation"/></div>
+            <div class="MergeView-description">
+              {{ translatePhrase('Switch to a sigel with permission to edit both the selected holdings.') }}
             </div>
           </div>
           <div v-if="hasDuplicates && !mismatchingTypes && !enrichOnly && !loadingRecords">

@@ -90,10 +90,6 @@ export default {
         inputValue: '',
         detailed: false,
       },
-      enrichFromSelectionModal: {
-        open: false,
-        inputId: '',
-      }
     };
   },
   emits: ['ready'],
@@ -344,16 +340,6 @@ export default {
           this.applyFieldsFromTemplate(template);
         }
       });
-    },
-    applyFromSource() {
-      this.$store.dispatch('setInspectorData', this.inspector.originalData);
-      this.$store.dispatch('flushChangeHistory');
-      this.removeEnrichedHighlight();
-      let source = cloneDeep(this.enrichment.data.source);
-      each(this.settings.keysToClear.duplication, (property) => {
-        unset(source, property);
-      });
-      this.applyFieldsFromTemplate(source, true);
     },
     applyFieldsFromTemplate(template) {
       const baseRecordType = this.inspector.data.mainEntity['@type'];
@@ -661,7 +647,11 @@ export default {
         );
       }
       if (this.user.uriMinter && VocabUtil.isSubClassOf(this.inspector.data.mainEntity['@type'], 'Concept', this.resources.vocab, this.resources.context)) {
-        this.user.uriMinter.assignUri(obj, { '@id': this.user.getActiveLibraryUri() });
+        this.user.uriMinter.assignUri(
+          obj,
+          { '@id': this.user.getActiveLibraryUri() },
+          (p) => VocabUtil.getMappedPropertyByContainer(p, '@language', this.resources.context)
+        );
       }
 
       return obj;
@@ -1024,8 +1014,6 @@ export default {
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
-      } else if (val.name === 'apply-source') {
-        this.applyFromSource();
       } else if (val.name === 'open-enrich-from-id') {
         this.toggleEnrichFromIdModal(true);
       } else if (val.name === 'open-detailed-enrich-from-id') {
@@ -1192,7 +1180,7 @@ export default {
           :full="true"
           :focus-data="inspector.data.mainEntity"
           :record-data="inspector.data.record"
-          v-if="!isItem" />
+        />
         <validation-summary v-if="user.settings.appTech" />
         <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
         <entity-form

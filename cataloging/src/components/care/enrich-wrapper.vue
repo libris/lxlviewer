@@ -53,16 +53,19 @@ export default {
     ...mapActions([
       'setEnrichmentSource',
       'setEnrichmentTarget',
-      'setEnrichmentChanges'
+      'setEnrichmentChanges',
+      'setEnrichmentOriginalData',
     ]),
     selectTarget() {
       const target = { 'mergeTargetId': this.inspector.data.record['@id'] + '#it' };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...target });
     },
     cancel() {
-      this.$store.dispatch('setInspectorData', this.inspector.originalData);
-      this.resetEverything();
-      this.close();
+      this.$store.dispatch('setInspectorData', this.enrichment.data.original)
+        .then(() => {
+          this.resetEverything();
+          this.close();
+        });
     },
     done() {
       this.close();
@@ -164,7 +167,7 @@ export default {
 
 <template>
   <div class="Enrich">
-    <merge-entities v-if="allFlagged.length !== 0"
+    <merge-entities v-show="allFlagged.length !== 0"
                     :flagged="allFlagged"
                     :enrich-step=true
                     :target-locked=true
