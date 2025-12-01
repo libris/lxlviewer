@@ -2,7 +2,7 @@ import { pushState } from '$app/navigation';
 import type { BibIdObj, HoldingLinks, HoldersByInstanceId, LibraryFull } from '$lib/types/holdings';
 import { BibDb } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
-import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
+import type { MyLibrariesType } from '$lib/types/userSettings';
 import { stripAnchor } from '$lib/utils/http';
 import getAtPath from '$lib/utils/getAtPath';
 import { USE_HOLDING_PANE } from '$lib/constants/panels';
@@ -25,10 +25,10 @@ export function handleClickHoldings(
 
 // todo working
 export function getMyLibsFromHoldings(
-	myLibraries: UserSettings['myLibraries'],
+	myLibraries: MyLibrariesType,
 	holdings: HoldersByInstanceId | HoldersByInstanceId[string]
-): LibraryItem[] {
-	const result: Record<string, LibraryItem> = {};
+): MyLibrariesType[] {
+	const result: MyLibrariesType = {};
 
 	if (myLibraries) {
 		// const result = Array.isArray(holdings) ? holdings.filter

@@ -27,7 +27,7 @@ import {
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { LibraryItem, MyLibrariesType, UserSettings } from '$lib/types/userSettings';
+import type { MyLibrariesType, UserSettings } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
@@ -320,7 +320,7 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getHeldByMyLibraries(item: FramedData, myLibraries: Record<string, LibraryItem>) {
+function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
 	const res = getHoldingsByInstanceId(item);
 	return getMyLibsFromHoldings(myLibraries, res);
 }
@@ -342,7 +342,7 @@ function displayFacetGroups(
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 	// manually add myLibraries to boolfilters
-	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, locale, translate) || [];
+	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, translate) || [];
 
 	const result = [];
 
@@ -477,11 +477,7 @@ function replacePath(view: Link, usePath: string | undefined) {
 }
 
 // TODO: we should get this from the backend...
-function addMyLibrariesBoolFilter(
-	boolFilters: Observation[] | undefined,
-	locale: LangCode,
-	translate: TranslateFn
-) {
+function addMyLibrariesBoolFilter(boolFilters: Observation[] | undefined, translate: TranslateFn) {
 	if (boolFilters) {
 		let existingBoolFilter: Observation | undefined;
 		const rest: Observation[] = [];
@@ -526,7 +522,7 @@ export function appendMyLibrariesParam(
 	if (['_q', '_r'].some((key) => searchParams.get(key)?.includes(MY_LIBRARIES_FILTER_ALIAS))) {
 		let sigelStr;
 		if (userSettings?.myLibraries) {
-			sigelStr = Object.values(userSettings?.myLibraries)
+			sigelStr = Object.keys(userSettings?.myLibraries)
 				.map((lib) =>
 					lib.sigel ? `itemHeldBy:"sigel:${lib.sigel}"` : `itemHeldByOrg:"sigel:org/${lib.code}"`
 				)

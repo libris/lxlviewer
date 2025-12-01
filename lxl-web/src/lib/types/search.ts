@@ -1,6 +1,6 @@
 import { type DisplayDecorated, type FramedData, JsonLd, LensType, type Link } from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
-import { type LibraryItem } from '$lib/types/userSettings';
+import { type MyLibrariesType } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import type { LibraryId } from './holdings';
 
@@ -50,7 +50,7 @@ export interface SearchResultItem {
 	typeForIcon: string; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
-	heldByMyLibraries?: LibraryItem[];
+	heldByMyLibraries?: MyLibrariesType[];
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }
