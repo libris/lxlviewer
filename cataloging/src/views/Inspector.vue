@@ -647,7 +647,11 @@ export default {
         );
       }
       if (this.user.uriMinter && VocabUtil.isSubClassOf(this.inspector.data.mainEntity['@type'], 'Concept', this.resources.vocab, this.resources.context)) {
-        this.user.uriMinter.assignUri(obj, { '@id': this.user.getActiveLibraryUri() });
+        this.user.uriMinter.assignUri(
+          obj,
+          { '@id': this.user.getActiveLibraryUri() },
+          (p) => VocabUtil.getMappedPropertyByContainer(p, '@language', this.resources.context)
+        );
       }
 
       return obj;
