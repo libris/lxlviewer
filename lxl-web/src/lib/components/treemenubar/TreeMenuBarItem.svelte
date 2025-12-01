@@ -38,7 +38,7 @@
 			}}
 			open={!!expandedItems().find(({ path: expandedPath }) => areEqualPaths(expandedPath, path))}
 		>
-			<summary onkeydown={(event) => handleKeyDown(dataByPath, event)}>
+			<summary onkeydown={(event) => handleKeyDown(dataByPath, event)} tabindex={-1}>
 				{@render _menuItem(dataByPath)}
 			</summary>
 			<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->

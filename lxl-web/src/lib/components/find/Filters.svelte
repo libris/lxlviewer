@@ -49,8 +49,8 @@
 		{ path: ['language', 'english'], searchString: 'english' },
 		{ path: ['language', 'spanish'], searchString: 'spanish' },
 		{ path: ['contributor'], searchString: 'contributor' },
-		{ path: ['contributor', 'Astrid Lindgren'], searchString: 'Astrid Lindgren' },
-		{ path: ['contributor', 'Hjalmar Söderberg'], searchString: 'Hjalmar Söderberg' }
+		{ path: ['contributor', 'Astrid Lindgren'], searchString: 'astrid Lindgren' },
+		{ path: ['contributor', 'Hjalmar Söderberg'], searchString: 'hjalmar söderberg' }
 	];
 
 	function handleFiltersListKeyDown(event: KeyboardEvent) {

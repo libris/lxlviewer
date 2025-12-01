@@ -32,8 +32,13 @@
 		wrapKeyboardNavigation = true
 	}: Props = $props();
 
-	let menuBar: HTMLMenuElement | undefined = $state();
+	const TYPEAHEAD_TIMEOUT_DURATION = 500;
 
+	let menuBar: HTMLMenuElement | undefined = $state();
+	let searchString: string = $state('');
+	let typeaheadTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	$inspect(searchString);
 	const rootItems = $derived(data.filter((item) => item.path.length === 1));
 	let expandedItems: TreeMenuItem[] = $derived([]); // TODO: set initially opened paths using getExpanded function?
 	let visibleItems: TreeMenuItem[] = $derived(getVisibleItems(data, expandedItems));
@@ -126,6 +131,10 @@
 		}
 	}
 
+	function clearTypehead() {
+		searchString = '';
+	}
+
 	export function handleKeyDown(item: TreeMenuItem | null, event: KeyboardEvent) {
 		if (
 			Object.keys(TreeMenuBarKeys).includes(event.key) ||
@@ -157,13 +166,25 @@
 					toggleItem(item);
 					break;
 			}
-		} else if (String.fromCharCode(event.keyCode).toLowerCase().match(/[a-z]/g)) {
-			const firstItem = visibleItems.find((item) => item.searchString?.startsWith(event.key));
+		}
+
+		if (String.fromCharCode(event.keyCode).toLowerCase().match(/[a-z]/g)) {
+			event.stopPropagation();
+			if (typeaheadTimeout) clearTimeout(typeaheadTimeout);
+			typeaheadTimeout = setTimeout(clearTypehead, TYPEAHEAD_TIMEOUT_DURATION);
+			searchString = (searchString || '') + String.fromCharCode(event.keyCode).toLowerCase();
+			const firstItem = visibleItems.find((item) =>
+				item.searchString?.toLowerCase().startsWith(searchString)
+			);
 			if (firstItem) {
 				focusItem(firstItem);
-			} else {
+			} else if (searchString.length === 1) {
 				focusItem(visibleItems[0]);
 			}
+		}
+
+		if (event.key === TreeMenuBarKeys.Backspace) {
+			clearTypehead();
 		}
 	}
 
