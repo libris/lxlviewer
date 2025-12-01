@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import type { Snippet } from 'svelte';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { BibIdData, HoldingsData, LibraryId } from '$lib/types/holdings';
 	import isFnurgel from '$lib/utils/isFnurgel';
@@ -11,9 +12,10 @@
 	type Props = {
 		holdings: HoldingsData;
 		refinedLibraries?: string[];
+		card?: Snippet;
 	};
 
-	let { holdings, refinedLibraries = [] }: Props = $props();
+	let { holdings, refinedLibraries = [], card }: Props = $props();
 	let { byInstanceId, byType, bibIdData, holdingLibraries } = holdings;
 	const userSettings = getUserSettings();
 	let searchPhrase = $state('');
@@ -134,9 +136,7 @@
 </script>
 
 <div class="flex flex-col gap-2 text-sm">
-	<!-- {#if showSummary}
-		<HoldingsResourceCard title={holdings.title} data={cardData as ResourceData} />
-	{/if} -->
+	{@render card?.()}
 	{#if numHolders}
 		<h2 class="font-medium">
 			{page.data.t('holdings.availableAt')}

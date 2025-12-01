@@ -5,6 +5,8 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import getMetaDescription from '$lib/utils/getMetaDescription';
 	import { type CitationsType } from '$lib/types/citation.js';
+	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
+	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http.js';
 	import Resource from '$lib/components/Resource.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import Meta from '$lib/components/Meta.svelte';
@@ -13,7 +15,7 @@
 	import { bestSize } from '$lib/utils/auxd';
 	import { first } from '$lib/utils/xl';
 	import { Width } from '$lib/types/auxd';
-	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
+	import SearchCard from '$lib/components/find/SearchCard.svelte';
 
 	const { data } = $props();
 
@@ -29,6 +31,16 @@
 	let previousURL: URL;
 	const refinedLibraries = $derived(
 		getLibraryIdsFromMapping([data.searchResult?.mapping, data.subsetMapping])
+	);
+
+	const holdingsParam = $derived(page.state.holdings || page.url.searchParams.get('holdings'));
+	const modalCard = $derived(
+		(holdingsParam &&
+			data.instances.filter(
+				(instance) =>
+					`${stripAnchor(trimSlashes(relativizeUrl(instance['@id'])))}` === holdingsParam
+			)[0]) ||
+			data.card
 	);
 
 	afterNavigate(({ to }) => {
@@ -83,12 +95,16 @@
 		tableOfContents={data.tableOfContents}
 		adjecentSearchResults={page.state.adjecentSearchResults}
 	/>
-	{#if page.state.holdings || page.url.searchParams.get('holdings')}
+	{#if holdingsParam}
 		<Modal close={() => handleCloseModal('holdings')}>
 			{#snippet title()}
 				<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
 			{/snippet}
-			<HoldingsContent holdings={data.holdings} {refinedLibraries} />
+			<HoldingsContent holdings={data.holdings} {refinedLibraries}>
+				{#snippet card()}
+					<SearchCard item={modalCard} />
+				{/snippet}
+			</HoldingsContent>
 		</Modal>
 	{:else if page.state.citations || page.url.searchParams.get('cite')}
 		<Modal close={() => handleCloseModal('cite')}>

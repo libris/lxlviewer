@@ -5,6 +5,9 @@
 	import type { SearchResult } from '$lib/types/search';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import SiteFooter from '../SiteFooter.svelte';
+	import { USE_HOLDING_PANE } from '$lib/constants/panels';
+	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
+	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import LeadingPane from '$lib/components/find/LeadingPane.svelte';
 	import Filters from '$lib/components/find/Filters.svelte';
@@ -17,9 +20,7 @@
 	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import Meta from '$lib/components/Meta.svelte';
-	import { USE_HOLDING_PANE } from '$lib/constants/panels';
 	import getPageTitle from '$lib/utils/getPageTitle';
-	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 
@@ -38,6 +39,13 @@
 
 	const HoldingsComponent = $derived(
 		USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
+	);
+	const holdingsParam = $derived(page.url.searchParams.get('holdings'));
+	const modalCard = $derived(
+		holdingsParam &&
+			searchResult.items.filter(
+				(item) => `${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}` === holdingsParam
+			)[0]
 	);
 
 	let previousURL: URL;
@@ -103,7 +111,7 @@
 			</div>
 			<SiteFooter />
 		</div>
-		{#if holdings && page.url.searchParams.get('holdings')}
+		{#if holdings && holdingsParam}
 			<HoldingsComponent close={handleCloseHoldings}>
 				{#snippet title()}
 					<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
@@ -115,7 +123,13 @@
 						</span>
 					</div>
 				{:then holdings}
-					<HoldingsContent {holdings} {refinedLibraries} />
+					<HoldingsContent {holdings} {refinedLibraries}>
+						{#snippet card()}
+							{#if modalCard}
+								<SearchCard item={modalCard} />
+							{/if}
+						{/snippet}
+					</HoldingsContent>
 				{:catch err}
 					<p>{err}</p>
 				{/await}

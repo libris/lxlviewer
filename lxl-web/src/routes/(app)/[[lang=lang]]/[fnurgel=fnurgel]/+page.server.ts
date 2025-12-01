@@ -208,6 +208,16 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdingLibraries: getHoldingLibraries(byType)
 	};
 
+	const card = asSearchResultItem(
+		[mainEntity],
+		displayUtil,
+		vocabUtil,
+		locale,
+		env.AUXD_SECRET,
+		locals.userSettings?.myLibraries,
+		undefined
+	)[0];
+
 	return {
 		uri: resource['@id'] as string,
 		type: mainEntity[JsonLd.TYPE],
@@ -222,7 +232,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		searchResult,
 		holdings,
 		images,
-		tableOfContents
+		tableOfContents,
+		card
 	};
 };
 
