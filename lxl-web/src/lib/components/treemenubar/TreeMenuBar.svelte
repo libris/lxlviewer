@@ -180,9 +180,16 @@
 			typeaheadTimeout = setTimeout(clearTypehead, TYPEAHEAD_TIMEOUT_DURATION);
 			searchString = (searchString || '') + String.fromCharCode(event.keyCode).toLowerCase();
 
-			const typeaheadItems = visibleItems.filter((item) =>
+			let typeaheadItems = visibleItems.filter((item) =>
 				item.searchString?.toLowerCase().startsWith(searchString)
 			);
+
+			/** Fallback to first character if there are no hits for search string with length */
+			if (!typeaheadItems.length && searchString.length > 1) {
+				typeaheadItems = visibleItems.filter((item) =>
+					item.searchString?.toLowerCase().startsWith(searchString.charAt(0))
+				);
+			}
 
 			const currentPath = document.activeElement?.getAttribute('data-path')?.split('.');
 			const currentIndex = currentPath
