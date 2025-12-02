@@ -12,10 +12,14 @@
 
 	const { data, path }: Props = $props();
 
-	const { menuItem, animated, toggle, handleKeyDown, expandedItems } = getTreeMenuBarContext();
+	const { menuItem, animated, toggle, handleKeyDown, expandedItems, tabbableItem } =
+		getTreeMenuBarContext();
 
 	const dataByPath = $derived(getDataByPath(data, path));
 	const hasChildren = $derived(!!getChildrenByPath(data, path).length);
+	const tabindex = $derived(
+		tabbableItem()?.path && areEqualPaths(tabbableItem().path, path) ? 0 : -1
+	);
 
 	function handleChange(data: TreeMenuItem, event: Event) {
 		console.log('handleMenuItemChange data:', data, 'event:', event);
@@ -25,6 +29,7 @@
 {#snippet _menuItem(dataByPath: TreeMenuItem)}
 	{@render menuItem({
 		data: dataByPath,
+		tabindex,
 		onmenuitemchange: (event: Event) => handleChange(dataByPath, event),
 		onmenuitemkeydown: (event: KeyboardEvent) => handleKeyDown(dataByPath, event)
 	})}

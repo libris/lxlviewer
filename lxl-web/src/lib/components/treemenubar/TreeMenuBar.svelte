@@ -45,6 +45,7 @@
 	const rootItems = $derived(data.filter((item) => item.path.length === 1));
 	let expandedItems: TreeMenuItem[] = $derived([]); // TODO: set initially opened paths using getExpanded function?
 	let visibleItems: TreeMenuItem[] = $derived(getVisibleItems(data, expandedItems));
+	let tabbableItem = $derived(visibleItems[0]);
 
 	function toggle({ data, expanded }: ToggleHandlerParams) {
 		if (expanded && !expandedItems.find((item) => areEqualPaths(data.path, item.path))) {
@@ -55,6 +56,7 @@
 	}
 
 	function focusItem(item: TreeMenuItem) {
+		tabbableItem = item;
 		(menuBar?.querySelector(`[data-path="${item.path.join('.')}"]`) as HTMLElement)?.focus();
 	}
 
@@ -209,6 +211,10 @@
 		if (event.key === TreeMenuBarKeys.Backspace) {
 			clearTypehead();
 		}
+
+		if (event.key === TreeMenuBarKeys.Escape) {
+			tabbableItem = visibleItems[0];
+		}
 	}
 
 	setTreeMenuBarContext({
@@ -216,7 +222,8 @@
 		animated: !prefersReducedMotion.current && animated,
 		toggle,
 		handleKeyDown,
-		expandedItems: () => expandedItems // is this the right way to fix reactivity?
+		expandedItems: () => expandedItems, // is this the right way to fix reactivity?
+		tabbableItem: () => tabbableItem
 	});
 
 	beforeNavigate(() => {
@@ -251,6 +258,7 @@ and https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/menu
 
 {#snippet fallbackMenuItem({
 	data,
+	tabindex,
 	onmenuitemchange,
 	onmenuitemkeydown
 }: TreeMenuItemSnippetParams)}
@@ -262,6 +270,7 @@ and https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/menu
 		data-sveltekit-noscroll
 		data-sveltekit-keepfocus
 		data-path={data.path.join('.')}
+		{tabindex}
 	>
 		{JSON.stringify(data?.path)}
 	</a>

@@ -11,6 +11,7 @@ type TreeMenuBarContext = {
 	toggle: (params: ToggleHandlerParams) => void;
 	handleKeyDown: (item: TreeMenuItem, event: KeyboardEvent) => void;
 	expandedItems: () => TreeMenuItem[];
+	tabbableItem: () => TreeMenuItem;
 };
 
 export const [getTreeMenuBarContext, setTreeMenuBarContext] = createContext<TreeMenuBarContext>();
