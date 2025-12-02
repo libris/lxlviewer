@@ -9,7 +9,9 @@ export interface TreeMenuItem {
 
 export interface TreeMenuItemSnippetParams {
 	data: TreeMenuItem;
+	level: number;
 	tabindex: number;
+	expanded?: boolean;
 	onmenuitemchange?: (event: Event) => void;
 	onmenuitemkeydown: (event: KeyboardEvent) => void;
 }

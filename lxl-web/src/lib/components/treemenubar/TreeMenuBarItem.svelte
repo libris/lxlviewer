@@ -20,6 +20,11 @@
 	const tabindex = $derived(
 		tabbableItem()?.path && areEqualPaths(tabbableItem().path, path) ? 0 : -1
 	);
+	const expanded = $derived(
+		hasChildren
+			? !!expandedItems().find(({ path: expandedPath }) => areEqualPaths(expandedPath, path))
+			: undefined
+	);
 
 	function handleChange(data: TreeMenuItem, event: Event) {
 		console.log('handleMenuItemChange data:', data, 'event:', event);
@@ -29,7 +34,9 @@
 {#snippet _menuItem(dataByPath: TreeMenuItem)}
 	{@render menuItem({
 		data: dataByPath,
+		level: path.length,
 		tabindex,
+		expanded,
 		onmenuitemchange: (event: Event) => handleChange(dataByPath, event),
 		onmenuitemkeydown: (event: KeyboardEvent) => handleKeyDown(dataByPath, event)
 	})}
@@ -71,7 +78,7 @@
 {/if}
 
 <style lang="postcss">
-	@reference 'tailwindcss';
+	@reference 'tailwindcss'
 
 	summary {
 		outline-offset: -2px;
