@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type { Snippet } from 'svelte';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import type { BibIdData, HoldingsData, LibraryId } from '$lib/types/holdings';
+	import type { BibIdData, HeldByMyLibraries, HoldingsData, LibraryId } from '$lib/types/holdings';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import Holder from './Holder.svelte';
 	import BiSearch from '~icons/bi/search';
@@ -16,8 +15,7 @@
 	};
 
 	let { holdings, refinedLibraries = [], card }: Props = $props();
-	let { byInstanceId, byType, bibIdData, holdingLibraries } = holdings;
-	const userSettings = getUserSettings();
+	let { byInstanceId, byType, bibIdData, holdingLibraries, myLibsByType } = holdings;
 	let searchPhrase = $state('');
 
 	// 'print' etc, workfnurgel, instance id
@@ -70,12 +68,29 @@
 	);
 
 	const myLibsHolders = $derived(
-		sortedHolders.filter((holder) => {
-			if (userSettings?.myLibraries) {
-				return Object.keys(userSettings.myLibraries).some((lib) => lib === holder[JsonLd.ID]);
-			} else return false;
-		})
+		sortedHolders.filter((holder) =>
+			myLibsByType ? holderIsInMyLibsByType(holder[JsonLd.ID], myLibsByType) : false
+		)
 	);
+
+	function holderIsInMyLibsByType(
+		holderId: string,
+		libsByType: Record<string, HeldByMyLibraries | null>
+	): boolean {
+		for (const typeGroup of Object.values(libsByType)) {
+			if (!typeGroup) continue;
+
+			for (const [id, data] of Object.entries(typeGroup)) {
+				if (id === holderId) return true;
+
+				if (data && typeof data === 'object' && 'members' in data) {
+					if (holderId in data.members) return true;
+				}
+			}
+		}
+
+		return false;
+	}
 
 	// not working unil new refinedLibraries
 	const refinedHolders = $derived(

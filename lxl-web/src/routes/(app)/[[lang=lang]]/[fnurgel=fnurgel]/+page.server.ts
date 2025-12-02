@@ -206,13 +206,9 @@ export const load = async ({ params, locals, fetch, url }) => {
 		byInstanceId: getHoldingsByInstanceId(mainEntity),
 		byType,
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
-		holdingLibraries: getHoldingLibraries(byType)
+		holdingLibraries: getHoldingLibraries(byType),
+		myLibsByType: getMyLibsFromGroupedHoldings(locals.userSettings?.myLibraries, byType)
 	};
-
-	const myLibsHoldersByType = getMyLibsFromGroupedHoldings(
-		locals.userSettings?.myLibraries,
-		holdings.byType
-	);
 
 	const workCard = asSearchResultItem(
 		[resource.mainEntity],
@@ -239,8 +235,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdings,
 		images,
 		tableOfContents,
-		workCard,
-		myLibsHoldersByType
+		workCard
 	};
 };
 

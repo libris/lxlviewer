@@ -113,6 +113,7 @@ export type HoldingsData = {
 	byInstanceId: HoldersByInstanceId;
 	byType: HoldersByType;
 	holdingLibraries: Record<LibraryId, LibraryWithLinks | null>;
+	myLibsByType: Record<string, HeldByMyLibraries | null>;
 };
 
 type OrgObj = {

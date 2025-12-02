@@ -91,11 +91,10 @@
 		relations={data.relations}
 		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}
 		instances={data.instances}
+		holdings={data.holdings}
 		searchResult={data.searchResult}
-		holdersByType={data.holdings.byType}
 		tableOfContents={data.tableOfContents}
 		adjecentSearchResults={page.state.adjecentSearchResults}
-		myLibsHoldersByType={data.myLibsHoldersByType}
 	/>
 	{#if holdingsParam}
 		<Modal close={() => handleCloseModal('holdings')}>

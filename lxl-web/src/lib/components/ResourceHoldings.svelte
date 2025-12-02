@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { JsonLd } from '$lib/types/xl';
-	import type { HeldByMyLibraries, HoldersByType } from '$lib/types/holdings';
+	import type { HoldingsData } from '$lib/types/holdings';
 	import type { SearchResultItem } from '$lib/types/search';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
@@ -12,12 +12,11 @@
 
 	interface Props {
 		instances: SearchResultItem[] | ResourceData[];
-		holdersByType: HoldersByType;
+		holdings: HoldingsData;
 		fnurgel: string;
-		myLibsHoldersByType: Record<string, HeldByMyLibraries | null>;
 	}
 
-	let { holdersByType, instances, fnurgel, myLibsHoldersByType }: Props = $props();
+	let { holdings, instances, fnurgel }: Props = $props();
 
 	function getLocalizedType(type: string) {
 		const found = instances.find((instanceItem) => type === instanceItem[JsonLd.TYPE]);
@@ -28,7 +27,7 @@
 </script>
 
 <ul class="@container flex flex-col gap-2">
-	{#each Object.keys(holdersByType) as type (type)}
+	{#each Object.keys(holdings.byType) as type (type)}
 		<li class="@md:self-center">
 			<a
 				class="btn btn-cta @md:max-w-sm"
@@ -37,9 +36,9 @@
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, type)}
 			>
-				{#if myLibsHoldersByType[type]}
+				{#if holdings.myLibsByType[type]}
 					<div class="mr-1 text-lg">
-						<MyLibsHoldingIndicator libraries={myLibsHoldersByType[type]} />
+						<MyLibsHoldingIndicator libraries={holdings.myLibsByType[type]} />
 					</div>
 				{/if}
 				<span class="text-nowrap">{getLocalizedType(type)}</span>
@@ -47,8 +46,8 @@
 					{' · '}
 					<span class="hidden @3xs:inline">{page.data.t('holdings.availableAt').toLowerCase()}</span
 					>
-					{holdersByType[type].length}
-					{holdersByType[type].length === 1
+					{holdings.byType[type].length}
+					{holdings.byType[type].length === 1
 						? page.data.t('holdings.library')
 						: page.data.t('holdings.libraries')}
 				</span>
