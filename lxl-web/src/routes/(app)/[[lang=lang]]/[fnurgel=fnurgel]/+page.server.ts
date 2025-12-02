@@ -19,7 +19,8 @@ import {
 	getHoldingsByInstanceId,
 	getBibIdsByInstanceId,
 	getHoldingsByType,
-	getHoldersByType
+	getHoldersByType,
+	getMyLibsFromGroupedHoldings
 } from '$lib/utils/holdings.server';
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
@@ -218,6 +219,11 @@ export const load = async ({ params, locals, fetch, url }) => {
 		undefined
 	)[0];
 
+	const myLibsHoldersByType = getMyLibsFromGroupedHoldings(
+		locals.userSettings?.myLibraries,
+		holdings.byType
+	);
+
 	return {
 		uri: resource['@id'] as string,
 		type: mainEntity[JsonLd.TYPE],
@@ -233,7 +239,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdings,
 		images,
 		tableOfContents,
-		card
+		card,
+		myLibsHoldersByType
 	};
 };
 

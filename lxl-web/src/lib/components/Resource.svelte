@@ -3,7 +3,7 @@
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { HoldersByType } from '$lib/types/holdings';
+	import type { HeldByMyLibraries, HoldersByType } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import type {
 		SearchResultItem,
@@ -38,6 +38,7 @@
 		holdersByType: HoldersByType;
 		tableOfContents: TableOfContentsItem[];
 		adjecentSearchResults?: AdjecentSearchResult[];
+		myLibsHoldersByType: Record<string, HeldByMyLibraries | null>;
 	};
 
 	const {
@@ -54,7 +55,8 @@
 		searchResult,
 		holdersByType,
 		tableOfContents,
-		adjecentSearchResults
+		adjecentSearchResults,
+		myLibsHoldersByType
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
@@ -145,7 +147,7 @@
 				{#if holdersByType && Object.keys(holdersByType).length && instances}
 					<section class="mt-5">
 						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
-						<ResourceHoldings {holdersByType} {instances} {fnurgel} />
+						<ResourceHoldings {holdersByType} {instances} {fnurgel} {myLibsHoldersByType} />
 					</section>
 				{/if}
 			</div>

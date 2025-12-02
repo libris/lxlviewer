@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
-	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import type { HoldersByType } from '$lib/types/holdings';
+	import { JsonLd } from '$lib/types/xl';
+	import type { HeldByMyLibraries, HoldersByType } from '$lib/types/holdings';
 	import type { SearchResultItem } from '$lib/types/search';
 	import type { ResourceData } from '$lib/types/resourceData';
-	import { JsonLd } from '$lib/types/xl';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
+	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import BiQuote from '~icons/bi/quote';
 	import { LxlLens } from '$lib/types/display';
 
@@ -15,11 +14,10 @@
 		instances: SearchResultItem[] | ResourceData[];
 		holdersByType: HoldersByType;
 		fnurgel: string;
+		myLibsHoldersByType: Record<string, HeldByMyLibraries | null>;
 	}
 
-	let { holdersByType, instances, fnurgel }: Props = $props();
-
-	const userSettings = getUserSettings();
+	let { holdersByType, instances, fnurgel, myLibsHoldersByType }: Props = $props();
 
 	function getLocalizedType(type: string) {
 		const found = instances.find((instanceItem) => type === instanceItem[JsonLd.TYPE]);
@@ -31,7 +29,6 @@
 
 <ul class="@container flex flex-col gap-2">
 	{#each Object.keys(holdersByType) as type (type)}
-		{@const heldByFav = getMyLibsFromHoldings(userSettings.myLibraries, holdersByType[type])}
 		<li class="@md:self-center">
 			<a
 				class="btn btn-cta @md:max-w-sm"
@@ -40,9 +37,9 @@
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, type)}
 			>
-				{#if heldByFav}
+				{#if myLibsHoldersByType[type]}
 					<div class="mr-1 text-lg">
-						<MyLibsHoldingIndicator libraries={heldByFav} />
+						<MyLibsHoldingIndicator libraries={myLibsHoldersByType[type]} />
 					</div>
 				{/if}
 				<span class="text-nowrap">{getLocalizedType(type)}</span>

@@ -1,14 +1,7 @@
 import { pushState } from '$app/navigation';
-import type {
-	BibIdObj,
-	HoldingLinks,
-	HoldersByInstanceId,
-	LibraryFull,
-	LibraryId
-} from '$lib/types/holdings';
+import type { BibIdObj, HoldingLinks, LibraryFull, LibraryId } from '$lib/types/holdings';
 import { BibDb } from '$lib/types/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
-import type { MyLibrariesType } from '$lib/types/userSettings';
 import { stripAnchor } from '$lib/utils/http';
 import getAtPath from '$lib/utils/getAtPath';
 import { USE_HOLDING_PANE } from '$lib/constants/panels';
@@ -27,25 +20,6 @@ export function handleClickHoldings(
 ) {
 	event.preventDefault();
 	pushState(event.currentTarget.href, { ...state, holdings: stripAnchor(id) });
-}
-
-// todo get libs from orgs
-export function getMyLibsFromHoldings(
-	myLibraries: MyLibrariesType | undefined,
-	holdings: HoldersByInstanceId | HoldersByInstanceId[string]
-): MyLibrariesType | null {
-	if (!myLibraries) return null;
-
-	const holdingIds = Array.isArray(holdings) ? holdings : Object.values(holdings).flat();
-	const result: MyLibrariesType = {};
-
-	for (const id of holdingIds) {
-		if (id in myLibraries) {
-			result[id] = myLibraries[id];
-		}
-	}
-
-	return Object.keys(result).length > 0 ? result : null;
 }
 
 /**

@@ -94,6 +94,7 @@
 		holdersByType={data.holdings.byType}
 		tableOfContents={data.tableOfContents}
 		adjecentSearchResults={page.state.adjecentSearchResults}
+		myLibsHoldersByType={data.myLibsHoldersByType}
 	/>
 	{#if holdingsParam}
 		<Modal close={() => handleCloseModal('holdings')}>

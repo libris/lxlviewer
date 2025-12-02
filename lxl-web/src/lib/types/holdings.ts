@@ -1,3 +1,4 @@
+import type { MyLibrariesType } from './userSettings';
 import type { BibDb, FramedData, JsonLd } from './xl';
 
 export type HoldingMainEntity = {
@@ -113,3 +114,12 @@ export type HoldingsData = {
 	byType: HoldersByType;
 	holdingLibraries: Record<LibraryId, LibraryWithLinks | null>;
 };
+
+type OrgObj = {
+	label: string;
+	members: MyLibrariesType;
+};
+
+type OrgWithMembers = Record<OrgId, OrgObj>;
+
+export type HeldByMyLibraries = MyLibrariesType | OrgWithMembers;

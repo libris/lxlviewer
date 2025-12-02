@@ -1,6 +1,7 @@
 import type {
 	BibIdData,
 	BibIdObj,
+	HeldByMyLibraries,
 	HolderLinks,
 	HoldersByInstanceId,
 	HoldersByType,
@@ -8,14 +9,18 @@ import type {
 	HoldingMainEntity,
 	HoldingsByType,
 	LibraryFull,
-	LibraryWithLinks
+	LibraryId,
+	LibraryWithLinks,
+	OrgId
 } from '$lib/types/holdings';
+import type { MyLibrariesType } from '$lib/types/userSettings';
 import { BibDb, Bibframe, JsonLd, LensType, type FramedData } from '$lib/types/xl';
 import { toString, VocabUtil, type DisplayUtil } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
-import { getLibrary } from '$lib/utils/getLibraries.server';
+import { getLibrary, getOrgs } from '$lib/utils/getLibraries.server';
 import type { LocaleCode } from '$lib/i18n/locales';
 import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
+import { isLibraryOrg } from '$lib/utils/holdings';
 
 type BibDbObj = {
 	[JsonLd.TYPE]: string;
@@ -213,4 +218,68 @@ export function getHoldersCount(
 	}
 
 	return holders.size;
+}
+
+/**
+ * get those of myLibs that are holders of a resource
+ * (including org lookup)
+ */
+export function getMyLibsFromHoldings(
+	myLibraries: MyLibrariesType | undefined,
+	holdings:
+		| HoldersByInstanceId
+		| HoldersByInstanceId[string]
+		| HoldersByType
+		| HoldersByInstanceId[string]
+): HeldByMyLibraries | null {
+	if (!myLibraries) return null;
+
+	const holdingIds: string[] = Array.isArray(holdings) ? holdings : Object.values(holdings).flat();
+	const result: HeldByMyLibraries = {};
+
+	for (const [libId, libLabel] of Object.entries(myLibraries)) {
+		if (isLibraryOrg(libId)) {
+			const orgMembers = getMembersInOrg(libId);
+			const matchingMembers = getMyLibsFromHoldings(orgMembers, holdings);
+
+			if (matchingMembers) {
+				result[libId] = {
+					label: libLabel,
+					members: matchingMembers as MyLibrariesType
+				};
+			}
+			continue;
+		}
+
+		if (holdingIds.includes(libId)) {
+			result[libId] = libLabel;
+		}
+	}
+	return Object.keys(result).length > 0 ? result : null;
+}
+
+export function getMembersInOrg(orgId: OrgId): MyLibrariesType {
+	const orgs = getOrgs();
+	const ids: LibraryId[] = orgs.get(orgId) ?? [];
+
+	const res: MyLibrariesType = {};
+	ids.forEach((lib) => (res[lib] = '')); // TODO: populate labels?
+
+	return res;
+}
+
+/**
+ * get heldByMyLibraries grouped by instance id or type
+ */
+export function getMyLibsFromGroupedHoldings(
+	myLibraries: MyLibrariesType | undefined,
+	grouped: HoldersByInstanceId | HoldersByType
+): Record<string, HeldByMyLibraries | null> {
+	const result: Record<string, HeldByMyLibraries | null> = {};
+
+	for (const [group, ids] of Object.entries(grouped)) {
+		result[group] = getMyLibsFromHoldings(myLibraries, ids);
+	}
+
+	return result;
 }

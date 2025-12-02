@@ -1,5 +1,11 @@
 import { env } from '$env/dynamic/private';
-import type { LibraryFull, LibraryId, LibraryRecord, LibraryWithLinks } from '$lib/types/holdings';
+import type {
+	LibraryFull,
+	LibraryId,
+	LibraryRecord,
+	LibraryWithLinks,
+	OrgId
+} from '$lib/types/holdings';
 import { BibDb, JsonLd } from '$lib/types/xl';
 import { gunzipSync } from 'node:zlib';
 import { createHolderLinks } from './holdings.server';
@@ -11,9 +17,11 @@ type Data = {
 	[JsonLd.GRAPH]?: LibraryRecord[] | LibraryFull[];
 }[];
 
-let librariesCache: Map<LibraryId, LibraryWithLinks> = new Map();
-let cacheExpires = 0;
-const timeToLive = 24 * 60 * 1000; // 24h
+type LibrariesCache = Map<LibraryId, LibraryWithLinks>;
+type OrgIndex = Map<OrgId, string[]>;
+
+let librariesCache: LibrariesCache = new Map();
+let orgIndex: OrgIndex = new Map();
 
 async function fetchLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	const start = Date.now();
@@ -79,16 +87,22 @@ function buildData(data: Data) {
 	return libraries;
 }
 
-export function getAllLibraries(displayutil: DisplayUtil, locale: LocaleCode) {
-	const now = Date.now();
+function buildOrgIndex(libraryMap: LibrariesCache): OrgIndex {
+	const index: Map<OrgId, string[]> = new Map();
 
-	if (librariesCache && now < cacheExpires) {
-		console.log('return the cache');
-		return librariesCache;
+	for (const [libId, data] of libraryMap) {
+		const orgId = data?.isPartOf?.[JsonLd.ID];
+		if (!orgId) continue;
+
+		if (!index.has(orgId)) {
+			index.set(orgId, []);
+		}
+		index.get(orgId)!.push(libId);
 	}
+	return index;
+}
 
-	// cache expired, refresh libs in background & return stale data meanwhile
-	refreshLibraries(displayutil, locale);
+export function getAllLibraries() {
 	return librariesCache ?? [];
 }
 
@@ -96,11 +110,15 @@ export function getLibrary(id: string) {
 	return librariesCache.get(id) ?? null;
 }
 
+export function getOrgs() {
+	return orgIndex ?? [];
+}
+
 export async function refreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	try {
 		const libraries = await fetchLibraries(displayUtil, locale);
 		librariesCache = libraries;
-		cacheExpires = Date.now() + timeToLive;
+		orgIndex = buildOrgIndex(libraries);
 	} catch (error) {
 		console.error('Refreshing Libraries failed', error);
 	}

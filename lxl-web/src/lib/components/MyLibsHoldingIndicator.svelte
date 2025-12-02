@@ -1,14 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { MyLibrariesType } from '$lib/types/userSettings';
+	import type { HeldByMyLibraries } from '$lib/types/holdings';
 	import popover from '$lib/actions/popover';
 	import BiHouseHeart from '~icons/bi/house-heart';
 
 	type IndicatorProps = {
-		libraries: MyLibrariesType;
+		libraries: HeldByMyLibraries;
 	};
 	const { libraries }: IndicatorProps = $props();
-	const librariesString = $derived(Object.values(libraries).join(', '));
+	const librariesString = $derived(
+		Object.values(libraries)
+			.map((v) => (typeof v === 'string' ? v : v.label))
+			.join(', ')
+	);
 </script>
 
 <span

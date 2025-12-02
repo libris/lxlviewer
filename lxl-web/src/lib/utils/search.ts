@@ -33,8 +33,12 @@ import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-import { getMyLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
-import { getHoldersCount, getHoldingsByInstanceId } from '$lib/utils/holdings.server';
+import { isLibraryOrg } from '$lib/utils/holdings';
+import {
+	getHoldersCount,
+	getHoldingsByInstanceId,
+	getMyLibsFromHoldings
+} from '$lib/utils/holdings.server';
 import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
@@ -321,8 +325,8 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 }
 
 function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
-	const res = getHoldingsByInstanceId(item);
-	return getMyLibsFromHoldings(myLibraries, res);
+	const holdingsByInstanceId = getHoldingsByInstanceId(item);
+	return getMyLibsFromHoldings(myLibraries, holdingsByInstanceId);
 }
 
 function isFreeTextQuery(property: unknown): boolean {

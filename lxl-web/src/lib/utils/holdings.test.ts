@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { getMyLibsFromHoldings } from './holdings';
-import { getHoldingsByInstanceId, getBibIdsByInstanceId } from './holdings.server';
+import {
+	getHoldingsByInstanceId,
+	getBibIdsByInstanceId,
+	getMyLibsFromHoldings
+} from './holdings.server';
 import mainEntity from '$lib/assets/json/test-data/main-entity.json';
 import record from '$lib/assets/json/test-data/record.json';
 import { UserSettings } from './userSettings.svelte';
