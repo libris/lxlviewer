@@ -61,7 +61,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	const resource = await resourceRes.json();
-	const mainEntity = centerOnWork(resource['mainEntity'] as FramedData);
+	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	copyMediaLinksToWork(mainEntity);
 
 	resourceId = resource.mainEntity['@id'];
@@ -209,8 +209,13 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdingLibraries: getHoldingLibraries(byType)
 	};
 
-	const card = asSearchResultItem(
-		[mainEntity],
+	const myLibsHoldersByType = getMyLibsFromGroupedHoldings(
+		locals.userSettings?.myLibraries,
+		holdings.byType
+	);
+
+	const workCard = asSearchResultItem(
+		[resource.mainEntity],
 		displayUtil,
 		vocabUtil,
 		locale,
@@ -218,11 +223,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 		locals.userSettings?.myLibraries,
 		undefined
 	)[0];
-
-	const myLibsHoldersByType = getMyLibsFromGroupedHoldings(
-		locals.userSettings?.myLibraries,
-		holdings.byType
-	);
 
 	return {
 		uri: resource['@id'] as string,
@@ -239,7 +239,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdings,
 		images,
 		tableOfContents,
-		card,
+		workCard,
 		myLibsHoldersByType
 	};
 };

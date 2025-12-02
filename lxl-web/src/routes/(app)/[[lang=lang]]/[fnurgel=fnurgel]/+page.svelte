@@ -4,6 +4,7 @@
 	import { afterNavigate, goto } from '$app/navigation';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import getMetaDescription from '$lib/utils/getMetaDescription';
+	import { JsonLd } from '$lib/types/xl.js';
 	import { type CitationsType } from '$lib/types/citation.js';
 	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http.js';
@@ -37,10 +38,10 @@
 	const modalCard = $derived(
 		(holdingsParam &&
 			data.instances.filter(
-				(instance) =>
-					`${stripAnchor(trimSlashes(relativizeUrl(instance['@id'])))}` === holdingsParam
+				(instance: { [JsonLd.ID]: string }) =>
+					`${stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])))}` === holdingsParam
 			)[0]) ||
-			data.card
+			data.workCard
 	);
 
 	afterNavigate(({ to }) => {
