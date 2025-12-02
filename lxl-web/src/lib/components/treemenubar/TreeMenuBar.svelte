@@ -253,6 +253,7 @@ and https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/menu
 		onclick={onmenuitemchange}
 		onkeydown={onmenuitemkeydown}
 		data-sveltekit-noscroll
+		data-sveltekit-keepfocus
 		data-path={data.path.join('.')}
 	>
 		{JSON.stringify(data?.path)}
