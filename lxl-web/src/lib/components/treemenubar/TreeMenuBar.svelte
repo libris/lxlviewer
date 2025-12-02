@@ -175,12 +175,12 @@
 			}
 		}
 
-		if (String.fromCharCode(event.keyCode).toLowerCase().match(/[a-z]/g)) {
+		if (event.key.toLowerCase().match(/^\S$/g)) {
 			event.stopPropagation();
 
 			if (typeaheadTimeout) clearTimeout(typeaheadTimeout);
 			typeaheadTimeout = setTimeout(clearTypehead, TYPEAHEAD_TIMEOUT_DURATION);
-			searchString = (searchString || '') + String.fromCharCode(event.keyCode).toLowerCase();
+			searchString = (searchString || '') + event.key;
 
 			let typeaheadItems = visibleItems.filter((item) =>
 				item.searchString?.toLowerCase().startsWith(searchString)
