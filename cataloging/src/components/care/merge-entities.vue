@@ -108,6 +108,11 @@ export default {
       if (this.bothRecordsLoaded) {
         const targetType = this.inspector.data.mainEntity['@type'];
         const sourceType = this.source.mainEntity['@type'];
+        if (this.enrichOnly) {
+          const targetBaseType = VocabUtil.getRecordType(targetType, this.resources.vocab, this.resources.context);
+          const sourceBaseType = VocabUtil.getRecordType(sourceType, this.resources.vocab, this.resources.context);
+          return sourceBaseType !== targetBaseType;
+        }
         const matching = (
           VocabUtil.isSubClassOf(targetType, sourceType, this.resources.vocab, this.resources.context)
           || VocabUtil.isSubClassOf(sourceType, targetType, this.resources.vocab, this.resources.context)
