@@ -74,7 +74,12 @@
 			{/snippet}
 		</Toolbar>
 	{/if}
-	<div class="filters-list relative overflow-x-hidden overflow-y-auto overscroll-contain">
+	<!-- Negative tabindex is needed to prevent keyboard focusable scrollers (see https://developer.chrome.com/blog/keyboard-focusable-scrollers) -->
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+	<div
+		class="filters-list relative overflow-x-hidden overflow-y-auto overscroll-contain"
+		tabindex={-1}
+	>
 		<a
 			bind:this={menuBarParent}
 			id={`${uid}-filters-list`}
