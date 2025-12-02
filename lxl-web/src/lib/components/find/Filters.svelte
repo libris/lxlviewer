@@ -21,6 +21,7 @@
 			0
 	);
 
+	let menuBarParent: HTMLAnchorElement | undefined = $state();
 	let menuBar: MenuBar | undefined = $state();
 	// const treeViewFacets = $derived(facets);
 
@@ -75,6 +76,7 @@
 	{/if}
 	<div class="filters-list relative overflow-x-hidden overflow-y-auto overscroll-contain">
 		<a
+			bind:this={menuBarParent}
 			id={`${uid}-filters-list`}
 			href={`#${uid}-filters-list`}
 			class="outline-accent-400 absolute h-full w-full cursor-default -outline-offset-2 focus:outline-2"
@@ -85,7 +87,12 @@
 			<span class="sr-only">{page.data.t('search.filterList')}</span>
 		</a>
 		<div class="absolute h-fit w-full">
-			<MenuBar bind:this={menuBar} data={flatData} ariaLabelledby={filterHeadingId} />
+			<MenuBar
+				bind:this={menuBar}
+				data={flatData}
+				ariaLabelledby={filterHeadingId}
+				focusMenuBarParent={() => menuBarParent?.focus()}
+			/>
 			<details class="text-5xs text-subtle">
 				<summary tabindex="-1">JSON</summary>
 				<pre>{JSON.stringify(facets)}</pre>

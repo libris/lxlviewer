@@ -33,5 +33,6 @@ export enum TreeMenuBarKeys {
 	ArrowLeft = 'ArrowLeft',
 	Home = 'Home',
 	End = 'End',
-	Backspace = 'Backspace'
+	Backspace = 'Backspace',
+	Escape = 'Escape'
 }

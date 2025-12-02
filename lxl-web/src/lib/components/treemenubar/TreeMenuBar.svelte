@@ -22,6 +22,7 @@
 		animated?: boolean;
 		menuItem?: TreeMenuItemSnippet;
 		wrapKeyboardNavigation?: boolean;
+		focusMenuBarParent?: () => void;
 	}
 
 	let {
@@ -31,7 +32,8 @@
 		ariaLabel,
 		animated = true,
 		menuItem = fallbackMenuItem,
-		wrapKeyboardNavigation = true
+		wrapKeyboardNavigation = true,
+		focusMenuBarParent
 	}: Props = $props();
 
 	const TYPEAHEAD_TIMEOUT_DURATION = 500;
@@ -166,6 +168,8 @@
 				case TreeMenuBarKeys.Space:
 					toggleItem(item);
 					break;
+				case TreeMenuBarKeys.Escape:
+					focusMenuBarParent?.();
 			}
 		}
 
