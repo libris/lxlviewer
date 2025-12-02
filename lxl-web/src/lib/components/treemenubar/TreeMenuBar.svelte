@@ -171,17 +171,28 @@
 
 		if (String.fromCharCode(event.keyCode).toLowerCase().match(/[a-z]/g)) {
 			event.stopPropagation();
+
 			if (typeaheadTimeout) clearTimeout(typeaheadTimeout);
 			typeaheadTimeout = setTimeout(clearTypehead, TYPEAHEAD_TIMEOUT_DURATION);
 			searchString = (searchString || '') + String.fromCharCode(event.keyCode).toLowerCase();
-			const firstItem = visibleItems.find((item) =>
+
+			const typeaheadItems = visibleItems.filter((item) =>
 				item.searchString?.toLowerCase().startsWith(searchString)
 			);
-			if (firstItem) {
-				focusItem(firstItem);
-			} else if (searchString.length === 1) {
-				focusItem(visibleItems[0]);
-			}
+
+			const currentPath = document.activeElement?.getAttribute('data-path')?.split('.');
+			const currentIndex = currentPath
+				? typeaheadItems.findIndex((item) => areEqualPaths(item.path, currentPath))
+				: undefined;
+
+			const typeaheadFocus =
+				(typeaheadItems.length > 1 &&
+					typeaheadItems.find(
+						(_, index) => typeof currentIndex === 'number' && index > currentIndex // Allows jumping between different typeahead results when pressing same character multiple times
+					)) ||
+				typeaheadItems[0];
+
+			if (typeaheadFocus) focusItem(typeaheadFocus);
 		}
 
 		if (event.key === TreeMenuBarKeys.Backspace) {
