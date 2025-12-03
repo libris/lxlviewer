@@ -337,13 +337,13 @@ export default {
           const splitFetched = LxlDataUtil.splitJson(result);
           const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings.keysToClear.duplication);
           const template = LxlDataUtil.splitJson(templateJson);
-          this.applyFieldsFromTemplate(template);
+          this.applyFieldsFromSource(template, false);
         }
       });
     },
-    applyFieldsFromTemplate(template) {
+    applyFieldsFromSource(source, fromTemplate) {
       const baseRecordType = this.inspector.data.mainEntity['@type'];
-      const tempRecordType = template.mainEntity['@type'];
+      const tempRecordType = source.mainEntity['@type'];
       const matching = (
         VocabUtil.isSubClassOf(tempRecordType, baseRecordType, this.resources.vocab, this.resources.context)
         || VocabUtil.isSubClassOf(baseRecordType, tempRecordType, this.resources.vocab, this.resources.context)
@@ -363,21 +363,18 @@ export default {
       if (baseRecordData.mainEntity.hasOwnProperty('instanceOf')) {
         const baseRecordWork = baseRecordData.mainEntity.instanceOf;
         if (Object.keys(baseRecordWork).length === 1 && baseRecordWork.hasOwnProperty('@id')) {
-          delete template.mainEntity.instanceOf;
+          delete source.mainEntity.instanceOf;
         }
       }
-      let changeList;
-      if (!this.enrichment.data.changes) {
-        changeList = [
-          ...getChangeList(template, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context),
-          ...getChangeList(template, baseRecordData, ['record'], ['record'], this.resources.context)
-        ];
-        changeList.forEach((change) => {
-          DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
-        });
-      } else {
-        changeList = this.enrichment.data.changes;
-      }
+
+      const skipIfPresent = fromTemplate ? ['role', 'language'] : [];
+      const changeList = [
+        ...getChangeList(source, baseRecordData, ['mainEntity'], ['mainEntity'], this.resources.context, skipIfPresent),
+        ...getChangeList(source, baseRecordData, ['record'], ['record'], this.resources.context)
+      ];
+      changeList.forEach((change) => {
+        DataUtil.fetchMissingLinkedToQuoted(change.value, this.$store);
+      });
 
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
@@ -1013,7 +1010,7 @@ export default {
             break;
         }
       } else if (val.name === 'apply-template') {
-        this.applyFieldsFromTemplate(val.value);
+        this.applyFieldsFromSource(val.value, true);
       } else if (val.name === 'open-enrich-from-id') {
         this.toggleEnrichFromIdModal(true);
       } else if (val.name === 'open-detailed-enrich-from-id') {
