@@ -885,3 +885,124 @@ test('should add hasVariant person to list', () => {
     }
   ]);
 });
+
+test('should not enrich within skipped properties', () => {
+  const skipIfPresent = ['language']
+  const source = {
+    "record": {},
+    "mainEntity": {
+      "language": [
+        {
+        "@id": "https://id.kb.se/language/nor"
+        }
+      ]
+    }
+  };
+
+  const target = {
+    "record": {},
+    "mainEntity": {
+      "language": [
+        {
+          "@id": "https://id.kb.se/language/swe"
+        }
+      ]
+    }
+  }
+
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(source, target, templatePath, templatePath,  null, skipIfPresent);
+
+  expect(changeList).toEqual([]);
+});
+
+test('should not enrich within role if present and instructed to skip', () => {
+  const skipIfPresent = ['role', 'language']
+  const source = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "PrimaryContribution",
+          "agent": null,
+          "role": [{"@id" : "https://id.kb.se/term/relator/author"}]
+        }
+      ],
+      "language": [
+        {
+          "@id": "https://id.kb.se/language/nor"
+        }
+      ]
+    }
+  };
+
+  const target = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "PrimaryContribution",
+          "agent": null,
+          "role": [{"@id" : "https://id.kb.se/term/relator/illustrator"}]
+        }
+      ],
+      "language": [
+        {
+          "@id": "https://id.kb.se/language/nor"
+        }
+      ]
+    }
+  };
+
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(source, target, templatePath, templatePath, null, skipIfPresent)
+
+  expect(changeList).toEqual([]);
+});
+
+test('should enrich within role if empty but specified as skipped', () => {
+  const skipIfPresent = ['role'];
+  const source = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "PrimaryContribution",
+          "agent": null,
+          "role": [{"@id" : "https://id.kb.se/term/relator/illustrator"}]
+        }
+      ],
+    }
+  };
+
+  const target = {
+    "record": {},
+    "mainEntity": {
+      "contribution": [
+        {
+          "@type": "PrimaryContribution",
+          "agent": null,
+          "role": []
+        }
+      ],
+    }
+  };
+
+  const templatePath = ['mainEntity'];
+
+  const changeList = getChangeList(source, target, templatePath, templatePath,  null, skipIfPresent)
+
+  expect(changeList).toEqual([
+    {
+      "path": "mainEntity.contribution[0].role[0]",
+      "value": {
+      "@id": "https://id.kb.se/term/relator/illustrator"
+      },
+    },
+  ]);
+});
+
+
+

@@ -2,13 +2,13 @@ import { each, get, isEmpty, isEqual } from 'lodash-es';
 import { arrayPathToString } from 'lxljs/string';
 import * as VocabUtil from "../../../lxljs/vocab.js";
 
-export function getChangeList(source, target, templatePath, targetPath = templatePath, context) {
+export function getChangeList(source, target, templatePath, targetPath = templatePath, context, skipIfExistsInTarget = []) {
   const changeList = [];
-  addToChangeList(source, target, templatePath, targetPath, changeList, context);
+  addToChangeList(source, target, templatePath, targetPath, changeList, context, skipIfExistsInTarget);
   return changeList;
 }
 
-function addToChangeList(source, target, sourcePath, targetPath, changeList, context) {
+function addToChangeList(source, target, sourcePath, targetPath, changeList, context, skipIfExistsInTarget) {
   let sourceObject = get(source, sourcePath);
   let targetObject = get(target, targetPath);
 
@@ -20,11 +20,12 @@ function addToChangeList(source, target, sourcePath, targetPath, changeList, con
     && !Array.isArray(sourceObject) && !Array.isArray(targetObject)) {
 
     each(sourceObject, (sourceValue, key) => {
+      let targetValue = targetObject[key];
+      let sourceConvertedToArray = false;
+
       if (key === '@id') {
         return;
       }
-      let targetValue = targetObject[key];
-      let sourceConvertedToArray = false;
 
       if (VocabUtil.propIsRepeatable(key, context)) {
         if (!Array.isArray(targetValue) && !isEmpty(targetValue) && !isEmpty(sourceValue)) {
@@ -52,6 +53,10 @@ function addToChangeList(source, target, sourcePath, targetPath, changeList, con
       else if (targetObject.hasOwnProperty(key) && Array.isArray(sourceValue) && sourceValue[0]
         && shouldNotEnrich(sourceValue[0])
         && VocabUtil.propIsRepeatable(key, context)) {
+        if (skip(key, skipIfExistsInTarget) && !isEmpty(targetValue)) {
+          return;
+        }
+
         let countAdded = 0;
         each (sourceValue, obj => {
           if (!asArray(targetValue).some(el => isEqual(el, obj))) {
@@ -82,13 +87,13 @@ function addToChangeList(source, target, sourcePath, targetPath, changeList, con
             const indexInTarget = targetArray.indexOf(firstElementWithMatchingType);
             const indexInSource = sourceValue.indexOf(obj);
             let path = sourceConvertedToArray ? [...sourcePath, key] : [...sourcePath, key, indexInSource];
-            addToChangeList(source, target, path,  [...targetPath, key, indexInTarget], changeList, context);
+            addToChangeList(source, target, path,  [...targetPath, key, indexInTarget], changeList, context, skipIfExistsInTarget);
           }
         })
       } // Recurse if object is present both in source and target
       else {
         if (typeof targetObject === 'object' && typeof sourceObject === 'object') {
-          addToChangeList(source, target, [...sourcePath, key], [...targetPath, key], changeList, context);
+          addToChangeList(source, target, [...sourcePath, key], [...targetPath, key], changeList, context, skipIfExistsInTarget);
         }
       }
     });
@@ -110,4 +115,8 @@ function isLinkedEntity(o) {
 // Use a parameter for enrich from file vs enrich from template instead?
 function hasNoEmptyValues(o) {
   return !Object.values(o).some(v => isEmpty(v));
+}
+
+function skip(key, skipIfPresentInTarget) {
+  return skipIfPresentInTarget.includes(key);
 }
