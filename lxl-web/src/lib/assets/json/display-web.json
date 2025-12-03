@@ -15,8 +15,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle"
 							]
 						},
@@ -54,8 +54,8 @@
 						"indirectlyIdentifiedBy",
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle",
 								"identifiedBy"
 							]
@@ -250,8 +250,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle"
 							]
 						},
@@ -339,8 +339,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle"
 							]
 						},
@@ -369,8 +369,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle"
 							]
 						},
