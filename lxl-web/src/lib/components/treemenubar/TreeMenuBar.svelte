@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { flip } from 'svelte/animate';
 	import { beforeNavigate } from '$app/navigation';
 	import { prefersReducedMotion } from 'svelte/motion';
 	import {
@@ -13,6 +14,7 @@
 	import TreeMenuBarItem from './TreeMenuBarItem.svelte';
 	import { areEqualPaths, getChildrenByPath, getNestedDataByPath, getVisibleItems } from './utils';
 	import { page } from '$app/state';
+	import { send, receive } from '$lib/utils/transition';
 
 	interface Props {
 		data: TreeMenuItem[];
@@ -251,9 +253,17 @@ and https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/menu
 	aria-labelledby={ariaLabelledby}
 	aria-label={ariaLabel}
 >
-	{#each rootItems as { path } (path)}
-		<TreeMenuBarItem data={getNestedDataByPath(data, path)} {path} />
-	{/each}
+	{#if animated}
+		{#each rootItems as { path } (path)}
+			<li role="presentation" in:receive={{ key: path }} out:send={{ key: path }} animate:flip>
+				<TreeMenuBarItem data={getNestedDataByPath(data, path)} {path} />
+			</li>
+		{/each}
+	{:else}
+		{#each rootItems as { path } (path)}
+			<TreeMenuBarItem data={getNestedDataByPath(data, path)} {path} />
+		{/each}
+	{/if}
 </menu>
 
 {#snippet fallbackMenuItem({
