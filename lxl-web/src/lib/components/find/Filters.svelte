@@ -1,83 +1,137 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { getModalContext } from '$lib/contexts/modal';
-	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
-	import FacetGroup from './FacetGroup.svelte';
-	import SearchMapping from './SearchMapping.svelte';
-	import BiSearch from '~icons/bi/search';
-	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
+	import type { Facet, DisplayMapping } from '$lib/types/search';
+	import Toolbar from '$lib/components/Toolbar.svelte';
+	import MenuBar from '../treemenubar/TreeMenuBar.svelte';
+	import { type TreeMenuItem } from '$lib/types/treemenubar';
 
-	type filtersPropsType = {
-		facets: TypedFacetGroup[];
+	type Props = {
+		facets?: Facet[];
 		mapping?: DisplayMapping[];
+		showHeader?: boolean;
 	};
 
-	const { facets, mapping }: filtersPropsType = $props();
+	const { facets, mapping, showHeader = true }: Props = $props();
 
-	function shouldShowMapping() {
-		if (
-			mapping &&
-			mapping.length === 1 &&
-			mapping[0].display === '*' &&
-			mapping[0].operator === 'equals'
-		) {
-			return false; // hide if only wildcard search
-		}
-		return true;
+	const uid = $props.id();
+	const filterHeadingId = $derived(`${uid}-filters-heading`);
+	const filtersLength = $derived(
+		mapping?.[0].children?.filter((m) => m['@id']?.includes('textQuery')).length ||
+			(mapping?.[0]['@id'] && !mapping[0]['@id'].includes('textQuery') && 1) ||
+			0
+	);
+
+	let menuBarParent: HTMLAnchorElement | undefined = $state();
+	let menuBar: MenuBar | undefined = $state();
+	// const treeViewFacets = $derived(facets);
+
+	function getClearAllHref() {
+		// TODO: Fix clear all links on AND filters
+		const textQuery = mapping?.[0].children?.find((m) => m['@id']?.includes('textQuery'));
+		return page.data.localizeHref(
+			'/find?' + new URLSearchParams([['_q', textQuery?.displayStr || '*']]).toString()
+		);
 	}
 
-	const inModal = getModalContext();
+	const flatData: TreeMenuItem[] = [
+		{ path: ['categories'], searchString: 'categories' },
+		{ path: ['categories', 'litterature'], searchString: 'litterature' },
+		{ path: ['categories', 'litterature', 'skönlitteratur'], searchString: 'skönlitteratur' },
+		{ path: ['categories', 'litterature', 'skönlitteratur', 'A'], searchString: 'a' },
+		{ path: ['categories', 'litterature', 'skönlitteratur', 'B'], searchString: 'b' },
 
-	let searchPhrase = $state('');
+		{ path: ['categories', 'litterature', 'poesi'], searchString: 'poesi' },
+		{ path: ['categories', 'litterature', 'poesi', 'C'], searchString: 'c' },
+		{ path: ['categories', 'litterature', 'poesi', 'D'], searchString: 'd' },
+		{ path: ['categories', 'music'], searchString: 'music' },
+		{ path: ['categories', 'film'], searchString: 'film' },
+		{ path: ['language'], searchString: 'language' },
+		{ path: ['language', 'swedish'], searchString: 'swedish' },
+		{ path: ['language', 'english'], searchString: 'english' },
+		{ path: ['language', 'spanish'], searchString: 'spanish' },
+		{ path: ['contributor'], searchString: 'contributor' },
+		{ path: ['contributor', 'Astrid Lindgren'], searchString: 'astrid Lindgren' },
+		{ path: ['contributor', 'Hjalmar Söderberg'], searchString: 'hjalmar söderberg' }
+	];
+
+	function handleFiltersListKeyDown(event: KeyboardEvent) {
+		menuBar?.handleKeyDown(null, event);
+	}
 </script>
 
-<div class="flex flex-col gap-4">
-	{#if mapping && inModal && shouldShowMapping()}
-		<nav aria-label={page.data.t('search.selectedFilters')}>
-			<SearchMapping {mapping} />
-		</nav>
+<nav class="filters" data-testid="filters">
+	{#if showHeader}
+		<Toolbar>
+			<h2 id={filterHeadingId} class="text-subtle text-xs tracking-widest uppercase">
+				{page.data.t('search.filters')}
+			</h2>
+			{#snippet trailingActions()}
+				{#if filtersLength}
+					<a href={getClearAllHref()} class="btn btn-ghost text-link">
+						{page.data.t('search.clearAll')}
+					</a>
+				{/if}
+			{/snippet}
+		</Toolbar>
 	{/if}
-	{#if facets?.length}
-		<nav
-			class="facet-nav relative flex flex-col gap-2 text-sm"
-			aria-label={page.data.t('search.filters')}
-			data-testid="facets"
+	<!-- Negative tabindex is needed to prevent keyboard focusable scrollers (see https://developer.chrome.com/blog/keyboard-focusable-scrollers) -->
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+	<div
+		class="filters-list relative overflow-x-hidden overflow-y-auto overscroll-contain"
+		tabindex={-1}
+	>
+		<a
+			bind:this={menuBarParent}
+			id={`${uid}-filters-list`}
+			href={`#${uid}-filters-list`}
+			class="outline-accent-400 absolute h-full w-full cursor-default -outline-offset-2 focus:outline-2"
+			draggable="false"
+			onclick={(event) => event.preventDefault()}
+			onkeydown={handleFiltersListKeyDown}
 		>
-			<div class="px-3">
-				<input
-					bind:value={searchPhrase}
-					placeholder={page.data.t('search.findFilter')}
-					aria-label={page.data.t('search.findFilter')}
-					class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
-					type="search"
-				/>
-				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
-			</div>
-			<ol>
-				{#each facets as group, i (group.dimension)}
-					<FacetGroup
-						{group}
-						locale={page.data.locale}
-						{searchPhrase}
-						isDefaultExpanded={i < DEFAULT_FACETS_EXPANDED}
-					/>
-				{/each}
-			</ol>
-			<span role="status" class="no-hits-msg px-4 text-xs" aria-atomic="true"
-				>{page.data.t('search.noResults')}</span
-			>
-		</nav>
-	{/if}
-</div>
+			<span class="sr-only">{page.data.t('search.filterList')}</span>
+		</a>
+		<div class="absolute h-fit w-full">
+			<MenuBar
+				bind:this={menuBar}
+				data={flatData}
+				ariaLabelledby={filterHeadingId}
+				focusMenuBarParent={() => menuBarParent?.focus()}
+			/>
+			<details class="text-5xs text-subtle">
+				<summary tabindex="-1">JSON</summary>
+				<pre>{JSON.stringify(facets)}</pre>
+			</details>
+			<!--	
+		{#if treeViewFacets?.length}
+			<TreeView ariaLabelledby={filterHeadingId} items={treeViewFacets}>
+				{#snippet treeItemSnippet({ data, level }: TreeItemSnippetParams)}
+					<FacetItem {data} {level} />
+				{/snippet}
+			</TreeView>
+		{:else}
+			<p role="status" aria-atomic="true" class="text-subtle my-3 px-3 text-sm">
+				{page.data.t('search.noFilters')}
+			</p>
+		{/if}
+		-->
+		</div>
+	</div>
+</nav>
 
 <style lang="postcss">
-	/* hide 'no hits' msg as long as there's results displaying */
-	:global(.facet-nav:has(.has-hits) .no-hits-msg) {
-		display: none;
-	}
-
-	:global(dialog .facet-nav) {
+	:global(dialog .filters) {
 		margin-right: calc(var(--spacing) * -4);
 		margin-left: calc(var(--spacing) * -4);
+	}
+
+	.filters-list {
+		height: calc(var(--leading-pane-height) - var(--toolbar-height) * 2);
+		scrollbar-width: thin;
+		scrollbar-gutter: stable;
+	}
+
+	:global(summary + menu) {
+		padding-left: calc(var(--spacing) * 6);
 	}
 </style>

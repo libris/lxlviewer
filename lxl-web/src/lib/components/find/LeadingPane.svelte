@@ -42,7 +42,7 @@
 	aria-label={page.data.t('panes.leadingPane')}
 	id="leading-pane"
 	class={[
-		'leading-pane relative hidden w-0 border-b border-b-neutral-200 sm:block',
+		'leading-pane sticky top-0 hidden w-0 sm:block',
 		// Enable transition for the collapse animation. But disable it while resizing the panel!
 		!isDragging && 'transition-[padding] duration-150 ease-in motion-reduce:transition-none'
 	]}
@@ -51,7 +51,7 @@
 >
 	<div
 		class={[
-			'leading-pane-wrapper sticky top-0',
+			'flex h-full flex-col',
 			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none',
 			paneOpen ? 'translate-x-0' : '-translate-x-full'
 		]}
@@ -73,7 +73,10 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div class="leading-pane-content mr-1.5 pt-2 pb-6">
+		<div
+			class="leading-pane-content overflow-y-auto overscroll-contain [&>*]:h-full"
+			style="--leading-pane-height:calc(100vh - var(--app-bar-height) - var(--banner-height, 0))"
+		>
 			{@render children?.()}
 		</div>
 	</div>
@@ -93,32 +96,21 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
+	.leading-pane {
+		height: calc(100vh - var(--app-bar-height) - var(--banner-height, 0));
+		top: calc(var(--app-bar-height) + var(--banner-height, 0));
+	}
+
 	.leading-pane,
 	.leading-pane-toolbar {
 		background: linear-gradient(90deg, var(--color-aside) 97%, var(--color-neutral-100) 100%);
 	}
 
-	.leading-pane-wrapper {
-		@variant sm {
-			top: calc(var(--app-bar-height) * 2 + var(--banner-height, 0));
-
-			@variant lg {
-				top: calc(var(--app-bar-height) + var(--banner-height, 0));
-			}
-		}
-	}
-
 	.leading-pane-content {
+		height: 100%;
 		max-height: calc(
-			100vh - var(--app-bar-height) * 2 - var(--toolbar-height) - var(--banner-height, 0) - 1px
+			100vh - var(--app-bar-height) - var(--banner-height, 0) - var(--toolbar-height, 0)
 		);
-
-		@variant lg {
-			max-height: calc(
-				100vh - var(--app-bar-height) - var(--toolbar-height) - var(--banner-height, 0) - 1px
-			);
-		}
-		overflow-y: auto;
 		scrollbar-width: thin;
 	}
 </style>

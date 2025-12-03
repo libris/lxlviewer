@@ -129,7 +129,7 @@ export default {
 		searchResults: 'Sökresultat',
 		loading: 'Laddar...',
 		findFilter: 'Hitta filter',
-		filters: 'Sökfilter',
+		filters: 'Filter',
 		activeFilter: 'Aktivt filter',
 		selectedFilters: 'Valda filter',
 		clearFilters: 'Rensa',
