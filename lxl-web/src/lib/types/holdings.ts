@@ -1,4 +1,3 @@
-import type { MyLibrariesType } from './userSettings';
 import type { BibDb, FramedData, JsonLd } from './xl';
 
 export type HoldingMainEntity = {
@@ -37,9 +36,9 @@ type HoldingItem = {
 	meta: Record<string, unknown>;
 };
 
+type RecordId = string;
 export type LibraryId = string;
 export type OrgId = string;
-type RecordId = string;
 
 export type LibraryRecord = {
 	[JsonLd.ID]: RecordId;
@@ -71,7 +70,6 @@ export interface LibraryWithLinks extends LibraryFull {
 export type BibIdObj = {
 	bibId: string;
 	[JsonLd.TYPE]: string;
-	// holders: string[];
 	onr: string | null;
 	isbn: string[];
 	issn: string[];
@@ -113,14 +111,4 @@ export type HoldingsData = {
 	byInstanceId: HoldersByInstanceId;
 	byType: HoldersByType;
 	holdingLibraries: Record<LibraryId, LibraryWithLinks | null>;
-	myLibsByType: Record<string, HeldByMyLibraries | null>;
 };
-
-type OrgObj = {
-	label: string;
-	members: MyLibrariesType;
-};
-
-type OrgWithMembers = Record<OrgId, OrgObj>;
-
-export type HeldByMyLibraries = MyLibrariesType | OrgWithMembers;

@@ -8,8 +8,7 @@ import {
 	getHoldingsByInstanceId,
 	getBibIdsByInstanceId,
 	getHoldingsByType,
-	getHoldersByType,
-	getMyLibsFromGroupedHoldings
+	getHoldersByType
 } from '$lib/utils/holdings.server';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 
@@ -43,8 +42,7 @@ export async function GET({ params, locals }) {
 		byInstanceId: getHoldingsByInstanceId(mainEntity),
 		byType,
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
-		holdingLibraries: getHoldingLibraries(byType),
-		myLibsByType: getMyLibsFromGroupedHoldings(locals.userSettings?.myLibraries, byType)
+		holdingLibraries: getHoldingLibraries(byType)
 	};
 
 	const end = Date.now();

@@ -1,15 +1,16 @@
-import type { LibraryId } from '$lib/types/holdings';
+import type { LibraryId, OrgId } from '$lib/types/holdings';
 import type { DisplayMapping } from '$lib/types/search';
 import { JsonLd } from '$lib/types/xl';
 
 /**
  * accepts an array of DisplayMappings (search and subset)
- * and returns a list of unique library id:s that exist in user's search refinement
+ * and returns id:s and labels of libs/orgs that exist in user's search refinement
  */
 export function getLibraryIdsFromMapping(
 	mappings: (DisplayMapping[] | undefined)[]
-): LibraryId[] | [] {
-	const result: string[] = [];
+): Record<LibraryId | OrgId, string> | null {
+	const result: Record<string, string> = {};
+	const validKeys = new Set(['itemHeldBy', 'itemHeldByOrg']);
 	for (const mapping of mappings) {
 		if (mapping) {
 			for (const m of mapping) {
@@ -23,9 +24,15 @@ export function getLibraryIdsFromMapping(
 			for (const child of mapping.children) {
 				_iterate(child);
 			}
-		} else if (mapping._key === 'itemHeldBy' && mapping.display) {
-			result.push(mapping.display[JsonLd.ID]);
+			return;
+		}
+
+		if (mapping._key && validKeys.has(mapping._key)) {
+			const id = mapping.display[JsonLd.ID];
+			if (id) {
+				result[id] = mapping.displayStr || '';
+			}
 		}
 	}
-	return [...new Set(result)];
+	return Object.keys(result).length > 0 ? result : null;
 }

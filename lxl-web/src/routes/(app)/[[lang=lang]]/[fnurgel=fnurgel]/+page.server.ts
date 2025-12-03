@@ -19,8 +19,7 @@ import {
 	getHoldingsByInstanceId,
 	getBibIdsByInstanceId,
 	getHoldingsByType,
-	getHoldersByType,
-	getMyLibsFromGroupedHoldings
+	getHoldersByType
 } from '$lib/utils/holdings.server';
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
@@ -31,12 +30,14 @@ import {
 	asSearchResultItem,
 	displayMappings
 } from '$lib/utils/search';
+import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 	const translate = await getTranslator(locale);
+	const myLibraries = locals.userSettings?.myLibraries;
 
 	let resourceId: null | string = null;
 	const subsetFilter = url.searchParams.get('_r');
@@ -107,7 +108,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			vocabUtil,
 			locale,
 			env.AUXD_SECRET,
-			locals.userSettings?.myLibraries,
+			myLibraries,
 			undefined
 		);
 	}
@@ -124,7 +125,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 				_stats: 'false',
 				_site: locals.site?.searchSite || ''
 			}),
-			locals.userSettings
+			myLibraries
 		);
 
 		const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
@@ -158,7 +159,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 				locale,
 				env.AUXD_SECRET,
 				undefined,
-				locals.userSettings?.myLibraries
+				myLibraries
 			);
 		})
 	);
@@ -206,8 +207,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		byInstanceId: getHoldingsByInstanceId(mainEntity),
 		byType,
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
-		holdingLibraries: getHoldingLibraries(byType),
-		myLibsByType: getMyLibsFromGroupedHoldings(locals.userSettings?.myLibraries, byType)
+		holdingLibraries: getHoldingLibraries(byType)
 	};
 
 	const workCard = asSearchResultItem(
@@ -216,9 +216,12 @@ export const load = async ({ params, locals, fetch, url }) => {
 		vocabUtil,
 		locale,
 		env.AUXD_SECRET,
-		locals.userSettings?.myLibraries,
+		myLibraries,
 		undefined
 	)[0];
+
+	const subsetMapping = locals?.subsetMapping;
+	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return {
 		uri: resource['@id'] as string,
@@ -235,7 +238,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdings,
 		images,
 		tableOfContents,
-		workCard
+		workCard,
+		refinedOrgs
 	};
 };
 

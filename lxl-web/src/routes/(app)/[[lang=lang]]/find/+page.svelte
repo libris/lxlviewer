@@ -123,7 +123,7 @@
 						</span>
 					</div>
 				{:then holdings}
-					<HoldingsContent {holdings} {refinedLibraries}>
+					<HoldingsContent {holdings} {refinedLibraries} libOrgs={page.data.refinedOrgs}>
 						{#snippet card()}
 							{#if modalCard}
 								<SearchCard item={modalCard} />

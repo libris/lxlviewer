@@ -114,6 +114,10 @@ export function getOrgs() {
 	return orgIndex ?? [];
 }
 
+export function getOrgMembers(id: OrgId): LibraryId[] | [] {
+	return orgIndex.get(id) ?? [];
+}
+
 export async function refreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	try {
 		const libraries = await fetchLibraries(displayUtil, locale);

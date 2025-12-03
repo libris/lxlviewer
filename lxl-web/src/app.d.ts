@@ -18,6 +18,7 @@ declare global {
 			display: DisplayUtil;
 			userSettings: UserSettings;
 			site?: Site;
+			subsetMapping?: DisplayMapping[];
 		}
 		interface PageData {
 			locale: import('$lib/i18n/locales').LocaleCode;

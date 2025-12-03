@@ -1,6 +1,15 @@
 import { pushState } from '$app/navigation';
-import type { BibIdObj, HoldingLinks, LibraryFull, LibraryId } from '$lib/types/holdings';
+import type {
+	BibIdObj,
+	HoldersByInstanceId,
+	HoldersByType,
+	HoldingLinks,
+	LibraryFull,
+	LibraryId,
+	OrgId
+} from '$lib/types/holdings';
 import { BibDb } from '$lib/types/xl';
+import type { MyLibrariesType } from '$lib/types/userSettings';
 import type { LocaleCode } from '$lib/i18n/locales';
 import { stripAnchor } from '$lib/utils/http';
 import getAtPath from '$lib/utils/getAtPath';
@@ -95,4 +104,50 @@ export function isLibraryOrg(id: LibraryId): boolean {
 		return true;
 	}
 	return false;
+}
+
+/**
+ * Get myLibraries id:s that are holders of a resource -
+ * orgs will be included if passed (with its members) as argument
+ */
+export function getMyLibsFromHoldings(
+	myLibraries: MyLibrariesType | undefined,
+	holdings:
+		| HoldersByInstanceId
+		| HoldersByInstanceId[string]
+		| HoldersByType
+		| HoldersByType[string],
+	orgs?: Record<string, string[]>
+): (LibraryId | OrgId)[] | null {
+	if (!myLibraries) return null;
+
+	const holdingIds = Array.isArray(holdings) ? holdings : Object.values(holdings).flat();
+
+	const holdingSet = new Set(holdingIds);
+
+	const result = new Set<LibraryId | OrgId>();
+
+	for (const libId of Object.keys(myLibraries)) {
+		if (isLibraryOrg(libId)) {
+			if (orgs) {
+				const orgMembers = orgs[libId];
+
+				if (orgMembers && Array.isArray(orgMembers)) {
+					for (const memberId of orgMembers) {
+						// add the org to result - not the member sigel
+						if (holdingSet.has(memberId)) {
+							result.add(libId);
+						}
+					}
+					continue;
+				}
+			}
+		}
+
+		if (holdingSet.has(libId)) {
+			result.add(libId);
+		}
+	}
+
+	return result.size ? [...result] : null;
 }

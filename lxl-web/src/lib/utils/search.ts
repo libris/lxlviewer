@@ -27,18 +27,16 @@ import {
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { MyLibrariesType, UserSettings } from '$lib/types/userSettings';
+import type { MyLibrariesType } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { isLibraryOrg } from '$lib/utils/holdings';
-import {
-	getHoldersCount,
-	getHoldingsByInstanceId,
-	getMyLibsFromHoldings
-} from '$lib/utils/holdings.server';
+import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
+import { getHoldersCount, getHoldingsByInstanceId } from '$lib/utils/holdings.server';
+import { getMyLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
@@ -326,7 +324,8 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 
 function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
 	const holdingsByInstanceId = getHoldingsByInstanceId(item);
-	return getMyLibsFromHoldings(myLibraries, holdingsByInstanceId);
+	const orgs = getRefinedOrgs(myLibraries);
+	return getMyLibsFromHoldings(myLibraries, holdingsByInstanceId, orgs);
 }
 
 function isFreeTextQuery(property: unknown): boolean {
@@ -521,12 +520,12 @@ function addMyLibrariesBoolFilter(boolFilters: Observation[] | undefined, transl
  */
 export function appendMyLibrariesParam(
 	searchParams: URLSearchParams,
-	userSettings: UserSettings
+	myLibraries: MyLibrariesType | undefined
 ): URLSearchParams {
 	if (['_q', '_r'].some((key) => searchParams.get(key)?.includes(MY_LIBRARIES_FILTER_ALIAS))) {
 		let sigelStr;
-		if (userSettings?.myLibraries) {
-			sigelStr = Object.keys(userSettings?.myLibraries)
+		if (myLibraries) {
+			sigelStr = Object.keys(myLibraries)
 				.map((id) => {
 					const slug = getUriSlug(id);
 					return isLibraryOrg(id)

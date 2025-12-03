@@ -101,7 +101,7 @@
 			{#snippet title()}
 				<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
 			{/snippet}
-			<HoldingsContent holdings={data.holdings} {refinedLibraries}>
+			<HoldingsContent holdings={data.holdings} {refinedLibraries} libOrgs={data.refinedOrgs}>
 				{#snippet card()}
 					<SearchCard item={modalCard} />
 				{/snippet}

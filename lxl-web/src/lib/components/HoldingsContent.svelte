@@ -1,22 +1,41 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type { Snippet } from 'svelte';
-	import type { BibIdData, HeldByMyLibraries, HoldingsData, LibraryId } from '$lib/types/holdings';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+	import type {
+		BibIdData,
+		HoldingsData,
+		LibraryId,
+		LibraryWithLinks,
+		OrgId
+	} from '$lib/types/holdings';
+	import { JsonLd } from '$lib/types/xl';
+	import { getMyLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import Holder from './Holder.svelte';
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
-	import { JsonLd } from '$lib/types/xl';
+	import BiBank from '~icons/bi/bank';
 
 	type Props = {
 		holdings: HoldingsData;
-		refinedLibraries?: string[];
+		libOrgs?: Record<OrgId, string[]>;
+		refinedLibraries?: Record<LibraryId | OrgId, string> | null;
 		card?: Snippet;
 	};
 
-	let { holdings, refinedLibraries = [], card }: Props = $props();
-	let { byInstanceId, byType, bibIdData, holdingLibraries, myLibsByType } = holdings;
+	type OrgWithMembers = {
+		[JsonLd.ID]: string;
+		_orgLabel: string;
+		_members: LibraryWithLinks[];
+	};
+
+	type NestedLibraries = LibraryWithLinks | OrgWithMembers;
+
+	let { holdings, libOrgs, refinedLibraries = {}, card }: Props = $props();
+	let { byInstanceId, byType, bibIdData, holdingLibraries } = holdings;
 	let searchPhrase = $state('');
+	const { myLibraries } = getUserSettings();
 
 	// 'print' etc, workfnurgel, instance id
 	const holdingId = $derived(page.state.holdings || page.url.searchParams.get('holdings'));
@@ -67,37 +86,56 @@
 		})
 	);
 
-	const myLibsHolders = $derived(
-		sortedHolders.filter((holder) =>
-			myLibsByType ? holderIsInMyLibsByType(holder[JsonLd.ID], myLibsByType) : false
-		)
-	);
+	const myLibsHolders = $derived.by(() => {
+		if (!myLibraries) return [];
+		const ids = getMyLibsFromHoldings(myLibraries, derivedHolders, libOrgs);
+		return buildNestedLibraries(ids, myLibraries, filteredHolders);
+	});
 
-	function holderIsInMyLibsByType(
-		holderId: string,
-		libsByType: Record<string, HeldByMyLibraries | null>
-	): boolean {
-		for (const typeGroup of Object.values(libsByType)) {
-			if (!typeGroup) continue;
+	const refinedHolders = $derived.by(() => {
+		if (!refinedLibraries) return [];
+		const ids = Object.keys(refinedLibraries);
+		return buildNestedLibraries(ids, refinedLibraries, filteredHolders);
+	});
 
-			for (const [id, data] of Object.entries(typeGroup)) {
-				if (id === holderId) return true;
+	function buildNestedLibraries(
+		ids: string[] | null | undefined,
+		labelMap: Record<string, string> | undefined,
+		holders: LibraryWithLinks[]
+	): NestedLibraries[] {
+		if (!ids || !labelMap) return [];
 
-				if (data && typeof data === 'object' && 'members' in data) {
-					if (holderId in data.members) return true;
+		const result: NestedLibraries[] = [];
+
+		for (const id of ids) {
+			if (isLibraryOrg(id)) {
+				const memberIds = libOrgs?.[id];
+
+				if (!memberIds) {
+					console.warn('Failed to lookup holding org', id);
+					continue;
 				}
+
+				const members = memberIds
+					.map((memberId) => holders.find((h) => h[JsonLd.ID] === memberId))
+					.filter(Boolean) as NestedLibraries[];
+
+				if (members.length) {
+					result.push({
+						[JsonLd.ID]: id,
+						_orgLabel: labelMap[id],
+						_members: members
+					} as OrgWithMembers);
+				}
+				continue;
 			}
+
+			const found = holders.find((h) => h[JsonLd.ID] === id);
+			if (found) result.push(found);
 		}
 
-		return false;
+		return result;
 	}
-
-	// not working unil new refinedLibraries
-	const refinedHolders = $derived(
-		derivedHoldersFull.filter((holder) => {
-			return refinedLibraries.some((lib) => lib === holder[JsonLd.ID]);
-		})
-	);
 
 	const specialSections = $derived([
 		{
@@ -174,8 +212,25 @@
 				</h2>
 				<ul class="flex flex-col gap-2 text-xs">
 					{#each section.data as holder, i (`mylibs-${holder[JsonLd.ID]}-${i}`)}
-						{@const instances = getInstancesForLibAndSelection(holder[JsonLd.ID])}
-						<Holder {holder} {instances} />
+						{#if '_members' in holder}
+							<li>
+								<h3 class="mb-2 flex items-center gap-2">
+									<span aria-hidden="true" class="text-subtle text-base">
+										<BiBank class="text-subtle size-3" />
+									</span>
+									<span>{holder._orgLabel}</span>
+								</h3>
+								<ul class="flex flex-col gap-2 pl-2">
+									{#each holder._members as member (`mylibs-member${member[JsonLd.ID]}`)}
+										{@const instances = getInstancesForLibAndSelection(member[JsonLd.ID])}
+										<Holder holder={member} {instances} />
+									{/each}
+								</ul>
+							</li>
+						{:else}
+							{@const instances = getInstancesForLibAndSelection(holder[JsonLd.ID])}
+							<Holder {holder} {instances} />
+						{/if}
 					{/each}
 				</ul>
 			</div>
