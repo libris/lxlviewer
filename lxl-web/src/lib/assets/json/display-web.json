@@ -449,7 +449,12 @@
 					"@id": "Work-web-card-header-extra",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["translationOf"]
+					"showProperties": [
+						{
+							"alternateProperties": [{ "subPropertyOf": "hasTitle", "range": "KeyTitle" }]
+						},
+						"translationOf"
+					]
 				},
 				"Instance": {
 					"@id": "Instance-web-card-header-extra",
