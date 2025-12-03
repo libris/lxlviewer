@@ -5,6 +5,7 @@ export type TreePath = string[];
 export interface TreeMenuItem {
 	path: TreePath;
 	searchString?: string;
+	children?: TreeMenuItem[];
 }
 
 export interface TreeMenuItemSnippetParams {
