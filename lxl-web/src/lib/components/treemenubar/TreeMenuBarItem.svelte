@@ -60,8 +60,8 @@
 					{#each children as item (item.path)}
 						<li
 							role="presentation"
-							in:receive={{ key: path }}
-							out:send={{ key: path }}
+							in:receive={{ key: item.path }}
+							out:send={{ key: item.path }}
 							animate:flip
 						>
 							<TreeMenuBarItem data={getNestedDataByPath(data, item.path)} path={item.path} />
