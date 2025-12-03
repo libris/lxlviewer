@@ -578,6 +578,19 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"provisionActivity-format": {
+			"TODO": "Why doesn't propertyFormatDomain provisionActivity work?",
+			"@id": "provisionActivity-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": [
+				"publication",
+				"distribution",
+				"production",
+				"manufacture",
+				"marc:primaryProvisionActivity"
+			],
+			"fresnel:propertyStyle": ["provisionActivity"]
+		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
 			"@type": "fresnel:Format",
