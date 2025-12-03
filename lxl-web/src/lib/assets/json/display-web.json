@@ -841,6 +841,17 @@
 			"fresnel:classFormatDomain": ["Role"],
 			"fresnel:resourceStyle": []
 		},
+		"KeyTitle-format": {
+			"@id": "Role-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["KeyTitle"],
+			"fresnel:resourceFormat": {
+				"fresnel:contentBefore": "[",
+				"fresnel:contentFirst": "[",
+				"fresnel:contentAfter": "]",
+				"fresnel:contentLast": "]"
+			}
+		},
 		"role-format": {
 			"@id": "role-format",
 			"@type": "fresnel:Format",
