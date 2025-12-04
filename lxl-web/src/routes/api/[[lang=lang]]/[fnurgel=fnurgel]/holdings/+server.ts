@@ -13,7 +13,6 @@ import {
 import { centerOnWork } from '$lib/utils/centerOnWork';
 
 export async function GET({ params, locals }) {
-	const start = Date.now();
 	const displayUtil = locals.display;
 	const locale = getSupportedLocale(params.lang);
 	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
@@ -44,9 +43,6 @@ export async function GET({ params, locals }) {
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
 		holdingLibraries: getHoldingLibraries(byType)
 	};
-
-	const end = Date.now();
-	console.log(`returning from /holdings took ${(end - start).toFixed(1)} ms`);
 
 	return json(holdings, {
 		headers: {

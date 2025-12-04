@@ -41,7 +41,7 @@ async function asLibraryResult(
 		locale,
 		env.AUXD_SECRET
 	);
-	// need to add the LibraryId to the formatted result since it's wiped
+	// need to re-add the LibraryId to the formatted result since it's wiped in formatting
 	const withId = items.map((item, index) => ({
 		...item,
 		thingId: view.items[index][JsonLd.ID],

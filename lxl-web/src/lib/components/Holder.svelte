@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import { page } from '$app/state';
 	import type { BibIdData, HolderLinks, HoldingLinks, LibraryWithLinks } from '$lib/types/holdings';
 	import LoanStatus from './LoanStatus.svelte';
@@ -20,58 +18,7 @@
 		holdingLinks[key] = createHoldingLinks(bibIdObj, holder, page.data.locale);
 	}
 
-	// load data when in viewport
-	let root: Element;
-	let observer: IntersectionObserver;
-
-	// let loading = $state(false);
 	let error = $state(!holder);
-
-	onMount(() => {
-		if (browser) {
-			observer = new IntersectionObserver((entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						// loadHolder();
-						observer?.disconnect();
-					}
-				});
-			});
-			observer.observe(root);
-		}
-	});
-
-	onDestroy(() => {
-		observer?.disconnect();
-	});
-
-	// async function loadHolder() {
-	// 	loading = true;
-	// 	const holderId: string = holder.obj?.['@id'] || '';
-	// 	try {
-	// 		const res = await fetch(`/api/${page.data.locale}/holder?id=${holderId}`);
-	// 		if (res.ok) {
-	// 			type HolderResponse = { links: HolderLinks; libraryMainEntity: FramedData };
-	// 			const { links, libraryMainEntity }: HolderResponse = await res.json();
-	// 			holderLinks = links;
-
-	// 			// create holder-specific links for its held instances
-	// 			let tempHoldingLinks: Record<string, HoldingLinks> = {};
-	// 			for (const [key, bibIdObj] of Object.entries(instances)) {
-	// 				tempHoldingLinks[key] = createHoldingLinks(bibIdObj, libraryMainEntity, page.data.locale);
-	// 			}
-	// 			holdingLinks = tempHoldingLinks;
-	// 			loading = false;
-	// 		} else {
-	// 			error = true;
-	// 			loading = false;
-	// 		}
-	// 	} catch (e) {
-	// 		console.error(e);
-	// 		loading = false;
-	// 		error = true;
-	// 	}
-	// }
 
 	const hasSomeItemLink = $derived(
 		holdingLinks
@@ -105,14 +52,8 @@
 	const instancesCanCollapse = $derived(currentInstanceLimit > INSTANCE_LIMIT);
 </script>
 
-<li
-	class={['border-neutral flex flex-col gap-2 pb-3 not-last:border-b', hidden && 'hidden']}
-	bind:this={root}
->
+<li class={['border-neutral flex flex-col gap-2 pb-3 not-last:border-b', hidden && 'hidden']}>
 	<h3 class="text-sm font-medium">{holder.name}</h3>
-	<!-- {#if loading}
-		<p class="animate-pulse">{page.data.t('search.loading')}</p>
-	{/if} -->
 	{#if error}
 		<div class="text-error bg-severe-50 rounded-sm p-2">
 			<p>{page.data.t('errors.somethingWentWrong')}</p>
