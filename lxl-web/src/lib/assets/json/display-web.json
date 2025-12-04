@@ -324,7 +324,7 @@
 					"@id": "Publication-tokens",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Publication",
-					"showProperties": ["agent", "year"]
+					"showProperties": ["agent", "year", "startYear", "endYear"]
 				}
 			}
 		},
