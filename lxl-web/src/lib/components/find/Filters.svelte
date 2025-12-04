@@ -89,7 +89,7 @@
 			onclick={(event) => event.preventDefault()}
 			onkeydown={handleFiltersListKeyDown}
 		>
-			<span class="sr-only">{page.data.t('search.filterList')}</span>
+			<span class="sr-only">{page.data.t('search.filtersListParent')}</span>
 		</a>
 		<div class="absolute h-fit w-full">
 			<MenuBar
