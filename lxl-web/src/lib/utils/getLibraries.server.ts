@@ -24,6 +24,9 @@ type OrgIndex = Map<OrgId, string[]>;
 let librariesCache: LibrariesCache = new Map();
 let orgIndex: OrgIndex = new Map();
 
+const REFRESH_INTERVAL = 12 * 60 * 60 * 1000; // 12 hrs?
+let intervalStarted = false;
+
 async function fetchLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	const start = Date.now();
 
@@ -124,11 +127,22 @@ export function getOrgMembers(id: OrgId): LibraryId[] | [] {
 }
 
 export async function refreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
-	try {
-		const libraries = await fetchLibraries(displayUtil, locale);
-		librariesCache = libraries;
-		orgIndex = buildOrgIndex(libraries);
-	} catch (error) {
-		console.error('Refreshing Libraries failed', error);
-	}
+	const libraries = await fetchLibraries(displayUtil, locale);
+	librariesCache = libraries;
+	orgIndex = buildOrgIndex(libraries);
+}
+
+export function startRefreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
+	if (intervalStarted) return; // avoid multiple intervals
+	intervalStarted = true;
+
+	refreshLibraries(displayUtil, locale).catch((err) =>
+		console.error('Initial library fetch failed:', err)
+	);
+
+	setInterval(() => {
+		refreshLibraries(displayUtil, locale).catch((err) =>
+			console.error('Scheduled library refresh failed:', err)
+		);
+	}, REFRESH_INTERVAL);
 }

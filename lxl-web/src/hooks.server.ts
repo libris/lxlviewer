@@ -7,7 +7,7 @@ import type { Site } from '$lib/types/site';
 import { DebugFlags, type MyLibrariesType, type UserSettings } from '$lib/types/userSettings';
 import displayWeb from '$lib/assets/json/display-web.json';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
-import { refreshLibraries } from '$lib/utils/getLibraries.server';
+import { startRefreshLibraries } from '$lib/utils/getLibraries.server';
 
 type Util = [VocabUtil, DisplayUtil];
 let utilCache: Util | undefined;
@@ -15,12 +15,8 @@ let utilCache: Util | undefined;
 export const init: ServerInit = async () => {
 	/* eslint-disable @typescript-eslint/no-unused-vars */
 	const [_, displayUtil] = await loadUtilCached();
-	try {
-		// get libraries at startup
-		await refreshLibraries(displayUtil, defaultLocale);
-	} catch (err) {
-		console.error('Refreshing libraries failed at server init', err);
-	}
+	// get libraries at startup
+	await startRefreshLibraries(displayUtil, defaultLocale);
 };
 
 export const handle = async ({ event, resolve }) => {
