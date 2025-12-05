@@ -77,14 +77,31 @@
 			-->
 			{#each facets.filter((facet) => facet.dimension !== 'librissearch:hasInstanceCategory') as facet (facet.dimension)}
 				<details role="menuitem">
-					<summary>
+					<summary
+						class="focusable flex min-h-9 cursor-pointer items-center text-[0.9375rem] font-medium"
+					>
 						{@render chevron()}
 						<span class="truncate">{facet.label}</span>
 					</summary>
 					<menu role="menu" style="--level:1">
-						{#each facet.values as value (value.label + (value.discriminator || ''))}
-							<a role="menuitem" href={value.view['@id']} data-sveltekit-keepfocus>
-								<span class="truncate">{value.label}</span>
+						{#each facet.values?.slice(0, 5) as value (value.label + (value.discriminator || ''))}
+							<a
+								role="menuitem"
+								class="focusable flex min-h-9 items-center text-sm"
+								href={value.view['@id']}
+								data-sveltekit-keepfocus
+							>
+								<div class="flex items-baseline overflow-hidden">
+									<span class="truncate">{value.label}</span>
+									<span class="text-placeholder text-3xs ml-2">
+										{value.totalItems.toLocaleString(page.data.locale)}
+										<span class="sr-only"
+											>{value.totalItems === 1
+												? page.data.t('search.hitsOne')
+												: page.data.t('search.hits')}</span
+										>
+									</span>
+								</div>
 							</a>
 						{/each}
 					</menu>
@@ -117,39 +134,21 @@
 		transform: rotate(90deg);
 	}
 
-	[role='menubar'] > details[role='menuitem'] > summary:hover,
-	[role='menubar'] > details[role='menuitem']:open > summary {
-		color: var(--color-body);
-	}
-
-	[role='menubar'] > details[role='menuitem'] > summary {
-		display: flex;
-		align-items: center;
-		min-height: calc(var(--spacing) * 10);
-		font-size: 0.9375rem;
-		font-weight: 500;
-		color: var(--color-subtle);
-		cursor: pointer;
-	}
-
 	[role='menu'] [role='menuitem'] {
-		display: flex;
-		align-items: center;
-		min-height: calc(var(--spacing) * 8);
-		font-size: var(--text-sm);
 		padding-left: calc(var(--level, 0) * var(--spacing) * 8);
+		padding-right: calc(var(--spacing) * 3);
 	}
 
-	/** Focusable styling */
-	summary,
-	[role='menu'] [role='menuitem'] {
+	.focusable {
 		outline-offset: -2px;
+
 		&:hover {
 			background: var(--color-primary-100);
 		}
-		&:focus {
+		&:focus-visible {
 			background: var(--color-accent-50);
-			outline: 2px solid var(--color-active);
+			outline-color: var(--color-active);
+			@apply outline-2;
 		}
 	}
 </style>
