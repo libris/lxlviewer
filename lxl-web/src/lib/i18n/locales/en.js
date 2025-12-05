@@ -78,7 +78,7 @@ export default {
 	},
 	facet: {
 		q: 'Free text search',
-		'librissearch:findCategory': '"Category"  🚧👷🏗️',
+		'librissearch:findCategory': 'Category',
 		'librissearch:hasInstanceCategory': '"Format"  🚧👷🏗',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
@@ -108,7 +108,7 @@ export default {
 		'librissearch:hasInstanceType': 'Format', // 'Carrier',
 		'librissearch:instanceOfType': 'Work type',
 		genreForm: 'Genre/form',
-		itemHeldBy: 'Library',
+		'librissearch:itemHeldBy': 'Library',
 		bibliography: 'Bibliography',
 		contributor: 'Author/Contributor',
 		language: 'Language',
