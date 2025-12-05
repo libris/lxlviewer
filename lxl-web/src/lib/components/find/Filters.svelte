@@ -77,7 +77,7 @@
 			-->
 			{#each facets.filter((facet) => facet.dimension !== 'librissearch:hasInstanceCategory') as facet (facet.dimension)}
 				<details role="menuitem">
-					<summary class="flex min-h-9 items-center font-medium -outline-offset-2">
+					<summary class="focusable flex min-h-9 items-center font-medium">
 						{@render chevron()}
 						{facet.label}
 					</summary>
@@ -98,6 +98,8 @@
 </nav>
 
 <style lang="postcss">
+	@reference 'tailwindcss'
+
 	:global(dialog .filters) {
 		margin-right: calc(var(--spacing) * -4);
 		margin-left: calc(var(--spacing) * -4);
@@ -115,5 +117,16 @@
 
 	details[open] > summary .chevron {
 		transform: rotate(90deg);
+	}
+
+	.focusable {
+		outline-offset: -2px;
+		&:hover {
+			background: var(--color-primary-100);
+		}
+		&:focus {
+			background: var(--color-accent-50);
+			outline: 2px solid var(--color-accent-400);
+		}
 	}
 </style>
