@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private';
+import { error } from '@sveltejs/kit';
 import type {
 	LibraryFull,
 	LibraryId,
@@ -29,6 +30,9 @@ async function fetchLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	const res = await fetch(
 		`${env.API_URL}/api/emm/full?selection=type:Library&download=.ndjsonld.gz`
 	);
+	if (!res.ok) {
+		return error(res.status);
+	}
 	const gzipped = Buffer.from(await res.arrayBuffer());
 	const text = gunzipSync(gzipped).toString('utf8');
 	const data: Data = text
