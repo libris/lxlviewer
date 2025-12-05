@@ -134,6 +134,24 @@
 		transform: rotate(90deg);
 	}
 
+	[role='menu'] {
+		position: relative;
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: calc(var(--spacing, 1) * var(--level) * 4);
+			height: 100%;
+			background: var(--color-neutral-300);
+			mask-image: url('$lib/assets/img/treeview-indent.svg');
+			mask-repeat: repeat-y;
+			mask-position: center right;
+			pointer-events: none;
+		}
+	}
+
 	[role='menu'] [role='menuitem'] {
 		padding-left: calc(var(--level, 0) * var(--spacing) * 8);
 		padding-right: calc(var(--spacing) * 3);
