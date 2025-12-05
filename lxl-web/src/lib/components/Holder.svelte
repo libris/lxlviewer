@@ -1,24 +1,41 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { BibIdData, HolderLinks, HoldingLinks, LibraryWithLinks } from '$lib/types/holdings';
-	import LoanStatus from './LoanStatus.svelte';
+	import type {
+		BibIdData,
+		HolderLinks,
+		HoldingLinks,
+		LibraryWithLinks,
+		UnknownLibrary
+	} from '$lib/types/holdings';
+	import { JsonLd } from '$lib/types/xl';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import { createHoldingLinks } from '$lib/utils/holdings';
+	import LoanStatus from './LoanStatus.svelte';
 
 	type Props = {
-		holder: LibraryWithLinks;
+		holder: LibraryWithLinks | UnknownLibrary;
 		instances: BibIdData;
 		hidden?: boolean;
 	};
-	const { holder, instances, hidden = false }: Props = $props();
-	const holderLinks: HolderLinks = $state(holder._links);
 
-	let holdingLinks: Record<string, HoldingLinks> = $state({});
-	for (const [key, bibIdObj] of Object.entries(instances)) {
-		holdingLinks[key] = createHoldingLinks(bibIdObj, holder, page.data.locale);
+	function isLibraryWithLinks(
+		holder: LibraryWithLinks | UnknownLibrary
+	): holder is LibraryWithLinks {
+		return '_links' in holder && 'sigel' in holder;
 	}
 
-	let error = $state(!holder);
+	const { holder, instances, hidden = false }: Props = $props();
+
+	const holderLinks: HolderLinks | undefined = $state(
+		isLibraryWithLinks(holder) ? holder._links : undefined
+	);
+
+	let holdingLinks: Record<string, HoldingLinks> = $state({});
+	if (isLibraryWithLinks(holder)) {
+		for (const [key, bibIdObj] of Object.entries(instances)) {
+			holdingLinks[key] = createHoldingLinks(bibIdObj, holder, page.data.locale);
+		}
+	}
 
 	const hasSomeItemLink = $derived(
 		holdingLinks
@@ -53,13 +70,12 @@
 </script>
 
 <li class={['border-neutral flex flex-col gap-2 pb-3 not-last:border-b', hidden && 'hidden']}>
-	<h3 class="text-sm font-medium">{holder.name}</h3>
-	{#if error}
+	<h3 class="text-sm font-medium">{holder.name || holder[JsonLd.ID]}</h3>
+	{#if !isLibraryWithLinks(holder)}
 		<div class="text-error bg-severe-50 rounded-sm p-2">
-			<p>{page.data.t('errors.somethingWentWrong')}</p>
+			<p>{page.data.t('errors.notAvailable')}</p>
 		</div>
-	{/if}
-	{#if holderLinks}
+	{:else if holderLinks}
 		<ul class="flex flex-col gap-2 [&>li]:flex [&>li]:flex-col [&>li]:items-start">
 			{#if hasSomeItemLink}
 				<!-- instance-specific links -->

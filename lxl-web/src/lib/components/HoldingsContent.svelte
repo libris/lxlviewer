@@ -7,7 +7,8 @@
 		HoldingsData,
 		LibraryId,
 		LibraryWithLinks,
-		OrgId
+		OrgId,
+		UnknownLibrary
 	} from '$lib/types/holdings';
 	import { JsonLd } from '$lib/types/xl';
 	import { getMyLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
@@ -30,7 +31,7 @@
 		_members: LibraryWithLinks[];
 	};
 
-	type NestedLibraries = LibraryWithLinks | OrgWithMembers;
+	type NestedLibraries = LibraryWithLinks | OrgWithMembers | UnknownLibrary;
 
 	let { holdings, libOrgs, refinedLibraries = {}, card }: Props = $props();
 	let { byInstanceId, byType, bibIdData, holdingLibraries } = holdings;
@@ -71,17 +72,23 @@
 		return [];
 	});
 
-	// filtering out null libraries, maybe we should show them?
 	const derivedHoldersFull = $derived(
-		derivedHolders.map((holder) => holdingLibraries[holder]).filter((holder) => !!holder)
+		derivedHolders.map(
+			(holder) => holdingLibraries[holder] || ({ [JsonLd.ID]: holder, name: '' } as UnknownLibrary)
+		)
 	);
 
 	const sortedHolders = $derived(
-		derivedHoldersFull.sort((a, b) => a.name.localeCompare(b.name, page.data.locale))
+		derivedHoldersFull.sort((a, b) => {
+			if (!a.name && b.name) return 1;
+			if (!b.name && a.name) return -1;
+			return a.name.localeCompare(b.name, page.data.locale);
+		})
 	);
 
 	const filteredHolders = $derived(
 		sortedHolders.filter((holder) => {
+			if (searchPhrase && !holder.name) return false;
 			return holder.name.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
 		})
 	);
@@ -101,7 +108,7 @@
 	function buildNestedLibraries(
 		ids: string[] | null | undefined,
 		labelMap: Record<string, string> | undefined,
-		holders: LibraryWithLinks[]
+		holders: (LibraryWithLinks | UnknownLibrary)[]
 	): NestedLibraries[] {
 		if (!ids || !labelMap) return [];
 
@@ -249,7 +256,7 @@
 	</div>
 	<!-- list holders -->
 	<ul class="flex flex-col gap-2 text-xs">
-		{#each sortedHolders as holder (holder[JsonLd.ID])}
+		{#each sortedHolders as holder, i (`${holder[JsonLd.ID]}-${i}`)}
 			{@const instances = getInstancesForLibAndSelection(holder[JsonLd.ID])}
 			<Holder
 				{holder}

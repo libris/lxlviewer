@@ -6,6 +6,7 @@ import type {
 	HoldingLinks,
 	LibraryFull,
 	LibraryId,
+	LibraryWithLinks,
 	OrgId
 } from '$lib/types/holdings';
 import { BibDb } from '$lib/types/xl';
@@ -36,7 +37,7 @@ export function handleClickHoldings(
  */
 export function createHoldingLinks(
 	bibIdObj: BibIdObj,
-	fullHolderData: LibraryFull,
+	fullHolderData: LibraryWithLinks,
 	locale: LocaleCode
 ): HoldingLinks {
 	const ilsPaths = [

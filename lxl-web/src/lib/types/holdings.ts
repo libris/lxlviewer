@@ -67,6 +67,12 @@ export interface LibraryWithLinks extends LibraryFull {
 	_links: HolderLinks;
 }
 
+// "libraries" with holding but missing in libs cache
+export type UnknownLibrary = {
+	[JsonLd.ID]: LibraryId;
+	name: '';
+};
+
 export type BibIdObj = {
 	bibId: string;
 	[JsonLd.TYPE]: string;
