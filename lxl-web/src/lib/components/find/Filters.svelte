@@ -79,11 +79,13 @@
 				<details role="menuitem">
 					<summary>
 						{@render chevron()}
-						{facet.label}
+						<span class="truncate">{facet.label}</span>
 					</summary>
 					<menu role="menu" style="--level:1">
 						{#each facet.values as value (value.label + (value.discriminator || ''))}
-							<a role="menuitem" href={value.view['@id']}>{value.label}</a>
+							<a role="menuitem" href={value.view['@id']}>
+								<span class="truncate">{value.label}</span>
+							</a>
 						{/each}
 					</menu>
 				</details>
@@ -115,11 +117,19 @@
 		transform: rotate(90deg);
 	}
 
+	[role='menubar'] > details[role='menuitem'] > summary:hover,
+	[role='menubar'] > details[role='menuitem']:open > summary {
+		color: var(--color-body);
+	}
+
 	[role='menubar'] > details[role='menuitem'] > summary {
 		display: flex;
 		align-items: center;
 		min-height: calc(var(--spacing) * 10);
 		font-size: 0.9375rem;
+		font-weight: 500;
+		color: var(--color-subtle);
+		cursor: pointer;
 	}
 
 	[role='menu'] [role='menuitem'] {
