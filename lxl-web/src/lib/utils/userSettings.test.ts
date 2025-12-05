@@ -3,23 +3,14 @@ import { UserSettings } from './userSettings.svelte';
 
 const s = {
 	myLibraries: {
-		'1234': {
-			'@id': '1234',
-			label: 'Kungliga bibiblioteket',
-			sigel: 'S'
-		},
-		'6456456': {
-			'@id': '6456456',
-			label: 'Göteborg',
-			sigel: 'Gbg'
-		}
+		'https://libris.kb.se/library/Nodi': 'Ale bibliotek',
+		'https://libris.kb.se/library/org/BIN': 'Biblioteken i Norrbotten'
 	},
 	facetSort: {
 		'rdf:type': 'hits.asc',
 		hasInstanceType: 'alpha.asc'
 	}
 };
-const anotherLib = { '@id': '434566', label: 'Nya biblioteket', sigel: 'N' };
 const userSettings = new UserSettings(s);
 
 describe('userSettings util', () => {
@@ -32,35 +23,19 @@ describe('userSettings util', () => {
 	});
 
 	it('can add a library', () => {
-		userSettings.addLibrary(anotherLib);
+		userSettings.addLibrary('https://libris.kb.se/library/Bole', 'Bollebygds bibliotek');
 		expect(userSettings.myLibraries).toStrictEqual({
-			'1234': {
-				'@id': '1234',
-				label: 'Kungliga bibiblioteket',
-				sigel: 'S'
-			},
-			'434566': {
-				'@id': '434566',
-				label: 'Nya biblioteket',
-				sigel: 'N'
-			},
-			'6456456': {
-				'@id': '6456456',
-				label: 'Göteborg',
-				sigel: 'Gbg'
-			}
+			'https://libris.kb.se/library/Bole': 'Bollebygds bibliotek',
+			'https://libris.kb.se/library/Nodi': 'Ale bibliotek',
+			'https://libris.kb.se/library/org/BIN': 'Biblioteken i Norrbotten'
 		});
 	});
 
 	it('can remove a library', () => {
-		userSettings.removeLibrary('1234');
-		userSettings.removeLibrary('434566');
+		userSettings.removeLibrary('https://libris.kb.se/library/Bole');
+		userSettings.removeLibrary('https://libris.kb.se/library/Nodi');
 		expect(userSettings.myLibraries).toStrictEqual({
-			'6456456': {
-				'@id': '6456456',
-				label: 'Göteborg',
-				sigel: 'Gbg'
-			}
+			'https://libris.kb.se/library/org/BIN': 'Biblioteken i Norrbotten'
 		});
 	});
 

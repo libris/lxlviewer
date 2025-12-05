@@ -25,6 +25,8 @@ export async function load({ locals, url, params, fetch }) {
 			const translator = await getTranslator(locale);
 			const mappings = displayMappings(data, locals.display, locale, translator, url.pathname);
 			subsetMapping = mappings.filter((m) => m.variable === '_r');
+			// add to locals for access in other load functions
+			locals.subsetMapping = subsetMapping;
 		} else {
 			console.warn('Failed to get _r mappings');
 		}

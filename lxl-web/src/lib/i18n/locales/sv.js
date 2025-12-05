@@ -207,6 +207,7 @@ export default {
 	},
 	errors: {
 		somethingWentWrong: 'Något gick fel',
+		notAvailable: 'Informationen kan inte visas',
 		notFound: 'Sidan hittades inte',
 		wrongLink: 'Klickade du på en länk i Libris som inte fungerade?',
 		sendEmail: 'Skicka e-post till',

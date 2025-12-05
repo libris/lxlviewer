@@ -1,19 +1,26 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { LibraryItem } from '$lib/types/userSettings';
 	import popover from '$lib/actions/popover';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 	import BiHouseHeart from '~icons/bi/house-heart';
 
 	type IndicatorProps = {
-		libraries: LibraryItem[];
+		libraries: string[];
 	};
 	const { libraries }: IndicatorProps = $props();
-	const librariesString = $derived(libraries.map((lib) => lib.label).join(', '));
+	const { myLibraries } = getUserSettings();
+
+	function getIndicatorText() {
+		if (myLibraries) {
+			return libraries.map((lib) => myLibraries[lib] || '').join(', ');
+		}
+		return '';
+	}
 </script>
 
 <span
 	use:popover={{
-		title: `${page.data.t('holdings.availableAt')}: ${librariesString}`
+		title: `${page.data.t('holdings.availableAt')}: ${getIndicatorText()}`
 	}}
 >
 	<BiHouseHeart class="libraries-indicator" />

@@ -111,7 +111,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			onclick={(event) => isInstanceCard && handleClickHoldings(event, page.state, id)}
 		>
 			<span class="text-base">
-				{#if item.heldByMyLibraries?.length}
+				{#if item.heldByMyLibraries}
 					<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
 				{:else}
 					<BiHouse class="text-neutral-400" />
@@ -399,5 +399,22 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		font-size: var(--text-2xs);
 		color: var(--color-subtle);
 		font-weight: var(--font-weight-normal);
+	}
+
+	/* card in dialog */
+	:global(dialog .search-card) {
+		border-top: none;
+		border-bottom: 1px solid var(--color-neutral);
+		background-color: var(--color-page);
+		border-radius: var(--radius-sm);
+
+		& .card-actions {
+			display: none;
+		}
+		/* todo: allow links? */
+		& .card-image,
+		.card-header-title {
+			pointer-events: none;
+		}
 	}
 </style>

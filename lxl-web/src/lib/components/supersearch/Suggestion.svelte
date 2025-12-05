@@ -13,17 +13,17 @@
 
 	type Props = {
 		item: SuperSearchResultItem;
-		getCellId: (cellIndex: number) => string;
-		isFocusedCell: (cellIndex: number) => boolean;
+		getCellId?: (cellIndex: number) => string;
+		isFocusedCell?: (cellIndex: number) => boolean;
 	};
 
 	const { item, getCellId, isFocusedCell }: Props = $props();
 	const resourceId = $derived(trimSlashes(relativizeUrl(item?.['@id'])));
-	const primaryAddQualifierLink = $derived(item.qualifiers?.[0]?._q || resourceId);
+	const primaryAddQualifierLink = $derived(item?.qualifiers?.[0]?._q || resourceId);
 </script>
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
-	{#if item.qualifiers.length}
+	{#if item.qualifiers?.length}
 		<span
 			class="text-subtle order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline"
 		>
@@ -99,20 +99,20 @@
 	</div>
 {/snippet}
 
-<div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers.length}>
-	{#if item.qualifiers.length}
+<div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers?.length}>
+	{#if item.qualifiers?.length}
 		<a
 			href={page.data.localizeHref(primaryAddQualifierLink)}
-			id={getCellId(0)}
-			class:focused-cell={isFocusedCell(0)}
+			id={getCellId?.(0)}
+			class:focused-cell={isFocusedCell?.(0)}
 		>
 			{@render resourceSnippet(item)}
 		</a>
 		<button
 			type="button"
 			class="more w-14 items-center justify-center p-0"
-			id={getCellId(1)}
-			class:focused-cell={isFocusedCell(1)}
+			id={getCellId?.(1)}
+			class:focused-cell={isFocusedCell?.(1)}
 		>
 			{#key item.qualifiers}
 				<span
@@ -136,7 +136,7 @@
 			{/key}
 		</button>
 	{:else}
-		<a href={page.data.localizeHref(resourceId)} id={getCellId(0)}>
+		<a href={page.data.localizeHref(resourceId)} id={getCellId ? getCellId(0) : ''}>
 			{@render resourceSnippet(item)}
 		</a>
 	{/if}

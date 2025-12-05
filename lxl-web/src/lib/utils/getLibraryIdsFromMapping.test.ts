@@ -1,26 +1,34 @@
 import { describe, it, expect } from 'vitest';
 import type { DisplayMapping } from '$lib/types/search';
-import { getSigelsFromMapping } from './getSigelsFromMapping';
+import { getLibraryIdsFromMapping } from './getLibraryIdsFromMapping';
 
-describe('getSigelsFromMapping', () => {
-	it('it returns an array of sigels included in mapping', () => {
-		expect(getSigelsFromMapping([mappingOneLib])).toStrictEqual(['Alve']);
+describe('getLibraryIdsFromMapping', () => {
+	it('it returns an object of sigels and labels included in mapping', () => {
+		expect(getLibraryIdsFromMapping([mappingOneLib])).toStrictEqual({
+			'https://libris.kb.se/library/Alve': 'Alvesta bibliotek · Alve'
+		});
 	});
 
-	it('it returns an array of sigels included in mapping 2', () => {
-		expect(getSigelsFromMapping([mappingTwoLibs])).toStrictEqual(['Boln', 'Hagf']);
+	it('it returns an object of sigels and labels included in mapping 2', () => {
+		expect(getLibraryIdsFromMapping([mappingTwoLibs])).toStrictEqual({
+			'https://libris.kb.se/library/Boln': 'Bollnäs bibliotek · Boln',
+			'https://libris.kb.se/library/Hagf': 'Hagfors bibliotek · Hagf'
+		});
 	});
 
 	it('does not include explicitly excluded libraries', () => {
-		expect(getSigelsFromMapping([mappingExcludedLib])).toStrictEqual(['Boln']);
+		expect(getLibraryIdsFromMapping([mappingExcludedLib])).toStrictEqual({
+			'https://libris.kb.se/library/Boln': 'Bollnäs bibliotek · Boln'
+		});
 	});
 
-	it('it returns an empty array if none found', () => {
-		expect(getSigelsFromMapping([mappingNoLibs])).toStrictEqual([]);
+	it('it returns null if none gound', () => {
+		expect(getLibraryIdsFromMapping([mappingNoLibs])).toStrictEqual(null);
 	});
 
-	it('returns an empty array if passed a random thing', () => {
-		expect(getSigelsFromMapping('hello')).toStrictEqual([]);
+	it('returns null if passed a random thing', () => {
+		// @ts-expect-error - intentionally passing the wrong thing
+		expect(getLibraryIdsFromMapping('hello')).toStrictEqual(null);
 	});
 });
 

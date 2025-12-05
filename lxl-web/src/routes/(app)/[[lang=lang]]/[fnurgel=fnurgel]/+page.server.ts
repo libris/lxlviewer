@@ -8,16 +8,19 @@ import { type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
+import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
+import type { HoldingsData } from '$lib/types/holdings.js';
 
 import { pickProperty, toString, asArray, first } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import {
+	getHoldingLibraries,
 	getHoldingsByInstanceId,
+	getBibIdsByInstanceId,
 	getHoldingsByType,
-	getHoldersByType,
-	getBibIdsByInstanceId
-} from '$lib/utils/holdings.js';
+	getHoldersByType
+} from '$lib/utils/holdings.server';
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
@@ -27,13 +30,14 @@ import {
 	asSearchResultItem,
 	displayMappings
 } from '$lib/utils/search';
-import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
+import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 	const translate = await getTranslator(locale);
+	const myLibraries = locals.userSettings?.myLibraries;
 
 	let resourceId: null | string = null;
 	const subsetFilter = url.searchParams.get('_r');
@@ -58,7 +62,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	const resource = await resourceRes.json();
-	const mainEntity = centerOnWork(resource['mainEntity'] as FramedData);
+	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	copyMediaLinksToWork(mainEntity);
 
 	resourceId = resource.mainEntity['@id'];
@@ -104,7 +108,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			vocabUtil,
 			locale,
 			env.AUXD_SECRET,
-			locals.userSettings?.myLibraries,
+			myLibraries,
 			undefined
 		);
 	}
@@ -121,7 +125,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 				_stats: 'false',
 				_site: locals.site?.searchSite || ''
 			}),
-			locals.userSettings
+			myLibraries
 		);
 
 		const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
@@ -155,7 +159,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 				locale,
 				env.AUXD_SECRET,
 				undefined,
-				locals.userSettings?.myLibraries
+				myLibraries
 			);
 		})
 	);
@@ -196,10 +200,28 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
-	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const holdingsByType = getHoldingsByType(mainEntity);
-	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
-	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
+	const byType = getHoldersByType(holdingsByType);
+
+	const holdings: HoldingsData = {
+		byInstanceId: getHoldingsByInstanceId(mainEntity),
+		byType,
+		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
+		holdingLibraries: getHoldingLibraries(byType)
+	};
+
+	const workCard = asSearchResultItem(
+		[resource.mainEntity],
+		displayUtil,
+		vocabUtil,
+		locale,
+		env.AUXD_SECRET,
+		myLibraries,
+		undefined
+	)[0];
+
+	const subsetMapping = locals?.subsetMapping;
+	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return {
 		uri: resource['@id'] as string,
@@ -213,13 +235,11 @@ export const load = async ({ params, locals, fetch, url }) => {
 		relationsPreviewsByQualifierKey,
 		instances,
 		searchResult,
-		holdings: {
-			holdingsByInstanceId,
-			holdersByType,
-			bibIdsByInstanceId
-		},
+		holdings,
 		images,
-		tableOfContents
+		tableOfContents,
+		workCard,
+		refinedOrgs
 	};
 };
 

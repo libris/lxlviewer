@@ -8,6 +8,7 @@ import { appendMyLibrariesParam, asResult } from '$lib/utils/search';
 import { DebugFlags } from '$lib/types/userSettings';
 import { displayMappingToString } from '$lib/utils/displayMappingToString.js';
 import getPageTitle from '$lib/utils/getPageTitle';
+import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server.js';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -15,6 +16,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const locale = getSupportedLocale(params?.lang);
 
 	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
+	const myLibraries = locals.userSettings?.myLibraries;
 
 	const searchParams = new URLSearchParams();
 
@@ -29,7 +31,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 	}
 
 	const recordsRes = await fetch(
-		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, locals.userSettings).toString()}${debug}`,
+		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}${debug}`,
 		{
 			// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
 			redirect: 'manual'
@@ -61,7 +63,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		locale,
 		env.AUXD_SECRET,
 		undefined,
-		locals.userSettings?.myLibraries
+		myLibraries
 	);
 
 	const pageTitle = getPageTitle(
@@ -71,5 +73,8 @@ export const load = async ({ params, url, locals, fetch }) => {
 		locals.site?.name
 	);
 
-	return { searchResult, pageTitle };
+	const subsetMapping = locals?.subsetMapping;
+	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
+
+	return { searchResult, pageTitle, refinedOrgs };
 };

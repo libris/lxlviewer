@@ -2,8 +2,9 @@
 	import { page } from '$app/state';
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
+	import { JsonLd } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { HoldersByType } from '$lib/types/holdings';
+	import type { HoldingsData } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import type {
 		SearchResultItem,
@@ -35,7 +36,7 @@
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
 		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
 		searchResult?: ResourceSearchResult;
-		holdersByType: HoldersByType;
+		holdings: HoldingsData;
 		tableOfContents: TableOfContentsItem[];
 		adjecentSearchResults?: AdjecentSearchResult[];
 	};
@@ -52,7 +53,7 @@
 		relationsPreviewsByQualifierKey,
 		instances,
 		searchResult,
-		holdersByType,
+		holdings,
 		tableOfContents,
 		adjecentSearchResults
 	}: Props = $props();
@@ -64,7 +65,7 @@
 
 	const derivedFilteredInstances = $derived.by(() => {
 		const idSet = new Set(filteredInstances);
-		return instances?.filter((instance) => idSet.has(instance?.['@id']));
+		return instances?.filter((instance) => idSet.has(instance?.[JsonLd.ID]));
 	});
 
 	const tabMatchingInstances: Tab | null = $derived.by(() => {
@@ -101,13 +102,13 @@
 			<SearchMapping mapping={searchMapping} />
 		</div>
 	{/if}
-	{#each derivedFilteredInstances as instance (instance?.['@id'])}
+	{#each derivedFilteredInstances as instance (instance?.[JsonLd.ID])}
 		<SearchCard item={instance as SearchResultItem} />
 	{/each}
 {/snippet}
 
 {#snippet panelAllInstances()}
-	{#each instances as instance (instance?.['@id'])}
+	{#each instances as instance (instance?.[JsonLd.ID])}
 		<SearchCard item={instance as SearchResultItem} />
 	{/each}
 {/snippet}
@@ -142,10 +143,10 @@
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
 					linkToFull
 				/>
-				{#if holdersByType && Object.keys(holdersByType).length && instances}
+				{#if holdings.byType && Object.keys(holdings.byType).length && instances}
 					<section class="mt-5">
 						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
-						<ResourceHoldings {holdersByType} {instances} {fnurgel} />
+						<ResourceHoldings {holdings} {instances} {fnurgel} />
 					</section>
 				{/if}
 			</div>

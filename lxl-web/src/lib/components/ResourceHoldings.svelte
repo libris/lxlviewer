@@ -1,33 +1,40 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
-	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
-	import { getResourceId } from '$lib/utils/resourceData';
-	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import MyLibrariesIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import type { HoldersByType } from '$lib/types/holdings';
-	import type { ResourceData } from '$lib/types/resourceData';
 	import { JsonLd } from '$lib/types/xl';
+	import type { HoldingsData } from '$lib/types/holdings';
+	import type { SearchResultItem } from '$lib/types/search';
+	import type { ResourceData } from '$lib/types/resourceData';
+	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
+	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import BiQuote from '~icons/bi/quote';
+	import { LxlLens } from '$lib/types/display';
 
 	interface Props {
-		instances: Record<string, unknown>[]; // TODO: fix better types
-		holdersByType: HoldersByType;
+		instances: SearchResultItem[] | ResourceData[];
+		holdings: HoldingsData;
 		fnurgel: string;
 	}
 
-	let { holdersByType, instances, fnurgel }: Props = $props();
-
-	const userSettings = getUserSettings();
+	let { holdings, instances, fnurgel }: Props = $props();
+	const { myLibraries } = getUserSettings();
 
 	function getLocalizedType(type: string) {
-		return instances.find((instanceItem) => type === instanceItem[JsonLd.TYPE])?._label || type;
+		const found = instances.find((instanceItem) => type === instanceItem[JsonLd.TYPE]);
+
+		// instance can be a formatted search result
+		return found?._label ?? found?.[LxlLens.CardHeading]?._label ?? type;
 	}
 </script>
 
 <ul class="@container flex flex-col gap-2">
-	{#each Object.keys(holdersByType) as type (type)}
+	{#each Object.keys(holdings.byType) as type (type)}
+		{@const myLibsHoldingByType = getMyLibsFromHoldings(
+			myLibraries,
+			holdings.byType[type],
+			page.data.refinedOrgs
+		)}
 		<li class="@md:self-center">
 			<a
 				class="btn btn-cta @md:max-w-sm"
@@ -36,27 +43,18 @@
 				data-testid="holding-link"
 				onclick={(event) => handleClickHoldings(event, page.state, type)}
 			>
-				{#if instances.length === 1}
-					{@const id = trimSlashes(relativizeUrl(getResourceId(instances[0] as ResourceData)))}
-					{#if id}
-						{@const favWithHolding = getMyLibsFromHoldings(
-							userSettings.myLibraries,
-							page.data.holdings.holdingsByInstanceId[id]
-						)}
-						{#if favWithHolding.length}
-							<div class="mr-1 text-lg">
-								<MyLibrariesIndicator libraries={favWithHolding} />
-							</div>
-						{/if}
-					{/if}
+				{#if myLibsHoldingByType}
+					<div class="mr-1 text-lg">
+						<MyLibsHoldingIndicator libraries={myLibsHoldingByType} />
+					</div>
 				{/if}
 				<span class="text-nowrap">{getLocalizedType(type)}</span>
 				<span class="text-2xs truncate font-normal opacity-90">
 					{' · '}
 					<span class="hidden @3xs:inline">{page.data.t('holdings.availableAt').toLowerCase()}</span
 					>
-					{holdersByType[type].length}
-					{holdersByType[type].length === 1
+					{holdings.byType[type].length}
+					{holdings.byType[type].length === 1
 						? page.data.t('holdings.library')
 						: page.data.t('holdings.libraries')}
 				</span>

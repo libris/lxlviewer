@@ -1,36 +1,101 @@
-import type { BibDb } from './xl';
+import type { BibDb, FramedData, JsonLd } from './xl';
+
+export type HoldingMainEntity = {
+	[JsonLd.REVERSE]?: {
+		instanceOf: HoldingInstance[];
+	};
+};
+
+export type HoldingInstance = {
+	[JsonLd.ID]: string;
+	[JsonLd.TYPE]: string;
+	[JsonLd.REVERSE]?: {
+		itemOf: HoldingItem[];
+	};
+	meta?: {
+		controlNumber?: string;
+	};
+	publication?: FramedData[];
+	identifiedBy?: {
+		[JsonLd.TYPE]: string;
+		value: string;
+	}[];
+};
+
+type HoldingItem = {
+	[JsonLd.ID]: string;
+	[JsonLd.TYPE]: 'Item';
+	heldBy: LibraryChip;
+	itemOf: { [JsonLd.ID]: string };
+	sameAs?: unknown;
+	shelfMark?: unknown;
+	availability?: unknown;
+	hasComponent?: unknown;
+	shelfControlNumber?: string;
+	physicalLocation?: unknown;
+	meta: Record<string, unknown>;
+};
+
+type RecordId = string;
+export type LibraryId = string;
+export type OrgId = string;
+
+export type LibraryRecord = {
+	[JsonLd.ID]: RecordId;
+	[JsonLd.TYPE]: 'Record';
+	mainEntity: {
+		[JsonLd.ID]: string;
+	};
+};
+
+type LibraryChip = {
+	[JsonLd.ID]: LibraryId;
+	[JsonLd.TYPE]: 'Library';
+	name: string;
+	sigel: string;
+	meta: LibraryRecord;
+};
+
+export interface LibraryFull extends LibraryChip {
+	isPartOf: { [JsonLd.ID]: OrgId };
+	[BibDb.ils]: Record<string, string>;
+	[BibDb.lopac]: Record<string, string>;
+	[BibDb.address]?: Record<string, string>[];
+}
+
+export interface LibraryWithLinks extends LibraryFull {
+	displayStr: string;
+	_links: HolderLinks;
+}
+
+// "libraries" with holding but missing in libs cache
+export type UnknownLibrary = {
+	[JsonLd.ID]: LibraryId;
+	name: '';
+	displayStr?: string;
+};
 
 export type BibIdObj = {
 	bibId: string;
-	'@type': string;
-	holders: string[];
+	[JsonLd.TYPE]: string;
 	onr: string | null;
 	isbn: string[];
 	issn: string[];
 	str: string;
 };
 
-export type BibIdByInstanceId = { [instanceId: string]: BibIdObj };
+export type BibIdData = { [instanceId: string]: BibIdObj };
 
-export type HoldingsByInstanceId = {
-	[id: string]: {
-		'@id': string;
-		'@type': string;
-		heldBy: DecoratedHolder;
-		itemOf: {
-			'@id': string;
-		};
-	}[];
+export type HoldersByInstanceId = {
+	[id: LibraryId]: string[];
+};
+
+export type HoldingsByType = {
+	[type: string]: HoldingItem[];
 };
 
 export type HoldersByType = {
-	[type: string]: DecoratedHolder[];
-};
-
-export type DecoratedHolder = {
-	obj: { '@id': string };
-	sigel: string;
-	str: string;
+	[type: string]: string[];
 };
 
 export type HolderLinks = {
@@ -50,10 +115,8 @@ export type HoldingLinks = {
 };
 
 export type HoldingsData = {
-	bibIdsByInstanceId: BibIdByInstanceId;
-	holdingsByInstanceId: HoldingsByInstanceId;
-	holdersByType?: HoldersByType;
-	overview: unknown;
-	instances: Record<string, unknown>[];
-	title: string;
+	bibIdData: BibIdData;
+	byInstanceId: HoldersByInstanceId;
+	byType: HoldersByType;
+	holdingLibraries: Record<LibraryId, LibraryWithLinks | null>;
 };
