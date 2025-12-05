@@ -135,8 +135,9 @@ export default {
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
 		removeFilter: 'Ta bort filter',
-		filtersListParent:
-			'Lista på tillämpliga sökfilter – använd piltangenterna för att navigera mellan de olika filtervalen',
+		noFilters: 'Inga tillämpliga sökfilter',
+		filtersMenubar:
+			'Tillämpliga sökfilter – använd piltangenterna för att navigera mellan de olika filtervalen"',
 		noResults: 'Inga resultat',
 		hitsOf: 'av',
 		hits: 'träffar',

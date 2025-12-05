@@ -76,7 +76,7 @@
 	>
 		<LeadingPane>
 			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
-				<Filters facets={searchResult.facetGroups || []} />
+				<Filters facets={searchResult.facets} />
 			</div>
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">

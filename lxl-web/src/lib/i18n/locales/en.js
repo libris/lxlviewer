@@ -136,8 +136,8 @@ export default {
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		removeFilter: 'Remove filter',
-		filtersListParent:
-			'List of applicaple filters – use arrow keys to navigate between the different list items',
+		noFilters: 'No applicable filters',
+		filtersMenubar: 'Applicable filters – use arrow keys to navigate between the different filters',
 		noResults: 'No results',
 		hitsOf: 'of',
 		hits: 'hits',
