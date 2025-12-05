@@ -18,6 +18,8 @@
 			0
 	);
 
+	let expandedItems = $derived(['librissearch:findCategory']); // use snapshots or page.state to remember state when navigating away from a find route...
+
 	function getClearAllHref() {
 		// TODO: Fix clear all links on AND filters
 		const textQuery = mapping?.[0].children?.find((m) => m['@id']?.includes('textQuery'));
@@ -76,7 +78,17 @@
 				and we don't want to rely on value.view.id as it changes after navigating
 			-->
 			{#each facets.filter((facet) => facet.dimension !== 'librissearch:hasInstanceCategory') as facet (facet.dimension)}
-				<details role="menuitem">
+				<details
+					role="menuitem"
+					open={expandedItems.includes(facet.dimension)}
+					ontoggle={(event: Event & { currentTarget: HTMLDetailsElement }) => {
+						if (event.currentTarget.open) {
+							expandedItems = [...expandedItems, facet.dimension];
+						} else {
+							expandedItems = expandedItems.filter((item) => item !== facet.dimension);
+						}
+					}}
+				>
 					<summary
 						class="focusable flex min-h-9 cursor-pointer items-center text-[0.9375rem] font-medium"
 					>
