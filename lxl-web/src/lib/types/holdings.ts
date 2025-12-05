@@ -64,6 +64,7 @@ export interface LibraryFull extends LibraryChip {
 }
 
 export interface LibraryWithLinks extends LibraryFull {
+	displayStr: string;
 	_links: HolderLinks;
 }
 
@@ -71,6 +72,7 @@ export interface LibraryWithLinks extends LibraryFull {
 export type UnknownLibrary = {
 	[JsonLd.ID]: LibraryId;
 	name: '';
+	displayStr?: string;
 };
 
 export type BibIdObj = {

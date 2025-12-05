@@ -6,10 +6,10 @@ import type {
 	LibraryWithLinks,
 	OrgId
 } from '$lib/types/holdings';
-import { BibDb, JsonLd } from '$lib/types/xl';
+import { BibDb, JsonLd, LensType } from '$lib/types/xl';
 import { gunzipSync } from 'node:zlib';
 import { createHolderLinks } from './holdings.server';
-import type { DisplayUtil } from './xl';
+import { toString, type DisplayUtil } from './xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 
 type Data = {
@@ -52,7 +52,8 @@ function withLinks(
 	locale: LocaleCode
 ): LibraryWithLinks {
 	const links = createHolderLinks(lib, locale, displayUtil);
-	const library = { ...lib, ...{ _links: links } };
+	const displayStr = toString(displayUtil.lensAndFormat(lib, LensType.Chip, locale));
+	const library = { ...lib, ...{ _links: links }, ...{ displayStr } };
 	delete library[BibDb.address];
 
 	return library;

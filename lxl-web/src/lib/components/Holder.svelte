@@ -70,7 +70,7 @@
 </script>
 
 <li class={['border-neutral flex flex-col gap-2 pb-3 not-last:border-b', hidden && 'hidden']}>
-	<h3 class="text-sm font-medium">{holder.name || holder[JsonLd.ID]}</h3>
+	<h3 class="text-sm font-medium">{holder.displayStr || holder.name || holder[JsonLd.ID]}</h3>
 	{#if !isLibraryWithLinks(holder)}
 		<div class="text-error bg-severe-50 rounded-sm p-2">
 			<p>{page.data.t('errors.notAvailable')}</p>
