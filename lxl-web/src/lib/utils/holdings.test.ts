@@ -13,11 +13,11 @@ describe('getBibIdsByInstanceId', () => {
 		const instanceTokenStr = 'Natur och kultur, 2018';
 		const DisplayUtil = { lensAndFormat: () => instanceTokenStr };
 
+		// @ts-expect-error - Display is mocked
 		expect(getBibIdsByInstanceId(workCenteredMainEntity, DisplayUtil, record, 'sv')).toStrictEqual({
 			'0h96fs3b0c49qkt': {
 				bibId: '7654300',
 				'@type': 'PhysicalResource',
-				holders: ['S', 'H', 'U', 'Um', 'Umdp', 'La', 'Q', 'L', 'Sbi', 'NB'],
 				onr: '9176423484',
 				isbn: ['9176423484'],
 				issn: [],
@@ -30,31 +30,19 @@ describe('getBibIdsByInstanceId', () => {
 describe('getMyLibsFromHoldings', () => {
 	it('Returns favourite library present in the holdings list', () => {
 		const userSettings = new UserSettings({});
-		userSettings.addLibrary({ '@id': '434566', label: 'Kungliga biblioteket', sigel: 'S' });
-		userSettings.addLibrary({ '@id': '54345', label: 'Mitt bibliotek', sigel: 'Mitt' });
+		userSettings.addLibrary('https://libris.kb.se/library/S', 'Kungliga biblioteket');
+		userSettings.addLibrary('https://libris.kb.se/library/foo', 'Mitt bibliotek');
 		const instances = getHoldingsByInstanceId(workCenteredMainEntity);
 
 		expect(getMyLibsFromHoldings(userSettings.myLibraries, instances)).toStrictEqual([
-			{
-				'@id': '434566',
-				label: 'Kungliga biblioteket',
-				sigel: 'S'
-			}
+			'https://libris.kb.se/library/S'
 		]);
 
-		userSettings.addLibrary({ '@id': '645656', label: 'Frescatibilbioteket', sigel: 'H' });
+		userSettings.addLibrary('https://libris.kb.se/library/H', 'Frescatibilbioteket');
 
 		expect(getMyLibsFromHoldings(userSettings.myLibraries, instances)).toStrictEqual([
-			{
-				'@id': '434566',
-				label: 'Kungliga biblioteket',
-				sigel: 'S'
-			},
-			{
-				'@id': '645656',
-				label: 'Frescatibilbioteket',
-				sigel: 'H'
-			}
+			'https://libris.kb.se/library/S',
+			'https://libris.kb.se/library/H'
 		]);
 	});
 });

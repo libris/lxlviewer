@@ -29,6 +29,8 @@ export function getLibraryIdsFromMapping(
 
 		if (mapping._key && validKeys.has(mapping._key)) {
 			const id = mapping.display[JsonLd.ID];
+			// as long as we don't fetch & cache library organizations
+			// we need to store the labels for reuse too
 			if (id) {
 				result[id] = mapping.displayStr || '';
 			}
