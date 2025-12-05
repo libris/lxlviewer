@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
+	import IconChevron from '~icons/bi/chevron-right';
 
 	type Props = {
 		facets?: Facet[];
@@ -25,6 +26,17 @@
 		);
 	}
 </script>
+
+{#snippet chevron()}
+	<span
+		aria-hidden="true"
+		class={[
+			'chevron pointer-events-none flex h-8 w-8 shrink-0 origin-center items-center justify-center transition-transform'
+		]}
+	>
+		<IconChevron class="text-subtle size-3.5" />
+	</span>
+{/snippet}
 
 <nav class="filters" data-testid="filters">
 	{#if showHeader}
@@ -65,7 +77,8 @@
 			-->
 			{#each facets.filter((facet) => facet.dimension !== 'librissearch:hasInstanceCategory') as facet (facet.dimension)}
 				<details role="menuitem">
-					<summary class="flex min-h-9 items-center px-3 font-medium -outline-offset-2">
+					<summary class="flex min-h-9 items-center font-medium -outline-offset-2">
+						{@render chevron()}
 						{facet.label}
 					</summary>
 					<menu role="menu">
@@ -97,6 +110,10 @@
 	}
 
 	:global(summary + menu) {
-		padding-left: calc(var(--spacing) * 9);
+		padding-left: calc(var(--spacing) * 8);
+	}
+
+	details[open] > summary .chevron {
+		transform: rotate(90deg);
 	}
 </style>
