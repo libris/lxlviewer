@@ -90,7 +90,7 @@
 					}}
 				>
 					<summary
-						class="focusable flex min-h-9 cursor-pointer items-center text-[0.9375rem] font-medium"
+						class="focusable text-subtle flex min-h-9 cursor-pointer items-center text-[0.9375rem] font-medium"
 					>
 						{@render chevron()}
 						<span class="truncate">{facet.label}</span>
@@ -143,8 +143,15 @@
 		scrollbar-gutter: stable;
 	}
 
-	details[open] > summary .chevron {
-		transform: rotate(90deg);
+	details {
+		&[open] > summary,
+		& > summary:hover {
+			color: var(--color-body);
+		}
+
+		&[open] .chevron {
+			transform: rotate(90deg);
+		}
 	}
 
 	[role='menu'] {
