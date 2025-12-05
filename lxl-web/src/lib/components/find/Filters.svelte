@@ -83,7 +83,7 @@
 					</summary>
 					<menu role="menu" style="--level:1">
 						{#each facet.values as value (value.label + (value.discriminator || ''))}
-							<a role="menuitem" href={value.view['@id']}>
+							<a role="menuitem" href={value.view['@id']} data-sveltekit-keepfocus>
 								<span class="truncate">{value.label}</span>
 							</a>
 						{/each}
