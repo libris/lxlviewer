@@ -66,7 +66,7 @@
 		<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
 		<menu
 			role="menubar"
-			class="outline-accent-400 min-h-full -outline-offset-2 focus:outline-2"
+			class="outline-active min-h-full -outline-offset-2 focus:outline-2"
 			aria-label={page.data.t('search.filtersMenubar')}
 			onkeydown={(event) => console.log('event.key', event.key)}
 			tabindex={0}
@@ -77,13 +77,13 @@
 			-->
 			{#each facets.filter((facet) => facet.dimension !== 'librissearch:hasInstanceCategory') as facet (facet.dimension)}
 				<details role="menuitem">
-					<summary class="focusable flex min-h-9 items-center font-medium">
+					<summary>
 						{@render chevron()}
 						{facet.label}
 					</summary>
-					<menu role="menu">
+					<menu role="menu" style="--level:1">
 						{#each facet.values as value (value.label + (value.discriminator || ''))}
-							<div>{value.label}</div>
+							<a role="menuitem" href={value.view['@id']}>{value.label}</a>
 						{/each}
 					</menu>
 				</details>
@@ -111,22 +111,35 @@
 		scrollbar-gutter: stable;
 	}
 
-	:global(summary + menu) {
-		padding-left: calc(var(--spacing) * 8);
-	}
-
 	details[open] > summary .chevron {
 		transform: rotate(90deg);
 	}
 
-	.focusable {
+	[role='menubar'] > details[role='menuitem'] > summary {
+		display: flex;
+		align-items: center;
+		min-height: calc(var(--spacing) * 10);
+		font-size: 0.9375rem;
+	}
+
+	[role='menu'] [role='menuitem'] {
+		display: flex;
+		align-items: center;
+		min-height: calc(var(--spacing) * 8);
+		font-size: var(--text-sm);
+		padding-left: calc(var(--level, 0) * var(--spacing) * 8);
+	}
+
+	/** Focusable styling */
+	summary,
+	[role='menu'] [role='menuitem'] {
 		outline-offset: -2px;
 		&:hover {
 			background: var(--color-primary-100);
 		}
 		&:focus {
 			background: var(--color-accent-50);
-			outline: 2px solid var(--color-accent-400);
+			outline: 2px solid var(--color-active);
 		}
 	}
 </style>
