@@ -15,8 +15,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle"
 							]
 						},
@@ -54,8 +54,8 @@
 						"indirectlyIdentifiedBy",
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle",
 								"identifiedBy"
 							]
@@ -250,8 +250,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle"
 							]
 						},
@@ -324,7 +324,7 @@
 					"@id": "Publication-tokens",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Publication",
-					"showProperties": ["agent", "year"]
+					"showProperties": ["agent", "year", "startYear", "endYear"]
 				}
 			}
 		},
@@ -339,8 +339,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle"
 							]
 						},
@@ -369,8 +369,8 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle"
 							]
 						},
@@ -449,7 +449,12 @@
 					"@id": "Work-web-card-header-extra",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["translationOf"]
+					"showProperties": [
+						{
+							"alternateProperties": [{ "subPropertyOf": "hasTitle", "range": "KeyTitle" }]
+						},
+						"translationOf"
+					]
 				},
 				"Instance": {
 					"@id": "Instance-web-card-header-extra",
@@ -572,6 +577,19 @@
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"provisionActivity-format": {
+			"TODO": "Why doesn't propertyFormatDomain provisionActivity work?",
+			"@id": "provisionActivity-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": [
+				"publication",
+				"distribution",
+				"production",
+				"manufacture",
+				"marc:primaryProvisionActivity"
+			],
+			"fresnel:propertyStyle": ["provisionActivity"]
 		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
@@ -835,6 +853,17 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Role"],
 			"fresnel:resourceStyle": []
+		},
+		"KeyTitle-format": {
+			"@id": "Role-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["KeyTitle"],
+			"fresnel:resourceFormat": {
+				"fresnel:contentBefore": "[",
+				"fresnel:contentFirst": "[",
+				"fresnel:contentAfter": "]",
+				"fresnel:contentLast": "]"
+			}
 		},
 		"role-format": {
 			"@id": "role-format",

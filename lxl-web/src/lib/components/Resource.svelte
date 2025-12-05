@@ -296,6 +296,15 @@
 			display: block;
 		}
 
+		& :global(.provisionActivity > ._contentBefore),
+		:global(.provisionActivity > ._contentAfter) {
+			display: none;
+		}
+
+		& :global(.provisionActivity > *) {
+			display: block;
+		}
+
 		& :global(.see-also > *) {
 			display: block;
 			width: fit-content;
