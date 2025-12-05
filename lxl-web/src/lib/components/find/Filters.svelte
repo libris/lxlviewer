@@ -90,6 +90,7 @@
 								class="focusable flex min-h-9 items-center text-sm"
 								href={value.view['@id']}
 								data-sveltekit-keepfocus
+								data-sveltekit-preload-data="false"
 							>
 								<div class="flex items-baseline overflow-hidden">
 									<span class="truncate">{value.label}</span>
