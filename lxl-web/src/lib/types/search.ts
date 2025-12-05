@@ -1,4 +1,11 @@
-import { type DisplayDecorated, type FramedData, JsonLd, LensType, type Link } from '$lib/types/xl';
+import {
+	type DisplayDecorated,
+	type DisplayDecoratedLite,
+	type FramedData,
+	JsonLd,
+	LensType,
+	type Link
+} from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
 import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
@@ -15,6 +22,7 @@ export interface SearchResult {
 	next?: Link;
 	previous?: Link;
 	items: SearchResultItem[];
+	facets: Facet[];
 	facetGroups?: FacetGroup[];
 	predicates?: MultiSelectFacet[];
 	_spell: SpellingSuggestion[] | [];
@@ -69,15 +77,31 @@ export interface FacetGroup {
 	facets: (Facet | MultiSelectFacet)[];
 }
 
+type FacetId = string;
+
 export interface Facet {
-	totalItems: number;
-	view: Link;
-	object: DisplayDecorated;
-	str: string;
-	discriminator: string;
-	facetGroups?: FacetGroup[];
+	dimension: FacetId;
+	view?: Link;
+	label: string;
+	operator: string;
+	maxItems: number;
+	values?: (FacetValue | FacetRange)[];
+	search?: FacetSearch;
+	alias?: string;
+	selected?: boolean;
 }
 
+export interface FacetValue {
+	dimension: FacetId;
+	totalItems: number;
+	view: Link;
+	label: DisplayDecoratedLite;
+	discriminator?: string;
+}
+
+export interface FacetRange extends FacetValue {
+	search: FacetSearch;
+}
 export interface MultiSelectFacet extends Facet {
 	selected: boolean;
 	alias?: string;
@@ -137,12 +161,13 @@ export interface MappingsOnlyPartialCollectionView {
 	};
 }
 
-interface Slice {
+export interface Slice {
 	alias: string;
-	dimension: FacetGroupId;
+	dimension: FacetId;
 	observation: Observation[];
 	search?: FacetSearch;
 	maxItems: number;
+	_connective: string;
 }
 
 export interface Observation {
@@ -150,6 +175,7 @@ export interface Observation {
 	view: Link;
 	object: FramedData;
 	_selected?: boolean;
+	sliceByDimension: Record<FacetId, Slice>;
 }
 
 export enum SearchOperators {

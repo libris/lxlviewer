@@ -13,10 +13,12 @@ import {
 	type ApiItemDebugInfo,
 	type DatatypeProperty,
 	type DisplayMapping,
+	type Facet,
 	type FacetGroup,
 	type ItemDebugInfo,
 	type MappingsOnlyPartialCollectionView,
 	type MultiSelectFacet,
+	type Slice,
 	type Observation,
 	type PartialCollectionView,
 	type SearchMapping,
@@ -37,6 +39,7 @@ import { getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from 
 import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
+import { getFacet } from '$lib/utils/facet';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -74,6 +77,11 @@ export async function asResult(
 			myLibraries,
 			maxScores
 		),
+		...(view?.stats?.sliceByDimension && {
+			facets: Object.values(view.stats.sliceByDimension).map((slice) =>
+				getFacet({ slice, displayUtil, locale, translate, usePath })
+			)
+		}),
 		...('stats' in view && {
 			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 		}),
@@ -386,15 +394,16 @@ function mapSlices(
 	translate: TranslateFn,
 	usePath?: string,
 	parentDimension?: string
-): FacetGroup[] {
-	return Object.values(slices).map((g) => {
-		const dimension = parentDimension ? `${parentDimension}/${g.dimension}` : g.dimension;
+): Facet[] {
+	return Object.values(slices).map((slice) => {
+		const dimension = parentDimension ? `${parentDimension}/${slice.dimension}` : slice.dimension;
 		return {
-			label: translate(`facet.${g.alias || g.dimension}`),
-			dimension: dimension,
-			maxItems: g.maxItems,
-			...('search' in g && { search: g.search }),
-			facets: g.observation.map((o) => {
+			label: translate(`facet.${slice.alias || slice.dimension}`),
+			dimension,
+			operator: slice._connective,
+			maxItems: slice.maxItems,
+			...('search' in slice && { search: slice.search }),
+			facets: slice.observation.map((o) => {
 				const str = toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '';
 				return {
 					...('_selected' in o && { selected: o._selected }),
@@ -471,7 +480,7 @@ function displayBoolFilters(
 /**
  * prevent links on resource page from pointing to /find
  */
-function replacePath(view: Link, usePath: string | undefined) {
+export function replacePath(view: Link, usePath: string | undefined) {
 	if (usePath) {
 		return {
 			'@id': view['@id'].replace('/find', usePath)
