@@ -83,7 +83,7 @@ export interface Facet {
 	dimension: FacetId;
 	view?: Link;
 	label: string;
-	operator: string;
+	operator: 'AND' | 'OR';
 	maxItems: number;
 	values?: (FacetValue | FacetRange)[];
 	search?: FacetSearch;
@@ -97,6 +97,7 @@ export interface FacetValue {
 	view: Link;
 	label: DisplayDecoratedLite;
 	discriminator?: string;
+	selected?: boolean;
 }
 
 export interface FacetRange extends FacetValue {

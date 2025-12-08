@@ -3,6 +3,7 @@
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import IconChevron from '~icons/bi/chevron-right';
+	import IconRemove from '~icons/bi/x-lg';
 
 	type Props = {
 		facets?: Facet[];
@@ -46,7 +47,7 @@
 	{#snippet _toggle(limited: boolean)}
 		<li role="presentation" class={['limit', limited ? 'show-less' : 'show-more']}>
 			<label
-				class="focusable text-2xs text-subtle hover:text-body has-focus:text-body flex min-h-9 w-full cursor-pointer items-center font-medium after:content-['...']"
+				class="focusable text-2xs text-subtle hover:text-body has-focus:text-body flex min-h-8 w-full cursor-pointer items-center font-medium after:content-['...']"
 			>
 				<!-- svelte-ignore a11y_role_has_required_aria_props -->
 				<!-- aria-checked isnn't needed if input type="radio" is used, see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/menuitemradio_role#description -->
@@ -135,23 +136,31 @@
 					<menu role="menu" style="--level:1">
 						{#each facet.values as value (value.label + (value.discriminator || ''))}
 							<a
-								role="menuitem"
-								class="focusable flex min-h-9 items-center text-sm"
+								role={facet.operator === 'OR' ? 'menuitemcheckbox' : 'menuitem'}
+								class={['focusable flex min-h-8 w-full items-center gap-2 text-sm']}
 								href={value.view['@id']}
 								data-sveltekit-keepfocus
 								data-sveltekit-preload-data="false"
+								aria-checked={value.selected}
 							>
-								<div class="flex items-baseline overflow-hidden">
-									<span class="truncate">{value.label}</span>
-									<span class="text-placeholder text-3xs ml-2">
-										{value.totalItems.toLocaleString(page.data.locale)}
-										<span class="sr-only"
-											>{value.totalItems === 1
-												? page.data.t('search.hitsOne')
-												: page.data.t('search.hits')}</span
-										>
+								<div class={['flex items-baseline overflow-hidden']}>
+									<span class={['truncate', value.selected && 'text-link font-medium']}>
+										{value.label}
 									</span>
+									{#if !(facet.operator === 'AND' && value.selected)}
+										<span class="text-placeholder text-3xs ml-2">
+											{value.totalItems.toLocaleString(page.data.locale)}
+											<span class="sr-only"
+												>{value.totalItems === 1
+													? page.data.t('search.hitsOne')
+													: page.data.t('search.hits')}</span
+											>
+										</span>
+									{/if}
 								</div>
+								{#if facet.operator === 'AND' && typeof value.selected === 'boolean' && value.selected}
+									<span class="text-subtle"><IconRemove /></span>
+								{/if}
 							</a>
 						{/each}
 						{#if facet.maxItems > SHOW_MORE_LIMIT && facet.values && facet.values.length > SHOW_MORE_LIMIT && facet.label}
@@ -204,7 +213,7 @@
 			left: 0;
 			width: calc(var(--spacing, 1) * var(--level) * 4);
 			height: 100%;
-			background: var(--color-neutral-200);
+			background: none;
 			mask-image: url('$lib/assets/img/treeview-indent.svg');
 			mask-repeat: repeat-y;
 			mask-position: center right;
@@ -218,11 +227,15 @@
 	}
 
 	[role='menu'] {
-		&:has(.limit.show-less input[type='radio']:checked) [role='menuitem'] {
-			display: none;
+		&:has(.limit.show-less input[type='radio']:checked) {
+			& [role='menuitem'],
+			[role='menuitemcheckbox'],
+			[role='menuitemradio'] {
+				display: none;
 
-			&:nth-child(-n + 5) {
-				display: flex;
+				&:nth-child(-n + 5) {
+					display: flex;
+				}
 			}
 		}
 		&:has(.limit.show-more input[type='radio']:checked) [role='menuitem'] {
@@ -235,6 +248,7 @@
 	}
 
 	[role='menu'] [role='menuitem'],
+	[role='menu'] [role='menuitemcheckbox'],
 	[role='menu'] label:has([role='menuitemradio']) {
 		padding-left: calc(var(--level, 0) * var(--spacing) * 8);
 		padding-right: calc(var(--spacing) * 3);
@@ -252,5 +266,28 @@
 			outline-color: var(--color-active);
 			@apply outline-2;
 		}
+	}
+
+	[role='menuitemcheckbox'][aria-checked='true']::before {
+		content: '';
+		background-image: url('$lib/assets/img/checkbox-checked.svg');
+		background-size: cover;
+		background-repeat: no-repeat;
+		content: '';
+		width: 14px;
+		height: 14px;
+		flex-shrink: 0;
+	}
+
+	[role='menuitemcheckbox'][aria-checked='false']::before {
+		mask-image: url('$lib/assets/img/checkbox-unchecked.svg');
+		background: var(--color-neutral-500);
+		mask-size: cover;
+		background-size: cover;
+		background-repeat: no-repeat;
+		content: '';
+		width: 14px;
+		height: 14px;
+		flex-shrink: 0;
 	}
 </style>

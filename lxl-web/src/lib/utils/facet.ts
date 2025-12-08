@@ -81,7 +81,8 @@ function getFacetValue({
 		label: toLite(displayUtil.lensAndFormat(observation.object, LensType.Chip, locale)),
 		discriminator: getUriSlug(getAtPath(observation.object, ['inScheme', JsonLd.ID], '')),
 		view: replacePath(observation.view, usePath),
-		totalItems: observation.totalItems
+		totalItems: observation.totalItems,
+		selected: observation._selected
 		/* children: observation.sliceByDimension
 			? Object.values(observation.sliceByDimension).map((slice) =>
 					getFacet({
