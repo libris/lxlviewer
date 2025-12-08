@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { page, navigating } from '$app/state';
 	import type { Facet, DisplayMapping } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import IconChevron from '~icons/bi/chevron-right';
@@ -59,8 +59,12 @@
 					checked={limited}
 					value={limited ? 'show-less' : 'show-more'}
 					onkeydown={(event: KeyboardEvent & { currentTarget: HTMLInputElement }) => {
-						if (event.key === 'Enter') {
-							event.currentTarget.checked = true;
+						if (navigating.to) {
+							event.preventDefault();
+						} else {
+							if (event.key === 'Enter') {
+								event.currentTarget.checked = true;
+							}
 						}
 					}}
 				/>
@@ -94,7 +98,10 @@
 	<!-- Negative tabindex is needed to prevent keyboard focusable scrollers (see https://developer.chrome.com/blog/keyboard-focusable-scrollers) -->
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<div
-		class="filters-list relative overflow-x-hidden overflow-y-auto overscroll-contain"
+		class={[
+			'filters-list relative overflow-x-hidden overflow-y-auto overscroll-contain',
+			navigating.to && 'opacity-50'
+		]}
 		tabindex={-1}
 	>
 		<!--
@@ -152,12 +159,16 @@
 							<a
 								role={facet.operator === 'OR' ? 'menuitemcheckbox' : 'menuitem'}
 								class={[
-									'focusable text-subtle hover:text-body focus-visible:text-body flex min-h-8 w-full items-center gap-2 text-sm'
+									'focusable text-subtle hover:text-body focus-visible:text-body flex min-h-8 w-full items-center gap-2 text-sm',
+									navigating.to && 'cursor-default'
 								]}
 								href={value.view['@id']}
 								data-sveltekit-keepfocus
 								data-sveltekit-preload-data="false"
 								aria-checked={value.selected}
+								onclick={(event: MouseEvent) => {
+									if (navigating.to) event?.preventDefault();
+								}}
 							>
 								<div class={['flex items-baseline overflow-hidden']}>
 									<span class={['truncate', value.selected && 'text-link font-medium']}>
