@@ -47,7 +47,7 @@
 	{#snippet _toggle(limited: boolean)}
 		<li role="presentation" class={['limit', limited ? 'show-less' : 'show-more']}>
 			<label
-				class="focusable flex min-h-8 w-full cursor-pointer items-center text-xs font-medium after:content-['…']"
+				class="focusable text-subtle hover:text-body focus:text-body flex min-h-8 w-full cursor-pointer items-center text-xs font-medium after:content-['…']"
 			>
 				<!-- svelte-ignore a11y_role_has_required_aria_props -->
 				<!-- aria-checked isnn't needed if input type="radio" is used, see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/menuitemradio_role#description -->
@@ -151,7 +151,9 @@
 						{#each facet.values as value (value.label + (value.discriminator || ''))}
 							<a
 								role={facet.operator === 'OR' ? 'menuitemcheckbox' : 'menuitem'}
-								class={['focusable flex min-h-8 w-full items-center gap-2 text-sm']}
+								class={[
+									'focusable text-subtle hover:text-body focus-visible:text-body flex min-h-8 w-full items-center gap-2 text-sm'
+								]}
 								href={value.view['@id']}
 								data-sveltekit-keepfocus
 								data-sveltekit-preload-data="false"
