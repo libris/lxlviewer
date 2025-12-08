@@ -101,13 +101,15 @@
 			and https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/menu
 		-->
 		<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-		<menu
+		<!-- 
+			<menu
 			role="menubar"
 			class="outline-active min-h-full -outline-offset-2 focus:outline-2"
 			aria-label={page.data.t('search.filtersMenubar')}
 			onkeydown={(event) => console.log('event.key', event.key)}
 			tabindex={0}
-		>
+		-->
+		<menu role="menubar">
 			<!-- 
 				Temporarily filter out librissearch:hasInstanceCategory as it causes duplicate keys (Reproduktion i originalstorlek)
 				and we don't want to rely on value.view.id as it changes after navigating
@@ -211,7 +213,7 @@
 
 		&:hover::after,
 		&:has(:focus-within)::after {
-			background: var(--color-neutral-400);
+			background: var(--color-neutral-300);
 		}
 	}
 
