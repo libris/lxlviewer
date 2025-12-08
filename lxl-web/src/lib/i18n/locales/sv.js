@@ -132,6 +132,7 @@ export default {
 		filters: 'Filter',
 		activeFilter: 'Aktivt filter',
 		selectedFilters: 'Valda filter',
+		selectedFiltersOne: 'Valt filter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
 		removeFilter: 'Ta bort filter',

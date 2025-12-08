@@ -116,6 +116,7 @@
 				and we don't want to rely on value.view.id as it changes after navigating
 			-->
 			{#each facets.filter((facet) => facet.dimension !== 'librissearch:hasInstanceCategory') as facet (facet.dimension)}
+				{@const selectedValues = facet.values?.filter((value) => value.selected)}
 				<details
 					role="menuitem"
 					open={expandedItems.includes(facet.dimension)}
@@ -131,7 +132,20 @@
 						class="focusable text-subtle bg-aside sticky top-0 z-10 flex min-h-9 cursor-pointer items-center text-[0.9375rem] font-medium"
 					>
 						{@render chevron()}
-						<span class="truncate">{facet.label}</span>
+						<span class={['truncate']}>{facet.label}</span>
+						{#if selectedValues?.length}
+							{@const message = `${selectedValues.length} ${
+								selectedValues.length === 1
+									? page.data.t('search.selectedFiltersOne').toLowerCase()
+									: page.data.t('search.selectedFilters').toLowerCase()
+							}`}
+							<span
+								class="bg-link mx-2 size-1.5 shrink-0 rounded-full"
+								title={message}
+								aria-label={message}
+							>
+							</span>
+						{/if}
 					</summary>
 					<menu role="menu" style="--level:1">
 						{#each facet.values as value (value.label + (value.discriminator || ''))}
