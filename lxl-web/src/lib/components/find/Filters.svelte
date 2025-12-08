@@ -47,7 +47,7 @@
 	{#snippet _toggle(limited: boolean)}
 		<li role="presentation" class={['limit', limited ? 'show-less' : 'show-more']}>
 			<label
-				class="focusable flex min-h-8 w-full cursor-pointer items-center text-sm font-medium after:content-['…']"
+				class="focusable flex min-h-8 w-full cursor-pointer items-center text-xs font-medium after:content-['…']"
 			>
 				<!-- svelte-ignore a11y_role_has_required_aria_props -->
 				<!-- aria-checked isnn't needed if input type="radio" is used, see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/menuitemradio_role#description -->
