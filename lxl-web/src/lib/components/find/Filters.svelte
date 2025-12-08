@@ -12,13 +12,15 @@
 
 	const { facets = [], mapping, showHeader = true }: Props = $props();
 
+	const SHOW_MORE_LIMIT = 5;
+
 	const filtersLength = $derived(
 		mapping?.[0].children?.filter((m) => m['@id']?.includes('textQuery')).length ||
 			(mapping?.[0]['@id'] && !mapping[0]['@id'].includes('textQuery') && 1) ||
 			0
 	);
 
-	let expandedItems = $derived(['librissearch:findCategory']); // use snapshots or page.state to remember state when navigating away from a find route...
+	let expandedItems = $derived(['librissearch:findCategory', 'language']); // use snapshots or page.state to remember state when navigating away from a find route...
 
 	function getClearAllHref() {
 		// TODO: Fix clear all links on AND filters
@@ -38,6 +40,33 @@
 	>
 		<IconChevron class="text-subtle size-3.5" />
 	</span>
+{/snippet}
+
+{#snippet limitToggles(name: string)}
+	{#snippet _toggle(limited: boolean)}
+		<li role="presentation" class={['limit', limited ? 'show-less' : 'show-more']}>
+			<label
+				class="focusable text-2xs text-subtle hover:text-body has-focus:text-body flex min-h-9 w-full cursor-pointer items-center font-medium after:content-['...']"
+			>
+				<!-- svelte-ignore a11y_role_has_required_aria_props -->
+				<!-- aria-checked isnn't needed if input type="radio" is used, see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/menuitemradio_role#description -->
+				<input
+					type="radio"
+					{name}
+					role="menuitemradio"
+					class="cursor-pointer appearance-none focus:outline-0"
+					checked={limited}
+				/>
+				{#if limited}
+					{page.data.t('search.showFewer')}
+				{:else}
+					{page.data.t('search.showMore')}
+				{/if}
+			</label>
+		</li>
+	{/snippet}
+	{@render _toggle(false)}
+	{@render _toggle(true)}
 {/snippet}
 
 <nav class="filters" data-testid="filters">
@@ -96,7 +125,7 @@
 						<span class="truncate">{facet.label}</span>
 					</summary>
 					<menu role="menu" style="--level:1">
-						{#each facet.values?.slice(0, 5) as value (value.label + (value.discriminator || ''))}
+						{#each facet.values as value (value.label + (value.discriminator || ''))}
 							<a
 								role="menuitem"
 								class="focusable flex min-h-9 items-center text-sm"
@@ -117,6 +146,9 @@
 								</div>
 							</a>
 						{/each}
+						{#if facet.maxItems > SHOW_MORE_LIMIT && facet.values && facet.values.length > SHOW_MORE_LIMIT && facet.label}
+							{@render limitToggles(facet.label.toString())}
+						{/if}
 					</menu>
 				</details>
 			{/each}
@@ -172,7 +204,25 @@
 		}
 	}
 
-	[role='menu'] [role='menuitem'] {
+	[role='menu'] {
+		&:has(.limit.show-less input[type='radio']:checked) [role='menuitem'] {
+			display: none;
+
+			&:nth-child(-n + 5) {
+				display: flex;
+			}
+		}
+		&:has(.limit.show-more input[type='radio']:checked) [role='menuitem'] {
+			display: flex;
+		}
+
+		.limit:has(:checked) {
+			display: none;
+		}
+	}
+
+	[role='menu'] [role='menuitem'],
+	[role='menu'] label:has([role='menuitemradio']) {
 		padding-left: calc(var(--level, 0) * var(--spacing) * 8);
 		padding-right: calc(var(--spacing) * 3);
 	}
@@ -183,7 +233,8 @@
 		&:hover {
 			background: var(--color-primary-100);
 		}
-		&:focus-visible {
+		&:focus-visible,
+		&:has(:focus) {
 			background: var(--color-accent-50);
 			outline-color: var(--color-active);
 			@apply outline-2;
