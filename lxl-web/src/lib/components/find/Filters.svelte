@@ -56,6 +56,12 @@
 					role="menuitemradio"
 					class="cursor-pointer appearance-none focus:outline-0"
 					checked={limited}
+					value={limited ? 'show-less' : 'show-more'}
+					onkeydown={(event: KeyboardEvent & { currentTarget: HTMLInputElement }) => {
+						if (event.key === 'Enter') {
+							event.currentTarget.checked = true;
+						}
+					}}
 				/>
 				{#if limited}
 					{page.data.t('search.showFewer')}
