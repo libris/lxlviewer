@@ -119,7 +119,7 @@
 				{@const selectedValues = facet.values?.filter((value) => value.selected)}
 				<details
 					role="menuitem"
-					open={expandedItems.includes(facet.dimension)}
+					open={expandedItems.includes(facet.dimension) || !!selectedValues?.length}
 					ontoggle={(event: Event & { currentTarget: HTMLDetailsElement }) => {
 						if (event.currentTarget.open) {
 							expandedItems = [...expandedItems, facet.dimension];
@@ -140,7 +140,7 @@
 									: page.data.t('search.selectedFilters').toLowerCase()
 							}`}
 							<span
-								class="bg-link mx-2 size-1.5 shrink-0 rounded-full"
+								class="bg-link mx-1.5 size-1.75 shrink-0 rounded-full"
 								title={message}
 								aria-label={message}
 							>
