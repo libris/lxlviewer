@@ -125,7 +125,7 @@
 					}}
 				>
 					<summary
-						class="focusable text-subtle flex min-h-9 cursor-pointer items-center text-[0.9375rem] font-medium"
+						class="focusable text-subtle bg-aside sticky top-0 z-10 flex min-h-9 cursor-pointer items-center text-[0.9375rem] font-medium"
 					>
 						{@render chevron()}
 						<span class="truncate">{facet.label}</span>
@@ -202,11 +202,16 @@
 			left: 0;
 			width: calc(var(--spacing, 1) * var(--level) * 4);
 			height: 100%;
-			background: var(--color-neutral-300);
+			background: var(--color-neutral-200);
 			mask-image: url('$lib/assets/img/treeview-indent.svg');
 			mask-repeat: repeat-y;
 			mask-position: center right;
 			pointer-events: none;
+		}
+
+		&:hover::after,
+		&:has(:focus-within)::after {
+			background: var(--color-neutral-400);
 		}
 	}
 
