@@ -22,6 +22,7 @@ function addToChangeList(source, target, sourcePath, targetPath, changeList, con
     each(sourceObject, (sourceValue, key) => {
       let targetValue = targetObject[key];
       let sourceConvertedToArray = false;
+      let targetConvertedToArray = false;
 
       if (key === '@id') {
         return;
@@ -36,6 +37,9 @@ function addToChangeList(source, target, sourcePath, targetPath, changeList, con
         }
         if (!Array.isArray(sourceValue)) {
           sourceConvertedToArray = true;
+        }
+        if (!Array.isArray(targetValue)) {
+          targetConvertedToArray = true;
         }
         sourceValue = asArray(sourceValue);
         targetValue = asArray(targetValue);
@@ -86,8 +90,9 @@ function addToChangeList(source, target, sourcePath, targetPath, changeList, con
           } else { //There is an element in the list with the same type
             const indexInTarget = targetArray.indexOf(firstElementWithMatchingType);
             const indexInSource = sourceValue.indexOf(obj);
-            let path = sourceConvertedToArray ? [...sourcePath, key] : [...sourcePath, key, indexInSource];
-            addToChangeList(source, target, path,  [...targetPath, key, indexInTarget], changeList, context, skipIfExistsInTarget);
+            let sp = sourceConvertedToArray ? [...sourcePath, key] : [...sourcePath, key, indexInSource];
+            let tp = targetConvertedToArray ? [...targetPath, key] : [...targetPath, key, indexInTarget];
+            addToChangeList(source, target, sp,  tp, changeList, context, skipIfExistsInTarget);
           }
         })
       } // Recurse if object is present both in source and target
