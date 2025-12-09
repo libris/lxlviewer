@@ -1,14 +1,23 @@
-import { defaultLocale, Locales } from '$lib/i18n/locales';
-import { env } from '$env/dynamic/private';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
+import type { RequestEvent, ServerInit } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
+import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
-import displayWeb from '$lib/assets/json/display-web.json';
-import { DebugFlags, type UserSettings } from '$lib/types/userSettings';
-import type { RequestEvent } from '@sveltejs/kit';
 import type { Site } from '$lib/types/site';
+import { DebugFlags, type MyLibrariesType, type UserSettings } from '$lib/types/userSettings';
+import displayWeb from '$lib/assets/json/display-web.json';
+import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
+import { startRefreshLibraries } from '$lib/utils/getLibraries.server';
 
-let utilCache;
+type Util = [VocabUtil, DisplayUtil];
+let utilCache: Util | undefined;
+
+export const init: ServerInit = async () => {
+	/* eslint-disable @typescript-eslint/no-unused-vars */
+	const [_, displayUtil] = await loadUtilCached();
+	// get libraries at startup
+	await startRefreshLibraries(displayUtil, defaultLocale);
+};
 
 export const handle = async ({ event, resolve }) => {
 	const [vocabUtil, displayUtil] = await loadUtilCached();
@@ -31,6 +40,8 @@ export const handle = async ({ event, resolve }) => {
 			console.warn('Failed to parse user settings', e);
 		}
 	}
+	let cookieEdit = false;
+
 	if (event.url.searchParams.has('_debug')) {
 		let flags = event.url.searchParams
 			.getAll('_debug')
@@ -41,11 +52,23 @@ export const handle = async ({ event, resolve }) => {
 		}
 
 		userSettings.debug = flags;
+		cookieEdit = true;
+	}
+
+	const myLibraries = userSettings.myLibraries;
+	if (myLibraries && !isValidMyLibraries(myLibraries)) {
+		// wipe myLibraries if wrong format
+		userSettings.myLibraries = {};
+		cookieEdit = true;
+	}
+
+	if (cookieEdit) {
 		event.cookies.set('userSettings', JSON.stringify(userSettings), {
-			maxAge: 365,
+			maxAge: 60 * 60 * 24 * 365, // 365 days
 			secure: true,
 			sameSite: 'strict',
-			path: '/' // ???
+			httpOnly: false, // allow the client to write to this cookie
+			path: '/'
 		});
 	}
 	event.locals.userSettings = userSettings;
@@ -69,6 +92,19 @@ export const handle = async ({ event, resolve }) => {
 	});
 };
 
+function isValidMyLibraries(value: unknown): value is MyLibrariesType {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) {
+		return false;
+	}
+
+	for (const [key, val] of Object.entries(value)) {
+		if (typeof key !== 'string') return false;
+		if (typeof val !== 'string') return false;
+	}
+
+	return true;
+}
+
 async function loadUtilCached() {
 	if (!utilCache) {
 		utilCache = await loadUtil();
@@ -78,7 +114,7 @@ async function loadUtilCached() {
 
 // TODO move
 // TODO error handling
-async function loadUtil() {
+async function loadUtil(): Promise<Util> {
 	const [contextRes, vocabRes, displayRes] = await Promise.all([
 		fetch(`${env.ID_URL}/context.jsonld`),
 		fetch(`${env.ID_URL}/vocab/data.jsonld`),

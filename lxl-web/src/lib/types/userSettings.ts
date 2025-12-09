@@ -1,12 +1,7 @@
 import type { AvailableCitationFormat } from '$lib/types/citation';
-import { JsonLd } from './xl';
+import type { LibraryId } from './holdings';
 
-export interface LibraryItem {
-	[JsonLd.ID]: string;
-	label: string;
-	sigel?: string;
-	code?: string;
-}
+export type MyLibrariesType = Record<LibraryId, string>;
 
 export enum ExpandedState {
 	OPEN = 'OPEN',
@@ -20,9 +15,7 @@ export type UserSettings = {
 	facetExpanded?: {
 		[dimension: string]: ExpandedState;
 	};
-	myLibraries?: {
-		[id: string]: LibraryItem;
-	};
+	myLibraries?: MyLibrariesType;
 	leadingPane?: {
 		width?: number;
 		open?: boolean;

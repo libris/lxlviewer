@@ -1,78 +1,39 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import { page } from '$app/state';
-	import type { FramedData } from '$lib/types/xl';
 	import type {
-		BibIdByInstanceId,
-		DecoratedHolder,
+		BibIdData,
 		HolderLinks,
-		HoldingLinks
+		HoldingLinks,
+		LibraryWithLinks,
+		UnknownLibrary
 	} from '$lib/types/holdings';
+	import { JsonLd } from '$lib/types/xl';
+	import BiChevronRight from '~icons/bi/chevron-right';
 	import { createHoldingLinks } from '$lib/utils/holdings';
 	import LoanStatus from './LoanStatus.svelte';
-	import BiChevronRight from '~icons/bi/chevron-right';
 
 	type Props = {
-		holder: DecoratedHolder;
-		instances: BibIdByInstanceId;
+		holder: LibraryWithLinks | UnknownLibrary;
+		instances: BibIdData;
 		hidden?: boolean;
 	};
+
+	function isLibraryWithLinks(
+		holder: LibraryWithLinks | UnknownLibrary
+	): holder is LibraryWithLinks {
+		return '_links' in holder && 'sigel' in holder;
+	}
+
 	const { holder, instances, hidden = false }: Props = $props();
 
-	let holderLinks: HolderLinks | undefined = $state();
-	let holdingLinks: Record<string, HoldingLinks> | undefined = $state();
+	const holderLinks: HolderLinks | undefined = $state(
+		isLibraryWithLinks(holder) ? holder._links : undefined
+	);
 
-	// load data when in viewport
-	let root: Element;
-	let observer: IntersectionObserver;
-
-	let loading = $state(false);
-	let error = $state(false);
-
-	onMount(() => {
-		if (browser) {
-			observer = new IntersectionObserver((entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						loadHolder();
-						observer?.disconnect();
-					}
-				});
-			});
-			observer.observe(root);
-		}
-	});
-
-	onDestroy(() => {
-		observer?.disconnect();
-	});
-
-	async function loadHolder() {
-		loading = true;
-		const holderId: string = holder.obj?.['@id'] || '';
-		try {
-			const res = await fetch(`/api/${page.data.locale}/holder?id=${holderId}`);
-			if (res.ok) {
-				type HolderResponse = { links: HolderLinks; libraryMainEntity: FramedData };
-				const { links, libraryMainEntity }: HolderResponse = await res.json();
-				holderLinks = links;
-
-				// create holder-specific links for its held instances
-				let tempHoldingLinks: Record<string, HoldingLinks> = {};
-				for (const [key, bibIdObj] of Object.entries(instances)) {
-					tempHoldingLinks[key] = createHoldingLinks(bibIdObj, libraryMainEntity, page.data.locale);
-				}
-				holdingLinks = tempHoldingLinks;
-				loading = false;
-			} else {
-				error = true;
-				loading = false;
-			}
-		} catch (e) {
-			console.error(e);
-			loading = false;
-			error = true;
+	let holdingLinks: Record<string, HoldingLinks> = $state({});
+	if (isLibraryWithLinks(holder)) {
+		for (const [key, bibIdObj] of Object.entries(instances)) {
+			holdingLinks[key] = createHoldingLinks(bibIdObj, holder, page.data.locale);
 		}
 	}
 
@@ -108,20 +69,13 @@
 	const instancesCanCollapse = $derived(currentInstanceLimit > INSTANCE_LIMIT);
 </script>
 
-<li
-	class={['border-neutral flex flex-col gap-2 pb-3 not-last:border-b', hidden && 'hidden']}
-	bind:this={root}
->
-	<h3 class="text-sm font-medium">{holder.str}</h3>
-	{#if loading}
-		<p class="animate-pulse">{page.data.t('search.loading')}</p>
-	{/if}
-	{#if error}
+<li class={['border-neutral flex flex-col gap-2 pb-3 not-last:border-b', hidden && 'hidden']}>
+	<h3 class="text-sm font-medium">{holder.displayStr || holder.name || holder[JsonLd.ID]}</h3>
+	{#if !isLibraryWithLinks(holder)}
 		<div class="text-error bg-severe-50 rounded-sm p-2">
-			<p>{page.data.t('errors.somethingWentWrong')}</p>
+			<p>{page.data.t('errors.notAvailable')}</p>
 		</div>
-	{/if}
-	{#if holderLinks}
+	{:else if holderLinks}
 		<ul class="flex flex-col gap-2 [&>li]:flex [&>li]:flex-col [&>li]:items-start">
 			{#if hasSomeItemLink}
 				<!-- instance-specific links -->

@@ -4,17 +4,19 @@
 	import { afterNavigate, goto } from '$app/navigation';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import getMetaDescription from '$lib/utils/getMetaDescription';
+	import { JsonLd } from '$lib/types/xl.js';
 	import { type CitationsType } from '$lib/types/citation.js';
-	import type { HoldingsData } from '$lib/types/holdings.js';
+	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
+	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http.js';
 	import Resource from '$lib/components/Resource.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import Meta from '$lib/components/Meta.svelte';
 	import Citations from '$lib/components/Citations.svelte';
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
-	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping.js';
 	import { bestSize } from '$lib/utils/auxd';
 	import { first } from '$lib/utils/xl';
 	import { Width } from '$lib/types/auxd';
+	import SearchCard from '$lib/components/find/SearchCard.svelte';
 
 	const { data } = $props();
 
@@ -26,16 +28,20 @@
 	// TODO: Possibly figure out some mapping and set og:type,
 	// see https://ogp.me/#types. Unclear how meaningful this would be.
 
-	const holdings: HoldingsData = $derived({
-		...data.holdings,
-		instances: data.instances,
-		overview: data.overview,
-		title: data.title
-	});
 
 	let previousURL: URL;
 	const refinedLibraries = $derived(
-		getSigelsFromMapping([data.searchResult?.mapping, data.subsetMapping])
+		getLibraryIdsFromMapping([data.searchResult?.mapping, data.subsetMapping])
+	);
+
+	const holdingsParam = $derived(page.state.holdings || page.url.searchParams.get('holdings'));
+	const modalCard = $derived(
+		(holdingsParam &&
+			data.instances.filter(
+				(instance: { [JsonLd.ID]: string }) =>
+					`${stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])))}` === holdingsParam
+			)[0]) ||
+			data.workCard
 	);
 
 	afterNavigate(({ to }) => {
@@ -85,17 +91,21 @@
 		relations={data.relations}
 		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}
 		instances={data.instances}
+		holdings={data.holdings}
 		searchResult={data.searchResult}
-		holdersByType={data.holdings.holdersByType}
 		tableOfContents={data.tableOfContents}
 		adjecentSearchResults={page.state.adjecentSearchResults}
 	/>
-	{#if page.state.holdings || page.url.searchParams.get('holdings')}
+	{#if holdingsParam}
 		<Modal close={() => handleCloseModal('holdings')}>
 			{#snippet title()}
 				<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
 			{/snippet}
-			<HoldingsContent {holdings} {refinedLibraries} />
+			<HoldingsContent holdings={data.holdings} {refinedLibraries} libOrgs={data.refinedOrgs}>
+				{#snippet card()}
+					<SearchCard item={modalCard} />
+				{/snippet}
+			</HoldingsContent>
 		</Modal>
 	{:else if page.state.citations || page.url.searchParams.get('cite')}
 		<Modal close={() => handleCloseModal('cite')}>

@@ -27,13 +27,16 @@ import {
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
+import type { MyLibrariesType } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-import { getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
+import { isLibraryOrg } from '$lib/utils/holdings';
+import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
+import { getHoldersCount, getHoldingsByInstanceId } from '$lib/utils/holdings.server';
+import { getMyLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
@@ -45,7 +48,7 @@ export async function asResult(
 	locale: LangCode,
 	auxdSecret: string,
 	usePath?: string,
-	myLibraries?: Record<string, LibraryItem>
+	myLibraries?: MyLibrariesType
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
 
@@ -95,14 +98,14 @@ export function asSearchResultItem(
 	vocabUtil: VocabUtil,
 	locale: LangCode,
 	auxdSecret: string,
-	myLibraries?: Record<string, LibraryItem>,
+	myLibraries?: MyLibrariesType,
 	maxScores?: Record<string, number>
 ): SearchResultItem[] {
 	return items
 		?.map((i) => cleanUpItem(i))
 		.map((i) => ({
 			...(myLibraries && {
-				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
+				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries)
 			}),
 			...('_debug' in i && {
 				_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
@@ -319,14 +322,10 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getHeldByMyLibraries(
-	item: FramedData,
-	myLibraries: Record<string, LibraryItem>,
-	display: DisplayUtil,
-	locale: LangCode
-) {
-	const res = getHoldingsByInstanceId(item, display, locale);
-	return getMyLibsFromHoldings(myLibraries, res);
+function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
+	const holdingsByInstanceId = getHoldingsByInstanceId(item);
+	const orgs = getRefinedOrgs(myLibraries);
+	return getMyLibsFromHoldings(myLibraries, holdingsByInstanceId, orgs);
 }
 
 function isFreeTextQuery(property: unknown): boolean {
@@ -346,7 +345,7 @@ function displayFacetGroups(
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 	// manually add myLibraries to boolfilters
-	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, locale, translate) || [];
+	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, translate) || [];
 
 	const result = [];
 
@@ -481,11 +480,7 @@ function replacePath(view: Link, usePath: string | undefined) {
 }
 
 // TODO: we should get this from the backend...
-function addMyLibrariesBoolFilter(
-	boolFilters: Observation[] | undefined,
-	locale: LangCode,
-	translate: TranslateFn
-) {
+function addMyLibrariesBoolFilter(boolFilters: Observation[] | undefined, translate: TranslateFn) {
 	if (boolFilters) {
 		let existingBoolFilter: Observation | undefined;
 		const rest: Observation[] = [];
@@ -525,18 +520,21 @@ function addMyLibrariesBoolFilter(
  */
 export function appendMyLibrariesParam(
 	searchParams: URLSearchParams,
-	userSettings: UserSettings
+	myLibraries: MyLibrariesType | undefined
 ): URLSearchParams {
 	if (['_q', '_r'].some((key) => searchParams.get(key)?.includes(MY_LIBRARIES_FILTER_ALIAS))) {
 		let sigelStr;
-		if (userSettings?.myLibraries) {
-			sigelStr = Object.values(userSettings?.myLibraries)
-				.map((lib) =>
-					lib.sigel ? `itemHeldBy:"sigel:${lib.sigel}"` : `itemHeldByOrg:"sigel:org/${lib.code}"`
-				)
+		if (myLibraries) {
+			sigelStr = Object.keys(myLibraries)
+				.map((id) => {
+					const slug = getUriSlug(id);
+					return isLibraryOrg(id)
+						? `itemHeldByOrg:"sigel:org/${slug}"`
+						: `itemHeldBy:"sigel:${slug}"`;
+				})
 				.join(' OR ');
 		}
-		searchParams.append(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
+		searchParams.set(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
 	}
 	return searchParams;
 }

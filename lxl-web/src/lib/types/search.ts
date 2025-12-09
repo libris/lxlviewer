@@ -1,7 +1,7 @@
 import { type DisplayDecorated, type FramedData, JsonLd, LensType, type Link } from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
-import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
+import type { LibraryId, OrgId } from '$lib/types/holdings';
 
 export interface SearchResult {
 	[JsonLd.ID]: string;
@@ -26,10 +26,15 @@ export interface ResourceSearchResult {
 	mapping: DisplayMapping[];
 }
 
+interface LibraryResultItem extends SearchResultItem {
+	thingId: LibraryId;
+	str: string;
+}
+
 export interface LibraryResult {
 	totalItems: number;
 	maxItems: number;
-	items: LibraryItem[];
+	items: LibraryResultItem[];
 }
 
 export interface SearchResultItem {
@@ -44,7 +49,7 @@ export interface SearchResultItem {
 	typeForIcon: string; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
-	heldByMyLibraries?: LibraryItem[];
+	heldByMyLibraries?: (LibraryId | OrgId)[] | null;
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }
@@ -236,7 +241,7 @@ export interface SuperSearchResult extends SearchResult {
 }
 
 export interface SuperSearchResultItem extends SearchResultItem {
-	qualifiers: QualifierSuggestion[];
+	qualifiers?: QualifierSuggestion[];
 }
 
 export interface QualifierSuggestion {
