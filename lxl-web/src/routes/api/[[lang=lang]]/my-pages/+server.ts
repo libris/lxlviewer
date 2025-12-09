@@ -16,7 +16,8 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	if (_q.length !== 0) {
 		const queryWithWildCard = _q + (_q.match(/[^*]$/) ? '*' : '');
-		const query = `${queryWithWildCard} ("rdf:type":Library OR "rdf:type":"bibdb:Organization")`;
+		// only display orgs with > 1 members
+		const query = `${queryWithWildCard} (( "rdf:type":("bibdb:Organization") AND reverseLinks.totalItemsByRelation.isPartOf>1) OR "rdf:type":Library )`;
 		url.searchParams.set('_q', query);
 	}
 
