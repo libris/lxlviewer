@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import type { ResourceData } from '$lib/types/resourceData';
+	import SearchCard from '$lib/components/find/SearchCard.svelte';
+	import type { SearchResultItem } from '$lib/types/search';
 
 	interface PopoverProps {
 		title?: string | undefined;
-		resourceData?: ResourceData | undefined;
+		resourceData?: SearchResultItem | undefined;
 		referenceElement: HTMLElement;
 		onMouseOver: (event: MouseEvent) => void;
 		onMouseLeave: (event: MouseEvent) => void;
@@ -80,7 +80,7 @@
 -->
 <div
 	class={[
-		'popover bg-page text-2xs border-neutral absolute top-0 left-0 z-50 w-max max-w-sm rounded-md border shadow-xl',
+		'popover bg-page text-2xs border-neutral absolute top-0 left-0 z-50 max-w-sm rounded-md border shadow-xl',
 		referenceElement.getAttribute('href') && 'link-popover'
 	]}
 	role="complementary"
@@ -92,12 +92,7 @@
 >
 	<div class="p-2">
 		{#if resourceData}
-			<DecoratedData
-				data={resourceData}
-				block
-				allowPopovers={false}
-				limit={{ hasVariant: 5, narrower: 5, related: 5 }}
-			/>
+			<SearchCard item={resourceData} allowPopovers={false} allowActions={false} />
 		{:else if title}
 			{title}
 		{/if}

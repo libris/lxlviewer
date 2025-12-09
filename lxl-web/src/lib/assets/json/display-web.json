@@ -133,10 +133,10 @@
 					"classLensDomain": "Person",
 					"fresnel:extends": { "@id": "Person-chips" },
 					"showProperties": [
+						"description",
 						"fresnel:super",
 						"hasOccupation",
 						"fieldOfActivity",
-						"description",
 						"seeAlso",
 						"disambiguatingDescription",
 						"nationality",
@@ -383,13 +383,13 @@
 					"@id": "Agent-web-card",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Agent",
-					"showProperties": []
+					"showProperties": ["description"]
 				},
 				"Concept": {
 					"@id": "Concept-web-card",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Concept",
-					"showProperties": []
+					"showProperties": ["narrower", "broader", "related"]
 				},
 				"Language": {
 					"@id": "Language-web-card",
@@ -425,13 +425,19 @@
 					"@id": "Agent-web-card-header-top",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Agent",
-					"showProperties": []
+					"showProperties": ["nationality"]
+				},
+				"Person": {
+					"@id": "Person-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Person",
+					"showProperties": ["hasOccupation", "nationality"]
 				},
 				"Concept": {
 					"@id": "Concept-web-card-header-top",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Concept",
-					"showProperties": []
+					"showProperties": ["inScheme"]
 				},
 				"Language": {
 					"@id": "Language-web-card-header-top",
@@ -468,6 +474,12 @@
 					"classLensDomain": "Agent",
 					"showProperties": []
 				},
+				"Person": {
+					"@id": "Person-web-card-header-extra",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Person",
+					"showProperties": ["fieldOfActivity"]
+				},
 				"Concept": {
 					"@id": "Concept-web-card-header-extra",
 					"@type": "fresnel:Lens",
@@ -502,24 +514,19 @@
 					"@id": "Agent-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Agent",
-					"showProperties": [
-						"disambiguatingDescription",
-						"activityStartDate",
-						"activityEndDate",
-						"nationality"
-					]
+					"showProperties": ["disambiguatingDescription", "activityStartDate", "activityEndDate"]
 				},
 				"Person": {
 					"@id": "Person-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Person",
-					"showProperties": ["hasOccupation", "nationality"]
+					"showProperties": []
 				},
 				"Concept": {
 					"@id": "Concept-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Concept",
-					"showProperties": ["inScheme"]
+					"showProperties": []
 				},
 				"Language": {
 					"@id": "Language-web-card-footer",
@@ -739,6 +746,12 @@
 			"fresnel:propertyFormatDomain": ["contribution"],
 			"fresnel:propertyStyle": ["contribution", "nolabel"]
 		},
+		"description-format": {
+			"@id": "description-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["description"],
+			"fresnel:propertyStyle": ["nolabel"]
+		},
 		"genreForm-format": {
 			"@id": "genreForm-format",
 			"@type": "fresnel:Format",
@@ -773,22 +786,6 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["GenreForm"],
 			"fresnel:resourceStyle": ["link"]
-		},
-		"GenreForm-relations-format": {
-			"@id": "GenreForm-relations-format",
-			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["GenreForm"],
-			"fresnel:propertyFormatDomain": [
-				"narrower",
-				"closeMatch",
-				"broader",
-				"hasVariant",
-				"related"
-			],
-			"fresnel:valueFormat": {
-				"fresnel:contentBefore": ", ",
-				"fresnel:contentFirst": ""
-			}
 		},
 		"Subject-format": {
 			"@id": "Subject-format",

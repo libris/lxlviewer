@@ -25,10 +25,19 @@
 	interface Props {
 		item: SearchResultItem;
 		uidPrefix?: string;
+		allowPopovers?: boolean;
+		allowLinks?: boolean;
+		allowActions?: boolean;
 	}
 
 	let articleElement: HTMLElement;
-	let { item, uidPrefix = '' }: Props = $props();
+	let {
+		item,
+		uidPrefix = '',
+		allowPopovers = true,
+		allowLinks = true,
+		allowActions = true
+	}: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
 	let titleId = $derived(`card-title-${id}`);
@@ -123,7 +132,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	{/if}
 {/snippet}
 
-<div class="@container/card">
+<div class="search-card-container @container/card">
 	<article
 		{id}
 		class={[
@@ -194,7 +203,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					{/if}
 					{#each item[LensType.WebCardHeaderTop]?._display as obj, index (index)}
 						<span>
-							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
+							<DecoratedData
+								data={obj}
+								showLabels={ShowLabelsOptions.Never}
+								{allowLinks}
+								{allowPopovers}
+							/>
 						</span>
 					{/each}
 				</p>
@@ -206,7 +220,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							aria-describedby={`${bodyId} ${footerId}`}
 							onclick={passAlongAdjecentSearchResults}
 						>
-							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
+							<DecoratedData
+								data={item['card-heading']}
+								showLabels={ShowLabelsOptions.Never}
+								{allowLinks}
+								{allowPopovers}
+							/>
 						</a>
 					</h2>
 				</hgroup>
@@ -214,7 +233,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<p class="card-header-extra">
 						{#each item[LensType.WebCardHeaderExtra]?._display as obj, index (index)}
 							<span>
-								<DecoratedData data={obj} showLabels={ShowLabelsOptions.DefaultOn} />
+								<DecoratedData
+									data={obj}
+									showLabels={ShowLabelsOptions.DefaultOn}
+									{allowLinks}
+									{allowPopovers}
+								/>
 							</span>
 						{/each}
 					</p>
@@ -226,9 +250,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						<div>
 							<DecoratedData
 								data={obj}
-								showLabels={ShowLabelsOptions.Never}
 								block
-								limit={{ contribution: 3 }}
+								limit={{ contribution: 3, related: 5 }}
+								allowLinks={true}
+								{allowPopovers}
 							/>
 						</div>
 					{/each}
@@ -253,13 +278,23 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							{#each obj.hasInstance._display as obj2, index (index)}
 								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
 								{#if !obj2.publication}
-									<DecoratedData data={obj2} showLabels={ShowLabelsOptions.Never} />
+									<DecoratedData
+										data={obj2}
+										showLabels={ShowLabelsOptions.Never}
+										{allowLinks}
+										{allowPopovers}
+									/>
 								{/if}
 							{/each}
 						{/if}
 					{:else}
 						<span>
-							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
+							<DecoratedData
+								data={obj}
+								showLabels={ShowLabelsOptions.Never}
+								{allowLinks}
+								{allowPopovers}
+							/>
 						</span>
 					{/if}
 				{/each}
@@ -269,19 +304,21 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<span>{item.selectTypeStr}</span>
 				{/if}
 			</footer>
-			<div class="card-actions flex gap-1 self-end pt-1">
-				{#if isInstanceCard}
-					<a
-						class="btn btn-primary h-7 rounded-full md:h-8"
-						href={getCiteLink(page.url, id)}
-						onclick={(event) => handleClickCite(event, page.state, id)}
-					>
-						<BiQuote class="size-4 text-neutral-400" />
-						<span>{page.data.t('citations.cite')}</span>
-					</a>
-				{/if}
-				{@render holdingsButton()}
-			</div>
+			{#if allowActions}
+				<div class="card-actions flex gap-1 self-end pt-1">
+					{#if isInstanceCard}
+						<a
+							class="btn btn-primary h-7 rounded-full md:h-8"
+							href={getCiteLink(page.url, id)}
+							onclick={(event) => handleClickCite(event, page.state, id)}
+						>
+							<BiQuote class="size-4 text-neutral-400" />
+							<span>{page.data.t('citations.cite')}</span>
+						</a>
+					{/if}
+					{@render holdingsButton()}
+				</div>
+			{/if}
 		</div>
 
 		{#if item._debug}
@@ -399,5 +436,21 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		font-size: var(--text-2xs);
 		color: var(--color-subtle);
 		font-weight: var(--font-weight-normal);
+	}
+
+	/* card in popover */
+	:global(.popover .search-card-container) {
+		container-type: normal;
+
+		& .search-card {
+			padding: 0;
+			column-gap: calc(var(--spacing) * 2);
+			border: none;
+		}
+
+		& .card-header-title {
+			pointer-events: none;
+			font-size: var(--text-sm);
+		}
 	}
 </style>
