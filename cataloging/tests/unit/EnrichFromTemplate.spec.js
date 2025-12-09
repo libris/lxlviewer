@@ -1004,5 +1004,38 @@ test('should enrich within role if empty but specified as skipped', () => {
   ]);
 });
 
+test('should not overwrite place with empty label', () => {
+  const source = {
+    "record": {},
+    "mainEntity": {
+      "place": [{
+        "@type": "Place",
+        "label": ""
+      }],
+    }
+  };
 
+  const target = {
+    "record": {},
+    "mainEntity": {
+      "place":
+          {
+            "@type": "Place",
+            "label": "Something"
+          }
 
+    }
+  }
+
+  const templatePath = ['mainEntity'];
+  const changeList = getChangeList(source, target, templatePath, templatePath, null)
+
+  //The only change is that a repeatable property is converted to an array
+  expect(changeList).toEqual([{
+    "path": "mainEntity.place",
+    "value": [{
+      "@type": "Place",
+      "label": "Something"
+    }]
+  }]);
+});
