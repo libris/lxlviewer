@@ -64,10 +64,11 @@ export const handle = async ({ event, resolve }) => {
 
 	if (cookieEdit) {
 		event.cookies.set('userSettings', JSON.stringify(userSettings), {
-			maxAge: 365,
+			maxAge: 60 * 60 * 24 * 365, // 365 days
 			secure: true,
 			sameSite: 'strict',
-			path: '/' // ???
+			httpOnly: false, // allow the client to write to this cookie
+			path: '/'
 		});
 	}
 	event.locals.userSettings = userSettings;
