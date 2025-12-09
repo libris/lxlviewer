@@ -132,7 +132,7 @@ export async function refreshLibraries(displayUtil: DisplayUtil, locale: LocaleC
 	orgIndex = buildOrgIndex(libraries);
 }
 
-export function startRefreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
+export async function startRefreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	if (intervalStarted) return; // avoid multiple intervals
 	intervalStarted = true;
 
