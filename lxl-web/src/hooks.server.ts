@@ -1,5 +1,5 @@
 import fs from 'fs';
-import type { RequestEvent, ServerInit } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
@@ -11,16 +11,16 @@ import { startRefreshLibraries } from '$lib/utils/getLibraries.server';
 
 type Util = [VocabUtil, DisplayUtil];
 let utilCache: Util | undefined;
-
-export const init: ServerInit = async () => {
-	/* eslint-disable @typescript-eslint/no-unused-vars */
-	const [_, displayUtil] = await loadUtilCached();
-	// get libraries at startup
-	await startRefreshLibraries(displayUtil, defaultLocale);
-};
+let initLibraries: boolean = false;
 
 export const handle = async ({ event, resolve }) => {
 	const [vocabUtil, displayUtil] = await loadUtilCached();
+
+	if (!initLibraries) {
+		initLibraries = true;
+		await startRefreshLibraries(displayUtil, defaultLocale);
+	}
+
 	event.locals.vocab = vocabUtil;
 	event.locals.display = displayUtil;
 
