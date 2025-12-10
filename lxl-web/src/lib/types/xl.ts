@@ -21,6 +21,10 @@ export enum Owl {
 	PROPERTY_CHAIN_AXIOM = 'propertyChainAxiom'
 }
 
+export enum Rdfs {
+	RDF_TYPE = 'rdf:type'
+}
+
 export enum Fmt {
 	DISPLAY = '_display',
 	PROPS = '_props',
