@@ -34,6 +34,7 @@
 						"genreForm",
 						"subject",
 						"classification",
+						"additionalClassificationDdc",
 						"intendedAudience",
 						"dissertation",
 						"cartographicAttributes",
