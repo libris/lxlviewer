@@ -188,7 +188,7 @@ export function translateObjectProp(object) {
 function formatLabel(item, type, resources) {
   const label = [];
   const formatters = resources.display.lensGroups.formatters;
-  const replaceInnerDot = s => s.replace(/ · /g, ', '); // TODO: handle nested chips properly
+  const replaceInnerDot = s => (s.replace ? s.replace(/ · /g, ', ') : s); // TODO: handle nested chips properly
 
   // FIXME: this should be driven by display.jsonld
   // We don't want Library and Bibliography. Could do isSubclassOf('Agent') && !isSubclassOf('Collection') but hardcode the list for now
