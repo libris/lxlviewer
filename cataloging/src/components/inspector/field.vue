@@ -136,7 +136,7 @@ export default {
     },
     isEnrichmentSource: {
       type: Boolean,
-      default: true,
+      default: false,
     }
   },
   data() {

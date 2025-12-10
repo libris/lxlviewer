@@ -13,10 +13,12 @@ import BulkChanges from '@/components/care/bulk-changes.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import AdminNotices from './AdminNotices.vue';
 import MergeWrapper from "@/components/care/merge-wrapper.vue";
+import FlaggedList from "@/components/care/flagged-list.vue";
 
 export default {
   name: 'DirectoryCare',
   components: {
+    FlaggedList,
     AdminNotices,
     'tab-menu': TabMenu,
     'holding-mover': HoldingMover,
@@ -62,7 +64,10 @@ export default {
         tabs.push({ id: 'merge', text: 'Merge entities' });
       }
       if (this.userIsAllowedToBulkChange) {
-        tabs.push({ id: 'bulkchanges', text: 'Create bulk change' })
+        tabs.push({ id: 'bulkchanges', text: 'Create bulk change' });
+      }
+      if (this.allFlagged.length > 0) {
+        tabs.push({ id: 'flagged', text: 'Flagged entities' });
       }
       return tabs;
     },
@@ -184,6 +189,7 @@ export default {
       <div v-if="!this.userIsAllowedToMergeEntities && $route.params.tool === 'merge'">
         {{ translatePhrase("To be able to merge entities, switch to a sigel with access.") }}
       </div>
+      <flagged-list :flagged="allFlagged" v-if="$route.params.tool === 'flagged'"></flagged-list>
       <modal-component
         v-if="showModal"
         title="Directory care list adjusted"
