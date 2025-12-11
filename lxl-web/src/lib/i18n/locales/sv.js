@@ -245,6 +245,8 @@ export default {
 		results: 'träffar',
 		result: 'träff',
 		editions: 'Utgåvor',
+		details: 'Detaljer',
+		moreDetails: 'Fler detaljer',
 		previous: 'Föregående',
 		next: 'Nästa',
 		resultOf: 'av',

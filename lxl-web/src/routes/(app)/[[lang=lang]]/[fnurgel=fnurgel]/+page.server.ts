@@ -193,7 +193,11 @@ export const load = async ({ params, locals, fetch, url }) => {
 						}))
 					}
 				]
-			: [])
+			: []),
+		{
+			id: 'details',
+			label: translate('resource.details')
+		}
 	];
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
