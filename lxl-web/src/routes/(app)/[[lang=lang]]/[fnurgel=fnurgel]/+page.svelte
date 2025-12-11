@@ -28,7 +28,6 @@
 	// TODO: Possibly figure out some mapping and set og:type,
 	// see https://ogp.me/#types. Unclear how meaningful this would be.
 
-
 	let previousURL: URL;
 	const refinedLibraries = $derived(
 		getLibraryIdsFromMapping([data.searchResult?.mapping, data.subsetMapping])
@@ -88,6 +87,7 @@
 		decoratedTypes={data.types}
 		decoratedHeading={data.heading}
 		decoratedOverview={data.overview}
+		decoratedDetails={data.details}
 		relations={data.relations}
 		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}
 		instances={data.instances}

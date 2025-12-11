@@ -33,6 +33,7 @@
 		decoratedTypes: DecoratedData;
 		decoratedHeading: DecoratedData;
 		decoratedOverview: DecoratedData;
+		decoratedDetails: DecoratedData;
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
 		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
@@ -50,6 +51,7 @@
 		decoratedTypes,
 		decoratedHeading,
 		decoratedOverview,
+		decoratedDetails,
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
@@ -256,6 +258,11 @@
 						</div>
 					</div>
 				{/if}
+				<div class="decorated-overview">
+					<div class="columns col-span-3">
+						<DecoratedData data={decoratedDetails} block showLabels={ShowLabelsOptions.Always} />
+					</div>
+				</div>
 			</section>
 		</div>
 	</div>

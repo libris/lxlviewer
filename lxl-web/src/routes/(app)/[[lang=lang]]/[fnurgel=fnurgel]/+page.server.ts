@@ -91,6 +91,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
+	const details = displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale);
 
 	let instances;
 	let searchResult: ResourceSearchResult | undefined;
@@ -238,6 +239,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
+		details: details,
 		searchResult,
 		holdings,
 		images,
