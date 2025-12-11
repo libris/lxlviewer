@@ -23,6 +23,7 @@
 	import TabList, { type Tab } from './TabList.svelte';
 	import SearchMapping from './find/SearchMapping.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
+	import IconArrowDown from '~icons/bi/arrow-down';
 
 	type Props = {
 		fnurgel: string;
@@ -172,17 +173,19 @@
 						block
 						limit={{ contribution: 10, hasVariant: 10, hasPart: 10 }}
 					/>
+					<a
+						class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
+						href="#{uidPrefix}details"
+						data-sveltekit-preload-data="false"
+						data-testid="details-link"
+					>
+						<IconArrowDown />
+						{page.data.t('resource.moreDetails')}
+					</a>
 				</div>
 			</section>
 			<section>
-				{#if instances?.length === 1}
-					<!-- single instance -->
-					<div class="decorated-overview">
-						<div class="instance-details columns col-span-3">
-							<DecoratedData data={instances[0]} block showLabels={ShowLabelsOptions.Always} />
-						</div>
-					</div>
-				{:else if instances?.length > 1}
+				{#if instances?.length > 1}
 					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
 						{page.data.t('resource.editions')}
 					</h2>
@@ -241,6 +244,19 @@
 					</ul>
 				</section>
 			{/if}
+			<section>
+				<h2 id="{uidPrefix}details" class="mb-4 text-xl font-medium">
+					{page.data.t('resource.details')}
+				</h2>
+				{#if instances?.length === 1}
+					<!-- single instance -->
+					<div class="decorated-overview">
+						<div class="instance-details columns col-span-3">
+							<DecoratedData data={instances[0]} block showLabels={ShowLabelsOptions.Always} />
+						</div>
+					</div>
+				{/if}
+			</section>
 		</div>
 	</div>
 </article>
