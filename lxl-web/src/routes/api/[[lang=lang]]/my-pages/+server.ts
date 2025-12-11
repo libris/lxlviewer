@@ -26,7 +26,11 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const data = await findRes.json();
 	const result = await asLibraryResult(data, displayUtil, vocabUtil, locale);
 
-	return json(result);
+	return json(result, {
+		headers: {
+			'cache-control': 'public, max-age=1800' // 30 mins
+		}
+	});
 };
 
 async function asLibraryResult(

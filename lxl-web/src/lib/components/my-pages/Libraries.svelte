@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { JsonLd } from '$lib/types/xl';
 	import { type LibraryResult } from '$lib/types/search';
@@ -8,7 +11,12 @@
 	import BiSearch from '~icons/bi/search';
 	import BiHeartFill from '~icons/bi/heart-fill';
 
-	let searchPhrase = $state('');
+	type Props = {
+		q: string | null;
+	};
+	const { q }: Props = $props();
+
+	let searchPhrase = $state(q || '');
 	let endpoint = '/api/my-pages';
 	let queryFn = (query: string) =>
 		new URLSearchParams({
@@ -19,9 +27,16 @@
 		});
 	const debouncedWait = 300;
 
+	function onResponse() {
+		const params = new SvelteURLSearchParams();
+		params.set('q', searchPhrase);
+		goto(page.url.pathname + `?${params.toString()}`, { replaceState: true, keepFocus: true });
+	}
+
 	let search = useSearchRequest({
 		endpoint,
 		queryFn,
+		transformFn: onResponse,
 		debouncedWait
 	});
 
@@ -31,6 +46,12 @@
 	function handleInputChange() {
 		search.debouncedFetchData(searchPhrase);
 	}
+
+	onMount(() => {
+		if (searchPhrase) {
+			search.debouncedFetchData(searchPhrase);
+		}
+	});
 </script>
 
 <h2 class="mt-4 font-medium">{page.data.t('myPages.findAndAdd')}</h2>
@@ -50,18 +71,25 @@
 			/>
 			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 		</div>
-		{#if searchPhrase && search.data}
-			{@const searchResult = search.data as LibraryResult}
-			<span class="my-3 block text-xs font-medium" role="status">
-				{#if search.isLoading}
-					{page.data.t('search.loading')}
-				{:else if searchResult?.totalItems && searchResult?.totalItems !== 0}
+		<span class="my-3 block text-xs font-medium" role="status">
+			{#if search.isLoading}
+				{page.data.t('search.loading')}
+			{:else if search.error}
+				<span class="bg-severe-50 rounded-sm p-1.5">{page.data.t('errors.somethingWentWrong')}</span
+				>
+			{:else if searchPhrase && search.data}
+				{@const searchResult = search.data as LibraryResult}
+				{@const hasResults = searchResult?.totalItems && searchResult?.totalItems !== 0}
+				{#if hasResults}
 					{searchResult?.totalItems}
 					{page.data.t('myPages.hitsFor')} "{searchPhrase}"
 				{:else}
 					{page.data.t('myPages.noResultsFor')} "{searchPhrase}"
 				{/if}
-			</span>
+			{/if}
+		</span>
+		{#if searchPhrase && search.data}
+			{@const searchResult = search.data as LibraryResult}
 			{#if searchResult?.items && searchResult?.items.length !== 0}
 				<ol class="my-libraries-result border-neutral flex flex-col rounded-sm border p-1">
 					{#each searchResult.items as resultItem (resultItem[JsonLd.ID])}
