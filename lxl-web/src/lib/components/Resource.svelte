@@ -288,6 +288,11 @@
 			}
 		}
 
+		& :global(.inScheme) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+		}
+
 		& :global(.contribution > ._contentBefore),
 		:global(.contribution > ._contentAfter) {
 			display: none;
