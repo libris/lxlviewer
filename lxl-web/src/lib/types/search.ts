@@ -26,7 +26,7 @@ export interface ResourceSearchResult {
 	mapping: DisplayMapping[];
 }
 
-interface LibraryResultItem extends SearchResultItem {
+export interface LibraryResultItem extends SearchResultItem {
 	thingId: LibraryId;
 	str: string;
 }

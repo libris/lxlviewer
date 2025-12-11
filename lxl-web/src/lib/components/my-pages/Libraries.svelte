@@ -4,17 +4,16 @@
 	import { JsonLd } from '$lib/types/xl';
 	import { type LibraryResult } from '$lib/types/search';
 	import { useSearchRequest } from 'supersearch';
-	import Suggestion from '$lib/components/supersearch/Suggestion.svelte';
+	import SearchCard from '$lib/components/find/SearchCard.svelte';
 	import BiSearch from '~icons/bi/search';
-	import BiHeart from '~icons/bi/heart-fill';
-	import BiTrash from '~icons/bi/trash';
+	import BiHeartFill from '~icons/bi/heart-fill';
 
 	let searchPhrase = $state('');
 	let endpoint = '/api/my-pages';
 	let queryFn = (query: string) =>
 		new URLSearchParams({
 			_q: query,
-			_limit: '6',
+			_limit: '20',
 			_stats: 'false',
 			_spell: 'false'
 		});
@@ -64,32 +63,10 @@
 				{/if}
 			</span>
 			{#if searchResult?.items && searchResult?.items.length !== 0}
-				<ol class="border-neutral flex flex-col gap-1 rounded-sm border p-1 text-xs">
+				<ol class="my-libraries-result border-neutral flex flex-col rounded-sm border p-1">
 					{#each searchResult.items as resultItem (resultItem[JsonLd.ID])}
-						{@const alreadyAdded = myLibraries?.[resultItem.thingId]}
-						<li class="hover:bg-primary-50 flex flex-1 items-center gap-1">
-							<div class="flex-1" id="library-search-item-{resultItem[JsonLd.ID]}">
-								<Suggestion item={resultItem} />
-							</div>
-							<div class="px-4">
-								<button
-									class="btn btn-primary text-nowrap"
-									aria-describedby="library-search-item-{resultItem[JsonLd.ID]}"
-									type="button"
-									onclick={() =>
-										alreadyAdded
-											? userSettings.removeLibrary(resultItem.thingId)
-											: userSettings.addLibrary(resultItem.thingId, resultItem.str)}
-								>
-									{#if alreadyAdded}
-										<BiTrash />
-										<span>{page.data.t('myPages.remove')}</span>
-									{:else}
-										<BiHeart class="text-primary-600" />
-										<span>{page.data.t('myPages.add')}</span>
-									{/if}
-								</button>
-							</div>
+						<li>
+							<SearchCard item={resultItem} />
 						</li>
 					{/each}
 				</ol>
@@ -113,7 +90,7 @@
 						type="button"
 						onclick={() => userSettings.removeLibrary(key)}
 					>
-						<BiTrash />
+						<BiHeartFill class="text-primary-600" />
 						<span>{page.data.t('myPages.remove')}</span>
 					</button>
 				</li>
@@ -121,3 +98,9 @@
 		</ol>
 	</div>
 </div>
+
+<style>
+	:global(.my-libraries-result li:first-of-type .search-card) {
+		border-top: none;
+	}
+</style>
