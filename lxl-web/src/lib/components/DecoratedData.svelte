@@ -134,7 +134,7 @@
 			isTopLevel() &&
 			(showLabels === ShowLabelsOptions.Always ||
 				(showLabels === ShowLabelsOptions.DefaultOn && !hasStyle(data, 'nolabel')) ||
-				(showLabels === ShowLabelsOptions.DefaultOff && !hasStyle(data, 'label')))
+				(showLabels === ShowLabelsOptions.DefaultOff && hasStyle(data, 'label')))
 		);
 	}
 </script>

@@ -4,7 +4,7 @@ import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
 
-import { type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
+import { Bibframe, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
@@ -92,7 +92,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
-	const overviewFooter = displayUtil.lensAndFormat(mainEntity, LensType.WebCardFooter, locale);
 	const details = displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale);
 
 	let instances;
@@ -115,6 +114,26 @@ export const load = async ({ params, locals, fetch, url }) => {
 			undefined
 		);
 	}
+
+	const summary = [mainEntity]
+		.concat(mainEntity?.['@reverse']?.instanceOf || [])
+		.filter((i: FramedData) => i[Bibframe.summary])
+		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		.map((i: FramedData) => ({
+			[JsonLd.TYPE]: i[JsonLd.TYPE],
+			[Bibframe.summary]: i[Bibframe.summary]
+		}))
+		.map((i: FramedData) => displayUtil.lensAndFormat(i, LensType.SearchCard, locale));
+
+	const resourceTableOfContents = [mainEntity]
+		.concat(mainEntity?.['@reverse']?.instanceOf || [])
+		.filter((i: FramedData) => i[Bibframe.tableOfContents])
+		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		.map((i: FramedData) => ({
+			[JsonLd.TYPE]: i[JsonLd.TYPE],
+			[Bibframe.tableOfContents]: i[Bibframe.tableOfContents]
+		}))
+		.map((i: FramedData) => displayUtil.lensAndFormat(i, LensType.SearchCard, locale));
 
 	// Search for instances that matches query
 	if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*') || locals.site) {
@@ -177,6 +196,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 	);
 
 	const tableOfContents: TableOfContentsItem[] = [
+		...(summary.length
+			? [
+					{
+						id: 'summary',
+						label: translate('resource.summary')
+					}
+				]
+			: []),
 		...(instances?.length > 1
 			? [
 					{
@@ -194,6 +221,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 							id: `occurrences-${relationItem.qualifierKey}`, // all ids should  be prefixed in +page.svelte
 							label: relationItem.label
 						}))
+					}
+				]
+			: []),
+		...(resourceTableOfContents.length
+			? [
+					{
+						id: 'resourceTableOfContents',
+						label: translate('resource.tableOfContents')
 					}
 				]
 			: []),
@@ -243,7 +278,9 @@ export const load = async ({ params, locals, fetch, url }) => {
 			heading: heading,
 			headingExtra: headingExtra,
 			overview: overviewWithoutHasInstance,
-			overviewFooter: overviewFooter,
+			overviewFooter: {},
+			summary: summary,
+			resourceTableOfContents: resourceTableOfContents,
 			details: details
 		},
 		searchResult,

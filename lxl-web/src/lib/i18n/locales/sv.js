@@ -245,6 +245,8 @@ export default {
 		results: 'träffar',
 		result: 'träff',
 		editions: 'Utgåvor',
+		summary: 'Sammanfattning',
+		tableOfContents: 'Innehållsförteckning',
 		details: 'Detaljer',
 		moreDetails: 'Fler detaljer',
 		previous: 'Föregående',

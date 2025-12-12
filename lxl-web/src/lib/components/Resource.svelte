@@ -36,6 +36,8 @@
 			headingExtra: DecoratedData;
 			overview: DecoratedData;
 			overviewFooter: DecoratedData;
+			summary: DecoratedData[];
+			resourceTableOfContents: DecoratedData[];
 			details: DecoratedData;
 		};
 		relations: Relation[];
@@ -158,7 +160,7 @@
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 @sm:gap-6 @3xl:py-6">
 			<section id="{uidPrefix}top">
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
-					<header class="flex-1">
+					<header class="my-3 flex-1">
 						<hgroup>
 							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
 								<TypeIcon type={typeForIcon} class="mr-0.5 inline text-sm" />
@@ -167,13 +169,13 @@
 									showLabels={ShowLabelsOptions.Never}
 								/>
 							</p>
-							<h1 class="decorated-heading my-3 text-3xl font-medium @3xl:text-3xl">
+							<h1 class="decorated-heading mt-2 mb-1 text-3xl font-medium @3xl:text-3xl">
 								<DecoratedData data={decoratedData.heading} showLabels={ShowLabelsOptions.Never} />
 							</h1>
 							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
 								<DecoratedData
 									data={decoratedData.headingExtra}
-									showLabels={ShowLabelsOptions.Never}
+									showLabels={ShowLabelsOptions.DefaultOn}
 								/>
 							</p>
 						</hgroup>
@@ -182,6 +184,7 @@
 				<div class="decorated-overview">
 					<DecoratedData
 						data={decoratedData.overview}
+						showLabels={ShowLabelsOptions.DefaultOff}
 						block
 						limit={{ contribution: 10, hasVariant: 10 }}
 					/>
@@ -201,6 +204,19 @@
 					</a>
 				</div>
 			</section>
+			{#if decoratedData.summary.length}
+				<section class="mt-6">
+					<h2 id={`${uidPrefix}summary`} class="mb-6 text-xl font-medium">
+						{page.data.t('resource.summary')}
+					</h2>
+					<DecoratedData
+						data={decoratedData.summary}
+						showLabels={ShowLabelsOptions.Never}
+						block
+						limit={{ contribution: 10, hasVariant: 10 }}
+					/>
+				</section>
+			{/if}
 			<section>
 				{#if instances?.length > 1}
 					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
@@ -259,6 +275,19 @@
 							</li>
 						{/each}
 					</ul>
+				</section>
+			{/if}
+			{#if decoratedData.resourceTableOfContents.length}
+				<section class="mt-6">
+					<h2 id={`${uidPrefix}resourceTableOfContents`} class="mb-6 text-xl font-medium">
+						{page.data.t('resource.tableOfContents')}
+					</h2>
+					<DecoratedData
+						data={decoratedData.resourceTableOfContents}
+						showLabels={ShowLabelsOptions.Never}
+						block
+						limit={{ contribution: 10, hasVariant: 10 }}
+					/>
 				</section>
 			{/if}
 			<section>

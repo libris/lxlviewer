@@ -853,6 +853,12 @@
 			"fresnel:classFormatDomain": ["Subject"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"subject-format": {
+			"@id": "Subject-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["subject"],
+			"fresnel:propertyStyle": ["label"]
+		},
 		"Classification-inScheme-format": {
 			"@id": "Classification-inScheme-format",
 			"@type": "fresnel:Format",
