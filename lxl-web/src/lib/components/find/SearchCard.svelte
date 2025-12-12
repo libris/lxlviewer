@@ -191,7 +191,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								class:rounded-full={item['@type'] === 'Person'}
 								class:rounded-sm={item['@type'] !== 'Person'}
 								class={[
-									'object-contain object-top'
+									'placeholder object-contain object-top'
 									//(item.typeForIcon === 'Text' || item.typeForIcon === 'Literature') && 'aspect-3/4'
 								]}
 							/>
@@ -512,6 +512,17 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			padding: 0;
 			column-gap: calc(var(--spacing) * 2);
 			border: none;
+
+			&:has(img.placeholder) {
+				// hide placeholder in popover
+				grid-template-areas:
+				'content';
+				grid-template-columns: 1fr;
+
+				& .card-image {
+					display: none;
+				}
+			}
 		}
 
 		& .card-header-title {
