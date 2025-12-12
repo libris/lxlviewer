@@ -1037,6 +1037,22 @@
 			"fresnel:classFormatDomain": ["GenreForm"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"GenreForm-relations-format": {
+			"@id": "GenreForm-relations-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["GenreForm"],
+			"fresnel:propertyFormatDomain": [
+				"narrower",
+				"closeMatch",
+				"broader",
+				"hasVariant",
+				"related"
+			],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"Subject-format": {
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
