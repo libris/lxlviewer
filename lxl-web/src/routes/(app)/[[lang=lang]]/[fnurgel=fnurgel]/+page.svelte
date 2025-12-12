@@ -84,10 +84,7 @@
 		type={data.type}
 		typeForIcon={data.typeForIcon}
 		images={data.images}
-		decoratedTypes={data.types}
-		decoratedHeading={data.heading}
-		decoratedOverview={data.overview}
-		decoratedDetails={data.details}
+		decoratedData={data.decoratedData}
 		relations={data.relations}
 		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}
 		instances={data.instances}
