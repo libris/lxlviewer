@@ -19,6 +19,9 @@ function addDefaultSearchParams(searchParams: URLSearchParams): URLSearchParams 
 	if (!params.has('_spell')) {
 		params.set('_spell', 'true');
 	}
+	if (params.has('q')) {
+		params.delete('q'); // used in my-pages
+	}
 
 	return params;
 }

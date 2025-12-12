@@ -166,7 +166,7 @@ export default {
 		goToResource: 'Go to the resource',
 		addLibraries: 'Add libraries',
 		changeLibraries: 'Change libraries',
-		noAddedLibrariesText: 'You have not chosen any favourite libraries.',
+		noAddedLibrariesText: 'You have not chosen any favourite libraries',
 		libraries: 'libraries'
 	},
 	supersearch: {

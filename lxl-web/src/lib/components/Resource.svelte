@@ -170,7 +170,7 @@
 					<DecoratedData
 						data={decoratedOverview}
 						block
-						limit={{ contribution: 10, hasVariant: 10 }}
+						limit={{ contribution: 10, hasVariant: 10, hasPart: 10 }}
 					/>
 				</div>
 			</section>
@@ -291,15 +291,6 @@
 		& :global(.inScheme) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
-		}
-
-		& :global(.contribution > ._contentBefore),
-		:global(.contribution > ._contentAfter) {
-			display: none;
-		}
-
-		& :global(.contribution > *) {
-			display: block;
 		}
 
 		& :global(.provisionActivity > ._contentBefore),

@@ -50,16 +50,19 @@
 						allowLinks={false}
 					/>
 				</h2>
-				{#if item[LxlLens.CardBody]?._display?.[0]}
+				<!-- only show body > contribution next to header header -->
+				{#if item[LxlLens.CardBody]?._display?.[0]?.contribution}
 					<p class="truncate">
 						<span class="divider">{' · '}</span>
-						<DecoratedData
-							data={item[LxlLens.CardBody]?._display[0]}
-							showLabels={ShowLabelsOptions.Never}
-							allowLinks={false}
-							allowPopovers={false}
-							limit={{ contribution: 3 }}
-						/>
+						<span class="suggestion-contribution">
+							<DecoratedData
+								data={item[LxlLens.CardBody]?._display[0]?.contribution}
+								showLabels={ShowLabelsOptions.Never}
+								allowLinks={false}
+								allowPopovers={false}
+								limit={{ contribution: 3 }}
+							/>
+						</span>
 					</p>
 				{/if}
 			</hgroup>
@@ -191,6 +194,10 @@
 		}
 	}
 
+	:global(.suggestion-contribution > *:not(:last-child)::after) {
+		content: ', ';
+	}
+
 	.resource-footer {
 		/* hide dangling divider · */
 		& .divider {
@@ -199,11 +206,6 @@
 
 		& :global(.divider:has(+ span)) {
 			display: inline;
-		}
-	}
-
-	.more {
-		&.focused-cell {
 		}
 	}
 
