@@ -23,6 +23,27 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	const findRes = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`);
+
+	if (!findRes.ok) {
+		let apiError;
+		try {
+			apiError = await findRes.json();
+		} catch {
+			apiError = null;
+		}
+
+		return json(
+			{
+				error: true,
+				statusText: apiError?.message || findRes.statusText,
+				status: apiError?.status || findRes.status
+			},
+			{
+				status: findRes.status
+			}
+		);
+	}
+
 	const data = await findRes.json();
 	const result = await asLibraryResult(data, displayUtil, vocabUtil, locale);
 
@@ -47,7 +68,7 @@ async function asLibraryResult(
 		env.AUXD_SECRET
 	);
 	// need to re-add the LibraryId to the formatted result since it's wiped in formatting
-	const withId = items.map((item, index) => ({
+	const withId = items?.map((item, index) => ({
 		...item,
 		thingId: view.items[index][JsonLd.ID],
 		str: toString(displayUtil.lensAndFormat(view.items[index], LensType.Chip, locale))

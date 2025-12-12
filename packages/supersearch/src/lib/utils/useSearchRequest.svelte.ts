@@ -42,6 +42,11 @@ export function useSearchRequest({
 			const response = await fetch(`${endpoint}?${searchParams.toString()}`, {
 				signal: controller.signal
 			});
+
+			if (!response.ok) {
+				throw new Error(`${response.status}: ${response.statusText}`);
+			}
+
 			const jsonResponse = (await response.json()) as JSONValue;
 
 			const _data = transformFn?.(jsonResponse) || jsonResponse;

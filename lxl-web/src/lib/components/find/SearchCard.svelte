@@ -86,7 +86,11 @@
 	}
 
 	function isLibraryCard(item: SearchResultItem | LibraryResultItem): item is LibraryResultItem {
-		return item[JsonLd.TYPE] === 'Library' || item[JsonLd.TYPE] === 'bibdb:Organization';
+		if (item[JsonLd.TYPE] !== 'Library' && item[JsonLd.TYPE] !== 'bibdb:Organization') return false;
+
+		// addLibrary from a SearchResultItem won't work until library-id:s are included...
+		if (!('thingId' in item) || !('str' in item)) return false;
+		return true;
 	}
 
 	$effect(() => {
