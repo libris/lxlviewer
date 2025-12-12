@@ -115,25 +115,27 @@ export const load = async ({ params, locals, fetch, url }) => {
 		);
 	}
 
-	const summary = [mainEntity]
-		.concat(mainEntity?.['@reverse']?.instanceOf || [])
-		.filter((i: FramedData) => i[Bibframe.summary])
-		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
-		.map((i: FramedData) => ({
-			[JsonLd.TYPE]: i[JsonLd.TYPE],
-			[Bibframe.summary]: i[Bibframe.summary]
+	const creations = [mainEntity].concat(mainEntity?.['@reverse']?.instanceOf || []);
+	const summary = creations
+		.filter((c: FramedData) => c[Bibframe.summary])
+		.map((c: FramedData) => ({
+			[JsonLd.TYPE]: c[JsonLd.TYPE],
+			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
+			[Bibframe.summary]: c[Bibframe.summary]
 		}))
-		.map((i: FramedData) => displayUtil.lensAndFormat(i, LensType.SearchCard, locale));
+		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
 
-	const resourceTableOfContents = [mainEntity]
-		.concat(mainEntity?.['@reverse']?.instanceOf || [])
-		.filter((i: FramedData) => i[Bibframe.tableOfContents])
-		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
-		.map((i: FramedData) => ({
-			[JsonLd.TYPE]: i[JsonLd.TYPE],
-			[Bibframe.tableOfContents]: i[Bibframe.tableOfContents]
+	const resourceTableOfContents = creations
+		.filter((c: FramedData) => c[Bibframe.tableOfContents])
+
+		.map((c: FramedData) => ({
+			[JsonLd.TYPE]: c[JsonLd.TYPE],
+			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
+			[Bibframe.tableOfContents]: c[Bibframe.tableOfContents]
 		}))
-		.map((i: FramedData) => displayUtil.lensAndFormat(i, LensType.SearchCard, locale));
+		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
 
 	// Search for instances that matches query
 	if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*') || locals.site) {
