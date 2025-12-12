@@ -24,6 +24,7 @@
 	import SearchMapping from './find/SearchMapping.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';
+	import Carousel from '$lib/components/Carousel.svelte';
 
 	type Props = {
 		fnurgel: string;
@@ -119,6 +120,12 @@
 	{/each}
 {/snippet}
 
+{#snippet summaryOrToc(d)}
+	<div class="summary-or-toc min-h-56 w-full">
+		<DecoratedData data={d} showLabels={ShowLabelsOptions.Never} block />
+	</div>
+{/snippet}
+
 {#if adjecentSearchResults}
 	<div class="border-b-neutral @container border-b">
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
@@ -209,12 +216,7 @@
 					<h2 id={`${uidPrefix}summary`} class="mb-6 text-xl font-medium">
 						{page.data.t('resource.summary')}
 					</h2>
-					<DecoratedData
-						data={decoratedData.summary}
-						showLabels={ShowLabelsOptions.Never}
-						block
-						limit={{ contribution: 10, hasVariant: 10 }}
-					/>
+					<Carousel items={decoratedData.summary} render={summaryOrToc} />
 				</section>
 			{/if}
 			<section>
@@ -282,12 +284,7 @@
 					<h2 id={`${uidPrefix}resourceTableOfContents`} class="mb-6 text-xl font-medium">
 						{page.data.t('resource.tableOfContents')}
 					</h2>
-					<DecoratedData
-						data={decoratedData.resourceTableOfContents}
-						showLabels={ShowLabelsOptions.Never}
-						block
-						limit={{ contribution: 10, hasVariant: 10 }}
-					/>
+					<Carousel items={decoratedData.resourceTableOfContents} render={summaryOrToc} />
 				</section>
 			{/if}
 			<section>
@@ -321,6 +318,12 @@
 
 	.sticky {
 		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
+	}
+
+	.summary-or-toc {
+		& :global(.provisionActivity) {
+			font-style: italic;
+		}
 	}
 
 	.decorated-heading {

@@ -56,7 +56,8 @@ export enum Bibframe {
 	Work = 'Work',
 	Instance = 'Instance',
 	summary = 'summary',
-	tableOfContents = 'tableOfContents'
+	tableOfContents = 'tableOfContents',
+	publication = 'publication'
 }
 
 export enum BibDb {
