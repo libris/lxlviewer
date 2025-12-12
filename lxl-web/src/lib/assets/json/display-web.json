@@ -784,7 +784,17 @@
 			"@id": "contribution-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["contribution"],
-			"fresnel:propertyStyle": ["contribution", "nolabel"]
+			"fresnel:propertyStyle": ["contribution", "nolabel"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Contribution-format": {
+			"@id": "Contribution-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Contribution"],
+			"fresnel:resourceStyle": ["block"]
 		},
 		"genreForm-format": {
 			"@id": "genreForm-format",
@@ -1074,6 +1084,26 @@
 				"fresnel:contentFirst": "(",
 				"fresnel:contentAfter": ")",
 				"fresnel:contentLast": ")"
+			}
+		},
+		"Library-format": {
+			"@id": "Library-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Library"],
+			"fresnel:resourceStyle": ["link", "block"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"bibdb:Organization-hasPart-format": {
+			"@id": "bibdb:Organization-hasPart-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["bibdb:Organization"],
+			"fresnel:propertyFormatDomain": ["hasPart"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
 			}
 		},
 		"hasReproduction-format": {
