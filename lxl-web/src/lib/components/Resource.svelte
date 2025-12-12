@@ -30,10 +30,14 @@
 		uid?: string;
 		typeForIcon: string;
 		images: SecureImage[];
-		decoratedTypes: DecoratedData;
-		decoratedHeading: DecoratedData;
-		decoratedOverview: DecoratedData;
-		decoratedDetails: DecoratedData;
+		decoratedData: {
+			headingTop: DecoratedData;
+			heading: DecoratedData;
+			headingExtra: DecoratedData;
+			overview: DecoratedData;
+			overviewFooter: DecoratedData;
+			details: DecoratedData;
+		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
 		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
@@ -48,10 +52,7 @@
 		uid,
 		typeForIcon,
 		images,
-		decoratedTypes,
-		decoratedHeading,
-		decoratedOverview,
-		decoratedDetails,
+		decoratedData,
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
@@ -161,17 +162,31 @@
 						<hgroup>
 							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
 								<TypeIcon type={typeForIcon} class="mr-0.5 inline text-sm" />
-								<DecoratedData data={decoratedTypes} showLabels={ShowLabelsOptions.Never} />
+								<DecoratedData
+									data={decoratedData.headingTop}
+									showLabels={ShowLabelsOptions.Never}
+								/>
 							</p>
 							<h1 class="decorated-heading my-3 text-3xl font-medium @3xl:text-3xl">
-								<DecoratedData data={decoratedHeading} showLabels={ShowLabelsOptions.Never} />
+								<DecoratedData data={decoratedData.heading} showLabels={ShowLabelsOptions.Never} />
 							</h1>
+							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
+								<DecoratedData
+									data={decoratedData.headingExtra}
+									showLabels={ShowLabelsOptions.Never}
+								/>
+							</p>
 						</hgroup>
 					</header>
 				</div>
 				<div class="decorated-overview">
 					<DecoratedData
-						data={decoratedOverview}
+						data={decoratedData.overview}
+						block
+						limit={{ contribution: 10, hasVariant: 10 }}
+					/>
+					<DecoratedData
+						data={decoratedData.overviewFooter}
 						block
 						limit={{ contribution: 10, hasVariant: 10, hasPart: 10 }}
 					/>
@@ -260,7 +275,11 @@
 				{/if}
 				<div class="decorated-overview">
 					<div class="columns col-span-3">
-						<DecoratedData data={decoratedDetails} block showLabels={ShowLabelsOptions.Always} />
+						<DecoratedData
+							data={decoratedData.details}
+							block
+							showLabels={ShowLabelsOptions.Always}
+						/>
 					</div>
 				</div>
 			</section>

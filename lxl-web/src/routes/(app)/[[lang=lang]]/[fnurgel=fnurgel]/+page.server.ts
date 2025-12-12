@@ -90,7 +90,9 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
+	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
+	const overviewFooter = displayUtil.lensAndFormat(mainEntity, LensType.WebCardFooter, locale);
 	const details = displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale);
 
 	let instances;
@@ -231,15 +233,19 @@ export const load = async ({ params, locals, fetch, url }) => {
 	return {
 		uri: resource['@id'] as string,
 		type: mainEntity[JsonLd.TYPE],
-		types: types,
 		typeForIcon: getTypeForIcon(typeLike), // FIXME
 		title: toString(heading),
-		heading,
-		overview: overviewWithoutHasInstance,
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
-		details: details,
+		decoratedData: {
+			headingTop: types,
+			heading: heading,
+			headingExtra: headingExtra,
+			overview: overviewWithoutHasInstance,
+			overviewFooter: overviewFooter,
+			details: details
+		},
 		searchResult,
 		holdings,
 		images,
