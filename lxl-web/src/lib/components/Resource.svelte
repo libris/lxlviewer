@@ -23,15 +23,24 @@
 	import TabList, { type Tab } from './TabList.svelte';
 	import SearchMapping from './find/SearchMapping.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
+	import IconArrowDown from '~icons/bi/arrow-down';
+	import Carousel from '$lib/components/Carousel.svelte';
 
 	type Props = {
 		fnurgel: string;
 		uid?: string;
 		typeForIcon: string;
 		images: SecureImage[];
-		decoratedTypes: DecoratedData;
-		decoratedHeading: DecoratedData;
-		decoratedOverview: DecoratedData;
+		decoratedData: {
+			headingTop: DecoratedData;
+			heading: DecoratedData;
+			headingExtra: DecoratedData;
+			overview: DecoratedData;
+			overviewFooter: DecoratedData;
+			summary: DecoratedData[];
+			resourceTableOfContents: DecoratedData[];
+			details: DecoratedData;
+		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
 		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
@@ -46,9 +55,7 @@
 		uid,
 		typeForIcon,
 		images,
-		decoratedTypes,
-		decoratedHeading,
-		decoratedOverview,
+		decoratedData,
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
@@ -113,6 +120,12 @@
 	{/each}
 {/snippet}
 
+{#snippet summaryOrToc(d)}
+	<div class="summary-or-toc min-h-56 w-full">
+		<DecoratedData data={d} showLabels={ShowLabelsOptions.Never} block />
+	</div>
+{/snippet}
+
 {#if adjecentSearchResults}
 	<div class="border-b-neutral @container border-b">
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
@@ -154,35 +167,60 @@
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 @sm:gap-6 @3xl:py-6">
 			<section id="{uidPrefix}top">
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
-					<header class="flex-1">
+					<header class="my-3 flex-1">
 						<hgroup>
 							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
 								<TypeIcon type={typeForIcon} class="mr-0.5 inline text-sm" />
-								<DecoratedData data={decoratedTypes} showLabels={ShowLabelsOptions.Never} />
+								<DecoratedData
+									data={decoratedData.headingTop}
+									showLabels={ShowLabelsOptions.Never}
+								/>
 							</p>
-							<h1 class="decorated-heading my-3 text-3xl font-medium @3xl:text-3xl">
-								<DecoratedData data={decoratedHeading} showLabels={ShowLabelsOptions.Never} />
+							<h1 class="decorated-heading mt-2 mb-1 text-3xl font-medium @3xl:text-3xl">
+								<DecoratedData data={decoratedData.heading} showLabels={ShowLabelsOptions.Never} />
 							</h1>
+							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
+								<DecoratedData
+									data={decoratedData.headingExtra}
+									showLabels={ShowLabelsOptions.DefaultOn}
+								/>
+							</p>
 						</hgroup>
 					</header>
 				</div>
 				<div class="decorated-overview">
 					<DecoratedData
-						data={decoratedOverview}
+						data={decoratedData.overview}
+						showLabels={ShowLabelsOptions.DefaultOff}
 						block
 						limit={{ contribution: 10, hasVariant: 10 }}
 					/>
+					<DecoratedData
+						data={decoratedData.overviewFooter}
+						block
+						limit={{ contribution: 10, hasVariant: 10 }}
+					/>
+					<a
+						class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
+						href="#{uidPrefix}details"
+						data-sveltekit-preload-data="false"
+						data-testid="details-link"
+					>
+						<IconArrowDown />
+						{page.data.t('resource.moreDetails')}
+					</a>
 				</div>
 			</section>
+			{#if decoratedData.summary.length}
+				<section class="mt-6">
+					<h2 id={`${uidPrefix}summary`} class="mb-6 text-xl font-medium">
+						{page.data.t('resource.summary')}
+					</h2>
+					<Carousel items={decoratedData.summary} render={summaryOrToc} />
+				</section>
+			{/if}
 			<section>
-				{#if instances?.length === 1}
-					<!-- single instance -->
-					<div class="decorated-overview">
-						<div class="instance-details columns col-span-3">
-							<DecoratedData data={instances[0]} block showLabels={ShowLabelsOptions.Always} />
-						</div>
-					</div>
-				{:else if instances?.length > 1}
+				{#if instances?.length > 1}
 					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
 						{page.data.t('resource.editions')}
 					</h2>
@@ -241,6 +279,36 @@
 					</ul>
 				</section>
 			{/if}
+			{#if decoratedData.resourceTableOfContents.length}
+				<section class="mt-6">
+					<h2 id={`${uidPrefix}resourceTableOfContents`} class="mb-6 text-xl font-medium">
+						{page.data.t('resource.tableOfContents')}
+					</h2>
+					<Carousel items={decoratedData.resourceTableOfContents} render={summaryOrToc} />
+				</section>
+			{/if}
+			<section>
+				<h2 id="{uidPrefix}details" class="mb-4 text-xl font-medium">
+					{page.data.t('resource.details')}
+				</h2>
+				{#if instances?.length === 1}
+					<!-- single instance -->
+					<div class="decorated-overview">
+						<div class="instance-details columns col-span-3">
+							<DecoratedData data={instances[0]} block showLabels={ShowLabelsOptions.Always} />
+						</div>
+					</div>
+				{/if}
+				<div class="decorated-overview">
+					<div class="columns col-span-3">
+						<DecoratedData
+							data={decoratedData.details}
+							block
+							showLabels={ShowLabelsOptions.Always}
+						/>
+					</div>
+				</div>
+			</section>
 		</div>
 	</div>
 </article>
@@ -250,6 +318,12 @@
 
 	.sticky {
 		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
+	}
+
+	.summary-or-toc {
+		& :global(.provisionActivity) {
+			font-style: italic;
+		}
 	}
 
 	.decorated-heading {

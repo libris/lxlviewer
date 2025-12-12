@@ -9,6 +9,8 @@ export type TypeLike = {
 	select: FramedData[];
 };
 
+const BAD_CARRIER_TYPES = ['https://id.kb.se/term/rda/OnlineResource'];
+
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	const result: TypeLike = {
@@ -33,7 +35,11 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 
 		const s = {};
 		getAtPath(thing, ['@reverse', 'instanceOf', '*', '_categoryByCollection', JsonLd.NONE], [])
-			.filter((c: FramedData) => c[JsonLd.TYPE] === 'ManifestationForm')
+			.filter(
+				(c: FramedData) =>
+					c[JsonLd.TYPE] === 'ManifestationForm' ||
+					(c[JsonLd.TYPE] === 'CarrierType' && !BAD_CARRIER_TYPES.includes(c[JsonLd.ID]))
+			)
 			.forEach((c: FramedData) => (s[c[JsonLd.ID]] = c));
 		const select = Object.values(s);
 		result.select.push(...select);
