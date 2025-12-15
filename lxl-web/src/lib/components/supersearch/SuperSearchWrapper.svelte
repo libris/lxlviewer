@@ -14,10 +14,11 @@
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping } from '$lib/types/search';
+	import type { DisplayMapping, SearchResult } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
+	import IconGo from '~icons/bi/arrow-right-short';
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 
@@ -299,12 +300,12 @@
 				{/if}
 			</div>
 		{/snippet}
-		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav class="mt-2 sm:mt-1 lg:mt-0">
+		{#snippet expandedContent({ search, resultsCount, resultsSnippet, getCellId, isFocusedCell })}
+			<nav class="mt-2 mb-2 sm:mt-1 lg:mt-0">
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
-						class="text-subtle mb-1 px-4 text-xs font-medium sm:px-2 lg:px-4"
+						class="text-subtle mb-1 px-4 text-sm font-medium sm:px-2 lg:px-4"
 					>
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
@@ -330,29 +331,39 @@
 						</div>
 					</div>
 				{/if}
-				{#if resultsCount && q.trim().length}
+				{#if showAllResultsButton && q.trim().length}
 					<div
-						id="supersearch-results-label"
-						class="text-subtle mb-1 px-4 text-xs font-medium sm:px-2 lg:px-4"
+						role="row"
+						class="text-subtle mb-3 flex items-center justify-between px-4 text-xs sm:text-sm"
 					>
-						{page.data.t('supersearch.suggestions')}
-					</div>
-					<div role="rowgroup" aria-labelledby="supersearch-results-label">
-						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+						{#if debouncedLoading || !search.data}
+							<span>{page.data.t('supersearch.loading')}</span>
+						{:else}
+							<h2 id="supersearch-results-label" class="font-medium">
+								{#if search.data && Object.hasOwn(search.data, 'totalItems')}
+									{page.data.t('supersearch.showing')}
+									{resultsCount}
+									{page.data.t('supersearch.showingOf')}
+									{(search.data as SearchResult).totalItems.toLocaleString(page.data.locale)}
+									{page.data.t('supersearch.hits')}
+								{/if}
+							</h2>
+						{/if}
+						<button type="submit" tabindex="-1">
+							<span class="text-link flex items-center gap-1 hover:underline">
+								{page.data.t('supersearch.showAll')}
+								<IconGo aria-hidden="true" class="text-link size-6" />
+							</span>
+						</button>
 					</div>
 				{/if}
-				{#if showAllResultsButton && q.trim().length}
-					<div role="row" class="show-all border-neutral bg-page fixed w-full border-t sm:static">
-						<button
-							type="submit"
-							class="hover:bg-primary-50 focus:bg-primary-50 min-h-11 w-full px-4 text-left text-sm font-medium sm:px-2 sm:text-xs lg:px-4"
-							class:focused-cell={isFocusedCell(
-								1 + (resultsCount ? resultsCount : 0) + (showAddQualifiers ? 1 : 0),
-								0
-							)}
-						>
-							{page.data.t('supersearch.showAll')}
-						</button>
+				{#if resultsCount && q.trim().length}
+					<div
+						role="rowgroup"
+						aria-labelledby="supersearch-results-label"
+						class="border-neutral border-t"
+					>
+						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
 			</nav>
@@ -394,11 +405,11 @@
 			border-bottom: none;
 			border-radius: var(--radius-md);
 			margin-inline: calc(var(--spacing) * 2);
-			box-shadow: 0 0 0 1px var(--color-primary-200);
+			box-shadow: 0 0 0 1px var(--color-neutral-400);
 			margin-block: calc((var(--spacing) * 2));
 
 			&.focused-row {
-				box-shadow: 0 0 0 1px var(--color-primary-500);
+				@apply outline-accent outline-2;
 			}
 		}
 
@@ -609,12 +620,5 @@
 	:global(.codemirror-container .cm-placeholder) {
 		color: var(--color-placeholder);
 		margin: 1px 0;
-	}
-
-	.show-all {
-		bottom: env(safe-area-inset-bottom, 0px);
-		@variant sm {
-			bottom: 0;
-		}
 	}
 </style>

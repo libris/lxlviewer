@@ -170,8 +170,11 @@ export default {
 	},
 	supersearch: {
 		addQualifiers: 'Lägg till filter',
-		suggestions: 'Förslag',
-		showAll: 'Visa alla träffar'
+		loading: 'Laddar...',
+		showing: 'Visar',
+		showingOf: 'av',
+		hits: 'resultat',
+		showAll: 'Visa alla sökresultat'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

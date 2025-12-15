@@ -171,7 +171,10 @@ export default {
 	},
 	supersearch: {
 		addQualifiers: 'Add filter',
-		suggestions: 'Suggestions',
+		loading: 'Loading...',
+		showing: 'Showing',
+		showingOf: 'of',
+		hits: 'results',
 		showAll: 'Show all results'
 	},
 	qualifiers: {
