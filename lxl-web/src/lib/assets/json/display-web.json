@@ -1073,10 +1073,10 @@
 				"fresnel:contentLast": ""
 			}
 		},
-		"Collection-sigel-format": {
+		"Library-sigel-format": {
 			"@id": "Collection-sigel-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Collection"],
+			"fresnel:classFormatDomain": ["Library"],
 			"fresnel:propertyFormatDomain": ["sigel"],
 			"fresnel:propertyStyle": ["sigel"],
 			"fresnel:propertyFormat": {
