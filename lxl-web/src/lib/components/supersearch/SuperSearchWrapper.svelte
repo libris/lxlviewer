@@ -14,7 +14,7 @@
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping, SearchResult } from '$lib/types/search';
+	import type { DisplayMapping } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
@@ -340,13 +340,7 @@
 							<span>{page.data.t('supersearch.loading')}</span>
 						{:else}
 							<h2 id="supersearch-results-label" class="font-medium">
-								{#if search.data && Object.hasOwn(search.data, 'totalItems')}
-									{page.data.t('supersearch.showing')}
-									{resultsCount}
-									{page.data.t('supersearch.showingOf')}
-									{(search.data as SearchResult).totalItems.toLocaleString(page.data.locale)}
-									{page.data.t('supersearch.hits')}
-								{/if}
+								{page.data.t('supersearch.suggestions')}
 							</h2>
 						{/if}
 						<button type="submit" id={getCellId(1, 0)}>

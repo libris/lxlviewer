@@ -171,9 +171,7 @@ export default {
 	supersearch: {
 		addQualifiers: 'Lägg till filter',
 		loading: 'Laddar...',
-		showing: 'Visar',
-		showingOf: 'av',
-		hits: 'resultat',
+		suggestions: 'Förslag',
 		showAll: 'Visa alla sökresultat'
 	},
 	qualifiers: {
