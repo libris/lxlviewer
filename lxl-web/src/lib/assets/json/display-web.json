@@ -1101,6 +1101,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["bibdb:Organization"],
 			"fresnel:propertyFormatDomain": ["hasPart"],
+			"fresnel:propertyStyle": ["sort()"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
