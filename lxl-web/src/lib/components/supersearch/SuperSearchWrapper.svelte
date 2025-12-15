@@ -349,8 +349,13 @@
 								{/if}
 							</h2>
 						{/if}
-						<button type="submit" tabindex="-1">
-							<span class="text-link flex items-center gap-1 hover:underline">
+						<button type="submit" id={getCellId(1, 0)}>
+							<span
+								class={[
+									'text-link flex items-center gap-1 hover:underline',
+									isFocusedCell(1, 0) && 'underline'
+								]}
+							>
 								{page.data.t('supersearch.showAll')}
 								<IconGo aria-hidden="true" class="text-link size-6" />
 							</span>
@@ -363,7 +368,7 @@
 						aria-labelledby="supersearch-results-label"
 						class="border-neutral border-t"
 					>
-						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 3 : 2 })}
 					</div>
 				{/if}
 			</nav>
