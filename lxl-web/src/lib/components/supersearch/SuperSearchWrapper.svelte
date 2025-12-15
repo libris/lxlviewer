@@ -300,20 +300,17 @@
 				{/if}
 			</div>
 		{/snippet}
-		{#snippet expandedContent({ search, resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav class="mt-2 mb-2 sm:mt-1 lg:mt-0">
+		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
+			<nav class="mt-2 mb-2 sm:mt-1 sm:mb-3 lg:mt-0">
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
-						class="text-subtle mb-1 px-4 text-sm font-medium sm:px-2 lg:px-4"
+						class="text-subtle mt-1.5 mb-1 px-4 text-sm font-medium lg:mt-0"
 					>
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div
-							role="row"
-							class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4 sm:pl-2 lg:pl-4"
-						>
+						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
 							{#each qualifierSuggestions as { key, label }, cellIndex (key)}
 								<button
 									type="button"
@@ -334,15 +331,11 @@
 				{#if showAllResultsButton && q.trim().length}
 					<div
 						role="row"
-						class="text-subtle mb-3 flex items-center justify-between px-4 text-xs sm:text-sm"
+						class="text-subtle mb-2 flex items-center justify-between px-4 text-xs sm:mb-3 sm:text-sm"
 					>
-						{#if debouncedLoading || !search.data}
-							<span>{page.data.t('supersearch.loading')}</span>
-						{:else}
-							<h2 id="supersearch-results-label" class="font-medium">
-								{page.data.t('supersearch.suggestions')}
-							</h2>
-						{/if}
+						<h2 id="supersearch-results-label" class="font-medium">
+							{page.data.t('supersearch.suggestions')}
+						</h2>
 						<button type="submit" id={getCellId(1, 0)}>
 							<span
 								class={[
