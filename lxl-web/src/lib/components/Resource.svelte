@@ -226,7 +226,7 @@
 			</section>
 			{#if decoratedData.summary.length}
 				<section class="mt-6">
-					<h2 id={`${uidPrefix}summary`} class="mb-6 text-xl font-medium">
+					<h2 id={`${uidPrefix}summary`} class="mb-3 text-xl font-medium">
 						{page.data.t('resource.summary')}
 					</h2>
 					<Carousel items={decoratedData.summary} render={summaryOrToc} />
@@ -294,7 +294,7 @@
 			{/if}
 			{#if decoratedData.resourceTableOfContents.length}
 				<section class="mt-6">
-					<h2 id={`${uidPrefix}resourceTableOfContents`} class="mb-6 text-xl font-medium">
+					<h2 id={`${uidPrefix}resourceTableOfContents`} class="mb-3 text-xl font-medium">
 						{page.data.t('resource.tableOfContents')}
 					</h2>
 					<Carousel items={decoratedData.resourceTableOfContents} render={summaryOrToc} />
