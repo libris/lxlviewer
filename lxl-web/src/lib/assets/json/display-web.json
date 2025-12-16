@@ -1043,18 +1043,24 @@
 			"fresnel:classFormatDomain": ["Cartographic"],
 			"fresnel:resourceStyle": ["block"]
 		},
+		"summary-format": {
+			"@id": "provisionActivity-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["summary"],
+			"fresnel:propertyStyle": ["nolabel", "summary"]
+		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Instance"],
-			"fresnel:propertyFormatDomain": ["identifiedBy", "summary"],
+			"fresnel:propertyFormatDomain": ["identifiedBy"],
 			"fresnel:propertyStyle": ["nolabel"]
 		},
 		"Work-self-x-format": {
 			"@id": "Work-self-x-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
-			"fresnel:propertyFormatDomain": ["hasTitle", "identifiedBy", "summary"],
+			"fresnel:propertyFormatDomain": ["hasTitle", "identifiedBy"],
 			"fresnel:propertyStyle": ["nolabel"]
 		},
 		"ISBD-area-format": {

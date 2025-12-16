@@ -324,6 +324,11 @@
 		& :global(.provisionActivity) {
 			font-style: italic;
 		}
+		& :global(.summary) {
+			display: inline-block;
+			max-width: 60ch;
+			//text-align: justify;
+		}
 	}
 
 	.decorated-heading {
