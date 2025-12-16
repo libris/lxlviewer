@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import type { SuperSearchResult } from '$lib/types/search.js';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-import insertWildcard from './insertWildcard.js';
+import addSuggestParens from './addSuggestParens.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
 import itemAsQualifiers from './itemAsQualifiers.js';
@@ -29,11 +29,12 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		newSearchParams.set('_debug', 'esScore');
 	}
 
-	newSearchParams.set('_suggest', 'true');
+	const suggestParens = addSuggestParens(_q, cursor);
 
-	const withWildcard = insertWildcard(_q, cursor);
-	newSearchParams.set('_q', withWildcard.query);
-	newSearchParams.set('cursor', withWildcard.cursor.toString());
+	for (const [key, val] of Object.entries(suggestParens)) {
+		newSearchParams.set(key, val);
+	}
+
 	newSearchParams.set('_sort', _sort);
 
 	if (locals.site?.searchSite) {
@@ -50,8 +51,8 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 
 	const superSearchResult: SuperSearchResult = {
-		'@id': data['@id'],
 		...searchResult,
+		'@id': data['@id'],
 		items: searchResult.items?.map((item, index) => {
 			return {
 				...item,
