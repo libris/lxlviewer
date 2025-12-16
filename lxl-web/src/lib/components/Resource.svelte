@@ -36,7 +36,7 @@
 			heading: DecoratedData;
 			headingExtra: DecoratedData;
 			overview: DecoratedData[];
-			overview2: DecoratedData;
+			overview2: DecoratedData[];
 			overviewFooter: DecoratedData;
 			summary: DecoratedData[];
 			resourceTableOfContents: DecoratedData[];
@@ -202,12 +202,19 @@
 					{/each}
 				</div>
 				<div class="decorated-overview">
-					<DecoratedData
-						data={decoratedData.overview2}
-						showLabels={ShowLabelsOptions.DefaultOn}
-						block
-						limit={{ contribution: 5, hasVariant: 5 }}
-					/>
+					{#if decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
+						<div class="border-b-neutral mb-2 border-b"></div>
+					{/if}
+					{#each decoratedData.overview2 as overview2 (overview2)}
+						<div class="compact mb-2">
+							<DecoratedData
+								data={overview2}
+								showLabels={ShowLabelsOptions.DefaultOn}
+								block
+								limit={{ contribution: 5, hasVariant: 5 }}
+							/>
+						</div>
+					{/each}
 					<DecoratedData
 						data={decoratedData.overviewFooter}
 						block

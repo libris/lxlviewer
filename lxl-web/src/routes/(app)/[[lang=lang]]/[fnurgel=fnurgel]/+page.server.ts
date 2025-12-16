@@ -105,7 +105,12 @@ export const load = async ({ params, locals, fetch, url }) => {
 		vocabUtil.getType(mainEntity) == 'Work' ||
 		vocabUtil.isSubClassOf(vocabUtil.getType(mainEntity), 'Work');
 	const overviewLens = isWork ? LensType.WebOverview2 : LxlLens.PageOverView;
-	const overview2 = displayUtil.lensAndFormat(mainEntity, overviewLens, locale);
+	const overview2 = [
+		displayUtil.lensAndFormat(mainEntity, overviewLens, locale),
+		...(_instances.length === 1
+			? [displayUtil.lensAndFormat(_instances[0], overviewLens, locale)]
+			: [])
+	];
 
 	const details = [
 		displayUtil.lensAndFormat(mainEntity, LensType.WebDetails, locale),
