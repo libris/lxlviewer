@@ -196,7 +196,7 @@
 								data={overview}
 								showLabels={ShowLabelsOptions.DefaultOff}
 								block
-								limit={{ contribution: 10, hasVariant: 10 }}
+								limit={{ contribution: 5, hasVariant: 10 }}
 							/>
 						</div>
 					{/each}
@@ -206,12 +206,12 @@
 						data={decoratedData.overview2}
 						showLabels={ShowLabelsOptions.DefaultOn}
 						block
-						limit={{ contribution: 10, hasVariant: 10 }}
+						limit={{ contribution: 5, hasVariant: 5 }}
 					/>
 					<DecoratedData
 						data={decoratedData.overviewFooter}
 						block
-						limit={{ contribution: 10, hasVariant: 10, hasPart: 10 }}
+						limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 					/>
 					<a
 						class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
@@ -311,7 +311,7 @@
 								data={details}
 								showLabels={ShowLabelsOptions.Always}
 								block
-								limit={{ contribution: 10, hasVariant: 10 }}
+								limit={{ contribution: 5, hasVariant: 10 }}
 							/>
 						</div>
 					{/each}
@@ -409,12 +409,18 @@
 			display: none;
 		}
 
-		/*
-        & :global(.provisionActivity > span) {
-           display: block;
-        }
+		& :global(.provisionActivity > span[data-type='Publication']) {
+			display: block;
+		}
 
-         */
+		& :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
+			display: block;
+			/*font-size: var(--text-2xs);*/
+		}
+
+		& :global(.provisionActivity:has(> span:nth-of-type(2))) {
+			@apply py-2;
+		}
 
 		& :global(.see-also > *) {
 			display: block;
@@ -460,6 +466,37 @@
 		& :global(.inScheme) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
+		}
+
+		& :global(.contribution > ._contentBefore),
+		:global(.contribution > ._contentAfter) {
+			display: none;
+		}
+
+		& :global(.contribution > *) {
+			display: block;
+		}
+
+		& :global(.hasNote > ._contentBefore),
+		:global(.hasNote > ._contentAfter) {
+			display: none;
+		}
+
+		& :global(div[data-property='hasTitle'] > span) {
+			display: block;
+		}
+
+		& :global(div[data-property='hasTitle'] > ._contentBefore),
+		:global(div[data-property='hasTitle'] > ._contentAfter) {
+			display: none;
+		}
+
+		& :global(.hasNote > *) {
+			display: block;
+		}
+
+		& :global(.hasNote > span)::before {
+			content: ' • ';
 		}
 
 		& :global(.provisionActivity > ._contentBefore),

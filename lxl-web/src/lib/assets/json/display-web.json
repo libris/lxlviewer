@@ -611,6 +611,18 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
 					"showProperties": ["subject"]
+				},
+				"Instance": {
+					"@id": "Instance-web-overview2",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": [
+						"continues",
+						{ "inverseOf": "continuedBy" },
+						"continuedBy",
+						{ "inverseOf": "continues" },
+						"relatedTo"
+					]
 				}
 			}
 		},
@@ -956,6 +968,12 @@
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["subject", "seriesMembership"],
 			"fresnel:propertyStyle": ["label"]
+		},
+		"hasNote-format": {
+			"@id": "hasNote-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["hasNote"],
+			"fresnel:propertyStyle": ["hasNote"]
 		},
 		"Classification-inScheme-format": {
 			"@id": "Classification-inScheme-format",
