@@ -11,15 +11,15 @@ import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/sea
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 import type { HoldingsData } from '$lib/types/holdings.js';
 
-import { pickProperty, toString, asArray, first } from '$lib/utils/xl.js';
+import { asArray, first, pickProperty, toString } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import {
+	getBibIdsByInstanceId,
+	getHoldersByType,
 	getHoldingLibraries,
 	getHoldingsByInstanceId,
-	getBibIdsByInstanceId,
-	getHoldingsByType,
-	getHoldersByType
+	getHoldingsByType
 } from '$lib/utils/holdings.server';
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
@@ -89,10 +89,30 @@ export const load = async ({ params, locals, fetch, url }) => {
 		delete mainEntity['language'];
 	}
 
+	const _instances = mainEntity?.['@reverse']?.instanceOf || [];
+
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
-	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
-	const details = displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale);
+	const overview = [
+		displayUtil.lensAndFormat(mainEntity, LensType.WebOverview, locale),
+		...(_instances.length === 1
+			? [displayUtil.lensAndFormat(_instances[0], LensType.WebOverview, locale)]
+			: [])
+	];
+
+	// TODO ...
+	const isWork =
+		vocabUtil.getType(mainEntity) == 'Work' ||
+		vocabUtil.isSubClassOf(vocabUtil.getType(mainEntity), 'Work');
+	const overviewLens = isWork ? LensType.WebOverview2 : LxlLens.PageOverView;
+	const overview2 = displayUtil.lensAndFormat(mainEntity, overviewLens, locale);
+
+	const details = [
+		displayUtil.lensAndFormat(mainEntity, LensType.WebDetails, locale),
+		...(_instances.length === 1
+			? [displayUtil.lensAndFormat(_instances[0], LensType.WebDetails, locale)]
+			: [])
+	];
 
 	let instances;
 	let searchResult: ResourceSearchResult | undefined;
@@ -279,7 +299,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 			headingTop: types,
 			heading: heading,
 			headingExtra: headingExtra,
-			overview: overviewWithoutHasInstance,
+			overview: overview,
+			overview2: overview2,
 			overviewFooter: {},
 			summary: summary,
 			resourceTableOfContents: resourceTableOfContents,

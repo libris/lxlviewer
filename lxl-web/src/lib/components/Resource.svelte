@@ -35,11 +35,12 @@
 			headingTop: DecoratedData;
 			heading: DecoratedData;
 			headingExtra: DecoratedData;
-			overview: DecoratedData;
+			overview: DecoratedData[];
+			overview2: DecoratedData;
 			overviewFooter: DecoratedData;
 			summary: DecoratedData[];
 			resourceTableOfContents: DecoratedData[];
-			details: DecoratedData;
+			details: DecoratedData[];
 		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
@@ -188,10 +189,22 @@
 						</hgroup>
 					</header>
 				</div>
+				<div class="decorated-overview-compact">
+					{#each decoratedData.overview as overview (overview)}
+						<div class="compact mb-2">
+							<DecoratedData
+								data={overview}
+								showLabels={ShowLabelsOptions.DefaultOff}
+								block
+								limit={{ contribution: 10, hasVariant: 10 }}
+							/>
+						</div>
+					{/each}
+				</div>
 				<div class="decorated-overview">
 					<DecoratedData
-						data={decoratedData.overview}
-						showLabels={ShowLabelsOptions.DefaultOff}
+						data={decoratedData.overview2}
+						showLabels={ShowLabelsOptions.DefaultOn}
 						block
 						limit={{ contribution: 10, hasVariant: 10 }}
 					/>
@@ -291,22 +304,17 @@
 				<h2 id="{uidPrefix}details" class="mb-4 text-xl font-medium">
 					{page.data.t('resource.details')}
 				</h2>
-				{#if instances?.length === 1}
-					<!-- single instance -->
-					<div class="decorated-overview">
-						<div class="instance-details columns col-span-3">
-							<DecoratedData data={instances[0]} block showLabels={ShowLabelsOptions.Always} />
-						</div>
-					</div>
-				{/if}
 				<div class="decorated-overview">
-					<div class="columns col-span-3">
-						<DecoratedData
-							data={decoratedData.details}
-							block
-							showLabels={ShowLabelsOptions.Always}
-						/>
-					</div>
+					{#each decoratedData.details as details (details)}
+						<div class="mb-2">
+							<DecoratedData
+								data={details}
+								showLabels={ShowLabelsOptions.Always}
+								block
+								limit={{ contribution: 10, hasVariant: 10 }}
+							/>
+						</div>
+					{/each}
 				</div>
 			</section>
 		</div>
@@ -343,9 +351,23 @@
 		}
 	}
 
-	.decorated-overview {
+	.decorated-overview-compact {
+		& :global(div:has(> .property-label)) {
+			display: inline;
+		}
+
 		& :global(.property-label) {
-			font-size: var(--text-2xs);
+			color: var(--color-body);
+		}
+
+		& :global(.property-label):not(:empty)::after {
+			color: var(--color-body);
+			content: ': ';
+		}
+
+		& :global(.contribution) {
+			font-size: var(--text-lg);
+			@apply mb-2;
 		}
 
 		& :global(.contribution-role) {
@@ -359,6 +381,74 @@
 				text-transform: capitalize;
 			}
 		}
+
+		& :global(div[data-property]:not(:last-child)) {
+			margin-bottom: 0;
+
+			@variant sm {
+				margin-bottom: 0;
+			}
+		}
+
+		& :global(.inScheme) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+		}
+
+		& :global(.contribution > ._contentBefore),
+		:global(.contribution > ._contentAfter) {
+			display: none;
+		}
+
+		& :global(.contribution > *) {
+			display: block;
+		}
+
+		& :global(.provisionActivity > ._contentBefore),
+		:global(.provisionActivity > ._contentAfter) {
+			display: none;
+		}
+
+		/*
+        & :global(.provisionActivity > span) {
+           display: block;
+        }
+
+         */
+
+		& :global(.see-also > *) {
+			display: block;
+			width: fit-content;
+			white-space: nowrap;
+		}
+
+		& :global(.genre-form) {
+			@apply py-3;
+		}
+	}
+
+	.decorated-overview {
+		& :global(.property-label) {
+			font-size: var(--text-2xs);
+		}
+
+		& :global(.contribution) {
+			font-size: var(--text-lg);
+			@apply mb-2;
+		}
+
+		& :global(.contribution-role) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+		}
+
+		& :global(small) {
+			display: block;
+			&::first-letter {
+				text-transform: capitalize;
+			}
+		}
+
 		& :global(div[data-property]:not(:last-child)) {
 			margin-bottom: calc(var(--spacing) * 1.5);
 

@@ -575,6 +575,104 @@
 					"showProperties": []
 				}
 			}
+		},
+		"web-overview": {
+			"@id": "web-overview",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-overview",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["contribution", "category", "intendedAudience"]
+				},
+				"Instance": {
+					"@id": "Instance-web-overview",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": [
+						"identifiedBy",
+						"publication",
+						"manufacture",
+						"extent",
+						"seriesMembership",
+						"contribution",
+						"responsibilityStatement"
+					]
+				}
+			}
+		},
+		"web-overview2": {
+			"@id": "web-overview2",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-overview2",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["subject"]
+				}
+			}
+		},
+		"web-details": {
+			"@id": "web-details",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-details",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["classification"]
+				},
+				"Instance": {
+					"@id": "Instance-web-details",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": [
+						"contribution",
+						"reproductionOf",
+						"identifiedBy",
+						"indirectlyIdentifiedBy",
+						"hasTitle",
+						"responsibilityStatement",
+						"editionStatement",
+						"editionStatementRemainder",
+						"isIssueOfEdition",
+						"isPartOf",
+						"part",
+						"publication",
+						"marc:primaryProvisionActivity",
+						"production",
+						"manufacture",
+						"distribution",
+						"copyright",
+						"copyrightDate",
+						"projectedProvisionDate",
+						"extent",
+						"hasDimensions",
+						"hasDuration",
+						"physicalDetailsNote",
+						"illustrativeContent",
+						"baseMaterial",
+						"appliedMaterial",
+						"productionMethod",
+						"digitalCharacteristic",
+						"marc:mediaTerm",
+						"genreForm",
+						"classification",
+						"accompaniedBy",
+						"seriesMembership",
+						"intendedAudience",
+						"associatedMedia",
+						"usageAndAccessPolicy",
+						"accessMode",
+						"isPrimaryTopicOf",
+						"isIssueOf",
+						"relatedTo",
+						"hasNote"
+					]
+				}
+			}
 		}
 	},
 	"formatters": {
@@ -636,7 +734,7 @@
 				"manufacture",
 				"marc:primaryProvisionActivity"
 			],
-			"fresnel:propertyStyle": ["provisionActivity"]
+			"fresnel:propertyStyle": ["provisionActivity", "label"]
 		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
@@ -853,10 +951,10 @@
 			"fresnel:classFormatDomain": ["Subject"],
 			"fresnel:resourceStyle": ["link"]
 		},
-		"subject-format": {
+		"needs-label-format": {
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["subject"],
+			"fresnel:propertyFormatDomain": ["subject", "seriesMembership"],
 			"fresnel:propertyStyle": ["label"]
 		},
 		"Classification-inScheme-format": {
@@ -907,6 +1005,16 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Subdivision"],
 			"fresnel:resourceStyle": ["link"]
+		},
+		"SeriesMembership-seriesEnumeration-format": {
+			"@id": "SeriesMembership-seriesEnumeration-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["SeriesMembership"],
+			"fresnel:propertyFormatDomain": ["seriesEnumeration"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ; ",
+				"fresnel:contentFirst": ""
+			}
 		},
 		"Instance-format": {
 			"@id": "Instance-format",
