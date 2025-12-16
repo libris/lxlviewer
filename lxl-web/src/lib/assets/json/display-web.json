@@ -592,6 +592,7 @@
 					"classLensDomain": "Instance",
 					"showProperties": [
 						"identifiedBy",
+						"editionStatement",
 						"publication",
 						"manufacture",
 						"extent",
