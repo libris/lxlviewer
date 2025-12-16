@@ -238,10 +238,28 @@ export default {
           this.resources,
         );
       }
-      return `${translatedType}, ${translatedBaseType}`;
+      return translatedType;
     },
     topBarInformation() {
-      return `${this.typeLabel}${this.categorization.length > 0 ? ' • ' : ''}${this.categorization.join(', ')}`;
+      let typeLike = [];
+      if (this.focusData._categoryByCollection) {
+        const find = this.focusData._categoryByCollection['find'];
+        const identify = this.focusData._categoryByCollection['identify'];
+        const none = this.focusData._categoryByCollection['@none'];
+
+        if (identify) {
+          typeLike = identify.map(i => this.getLabel(i));
+        } else if (find) {
+          typeLike = find.map(f => this.getLabel(f));
+        } else if (none) {
+          typeLike = none.map(n => this.getLabel(n));
+        }
+      }
+      if (typeLike.length === 0) {
+        return `${this.typeLabel}${this.categorization.length > 0 ? ' • ' : ''}${this.categorization.join(', ')}`;
+      } else {
+        return `${this.typeLabel} • ${typeLike.join(', ')}`;
+      }
     },
     categorization() {
       return StringUtil.getFormattedEntries(
