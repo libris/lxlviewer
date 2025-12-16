@@ -2,8 +2,9 @@
 	import { browser } from '$app/environment';
 	import { onDestroy } from 'svelte';
 	import { goto, onNavigate, replaceState } from '$app/navigation';
-	import type { SearchResultItem } from '$lib/types/search';
-	import { LensType } from '$lib/types/xl';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+	import type { LibraryResultItem, SearchResultItem } from '$lib/types/search';
+	import { JsonLd, LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
 	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
@@ -21,9 +22,11 @@
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import BiHouse from '~icons/bi/house';
 	import BiQuote from '~icons/bi/quote';
+	import BiHeartFill from '~icons/bi/heart-fill';
+	import BiHeart from '~icons/bi/heart';
 
 	interface Props {
-		item: SearchResultItem;
+		item: SearchResultItem | LibraryResultItem;
 		uidPrefix?: string;
 	}
 
@@ -80,6 +83,14 @@
 				dimissedHighlighting: true
 			});
 		}
+	}
+
+	function isLibraryCard(item: SearchResultItem | LibraryResultItem): item is LibraryResultItem {
+		if (item[JsonLd.TYPE] !== 'Library' && item[JsonLd.TYPE] !== 'bibdb:Organization') return false;
+
+		// addLibrary from a SearchResultItem won't work until library-id:s are included...
+		if (!('thingId' in item) || !('str' in item)) return false;
+		return true;
 	}
 
 	$effect(() => {
@@ -228,7 +239,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								data={obj}
 								showLabels={ShowLabelsOptions.Never}
 								block
-								limit={{ contribution: 3 }}
+								limit={{ contribution: 3, hasPart: 5 }}
 							/>
 						</div>
 					{/each}
@@ -279,6 +290,28 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						<BiQuote class="size-4 text-neutral-400" />
 						<span>{page.data.t('citations.cite')}</span>
 					</a>
+				{/if}
+				{#if isLibraryCard(item)}
+					{@const userSettings = getUserSettings()}
+					{@const alreadyAdded =
+						userSettings.myLibraries &&
+						Object.keys(userSettings.myLibraries).includes(item.thingId)}
+					<button
+						class="btn btn-primary h-7 rounded-full md:h-8"
+						type="button"
+						onclick={() =>
+							alreadyAdded
+								? userSettings.removeLibrary(item.thingId)
+								: userSettings.addLibrary(item.thingId, item.str)}
+					>
+						{#if alreadyAdded}
+							<BiHeartFill class="text-primary-600" />
+							<span>{page.data.t('myPages.remove')}</span>
+						{:else}
+							<BiHeart class="text-primary-600" />
+							<span>{page.data.t('myPages.add')}</span>
+						{/if}
+					</button>
 				{/if}
 				{@render holdingsButton()}
 			</div>
@@ -415,6 +448,16 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		& .card-image,
 		.card-header-title {
 			pointer-events: none;
+		}
+	}
+
+	/* slim card in myLibraries search */
+	:global(.my-libraries-result .search-card) {
+		grid-template-columns: 48px 1fr;
+		padding: calc(var(--spacing) * 2);
+
+		& .card-header-title {
+			font-size: var(--text-sm);
 		}
 	}
 </style>

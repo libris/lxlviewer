@@ -461,6 +461,18 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Language",
 					"showProperties": []
+				},
+				"Library": {
+					"@id": "Library-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Library",
+					"showProperties": ["bibdb:libraryType"]
+				},
+				"bibdb:Organization": {
+					"@id": "bibdb:Organization-web-card-header-top",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "bibdb:Organization",
+					"showProperties": []
 				}
 			}
 		},
@@ -501,6 +513,12 @@
 					"@id": "Language-web-card-header-extra",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Language",
+					"showProperties": []
+				},
+				"bibdb:Organization": {
+					"@id": "bibdb:Organization-web-card-header-extra",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "bibdb:Organization",
 					"showProperties": []
 				}
 			}
@@ -548,6 +566,12 @@
 					"@id": "Language-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Language",
+					"showProperties": []
+				},
+				"bibdb:Organization": {
+					"@id": "bibdb:Organization-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "bibdb:Organization",
 					"showProperties": []
 				}
 			}
@@ -760,7 +784,17 @@
 			"@id": "contribution-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["contribution"],
-			"fresnel:propertyStyle": ["contribution", "nolabel"]
+			"fresnel:propertyStyle": ["contribution", "nolabel"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Contribution-format": {
+			"@id": "Contribution-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Contribution"],
+			"fresnel:resourceStyle": ["block"]
 		},
 		"genreForm-format": {
 			"@id": "genreForm-format",
@@ -1039,10 +1073,10 @@
 				"fresnel:contentLast": ""
 			}
 		},
-		"Collection-sigel-format": {
+		"Library-sigel-format": {
 			"@id": "Collection-sigel-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Collection"],
+			"fresnel:classFormatDomain": ["Library"],
 			"fresnel:propertyFormatDomain": ["sigel"],
 			"fresnel:propertyStyle": ["sigel"],
 			"fresnel:propertyFormat": {
@@ -1050,6 +1084,27 @@
 				"fresnel:contentFirst": "(",
 				"fresnel:contentAfter": ")",
 				"fresnel:contentLast": ")"
+			}
+		},
+		"Library-format": {
+			"@id": "Library-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Library"],
+			"fresnel:resourceStyle": ["link", "block"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"bibdb:Organization-hasPart-format": {
+			"@id": "bibdb:Organization-hasPart-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["bibdb:Organization"],
+			"fresnel:propertyFormatDomain": ["hasPart"],
+			"fresnel:propertyStyle": ["sort()"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
 			}
 		},
 		"hasReproduction-format": {

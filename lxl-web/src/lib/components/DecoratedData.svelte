@@ -275,6 +275,7 @@
 
 	.block {
 		display: block;
+		width: fit-content;
 	}
 
 	/* resource property-specific styles */
@@ -322,8 +323,11 @@
 		}
 	}
 
-	/* delimiter toggle */
-	:global([data-property]:not([data-property='contribution']) > button.delimiter) {
+	button.delimiter {
 		margin-left: calc(var(--spacing) * 1.5);
+	}
+
+	:global(.block + button.delimiter) {
+		margin-left: 0;
 	}
 </style>
