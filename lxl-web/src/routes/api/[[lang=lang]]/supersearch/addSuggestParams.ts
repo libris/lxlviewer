@@ -5,7 +5,7 @@ import { lxlQuery } from 'codemirror-lang-lxlquery';
  * (as long as empty searches are disallowed, transform () -> "")
  * for non-empty values instead apply _suggest
  */
-function addSuggestParens(query: string, cursor: number) {
+function addSuggestParams(query: string, cursor: number) {
 	const tree = lxlQuery.language.parser.parse(query);
 	const innerNode = tree.resolveInner(cursor, -1);
 	let qualifierValueNode = null;
@@ -38,4 +38,4 @@ function addSuggestParens(query: string, cursor: number) {
 	};
 }
 
-export default addSuggestParens;
+export default addSuggestParams;

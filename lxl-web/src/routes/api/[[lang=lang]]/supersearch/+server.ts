@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import type { SuperSearchResult } from '$lib/types/search.js';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-import addSuggestParens from './addSuggestParens.js';
+import addSuggestParams from './addSuggestParams.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
 import itemAsQualifiers from './itemAsQualifiers.js';
@@ -29,9 +29,9 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		newSearchParams.set('_debug', 'esScore');
 	}
 
-	const suggestParens = addSuggestParens(_q, cursor);
+	const suggestParams = addSuggestParams(_q, cursor);
 
-	for (const [key, val] of Object.entries(suggestParens)) {
+	for (const [key, val] of Object.entries(suggestParams)) {
 		newSearchParams.set(key, val);
 	}
 
