@@ -98,6 +98,8 @@ export interface FacetValue {
 	label: DisplayDecoratedLite;
 	discriminator?: string;
 	selected?: boolean;
+	facets?: Facet;
+	// values?: (FacetValue | FacetRange)[];
 }
 
 export interface FacetRange extends FacetValue {

@@ -3,7 +3,7 @@ import type { TranslateFn } from '$lib/i18n';
 import type { LocaleCode } from '$lib/i18n/locales';
 import { JsonLd, LensType } from '$lib/types/xl';
 
-import { DisplayUtil, toLite } from '$lib/utils/xl';
+import { DisplayUtil, toLite, toString } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { replacePath } from '$lib/utils/search';
@@ -54,7 +54,7 @@ export function getFacet({
 				dimension,
 				displayUtil,
 				locale,
-				// translate,
+				translate,
 				usePath
 			});
 		})
@@ -66,36 +66,54 @@ function getFacetValue({
 	dimension,
 	displayUtil,
 	locale,
-	// translate,
+	translate,
 	usePath
 }: {
 	observation: Observation;
 	dimension: string;
 	displayUtil: DisplayUtil;
 	locale: LocaleCode;
-	// translate: TranslateFn;
+	translate: TranslateFn;
 	usePath?: string;
 }): FacetValue | FacetRange {
+	const label = toLite(displayUtil.lensAndFormat(observation.object, LensType.Chip, locale));
+	const discriminator = getUriSlug(getAtPath(observation.object, ['inScheme', JsonLd.ID], ''));
+
 	return {
 		dimension,
-		label: toLite(displayUtil.lensAndFormat(observation.object, LensType.Chip, locale)),
-		discriminator: getUriSlug(getAtPath(observation.object, ['inScheme', JsonLd.ID], '')),
+		label,
+		discriminator,
 		view: replacePath(observation.view, usePath),
 		totalItems: observation.totalItems,
-		selected: observation._selected
-		/* children: observation.sliceByDimension
-			? Object.values(observation.sliceByDimension).map((slice) =>
-					getFacet({
-						slice,
-						observation,
-						parentDimension: dimension,
-						displayUtil,
-						locale,
-						translate,
-						usePath
-					})
-				)
-			: undefined
-		*/
+		selected: observation._selected,
+		values:
+			dimension === 'librissearch:findCategory' && observation.sliceByDimension
+				? Object.values(observation.sliceByDimension)
+						.map((slice) => {
+							const nestedValues = slice.observation.map((observationItem) => {
+								return getFacetValue({
+									observation: observationItem,
+									dimension: dimension,
+									displayUtil,
+									locale,
+									translate,
+									usePath
+								});
+							});
+
+							return [
+								{
+									dimension,
+									label: 'Allt inom ' + (toString(label) as string).toLowerCase(),
+									discriminator,
+									totalItems: observation.totalItems,
+									selected: observation._selected,
+									view: observation.view
+								},
+								...nestedValues
+							];
+						})
+						.flat()
+				: undefined
 	};
 }

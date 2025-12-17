@@ -1,19 +1,15 @@
 <script lang="ts">
 	import { page, navigating } from '$app/state';
-	import type { Facet, DisplayMapping } from '$lib/types/search';
+	import type { Facet } from '$lib/types/search';
 	import Toolbar from '$lib/components/Toolbar.svelte';
-	import IconChevron from '~icons/bi/chevron-right';
-	import IconRemove from '~icons/bi/x-lg';
+	import FacetGroup from '$lib/components/facet/FacetGroup.svelte';
 
 	type Props = {
 		facets?: Facet[];
-		mapping?: DisplayMapping[];
 		showHeader?: boolean;
 	};
 
 	const { facets = [], mapping, showHeader = true }: Props = $props();
-
-	const SHOW_MORE_LIMIT = 5;
 
 	const filtersLength = $derived(
 		mapping?.[0].children?.filter((m) => m['@id']?.includes('textQuery')).length ||
@@ -21,7 +17,7 @@
 			0
 	);
 
-	let expandedItems = $derived(['librissearch:findCategory', 'language']); // use snapshots or page.state to remember state when navigating away from a find route...
+	// let expandedItems = $derived(['librissearch:findCategory', 'language']); // use snapshots or page.state to remember state when navigating away from a find route...
 
 	function getClearAllHref() {
 		// TODO: Fix clear all links on AND filters
@@ -31,54 +27,6 @@
 		);
 	}
 </script>
-
-{#snippet chevron()}
-	<span
-		aria-hidden="true"
-		class={[
-			'chevron pointer-events-none flex h-8 w-8 shrink-0 origin-center items-center justify-center transition-transform'
-		]}
-	>
-		<IconChevron class="text-subtle size-3.5" />
-	</span>
-{/snippet}
-
-{#snippet limitToggles(name: string)}
-	{#snippet _toggle(limited: boolean)}
-		<li role="presentation" class={['limit', limited ? 'show-less' : 'show-more']}>
-			<label
-				class="focusable text-subtle hover:text-body focus:text-body flex min-h-8 w-full cursor-pointer items-center text-xs font-medium after:content-['…']"
-			>
-				<!-- svelte-ignore a11y_role_has_required_aria_props -->
-				<!-- aria-checked isnn't needed if input type="radio" is used, see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/menuitemradio_role#description -->
-				<input
-					type="radio"
-					{name}
-					role="menuitemradio"
-					class="cursor-pointer appearance-none focus:outline-0"
-					checked={limited}
-					value={limited ? 'show-less' : 'show-more'}
-					onkeydown={(event: KeyboardEvent & { currentTarget: HTMLInputElement }) => {
-						if (navigating.to) {
-							event.preventDefault();
-						} else {
-							if (event.key === 'Enter') {
-								event.currentTarget.checked = true;
-							}
-						}
-					}}
-				/>
-				{#if limited}
-					{page.data.t('search.showFewer')}
-				{:else}
-					{page.data.t('search.showMore')}
-				{/if}
-			</label>
-		</li>
-	{/snippet}
-	{@render _toggle(false)}
-	{@render _toggle(true)}
-{/snippet}
 
 <nav class="filters" data-testid="filters">
 	{#if showHeader}
@@ -100,7 +48,7 @@
 	<div
 		class={[
 			'filters-list relative overflow-x-hidden overflow-y-auto overscroll-contain',
-			navigating.to && 'opacity-50'
+			navigating.to && navigating.from?.url.pathname === navigating.to?.url.pathname && 'opacity-50'
 		]}
 		tabindex={-1}
 	>
@@ -123,78 +71,7 @@
 				and we don't want to rely on value.view.id as it changes after navigating
 			-->
 			{#each facets.filter((facet) => facet.dimension !== 'librissearch:hasInstanceCategory') as facet (facet.dimension)}
-				{@const selectedValues = facet.values?.filter((value) => value.selected)}
-				<details
-					role="menuitem"
-					open={expandedItems.includes(facet.dimension) || !!selectedValues?.length}
-					ontoggle={(event: Event & { currentTarget: HTMLDetailsElement }) => {
-						if (event.currentTarget.open) {
-							expandedItems = [...expandedItems, facet.dimension];
-						} else {
-							expandedItems = expandedItems.filter((item) => item !== facet.dimension);
-						}
-					}}
-				>
-					<summary
-						class="focusable text-subtle bg-aside sticky top-0 z-10 flex min-h-9 cursor-pointer items-center text-[0.9375rem] font-medium"
-					>
-						{@render chevron()}
-						<span class={['truncate']}>{facet.label}</span>
-						{#if selectedValues?.length}
-							{@const message = `${selectedValues.length} ${
-								selectedValues.length === 1
-									? page.data.t('search.selectedFiltersOne').toLowerCase()
-									: page.data.t('search.selectedFilters').toLowerCase()
-							}`}
-							<span
-								class="bg-link mx-1.5 size-1.75 shrink-0 rounded-full"
-								title={message}
-								aria-label={message}
-							>
-							</span>
-						{/if}
-					</summary>
-					<menu role="menu" style="--level:1">
-						{#each facet.values as value (value.label + (value.discriminator || ''))}
-							<a
-								role={facet.operator === 'OR' ? 'menuitemcheckbox' : 'menuitem'}
-								class={[
-									'focusable text-subtle hover:text-body focus-visible:text-body flex min-h-8 w-full items-center gap-2 text-sm',
-									navigating.to && 'cursor-default'
-								]}
-								href={value.view['@id']}
-								data-sveltekit-keepfocus
-								data-sveltekit-preload-data="false"
-								aria-checked={value.selected}
-								onclick={(event: MouseEvent) => {
-									if (navigating.to) event?.preventDefault();
-								}}
-							>
-								<div class={['flex items-baseline overflow-hidden']}>
-									<span class={['truncate', value.selected && 'text-link font-medium']}>
-										{value.label}
-									</span>
-									{#if !(facet.operator === 'AND' && value.selected)}
-										<span class="text-placeholder text-3xs ml-2">
-											{value.totalItems.toLocaleString(page.data.locale)}
-											<span class="sr-only"
-												>{value.totalItems === 1
-													? page.data.t('search.hitsOne')
-													: page.data.t('search.hits')}</span
-											>
-										</span>
-									{/if}
-								</div>
-								{#if facet.operator === 'AND' && typeof value.selected === 'boolean' && value.selected}
-									<span class="text-subtle"><IconRemove /></span>
-								{/if}
-							</a>
-						{/each}
-						{#if facet.maxItems > SHOW_MORE_LIMIT && facet.values && facet.values.length > SHOW_MORE_LIMIT && facet.label}
-							{@render limitToggles(facet.label.toString())}
-						{/if}
-					</menu>
-				</details>
+				<FacetGroup data={facet} level={1} />
 			{/each}
 			{#if !facets.length}
 				<p role="status" aria-atomic="true" class="text-subtle p-3">
@@ -272,13 +149,6 @@
 		.limit:has(:checked) {
 			display: none;
 		}
-	}
-
-	[role='menu'] [role='menuitem'],
-	[role='menu'] [role='menuitemcheckbox'],
-	[role='menu'] label:has([role='menuitemradio']) {
-		padding-left: calc(var(--level, 0) * var(--spacing) * 8);
-		padding-right: calc(var(--spacing) * 3);
 	}
 
 	.focusable {
