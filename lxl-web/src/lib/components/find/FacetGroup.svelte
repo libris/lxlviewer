@@ -257,4 +257,8 @@
 			transform: rotate(90deg);
 		}
 	}
+
+	summary {
+		padding-left: calc((var(--level, 0) - 1) * var(--spacing) * 5);
+	}
 </style>
