@@ -14,7 +14,7 @@
 	import FacetGroup from './FacetGroup.svelte';
 	import FacetValue from '$lib/components/find/FacetValue.svelte';
 	import FacetRange from '$lib/components/find/FacetRange.svelte';
-	import BiChevronRight from '~icons/bi/chevron-right';
+	import IconChevron from '~icons/bi/chevron-right';
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiInfo from '~icons/bi/info-circle';
 	import BiPencil from '~icons/bi/pencil';
@@ -106,11 +106,8 @@
 		}
 	}
 
-	function saveUserExpanded(e: Event): void {
-		e.preventDefault();
-		if (detailsEl) {
-			userSettings.saveFacetExpanded(data.dimension, !detailsEl.open);
-		}
+	function saveUserExpanded(event: Event & { currentTarget: HTMLDetailsElement }) {
+		userSettings.saveFacetExpanded(data.dimension, event.currentTarget.open);
 	}
 </script>
 
@@ -118,33 +115,25 @@
 	class={['relative w-full', searchPhrase && !hasHits && 'hidden']}
 	open={!!expanded}
 	data-dimension={data.dimension}
+	ontoggle={saveUserExpanded}
 	bind:this={detailsEl}
 >
-	{#if !parent}
-		<summary
-			role="menuitem"
-			class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
-			data-testid="facet-toggle"
-			onclick={saveUserExpanded}
+	<summary
+		role="menuitem"
+		class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
+		data-testid="facet-toggle"
+	>
+		<span
+			aria-hidden="true"
+			class={[
+				'chevron pointer-events-none flex h-8 w-8 shrink-0 origin-center items-center justify-center transition-transform'
+			]}
 		>
-			<span class="arrow text-subtle transition-transform">
-				<BiChevronRight />
-			</span>
-			<span class="flex-1 whitespace-nowrap">{data.label}</span>
-		</summary>
-	{:else}
-		<summary
-			class="hover:bg-primary-100 flex w-full cursor-pointer items-center gap-2 pr-3 pl-3 text-xs font-medium"
-			data-testid="facet-toggle"
-		>
-			<span class="arrow text-subtle transition-transform">
-				<button onclick={saveUserExpanded}>
-					<BiChevronRight />
-				</button>
-			</span>
-			<FacetValue data={parent} isEmbedded={true} />
-		</summary>
-	{/if}
+			<IconChevron class="text-subtle size-3.5" />
+		</span>
+		<span class="flex-1 whitespace-nowrap">{parent?.label || data.label}</span>
+	</summary>
+
 	<!-- sorting -->
 	<div class={['facet-sort absolute top-0 size-8', parent ? 'right-15' : 'right-2']}>
 		<select
@@ -239,16 +228,14 @@
 </details>
 
 <style lang="postcss">
-	details[open] > summary {
-		& .arrow {
-			rotate: 90deg;
-		}
-		& .facet-sort {
-			display: block;
+	details {
+		&[open] > summary,
+		& > summary:hover {
+			color: var(--color-body);
 		}
 
-		& summary:hover {
-			background-color: inherit;
+		&[open] > summary .chevron {
+			transform: rotate(90deg);
 		}
 	}
 
