@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
-	import { fade } from 'svelte/transition';
+	import { onDestroy } from 'svelte';
+	import NProgress from 'nprogress';
 	import {
 		SuperSearch,
 		lxlQualifierPlugin,
@@ -10,7 +11,6 @@
 		type ViewUpdateSuperSearchEvent
 	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
-	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
@@ -164,10 +164,15 @@
 	}
 
 	function handleOnExpand() {
+		NProgress.configure({ parent: '#supersearch-dialog' });
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
 		}
+	}
+
+	function handleOnCollapse() {
+		NProgress.configure({ parent: 'body' });
 	}
 
 	function handleOnExpandedViewUpdate(event: ViewUpdateSuperSearchEvent) {
@@ -184,13 +189,20 @@
 			superSearch?.fetchData();
 		}
 	});
+
+	$effect(() => {
+		if (debouncedLoading) {
+			NProgress.start();
+		} else {
+			NProgress.done();
+		}
+	});
+
+	onDestroy(() => {
+		NProgress.configure({ parent: 'body' });
+	});
 </script>
 
-{#snippet loading()}
-	<span class="pointer-events-none block size-4" in:fade={{ duration: 200 }}>
-		<Spinner />
-	</span>
-{/snippet}
 {#key page.data.locale}
 	<SuperSearch
 		name="_q"
@@ -251,11 +263,7 @@
 						]}
 						onclick={onclickClose}
 					>
-						{#if debouncedLoading}
-							{@render loading()}
-						{:else}
-							<IconBack aria-hidden="true" class="size-7" />
-						{/if}
+						<IconBack aria-hidden="true" class="size-7" />
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
@@ -409,11 +417,11 @@
 			border-bottom: none;
 			border-radius: var(--radius-md);
 			margin-inline: calc(var(--spacing) * 2);
-			box-shadow: 0 0 0 1px var(--color-neutral-400);
+			box-shadow: 0 0 0 1px var(--color-neutral-300);
 			margin-block: calc((var(--spacing) * 2));
 
 			&.focused-row {
-				box-shadow: 0 0 0 1px var(--color-primary-400);
+				box-shadow: 0 0 0 1px var(--color-primary-500);
 				outline: 3px solid var(--color-primary-200);
 				outline-offset: 1px;
 			}
