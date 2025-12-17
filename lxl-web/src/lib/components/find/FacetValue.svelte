@@ -43,12 +43,14 @@
 			{/if}
 		</span>
 	</span>
-	<span class="text-placeholder text-3xs ml-2">
-		{data.totalItems.toLocaleString(page.data.locale)}
-		<span class="sr-only">
-			{data.totalItems === 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}
+	{#if data.totalItems > 0}
+		<span class="text-placeholder text-3xs ml-2">
+			{data.totalItems.toLocaleString(page.data.locale)}
+			<span class="sr-only">
+				{data.totalItems === 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}
+			</span>
 		</span>
-	</span>
+	{/if}
 </a>
 
 <style lang="postcss">
