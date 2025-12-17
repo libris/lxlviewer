@@ -43,7 +43,7 @@
 			aria-label={page.data.t('search.filters')}
 			data-testid="facets"
 		>
-			<div class="px-3">
+			<div class="px-3 mt-3 relative">
 				<input
 					bind:value={searchPhrase}
 					placeholder={page.data.t('search.findFilter')}
