@@ -618,6 +618,7 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
 					"showProperties": [
+						"associatedMedia",
 						"continues",
 						{ "inverseOf": "continuedBy" },
 						"continuedBy",
