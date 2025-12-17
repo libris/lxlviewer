@@ -127,19 +127,19 @@
 					/>
 				{/if}
 			{/each}
-		{:else}
-			<li class="facet-group-list-value hover:bg-primary-100 flex">
+		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
+			<li role="presentation" class="flex">
 				<FacetValue data={value} />
-				{#if 'alias' in value && value.alias === MY_LIBRARIES_FILTER_ALIAS}
-					<a
-						href={page.data.localizeHref('/my-pages')}
-						class="btn btn-primary mr-2 border-0"
-						aria-label={page.data.t('search.changeLibraries')}
-					>
-						<BiPencil />
-					</a>
-				{/if}
+				<a
+					href={page.data.localizeHref('/my-pages')}
+					class="btn btn-primary mr-2 border-0"
+					aria-label={page.data.t('search.changeLibraries')}
+				>
+					<BiPencil />
+				</a>
 			</li>
+		{:else}
+			<FacetValue data={value} />
 		{/if}
 	{/each}
 {/snippet}
@@ -246,9 +246,5 @@
 		&[open] > summary .chevron {
 			transform: rotate(90deg);
 		}
-	}
-
-	.facet-group-list-value:has(.btn:hover) {
-		background-color: inherit;
 	}
 </style>
