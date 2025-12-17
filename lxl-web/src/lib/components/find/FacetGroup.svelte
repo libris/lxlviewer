@@ -31,8 +31,6 @@
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
 
-	let detailsEl: HTMLDetailsElement | undefined = undefined;
-
 	const totalItems = $derived(data.values.length);
 	let defaultItemsShown = $state(DEFAULT_FACET_VALUES_SHOWN);
 
@@ -116,7 +114,6 @@
 	open={!!expanded}
 	data-dimension={data.dimension}
 	ontoggle={saveUserExpanded}
-	bind:this={detailsEl}
 >
 	<summary
 		role="menuitem"
