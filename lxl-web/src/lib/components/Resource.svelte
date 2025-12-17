@@ -215,11 +215,13 @@
 							/>
 						</div>
 					{/each}
-					<DecoratedData
-						data={decoratedData.overviewFooter}
-						block
-						limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
-					/>
+					<div class="mb-2">
+						<DecoratedData
+							data={decoratedData.overviewFooter}
+							block
+							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
+						/>
+					</div>
 					<a
 						class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
 						href="#{uidPrefix}details"
@@ -342,7 +344,7 @@
 		& :global(.summary) {
 			display: inline-block;
 			max-width: 60ch;
-			//text-align: justify;
+			text-align: justify;
 		}
 	}
 

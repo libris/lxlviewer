@@ -125,7 +125,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	// Format & sort instances; single instance -> pick from resource overview
 	if (mainEntity?.['@reverse']?.instanceOf?.length === 1) {
 		// TODO: Replace with a custom getProperty method (similar to pickProperty)
-		instances = jmespath.search(overview, '*[].hasInstance[]');
+		instances = jmespath.search(overview[0], '*[].hasInstance[]');
 	} else if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
 		// multiple instances -> format as web cards
 		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
@@ -266,7 +266,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	];
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
+	const [_, overviewWithoutHasInstance] = pickProperty(overview[0], ['hasInstance']);
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByType = getHoldingsByType(mainEntity);
