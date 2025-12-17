@@ -91,6 +91,7 @@ export interface FacetValue {
 	alias?: string;
 	selected?: boolean;
 	operator?: FacetOperator;
+	all?: boolean
 }
 
 export type FacetOperator = 'AND' | 'OR';

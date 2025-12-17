@@ -7,15 +7,11 @@
 
 	interface Props {
 		data: FacetValue;
-		parentDimension: string;
 		operator?: FacetOperator;
+		all?: boolean;
 	}
 
-	let { data, parentDimension, operator, index }: Props = $props();
-
-	const identifyCategory = $derived(
-		parentDimension?.split('/').slice(-1)?.toString() === 'librissearch:identifyCategory'
-	);
+	let { data, operator, all }: Props = $props();
 </script>
 
 <a
@@ -23,7 +19,7 @@
 	class={[
 		`flex min-h-8 items-center no-underline`,
 		operator === 'OR' && 'with-checkbox',
-		operator === 'AND' && identifyCategory && 'with-radio'
+		(operator === 'AND' || all) && 'with-radio'
 	]}
 	href={page.data.localizeHref(data.view['@id'])}
 	aria-checked={data.selected}

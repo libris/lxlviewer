@@ -131,7 +131,8 @@
 									str: label,
 									totalItems: value.totalItems,
 									selected: value.selected,
-									view: value.view
+									view: value.view,
+									all: true,
 								},
 								...facet.values
 							]
@@ -145,7 +146,7 @@
 			{/each}
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
 			<li role="presentation" class="flex">
-				<FacetValue data={value} parentDimension={data.dimension} operator={data.operator} />
+				<FacetValue data={value} operator={data.operator} all={value.all} />
 				<a
 					href={page.data.localizeHref('/my-pages')}
 					class="btn btn-primary mr-2 border-0"
@@ -155,7 +156,7 @@
 				</a>
 			</li>
 		{:else}
-			<FacetValue data={value} parentDimension={data.dimension} operator={data.operator} />
+			<FacetValue data={value} operator={data.operator} all={value.all} />
 		{/if}
 	{/each}
 {/snippet}
