@@ -38,11 +38,7 @@
 		</nav>
 	{/if}
 	{#if facets?.length}
-		<nav
-			class="facet-nav relative flex flex-col gap-2 text-sm"
-			aria-label={page.data.t('search.filters')}
-			data-testid="facets"
-		>
+		<nav class="facet-nav" aria-label={page.data.t('search.filters')} data-testid="facets">
 			<div class="relative mt-3 px-3">
 				<input
 					bind:value={searchPhrase}
@@ -64,8 +60,8 @@
 					/>
 				{/each}
 			</menu>
-			<span role="status" class="no-hits-msg px-4 text-xs" aria-atomic="true">
-				{page.data.t('search.noResults')}
+			<span role="status" class="no-hits-msg px-4 text-sm" aria-atomic="true">
+				{page.data.t('search.noFiltersFound')}
 			</span>
 		</nav>
 	{/if}

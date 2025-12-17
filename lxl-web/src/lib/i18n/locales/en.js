@@ -136,6 +136,7 @@ export default {
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		removeFilter: 'Remove filter',
+		noFiltersFound: 'No filters found',
 		noResults: 'No results',
 		hitsOf: 'of',
 		hits: 'hits',

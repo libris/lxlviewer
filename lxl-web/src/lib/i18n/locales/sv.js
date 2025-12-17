@@ -135,6 +135,7 @@ export default {
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
 		removeFilter: 'Ta bort filter',
+		noFiltersFound: 'Inga filter hittades',
 		noResults: 'Inga resultat',
 		hitsOf: 'av',
 		hits: 'träffar',
