@@ -189,7 +189,7 @@
 						</hgroup>
 					</header>
 				</div>
-				<div class="decorated-overview-compact">
+				<div class="decorated-data-section decorated-compact">
 					{#each decoratedData.overview as overview (overview)}
 						<div class="compact mb-2">
 							<DecoratedData
@@ -201,7 +201,7 @@
 						</div>
 					{/each}
 				</div>
-				<div class="decorated-overview">
+				<div class="decorated-data-section decorated-spacious">
 					{#if decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
 						<div class="border-b-neutral mb-2 border-b"></div>
 					{/if}
@@ -313,7 +313,7 @@
 				<h2 id="{uidPrefix}details" class="mb-4 text-xl font-medium">
 					{page.data.t('resource.details')}
 				</h2>
-				<div class="decorated-overview">
+				<div class="decorated-data-section decorated-spacious">
 					{#each decoratedData.details as details (details)}
 						<div class="mb-2">
 							<DecoratedData
@@ -360,18 +360,12 @@
 		}
 	}
 
-	.decorated-overview-compact {
-		& :global(div:has(> .property-label)) {
-			display: inline;
-		}
-
-		& :global(.property-label) {
-			color: var(--color-body);
-		}
-
-		& :global(.property-label):not(:empty)::after {
-			color: var(--color-body);
-			content: ': ';
+	.decorated-data-section {
+		& :global(small) {
+			display: block;
+			&::first-letter {
+				text-transform: capitalize;
+			}
 		}
 
 		& :global(.contribution) {
@@ -382,21 +376,6 @@
 		& :global(.contribution-role) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
-		}
-
-		& :global(small) {
-			display: block;
-			&::first-letter {
-				text-transform: capitalize;
-			}
-		}
-
-		& :global(div[data-property]:not(:last-child)) {
-			margin-bottom: 0;
-
-			@variant sm {
-				margin-bottom: 0;
-			}
 		}
 
 		& :global(.inScheme) {
@@ -413,22 +392,12 @@
 			display: block;
 		}
 
-		& :global(.provisionActivity > ._contentBefore),
-		:global(.provisionActivity > ._contentAfter) {
+		& :global(div[data-property='identifiedBy'] > ._contentBefore) {
 			display: none;
 		}
 
-		& :global(.provisionActivity > span[data-type='Publication']) {
+		& :global(div[data-property='identifiedBy'] > span) {
 			display: block;
-		}
-
-		& :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
-			display: block;
-			/*font-size: var(--text-2xs);*/
-		}
-
-		& :global(.provisionActivity:has(> span:nth-of-type(2))) {
-			@apply py-2;
 		}
 
 		& :global(.see-also > *) {
@@ -437,53 +406,12 @@
 			white-space: nowrap;
 		}
 
-		& :global(.genre-form) {
-			@apply py-3;
-		}
-	}
-
-	.decorated-overview {
-		& :global(.property-label) {
-			font-size: var(--text-2xs);
-		}
-
-		& :global(.contribution) {
-			font-size: var(--text-lg);
-			@apply mb-2;
-		}
-
-		& :global(.contribution-role) {
-			font-size: var(--text-2xs);
-			color: var(--color-subtle);
-		}
-
-		& :global(small) {
+		& :global(.hasNote > *) {
 			display: block;
-			&::first-letter {
-				text-transform: capitalize;
-			}
 		}
 
-		& :global(div[data-property]:not(:last-child)) {
-			margin-bottom: calc(var(--spacing) * 1.5);
-
-			@variant sm {
-				margin-bottom: calc(var(--spacing) * 3);
-			}
-		}
-
-		& :global(.inScheme) {
-			font-size: var(--text-2xs);
-			color: var(--color-subtle);
-		}
-
-		& :global(.contribution > ._contentBefore),
-		:global(.contribution > ._contentAfter) {
-			display: none;
-		}
-
-		& :global(.contribution > *) {
-			display: block;
+		& :global(.hasNote > span)::before {
+			content: ' • ';
 		}
 
 		& :global(.hasNote > ._contentBefore),
@@ -500,27 +428,83 @@
 			display: none;
 		}
 
-		& :global(.hasNote > *) {
-			display: block;
-		}
-
-		& :global(.hasNote > span)::before {
-			content: ' • ';
-		}
-
-		& :global(.provisionActivity > ._contentBefore),
-		:global(.provisionActivity > ._contentAfter) {
-			display: none;
-		}
-
-		& :global(.provisionActivity > *) {
-			display: block;
-		}
-
 		& :global(.see-also > *) {
 			display: block;
 			width: fit-content;
 			white-space: nowrap;
+		}
+
+		& :global(.genre-form) {
+			@apply py-3;
+		}
+
+		& :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
+			display: block;
+			/*font-size: var(--text-2xs);*/
+		}
+
+		& :global(.provisionActivity:has(> span:nth-of-type(2))) {
+			@apply py-2;
+
+			& :global(> ._contentBefore),
+			:global(> ._contentAfter) {
+				display: none;
+			}
+
+			& :global(> span) {
+				display: block;
+			}
+
+			& :global(span[data-type='PrimaryPublication']) {
+			}
+
+			& :global(span[data-type='Publication']) {
+				font-weight: var(--font-weight-light);
+			}
+		}
+	}
+
+	.decorated-compact {
+		& :global(div:has(> .property-label)) {
+			display: inline;
+		}
+
+		& :global(.property-label) {
+			color: var(--color-body);
+		}
+
+		& :global(.property-label):not(:empty)::after {
+			color: var(--color-body);
+			content: ': ';
+		}
+
+		& :global(div[data-property]:not(:last-child)) {
+			margin-bottom: 0;
+
+			@variant sm {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	.decorated-spacious {
+		& :global(.property-label) {
+			font-size: var(--text-2xs);
+		}
+
+		& :global(small) {
+			display: block;
+			&::first-letter {
+				text-transform: capitalize;
+			}
+		}
+
+		& :global(div[data-property]:not(:last-child)) {
+			margin-bottom: calc(var(--spacing) * 1.5);
+
+			@variant sm {
+				margin-bottom: calc(var(--spacing) * 3);
+			}
 		}
 	}
 
