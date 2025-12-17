@@ -54,9 +54,13 @@
 				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
 			</div>
 			<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-			<menu role="menubar">
+			<menu role="menubar" aria-labelledby={"tab-filters"}>
 				{#each facets as facet, index (facet.dimension)}
-					<FacetGroup data={facet} {searchPhrase} isDefaultExpanded={index < DEFAULT_FACETS_EXPANDED} />
+					<FacetGroup
+						data={facet}
+						{searchPhrase}
+						isDefaultExpanded={index < DEFAULT_FACETS_EXPANDED}
+					/>
 				{/each}
 			</menu>
 			<span role="status" class="no-hits-msg px-4 text-xs" aria-atomic="true"
