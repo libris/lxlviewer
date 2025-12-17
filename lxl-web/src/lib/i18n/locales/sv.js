@@ -169,6 +169,7 @@ export default {
 		libraries: 'bibliotek'
 	},
 	supersearch: {
+		search: 'Sök',
 		addQualifiers: 'Lägg till filter',
 		loading: 'Laddar...',
 		suggestions: 'Förslag',

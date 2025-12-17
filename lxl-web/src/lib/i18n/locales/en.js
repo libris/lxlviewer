@@ -170,6 +170,7 @@ export default {
 		libraries: 'libraries'
 	},
 	supersearch: {
+		search: 'Search',
 		addQualifiers: 'Add filter',
 		loading: 'Loading...',
 		suggestions: 'Suggestions',

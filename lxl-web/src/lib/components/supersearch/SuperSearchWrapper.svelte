@@ -215,9 +215,10 @@
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		comboboxAriaLabel={page.data.t('search.search')}
-		defaultInputCol={2}
+		defaultInputCol={undefined}
 		debouncedWait={400}
 		onexpand={handleOnExpand}
+		oncollapse={handleOnCollapse}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 	>
@@ -260,25 +261,19 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:h-11 sm:w-11 lg:h-12',
+							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
 							expanded && 'hidden sm:flex'
 						]}
 					>
-						{#if expanded && debouncedLoading}
-							<span class="pointer-events-none">
-								{@render loading()}
-							</span>
-						{:else}
-							<button
-								type="button"
-								tabindex="-1"
-								onclick={() => showExpandedSearch({ cursorAtEnd: true })}
-								class="flex h-full w-full cursor-default items-center justify-center"
-								aria-hidden="true"
-							>
-								<IconSearch aria-hidden="true" class="flex size-4 lg:mt-[1px]" />
-							</button>
-						{/if}
+						<button
+							type="button"
+							tabindex="-1"
+							onclick={() => showExpandedSearch({ cursorAtEnd: true })}
+							class="flex h-full w-full cursor-default items-center justify-center"
+							aria-hidden="true"
+						>
+							<IconSearch aria-hidden="true" class="flex size-4 lg:mt-[1px]" />
+						</button>
 					</div>
 					{@render inputField()}
 				</div>
@@ -298,6 +293,17 @@
 						<IconClear class="size-4.5 sm:size-4" />
 					</button>
 				{/if}
+				<button
+					type="submit"
+					id={getCellId(2)}
+					class:focused-cell={isFocusedCell(2)}
+					class={[
+						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
+					]}
+					aria-label={page.data.t('supersearch.search')}
+				>
+					<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
+				</button>
 			</div>
 		{/snippet}
 		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
@@ -336,13 +342,8 @@
 						<h2 id="supersearch-results-label" class="font-medium">
 							{page.data.t('supersearch.suggestions')}
 						</h2>
-						<button type="submit" id={getCellId(1, 0)}>
-							<span
-								class={[
-									'text-link flex items-center gap-1 hover:underline',
-									isFocusedCell(1, 0) && 'underline'
-								]}
-							>
+						<button type="submit">
+							<span class={['text-link flex items-center gap-1 hover:underline']}>
 								{page.data.t('supersearch.showAll')}
 								<IconGo aria-hidden="true" class="text-link size-6" />
 							</span>
@@ -355,7 +356,7 @@
 						aria-labelledby="supersearch-results-label"
 						class="border-neutral border-t"
 					>
-						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 3 : 2 })}
+						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
 			</nav>
@@ -376,7 +377,7 @@
 		min-height: var(--search-input-height);
 		font-size: var(--text-xs);
 		border-radius: var(--radius-md);
-		box-shadow: 0 0 0 1px var(--color-primary-200);
+		box-shadow: 0 0 0 1px var(--color-primary-300);
 		&:hover,
 		&:focus-within {
 			box-shadow: 0 0 0 1px var(--color-primary-500);
@@ -384,6 +385,17 @@
 		@variant sm {
 			&:hover {
 				box-shadow: 0 0 0 1px var(--color-primary-500);
+			}
+
+			&:focus-within {
+				outline: 3px solid var(--color-primary-200);
+				outline-offset: 1px;
+			}
+		}
+
+		@variant lg {
+			&:focus-within {
+				outline: 4px solid var(--color-primary-200);
 			}
 		}
 	}
@@ -401,13 +413,19 @@
 			margin-block: calc((var(--spacing) * 2));
 
 			&.focused-row {
-				@apply outline-accent outline-2;
+				box-shadow: 0 0 0 1px var(--color-primary-400);
+				outline: 3px solid var(--color-primary-200);
+				outline-offset: 1px;
 			}
 		}
 
 		@variant lg {
 			margin-block: calc(var(--spacing) * 3);
 			margin-inline: calc(var(--spacing) * 4);
+
+			&.focused-row {
+				outline: 4px solid var(--color-primary-200);
+			}
 		}
 
 		@variant 3xl {
@@ -551,13 +569,17 @@
 	.supersearch-input :global(.cm-line) {
 		line-height: 30px;
 		padding-left: calc(var(--spacing) * 11);
+
+		@variant sm {
+			padding-left: calc(var(--spacing) * 3);
+		}
 	}
 
 	.expanded.supersearch-input :global(.cm-line) {
 		padding-left: 0;
 
 		@variant sm {
-			padding-left: calc(var(--spacing) * 11);
+			padding-left: calc(var(--spacing) * 3);
 		}
 	}
 
