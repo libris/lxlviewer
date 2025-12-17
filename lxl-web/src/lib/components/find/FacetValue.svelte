@@ -9,14 +9,19 @@
 
 	interface Props {
 		data: FacetValue;
+		parentDimension: string;
 	}
 
-	let { data }: Props = $props();
+	let { data, parentDimension }: Props = $props();
 </script>
 
 <a
 	role="menuitem"
-	class={[`flex min-h-8 items-center no-underline`]}
+	class={[
+		`flex min-h-8 items-center no-underline`,
+		parentDimension?.split('/').slice(-1)?.toString() === 'librissearch:identifyCategory' &&
+			'identify-category'
+	]}
 	href={page.data.localizeHref(data.view['@id'])}
 	data-sveltekit-preload-data="false"
 >
@@ -59,5 +64,11 @@
 	[role='menuitem'] {
 		padding-left: calc((var(--level, 0) * var(--spacing) * 5) + var(--spacing) * 3);
 		padding-right: calc(var(--spacing) * 3);
+	}
+
+	/** A rather hacky way to style nested identify categories... */
+	[role='menuitem'].identify-category:not(:first-child) {
+		padding-left: calc((var(--level, 0) * var(--spacing) * 8) + var(--spacing) * 3);
+		@apply text-xs;
 	}
 </style>
