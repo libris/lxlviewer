@@ -39,7 +39,7 @@
 	{/if}
 	{#if facets?.length}
 		<nav class="facet-nav" aria-label={page.data.t('search.filters')} data-testid="facets">
-			<div class="relative mt-3 px-3">
+			<div class="relative mt-3 mb-1.5 px-3">
 				<input
 					bind:value={searchPhrase}
 					placeholder={page.data.t('search.findFilter')}

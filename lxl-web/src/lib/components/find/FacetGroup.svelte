@@ -154,11 +154,7 @@
 		style={`--level:${level}`}
 		ontoggle={saveUserExpanded}
 	>
-		<summary
-			role="menuitem"
-			class="hover:bg-primary-100 flex min-h-9 w-full cursor-pointer items-center gap-2 pr-12 pl-3 text-xs font-medium"
-			data-testid="facet-toggle"
-		>
+		<summary role="menuitem" class="flex" data-testid="facet-toggle">
 			<span
 				aria-hidden="true"
 				class={[
@@ -167,11 +163,11 @@
 			>
 				<IconChevron class="text-subtle size-3.5" />
 			</span>
-			<span class="flex-1 whitespace-nowrap">{parent?.label || data.label}</span>
+			<span class="truncate">{parent?.label || data.label}</span>
 		</summary>
 
 		<!-- sorting -->
-		<div class={['facet-sort absolute top-0 size-8', parent ? 'right-15' : 'right-2']}>
+		<div class={['facet-sort absolute top-0 size-8 right-2']}>
 			<select
 				name={data.dimension}
 				bind:value={currentSort}
@@ -187,51 +183,46 @@
 			</select>
 			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
 		</div>
-		<div class="text-2xs">
-			{#if data.search && !(searchPhrase && hasHits)}
-				<!-- facet range inputs; hide in filter search results -->
-				<FacetRange search={data.search} />
+		{#if data.search && !(searchPhrase && hasHits)}
+			<!-- facet range inputs; hide in filter search results -->
+			<FacetRange search={data.search} />
+		{/if}
+		<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
+		<menu
+			role="menu"
+			data-testid="facet-list"
+		>
+			{@render values(shownItems)}
+		</menu>
+		<div class="text-2xs flex flex-col justify-start">
+			<!-- 'show more' btn -->
+			{#if canShowMoreItems || canShowFewerItems}
+				<button
+					class="hover:bg-primary-100 w-full"
+					onclick={() =>
+						canShowMoreItems
+							? (defaultItemsShown = totalItems)
+							: (defaultItemsShown = DEFAULT_FACET_VALUES_SHOWN)}
+				>
+					<span class="ml-4.5 block border-l border-l-neutral-200 py-1.5 pr-3 pl-4 text-left">
+						{canShowMoreItems ? page.data.t('search.showMore') : page.data.t('search.showFewer')}...
+					</span>
+				</button>
 			{/if}
-			<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-			<menu
-				role="menu"
-				class="flex max-h-72 flex-col overflow-x-clip overflow-y-auto sm:max-h-[453px]"
-				data-testid="facet-list"
-			>
-				{@render values(shownItems)}
-			</menu>
-			<div class="text-2xs flex flex-col justify-start">
-				<!-- 'show more' btn -->
-				{#if canShowMoreItems || canShowFewerItems}
-					<button
-						class="hover:bg-primary-100 w-full"
-						onclick={() =>
-							canShowMoreItems
-								? (defaultItemsShown = totalItems)
-								: (defaultItemsShown = DEFAULT_FACET_VALUES_SHOWN)}
-					>
-						<span class="ml-4.5 block border-l border-l-neutral-200 py-1.5 pr-3 pl-4 text-left">
-							{canShowMoreItems
-								? page.data.t('search.showMore')
-								: page.data.t('search.showFewer')}...
-						</span>
-					</button>
-				{/if}
-				<!-- limit reached info -->
-				{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
-					<button
-						class="text-error bg-severe-50 m-3 flex items-center gap-1 rounded-sm px-2 py-1"
-						use:popover={{
-							title: page.data.t('facet.limitText'),
-							placeAsSibling: false
-						}}
-					>
-						<span>{page.data.t('facet.limitInfo')}</span>
-						<span class="sr-only">{page.data.t('facet.limitText')}</span>
-						<BiInfo aria-hidden="true" />
-					</button>
-				{/if}
-			</div>
+			<!-- limit reached info -->
+			{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
+				<button
+					class="text-error bg-severe-50 m-3 flex items-center gap-1 rounded-sm px-2 py-1"
+					use:popover={{
+						title: page.data.t('facet.limitText'),
+						placeAsSibling: false
+					}}
+				>
+					<span>{page.data.t('facet.limitInfo')}</span>
+					<span class="sr-only">{page.data.t('facet.limitText')}</span>
+					<BiInfo aria-hidden="true" />
+				</button>
+			{/if}
 		</div>
 	</details>
 {/if}

@@ -9,17 +9,15 @@
 
 	interface Props {
 		data: FacetValue;
-		isEmbedded?: boolean; // should we not draw our own borders
 	}
 
-	let { data, isEmbedded = false }: Props = $props();
+	let { data }: Props = $props();
 </script>
 
 <a
 	role="menuitem"
 	class={[
-		`facet-link grid flex-1 grid-cols-[auto_auto] items-end justify-between gap-2 py-1.5 font-normal no-underline`,
-		isEmbedded ? 'hover:bg-primary-100' : 'ml-4.5 border-l border-l-neutral-200 pr-3 pl-4'
+		`flex no-underline justify-between`,
 	]}
 	href={page.data.localizeHref(data.view['@id'])}
 	data-sveltekit-preload-data="false"
@@ -36,7 +34,7 @@
 				{/if}
 			</div>
 		{/if}
-		<span>
+		<span class="truncate">
 			<DecoratedDataLite data={data.label} />
 			{#if data.discriminator}
 				<span class="text-subtle">({data.discriminator})</span>
@@ -44,8 +42,8 @@
 		</span>
 	</span>
 	{#if data.totalItems > 0}
-		<span class="badge" aria-label="{data.totalItems} {page.data.t('search.hits')}"
-			>{data.totalItems.toLocaleString(page.data.locale)}</span
-		>
+		<span class="badge shrink-0" aria-label="{data.totalItems} {page.data.t('search.hits')}">
+			{data.totalItems.toLocaleString(page.data.locale)}
+		</span>
 	{/if}
 </a>
