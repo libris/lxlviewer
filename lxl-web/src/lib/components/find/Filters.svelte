@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getModalContext } from '$lib/contexts/modal';
-	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
-	import FacetGroup from './FacetGroup.svelte';
+	import type { DisplayMapping, Facet } from '$lib/types/search';
+	import FacetGroup from '$lib/components/find/FacetGroup.svelte';
 	import SearchMapping from './SearchMapping.svelte';
 	import BiSearch from '~icons/bi/search';
 	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 
 	type filtersPropsType = {
-		facets: TypedFacetGroup[];
+		facets: Facet[];
 		mapping?: DisplayMapping[];
 	};
 
@@ -43,7 +43,7 @@
 			aria-label={page.data.t('search.filters')}
 			data-testid="facets"
 		>
-			<div class="px-3 mt-3 relative">
+			<div class="relative mt-3 px-3">
 				<input
 					bind:value={searchPhrase}
 					placeholder={page.data.t('search.findFilter')}
@@ -53,16 +53,12 @@
 				/>
 				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
 			</div>
-			<ol>
-				{#each facets as group, i (group.dimension)}
-					<FacetGroup
-						{group}
-						locale={page.data.locale}
-						{searchPhrase}
-						isDefaultExpanded={i < DEFAULT_FACETS_EXPANDED}
-					/>
+			<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
+			<menu role="menubar">
+				{#each facets as facet, index (facet.dimension)}
+					<FacetGroup data={facet} {searchPhrase} isDefaultExpanded={index < DEFAULT_FACETS_EXPANDED} />
 				{/each}
-			</ol>
+			</menu>
 			<span role="status" class="no-hits-msg px-4 text-xs" aria-atomic="true"
 				>{page.data.t('search.noResults')}</span
 			>

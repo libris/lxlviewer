@@ -13,16 +13,17 @@ import {
 	type ApiItemDebugInfo,
 	type DatatypeProperty,
 	type DisplayMapping,
-	type FacetGroup,
+	type Facet,
+	type FacetValue,
 	type ItemDebugInfo,
 	type MappingsOnlyPartialCollectionView,
-	type MultiSelectFacet,
 	type Observation,
 	type PartialCollectionView,
 	type SearchMapping,
 	SearchOperators,
 	type SearchResult,
-	type SearchResultItem
+	type SearchResultItem,
+	type Slice
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
@@ -78,7 +79,7 @@ export async function asResult(
 			maxScores
 		),
 		...('stats' in view && {
-			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
+			facets: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 		}),
 		...('stats' in view && { predicates: displayPredicates(view, displayUtil, locale, usePath) }),
 		_spell: view._spell
@@ -342,7 +343,7 @@ function displayFacetGroups(
 	locale: LangCode,
 	translate: TranslateFn,
 	usePath?: string
-): FacetGroup[] {
+): Facet[] {
 	const slices = view.stats?.sliceByDimension || {};
 	// manually add myLibraries to boolfilters
 	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, translate) || [];
@@ -385,20 +386,20 @@ function mapSlices(
 	translate: TranslateFn,
 	usePath?: string,
 	parentDimension?: string
-): FacetGroup[] {
-	return Object.values(slices).map((g) => {
-		const dimension = parentDimension ? `${parentDimension}/${g.dimension}` : g.dimension;
+): Facet[] {
+	return Object.values(slices).map((slice) => {
+		const dimension = parentDimension ? `${parentDimension}/${slice.dimension}` : slice.dimension;
 		return {
-			label: translate(`facet.${g.alias || g.dimension}`),
+			label: translate(`facet.${slice.alias || slice.dimension}`),
 			dimension: dimension,
-			maxItems: g.maxItems,
-			...('search' in g && { search: g.search }),
-			facets: g.observation.map((o) => {
+			maxItems: slice.maxItems,
+			...('search' in slice && { search: slice.search }),
+			values: slice.observation.map((o) => {
 				const str = toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '';
 				return {
 					...('_selected' in o && { selected: o._selected }),
 					...('sliceByDimension' in o && {
-						facetGroups: mapSlices(
+						facets: mapSlices(
 							o.sliceByDimension,
 							displayUtil,
 							locale,
@@ -409,7 +410,7 @@ function mapSlices(
 					}),
 					totalItems: o.totalItems,
 					view: replacePath(o.view, usePath),
-					object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+					label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 					str: str,
 					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
 				};
@@ -423,7 +424,7 @@ export function displayPredicates(
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	usePath?: string
-): MultiSelectFacet[] {
+): FacetValue[] {
 	const predicates = view.stats?._predicates || [];
 
 	return predicates.map((o) => {
@@ -431,7 +432,7 @@ export function displayPredicates(
 			...('_selected' in o && { selected: o._selected }),
 			totalItems: o.totalItems,
 			view: replacePath(o.view, usePath),
-			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
+			label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.WebChip, locale)) || ''
 		};
 	});
@@ -445,25 +446,24 @@ function displayBoolFilters(
 	locale: LangCode,
 	translate: TranslateFn,
 	usePath?: string
-): FacetGroup {
+): Facet {
 	const filters = boolFilters?.filter(predicate) || [];
 
-	const facets = filters.map((o) => {
+	const values = filters.map((o) => {
 		return {
 			selected: o._selected || false,
 			totalItems: o.totalItems,
 			view: replacePath(o.view, usePath),
-			object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+			label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-			discriminator: '',
-			alias: o.object.alias
+			alias: Object.hasOwn(o.object, 'alias') ? (o.object.alias as string) : undefined
 		};
 	});
 
 	return {
 		label: translate(`facet.${dimension}`),
 		dimension: dimension,
-		facets: facets
+		values
 	};
 }
 
