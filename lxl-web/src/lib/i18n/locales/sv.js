@@ -173,7 +173,7 @@ export default {
 		addQualifiers: 'Lägg till filter',
 		loading: 'Laddar...',
 		suggestions: 'Förslag',
-		showAll: 'Visa alla sökresultat'
+		showAll: 'Visa sökresultat'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
