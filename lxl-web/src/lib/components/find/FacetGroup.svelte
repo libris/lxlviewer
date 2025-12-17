@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { LocaleCode } from '$lib/i18n/locales';
 	import type { Facet, FacetGroup } from '$lib/types/search';
 	import { ExpandedState } from '$lib/types/userSettings';
 	import {
@@ -23,13 +22,12 @@
 
 	type FacetGroupProps = {
 		group: FacetGroup;
-		locale: LocaleCode;
 		searchPhrase: string;
 		isDefaultExpanded: boolean;
 		parentFacet?: Facet;
 	};
 
-	let { group, locale, searchPhrase, isDefaultExpanded, parentFacet }: FacetGroupProps = $props();
+	let { group, searchPhrase, isDefaultExpanded, parentFacet }: FacetGroupProps = $props();
 
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
@@ -146,7 +144,7 @@
 						<BiChevronRight />
 					</button>
 				</span>
-				<FacetValue facet={parentFacet} {locale} isEmbedded={true} />
+				<FacetValue facet={parentFacet} isEmbedded={true} />
 			</summary>
 		{/if}
 		<!-- sorting -->
@@ -178,7 +176,7 @@
 				{#each shownItems as facet (facet.str + facet.view['@id'])}
 					{#if !facet.facetGroups}
 						<li class="facet-group-list-value hover:bg-primary-100 flex">
-							<FacetValue {facet} {locale} />
+							<FacetValue {facet} />
 							{#if 'alias' in facet && facet.alias === MY_LIBRARIES_FILTER_ALIAS}
 								<a
 									href={page.data.localizeHref('/my-pages')}
@@ -197,7 +195,6 @@
 										<!-- for now hide category @none directly under find -->
 										<svelte:self
 											{group}
-											locale={page.data.locale}
 											{searchPhrase}
 											isDefaultExpanded={false}
 											parentFacet={facet}

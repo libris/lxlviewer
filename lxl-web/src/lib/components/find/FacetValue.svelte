@@ -5,15 +5,13 @@
 	import BiSquare from '~icons/bi/square';
 	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
 	import type { Facet, MultiSelectFacet } from '$lib/types/search';
-	import type { LocaleCode } from '$lib/i18n/locales';
 
 	interface Props {
 		facet: Facet | MultiSelectFacet;
-		locale: LocaleCode;
 		isEmbedded?: boolean; // should we not draw our own borders
 	}
 
-	let { facet, locale, isEmbedded = false }: Props = $props();
+	let { facet, isEmbedded = false }: Props = $props();
 </script>
 
 <a
@@ -45,7 +43,7 @@
 	</span>
 	{#if facet.totalItems > 0}
 		<span class="badge" aria-label="{facet.totalItems} {page.data.t('search.hits')}"
-			>{facet.totalItems.toLocaleString(locale)}</span
+			>{facet.totalItems.toLocaleString(page.data.locale)}</span
 		>
 	{/if}
 </a>
