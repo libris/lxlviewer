@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
 
-	import BiCheckSquareFill from '~icons/bi/check-square-fill';
-	import BiSquare from '~icons/bi/square';
 	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
 
 	import type { FacetOperator, FacetValue } from '$lib/types/search';
@@ -10,34 +8,28 @@
 	interface Props {
 		data: FacetValue;
 		parentDimension: string;
-		operator?: FacetOperator
+		operator?: FacetOperator;
 	}
 
-	let { data, parentDimension, operator }: Props = $props();
+	let { data, parentDimension, operator, index }: Props = $props();
+
+	const identifyCategory = $derived(
+		parentDimension?.split('/').slice(-1)?.toString() === 'librissearch:identifyCategory'
+	);
 </script>
 
 <a
-	role="menuitem"
+	role={operator === 'OR' ? 'menuitemcheckbox' : 'menuitem'}
 	class={[
 		`flex min-h-8 items-center no-underline`,
-		parentDimension?.split('/').slice(-1)?.toString() === 'librissearch:identifyCategory' &&
-			'identify-category'
+		operator === 'OR' && 'with-checkbox',
+		operator === 'AND' && identifyCategory && 'with-radio'
 	]}
 	href={page.data.localizeHref(data.view['@id'])}
+	aria-checked={data.selected}
 	data-sveltekit-preload-data="false"
 >
 	<span class="truncate" title={data.str}>
-		{#if 'selected' in data}
-			<!-- checkboxes -->
-			<span class="sr-only">{data.selected ? page.data.t('search.activeFilter') : ''}</span>
-			<div class="bg-page mr-1 inline-block rounded-sm text-xs" aria-hidden="true">
-				{#if data.selected}
-					<BiCheckSquareFill class="text-accent" />
-				{:else}
-					<BiSquare class="text-subtle" />
-				{/if}
-			</div>
-		{/if}
 		<span class="truncate">
 			{#if typeof data.label === 'string'}
 				{data.label}
@@ -62,14 +54,48 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	[role='menuitem'] {
+	[role='menuitem'],
+	[role='menuitemcheckbox'] {
 		padding-left: calc((var(--level, 0) * var(--spacing) * 5) + var(--spacing) * 3);
 		padding-right: calc(var(--spacing) * 3);
 	}
 
 	/** A rather hacky way to style nested identify categories... */
-	[role='menuitem'].identify-category:not(:first-child) {
+	/*
+	[role='menuitem'].identify-category:not(:first-child),
+	[role='menuitemcheckbox'].identify-category:not(:first-child) {
 		padding-left: calc((var(--level, 0) * var(--spacing) * 8) + var(--spacing) * 3);
 		@apply text-xs;
+	}
+	*/
+
+	.with-checkbox::before {
+		content: '';
+		background-size: cover;
+		background-image: url('$lib/assets/img/checkbox-unchecked.svg');
+		background-repeat: no-repeat;
+		content: '';
+		width: 14px;
+		height: 14px;
+		flex-shrink: 0;
+		margin-right: calc(var(--spacing) * 2);
+	}
+	.with-checkbox[aria-checked='true']::before {
+		background-image: url('$lib/assets/img/checkbox-checked.svg');
+	}
+
+	.with-radio::before {
+		content: '';
+		background-size: cover;
+		background-image: url('$lib/assets/img/radio-unchecked.svg');
+		background-repeat: no-repeat;
+		content: '';
+		width: 14px;
+		height: 14px;
+		flex-shrink: 0;
+		margin-right: calc(var(--spacing) * 2);
+	}
+	.with-radio[aria-checked='true']::before {
+		background-image: url('$lib/assets/img/radio-checked.svg');
 	}
 </style>
