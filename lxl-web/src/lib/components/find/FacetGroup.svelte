@@ -21,12 +21,13 @@
 
 	type Props = {
 		data: Facet;
+		level: number;
 		searchPhrase: string;
 		isDefaultExpanded: boolean;
 		parent?: FacetValueType;
 	};
 
-	let { data, searchPhrase, isDefaultExpanded, parent }: Props = $props();
+	let { data, level, searchPhrase, isDefaultExpanded, parent }: Props = $props();
 
 	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters'];
 
@@ -117,7 +118,13 @@
 			{#each value.facets as facet, index (facet.dimension)}
 				<!-- for now hide category @none directly under find -->
 				{#if index < 1}
-					<FacetGroup data={facet} {searchPhrase} parent={value} isDefaultExpanded={false} />
+					<FacetGroup
+						data={facet}
+						level={level + 1}
+						{searchPhrase}
+						parent={value}
+						isDefaultExpanded={false}
+					/>
 				{/if}
 			{/each}
 		{:else}
@@ -144,6 +151,7 @@
 		class={['relative w-full', searchPhrase && !hasHits && 'hidden']}
 		open={!!expanded}
 		data-dimension={data.dimension}
+		style={`--level:${level}`}
 		ontoggle={saveUserExpanded}
 	>
 		<summary

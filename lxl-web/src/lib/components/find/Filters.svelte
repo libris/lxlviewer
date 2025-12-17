@@ -58,6 +58,7 @@
 				{#each facets as facet, index (facet.dimension)}
 					<FacetGroup
 						data={facet}
+						level={1}
 						{searchPhrase}
 						isDefaultExpanded={index < DEFAULT_FACETS_EXPANDED}
 					/>
