@@ -5,14 +5,15 @@
 	import BiSquare from '~icons/bi/square';
 	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
 
-	import type { FacetValue } from '$lib/types/search';
+	import type { FacetOperator, FacetValue } from '$lib/types/search';
 
 	interface Props {
 		data: FacetValue;
 		parentDimension: string;
+		operator?: FacetOperator
 	}
 
-	let { data, parentDimension }: Props = $props();
+	let { data, parentDimension, operator }: Props = $props();
 </script>
 
 <a

@@ -78,18 +78,22 @@ export interface Facet {
 	search?: FacetSearch;
 	maxItems?: number;
 	values: FacetValue[];
+	operator?: FacetOperator;
 }
 
 export interface FacetValue {
 	totalItems: number;
 	view: Link;
-	label: DisplayDecoratedLite | string;
+	label: DisplayDecoratedLite | string;
 	str: string;
 	discriminator?: string;
 	facets?: Facet[];
 	alias?: string;
-	selected?: boolean
+	selected?: boolean;
+	operator?: FacetOperator;
 }
+
+export type FacetOperator = 'AND' | 'OR';
 
 interface SpellingSuggestion {
 	label: string;
@@ -151,6 +155,7 @@ export interface Slice {
 	observation: Observation[];
 	search?: FacetSearch;
 	maxItems: number;
+	_connective: string;
 }
 
 export interface Observation {
@@ -158,7 +163,7 @@ export interface Observation {
 	view: Link;
 	object: FramedData;
 	_selected?: boolean;
-	sliceByDimension: Record<FacetId, Slice>
+	sliceByDimension: Record<FacetId, Slice>;
 }
 
 export enum SearchOperators {

@@ -14,6 +14,7 @@ import {
 	type DatatypeProperty,
 	type DisplayMapping,
 	type Facet,
+	type FacetOperator,
 	type FacetValue,
 	type ItemDebugInfo,
 	type MappingsOnlyPartialCollectionView,
@@ -393,6 +394,7 @@ function mapSlices(
 			label: translate(`facet.${slice.alias || slice.dimension}`),
 			dimension: dimension,
 			maxItems: slice.maxItems,
+			operator: slice._connective ? (slice._connective as FacetOperator) : undefined,
 			...('search' in slice && { search: slice.search }),
 			values: slice.observation.map((o) => {
 				const str = toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '';
