@@ -16,9 +16,7 @@
 
 <a
 	role="menuitem"
-	class={[
-		`flex no-underline justify-between`,
-	]}
+	class={[`flex min-h-8 items-center no-underline`]}
 	href={page.data.localizeHref(data.view['@id'])}
 	data-sveltekit-preload-data="false"
 >
@@ -41,9 +39,19 @@
 			{/if}
 		</span>
 	</span>
-	{#if data.totalItems > 0}
-		<span class="badge shrink-0" aria-label="{data.totalItems} {page.data.t('search.hits')}">
-			{data.totalItems.toLocaleString(page.data.locale)}
+	<span class="text-placeholder text-3xs ml-2">
+		{data.totalItems.toLocaleString(page.data.locale)}
+		<span class="sr-only">
+			{data.totalItems === 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}
 		</span>
-	{/if}
+	</span>
 </a>
+
+<style lang="postcss">
+	@reference 'tailwindcss';
+
+	[role='menuitem'] {
+		padding-left: calc((var(--level, 0) * var(--spacing) * 5) + var(--spacing) * 3);
+		padding-right: calc(var(--spacing) * 3);
+	}
+</style>

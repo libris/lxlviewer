@@ -154,7 +154,7 @@
 		style={`--level:${level}`}
 		ontoggle={saveUserExpanded}
 	>
-		<summary role="menuitem" class="flex" data-testid="facet-toggle">
+		<summary role="menuitem" class={["flex min-h-8 cursor-pointer items-center text-subtle", level === 1 && 'font-medium']} data-testid="facet-toggle">
 			<span
 				aria-hidden="true"
 				class={[
@@ -228,6 +228,8 @@
 {/if}
 
 <style lang="postcss">
+	@reference 'tailwindcss';
+
 	details {
 		&[open] > summary,
 		& > summary:hover {

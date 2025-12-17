@@ -50,7 +50,7 @@
 				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
 			</div>
 			<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-			<menu role="menubar" aria-labelledby={'tab-filters'}>
+			<menu role="menubar" aria-labelledby={'tab-filters'} class="text-sm">
 				{#each facets as facet, index (facet.dimension)}
 					<FacetGroup
 						data={facet}
