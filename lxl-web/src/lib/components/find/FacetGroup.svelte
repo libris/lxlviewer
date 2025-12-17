@@ -8,6 +8,7 @@
 		DEFAULT_FACET_VALUES_SHOWN,
 		MY_LIBRARIES_FILTER_ALIAS
 	} from '$lib/constants/facets';
+	import { toString } from '$lib/utils/xl';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';
@@ -118,8 +119,23 @@
 			{#each value.facets as facet, index (facet.dimension)}
 				<!-- for now hide category @none directly under find -->
 				{#if index < 1}
+					{@const label =
+						`${page.data.t('search.allInFacet')} ` +
+						(toString(value.label) as string).toLowerCase()}
 					<FacetGroup
-						data={facet}
+						data={{
+							...facet,
+							values: [
+								{
+									label,
+									str: label,
+									totalItems: value.totalItems,
+									selected: value.selected,
+									view: value.view
+								},
+								...facet.values
+							]
+						}}
 						level={level + 1}
 						{searchPhrase}
 						parent={value}
@@ -154,7 +170,11 @@
 		style={`--level:${level}`}
 		ontoggle={saveUserExpanded}
 	>
-		<summary role="menuitem" class={["flex min-h-8 cursor-pointer items-center text-subtle", level === 1 && 'font-medium']} data-testid="facet-toggle">
+		<summary
+			role="menuitem"
+			class={['text-subtle flex min-h-8 cursor-pointer items-center', level === 1 && 'font-medium']}
+			data-testid="facet-toggle"
+		>
 			<span
 				aria-hidden="true"
 				class={[
@@ -167,7 +187,7 @@
 		</summary>
 
 		<!-- sorting -->
-		<div class={['facet-sort absolute top-0 size-8 right-2']}>
+		<div class={['facet-sort absolute top-0 right-2 size-8']}>
 			<select
 				name={data.dimension}
 				bind:value={currentSort}
@@ -188,10 +208,7 @@
 			<FacetRange search={data.search} />
 		{/if}
 		<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-		<menu
-			role="menu"
-			data-testid="facet-list"
-		>
+		<menu role="menu" data-testid="facet-list">
 			{@render values(shownItems)}
 		</menu>
 		<div class="text-2xs flex flex-col justify-start">

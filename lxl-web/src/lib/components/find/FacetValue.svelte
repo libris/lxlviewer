@@ -33,7 +33,11 @@
 			</div>
 		{/if}
 		<span class="truncate">
-			<DecoratedDataLite data={data.label} />
+			{#if typeof data.label === 'string'}
+				{data.label}
+			{:else}
+				<DecoratedDataLite data={data.label} />
+			{/if}
 			{#if data.discriminator}
 				<span class="text-subtle">({data.discriminator})</span>
 			{/if}

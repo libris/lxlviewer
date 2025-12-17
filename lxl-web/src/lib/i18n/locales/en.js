@@ -168,7 +168,8 @@ export default {
 		addLibraries: 'Add libraries',
 		changeLibraries: 'Change libraries',
 		noAddedLibrariesText: 'You have not chosen any favourite libraries',
-		libraries: 'libraries'
+		libraries: 'libraries',
+		allInFacet: 'All in'
 	},
 	supersearch: {
 		addQualifiers: 'Add filter',
