@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
-	import { onDestroy } from 'svelte';
-	import NProgress from 'nprogress';
 	import {
 		SuperSearch,
 		lxlQualifierPlugin,
@@ -43,6 +41,7 @@
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
 
@@ -164,15 +163,10 @@
 	}
 
 	function handleOnExpand() {
-		NProgress.configure({ parent: '#supersearch-dialog' });
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
 		}
-	}
-
-	function handleOnCollapse() {
-		NProgress.configure({ parent: 'body' });
 	}
 
 	function handleOnExpandedViewUpdate(event: ViewUpdateSuperSearchEvent) {
@@ -188,18 +182,6 @@
 			prevLocale = page.data.locale;
 			superSearch?.fetchData();
 		}
-	});
-
-	$effect(() => {
-		if (debouncedLoading) {
-			NProgress.start();
-		} else {
-			NProgress.done();
-		}
-	});
-
-	onDestroy(() => {
-		NProgress.configure({ parent: 'body' });
 	});
 </script>
 
@@ -230,7 +212,6 @@
 		defaultInputCol={undefined}
 		debouncedWait={400}
 		onexpand={handleOnExpand}
-		oncollapse={handleOnCollapse}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 	>
