@@ -7,12 +7,12 @@
 	import BiSearch from '~icons/bi/search';
 	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 
-	type filtersPropsType = {
+	type Props = {
 		facets: Facet[];
 		mapping?: DisplayMapping[];
 	};
 
-	const { facets, mapping }: filtersPropsType = $props();
+	const { facets, mapping }: Props = $props();
 
 	function shouldShowMapping() {
 		if (
@@ -54,7 +54,7 @@
 				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
 			</div>
 			<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-			<menu role="menubar" aria-labelledby={"tab-filters"}>
+			<menu role="menubar" aria-labelledby={'tab-filters'}>
 				{#each facets as facet, index (facet.dimension)}
 					<FacetGroup
 						data={facet}
@@ -64,17 +64,19 @@
 					/>
 				{/each}
 			</menu>
-			<span role="status" class="no-hits-msg px-4 text-xs" aria-atomic="true"
-				>{page.data.t('search.noResults')}</span
-			>
+			<span role="status" class="no-hits-msg px-4 text-xs" aria-atomic="true">
+				{page.data.t('search.noResults')}
+			</span>
 		</nav>
 	{/if}
 </div>
 
 <style lang="postcss">
 	/* hide 'no hits' msg as long as there's results displaying */
-	:global(.facet-nav:has(.has-hits) .no-hits-msg) {
-		display: none;
+	.facet-nav {
+		&:global(:has(.has-hits) .no-hits-msg) {
+			display: none;
+		}
 	}
 
 	:global(dialog .facet-nav) {

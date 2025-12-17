@@ -148,7 +148,7 @@
 	{@render values(data.values)}
 {:else}
 	<details
-		class={['relative w-full', searchPhrase && !hasHits && 'hidden']}
+		class={['relative w-full', hasHits && 'has-hits', searchPhrase && !hasHits && 'hidden']}
 		open={!!expanded}
 		data-dimension={data.dimension}
 		style={`--level:${level}`}
