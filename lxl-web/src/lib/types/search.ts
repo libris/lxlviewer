@@ -83,11 +83,12 @@ export interface Facet {
 export interface FacetValue {
 	totalItems: number;
 	view: Link;
-	label: DisplayDecoratedLite;
+	label: DisplayDecoratedLite | string;
 	str: string;
 	discriminator?: string;
 	facets?: Facet[];
 	alias?: string;
+	selected?: boolean
 }
 
 interface SpellingSuggestion {
