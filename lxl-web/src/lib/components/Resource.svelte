@@ -438,6 +438,10 @@
 			@apply py-3;
 		}
 
+		& :global(.coverage) {
+			color: var(--color-subtle);
+		}
+
 		& :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
 			display: block;
 			/*font-size: var(--text-2xs);*/
@@ -459,7 +463,8 @@
 			}
 
 			& :global(span[data-type='Publication']) {
-				font-weight: var(--font-weight-light);
+				color: var(--color-subtle);
+				/* font-weight: var(--font-weight-light); */
 			}
 		}
 	}
