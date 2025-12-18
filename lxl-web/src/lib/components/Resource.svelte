@@ -170,7 +170,7 @@
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
 					<header class="my-3 flex-1">
 						<hgroup>
-							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
+							<p class="text-subtle flex items-center gap-1 text-sm font-medium">
 								<TypeIcon type={typeForIcon} class="mr-0.5 inline text-sm" />
 								<DecoratedData
 									data={decoratedData.headingTop}
@@ -180,7 +180,9 @@
 							<h1 class="decorated-heading mt-2 mb-1 text-3xl font-medium @3xl:text-3xl">
 								<DecoratedData data={decoratedData.heading} showLabels={ShowLabelsOptions.Never} />
 							</h1>
-							<p class="text-subtle flex items-center gap-1 text-xs font-medium">
+							<p
+								class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
+							>
 								<DecoratedData
 									data={decoratedData.headingExtra}
 									showLabels={ShowLabelsOptions.DefaultOn}
@@ -360,6 +362,12 @@
 		}
 	}
 
+	.decorated-heading-extra {
+		& :global(span[data-type='KeyTitle'] > span[data-property='rdf:type']) {
+			display: none;
+		}
+	}
+
 	.decorated-data-section {
 		& :global(small) {
 			display: block;
@@ -371,6 +379,7 @@
 		& :global(.contribution) {
 			font-size: var(--text-lg);
 			@apply mb-2;
+			@apply mt-1;
 		}
 
 		& :global(.contribution-role) {
@@ -453,7 +462,7 @@
 		}
 
 		& :global(.provisionActivity:has(> span:nth-of-type(2))) {
-			@apply py-2;
+			@apply py-1;
 
 			& :global(> ._contentBefore),
 			:global(> ._contentAfter) {
@@ -468,9 +477,18 @@
 			}
 
 			& :global(span[data-type='Publication']) {
-				color: var(--color-subtle);
+				/* color: var(--color-subtle); */
 				/* font-weight: var(--font-weight-light); */
 			}
+		}
+
+		& :global(span[data-type='KeyTitle'] > span[data-property='rdf:type']) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+		}
+
+		& :global(span[data-type='KeyTitle'] > span[data-property='rdf:type'])::before {
+			content: ' ';
 		}
 	}
 

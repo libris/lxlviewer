@@ -337,6 +337,12 @@
 						"coverage"
 					]
 				},
+				"KeyTitle": {
+					"@id": "Title-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Title",
+					"showProperties": ["mainTitle", "qualifier", "rdf:type"]
+				},
 				"DatatypeProperty": {
 					"@id": "DatatypeProperty-chips",
 					"@type": "fresnel:Lens",
@@ -883,6 +889,16 @@
 			"fresnel:propertyFormatDomain": ["qualifier"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"KeyTitle-rdf:type-format": {
+			"@id": "KeyTitle-rdf:type-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["KeyTitle"],
+			"fresnel:propertyFormatDomain": ["rdf:type"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
 			}
 		},
