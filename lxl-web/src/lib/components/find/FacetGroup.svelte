@@ -265,7 +265,7 @@
 			>
 				<IconChevron class="text-subtle size-3.5" />
 			</span>
-			<span class="truncate">{parent?.label || data.label}</span>
+			<span class="text-body truncate">{parent?.label || data.label}</span>
 			{#if selectedValues?.length}
 				{@const message = `${selectedValues.length} ${
 					selectedValues.length === 1

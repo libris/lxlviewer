@@ -28,7 +28,7 @@
 		variant === 'radio' && 'with-radio',
 		parentDimension.split('/')[0] === 'librissearch:findCategory' &&
 			variant === 'checkbox' &&
-			'text-subtle text-xs'
+			'text-xs'
 	]}
 	href={page.data.localizeHref(data.view['@id'])}
 	aria-checked={data.selected}
@@ -42,7 +42,7 @@
 				<DecoratedDataLite data={data.label} />
 			{/if}
 			{#if data.discriminator}
-				<span class="text-subtle">({data.discriminator})</span>
+				<span class="text-subtle text-xs">({data.discriminator})</span>
 			{/if}
 		</span>
 	</span>
