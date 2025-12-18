@@ -1,9 +1,11 @@
 import { lxlQuery } from 'codemirror-lang-lxlquery';
 
 /**
- * Insert a * (to get initial suggestions) if qualifier value is an empty quote or group
+ * Check for empty qualifier values and add _mappingOnly to quickly get their label
+ * (as long as empty searches are disallowed, transform () -> "")
+ * for non-empty values instead apply _suggest
  */
-function insertWildcard(query: string, cursor: number) {
+function addSuggestParams(query: string, cursor: number) {
 	const tree = lxlQuery.language.parser.parse(query);
 	const innerNode = tree.resolveInner(cursor, -1);
 	let qualifierValueNode = null;
@@ -23,15 +25,17 @@ function insertWildcard(query: string, cursor: number) {
 		const valueNodeText = query.slice(qualifierValueNode.from, qualifierValueNode.to).trim();
 		if (valueNodeText === '""' || valueNodeText === '()') {
 			return {
-				query:
-					query.slice(0, qualifierValueNode.from + 1) +
-					'*' +
-					query.slice(qualifierValueNode.to - 1),
-				cursor: cursor + 1
+				_q: query.slice(0, qualifierValueNode.from) + '""' + query.slice(qualifierValueNode.to),
+				cursor,
+				_mappingOnly: 'true'
 			};
 		}
 	}
-	return { query, cursor };
+	return {
+		_q: query,
+		cursor,
+		_suggest: 'true'
+	};
 }
 
-export default insertWildcard;
+export default addSuggestParams;
