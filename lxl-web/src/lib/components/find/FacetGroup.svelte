@@ -116,7 +116,11 @@
 	function getValueVariant(facet: Facet) {
 		const d = facet.dimension.split('/');
 		// FIXME
-		if (d[0] === 'librissearch:findCategory' && d.length === 3) {
+		if (
+			d[0] === 'librissearch:findCategory' &&
+			d.length === 3 &&
+			d[2] !== 'librissearch:noneCategory'
+		) {
 			return 'radio';
 		}
 		if (facet.operator === 'OR') return 'checkbox';
@@ -126,39 +130,34 @@
 {#snippet values(items: FacetValueType[])}
 	{#each items as value (value.label + value.view['@id'])}
 		{#if value.facets}
-			{#each value.facets as facet, facetIndex (facet.dimension)}
-				<!-- for now hide category @none directly under find -->
-				{#if facetIndex < 1}
-					{@const label =
-						`${page.data.t('search.allInFacet')} ` +
-						(toString(value.label) as string).toLowerCase()}
-					<FacetGroup
-						data={{
-							...facet,
-							values: [
-								...(level === 1
-									? [
-											{
-												// FIXME
-												label,
-												str: label,
-												totalItems: value.totalItems,
-												selected: value.selected,
-												view: value.view,
-												all: true
-											}
-										]
-									: []),
-								...facet.values
-							]
-						}}
-						level={level + 1}
-						{searchPhrase}
-						parent={value}
-						isDefaultExpanded={false}
-					/>
-				{/if}
-			{/each}
+			{@const label =
+				`${page.data.t('search.allInFacet')} ` + (toString(value.label) as string).toLowerCase()}
+			<FacetGroup
+				data={{
+					...value.facets[0],
+					values: [
+						...(level === 1
+							? [
+									{
+										// FIXME
+										label,
+										str: label,
+										totalItems: value.totalItems,
+										selected: value.selected,
+										view: value.view,
+										all: true,
+										facets: value.facets.length > 1 ? value.facets.slice(1) : undefined
+									}
+								]
+							: []),
+						...value.facets[0].values
+					]
+				}}
+				level={level + 1}
+				{searchPhrase}
+				parent={value}
+				isDefaultExpanded={false}
+			/>
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
 			<li role="presentation" class="flex">
 				<FacetValue data={value} parentDimension={data.dimension} />
