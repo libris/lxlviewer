@@ -615,11 +615,11 @@
 					"showProperties": [
 						"identifiedBy",
 						"editionStatement",
+						"contribution",
 						"publication",
 						"manufacture",
 						"extent",
 						"seriesMembership",
-						"contribution",
 						"responsibilityStatement"
 					]
 				}
@@ -662,7 +662,27 @@
 					"@id": "Work-web-details",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["classification"]
+					"showProperties": [
+						"hasTitle",
+						"legalDate",
+						"version",
+						"marc:arrangedStatementForMusic",
+						"originDate",
+						"contribution",
+						"language",
+						"translationOf",
+						"hasNotation",
+						"hasVariant",
+						"inCollection",
+						"classification",
+						"additionalClassificationDdc",
+						"intendedAudience",
+						"dissertation",
+						"cartographicAttributes",
+						"isPartOf",
+						"associatedMedia",
+						"isPrimaryTopicOf"
+					]
 				},
 				"Instance": {
 					"@id": "Instance-web-details",
