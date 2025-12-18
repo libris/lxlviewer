@@ -85,15 +85,11 @@
 		}
 	});
 
-	/*
 	function handleSubmit(event: SubmitEvent) {
 		if (!q || !q.trim()) {
 			event.preventDefault();
-		} else {
-			q = addSpaceIfEndingQualifier(q.trim());
 		}
 	}
-	*/
 
 	const editedParentNode = $derived.by(() => {
 		if (!q || !selection) {
@@ -290,6 +286,7 @@
 						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
 					]}
 					aria-label={page.data.t('supersearch.search')}
+					onclick={handleSubmit}
 				>
 					<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
 				</button>
@@ -331,7 +328,7 @@
 						<h2 id="supersearch-results-label" class="font-medium">
 							{page.data.t('supersearch.suggestions')}
 						</h2>
-						<button type="submit">
+						<button type="submit" onclick={handleSubmit}>
 							<span class={['text-link flex items-center gap-1 hover:underline']}>
 								{page.data.t('supersearch.showAll')}
 								<IconGo aria-hidden="true" class="text-link size-6" />
