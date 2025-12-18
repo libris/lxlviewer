@@ -358,6 +358,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 <style lang="postcss">
 	@reference 'tailwindcss';
 
+	.card-header-extra {
+		& :global(span[data-type='KeyTitle'] > span[data-property='rdf:type']) {
+			display: none;
+		}
+	}
+
 	.search-card {
 		grid-template-areas:
 			'image content'
