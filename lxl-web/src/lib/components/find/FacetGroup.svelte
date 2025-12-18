@@ -111,14 +111,22 @@
 	function saveUserExpanded(event: Event & { currentTarget: HTMLDetailsElement }) {
 		userSettings.saveFacetExpanded(data.dimension, event.currentTarget.open);
 	}
+
+	function getValueVariant(facet: Facet, index: number) {
+		if (facet.dimension.split('/')[0] === 'librissearch:findCategory') {
+			if (index === 0) return 'radio';
+			return 'checkbox';
+		}
+		if (facet.operator === 'OR') return 'checkbox';
+	}
 </script>
 
 {#snippet values(items: FacetValueType[])}
-	{#each items as value (value.label + value.view['@id'])}
+	{#each items as value, index (value.label + value.view['@id'])}
 		{#if value.facets}
-			{#each value.facets as facet, index (facet.dimension)}
+			{#each value.facets as facet, facetIndex (facet.dimension)}
 				<!-- for now hide category @none directly under find -->
-				{#if index < 1}
+				{#if facetIndex < 1}
 					{@const label =
 						`${page.data.t('search.allInFacet')} ` +
 						(toString(value.label) as string).toLowerCase()}
@@ -146,7 +154,7 @@
 			{/each}
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
 			<li role="presentation" class="flex">
-				<FacetValue data={value} operator={data.operator} all={value.all} />
+				<FacetValue data={value} parentDimension={data.dimension} />
 				<a
 					href={page.data.localizeHref('/my-pages')}
 					class="btn btn-primary mr-2 border-0"
@@ -156,7 +164,11 @@
 				</a>
 			</li>
 		{:else}
-			<FacetValue data={value} operator={data.operator} all={value.all} />
+			<FacetValue
+				data={value}
+				parentDimension={data.dimension}
+				variant={getValueVariant(data, index)}
+			/>
 		{/if}
 	{/each}
 {/snippet}
@@ -225,7 +237,7 @@
 							? (defaultItemsShown = totalItems)
 							: (defaultItemsShown = DEFAULT_FACET_VALUES_SHOWN)}
 				>
-					<span class="ml-4.5 block border-l border-l-neutral-200 py-1.5 pr-3 pl-4 text-left">
+					<span class="ml-4.5 block py-1.5 pr-3 pl-4 text-left">
 						{canShowMoreItems ? page.data.t('search.showMore') : page.data.t('search.showFewer')}...
 					</span>
 				</button>

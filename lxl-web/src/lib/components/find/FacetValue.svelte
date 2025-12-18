@@ -3,23 +3,32 @@
 
 	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
 
-	import type { FacetOperator, FacetValue } from '$lib/types/search';
+	import type { FacetValue } from '$lib/types/search';
 
 	interface Props {
 		data: FacetValue;
-		operator?: FacetOperator;
-		all?: boolean;
+		parentDimension: string;
+		variant?: 'radio' | 'checkbox';
 	}
 
-	let { data, operator, all }: Props = $props();
+	let { data, parentDimension, variant }: Props = $props();
+
+	const role = $derived.by(() => {
+		if (variant === 'radio') return 'menuitemradio';
+		if (variant === 'checkbox') return 'menuitemcheckbox';
+		return 'menuitem';
+	});
 </script>
 
 <a
-	role={operator === 'OR' ? 'menuitemcheckbox' : 'menuitem'}
+	{role}
 	class={[
 		`focusable flex min-h-8 items-center no-underline`,
-		operator === 'OR' && 'with-checkbox',
-		(operator === 'AND' || all) && 'with-radio'
+		variant === 'checkbox' && 'with-checkbox',
+		variant === 'radio' && 'with-radio',
+		parentDimension.split('/')[0] === 'librissearch:findCategory' &&
+			variant === 'checkbox' &&
+			'text-subtle text-xs'
 	]}
 	href={page.data.localizeHref(data.view['@id'])}
 	aria-checked={data.selected}
@@ -51,7 +60,8 @@
 	@reference 'tailwindcss';
 
 	[role='menuitem'],
-	[role='menuitemcheckbox'] {
+	[role='menuitemcheckbox'],
+	[role='menuitemradio'] {
 		padding-left: calc((var(--level, 0) * var(--spacing) * 5) + var(--spacing) * 3);
 		padding-right: calc(var(--spacing) * 3);
 	}
