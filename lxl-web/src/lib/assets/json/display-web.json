@@ -778,7 +778,6 @@
 				"place",
 				"country",
 				"year",
-				"startYear",
 				"date",
 				"marc:publicationStatus"
 			],
@@ -793,9 +792,24 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
 			"fresnel:propertyFormatDomain": ["endYear"],
+			"fresnel:propertyStyle": ["endYear"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": "-",
 				"fresnel:contentFirst": "-"
+			}
+		},
+		"ProvisionActivity-startYear-format": {
+			"TODO": "this can fail if there are additional properties after startYear? see also endYear above",
+			"@id": "ProvisionActivity-startYear-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["ProvisionActivity"],
+			"fresnel:propertyFormatDomain": ["startYear"],
+			"fresnel:propertyStyle": ["startYear"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": "",
+				"fresnel:contentLast": "-",
+				"fresnel:contentAfter": "-"
 			}
 		},
 		"Agent-activityEndDate-format": {

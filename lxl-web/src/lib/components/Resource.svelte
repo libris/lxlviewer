@@ -428,6 +428,11 @@
 			display: none;
 		}
 
+		/* hide double dash - */
+		& :global(._contentAfter.startYear + ._contentBefore.endYear) {
+			display: none;
+		}
+
 		& :global(.see-also > *) {
 			display: block;
 			width: fit-content;
