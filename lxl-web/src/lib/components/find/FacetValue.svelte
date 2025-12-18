@@ -5,6 +5,8 @@
 
 	import type { FacetValue } from '$lib/types/search';
 
+	import IconClose from '~icons/bi/x-lg';
+
 	interface Props {
 		data: FacetValue;
 		parentDimension: string;
@@ -55,6 +57,11 @@
 			</span>
 		</span>
 	{/if}
+	{#if data.selected && !variant}
+		<span class="text-placeholder onhover mr-2 ml-auto hidden" aria-hidden="true">
+			<IconClose />
+		</span>
+	{/if}
 </a>
 
 <style lang="postcss">
@@ -92,7 +99,7 @@
 		height: calc(var(--spacing) * 1.75);
 		transform: scale(0.4);
 		transform-origin: center;
-		margin-left: calc(var(--spacing));
+		/*margin-left: calc(var(--spacing));*/
 	}
 	.with-and[aria-checked='true']::before {
 		width: calc(var(--spacing) * 1.75);
@@ -134,6 +141,10 @@
 
 		&:hover {
 			background: var(--color-primary-100);
+
+			.onhover {
+				display: initial;
+			}
 		}
 		&:focus-visible,
 		&:has(:focus) {
