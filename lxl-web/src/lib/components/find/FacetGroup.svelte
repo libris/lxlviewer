@@ -243,7 +243,12 @@
 	</div>
 {:else}
 	<details
-		class={['relative w-full', hasHits && 'has-hits', searchPhrase && !hasHits && 'hidden']}
+		class={[
+			'relative w-full',
+			hasHits && 'has-hits',
+			searchPhrase && !hasHits && 'hidden',
+			level === 1 && expanded && 'pb-2'
+		]}
 		open={!!expanded}
 		data-dimension={data.dimension}
 		style={`--level:${level}`}
