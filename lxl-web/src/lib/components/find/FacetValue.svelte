@@ -17,7 +17,7 @@
 <a
 	role={operator === 'OR' ? 'menuitemcheckbox' : 'menuitem'}
 	class={[
-		`flex min-h-8 items-center no-underline`,
+		`focusable flex min-h-8 items-center no-underline`,
 		operator === 'OR' && 'with-checkbox',
 		(operator === 'AND' || all) && 'with-radio'
 	]}
@@ -93,5 +93,19 @@
 	}
 	.with-radio[aria-checked='true']::before {
 		background-image: url('$lib/assets/img/radio-checked.svg');
+	}
+
+	.focusable {
+		outline-offset: -2px;
+
+		&:hover {
+			background: var(--color-primary-100);
+		}
+		&:focus-visible,
+		&:has(:focus) {
+			background: var(--color-accent-50);
+			outline-color: var(--color-active);
+			@apply outline-2;
+		}
 	}
 </style>

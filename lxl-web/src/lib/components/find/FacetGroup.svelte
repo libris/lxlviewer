@@ -132,7 +132,7 @@
 									totalItems: value.totalItems,
 									selected: value.selected,
 									view: value.view,
-									all: true,
+									all: true
 								},
 								...facet.values
 							]
@@ -173,7 +173,10 @@
 	>
 		<summary
 			role="menuitem"
-			class={['text-subtle flex min-h-8 cursor-pointer items-center', level === 1 && 'font-medium']}
+			class={[
+				'focusable text-subtle flex min-h-8 cursor-pointer items-center',
+				level === 1 && 'font-medium'
+			]}
 			data-testid="facet-toggle"
 		>
 			<span
@@ -261,5 +264,19 @@
 
 	summary {
 		padding-left: calc((var(--level, 0) - 1) * var(--spacing) * 5);
+	}
+
+	.focusable {
+		outline-offset: -2px;
+
+		&:hover {
+			background: var(--color-primary-100);
+		}
+		&:focus-visible,
+		&:has(:focus) {
+			background: var(--color-accent-50);
+			outline-color: var(--color-active);
+			@apply outline-2;
+		}
 	}
 </style>
