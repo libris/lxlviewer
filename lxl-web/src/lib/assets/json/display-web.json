@@ -663,7 +663,6 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
 					"showProperties": [
-						"hasTitle",
 						"legalDate",
 						"version",
 						"marc:arrangedStatementForMusic",
