@@ -113,17 +113,18 @@
 		userSettings.saveFacetExpanded(data.dimension, event.currentTarget.open);
 	}
 
-	function getValueVariant(facet: Facet, index: number) {
-		if (facet.dimension.split('/')[0] === 'librissearch:findCategory') {
-			if (index === 0) return 'radio';
-			return 'checkbox';
+	function getValueVariant(facet: Facet) {
+		const d = facet.dimension.split('/');
+		// FIXME
+		if (d[0] === 'librissearch:findCategory' && d.length === 3) {
+			return 'radio';
 		}
 		if (facet.operator === 'OR') return 'checkbox';
 	}
 </script>
 
 {#snippet values(items: FacetValueType[])}
-	{#each items as value, index (value.label + value.view['@id'])}
+	{#each items as value (value.label + value.view['@id'])}
 		{#if value.facets}
 			{#each value.facets as facet, facetIndex (facet.dimension)}
 				<!-- for now hide category @none directly under find -->
@@ -135,14 +136,19 @@
 						data={{
 							...facet,
 							values: [
-								{
-									label,
-									str: label,
-									totalItems: value.totalItems,
-									selected: value.selected,
-									view: value.view,
-									all: true
-								},
+								...(level === 1
+									? [
+											{
+												// FIXME
+												label,
+												str: label,
+												totalItems: value.totalItems,
+												selected: value.selected,
+												view: value.view,
+												all: true
+											}
+										]
+									: []),
 								...facet.values
 							]
 						}}
@@ -165,17 +171,75 @@
 				</a>
 			</li>
 		{:else}
-			<FacetValue
-				data={value}
-				parentDimension={data.dimension}
-				variant={getValueVariant(data, index)}
-			/>
+			<FacetValue data={value} parentDimension={data.dimension} variant={getValueVariant(data)} />
 		{/if}
 	{/each}
 {/snippet}
 
+{#snippet controls()}
+	<!-- sorting -->
+	<div class={['facet-sort absolute top-0 right-2 size-8']}>
+		<select
+			name={data.dimension}
+			bind:value={currentSort}
+			onchange={saveUserSort}
+			class="btn btn-primary size-full appearance-none border-0 text-transparent"
+			aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
+			data-testid={`facet-sort-${data.dimension}`}
+		>
+			{#each sortOptions as option (option.value)}
+				<option selected={option.value == currentSort} value={option.value}>{option.label}</option>
+			{/each}
+		</select>
+		<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
+	</div>
+	{#if data.search && !(searchPhrase && hasHits)}
+		<!-- facet range inputs; hide in filter search results -->
+		<FacetRange search={data.search} />
+	{/if}
+	<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
+	<menu role="menu" data-testid="facet-list">
+		{@render values(shownItems)}
+	</menu>
+	<div class="text-2xs flex flex-col justify-start">
+		<!-- 'show more' btn -->
+		{#if canShowMoreItems || canShowFewerItems}
+			<button
+				class="hover:bg-primary-100 w-full"
+				onclick={() =>
+					canShowMoreItems
+						? (defaultItemsShown = totalItems)
+						: (defaultItemsShown = DEFAULT_FACET_VALUES_SHOWN)}
+			>
+				<span class="indented block py-1.5 pr-3 text-left">
+					{canShowMoreItems ? page.data.t('search.showMore') : page.data.t('search.showFewer')}...
+				</span>
+			</button>
+		{/if}
+		<!-- limit reached info -->
+		{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
+			<button
+				class="text-error bg-severe-50 indented flex items-center gap-1 rounded-sm py-1"
+				use:popover={{
+					title: page.data.t('facet.limitText'),
+					placeAsSibling: false
+				}}
+			>
+				<span>{page.data.t('facet.limitInfo')}</span>
+				<span class="sr-only">{page.data.t('facet.limitText')}</span>
+				<BiInfo aria-hidden="true" />
+			</button>
+		{/if}
+	</div>
+{/snippet}
+
 {#if PERMANENTLY_EXPANDED_FACETS.includes(data.dimension)}
 	{@render values(data.values)}
+{:else if parent && parent.selected === true && level > 2}
+	<FacetValue data={parent} parentDimension={data.dimension} variant="radio" />
+	<div style={`--level:${level}`}>
+		{@render controls()}
+	</div>
 {:else}
 	<details
 		class={['relative w-full', hasHits && 'has-hits', searchPhrase && !hasHits && 'hidden']}
@@ -216,61 +280,7 @@
 			{/if}
 		</summary>
 
-		<!-- sorting -->
-		<div class={['facet-sort absolute top-0 right-2 size-8']}>
-			<select
-				name={data.dimension}
-				bind:value={currentSort}
-				onchange={saveUserSort}
-				class="btn btn-primary size-full appearance-none border-0 text-transparent"
-				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
-				data-testid={`facet-sort-${data.dimension}`}
-			>
-				{#each sortOptions as option (option.value)}
-					<option selected={option.value == currentSort} value={option.value}>{option.label}</option
-					>
-				{/each}
-			</select>
-			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
-		</div>
-		{#if data.search && !(searchPhrase && hasHits)}
-			<!-- facet range inputs; hide in filter search results -->
-			<FacetRange search={data.search} />
-		{/if}
-		<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-		<menu role="menu" data-testid="facet-list">
-			{@render values(shownItems)}
-		</menu>
-		<div class="text-2xs flex flex-col justify-start">
-			<!-- 'show more' btn -->
-			{#if canShowMoreItems || canShowFewerItems}
-				<button
-					class="hover:bg-primary-100 w-full"
-					onclick={() =>
-						canShowMoreItems
-							? (defaultItemsShown = totalItems)
-							: (defaultItemsShown = DEFAULT_FACET_VALUES_SHOWN)}
-				>
-					<span class="ml-4.5 block py-1.5 pr-3 pl-4 text-left">
-						{canShowMoreItems ? page.data.t('search.showMore') : page.data.t('search.showFewer')}...
-					</span>
-				</button>
-			{/if}
-			<!-- limit reached info -->
-			{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
-				<button
-					class="text-error bg-severe-50 m-3 flex items-center gap-1 rounded-sm px-2 py-1"
-					use:popover={{
-						title: page.data.t('facet.limitText'),
-						placeAsSibling: false
-					}}
-				>
-					<span>{page.data.t('facet.limitInfo')}</span>
-					<span class="sr-only">{page.data.t('facet.limitText')}</span>
-					<BiInfo aria-hidden="true" />
-				</button>
-			{/if}
-		</div>
+		{@render controls()}
 	</details>
 {/if}
 
@@ -290,6 +300,11 @@
 
 	summary {
 		padding-left: calc((var(--level, 0) - 1) * var(--spacing) * 5);
+	}
+
+	.indented {
+		padding-left: calc((var(--level, 0) * var(--spacing) * 5) + var(--spacing) * 3);
+		padding-right: calc(var(--spacing) * 3);
 	}
 
 	.focusable {
