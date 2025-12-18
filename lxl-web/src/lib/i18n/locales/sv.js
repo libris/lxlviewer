@@ -169,9 +169,11 @@ export default {
 		libraries: 'bibliotek'
 	},
 	supersearch: {
+		search: 'Sök',
 		addQualifiers: 'Lägg till filter',
+		loading: 'Laddar...',
 		suggestions: 'Förslag',
-		showAll: 'Visa alla träffar'
+		showAll: 'Visa sökresultat'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

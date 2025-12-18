@@ -170,9 +170,11 @@ export default {
 		libraries: 'libraries'
 	},
 	supersearch: {
+		search: 'Search',
 		addQualifiers: 'Add filter',
+		loading: 'Loading...',
 		suggestions: 'Suggestions',
-		showAll: 'Show all results'
+		showAll: 'Show search results'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

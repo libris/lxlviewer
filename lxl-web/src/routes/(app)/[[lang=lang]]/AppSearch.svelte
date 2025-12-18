@@ -39,11 +39,20 @@
 </script>
 
 {#snippet fallbackInput()}
-	<div class="relative">
-		<span class="text-subtle absolute flex h-full w-11 items-center justify-center">
+	<div class="fallback-search relative">
+		<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
 			<IconSearch class="size-4 lg:mt-[1px]" aria-hidden="true" />
 		</span>
 		<input type="search" {id} {name} {placeholder} bind:this={fallbackInputElement} />
+		<button
+			type="submit"
+			class={[
+				'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
+			]}
+			aria-label={page.data.t('supersearch.search')}
+		>
+			<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
+		</button>
 	</div>
 {/snippet}
 
@@ -65,7 +74,7 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	input[type='search'] {
+	.fallback-search {
 		display: flex;
 		width: 100%;
 		height: var(--search-input-height);
@@ -73,19 +82,31 @@
 		box-shadow: 0 0 0 1px var(--color-primary-200);
 		border-radius: var(--radius-md);
 		font-size: var(--text-xs);
-		padding-left: 44px;
 
-		&::placeholder {
-			color: var(--color-placeholder);
-		}
 		&:hover,
-		&:focus {
+		&:has(:focus) {
 			box-shadow: 0 0 0 1px var(--color-primary-500);
 		}
 
-		&:focus {
+		&:has(:focus) {
 			outline: 4px solid var(--color-primary-200);
 			outline-offset: 1px;
+		}
+
+		& input[type='search'] {
+			width: 100%;
+			padding-left: calc(var(--spacing) * 11);
+
+			@variant sm {
+				padding-left: calc(var(--spacing) * 3);
+			}
+
+			&:focus {
+				outline: none;
+			}
+			&::placeholder {
+				color: var(--color-placeholder);
+			}
 		}
 	}
 </style>

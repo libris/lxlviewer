@@ -226,7 +226,7 @@
 			</form>
 		</search>
 		<ul class="trailing-actions mr-2 flex items-center justify-end lg:mr-0 lg:gap-2">
-			<li class="lg:hidden">
+			<li class={[showSearchInputOnMobile && 'hidden', 'lg:hidden']}>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
 					type={mounted ? 'button' : undefined}

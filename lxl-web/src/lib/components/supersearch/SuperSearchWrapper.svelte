@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
-	import { fade } from 'svelte/transition';
 	import {
 		SuperSearch,
 		lxlQualifierPlugin,
@@ -10,7 +9,6 @@
 		type ViewUpdateSuperSearchEvent
 	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
-	import Spinner from '$lib/components/Spinner.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
@@ -18,6 +16,7 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
+	import IconGo from '~icons/bi/arrow-right-short';
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 
@@ -42,6 +41,7 @@
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
 
@@ -85,15 +85,11 @@
 		}
 	});
 
-	/*
 	function handleSubmit(event: SubmitEvent) {
 		if (!q || !q.trim()) {
 			event.preventDefault();
-		} else {
-			q = addSpaceIfEndingQualifier(q.trim());
 		}
 	}
-	*/
 
 	const editedParentNode = $derived.by(() => {
 		if (!q || !selection) {
@@ -185,11 +181,6 @@
 	});
 </script>
 
-{#snippet loading()}
-	<span class="pointer-events-none block size-4" in:fade={{ duration: 200 }}>
-		<Spinner />
-	</span>
-{/snippet}
 {#key page.data.locale}
 	<SuperSearch
 		name="_q"
@@ -214,7 +205,7 @@
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		comboboxAriaLabel={page.data.t('search.search')}
-		defaultInputCol={2}
+		defaultInputCol={undefined}
 		debouncedWait={400}
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
@@ -249,35 +240,25 @@
 						]}
 						onclick={onclickClose}
 					>
-						{#if debouncedLoading}
-							{@render loading()}
-						{:else}
-							<IconBack aria-hidden="true" class="size-7" />
-						{/if}
+						<IconBack aria-hidden="true" class="size-7" />
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:h-11 sm:w-11 lg:h-12',
+							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
 							expanded && 'hidden sm:flex'
 						]}
 					>
-						{#if expanded && debouncedLoading}
-							<span class="pointer-events-none">
-								{@render loading()}
-							</span>
-						{:else}
-							<button
-								type="button"
-								tabindex="-1"
-								onclick={() => showExpandedSearch({ cursorAtEnd: true })}
-								class="flex h-full w-full cursor-default items-center justify-center"
-								aria-hidden="true"
-							>
-								<IconSearch aria-hidden="true" class="flex size-4 lg:mt-[1px]" />
-							</button>
-						{/if}
+						<button
+							type="button"
+							tabindex="-1"
+							onclick={() => showExpandedSearch({ cursorAtEnd: true })}
+							class="flex h-full w-full cursor-default items-center justify-center"
+							aria-hidden="true"
+						>
+							<IconSearch aria-hidden="true" class="flex size-4 lg:mt-[1px]" />
+						</button>
 					</div>
 					{@render inputField()}
 				</div>
@@ -297,22 +278,31 @@
 						<IconClear class="size-4.5 sm:size-4" />
 					</button>
 				{/if}
+				<button
+					type="submit"
+					id={getCellId(2)}
+					class:focused-cell={isFocusedCell(2)}
+					class={[
+						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
+					]}
+					aria-label={page.data.t('supersearch.search')}
+					onclick={handleSubmit}
+				>
+					<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
+				</button>
 			</div>
 		{/snippet}
 		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav class="mt-2 sm:mt-1 lg:mt-0">
+			<nav class="mt-2 mb-2 sm:mt-1 sm:mb-3 lg:mt-0">
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
-						class="text-subtle mb-1 px-4 text-xs font-medium sm:px-2 lg:px-4"
+						class="text-subtle mt-1.5 mb-1 px-4 text-sm font-medium lg:mt-0"
 					>
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div
-							role="row"
-							class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4 sm:pl-2 lg:pl-4"
-						>
+						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
 							{#each qualifierSuggestions as { key, label }, cellIndex (key)}
 								<button
 									type="button"
@@ -330,29 +320,29 @@
 						</div>
 					</div>
 				{/if}
-				{#if resultsCount && q.trim().length}
+				{#if showAllResultsButton && q.trim().length}
 					<div
-						id="supersearch-results-label"
-						class="text-subtle mb-1 px-4 text-xs font-medium sm:px-2 lg:px-4"
+						role="row"
+						class="text-subtle mb-2 flex items-center justify-between px-4 text-xs sm:mb-3 sm:text-sm"
 					>
-						{page.data.t('supersearch.suggestions')}
-					</div>
-					<div role="rowgroup" aria-labelledby="supersearch-results-label">
-						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+						<h2 id="supersearch-results-label" class="font-medium">
+							{page.data.t('supersearch.suggestions')}
+						</h2>
+						<button type="submit" onclick={handleSubmit}>
+							<span class={['text-link flex items-center gap-1 hover:underline']}>
+								{page.data.t('supersearch.showAll')}
+								<IconGo aria-hidden="true" class="text-link size-6" />
+							</span>
+						</button>
 					</div>
 				{/if}
-				{#if showAllResultsButton && q.trim().length}
-					<div role="row" class="show-all border-neutral bg-page fixed w-full border-t sm:static">
-						<button
-							type="submit"
-							class="hover:bg-primary-50 focus:bg-primary-50 min-h-11 w-full px-4 text-left text-sm font-medium sm:px-2 sm:text-xs lg:px-4"
-							class:focused-cell={isFocusedCell(
-								1 + (resultsCount ? resultsCount : 0) + (showAddQualifiers ? 1 : 0),
-								0
-							)}
-						>
-							{page.data.t('supersearch.showAll')}
-						</button>
+				{#if resultsCount && q.trim().length}
+					<div
+						role="rowgroup"
+						aria-labelledby="supersearch-results-label"
+						class="border-neutral border-t"
+					>
+						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
 			</nav>
@@ -373,7 +363,7 @@
 		min-height: var(--search-input-height);
 		font-size: var(--text-xs);
 		border-radius: var(--radius-md);
-		box-shadow: 0 0 0 1px var(--color-primary-200);
+		box-shadow: 0 0 0 1px var(--color-primary-300);
 		&:hover,
 		&:focus-within {
 			box-shadow: 0 0 0 1px var(--color-primary-500);
@@ -381,6 +371,17 @@
 		@variant sm {
 			&:hover {
 				box-shadow: 0 0 0 1px var(--color-primary-500);
+			}
+
+			&:focus-within {
+				outline: 3px solid var(--color-primary-200);
+				outline-offset: 1px;
+			}
+		}
+
+		@variant lg {
+			&:focus-within {
+				outline: 4px solid var(--color-primary-200);
 			}
 		}
 	}
@@ -394,17 +395,23 @@
 			border-bottom: none;
 			border-radius: var(--radius-md);
 			margin-inline: calc(var(--spacing) * 2);
-			box-shadow: 0 0 0 1px var(--color-primary-200);
+			box-shadow: 0 0 0 1px var(--color-neutral-300);
 			margin-block: calc((var(--spacing) * 2));
 
 			&.focused-row {
 				box-shadow: 0 0 0 1px var(--color-primary-500);
+				outline: 3px solid var(--color-primary-200);
+				outline-offset: 1px;
 			}
 		}
 
 		@variant lg {
 			margin-block: calc(var(--spacing) * 3);
 			margin-inline: calc(var(--spacing) * 4);
+
+			&.focused-row {
+				outline: 4px solid var(--color-primary-200);
+			}
 		}
 
 		@variant 3xl {
@@ -548,13 +555,17 @@
 	.supersearch-input :global(.cm-line) {
 		line-height: 30px;
 		padding-left: calc(var(--spacing) * 11);
+
+		@variant sm {
+			padding-left: calc(var(--spacing) * 3);
+		}
 	}
 
 	.expanded.supersearch-input :global(.cm-line) {
 		padding-left: 0;
 
 		@variant sm {
-			padding-left: calc(var(--spacing) * 11);
+			padding-left: calc(var(--spacing) * 3);
 		}
 	}
 
@@ -609,12 +620,5 @@
 	:global(.codemirror-container .cm-placeholder) {
 		color: var(--color-placeholder);
 		margin: 1px 0;
-	}
-
-	.show-all {
-		bottom: env(safe-area-inset-bottom, 0px);
-		@variant sm {
-			bottom: 0;
-		}
 	}
 </style>
