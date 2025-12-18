@@ -137,67 +137,72 @@ function lxlQualifierPlugin(
 						const valueNode = node.node.getChild('QualifierValue');
 						const value = valueNode ? doc.slice(valueNode?.from, valueNode?.to) : undefined;
 
+						// QUALIFIER VALIDATION
+
 						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
 
-						// add qualfier mark
-						const qualifierMark = Decoration.mark({
-							class: 'lxl-qualifier',
-							attributes: { style: 'display: inline-block; margin-left: 1px; margin-right: 1px;' },
-							inclusive: true
-						});
-						widgets.push(qualifierMark.range(node.from, node.to));
+						if (keyLabel && !invalid) {
+							// add qualfier mark
+							const qualifierMark = Decoration.mark({
+								class: 'lxl-qualifier',
+								attributes: {
+									style: 'display: inline-block; margin-left: 1px; margin-right: 1px;'
+								},
+								inclusive: true
+							});
+							widgets.push(qualifierMark.range(node.from, node.to));
 
-						if (valueNode) {
-							const ghostGroup = valueNode.getChild('QualifierOuterGroup');
+							if (valueNode) {
+								const ghostGroup = valueNode.getChild('QualifierOuterGroup');
 
-							if (ghostGroup && !SHOW_GHOST_GROUP) {
-								// add ghost parens mark
-								const parensMark = Decoration.replace({
-									widget: new ghostGroupWidget(),
-									inclusive: false
-								});
+								if (ghostGroup && !SHOW_GHOST_GROUP) {
+									// add ghost parens mark
+									const parensMark = Decoration.replace({
+										widget: new ghostGroupWidget(),
+										inclusive: false
+									});
 
-								const openingParens = ghostGroup.from;
-								const closingParens = ghostGroup.to;
+									const openingParens = ghostGroup.from;
+									const closingParens = ghostGroup.to;
 
-								if (
-									doc.slice(openingParens, openingParens + 1) === '(' &&
-									doc.slice(closingParens - 1, closingParens) === ')'
-								) {
-									widgets.push(parensMark.range(openingParens, openingParens + 1));
-									widgets.push(parensMark.range(closingParens - 1, closingParens));
+									if (
+										doc.slice(openingParens, openingParens + 1) === '(' &&
+										doc.slice(closingParens - 1, closingParens) === ')'
+									) {
+										widgets.push(parensMark.range(openingParens, openingParens + 1));
+										widgets.push(parensMark.range(closingParens - 1, closingParens));
+									}
 								}
 							}
-						}
 
-						// Add qualifier widget
-						if ((keyLabel || valueLabel) && qualifierWidget) {
-							const qualifierDecoration = Decoration.replace({
-								widget: new QualifierWidget(
-									key,
-									keyLabel,
-									operator,
-									value,
-									valueLabel,
-									qualifierWidget,
-									removeLink
-								)
-							});
-							const decorationRangeFrom = node.from;
-							const decorationRangeTo = valueLabel ? node.to : operatorNode?.to;
+							// Add qualifier widget
+							if (qualifierWidget) {
+								const qualifierDecoration = Decoration.replace({
+									widget: new QualifierWidget(
+										key,
+										keyLabel,
+										operator,
+										value,
+										valueLabel,
+										qualifierWidget,
+										removeLink
+									)
+								});
+								const decorationRangeFrom = node.from;
+								const decorationRangeTo = valueLabel ? node.to : operatorNode?.to;
 
-							ranges.add(decorationRangeFrom, decorationRangeTo || node.to, qualifierDecoration);
-							widgets.push(qualifierDecoration.range(decorationRangeFrom, decorationRangeTo));
+								ranges.add(decorationRangeFrom, decorationRangeTo || node.to, qualifierDecoration);
+								widgets.push(qualifierDecoration.range(decorationRangeFrom, decorationRangeTo));
+							}
 						} else if (invalid) {
 							// Add invalid key mark decoration
-							const invalidKey = Decoration.mark({
-								class: 'lxl-invalid',
-								inclusive: false
-							});
-							const invalidRangeFrom = keyNode ? keyNode.from : node.from;
-							const invalidRangeTo = keyNode ? keyNode.to : operatorNode?.from;
-
-							widgets.push(invalidKey.range(invalidRangeFrom, invalidRangeTo));
+							// const invalidKey = Decoration.mark({
+							// 	class: 'lxl-invalid',
+							// 	inclusive: false
+							// });
+							// const invalidRangeFrom = keyNode ? keyNode.from : node.from;
+							// const invalidRangeTo = keyNode ? keyNode.to : operatorNode?.from;
+							// widgets.push(invalidKey.range(invalidRangeFrom, invalidRangeTo));
 						}
 					}
 				}
@@ -237,7 +242,8 @@ function lxlQualifierPlugin(
 			EditorView.atomicRanges.of(() => atomicRangeSet),
 			// ghost group filters -->
 			EditorState.transactionFilter.of(jumpPastParens),
-			EditorState.transactionFilter.of(createGhostGroup),
+			// EditorState.transactionFilter.of(createGhostGroup),
+			createGhostGroup(() => atomicRangeSet),
 			EditorState.transactionFilter.of(handleInputBeforeGroup),
 			EditorState.transactionFilter.of(removeGhostGroup),
 			EditorState.transactionFilter.of(repairGhostGroup),
