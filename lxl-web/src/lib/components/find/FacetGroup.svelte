@@ -272,6 +272,14 @@
 				<IconChevron class="text-subtle size-3.5" />
 			</span>
 			<span class="text-body truncate">{parent?.label || data.label}</span>
+			{#if level > 1 && parent}
+				<span class="text-placeholder text-3xs ml-2">
+					{parent.totalItems.toLocaleString(page.data.locale)}
+					<span class="sr-only">
+						{parent.totalItems === 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}
+					</span>
+				</span>
+			{/if}
 			{#if selectedValues?.length}
 				{@const message = `${selectedValues.length} ${
 					selectedValues.length === 1
