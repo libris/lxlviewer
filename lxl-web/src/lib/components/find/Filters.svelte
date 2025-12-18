@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { page, navigating } from '$app/state';
 	import { getModalContext } from '$lib/contexts/modal';
 	import type { DisplayMapping, Facet } from '$lib/types/search';
 	import FacetGroup from '$lib/components/find/FacetGroup.svelte';
@@ -50,7 +50,16 @@
 				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
 			</div>
 			<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-			<menu role="menubar" aria-labelledby={'tab-filters'} class="text-sm">
+			<menu
+				role="menubar"
+				aria-labelledby={'tab-filters'}
+				class={[
+					'text-sm',
+					navigating.to &&
+						navigating.from?.url.pathname === navigating.to?.url.pathname &&
+						'opacity-50 pointer-events-none'
+				]}
+			>
 				{#each facets as facet, index (facet.dimension)}
 					<FacetGroup
 						data={facet}
