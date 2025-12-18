@@ -235,9 +235,11 @@
 {#if PERMANENTLY_EXPANDED_FACETS.includes(data.dimension)}
 	{@render values(data.values)}
 {:else if parent && parent.selected === true && level > 2}
-	<FacetValue data={parent} parentDimension={data.dimension} variant="radio" />
-	<div style={`--level:${level}`}>
-		{@render controls()}
+	<div class="relative">
+		<FacetValue data={parent} parentDimension={data.dimension} variant="radio" />
+		<div style={`--level:${level}`}>
+			{@render controls()}
+		</div>
 	</div>
 {:else}
 	<details
