@@ -23,12 +23,12 @@
 <a
 	{role}
 	class={[
-		`focusable flex min-h-8 items-center no-underline`,
+		`focusable flex min-h-8 items-center text-xs no-underline`,
 		variant === 'checkbox' && 'with-checkbox',
 		variant === 'radio' && 'with-radio',
 		parentDimension.split('/')[0] === 'librissearch:findCategory' &&
 			variant === 'checkbox' &&
-			'text-xs'
+			'text-2xs'
 	]}
 	href={page.data.localizeHref(data.view['@id'])}
 	aria-checked={data.selected}
@@ -42,7 +42,7 @@
 				<DecoratedDataLite data={data.label} />
 			{/if}
 			{#if data.discriminator}
-				<span class="text-subtle text-xs">({data.discriminator})</span>
+				<span class="text-subtle text-3xs">({data.discriminator})</span>
 			{/if}
 		</span>
 	</span>

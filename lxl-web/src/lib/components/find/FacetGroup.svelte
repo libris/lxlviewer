@@ -253,7 +253,8 @@
 			role="menuitem"
 			class={[
 				'focusable text-subtle flex min-h-8 cursor-pointer items-center',
-				level === 1 && 'font-medium'
+				level === 1 && 'font-medium',
+				level > 1 && 'text-xs'
 			]}
 			data-testid="facet-toggle"
 		>
