@@ -133,6 +133,7 @@ export default {
 		filters: 'Filters',
 		activeFilter: 'Active filter',
 		selectedFilters: 'Selected filters',
+		selectedFiltersOne: 'Selected filter',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		removeFilter: 'Remove filter',

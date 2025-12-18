@@ -97,6 +97,7 @@
 		!canShowMoreItems && filteredItems.length > DEFAULT_FACET_VALUES_SHOWN
 	);
 	const maxItemsReached = $derived(totalItems === data.maxItems);
+	const selectedValues = $derived(data.values?.filter((value) => value.selected));
 
 	function saveUserSort(e: Event): void {
 		const target = e.target as HTMLSelectElement;
@@ -200,6 +201,19 @@
 				<IconChevron class="text-subtle size-3.5" />
 			</span>
 			<span class="truncate">{parent?.label || data.label}</span>
+			{#if selectedValues?.length}
+				{@const message = `${selectedValues.length} ${
+					selectedValues.length === 1
+						? page.data.t('search.selectedFiltersOne').toLowerCase()
+						: page.data.t('search.selectedFilters').toLowerCase()
+				}`}
+				<span
+					class="bg-link mx-1.5 size-1.75 shrink-0 rounded-full"
+					title={message}
+					aria-label={message}
+				>
+				</span>
+			{/if}
 		</summary>
 
 		<!-- sorting -->
