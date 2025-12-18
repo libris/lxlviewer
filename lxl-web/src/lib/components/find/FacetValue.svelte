@@ -26,6 +26,7 @@
 		`focusable flex min-h-8 items-center text-xs no-underline`,
 		variant === 'checkbox' && 'with-checkbox',
 		variant === 'radio' && 'with-radio',
+		!variant && 'with-and',
 		parentDimension.split('/')[0] === 'librissearch:findCategory' &&
 			variant === 'checkbox' &&
 			'text-2xs'
@@ -75,12 +76,36 @@
 	}
 	*/
 
+	/*
+    a[aria-checked='true'] {
+        font-weight: var(--font-weight-semibold);
+    }
+     */
+
+	.with-and::before {
+		content: '';
+		flex-shrink: 0;
+		margin-right: calc(var(--spacing) * 2);
+		border-radius: calc(infinity * 1px);
+		background-color: var(--color-neutral-400);
+		width: calc(var(--spacing) * 1.75);
+		height: calc(var(--spacing) * 1.75);
+		transform: scale(0.4);
+		transform-origin: center;
+		margin-left: calc(var(--spacing));
+	}
+	.with-and[aria-checked='true']::before {
+		width: calc(var(--spacing) * 1.75);
+		height: calc(var(--spacing) * 1.75);
+		background-color: var(--color-accent-600);
+		transform: scale(1);
+	}
+
 	.with-checkbox::before {
 		content: '';
 		background-size: cover;
 		background-image: url('$lib/assets/img/checkbox-unchecked.svg');
 		background-repeat: no-repeat;
-		content: '';
 		width: 14px;
 		height: 14px;
 		flex-shrink: 0;
@@ -95,7 +120,6 @@
 		background-size: cover;
 		background-image: url('$lib/assets/img/radio-unchecked.svg');
 		background-repeat: no-repeat;
-		content: '';
 		width: 14px;
 		height: 14px;
 		flex-shrink: 0;
