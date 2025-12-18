@@ -24,47 +24,36 @@
 </script>
 
 <div class="carousel flex w-full flex-col items-center">
-	<div class="relative flex w-full items-center justify-center overflow-hidden">
-		{#if items.length > 1}
-			<button
-				class="scroll-button btn btn-icon absolute top-[calc(33cqw-44px)] left-1 hidden shadow-lg disabled:opacity-50 disabled:shadow-none @lg:top-[calc(26cqw-44px)] @3xl:top-[calc(21cqw-44px)] @5xl:top-[calc(17cqw-44px)] noscript:hidden"
-				onclick={prev}
-			>
-				<IconChevronLeft class="size-5" />
-			</button>
-		{/if}
-
-		<div class="flex w-full justify-center">
-			{#key index}
-				{@render render(items[index])}
-			{/key}
-		</div>
-
-		{#if items.length > 1}
-			<button
-				class="scroll-button btn btn-icon absolute top-[calc(25cqw-44px)] right-1 hidden shadow-lg disabled:opacity-50 disabled:shadow-none @lg:top-[calc(26cqw-44px)] @3xl:top-[calc(21cqw-44px)] @5xl:top-[calc(17cqw-44px)] noscript:hidden"
-				onclick={next}
-			>
-				<IconChevronRight class="size-5" />
-			</button>
-		{/if}
-	</div>
-
 	{#if items.length > 1}
-		<div class="mt-4 flex space-x-2">
+		<div class="mb-4 flex space-x-2 align-middle noscript:hidden">
+			<button class="btn btn-primary mx-2" onclick={prev}>
+				<IconChevronLeft class="size-3" />
+			</button>
 			{#each { length: items.length }, i}
 				<button
 					aria-label={`element ${i}`}
-					class="h-2 w-2 cursor-pointer rounded-full"
+					class="mx-2 my-2 h-3 w-3 cursor-pointer rounded-full"
 					class:dot-selected={i === index}
 					class:dot-unselected={i !== index}
 					onclick={() => {
 						index = i;
 					}}
-				></button>
+				>
+					<span></span>
+				</button>
 			{/each}
+			<button class="btn btn-primary mx-2" onclick={next}>
+				<IconChevronRight class="size-3" />
+			</button>
 		</div>
 	{/if}
+	<div class="@container relative flex w-full items-center justify-center overflow-hidden">
+		<div class="flex justify-center">
+			{#key index}
+				{@render render(items[index])}
+			{/key}
+		</div>
+	</div>
 </div>
 
 <style lang="postcss">

@@ -345,7 +345,7 @@
 		}
 		& :global(.summary) {
 			display: inline-block;
-			max-width: 60ch;
+			/*max-width: 60ch;*/
 			text-align: justify;
 		}
 	}
