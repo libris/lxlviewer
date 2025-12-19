@@ -80,17 +80,22 @@
 		})
 	);
 
-	const filteredItems = $derived(
-		sortedItems.filter((facet) => {
-			return facet.str
+	const match: (facet: FacetValueType) => void = (facet: FacetValueType) => {
+		return (
+			facet.str
 				.toLowerCase()
 				.split(/\s|--/)
-				.find((s) => s.startsWith(searchPhrase.toLowerCase()));
-		})
-	);
+				.find((s) => s.startsWith(searchPhrase.toLowerCase())) ||
+			(facet.facets && facet.facets.some((f) => f.values.some((facet2) => match(facet2))))
+		);
+	};
+
+	const filteredItems = $derived(sortedItems.filter((facet) => match(facet)));
 
 	const shownItems = $derived(filteredItems.filter((facet, index) => index < defaultItemsShown));
+
 	let hasHits = $derived(filteredItems.length > 0);
+
 	let expanded = $derived(isUserOrDefaultExpanded || (searchPhrase && hasHits));
 	const canShowMoreItems = $derived(filteredItems.length > defaultItemsShown);
 	const canShowFewerItems = $derived(
