@@ -119,26 +119,17 @@ export const load = async ({ params, locals, fetch, url }) => {
 			: [])
 	];
 
-	let instances;
 	let searchResult: ResourceSearchResult | undefined;
-
-	// Format & sort instances; single instance -> pick from resource overview
-	if (mainEntity?.['@reverse']?.instanceOf?.length === 1) {
-		// TODO: Replace with a custom getProperty method (similar to pickProperty)
-		instances = jmespath.search(overview[0], '*[].hasInstance[]');
-	} else if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
-		// multiple instances -> format as web cards
-		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
-		instances = asSearchResultItem(
-			sortedInstances,
-			displayUtil,
-			vocabUtil,
-			locale,
-			env.AUXD_SECRET,
-			myLibraries,
-			undefined
-		);
-	}
+	const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
+	const instances = asSearchResultItem(
+		sortedInstances,
+		displayUtil,
+		vocabUtil,
+		locale,
+		env.AUXD_SECRET,
+		myLibraries,
+		undefined
+	);
 
 	const creations = [mainEntity].concat(mainEntity?.['@reverse']?.instanceOf || []);
 	const summary = creations
