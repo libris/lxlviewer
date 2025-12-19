@@ -638,7 +638,8 @@
 						"manufacture",
 						"extent",
 						"seriesMembership",
-						"responsibilityStatement"
+						"responsibilityStatement",
+						"isPartOf"
 					]
 				}
 			}
@@ -1079,7 +1080,7 @@
 		"needs-label-format": {
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["subject", "seriesMembership"],
+			"fresnel:propertyFormatDomain": ["subject", "seriesMembership", "isPartOf"],
 			"fresnel:propertyStyle": ["label"]
 		},
 		"hasNote-format": {
