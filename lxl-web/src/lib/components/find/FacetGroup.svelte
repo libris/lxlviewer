@@ -102,8 +102,23 @@
 		!canShowMoreItems && filteredItems.length > DEFAULT_FACET_VALUES_SHOWN
 	);
 	const maxItemsReached = $derived(totalItems === data.maxItems);
-	const selectedValues = $derived(data.values?.filter((value) => value.selected));
+	const selectedCount = $derived(getNestedSelectedCount(data.values));
 
+	function getNestedSelectedCount(values: FacetValueType[]) {
+		let count = 0;
+		for (const value of values) {
+			if (value.selected) {
+				count++;
+			}
+			if (value.facets) {
+				for (const facet of value.facets) {
+					const nestedCount = getNestedSelectedCount(facet.values);
+					count = count + nestedCount;
+				}
+			}
+		}
+		return count;
+	}
 	function saveUserSort(e: Event): void {
 		const target = e.target as HTMLSelectElement;
 		userSettings.saveFacetSort(data.dimension, target.value);
@@ -258,6 +273,9 @@
 		data-dimension={data.dimension}
 		style={`--level:${level}`}
 		ontoggle={saveUserExpanded}
+		name={data.dimension?.split('/')[0] === 'librissearch:findCategory' && level === 2
+			? 'findCategory'
+			: undefined}
 	>
 		<summary
 			role="menuitem"
@@ -285,9 +303,9 @@
 					</span>
 				</span>
 			{/if}
-			{#if selectedValues?.length}
-				{@const message = `${selectedValues.length} ${
-					selectedValues.length === 1
+			{#if selectedCount}
+				{@const message = `${selectedCount} ${
+					selectedCount === 1
 						? page.data.t('search.selectedFiltersOne').toLowerCase()
 						: page.data.t('search.selectedFilters').toLowerCase()
 				}`}
