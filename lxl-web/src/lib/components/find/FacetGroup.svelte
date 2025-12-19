@@ -258,6 +258,9 @@
 		data-dimension={data.dimension}
 		style={`--level:${level}`}
 		ontoggle={saveUserExpanded}
+		name={data.dimension?.split('/')[0] === 'librissearch:findCategory' && level === 2
+			? 'findCategory'
+			: undefined}
 	>
 		<summary
 			role="menuitem"
