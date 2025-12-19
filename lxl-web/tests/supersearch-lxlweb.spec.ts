@@ -85,10 +85,10 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 });
 
 test('user can jump from first row to bottom by pressing arrow up', async ({ page }) => {
-	await page.getByTestId('supersearch').getByRole('combobox').fill('a');
+	await page.getByTestId('supersearch').getByRole('combobox').fill('Kallocain');
 
 	await page.waitForResponse(
-		(res) => res.url().includes('/supersearch?_q=a') && res.status() === 200
+		(res) => res.url().includes('/supersearch?_q=Kallocain') && res.status() === 200
 	);
 	await expect(page.getByRole('dialog').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowUp');
@@ -116,6 +116,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier'),
 		'qualifier value is initially empty but has styling'
 	).toContainText('');
+	await page.keyboard.press('j');
 
 	await page.waitForResponse(
 		(res) => res.url().includes('/supersearch?_q=contributor') && res.status() === 200
@@ -128,7 +129,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		'all suggestions are persons or organizations'
 	).toHaveCount(5);
 	await expect(page.getByRole('dialog').getByRole('combobox')).toContainText('Författare/upphov');
-	await page.getByRole('dialog').getByRole('combobox').pressSequentially('jan');
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('an');
 
 	await page.waitForResponse(
 		(res) => res.url().includes('supersearch?_q=contributor%3A%28jan%29') && res.status() === 200
@@ -141,7 +142,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 			.filter({ hasText: /jan/i }),
 		'all suggestions are persons related to the query "jan"'
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
+	await page.getByRole('dialog').locator('.suggestion').first().getByRole('link').click();
 	await page.waitForURL('**/find?**');
 	await expect(page.url()).toContain('contributor');
 	await expect(
@@ -160,6 +161,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByText('Språk')
 		.click();
 
+	await page.keyboard.press('S');
 	await page.waitForResponse(
 		(res) =>
 			res.url().includes('/supersearch?') &&
@@ -167,11 +169,11 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 			res.status() === 200
 	);
 	await expect(
-		page.getByRole('dialog').getByLabel('Förslag').getByRole('link').filter({ hasText: 'Språk' }),
+		page.getByRole('dialog').locator('.suggestion').getByRole('link').filter({ hasText: 'Språk' }),
 		'all suggestions are languages'
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByRole('combobox').pressSequentially('Swahili');
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
+	await page.getByRole('dialog').getByRole('combobox').pressSequentially('wahili');
+	await page.getByRole('dialog').locator('.suggestion').getByRole('link').first().click();
 	await page.waitForURL(/spr%C3%A5k/);
 	await expect(page.url()).toContain('contributor');
 	await expect(page.url(), 'url contains both contributor and language').toContain(
@@ -196,6 +198,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByText('Ämne')
 		.click();
 
+	await page.keyboard.press('A');
 	await page.waitForResponse(
 		(res) =>
 			res.url().includes('/supersearch?') && res.url().includes('A4mne') && res.status() === 200
@@ -203,7 +206,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await expect(page.getByRole('dialog').getByRole('link').filter({ hasText: 'ämne' })).toHaveCount(
 		5
 	);
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
+	await page.getByRole('dialog').locator('.suggestion').getByRole('link').first().click();
 	await page.waitForURL(/A4mne/);
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-key').first(),
