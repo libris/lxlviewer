@@ -337,6 +337,24 @@
 						"coverage"
 					]
 				},
+				"VariantTitle": {
+					"@id": "VariantTitle-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Title",
+					"showProperties": [
+						"typeNote",
+						"mainTitle",
+						"title",
+						"subtitle",
+						"titleRemainder",
+						"partNumber",
+						"partName",
+						"hasPart",
+						"marc:parallelTitle",
+						"coverage",
+						"rdf:type"
+					]
+				},
 				"KeyTitle": {
 					"@id": "Title-chips",
 					"@type": "fresnel:Lens",
@@ -911,11 +929,23 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"KeyTitle-rdf:type-format": {
+		"Title-maintitle-format": {
+			"NOTE": "it can have a typeNote before, which usually contains a :",
+			"@id": "Title-mainTitle-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Title"],
+			"fresnel:propertyFormatDomain": ["mainTitle"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Title-rdf:type-format": {
 			"@id": "KeyTitle-rdf:type-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["KeyTitle"],
+			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["rdf:type"],
+			"fresnel:propertyStyle": ["Title-type"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""

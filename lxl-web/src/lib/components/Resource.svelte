@@ -315,7 +315,7 @@
 				<h2 id="{uidPrefix}details" class="mb-4 text-xl font-medium">
 					{page.data.t('resource.details')}
 				</h2>
-				<div class="decorated-data-section decorated-spacious">
+				<div class="decorated-data-section decorated-spacious decorated-details">
 					{#each decoratedData.details as details (details)}
 						<div class="mb-2">
 							<DecoratedData
@@ -482,13 +482,21 @@
 			}
 		}
 
-		& :global(span[data-type='KeyTitle'] > span[data-property='rdf:type']) {
+		& :global(span.Title-type) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
 		}
 
-		& :global(span[data-type='KeyTitle'] > span[data-property='rdf:type'])::before {
+		& :global(span.Title-type)::before {
 			content: ' ';
+		}
+
+		& :global(.coverage + span.Title-type) {
+			display: none;
+		}
+
+		& :global(span[data-property='typeNote']) {
+			color: var(--color-subtle);
 		}
 	}
 
@@ -522,6 +530,7 @@
 
 		& :global(small) {
 			display: block;
+
 			&::first-letter {
 				text-transform: capitalize;
 			}
@@ -533,6 +542,13 @@
 			@variant sm {
 				margin-bottom: calc(var(--spacing) * 3);
 			}
+		}
+	}
+
+	.decorated-details {
+		& :global(span[data-type='Title']) {
+			/* color: var(--color-subtle); */
+			font-weight: var(--font-weight-semibold);
 		}
 	}
 
