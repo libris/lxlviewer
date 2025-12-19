@@ -566,7 +566,7 @@
 	}
 
 	.decorated-details {
-		& :global(span[data-type='Title']) {
+		& :global(div[data-property='hasTitle'] > span[data-type='Title']) {
 			/* color: var(--color-subtle); */
 			font-weight: var(--font-weight-semibold);
 		}
