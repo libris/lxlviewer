@@ -258,7 +258,7 @@ export default {
       if (typeLike.length === 0) {
         return `${this.typeLabel}${this.categorization.length > 0 ? ' • ' : ''}${this.categorization.join(', ')}`;
       } else {
-        return `${this.typeLabel} • ${typeLike.join(', ')}`;
+        return `${this.typeLabel} › ${typeLike.join(', ')}`;
       }
     },
     categorization() {
