@@ -132,9 +132,11 @@ export default {
 		filters: 'Sökfilter',
 		activeFilter: 'Aktivt filter',
 		selectedFilters: 'Valda filter',
+		selectedFiltersOne: 'Valt filter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
 		removeFilter: 'Ta bort filter',
+		noFiltersFound: 'Inga filter hittades',
 		noResults: 'Inga resultat',
 		hitsOf: 'av',
 		hits: 'träffar',
@@ -166,7 +168,8 @@ export default {
 		addLibraries: 'Lägg till bibliotek',
 		changeLibraries: 'Ändra bibliotek',
 		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek',
-		libraries: 'bibliotek'
+		libraries: 'bibliotek',
+		allInFacet: 'Allt inom'
 	},
 	supersearch: {
 		search: 'Sök',

@@ -133,9 +133,11 @@ export default {
 		filters: 'Filters',
 		activeFilter: 'Active filter',
 		selectedFilters: 'Selected filters',
+		selectedFiltersOne: 'Selected filter',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		removeFilter: 'Remove filter',
+		noFiltersFound: 'No filters found',
 		noResults: 'No results',
 		hitsOf: 'of',
 		hits: 'hits',
@@ -167,7 +169,8 @@ export default {
 		addLibraries: 'Add libraries',
 		changeLibraries: 'Change libraries',
 		noAddedLibrariesText: 'You have not chosen any favourite libraries',
-		libraries: 'libraries'
+		libraries: 'libraries',
+		allInFacet: 'All in'
 	},
 	supersearch: {
 		search: 'Search',
