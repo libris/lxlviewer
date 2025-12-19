@@ -31,7 +31,7 @@
 	let searchPhrase = $state('');
 </script>
 
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-4 pb-4">
 	{#if mapping && inModal && shouldShowMapping()}
 		<nav aria-label={page.data.t('search.selectedFilters')}>
 			<SearchMapping {mapping} />
@@ -57,7 +57,7 @@
 					'text-sm',
 					navigating.to &&
 						navigating.from?.url.pathname === navigating.to?.url.pathname &&
-						'opacity-50 pointer-events-none'
+						'pointer-events-none opacity-50'
 				]}
 			>
 				{#each facets as facet, index (facet.dimension)}
