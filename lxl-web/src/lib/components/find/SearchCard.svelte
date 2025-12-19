@@ -56,8 +56,11 @@
 		(!page.state.dimissedHighlighting && page.url.hash === `#${id}`) || modalParam === id
 	);
 
-	// safer way to check if data is an instance?
-	const isInstanceCard = $derived(!!page.params.fnurgel);
+	// better way to check if data is an instance?
+	const isInstanceCard = $derived(
+		item[JsonLd.TYPE] === 'PhysicalResource' || item[JsonLd.TYPE] === 'DigitalResource'
+	);
+
 	const resourceLink = $derived.by(() => {
 		const url = new URL(page.url.origin + page.data.localizeHref(id));
 		// pass on _q to resource page
@@ -96,9 +99,7 @@
 
 	function isLibraryCard(item: SearchResultItem | LibraryResultItem): item is LibraryResultItem {
 		if (item[JsonLd.TYPE] !== 'Library' && item[JsonLd.TYPE] !== 'bibdb:Organization') return false;
-
-		// addLibrary from a SearchResultItem won't work until library-id:s are included...
-		if (!('thingId' in item) || !('str' in item)) return false;
+		if (!('libraryId' in item) || !('displayStr' in item)) return false;
 		return true;
 	}
 
@@ -331,14 +332,14 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						{@const userSettings = getUserSettings()}
 						{@const alreadyAdded =
 							userSettings.myLibraries &&
-							Object.keys(userSettings.myLibraries).includes(item.thingId)}
+							Object.keys(userSettings.myLibraries).includes(item.libraryId)}
 						<button
 							class="btn btn-primary h-7 rounded-full md:h-8"
 							type="button"
 							onclick={() =>
 								alreadyAdded
-									? userSettings.removeLibrary(item.thingId)
-									: userSettings.addLibrary(item.thingId, item.str)}
+									? userSettings.removeLibrary(item.libraryId)
+									: userSettings.addLibrary(item.libraryId, item.displayStr)}
 						>
 							{#if alreadyAdded}
 								<BiHeartFill class="text-primary-600" />

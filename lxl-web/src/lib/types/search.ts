@@ -34,8 +34,8 @@ export interface ResourceSearchResult {
 }
 
 export interface LibraryResultItem extends SearchResultItem {
-	thingId: LibraryId;
-	str: string;
+	libraryId: LibraryId;
+	displayStr: string;
 }
 
 export interface LibraryResult {
@@ -91,7 +91,7 @@ export interface FacetValue {
 	alias?: string;
 	selected?: boolean;
 	operator?: FacetOperator;
-	all?: boolean
+	all?: boolean;
 }
 
 export type FacetOperator = 'AND' | 'OR';
