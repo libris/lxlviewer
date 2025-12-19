@@ -121,7 +121,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	let searchResult: ResourceSearchResult | undefined;
 	let instances;
-	if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
+	if (mainEntity?.['@reverse']?.instanceOf?.length > 0) {
 		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
 		instances = asSearchResultItem(
 			sortedInstances,
