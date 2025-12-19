@@ -38,8 +38,8 @@
 		return myLibsCookie
 			.map(
 				(id) =>
-					(myLibraries ?? []).find((m) => m.thingId === id) ||
-					addedFromSearch.find((a) => a.thingId === id)
+					(myLibraries ?? []).find((m) => m.libraryId === id) ||
+					addedFromSearch.find((a) => a.libraryId === id)
 			)
 			.filter((lib) => !!lib);
 	});
@@ -71,10 +71,10 @@
 
 	$effect(() => {
 		const items: LibraryResultItem[] = search?.data?.items || [];
-		const matches = items.filter((i) => myLibsCookie.includes(i.thingId));
+		const matches = items.filter((i) => myLibsCookie.includes(i.libraryId));
 
 		for (const m of matches) {
-			if (!addedFromSearch.find((x) => x.thingId === m.thingId)) {
+			if (!addedFromSearch.find((x) => x.libraryId === m.libraryId)) {
 				// when adding a lib from the search results, display that card in list on the right
 				addedFromSearch.push(m);
 			}

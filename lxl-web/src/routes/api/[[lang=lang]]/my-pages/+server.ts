@@ -3,8 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import { getSupportedLocale, type LocaleCode as LangCode } from '$lib/i18n/locales.js';
 import type { LibraryResult, PartialCollectionView } from '$lib/types/search';
-import { JsonLd, LensType } from '$lib/types/xl.js';
-import { DisplayUtil, toString, VocabUtil } from '$lib/utils/xl';
+import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import { asSearchResultItem } from '$lib/utils/search.js';
 
 export const GET: RequestHandler = async ({ url, params, locals }) => {
@@ -67,15 +66,9 @@ async function asLibraryResult(
 		locale,
 		env.AUXD_SECRET
 	);
-	// need to re-add the LibraryId to the formatted result since it's wiped in formatting
-	const withId = items?.map((item, index) => ({
-		...item,
-		thingId: view.items[index][JsonLd.ID],
-		str: toString(displayUtil.lensAndFormat(view.items[index], LensType.Chip, locale))
-	}));
 	return {
 		totalItems: view.totalItems,
 		maxItems: view.maxItems,
-		items: withId
+		items
 	} as LibraryResult;
 }

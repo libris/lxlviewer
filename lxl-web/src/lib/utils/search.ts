@@ -127,7 +127,11 @@ export function asSearchResultItem(
 			typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
 			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
-			numberOfHolders: getHoldersCount(i, vocabUtil)
+			numberOfHolders: getHoldersCount(i, vocabUtil),
+			...(isLibrary(i) && {
+				libraryId: i[JsonLd.ID],
+				displayStr: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale))
+			})
 		}));
 }
 
@@ -284,6 +288,10 @@ function isSerial(item: FramedData): boolean {
 		item[JsonLd.TYPE] === 'Serial' ||
 		getAtPath(item, ['@reverse', 'instanceOf', '*', 'issuanceType']).every((v) => v === 'Serial')
 	);
+}
+
+function isLibrary(item: FramedData): boolean {
+	return item[JsonLd.TYPE] === 'Library' || item[JsonLd.TYPE] === 'bibdb:Organization';
 }
 
 function getMaxScores(itemDebugs: ApiItemDebugInfo[]) {
