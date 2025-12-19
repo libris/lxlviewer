@@ -343,10 +343,29 @@
 		& :global(.provisionActivity) {
 			font-style: italic;
 		}
+
 		& :global(.summary) {
 			display: inline-block;
 			/*max-width: 60ch;*/
 			text-align: justify;
+		}
+
+		& :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents']) {
+			display: block;
+		}
+
+		& :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents'])::before {
+			content: ' • ';
+			color: var(--color-subtle);
+		}
+
+		& :global(div[data-property='tableOfContents'] > span._contentBefore) {
+			display: none;
+		}
+
+		& :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
+			display: block;
+			/*font-size: var(--text-2xs);*/
 		}
 	}
 
@@ -421,6 +440,7 @@
 
 		& :global(.hasNote > span)::before {
 			content: ' • ';
+			color: var(--color-subtle);
 		}
 
 		& :global(.hasNote > ._contentBefore),
