@@ -1,13 +1,14 @@
 import { Decoration, EditorView, WidgetType } from '@codemirror/view';
 import { syntaxTree } from '@codemirror/language';
 import { type Range } from '@codemirror/state';
-import { qualifierSemanticField, type QualifierSemantic } from './qualifierValidation.js';
+import { qualifierSemanticField } from './qualifierValidation.js';
 import { qualifierWidgetRendererFacet } from './qualifierFacet.js';
+import type { QualifierWidgetProps } from './index.js';
 
 class QualifierWidget extends WidgetType {
 	private cleanup?: () => void;
 
-	constructor(readonly props: QualifierSemantic) {
+	constructor(readonly props: QualifierWidgetProps) {
 		super();
 	}
 
@@ -15,7 +16,8 @@ class QualifierWidget extends WidgetType {
 		return (
 			this.props.keyLabel === other.props.keyLabel &&
 			this.props.valueLabel === other.props.valueLabel &&
-			this.props.removeLink === other.props.removeLink
+			this.props.removeLink === other.props.removeLink &&
+			this.props.value === other.props.value
 		);
 	}
 
@@ -48,17 +50,25 @@ export const qualifierDecorations = EditorView.decorations.compute(
 				if (node.name !== 'Qualifier') return;
 
 				const data = sem.get(`${node.from}-${node.to}`);
-				console.log(data);
+
+				// invalidated
 				if (!data || data.invalid) return;
 
-				//TODO
-				// const decorationRangeTo = valueLabel ? node.to : operatorNode?.to;
+				const operatorNode = node.node.getChild('QualifierOperator');
+				const operator = operatorNode
+					? state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
+					: '';
+
+				const props: QualifierWidgetProps = {
+					operator,
+					...data
+				};
 
 				decorations.push(
 					Decoration.replace({
-						widget: new QualifierWidget(data)
+						widget: new QualifierWidget(props)
 						// side: 1
-					}).range(node.from, node.to)
+					}).range(node.from, data.valueLabel ? node.to : operatorNode?.to)
 				);
 
 				// decorations.push(

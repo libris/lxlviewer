@@ -1,6 +1,8 @@
 import { StateEffect, StateField } from '@codemirror/state';
 
 export interface QualifierSemantic {
+	key: string;
+	value?: string;
 	keyLabel?: string;
 	valueLabel?: string;
 	removeLink?: string;

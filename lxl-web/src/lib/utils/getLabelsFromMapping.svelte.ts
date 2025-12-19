@@ -23,7 +23,7 @@ function getLabelFromMappings(
 		prevSuggestMapping = suggestMapping;
 	}
 
-	return { keyLabel, valueLabel, removeLink, invalid };
+	return { key, value, keyLabel, valueLabel, removeLink, invalid };
 }
 
 function iterateMapping(

@@ -58,7 +58,8 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 				enter: (node) => {
 					if (node.name !== 'Qualifier') return;
 					const qualifierKey = node.node.getChild('QualifierKey');
-					const qualifierValue = node.node.getChild('qualifierValue');
+					// TODO enum for these
+					const qualifierValue = node.node.getChild('QualifierValue');
 
 					const qualifierKeyText = qualifierKey
 						? view.state.doc.sliceString(qualifierKey.from, qualifierKey.to)
