@@ -1,9 +1,11 @@
 <script lang="ts">
+	import { mount, unmount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import {
 		SuperSearch,
-		lxlQualifierPlugin,
+		lxlQualifierExtension,
+		type QualifierWidgetProps,
 		type Selection,
 		type ShowExpandedSearchOptions,
 		type ViewUpdateSuperSearchEvent
@@ -140,6 +142,19 @@
 		});
 	}
 
+	const renderer = (container: HTMLElement, props: QualifierWidgetProps) => {
+		const component = mount(QualifierPill, {
+			target: container,
+			props
+		});
+
+		return {
+			destroy() {
+				unmount(component);
+			}
+		};
+	};
+
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
 			// Make sure supersearch doesn't use '_r' section of mapping
@@ -147,7 +162,7 @@
 			const filteredSuggestMapping = suggestMapping?.filter((m) => m.variable === '_q');
 			return getLabelFromMappings(key, value, filteredPageMapping, filteredSuggestMapping);
 		}
-		return lxlQualifierPlugin(QualifierPill, getLabels);
+		return lxlQualifierExtension(getLabels, renderer);
 	});
 
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {

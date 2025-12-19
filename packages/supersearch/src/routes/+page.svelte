@@ -6,7 +6,7 @@
 	import clearIconSvg from './icon-clear.svg';
 	import backIconSvg from './icon-arrow-left.svg';
 	import type { ExpandedContentParams } from '$lib/components/SuperSearch.svelte';
-	import { lxlQualifierPlugin } from '$lib/index.js';
+	import { lxlQualifierExtension } from '$lib/index.js';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	let isLoading: boolean | undefined = $state();
@@ -101,7 +101,7 @@
 			form={useFormAttribute ? 'form-outside' : undefined}
 			expandedContent={useCustomExpandedContent ? expandedContent : undefined}
 			wrappingArrowKeyNavigation={useWrappingArrowKeyNavigation}
-			extensions={[lxlQualifierPlugin()]}
+			extensions={[lxlQualifierExtension(() => true)]}
 		>
 			{#snippet inputRow({
 				expanded,
