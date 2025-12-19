@@ -59,23 +59,24 @@ export const qualifierDecorations = EditorView.decorations.compute(
 					? state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
 					: '';
 
-				const props: QualifierWidgetProps = {
-					operator,
-					...data
-				};
-
+				// lxl-qualifier element
 				decorations.push(
-					Decoration.replace({
-						widget: new QualifierWidget(props)
-						// side: 1
-					}).range(node.from, data.valueLabel ? node.to : operatorNode?.to)
+					Decoration.mark({
+						class: 'lxl-qualifier',
+						attributes: {
+							style: 'display: inline-block; margin-left: 1px; margin-right: 1px;'
+						},
+						inclusive: true
+					}).range(node.from, node.to)
 				);
 
-				// decorations.push(
-				// 	Decoration.mark({
-				// 		class: "lxl-qualifier"
-				// 	}).range(node.from, node.to)
-				// )
+				// QualifierWidget
+				decorations.push(
+					Decoration.replace({
+						widget: new QualifierWidget({ operator, ...data }),
+						side: 1
+					}).range(node.from, data.valueLabel ? node.to : operatorNode?.to)
+				);
 			}
 		});
 
