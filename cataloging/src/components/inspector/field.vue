@@ -37,6 +37,7 @@ import {
   VALUE_FROM_KEY,
   ANY_TYPE
 } from "@/utils/bulk.js";
+import * as RecordUtil from "@/utils/record.js";
 
 export default {
   name: 'field',
@@ -260,6 +261,30 @@ export default {
         this.$store.dispatch('setValidation', { path: this.path, validates: true });
       }
       return failedValidations;
+    },
+    missingContentType() {
+      if (this.fieldKey === 'category' && this.parentPath === 'mainEntity') {
+        const hasContentType = this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === 'ContentType');
+        return !hasContentType;
+      }
+      return false;
+    },
+    missingGenreForm() {
+      if (this.fieldKey === 'category' && this.parentPath === 'mainEntity') {
+        const hasGenreForm = this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === 'GenreForm');
+        return !hasGenreForm;
+      }
+      return false;
+    },
+    validationText() {
+      if (this.missingContentType && this.missingGenreForm) {
+        return translatePhrase('Genre/form and content type are missing');
+      } else if (this.missingGenreForm) {
+        return translatePhrase('Genre/form is missing');
+      } else if (this.missingContentType) {
+        return translatePhrase('Content type is missing');
+      }
+      return '';
     },
     clipboardHasValidObject() {
       if (this.clipboardValue === null) {
@@ -680,6 +705,13 @@ export default {
       }
       return 'error';
     },
+    getTypeFromQuoted(key) {
+      const obj =  this.inspector.data.quoted[key] || null;
+      if (obj) {
+        return obj['@type'];
+      }
+      return null;
+    },
     isLinked(o) {
       if (o === null) {
         return false;
@@ -775,6 +807,7 @@ export default {
       'is-diff-added': diffAdded,
       'is-diff-removed': diffRemoved,
       'is-diff-modified': diffModified,
+      'validation-warn': missingContentType && !isLocked,
       'is-locked': locked,
       'is-diff': isFieldDiff,
       'is-new': isFieldNew,
@@ -1190,6 +1223,14 @@ export default {
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
+    <div class="Field-validation" v-if="missingContentType && !isLocked">
+      <div class="Field-validation-text">
+        {{ validationText }}
+      </div>
+      <div class="Field-validation-icon">
+        <i class="fa fa-exclamation-circle icon--sm" />
+      </div>
+    </div>
 
     <div
       class="Field-content is-endOfTree js-endOfTree"
@@ -1369,6 +1410,27 @@ export default {
     border: 1px dashed;
     border-color: @base-color;
     background-color: @form-modified;
+  }
+
+  &.validation-warn {
+    border: 1px solid;
+    border-color: @form-validate-warn;
+    background-color: @form-validate-warn;
+  }
+
+  &-validation {
+    display: flex;
+    align-items: center;
+
+    &-icon {
+      padding-right: 1.2em;
+      color: @brand-warning;
+    }
+    &-text {
+      max-width: 7em;
+      font-size: 12px;
+      padding: 0 0.5em;
+    }
   }
 
   .icon-removed {
