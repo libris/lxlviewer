@@ -54,7 +54,10 @@ export enum Platform {
 
 export enum Bibframe {
 	Work = 'Work',
-	Instance = 'Instance'
+	Instance = 'Instance',
+	summary = 'summary',
+	tableOfContents = 'tableOfContents',
+	publication = 'publication'
 }
 
 export enum BibDb {
@@ -178,6 +181,9 @@ export enum LensType {
 	SearchCard = 'search-cards',
 	WebChip = 'web-chips',
 	WebCard = 'web-card',
+	WebOverview = 'web-overview',
+	WebOverview2 = 'web-overview2',
+	WebDetails = 'web-details',
 	WebCardFooter = 'web-card-footer',
 	WebCardHeaderTop = 'web-card-header-top',
 	WebCardHeaderExtra = 'web-card-header-extra',

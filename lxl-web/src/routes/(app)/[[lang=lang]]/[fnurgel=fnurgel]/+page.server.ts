@@ -4,22 +4,22 @@ import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
 
-import { type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
+import { Bibframe, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 import type { HoldingsData } from '$lib/types/holdings.js';
 
-import { pickProperty, toString, asArray, first } from '$lib/utils/xl.js';
+import { asArray, first, pickProperty, toString } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import {
+	getBibIdsByInstanceId,
+	getHoldersByType,
 	getHoldingLibraries,
 	getHoldingsByInstanceId,
-	getBibIdsByInstanceId,
-	getHoldingsByType,
-	getHoldersByType
+	getHoldingsByType
 } from '$lib/utils/holdings.server';
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
@@ -89,8 +89,35 @@ export const load = async ({ params, locals, fetch, url }) => {
 		delete mainEntity['language'];
 	}
 
+	const _instances = mainEntity?.['@reverse']?.instanceOf || [];
+
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
-	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
+	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
+	const overview = [
+		displayUtil.lensAndFormat(mainEntity, LensType.WebOverview, locale),
+		...(_instances.length === 1
+			? [displayUtil.lensAndFormat(_instances[0], LensType.WebOverview, locale)]
+			: [])
+	];
+
+	// TODO ...
+	const isWork =
+		vocabUtil.getType(mainEntity) == 'Work' ||
+		vocabUtil.isSubClassOf(vocabUtil.getType(mainEntity), 'Work');
+	const overviewLens = isWork ? LensType.WebOverview2 : LxlLens.PageOverView;
+	const overview2 = [
+		displayUtil.lensAndFormat(mainEntity, overviewLens, locale),
+		...(_instances.length === 1
+			? [displayUtil.lensAndFormat(_instances[0], overviewLens, locale)]
+			: [])
+	];
+
+	const details = [
+		displayUtil.lensAndFormat(mainEntity, LensType.WebDetails, locale),
+		...(_instances.length === 1
+			? [displayUtil.lensAndFormat(_instances[0], LensType.WebDetails, locale)]
+			: [])
+	];
 
 	let instances;
 	let searchResult: ResourceSearchResult | undefined;
@@ -98,7 +125,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	// Format & sort instances; single instance -> pick from resource overview
 	if (mainEntity?.['@reverse']?.instanceOf?.length === 1) {
 		// TODO: Replace with a custom getProperty method (similar to pickProperty)
-		instances = jmespath.search(overview, '*[].hasInstance[]');
+		instances = jmespath.search(overview[0], '*[].hasInstance[]');
 	} else if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
 		// multiple instances -> format as web cards
 		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
@@ -112,6 +139,28 @@ export const load = async ({ params, locals, fetch, url }) => {
 			undefined
 		);
 	}
+
+	const creations = [mainEntity].concat(mainEntity?.['@reverse']?.instanceOf || []);
+	const summary = creations
+		.filter((c: FramedData) => c[Bibframe.summary])
+		.map((c: FramedData) => ({
+			[JsonLd.TYPE]: c[JsonLd.TYPE],
+			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
+			[Bibframe.summary]: c[Bibframe.summary]
+		}))
+		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
+
+	const resourceTableOfContents = creations
+		.filter((c: FramedData) => c[Bibframe.tableOfContents])
+
+		.map((c: FramedData) => ({
+			[JsonLd.TYPE]: c[JsonLd.TYPE],
+			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
+			[Bibframe.tableOfContents]: c[Bibframe.tableOfContents]
+		}))
+		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
 
 	// Search for instances that matches query
 	if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*') || locals.site) {
@@ -174,6 +223,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 	);
 
 	const tableOfContents: TableOfContentsItem[] = [
+		...(summary.length
+			? [
+					{
+						id: 'summary',
+						label: translate('resource.summary')
+					}
+				]
+			: []),
 		...(instances?.length > 1
 			? [
 					{
@@ -193,11 +250,23 @@ export const load = async ({ params, locals, fetch, url }) => {
 						}))
 					}
 				]
-			: [])
+			: []),
+		...(resourceTableOfContents.length
+			? [
+					{
+						id: 'resourceTableOfContents',
+						label: translate('resource.tableOfContents')
+					}
+				]
+			: []),
+		{
+			id: 'details',
+			label: translate('resource.details')
+		}
 	];
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
+	const [_, overviewWithoutHasInstance] = pickProperty(overview[0], ['hasInstance']);
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByType = getHoldingsByType(mainEntity);
@@ -226,14 +295,22 @@ export const load = async ({ params, locals, fetch, url }) => {
 	return {
 		uri: resource['@id'] as string,
 		type: mainEntity[JsonLd.TYPE],
-		types: types,
 		typeForIcon: getTypeForIcon(typeLike), // FIXME
 		title: toString(heading),
-		heading,
-		overview: overviewWithoutHasInstance,
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
+		decoratedData: {
+			headingTop: types,
+			heading: heading,
+			headingExtra: headingExtra,
+			overview: overview,
+			overview2: overview2,
+			overviewFooter: {},
+			summary: summary,
+			resourceTableOfContents: resourceTableOfContents,
+			details: details
+		},
 		searchResult,
 		holdings,
 		images,

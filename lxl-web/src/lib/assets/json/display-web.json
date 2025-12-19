@@ -321,6 +321,28 @@
 						"fullerFormOfName"
 					]
 				},
+				"Title": {
+					"@id": "Title-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Title",
+					"showProperties": [
+						"mainTitle",
+						"title",
+						"subtitle",
+						"titleRemainder",
+						"partNumber",
+						"partName",
+						"hasPart",
+						"marc:parallelTitle",
+						"coverage"
+					]
+				},
+				"KeyTitle": {
+					"@id": "Title-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Title",
+					"showProperties": ["mainTitle", "qualifier", "rdf:type"]
+				},
 				"DatatypeProperty": {
 					"@id": "DatatypeProperty-chips",
 					"@type": "fresnel:Lens",
@@ -575,6 +597,141 @@
 					"showProperties": []
 				}
 			}
+		},
+		"web-overview": {
+			"@id": "web-overview",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-overview",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["contribution", "category", "intendedAudience"]
+				},
+				"Instance": {
+					"@id": "Instance-web-overview",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": [
+						"identifiedBy",
+						"editionStatement",
+						"contribution",
+						"publication",
+						"manufacture",
+						"extent",
+						"seriesMembership",
+						"responsibilityStatement"
+					]
+				}
+			}
+		},
+		"web-overview2": {
+			"@id": "web-overview2",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-overview2",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["subject"]
+				},
+				"Instance": {
+					"@id": "Instance-web-overview2",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": [
+						"associatedMedia",
+						"continues",
+						{ "inverseOf": "continuedBy" },
+						"continuedBy",
+						{ "inverseOf": "continues" },
+						"continues",
+						{ "inverseOf": "continuedBy" },
+						"continuesInPart",
+						"continuedInPartBy",
+						"relatedTo"
+					]
+				}
+			}
+		},
+		"web-details": {
+			"@id": "web-details",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-details",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": [
+						"legalDate",
+						"version",
+						"marc:arrangedStatementForMusic",
+						"originDate",
+						"contribution",
+						"language",
+						"translationOf",
+						"hasNotation",
+						"hasVariant",
+						"inCollection",
+						"classification",
+						"additionalClassificationDdc",
+						"intendedAudience",
+						"dissertation",
+						"cartographicAttributes",
+						"isPartOf",
+						"associatedMedia",
+						"isPrimaryTopicOf"
+					]
+				},
+				"Instance": {
+					"@id": "Instance-web-details",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": [
+						"contribution",
+						"reproductionOf",
+						"identifiedBy",
+						"indirectlyIdentifiedBy",
+						"hasTitle",
+						"responsibilityStatement",
+						"editionStatement",
+						"editionStatementRemainder",
+						"isIssueOfEdition",
+						"isPartOf",
+						"part",
+						"publication",
+						"marc:primaryProvisionActivity",
+						"production",
+						"manufacture",
+						"distribution",
+						"copyright",
+						"copyrightDate",
+						"projectedProvisionDate",
+						"extent",
+						"hasDimensions",
+						"hasDuration",
+						"physicalDetailsNote",
+						"illustrativeContent",
+						"baseMaterial",
+						"appliedMaterial",
+						"productionMethod",
+						"digitalCharacteristic",
+						"marc:mediaTerm",
+						"genreForm",
+						"classification",
+						"accompaniedBy",
+						"seriesMembership",
+						"intendedAudience",
+						"associatedMedia",
+						"usageAndAccessPolicy",
+						"accessMode",
+						"isPrimaryTopicOf",
+						"isIssueOf",
+						"relatedTo",
+						"hasNote"
+					]
+				}
+			}
 		}
 	},
 	"formatters": {
@@ -636,7 +793,7 @@
 				"manufacture",
 				"marc:primaryProvisionActivity"
 			],
-			"fresnel:propertyStyle": ["provisionActivity"]
+			"fresnel:propertyStyle": ["provisionActivity", "label"]
 		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
@@ -646,7 +803,6 @@
 				"place",
 				"country",
 				"year",
-				"startYear",
 				"date",
 				"marc:publicationStatus"
 			],
@@ -661,9 +817,24 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
 			"fresnel:propertyFormatDomain": ["endYear"],
+			"fresnel:propertyStyle": ["endYear"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": "-",
 				"fresnel:contentFirst": "-"
+			}
+		},
+		"ProvisionActivity-startYear-format": {
+			"TODO": "this can fail if there are additional properties after startYear? see also endYear above",
+			"@id": "ProvisionActivity-startYear-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["ProvisionActivity"],
+			"fresnel:propertyFormatDomain": ["startYear"],
+			"fresnel:propertyStyle": ["startYear"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": "",
+				"fresnel:contentLast": "-",
+				"fresnel:contentAfter": "-"
 			}
 		},
 		"Agent-activityEndDate-format": {
@@ -718,6 +889,18 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Title-coverage-format": {
+			"@id": "coverage-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Title"],
+			"fresnel:propertyFormatDomain": ["coverage"],
+			"fresnel:propertyStyle": ["coverage"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentFirst": "(",
+				"fresnel:contentAfter": ")"
+			}
+		},
 		"Title-qualifier-format": {
 			"@id": "Title-qualifier-format",
 			"@type": "fresnel:Format",
@@ -725,6 +908,16 @@
 			"fresnel:propertyFormatDomain": ["qualifier"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"KeyTitle-rdf:type-format": {
+			"@id": "KeyTitle-rdf:type-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["KeyTitle"],
+			"fresnel:propertyFormatDomain": ["rdf:type"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -853,6 +1046,18 @@
 			"fresnel:classFormatDomain": ["Subject"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"needs-label-format": {
+			"@id": "Subject-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["subject", "seriesMembership"],
+			"fresnel:propertyStyle": ["label"]
+		},
+		"hasNote-format": {
+			"@id": "hasNote-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["hasNote"],
+			"fresnel:propertyStyle": ["hasNote"]
+		},
 		"Classification-inScheme-format": {
 			"@id": "Classification-inScheme-format",
 			"@type": "fresnel:Format",
@@ -901,6 +1106,16 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Subdivision"],
 			"fresnel:resourceStyle": ["link"]
+		},
+		"SeriesMembership-seriesEnumeration-format": {
+			"@id": "SeriesMembership-seriesEnumeration-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["SeriesMembership"],
+			"fresnel:propertyFormatDomain": ["seriesEnumeration"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ; ",
+				"fresnel:contentFirst": ""
+			}
 		},
 		"Instance-format": {
 			"@id": "Instance-format",
@@ -1037,18 +1252,24 @@
 			"fresnel:classFormatDomain": ["Cartographic"],
 			"fresnel:resourceStyle": ["block"]
 		},
+		"summary-format": {
+			"@id": "provisionActivity-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["summary"],
+			"fresnel:propertyStyle": ["nolabel", "summary"]
+		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Instance"],
-			"fresnel:propertyFormatDomain": ["identifiedBy", "summary"],
+			"fresnel:propertyFormatDomain": ["identifiedBy"],
 			"fresnel:propertyStyle": ["nolabel"]
 		},
 		"Work-self-x-format": {
 			"@id": "Work-self-x-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
-			"fresnel:propertyFormatDomain": ["hasTitle", "identifiedBy", "summary"],
+			"fresnel:propertyFormatDomain": ["hasTitle", "identifiedBy"],
 			"fresnel:propertyStyle": ["nolabel"]
 		},
 		"ISBD-area-format": {

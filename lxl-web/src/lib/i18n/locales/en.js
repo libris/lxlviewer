@@ -251,6 +251,8 @@ export default {
 		results: 'results',
 		result: 'result',
 		editions: 'Editions',
+		details: 'Details',
+		moreDetails: 'More details',
 		previous: 'Previous',
 		next: 'Next',
 		resultOf: 'of',
