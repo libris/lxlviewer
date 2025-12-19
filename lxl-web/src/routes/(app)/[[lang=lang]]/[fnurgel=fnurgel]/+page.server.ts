@@ -120,16 +120,19 @@ export const load = async ({ params, locals, fetch, url }) => {
 	];
 
 	let searchResult: ResourceSearchResult | undefined;
-	const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
-	const instances = asSearchResultItem(
-		sortedInstances,
-		displayUtil,
-		vocabUtil,
-		locale,
-		env.AUXD_SECRET,
-		myLibraries,
-		undefined
-	);
+	let instances;
+	if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
+		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
+		instances = asSearchResultItem(
+			sortedInstances,
+			displayUtil,
+			vocabUtil,
+			locale,
+			env.AUXD_SECRET,
+			myLibraries,
+			undefined
+		);
+	}
 
 	const creations = [mainEntity].concat(mainEntity?.['@reverse']?.instanceOf || []);
 	const summary = creations
