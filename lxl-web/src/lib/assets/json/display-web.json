@@ -633,7 +633,7 @@
 					"@id": "Work-web-overview2",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["subject"]
+					"showProperties": ["subject", "associatedMedia"]
 				},
 				"Instance": {
 					"@id": "Instance-web-overview2",
