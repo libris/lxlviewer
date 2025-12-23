@@ -152,34 +152,36 @@
 		{#if value.facets}
 			{@const label =
 				`${page.data.t('search.allInFacet')} ` + (toString(value.label) as string).toLowerCase()}
-			<FacetGroup
-				data={{
-					...value.facets[0],
-					values: [
-						...(level === 1
-							? [
-									{
-										// FIXME
-										label,
-										str: label,
-										totalItems: value.totalItems,
-										selected: value.selected,
-										view: value.view,
-										all: true,
-										facets: value.facets.length > 1 ? value.facets.slice(1) : undefined
-									}
-								]
-							: []),
-						...value.facets[0].values
-					]
-				}}
-				level={level + 1}
-				{searchPhrase}
-				parent={value}
-				isDefaultExpanded={false}
-			/>
+			<li>
+				<FacetGroup
+					data={{
+						...value.facets[0],
+						values: [
+							...(level === 1
+								? [
+										{
+											// FIXME
+											label,
+											str: label,
+											totalItems: value.totalItems,
+											selected: value.selected,
+											view: value.view,
+											all: true,
+											facets: value.facets.length > 1 ? value.facets.slice(1) : undefined
+										}
+									]
+								: []),
+							...value.facets[0].values
+						]
+					}}
+					level={level + 1}
+					{searchPhrase}
+					parent={value}
+					isDefaultExpanded={false}
+				/>
+			</li>
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
-			<li role="presentation" class="flex">
+			<li class="flex">
 				<FacetValue data={value} parentDimension={data.dimension} />
 				<a
 					href={page.data.localizeHref('/my-pages')}
@@ -190,7 +192,9 @@
 				</a>
 			</li>
 		{:else}
-			<FacetValue data={value} parentDimension={data.dimension} variant={getValueVariant(data)} />
+			<li>
+				<FacetValue data={value} parentDimension={data.dimension} variant={getValueVariant(data)} />
+			</li>
 		{/if}
 	{/each}
 {/snippet}
@@ -216,10 +220,9 @@
 		<!-- facet range inputs; hide in filter search results -->
 		<FacetRange search={data.search} />
 	{/if}
-	<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-	<menu role="menu" data-testid="facet-list">
+	<ul data-testid="facet-list">
 		{@render values(shownItems)}
-	</menu>
+	</ul>
 	<div class="text-2xs flex flex-col justify-start">
 		<!-- 'show more' btn -->
 		{#if canShowMoreItems || canShowFewerItems}
@@ -253,7 +256,9 @@
 {/snippet}
 
 {#if PERMANENTLY_EXPANDED_FACETS.includes(data.dimension)}
-	{@render values(data.values)}
+	<ul>
+		{@render values(data.values)}
+	</ul>
 {:else if parent && parent.selected === true && level > 2}
 	<div class="relative">
 		<FacetValue data={parent} parentDimension={data.dimension} variant="radio" />
@@ -278,7 +283,6 @@
 			: undefined}
 	>
 		<summary
-			role="menuitem"
 			class={[
 				'focusable text-subtle flex min-h-8 cursor-pointer items-center',
 				level === 1 && 'font-medium',
@@ -317,7 +321,6 @@
 				</span>
 			{/if}
 		</summary>
-
 		{@render controls()}
 	</details>
 {/if}
