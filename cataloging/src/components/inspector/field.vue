@@ -262,27 +262,33 @@ export default {
       }
       return failedValidations;
     },
-    missingContentType() {
+    missingInCategory() {
+      //TODO: Rendering on category.length === 0 is broken;
+      const missing = [];
       if (this.fieldKey === 'category' && this.parentPath === 'mainEntity') {
-        const hasContentType = this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === 'ContentType');
-        return !hasContentType;
+        //TODO: Move to settings?
+        const typesToValidate = ['contentType', 'genreForm'];
+        typesToValidate.forEach(t => {
+            if (!this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === capitalize(t))) {
+              missing.push(t);
+            }
+          }
+        )
       }
-      return false;
+      return missing;
     },
-    missingGenreForm() {
-      if (this.fieldKey === 'category' && this.parentPath === 'mainEntity') {
-        const hasGenreForm = this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === 'GenreForm');
-        return !hasGenreForm;
-      }
-      return false;
+    hasMissingInCategory() {
+      return this.missingInCategory.length !== 0;
     },
     validationText() {
-      if (this.missingContentType && this.missingGenreForm) {
-        return translatePhrase('Genre/form and content type are missing');
-      } else if (this.missingGenreForm) {
-        return translatePhrase('Genre/form is missing');
-      } else if (this.missingContentType) {
-        return translatePhrase('Content type is missing');
+      //TODO: length > 2
+      if (this.missingInCategory.length === 1) {
+        const typeLabel = StringUtil.getLabelByLang(this.missingInCategory[0], this.user.settings.language, this.resources);
+        return `${capitalize(typeLabel)} ${translatePhrase('is missing')}. `
+      } else if (this.missingInCategory.length === 2) {
+        const typeLabel1 = StringUtil.getLabelByLang(this.missingInCategory[0], this.user.settings.language, this.resources);
+        const typeLabel2 = StringUtil.getLabelByLang(this.missingInCategory[1], this.user.settings.language, this.resources);
+        return `${capitalize(typeLabel1)} ${translatePhrase('and')} ${typeLabel2} ${translatePhrase('are missing')}. `;
       }
       return '';
     },
@@ -807,7 +813,7 @@ export default {
       'is-diff-added': diffAdded,
       'is-diff-removed': diffRemoved,
       'is-diff-modified': diffModified,
-      'validation-warn': missingContentType && !isLocked,
+      'validation-warn': hasMissingInCategory && !isLocked,
       'is-locked': locked,
       'is-diff': isFieldDiff,
       'is-new': isFieldNew,
@@ -1223,12 +1229,13 @@ export default {
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
-    <div class="Field-validation" v-if="missingContentType && !isLocked">
-      <div class="Field-validation-text">
-        {{ validationText }}
-      </div>
+    <div class="Field-validation" v-if="hasMissingInCategory && !isLocked">
       <div class="Field-validation-icon">
-        <i class="fa fa-exclamation-circle icon--sm" />
+        <i class="fa fa-warning fa-fw icon--sm"
+           tabindex="0"
+           :aria-label="validationText"
+           v-tooltip.top="validationText"
+        />
       </div>
     </div>
 
@@ -1414,8 +1421,8 @@ export default {
 
   &.validation-warn {
     border: 1px solid;
-    border-color: @form-validate-warn;
-    background-color: @form-validate-warn;
+    border-color: @form-validate-background;
+    background-color: @form-validate-background;
   }
 
   &-validation {
@@ -1424,7 +1431,7 @@ export default {
 
     &-icon {
       padding-right: 1.2em;
-      color: @brand-warning;
+      color: @form-validate;
     }
     &-text {
       max-width: 7em;

@@ -513,8 +513,8 @@
     "One or more sigels have holdings on both the record to remove and the record to keep. Before merge, one of these holdings has to be manually removed, for each sigel:" : "En eller flera sigel har bestånd på både den post som ska behållas och den som ska tas bort. Innan ihopslagning behöver ett av dessa bestånd tas bort manuellt, för varje sigel:",
     "Switch to a sigel with permission to edit both the selected holdings." : "Byt till en sigel som har tillåtelse att redigera båda de valda bestånden.",
     "Flagged entities" : "Flaggade",
-    "Genre/form and content type are missing": "Genre/form och innehållstyp saknas",
-    "Genre/form is missing": "Genre/form saknas",
-    "Content type is missing": "Innehållstyp saknas"
+    "is missing": "saknas",
+    "are missing" : "saknas",
+    "and": "och"
   }
 }
