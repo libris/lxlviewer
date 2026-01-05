@@ -264,15 +264,13 @@ export default {
     },
     missingInCategory() {
       const missing = [];
-      if (this.fieldKey === 'category' && this.parentPath === 'mainEntity') {
-        //TODO: Move to settings?
-        const typesToValidate = ['contentType', 'genreForm'];
-        typesToValidate.forEach(t => {
-            if (!this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === capitalize(t))) {
-              missing.push(t);
-            }
+      //TODO: path 'mainEntity.category' only valid if we are at a work, not an instance
+      if (Object.keys(this.settings.validateTypesByPath).includes(this.path)) {
+        this.settings.validateTypesByPath[this.path].forEach(t => {
+          if (!this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === capitalize(t))) {
+            missing.push(t);
           }
-        )
+        })
       }
       return missing;
     },
