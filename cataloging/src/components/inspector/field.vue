@@ -263,7 +263,6 @@ export default {
       return failedValidations;
     },
     missingInCategory() {
-      //TODO: Rendering on category.length === 0 is broken;
       const missing = [];
       if (this.fieldKey === 'category' && this.parentPath === 'mainEntity') {
         //TODO: Move to settings?
@@ -1229,15 +1228,6 @@ export default {
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
-    <div class="Field-validation" v-if="hasMissingInCategory && !isLocked">
-      <div class="Field-validation-icon">
-        <i class="fa fa-warning fa-fw icon--sm"
-           tabindex="0"
-           :aria-label="validationText"
-           v-tooltip.top="validationText"
-        />
-      </div>
-    </div>
 
     <div
       class="Field-content is-endOfTree js-endOfTree"
@@ -1325,6 +1315,16 @@ export default {
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
+    <div class="Field-validation" v-if="hasMissingInCategory && !isLocked">
+      <div class="Field-validation-icon">
+        <i class="fa fa-warning fa-fw icon--sm"
+           tabindex="0"
+           :aria-label="validationText"
+           v-tooltip.top="validationText"
+        />
+      </div>
+    </div>
+
     <modal-component
       :title="translatePhrase(this.getModalTitle())"
       modal-type="warning"
@@ -1430,7 +1430,7 @@ export default {
     align-items: center;
 
     &-icon {
-      padding-right: 1.2em;
+      padding-right: 1em;
       color: @form-validate;
     }
     &-text {
