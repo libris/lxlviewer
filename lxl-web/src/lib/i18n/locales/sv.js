@@ -259,7 +259,12 @@ export default {
 		next: 'Nästa',
 		resultOf: 'av',
 		showInSearchResults: 'Visa i träfflista',
-		showInSearchResultsShort: 'Visa träfflista'
+		showInSearchResultsShort: 'Visa träfflista',
+		uriLink: 'URI (länk till resurs)',
+		download: 'Ladda ner beskrivning',
+		showIn: 'Visa i',
+		librisCataloging: 'Libris katalogisering',
+		librisOld: 'gamla Libris'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

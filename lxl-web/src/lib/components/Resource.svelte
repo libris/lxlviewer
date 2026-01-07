@@ -28,6 +28,9 @@
 
 	type Props = {
 		fnurgel: string;
+		uri: string;
+		recordUri: string;
+		controlNumber: string;
 		uid?: string;
 		typeForIcon: string;
 		images: SecureImage[];
@@ -53,6 +56,9 @@
 
 	const {
 		fnurgel,
+		uri,
+		recordUri,
+		controlNumber,
 		uid,
 		typeForIcon,
 		images,
@@ -326,6 +332,46 @@
 							/>
 						</div>
 					{/each}
+				</div>
+				<div class="mt-5 w-fit rounded-lg bg-neutral-100 p-3 text-sm">
+					<p>
+						{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
+					</p>
+					<p>
+						<a
+							href={recordUri.split('/').toSpliced(-1, 0, 'katalogisering').join('/')}
+							target="_blank"
+							class="ext-link"
+							>{page.data.t('resource.showIn')} {page.data.t('resource.librisCataloging')}</a
+						>
+						{#if instances?.length === 1}
+							· <a href="https://libris.kb.se/bib/{controlNumber}" target="_blank" class="ext-link"
+								>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
+							>
+						{/if}
+					</p>
+					<p>
+						{page.data.t('resource.download')}:
+						<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
+						· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
+						· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
+						{#if instances?.length === 1}
+							· <a
+								href="{recordUri
+									.split('/')
+									.toSpliced(-1, 1)
+									.join('/')}/_compilemarc?library=Foo&id={recordUri}"
+								target="_blank"
+								class="ext-link">MARC21 (ISO 2709)</a
+							>
+						{/if}
+						<!--
+                        TODO _compilemarc can only create ISO 2709
+                        TODO _compilemarc can only handle bib
+                        TODO? select export profile (library)?
+                        <a href="{fnurgel}" target="_blank" class="ext-link">MARC-XML</a> ·
+                        -->
+					</p>
 				</div>
 			</section>
 		</div>

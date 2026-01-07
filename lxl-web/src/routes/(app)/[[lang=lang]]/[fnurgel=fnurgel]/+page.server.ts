@@ -287,7 +287,9 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return {
-		uri: resource['@id'] as string,
+		uri: resourceId,
+		recordUri: resource['@id'] as string,
+		controlNumber: resource['controlNumber'] as string,
 		type: mainEntity[JsonLd.TYPE],
 		typeForIcon: getTypeForIcon(typeLike), // FIXME
 		title: toString(heading),
