@@ -108,6 +108,7 @@ export default {
 		'librissearch:instanceOfType': 'Verkstyp',
 		genreForm: 'Genre/form',
 		'librissearch:itemHeldBy': 'Bibliotek',
+		'librissearch:itemHeldByOrg': 'Bibliotek',
 		bibliography: 'Bibliografi',
 		contributor: 'Författare/upphov',
 		language: 'Språk',

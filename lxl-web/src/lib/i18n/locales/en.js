@@ -109,6 +109,7 @@ export default {
 		'librissearch:instanceOfType': 'Work type',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
+		'librissearch:itemHeldByOrg': 'Library',
 		bibliography: 'Bibliography',
 		contributor: 'Author/Contributor',
 		language: 'Language',
