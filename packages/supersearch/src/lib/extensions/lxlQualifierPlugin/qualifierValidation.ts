@@ -1,6 +1,6 @@
-import { StateEffect, StateField } from '@codemirror/state';
+import { StateField, StateEffect, RangeSet, RangeSetBuilder, RangeValue } from '@codemirror/state';
 
-export interface QualifierSemantic {
+export interface QualifierValidationResponse {
 	key: string;
 	value?: string;
 	keyLabel?: string;
@@ -9,11 +9,21 @@ export interface QualifierSemantic {
 	invalid: boolean;
 }
 
+export interface QualifierSemantic extends QualifierValidationResponse {
+	// from: number
+	// to: number
+	atomicFrom?: number;
+	atomicTo?: number;
+}
+
 // export const setQualifierValidity = StateEffect.define<{
 //   from: number
 //   to: number
 //   valid: boolean
 // }>()
+
+class AtomicRange extends RangeValue {}
+export const atomicRange = new AtomicRange();
 
 export const setQualifierSemantic = StateEffect.define<{
 	from: number;
@@ -23,32 +33,50 @@ export const setQualifierSemantic = StateEffect.define<{
 
 // export type QualifierValidation = Map<string, boolean>
 
-type SemanticMap = Map<string, QualifierSemantic>;
-
-export const qualifierSemanticField = StateField.define<SemanticMap>({
+export const qualifierSemanticField = StateField.define<{
+	data: Map<string, QualifierSemantic>;
+	atomicRanges: RangeSet<RangeValue>;
+}>({
 	create() {
-		return new Map();
+		return {
+			data: new Map(),
+			atomicRanges: RangeSet.empty
+		};
 	},
 
 	update(value, tr) {
-		const next = new Map(value);
+		let data = value.data;
+		let atomicRanges = value.atomicRanges;
+		let changed = false;
 
 		for (const e of tr.effects) {
-			if (e.is(setQualifierSemantic)) {
-				next.set(`${e.value.from}-${e.value.to}`, e.value.semantic);
+			if (!e.is(setQualifierSemantic)) continue;
+
+			if (!changed) {
+				data = new Map(data);
+				changed = true;
 			}
+
+			const { from, to, semantic } = e.value;
+			const key = `${from}-${to}`;
+			data.set(key, semantic);
 		}
 
-		if (tr.docChanged) {
-			const remapped = new Map();
-			for (const [k, v] of next) {
-				const [from, to] = k.split('-').map(Number);
-				remapped.set(`${tr.changes.mapPos(from)}-${tr.changes.mapPos(to)}`, v);
-			}
-			return remapped;
+		if (!changed) return value;
+
+		const builder = new RangeSetBuilder<RangeValue>();
+
+		const entries = [...data.values()]
+			.filter((v) => !v.invalid && v.atomicFrom != null && v.atomicTo != null)
+			.sort((a, b) => a.atomicFrom! - b.atomicFrom!);
+
+		for (const v of entries) {
+			builder.add(v.atomicFrom!, v.atomicTo!, atomicRange);
 		}
 
-		return next;
+		atomicRanges = builder.finish();
+
+		return { data, atomicRanges };
 	}
 });
 

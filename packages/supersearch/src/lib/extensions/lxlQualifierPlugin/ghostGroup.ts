@@ -1,87 +1,63 @@
-import { EditorState, type RangeSet, type RangeValue, Transaction } from '@codemirror/state';
+import { Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically
 
-let prevSize: undefined | number;
 /**
  * QualifierValue's first child must be a QualifierOuterGroup.
  * If not - add/repair it. Exception: quoted qualifier values
  */
-export const createGhostGroup = (getRanges: () => RangeSet<RangeValue>) => {
-	return EditorState.transactionFilter.of((tr: Transaction) => {
-		if (tr.isUserEvent('delete')) {
-			return tr;
-		}
-		if (tr.isUserEvent('select')) {
-			return tr;
-		}
-		const atomicRanges = getRanges();
-		if (!prevSize) {
-			prevSize = atomicRanges.size;
-		}
+export const createGhostGroup = (tr: Transaction) => {
+	if (!tr.docChanged || !tr.isUserEvent('input')) {
+		return tr;
+	}
 
-		if (!tr.docChanged && atomicRanges.size === prevSize) {
-			prevSize = atomicRanges.size;
-			return tr;
+	const changes: { from: number; to?: number; insert?: string }[] = [];
+	let selection: { anchor: number } | undefined;
+
+	const prevNode = syntaxTree(tr.state).resolveInner(tr.state.selection.main.head, -1);
+	if (prevNode.name === 'QualifierOperator') {
+		const operator = tr.state.sliceDoc(prevNode.from, prevNode.to);
+		if (operator === ':' || operator === '=') {
+			// insert group after typing equality operator
+			changes.push({ from: prevNode.to, insert: '()' });
+			selection = { anchor: prevNode.to + 1 };
 		}
+	} else {
+		const currentNode = syntaxTree(tr.state).resolve(tr.state.selection.main.head, -1);
+		const qualifierValue = getParent(currentNode, 'QualifierValue');
 
-		const changes: { from: number; to?: number; insert?: string }[] = [];
-		let selection: { anchor: number } | undefined;
-
-		const prevNode = syntaxTree(tr.state).resolveInner(tr.state.selection.main.head, -1);
-		const qualifier = getParent(prevNode, 'Qualifier');
-		if (!qualifier) {
-			return tr;
-		}
-		if (!isValidQualifier(qualifier, atomicRanges)) {
-			return tr;
-		}
-
-		if (prevNode.name === 'QualifierOperator') {
-			const operator = tr.state.sliceDoc(prevNode.from, prevNode.to);
-
+		if (qualifierValue && qualifierValue.node.firstChild?.name !== 'QualifierOuterGroup') {
+			// we are editing a groupless qualifier value
+			const operator = tr.state.sliceDoc(
+				qualifierValue.node.prevSibling?.from,
+				qualifierValue.node.prevSibling?.to
+			);
 			if (operator === ':' || operator === '=') {
-				// insert group after typing equality operator
-				changes.push({ from: prevNode.to, insert: '()' });
-				selection = { anchor: prevNode.to + 1 };
-			}
-		} else {
-			const currentNode = syntaxTree(tr.state).resolve(tr.state.selection.main.head, -1);
-			const qualifierValue = getParent(currentNode, 'QualifierValue');
+				// if the operator is equality, add ()
+				const { from, to } = qualifierValue;
+				changes.push({ from, insert: '(' });
+				changes.push({ from: to, insert: ')' });
 
-			if (qualifierValue && qualifierValue.node.firstChild?.name !== 'QualifierOuterGroup') {
-				// we are editing a groupless qualifier value
-				const operator = tr.state.sliceDoc(
-					qualifierValue.node.prevSibling?.from,
-					qualifierValue.node.prevSibling?.to
-				);
-				if (operator === ':' || operator === '=') {
-					// if the operator is equality, add ()
-					const { from, to } = qualifierValue;
-					changes.push({ from, insert: '(' });
-					changes.push({ from: to, insert: ')' });
-
-					const offset = tr.state.selection.main.head + 1;
-					selection = { anchor: offset };
-				}
+				const offset = tr.state.selection.main.head + 1;
+				selection = { anchor: offset };
 			}
 		}
+	}
 
-		if (!changes.length) return tr;
+	if (!changes.length) return tr;
 
-		return [
-			tr,
-			{
-				changes,
-				sequential: true,
-				selection,
-				userEvent: 'input.complete'
-			}
-		];
-	});
+	return [
+		tr,
+		{
+			changes,
+			sequential: true,
+			selection,
+			userEvent: 'input.complete'
+		}
+	];
 };
 
 /**
@@ -464,16 +440,16 @@ function getParent(node: SyntaxNode, name: string): SyntaxNode | false {
 /**
  * Returns true if the node is covered by an atomic range
  */
-function isValidQualifier(node: SyntaxNode, atomicRanges: RangeSet<RangeValue>): boolean {
-	let containsAtomic = false;
+// function isValidQualifier(node: SyntaxNode, atomicRanges: RangeSet<RangeValue>): boolean {
+// 	let containsAtomic = false;
 
-	atomicRanges.between(node.from, node.to, (start, end) => {
-		// True overlap (not just touching)
-		if (node.from < end && start < node.to) {
-			containsAtomic = true;
-			return false;
-		}
-	});
+// 	atomicRanges.between(node.from, node.to, (start, end) => {
+// 		// True overlap (not just touching)
+// 		if (node.from < end && start < node.to) {
+// 			containsAtomic = true;
+// 			return false;
+// 		}
+// 	});
 
-	return containsAtomic;
-}
+// 	return containsAtomic;
+// }

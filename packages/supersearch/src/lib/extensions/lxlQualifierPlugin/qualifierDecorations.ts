@@ -49,7 +49,7 @@ export const qualifierDecorations = EditorView.decorations.compute(
 			enter(node) {
 				if (node.name !== 'Qualifier') return;
 
-				const data = sem.get(`${node.from}-${node.to}`);
+				const data = sem.data.get(`${node.from}-${node.to}`);
 
 				// invalidated
 				if (!data || data.invalid) return;
@@ -73,8 +73,8 @@ export const qualifierDecorations = EditorView.decorations.compute(
 				// QualifierWidget
 				decorations.push(
 					Decoration.replace({
-						widget: new QualifierWidget({ operator, ...data }),
-						side: 1
+						widget: new QualifierWidget({ operator, ...data })
+						// side: 1
 					}).range(node.from, data.valueLabel ? node.to : operatorNode?.to)
 				);
 			}

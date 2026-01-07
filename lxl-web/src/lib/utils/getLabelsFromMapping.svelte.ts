@@ -15,12 +15,17 @@ function getLabelFromMappings(
 
 	const keyLabel = suggestLabels.keyLabel || pageLabels.keyLabel;
 	const valueLabel = suggestLabels.valueLabel || pageLabels.valueLabel;
-	const invalid = suggestLabels.invalid || pageLabels.invalid;
+	let invalid = suggestLabels.invalid || pageLabels.invalid;
 	const removeLink = suggestLabels.removeLink || pageLabels.removeLink;
 
 	if (suggestMapping?.length) {
 		// save latest mapping as fallback for error responses etc
 		prevSuggestMapping = suggestMapping;
+	}
+
+	// no label - invalid key?
+	if (!keyLabel) {
+		invalid = true;
 	}
 
 	return { key, value, keyLabel, valueLabel, removeLink, invalid };

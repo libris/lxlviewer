@@ -4,20 +4,18 @@ import { qualifierValidatorFacet } from './qualifierFacet.js';
 import type { StateEffect } from '@codemirror/state';
 import { messages } from '$lib/constants/messages.js';
 import { sendMessage } from '$lib/utils/sendMessage.js';
-import { qualifierSemanticField, setQualifierSemantic } from './qualifierValidation.js';
+import {
+	qualifierSemanticField,
+	setQualifierSemantic,
+	type QualifierSemantic
+} from './qualifierValidation.js';
 
 export const qualifierPlugin = ViewPlugin.fromClass(
 	class {
-		private scheduled = false;
-
-		constructor(view: EditorView) {
-			this.schedule(view);
-		}
-
 		update(update: ViewUpdate) {
 			let shouldRevalidate = update.docChanged;
 
-			if (!update.docChanged) {
+			if (!shouldRevalidate) {
 				for (const tr of update.transactions) {
 					for (const e of tr.effects) {
 						if (e.is(sendMessage) && e.value.message === messages.NEW_DATA) {
@@ -31,6 +29,7 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 				this.schedule(update.view);
 			}
 		}
+		private scheduled = false;
 
 		schedule(view: EditorView) {
 			if (this.scheduled) return;
@@ -38,40 +37,24 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 
 			queueMicrotask(() => {
 				this.scheduled = false;
-				this.validate(view);
+				this.runValidation(view);
 			});
 		}
-
-		validate(view: EditorView) {
-			// const validator = view.state.facet(qualifierValidatorFacet)
-			// if (!validator) return;
-
-			// const effects: StateEffect<any>[] = [];
-
+		runValidation(view: EditorView) {
 			const validator = view.state.facet(qualifierValidatorFacet);
 			if (!validator) return;
 
-			const current = view.state.field(qualifierSemanticField);
+			const current = view.state.field(qualifierSemanticField).data;
 			const effects: StateEffect<unknown>[] = [];
 
 			syntaxTree(view.state).iterate({
 				enter: (node) => {
 					if (node.name !== 'Qualifier') return;
-					const qualifierKey = node.node.getChild('QualifierKey');
-					// TODO enum for these
-					const qualifierValue = node.node.getChild('QualifierValue');
 
-					const qualifierKeyText = qualifierKey
-						? view.state.doc.sliceString(qualifierKey.from, qualifierKey.to)
-						: '';
-					const qualifierValueText = qualifierValue
-						? view.state.doc.sliceString(qualifierValue.from, qualifierValue.to)
-						: undefined;
-
-					const semantic = validator(qualifierKeyText, qualifierValueText);
+					const semantic: QualifierSemantic = computeQualifierSemantic(node, view, validator);
 					const key = `${node.from}-${node.to}`;
 
-					if (current.get(key) !== semantic) {
+					if (!shallowEqual(current.get(key), semantic)) {
 						effects.push(
 							setQualifierSemantic.of({
 								from: node.from,
@@ -89,3 +72,56 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 		}
 	}
 );
+
+function shallowEqual(a: QualifierSemantic | undefined, b: QualifierSemantic): boolean {
+	if (a === b) return true;
+	if (!a) return false;
+
+	return (
+		a.invalid === b.invalid &&
+		a.keyLabel === b.keyLabel &&
+		a.valueLabel === b.valueLabel &&
+		a.removeLink === b.removeLink &&
+		a.atomicFrom === b.atomicFrom &&
+		a.atomicTo === b.atomicTo
+	);
+}
+
+function computeQualifierSemantic(
+	node: unknown,
+	view: EditorView,
+	validate: (
+		key: string,
+		value?: string
+	) => {
+		keyLabel?: string;
+		valueLabel?: string;
+		removeLink?: string;
+		invalid: boolean;
+	}
+) {
+	const treeNode = node.node;
+
+	const keyNode = treeNode.getChild('QualifierKey');
+	const opNode = treeNode.getChild('QualifierOperator');
+	const valueNode = treeNode.getChild('QualifierValue');
+
+	const keyText = keyNode ? view.state.doc.sliceString(keyNode.from, keyNode.to) : '';
+
+	const valueText = valueNode
+		? view.state.doc.sliceString(valueNode.from, valueNode.to)
+		: undefined;
+
+	const semantic = validate(keyText, valueText);
+
+	// Decide atomic extent
+	const atomicFrom = node.from;
+	const atomicTo = semantic.valueLabel ? node.to : (opNode?.to ?? node.to);
+
+	return {
+		...semantic,
+		key: keyText,
+		atomicFrom,
+		atomicTo
+	};
+}

@@ -1,8 +1,8 @@
 import { Facet } from '@codemirror/state';
-import type { QualifierSemantic } from './qualifierValidation.js';
+import type { QualifierValidationResponse } from './qualifierValidation.js';
 import type { QualifierWidgetProps } from './index.js';
 
-export type QualifierValidator = (key: string, value?: string) => QualifierSemantic;
+export type QualifierValidator = (key: string, value?: string) => QualifierValidationResponse;
 
 export const qualifierValidatorFacet = Facet.define<QualifierValidator, QualifierValidator>({
 	combine(values) {

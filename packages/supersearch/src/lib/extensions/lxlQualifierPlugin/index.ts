@@ -7,6 +7,15 @@ import {
 	type QualifierValidator,
 	type QualifierWidgetRenderer
 } from './qualifierFacet.js';
+import { EditorState } from '@codemirror/state';
+import {
+	balanceInnerParens,
+	createGhostGroup,
+	handleInputBeforeGroup,
+	jumpPastParens,
+	removeGhostGroup
+} from './ghostGroup.js';
+import insertSpaceAroundQualifier from './insertSpaceAroundQualifier2.js';
 
 const lxlQualifierExtension = (
 	validateQualifier: QualifierValidator,
@@ -17,7 +26,17 @@ const lxlQualifierExtension = (
 		qualifierDecorations,
 		qualifierPlugin,
 		qualifierValidatorFacet.of(validateQualifier),
-		qualifierWidgetRendererFacet.of(renderer)
+		qualifierWidgetRendererFacet.of(renderer),
+
+		// ghost group filters
+		EditorState.transactionFilter.of(jumpPastParens),
+		EditorState.transactionFilter.of(createGhostGroup),
+		EditorState.transactionFilter.of(handleInputBeforeGroup),
+		EditorState.transactionFilter.of(removeGhostGroup),
+		EditorState.transactionFilter.of(removeGhostGroup),
+		EditorState.transactionFilter.of(balanceInnerParens),
+
+		EditorState.transactionFilter.of(insertSpaceAroundQualifier)
 	];
 };
 
@@ -286,8 +305,7 @@ export default lxlQualifierExtension;
 // 			EditorView.atomicRanges.of(() => atomicRangeSet),
 // 			// ghost group filters -->
 // 			EditorState.transactionFilter.of(jumpPastParens),
-// 			// EditorState.transactionFilter.of(createGhostGroup),
-// 			createGhostGroup(() => atomicRangeSet),
+// 			EditorState.transactionFilter.of(createGhostGroup),
 // 			EditorState.transactionFilter.of(handleInputBeforeGroup),
 // 			EditorState.transactionFilter.of(removeGhostGroup),
 // 			EditorState.transactionFilter.of(repairGhostGroup),
