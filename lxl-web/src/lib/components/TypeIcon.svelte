@@ -46,6 +46,8 @@
 		// categories / old work types
 		Cartography: BiMap,
 		Literature: BiBook,
+		'Sk%C3%B6nlitteratur': BiBook,
+		'Ej%20sk%C3%B6nlitteratur': BiBook,
 		MovingImage: BiFilm,
 		Music: BiMusicNoteBeamed,
 		Object: BiBox,
