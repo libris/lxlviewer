@@ -2,12 +2,12 @@ import { expect, test } from '@playwright/test';
 
 test('A subset filter can display on any page', async ({ page }) => {
 	await page.goto('/help?_r=itemHeldBy%3A"sigel%3AArkm"');
-	expect(page.locator('.subset-container').getByText('ArkDes')).toBeVisible();
+	await expect(page.locator('.subset-container').getByText('ArkDes')).toBeVisible();
 });
 
 test('The search placeholder is replaced when using a subset', async ({ page }) => {
 	await page.goto('my-pages?_r=itemHeldBy%3A"sigel%3AArkm"');
-	expect(page.getByRole('combobox', { name: 'Sök' }).getByText('ArkDes')).toBeVisible();
+	await expect(page.getByRole('combobox', { name: 'Sök' }).getByText('ArkDes')).toBeVisible();
 });
 
 test('_r param is preserved when navigating around the app', async ({ page }) => {
