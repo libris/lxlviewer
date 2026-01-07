@@ -15,17 +15,19 @@
 
 	let { data, parentDimension, variant }: Props = $props();
 
+	/*
 	const role = $derived.by(() => {
 		if (variant === 'radio') return 'menuitemradio';
 		if (variant === 'checkbox') return 'menuitemcheckbox';
 		return 'menuitem';
 	});
+	*/
 </script>
 
 <a
-	{role}
 	class={[
 		`focusable flex min-h-8 items-center text-xs no-underline`,
+		data.selected && 'selected',
 		variant === 'checkbox' && 'with-checkbox',
 		variant === 'radio' && 'with-radio',
 		!variant && 'with-and',
@@ -34,7 +36,6 @@
 			'text-2xs'
 	]}
 	href={page.data.localizeHref(data.view['@id'])}
-	aria-checked={data.selected}
 	data-sveltekit-preload-data="false"
 >
 	<span class="truncate" title={data.str}>
@@ -67,9 +68,7 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	[role='menuitem'],
-	[role='menuitemcheckbox'],
-	[role='menuitemradio'] {
+	a {
 		padding-left: calc((var(--level, 0) * var(--spacing) * 5) + var(--spacing) * 3);
 		padding-right: calc(var(--spacing) * 3);
 	}
@@ -101,7 +100,7 @@
 		transform-origin: center;
 		/*margin-left: calc(var(--spacing));*/
 	}
-	.with-and[aria-checked='true']::before {
+	.with-and.selected::before {
 		width: calc(var(--spacing) * 1.75);
 		height: calc(var(--spacing) * 1.75);
 		background-color: var(--color-accent-600);
@@ -118,7 +117,7 @@
 		flex-shrink: 0;
 		margin-right: calc(var(--spacing) * 2);
 	}
-	.with-checkbox[aria-checked='true']::before {
+	.with-checkbox.selected::before {
 		background-image: url('$lib/assets/img/checkbox-checked.svg');
 	}
 
@@ -132,7 +131,7 @@
 		flex-shrink: 0;
 		margin-right: calc(var(--spacing) * 2);
 	}
-	.with-radio[aria-checked='true']::before {
+	.with-radio.selected::before {
 		background-image: url('$lib/assets/img/radio-checked.svg');
 	}
 

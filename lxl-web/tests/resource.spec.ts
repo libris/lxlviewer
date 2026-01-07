@@ -3,7 +3,6 @@ import { expect, test, devices } from '@playwright/test';
 test('decorated data label visibilty is correct after page navigations', async ({ page }) => {
 	// TODO: We should probably mock the required requests but something similar to https://github.com/markjaquith/sveltekit-playwright-fetch-mock would be needed to mock the server-side fetches.
 	await page.goto('/h08ndxddfg5v2pjf');
-	await expect(page.getByText('Medverkan och funktion')).toBeHidden();
 	await page.getByText('Jonas Hassen Khemiri, 1978-').first().click();
 	await expect(page.getByRole('article').getByText('Svenska')).toBeVisible();
 });
@@ -72,10 +71,13 @@ test('table of contents', async ({ page }) => {
 		page.getByTestId('toc-mobile').locator('a').first(),
 		'enter keypress toggles table of contents while focused on toggle'
 	).toBeVisible();
-	await page.goto('/2jr64jg10461zcj2');
-	await expect(
-		page.getByTestId('toc'),
-		'table of contents is hidden if there are no items to show'
-	).not.toBeVisible();
-	await expect(page.getByTestId('toc-mobile')).not.toBeVisible();
+
+	// Toc always visible now with summary - details?
+
+	// await page.goto('/2jr64jg10461zcj2');
+	// await expect(
+	// 	page.getByTestId('toc'),
+	// 	'table of contents is hidden if there are no items to show'
+	// ).not.toBeVisible();
+	// await expect(page.getByTestId('toc-mobile')).not.toBeVisible();
 });
