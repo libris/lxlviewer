@@ -262,7 +262,7 @@ export default {
       }
       return failedValidations;
     },
-    missingInCategory() {
+    missingTypes() {
       const missing = [];
       //TODO: path 'mainEntity.category' only valid if we are at a work, not an instance
       if (Object.keys(this.settings.validateTypesByPath).includes(this.path)) {
@@ -274,17 +274,17 @@ export default {
       }
       return missing;
     },
-    hasMissingInCategory() {
-      return this.missingInCategory.length !== 0;
+    hasMissingTypes() {
+      return this.missingTypes.length !== 0;
     },
     validationText() {
       //TODO: length > 2
-      if (this.missingInCategory.length === 1) {
-        const typeLabel = StringUtil.getLabelByLang(this.missingInCategory[0], this.user.settings.language, this.resources);
+      if (this.missingTypes.length === 1) {
+        const typeLabel = StringUtil.getLabelByLang(this.missingTypes[0], this.user.settings.language, this.resources);
         return `${capitalize(typeLabel)} ${translatePhrase('is missing')}. `
-      } else if (this.missingInCategory.length === 2) {
-        const typeLabel1 = StringUtil.getLabelByLang(this.missingInCategory[0], this.user.settings.language, this.resources);
-        const typeLabel2 = StringUtil.getLabelByLang(this.missingInCategory[1], this.user.settings.language, this.resources);
+      } else if (this.missingTypes.length === 2) {
+        const typeLabel1 = StringUtil.getLabelByLang(this.missingTypes[0], this.user.settings.language, this.resources);
+        const typeLabel2 = StringUtil.getLabelByLang(this.missingTypes[1], this.user.settings.language, this.resources);
         return `${capitalize(typeLabel1)} ${translatePhrase('and')} ${typeLabel2} ${translatePhrase('are missing')}. `;
       }
       return '';
@@ -810,7 +810,7 @@ export default {
       'is-diff-added': diffAdded,
       'is-diff-removed': diffRemoved,
       'is-diff-modified': diffModified,
-      'validation-warn': hasMissingInCategory && !isLocked,
+      'validation-warn': hasMissingTypes && !isLocked,
       'is-locked': locked,
       'is-diff': isFieldDiff,
       'is-new': isFieldNew,
@@ -1313,7 +1313,7 @@ export default {
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
-    <div class="Field-validation" v-if="hasMissingInCategory && !isLocked">
+    <div class="Field-validation" v-if="hasMissingTypes && !isLocked">
       <div class="Field-validation-icon">
         <i class="fa fa-warning fa-fw icon--sm"
            tabindex="0"
