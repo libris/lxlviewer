@@ -6,6 +6,7 @@
 	import BiCardImage from '~icons/bi/card-image';
 	import BiDatabase from '~icons/bi/database';
 	import BiFilm from '~icons/bi/film';
+	import BiGlobeEuropeAfrica from '~icons/bi/globe-europe-africa';
 	import BiLaptop from '~icons/bi/laptop';
 	import BiListColumnsReversed from '~icons/bi/list-columns-reverse';
 	import BiMap from '~icons/bi/map';
@@ -48,12 +49,14 @@
 
 		// categories / old work types
 		Cartography: BiMap,
+		Kartor: BiMap,
 		Literature: BiBook,
 		'Sk%C3%B6nlitteratur': BiBook,
 		'Ej%20sk%C3%B6nlitteratur': BiBook,
 		MovingImage: BiFilm,
 		Music: BiMusicNoteBeamed,
 		Object: BiBox,
+		ThreeDimensionalForm: BiBox,
 		Software: BiLaptop,
 		StillImage: BiCardImage,
 
@@ -63,6 +66,7 @@
 		Kit: BiBoxSeam,
 		Databaser: BiDatabase,
 		Periodika: BiNewsPaper,
+		Kartglober: BiGlobeEuropeAfrica,
 
 		// Old work types
 		Audio: BiSoundWave,

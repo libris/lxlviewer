@@ -78,7 +78,9 @@ const IDENTIFY_ICONS = [
 	'Ljudb%C3%B6cker',
 	'Kit',
 	'Databaser',
-	'Periodika'
+	'Periodika',
+	'Kartor',
+	'Kartglober'
 ];
 
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
