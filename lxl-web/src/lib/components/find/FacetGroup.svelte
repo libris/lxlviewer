@@ -272,7 +272,7 @@
 			'relative w-full',
 			hasHits && 'has-hits',
 			searchPhrase && !hasHits && 'hidden',
-			level === 1 && expanded && 'pb-2'
+			level === 1 && 'border-b border-neutral-200/75 py-2'
 		]}
 		open={!!expanded}
 		data-dimension={data.dimension}
@@ -286,7 +286,7 @@
 			class={[
 				'focusable text-subtle flex min-h-8 cursor-pointer items-center',
 				level === 1 && 'font-medium',
-				level > 1 && 'text-xs'
+				level > 1 && 'hover:bg-primary-100 text-xs'
 			]}
 			data-testid="facet-toggle"
 		>
@@ -351,9 +351,6 @@
 	.focusable {
 		outline-offset: -2px;
 
-		&:hover {
-			background: var(--color-primary-100);
-		}
 		&:focus-visible,
 		&:has(:focus) {
 			background: var(--color-accent-50);

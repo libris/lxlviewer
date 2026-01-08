@@ -31,7 +31,7 @@
 	let searchPhrase = $state('');
 </script>
 
-<div class="flex flex-col gap-4 pb-4">
+<div class="flex flex-col gap-4">
 	{#if mapping && inModal && shouldShowMapping()}
 		<nav aria-label={page.data.t('search.selectedFilters')}>
 			<SearchMapping {mapping} />
