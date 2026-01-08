@@ -148,7 +148,7 @@
 </script>
 
 {#snippet values(items: FacetValueType[])}
-	{#each items as value (value.label + value.view['@id'])}
+	{#each items as value (toString(value.label) + value.discriminator)}
 		{#if value.facets}
 			{@const label =
 				`${page.data.t('search.allInFacet')} ` + (toString(value.label) as string).toLowerCase()}
@@ -278,8 +278,8 @@
 		data-dimension={data.dimension}
 		style={`--level:${level}`}
 		ontoggle={saveUserExpanded}
-		name={data.dimension?.split('/')[0] === 'librissearch:findCategory' && level === 2
-			? 'findCategory'
+		name={data.dimension?.startsWith('librissearch:findCategory/') && level === 2
+			? 'category'
 			: undefined}
 	>
 		<summary
