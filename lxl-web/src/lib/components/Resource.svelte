@@ -231,15 +231,17 @@
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>
-					<a
-						class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
-						href="#{uidPrefix}details"
-						data-sveltekit-preload-data="false"
-						data-testid="details-link"
-					>
-						<IconArrowDown />
-						{page.data.t('resource.moreDetails')}
-					</a>
+					{#if decoratedData.summary.length || instances?.length > 1 || relations.length || decoratedData.resourceTableOfContents.length}
+						<a
+							class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
+							href="#{uidPrefix}details"
+							data-sveltekit-preload-data="false"
+							data-testid="details-link"
+						>
+							<IconArrowDown />
+							{page.data.t('resource.moreDetails')}
+						</a>
+					{/if}
 				</div>
 			</section>
 			{#if decoratedData.summary.length}
@@ -250,8 +252,8 @@
 					<Carousel items={decoratedData.summary} render={summaryOrToc} />
 				</section>
 			{/if}
-			<section>
-				{#if instances?.length > 1}
+			{#if instances?.length > 1}
+				<section class="mt-6">
 					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
 						{page.data.t('resource.editions')}
 					</h2>
@@ -260,8 +262,8 @@
 					{:else}
 						{@render panelAllInstances()}
 					{/if}
-				{/if}
-			</section>
+				</section>
+			{/if}
 			{#if relations.length}
 				<section class="mt-6">
 					<h2 id={`${uidPrefix}occurrences`} class="mb-6 text-xl font-medium">
@@ -318,8 +320,8 @@
 					<Carousel items={decoratedData.resourceTableOfContents} render={summaryOrToc} />
 				</section>
 			{/if}
-			<section>
-				<h2 id="{uidPrefix}details" class="mb-4 text-xl font-medium">
+			<section class="border-t-neutral border-t">
+				<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 					{page.data.t('resource.details')}
 				</h2>
 				<div class="decorated-data-section decorated-spacious decorated-details">
