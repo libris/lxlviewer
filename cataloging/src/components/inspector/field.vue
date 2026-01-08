@@ -280,11 +280,11 @@ export default {
       //TODO: length > 2
       if (this.missingTypes.length === 1) {
         const typeLabel = StringUtil.getLabelByLang(this.missingTypes[0], this.user.settings.language, this.resources);
-        return `${capitalize(typeLabel)} ${translatePhrase('is missing')}. `
+        return `${capitalize(typeLabel)} ${translatePhrase('is missing')} `
       } else if (this.missingTypes.length === 2) {
         const typeLabel1 = StringUtil.getLabelByLang(this.missingTypes[0], this.user.settings.language, this.resources);
         const typeLabel2 = StringUtil.getLabelByLang(this.missingTypes[1], this.user.settings.language, this.resources);
-        return `${capitalize(typeLabel1)} ${translatePhrase('and')} ${typeLabel2} ${translatePhrase('are missing')}. `;
+        return `${capitalize(typeLabel1)} ${translatePhrase('and')} ${typeLabel2} ${translatePhrase('are missing')} `;
       }
       return '';
     },
