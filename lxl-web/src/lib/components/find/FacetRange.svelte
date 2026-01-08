@@ -86,6 +86,6 @@
 	@reference 'tailwindcss';
 
 	form {
-		padding-left: calc((var(--level, 0) * var(--spacing) * 5) + var(--spacing) * 3);
+		padding-left: calc((var(--level, 0) * var(--spacing) * 4));
 	}
 </style>

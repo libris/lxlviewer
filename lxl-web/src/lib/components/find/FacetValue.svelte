@@ -9,11 +9,11 @@
 
 	interface Props {
 		data: FacetValue;
-		parentDimension: string;
 		variant?: 'radio' | 'checkbox';
+		permanent?: boolean;
 	}
 
-	let { data, parentDimension, variant }: Props = $props();
+	let { data, variant, permanent }: Props = $props();
 
 	/*
 	const role = $derived.by(() => {
@@ -31,15 +31,13 @@
 		variant === 'checkbox' && 'with-checkbox',
 		variant === 'radio' && 'with-radio',
 		!variant && 'with-and',
-		parentDimension.split('/')[0] === 'librissearch:findCategory' &&
-			variant === 'checkbox' &&
-			'text-2xs'
+		permanent && 'pl-4!'
 	]}
 	href={page.data.localizeHref(data.view['@id'])}
 	data-sveltekit-preload-data="false"
 >
 	<span class="truncate" title={data.str}>
-		<span class="truncate">
+		<span class={['truncate', data.selected && 'text-accent font-medium']}>
 			{#if typeof data.label === 'string'}
 				{data.label}
 			{:else}
@@ -50,16 +48,18 @@
 			{/if}
 		</span>
 	</span>
-	{#if data.totalItems > 0}
-		<span class="text-placeholder text-3xs ml-2">
-			{data.totalItems.toLocaleString(page.data.locale)}
+	{#if data.totalItems !== 0 && !(data.selected && !variant)}
+		<span class="text-placeholder text-2xs ml-2">
+			<span class="text-3xs">
+				{data.totalItems.toLocaleString(page.data.locale)}
+			</span>
 			<span class="sr-only">
 				{data.totalItems === 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}
 			</span>
 		</span>
 	{/if}
 	{#if data.selected && !variant}
-		<span class="text-placeholder onhover mr-2 ml-auto hidden" aria-hidden="true">
+		<span class="text-subtle ml-auto" aria-hidden="true">
 			<IconClose />
 		</span>
 	{/if}
@@ -69,7 +69,7 @@
 	@reference 'tailwindcss';
 
 	a {
-		padding-left: calc((var(--level, 0) * var(--spacing) * 5) + var(--spacing) * 3);
+		padding-left: calc(((var(--level, 0) - 1) * var(--spacing) * 5.5) + var(--spacing) * 4);
 		padding-right: calc(var(--spacing) * 3);
 	}
 
@@ -88,51 +88,46 @@
     }
      */
 
-	.with-and::before {
+	.with-checkbox::before,
+	.with-radio::before {
 		content: '';
+		mask-size: cover;
+		mask-repeat: no-repeat;
+		background: var(--color-neutral-400);
+		width: 14px;
+		height: 14px;
 		flex-shrink: 0;
 		margin-right: calc(var(--spacing) * 2);
-		border-radius: calc(infinity * 1px);
-		background-color: var(--color-neutral-400);
-		width: calc(var(--spacing) * 1.75);
-		height: calc(var(--spacing) * 1.75);
-		transform: scale(0.4);
-		transform-origin: center;
-		/*margin-left: calc(var(--spacing));*/
 	}
-	.with-and.selected::before {
-		width: calc(var(--spacing) * 1.75);
-		height: calc(var(--spacing) * 1.75);
-		background-color: var(--color-accent-600);
-		transform: scale(1);
+
+	.with-checkbox:hover::before,
+	.with-radio:hover::before {
+		background: var(--color-neutral-500);
 	}
 
 	.with-checkbox::before {
-		content: '';
-		background-size: cover;
-		background-image: url('$lib/assets/img/checkbox-unchecked.svg');
-		background-repeat: no-repeat;
-		width: 14px;
-		height: 14px;
-		flex-shrink: 0;
-		margin-right: calc(var(--spacing) * 2);
+		mask-image: url('$lib/assets/img/checkbox-unchecked.svg');
 	}
-	.with-checkbox.selected::before {
-		background-image: url('$lib/assets/img/checkbox-checked.svg');
+	.with-radio::before {
+		mask-image: url('$lib/assets/img/radio-unchecked.svg');
 	}
 
-	.with-radio::before {
-		content: '';
-		background-size: cover;
-		background-image: url('$lib/assets/img/radio-unchecked.svg');
-		background-repeat: no-repeat;
-		width: 14px;
-		height: 14px;
-		flex-shrink: 0;
-		margin-right: calc(var(--spacing) * 2);
+	.with-checkbox.selected::before {
+		mask-image: url('$lib/assets/img/checkbox-checked.svg');
 	}
+
 	.with-radio.selected::before {
-		background-image: url('$lib/assets/img/radio-checked.svg');
+		mask-image: url('$lib/assets/img/radio-checked.svg');
+	}
+
+	.with-checkbox.selected::before,
+	.with-radio.selected::before {
+		background: var(--color-accent);
+	}
+
+	.with-checkbox.selected:hover::before,
+	.with-radio.selected:hover::before {
+		background: var(--color-accent-700);
 	}
 
 	.focusable {
@@ -140,10 +135,6 @@
 
 		&:hover {
 			background: var(--color-primary-100);
-
-			.onhover {
-				display: initial;
-			}
 		}
 		&:focus-visible,
 		&:has(:focus) {
