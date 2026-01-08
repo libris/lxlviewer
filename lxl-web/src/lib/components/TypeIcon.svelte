@@ -7,6 +7,7 @@
 	import BiDatabase from '~icons/bi/database';
 	import BiFilm from '~icons/bi/film';
 	import BiLaptop from '~icons/bi/laptop';
+	import BiListColumnsReversed from '~icons/bi/list-columns-reverse';
 	import BiMap from '~icons/bi/map';
 	import BiMusicNoteBeamed from '~icons/bi/music-note-beamed';
 	import BiMusicNoteList from '~icons/bi/music-note-list';
@@ -32,6 +33,7 @@
 	const { type, class: className = '' }: Props = $props();
 
 	const ICONS: Record<string, IconType> = {
+		Bibliography: BiListColumnsReversed,
 		Country: BiGeoAlt,
 		GenreForm: BiTag,
 		Geographic: BiGeoAlt,
