@@ -100,3 +100,17 @@ export function getTypeForIcon(typeLike: TypeLike) {
 export function slug(s: string) {
 	return s === undefined ? undefined : s.split('/').pop();
 }
+
+export function bookAspectRatio(iconTypeStr: string) {
+	return (
+		iconTypeStr &&
+		[
+			'Literature',
+			'Ej%20sk%C3%B6nlitteratur',
+			'Sk%C3%B6nlitteratur',
+			'Text',
+			'Periodika',
+			'NotatedMusic'
+		].includes(iconTypeStr)
+	);
+}

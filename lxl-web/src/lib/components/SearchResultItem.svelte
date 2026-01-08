@@ -6,6 +6,7 @@
 	import placeholderImage from '$lib/assets/img/placeholder.svg';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import TypeIcon from './TypeIcon.svelte';
+	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 
 	type Props = { data: SearchResultItem; headerClass?: string };
 
@@ -33,7 +34,7 @@
 					class={[
 						'object-cover',
 						data?.['@type'] === 'Person' ? 'rounded-full' : 'rounded-lg',
-						(data?.typeForIcon === 'Text' || data?.typeForIcon === 'Literature') && 'aspect-3/4'
+						bookAspectRatio(data?.typeForIcon) && 'aspect-3/4'
 					]}
 				/>
 				<TypeIcon type={data.typeForIcon} class="absolute text-4xl text-neutral-300" />
