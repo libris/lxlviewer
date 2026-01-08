@@ -1090,6 +1090,16 @@
 			"fresnel:classFormatDomain": ["Subject"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"SeriesMembership-seriesStatement-format": {
+			"@id": "Subject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["SeriesMembership"],
+			"fresnel:propertyFormatDomain": ["seriesStatement"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " · ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"needs-label-format": {
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
