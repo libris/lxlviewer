@@ -284,6 +284,21 @@
 						"originDate"
 					]
 				},
+				"Instance": {
+					"@id": "Instance-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
+								"hasTitle",
+								"identifiedBy"
+							]
+						}
+					]
+				},
 				"Library": {
 					"@id": "Library-chips",
 					"@type": "fresnel:Lens",
@@ -646,7 +661,8 @@
 						"extent",
 						"seriesMembership",
 						"responsibilityStatement",
-						"isPartOf"
+						"isPartOf",
+						"part"
 					]
 				}
 			}
