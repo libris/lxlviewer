@@ -1,6 +1,7 @@
-import { Transaction } from '@codemirror/state';
+import { EditorState, Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
+import { qualifierSemanticField } from './qualifierValidation.js';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically
@@ -10,7 +11,13 @@ import type { SyntaxNode } from '@lezer/common';
  * If not - add/repair it. Exception: quoted qualifier values
  */
 export const createGhostGroup = (tr: Transaction) => {
-	if (!tr.docChanged || !tr.isUserEvent('input')) {
+	const isUserInput = tr.isUserEvent('input') || tr.isUserEvent('delete');
+
+	// also run on validation field updates (no doc change)
+	const validationUpdated =
+		tr.startState.field(qualifierSemanticField) !== tr.state.field(qualifierSemanticField);
+
+	if (!isUserInput && !validationUpdated) {
 		return tr;
 	}
 
@@ -18,6 +25,11 @@ export const createGhostGroup = (tr: Transaction) => {
 	let selection: { anchor: number } | undefined;
 
 	const prevNode = syntaxTree(tr.state).resolveInner(tr.state.selection.main.head, -1);
+
+	// validate qualifier
+	const validQualifier = getValidQualifier(tr.state, prevNode);
+	if (!validQualifier) return tr;
+
 	if (prevNode.name === 'QualifierOperator') {
 		const operator = tr.state.sliceDoc(prevNode.from, prevNode.to);
 		if (operator === ':' || operator === '=') {
@@ -77,6 +89,10 @@ export const removeGhostGroup = (tr: Transaction) => {
 	startTree.iterate({
 		enter(node) {
 			if (node.name !== 'Qualifier') return;
+
+			// validate qualifier
+			const validQualifier = getValidQualifier(tr.startState, node.node);
+			if (!validQualifier) return;
 
 			// map approximate qualifier position into new document
 			const mappedFrom = tr.changes.mapPos(node.from, 1);
@@ -437,19 +453,17 @@ function getParent(node: SyntaxNode, name: string): SyntaxNode | false {
 	return current?.name === name ? current : false;
 }
 
-/**
- * Returns true if the node is covered by an atomic range
- */
-// function isValidQualifier(node: SyntaxNode, atomicRanges: RangeSet<RangeValue>): boolean {
-// 	let containsAtomic = false;
+export function isValidQualifier(state: EditorState, node: SyntaxNode | false): boolean {
+	if (!node || node.name !== 'Qualifier') return false;
 
-// 	atomicRanges.between(node.from, node.to, (start, end) => {
-// 		// True overlap (not just touching)
-// 		if (node.from < end && start < node.to) {
-// 			containsAtomic = true;
-// 			return false;
-// 		}
-// 	});
+	const semantics = state.field(qualifierSemanticField);
+	const key = `${node.from}-${node.to}`;
 
-// 	return containsAtomic;
-// }
+	const semantic = semantics.qualifiers.get(key);
+	return !!semantic && !semantic.invalid;
+}
+
+const getValidQualifier = (state: EditorState, node: SyntaxNode) => {
+	const parent = getParent(node, 'Qualifier');
+	return parent && isValidQualifier(state, parent.node) ? parent : null;
+};
