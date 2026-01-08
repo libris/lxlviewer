@@ -10,6 +10,7 @@
 	import BiMap from '~icons/bi/map';
 	import BiMusicNoteBeamed from '~icons/bi/music-note-beamed';
 	import BiMusicNoteList from '~icons/bi/music-note-list';
+	import BiNewsPaper from '~icons/bi/newspaper';
 	import BiPeople from '~icons/bi/people';
 	import BiPerson from '~icons/bi/person';
 	import BiSlashLg from '~icons/bi/slash-lg';
@@ -59,6 +60,7 @@
 		NotatedMusic: BiMusicNoteList,
 		Kit: BiBoxSeam,
 		Databaser: BiDatabase,
+		Periodika: BiNewsPaper,
 
 		// Old work types
 		Audio: BiSoundWave,

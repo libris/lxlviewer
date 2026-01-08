@@ -72,7 +72,14 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 
 export default getTypeLike;
 
-const IDENTIFY_ICONS = ['Audiobook', 'NotatedMusic', 'Ljudb%C3%B6cker', 'Kit', 'Databaser'];
+const IDENTIFY_ICONS = [
+	'Audiobook',
+	'NotatedMusic',
+	'Ljudb%C3%B6cker',
+	'Kit',
+	'Databaser',
+	'Periodika'
+];
 
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 export function getTypeForIcon(typeLike: TypeLike) {
