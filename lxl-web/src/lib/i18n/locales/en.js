@@ -260,7 +260,7 @@ export default {
 		showInSearchResults: 'Show in search results',
 		showInSearchResultsShort: 'Show all results',
 		uriLink: 'URI (link to resource)',
-		download: 'Download description',
+		downloadDescription: 'Download description',
 		showIn: 'Show in',
 		librisCataloging: 'Libris cataloging',
 		librisOld: 'old Libris'

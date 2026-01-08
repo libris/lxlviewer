@@ -261,7 +261,7 @@ export default {
 		showInSearchResults: 'Visa i träfflista',
 		showInSearchResultsShort: 'Visa träfflista',
 		uriLink: 'URI (länk till resurs)',
-		download: 'Ladda ner beskrivning',
+		downloadDescription: 'Ladda ner beskrivning',
 		showIn: 'Visa i',
 		librisCataloging: 'Libris katalogisering',
 		librisOld: 'gamla Libris'

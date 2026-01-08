@@ -25,6 +25,7 @@
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import Carousel from '$lib/components/Carousel.svelte';
+	import BiDownload from '~icons/bi/download';
 
 	type Props = {
 		fnurgel: string;
@@ -333,9 +334,32 @@
 						</div>
 					{/each}
 				</div>
-				<div class="mt-5 w-fit rounded-lg bg-neutral-100 p-3 text-sm">
+				<div class="mt-5 rounded-lg bg-neutral-100 p-3 text-sm">
 					<p>
 						{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
+					</p>
+					<p>
+						{page.data.t('resource.downloadDescription')}:
+						<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
+						· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
+						· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
+						{#if instances?.length === 1}
+							· <a
+								href="{recordUri
+									.split('/')
+									.toSpliced(-1, 1)
+									.join('/')}/_compilemarc?library=Foo&id={recordUri}"
+								target="_blank"
+								download="{fnurgel}.marc"
+								class="link">MARC21 (ISO 2709) <BiDownload class="inline" /></a
+							>
+							<!--
+                            TODO _compilemarc can only create ISO 2709
+                            TODO _compilemarc can only handle bib
+                            TODO? select export profile (library)?
+                            <a href="{fnurgel}" target="_blank" class="ext-link">MARC-XML</a> ·
+                            -->
+						{/if}
 					</p>
 					<p>
 						<a
@@ -349,28 +373,6 @@
 								>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
 							>
 						{/if}
-					</p>
-					<p>
-						{page.data.t('resource.download')}:
-						<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
-						· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
-						· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
-						{#if instances?.length === 1}
-							· <a
-								href="{recordUri
-									.split('/')
-									.toSpliced(-1, 1)
-									.join('/')}/_compilemarc?library=Foo&id={recordUri}"
-								target="_blank"
-								class="ext-link">MARC21 (ISO 2709)</a
-							>
-						{/if}
-						<!--
-                        TODO _compilemarc can only create ISO 2709
-                        TODO _compilemarc can only handle bib
-                        TODO? select export profile (library)?
-                        <a href="{fnurgel}" target="_blank" class="ext-link">MARC-XML</a> ·
-                        -->
 					</p>
 				</div>
 			</section>
