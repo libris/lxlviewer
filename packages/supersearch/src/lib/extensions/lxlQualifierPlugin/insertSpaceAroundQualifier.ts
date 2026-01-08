@@ -1,4 +1,4 @@
-import { type Transaction, type TransactionSpec } from '@codemirror/state';
+import type { Transaction, TransactionSpec } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { qualifierSemanticField } from './qualifierValidation.js';
 
@@ -24,20 +24,9 @@ const insertSpaceAroundQualifier = (tr: Transaction) => {
 	const newCursorPos = oldCursorPos + inputLength;
 	const inputRangeMin = Math.min(oldCursorPos, newCursorPos);
 	const inputRangeMax = Math.max(oldCursorPos, newCursorPos);
+	const atomicRanges = tr.startState.field(qualifierSemanticField).atomicRanges;
 
-	const semantics = tr.startState.field(qualifierSemanticField);
-
-	for (const data of semantics.data.values()) {
-		if (data.invalid) continue;
-		if (data.atomicFrom == null || data.atomicTo == null) continue;
-
-		const atomicStart = data.atomicFrom;
-		const atomicEnd = data.atomicTo;
-
-		if (atomicEnd <= inputRangeMin || atomicStart >= inputRangeMax) {
-			continue;
-		}
-
+	atomicRanges.between(inputRangeMin, inputRangeMax, (atomicStart, atomicEnd) => {
 		const input = tr.newDoc.slice(oldCursorPos, newCursorPos).toString().trim();
 		const prevChar = tr.newDoc
 			.slice(inputRangeMin - 1, inputRangeMin)
@@ -47,17 +36,6 @@ const insertSpaceAroundQualifier = (tr: Transaction) => {
 			.slice(inputRangeMax - 1, inputRangeMax)
 			.toString()
 			.trim();
-
-		// atomicRanges.between(inputRangeMin, inputRangeMax, (atomicStart, atomicEnd) => {
-		// const input = tr.newDoc.slice(oldCursorPos, newCursorPos).toString().trim();
-		// const prevChar = tr.newDoc
-		// 	.slice(inputRangeMin - 1, inputRangeMin)
-		// 	.toString()
-		// 	.trim();
-		// const nextChar = tr.newDoc
-		// 	.slice(inputRangeMax - 1, inputRangeMax)
-		// 	.toString()
-		// 	.trim();
 
 		if (oldCursorPos === atomicStart && (input || (isDelete && prevChar))) {
 			// input touches atomic range start, insert space after input
@@ -117,8 +95,8 @@ const insertSpaceAroundQualifier = (tr: Transaction) => {
 				];
 			}
 		}
-		return tr;
-	}
+		return false;
+	});
 	return insert;
 };
 

@@ -3,6 +3,9 @@ import type { QualifierValidator, QualifierWidgetRenderer } from '$lib/types/lxl
 import { qualifierValidatorFacet, qualifierWidgetRendererFacet } from './qualifierFacet.js';
 import { qualifierSemanticField } from './qualifierValidation.js';
 import { addQualifiers } from './qualifierDecorations.js';
+import { EditorState } from '@codemirror/state';
+// import { balanceInnerParens, createGhostGroup, handleInputBeforeGroup, jumpPastParens, removeGhostGroup, repairGhostGroup } from './ghostGroup.js';
+import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
 const lxlQualifierPlugin = (
 	validateQualifier: QualifierValidator,
@@ -31,7 +34,17 @@ const lxlQualifierPlugin = (
 				qualifierValidatorFacet.of(validateQualifier),
 				qualifierWidgetRendererFacet.of(renderer),
 
-				EditorView.atomicRanges.of((view) => view.state.field(qualifierSemanticField).atomicRanges)
+				EditorView.atomicRanges.of((view) => view.state.field(qualifierSemanticField).atomicRanges),
+
+				// ghost group filters -->
+				// EditorState.transactionFilter.of(jumpPastParens),
+				// EditorState.transactionFilter.of(createGhostGroup),
+				// EditorState.transactionFilter.of(handleInputBeforeGroup),
+				// EditorState.transactionFilter.of(removeGhostGroup),
+				// EditorState.transactionFilter.of(repairGhostGroup),
+				// EditorState.transactionFilter.of(balanceInnerParens),
+				// <--
+				EditorState.transactionFilter.of(insertSpaceAroundQualifier)
 			]
 		}
 	);
