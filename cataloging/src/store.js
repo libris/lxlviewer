@@ -58,6 +58,7 @@ const store = createStore({
         promises: [],
       },
       title: '',
+      recordType: '',
       status: {
         detailedEnrichmentModal: {
           open: false,
@@ -269,6 +270,9 @@ const store = createStore({
     },
     setInspectorTitle(state, str) {
       state.inspector.title = str;
+    },
+    setRecordType(state, str) {
+      state.inspector.recordType = str;
     },
     setStatusValue(state, payload) {
       if (state.status.hasOwnProperty(payload.property)) {
@@ -910,6 +914,9 @@ const store = createStore({
     },
     setInspectorTitle({ commit }, str) {
       commit('setInspectorTitle', str);
+    },
+    setRecordType({ commit }, str) {
+      commit('setRecordType', str);
     },
     removeNotification({ commit }, index) {
       commit('removeNotification', index);

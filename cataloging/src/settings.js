@@ -110,8 +110,8 @@ export default {
     'heldBy',
   ],
   validateTypesByPath: {
-    'mainEntity.category' : ['contentType', 'genreForm'],
-    'mainEntity.instanceOf.category' : ['contentType', 'genreForm'],
+    'Work' : { 'mainEntity.category' : ['contentType', 'genreForm'] },
+    'Instance' : { 'mainEntity.instanceOf.category' : ['contentType', 'genreForm'] },
   },
   defaultExpandedProperties: [
     'hasComponent',

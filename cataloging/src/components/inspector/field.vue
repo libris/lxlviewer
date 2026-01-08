@@ -37,7 +37,6 @@ import {
   VALUE_FROM_KEY,
   ANY_TYPE
 } from "@/utils/bulk.js";
-import * as RecordUtil from "@/utils/record.js";
 
 export default {
   name: 'field',
@@ -264,9 +263,9 @@ export default {
     },
     missingTypes() {
       const missing = [];
-      //TODO: path 'mainEntity.category' only valid if we are at a work, not an instance
-      if (Object.keys(this.settings.validateTypesByPath).includes(this.path)) {
-        this.settings.validateTypesByPath[this.path].forEach(t => {
+      const validateByPath = this.settings.validateTypesByPath[this.inspector.recordType];
+        if (validateByPath && Object.keys(validateByPath).includes(this.path)) {
+          validateByPath[this.path].forEach(t => {
           if (!this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === capitalize(t))) {
             missing.push(t);
           }
@@ -1087,239 +1086,238 @@ export default {
     </div>
 
     <pre class="path-code" v-show="user.settings.appTech && isInner">{{path}}</pre>
-
-    <div
-      class="Field-content FieldContent"
-      :class="{ 'is-locked': locked }"
-      v-if="fieldKey === '@type'">
+    <div class="Field-content-container">
       <div
-        class="Field-contentItem"
-        v-for="(item, index) in valueAsArray"
-        :key="index"
-        v-bind:class="{ 'is-entityContent': getDatatype(item) == 'entity' }">
-        <item-type
-          :is-locked="locked"
-          :container-accepted-types="parentAcceptedTypes"
-          :field-key="fieldKey"
-          :field-value="item"
-          :entity-type="entityType"
-          :parent-path="path"/>
-        <div class="Field-matchSubClasses" v-if="this.parentPath === 'mainEntity'
-        && isBulkChangeMatchForm && !isAnyType">
-        <span class="Field-matchSubClassesLabel">
-          {{ translatePhrase('Match subtypes') }}
-        </span>
-          <span>
-            <input
-              type="checkbox"
-              class="customCheckbox-input"
-              :disabled="isLocked"
-              :checked="matchSubTypes"
-              @change="toggleMatchSubtypes"/>
-            <span class="customCheckbox-icon"/>
+        class="Field-content FieldContent"
+        :class="{ 'is-locked': locked }"
+        v-if="fieldKey === '@type'">
+        <div
+          class="Field-contentItem"
+          v-for="(item, index) in valueAsArray"
+          :key="index"
+          v-bind:class="{ 'is-entityContent': getDatatype(item) == 'entity' }">
+          <item-type
+            :is-locked="locked"
+            :container-accepted-types="parentAcceptedTypes"
+            :field-key="fieldKey"
+            :field-value="item"
+            :entity-type="entityType"
+            :parent-path="path"/>
+          <div class="Field-matchSubClasses" v-if="this.parentPath === 'mainEntity'
+          && isBulkChangeMatchForm && !isAnyType">
+          <span class="Field-matchSubClassesLabel">
+            {{ translatePhrase('Match subtypes') }}
           </span>
+            <span>
+              <input
+                type="checkbox"
+                class="customCheckbox-input"
+                :disabled="isLocked"
+                :checked="matchSubTypes"
+                @change="toggleMatchSubtypes"/>
+              <span class="customCheckbox-icon"/>
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+      <div
+        class="Field-content FieldContent"
+        v-bind:class="{ 'is-locked': locked }"
+        v-if="fieldKey !== '@type' && isObjectArray">
+        <div class="Field-contentItem">
 
-    <div
-      class="Field-content FieldContent"
-      v-bind:class="{ 'is-locked': locked }"
-      v-if="fieldKey !== '@type' && isObjectArray">
-      <div class="Field-contentItem">
+          <item-bylang
+            v-if="getDatatype(firstInValueAsArray) == 'language'"
+            :is-locked="locked"
+            :is-first-field="isFirstField"
+            :field-value="valueAsArray"
+            :field-key="fieldKey"
+            :parent-path="path"
+            :diff="diff"
+            :is-expanded="isExpanded"
+            :is-enrichment-source="isEnrichmentSource"
+          />
+        </div>
+        <div
+          class="Field-contentItem"
+          v-for="(item, index) in valueAsArray"
+          :key="index"
+          v-bind:class="{
+            'is-entityContent': getDatatype(item) == 'entity' && !isCard,
+            'is-new': newDiffValues.indexOf(item) > -1,
+          }">
 
-        <item-bylang
-          v-if="getDatatype(firstInValueAsArray) == 'language'"
-          :is-locked="locked"
-          :is-first-field="isFirstField"
-          :field-value="valueAsArray"
-          :field-key="fieldKey"
-          :parent-path="path"
-          :diff="diff"
-          :is-expanded="isExpanded"
-          :is-enrichment-source="isEnrichmentSource"
-        />
+          <item-error
+            v-if="getDatatype(item) == 'error'"
+            :field-key="fieldKey"
+            :parent-path="path"
+            :index="index"
+            :diff="diff"
+            :item="item" />
+
+          <id-list v-if="getDatatype(item) == 'idList'"
+            :show-remove-button="isBulkChangeMatchForm && !isLocked"
+            :id-list-link="item[HAS_ID_KEY()][VALUE_FROM_KEY()]['@id']"
+            @remove-id-list="removeThis"
+          />
+
+          <item-grouped
+            v-if="getDatatype(item) == 'grouped'"
+            :field-key="fieldKey"
+            :is-card="isCard"
+            :entity-type="entityType"
+            :parent-path="path"
+            :index="index"
+            :diff="diff"
+            :item="item" />
+
+          <!-- Other linked resources -->
+          <item-vocab
+            v-if="getDatatype(item) == 'vocab'"
+            :as-dropdown="fieldKey !== 'encodingLevel'"
+            :is-locked="locked"
+            :field-key="fieldKey"
+            :parent-range="rangeFull"
+            :value="item"
+            :entity-type="entityType"
+            :index="index"
+            :diff="diff"
+            :parent-path="path" />
+
+          <!-- Other linked entities -->
+          <item-entity
+            v-if="getDatatype(item) == 'entity'"
+            :is-locked="locked"
+            :is-card="isCard"
+            :is-expanded="isCard"
+            :exclude-properties="isReverseProperty ? [reverseProperty] : []"
+            :item="item"
+            :field-key="fieldKey"
+            :index="index"
+            :diff="diff"
+            :parent-path="path"
+            :is-enrichment-source="isEnrichmentSource"
+          />
+
+          <!-- Not linked, local child objects OR inlined linked objects-->
+          <item-local
+            :data-parent="path"
+            v-if="getDatatype(item) == 'local'"
+            :is-locked="locked"
+            :entity-type="entityType"
+            :is-compositional="isCompositional"
+            :all-values-from="allValuesFrom"
+            :some-values-from="someValuesFrom"
+            :all-search-types="allSearchTypes"
+            :range="range"
+            :range-full="rangeFull"
+            :item="item"
+            :field-key="fieldKey"
+            :index="index"
+            :parent-path="path"
+            :in-array="valueIsArray"
+            :diff="diff"
+            :should-expand="expandChildren || enrichedChildren"
+            :bulk-context="bulkContext"
+            :is-enrichment-source="isEnrichmentSource"
+          />
+        </div>
+        <portal-target :name="`typeSelect-${path}`" />
       </div>
       <div
-        class="Field-contentItem"
-        v-for="(item, index) in valueAsArray"
-        :key="index"
-        v-bind:class="{
-          'is-entityContent': getDatatype(item) == 'entity' && !isCard,
-          'is-new': newDiffValues.indexOf(item) > -1,
-        }">
+        class="Field-content is-endOfTree js-endOfTree"
+        v-bind:class="{ 'is-locked': locked }"
+        v-if="fieldKey !== '@type' && !isObjectArray"
+      >
+        <div class="Field-contentItem">
+          <item-bylang
+            v-if="getDatatype(firstInValueAsArray) == 'language'"
+            :is-locked="locked"
+            :is-first-field="isFirstField"
+            :field-value="valueAsArray"
+            :field-key="fieldKey"
+            :parent-path="path"
+            :diff="diff"
+            :is-expanded="isExpanded"
+            :is-enrichment-source="isEnrichmentSource"
+          />
+        </div>
 
-        <item-error
-          v-if="getDatatype(item) == 'error'"
-          :field-key="fieldKey"
-          :parent-path="path"
-          :index="index"
-          :diff="diff"
-          :item="item" />
+        <div
+          class="Field-contentItem"
+          v-for="(item, index) in valueAsArray"
+          :key="index">
 
-        <id-list v-if="getDatatype(item) == 'idList'"
-          :show-remove-button="isBulkChangeMatchForm && !isLocked"
-          :id-list-link="item[HAS_ID_KEY()][VALUE_FROM_KEY()]['@id']"
-          @remove-id-list="removeThis"
-        />
+          <!-- Other linked resources -->
+          <item-vocab
+            v-if="getDatatype(item) == 'vocab'"
+            :as-dropdown="fieldKey !== 'encodingLevel'"
+            :is-locked="locked"
+            :field-key="fieldKey"
+            :field-value="item"
+            :entity-type="entityType"
+            :index="index"
+            :diff="diff"
+            :parent-path="path" />
 
-        <item-grouped
-          v-if="getDatatype(item) == 'grouped'"
-          :field-key="fieldKey"
-          :is-card="isCard"
-          :entity-type="entityType"
-          :parent-path="path"
-          :index="index"
-          :diff="diff"
-          :item="item" />
+          <!-- Boolean value -->
+          <item-boolean
+            v-if="getDatatype(item) == 'boolean'"
+            :is-locked="locked"
+            :field-key="fieldKey"
+            :field-value="item"
+            :entity-type="entityType"
+            :index="index"
+            :diff="diff"
+            :parent-path="path" />
 
-        <!-- Other linked resources -->
-        <item-vocab
-          v-if="getDatatype(item) == 'vocab'"
-          :as-dropdown="fieldKey !== 'encodingLevel'"
-          :is-locked="locked"
-          :field-key="fieldKey"
-          :parent-range="rangeFull"
-          :value="item"
-          :entity-type="entityType"
-          :index="index"
-          :diff="diff"
-          :parent-path="path" />
+          <!-- Numeric value -->
+          <item-numeric
+            v-if="getDatatype(item) == 'numeric'"
+            :is-locked="locked"
+            :field-key="fieldKey"
+            :field-value="item"
+            :entity-type="entityType"
+            :index="index"
+            :diff="diff"
+            :parent-path="path"
+            :range="range" />
 
-        <!-- Other linked entities -->
-        <item-entity
-          v-if="getDatatype(item) == 'entity'"
-          :is-locked="locked"
-          :is-card="isCard"
-          :is-expanded="isCard"
-          :exclude-properties="isReverseProperty ? [reverseProperty] : []"
-          :item="item"
-          :field-key="fieldKey"
-          :index="index"
-          :diff="diff"
-          :parent-path="path"
-          :is-enrichment-source="isEnrichmentSource"
-        />
+          <!-- Not linked, local child strings -->
+          <item-value
+            v-if="getDatatype(item) == 'value'"
+            :is-removable="!hasSingleValue"
+            :is-locked="locked"
+            :is-uri-type="isUriType"
+            :field-value="item"
+            :field-key="fieldKey"
+            :index="index"
+            :parent-path="path"
+            :diff="diff"
+            :is-expanded="isExpanded" />
 
-        <!-- Not linked, local child objects OR inlined linked objects-->
-        <item-local
-          :data-parent="path"
-          v-if="getDatatype(item) == 'local'"
-          :is-locked="locked"
-          :entity-type="entityType"
-          :is-compositional="isCompositional"
-          :all-values-from="allValuesFrom"
-          :some-values-from="someValuesFrom"
-          :all-search-types="allSearchTypes"
-          :range="range"
-          :range-full="rangeFull"
-          :item="item"
-          :field-key="fieldKey"
-          :index="index"
-          :parent-path="path"
-          :in-array="valueIsArray"
-          :diff="diff"
-          :should-expand="expandChildren || enrichedChildren"
-          :bulk-context="bulkContext"
-          :is-enrichment-source="isEnrichmentSource"
-        />
+          <!-- shelfControlNumber -->
+          <item-shelf-control-number
+            v-if="getDatatype(item) == 'shelfControlNumber'"
+            :is-locked="locked"
+            :field-value="item"
+            :field-key="fieldKey"
+            :index="index"
+            :diff="diff"
+            :parent-path="path"
+            :is-expanded="isExpanded" />
+
+        </div>
+        <portal-target :name="`typeSelect-${path}`" />
       </div>
-      <portal-target :name="`typeSelect-${path}`" />
-    </div>
-
-    <div
-      class="Field-content is-endOfTree js-endOfTree"
-      v-bind:class="{ 'is-locked': locked }"
-      v-if="fieldKey !== '@type' && !isObjectArray"
-    >
-      <div class="Field-contentItem">
-        <item-bylang
-          v-if="getDatatype(firstInValueAsArray) == 'language'"
-          :is-locked="locked"
-          :is-first-field="isFirstField"
-          :field-value="valueAsArray"
-          :field-key="fieldKey"
-          :parent-path="path"
-          :diff="diff"
-          :is-expanded="isExpanded"
-          :is-enrichment-source="isEnrichmentSource"
-        />
-      </div>
-
-      <div
-        class="Field-contentItem"
-        v-for="(item, index) in valueAsArray"
-        :key="index">
-
-        <!-- Other linked resources -->
-        <item-vocab
-          v-if="getDatatype(item) == 'vocab'"
-          :as-dropdown="fieldKey !== 'encodingLevel'"
-          :is-locked="locked"
-          :field-key="fieldKey"
-          :field-value="item"
-          :entity-type="entityType"
-          :index="index"
-          :diff="diff"
-          :parent-path="path" />
-
-        <!-- Boolean value -->
-        <item-boolean
-          v-if="getDatatype(item) == 'boolean'"
-          :is-locked="locked"
-          :field-key="fieldKey"
-          :field-value="item"
-          :entity-type="entityType"
-          :index="index"
-          :diff="diff"
-          :parent-path="path" />
-
-        <!-- Numeric value -->
-        <item-numeric
-          v-if="getDatatype(item) == 'numeric'"
-          :is-locked="locked"
-          :field-key="fieldKey"
-          :field-value="item"
-          :entity-type="entityType"
-          :index="index"
-          :diff="diff"
-          :parent-path="path"
-          :range="range" />
-
-        <!-- Not linked, local child strings -->
-        <item-value
-          v-if="getDatatype(item) == 'value'"
-          :is-removable="!hasSingleValue"
-          :is-locked="locked"
-          :is-uri-type="isUriType"
-          :field-value="item"
-          :field-key="fieldKey"
-          :index="index"
-          :parent-path="path"
-          :diff="diff"
-          :is-expanded="isExpanded" />
-
-        <!-- shelfControlNumber -->
-        <item-shelf-control-number
-          v-if="getDatatype(item) == 'shelfControlNumber'"
-          :is-locked="locked"
-          :field-value="item"
-          :field-key="fieldKey"
-          :index="index"
-          :diff="diff"
-          :parent-path="path"
-          :is-expanded="isExpanded" />
-
-      </div>
-      <portal-target :name="`typeSelect-${path}`" />
-    </div>
-    <div class="Field-validation" v-if="hasMissingTypes && !isLocked">
-      <div class="Field-validation-icon">
-        <i class="fa fa-warning fa-fw icon--sm"
-           tabindex="0"
-           :aria-label="validationText"
-           v-tooltip.top="validationText"
-        />
+      <div class="Field-validation" v-if="hasMissingTypes && !isLocked">
+        <div class="Field-validation-icon">
+          <i class="fa fa-warning fa-fw icon--sm"
+             tabindex="0"
+             :aria-label="validationText"
+             v-tooltip.top="validationText"
+          />
+        </div>
       </div>
     </div>
 
@@ -1421,6 +1419,11 @@ export default {
     border: 1px solid;
     border-color: @form-validate-background;
     background-color: @form-validate-background;
+  }
+
+  &-content-container {
+    width: 100%;
+    display: flex;
   }
 
   &-validation {

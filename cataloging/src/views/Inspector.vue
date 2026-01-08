@@ -470,8 +470,9 @@ export default {
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('saveLangTagSearch', '');
       this.$store.dispatch('removeLoadingIndicator', 'Loading document');
-      this.removeEnrichedHighlight();
 
+      this.removeEnrichedHighlight();
+      this.setRecordType();
       this.recordLoaded = true;
 
       this.$nextTick(() => {
@@ -909,6 +910,10 @@ export default {
           value: [],
         });
       }
+    },
+    setRecordType() {
+      const recordType = VocabUtil.getRecordType(this.inspector.data.mainEntity['@type'], this.resources.vocab, this.resources.context);
+      this.$store.dispatch('setRecordType', recordType);
     },
     async preSaveHook(obj) {
       await checkAutoShelfControlNumber(obj, this.settings, this.user, this.resources);
