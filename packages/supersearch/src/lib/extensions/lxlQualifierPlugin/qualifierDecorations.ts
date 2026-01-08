@@ -44,12 +44,7 @@ export function addQualifiers(view: EditorView) {
 	const decorations: Range<Decoration>[] = [];
 
 	qualifiers.forEach((qualifier) => {
-		const operatorNode = qualifier.node.getChild('QualifierOperator');
-		const operator = operatorNode
-			? view.state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
-			: '';
-
-		// lxl-qualifier element
+		// qualifier wrapper mark
 		decorations.push(
 			Decoration.mark({
 				class: 'lxl-qualifier',
@@ -60,8 +55,24 @@ export function addQualifiers(view: EditorView) {
 			}).range(qualifier.node.from, qualifier.node.to)
 		);
 
-		// QualifierWidget
+		// value mark (for non-atomic)
+		const valuNode = qualifier.node.getChild('QualifierValue');
+		if (!qualifier.valueLabel && valuNode) {
+			decorations.push(
+				Decoration.mark({
+					class: 'lxl-qualifier-value',
+					inclusive: true
+				}).range(valuNode.from, valuNode.node.to)
+			);
+		}
+
+		// qualifier atomic widget
 		if (qualifier.atomicFrom != null) {
+			const operatorNode = qualifier.node.getChild('QualifierOperator');
+			const operator = operatorNode
+				? view.state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
+				: '';
+
 			decorations.push(
 				Decoration.replace({
 					widget: new QualifierWidget({ operator, ...qualifier })

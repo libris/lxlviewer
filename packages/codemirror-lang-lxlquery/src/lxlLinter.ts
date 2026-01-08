@@ -31,6 +31,12 @@ function findErrors(view: EditorView) {
 					let { from, to } = node;
 					let n = node.node;
 
+					// qualifier without a value is not allowed in grammar
+					// but skip it (user could be typing a title)
+					if (node.node.prevSibling?.name === 'QualifierOperator' && from === to) {
+						return false;
+					}
+
 					while (from === to && n.parent) {
 						// if error node is zero-length
 						// iterate the tree backwards until we find a visible parent to mark
