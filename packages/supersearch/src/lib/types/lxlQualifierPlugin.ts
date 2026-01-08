@@ -1,3 +1,4 @@
+import type { RangeSet, RangeValue } from '@codemirror/state';
 import type { SyntaxNode } from '@lezer/common';
 
 export type QualifierValidator = (key: string, value?: string) => QualifierValidationResponse;
@@ -14,10 +15,15 @@ export interface QualifierValidationResponse {
 export interface QualifierSemantic extends QualifierValidationResponse {
 	// from: number
 	// to: number
-	// atomicFrom?: number;
-	// atomicTo?: number;
+	atomicFrom?: number;
+	atomicTo?: number;
 	node: SyntaxNode;
 }
+
+export type QualifierSemanticState = {
+	qualifiers: Map<string, QualifierSemantic>;
+	atomicRanges: RangeSet<RangeValue>;
+};
 
 export type QualifierWidgetRenderer = (
 	container: HTMLElement,

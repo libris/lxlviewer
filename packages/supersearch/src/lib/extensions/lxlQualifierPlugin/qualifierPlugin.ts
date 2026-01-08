@@ -1,96 +1,113 @@
-import type { SyntaxNode } from '@lezer/common';
-import { EditorView, type ViewUpdate, type DecorationSet } from '@codemirror/view';
-import { syntaxTree } from '@codemirror/language';
-import { qualifierValidatorFacet } from './qualifierFacet.js';
-import type { StateEffect } from '@codemirror/state';
-import { messages } from '$lib/constants/messages.js';
-import { sendMessage } from '$lib/utils/sendMessage.js';
-import { setQualifierSemantic } from './qualifierValidation.js';
-import type { QualifierSemantic, QualifierValidator } from '$lib/types/lxlQualifierPlugin.js';
-import { addQualifiers } from './qualifierDecorations.js';
+// import type { SyntaxNode } from '@lezer/common';
+// import { EditorView, type ViewUpdate, type DecorationSet } from '@codemirror/view';
+// import { syntaxTree } from '@codemirror/language';
+// import { qualifierValidatorFacet } from './qualifierFacet.js';
+// import type { StateEffect } from '@codemirror/state';
+// import { messages } from '$lib/constants/messages.js';
+// import { sendMessage } from '$lib/utils/sendMessage.js';
+// import { setQualifierSemantic } from './qualifierValidation.js';
+// import type { QualifierSemantic, QualifierValidator } from '$lib/types/lxlQualifierPlugin.js';
+// import { addQualifiers } from './qualifierDecorations.js';
 
-export class LxlQualifier {
-	decorations: DecorationSet;
+// export class LxlQualifier {
+//   decorations: DecorationSet
 
-	constructor(view: EditorView) {
-		this.decorations = addQualifiers(view);
-	}
-	update(update: ViewUpdate) {
-		let shouldRevalidate = update.docChanged;
+//   constructor(view: EditorView) {
+//     this.decorations = addQualifiers(view)
+//   }
 
-		if (!shouldRevalidate) {
-			for (const tr of update.transactions) {
-				for (const e of tr.effects) {
-					if (e.is(sendMessage) && e.value.message === messages.NEW_DATA) {
-						console.log('new data');
-						shouldRevalidate = true;
-					}
-					if (e.is(setQualifierSemantic)) {
-						console.log('statefield update effect');
-						this.decorations = addQualifiers(update.view);
-					}
-				}
-			}
-		}
+//   update(update: ViewUpdate) {
+//     for (const tr of update.transactions) {
+//       if (tr.effects.some(e => e.is(setQualifierSemantic))) {
+//         this.decorations = addQualifiers(update.view)
+//         break
+//       }
+//     }
+//   }
+// }
 
-		if (shouldRevalidate) {
-			this.schedule(update.view);
-		}
-	}
-	private scheduled = false;
+// export class LxlQualifier {
+// 	decorations: DecorationSet;
 
-	schedule(view: EditorView) {
-		if (this.scheduled) return;
-		this.scheduled = true;
+// 	constructor(view: EditorView) {
+// 		this.decorations = addQualifiers(view);
+// 	}
+// 	update(update: ViewUpdate) {
+// 		let shouldRevalidate = update.docChanged;
 
-		queueMicrotask(() => {
-			this.scheduled = false;
-			this.runValidation(view);
-		});
-	}
-	runValidation(view: EditorView) {
-		const validator = view.state.facet(qualifierValidatorFacet);
-		if (!validator) return;
+// 		if (!shouldRevalidate) {
+// 			for (const tr of update.transactions) {
+// 				for (const e of tr.effects) {
+// 					if (e.is(sendMessage) && e.value.message === messages.NEW_DATA) {
+// 						console.log('new data');
+// 						shouldRevalidate = true;
+// 					}
+// 					if (e.is(setQualifierSemantic)) {
+// 						console.log('statefield update effect');
+// 						this.decorations = addQualifiers(update.view);
+// 					}
+// 				}
+// 			}
+// 		}
 
-		const effects: StateEffect<QualifierSemantic>[] = [];
+// 		if (shouldRevalidate) {
+// 			this.schedule(update.view);
+// 		}
+// 	}
+// 	private scheduled = false;
 
-		syntaxTree(view.state).iterate({
-			enter: (node) => {
-				if (node.name !== 'Qualifier') return;
+// 	schedule(view: EditorView) {
+// 		if (this.scheduled) return;
+// 		this.scheduled = true;
 
-				const semantic = computeQualifierSemantic(node.node, view, validator);
-				effects.push(setQualifierSemantic.of(semantic));
-			}
-		});
+// 		queueMicrotask(() => {
+// 			this.scheduled = false;
+// 			this.runValidation(view);
+// 		});
+// 	}
+// 	runValidation(view: EditorView) {
+// 		const validator = view.state.facet(qualifierValidatorFacet);
+// 		if (!validator) return;
 
-		if (effects.length) {
-			view.dispatch({ effects });
-		}
-	}
-}
+// 		const effects: StateEffect<QualifierSemantic>[] = [];
 
-function computeQualifierSemantic(
-	node: SyntaxNode,
-	view: EditorView,
-	validate: QualifierValidator
-): QualifierSemantic {
-	const keyNode = node.getChild('QualifierKey');
-	const valueNode = node.getChild('QualifierValue');
+// 		syntaxTree(view.state).iterate({
+// 			enter: (node) => {
+// 				if (node.name !== 'Qualifier') return;
 
-	const keyText = keyNode ? view.state.doc.sliceString(keyNode.from, keyNode.to) : '';
+// 				const semantic = computeQualifierSemantic(node.node, view, validator);
+// 				effects.push(setQualifierSemantic.of(semantic));
+// 			}
+// 		});
 
-	const valueText = valueNode
-		? view.state.doc.sliceString(valueNode.from, valueNode.to)
-		: undefined;
+// 		if (effects.length) {
+// 			view.dispatch({ effects });
+// 		}
+// 	}
+// }
 
-	const semantic = validate(keyText, valueText);
+// function computeQualifierSemantic(
+// 	node: SyntaxNode,
+// 	view: EditorView,
+// 	validate: QualifierValidator
+// ): QualifierSemantic {
+// 	const keyNode = node.getChild('QualifierKey');
+// 	const valueNode = node.getChild('QualifierValue');
 
-	return {
-		...semantic,
-		key: keyText,
-		node
-	};
-}
+// 	const keyText = keyNode ? view.state.doc.sliceString(keyNode.from, keyNode.to) : '';
+
+// 	const valueText = valueNode
+// 		? view.state.doc.sliceString(valueNode.from, valueNode.to)
+// 		: undefined;
+
+// 	const semantic = validate(keyText, valueText);
+
+// 	return {
+// 		...semantic,
+// 		key: keyText,
+// 		node
+// 	};
+// }
 
 // function shallowEqual(a: QualifierSemantic | undefined, b: QualifierSemantic): boolean {
 // 	if (a === b) return true;

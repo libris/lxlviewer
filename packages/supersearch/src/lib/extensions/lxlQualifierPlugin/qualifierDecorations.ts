@@ -41,11 +41,9 @@ class QualifierWidget extends WidgetType {
 export function addQualifiers(view: EditorView) {
 	const stateFields = view.state.field(qualifierSemanticField, false);
 
-	console.log(stateFields);
-
 	const decorations: Range<Decoration>[] = [];
 
-	stateFields?.forEach((qualifier) => {
+	stateFields?.qualifiers.forEach((qualifier) => {
 		const operatorNode = qualifier.node.getChild('QualifierOperator');
 		const operator = operatorNode
 			? view.state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
@@ -62,15 +60,18 @@ export function addQualifiers(view: EditorView) {
 			}).range(qualifier.node.from, qualifier.node.to)
 		);
 
-		const atomicFrom = qualifier.node.from;
-		const atomicTo = qualifier.valueLabel ? qualifier.node.to : operatorNode?.to;
-
 		// QualifierWidget
-		decorations.push(
-			Decoration.replace({
-				widget: new QualifierWidget({ operator, ...qualifier })
-			}).range(atomicFrom, atomicTo)
-		);
+		if (qualifier.atomicFrom != null) {
+			console.log('will push', qualifier);
+
+			decorations.push(
+				Decoration.replace({
+					widget: new QualifierWidget({ operator, ...qualifier })
+				}).range(qualifier.atomicFrom, qualifier.atomicTo)
+			);
+		} else {
+			console.log('will not push', qualifier);
+		}
 	});
 	return Decoration.set(decorations, true);
 }
