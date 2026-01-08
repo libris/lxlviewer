@@ -148,7 +148,7 @@
 </script>
 
 {#snippet values(items: FacetValueType[])}
-	{#each items as value (toString(value.label) + value.discriminator)}
+	{#each items as value (toString(value.label) + value.discriminator + value.totalItems)}
 		{#if value.facets}
 			{@const label =
 				`${page.data.t('search.allInFacet')} ` + (toString(value.label) as string).toLowerCase()}
