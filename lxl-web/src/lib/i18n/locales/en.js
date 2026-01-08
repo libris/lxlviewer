@@ -258,7 +258,12 @@ export default {
 		next: 'Next',
 		resultOf: 'of',
 		showInSearchResults: 'Show in search results',
-		showInSearchResultsShort: 'Show all results'
+		showInSearchResultsShort: 'Show all results',
+		uriLink: 'URI (link to resource)',
+		downloadDescription: 'Download description',
+		showIn: 'Show in',
+		librisCataloging: 'Libris cataloging',
+		librisOld: 'old Libris'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',

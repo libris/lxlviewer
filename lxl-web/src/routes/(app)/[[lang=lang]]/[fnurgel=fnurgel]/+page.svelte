@@ -81,6 +81,9 @@
 	{/if}
 	<Resource
 		fnurgel={page.params.fnurgel}
+		uri={data.uri}
+		recordUri={data.recordUri}
+		controlNumber={data.controlNumber}
 		type={data.type}
 		typeForIcon={data.typeForIcon}
 		images={data.images}
