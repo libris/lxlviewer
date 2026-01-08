@@ -1,18 +1,17 @@
-import SuperSearch from '$lib/components/SuperSearch.svelte';
-import type { Selection } from './components/CodeMirror.svelte';
-import lxlQualifierExtension, {
-	type QualifierWidgetProps
-} from '$lib/extensions/lxlQualifierPlugin/index.js';
+import type { QualifierWidgetProps } from './types/lxlQualifierPlugin.js';
 import type { ResultItem, ShowExpandedSearchOptions } from './types/superSearch.js';
-import useSearchRequest from './utils/useSearchRequest.svelte';
+import type { Selection } from './components/CodeMirror.svelte';
 import type {
 	ChangeCodeMirrorEvent as ChangeSuperSearchEvent,
 	ViewUpdateCodeMirrorEvent as ViewUpdateSuperSearchEvent
 } from './components/CodeMirror.svelte';
+import lxlQualifierPlugin from './extensions/lxlQualifierPlugin/index.js';
+import SuperSearch from '$lib/components/SuperSearch.svelte';
+import useSearchRequest from './utils/useSearchRequest.svelte';
 
 export {
 	SuperSearch,
-	lxlQualifierExtension,
+	lxlQualifierPlugin,
 	useSearchRequest,
 	type ResultItem,
 	type Selection,

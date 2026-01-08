@@ -1,9 +1,8 @@
 import { Decoration, EditorView, WidgetType } from '@codemirror/view';
-import { syntaxTree } from '@codemirror/language';
+import type { QualifierWidgetProps } from '$lib/types/lxlQualifierPlugin.js';
 import { type Range } from '@codemirror/state';
 import { qualifierSemanticField } from './qualifierValidation.js';
 import { qualifierWidgetRendererFacet } from './qualifierFacet.js';
-import type { QualifierWidgetProps } from './index.js';
 
 class QualifierWidget extends WidgetType {
 	private cleanup?: () => void;
@@ -39,47 +38,84 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-export const qualifierDecorations = EditorView.decorations.compute(
-	[qualifierSemanticField],
-	(state) => {
-		const sem = state.field(qualifierSemanticField);
-		const decorations: Range<Decoration>[] = [];
+export function addQualifiers(view: EditorView) {
+	const stateFields = view.state.field(qualifierSemanticField, false);
 
-		syntaxTree(state).iterate({
-			enter(node) {
-				if (node.name !== 'Qualifier') return;
+	console.log(stateFields);
 
-				const data = sem.data.get(`${node.from}-${node.to}`);
+	const decorations: Range<Decoration>[] = [];
 
-				// invalidated
-				if (!data || data.invalid) return;
+	stateFields?.forEach((qualifier) => {
+		const operatorNode = qualifier.node.getChild('QualifierOperator');
+		const operator = operatorNode
+			? view.state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
+			: '';
 
-				const operatorNode = node.node.getChild('QualifierOperator');
-				const operator = operatorNode
-					? state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
-					: '';
+		// lxl-qualifier element
+		decorations.push(
+			Decoration.mark({
+				class: 'lxl-qualifier',
+				attributes: {
+					style: 'display: inline-block; margin-left: 1px; margin-right: 1px;'
+				},
+				inclusive: true
+			}).range(qualifier.node.from, qualifier.node.to)
+		);
 
-				// lxl-qualifier element
-				decorations.push(
-					Decoration.mark({
-						class: 'lxl-qualifier',
-						attributes: {
-							style: 'display: inline-block; margin-left: 1px; margin-right: 1px;'
-						},
-						inclusive: true
-					}).range(node.from, node.to)
-				);
+		const atomicFrom = qualifier.node.from;
+		const atomicTo = qualifier.valueLabel ? qualifier.node.to : operatorNode?.to;
 
-				// QualifierWidget
-				decorations.push(
-					Decoration.replace({
-						widget: new QualifierWidget({ operator, ...data })
-						// side: 1
-					}).range(node.from, data.valueLabel ? node.to : operatorNode?.to)
-				);
-			}
-		});
+		// QualifierWidget
+		decorations.push(
+			Decoration.replace({
+				widget: new QualifierWidget({ operator, ...qualifier })
+			}).range(atomicFrom, atomicTo)
+		);
+	});
+	return Decoration.set(decorations, true);
+}
 
-		return Decoration.set(decorations, true);
-	}
-);
+// export const qualifierDecorations = EditorView.decorations.compute(
+// 	[qualifierSemanticField],
+// 	(state) => {
+// 		const sem = state.field(qualifierSemanticField);
+// 		const decorations: Range<Decoration>[] = [];
+
+// 		syntaxTree(state).iterate({
+// 			enter(node) {
+// 				if (node.name !== 'Qualifier') return;
+
+// 				const data = sem.data.get(`${node.from}-${node.to}`);
+
+// 				// invalidated
+// 				if (!data || data.invalid) return;
+
+// 				const operatorNode = node.node.getChild('QualifierOperator');
+// 				const operator = operatorNode
+// 					? state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
+// 					: '';
+
+// 				// lxl-qualifier element
+// 				decorations.push(
+// 					Decoration.mark({
+// 						class: 'lxl-qualifier',
+// 						attributes: {
+// 							style: 'display: inline-block; margin-left: 1px; margin-right: 1px;'
+// 						},
+// 						inclusive: true
+// 					}).range(node.from, node.to)
+// 				);
+
+// 				// QualifierWidget
+// 				decorations.push(
+// 					Decoration.replace({
+// 						widget: new QualifierWidget({ operator, ...data })
+// 						// side: 1
+// 					}).range(node.from, data.valueLabel ? node.to : operatorNode?.to)
+// 				);
+// 			}
+// 		});
+
+// 		return Decoration.set(decorations, true);
+// 	}
+// );

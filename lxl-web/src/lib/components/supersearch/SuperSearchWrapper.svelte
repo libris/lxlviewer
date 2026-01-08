@@ -4,7 +4,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import {
 		SuperSearch,
-		lxlQualifierExtension,
+		lxlQualifierPlugin,
 		type QualifierWidgetProps,
 		type Selection,
 		type ShowExpandedSearchOptions,
@@ -162,7 +162,7 @@
 			const filteredSuggestMapping = suggestMapping?.filter((m) => m.variable === '_q');
 			return getLabelFromMappings(key, value, filteredPageMapping, filteredSuggestMapping);
 		}
-		return lxlQualifierExtension(getLabels, renderer);
+		return lxlQualifierPlugin(getLabels, renderer);
 	});
 
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {

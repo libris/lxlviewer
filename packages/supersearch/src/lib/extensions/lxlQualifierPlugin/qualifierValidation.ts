@@ -1,82 +1,52 @@
-import { StateField, StateEffect, RangeSet, RangeSetBuilder, RangeValue } from '@codemirror/state';
+import type { QualifierSemantic } from '$lib/types/lxlQualifierPlugin.js';
+import { StateField, StateEffect } from '@codemirror/state';
 
-export interface QualifierValidationResponse {
-	key: string;
-	value?: string;
-	keyLabel?: string;
-	valueLabel?: string;
-	removeLink?: string;
-	invalid: boolean;
-}
+// class AtomicRange extends RangeValue {}
+// export const atomicRange = new AtomicRange();
 
-export interface QualifierSemantic extends QualifierValidationResponse {
-	// from: number
-	// to: number
-	atomicFrom?: number;
-	atomicTo?: number;
-}
+export const setQualifierSemantic = StateEffect.define<QualifierSemantic>();
 
-// export const setQualifierValidity = StateEffect.define<{
-//   from: number
-//   to: number
-//   valid: boolean
-// }>()
-
-class AtomicRange extends RangeValue {}
-export const atomicRange = new AtomicRange();
-
-export const setQualifierSemantic = StateEffect.define<{
-	from: number;
-	to: number;
-	semantic: QualifierSemantic;
-}>();
-
-// export type QualifierValidation = Map<string, boolean>
-
-export const qualifierSemanticField = StateField.define<{
-	data: Map<string, QualifierSemantic>;
-	atomicRanges: RangeSet<RangeValue>;
-}>({
+export const qualifierSemanticField = StateField.define<Map<string, QualifierSemantic>>({
 	create() {
-		return {
-			data: new Map(),
-			atomicRanges: RangeSet.empty
-		};
+		return new Map();
 	},
 
 	update(value, tr) {
-		let data = value.data;
-		let atomicRanges = value.atomicRanges;
+		// let data = value.data;
+		// let atomicRanges = value.atomicRanges;
 		let changed = false;
+		let data = value;
 
 		for (const e of tr.effects) {
 			if (!e.is(setQualifierSemantic)) continue;
 
 			if (!changed) {
-				data = new Map(data);
+				data = new Map();
 				changed = true;
 			}
 
-			const { from, to, semantic } = e.value;
-			const key = `${from}-${to}`;
+			const semantic = e.value;
+			if (semantic.invalid) continue;
+
+			const key = `${semantic.node.from}-${semantic.node.to}`;
 			data.set(key, semantic);
 		}
 
-		if (!changed) return value;
+		// if (!changed) return value;
 
-		const builder = new RangeSetBuilder<RangeValue>();
+		// const builder = new RangeSetBuilder<RangeValue>();
 
-		const entries = [...data.values()]
-			.filter((v) => !v.invalid && v.atomicFrom != null && v.atomicTo != null)
-			.sort((a, b) => a.atomicFrom! - b.atomicFrom!);
+		// const entries = [...data.values()]
+		// 	.filter((v) => !v.invalid && v.atomicFrom != null && v.atomicTo != null)
+		// 	.sort((a, b) => a.atomicFrom! - b.atomicFrom!);
 
-		for (const v of entries) {
-			builder.add(v.atomicFrom!, v.atomicTo!, atomicRange);
-		}
+		// for (const v of entries) {
+		// 	builder.add(v.atomicFrom!, v.atomicTo!, atomicRange);
+		// }
 
-		atomicRanges = builder.finish();
+		// atomicRanges = builder.finish();
 
-		return { data, atomicRanges };
+		return data;
 	}
 });
 
