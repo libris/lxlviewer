@@ -78,8 +78,8 @@ export default {
 	},
 	facet: {
 		q: 'Free text search',
-		'librissearch:findCategory': '"Category"  🚧👷🏗️',
-		'librissearch:hasInstanceCategory': '"Format"  🚧👷🏗',
+		'librissearch:findCategory': 'Category',
+		'librissearch:hasInstanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
 		issuanceType: 'Issuance type',
