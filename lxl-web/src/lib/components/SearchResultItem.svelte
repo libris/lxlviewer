@@ -126,4 +126,16 @@
 		color: var(--color-subtle);
 		font-weight: var(--font-weight-normal);
 	}
+
+	.decorated-card-header-extra {
+		& :global(span[data-property='hasTitle']:has(> span[data-type='KeyTitle'])) {
+			display: none;
+		}
+
+		/*
+        & :global(span[data-type='KeyTitle'] > span[data-property='rdf:type']) {
+            display: none;
+        }
+         */
+	}
 </style>
