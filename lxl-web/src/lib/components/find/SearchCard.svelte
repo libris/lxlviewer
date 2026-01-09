@@ -263,6 +263,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						<div>
 							<DecoratedData
 								data={obj}
+								showLabels={ShowLabelsOptions.DefaultOff}
+								depth={2}
 								block
 								limit={{ contribution: 3, hasPart: 5, related: 5 }}
 								allowLinks={true}
@@ -479,6 +481,43 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		font-weight: var(--font-weight-normal);
 	}
 
+    /* TODO inline label style in DecoratedData */
+    .card-header-extra,
+    .card-body {
+        & :global(div:has(> .property-label)) {
+            /* override e.g isPartOf > hasTitle block */
+            display: inline;
+        }
+
+        & :global(span[data-property]) {
+            display: inline;
+        }
+
+        & :global(div[data-property] > div) {
+            display: inline;
+        }
+
+        /* FIXME */
+        & :global(div:has(> div[data-property='isPartOf'])),
+        & :global(div[data-property='isPartOf']),
+        & :global(div:has(> div[data-property='isPartOf']) + div:has(> div[data-property='part'])),
+        & :global(div[data-property='part']) {
+            display: inline;
+        }
+
+        & :global(div > div[data-property='part'])::before {
+            content: ' ; ';
+        }
+
+        & :global(.property-label) {
+            color: var(--color-body);
+        }
+
+        & :global(.property-label):not(:empty)::after {
+            color: var(--color-body);
+            content: ': ';
+        }
+    }
 	/* card in dialog */
 	:global(dialog .search-card) {
 		border-top: none;
