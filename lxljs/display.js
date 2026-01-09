@@ -55,12 +55,12 @@ export function expandInherited(display) {
   return cloned;
 }
 
-function getValueByLang(item, propertyId, langCode, context) {
-  const translatedValue = tryGetValueByLang(item, propertyId, langCode, context);
+function getValueByLang(item, propertyId, langCode, resources) {
+  const translatedValue = tryGetValueByLang(item, propertyId, langCode, resources);
   return translatedValue != null ? translatedValue : item[propertyId];
 }
 
-function tryGetValueByLang(item, propertyId, langCode, context) {
+function tryGetValueByLang(item, propertyId, langCode, resources) {
   if (!langCode || typeof langCode === 'undefined') {
     throw new Error('tryGetValueByLang was called with an undefined language code.');
   }
@@ -71,8 +71,12 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
   if (typeof propertyId === 'string' && propertyId.startsWith('@reverse/') && propertyId !== '@reverse/itemOf') {
     return get(item, propertyId.replace(/\//g, '.'));
   }
-  
-  const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
+
+  if (propertyId === 'rdf:type') {
+    return StringUtil.getLabelByLang(get(item, '@type'), langCode, resources);
+  }
+
+  const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', resources.context);
   
   if (byLangKey && item[byLangKey]) {
     if (item[byLangKey][langCode]) {
@@ -275,7 +279,6 @@ export function getItemLabel(item, resources, quoted, settings, inClass = '') {
   }
 
   const displayObject = getChip(item, resources, quoted, settings);
-
   const { from: transliteratedFrom, to: transliteratedTo } = isStructuredValue(item, resources) && getTransliteratedLanguages(item);
   const transliteratedFromDisplayObject = transliteratedFrom && getChip(item, resources, quoted, { ...settings, language: transliteratedFrom });
   const transliteratedToDisplayObjects = transliteratedTo && transliteratedTo.map(language => getChip(item, resources, quoted, { ...settings, language }));
@@ -422,7 +425,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
   properties.forEach((property) => {
     if (!isObject(property)) {
       let valueOnItem = '';
-      valueOnItem = getValueByLang(trueItem, property, settings.language, resources.context);
+      valueOnItem = getValueByLang(trueItem, property, settings.language, resources);
 
       if (typeof valueOnItem !== 'undefined') {
         let value = valueOnItem;
@@ -522,7 +525,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
               foundProperty = p;
               break;
             } else if (trueItem.hasOwnProperty(`${p}ByLang`)) {
-              result[p] = tryGetValueByLang(trueItem, p, settings.language, resources.context);
+              result[p] = tryGetValueByLang(trueItem, p, settings.language, resources);
               foundProperty = `${p}ByLang`;
               break;
             }
@@ -591,7 +594,7 @@ export function getItemSummary(item, resources, quoted, settings, displayGroups,
       } else if (cardDisplayGroups.hidden.includes(key)) {
         // drop it
       } else {
-        const translated = tryGetValueByLang(item, key, settings.language, resources.context);
+        const translated = tryGetValueByLang(item, key, settings.language, resources);
         const itemValue = translated !== null ? translated : item[key];
         
         summary.info.push({ property: key, value: isArray(itemValue) ? itemValue : [itemValue] });
