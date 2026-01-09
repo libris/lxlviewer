@@ -201,21 +201,24 @@
 
 {#snippet controls()}
 	<!-- sorting -->
-	<div class={['facet-sort absolute top-2 right-8 size-8']}>
-		<select
-			name={data.dimension}
-			bind:value={currentSort}
-			onchange={saveUserSort}
-			class="btn btn-primary size-full cursor-pointer appearance-none border-0 text-transparent"
-			aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
-			data-testid={`facet-sort-${data.dimension}`}
-		>
-			{#each sortOptions as option (option.value)}
-				<option selected={option.value == currentSort} value={option.value}>{option.label}</option>
-			{/each}
-		</select>
-		<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
-	</div>
+	{#if level === 1}
+		<div class={['facet-sort absolute top-2 right-8 size-8']}>
+			<select
+				name={data.dimension}
+				bind:value={currentSort}
+				onchange={saveUserSort}
+				class="btn btn-primary size-full cursor-pointer appearance-none border-0 text-transparent"
+				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
+				data-testid={`facet-sort-${data.dimension}`}
+			>
+				{#each sortOptions as option (option.value)}
+					<option selected={option.value == currentSort} value={option.value}>{option.label}</option
+					>
+				{/each}
+			</select>
+			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
+		</div>
+	{/if}
 	{#if data.search && !(searchPhrase && hasHits)}
 		<!-- facet range inputs; hide in filter search results -->
 		<FacetRange search={data.search} />
