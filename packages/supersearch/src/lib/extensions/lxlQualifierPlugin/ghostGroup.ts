@@ -1,7 +1,7 @@
 import { EditorState, Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
-import { qualifierSemanticField } from './qualifierValidation.js';
+import { qualifierStateField } from './qualifierValidation.js';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically
@@ -15,7 +15,7 @@ export const createGhostGroup = (tr: Transaction) => {
 
 	// also run on validation field updates (no doc change)
 	const validationUpdated =
-		tr.startState.field(qualifierSemanticField) !== tr.state.field(qualifierSemanticField);
+		tr.startState.field(qualifierStateField) !== tr.state.field(qualifierStateField);
 
 	if (!isUserInput && !validationUpdated) {
 		return tr;
@@ -456,11 +456,11 @@ function getParent(node: SyntaxNode, name: string): SyntaxNode | false {
 export function isValidQualifier(state: EditorState, node: SyntaxNode | false): boolean {
 	if (!node || node.name !== 'Qualifier') return false;
 
-	const semantics = state.field(qualifierSemanticField);
+	const stateField = state.field(qualifierStateField);
 	const key = `${node.from}-${node.to}`;
 
-	const semantic = semantics.qualifiers.get(key);
-	return !!semantic && !semantic.invalid;
+	const qualifier = stateField.qualifiers.get(key);
+	return !!qualifier && !qualifier.invalid;
 }
 
 const getValidQualifier = (state: EditorState, node: SyntaxNode) => {

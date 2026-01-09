@@ -1,9 +1,9 @@
 import { ViewPlugin, EditorView, type DecorationSet, ViewUpdate } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
-import type { QualifierValidator, QualifierWidgetRenderer } from '$lib/types/lxlQualifierPlugin.js';
-import { qualifierValidatorFacet, qualifierWidgetRendererFacet } from './qualifierFacet.js';
-import { qualifierSemanticField } from './qualifierValidation.js';
-import { addQualifiers } from './qualifierDecorations.js';
+import type { QualifierValidator, QualifierRenderer } from '$lib/types/lxlQualifierPlugin.js';
+import { qualifierValidatorFacet, qualifierRenderFacet } from './qualifierFacet.js';
+import { qualifierStateField } from './qualifierValidation.js';
+import { addDecorations } from './qualifierDecoration.js';
 import {
 	balanceInnerParens,
 	createGhostGroup,
@@ -14,34 +14,31 @@ import {
 } from './ghostGroup.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
-const lxlQualifierPlugin = (
-	validateQualifier: QualifierValidator,
-	renderer: QualifierWidgetRenderer
-) => {
+const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn: QualifierRenderer) => {
 	return ViewPlugin.fromClass(
 		class {
 			decorations: DecorationSet;
 			constructor(view: EditorView) {
-				this.decorations = addQualifiers(view);
+				this.decorations = addDecorations(view);
 			}
 
 			update(update: ViewUpdate) {
-				const prev = update.startState.field(qualifierSemanticField);
-				const next = update.state.field(qualifierSemanticField);
+				const prev = update.startState.field(qualifierStateField);
+				const next = update.state.field(qualifierStateField);
 
 				if (prev !== next) {
-					this.decorations = addQualifiers(update.view);
+					this.decorations = addDecorations(update.view);
 				}
 			}
 		},
 		{
 			decorations: (instance) => instance.decorations,
 			provide: () => [
-				qualifierSemanticField,
-				qualifierValidatorFacet.of(validateQualifier),
-				qualifierWidgetRendererFacet.of(renderer),
+				qualifierStateField,
+				qualifierValidatorFacet.of(validateFn),
+				qualifierRenderFacet.of(renderFn),
 
-				EditorView.atomicRanges.of((view) => view.state.field(qualifierSemanticField).atomicRanges),
+				EditorView.atomicRanges.of((view) => view.state.field(qualifierStateField).atomicRanges),
 
 				// ghost group filters -->
 				EditorState.transactionFilter.of(jumpPastParens),

@@ -1,6 +1,6 @@
 import type { Transaction, TransactionSpec } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
-import { qualifierSemanticField } from './qualifierValidation.js';
+import { qualifierStateField } from './qualifierValidation.js';
 
 /**
  * Prevent an atomic qualifier from breaking by inserting a space when typing before it,
@@ -24,7 +24,7 @@ const insertSpaceAroundQualifier = (tr: Transaction) => {
 	const newCursorPos = oldCursorPos + inputLength;
 	const inputRangeMin = Math.min(oldCursorPos, newCursorPos);
 	const inputRangeMax = Math.max(oldCursorPos, newCursorPos);
-	const atomicRanges = tr.startState.field(qualifierSemanticField).atomicRanges;
+	const atomicRanges = tr.startState.field(qualifierStateField).atomicRanges;
 
 	atomicRanges.between(inputRangeMin, inputRangeMax, (atomicStart, atomicEnd) => {
 		const input = tr.newDoc.slice(oldCursorPos, newCursorPos).toString().trim();

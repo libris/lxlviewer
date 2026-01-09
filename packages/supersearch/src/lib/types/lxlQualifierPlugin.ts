@@ -12,20 +12,18 @@ export interface QualifierValidationResponse {
 	invalid: boolean;
 }
 
-export interface QualifierSemantic extends QualifierValidationResponse {
-	// from: number
-	// to: number
+export interface QualifierState extends QualifierValidationResponse {
 	atomicFrom?: number;
 	atomicTo?: number;
 	node: SyntaxNode;
 }
 
-export type QualifierSemanticState = {
-	qualifiers: Map<string, QualifierSemantic>;
+export type QualifierStateField = {
+	qualifiers: Map<string, QualifierState>;
 	atomicRanges: RangeSet<RangeValue>;
 };
 
-export type QualifierWidgetRenderer = (
+export type QualifierRenderer = (
 	container: HTMLElement,
 	props: QualifierWidgetProps
 ) => { destroy?: () => void } | void;

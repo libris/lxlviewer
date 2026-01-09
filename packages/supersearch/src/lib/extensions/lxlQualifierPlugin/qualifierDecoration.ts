@@ -1,8 +1,8 @@
 import { Decoration, EditorView, WidgetType } from '@codemirror/view';
 import type { QualifierWidgetProps } from '$lib/types/lxlQualifierPlugin.js';
 import { type Range } from '@codemirror/state';
-import { qualifierSemanticField } from './qualifierValidation.js';
-import { qualifierWidgetRendererFacet } from './qualifierFacet.js';
+import { qualifierStateField } from './qualifierValidation.js';
+import { qualifierRenderFacet } from './qualifierFacet.js';
 
 class QualifierWidget extends WidgetType {
 	private cleanup?: () => void;
@@ -24,7 +24,7 @@ class QualifierWidget extends WidgetType {
 		const container = document.createElement('span');
 		container.className = 'atomic';
 
-		const render = view.state.facet(qualifierWidgetRendererFacet);
+		const render = view.state.facet(qualifierRenderFacet);
 		if (render) {
 			const result = render(container, this.props);
 			this.cleanup = result?.destroy;
@@ -38,8 +38,8 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-export function addQualifiers(view: EditorView) {
-	const { qualifiers } = view.state.field(qualifierSemanticField);
+export function addDecorations(view: EditorView) {
+	const { qualifiers } = view.state.field(qualifierStateField);
 
 	const decorations: Range<Decoration>[] = [];
 

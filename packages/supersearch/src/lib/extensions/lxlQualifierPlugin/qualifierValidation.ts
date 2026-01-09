@@ -1,25 +1,18 @@
-import { StateField, RangeSet, RangeSetBuilder, RangeValue, EditorState } from '@codemirror/state';
-import type { QualifierSemantic, QualifierValidator } from '$lib/types/lxlQualifierPlugin.js';
-import { qualifierValidatorFacet } from './qualifierFacet.js';
-import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
+import { syntaxTree } from '@codemirror/language';
+import { StateField, RangeSet, RangeSetBuilder, RangeValue, EditorState } from '@codemirror/state';
+import type {
+	QualifierState,
+	QualifierStateField,
+	QualifierValidator
+} from '$lib/types/lxlQualifierPlugin.js';
 import { sendMessage } from '$lib/utils/sendMessage.js';
-
-// export const setQualifierSemantic = StateEffect.define<QualifierSemantic[]>();
-
-// ✔ StateField computes semantics
-// ✔ Atomic ranges come from state
-// ✔ ViewPlugin renders only
+import { qualifierValidatorFacet } from './qualifierFacet.js';
 
 class AtomicRange extends RangeValue {}
 const atomicRange = new AtomicRange();
 
-type QualifierSemanticState = {
-	qualifiers: Map<string, QualifierSemantic>;
-	atomicRanges: RangeSet<RangeValue>;
-};
-
-export const qualifierSemanticField = StateField.define<QualifierSemanticState>({
+export const qualifierStateField = StateField.define<QualifierStateField>({
 	create(state) {
 		return computeQualifierState(state);
 	},
@@ -32,10 +25,10 @@ export const qualifierSemanticField = StateField.define<QualifierSemanticState>(
 	}
 });
 
-function computeQualifierState(state: EditorState): QualifierSemanticState {
+function computeQualifierState(state: EditorState): QualifierStateField {
 	const validator = state.facet(qualifierValidatorFacet);
 
-	const qualifiers = new Map<string, QualifierSemantic>();
+	const qualifiers = new Map<string, QualifierState>();
 	const builder = new RangeSetBuilder<RangeValue>();
 
 	if (!validator) {
@@ -49,15 +42,15 @@ function computeQualifierState(state: EditorState): QualifierSemanticState {
 		enter(node) {
 			if (node.name !== 'Qualifier') return;
 
-			const semantic = computeQualifierSemantic(node.node, state, validator);
+			const validatedQualifier = validateQualifier(node.node, state, validator);
 
-			if (semantic.invalid) return;
+			if (validatedQualifier.invalid) return;
 
 			const key = `${node.from}-${node.to}`;
-			qualifiers.set(key, semantic);
+			qualifiers.set(key, validatedQualifier);
 
-			if (semantic.atomicFrom != null && semantic.atomicTo != null) {
-				builder.add(semantic.atomicFrom, semantic.atomicTo, atomicRange);
+			if (validatedQualifier.atomicFrom != null && validatedQualifier.atomicTo != null) {
+				builder.add(validatedQualifier.atomicFrom, validatedQualifier.atomicTo, atomicRange);
 			}
 		}
 	});
@@ -68,25 +61,24 @@ function computeQualifierState(state: EditorState): QualifierSemanticState {
 	};
 }
 
-function computeQualifierSemantic(
+function validateQualifier(
 	node: SyntaxNode,
 	state: EditorState,
 	validate: QualifierValidator
-): QualifierSemantic {
+): QualifierState {
 	const keyNode = node.getChild('QualifierKey');
 	const valueNode = node.getChild('QualifierValue');
 	const opNode = node.getChild('QualifierOperator');
 
 	const keyText = keyNode ? state.doc.sliceString(keyNode.from, keyNode.to) : '';
-
 	const valueText = valueNode ? state.doc.sliceString(valueNode.from, valueNode.to) : undefined;
 
-	const semantic = validate(keyText, valueText);
-	const atomicFrom = semantic.invalid ? undefined : node.from;
-	const atomicTo = semantic.valueLabel ? node.to : opNode?.to;
+	const validatedQualifier = validate(keyText, valueText);
+	const atomicFrom = validatedQualifier.invalid ? undefined : node.from;
+	const atomicTo = validatedQualifier.valueLabel ? node.to : opNode?.to;
 
 	return {
-		...semantic,
+		...validatedQualifier,
 		key: keyText,
 		atomicFrom,
 		atomicTo,
