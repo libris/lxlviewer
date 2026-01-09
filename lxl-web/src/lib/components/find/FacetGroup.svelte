@@ -30,7 +30,7 @@
 
 	let { data, level, searchPhrase, isDefaultExpanded, parent }: Props = $props();
 
-	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters'];
+	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters', 'librissearch:hasInstanceType'];
 	const permanentlyExpanded = $derived(PERMANENTLY_EXPANDED_FACETS.includes(data.dimension));
 
 	const matomoTracker = getMatomoTracker();
@@ -282,7 +282,7 @@
 {/snippet}
 
 {#if permanentlyExpanded}
-	<ul>
+	<ul class="border-b border-neutral-200 py-2">
 		{@render values(data.values)}
 	</ul>
 {:else if parent && parent.selected === true && level > 2}
@@ -298,7 +298,7 @@
 			'relative w-full',
 			hasHits && 'has-hits',
 			searchPhrase && !hasHits && 'hidden',
-			level === 1 && 'border-b border-neutral-200/75',
+			level === 1 && 'border-b border-neutral-200',
 			level === 1 && expanded && 'pb-2'
 		]}
 		open={!!expanded}
