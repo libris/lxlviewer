@@ -172,7 +172,9 @@
 				{/if}
 			</div>
 		</div>
-		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 @sm:gap-6 @3xl:py-6">
+		<div
+			class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 pb-6 @sm:gap-6 @3xl:py-6"
+		>
 			<section id="{uidPrefix}top">
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
 					<header class="my-3 flex-1">
