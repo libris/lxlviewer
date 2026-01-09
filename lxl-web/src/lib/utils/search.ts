@@ -280,6 +280,18 @@ function cleanUpItem(item: FramedData): FramedData {
 		}
 	});
 
+	// TODO: don't copy these from the instance when we have fresnel:fslselector (path) support in lenses
+	const instanceIsPartOf = asArray(
+		getAtPath(item, ['@reverse', 'instanceOf', '*', 'isPartOf', '*'])
+	);
+	if (instanceIsPartOf.length > 0) {
+		item['isPartOf'] = instanceIsPartOf;
+	}
+	const instancePart = asArray(getAtPath(item, ['@reverse', 'instanceOf', '*', 'part', '*']));
+	if (instancePart.length > 0) {
+		item['part'] = instancePart;
+	}
+
 	return item;
 }
 

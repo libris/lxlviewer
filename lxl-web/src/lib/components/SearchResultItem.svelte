@@ -139,4 +139,11 @@
         }
          */
 	}
+
+	.decorated-card-body {
+		& :global(div[data-property='isPartOf']),
+		& :global(div[data-property='part']) {
+			display: none;
+		}
+	}
 </style>
