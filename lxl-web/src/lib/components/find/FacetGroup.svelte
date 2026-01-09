@@ -39,7 +39,7 @@
 	const totalItems = $derived(data.values.length);
 	let defaultItemsShown = $state(DEFAULT_FACET_VALUES_SHOWN);
 
-	const showSort = $derived(level === 1 && data.dimension !== 'boolFilters');
+	const showSort = $derived((level === 1 && data.dimension !== 'boolFilters') || level === 3);
 
 	let currentSort = $state(
 		userSettings.facetSort?.[data.dimension] ||
@@ -205,7 +205,13 @@
 {#snippet controls()}
 	<!-- sorting -->
 	{#if showSort}
-		<div class={['facet-sort absolute top-2 right-8 size-8']}>
+		<div
+			class={[
+				'facet-sort absolute size-8',
+				level === 1 && 'top-2 right-8',
+				level === 3 && 'top-0 right-0'
+			]}
+		>
 			<select
 				name={data.dimension}
 				bind:value={currentSort}
