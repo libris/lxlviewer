@@ -277,16 +277,27 @@ export default {
       return this.missingTypes.length !== 0;
     },
     validationText() {
-      //TODO: length > 2
-      if (this.missingTypes.length === 1) {
-        const typeLabel = StringUtil.getLabelByLang(this.missingTypes[0], this.user.settings.language, this.resources);
-        return `${capitalize(typeLabel)} ${translatePhrase('is missing')} `
-      } else if (this.missingTypes.length === 2) {
-        const typeLabel1 = StringUtil.getLabelByLang(this.missingTypes[0], this.user.settings.language, this.resources);
-        const typeLabel2 = StringUtil.getLabelByLang(this.missingTypes[1], this.user.settings.language, this.resources);
-        return `${capitalize(typeLabel1)} ${translatePhrase('and')} ${typeLabel2} ${translatePhrase('are missing')} `;
+      const count = this.missingTypes.length;
+      if (count === 0) {
+        return '';
       }
-      return '';
+
+      const missingTypeLabel = this.missingTypes.map(type =>
+        StringUtil.getLabelByLang(type, this.user.settings.language, this.resources)
+      );
+
+      missingTypeLabel[0] = capitalize(missingTypeLabel[0]);
+
+      let allMissing;
+      if (count === 1) {
+        allMissing = missingTypeLabel[0];
+      } else if (count === 2) {
+        allMissing = `${missingTypeLabel[0]} ${translatePhrase('and')} ${missingTypeLabel[1]}`;
+      } else if (count > 2) {
+        allMissing = `${missingTypeLabel.slice(0, -1).join(', ')}, ${translatePhrase('and')} ${missingTypeLabel[count - 1]}`;
+      }
+
+      return `${allMissing} ${count === 1 ? translatePhrase('is missing') : translatePhrase('are missing')}`;
     },
     clipboardHasValidObject() {
       if (this.clipboardValue === null) {
