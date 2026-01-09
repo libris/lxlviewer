@@ -17,7 +17,7 @@ function addSuggestParams(query: string, cursor: number) {
 			qualifierValueNode = n;
 			break;
 		} else if (n.type.is('QualifierOperator') && n.nextSibling?.type.isError) {
-			// QualifierValue can also be an error node in Qualifier is incomplete
+			// QualifierValue can also be an error node if Qualifier is incomplete
 			qualifierValueNode = n.nextSibling;
 			break;
 		} else {
