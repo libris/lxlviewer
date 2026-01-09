@@ -38,9 +38,21 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-export function addDecorations(view: EditorView) {
-	const { qualifiers } = view.state.field(qualifierStateField);
+class GhostGroupWidget extends WidgetType {
+	eq(): boolean {
+		return true;
+	}
+	toDOM(): HTMLElement {
+		const container = document.createElement('span');
+		container.className = 'lxl-ghost-group';
+		return container;
+	}
+}
 
+export function addDecorations(view: EditorView) {
+	const SHOW_GHOST_GROUP = false;
+
+	const { qualifiers } = view.state.field(qualifierStateField);
 	const decorations: Range<Decoration>[] = [];
 
 	qualifiers.forEach((qualifier) => {
@@ -55,15 +67,40 @@ export function addDecorations(view: EditorView) {
 			}).range(qualifier.node.from, qualifier.node.to)
 		);
 
+		const valueNode = qualifier.node.getChild('QualifierValue');
+
 		// value mark (for non-atomic)
-		const valuNode = qualifier.node.getChild('QualifierValue');
-		if (!qualifier.valueLabel && valuNode) {
+		if (!qualifier.valueLabel && valueNode) {
 			decorations.push(
 				Decoration.mark({
 					class: 'lxl-qualifier-value',
-					inclusive: true
-				}).range(valuNode.from, valuNode.node.to)
+					inclusive: false
+				}).range(valueNode.from, valueNode.node.to)
 			);
+		}
+
+		// hide ghost groups
+		if (valueNode) {
+			const ghostGroup = valueNode.getChild('QualifierOuterGroup');
+
+			if (ghostGroup && !SHOW_GHOST_GROUP) {
+				const doc = view.state.doc.toString();
+				const openingParens = ghostGroup.from;
+				const closingParens = ghostGroup.to;
+
+				if (
+					doc.slice(openingParens, openingParens + 1) === '(' &&
+					doc.slice(closingParens - 1, closingParens) === ')'
+				) {
+					const parensMark = Decoration.replace({
+						widget: new GhostGroupWidget(),
+						inclusive: false
+					});
+
+					decorations.push(parensMark.range(openingParens, openingParens + 1));
+					decorations.push(parensMark.range(closingParens - 1, closingParens));
+				}
+			}
 		}
 
 		// qualifier atomic widget
