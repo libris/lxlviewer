@@ -10,10 +10,9 @@
 	interface Props {
 		data: FacetValue;
 		variant?: 'radio' | 'checkbox';
-		permanent?: boolean;
 	}
 
-	let { data, variant, permanent }: Props = $props();
+	let { data, variant }: Props = $props();
 
 	/*
 	const role = $derived.by(() => {
@@ -30,8 +29,7 @@
 		data.selected && 'selected',
 		variant === 'checkbox' && 'with-checkbox',
 		variant === 'radio' && 'with-radio',
-		!variant && 'with-and',
-		permanent && 'pl-4!'
+		!variant && 'with-and'
 	]}
 	href={page.data.localizeHref(data.view['@id'])}
 	data-sveltekit-preload-data="false"

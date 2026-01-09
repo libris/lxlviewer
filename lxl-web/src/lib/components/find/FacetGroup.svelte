@@ -31,6 +31,7 @@
 	let { data, level, searchPhrase, isDefaultExpanded, parent }: Props = $props();
 
 	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters'];
+	const permanentlyExpanded = $derived(PERMANENTLY_EXPANDED_FACETS.includes(data.dimension));
 
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
@@ -181,8 +182,8 @@
 				/>
 			</li>
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
-			<li class="flex">
-				<FacetValue data={value} permanent />
+			<li class={['flex', permanentlyExpanded && '[&>a]:pl-4!']}>
+				<FacetValue data={value} />
 				<a
 					href={page.data.localizeHref('/my-pages')}
 					class="btn btn-primary mr-2 border-0"
@@ -192,8 +193,8 @@
 				</a>
 			</li>
 		{:else}
-			<li>
-				<FacetValue data={value} variant={getValueVariant(data)} permanent />
+			<li class={[permanentlyExpanded && '[&>a]:pl-4!']}>
+				<FacetValue data={value} variant={getValueVariant(data)} />
 			</li>
 		{/if}
 	{/each}
@@ -272,7 +273,7 @@
 	</span>
 {/snippet}
 
-{#if PERMANENTLY_EXPANDED_FACETS.includes(data.dimension)}
+{#if permanentlyExpanded}
 	<ul>
 		{@render values(data.values)}
 	</ul>
