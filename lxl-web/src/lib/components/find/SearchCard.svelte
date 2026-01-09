@@ -24,6 +24,7 @@
 	import BiQuote from '~icons/bi/quote';
 	import BiHeartFill from '~icons/bi/heart-fill';
 	import BiHeart from '~icons/bi/heart';
+	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 
 	interface Props {
 		item: SearchResultItem | LibraryResultItem;
@@ -192,8 +193,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								class:rounded-full={item['@type'] === 'Person'}
 								class:rounded-sm={item['@type'] !== 'Person'}
 								class={[
-									'placeholder object-contain object-top'
-									//(item.typeForIcon === 'Text' || item.typeForIcon === 'Literature') && 'aspect-3/4'
+									'placeholder object-cover object-top',
+									bookAspectRatio(item.typeForIcon) && 'aspect-3/4'
 								]}
 							/>
 							<TypeIcon type={item.typeForIcon} class="absolute text-2xl text-neutral-400" />

@@ -48,7 +48,7 @@
 		</div>
 	{/if}
 	<div class="@container relative flex w-full items-center justify-center overflow-hidden">
-		<div class="flex justify-center">
+		<div class="flex w-full justify-center">
 			{#key index}
 				{@render render(items[index])}
 			{/key}

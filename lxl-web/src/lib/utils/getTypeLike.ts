@@ -72,7 +72,16 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 
 export default getTypeLike;
 
-const IDENTIFY_ICONS = ['Audiobook', 'NotatedMusic', 'Ljudb%C3%B6cker', 'Kit', 'Databaser'];
+const IDENTIFY_ICONS = [
+	'Audiobook',
+	'NotatedMusic',
+	'Ljudb%C3%B6cker',
+	'Kit',
+	'Databaser',
+	'Periodika',
+	'Kartor',
+	'Kartglober'
+];
 
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 export function getTypeForIcon(typeLike: TypeLike) {
@@ -92,4 +101,18 @@ export function getTypeForIcon(typeLike: TypeLike) {
 
 export function slug(s: string) {
 	return s === undefined ? undefined : s.split('/').pop();
+}
+
+export function bookAspectRatio(iconTypeStr: string) {
+	return (
+		iconTypeStr &&
+		[
+			'Literature',
+			'Ej%20sk%C3%B6nlitteratur',
+			'Sk%C3%B6nlitteratur',
+			'Text',
+			'Periodika',
+			'NotatedMusic'
+		].includes(iconTypeStr)
+	);
 }

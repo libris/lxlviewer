@@ -572,7 +572,22 @@
 
 	.decorated-compact {
 		& :global(div:has(> .property-label)) {
+			/* override e.g isPartOf > hasTitle block */
 			display: inline;
+		}
+
+		& :global(span[data-property]) {
+			display: inline;
+		}
+
+		& :global(div[data-property='isPartOf']:has(+ div[data-property='part'])) {
+			display: inline;
+		}
+		& :global(div[data-property='isPartOf'] + div[data-property='part']) {
+			display: inline;
+		}
+		& :global(div[data-property='isPartOf'] + div[data-property='part'])::before {
+			content: ' ; ';
 		}
 
 		& :global(.property-label) {
