@@ -4,7 +4,7 @@ import type { DisplayMapping } from '$lib/types/search';
 
 describe('displayMappingToString', () => {
 	it('returns a readable text string from a DisplayMapping object', () => {
-		expect(displayMappingToString(mapping)).toBe('Typ: Stillbild, Format: Elektronisk');
+		expect(displayMappingToString(mapping)).toBe('Typ: Stillbild Format: Elektronisk');
 	});
 
 	it('handles filter aliases correctly (no key)', () => {
