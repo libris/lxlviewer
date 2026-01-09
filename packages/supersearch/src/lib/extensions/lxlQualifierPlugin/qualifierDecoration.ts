@@ -54,6 +54,7 @@ export function addDecorations(view: EditorView) {
 
 	const { qualifiers } = view.state.field(qualifierStateField);
 	const decorations: Range<Decoration>[] = [];
+	const renderer = view.state.facet(qualifierRenderFacet);
 
 	qualifiers.forEach((qualifier) => {
 		// qualifier wrapper mark
@@ -102,6 +103,8 @@ export function addDecorations(view: EditorView) {
 				}
 			}
 		}
+
+		if (!renderer) return;
 
 		// qualifier atomic widget
 		if (qualifier.atomicFrom != null) {

@@ -14,7 +14,7 @@ import {
 } from './ghostGroup.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
-const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn: QualifierRenderer) => {
+const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn?: QualifierRenderer) => {
 	return ViewPlugin.fromClass(
 		class {
 			decorations: DecorationSet;
@@ -36,7 +36,7 @@ const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn: QualifierR
 			provide: () => [
 				qualifierStateField,
 				qualifierValidatorFacet.of(validateFn),
-				qualifierRenderFacet.of(renderFn),
+				renderFn ? qualifierRenderFacet.of(renderFn) : [],
 
 				EditorView.atomicRanges.of((view) => view.state.field(qualifierStateField).atomicRanges),
 

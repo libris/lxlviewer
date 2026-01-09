@@ -7,7 +7,7 @@ import type {
 	QualifierValidator
 } from '$lib/types/lxlQualifierPlugin.js';
 import { sendMessage } from '$lib/utils/sendMessage.js';
-import { qualifierValidatorFacet } from './qualifierFacet.js';
+import { qualifierRenderFacet, qualifierValidatorFacet } from './qualifierFacet.js';
 
 class AtomicRange extends RangeValue {}
 const atomicRange = new AtomicRange();
@@ -27,6 +27,7 @@ export const qualifierStateField = StateField.define<QualifierStateField>({
 
 function computeQualifierState(state: EditorState): QualifierStateField {
 	const validator = state.facet(qualifierValidatorFacet);
+	const renderer = state.facet(qualifierRenderFacet);
 
 	const qualifiers = new Map<string, QualifierState>();
 	const builder = new RangeSetBuilder<RangeValue>();
@@ -57,7 +58,7 @@ function computeQualifierState(state: EditorState): QualifierStateField {
 
 	return {
 		qualifiers,
-		atomicRanges: builder.finish()
+		atomicRanges: !renderer ? RangeSet.empty : builder.finish()
 	};
 }
 
