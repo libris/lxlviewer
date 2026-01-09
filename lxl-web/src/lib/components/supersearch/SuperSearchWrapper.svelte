@@ -5,7 +5,7 @@
 	import {
 		SuperSearch,
 		lxlQualifierPlugin,
-		type QualifierWidgetProps,
+		type QualifierRendererProps,
 		type Selection,
 		type ShowExpandedSearchOptions,
 		type ViewUpdateSuperSearchEvent
@@ -142,7 +142,7 @@
 		});
 	}
 
-	const renderer = (container: HTMLElement, props: QualifierWidgetProps) => {
+	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
 		const component = mount(QualifierPill, {
 			target: container,
 			props

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { type QualifierWidgetProps } from 'supersearch';
+	import type { QualifierRendererProps } from 'supersearch';
 	import IconClose from '~icons/bi/x-lg';
 
-	const { key, keyLabel, operator, value, valueLabel, removeLink }: QualifierWidgetProps = $props();
+	const { key, keyLabel, operator, value, valueLabel, removeLink }: QualifierRendererProps =
+		$props();
 
 	/**
 	 * TODO: Add resource links when API exposes the record ids/fnurgels in mappings

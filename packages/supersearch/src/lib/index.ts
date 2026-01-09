@@ -1,4 +1,4 @@
-import type { QualifierWidgetProps } from './types/lxlQualifierPlugin.js';
+import type { QualifierRendererProps } from './types/lxlQualifierPlugin.js';
 import type { ResultItem, ShowExpandedSearchOptions } from './types/superSearch.js';
 import type { Selection } from './components/CodeMirror.svelte';
 import type {
@@ -15,7 +15,7 @@ export {
 	useSearchRequest,
 	type ResultItem,
 	type Selection,
-	type QualifierWidgetProps,
+	type QualifierRendererProps,
 	type ChangeSuperSearchEvent,
 	type ViewUpdateSuperSearchEvent,
 	type ShowExpandedSearchOptions

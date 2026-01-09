@@ -23,12 +23,7 @@ export type QualifierStateField = {
 	atomicRanges: RangeSet<RangeValue>;
 };
 
-export type QualifierRenderer = (
-	container: HTMLElement,
-	props: QualifierWidgetProps
-) => { destroy?: () => void } | void;
-
-export type QualifierWidgetProps = {
+export type QualifierRendererProps = {
 	key: string;
 	keyLabel?: string;
 	operator: string;
@@ -36,3 +31,8 @@ export type QualifierWidgetProps = {
 	valueLabel?: string;
 	removeLink?: string;
 };
+
+export type QualifierRenderer = (
+	container: HTMLElement,
+	props: QualifierRendererProps
+) => { destroy?: () => void } | void;
