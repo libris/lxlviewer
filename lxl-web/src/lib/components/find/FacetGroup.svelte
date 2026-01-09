@@ -15,7 +15,7 @@
 	import FacetGroup from './FacetGroup.svelte';
 	import FacetValue from '$lib/components/find/FacetValue.svelte';
 	import FacetRange from '$lib/components/find/FacetRange.svelte';
-	import IconChevron from '~icons/bi/chevron-right';
+	import IconChevron from '~icons/bi/chevron-down';
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiInfo from '~icons/bi/info-circle';
 	import BiPencil from '~icons/bi/pencil';
@@ -31,12 +31,15 @@
 	let { data, level, searchPhrase, isDefaultExpanded, parent }: Props = $props();
 
 	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters'];
+	const permanentlyExpanded = $derived(PERMANENTLY_EXPANDED_FACETS.includes(data.dimension));
 
 	const matomoTracker = getMatomoTracker();
 	const userSettings = getUserSettings();
 
 	const totalItems = $derived(data.values.length);
 	let defaultItemsShown = $state(DEFAULT_FACET_VALUES_SHOWN);
+
+	const showSort = $derived((level === 1 && data.dimension !== 'boolFilters') || level === 3);
 
 	let currentSort = $state(
 		userSettings.facetSort?.[data.dimension] ||
@@ -181,8 +184,8 @@
 				/>
 			</li>
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
-			<li class="flex">
-				<FacetValue data={value} parentDimension={data.dimension} />
+			<li class={['flex', permanentlyExpanded && '[&>a]:pl-4!']}>
+				<FacetValue data={value} />
 				<a
 					href={page.data.localizeHref('/my-pages')}
 					class="btn btn-primary mr-2 border-0"
@@ -192,8 +195,8 @@
 				</a>
 			</li>
 		{:else}
-			<li>
-				<FacetValue data={value} parentDimension={data.dimension} variant={getValueVariant(data)} />
+			<li class={[permanentlyExpanded && '[&>a]:pl-4!']}>
+				<FacetValue data={value} variant={getValueVariant(data)} />
 			</li>
 		{/if}
 	{/each}
@@ -201,21 +204,30 @@
 
 {#snippet controls()}
 	<!-- sorting -->
-	<div class={['facet-sort absolute top-0 right-2 size-8']}>
-		<select
-			name={data.dimension}
-			bind:value={currentSort}
-			onchange={saveUserSort}
-			class="btn btn-primary size-full appearance-none border-0 text-transparent"
-			aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
-			data-testid={`facet-sort-${data.dimension}`}
+	{#if showSort}
+		<div
+			class={[
+				'facet-sort absolute size-8',
+				level === 1 && 'top-2 right-8',
+				level === 3 && 'top-0 right-0'
+			]}
 		>
-			{#each sortOptions as option (option.value)}
-				<option selected={option.value == currentSort} value={option.value}>{option.label}</option>
-			{/each}
-		</select>
-		<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
-	</div>
+			<select
+				name={data.dimension}
+				bind:value={currentSort}
+				onchange={saveUserSort}
+				class="btn btn-primary size-full cursor-pointer appearance-none border-0 text-transparent"
+				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
+				data-testid={`facet-sort-${data.dimension}`}
+			>
+				{#each sortOptions as option (option.value)}
+					<option selected={option.value == currentSort} value={option.value}>{option.label}</option
+					>
+				{/each}
+			</select>
+			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
+		</div>
+	{/if}
 	{#if data.search && !(searchPhrase && hasHits)}
 		<!-- facet range inputs; hide in filter search results -->
 		<FacetRange search={data.search} />
@@ -255,13 +267,27 @@
 	</div>
 {/snippet}
 
-{#if PERMANENTLY_EXPANDED_FACETS.includes(data.dimension)}
+{#snippet chevron(position: 'left' | 'right' = 'left')}
+	<span
+		aria-hidden="true"
+		class={[
+			'chevron pointer-events-none flex h-8 w-8 shrink-0 origin-center items-center justify-center transition-transform',
+			position,
+			position === 'right' && 'ml-auto',
+			position === 'left' && 'rotate-270'
+		]}
+	>
+		<IconChevron class="text-subtle size-3.5" />
+	</span>
+{/snippet}
+
+{#if permanentlyExpanded}
 	<ul>
 		{@render values(data.values)}
 	</ul>
 {:else if parent && parent.selected === true && level > 2}
 	<div class="relative">
-		<FacetValue data={parent} parentDimension={data.dimension} variant="radio" />
+		<FacetValue data={parent} variant="radio" />
 		<div style={`--level:${level}`}>
 			{@render controls()}
 		</div>
@@ -272,6 +298,7 @@
 			'relative w-full',
 			hasHits && 'has-hits',
 			searchPhrase && !hasHits && 'hidden',
+			level === 1 && 'border-b border-neutral-200/75',
 			level === 1 && expanded && 'pb-2'
 		]}
 		open={!!expanded}
@@ -284,20 +311,15 @@
 	>
 		<summary
 			class={[
-				'focusable text-subtle flex min-h-8 cursor-pointer items-center',
-				level === 1 && 'font-medium',
-				level > 1 && 'text-xs'
+				'focusable text-subtle hover:bg-primary-100 flex min-h-8 cursor-pointer items-center',
+				level === 1 && 'min-h-11 pl-4 font-medium',
+				level > 1 && 'pl-1.5 text-xs'
 			]}
 			data-testid="facet-toggle"
 		>
-			<span
-				aria-hidden="true"
-				class={[
-					'chevron pointer-events-none flex h-8 w-8 shrink-0 origin-center items-center justify-center transition-transform'
-				]}
-			>
-				<IconChevron class="text-subtle size-3.5" />
-			</span>
+			{#if level > 1}
+				{@render chevron()}
+			{/if}
 			<span class="text-body truncate">{parent?.label || data.label}</span>
 			{#if level > 1 && parent}
 				<span class="text-placeholder text-3xs ml-2">
@@ -320,6 +342,9 @@
 				>
 				</span>
 			{/if}
+			{#if level === 1}
+				{@render chevron('right')}
+			{/if}
 		</summary>
 		{@render controls()}
 	</details>
@@ -334,26 +359,26 @@
 			color: var(--color-body);
 		}
 
-		&[open] > summary .chevron {
+		&[open] > summary .chevron.right {
+			transform: rotate(180deg);
+		}
+
+		&[open] > summary .chevron.left {
 			transform: rotate(90deg);
 		}
 	}
 
 	summary {
-		padding-left: calc((var(--level, 0) - 1) * var(--spacing) * 5);
 	}
 
 	.indented {
-		padding-left: calc((var(--level, 0) * var(--spacing) * 5) + var(--spacing) * 3);
+		padding-left: calc(((var(--level, 0) - 1) * var(--spacing) * 5.5) + var(--spacing) * 4);
 		padding-right: calc(var(--spacing) * 3);
 	}
 
 	.focusable {
 		outline-offset: -2px;
 
-		&:hover {
-			background: var(--color-primary-100);
-		}
 		&:focus-visible,
 		&:has(:focus) {
 			background: var(--color-accent-50);
