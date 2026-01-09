@@ -31,7 +31,7 @@ export function displayMappingToString(mapping: DisplayMapping[]): string {
 		}
 		return result
 			.filter((m) => !!m)
-			.join(', ')
+			.join(' ')
 			.trim();
 	}
 	return '';

@@ -123,8 +123,8 @@
 	background-color: transparent;
 }
 
-/* hide key and operator for linked values */
-.atomic .lxl-qualifier-key:has(~ .lxl-qualifier-value),
-.atomic .lxl-qualifier-operator:has(~ .lxl-qualifier-value) {
+/* hide key and operator for linked values in supersearch */
+.codemirror-container .atomic .lxl-qualifier-key:has(~ .lxl-qualifier-value),
+.codemirror-container .atomic .lxl-qualifier-operator:has(~ .lxl-qualifier-value) {
 	display: none;
 }
