@@ -68,14 +68,18 @@ function validateQualifier(
 ): QualifierState {
 	const keyNode = node.getChild('QualifierKey');
 	const valueNode = node.getChild('QualifierValue');
-	const opNode = node.getChild('QualifierOperator');
+	const operatorNode = node.getChild('QualifierOperator');
 
 	const keyText = keyNode ? state.doc.sliceString(keyNode.from, keyNode.to) : '';
 	const valueText = valueNode ? state.doc.sliceString(valueNode.from, valueNode.to) : undefined;
 
 	const validatedQualifier = validate(keyText, valueText);
 	const atomicFrom = validatedQualifier.invalid ? undefined : node.from;
-	const atomicTo = validatedQualifier.valueLabel ? node.to : opNode?.to;
+	const atomicTo = validatedQualifier.invalid
+		? undefined
+		: validatedQualifier.valueLabel
+			? node.to
+			: operatorNode?.to;
 
 	return {
 		...validatedQualifier,
