@@ -266,7 +266,7 @@ export default {
       const validateByPath = this.settings.validateTypesByPath[this.inspector.recordType];
         if (validateByPath && Object.keys(validateByPath).includes(this.path)) {
           validateByPath[this.path].forEach(t => {
-          if (!this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === capitalize(t))) {
+          if (!this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === t)) {
             missing.push(t);
           }
         })
