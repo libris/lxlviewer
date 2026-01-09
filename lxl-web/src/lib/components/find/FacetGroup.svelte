@@ -306,7 +306,7 @@
 		<summary
 			class={[
 				'focusable text-subtle hover:bg-primary-100 flex min-h-8 cursor-pointer items-center',
-				level === 1 && 'py-2 pl-4 font-medium',
+				level === 1 && 'min-h-11 pl-4 font-medium',
 				level > 1 && 'pl-1.5 text-xs'
 			]}
 			data-testid="facet-toggle"
