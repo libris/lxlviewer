@@ -512,6 +512,9 @@
     "To be able to merge entities, switch to a sigel with access." : "För att slå ihop entiteter, byt till en sigel med rättigheter.",
     "One or more sigels have holdings on both the record to remove and the record to keep. Before merge, one of these holdings has to be manually removed, for each sigel:" : "En eller flera sigel har bestånd på både den post som ska behållas och den som ska tas bort. Innan ihopslagning behöver ett av dessa bestånd tas bort manuellt, för varje sigel:",
     "Switch to a sigel with permission to edit both the selected holdings." : "Byt till en sigel som har tillåtelse att redigera båda de valda bestånden.",
-    "Flagged entities" : "Flaggade"
+    "Flagged entities" : "Flaggade",
+    "is missing": "saknas",
+    "are missing" : "saknas",
+    "and": "och"
   }
 }

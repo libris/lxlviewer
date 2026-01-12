@@ -109,6 +109,10 @@ export default {
     'itemOf',
     'heldBy',
   ],
+  validateTypesByPath: {
+    'Work' : { 'mainEntity.category' : ['ContentType', 'GenreForm'] },
+    'Instance' : { 'mainEntity.instanceOf.category' : ['ContentType', 'GenreForm'] },
+  },
   defaultExpandedProperties: [
     'hasComponent',
     '@reverse/reproductionOf',
