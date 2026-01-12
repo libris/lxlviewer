@@ -320,7 +320,7 @@
 					<Carousel items={decoratedData.resourceTableOfContents} render={summaryOrToc} />
 				</section>
 			{/if}
-			<section class="border-t-neutral border-t">
+			<section class="-mx-6 mb-6 bg-neutral-100 px-6 pb-6 @2xl:mx-0 @2xl:rounded-lg">
 				<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 					{page.data.t('resource.details')}
 				</h2>
@@ -336,7 +336,7 @@
 						</div>
 					{/each}
 				</div>
-				<div class="mt-5 rounded-lg bg-neutral-100 p-3 text-sm">
+				<div class="mt-5 text-sm">
 					<p>
 						{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
 					</p>
