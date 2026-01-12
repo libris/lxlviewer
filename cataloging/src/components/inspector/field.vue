@@ -8,7 +8,7 @@ import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
-import { getContextValue } from 'lxljs/vocab';
+import {getContextValue, isSubClassOf} from 'lxljs/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
@@ -266,7 +266,7 @@ export default {
       const validateByPath = this.settings.validateTypesByPath[this.inspector.recordType];
         if (validateByPath && Object.keys(validateByPath).includes(this.path)) {
           validateByPath[this.path].forEach(t => {
-          if (!this.valueAsArray.some(v => this.getTypeFromQuoted(v['@id']) === t)) {
+          if (!this.valueAsArray.some(v => this.hasType(v, t))) {
             missing.push(t);
           }
         })
@@ -717,6 +717,13 @@ export default {
         return 'value';
       }
       return 'error';
+    },
+    hasType(value, type) {
+      if (value['@id']) {
+        return isSubClassOf(this.getTypeFromQuoted(value['@id']), type, this.resources.vocab, this.resources.context);
+      } else if (value['@type']) { // Local entities
+        return isSubClassOf(value['@type'], type, this.resources.vocab, this.resources.context);
+      }
     },
     getTypeFromQuoted(key) {
       const obj =  this.inspector.data.quoted[key] || null;
