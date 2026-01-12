@@ -24,8 +24,8 @@
 	import SearchMapping from './find/SearchMapping.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';
-	import Carousel from '$lib/components/Carousel.svelte';
 	import BiDownload from '~icons/bi/download';
+	import ExpandableArea from '$lib/components/ExpandableArea.svelte';
 
 	type Props = {
 		fnurgel: string;
@@ -126,12 +126,6 @@
 	{#each instances as instance (instance?.[JsonLd.ID])}
 		<SearchCard item={instance as SearchResultItem} />
 	{/each}
-{/snippet}
-
-{#snippet summaryOrToc(d)}
-	<div class="summary-or-toc min-h-56 w-full">
-		<DecoratedData data={d} showLabels={ShowLabelsOptions.Never} block />
-	</div>
 {/snippet}
 
 {#if adjecentSearchResults}
@@ -245,15 +239,25 @@
 				</div>
 			</section>
 			{#if decoratedData.summary.length}
-				<section class="mt-6">
+				<section>
 					<h2 id={`${uidPrefix}summary`} class="mb-3 text-xl font-medium">
 						{page.data.t('resource.summary')}
 					</h2>
-					<Carousel items={decoratedData.summary} render={summaryOrToc} />
+					{#snippet summary()}
+						<div class="flex flex-col gap-6">
+							{#each decoratedData.summary as s (s)}
+								<p class="summary-or-toc w-full">
+									<DecoratedData data={s} showLabels={ShowLabelsOptions.Never} block />
+								</p>
+							{/each}
+						</div>
+					{/snippet}
+
+					<ExpandableArea content={summary} collapsedHeightPx={instances?.length > 1 ? 200 : 400} />
 				</section>
 			{/if}
 			{#if instances?.length > 1}
-				<section class="mt-6">
+				<section>
 					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
 						{page.data.t('resource.editions')}
 					</h2>
@@ -265,7 +269,7 @@
 				</section>
 			{/if}
 			{#if relations.length}
-				<section class="mt-6">
+				<section>
 					<h2 id={`${uidPrefix}occurrences`} class="mb-6 text-xl font-medium">
 						{page.data.t('resource.occurrences')}
 					</h2>
@@ -313,14 +317,24 @@
 				</section>
 			{/if}
 			{#if decoratedData.resourceTableOfContents.length}
-				<section class="mt-6">
+				<section>
 					<h2 id={`${uidPrefix}resourceTableOfContents`} class="mb-3 text-xl font-medium">
 						{page.data.t('resource.tableOfContents')}
 					</h2>
-					<Carousel items={decoratedData.resourceTableOfContents} render={summaryOrToc} />
+					{#snippet resourceTableOfContents()}
+						<div class="flex flex-col gap-6">
+							{#each decoratedData.resourceTableOfContents as r (r)}
+								<p class="summary-or-toc w-full">
+									<DecoratedData data={r} showLabels={ShowLabelsOptions.Never} block />
+								</p>
+							{/each}
+						</div>
+					{/snippet}
+
+					<ExpandableArea content={resourceTableOfContents} collapsedHeightPx={300} />
 				</section>
 			{/if}
-			<section class="-mx-6 mb-6 bg-neutral-100 px-6 pb-6 @2xl:mx-0 @2xl:rounded-lg">
+			<section class="-mx-6 my-6 bg-neutral-100 px-6 pb-6 @2xl:mx-0 @2xl:rounded-lg">
 				<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 					{page.data.t('resource.details')}
 				</h2>
