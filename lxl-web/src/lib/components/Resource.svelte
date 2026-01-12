@@ -175,7 +175,7 @@
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 @sm:gap-6 @3xl:py-6">
 			<section id="{uidPrefix}top">
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
-					<header class="my-3 flex-1">
+					<header class="mb-3 flex-1">
 						<hgroup>
 							<p class="text-subtle flex items-center gap-1 text-sm font-medium">
 								<TypeIcon type={typeForIcon} class="mr-0.5 inline text-sm" />
