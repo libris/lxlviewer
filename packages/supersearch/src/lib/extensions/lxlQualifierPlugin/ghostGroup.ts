@@ -11,13 +11,12 @@ import { qualifierStateField } from './qualifierValidation.js';
  * If not - add/repair it. Exception: quoted qualifier values
  */
 export const createGhostGroup = (tr: Transaction) => {
-	const isUserInput = tr.isUserEvent('input') || tr.isUserEvent('delete');
+	// run on valdation change -> atomic range change
+	const rangesChanged =
+		tr.startState.field(qualifierStateField).atomicRanges.size !==
+		tr.state.field(qualifierStateField).atomicRanges.size;
 
-	// also run on validation field updates (no doc change)
-	const validationUpdated =
-		tr.startState.field(qualifierStateField) !== tr.state.field(qualifierStateField);
-
-	if (!isUserInput && !validationUpdated) {
+	if (!tr.isUserEvent('input') && !rangesChanged) {
 		return tr;
 	}
 
