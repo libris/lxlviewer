@@ -722,7 +722,8 @@
 						"cartographicAttributes",
 						"isPartOf",
 						"associatedMedia",
-						"isPrimaryTopicOf"
+						"isPrimaryTopicOf",
+						"hasNote"
 					]
 				},
 				"Instance": {
