@@ -232,7 +232,7 @@
 		<!-- facet range inputs; hide in filter search results -->
 		<FacetRange search={data.search} />
 	{/if}
-	<ul data-testid="facet-list">
+	<ul data-testid={level === 1 ? 'facet-list' : undefined}>
 		{@render values(shownItems)}
 	</ul>
 	<div class="text-2xs flex flex-col justify-start">
@@ -315,7 +315,7 @@
 				level === 1 && 'min-h-11 pl-4 font-medium',
 				level > 1 && 'pl-1.5 text-xs'
 			]}
-			data-testid="facet-toggle"
+			data-testid={level === 1 ? 'facet-toggle' : undefined}
 		>
 			{#if level > 1}
 				{@render chevron()}
