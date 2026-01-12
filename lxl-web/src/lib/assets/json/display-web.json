@@ -453,6 +453,8 @@
 							]
 						},
 						"contribution",
+						"isPartOf",
+						"part",
 						{ "inverseOf": "instanceOf" },
 						"language"
 					]
@@ -479,7 +481,14 @@
 					"@id": "Instance-web-card",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
+					"showProperties": [
+						"hasTitle",
+						"responsibilityStatement",
+						"identifier",
+						"publication",
+						"isPartOf",
+						"part"
+					]
 				}
 			}
 		},
@@ -556,7 +565,7 @@
 					"@id": "Instance-web-card-header-extra",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["isPartOf", "part"]
+					"showProperties": []
 				},
 				"Agent": {
 					"@id": "Agent-web-card-header-extra",
