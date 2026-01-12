@@ -1442,6 +1442,7 @@ export default {
     align-items: center;
 
     &-icon {
+      padding-left: 1em;
       padding-right: 1em;
       color: @form-validate;
     }
@@ -1712,6 +1713,7 @@ export default {
     margin: 0;
     padding: 0.25em 1em;
     max-width: 100%;
+    min-width: 0;
 
     .Field--inner & {
       border: 0;
