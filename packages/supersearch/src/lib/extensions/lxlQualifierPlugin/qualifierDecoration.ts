@@ -14,9 +14,9 @@ class QualifierWidget extends WidgetType {
 	eq(other: QualifierWidget): boolean {
 		return (
 			this.props.keyLabel === other.props.keyLabel &&
+			this.props.operator === other.props.operator &&
 			this.props.valueLabel === other.props.valueLabel &&
-			this.props.removeLink === other.props.removeLink &&
-			this.props.value === other.props.value
+			this.props.removeLink === other.props.removeLink
 		);
 	}
 
