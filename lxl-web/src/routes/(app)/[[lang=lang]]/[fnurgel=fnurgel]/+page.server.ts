@@ -65,8 +65,11 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	copyMediaLinksToWork(mainEntity);
 
+	const mainEntityCopy = { ...mainEntity };
+	mainEntityCopy.meta = { [JsonLd.ID]: mainEntity[JsonLd.ID] };
+
 	const workCard = asSearchResultItem(
-		[mainEntity],
+		[mainEntityCopy],
 		displayUtil,
 		vocabUtil,
 		locale,
