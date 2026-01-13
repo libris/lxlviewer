@@ -391,6 +391,16 @@
 					"showProperties": [
 						{ "alternateProperties": ["title", "prefLabel", "label", "name", "code", "uri"] }
 					]
+				},
+				"TableOfContents": {
+					"@id": "TableOfContents-chips",
+					"classLensDomain": "TableOfContents",
+					"showProperties": ["label", "hasPart"]
+				},
+				"ToCEntry": {
+					"@id": "ToCEntry-chips",
+					"classLensDomain": "ToCEntry",
+					"showProperties": ["label", "responsibilityStatement"]
 				}
 			}
 		},
