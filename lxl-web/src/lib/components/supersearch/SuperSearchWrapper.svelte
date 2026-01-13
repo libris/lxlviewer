@@ -163,9 +163,13 @@
 	}
 
 	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
+		const propsWithHandler = {
+			...props,
+			onclick: () => showExpandedSearch({ cursorAtEnd: true })
+		};
 		const component = mount(QualifierPill, {
 			target: container,
-			props
+			props: propsWithHandler
 		});
 
 		return {

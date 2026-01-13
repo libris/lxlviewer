@@ -8,6 +8,8 @@ import type {
 } from '$lib/types/lxlQualifierPlugin.js';
 import { sendMessage } from '$lib/utils/sendMessage.js';
 import { qualifierRenderFacet, qualifierValidatorFacet } from './qualifierFacet.js';
+import { messages } from '$lib/constants/messages.js';
+import { startEditingQualifier, stopEditingQualifier } from './qualifierEffects.js';
 
 class AtomicRange extends RangeValue {}
 const atomicRange = new AtomicRange();
@@ -18,10 +20,36 @@ export const qualifierStateField = StateField.define<QualifierStateField>({
 	},
 
 	update(value, tr) {
-		if (!tr.docChanged && !tr.effects.some((e) => e.is(sendMessage))) {
-			return value;
+		// if (!tr.docChanged && !tr.effects.some((e) => e.is(sendMessage))) {
+		// 	return value;
+		// }
+		// return computeQualifierState(tr.state);
+		// let edited = value.edited;
+
+		for (const e of tr.effects) {
+			if (e.is(sendMessage) && e.value.message === messages.NEW_DATA) {
+				console.log('new data');
+				return computeQualifierState(tr.state);
+			}
+
+			if (e.is(startEditingQualifier)) {
+				// edited = edited.concat(e.value);
+				console.log('editing');
+			}
+
+			if (e.is(stopEditingQualifier)) {
+				// editingIdsToDisable ??= new Set();
+				// editingIdsToDisable.add(e.value);
+				// editingChanged = true;
+			}
 		}
-		return computeQualifierState(tr.state);
+		if (tr.docChanged) {
+			// edited = edited
+			// .map(r => tr.changes.mapRange(r))
+			// .filter(r => r.from < r.to);
+			return computeQualifierState(tr.state);
+		}
+		return value;
 	}
 });
 

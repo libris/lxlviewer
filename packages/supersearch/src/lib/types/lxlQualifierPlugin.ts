@@ -12,10 +12,13 @@ export interface QualifierValidationResponse {
 	invalid: boolean;
 }
 
+export type QualifierId = string;
+
 export interface QualifierState extends QualifierValidationResponse {
 	atomicFrom?: number;
 	atomicTo?: number;
 	node: SyntaxNode;
+	editing?: boolean;
 }
 
 export type QualifierStateField = {

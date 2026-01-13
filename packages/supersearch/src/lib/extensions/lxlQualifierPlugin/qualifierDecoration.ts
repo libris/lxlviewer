@@ -3,6 +3,7 @@ import type { QualifierRendererProps } from '$lib/types/lxlQualifierPlugin.js';
 import { type Range } from '@codemirror/state';
 import { qualifierStateField } from './qualifierValidation.js';
 import { qualifierRenderFacet } from './qualifierFacet.js';
+import { startEditingQualifier } from './qualifierEffects.js';
 
 class QualifierWidget extends WidgetType {
 	private cleanup?: () => void;
@@ -23,6 +24,13 @@ class QualifierWidget extends WidgetType {
 	toDOM(view: EditorView): HTMLElement {
 		const container = document.createElement('span');
 		container.className = 'atomic';
+
+		container.ondblclick = () => {
+			view.dispatch({
+				// todo real
+				effects: startEditingQualifier.of({ from: 0, to: 1 })
+			});
+		};
 
 		const render = view.state.facet(qualifierRenderFacet);
 		if (render) {
@@ -60,7 +68,7 @@ export function addDecorations(view: EditorView) {
 		// qualifier wrapper mark
 		decorations.push(
 			Decoration.mark({
-				class: 'lxl-qualifier',
+				class: `lxl-qualifier ${qualifier.editing ? 'editing' : ''}`,
 				attributes: {
 					style: 'display: inline-block; margin-left: 1px; margin-right: 1px;'
 				},
@@ -107,17 +115,19 @@ export function addDecorations(view: EditorView) {
 		if (!renderer) return;
 
 		// qualifier atomic widget
-		if (qualifier.atomicFrom != null) {
-			const operatorNode = qualifier.node.getChild('QualifierOperator');
-			const operator = operatorNode
-				? view.state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
-				: '';
+		if (!qualifier.editing) {
+			if (qualifier.atomicFrom != null) {
+				const operatorNode = qualifier.node.getChild('QualifierOperator');
+				const operator = operatorNode
+					? view.state.doc.toString().slice(operatorNode?.from, operatorNode?.to)
+					: '';
 
-			decorations.push(
-				Decoration.replace({
-					widget: new QualifierWidget({ operator, ...qualifier })
-				}).range(qualifier.atomicFrom, qualifier.atomicTo)
-			);
+				decorations.push(
+					Decoration.replace({
+						widget: new QualifierWidget({ operator, ...qualifier })
+					}).range(qualifier.atomicFrom, qualifier.atomicTo)
+				);
+			}
 		}
 	});
 	return Decoration.set(decorations, true);

@@ -2,13 +2,19 @@
 	position: relative;
 	height: calc(var(--spacing) * 7.5);
 	color: var(--text-body);
-	background-color: var(--color-accent-50);
 	outline: 1px solid var(--color-accent-200);
 	outline-offset: -1px;
 	border-radius: var(--radius-md);
 	transition: background-color 0.1s ease;
 	z-index: 1;
 	font-size: var(--text-xs);
+	/* pointer-events: none; */
+}
+
+.lxl-qualifier.editing {
+	padding-left: calc(var(--spacing) * 1.5);
+	padding-right: calc(var(--spacing) * 1.5);
+	outline-color: var(--color-neutral-400);
 }
 
 .lxl-qualifier-key {
@@ -47,10 +53,20 @@
 }
 
 .atomic {
+	background-color: var(--color-accent-50);
 	display: inline-flex;
 	align-items: center;
 	height: 100%;
+	border-top-left-radius: var(--radius-md);
+	border-bottom-left-radius: var(--radius-md);
 	user-select: none;
+	pointer-events: auto;
+	cursor: pointer;
+}
+
+.atomic:has(.lxl-qualifier-remove) {
+	border-top-right-radius: var(--radius-md);
+	border-bottom-right-radius: var(--radius-md);
 }
 
 .atomic .lxl-qualifier-key {
@@ -75,7 +91,7 @@
 	content: '';
 	position: absolute;
 	top: 0px;
-	right: 0;
+	right: 1px;
 	height: calc(var(--spacing) * 7.5);
 	width: 1px;
 	background-color: var(--color-accent-200);
