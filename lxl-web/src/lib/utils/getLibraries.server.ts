@@ -144,5 +144,5 @@ export async function startRefreshLibraries(displayUtil: DisplayUtil, locale: Lo
 		refreshLibraries(displayUtil, locale).catch((err) =>
 			console.error('Scheduled library refresh failed:', err)
 		);
-	}, REFRESH_INTERVAL);
+	}, REFRESH_INTERVAL).unref();
 }
