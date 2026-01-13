@@ -87,6 +87,9 @@
 @theme inline {
 	--breakpoint-3xl: 110rem; /* 1760px */
 
+	--container-6xs: 10rem; /* 160px */
+	--container-5xs: 12rem; /* 192px */
+	--container-4xs: 14rem; /* 224px */
 	--container-8xl: 90rem; /* 1440px */
 	--container-9xl: 96rem; /* 1536px */
 	--container-10xl: 110rem; /* 1760px */

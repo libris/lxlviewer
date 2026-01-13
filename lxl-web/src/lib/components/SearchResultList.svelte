@@ -5,10 +5,10 @@
 	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';
 
-	type Props = { items: SearchResultItemType[]; type: 'horizontal' };
+	type Props = { items: SearchResultItemType[]; type: 'horizontal'; ariaLabelledBy?: string };
 
 	const SCROLL_AMOUNT = 0.85;
-	let { items, type }: Props = $props();
+	let { items, type, ariaLabelledBy }: Props = $props();
 	let ulElement: HTMLUListElement | undefined;
 	let clientWidth: number | undefined = $state();
 	let disabledLeftScrollButton = $state(true);
@@ -52,6 +52,7 @@
 {#snippet horizontalList()}
 	<div class="horizontal-list @container relative">
 		<ul
+			aria-labelledby={ariaLabelledBy}
 			class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
 			bind:this={ulElement}
 			bind:clientWidth
@@ -96,19 +97,6 @@
 					display: flex;
 				}
 			}
-		}
-		& :global(.decorated-card-header-top) {
-			margin-top: calc(var(--spacing) * 2);
-		}
-		& :global(.decorated-card-heading) {
-			font-size: var(--text-sm);
-			@apply line-clamp-3;
-		}
-		& :global(.decorated-card-body) {
-			margin-block: calc(var(--spacing) * 1);
-		}
-		& :global(.decorated-card-body [data-property='contribution'] > *) {
-			@apply truncate;
 		}
 		& :global(.agent-lifespan),
 		& :global(.contribution-role) {
