@@ -65,6 +65,16 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	copyMediaLinksToWork(mainEntity);
 
+	const workCard = asSearchResultItem(
+		[mainEntity],
+		displayUtil,
+		vocabUtil,
+		locale,
+		env.AUXD_SECRET,
+		myLibraries,
+		undefined
+	)[0];
+
 	resourceId = resource.mainEntity['@id'];
 
 	const typeLike = getTypeLike(mainEntity, vocabUtil);
@@ -272,16 +282,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
 		holdingLibraries: getHoldingLibraries(byType)
 	};
-
-	const workCard = asSearchResultItem(
-		[resource.mainEntity],
-		displayUtil,
-		vocabUtil,
-		locale,
-		env.AUXD_SECRET,
-		myLibraries,
-		undefined
-	)[0];
 
 	const subsetMapping = locals?.subsetMapping;
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
