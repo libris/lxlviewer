@@ -2,6 +2,10 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
+	import IconBook from '~icons/bi/book';
+
+	import IconCircle from '~icons/bi/plus-circle';
+	import IconChevronDown from '~icons/bi/chevron-down';
 
 	import { getFeaturedSearches } from './homepage.remote';
 	import SearchResultList from '$lib/components/SearchResultList.svelte';
@@ -24,23 +28,72 @@
 <header class="page-header centered">
 	<div class="py-6">
 		<hgroup>
-			<h1 class="my-2 max-w-[20ch] text-4xl leading-none lg:text-6xl 2xl:text-7xl">
-				Utforska Sveriges biblioteks samlingar
+			<h1 class="my-2 text-4xl leading-none lg:text-6xl 2xl:text-6xl">
+				Sök på alla svenska bibliotek
 			</h1>
-			<p class="text-xl">
+			<p class="text-lg">
 				Libris är de svenska bibliotekens gemensamma katalog med över 9 miljoner titlar.
 			</p>
 		</hgroup>
-		<nav class="my-6">
-			<h2 class="my-4 w-fit border-t pt-4 tracking-widest uppercase">Genvägar</h2>
+		<input type="search" class="bg-page mt-6 mb-4 min-h-16 w-full max-w-[960px] rounded-lg" />
+
+		<nav class="my-4 flex w-fit flex-col">
+			<div class="flex gap-4 text-[0.9375rem]">
+				<h2 class="text-sm tracking-widest uppercase">Sök efter</h2>
+				<ul class="flex gap-3">
+					<li>
+						<a href="#" class="bg-page class flex items-center gap-1 rounded-full px-2 py-1"
+							><IconBook />Skönlitteratur</a
+						>
+					</li>
+					<li>
+						<a href="#" class="bg-page class flex items-center gap-1 rounded-full px-2 py-1"
+							><IconBook />Facklitteratur</a
+						>
+					</li>
+					<li><a href="#" class="bg-page rounded-full px-2 py-2">Stillbild</a></li>
+					<li><a href="#" class="bg-page rounded-full px-2 py-2">Musik</a></li>
+					<li><a href="#" class="bg-page rounded-full px-2 py-2">Mjukvara</a></li>
+					<li><a href="#" class="bg-page rounded-full px-2 py-2">Rörlig bild</a></li>
+					<li><a href="#" class="bg-page rounded-full px-2 py-2">Föremål</a></li>
+				</ul>
+			</div>
+			<hr class="my-4" />
+			<ul class="flex gap-3">
+				<li>
+					<a href="#" class="bg-page class flex items-center gap-2 rounded-full px-2 py-1"
+						>Författare/upphov:<IconCircle /></a
+					>
+				</li>
+				<li>
+					<a href="#" class="bg-page class flex items-center gap-2 rounded-full px-2 py-1"
+						>Titel:<IconCircle /></a
+					>
+				</li>
+				<li>
+					<a href="#" class="bg-page class flex items-center gap-2 rounded-full px-2 py-1"
+						>Språk:<IconCircle /></a
+					>
+				</li>
+				<li>
+					<a href="#" class="bg-page class flex items-center gap-2 rounded-full px-2 py-1"
+						>Utgivningsår:<IconCircle /></a
+					>
+				</li>
+				<li>
+					<a href="#" class="bg-page class flex items-center gap-2 rounded-full px-2 py-1"
+						>Fler filter<IconChevronDown /></a
+					>
+				</li>
+			</ul>
+		</nav>
+		<!--<nav class="my-6">
+			<h2 class="my-4 w-fit border-t pt-4 text-[0.9375rem] tracking-widest uppercase">Genvägar</h2>
 			<ul>
 				<li>
 					<div class="text-lg">
 						<li class="inline after:mx-2 after:content-['_·_']">
 							<a href="#" class="text-link">Hitta mitt bibliotek</a>
-						</li>
-						<li class="inline after:mx-2 after:content-['_·_']">
-							<a href="#" class="text-link">Sök i deldatabaser</a>
 						</li>
 						<li class="inline"><a href="#" class="text-link">Läs mer om Libris</a></li>
 					</div>
@@ -48,19 +101,12 @@
 			</ul>
 		</nav>
 	</div>
+	-->
+	</div>
 </header>
-<section class="centered my-6">
-	<h2 class="tracking-widest uppercase">Kategorier</h2>
-	<ul class="my-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
-		{#each ['Facklitteratur', 'Skönlitteratur', 'Stillbild', 'Mjukvara', 'Musik', 'Rörlig bild', 'Blandat material', 'Föremål'] as item (item)}
-			<li class="rounded-md border border-neutral-100 bg-neutral-50 p-4">{item}</li>
-		{/each}
-	</ul>
-</section>
-<hr class="centered block" />
 {#each await getFeaturedSearches() as featured, index (featured.headingByLang.sv)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
-	<section class="centered">
+	<section class="centered my-8">
 		<header class="flex justify-between">
 			<h2 class="heading mb-8 text-3xl" {id}>
 				<a
@@ -107,12 +153,8 @@
 		}
 	}
 
-	hr {
-		margin: calc(var(--spacing) * 8) auto;
-		width: 66.6%;
-	}
 	.page-header {
-		background: var(--color-neutral-100);
+		background: var(--color-primary-100);
 		min-height: calc(38.2vh + var(--app-bar-height) + var(--banner-height, 0));
 		align-items: center;
 	}
