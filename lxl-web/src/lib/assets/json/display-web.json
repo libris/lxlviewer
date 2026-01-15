@@ -294,7 +294,8 @@
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
 								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle",
-								"identifiedBy"
+								"identifiedBy",
+								"label"
 							]
 						}
 					]
@@ -710,7 +711,8 @@
 						{ "inverseOf": "continuedBy" },
 						"continuesInPart",
 						"continuedInPartBy",
-						"relatedTo"
+						"relatedTo",
+						"accompaniedBy"
 					]
 				}
 			}
