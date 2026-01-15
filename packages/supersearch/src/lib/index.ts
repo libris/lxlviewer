@@ -1,5 +1,5 @@
 import type { QualifierRendererProps } from './types/lxlQualifierPlugin.js';
-import type { ResultItem, ShowExpandedSearchOptions } from './types/superSearch.js';
+import type { ResultItem, ShowExpandedSearchOptions, DebouncedWaitFunction } from './types/superSearch.js';
 import type { Selection } from './components/CodeMirror.svelte';
 import type {
 	ChangeCodeMirrorEvent as ChangeSuperSearchEvent,
@@ -18,5 +18,6 @@ export {
 	type QualifierRendererProps,
 	type ChangeSuperSearchEvent,
 	type ViewUpdateSuperSearchEvent,
-	type ShowExpandedSearchOptions
+	type ShowExpandedSearchOptions,
+	type DebouncedWaitFunction
 };

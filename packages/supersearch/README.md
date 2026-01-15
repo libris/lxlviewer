@@ -40,6 +40,7 @@ To use `supersearch` in a non-Svelte project ...
 
 | `toggleWithKeyboardShortcut` | `boolean` | Controls if expanded search should be togglable using `cmd+k`(macOS) and `ctrl+k` (Linux/Windows) | `false` |
 | `debouncedWait` | `number` | The wait time, in milliseconds that debounce function should wait between invocated search queries. | `300` |
+| `getDebouncedWait` | `DebouncedWaitFunction` | A function `(query: string) => number \| null` for dynamic debounce timing based on query length; return `null` to not fetch at all. | `undefined` |
 | `cursor` | `number` | A bindable prop telling the current cursor position index (the prop should be treated as readonly) | `0` |
 | `isLoading` | `boolean` | A bindable prop telling if the component is currently loading data (the prop should be treated as readonly) | `undefined` |
 | `hasData` | `boolean` | A bindable prop telling if the component has data (the prop should be treated as readonly) | `undefined` |

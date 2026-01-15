@@ -22,7 +22,8 @@
 		PaginationQueryFunction,
 		TransformFunction,
 		ResultItem,
-		ShowExpandedSearchOptions
+		ShowExpandedSearchOptions,
+		DebouncedWaitFunction
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
 
@@ -80,6 +81,7 @@
 		toggleWithKeyboardShortcut?: boolean;
 		wrappingArrowKeyNavigation?: boolean;
 		debouncedWait?: number;
+		getDebouncedWait?: DebouncedWaitFunction;
 		selection?: Selection;
 		isLoading?: boolean;
 		hasData?: boolean;
@@ -113,6 +115,7 @@
 		defaultResultRow = 0,
 		defaultResultCol = 0,
 		debouncedWait = 300,
+		getDebouncedWait,
 		selection = $bindable(),
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable(), // should be treated as readonly
@@ -149,7 +152,8 @@
 		queryFn,
 		paginationQueryFn,
 		transformFn,
-		debouncedWait
+		debouncedWait,
+		getDebouncedWait
 	});
 
 	let prevSearchDataId: string | undefined;

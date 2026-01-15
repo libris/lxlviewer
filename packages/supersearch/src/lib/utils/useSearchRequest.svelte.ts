@@ -1,7 +1,8 @@
 import type {
 	QueryFunction,
 	PaginationQueryFunction,
-	TransformFunction
+	TransformFunction,
+	DebouncedWaitFunction
 } from '$lib/types/superSearch.js';
 import type { JSONValue } from '$lib/types/json.js';
 import debounce from '$lib/utils/debounce.js';
@@ -11,13 +12,15 @@ export function useSearchRequest({
 	queryFn,
 	paginationQueryFn,
 	transformFn,
-	debouncedWait = 300
+	debouncedWait = 300,
+	getDebouncedWait
 }: {
 	endpoint: string | URL;
 	queryFn: QueryFunction;
 	paginationQueryFn?: PaginationQueryFunction;
 	transformFn?: TransformFunction;
 	debouncedWait?: number;
+	getDebouncedWait?: DebouncedWaitFunction;
 }) {
 	let isLoading = $state(false);
 	let error: string | undefined = $state();
@@ -75,7 +78,7 @@ export function useSearchRequest({
 
 	const debouncedFetchData = debounce(
 		(query: string, cursor: number) => fetchData(query, cursor),
-		debouncedWait
+		getDebouncedWait ? (query: string) => getDebouncedWait(query) : debouncedWait
 	);
 
 	async function fetchMoreData() {
