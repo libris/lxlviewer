@@ -36,16 +36,6 @@ export const getFeaturedSearches = query(async () => {
 				_limit: 10
 			},
 			showAllLabelByLang: { sv: 'Visa fler titlar', en: 'Show more titles' }
-		},
-		{
-			headingByLang: { sv: 'Iran i litteraturen', en: 'Non-fiction about Greenland' },
-			findHref:
-				'/find?_q=%C3%A4mne:%22sao:Iran%22+(category:%22saogf:Ej%2520sk%25C3%25B6nlitteratur%22+OR+category:%22saogf:Sk%25C3%25B6nlitteratur%22)',
-			previewParams: {
-				_q: 'category:"saogf:Ej%20sk%C3%B6nlitteratur" category:"saogf:Sk%C3%B6nlitteratur" ämne:"sao:Iran" existsImage',
-				_limit: 10
-			},
-			showAllLabelByLang: { sv: 'Visa fler titlar', en: 'Show more titles' }
 		}
 	];
 

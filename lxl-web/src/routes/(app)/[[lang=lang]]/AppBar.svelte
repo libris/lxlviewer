@@ -120,7 +120,13 @@
 	{#if !dismissedBanner}
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
-	<nav class={['app-bar bg-app-header grid items-stretch', subset && 'with-subset']}>
+	<nav
+		class={[
+			'app-bar bg-app-header grid items-stretch',
+			page.route.id === '/(app)/[[lang=lang]]' && 'home',
+			subset && 'with-subset'
+		]}
+	>
 		<ul class="leading-actions ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
 				<svelte:element
@@ -288,7 +294,10 @@
 		grid-template-columns: var(--search-grid-template-columns);
 		padding: var(--search-padding);
 		gap: var(--search-gap);
-		box-shadow: 0 1px 0 0 var(--color-primary-200);
+
+		&:not(.home) {
+			box-shadow: 0 1px 0 0 var(--color-primary-200);
+		}
 	}
 
 	.leading-actions {

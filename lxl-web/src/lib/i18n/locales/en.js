@@ -1,8 +1,10 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
 	home: {
-		searchPlaceholder: 'Title, author, subject etc',
-		pageDescription:
+		pageHeadingTitle: 'Search all Swedish libraries',
+		pageHeadingDescription:
+			"Libris is the Swedish libraries' joint catalogue with over 9 million items.",
+		metaDescription:
 			'Libris is a national search service with information about titles in about 600 Swedish libraries, including the National Library. With Libris you can find what you are looking for at a library near you. The search service contains almost 13 million items: books, journals, pictures, maps, notes, e-books and more. Libris also contains digital material that is free to access from home.'
 	},
 	appMenu: {
