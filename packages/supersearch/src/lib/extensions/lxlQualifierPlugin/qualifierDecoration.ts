@@ -77,8 +77,10 @@ export function addDecorations(view: EditorView) {
 					inclusive: true
 				}).range(qualifier.node.from, qualifier.node.to)
 			);
+		}
 
-			// value mark (for non-atomic)
+		if (!qualifier.invalid && !isEditing) {
+			// value mark for non-atomic (valid & not editing)
 			if (!qualifier.valueLabel && valueNode) {
 				decorations.push(
 					Decoration.mark({
@@ -87,9 +89,7 @@ export function addDecorations(view: EditorView) {
 					}).range(valueNode.from, valueNode.node.to)
 				);
 			}
-		}
 
-		if (!qualifier.invalid && !isEditing) {
 			// hide ghost groups (valid & not editing)
 			if (valueNode) {
 				const ghostGroup = valueNode.getChild('QualifierOuterGroup');
