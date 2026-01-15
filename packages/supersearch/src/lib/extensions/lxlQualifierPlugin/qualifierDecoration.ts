@@ -1,6 +1,6 @@
 import { Decoration, EditorView, WidgetType } from '@codemirror/view';
 import type { QualifierRendererProps } from '$lib/types/lxlQualifierPlugin.js';
-import { type Range } from '@codemirror/state';
+import type { Range } from '@codemirror/state';
 import { qualifierStateField } from './qualifierValidation.js';
 import { qualifierRenderFacet } from './qualifierFacet.js';
 import { startEditingQualifier } from './qualifierEffects.js';
@@ -28,7 +28,7 @@ class QualifierWidget extends WidgetType {
 		container.ondblclick = () => {
 			view.dispatch({
 				// todo real
-				effects: startEditingQualifier.of({ from: 0, to: 1 })
+				effects: startEditingQualifier.of({ from: this.props.atomicFrom, to: this.props.atomicTo })
 			});
 		};
 
@@ -59,63 +59,62 @@ class GhostGroupWidget extends WidgetType {
 
 export function addDecorations(view: EditorView) {
 	const SHOW_GHOST_GROUP = false;
-
-	const { qualifiers } = view.state.field(qualifierStateField);
+	const { qualifiers, editing } = view.state.field(qualifierStateField);
 	const decorations: Range<Decoration>[] = [];
-	const renderer = view.state.facet(qualifierRenderFacet);
 
 	qualifiers.forEach((qualifier) => {
-		// qualifier wrapper mark
-		decorations.push(
-			Decoration.mark({
-				class: `lxl-qualifier ${qualifier.editing ? 'editing' : ''}`,
-				attributes: {
-					style: 'display: inline-block; margin-left: 1px; margin-right: 1px;'
-				},
-				inclusive: true
-			}).range(qualifier.node.from, qualifier.node.to)
-		);
-
+		const isEditing = editing && qualifier.node.from === editing.from;
 		const valueNode = qualifier.node.getChild('QualifierValue');
 
-		// value mark (for non-atomic)
-		if (!qualifier.valueLabel && valueNode) {
+		if (!qualifier.invalid || isEditing) {
+			// qualifier wrapper mark (valid & editing)
 			decorations.push(
 				Decoration.mark({
-					class: 'lxl-qualifier-value',
-					inclusive: false
-				}).range(valueNode.from, valueNode.node.to)
+					class: `lxl-qualifier${isEditing ? ' editing' : ''}`,
+					attributes: {
+						style: 'display: inline-block; margin-left: 1px; margin-right: 1px;'
+					},
+					inclusive: true
+				}).range(qualifier.node.from, qualifier.node.to)
 			);
-		}
 
-		// hide ghost groups
-		if (valueNode) {
-			const ghostGroup = valueNode.getChild('QualifierOuterGroup');
-
-			if (ghostGroup && !SHOW_GHOST_GROUP) {
-				const doc = view.state.doc.toString();
-				const openingParens = ghostGroup.from;
-				const closingParens = ghostGroup.to;
-
-				if (
-					doc.slice(openingParens, openingParens + 1) === '(' &&
-					doc.slice(closingParens - 1, closingParens) === ')'
-				) {
-					const parensMark = Decoration.replace({
-						widget: new GhostGroupWidget(),
+			// value mark (for non-atomic)
+			if (!qualifier.valueLabel && valueNode) {
+				decorations.push(
+					Decoration.mark({
+						class: 'lxl-qualifier-value',
 						inclusive: false
-					});
-
-					decorations.push(parensMark.range(openingParens, openingParens + 1));
-					decorations.push(parensMark.range(closingParens - 1, closingParens));
-				}
+					}).range(valueNode.from, valueNode.node.to)
+				);
 			}
 		}
 
-		if (!renderer) return;
+		if (!qualifier.invalid && !isEditing) {
+			// hide ghost groups (valid & not editing)
+			if (valueNode) {
+				const ghostGroup = valueNode.getChild('QualifierOuterGroup');
 
-		// qualifier atomic widget
-		if (!qualifier.editing) {
+				if (ghostGroup && !SHOW_GHOST_GROUP) {
+					const doc = view.state.doc.toString();
+					const openingParens = ghostGroup.from;
+					const closingParens = ghostGroup.to;
+
+					if (
+						doc.slice(openingParens, openingParens + 1) === '(' &&
+						doc.slice(closingParens - 1, closingParens) === ')'
+					) {
+						const parensMark = Decoration.replace({
+							widget: new GhostGroupWidget(),
+							inclusive: false
+						});
+
+						decorations.push(parensMark.range(openingParens, openingParens + 1));
+						decorations.push(parensMark.range(closingParens - 1, closingParens));
+					}
+				}
+			}
+
+			// qualifier atomic widget (valid & not editing)
 			if (qualifier.atomicFrom != null) {
 				const operatorNode = qualifier.node.getChild('QualifierOperator');
 				const operator = operatorNode
@@ -128,6 +127,15 @@ export function addDecorations(view: EditorView) {
 					}).range(qualifier.atomicFrom, qualifier.atomicTo)
 				);
 			}
+		}
+		if (qualifier.invalid && isEditing) {
+			// Add invalid key mark decoration (invalid && editing)
+			const invalidKey = Decoration.mark({
+				class: 'lxl-invalid',
+				inclusive: false
+			});
+
+			decorations.push(invalidKey.range(editing.from, editing.to));
 		}
 	});
 	return Decoration.set(decorations, true);

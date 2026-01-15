@@ -16,44 +16,56 @@ const atomicRange = new AtomicRange();
 
 export const qualifierStateField = StateField.define<QualifierStateField>({
 	create(state) {
-		return computeQualifierState(state);
+		return computeQualifierState(state, null, 0);
+	},
+
+	compare(a, b) {
+		return a.version === b.version;
 	},
 
 	update(value, tr) {
-		// if (!tr.docChanged && !tr.effects.some((e) => e.is(sendMessage))) {
-		// 	return value;
-		// }
-		// return computeQualifierState(tr.state);
-		// let edited = value.edited;
+		let { editing } = value;
+		const { version } = value;
+		let changed = false;
 
 		for (const e of tr.effects) {
 			if (e.is(sendMessage) && e.value.message === messages.NEW_DATA) {
-				console.log('new data');
-				return computeQualifierState(tr.state);
+				changed = true;
 			}
 
 			if (e.is(startEditingQualifier)) {
-				// edited = edited.concat(e.value);
-				console.log('editing');
+				editing = e.value;
+				changed = true;
+			} else if (e.is(stopEditingQualifier)) {
+				editing = null;
+				changed = true;
 			}
+		}
 
-			if (e.is(stopEditingQualifier)) {
-				// editingIdsToDisable ??= new Set();
-				// editingIdsToDisable.add(e.value);
-				// editingChanged = true;
+		if (editing && tr.docChanged) {
+			const from = tr.changes.mapPos(editing.from, 1);
+			const to = tr.changes.mapPos(editing.to, -1);
+			const mapped = from < to ? { from, to } : null;
+
+			if (mapped?.from !== editing.from || mapped?.to !== editing.to) {
+				editing = mapped;
+				changed = true;
 			}
 		}
-		if (tr.docChanged) {
-			// edited = edited
-			// .map(r => tr.changes.mapRange(r))
-			// .filter(r => r.from < r.to);
-			return computeQualifierState(tr.state);
+
+		if (tr.docChanged || changed) {
+			return computeQualifierState(tr.state, editing, version + 1);
 		}
+
 		return value;
 	}
 });
 
-function computeQualifierState(state: EditorState): QualifierStateField {
+function computeQualifierState(
+	state: EditorState,
+	editing: { from: number; to: number } | null,
+	version: number
+): QualifierStateField {
 	const validator = state.facet(qualifierValidatorFacet);
 	const renderer = state.facet(qualifierRenderFacet);
 
@@ -63,30 +75,36 @@ function computeQualifierState(state: EditorState): QualifierStateField {
 	if (!validator) {
 		return {
 			qualifiers,
-			atomicRanges: RangeSet.empty
+			atomicRanges: RangeSet.empty,
+			editing,
+			version
 		};
 	}
 
 	syntaxTree(state).iterate({
 		enter(node) {
 			if (node.name !== 'Qualifier') return;
-
-			const validatedQualifier = validateQualifier(node.node, state, validator);
-
-			if (validatedQualifier.invalid) return;
+			const q = validateQualifier(node.node, state, validator);
 
 			const key = `${node.from}-${node.to}`;
-			qualifiers.set(key, validatedQualifier);
+			qualifiers.set(key, q);
 
-			if (validatedQualifier.atomicFrom != null && validatedQualifier.atomicTo != null) {
-				builder.add(validatedQualifier.atomicFrom, validatedQualifier.atomicTo, atomicRange);
+			if (
+				!q.invalid &&
+				q.atomicFrom != null &&
+				q.atomicTo != null &&
+				!isEditing(editing, q.atomicFrom, q.atomicTo)
+			) {
+				builder.add(q.atomicFrom, q.atomicTo, atomicRange);
 			}
 		}
 	});
 
 	return {
 		qualifiers,
-		atomicRanges: !renderer ? RangeSet.empty : builder.finish()
+		atomicRanges: !renderer ? RangeSet.empty : builder.finish(),
+		editing,
+		version
 	};
 }
 
@@ -117,4 +135,8 @@ function validateQualifier(
 		atomicTo,
 		node
 	};
+}
+
+function isEditing(editing: { from: number; to: number } | null, from: number, to: number) {
+	return !!editing && editing.from === from && editing.to === to;
 }

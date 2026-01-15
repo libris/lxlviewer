@@ -24,6 +24,11 @@ export interface QualifierState extends QualifierValidationResponse {
 export type QualifierStateField = {
 	qualifiers: Map<string, QualifierState>;
 	atomicRanges: RangeSet<RangeValue>;
+	editing: {
+		from: number;
+		to: number;
+	} | null;
+	version: number;
 };
 
 export type QualifierRendererProps = {

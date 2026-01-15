@@ -25,6 +25,10 @@
 	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 	import isViewUpdateOfUserEvent from '$lib/utils/isViewUpdateOfUserEvent.js';
+	import {
+		isViewUpdateSyncableEffect,
+		syncedTransaction
+	} from '$lib/utils/isViewUpdateSyncableEffect.js';
 
 	type CodeMirrorProps = {
 		value?: string;
@@ -51,6 +55,10 @@
 	let prevLineHeight = $state();
 
 	const updateHandler = EditorView.updateListener.of((update) => {
+		if (update.transactions.some((tr) => tr.annotation(syncedTransaction))) {
+			return;
+		}
+
 		// TODO: do better more generic equality check
 		if (prevLineHeight !== update.view.lineBlockAt(0).height) {
 			onviewupdate({ lineHeight: update.view.lineBlockAt(0).height });
@@ -85,6 +93,15 @@
 				to: update.state.selection.main.to,
 				anchor: update.state.selection.main.anchor,
 				head: update.state.selection.main.head
+			});
+		}
+
+		const effects = isViewUpdateSyncableEffect(update);
+
+		if (effects.length) {
+			syncedEditorView?.dispatch({
+				effects,
+				annotations: syncedTransaction.of(true)
 			});
 		}
 	});

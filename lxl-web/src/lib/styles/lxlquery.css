@@ -14,7 +14,8 @@
 .lxl-qualifier.editing {
 	padding-left: calc(var(--spacing) * 1.5);
 	padding-right: calc(var(--spacing) * 1.5);
-	outline-color: var(--color-neutral-400);
+	outline-color: var(--color-accent-400);
+	outline-style: dashed;
 }
 
 .lxl-qualifier-key {
