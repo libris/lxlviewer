@@ -55,10 +55,11 @@
 
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
+	const MIN_LENGTH_FOR_SUGGESTIONS = 3;
 	const getDebouncedWait: DebouncedWaitFunction = (query) => {
 		const trimmedLength = query.trim().length;
-		if (trimmedLength < 3) return null;
-		if (trimmedLength === 3) return 3000;
+		if (trimmedLength < MIN_LENGTH_FOR_SUGGESTIONS) return null;
+		if (trimmedLength === MIN_LENGTH_FOR_SUGGESTIONS) return 3000;
 		if (trimmedLength === 4) return 1500;
 		return 400;
 	};
@@ -352,7 +353,9 @@
 						class="text-subtle mb-2 flex items-center justify-between px-4 text-xs sm:mb-3 sm:text-sm"
 					>
 						<h2 id="supersearch-results-label" class="font-medium">
-							{page.data.t('supersearch.suggestions')}
+							{#if q.trim().length >= MIN_LENGTH_FOR_SUGGESTIONS || resultsCount}
+								{page.data.t('supersearch.suggestions')}
+							{/if}
 						</h2>
 						<button type="submit" onclick={handleSubmit}>
 							<span class={['text-link flex items-center gap-1 hover:underline']}>
