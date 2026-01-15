@@ -16,6 +16,10 @@ function addSuggestParams(query: string, cursor: number) {
 		if (n.type.is('QualifierValue')) {
 			qualifierValueNode = n;
 			break;
+		} else if (n.type.is('QualifierOperator') && n.nextSibling?.type.isError) {
+			// QualifierValue can also be an error node if Qualifier is incomplete
+			qualifierValueNode = n.nextSibling;
+			break;
 		} else {
 			n = n?.parent;
 		}
@@ -23,7 +27,7 @@ function addSuggestParams(query: string, cursor: number) {
 
 	if (qualifierValueNode) {
 		const valueNodeText = query.slice(qualifierValueNode.from, qualifierValueNode.to).trim();
-		if (valueNodeText === '""' || valueNodeText === '()') {
+		if (!valueNodeText || valueNodeText === '""' || valueNodeText === '()') {
 			return {
 				_q: query.slice(0, qualifierValueNode.from) + '""' + query.slice(qualifierValueNode.to),
 				cursor,

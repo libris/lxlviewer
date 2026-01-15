@@ -8,6 +8,7 @@
 	import type { ExpandedContentParams } from '$lib/components/SuperSearch.svelte';
 	import { lxlQualifierPlugin } from '$lib/index.js';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import type { QualifierValidationResponse } from '$lib/types/lxlQualifierPlugin.js';
 
 	let isLoading: boolean | undefined = $state();
 	let hasData: boolean | undefined = $state();
@@ -36,6 +37,15 @@
 				...item,
 				heading: `${item.heading} for "${value}"`
 			}))
+		};
+	}
+
+	function validator(key: string, value?: string): QualifierValidationResponse {
+		return {
+			key,
+			value,
+			keyLabel: key,
+			invalid: false
 		};
 	}
 </script>
@@ -101,7 +111,7 @@
 			form={useFormAttribute ? 'form-outside' : undefined}
 			expandedContent={useCustomExpandedContent ? expandedContent : undefined}
 			wrappingArrowKeyNavigation={useWrappingArrowKeyNavigation}
-			extensions={[lxlQualifierPlugin()]}
+			extensions={[lxlQualifierPlugin(validator, undefined)]}
 		>
 			{#snippet inputRow({
 				expanded,
@@ -319,15 +329,14 @@
 	}
 
 	:global(.lxl-qualifier) {
-		background: #ccc;
-	}
-
-	:global(.lxl-qualifier-key) {
-		background: lightgreen;
-	}
-
-	:global(.lxl-qualifier-value) {
 		background: lightcyan;
+	}
+
+	:global(.lxl-ghost-group) {
+		display: inline-block;
+		background: cyan;
+		width: 5px;
+		height: 5px;
 	}
 
 	:global(.lxl-boolean-query, .lxl-wildcard) {

@@ -1,9 +1,10 @@
 .lxl-qualifier {
 	position: relative;
-	height: calc(var(--spacing) * 8);
+	height: calc(var(--spacing) * 7.5);
 	color: var(--text-body);
 	background-color: var(--color-accent-50);
-	border: 1px solid var(--color-accent-200);
+	outline: 1px solid var(--color-accent-200);
+	outline-offset: -1px;
 	border-radius: var(--radius-md);
 	transition: background-color 0.1s ease;
 	z-index: 1;
@@ -72,9 +73,9 @@
 .atomic .lxl-qualifier-operator::after {
 	content: '';
 	position: absolute;
-	top: -1px;
+	top: 0px;
 	right: 0;
-	height: calc(var(--spacing) * 8);
+	height: calc(var(--spacing) * 7.5);
 	width: 1px;
 	background-color: var(--color-accent-200);
 	z-index: -1;
@@ -123,8 +124,8 @@
 	background-color: transparent;
 }
 
-/* hide key and operator for linked values */
-.atomic .lxl-qualifier-key:has(~ .lxl-qualifier-value),
-.atomic .lxl-qualifier-operator:has(~ .lxl-qualifier-value) {
+/* hide key and operator for linked values in supersearch */
+.codemirror-container .atomic .lxl-qualifier-key:has(~ .lxl-qualifier-value),
+.codemirror-container .atomic .lxl-qualifier-operator:has(~ .lxl-qualifier-value) {
 	display: none;
 }

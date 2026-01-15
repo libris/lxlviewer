@@ -7,9 +7,10 @@
 		type ViewUpdateCodeMirrorEvent,
 		type Selection
 	} from '$lib/components/CodeMirror.svelte';
+	import { sendMessage } from '$lib/utils/sendMessage.js';
 	import type { ChangeSuperSearchEvent, ViewUpdateSuperSearchEvent } from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
-	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
+	import { Compartment, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import preventEnterKeyHandling from '$lib/extensions/preventEnterKeyHandling.js';
 	import arrowKeyCursorHandling from '$lib/extensions/arrowKeyCursorHandling.js';
@@ -152,7 +153,6 @@
 	});
 
 	let prevSearchDataId: string | undefined;
-	const sendMessage = StateEffect.define<{ message: string }>({});
 	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
 
 	$effect(() => {

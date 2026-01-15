@@ -23,7 +23,7 @@
 	]}
 >
 	{#each mapping as m, i (`outer-${i}-${depth}`)}
-		{@const { children, operator, up, variable, displayStr, label, display } = m}
+		{@const { children, operator, up, variable, displayStr, label, display, invalid } = m}
 		{#if (displayStr || label) && !isWildcardQuery(m)}
 			{@const isLinked = !!display?.['@id']}
 			<li
@@ -32,15 +32,19 @@
 					variable && `variable-${variable}`
 				]}
 			>
-				<span class="atomic">
+				<span class="atomic truncate">
 					{#if label}
-						<span class="lxl-qualifier-key atomic h-full content-center whitespace-nowrap">
-							{label}
+						<span class="lxl-qualifier-key h-full content-center whitespace-nowrap">
+							{#if invalid}
+								{invalid}
+							{:else}
+								{label}
+							{/if}
 						</span>
 					{/if}
 					{#if operator && operator !== 'none'}
 						<span
-							class="lxl-qualifier-operator atomic h-full content-center pr-1.5 {operator ===
+							class="lxl-qualifier-operator h-full content-center pr-1.5 {operator ===
 								'existence' && 'pl-1.5'}">{getRelationSymbol(m.operator)}</span
 						>
 					{/if}
@@ -48,7 +52,7 @@
 						<span
 							class={[
 								'h-full content-center overflow-hidden',
-								operator === 'none' ? 'lxl-qualifier-alias atomic' : 'lxl-qualifier-value',
+								operator === 'none' ? 'lxl-qualifier-alias' : 'lxl-qualifier-value',
 								isLinked && 'atomic'
 							]}
 						>
