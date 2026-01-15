@@ -173,6 +173,12 @@
 						}
 					]
 				},
+				"SeriesMembership": {
+					"@id": "SeriesMembership-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "SeriesMembership",
+					"showProperties": ["inSeries", "seriesStatement", "seriesEnumeration"]
+				},
 				"Subdivision": {
 					"@id": "Subdivision-chips",
 					"@type": "fresnel:Lens",
@@ -186,13 +192,13 @@
 					"@id": "Classification-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Classification",
-					"showProperties": ["code", "prefLabel", "inScheme"]
+					"showProperties": ["code", "prefLabel", "inScheme", "_find"]
 				},
 				"ClassificationDdc": {
 					"@id": "ClassificationDdc-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "ClassificationDdc",
-					"showProperties": ["code", "prefLabel", "rdf:type"],
+					"showProperties": ["code", "prefLabel", "rdf:type", "_find"],
 					"TODO": "Support classLensDomain array, merge with other ClassificationXxx"
 				},
 				"ClassificationLcc": {
@@ -1100,11 +1106,28 @@
 			"fresnel:resourceStyle": ["ext-link", "displayType()", "uriToId()"]
 		},
 		"ShelfMark-format": {
-			"TODO": "This is an override for displayType() in Identifier. Identifier should use rdf:type in showProperties instead",
-			"@id": "ShelfMark-format",
+      "TODO": "This is an override for displayType() in Identifier. Identifier should use rdf:type in showProperties instead",
+      "@id": "ShelfMark-format",
+      "@type": "fresnel:Format",
+      "fresnel:classFormatDomain": [
+        "ShelfMark"
+      ],
+      "fresnel:resourceStyle": []
+    },
+		"_Query-format": {
+			"@id": "_Query-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["ShelfMark"],
-			"fresnel:resourceStyle": []
+			"fresnel:classFormatDomain": ["_Query"],
+			"fresnel:resourceStyle": ["find-link"]
+		},
+		"_find-format": {
+			"@id": "contribution-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["_find"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
 		},
 		"contribution-format": {
 			"@id": "contribution-format",

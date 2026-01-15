@@ -52,7 +52,7 @@
 					return page.data.localizeHref(trimSlashes(relativizeUrl(id)));
 				}
 			}
-			if (depth > 1 && hasStyle(data, 'ext-link')) {
+			if (depth > 1 && (hasStyle(data, 'ext-link') || hasStyle(data, 'find-link'))) {
 				const id = getResourceId(value);
 				if (id) {
 					return id;
