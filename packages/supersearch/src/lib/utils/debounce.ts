@@ -1,9 +1,13 @@
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-function debounce(callback: Function, wait = 300) {
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type, @typescript-eslint/no-explicit-any
+function debounce(callback: Function, wait: number | ((...args: any[]) => number | null) = 300) {
 	let timeout: ReturnType<typeof setTimeout>;
-	return (...args: unknown[]) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (...args: any[]) => {
 		clearTimeout(timeout);
-		timeout = setTimeout(() => callback(...args), wait);
+		const resolvedWait = typeof wait === 'function' ? wait(...args) : wait;
+		if (resolvedWait !== null) {
+			timeout = setTimeout(() => callback(...args), resolvedWait);
+		}
 	};
 }
 

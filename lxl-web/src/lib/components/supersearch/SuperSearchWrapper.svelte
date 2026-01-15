@@ -8,7 +8,8 @@
 		type QualifierRendererProps,
 		type Selection,
 		type ShowExpandedSearchOptions,
-		type ViewUpdateSuperSearchEvent
+		type ViewUpdateSuperSearchEvent,
+		type DebouncedWaitFunction
 	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
@@ -51,6 +52,16 @@
 	let fetchOnExpand = $state(true);
 	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
+
+	// We don't want to provide search suggestions when user has entered < 3 chars, because
+	// they are expensive. Use decreasing debounce as query gets longer.
+	const getDebouncedWait: DebouncedWaitFunction = (query) => {
+		const trimmedLength = query.trim().length;
+		if (trimmedLength < 3) return null;
+		if (trimmedLength === 3) return 3000;
+		if (trimmedLength === 4) return 1500;
+		return 400;
+	};
 
 	// debounce loading spinner
 	$effect(() => {
@@ -221,7 +232,7 @@
 		wrappingArrowKeyNavigation
 		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={undefined}
-		debouncedWait={400}
+		{getDebouncedWait}
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}

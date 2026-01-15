@@ -18,3 +18,5 @@ export interface ResultItem {
 export type ShowExpandedSearchOptions = {
 	cursorAtEnd: boolean;
 };
+
+export type DebouncedWaitFunction = (query: string) => number | null;
