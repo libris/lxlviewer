@@ -21,12 +21,14 @@
 />
 
 <header class="page-header bg-primary-100 flex items-center px-3 @sm:px-6">
-	<div class="col-start-2 col-end-3 mx-auto w-full max-w-7xl">
-		<hgroup class="mx-auto">
-			<h1 class="mb-3 text-3xl leading-none @lg:text-4xl @3xl:text-5xl">
+	<div class="col-start-2 col-end-3 mb-4 w-full max-w-7xl">
+		<hgroup>
+			<h1
+				class="mb-2 text-2xl @md:text-[1.6875rem] @3xl:text-4xl @3xl:tracking-[-0.0125rem] @7xl:text-[3.25rem]"
+			>
 				{page.data.t('home.pageHeadingTitle')}
 			</h1>
-			<p class="text-body/87.5 text-sm @5xl:text-base">
+			<p class="text-body/87.5 max-w-[40ch] text-sm @3xl:text-base @7xl:max-w-none">
 				{page.data.t('home.pageHeadingDescription')}
 			</p>
 		</hgroup>
@@ -34,16 +36,16 @@
 </header>
 {#each await getFeaturedSearches() as featured, index (featured.headingByLang.sv)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
-	<section class="max-w-10xl mx-auto w-full px-3 py-6 @sm:px-6">
-		<header class="flex justify-between">
-			<h2 class="heading mb-8 text-3xl" {id}>
+	<section class="my-3 flex flex-col gap-3 @sm:my-6 @sm:gap-6 @5xl:my-8 @5xl:gap-8">
+		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
+			<h2 class="text-lg @lg:text-xl @3xl:text-2xl" {id}>
 				<a
 					href={page.data.localizeHref(featured.findHref)}
-					class="ease-in-out hover:underline hover:[&>svg]:translate-x-2"
+					class="ease-in-out hover:underline hover:[&>svg]:translate-x-1"
 				>
 					{featured.headingByLang[page.data.locale]}
 					{#if !featured.showAllLabelByLang}
-						<IconArrowRight class="ml-1 inline size-5.5 transition-transform" />
+						<IconArrowRight class="ml-1 inline size-4 transition-transform" />
 					{/if}
 				</a>
 			</h2>
@@ -57,9 +59,7 @@
 				</a>
 			{/if}
 		</header>
-		<div>
-			<SearchResultList items={featured.items} type="horizontal" ariaLabelledBy={id} />
-		</div>
+		<SearchResultList items={featured.items} type="horizontal" ariaLabelledBy={id} />
 	</section>
 {/each}
 
@@ -68,6 +68,10 @@
 
 	.page-header {
 		min-height: calc(38.2vh + var(--banner-height, 0));
+
+		@variant @md {
+			padding-inline: calc(var(--spacing) * 14);
+		}
 
 		@variant @5xl {
 			display: grid;
