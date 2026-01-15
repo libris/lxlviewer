@@ -4,7 +4,8 @@ import {
 	type FramedData,
 	JsonLd,
 	LensType,
-	type Link
+	type Link,
+	Owl
 } from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
 import { LxlLens } from '$lib/types/display';
@@ -210,9 +211,9 @@ interface InvalidProperty {
 }
 
 interface PropertyChainAxiom {
-	propertyChainAxiom: (ObjectProperty | DatatypeProperty)[];
-	label: string; // e.g. "instanceOf language"
-	_key: string; // e.g. "instanceOf.language"
+	[Owl.PROPERTY_CHAIN_AXIOM]: { [JsonLd.LIST]: (ObjectProperty | DatatypeProperty)[] }[];
+	// label: string; // e.g. "instanceOf language"
+	// _key: string; // e.g. "instanceOf.language"
 }
 
 export interface ApiItemDebugInfo {

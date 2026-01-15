@@ -178,12 +178,19 @@ export function displayMappings(
 
 				let label = '';
 				// FIXME
-				if (Owl.PROPERTY_CHAIN_AXIOM in m.property && !(JsonLd.TYPE in m.property)) {
+				if (
+					Owl.PROPERTY_CHAIN_AXIOM in (m.property || []) &&
+					!(JsonLd.TYPE in (m.property || []))
+				) {
 					label = label = m.alias
 						? translate(`facet.${m.alias}`)
 						: m.property[Owl.PROPERTY_CHAIN_AXIOM]
-								.map((p) => toString(displayUtil.lensAndFormat(p, LensType.Token, locale)))
-								.join('/');
+								.map((pcas) =>
+									pcas[JsonLd.LIST]
+										.map((p) => toString(displayUtil.lensAndFormat(p, LensType.Token, locale)))
+										.join('/')
+								)
+								.join(', ');
 				} else {
 					label = m.alias
 						? translate(`facet.${m.alias}`)
