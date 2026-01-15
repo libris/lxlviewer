@@ -511,6 +511,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
         & :global(.property-label) {
             color: var(--color-body);
+            font-style: italic;
         }
 
         & :global(.property-label):not(:empty)::after {

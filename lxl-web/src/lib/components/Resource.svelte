@@ -606,6 +606,7 @@
 
 		& :global(.property-label) {
 			color: var(--color-body);
+			font-style: italic;
 		}
 
 		& :global(.property-label):not(:empty)::after {
