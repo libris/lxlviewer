@@ -29,6 +29,9 @@ export const createGhostGroup = (tr: Transaction) => {
 	const validQualifier = getValidQualifier(tr.state, prevNode);
 	if (!validQualifier) return tr;
 
+	// check if in edit mode
+	if (isEditingQualifier(tr.state, prevNode)) return tr;
+
 	if (prevNode.name === 'QualifierOperator') {
 		const operator = tr.state.sliceDoc(prevNode.from, prevNode.to);
 		if (operator === ':' || operator === '=') {
@@ -465,4 +468,14 @@ export function isValidQualifier(state: EditorState, node: SyntaxNode | false): 
 const getValidQualifier = (state: EditorState, node: SyntaxNode) => {
 	const parent = getParent(node, 'Qualifier');
 	return parent && isValidQualifier(state, parent.node) ? parent : null;
+};
+
+export const isEditingQualifier = (state: EditorState, node: SyntaxNode) => {
+	const { editing } = state.field(qualifierStateField);
+	if (!editing) return false;
+
+	const parent = getParent(node, 'Qualifier');
+	if (!parent) return false;
+
+	return parent.node.from === editing.from;
 };
