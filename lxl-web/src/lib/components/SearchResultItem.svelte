@@ -52,7 +52,7 @@
 			class="resource-link flex-col items-stretch outline-0 not-first:flex hover:[&_h2]:underline focus:[&_h2]:underline"
 		>
 			{@render image()}
-			<p class="text-subtle mb-0.5 text-xs @3xs:text-[0.8125rem]">
+			<p class="text-subtle mb-0.5 text-xs">
 				<TypeIcon type={data.typeForIcon} class="text-3xs @3xs:text-2xs inline" />
 				{#if data.typeStr}
 					<span class="font-medium">
@@ -67,11 +67,11 @@
 				{/each}
 			</p>
 			<hgroup>
-				<h2 class={['line-clamp-3 text-sm font-medium @3xs:text-base']}>
+				<h2 class={['@4xs:text-[0.9375rem]! line-clamp-2 text-sm font-medium']}>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
 				{#if data['web-card-header-extra']?._display}
-					<p class="text-subtle text-[0.8125rem line-clamp-3 @3xs:text-[0.8125rem]">
+					<p class="text-subtle line-clamp-2 text-xs">
 						{#each data['web-card-header-extra']?._display as displayObj, index (index)}
 							<span>
 								<DecoratedData data={displayObj} showLabels="defaultOn" />
@@ -85,7 +85,7 @@
 	{#if data['card-body']?._display}
 		<div class="decorated-card-body mt-1 mb-1.5">
 			{#each data['card-body']?._display as obj, index (index)}
-				<div class="flex flex-col items-center text-center @3xs:text-sm">
+				<div class="@4xs:text-sm flex flex-col items-center text-center">
 					<DecoratedData data={obj} showLabels="never" block limit={{ contribution: 3 }} />
 				</div>
 			{/each}
