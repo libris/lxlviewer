@@ -1,6 +1,7 @@
 import { query } from '$app/server';
 import type { LocaleCode } from '$lib/i18n/locales';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
+
 export const getFeaturedSearches = query(async () => {
 	const FEATURED_QUERIES: {
 		headingByLang: Record<LocaleCode, string>;
@@ -14,7 +15,7 @@ export const getFeaturedSearches = query(async () => {
 				'/find?_q=language%3A"lang%3Aswe"+category:"saogf:Sk%25C3%25B6nlitteratur"&_sort=-%40reverse.instanceOf.publication.year',
 			previewParams: {
 				_q: 'language:"lang:swe" category:"saogf:Sk%C3%B6nlitteratur" existsImage',
-				_limit: 12,
+				_limit: 10,
 				_sort: '-@reverse.instanceOf.publication.year'
 			}
 		},
@@ -24,7 +25,7 @@ export const getFeaturedSearches = query(async () => {
 				'/find?_q=category:"saogf:Ej%2520sk%25C3%25B6nlitteratur"+yearPublished%3A-2026&_sort=-%40reverse.instanceOf.publication.year',
 			previewParams: {
 				_q: 'category:"saogf:Ej%20sk%C3%B6nlitteratur" yearPublished:-2026 existsImage',
-				_limit: 12,
+				_limit: 10,
 				_sort: '-@reverse.instanceOf.publication.year'
 			}
 		},

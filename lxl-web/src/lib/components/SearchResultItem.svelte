@@ -14,7 +14,9 @@
 </script>
 
 {#snippet image()}
-	<div class="mx-auto mb-2 flex aspect-square w-full max-w-xs items-end justify-center">
+	<div
+		class="resource-image mx-auto mb-2 flex aspect-square w-full items-end justify-center rounded-lg bg-neutral-100 p-3"
+	>
 		{#if data.image}
 			<img
 				src={data.image.url}
@@ -47,7 +49,7 @@
 	<header>
 		<a
 			href={page.data.localizeHref(relativizeUrl(data['@id']))}
-			class="flex flex-col items-stretch outline-0 hover:[&_h2]:underline focus:[&_h2]:underline"
+			class="resource-link flex-col items-stretch outline-0 not-first:flex hover:[&_h2]:underline focus:[&_h2]:underline"
 		>
 			{@render image()}
 			<p class="text-subtle mb-0.5 text-xs @3xs:text-[0.8125rem]">

@@ -21,14 +21,16 @@
 />
 
 <header class="page-header bg-primary-100 flex items-center px-3 @sm:px-6">
-	<div class="col-start-2 col-end-3 mb-4 w-full max-w-7xl">
+	<div class="col-start-2 col-end-3 mx-auto mb-4 w-full max-w-7xl">
 		<hgroup>
 			<h1
-				class="mb-2 text-2xl @md:text-[1.6875rem] @3xl:text-4xl @3xl:tracking-[-0.0125rem] @7xl:text-[3.25rem]"
+				class="mb-2 text-2xl @md:text-[1.6875rem] @3xl:text-4xl @3xl:tracking-[-0.0125rem] @7xl:text-[3.25rem] @min-[120rem]:text-[3.625rem]"
 			>
 				{page.data.t('home.pageHeadingTitle')}
 			</h1>
-			<p class="text-body/87.5 max-w-[40ch] text-sm @3xl:text-base @7xl:max-w-none">
+			<p
+				class="text-body/87.5 max-w-[40ch] text-sm @3xl:text-base @7xl:max-w-none @min-[120rem]:text-lg"
+			>
 				{page.data.t('home.pageHeadingDescription')}
 			</p>
 		</hgroup>
@@ -36,9 +38,11 @@
 </header>
 {#each await getFeaturedSearches() as featured, index (featured.headingByLang.sv)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
-	<section class="my-3 flex flex-col gap-3 @sm:my-6 @sm:gap-6 @5xl:my-8 @5xl:gap-8">
+	<section
+		class="@5xl-my-8 my-3 flex flex-col gap-1 @sm:my-6 @sm:gap-2 @5xl:my-8 @5xl:gap-4.5 [&:last-of-type]:pb-6 @5xl:[&:last-of-type]:pb-10"
+	>
 		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
-			<h2 class="text-lg @lg:text-xl @3xl:text-2xl" {id}>
+			<h2 class="text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem]" {id}>
 				<a
 					href={page.data.localizeHref(featured.findHref)}
 					class="ease-in-out hover:underline hover:[&>svg]:translate-x-1"
@@ -59,7 +63,9 @@
 				</a>
 			{/if}
 		</header>
-		<SearchResultList items={featured.items} type="horizontal" ariaLabelledBy={id} />
+		<div class="featured-list-container">
+			<SearchResultList items={featured.items} type="horizontal" ariaLabelledBy={id} />
+		</div>
 	</section>
 {/each}
 
@@ -91,5 +97,74 @@
 
 	h2 {
 		font-family: 'KB Serif Display 06';
+	}
+
+	.featured-list-container {
+		& :global(.resource-link:hover .resource-image > img) {
+			@apply scale-105 transition-all;
+		}
+
+		& :global(.horizontal-list > ul) {
+			gap: calc(var(--spacing) * 3);
+
+			@variant @sm {
+				gap: calc(var(--spacing) * 6);
+			}
+
+			& > :global(li) {
+				min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 3) / 2.5));
+
+				@variant @xl {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 4) / 3.5));
+				}
+				@variant @3xl {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5) / 4.5));
+				}
+
+				@variant @5xl {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5 - 80px) / 5.5));
+				}
+
+				@variant @7xl {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 4 - 80px) / 4.5));
+				}
+				@container (width >= 80rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5 - 80px) / 5.5));
+				}
+				@container (width >= 100rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 6 - 80px) / 6.5));
+				}
+				@container (width >= 120rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 7 - 80px) / 7.5));
+				}
+				@container (width >= 140rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 8 - 80px) / 8.5));
+				}
+				@container (width >= 160rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 9 - 80px) / 9.5));
+				}
+				@container (width >= 180rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 9 - 160px) / 10));
+				}
+				&:global(:first-child) {
+					margin-left: calc(var(--spacing) * 3);
+					@variant @sm {
+						margin-left: calc(var(--spacing) * 6);
+					}
+					@variant @5xl {
+						margin-left: calc(var(--spacing) * 20);
+					}
+				}
+				&:global(:last-child) {
+					margin-right: calc(var(--spacing) * 3);
+					@variant @sm {
+						margin-right: calc(var(--spacing) * 6);
+					}
+					@variant @5xl {
+						margin-right: calc(var(--spacing) * 20);
+					}
+				}
+			}
+		}
 	}
 </style>

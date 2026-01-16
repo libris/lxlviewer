@@ -53,22 +53,19 @@
 	<div class="horizontal-list @container relative">
 		<ul
 			aria-labelledby={ariaLabelledBy}
-			class="scrollbar-hidden flex gap-3 overflow-x-auto overscroll-x-contain px-3 sm:px-6 @3xl:px-0"
+			class="scrollbar-hidden flex overflow-x-auto overscroll-x-contain"
 			bind:this={ulElement}
 			bind:clientWidth
 			onscroll={updateDisabledScrollButtons}
 		>
 			{#each items as item (item['@id'])}
-				<!-- TODO: Rework width attributes for more exact values -->
-				<li
-					class="min-w-[33%] flex-0 overflow-x-hidden text-center text-xs @lg:min-w-[26%] @3xl:min-w-[21%] @5xl:min-w-[17%]"
-				>
+				<li class="min-w-5xs gap-3 overflow-x-hidden text-center text-xs">
 					<SearchResultItem data={item} />
 				</li>
 			{/each}
 		</ul>
 		<button
-			class="scroll-button btn btn-icon absolute top-[calc(33cqw-44px)] left-1 hidden shadow-lg disabled:opacity-50 disabled:shadow-none @lg:top-[calc(26cqw-44px)] @3xl:top-[calc(21cqw-44px)] @5xl:top-[calc(17cqw-44px)] noscript:hidden"
+			class="scroll-button btn btn-icon absolute left-1 hidden shadow-lg disabled:opacity-50 disabled:shadow-none noscript:hidden"
 			onclick={scrollLeft}
 			disabled={disabledLeftScrollButton}
 		>
