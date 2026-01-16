@@ -79,9 +79,6 @@
 		--search-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
 		--search-padding: 0 calc(var(--spacing) * 2);
 	}
-	@variant 3xl {
-		--app-bar-height: 76px;
-	}
 }
 
 @theme inline {

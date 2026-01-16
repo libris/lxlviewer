@@ -413,10 +413,6 @@
 				outline: 4px solid var(--color-primary-200);
 			}
 		}
-
-		@variant 3xl {
-			margin-block: calc(var(--spacing) * 3.5);
-		}
 	}
 
 	.action {
