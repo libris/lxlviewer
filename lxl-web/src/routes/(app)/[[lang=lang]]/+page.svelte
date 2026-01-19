@@ -39,10 +39,13 @@
 {#each await getFeaturedSearches() as featured, index (featured.headingByLang.sv)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
-		class="@5xl-my-8 my-3 flex flex-col gap-1 @sm:my-6 @sm:gap-2 @5xl:my-8 @5xl:gap-4.5 [&:last-of-type]:pb-6 @5xl:[&:last-of-type]:pb-10"
+		class="@5xl-my-8 my-3 flex flex-col gap-1 last-of-type:pb-6 @sm:my-6 @sm:gap-2 @5xl:my-8 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
 	>
 		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
-			<h2 class="text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem]" {id}>
+			<h2
+				class="text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[120rem]:text-3xl"
+				{id}
+			>
 				<a
 					href={page.data.localizeHref(featured.findHref)}
 					class="ease-in-out hover:underline hover:[&>svg]:translate-x-1"
@@ -73,13 +76,14 @@
 	@reference 'tailwindcss';
 
 	.page-header {
-		min-height: calc(38.2vh + var(--banner-height, 0));
+		min-height: calc(38.2vh - var(--app-bar-height) - var(--banner-height, 0));
 
 		@variant @md {
 			padding-inline: calc(var(--spacing) * 14);
 		}
 
 		@variant @5xl {
+			min-height: calc(38.2vh - var(--banner-height, 0));
 			display: grid;
 			grid-template-columns: var(--search-grid-template-columns);
 			gap: var(--search-gap);
@@ -100,8 +104,45 @@
 	}
 
 	.featured-list-container {
-		& :global(.resource-link:hover .resource-image > img) {
-			@apply scale-105 transition-all;
+		position: relative;
+
+		@variant @5xl {
+			&::before,
+			&::after {
+				content: '';
+				top: 0;
+				width: 5rem;
+				height: 100%;
+				position: absolute;
+				pointer-events: none;
+			}
+
+			&::before {
+				left: 0;
+				background: linear-gradient(to right, rgba(255, 255, 255, 0.875), rgba(255, 255, 255, 0));
+			}
+
+			&::after {
+				right: 0;
+				background: linear-gradient(to left, rgba(255, 255, 255, 0.875), rgba(255, 255, 255, 0));
+			}
+		}
+
+		& :global(.resource-link .resource-image) {
+			overflow: hidden;
+			@apply transition-colors;
+
+			& > :global(img) {
+				@apply transition-all;
+			}
+		}
+
+		& :global(.resource-link:hover .resource-image) {
+			@apply bg-neutral-100/50;
+			& > :global(img) {
+				@apply scale-105;
+				filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.175));
+			}
 		}
 
 		& :global(.horizontal-list > ul) {
@@ -163,6 +204,25 @@
 					@variant @5xl {
 						margin-right: calc(var(--spacing) * 20);
 					}
+				}
+			}
+		}
+
+		@variant @5xl {
+			& :global(.scroll-button) {
+				width: calc(var(--spacing) * 13);
+				height: calc(var(--spacing) * 13);
+
+				&:global(:disabled) {
+					@apply bg-neutral-100;
+					@apply text-neutral-400/50;
+				}
+				&:global(.left) {
+					margin-left: calc(var(--spacing) * 4);
+				}
+
+				&:global(.right) {
+					margin-right: calc(var(--spacing) * 4);
 				}
 			}
 		}

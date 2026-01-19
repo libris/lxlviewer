@@ -342,6 +342,34 @@
 		}
 	}
 
+	.btn-scroll {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: calc(infinity * 1px);
+		width: calc(var(--spacing) * 11);
+		height: calc(var(--spacing) * 11);
+		box-shadow:
+			0 2px 24px rgba(0, 0, 0, 0.3),
+			0 3px 16px rgba(0, 0, 0, 0.22);
+		@apply bg-neutral-800;
+		@apply text-page;
+		@apply transition-all;
+
+		&:disabled {
+			@apply bg-neutral-800/20;
+			@apply text-page/75;
+			@apply shadow-none;
+			cursor: default;
+		}
+		&:not(:disabled) {
+			&:hover,
+			&:focus-visible {
+				@apply bg-neutral-600;
+			}
+		}
+	}
+
 	.tab {
 		padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
 		min-height: calc(var(--spacing) * 7.5);
@@ -403,6 +431,14 @@
 	}
 	-ms-overflow-style: none;
 	scrollbar-width: none;
+}
+
+@utility drag-none {
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
+	-moz-user-drag: none;
+	-o-user-drag: none;
+	user-select: none;
 }
 
 /* OLD THEME */

@@ -49,11 +49,11 @@
 	<header>
 		<a
 			href={page.data.localizeHref(relativizeUrl(data['@id']))}
-			class="resource-link flex-col items-stretch outline-0 not-first:flex hover:[&_h2]:underline focus:[&_h2]:underline"
+			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
 			{@render image()}
 			<p class="text-subtle mb-0.5 text-xs">
-				<TypeIcon type={data.typeForIcon} class="text-3xs @3xs:text-2xs inline" />
+				<TypeIcon type={data.typeForIcon} class="text-3xs @4xs:text-2xs inline" />
 				{#if data.typeStr}
 					<span class="font-medium">
 						{data.typeStr}
@@ -67,7 +67,7 @@
 				{/each}
 			</p>
 			<hgroup>
-				<h2 class={['@4xs:text-[0.9375rem]! line-clamp-2 text-sm font-medium']}>
+				<h2 class={['@4xs:text-[0.9375rem]! line-clamp-2 text-sm font-medium hover:underline']}>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
 				{#if data['web-card-header-extra']?._display}
@@ -83,7 +83,7 @@
 		</a>
 	</header>
 	{#if data['card-body']?._display}
-		<div class="decorated-card-body mt-1 mb-1.5">
+		<div class="4xs:text-sm decorated-card-body mt-1 mb-1.5 text-xs">
 			{#each data['card-body']?._display as obj, index (index)}
 				<div class="@4xs:text-sm flex flex-col items-center text-center">
 					<DecoratedData data={obj} showLabels="never" block limit={{ contribution: 3 }} />
@@ -91,7 +91,7 @@
 			{/each}
 		</div>
 	{/if}
-	<footer class="@3xs:text-[0.8125rem]">
+	<footer class="@4xs:text-[0.8125rem] text-xs">
 		{#each data['web-card-footer']?._display as obj, index (index)}
 			{#if 'hasInstance' in obj}
 				{@const instances = getInstanceData(obj.hasInstance)}

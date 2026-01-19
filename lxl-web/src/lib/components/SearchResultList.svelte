@@ -50,7 +50,7 @@
 </script>
 
 {#snippet horizontalList()}
-	<div class="horizontal-list @container relative">
+	<div class="horizontal-list relative">
 		<ul
 			aria-labelledby={ariaLabelledBy}
 			class="scrollbar-hidden flex overflow-x-auto overscroll-x-contain"
@@ -59,24 +59,29 @@
 			onscroll={updateDisabledScrollButtons}
 		>
 			{#each items as item (item['@id'])}
-				<li class="min-w-5xs gap-3 overflow-x-hidden text-center text-xs">
+				<li class="overflow-x-hidden text-center">
 					<SearchResultItem data={item} />
 				</li>
 			{/each}
 		</ul>
 		<button
-			class="scroll-button btn btn-icon absolute left-1 hidden shadow-lg disabled:opacity-50 disabled:shadow-none noscript:hidden"
+			class="scroll-button left btn btn-scroll absolute left-0 z-10 ml-2 opacity-0 transition-all noscript:hidden
+			"
 			onclick={scrollLeft}
 			disabled={disabledLeftScrollButton}
+			aria-hidden="true"
+			tabindex="-1"
 		>
-			<IconChevronLeft class="size-5" />
+			<IconChevronLeft class="-ml-px size-5 @5xl:size-6 " />
 		</button>
 		<button
-			class="scroll-button btn btn-icon absolute top-[calc(33cqw-44px)] right-1 hidden shadow-lg disabled:opacity-50 disabled:shadow-none @lg:top-[calc(26cqw-44px)] @3xl:top-[calc(21cqw-44px)] @5xl:top-[calc(17cqw-44px)] noscript:hidden"
+			class="scroll-button right btn btn-scroll absolute right-0 z-10 mr-2 opacity-0 transition-all noscript:hidden"
 			onclick={scrollRight}
 			disabled={disabledRightScrollButton}
+			aria-hidden="true"
+			tabindex="-1"
 		>
-			<IconChevronRight class="size-5" />
+			<IconChevronRight class="ml-px size-5 @5xl:size-6" />
 		</button>
 	</div>
 {/snippet}
@@ -86,12 +91,14 @@
 {/if}
 
 <style lang="postcss">
+	@reference "tailwindcss";
+
 	.horizontal-list {
 		@media (any-pointer: fine) and (scripting: enabled) {
 			&:hover,
 			&:focus-within {
 				.scroll-button {
-					display: flex;
+					opacity: 100%;
 				}
 			}
 		}
@@ -99,5 +106,9 @@
 		& :global(.contribution-role) {
 			display: none;
 		}
+	}
+
+	.scroll-button {
+		top: calc(50% - var(--spacing) * 11);
 	}
 </style>
