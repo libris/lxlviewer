@@ -43,8 +43,6 @@ export const getFeaturedSearches = query(async () => {
 	const previewSearchResults = await Promise.all(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		Object.entries(FEATURED_QUERIES).map(async ([_, { previewParams }]) => {
-			const params = { ...previewParams };
-			console.log('params', params);
 			return getSearchResults(previewParams);
 		})
 	);
