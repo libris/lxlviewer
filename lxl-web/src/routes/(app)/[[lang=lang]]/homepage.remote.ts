@@ -22,9 +22,9 @@ export const getFeaturedSearches = query(async () => {
 		{
 			headingByLang: { sv: 'Ny facklitteratur', en: 'New non-fiction' },
 			findHref:
-				'/find?_q=category:"saogf:Ej%2520sk%25C3%25B6nlitteratur"+yearPublished%3A-2026&_sort=-%40reverse.instanceOf.publication.year',
+				'/find?_q=category:"saogf:Facklitteratur"+yearPublished%3A-2026&_sort=-%40reverse.instanceOf.publication.year',
 			previewParams: {
-				_q: 'category:"saogf:Ej%20sk%C3%B6nlitteratur" yearPublished:-2026 existsImage',
+				_q: 'category:"saogf:Facklitteratur" yearPublished:-2026 existsImage',
 				_limit: 10,
 				_sort: '-@reverse.instanceOf.publication.year'
 			}
