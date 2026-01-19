@@ -263,6 +263,9 @@ export default {
     },
     missingTypes() {
       const missing = [];
+      if (this.isLocked) {
+        return missing;
+      }
       const validateByPath = this.settings.validateTypesByPath[this.inspector.recordType];
         if (validateByPath && Object.keys(validateByPath).includes(this.path)) {
           validateByPath[this.path].forEach(t => {
