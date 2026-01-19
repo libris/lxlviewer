@@ -6,7 +6,6 @@
 	import type { HoldingsData } from '$lib/types/holdings';
 	import SiteFooter from '../SiteFooter.svelte';
 	import { USE_HOLDING_PANE } from '$lib/constants/panels';
-	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import LeadingPane from '$lib/components/find/LeadingPane.svelte';
@@ -32,9 +31,6 @@
 			: `${page.data.t('search.searchResults')} - ${siteName}`
 	);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
-	const refinedLibraries = $derived(
-		getLibraryIdsFromMapping([searchResult.mapping, page.data.subsetMapping])
-	);
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
 
 	const HoldingsComponent = $derived(
@@ -114,7 +110,7 @@
 		{#if holdings && holdingsParam}
 			<HoldingsComponent close={handleCloseHoldings}>
 				{#snippet title()}
-					<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
+					<span>{page.data.t('holdings.findAtLibrary')}</span>
 				{/snippet}
 				{#await holdings}
 					<div class="m-6 flex h-full items-center justify-center">
@@ -123,7 +119,7 @@
 						</span>
 					</div>
 				{:then holdings}
-					<HoldingsContent {holdings} {refinedLibraries} libOrgs={page.data.refinedOrgs}>
+					<HoldingsContent {holdings}>
 						{#snippet card()}
 							{#if modalCard}
 								<SearchCard item={modalCard} />

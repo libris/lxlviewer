@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type {
-		BibIdData,
 		HolderLinks,
 		HoldingLinks,
 		LibraryWithLinks,
+		LibraryWithLinksAndInstances,
 		UnknownLibrary
 	} from '$lib/types/holdings';
 	import { JsonLd } from '$lib/types/xl';
@@ -13,8 +13,7 @@
 	import LoanStatus from './LoanStatus.svelte';
 
 	type Props = {
-		holder: LibraryWithLinks | UnknownLibrary;
-		instances: BibIdData;
+		holder: LibraryWithLinksAndInstances | UnknownLibrary;
 		hidden?: boolean;
 	};
 
@@ -24,7 +23,7 @@
 		return '_links' in holder && 'sigel' in holder;
 	}
 
-	const { holder, instances, hidden = false }: Props = $props();
+	const { holder, hidden = false }: Props = $props();
 
 	const holderLinks: HolderLinks | undefined = $state(
 		isLibraryWithLinks(holder) ? holder._links : undefined
@@ -32,7 +31,7 @@
 
 	let holdingLinks: Record<string, HoldingLinks> = $state({});
 	if (isLibraryWithLinks(holder)) {
-		for (const [key, bibIdObj] of Object.entries(instances)) {
+		for (const [key, bibIdObj] of Object.entries(holder._instances)) {
 			holdingLinks[key] = createHoldingLinks(bibIdObj, holder, page.data.locale);
 		}
 	}
@@ -100,7 +99,7 @@
 							</a>
 						{/if}
 						{#if holding.itemStatus?.[0]}
-							{@const bibIdObj = instances[key]}
+							{@const bibIdObj = holder?._instances?.[key]}
 							{#if bibIdObj}
 								<LoanStatus sigel={holder.sigel} {bibIdObj} />
 							{/if}

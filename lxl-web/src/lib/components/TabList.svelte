@@ -4,7 +4,9 @@
 	export type Tab = {
 		label: string;
 		id: string;
-		content?: Snippet;
+		active?: boolean;
+		contentData?: unknown;
+		content?: Snippet<unknown>;
 		icon?: Component;
 	};
 
@@ -14,7 +16,12 @@
 	};
 
 	const { tabs, ariaLabel = 'tablist' }: TabList = $props();
-	let activeTabIndex = $state(0);
+	let activeTabIndex = $state(
+		Math.max(
+			0,
+			tabs.findIndex((tab) => tab.active)
+		)
+	);
 
 	function handleKeyDown(e: KeyboardEvent) {
 		const key = e.key;
@@ -85,7 +92,10 @@
 				aria-labelledby={`tab-${tab.id}`}
 				class={[!isActive && 'hidden']}
 			>
-				{@render tab.content()}
+				{#if isActive}
+					<!-- don't render hidden content -->
+					{@render tab.content(tab.contentData)}
+				{/if}
 			</div>
 		{/if}
 	{/each}
