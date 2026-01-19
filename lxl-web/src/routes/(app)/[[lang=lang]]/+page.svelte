@@ -39,7 +39,7 @@
 {#each await getFeaturedSearches() as featured, index (featured.headingByLang.sv)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
-		class="@5xl-my-8 my-3 flex flex-col gap-1 last-of-type:pb-6 @sm:my-6 @sm:gap-2 @5xl:my-8 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
+		class="@5xl-my-8 my-3 flex flex-col gap-3 last-of-type:pb-6 @sm:my-6 @lg:gap-4.5 @5xl:my-8 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
 	>
 		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
 			<h2
@@ -48,18 +48,25 @@
 			>
 				<a
 					href={page.data.localizeHref(featured.findHref)}
-					class="ease-in-out hover:underline hover:[&>svg]:translate-x-1"
+					class={[
+						'ease-in-out hover:underline hover:[&>svg]:translate-x-1',
+						!featured.showAllLabelByLang &&
+							'[&>svg]transition-all [&>svg]:mb-0.5 [&>svg]:opacity-0 hover:[&>svg]:opacity-100 focus-visible:[&>svg]:opacity-100'
+					]}
 				>
 					{featured.headingByLang[page.data.locale]}
-					{#if !featured.showAllLabelByLang}
-						<IconArrowRight class="ml-1 inline size-4 transition-transform" />
-					{/if}
+					<IconArrowRight
+						class={[
+							'mx-0.5 inline size-4 transition-transform @5xl:size-5',
+							!featured.showAllLabelByLang && 'opacity-0 transition-all hover:opacity-100'
+						]}
+					/>
 				</a>
 			</h2>
 			{#if featured.showAllLabelByLang}
 				<a
 					href={page.data.localizeHref(featured.findHref)}
-					class="text-sm hover:underline hover:[&>svg]:translate-x-1"
+					class="btn btn-ghost text-sm hover:underline hover:[&>svg]:translate-x-0.5 focus-visible:[&>svg]:translate-x-0.5"
 				>
 					{featured.showAllLabelByLang[page.data.locale]}
 					<IconArrowRight class="ml-1 inline-flex size-4 transition-transform" />
@@ -138,7 +145,6 @@
 		}
 
 		& :global(.resource-link:hover .resource-image) {
-			@apply bg-neutral-100/50;
 			& > :global(img) {
 				@apply scale-105;
 				filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.175));
