@@ -309,6 +309,23 @@
 		}
 	}
 
+	.btn-ghost {
+		color: var(--color-body);
+		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3);
+		@apply rounded-full;
+
+		&:not(:disabled) {
+			&:hover,
+			&:focus-visible {
+				background-color: var(--color-primary-100);
+			}
+
+			& svg {
+				color: var(--color-subtle);
+			}
+		}
+	}
+
 	.btn-cta {
 		background-color: var(--color-accent);
 		color: var(--color-white);

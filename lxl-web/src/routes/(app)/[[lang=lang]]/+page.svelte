@@ -74,7 +74,7 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			<SearchResultList items={featured.items} type="horizontal" ariaLabelledBy={id} />
+			<SearchResultList items={featured.items} type="horizontal" ariaLabelledBy={id} withGradient />
 		</div>
 	</section>
 {/each}
@@ -111,30 +111,6 @@
 	}
 
 	.featured-list-container {
-		position: relative;
-
-		@variant @5xl {
-			&::before,
-			&::after {
-				content: '';
-				top: 0;
-				width: 5rem;
-				height: 100%;
-				position: absolute;
-				pointer-events: none;
-			}
-
-			&::before {
-				left: 0;
-				background: linear-gradient(to right, rgba(255, 255, 255, 0.875), rgba(255, 255, 255, 0));
-			}
-
-			&::after {
-				right: 0;
-				background: linear-gradient(to left, rgba(255, 255, 255, 0.875), rgba(255, 255, 255, 0));
-			}
-		}
-
 		& :global(.resource-link .resource-image) {
 			overflow: hidden;
 			@apply transition-colors;

@@ -5,10 +5,15 @@
 	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';
 
-	type Props = { items: SearchResultItemType[]; type: 'horizontal'; ariaLabelledBy?: string };
+	type Props = {
+		items: SearchResultItemType[];
+		type: 'horizontal';
+		ariaLabelledBy?: string;
+		withGradient?: boolean;
+	};
 
 	const SCROLL_AMOUNT = 0.85;
-	let { items, type, ariaLabelledBy }: Props = $props();
+	let { items, type, ariaLabelledBy, withGradient }: Props = $props();
 	let ulElement: HTMLUListElement | undefined;
 	let clientWidth: number | undefined = $state();
 	let disabledLeftScrollButton = $state(true);
@@ -50,7 +55,7 @@
 </script>
 
 {#snippet horizontalList()}
-	<div class="horizontal-list relative">
+	<div class={['horizontal-list relative', withGradient && 'with-gradient']}>
 		<ul
 			aria-labelledby={ariaLabelledBy}
 			class="scrollbar-hidden flex overflow-x-auto overscroll-x-contain"
@@ -65,7 +70,7 @@
 			{/each}
 		</ul>
 		<button
-			class="scroll-button left btn btn-scroll absolute left-0 z-10 ml-2 opacity-0 transition-all noscript:hidden
+			class="scroll-button left btn btn-scroll absolute left-0 z-30 ml-2 opacity-0 transition-all noscript:hidden
 			"
 			onclick={scrollLeft}
 			disabled={disabledLeftScrollButton}
@@ -75,7 +80,7 @@
 			<IconChevronLeft class="-ml-px size-5 @5xl:size-6 " />
 		</button>
 		<button
-			class="scroll-button right btn btn-scroll absolute right-0 z-10 mr-2 opacity-0 transition-all noscript:hidden"
+			class="scroll-button right btn btn-scroll absolute right-0 z-30 mr-2 opacity-0 transition-all noscript:hidden"
 			onclick={scrollRight}
 			disabled={disabledRightScrollButton}
 			aria-hidden="true"
@@ -105,6 +110,30 @@
 		& :global(.agent-lifespan),
 		& :global(.contribution-role) {
 			display: none;
+		}
+
+		&.with-gradient {
+			@variant @5xl {
+				&::before,
+				&::after {
+					content: '';
+					top: 0;
+					width: 5rem;
+					height: 100%;
+					position: absolute;
+					@apply z-20;
+				}
+
+				&::before {
+					left: 0;
+					background: linear-gradient(to right, rgba(255, 255, 255, 0.875), rgba(255, 255, 255, 0));
+				}
+
+				&::after {
+					right: 0;
+					background: linear-gradient(to left, rgba(255, 255, 255, 0.875), rgba(255, 255, 255, 0));
+				}
+			}
 		}
 	}
 
