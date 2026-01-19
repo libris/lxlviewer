@@ -1,12 +1,14 @@
 import { query } from '$app/server';
-import type { LocaleCode } from '$lib/i18n/locales';
+import { getSupportedLocale, type LocaleCode } from '$lib/i18n/locales';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
+import { SearchResultsSchema } from '$lib/schemas/searchResult';
+import * as v from 'valibot';
 
-export const getFeaturedSearches = query(async () => {
+export const getFeaturedSearches = query(v.optional(v.string()), async (lang) => {
 	const FEATURED_QUERIES: {
 		headingByLang: Record<LocaleCode, string>;
 		findHref: string;
-		previewParams: Record<string, string | number | boolean>;
+		previewParams: v.InferInput<typeof SearchResultsSchema>;
 		showAllLabelByLang?: Record<LocaleCode, string>;
 	}[] = [
 		{
@@ -39,6 +41,7 @@ export const getFeaturedSearches = query(async () => {
 			showAllLabelByLang: { sv: 'Visa fler titlar', en: 'Show more titles' }
 		}
 	];
+	const locale = getSupportedLocale(lang);
 
 	const previewSearchResults = await Promise.all(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -47,10 +50,14 @@ export const getFeaturedSearches = query(async () => {
 		})
 	);
 
-	const featuredSearches = FEATURED_QUERIES.map((item, index) => ({
-		...item,
-		items: previewSearchResults[index].items
-	}));
+	const featuredSearches = FEATURED_QUERIES.map(
+		({ headingByLang, showAllLabelByLang, ...rest }, index) => ({
+			...rest,
+			items: previewSearchResults[index].items,
+			heading: headingByLang[locale],
+			showAllLabel: showAllLabelByLang?.[locale]
+		})
+	);
 
 	return featuredSearches;
 });

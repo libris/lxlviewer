@@ -116,7 +116,7 @@
 >
 	{page.data.t('header.skipToContent')}
 </a>
-<header class="sticky top-0 z-20">
+<header class="sticky top-0 z-40">
 	{#if !dismissedBanner}
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}

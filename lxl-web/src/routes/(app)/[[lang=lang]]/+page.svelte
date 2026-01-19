@@ -5,8 +5,11 @@
 	import { getFeaturedSearches } from './homepage.remote';
 	import SearchResultList from '$lib/components/SearchResultList.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right';
+	import type { Locales } from '$lib/i18n/locales';
 
 	const uid = $props.id();
+
+	const featuredSearches = $derived(await getFeaturedSearches(page.data.locale as Locales));
 </script>
 
 <svelte:head>
@@ -36,7 +39,7 @@
 		</hgroup>
 	</div>
 </header>
-{#each await getFeaturedSearches() as featured, index (featured.headingByLang.sv)}
+{#each await featuredSearches as featured, index (featured.heading)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
 		class="@5xl-my-8 my-3 flex flex-col gap-3 last-of-type:pb-6 @sm:my-6 @lg:gap-4.5 @5xl:my-8 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
@@ -50,25 +53,25 @@
 					href={page.data.localizeHref(featured.findHref)}
 					class={[
 						'ease-in-out hover:underline hover:[&>svg]:translate-x-1',
-						!featured.showAllLabelByLang &&
+						!featured.showAllLabel &&
 							'[&>svg]transition-all [&>svg]:mb-0.5 [&>svg]:opacity-0 hover:[&>svg]:opacity-100 focus-visible:[&>svg]:opacity-100'
 					]}
 				>
-					{featured.headingByLang[page.data.locale]}
+					{featured.heading}
 					<IconArrowRight
 						class={[
 							'mx-0.5 inline size-4 transition-transform @5xl:size-5',
-							!featured.showAllLabelByLang && 'opacity-0 transition-all hover:opacity-100'
+							!featured.showAllLabel && 'opacity-0 transition-all hover:opacity-100'
 						]}
 					/>
 				</a>
 			</h2>
-			{#if featured.showAllLabelByLang}
+			{#if featured.showAllLabel}
 				<a
 					href={page.data.localizeHref(featured.findHref)}
 					class="btn btn-ghost text-sm hover:underline hover:[&>svg]:translate-x-0.5 focus-visible:[&>svg]:translate-x-0.5"
 				>
-					{featured.showAllLabelByLang[page.data.locale]}
+					{featured.showAllLabel}
 					<IconArrowRight class="ml-1 inline-flex size-4 transition-transform" />
 				</a>
 			{/if}
