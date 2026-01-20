@@ -141,6 +141,12 @@
 	}
 
 	.decorated-card-body {
+		& :global(div) {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
 		& :global(div[data-property='isPartOf']),
 		& :global(div[data-property='part']) {
 			display: none;
