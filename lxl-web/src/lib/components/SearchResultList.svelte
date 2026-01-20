@@ -106,6 +106,23 @@
 					opacity: 100%;
 				}
 			}
+
+			& :global(.resource-link .resource-image) {
+				overflow: hidden;
+
+				& :global(> *) {
+					@apply transition-all;
+				}
+			}
+
+			& :global(.resource-link:hover .resource-image) {
+				& :global(> *) {
+					@apply scale-105;
+				}
+				& :global(img) {
+					filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.175));
+				}
+			}
 		}
 		& :global(.agent-lifespan),
 		& :global(.contribution-role) {

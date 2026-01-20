@@ -114,22 +114,6 @@
 	}
 
 	.featured-list-container {
-		& :global(.resource-link .resource-image) {
-			overflow: hidden;
-			@apply transition-colors;
-
-			& > :global(img) {
-				@apply transition-all;
-			}
-		}
-
-		& :global(.resource-link:hover .resource-image) {
-			& > :global(img) {
-				@apply scale-105;
-				filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.175));
-			}
-		}
-
 		& :global(.horizontal-list > ul > li) {
 			&:global(:first-child) {
 				margin-left: calc(var(--spacing) * 3);

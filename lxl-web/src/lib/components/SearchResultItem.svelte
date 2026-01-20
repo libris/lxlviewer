@@ -29,17 +29,17 @@
 				]}
 			/>
 		{:else}
-			<div class="relative flex items-center justify-center">
+			<div class="relative flex aspect-square w-full items-center justify-center">
 				<img
 					src={placeholderImage}
 					alt=""
 					class={[
-						'object-cover',
+						'h-full object-cover',
 						data?.['@type'] === 'Person' ? 'rounded-full' : 'rounded-lg',
 						bookAspectRatio(data?.typeForIcon) && 'aspect-3/4'
 					]}
 				/>
-				<TypeIcon type={data.typeForIcon} class="absolute text-4xl text-neutral-300" />
+				<TypeIcon type={data.typeForIcon} class="@4xs:size-14! absolute size-10 text-neutral-300" />
 			</div>
 		{/if}
 	</div>
