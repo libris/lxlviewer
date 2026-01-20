@@ -604,12 +604,8 @@
 			content: ' ; ';
 		}
 
-		& :global(div[data-property='hasPart']) {
-			@apply pb-2;
-
-			& :global(.contribution > span) {
-				display: inline;
-			}
+		& :global(div[data-property='hasPart']:has(> span:nth-of-type(2))) {
+			@apply py-1;
 
 			& :global(> span) {
 				display: block;
@@ -619,11 +615,17 @@
 				content: ' • ';
 				color: var(--color-subtle);
 			}
+		}
 
+		& :global(div[data-property='hasPart']) {
 			& :global(.contribution) {
 				font-size: var(--text-md);
 				@apply mb-0;
 				@apply mt-0;
+			}
+
+			& :global(.contribution > span) {
+				display: inline;
 			}
 		}
 
