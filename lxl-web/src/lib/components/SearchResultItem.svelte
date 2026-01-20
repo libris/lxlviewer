@@ -45,7 +45,7 @@
 	</div>
 {/snippet}
 
-<article class="@container">
+<article class="@container min-w-36">
 	<header>
 		<a
 			href={page.data.localizeHref(relativizeUrl(data['@id']))}

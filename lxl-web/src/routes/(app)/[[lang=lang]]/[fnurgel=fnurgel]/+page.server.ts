@@ -24,13 +24,9 @@ import {
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
-import {
-	appendMyLibrariesParam,
-	asResult,
-	asSearchResultItem,
-	displayMappings
-} from '$lib/utils/search';
+import { appendMyLibrariesParam, asSearchResultItem, displayMappings } from '$lib/utils/search';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
+import { getSearchResults } from '$lib/remotes/searchResult.remote.js';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
@@ -193,17 +189,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 	/** TODO: Better error handling while fetching relations previews */
 	const relationsPreviews = await Promise.all(
 		relations.map(async (relation) => {
-			const previewRes = await fetch(relation.previewUrl);
-			const previewData = await previewRes.json();
-			return asResult(
-				previewData,
-				displayUtil,
-				vocabUtil,
-				locale,
-				env.AUXD_SECRET,
-				undefined,
-				myLibraries
-			);
+			const url = new URL(relation.previewUrl);
+			const params = Object.fromEntries(url.searchParams);
+			const preview = await getSearchResults(params);
+			return preview;
 		})
 	);
 	const relationsPreviewsByQualifierKey = relations.reduce(

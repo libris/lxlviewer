@@ -24,7 +24,7 @@
 />
 
 <header class="page-header bg-primary-100 flex items-center px-3 @sm:px-6">
-	<div class="col-start-2 col-end-3 mx-auto mb-4 w-full max-w-7xl">
+	<div class="col-start-2 col-end-3 mx-auto mt-8 mb-12 w-full max-w-7xl @5xl:mt-12 @5xl:mb-16">
 		<hgroup>
 			<h1
 				class="mb-2 text-2xl @md:text-[1.6875rem] @3xl:text-4xl @3xl:tracking-[-0.0125rem] @7xl:text-[3.25rem] @min-[120rem]:text-[3.625rem]"
@@ -130,65 +130,23 @@
 			}
 		}
 
-		& :global(.horizontal-list > ul) {
-			gap: calc(var(--spacing) * 3);
-
-			@variant @sm {
-				gap: calc(var(--spacing) * 6);
-			}
-
-			& > :global(li) {
-				min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 3) / 2.5));
-
-				@variant @xl {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 4) / 3.5));
+		& :global(.horizontal-list > ul > li) {
+			&:global(:first-child) {
+				margin-left: calc(var(--spacing) * 3);
+				@variant @sm {
+					margin-left: calc(var(--spacing) * 6);
 				}
-				@variant @3xl {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5) / 4.5));
-				}
-
 				@variant @5xl {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5 - 80px) / 5.5));
+					margin-left: calc(var(--spacing) * 20);
 				}
-
-				@variant @7xl {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 4 - 80px) / 4.5));
+			}
+			&:global(:last-child) {
+				margin-right: calc(var(--spacing) * 3);
+				@variant @sm {
+					margin-right: calc(var(--spacing) * 6);
 				}
-				@container (width >= 80rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5 - 80px) / 5.5));
-				}
-				@container (width >= 100rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 6 - 80px) / 6.5));
-				}
-				@container (width >= 120rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 7 - 80px) / 7.5));
-				}
-				@container (width >= 140rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 8 - 80px) / 8.5));
-				}
-				@container (width >= 160rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 9 - 80px) / 9.5));
-				}
-				@container (width >= 180rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 9 - 160px) / 10));
-				}
-				&:global(:first-child) {
-					margin-left: calc(var(--spacing) * 3);
-					@variant @sm {
-						margin-left: calc(var(--spacing) * 6);
-					}
-					@variant @5xl {
-						margin-left: calc(var(--spacing) * 20);
-					}
-				}
-				&:global(:last-child) {
-					margin-right: calc(var(--spacing) * 3);
-					@variant @sm {
-						margin-right: calc(var(--spacing) * 6);
-					}
-					@variant @5xl {
-						margin-right: calc(var(--spacing) * 20);
-					}
+				@variant @5xl {
+					margin-right: calc(var(--spacing) * 20);
 				}
 			}
 		}

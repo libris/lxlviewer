@@ -301,7 +301,7 @@
 										</span>
 									</a>
 								</div>
-								<div class="-mx-3 @sm:-mx-6 @3xl:mx-0">
+								<div class="relation-list @containe -mx-3 @sm:-mx-6 @3xl:mx-0">
 									<SearchResultList
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
@@ -639,5 +639,25 @@
 
 	:global([role='tabpanel'] .\@container\/card:first-of-type .search-card) {
 		border-top: none;
+	}
+
+	.relation-list {
+		@variant @max-3xl {
+			:global(ul > li:first-of-type) {
+				@apply ml-3;
+
+				@variant @sm {
+					@apply ml-6;
+				}
+			}
+
+			:global(ul > li:last-of-type) {
+				@apply mr-3;
+
+				@variant @sm {
+					@apply mr-6;
+				}
+			}
+		}
 	}
 </style>

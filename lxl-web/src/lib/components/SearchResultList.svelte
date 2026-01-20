@@ -55,7 +55,7 @@
 </script>
 
 {#snippet horizontalList()}
-	<div class={['horizontal-list relative', withGradient && 'with-gradient']}>
+	<div class={['horizontal-list relative w-full', withGradient && 'with-gradient']}>
 		<ul
 			aria-labelledby={ariaLabelledBy}
 			class="scrollbar-hidden flex overflow-x-auto overscroll-x-contain"
@@ -112,6 +112,47 @@
 			display: none;
 		}
 
+		& > ul {
+			gap: calc(var(--spacing) * 3);
+
+			@variant @sm {
+				gap: calc(var(--spacing) * 6);
+			}
+			& > :global(li) {
+				min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 3) / 2.5));
+
+				@variant @xl {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 4) / 3.5));
+				}
+				@variant @3xl {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5) / 4.5));
+				}
+				@variant @5xl {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5 - 80px) / 5.5));
+				}
+				@variant @7xl {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 4 - 80px) / 4.5));
+				}
+				@container (width >= 80rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5 - 80px) / 5.5));
+				}
+				@container (width >= 100rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 6 - 80px) / 6.5));
+				}
+				@container (width >= 120rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 7 - 80px) / 7.5));
+				}
+				@container (width >= 140rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 8 - 80px) / 8.5));
+				}
+				@container (width >= 160rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 9 - 80px) / 9.5));
+				}
+				@container (width >= 180rem) {
+					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 9 - 160px) / 10));
+				}
+			}
+		}
 		&.with-gradient {
 			@variant @5xl {
 				&::before,
