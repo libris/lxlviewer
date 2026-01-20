@@ -110,7 +110,7 @@
 
 <!-- num libraries -->
 {#if numHolders}
-	<h2 class="my-2">
+	<h2 class="mt-2 mb-4">
 		{page.data.t('holdings.availableAt')}
 		{numHolders}
 		{numHolders === 1 ? page.data.t('holdings.library') : page.data.t('holdings.libraries')}
@@ -120,8 +120,10 @@
 {#each specialSections as section (section.id)}
 	{#if section.data.length}
 		{@const Icon = section.icon}
-		<div class="border-neutral bg-accent-50 mb-2 flex flex-col gap-2 rounded-sm border-b p-4 pb-1">
-			<h2 class="flex items-center gap-2">
+		<div
+			class="special-section border-neutral bg-page mb-2 flex flex-col gap-2 rounded-sm border p-4"
+		>
+			<h2 class="flex items-center gap-2 pb-1">
 				<span aria-hidden="true" class="text-subtle text-base">
 					<Icon />
 				</span>
@@ -137,7 +139,7 @@
 								</span>
 								<span>{holder._orgLabel}</span>
 							</h3>
-							<ul class="flex flex-col gap-2 pl-2">
+							<ul class="flex flex-col gap-2">
 								{#each holder._members as member (`mylibs-member${member[JsonLd.ID]}`)}
 									<Holder holder={member} />
 								{/each}
@@ -152,13 +154,14 @@
 	{/if}
 {/each}
 <!-- search -->
-<div class="relative mb-2">
+<div class="relative my-3">
 	<input
 		bind:value={searchPhrase}
 		placeholder={page.data.t('holdings.findLibrary')}
 		aria-label={page.data.t('holdings.findLibrary')}
 		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 		type="search"
+		name="search holders"
 	/>
 	<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 </div>
@@ -173,3 +176,14 @@
 		</li>
 	{/if}
 </ul>
+
+<style>
+	:global(.special-section .holder) {
+		padding: 0;
+		padding-bottom: calc(var(--spacing) * 3);
+		padding-top: calc(var(--spacing) * 3);
+		border-radius: 0;
+		border-bottom: none;
+		border-top: 1px solid var(--color-neutral-200);
+	}
+</style>
