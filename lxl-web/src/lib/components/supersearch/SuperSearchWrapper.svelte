@@ -392,11 +392,7 @@
 		min-height: var(--search-input-height);
 		font-size: var(--text-xs);
 		border-radius: var(--radius-md);
-		box-shadow: 0 0 0 1px var(--color-primary-300);
-		&:hover,
-		&:focus-within {
-			box-shadow: 0 0 0 1px var(--color-primary-500);
-		}
+		box-shadow: 0 0 0 1px var(--color-primary-400);
 		@variant sm {
 			&:hover {
 				box-shadow: 0 0 0 1px var(--color-primary-500);
@@ -412,6 +408,10 @@
 			&:focus-within {
 				outline: 4px solid var(--color-primary-200);
 			}
+		}
+
+		@variant 3xl {
+			font-size: var(--text-sm);
 		}
 	}
 
@@ -441,10 +441,6 @@
 			&.focused-row {
 				outline: 4px solid var(--color-primary-200);
 			}
-		}
-
-		@variant 3xl {
-			margin-block: calc(var(--spacing) * 3.5);
 		}
 	}
 
@@ -588,6 +584,10 @@
 		@variant sm {
 			padding-left: calc(var(--spacing) * 3);
 		}
+
+		@variant 3xl {
+			padding-left: calc(var(--spacing) * 4);
+		}
 	}
 
 	.expanded.supersearch-input :global(.cm-line) {
@@ -595,6 +595,10 @@
 
 		@variant sm {
 			padding-left: calc(var(--spacing) * 3);
+		}
+
+		@variant 3xl {
+			padding-left: calc(var(--spacing) * 4);
 		}
 	}
 

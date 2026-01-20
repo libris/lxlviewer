@@ -73,20 +73,16 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+	@reference "../../../app.css";
 
 	.fallback-search {
 		display: flex;
 		width: 100%;
 		height: var(--search-input-height);
 		background: var(--color-input);
-		box-shadow: 0 0 0 1px var(--color-primary-200);
+		box-shadow: 0 0 0 1px var(--color-primary-400);
 		border-radius: var(--radius-md);
 		font-size: var(--text-xs);
-
-		&:hover,
-		&:has(:focus) {
-			box-shadow: 0 0 0 1px var(--color-primary-500);
-		}
 
 		&:has(:focus) {
 			outline: 4px solid var(--color-primary-200);
@@ -101,11 +97,19 @@
 				padding-left: calc(var(--spacing) * 3);
 			}
 
+			@variant 3xl {
+				padding-left: calc(var(--spacing) * 4);
+			}
+
 			&:focus {
 				outline: none;
 			}
 			&::placeholder {
 				color: var(--color-placeholder);
+			}
+
+			@variant 3xl {
+				font-size: var(--text-sm);
 			}
 		}
 	}
