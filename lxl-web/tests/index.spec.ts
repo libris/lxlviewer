@@ -11,7 +11,7 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 });
 
 test('index page has expected h1', async ({ page }) => {
-	await expect(page.getByRole('heading', { name: 'Välkommen till öppen beta!' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Sök på alla svenska bibliotek' })).toBeVisible();
 });
 
 test('can change the language', async ({ page }) => {
