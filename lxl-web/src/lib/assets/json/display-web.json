@@ -275,7 +275,8 @@
 							"alternateProperties": [
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
 								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
-								"hasTitle"
+								"hasTitle",
+								"category"
 							]
 						},
 						"legalDate",
