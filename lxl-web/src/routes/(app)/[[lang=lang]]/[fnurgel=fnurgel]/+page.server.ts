@@ -3,6 +3,7 @@ import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
+import * as v from 'valibot';
 
 import { Bibframe, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
@@ -24,13 +25,10 @@ import {
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
-import {
-	appendMyLibrariesParam,
-	asResult,
-	asSearchResultItem,
-	displayMappings
-} from '$lib/utils/search';
+import { appendMyLibrariesParam, asSearchResultItem, displayMappings } from '$lib/utils/search';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
+import { getSearchResults } from '$lib/remotes/searchResult.remote';
+import { SearchResultsSchema } from '$lib/schemas/searchResult';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
@@ -64,19 +62,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const resource = await resourceRes.json();
 	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	copyMediaLinksToWork(mainEntity);
-
-	const mainEntityCopy = { ...mainEntity };
-	mainEntityCopy.meta = { [JsonLd.ID]: mainEntity[JsonLd.ID] };
-
-	const workCard = asSearchResultItem(
-		[mainEntityCopy],
-		displayUtil,
-		vocabUtil,
-		locale,
-		env.AUXD_SECRET,
-		myLibraries,
-		undefined
-	)[0];
 
 	resourceId = resource.mainEntity['@id'];
 
@@ -206,17 +191,13 @@ export const load = async ({ params, locals, fetch, url }) => {
 	/** TODO: Better error handling while fetching relations previews */
 	const relationsPreviews = await Promise.all(
 		relations.map(async (relation) => {
-			const previewRes = await fetch(relation.previewUrl);
-			const previewData = await previewRes.json();
-			return asResult(
-				previewData,
-				displayUtil,
-				vocabUtil,
-				locale,
-				env.AUXD_SECRET,
-				undefined,
-				myLibraries
-			);
+			const url = new URL(relation.previewUrl);
+			const params = Object.fromEntries(url.searchParams);
+
+			if (v.is(SearchResultsSchema, params)) {
+				const preview = await getSearchResults(params);
+				return preview;
+			}
 		})
 	);
 	const relationsPreviewsByQualifierKey = relations.reduce(
@@ -285,6 +266,19 @@ export const load = async ({ params, locals, fetch, url }) => {
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
 		holdingLibraries: getHoldingLibraries(byType)
 	};
+
+	const mainEntityCopy = { ...mainEntity };
+	mainEntityCopy.meta = { [JsonLd.ID]: mainEntity[JsonLd.ID] };
+
+	const workCard = asSearchResultItem(
+		[mainEntityCopy],
+		displayUtil,
+		vocabUtil,
+		locale,
+		env.AUXD_SECRET,
+		myLibraries,
+		undefined
+	)[0];
 
 	const subsetMapping = locals?.subsetMapping;
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
