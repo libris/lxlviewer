@@ -26,6 +26,11 @@ ROUTES_TO_CHECK.forEach((route) => {
 		await page.getByRole('link').getByText('In English').click();
 
 		await expect(page).toHaveURL(routeSlug ? `en${route}` : 'en');
+
+		if (route === '/') {
+			await expect(page.getByText('New fiction in Swedish')).toBeVisible();
+		}
+
 		const allLinksAfter = await page
 			.getByRole('link')
 			.evaluateAll((links) => links.map((link) => link.getAttribute('href')!));
