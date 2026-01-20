@@ -55,6 +55,7 @@
 		'Ej%20sk%C3%B6nlitteratur': BiBook,
 		MovingImage: BiFilm,
 		Music: BiMusicNoteBeamed,
+		Musik: BiMusicNoteBeamed,
 		Object: BiBox,
 		ThreeDimensionalForm: BiBox,
 		Software: BiLaptop,
