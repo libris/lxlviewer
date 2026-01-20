@@ -110,7 +110,7 @@
 
 <!-- num libraries -->
 {#if numHolders}
-	<h2 class="mt-2 mb-4">
+	<h2 class="my-2">
 		{page.data.t('holdings.availableAt')}
 		{numHolders}
 		{numHolders === 1 ? page.data.t('holdings.library') : page.data.t('holdings.libraries')}
@@ -154,14 +154,14 @@
 	{/if}
 {/each}
 <!-- search -->
-<div class="relative my-3">
+<div class="relative">
 	<input
 		bind:value={searchPhrase}
-		placeholder={page.data.t('holdings.findLibrary')}
+		placeholder={`${page.data.t('search.search')} ${page.data.t('holdings.library')}`}
 		aria-label={page.data.t('holdings.findLibrary')}
 		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 		type="search"
-		name="search holders"
+		name={page.data.t('holdings.findLibrary')}
 	/>
 	<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 </div>

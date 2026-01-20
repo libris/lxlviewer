@@ -117,7 +117,9 @@
 </script>
 
 {#snippet holdingPanel(holders: (LibraryWithLinksAndInstances | UnknownLibrary)[])}
-	<HoldingsPanel {holders} bind:searchPhrase />
+	<div class="flex flex-col gap-2">
+		<HoldingsPanel {holders} bind:searchPhrase />
+	</div>
 {/snippet}
 
 <div class="flex flex-col gap-2 text-sm">
