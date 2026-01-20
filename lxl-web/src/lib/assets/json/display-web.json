@@ -281,7 +281,12 @@
 						"legalDate",
 						"version",
 						"marc:arrangedStatementForMusic",
-						"originDate"
+						"originDate",
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "contribution", "range": "PrimaryContribution" }
+							]
+						}
 					]
 				},
 				"Instance": {
@@ -666,7 +671,7 @@
 					"@id": "Work-web-overview",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["contribution", "category", "intendedAudience"]
+					"showProperties": ["contribution", "category", "hasPart", "intendedAudience"]
 				},
 				"Instance": {
 					"@id": "Instance-web-overview",
@@ -1143,6 +1148,17 @@
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["subject", "seriesMembership", "isPartOf"],
 			"fresnel:propertyStyle": ["label"]
+		},
+		"Work-hasPart-format": {
+			"@id": "Subject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Work"],
+			"fresnel:propertyFormatDomain": ["hasPart"],
+			"fresnel:propertyStyle": ["label"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
 		},
 		"hasNote-format": {
 			"@id": "hasNote-format",

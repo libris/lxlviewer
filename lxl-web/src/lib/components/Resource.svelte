@@ -604,6 +604,29 @@
 			content: ' ; ';
 		}
 
+		& :global(div[data-property='hasPart']) {
+			@apply pb-2;
+
+			& :global(.contribution > span) {
+				display: inline;
+			}
+
+			& :global(> span) {
+				display: block;
+			}
+
+			& :global(> span)::before {
+				content: ' • ';
+				color: var(--color-subtle);
+			}
+
+			& :global(.contribution) {
+				font-size: var(--text-md);
+				@apply mb-0;
+				@apply mt-0;
+			}
+		}
+
 		& :global(.property-label) {
 			color: var(--color-body);
 			font-style: italic;
