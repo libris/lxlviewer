@@ -8,6 +8,9 @@ export function centerOnWork(mainEntity: FramedData): FramedData {
 		result['@reverse'] = { instanceOf: [mainEntity] };
 		if (!result.hasTitle && mainEntity.hasTitle) {
 			result.hasTitle = mainEntity.hasTitle;
+		} else if (result.hasTitle && mainEntity.hasTitle) {
+			result._uniformTitle = result.hasTitle;
+			result.hasTitle = mainEntity.hasTitle;
 		}
 		return result;
 	} else {

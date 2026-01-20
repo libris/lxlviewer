@@ -576,7 +576,8 @@
 						{
 							"alternateProperties": [{ "subPropertyOf": "hasTitle", "range": "KeyTitle" }]
 						},
-						"translationOf"
+						"translationOf",
+						"_uniformTitle"
 					]
 				},
 				"Instance": {
