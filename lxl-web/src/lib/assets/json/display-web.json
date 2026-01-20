@@ -281,6 +281,8 @@
 						"legalDate",
 						"version",
 						"marc:arrangedStatementForMusic",
+						"musicMedium",
+						"musicKey",
 						"originDate",
 						"language",
 						{
@@ -674,7 +676,13 @@
 					"@id": "Work-web-overview",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["contribution", "category", "hasPart", "intendedAudience"]
+					"showProperties": [
+						"contribution",
+						"category",
+						"hasPart",
+						"relationship",
+						"intendedAudience"
+					]
 				},
 				"Instance": {
 					"@id": "Instance-web-overview",
@@ -739,6 +747,8 @@
 						"marc:arrangedStatementForMusic",
 						"originDate",
 						"contribution",
+						"hasPart",
+						"relationship",
 						"language",
 						"translationOf",
 						"hasNotation",
@@ -1153,13 +1163,34 @@
 			"fresnel:propertyStyle": ["label"]
 		},
 		"Work-hasPart-format": {
-			"@id": "Subject-format",
+			"@id": "Work-hasPart-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["hasPart"],
 			"fresnel:propertyStyle": ["label"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Work-relationship-format": {
+			"@id": "Work-relationship-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Work"],
+			"fresnel:propertyFormatDomain": ["relationship"],
+			"fresnel:propertyStyle": ["label"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Work-arrangedStatementForMusic-format": {
+			"@id": "Work-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Work"],
+			"fresnel:propertyFormatDomain": ["marc:arrangedStatementForMusic"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
 		},

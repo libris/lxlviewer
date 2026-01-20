@@ -582,6 +582,31 @@
 		& :global(span[data-property='typeNote']) {
 			color: var(--color-subtle);
 		}
+
+		& :global(div[data-property='hasPart']),
+		& :global(div[data-property='relationship']) {
+			& :global(.contribution) {
+				font-size: var(--text-md);
+				@apply mb-0;
+				@apply mt-0;
+			}
+
+			& :global(.contribution > span) {
+				display: inline;
+			}
+		}
+
+		& :global(div[data-property='hasPart']:has(> span:nth-of-type(2))),
+		& :global(div[data-property='relationship']:has(> span:nth-of-type(2))) {
+			& :global(> span)::before {
+				content: ' • ';
+				color: var(--color-subtle);
+			}
+
+			& :global(> span) {
+				display: block;
+			}
+		}
 	}
 
 	.decorated-compact {
@@ -604,29 +629,9 @@
 			content: ' ; ';
 		}
 
-		& :global(div[data-property='hasPart']:has(> span:nth-of-type(2))) {
+		& :global(div[data-property='hasPart']:has(> span:nth-of-type(2))),
+		& :global(div[data-property='relationship']:has(> span:nth-of-type(2))) {
 			@apply py-1;
-
-			& :global(> span) {
-				display: block;
-			}
-
-			& :global(> span)::before {
-				content: ' • ';
-				color: var(--color-subtle);
-			}
-		}
-
-		& :global(div[data-property='hasPart']) {
-			& :global(.contribution) {
-				font-size: var(--text-md);
-				@apply mb-0;
-				@apply mt-0;
-			}
-
-			& :global(.contribution > span) {
-				display: inline;
-			}
 		}
 
 		& :global(.property-label) {
