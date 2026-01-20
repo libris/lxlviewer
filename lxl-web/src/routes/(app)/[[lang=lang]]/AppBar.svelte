@@ -101,9 +101,9 @@
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
 	<div
-		class="text-2xs text-subtle 3xl:text-xs 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1.25 px-1 font-medium"
+		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-xs font-medium 2xl:text-sm @2xl:gap-0"
 	>
-		<Icon class="3xl:size-5.5 7xl:size-6 size-5" />
+		<Icon class="size-5" />
 		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
 			{label}
 		</p>
