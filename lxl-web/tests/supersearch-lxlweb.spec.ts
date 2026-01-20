@@ -104,6 +104,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByLabel('Lägg till filter')
 		.getByRole('button')
 		.getByText('Författare/upphov')
+		.first()
 		.click();
 	await expect(
 		page.getByRole('dialog').getByLabel('Lägg till filter'),
