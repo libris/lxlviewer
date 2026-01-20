@@ -276,7 +276,8 @@
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
 								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle",
-								"category"
+								"category",
+								"translationOf"
 							]
 						},
 						"legalDate",
@@ -1190,6 +1191,15 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["marc:arrangedStatementForMusic"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"marc:formSubheading-format": {
+			"@id": "marc:formSubheading-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["marc:formSubheading"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""

@@ -594,16 +594,36 @@
 			& :global(.contribution > span) {
 				display: inline;
 			}
+
+			/* There shouldn't exist multiple PrimaryContribution, but it does */
+			&
+				:global(
+					span[data-type='PrimaryContribution']:has(+ span[data-type='PrimaryContribution'])
+				)::after {
+				content: '; ';
+			}
+
+			/* TODO, e.g. w8hp61lvtrstrtn0  */
+			& :global(span[data-property='translationOf'])::before {
+				content: '{';
+				color: var(--color-subtle);
+			}
+			& :global(span[data-property='translationOf'])::after {
+				content: '}';
+				color: var(--color-subtle);
+			}
 		}
 
-		& :global(div[data-property='hasPart']:has(> span:nth-of-type(2))),
-		& :global(div[data-property='relationship']:has(> span:nth-of-type(2))) {
-			& :global(> span)::before {
+		& :global(div[data-property='hasPart']:has(> :nth-child(3))),
+		& :global(div[data-property='relationship']:has(> :nth-child(3))) {
+			& :global(> span)::before,
+			& :global(> a)::before {
 				content: ' • ';
 				color: var(--color-subtle);
 			}
 
-			& :global(> span) {
+			& :global(> span),
+			& :global(> a) {
 				display: block;
 			}
 		}
@@ -629,8 +649,8 @@
 			content: ' ; ';
 		}
 
-		& :global(div[data-property='hasPart']:has(> span:nth-of-type(2))),
-		& :global(div[data-property='relationship']:has(> span:nth-of-type(2))) {
+		& :global(div[data-property='hasPart']:has(> :nth-child(3))),
+		& :global(div[data-property='relationship']:has(> :nth-child(3))) {
 			@apply py-1;
 		}
 
