@@ -282,6 +282,7 @@
 						"version",
 						"marc:arrangedStatementForMusic",
 						"originDate",
+						"language",
 						{
 							"alternateProperties": [
 								{ "subPropertyOf": "contribution", "range": "PrimaryContribution" }
