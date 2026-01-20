@@ -356,7 +356,8 @@
 						"partName",
 						"hasPart",
 						"marc:parallelTitle",
-						"coverage"
+						"coverage",
+						"marc:formSubheading"
 					]
 				},
 				"VariantTitle": {
