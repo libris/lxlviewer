@@ -8,7 +8,7 @@
 		UnknownLibrary
 	} from '$lib/types/holdings';
 	import { JsonLd } from '$lib/types/xl';
-	import BiChevronRight from '~icons/bi/chevron-right';
+	import BiChevronDown from '~icons/bi/chevron-down';
 	import { createHoldingLinks } from '$lib/utils/holdings';
 	import LoanStatus from './LoanStatus.svelte';
 
@@ -173,11 +173,9 @@
 				<li>
 					<!-- opening hours / adress -->
 					<details class="w-full">
-						<summary class="link-subtle flex cursor-pointer items-center gap-0.5">
-							<span
-								class="text-3xs arrow text-subtle h-3 origin-center rotate-0 transition-transform"
-							>
-								<BiChevronRight />
+						<summary class="link-subtle flex cursor-pointer items-center gap-1">
+							<span class="text-3xs arrow text-subtle flex h-3 origin-center rotate-0 items-center">
+								<BiChevronDown />
 							</span>
 							<span>{page.data.t('holdings.openingHoursEtc')}</span>
 						</summary>
@@ -201,7 +199,7 @@
 <style>
 	details[open] {
 		& .arrow {
-			rotate: 90deg;
+			rotate: 180deg;
 		}
 	}
 

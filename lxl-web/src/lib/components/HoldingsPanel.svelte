@@ -6,7 +6,8 @@
 	import { getMyLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
 	import Holder from './Holder.svelte';
 	import BiSearch from '~icons/bi/search';
-	import BiHouseHeart from '~icons/bi/house-heart';
+	// import BiHouseHeart from '~icons/bi/house-heart';
+	import IconChevron from '~icons/bi/chevron-down';
 	import BiBank from '~icons/bi/bank';
 	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 
@@ -96,14 +97,14 @@
 		{
 			id: 'refined-libraries-section',
 			title: page.data.t(`holdings.refinedLibraries`),
-			data: refinedHolders,
-			icon: BiSearch
+			data: refinedHolders
+			// icon: BiSearch
 		},
 		{
 			id: 'my-libraries-section',
 			title: page.data.t('myPages.favouriteLibraries'),
-			data: myLibsHolders,
-			icon: BiHouseHeart
+			data: myLibsHolders
+			// icon: BiHouseHeart
 		}
 	]);
 </script>
@@ -119,21 +120,28 @@
 <!-- refined libraries & my libraries -->
 {#each specialSections as section (section.id)}
 	{#if section.data.length}
-		{@const Icon = section.icon}
-		<div
-			class="special-section border-neutral bg-page mb-2 flex flex-col gap-2 rounded-sm border p-4"
+		<!-- {@const Icon = section.icon} -->
+		<details
+			open
+			class="special-section border-neutral bg-page mb-2 flex flex-col rounded-sm border p-4"
 		>
-			<h2 class="flex items-center gap-2 pb-1">
-				<span aria-hidden="true" class="text-subtle text-base">
-					<Icon />
-				</span>
-				<span class="font-medium">{section.title}</span>
-			</h2>
-			<ul class="flex flex-col gap-2 text-xs">
+			<summary class="cursor-pointer">
+				<h2 class="flex items-center gap-2">
+					<!-- <Icon /> -->
+					<span
+						class="arrow text-subtle origin-center text-base transition-transform"
+						aria-hidden="true"
+					>
+						<IconChevron />
+					</span>
+					<span class="font-medium">{section.title}</span>
+				</h2>
+			</summary>
+			<ul class="mt-3 flex flex-col gap-2 text-xs">
 				{#each section.data as holder, i (`mylibs-${holder[JsonLd.ID]}-${i}`)}
 					{#if '_members' in holder}
 						<li>
-							<h3 class="mb-2 flex items-center gap-2">
+							<h3 class="mb-3 flex items-center gap-2">
 								<span aria-hidden="true" class="text-subtle text-base">
 									<BiBank class="text-subtle size-3" />
 								</span>
@@ -150,7 +158,7 @@
 					{/if}
 				{/each}
 			</ul>
-		</div>
+		</details>
 	{/if}
 {/each}
 <!-- search -->
@@ -185,5 +193,11 @@
 		border-radius: 0;
 		border-bottom: none;
 		border-top: 1px solid var(--color-neutral-200);
+	}
+
+	details[open] {
+		& .arrow {
+			rotate: 180deg;
+		}
 	}
 </style>
