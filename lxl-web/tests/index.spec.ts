@@ -14,6 +14,19 @@ test('index page has expected h1', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: 'Sök på alla svenska bibliotek' })).toBeVisible();
 });
 
+test('index page shows featured searches', async ({ page }) => {
+	const FEATURED_SEARCH_TITLES = [
+		'Ny skönlitteratur på svenska',
+		'Ny facklitteratur',
+		'Böcker om att börja skolan'
+	];
+
+	FEATURED_SEARCH_TITLES.forEach(async (featuredTitle) => {
+		await expect(page.getByLabel(featuredTitle)).toBeVisible();
+		await expect(page.getByLabel(featuredTitle).getByRole('listitem')).toHaveCount(10);
+	});
+});
+
 test('can change the language', async ({ page }) => {
 	await page.getByTestId('change-lang').click();
 	await expect(page).toHaveURL('/en');
