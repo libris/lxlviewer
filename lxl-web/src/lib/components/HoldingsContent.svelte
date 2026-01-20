@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type { Snippet } from 'svelte';
+	import { JsonLd } from '$lib/types/xl';
 	import type {
 		BibIdData,
 		HoldingsData,
-		LibraryWithLinks,
 		LibraryWithLinksAndInstances,
 		UnknownLibrary
 	} from '$lib/types/holdings';
-	import { JsonLd } from '$lib/types/xl';
 	import TabList, { type Tab } from './TabList.svelte';
 	import HoldingsPanel from './HoldingsPanel.svelte';
+	import isFnurgel from '$lib/utils/isFnurgel';
 
 	type Props = {
 		holdings: HoldingsData;
@@ -18,35 +18,65 @@
 	};
 
 	let { holdings, card }: Props = $props();
-	let { byInstanceId, byType, bibIdData, holdingLibraries } = $derived(holdings);
+
+	const { byInstanceId, byType, bibIdData, holdingLibraries } = $derived(holdings);
 	let searchPhrase = $state('');
 
-	// type, workfnurgel, instance id
-	const holdingSelection = $derived(
-		page.state.holdings || page.url.searchParams.get('holdings') || ''
-	);
+	// instanceId | type | work fnurgel | ''
+	const holdingParam = $derived(page.state.holdings || page.url.searchParams.get('holdings') || '');
 
-	function getHolders(selection?: string) {
-		let holders: string[] = [];
-		if (selection) {
-			if (byType[selection]) {
-				holders = byType[selection];
-			} else if (byInstanceId[selection]) {
-				holders = byInstanceId[selection];
-			}
-		} else {
-			holders = Array.from(new Set(Object.values(byType).flat()));
+	type SelectionKind = 'instance' | 'type' | 'work' | 'all';
+
+	function getSelectionKind(selection?: string): SelectionKind {
+		if (!selection) return 'all';
+		if (byInstanceId[selection]) return 'instance';
+		if (byType[selection]) return 'type';
+		if (isFnurgel(selection)) return 'work';
+		return 'all';
+	}
+
+	function getVisibleInstanceIds(selection?: string): string[] {
+		const kind = getSelectionKind(selection);
+
+		switch (kind) {
+			case 'instance':
+				return [selection!];
+
+			case 'type':
+				return Object.entries(bibIdData)
+					.filter(([, data]) => data[JsonLd.TYPE] === selection)
+					.map(([id]) => id);
+
+			case 'work':
+			case 'all':
+			default:
+				return Object.keys(bibIdData);
 		}
-		return getDerivedHoldersFull(holders);
 	}
 
-	function getDerivedHoldersFull(holders: string[]) {
-		return holders.map(
-			(holder) => holdingLibraries[holder] || ({ [JsonLd.ID]: holder, name: '' } as UnknownLibrary)
-		);
+	function getLibrariesWithInstances(
+		instanceIds: string[]
+	): (LibraryWithLinksAndInstances | UnknownLibrary)[] {
+		const libraries: Record<string, BibIdData> = {};
+
+		for (const instanceId of instanceIds) {
+			const holders = byInstanceId[instanceId] ?? [];
+
+			for (const libraryId of holders) {
+				if (!libraries[libraryId]) {
+					libraries[libraryId] = {};
+				}
+				libraries[libraryId][instanceId] = bibIdData[instanceId];
+			}
+		}
+
+		return Object.entries(libraries).map(([libraryId, _instances]) => ({
+			...(holdingLibraries[libraryId] ?? ({ [JsonLd.ID]: libraryId, name: '' } as UnknownLibrary)),
+			_instances
+		}));
 	}
 
-	function sortHolders(holders: (LibraryWithLinks | UnknownLibrary)[]) {
+	function sortHolders(holders: (LibraryWithLinksAndInstances | UnknownLibrary)[]) {
 		return holders.sort((a, b) => {
 			if (!a.name && b.name) return 1;
 			if (!b.name && a.name) return -1;
@@ -55,74 +85,50 @@
 	}
 
 	const tabsByType: Tab[] | null = $derived.by(() => {
-		// selection is instance = no tabs
-		if (Object.keys(byInstanceId).some((instanceId) => instanceId === holdingSelection))
-			return null;
+		if (getSelectionKind(holdingParam) === 'instance') return null;
 
 		const typeKeys = Object.keys(byType);
 		if (typeKeys.length <= 1) return null;
 
-		const typeTabs = typeKeys.map((type) => {
-			const holders = sortHolders(getHolders(type));
-			const holdersWithInstances = getInstancesForHolders(holders, type);
+		const tabs: Tab[] = typeKeys.map((type) => {
+			const instanceIds = getVisibleInstanceIds(type);
+			const holders = sortHolders(getLibrariesWithInstances(instanceIds));
+
 			return {
 				id: `holdings-type-${type}`,
 				label: page.data.t(`holdings.${type}`),
 				content: holdingPanel,
-				active: type === holdingSelection ? true : false,
-				contentData: holdersWithInstances
+				active: type === holdingParam,
+				contentData: holders
 			};
 		});
 
-		// add 'all' tab
-		if (typeKeys.length > 1) {
-			const holders = sortHolders(getHolders());
-			const holdersWithInstances = getInstancesForHolders(holders);
-			typeTabs.unshift({
-				id: 'holdings-type-all',
-				label: page.data.t('holdings.allFormats'),
-				content: holdingPanel,
-				contentData: holdersWithInstances,
-				active: holdingSelection === 'work'
-			});
-		}
-		return typeTabs;
-	});
-
-	// get instances for the holders subset and the current type selection
-	export function getInstancesForHolders(
-		holders: (LibraryWithLinks | UnknownLibrary)[],
-		selection?: string
-	): (LibraryWithLinksAndInstances | UnknownLibrary)[] {
-		return holders.map((holder) => {
-			let _instances: BibIdData = {};
-			for (const [key, value] of Object.entries(bibIdData)) {
-				if (byInstanceId[key].includes(holder[JsonLd.ID])) {
-					if (selection && selection === value[JsonLd.TYPE]) {
-						_instances[key] = value;
-					} else if (!selection) {
-						_instances[key] = value;
-					}
-				}
-			}
-			return { ...holder, _instances };
+		// Add 'all' tab
+		tabs.unshift({
+			id: 'holdings-type-all',
+			label: page.data.t('holdings.allFormats'),
+			content: holdingPanel,
+			active: getSelectionKind(holdingParam) === 'work',
+			contentData: sortHolders(getLibrariesWithInstances(getVisibleInstanceIds()))
 		});
-	}
+
+		return tabs;
+	});
 </script>
 
-{#snippet holdingPanel(holders: ReturnType<typeof getInstancesForHolders>)}
+{#snippet holdingPanel(holders: (LibraryWithLinksAndInstances | UnknownLibrary)[])}
 	<HoldingsPanel {holders} bind:searchPhrase />
 {/snippet}
 
 <div class="flex flex-col gap-2 text-sm">
-	<!-- card -->
 	{@render card?.()}
-	<!-- tabs -->
+
 	{#if tabsByType}
 		<TabList ariaLabel={page.data.t('resource.editions')} tabs={tabsByType} />
 	{:else}
-		{@const holders = sortHolders(getHolders(holdingSelection))}
-		{@const holdersWithInstances = getInstancesForHolders(holders)}
-		{@render holdingPanel(holdersWithInstances)}
+		<!-- no tabs view -->
+		{@const instanceIds = getVisibleInstanceIds(holdingParam)}
+		{@const holders = sortHolders(getLibrariesWithInstances(instanceIds))}
+		{@render holdingPanel(holders)}
 	{/if}
 </div>
