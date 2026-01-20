@@ -147,7 +147,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.waitForURL('**/find?**');
 	await expect(page.url()).toContain('contributor');
 	await expect(
-		page.getByRole('combobox').locator('.lxl-qualifier-key'),
+		page.getByRole('combobox').locator('.lxl-qualifier-key').first(),
 		'pill with selected qualifier key exists...'
 	).toContainText('Författare/upphov');
 	await expect(
