@@ -27,7 +27,7 @@
 	<div class="col-start-2 col-end-3 mx-auto mt-8 mb-12 w-full max-w-7xl @5xl:mt-12 @5xl:mb-16">
 		<hgroup>
 			<h1
-				class="mb-2 font-serif text-2xl @md:text-[1.6875rem] @3xl:text-4xl @3xl:tracking-[-0.0125rem] @7xl:text-[3.25rem] @min-[120rem]:text-[3.625rem]"
+				class="mb-2 font-serif text-2xl @md:text-[1.6875rem] @3xl:text-4xl @3xl:tracking-[-0.0125rem] @7xl:text-5xl"
 			>
 				{page.data.t('home.pageHeadingTitle')}
 			</h1>
