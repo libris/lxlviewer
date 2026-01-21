@@ -3,7 +3,7 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
-import { cloneDeep, differenceWith, get, isArray, isEqual, isObject, isPlainObject } from 'lodash-es';
+import { cloneDeep, differenceWith, get, isArray, isEqual, isObject, isPlainObject, uniq } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -149,7 +149,8 @@ export default {
       uniqueIds: [],
       unlockedByUser: false,
       unlockModalOpen: false,
-      protectedProps
+      protectedProps,
+      broaderCategories: []
     };
   },
   components: {
@@ -176,6 +177,10 @@ export default {
         }
       }
     },
+    'valueAsArray.length'() {
+      if (!this.fieldKey === 'category') return;
+      this.getBroaderCategories();
+    }
   },
   computed: {
     diffAdded() {
@@ -261,6 +266,7 @@ export default {
       }
       return failedValidations;
     },
+
     missingTypes() {
       const missing = [];
       if (this.isLocked) {
@@ -721,11 +727,11 @@ export default {
       }
       return 'error';
     },
-    hasType(value, type) {
-      if (value['@id']) {
-        return isSubClassOf(this.getTypeFromQuoted(value['@id']), type, this.resources.vocab, this.resources.context);
-      } else if (value['@type']) { // Local entities
-        return isSubClassOf(value['@type'], type, this.resources.vocab, this.resources.context);
+    hasType(entity, type) {
+      if (entity['@id']) {
+        return isSubClassOf(this.getTypeFromQuoted(entity['@id']), type, this.resources.vocab, this.resources.context);
+      } else if (entity['@type']) { // Local entities
+        return isSubClassOf(entity['@type'], type, this.resources.vocab, this.resources.context);
       }
     },
     getTypeFromQuoted(key) {
@@ -734,6 +740,22 @@ export default {
         return obj['@type'];
       }
       return null;
+    },
+    async getBroaderCategories() {
+      if (this.fieldKey === 'category') {
+        let allBroader = [];
+        const values = this.valueAsArray;
+        for (const entity of values) {
+          if (entity['@id']) {
+            const categoryCard =  this.inspector.data.quoted[entity['@id']] || null;
+            if (categoryCard && categoryCard.hasOwnProperty('broader')) {
+              const broaderForEntity = await DataUtil.fetchBroader(categoryCard.broader, cloneDeep(categoryCard.broader));
+              allBroader = [... allBroader, ...broaderForEntity];
+            }
+          }
+        }
+        this.broaderCategories = uniq(allBroader);
+      }
     },
     isLinked(o) {
       if (o === null) {
@@ -813,6 +835,7 @@ export default {
           throw new Error('A datanode component has been added for a _uid key, which should never happen.');
         }
         this.highLightLastAdded();
+        this.getBroaderCategories();
       }, 300);
     });
   },
@@ -1218,6 +1241,7 @@ export default {
             :diff="diff"
             :parent-path="path"
             :is-enrichment-source="isEnrichmentSource"
+            :broader-categories="broaderCategories"
           />
 
           <!-- Not linked, local child objects OR inlined linked objects-->

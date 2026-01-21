@@ -1,5 +1,5 @@
 <script>
-import {each, uniq, sortBy, get, isArray, isEqual} from 'lodash-es';
+import {each, uniq, sortBy, get, isEqual} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';

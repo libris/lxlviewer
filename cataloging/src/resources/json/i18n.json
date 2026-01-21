@@ -515,6 +515,7 @@
     "Flagged entities" : "Flaggade",
     "is missing": "saknas",
     "are missing" : "saknas",
-    "and": "och"
+    "and": "och",
+    "Category is already implied by another category and will be removed on save": "Kategorin är redan implicerad av en annan kategori och kommer raderas när posten sparas"
   }
 }
