@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import type { BibIdObj } from '$lib/types/holdings';
 	import type { HoldingStatus } from '$lib/types/api';
-	import BiChevronDown from '~icons/bi/chevron-down';
+	import BiChevronRight from '~icons/bi/chevron-right';
 	import Spinner from '$lib/components/Spinner.svelte';
 
 	type HoldingInfoProps = {
@@ -108,8 +108,10 @@
 	}}
 >
 	<summary class="link-subtle flex cursor-pointer items-center gap-1">
-		<span class="text-3xs arrow text-subtle item-center flex h-3 origin-center rotate-0">
-			<BiChevronDown />
+		<span
+			class="text-3xs chevron text-subtle item-center flex h-3 origin-center rotate-0 transition-transform"
+		>
+			<BiChevronRight />
 		</span>
 		<span>{page.data.t('holdings.loanStatus')}</span>
 	</summary>
@@ -191,8 +193,8 @@
 
 <style lang="postcss">
 	details[open] {
-		& .arrow {
-			transform: rotate(180deg);
+		& .chevron {
+			transform: rotate(90deg);
 		}
 	}
 	.status-container {

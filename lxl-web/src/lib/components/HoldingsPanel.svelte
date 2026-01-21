@@ -123,13 +123,13 @@
 		<!-- {@const Icon = section.icon} -->
 		<details
 			open
-			class="special-section border-neutral bg-page mb-2 flex flex-col rounded-sm border p-4"
+			class="special-section border-neutral bg-page mb-2 flex flex-col rounded-sm border p-3"
 		>
 			<summary class="cursor-pointer">
 				<h2 class="flex items-center gap-2">
 					<!-- <Icon /> -->
 					<span
-						class="arrow text-subtle origin-center text-base transition-transform"
+						class="chevron text-subtle origin-center text-base transition-transform"
 						aria-hidden="true"
 					>
 						<IconChevron />
@@ -196,7 +196,7 @@
 	}
 
 	details[open] {
-		& .arrow {
+		& .chevron {
 			rotate: 180deg;
 		}
 	}
