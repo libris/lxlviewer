@@ -95,7 +95,7 @@
 		<h3 class="text-sm font-medium">{holder.displayStr || holder.name || holder[JsonLd.ID]}</h3>
 		{#if bestLink}
 			<a href={bestLink} target="_blank" aria-label={page.data.t('holdings.findAtLibrary')}>
-				<BiBoxArrowUpRight class="text-link size-4" />
+				<BiBoxArrowUpRight class="text-link ml-2 size-4" />
 			</a>
 		{:else if manyInstances}
 			<button
