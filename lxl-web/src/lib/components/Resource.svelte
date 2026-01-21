@@ -603,7 +603,8 @@
 				content: '; ';
 			}
 
-			/* TODO, e.g. w8hp61lvtrstrtn0  */
+			/* TODO, what about translationOf in parts? e.g. w8hp61lvtrstrtn0  */
+			/*
 			& :global(span[data-property='translationOf'])::before {
 				content: '{';
 				color: var(--color-subtle);
@@ -611,6 +612,12 @@
 			& :global(span[data-property='translationOf'])::after {
 				content: '}';
 				color: var(--color-subtle);
+			}
+             */
+
+			& :global(.agent-lifespan),
+			& :global(.language) {
+				display: none;
 			}
 		}
 

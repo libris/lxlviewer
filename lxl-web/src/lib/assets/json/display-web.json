@@ -1411,6 +1411,13 @@
 			"fresnel:propertyFormatDomain": ["summary"],
 			"fresnel:propertyStyle": ["nolabel", "summary"]
 		},
+		"Work-language-format": {
+			"@id": "Work-language-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Work"],
+			"fresnel:propertyFormatDomain": ["language"],
+			"fresnel:propertyStyle": ["language"]
+		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",
 			"@type": "fresnel:Format",
