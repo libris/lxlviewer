@@ -8,6 +8,7 @@
 	border-radius: var(--radius-md);
 	transition: background-color 0.1s ease;
 	z-index: 1;
+	font-size: var(--text-xs);
 }
 
 .lxl-qualifier-key {

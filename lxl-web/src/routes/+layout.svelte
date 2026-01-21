@@ -35,7 +35,7 @@
 
 <div class="flex min-h-screen flex-col">
 	<Matomo>
-		{@render children()}
+		<svelte:boundary>{@render children()}</svelte:boundary>
 		<CookieConsent />
 	</Matomo>
 </div>
