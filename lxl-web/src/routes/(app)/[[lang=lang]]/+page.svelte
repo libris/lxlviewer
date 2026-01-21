@@ -52,27 +52,19 @@
 				<a
 					href={page.data.localizeHref(featured.findHref)}
 					class={[
-						'ease-in-out hover:underline hover:[&>svg]:translate-x-1',
-						!featured.showAllLabel &&
-							'[&>svg]transition-all [&>svg]:mb-0.5 [&>svg]:opacity-0 hover:[&>svg]:opacity-100 focus-visible:[&>svg]:opacity-100'
+						'ease-in-out hover:underline [&>svg]:mb-0.5 [&>svg]:transition-transform hover:[&>svg]:translate-x-1'
 					]}
 				>
 					{featured.heading}
-					<IconArrowRight
-						class={[
-							'mx-0.5 inline size-4 transition-transform @5xl:size-5',
-							!featured.showAllLabel && 'opacity-0 transition-all hover:opacity-100'
-						]}
-					/>
+					<IconArrowRight class={['mx-0.5 inline size-4 transition-transform @5xl:size-5']} />
 				</a>
 			</h2>
 			{#if featured.showAllLabel}
 				<a
 					href={page.data.localizeHref(featured.findHref)}
-					class="btn btn-ghost text-sm hover:underline hover:[&>svg]:translate-x-0.5 focus-visible:[&>svg]:translate-x-0.5"
+					class="btn btn-ghost text-sm hover:underline"
 				>
 					{featured.showAllLabel}
-					<IconArrowRight class="ml-1 inline-flex size-4 transition-transform" />
 				</a>
 			{/if}
 		</header>
