@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import SearchResultItem from '$lib/components/SearchResultItem.svelte';
 	import type { SearchResultItem as SearchResultItemType } from '$lib/types/search';
 	import { onMount } from 'svelte';
@@ -23,6 +24,7 @@
 	function getPreferredScrollBehaviour() {
 		return window.matchMedia(`(prefers-reduced-motion: reduce)`).matches ? 'instant' : 'smooth';
 	}
+
 	function scrollLeft() {
 		ulElement?.scrollBy({
 			left: ulElement.clientWidth * -SCROLL_AMOUNT,
@@ -75,7 +77,7 @@
 			"
 			onclick={scrollLeft}
 			disabled={disabledLeftScrollButton}
-			aria-hidden="true"
+			aria-label={page.data.t('horizontalList.goBackward')}
 			tabindex="-1"
 		>
 			<IconChevronLeft class="-ml-px size-5 @5xl:size-6 " />
@@ -84,7 +86,7 @@
 			class="scroll-button right btn btn-scroll absolute right-0 z-30 mr-2 opacity-0 transition-all noscript:hidden"
 			onclick={scrollRight}
 			disabled={disabledRightScrollButton}
-			aria-hidden="true"
+			aria-label={page.data.t('horizontalList.goForward')}
 			tabindex="-1"
 		>
 			<IconChevronRight class="ml-px size-5 @5xl:size-6" />

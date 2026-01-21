@@ -315,5 +315,9 @@ export default {
 		copyToClipboard: 'Copy to clipboard',
 		copied: 'Copied!',
 		saveAsFile: 'Save as file'
+	},
+	horizontalList: {
+		goForward: 'Go forward in list',
+		goBackward: 'Go backward in list'
 	}
 };

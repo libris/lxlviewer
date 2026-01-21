@@ -316,5 +316,9 @@ export default {
 		copyToClipboard: 'Kopiera till urklipp',
 		copied: 'Kopierad!',
 		saveAsFile: 'Spara som fil'
+	},
+	horizontalList: {
+		goForward: 'Gå framåt i lista',
+		goBackward: 'Gå bakåt i lista'
 	}
 };
