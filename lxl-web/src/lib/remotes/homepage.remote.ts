@@ -40,8 +40,8 @@ export const getFeaturedSearches = query(v.optional(v.string()), async (lang) =>
 			previewParams: {
 				_q: 'category:"saogf:Sk%C3%B6nlitteratur" category:"barngf:Bilderb%C3%B6cker" subject:"barn:B%C3%B6rja%20skolan" existsImage',
 				_limit: 10
-			},
-			showAllLabelByLang: { sv: 'Visa fler titlar', en: 'Show more titles' }
+			}
+			// showAllLabelByLang: { sv: 'Visa fler titlar', en: 'Show more titles' }
 		}
 	];
 	const locale = getSupportedLocale(lang);
