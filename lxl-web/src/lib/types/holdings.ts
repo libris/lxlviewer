@@ -109,6 +109,7 @@ export type HolderLinks = {
 	[BibDb.Address]: string[];
 	[BibDb.MyLoansLink]: string;
 	[BibDb.RegistrationLink]: string;
+	[BibDb.AddressLocality]: string | undefined;
 };
 
 export type HoldingLinks = {

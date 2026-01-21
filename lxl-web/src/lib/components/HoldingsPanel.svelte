@@ -33,7 +33,10 @@
 	const filteredHolders = $derived(
 		holders.filter((holder) => {
 			if (searchPhrase && !holder.name) return false;
-			return holder.name.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
+			const searchableString =
+				`${holder.name} ${holder?._links?.addressLocality || ''}`.toLowerCase();
+
+			return searchableString.indexOf(searchPhrase.toLowerCase()) > -1;
 		})
 	);
 
@@ -165,7 +168,7 @@
 <div class="relative">
 	<input
 		bind:value={searchPhrase}
-		placeholder={`${page.data.t('search.search')} ${page.data.t('holdings.library')}`}
+		placeholder={page.data.t('holdings.findLibrary')}
 		aria-label={page.data.t('holdings.findLibrary')}
 		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 		type="search"

@@ -61,7 +61,7 @@ export default {
 		myPages: 'My pages',
 		libraries: 'Libraries',
 		favouriteLibraries: 'My libraries',
-		findLibrary: 'Search for libraries',
+		findLibrary: 'Search library or location',
 		findAndAdd: 'Find and add favourite libraries',
 		noResultsFor: 'No results for',
 		hitsFor: 'hits for',

@@ -273,7 +273,7 @@ export default {
 		availableAt: 'Finns på',
 		library: 'bibliotek',
 		libraries: 'bibliotek',
-		findLibrary: 'Hitta bibliotek',
+		findLibrary: 'Sök bibliotek eller ort',
 		findAtLibrary: 'Hitta på bibliotek',
 		allFormats: 'Alla format',
 		PhysicalResource: 'Fysisk',
