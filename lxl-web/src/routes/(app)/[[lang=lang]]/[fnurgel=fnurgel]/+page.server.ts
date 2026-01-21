@@ -177,6 +177,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 				_p: 'instanceOf',
 				_q: _q || '*',
 				_r: subsetFilter || '',
+				_limit: '150',
 				_spell: 'false',
 				_stats: 'false',
 				_site: locals.site?.searchSite || ''
