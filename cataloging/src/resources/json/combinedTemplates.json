@@ -1877,7 +1877,7 @@
             "subject": []
           },
           "category": [{
-            "@id": "https://id.kb.se/term/ktg/PrintedVolume"
+            "@id": "https://id.kb.se/term/ktg/Print"
           }]
         }
       }
@@ -2522,7 +2522,7 @@
           },
           "category": [
             {
-              "@id": "https://id.kb.se/term/ktg/PrintedVolume"
+              "@id": "https://id.kb.se/term/ktg/Print"
             }
           ]
         }
@@ -3144,7 +3144,7 @@
               "@id": "https://id.kb.se/term/rda/StillImage"
             },
               {
-                "@id": "https://id.kb.se/marc/Picture"
+                "@id": "https://id.kb.se/term/saogf/Bilder"
               },
               {
                 "@id": "https://id.kb.se/term/gmgpc/swe/Bilder"
@@ -3190,10 +3190,7 @@
           "category": [
             {
               "@id": "https://id.kb.se/term/rda/Sheet"
-            },
-            {
-              "@id": "https://id.kb.se/marc/Picture"
-            }
+            }            
           ]
         }
       }
