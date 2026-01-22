@@ -266,7 +266,6 @@ export default {
       }
       return failedValidations;
     },
-
     missingTypes() {
       const missing = [];
       if (this.isLocked) {
