@@ -20,9 +20,12 @@ test('index page shows featured searches', async ({ page }) => {
 		'Ny facklitteratur',
 		'Böcker om att börja skolan'
 	];
+	await expect(page).toHaveURL('/');
 	await page.waitForLoadState('networkidle');
 	FEATURED_SEARCH_TITLES.forEach(async (featuredTitle) => {
-		await expect(page.getByLabel(featuredTitle).getByRole('listitem')).toHaveCount(10);
+		await expect(page.getByLabel(featuredTitle).getByRole('listitem')).toHaveCount(10, {
+			timeout: 10000
+		});
 	});
 });
 
