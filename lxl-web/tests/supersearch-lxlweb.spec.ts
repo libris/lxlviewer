@@ -54,6 +54,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL(/\/[a-z0-9]{15,}$/); // fnurgel route
+	await page.waitForLoadState('networkidle');
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-key'),
 		'query is kept when navigating from find routes...'

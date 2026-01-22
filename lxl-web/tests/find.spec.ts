@@ -49,6 +49,7 @@ test('facet groups can toggle', async ({ page }) => {
 test('opening and sorting the facet sets a cookie', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
 	await expect(beforeCookies).toEqual([]);
+	await page.waitForLoadState('networkidle');
 	await page.locator('summary').filter({ hasText: 'Språk' }).click();
 	await page.getByTestId('facet-sort-language').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
