@@ -1415,7 +1415,10 @@
             ],
             "language": [],
             "category": [{
-              "@id": "https://id.kb.se/term/ktg/MovingImage"
+              "@id": "https://id.kb.se/term/rda/TwoDimensionalMovingImage"
+            },
+            {
+              "@id": "https://id.kb.se/term/saogf/Filmer"
             }],
             "marc:subtitlesOrCaptions": {
               "@type": "marc:SubtitlesOrCaptions",
@@ -1603,6 +1606,9 @@
             "category": [
               {
                 "@id": "https://id.kb.se/term/saogf/Musikinspelningar"
+              },
+              {
+                "@id": "https://id.kb.se/term/rda/PerformedMusic"
               }],
             "classification": [{
               "@type": "ClassificationDdc",
@@ -2023,6 +2029,9 @@
             "category": [
               {
                 "@id": "https://id.kb.se/term/saogf/Kartor"
+              },
+              {
+                "@id": "https://id.kb.se/term/rda/CartographicImage"
               }],
             "contribution": [{
               "@type": "PrimaryContribution",
@@ -2069,13 +2078,8 @@
           },
           "category": [{
             "@id": "https://id.kb.se/term/rda/Sheet"
-          },
-            {
-              "@id": "https://id.kb.se/marc/MapATwoDimensionalMap"
-            },
-            {
-              "@id": "https://id.kb.se/marc/SingleMap"
-            }]
+          }
+            ]
         }
       }
     },
@@ -2853,7 +2857,10 @@
           },
           "category": [
             {
-              "@id": "https://id.kb.se/term/ktg/PrintedVolume"
+              "@id": "https://id.kb.se/term/ktg/Print"
+            },
+            {
+              "@id": "https://id.kb.se/term/rda/Volume"
             }
           ]
         }
