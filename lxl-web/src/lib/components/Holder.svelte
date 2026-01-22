@@ -102,7 +102,7 @@
 		{/if}
 	</div>
 	{#if !isLibraryWithLinks(holder)}
-		<div class="text-error bg-severe-50 mt-2 rounded-sm p-2">
+		<div class="text-severe-600 bg-severe-50 mt-2 rounded-sm p-2">
 			<p>{page.data.t('errors.notAvailable')}</p>
 		</div>
 	{:else}

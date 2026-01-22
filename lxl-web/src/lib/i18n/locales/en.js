@@ -216,7 +216,7 @@ export default {
 	},
 	errors: {
 		somethingWentWrong: 'Something went wrong',
-		notAvailable: 'This information is not available',
+		notAvailable: 'Information is not available',
 		notFound: 'Page not found',
 		wrongLink: "Did you click on a link that didn't work?",
 		sendEmail: 'Send an e-mail to',
