@@ -126,7 +126,7 @@
 		<!-- {@const Icon = section.icon} -->
 		<details
 			open
-			class="special-section border-neutral bg-page mb-2 flex flex-col rounded-sm border p-3"
+			class="special-section mb-2 flex flex-col rounded-sm border border-neutral-200 bg-neutral-100 p-3"
 		>
 			<summary class="cursor-pointer">
 				<h2 class="flex items-center gap-2">
@@ -150,7 +150,7 @@
 								</span>
 								<span>{holder._orgLabel}</span>
 							</h3>
-							<ul class="flex flex-col gap-2">
+							<ul class="mb-2 ml-3 flex flex-col gap-2">
 								{#each holder._members as member (`mylibs-member${member[JsonLd.ID]}`)}
 									<Holder holder={member} />
 								{/each}
@@ -189,15 +189,6 @@
 </ul>
 
 <style>
-	:global(.special-section .holder) {
-		padding: 0;
-		padding-bottom: calc(var(--spacing) * 3);
-		padding-top: calc(var(--spacing) * 3);
-		border-radius: 0;
-		border-bottom: none;
-		border-top: 1px solid var(--color-neutral-200);
-	}
-
 	details[open] {
 		& .chevron {
 			rotate: 180deg;
