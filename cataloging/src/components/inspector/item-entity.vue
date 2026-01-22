@@ -238,7 +238,7 @@ export default {
           class="ItemEntity chip"
           tabindex="0"
           ref="chip"
-          v-tooltip.top="willBeRemoved ? translatePhrase('Category is already implied by another category and will be removed on save') : null"
+          v-tooltip.top="willBeRemoved ? translatePhrase('The term is implied by another term and will be removed on save') : null"
           v-if="!isCardWithData || !expanded"
           :class="{
             'is-locked': isLocked,

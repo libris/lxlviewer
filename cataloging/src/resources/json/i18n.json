@@ -516,6 +516,6 @@
     "is missing": "saknas",
     "are missing" : "saknas",
     "and": "och",
-    "Category is already implied by another category and will be removed on save": "Kategorin är redan implicerad av en annan kategori och kommer raderas när posten sparas"
+    "The term is implied by another term and will be removed on save": "Termen impliceras av en annan term och kommer raderas när posten sparas"
   }
 }

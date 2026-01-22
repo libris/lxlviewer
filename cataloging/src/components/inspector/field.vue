@@ -748,9 +748,11 @@ export default {
         for (const entity of values) {
           if (entity['@id']) {
             const categoryCard =  this.inspector.data.quoted[entity['@id']] || null;
-            if (categoryCard && categoryCard.hasOwnProperty('broader')) {
-              const broaderForEntity = await DataUtil.fetchBroader(categoryCard.broader, cloneDeep(categoryCard.broader));
-              allBroader = [... allBroader, ...broaderForEntity];
+            for (const broader of this.settings.broaderRelations) {
+              if (categoryCard && categoryCard[broader]) {
+                const broaderForEntity = await DataUtil.fetchBroader(categoryCard[broader], cloneDeep(categoryCard[broader]));
+                allBroader = [...allBroader, ...broaderForEntity];
+              }
             }
           }
         }
