@@ -763,7 +763,8 @@
 						"isPartOf",
 						"associatedMedia",
 						"isPrimaryTopicOf",
-						"hasNote"
+						"hasNote",
+						"marc:hasBiographicalOrHistoricalData"
 					]
 				},
 				"Instance": {

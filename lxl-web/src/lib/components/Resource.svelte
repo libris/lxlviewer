@@ -584,7 +584,8 @@
 		}
 
 		& :global(div[data-property='hasPart']),
-		& :global(div[data-property='relationship']) {
+		& :global(div[data-property='relationship']),
+		& :global(div[data-property='hasVariant'] > span[data-type='Work']) {
 			& :global(.contribution) {
 				font-size: var(--text-md);
 				@apply mb-0;
@@ -622,7 +623,8 @@
 		}
 
 		& :global(div[data-property='hasPart']:has(> :nth-child(3))),
-		& :global(div[data-property='relationship']:has(> :nth-child(3))) {
+		& :global(div[data-property='relationship']:has(> :nth-child(3))),
+		& :global(div[data-property='hasVariant']:has(> span[data-type='Work'])) {
 			& :global(> span)::before,
 			& :global(> a)::before {
 				content: ' • ';
@@ -632,6 +634,10 @@
 			& :global(> span),
 			& :global(> a) {
 				display: block;
+			}
+
+			& :global(> span._contentBefore) {
+				display: none;
 			}
 		}
 	}
