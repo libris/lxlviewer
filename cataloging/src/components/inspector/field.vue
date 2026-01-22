@@ -283,7 +283,7 @@ export default {
       return missing;
     },
     hasMissingTypes() {
-      return this.missingTypes.length !== 0;
+      return this.missingTypes.length !== 0 && this.valueAsArray.length !== 0;
     },
     validationText() {
       const count = this.missingTypes.length;
