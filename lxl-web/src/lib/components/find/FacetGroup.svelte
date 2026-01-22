@@ -26,9 +26,12 @@
 		searchPhrase: string;
 		isDefaultExpanded: boolean;
 		parent?: FacetValueType;
+		parentUid?: string;
 	};
 
-	let { data, level, searchPhrase, isDefaultExpanded, parent }: Props = $props();
+	let { data, level, searchPhrase, isDefaultExpanded, parent, parentUid = '' }: Props = $props();
+
+	const uid = $props.id();
 
 	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters', 'librissearch:hasInstanceType'];
 	const permanentlyExpanded = $derived(PERMANENTLY_EXPANDED_FACETS.includes(data.dimension));
@@ -181,6 +184,7 @@
 					{searchPhrase}
 					parent={value}
 					isDefaultExpanded={false}
+					parentUid={uid}
 				/>
 			</li>
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
@@ -213,7 +217,7 @@
 			]}
 		>
 			<select
-				name={data.dimension}
+				name={parentUid + data.dimension}
 				bind:value={currentSort}
 				onchange={saveUserSort}
 				class="btn btn-primary size-full cursor-pointer appearance-none border-0 text-transparent"
@@ -306,7 +310,7 @@
 		style={`--level:${level}`}
 		ontoggle={saveUserExpanded}
 		name={data.dimension?.startsWith('librissearch:findCategory/') && level === 2
-			? 'category'
+			? parentUid + 'category'
 			: undefined}
 	>
 		<summary
