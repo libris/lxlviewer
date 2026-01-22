@@ -25,7 +25,7 @@ test('mapping displays the correct search query 2', async ({ page }) => {
 		'/find?_q=%28contribution:*+OR+%28category:"https://id.kb.se/term/ktg/Literature"+NOT+titel:"pirater"%29%29+existsImage'
 	);
 	await page.getByRole('link', { name: 'Sökfilter' }).click();
-	const mapping = page.getByRole('navigation', { name: 'Valda filter' });
+	const mapping = await page.getByRole('navigation', { name: 'Valda filter' });
 	const innerText =
 		'and or Medverkan och funktion ∃ or and Kategori : Litteratur and not Titel : "pirater" and Har omslags-/miniatyrbild Rensa';
 	await expect(mapping).toHaveText(innerText, { ignoreCase: true });

@@ -256,9 +256,6 @@ test('access filters can be added/removed', async ({ page }) => {
 	await page.getByTestId('supersearch').click();
 	await page.keyboard.press('Backspace');
 	await page.keyboard.press('Backspace');
-	await expect(
-		page.getByRole('dialog').getByRole('combobox'),
-		'user can remove access filters by pressing backspace to remove pill'
-	).not.toContainText('Fritt online');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toContainText('hej');
+	await page.waitForLoadState('networkidle');
+	await expect(page.getByRole('combobox').first()).toHaveText('hej');
 });

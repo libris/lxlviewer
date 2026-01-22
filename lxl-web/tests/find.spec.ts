@@ -74,7 +74,7 @@ test('facet opened/closed state is preserved', async ({ page, context }) => {
 	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeVisible();
 
 	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
-
+	await page.waitForURL('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
 	await expect(page.getByTestId('facet-list').first()).toBeHidden();
 	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeVisible();
 });
@@ -101,6 +101,7 @@ test('user sorting is persisted after navigating', async ({ page }) => {
 	await expect(langFacetSort).toHaveValue('hits.desc');
 	await langFacetSort.selectOption('alpha.asc');
 	await page.goto('/find?_q=a&_limit=20&_offset=0&_sort=&_i=f');
+	await page.waitForLoadState('networkidle');
 
 	await page.locator('summary').filter({ hasText: 'Språk' }).click();
 	const langFacetSortNew = await page.getByTestId('facet-sort-language');

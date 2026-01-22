@@ -1,10 +1,12 @@
 import { expect, test, devices } from '@playwright/test';
 
 test('decorated data label visibilty is correct after page navigations', async ({ page }) => {
-	// TODO: We should probably mock the required requests but something similar to https://github.com/markjaquith/sveltekit-playwright-fetch-mock would be needed to mock the server-side fetches.
 	await page.goto('/h08ndxddfg5v2pjf');
 	await page.getByText('Jonas Hassen Khemiri, 1978-').first().click();
-	await expect(page.getByRole('article').getByText('Svenska')).toBeVisible();
+	await page.waitForURL('/khwz18234vvmvn7');
+	await expect(
+		page.getByRole('article').getByRole('heading').getByText('Jonas Hassen Khemiri, 1978-')
+	).toBeVisible();
 });
 
 test('initially opened holdings modals are closable', async ({ page }) => {

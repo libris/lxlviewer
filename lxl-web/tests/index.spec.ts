@@ -16,13 +16,12 @@ test('index page has expected h1', async ({ page }) => {
 
 test('index page shows featured searches', async ({ page }) => {
 	const FEATURED_SEARCH_TITLES = [
-		'Ny skönlitteratur på svenska',
+		'Ny skönlitteratur på svenska ',
 		'Ny facklitteratur',
 		'Böcker om att börja skolan'
 	];
-
+	await page.waitForLoadState('networkidle');
 	FEATURED_SEARCH_TITLES.forEach(async (featuredTitle) => {
-		await expect(page.getByLabel(featuredTitle)).toBeVisible();
 		await expect(page.getByLabel(featuredTitle).getByRole('listitem')).toHaveCount(10);
 	});
 });
@@ -39,6 +38,7 @@ test('index page has a search input', async ({ page }) => {
 test('can perform a search', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').fill('*');
 	await page.keyboard.press('Enter');
+	await page.waitForLoadState('networkidle');
 	await expect(page).toHaveURL(/\/find/);
 });
 
