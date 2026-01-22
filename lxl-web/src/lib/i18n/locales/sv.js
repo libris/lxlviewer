@@ -290,7 +290,6 @@ export default {
 		unavailable: 'Ej tillgänglig',
 		map: 'karta',
 		linkToLocal: 'Hitta',
-		loanReserveLink: 'Låna',
 		linkToCatalog: 'Bibliotekets lokala katalog',
 		linkToSite: 'Bibliotekets webbplats',
 		openingHoursEtc: 'Öppettider, adress m.m.',

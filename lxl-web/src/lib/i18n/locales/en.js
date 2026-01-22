@@ -289,7 +289,6 @@ export default {
 		unavailable: 'Not available',
 		map: 'map',
 		linkToLocal: 'Find',
-		loanReserveLink: 'Loan',
 		linkToCatalog: 'Local library catalog',
 		linkToSite: 'Library website',
 		openingHoursEtc: 'Opening hours, address etc',
