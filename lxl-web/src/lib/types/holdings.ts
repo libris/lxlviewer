@@ -68,6 +68,10 @@ export interface LibraryWithLinks extends LibraryFull {
 	_links: HolderLinks;
 }
 
+export interface LibraryWithLinksAndInstances extends LibraryWithLinks {
+	_instances: BibIdData;
+}
+
 // "libraries" with holding but missing in libs cache
 export type UnknownLibrary = {
 	[JsonLd.ID]: LibraryId;
@@ -105,6 +109,7 @@ export type HolderLinks = {
 	[BibDb.Address]: string[];
 	[BibDb.MyLoansLink]: string;
 	[BibDb.RegistrationLink]: string;
+	[BibDb.AddressLocality]: string | undefined;
 };
 
 export type HoldingLinks = {

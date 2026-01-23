@@ -22,11 +22,11 @@ test('index page shows featured searches', async ({ page }) => {
 	];
 	await expect(page).toHaveURL('/');
 	await page.waitForLoadState('networkidle');
-	FEATURED_SEARCH_TITLES.forEach(async (featuredTitle) => {
+	for (const featuredTitle of FEATURED_SEARCH_TITLES) {
 		await expect(page.getByLabel(featuredTitle).getByRole('listitem')).toHaveCount(10, {
 			timeout: 10000
 		});
-	});
+	}
 });
 
 test('can change the language', async ({ page }) => {

@@ -6,7 +6,6 @@
 	import getMetaDescription from '$lib/utils/getMetaDescription';
 	import { JsonLd } from '$lib/types/xl.js';
 	import { type CitationsType } from '$lib/types/citation.js';
-	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http.js';
 	import Resource from '$lib/components/Resource.svelte';
 	import Modal from '$lib/components/Modal.svelte';
@@ -29,9 +28,6 @@
 	// see https://ogp.me/#types. Unclear how meaningful this would be.
 
 	let previousURL: URL;
-	const refinedLibraries = $derived(
-		getLibraryIdsFromMapping([data.searchResult?.mapping, data.subsetMapping])
-	);
 
 	const holdingsParam = $derived(page.state.holdings || page.url.searchParams.get('holdings'));
 	const modalCard = $derived(
@@ -99,9 +95,9 @@
 	{#if holdingsParam}
 		<Modal close={() => handleCloseModal('holdings')}>
 			{#snippet title()}
-				<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
+				<span>{page.data.t('holdings.findAtLibrary')}</span>
 			{/snippet}
-			<HoldingsContent holdings={data.holdings} {refinedLibraries} libOrgs={data.refinedOrgs}>
+			<HoldingsContent holdings={data.holdings}>
 				{#snippet card()}
 					<SearchCard item={modalCard} />
 				{/snippet}

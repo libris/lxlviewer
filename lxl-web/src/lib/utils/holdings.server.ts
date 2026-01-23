@@ -152,6 +152,7 @@ export function createHolderLinks(
 	const addresses: string[] = [];
 	const address: BibDbObj[] = getAtPath(fullHolderData, [BibDb.address, '*'], undefined) || [];
 	const postalAddress = address.find((a) => a[JsonLd.TYPE] === BibDb.postalAddress) as FramedData;
+	const addressLocality = postalAddress?.[BibDb.addressLocality] as string | undefined;
 	const visitingAddress = address.find(
 		(a) => a[JsonLd.TYPE] === BibDb.visitingAddress
 	) as FramedData;
@@ -168,7 +169,8 @@ export function createHolderLinks(
 		linksToCatalog: linksToCatalog?.length ? [linksToCatalog] : [],
 		myLoansLink,
 		registrationLink,
-		openingHours: openingHours?.length ? [openingHours] : []
+		openingHours: openingHours?.length ? [openingHours] : [],
+		addressLocality
 	};
 }
 
