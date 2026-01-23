@@ -1384,10 +1384,12 @@
 			"@id": "Transliteration-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["_script"],
-			"fresnel:propertyStyle": ["transliteration", "block"],
+			"fresnel:propertyStyle": ["transliteration"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " ",
-				"fresnel:contentFirst": ""
+				"fresnel:contentBefore": " »",
+				"fresnel:contentFirst": "»",
+				"fresnel:contentAfter": "»",
+				"fresnel:contentLast": "»"
 			}
 		},
 		"cartographicAttributes-format": {

@@ -434,14 +434,20 @@
 	}
 
 	.decorated-heading {
-		& :global(.transliteration) {
-			font-size: var(--text-2xl);
-			color: var(--color-subtle);
-		}
-
 		& :global(.agent-lifespan) {
 			font-weight: var(--font-weight-normal);
 			color: var(--color-subtle);
+		}
+
+		& :global(.transliteration) {
+			font-size: var(--text-2xl);
+			color: var(--color-subtle);
+			display: block;
+		}
+
+		& :global(.transliteration._contentBefore),
+		& :global(.transliteration._contentAfter) {
+			display: none;
 		}
 	}
 

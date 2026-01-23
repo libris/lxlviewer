@@ -67,7 +67,11 @@
 				{/each}
 			</p>
 			<hgroup>
-				<h2 class={['@4xs:text-[0.9375rem]! line-clamp-2 text-sm font-medium hover:underline']}>
+				<h2
+					class={[
+						'decorated-card-heading @4xs:text-[0.9375rem]! line-clamp-2 text-sm font-medium hover:underline'
+					]}
+				>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
 				{#if data['web-card-header-extra']?._display}
@@ -122,6 +126,20 @@
 </article>
 
 <style lang="postcss">
+	.decorated-card-heading {
+		& :global(.transliteration) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+			font-weight: var(--font-weight-normal);
+			display: block;
+		}
+
+		& :global(.transliteration._contentBefore),
+		& :global(.transliteration._contentAfter) {
+			display: none;
+		}
+	}
+
 	.decorated-card-body {
 		& :global([data-property='contribution']) {
 			display: flex;
