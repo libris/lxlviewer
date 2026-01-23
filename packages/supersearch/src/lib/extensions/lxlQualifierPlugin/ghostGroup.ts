@@ -2,6 +2,7 @@ import { EditorState, Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 import { qualifierStateField } from './qualifierValidation.js';
+import { startEditingQualifier, stopEditingQualifier } from './qualifierEffects.js';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically
@@ -11,6 +12,13 @@ import { qualifierStateField } from './qualifierValidation.js';
  * If not - add/repair it. Exception: quoted qualifier values
  */
 export const createGhostGroup = (tr: Transaction) => {
+	// don't run on edit qualifier start/stop events
+	for (const e of tr.effects) {
+		if (e.is(stopEditingQualifier) || e.is(startEditingQualifier)) {
+			return tr;
+		}
+	}
+
 	// run on valdation change -> atomic range change
 	const rangesChanged =
 		tr.startState.field(qualifierStateField).atomicRanges.size !==
