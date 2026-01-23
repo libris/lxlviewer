@@ -50,9 +50,9 @@
 	const hasSomeItemLink = $derived(
 		instances.some(
 			(instance) =>
-				instance.linksToItem.length ||
-				instance.loanReserveLink.length ||
-				instance.itemStatus?.length
+				instance?.linksToItem.length ||
+				instance?.loanReserveLink.length ||
+				instance?.itemStatus?.length
 		)
 	);
 
@@ -64,7 +64,7 @@
 
 	function getBestLink(instance: InstanceWithLinks): string | undefined {
 		let link: string | undefined;
-		link = instance.loanReserveLink?.[0] || instance.linksToItem?.[0];
+		link = instance?.loanReserveLink?.[0] || instance?.linksToItem?.[0];
 		if (link) return link;
 		else if (isLibraryWithLinks(holder)) {
 			return holder._links?.linksToCatalog?.[0] || holder._links?.linksToSite?.[0];
@@ -82,7 +82,7 @@
 	<div class="holder-heading flex items-baseline justify-between">
 		<h3 class="text-sm font-medium">{holder.displayStr || holder.name || holder[JsonLd.ID]}</h3>
 		<!-- ext link or expand instances -->
-		{#if numInstances === 1 && getBestLink(instances[0])}
+		{#if (numInstances === 1 || !hasSomeItemLink) && getBestLink(instances[0])}
 			<a
 				href={getBestLink(instances[0])}
 				target="_blank"
