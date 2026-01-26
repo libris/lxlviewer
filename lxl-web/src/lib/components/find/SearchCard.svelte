@@ -474,7 +474,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.card-header-top,
 	.card-header-extra,
-	.card-footer :global(.transliteration) {
+	.card-footer {
 		font-size: var(--text-2xs);
 		color: var(--color-subtle);
 		font-weight: var(--font-weight-normal);
