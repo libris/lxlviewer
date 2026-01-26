@@ -19,7 +19,7 @@
 
 	const { data } = $props();
 
-	const description = $derived(getMetaDescription(data.overview));
+	const description = $derived(getMetaDescription(data.decoratedData.overview?.[0]));
 	const ogImage = $derived(
 		data.images?.length ? bestSize(first(data.images), Width.MEDIUM)?.url : undefined
 	);
