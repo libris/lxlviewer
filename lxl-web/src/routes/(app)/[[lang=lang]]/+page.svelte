@@ -2,14 +2,11 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
-	import { getFeaturedSearches } from '$lib/remotes/homepage.remote';
 	import SearchResultList from '$lib/components/SearchResultList.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right';
-	import type { Locales } from '$lib/i18n/locales';
+	import { getFeaturedSearchesPreviews } from '$lib/remotes/homepage.remote';
 
 	const uid = $props.id();
-
-	const featuredSearches = $derived(await getFeaturedSearches(page.data.locale as Locales));
 </script>
 
 <svelte:head>
@@ -39,7 +36,7 @@
 		</hgroup>
 	</div>
 </header>
-{#each await featuredSearches as featured, index (featured.heading)}
+{#each page.data.featuredSearches as featured, index (featured.heading)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
 		class="@5xl-my-8 my-3 flex flex-col gap-3 last-of-type:pb-6 @sm:my-6 @lg:gap-4.5 @5xl:my-8 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
@@ -69,7 +66,16 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			<SearchResultList items={featured.items} type="horizontal" ariaLabelledBy={id} withGradient />
+			{#await getFeaturedSearchesPreviews()}
+				{page.data.t('search.loading')}
+			{:then featuredPreviews}
+				<SearchResultList
+					items={featuredPreviews[index].items}
+					type="horizontal"
+					ariaLabelledBy={id}
+					withGradient
+				/>
+			{/await}
 		</div>
 	</section>
 {/each}
