@@ -729,7 +729,11 @@ class Formatter {
 		// FIXME reaching inside
 		if (this.displayUtil.langContainerAliasInverted[propertyName]) {
 			return {
-				[this.displayUtil.langContainerAliasInverted[propertyName]]: this.pickLanguage(value)
+				[this.displayUtil.langContainerAliasInverted[propertyName]]: this.formatValues(
+					this.pickLanguage(value),
+					className,
+					propertyName
+				)
 			};
 		}
 
