@@ -180,6 +180,12 @@ export default {
     'valueAsArray.length'() {
       if (!this.fieldKey === 'category') return;
       this.getBroaderCategories();
+    },
+    'isLocked'(newValue, oldValue) {
+      if (!newValue && newValue !== oldValue) {
+        if (!this.fieldKey === 'category') return;
+        this.getBroaderCategories();
+      }
     }
   },
   computed: {
@@ -741,8 +747,8 @@ export default {
       return null;
     },
     async getBroaderCategories() {
-      if (this.fieldKey === 'category') {
-        let allBroader = [];
+      if (this.fieldKey === 'category' && !this.isLocked) {
+          let allBroader = [];
         const values = this.valueAsArray;
         for (const entity of values) {
           if (entity['@id']) {
