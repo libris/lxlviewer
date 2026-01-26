@@ -20,10 +20,12 @@ declare global {
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
 		}
-		interface PageData {
+		interface LayoutData {
 			locale: import('$lib/i18n/locales').LocaleCode;
 			t: Awaited<ReturnType<typeof import('$lib/i18n').getTranslator>>;
 			localizeHref: ReturnType<typeof import('$lib/i18n').initLocalizeHref>;
+		}
+		interface PageData {
 			userSettings: UserSettings;
 			subsetMapping: DisplayMapping[] | undefined;
 			siteName?: string;
