@@ -76,7 +76,8 @@ export default {
 		feedback: 'Give feedback',
 		feedbackLink: 'http://survey.kb.se/librisbeta/en',
 		customerSupport: 'Libris customer support',
-		cookies: 'Manage cookies'
+		cookies: 'Manage cookies',
+		gdpr: 'Processing of personal data'
 	},
 	facet: {
 		q: 'Free text search',
