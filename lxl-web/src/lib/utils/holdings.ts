@@ -1,7 +1,6 @@
 import { pushState } from '$app/navigation';
 import type {
 	BibIdObj,
-	HoldersByInstanceId,
 	HoldersByType,
 	HoldingLinks,
 	LibraryFull,
@@ -113,11 +112,7 @@ export function isLibraryOrg(id: LibraryId): boolean {
  */
 export function getMyLibsFromHoldings(
 	myLibraries: MyLibrariesType | undefined,
-	holdings:
-		| HoldersByInstanceId
-		| HoldersByInstanceId[string]
-		| HoldersByType
-		| HoldersByType[string],
+	holdings: string[] | HoldersByType | HoldersByType[string],
 	orgs?: Record<string, string[]>
 ): (LibraryId | OrgId)[] | null {
 	if (!myLibraries) return null;

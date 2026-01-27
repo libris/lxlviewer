@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { getHoldingsByInstanceId, getBibIdsByInstanceId } from './holdings.server';
+import { getBibIdsByInstanceId, getHoldersByType, getHoldingsByType } from './holdings.server';
 import { getMyLibsFromHoldings } from './holdings';
 import mainEntity from '$lib/assets/json/test-data/main-entity.json';
 import record from '$lib/assets/json/test-data/record.json';
 import { UserSettings } from './userSettings.svelte';
 import { centerOnWork } from './centerOnWork';
-import type { DisplayUtil } from './xl';
 
 const workCenteredMainEntity = centerOnWork(mainEntity);
 
@@ -22,7 +21,8 @@ describe('getBibIdsByInstanceId', () => {
 				onr: '9176423484',
 				isbn: ['9176423484'],
 				issn: [],
-				str: instanceTokenStr
+				str: instanceTokenStr,
+				itemStr: undefined
 			}
 		});
 	});
@@ -31,18 +31,17 @@ describe('getBibIdsByInstanceId', () => {
 describe('getMyLibsFromHoldings', () => {
 	it('Returns favourite library present in the holdings list', () => {
 		const userSettings = new UserSettings({});
-		const displayUtil = { lensAndFormat: () => {} } as unknown as DisplayUtil;
 		userSettings.addLibrary('https://libris.kb.se/library/S', 'Kungliga biblioteket');
 		userSettings.addLibrary('https://libris.kb.se/library/foo', 'Mitt bibliotek');
-		const instances = getHoldingsByInstanceId(workCenteredMainEntity, displayUtil);
+		const byType = getHoldersByType(getHoldingsByType(workCenteredMainEntity));
 
-		expect(getMyLibsFromHoldings(userSettings.myLibraries, instances)).toStrictEqual([
+		expect(getMyLibsFromHoldings(userSettings.myLibraries, byType)).toStrictEqual([
 			'https://libris.kb.se/library/S'
 		]);
 
 		userSettings.addLibrary('https://libris.kb.se/library/H', 'Frescatibilbioteket');
 
-		expect(getMyLibsFromHoldings(userSettings.myLibraries, instances)).toStrictEqual([
+		expect(getMyLibsFromHoldings(userSettings.myLibraries, byType)).toStrictEqual([
 			'https://libris.kb.se/library/S',
 			'https://libris.kb.se/library/H'
 		]);

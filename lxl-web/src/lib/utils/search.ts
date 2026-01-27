@@ -37,7 +37,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { isLibraryOrg } from '$lib/utils/holdings';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
-import { getHoldersCount, getHoldingsByInstanceId } from '$lib/utils/holdings.server';
+import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
 import { getMyLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
@@ -107,7 +107,7 @@ export function asSearchResultItem(
 		?.map((i) => cleanUpItem(i))
 		.map((i) => ({
 			...(myLibraries && {
-				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil)
+				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries)
 			}),
 			...('_debug' in i && {
 				_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
@@ -353,14 +353,10 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getHeldByMyLibraries(
-	item: FramedData,
-	myLibraries: MyLibrariesType,
-	displayUtil: DisplayUtil
-) {
-	const holdingsByInstanceId = getHoldingsByInstanceId(item, displayUtil);
+function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
 	const orgs = getRefinedOrgs(myLibraries);
-	return getMyLibsFromHoldings(myLibraries, holdingsByInstanceId, orgs);
+	const holdingsByType = getHoldersByType(getHoldingsByType(item));
+	return getMyLibsFromHoldings(myLibraries, holdingsByType, orgs);
 }
 
 function isFreeTextQuery(property: unknown): boolean {
