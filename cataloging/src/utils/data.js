@@ -232,16 +232,25 @@ export async function fetchBroader(broader, all) {
   const nextBroader = [];
 
   for (const thing of things) {
-    if (thing.broader) {
-      //TODO: use "asArray" on thing.broader first?
-      all.push(...thing.broader);
-      nextBroader.push(...thing.broader);
+    for (const rel of settings.broaderRelations) {
+      if (thing[rel]) {
+        const broader = asArray(thing[rel]);
+        all.push(...broader);
+        const visited = new Set(all.map(o => o['@id']));
+        for (const b of broader) {
+          !visited.has(b['@id']) && nextBroader.push(b);
+        }
+      }
     }
   }
   if (nextBroader.length === 0) {
     return uniq(all.map(b => b['@id']));
   }
   return fetchBroader(nextBroader, all);
+}
+
+function asArray(v) {
+  return Array.isArray(v) ? v : [v];
 }
 
 export function moveWorkToInstance(data) {

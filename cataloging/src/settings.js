@@ -116,6 +116,7 @@ export default {
   broaderRelations: [
     'broader',
     'broadMatch',
+    'exactMatch',
     'locatedIn'
   ],
   defaultExpandedProperties: [
