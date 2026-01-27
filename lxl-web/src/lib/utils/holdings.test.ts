@@ -5,6 +5,7 @@ import mainEntity from '$lib/assets/json/test-data/main-entity.json';
 import record from '$lib/assets/json/test-data/record.json';
 import { UserSettings } from './userSettings.svelte';
 import { centerOnWork } from './centerOnWork';
+import type { DisplayUtil } from './xl';
 
 const workCenteredMainEntity = centerOnWork(mainEntity);
 
@@ -30,9 +31,10 @@ describe('getBibIdsByInstanceId', () => {
 describe('getMyLibsFromHoldings', () => {
 	it('Returns favourite library present in the holdings list', () => {
 		const userSettings = new UserSettings({});
+		const displayUtil = { lensAndFormat: () => {} } as unknown as DisplayUtil;
 		userSettings.addLibrary('https://libris.kb.se/library/S', 'Kungliga biblioteket');
 		userSettings.addLibrary('https://libris.kb.se/library/foo', 'Mitt bibliotek');
-		const instances = getHoldingsByInstanceId(workCenteredMainEntity);
+		const instances = getHoldingsByInstanceId(workCenteredMainEntity, displayUtil);
 
 		expect(getMyLibsFromHoldings(userSettings.myLibraries, instances)).toStrictEqual([
 			'https://libris.kb.se/library/S'

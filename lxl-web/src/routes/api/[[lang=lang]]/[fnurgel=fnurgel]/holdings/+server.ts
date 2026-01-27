@@ -38,7 +38,7 @@ export async function GET({ params, locals }) {
 	const byType = getHoldersByType(holdingsByType);
 
 	const holdings: HoldingsData = {
-		byInstanceId: getHoldingsByInstanceId(mainEntity),
+		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil),
 		byType,
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
 		holdingLibraries: getHoldingLibraries(byType)

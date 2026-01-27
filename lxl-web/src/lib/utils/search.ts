@@ -107,7 +107,7 @@ export function asSearchResultItem(
 		?.map((i) => cleanUpItem(i))
 		.map((i) => ({
 			...(myLibraries && {
-				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries)
+				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil)
 			}),
 			...('_debug' in i && {
 				_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
@@ -353,8 +353,12 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
-	const holdingsByInstanceId = getHoldingsByInstanceId(item);
+function getHeldByMyLibraries(
+	item: FramedData,
+	myLibraries: MyLibrariesType,
+	displayUtil: DisplayUtil
+) {
+	const holdingsByInstanceId = getHoldingsByInstanceId(item, displayUtil);
 	const orgs = getRefinedOrgs(myLibraries);
 	return getMyLibsFromHoldings(myLibraries, holdingsByInstanceId, orgs);
 }

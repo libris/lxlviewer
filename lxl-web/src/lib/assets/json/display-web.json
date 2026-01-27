@@ -511,6 +511,26 @@
 						"isPartOf",
 						"part"
 					]
+				},
+				"Item": {
+					"@id": "Item-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Item",
+					"showProperties": [
+						"hasComponent",
+						"physicalLocation",
+						"shelfMark",
+						"shelfControlNumber",
+						"language",
+						"genreForm",
+						"classification",
+						"subject",
+						"summary",
+						"immediateAcquisition",
+						"availability",
+						{ "inverseOf": "itemUsed" },
+						{ "inverseOf": "hasComponent" }
+					]
 				}
 			}
 		},
@@ -1525,6 +1545,16 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["bibdb:PostalAddress"],
 			"fresnel:propertyFormatDomain": ["bibdb:addressLocality"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Item-format": {
+			"@id": "Item-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Item"],
+			"fresnel:propertyFormatDomain": ["*"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""

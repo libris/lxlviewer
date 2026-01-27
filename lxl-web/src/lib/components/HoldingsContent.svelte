@@ -62,11 +62,12 @@
 		for (const instanceId of instanceIds) {
 			const holders = byInstanceId[instanceId] ?? [];
 
-			for (const libraryId of holders) {
+			for (const lib of holders) {
+				const libraryId = lib[JsonLd.ID];
 				if (!libraries[libraryId]) {
 					libraries[libraryId] = {};
 				}
-				libraries[libraryId][instanceId] = bibIdData[instanceId];
+				libraries[libraryId][instanceId] = { ...bibIdData[instanceId], itemStr: lib.itemStr };
 			}
 		}
 

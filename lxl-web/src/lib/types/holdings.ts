@@ -86,12 +86,16 @@ export type BibIdObj = {
 	isbn: string[];
 	issn: string[];
 	str: string;
+	itemStr: string | undefined;
 };
 
 export type BibIdData = { [instanceId: string]: BibIdObj };
 
 export type HoldersByInstanceId = {
-	[id: LibraryId]: string[];
+	[id: LibraryId]: {
+		[JsonLd.ID]: string;
+		itemStr?: string;
+	}[];
 };
 
 export type HoldingsByType = {
