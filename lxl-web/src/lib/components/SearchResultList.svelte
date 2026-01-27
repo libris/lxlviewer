@@ -10,6 +10,8 @@
 		items: SearchResultItemType[];
 		type: 'horizontal';
 		ariaLabelledBy?: string;
+		ariaLive?: 'polite' | 'off' | 'assertive';
+		ariaBusy?: boolean;
 		withGradient?: boolean;
 		placeholderItems?: number;
 		listElement?: HTMLUListElement | undefined;
@@ -19,6 +21,8 @@
 		items,
 		type,
 		ariaLabelledBy,
+		ariaLive,
+		ariaBusy,
 		withGradient,
 		placeholderItems = 0,
 		listElement = $bindable()
@@ -73,6 +77,8 @@
 			bind:this={listElement}
 			bind:clientWidth
 			onscroll={updateDisabledScrollButtons}
+			aria-live={ariaLive}
+			aria-busy={ariaBusy}
 		>
 			{#each items as item (item['@id'])}
 				<li class="overflow-x-hidden text-center">

@@ -67,6 +67,8 @@
 	items={previews?.items || []}
 	type="horizontal"
 	{ariaLabelledBy}
+	ariaLive="polite"
+	ariaBusy={!previews || previewsQuery?.loading ? true : false}
 	placeholderItems={!previews && !previewsQuery?.current ? 10 : 0}
 	withGradient
 	bind:listElement
