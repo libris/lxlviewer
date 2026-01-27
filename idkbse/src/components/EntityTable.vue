@@ -122,6 +122,9 @@ export default {
           if (termObj && termObj.hasOwnProperty('inverseOf')) {
             currentProp = termObj['inverseOf']['@id'].split('/').pop();
           }
+          else if (termObj && termObj['@type'] === 'owl:SymmetricProperty') {
+            currentProp = currentProp.split('/').pop();
+          }
         }
         if (this.itemData.hasOwnProperty(currentProp) && this.hiddenProperties.includes(currentProp) == false) {
           translatedOrder.push(currentProp);
@@ -142,6 +145,8 @@ export default {
         if (termObj.hasOwnProperty('inverseOf')) {
           const reverseKey = termObj['inverseOf']['@id'].split('/').pop();
           extracted[reverseKey] = value;
+        } else if (termObj['@type'] === 'owl:SymmetricProperty') {
+          extracted[key] = value;
         } else {
           const capitalizedKey = key[0].toUpperCase() + key.slice(1);
           extracted[`in${capitalizedKey}Of`] = value;

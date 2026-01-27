@@ -1,4 +1,4 @@
-<template>      
+<template>
   <div class="TermLensesList">
     <span class="TermLensesList-completed">{{ level }}</span> <i class="bi-chevron-left"></i>
     <ul class="TermLensesList-list">
@@ -79,7 +79,10 @@ export default {
       const reverseItem = VocabUtil.getTermObject(reverseLabel, this.vocab, this.vocabContext);
       if (reverseItem.hasOwnProperty('inverseOf') && reverseItem.inverseOf.hasOwnProperty('@id')) {
         return reverseItem.inverseOf;
-      } else {
+      } else if (reverseItem['@type'] === 'owl:SymmetricProperty') {
+        return reverseItem;
+      }
+      else {
         return null;
       }
     },
