@@ -339,6 +339,16 @@
 						"uri"
 					]
 				},
+				"Agent": {
+					"@id": "Agent-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Resource",
+					"showProperties": [
+						{ "alternateProperties": ["prefLabel", "label", "name"] },
+						"isPartOf",
+						"_find"
+					]
+				},
 				"Person": {
 					"@id": "Person-chips",
 					"@type": "fresnel:Lens",

@@ -420,6 +420,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			color: var(--color-subtle);
 			font-size: var(--text-3xs);
 		}
+
+        & :global(.find-link) {
+            display: none;
+        }
 	}
 
 	.card-image {
