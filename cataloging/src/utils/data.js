@@ -228,6 +228,7 @@ export async function fetchBroader(broader, all) {
   const things = results
     .filter(r => r.status === 'fulfilled')
     .map(r => r.value.data)
+    .filter(doc => doc)
     .flatMap(doc => doc['@graph']);
   const nextBroader = [];
 
