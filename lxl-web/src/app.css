@@ -447,6 +447,10 @@
 	scrollbar-width: none;
 }
 
+@utility skeleton {
+	@apply rounded-lg bg-neutral-100;
+}
+
 /* OLD THEME */
 
 /* custom bg colors  */

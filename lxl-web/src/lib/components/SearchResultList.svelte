@@ -87,7 +87,7 @@
 			{/each}
 			{#each { length: placeholderItems }}
 				<li class="overflow-x-hidden text-center">
-					<div class="aspect-square rounded-lg bg-neutral-100"></div>
+					<div class="skeleton aspect-square"></div>
 				</li>
 			{/each}
 		</ul>
