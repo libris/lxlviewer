@@ -701,6 +701,12 @@
 						"isPartOf",
 						"part"
 					]
+				},
+				"Bibliography": {
+					"@id": "Bibliography-web-overview",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Bibliography",
+					"showProperties": ["description"]
 				}
 			}
 		},
