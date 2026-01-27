@@ -63,6 +63,10 @@
 	});
 </script>
 
+{#snippet previewPlaceholder()}
+	<div class="skeleton aspect-square"></div>
+{/snippet}
+
 <SearchResultList
 	items={previews?.items || []}
 	type="horizontal"
@@ -70,6 +74,7 @@
 	ariaLive="polite"
 	ariaBusy={!previews || previewsQuery?.loading ? true : false}
 	placeholderItems={!previews && !previewsQuery?.current ? 10 : 0}
+	placeholderSnippet={previewPlaceholder}
 	withGradient
 	bind:listElement
 />

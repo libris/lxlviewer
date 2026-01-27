@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import SearchResultItem from '$lib/components/SearchResultItem.svelte';
 	import type { SearchResultItem as SearchResultItemType } from '$lib/types/search';
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';
 
@@ -14,6 +14,7 @@
 		ariaBusy?: boolean;
 		withGradient?: boolean;
 		placeholderItems?: number;
+		placeholderSnippet?: Snippet;
 		listElement?: HTMLUListElement | undefined;
 	};
 
@@ -25,6 +26,7 @@
 		ariaBusy,
 		withGradient,
 		placeholderItems = 0,
+		placeholderSnippet,
 		listElement = $bindable()
 	}: Props = $props();
 
@@ -69,6 +71,9 @@
 	onMount(() => updateDisabledScrollButtons());
 </script>
 
+{#snippet fallbackPlaceholderSnippet()}
+	<div class="skeleton aspect-square"></div>
+{/snippet}
 {#snippet horizontalList()}
 	<div class={['horizontal-list relative w-full', withGradient && 'with-gradient']}>
 		<ul
@@ -87,7 +92,11 @@
 			{/each}
 			{#each { length: placeholderItems }}
 				<li class="overflow-x-hidden text-center">
-					<div class="skeleton aspect-square"></div>
+					{#if placeholderSnippet}
+						{@render placeholderSnippet()}
+					{:else}
+						{@render fallbackPlaceholderSnippet()}
+					{/if}
 				</li>
 			{/each}
 		</ul>
