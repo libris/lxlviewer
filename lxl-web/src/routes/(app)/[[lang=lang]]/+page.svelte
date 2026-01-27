@@ -2,9 +2,8 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
-	import SearchResultList from '$lib/components/SearchResultList.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right';
-	import { getFeaturedSearchesPreviews } from '$lib/remotes/homepage.remote';
+	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
 
 	const uid = $props.id();
 </script>
@@ -66,16 +65,7 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			{#await getFeaturedSearchesPreviews()}
-				{page.data.t('search.loading')}
-			{:then featuredPreviews}
-				<SearchResultList
-					items={featuredPreviews[index].items}
-					type="horizontal"
-					ariaLabelledBy={id}
-					withGradient
-				/>
-			{/await}
+			<FeaturedPreviewList featuredSearch={featured} ariaLabelledBy={id} />
 		</div>
 	</section>
 {/each}

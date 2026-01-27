@@ -1,4 +1,4 @@
-import { query, prerender } from '$app/server';
+import { query } from '$app/server';
 import { getSupportedLocale, type LocaleCode } from '$lib/i18n/locales';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';
@@ -16,7 +16,7 @@ const FEATURED_QUERIES: {
 			'/find?_q=language%3A"lang%3Aswe"+category:"saogf:Sk%25C3%25B6nlitteratur"&_sort=-%40reverse.instanceOf.publication.year',
 		previewParams: {
 			_q: 'language:"lang:swe" category:"saogf:Sk%C3%B6nlitteratur" existsImage',
-			_limit: 10,
+			_limit: 20,
 			_sort: '-@reverse.instanceOf.publication.year'
 		}
 	},
@@ -26,7 +26,7 @@ const FEATURED_QUERIES: {
 			'/find?_q=category:"saogf:Facklitteratur"+yearPublished%3A-2026&_sort=-%40reverse.instanceOf.publication.year',
 		previewParams: {
 			_q: 'category:"saogf:Facklitteratur" yearPublished:-2026 existsImage',
-			_limit: 10,
+			_limit: 20,
 			_sort: '-@reverse.instanceOf.publication.year'
 		}
 	},
@@ -35,26 +35,33 @@ const FEATURED_QUERIES: {
 		findHref: '/find?_q=category:"barngf:Bilderböcker"+subject:"barn:B%25C3%25B6rja%2520skolan"',
 		previewParams: {
 			_q: 'category:"saogf:Sk%C3%B6nlitteratur" category:"barngf:Bilderb%C3%B6cker" subject:"barn:B%C3%B6rja%20skolan" existsImage',
-			_limit: 10
+			_limit: 20
 		}
 		// showAllLabelByLang: { sv: 'Visa fler titlar', en: 'Show more titles' }
 	}
 ];
 
+export type FeaturedSearch = {
+	heading: string;
+	findHref: string;
+	previewParams: v.InferInput<typeof SearchResultsSchema>;
+	showAllLabel?: string;
+};
+
 export const getFeaturedSearches = query(v.optional(v.string()), async (lang) => {
 	const locale = getSupportedLocale(lang);
 
-	return FEATURED_QUERIES.map(({ headingByLang, showAllLabelByLang, ...rest }) => ({
-		...rest,
-		heading: headingByLang[locale],
-		showAllLabel: showAllLabelByLang?.[locale]
-	}));
-});
-
-export const getFeaturedSearchesPreviews = prerender(async () => {
-	return await Promise.all(
-		Object.values(FEATURED_QUERIES).map(async ({ previewParams }) => {
-			return getSearchResults(previewParams);
+	const featuredSearches: FeaturedSearch[] = FEATURED_QUERIES.map(
+		({ headingByLang, showAllLabelByLang, ...rest }) => ({
+			...rest,
+			heading: headingByLang[locale],
+			showAllLabel: showAllLabelByLang?.[locale]
 		})
 	);
+
+	return featuredSearches;
+});
+
+export const getFeaturedPreviews = query(SearchResultsSchema, async (params) => {
+	return getSearchResults(params);
 });

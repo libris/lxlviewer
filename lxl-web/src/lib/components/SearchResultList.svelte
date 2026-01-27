@@ -11,9 +11,10 @@
 		type: 'horizontal';
 		ariaLabelledBy?: string;
 		withGradient?: boolean;
+		placeholderItems?: number;
 	};
 
-	let { items, type, ariaLabelledBy, withGradient }: Props = $props();
+	let { items, type, ariaLabelledBy, withGradient, placeholderItems = 0 }: Props = $props();
 
 	const SCROLL_AMOUNT = 0.85;
 	let ulElement: HTMLUListElement | undefined;
@@ -69,6 +70,11 @@
 			{#each items as item (item['@id'])}
 				<li class="overflow-x-hidden text-center">
 					<SearchResultItem data={item} />
+				</li>
+			{/each}
+			{#each { length: placeholderItems }}
+				<li class="overflow-x-hidden text-center">
+					<div class="aspect-square rounded-lg bg-neutral-100"></div>
 				</li>
 			{/each}
 		</ul>
