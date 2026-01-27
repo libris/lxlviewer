@@ -65,7 +65,7 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			<FeaturedPreviewList featuredSearch={featured} ariaLabelledBy={id} />
+			<FeaturedPreviewList featuredSearch={featured} ariaLabelledBy={id} lazyload />
 		</div>
 	</section>
 {/each}

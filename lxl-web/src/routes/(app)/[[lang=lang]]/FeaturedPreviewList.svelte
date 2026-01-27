@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
 	import { type FeaturedSearch } from '$lib/remotes/homepage.remote';
 	import SearchResultList from '$lib/components/SearchResultList.svelte';
 	import { getHomepageContext } from '$lib/contexts/homepage';
@@ -7,15 +9,21 @@
 	type Props = {
 		featuredSearch: FeaturedSearch;
 		ariaLabelledBy?: string;
+		lazyload?: boolean;
 	};
 
-	let { featuredSearch, ariaLabelledBy }: Props = $props();
+	let { featuredSearch, ariaLabelledBy, lazyload = false }: Props = $props();
+
+	let listElement: HTMLUListElement | undefined = $state();
+	let observer: IntersectionObserver | undefined = $state();
+	let shouldGetPreviews = $derived(false);
 
 	const homepageContext = getHomepageContext();
 	const previewParamsString = $derived(JSON.stringify(featuredSearch.previewParams));
 
 	const previewsQuery = $derived(
-		!homepageContext.previews?.[previewParamsString]
+		!homepageContext.previews?.[previewParamsString] &&
+			(!lazyload || (lazyload && shouldGetPreviews))
 			? getFeaturedPreviews(featuredSearch.previewParams)
 			: undefined
 	);
@@ -30,6 +38,29 @@
 			};
 		}
 	});
+
+	$effect(() => {
+		if (previews) observer?.disconnect();
+	});
+
+	function handleObserve(entries: IntersectionObserverEntry[]) {
+		if (entries[0].isIntersecting) shouldGetPreviews = true;
+	}
+
+	afterNavigate(() => {
+		observer?.disconnect();
+
+		if (lazyload) {
+			observer = new IntersectionObserver(handleObserve, {});
+			if (listElement) {
+				observer.observe(listElement);
+			}
+		}
+	});
+
+	onDestroy(() => {
+		observer?.disconnect();
+	});
 </script>
 
 <SearchResultList
@@ -38,6 +69,7 @@
 	{ariaLabelledBy}
 	placeholderItems={!previews && !previewsQuery?.current ? 10 : 0}
 	withGradient
+	bind:listElement
 />
 
 <style lang="postcss">

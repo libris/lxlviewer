@@ -12,12 +12,19 @@
 		ariaLabelledBy?: string;
 		withGradient?: boolean;
 		placeholderItems?: number;
+		listElement?: HTMLUListElement | undefined;
 	};
 
-	let { items, type, ariaLabelledBy, withGradient, placeholderItems = 0 }: Props = $props();
+	let {
+		items,
+		type,
+		ariaLabelledBy,
+		withGradient,
+		placeholderItems = 0,
+		listElement = $bindable()
+	}: Props = $props();
 
 	const SCROLL_AMOUNT = 0.85;
-	let ulElement: HTMLUListElement | undefined;
 	let clientWidth: number | undefined = $state();
 	let disabledLeftScrollButton = $state(true);
 	let disabledRightScrollButton = $state(false);
@@ -27,27 +34,27 @@
 	}
 
 	function scrollLeft() {
-		ulElement?.scrollBy({
-			left: ulElement.clientWidth * -SCROLL_AMOUNT,
+		listElement?.scrollBy({
+			left: listElement.clientWidth * -SCROLL_AMOUNT,
 			behavior: getPreferredScrollBehaviour()
 		});
 	}
 
 	function scrollRight() {
-		ulElement?.scrollBy({
-			left: ulElement.clientWidth * SCROLL_AMOUNT,
+		listElement?.scrollBy({
+			left: listElement.clientWidth * SCROLL_AMOUNT,
 			behavior: getPreferredScrollBehaviour()
 		});
 	}
 
 	function updateDisabledScrollButtons() {
-		if (ulElement) {
-			if (ulElement.scrollLeft <= 0) {
+		if (listElement) {
+			if (listElement.scrollLeft <= 0) {
 				disabledLeftScrollButton = true;
 			} else {
 				disabledLeftScrollButton = false;
 			}
-			if (ulElement.scrollLeft >= ulElement.scrollWidth - ulElement.clientWidth) {
+			if (listElement.scrollLeft >= listElement.scrollWidth - listElement.clientWidth) {
 				disabledRightScrollButton = true;
 			} else {
 				disabledRightScrollButton = false;
@@ -63,7 +70,7 @@
 		<ul
 			aria-labelledby={ariaLabelledBy}
 			class="scrollbar-hidden flex overflow-x-auto overscroll-x-contain"
-			bind:this={ulElement}
+			bind:this={listElement}
 			bind:clientWidth
 			onscroll={updateDisabledScrollButtons}
 		>
