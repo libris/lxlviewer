@@ -246,9 +246,9 @@
 					{#snippet summary()}
 						<div class="flex flex-col gap-6">
 							{#each decoratedData.summary as s (s)}
-								<p class="summary-or-toc w-full">
+								<div class="summary-or-toc w-full">
 									<DecoratedData data={s} showLabels={ShowLabelsOptions.Never} block />
-								</p>
+								</div>
 							{/each}
 						</div>
 					{/snippet}
@@ -324,9 +324,9 @@
 					{#snippet resourceTableOfContents()}
 						<div class="flex flex-col gap-6">
 							{#each decoratedData.resourceTableOfContents as r (r)}
-								<p class="summary-or-toc w-full">
+								<div class="summary-or-toc w-full">
 									<DecoratedData data={r} showLabels={ShowLabelsOptions.Never} block />
-								</p>
+								</div>
 							{/each}
 						</div>
 					{/snippet}

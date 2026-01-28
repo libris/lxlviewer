@@ -10,7 +10,7 @@
 	let { content, collapsedHeightPx = 200 }: Props = $props();
 
 	let expanded = $state(false);
-	let canCollapse = $state(false);
+	let canCollapse = $state(true);
 
 	let contentEl: HTMLDivElement;
 
