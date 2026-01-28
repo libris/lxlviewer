@@ -68,7 +68,7 @@ export default {
       } return false;
     },
     toBeRemoved() {
-      if (this.broaderCategories.length > 0) {
+      if (this.broaderCategories.length > 0 && !this.isLocked) {
         return this.broaderCategories.some(b => b === this.item['@id']);
       }
       return false;
