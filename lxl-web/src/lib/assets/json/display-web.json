@@ -485,7 +485,7 @@
 					"@id": "Agent-web-card",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Agent",
-					"showProperties": ["description"]
+					"showProperties": ["description", "comment"]
 				},
 				"Concept": {
 					"@id": "Concept-web-card",
