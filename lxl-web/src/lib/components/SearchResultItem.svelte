@@ -52,8 +52,11 @@
 			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
 			{@render image()}
-			<p class="text-subtle mb-0.5 text-xs">
-				<TypeIcon type={data.typeForIcon} class="text-3xs @4xs:text-2xs inline" />
+			<p class="text-subtle line-clamp-1 text-xs break-all">
+				<TypeIcon
+					type={data.typeForIcon}
+					class="text-3xs @4xs:text-2xs inline -translate-y-px leading-none"
+				/>
 				{#if data.typeStr}
 					<span class="font-medium">
 						{data.typeStr}
@@ -61,21 +64,19 @@
 					<span class="hidden has-[+*]:inline"> · </span>
 				{/if}
 				{#each data['web-card-header-top']?._display as displayObj, index (index)}
-					<span>
-						<DecoratedData data={displayObj} showLabels="never" />
-					</span>
+					<DecoratedData data={displayObj} showLabels="never" />
 				{/each}
 			</p>
 			<hgroup>
 				<h2
 					class={[
-						'decorated-card-heading @4xs:text-[0.9375rem]! line-clamp-2 text-sm font-medium hover:underline'
+						'decorated-card-heading mt-0.5 line-clamp-2 text-sm leading-snug font-medium hover:underline @min-[16rem]:text-[0.9375rem]'
 					]}
 				>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
-				{#if data['web-card-header-extra']?._display}
-					<p class="text-subtle line-clamp-2 text-xs">
+				{#if data['web-card-header-extra']?._display && data['web-card-header-extra']?._display.length}
+					<p class="text-subtle mt-0.5 truncate text-xs">
 						{#each data['web-card-header-extra']?._display as displayObj, index (index)}
 							<span>
 								<DecoratedData data={displayObj} showLabels="defaultOn" />
@@ -87,7 +88,7 @@
 		</a>
 	</header>
 	{#if data['card-body']?._display}
-		<div class="4xs:text-sm decorated-card-body mt-1 mb-1.5 text-xs">
+		<div class="4xs:text-sm decorated-card-body mt-1 mb-1 text-xs">
 			{#each data['card-body']?._display as obj, index (index)}
 				<div class="@4xs:text-sm flex flex-col items-center text-center">
 					<DecoratedData data={obj} showLabels="never" block limit={{ contribution: 3 }} />
