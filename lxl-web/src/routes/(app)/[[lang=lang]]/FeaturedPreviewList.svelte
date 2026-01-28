@@ -64,7 +64,15 @@
 </script>
 
 {#snippet previewPlaceholder()}
-	<div class="skeleton aspect-square"></div>
+	<div class="flex flex-col items-center">
+		<div class="skeleton mb-2 aspect-square w-full"></div>
+		<div class="skeleton bg-neutral my-0.5 h-3 w-1/3"></div>
+		<div
+			class="skeleton bg-neutral mt-1.25 mb-2.5 h-3.5 w-3/4 @min-[16rem]:mb-2.25 @min-[16rem]:h-3.75"
+		></div>
+		<div class="skeleton bg-neutral h-3 w-1/2"></div>
+		<div class="skeleton bg-neutral mt-2 h-3 w-1/3"></div>
+	</div>
 {/snippet}
 
 <SearchResultList
