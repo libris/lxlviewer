@@ -734,7 +734,8 @@ export default {
     },
     hasType(entity, type) {
       if (entity['@id']) {
-        return isSubClassOf(this.getTypeFromQuoted(entity['@id']), type, this.resources.vocab, this.resources.context);
+        const typeFromQuoted = this.getTypeFromQuoted(entity['@id']);
+        return typeFromQuoted ? isSubClassOf(typeFromQuoted, type, this.resources.vocab, this.resources.context) : false;
       } else if (entity['@type']) { // Local entities
         return isSubClassOf(entity['@type'], type, this.resources.vocab, this.resources.context);
       }
