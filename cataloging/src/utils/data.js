@@ -220,6 +220,40 @@ export async function fetchMissingLinkedToQuoted(obj, store) {
     .catch((e) => console.log(e));
 }
 
+export async function fetchBroader(broader, all) {
+  const results = await Promise.allSettled(
+    broader.map(l => HttpUtil.getDocument(l['@id'], undefined, false))
+  );
+
+  const things = results
+    .filter(r => r.status === 'fulfilled')
+    .map(r => r.value.data)
+    .filter(doc => doc)
+    .flatMap(doc => doc['@graph']);
+  const nextBroader = [];
+
+  for (const thing of things) {
+    for (const rel of settings.broaderRelations) {
+      if (thing[rel]) {
+        const broader = asArray(thing[rel]);
+        all.push(...broader);
+        const visited = new Set(all.map(o => o['@id']));
+        for (const b of broader) {
+          !visited.has(b['@id']) && nextBroader.push(b);
+        }
+      }
+    }
+  }
+  if (nextBroader.length === 0) {
+    return uniq(all.map(b => b['@id']));
+  }
+  return fetchBroader(nextBroader, all);
+}
+
+function asArray(v) {
+  return Array.isArray(v) ? v : [v];
+}
+
 export function moveWorkToInstance(data) {
   const oldWork = data.work;
   if (oldWork !== undefined) {

@@ -515,6 +515,7 @@
     "Flagged entities" : "Flaggade",
     "is missing": "saknas",
     "are missing" : "saknas",
-    "and": "och"
+    "and": "och",
+    "The term is implied by another term and will be removed on save": "Termen impliceras av en annan term och kommer raderas när posten sparas"
   }
 }

@@ -113,6 +113,12 @@ export default {
     'Work' : { 'mainEntity.category' : ['ContentType', 'GenreForm'] },
     'Instance' : { 'mainEntity.instanceOf.category' : ['ContentType', 'GenreForm'] },
   },
+  broaderRelations: [
+    'broader',
+    'broadMatch',
+    'exactMatch',
+    'locatedIn'
+  ],
   defaultExpandedProperties: [
     'hasComponent',
     '@reverse/reproductionOf',

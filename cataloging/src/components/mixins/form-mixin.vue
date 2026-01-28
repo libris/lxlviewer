@@ -5,7 +5,6 @@ import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import DisplayGroups from '@/resources/json/displayGroups.json';
-import {getAllVocabProperties, getProperties, getRangeFull, getSubClassChain} from "lxljs/vocab.js";
 import { ANY_TYPE } from "@/utils/bulk.js";
 
 export default {
