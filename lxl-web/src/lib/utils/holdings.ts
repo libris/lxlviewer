@@ -6,6 +6,7 @@ import type {
 	LibraryFull,
 	LibraryId,
 	LibraryWithLinks,
+	LinkResolver,
 	OrgId
 } from '$lib/types/holdings';
 import { BibDb } from '$lib/types/xl';
@@ -61,12 +62,31 @@ export function createHoldingLinks(
 
 	const itemStatusUri = getAtPath(fullHolderData, [BibDb.ils, BibDb.itemStatusUri], []);
 
+	let linkResolver;
+	if (fullHolderData?.[BibDb.linkResolver]) {
+		linkResolver = buildLinkServerLink(fullHolderData?.[BibDb.linkResolver]);
+	}
+
 	return {
 		linksToItem: linksToItem || [],
 		itemStatus: itemStatusUri || null,
 		loanReserveLink: lopacLinksLoanReserve || [],
-		str: bibIdObj.str
+		str: bibIdObj.str,
+		linkResolver
 	};
+}
+
+function buildLinkServerLink(data: LinkResolver) {
+	try {
+		const url = new URL(data.uri);
+		// console.log(url)
+		return {
+			uri: url.toString(),
+			label: data.label
+		};
+	} catch {
+		return undefined;
+	}
 }
 
 function getLinksToItemFor(

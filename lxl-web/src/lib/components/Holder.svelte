@@ -124,6 +124,11 @@
 						<a href={getBestLink(instance)} target="_blank" class="ext-link">
 							{page.data.t('holdings.linkToLocal')}
 						</a>
+						{#if instance.linkResolver}
+							<a href={instance.linkResolver.uri} target="_blank" class="ext-link"
+								>{instance.linkResolver.label}</a
+							>
+						{/if}
 						{#if instance.itemStatus?.[0]}
 							<LoanStatus sigel={holder.sigel} bibIdObj={instance} />
 						{/if}
@@ -162,8 +167,8 @@
 					</li>
 				{/if}
 			{/if}
-			<!-- Lopac general links -->
-			{#if holder._links.myLoansLink || holder._links.registrationLink}
+			<!-- Lopac general links / single instance linkserver link -->
+			{#if holder._links.myLoansLink || holder._links.registrationLink || instances[0].linkResolver}
 				<li class="mt-1">
 					<div class="ml-4 flex flex-row gap-2">
 						{#if holder._links.myLoansLink}
@@ -175,6 +180,11 @@
 							<a target="_blank" class="ext-link" href={holder._links.registrationLink}>
 								{page.data.t('holdings.applyForCard')}
 							</a>
+						{/if}
+						{#if instances?.[0].linkResolver}
+							<a href={instances[0].linkResolver.uri} target="_blank" class="ext-link"
+								>{instances[0].linkResolver.label}</a
+							>
 						{/if}
 					</div>
 				</li>

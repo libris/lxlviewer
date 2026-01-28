@@ -76,6 +76,7 @@ export enum BibDb {
 	addressLocality = 'bibdb:addressLocality',
 	postalAddress = 'bibdb:PostalAddress',
 	visitingAddress = 'bibdb:VisitingAddress',
+	linkResolver = 'bibdb:linkResolver',
 	LinksToCatalog = 'linksToCatalog',
 	LinksToSite = 'linksToSite',
 	LinksToItem = 'linksToItem',
@@ -85,7 +86,8 @@ export enum BibDb {
 	OpeningHours = 'openingHours',
 	LoanReserveLink = 'loanReserveLink',
 	MyLoansLink = 'myLoansLink',
-	RegistrationLink = 'registrationLink'
+	RegistrationLink = 'registrationLink',
+	LinkResolver = 'linkResolver'
 }
 
 export type ClassName = string;
