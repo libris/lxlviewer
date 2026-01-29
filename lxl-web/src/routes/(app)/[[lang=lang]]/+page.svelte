@@ -65,7 +65,11 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			<FeaturedPreviewList featuredSearch={featured} ariaLabelledBy={id} lazyload />
+			<FeaturedPreviewList
+				featuredSearch={featured}
+				ariaLabelledBy={id}
+				lazyload={index === 0 ? 'mount' : 'intersection'}
+			/>
 		</div>
 	</section>
 {/each}

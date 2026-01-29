@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import { type FeaturedSearch } from '$lib/remotes/homepage.remote';
 	import SearchResultList from '$lib/components/SearchResultList.svelte';
@@ -9,10 +9,10 @@
 	type Props = {
 		featuredSearch: FeaturedSearch;
 		ariaLabelledBy?: string;
-		lazyload?: boolean;
+		lazyload?: 'intersection' | 'mount';
 	};
 
-	let { featuredSearch, ariaLabelledBy, lazyload = false }: Props = $props();
+	let { featuredSearch, ariaLabelledBy, lazyload = undefined }: Props = $props();
 
 	let listElement: HTMLUListElement | undefined = $state();
 	let observer: IntersectionObserver | undefined = $state();
@@ -50,11 +50,17 @@
 	afterNavigate(() => {
 		observer?.disconnect();
 
-		if (lazyload) {
+		if (lazyload === 'intersection') {
 			observer = new IntersectionObserver(handleObserve, {});
 			if (listElement) {
 				observer.observe(listElement);
 			}
+		}
+	});
+
+	onMount(() => {
+		if (lazyload === 'mount') {
+			shouldGetPreviews = true;
 		}
 	});
 
