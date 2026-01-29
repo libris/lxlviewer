@@ -3,7 +3,7 @@
     <div class="CollectionCard-content">
       <div class="CollectionCard-header">
         <span class="CollectionCard-title">
-          <a onclick="event.stopPropagation()" :href="collectionData.view['@id']">
+          <a onclick="event.stopPropagation()" :href="searchUrl">
             {{ title }}
           </a>
         </span>
@@ -44,11 +44,22 @@ export default {
       }
       return this.collectionData.object['@id'];
     },
+    searchUrl() {
+      const params = new URLSearchParams({
+        q: '*',
+        'inScheme.@id': this.collectionData.object['@id'],
+      });
+      return `/find?${params.toString()}`;
+    },
   },
   methods: {
     navigateToSearch() {
       this.$router.push({
-        path: this.collectionData.view['@id'],
+        path: '/find',
+        query: {
+          q: '*',
+          'inScheme.@id': this.collectionData.object['@id'],
+        },
       });
     },
   },
