@@ -1116,19 +1116,11 @@
 			"fresnel:resourceStyle": ["ext-link", "displayType()", "uriToId()"]
 		},
 		"ShelfMark-format": {
-      "TODO": "This is an override for displayType() in Identifier. Identifier should use rdf:type in showProperties instead",
-      "@id": "ShelfMark-format",
-      "@type": "fresnel:Format",
-      "fresnel:classFormatDomain": [
-        "ShelfMark"
-      ],
-      "fresnel:resourceStyle": []
-    },
-		"_Query-format": {
-			"@id": "_Query-format",
+			"TODO": "This is an override for displayType() in Identifier. Identifier should use rdf:type in showProperties instead",
+			"@id": "ShelfMark-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["_Query"],
-			"fresnel:resourceStyle": ["find-link"]
+			"fresnel:classFormatDomain": ["ShelfMark"],
+			"fresnel:resourceStyle": []
 		},
 		"_find-format": {
 			"@id": "contribution-format",
