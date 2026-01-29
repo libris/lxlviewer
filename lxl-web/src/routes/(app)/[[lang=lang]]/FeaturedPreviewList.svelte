@@ -70,7 +70,7 @@
 </script>
 
 {#snippet previewPlaceholder()}
-	<div class="flex flex-col items-center">
+	<div class="placeholder flex flex-col items-center">
 		<div class="skeleton mb-2 aspect-square w-full"></div>
 		<div class="skeleton bg-neutral my-0.5 h-3 w-1/3"></div>
 		<div
@@ -81,18 +81,27 @@
 	</div>
 {/snippet}
 
-<SearchResultList
-	items={previews?.items || []}
-	type="horizontal"
-	{ariaLabelledBy}
-	ariaLive="polite"
-	ariaBusy={!previews || previewsQuery?.loading ? true : false}
-	placeholderItems={!previews && !previewsQuery?.current ? 10 : 0}
-	placeholderSnippet={previewPlaceholder}
-	withGradient
-	bind:listElement
-/>
+<div class="featured-previews contents">
+	<SearchResultList
+		items={previews?.items || []}
+		type="horizontal"
+		{ariaLabelledBy}
+		ariaLive="polite"
+		ariaBusy={!previews || previewsQuery?.loading ? true : false}
+		placeholderItems={!previews && !previewsQuery?.current ? 10 : 0}
+		placeholderSnippet={previewPlaceholder}
+		withGradient
+		bind:listElement
+	/>
+</div>
 
 <style lang="postcss">
 	@reference "tailwindcss";
+
+	.featured-previews {
+		& .placeholder,
+		:global(article) {
+			height: calc(100cqw + (var(--spacing) * 3) + 9rem);
+		}
+	}
 </style>

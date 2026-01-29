@@ -86,12 +86,12 @@
 			aria-busy={ariaBusy}
 		>
 			{#each items as item (item['@id'])}
-				<li class="overflow-x-hidden text-center">
+				<li class="@container overflow-x-hidden text-center">
 					<SearchResultItem data={item} />
 				</li>
 			{/each}
 			{#each { length: placeholderItems }}
-				<li class="overflow-x-hidden text-center">
+				<li class="@container overflow-x-hidden text-center">
 					{#if placeholderSnippet}
 						{@render placeholderSnippet()}
 					{:else}

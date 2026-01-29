@@ -19,7 +19,7 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-<header class="page-header bg-primary-100 flex items-center px-3 @sm:px-6">
+<header class="page-header bg-primary-100 flex items-center px-3 @sm:mb-3 @sm:px-6 @5xl:mb-5">
 	<div class="col-start-2 col-end-3 mx-auto mt-8 mb-12 w-full max-w-7xl @5xl:mt-12 @5xl:mb-16">
 		<hgroup>
 			<h1
@@ -38,7 +38,7 @@
 {#each page.data.featuredSearches as featured, index (featured.heading)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
-		class="@5xl-my-8 my-3 flex flex-col gap-3 last-of-type:pb-6 @sm:my-6 @lg:gap-4.5 @5xl:my-8 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
+		class="my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
 	>
 		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
 			<h2
@@ -78,14 +78,13 @@
 	@reference 'tailwindcss';
 
 	.page-header {
-		min-height: calc(38.2vh - var(--app-bar-height) - var(--banner-height, 0));
+		min-height: calc(38.2vh + var(--app-bar-height) - var(--banner-height, 0));
 
 		@variant @md {
 			padding-inline: calc(var(--spacing) * 14);
 		}
 
 		@variant @5xl {
-			min-height: calc(38.2vh - var(--banner-height, 0));
 			display: grid;
 			grid-template-columns: var(--search-grid-template-columns);
 			gap: var(--search-gap);
