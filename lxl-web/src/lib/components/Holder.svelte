@@ -52,7 +52,8 @@
 			(instance) =>
 				instance?.linksToItem.length ||
 				instance?.loanReserveLink.length ||
-				instance?.itemStatus?.length
+				instance?.itemStatus?.length ||
+				instance?.itemStr
 		)
 	);
 
