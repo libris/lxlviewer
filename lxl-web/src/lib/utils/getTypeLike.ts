@@ -72,7 +72,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 
 export default getTypeLike;
 
-const IDENTIFY_ICONS = [
+const PRIORITIZED_ICONS = [
 	'Audiobook',
 	'NotatedMusic',
 	'Ljudb%C3%B6cker',
@@ -85,10 +85,10 @@ const IDENTIFY_ICONS = [
 
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 export function getTypeForIcon(typeLike: TypeLike) {
-	for (const t of typeLike.identify) {
+	for (const t of typeLike.identify.concat(typeLike.find)) {
 		if (t) {
 			const slugStr = slug(t[JsonLd.ID]);
-			if (slugStr && IDENTIFY_ICONS.includes(slugStr)) {
+			if (slugStr && PRIORITIZED_ICONS.includes(slugStr)) {
 				return slugStr;
 			}
 		}
