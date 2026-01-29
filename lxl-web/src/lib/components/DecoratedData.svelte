@@ -14,6 +14,7 @@
 		showLabels?: 'always' | 'never' | 'defaultOn' | 'defaultOff';
 		allowPopovers?: boolean; // used for preventing nested popovers
 		allowLinks?: boolean;
+		allowFindLinks?: boolean;
 		block?: boolean;
 		limit?: Record<string, number>;
 		keyed?: boolean;
@@ -25,6 +26,7 @@
 		showLabels = 'defaultOn',
 		allowPopovers = true,
 		allowLinks = true,
+		allowFindLinks = false,
 		block = false,
 		limit = undefined,
 		keyed = true
@@ -56,6 +58,12 @@
 				const id = getResourceId(value);
 				if (id) {
 					return id;
+				}
+			}
+			if (allowFindLinks && depth > 1 && hasStyle(data, 'find-link')) {
+				const link = getPropertyValue(value, '_findLink');
+				if (link) {
+					return link;
 				}
 			}
 		}
@@ -153,6 +161,7 @@
 					{showLabels}
 					{block}
 					{allowLinks}
+					{allowFindLinks}
 					{allowPopovers}
 					{limit}
 					{keyed}
@@ -179,6 +188,7 @@
 						{showLabels}
 						{block}
 						{allowLinks}
+						{allowFindLinks}
 						{allowPopovers}
 						{limit}
 						{keyed}
@@ -191,6 +201,7 @@
 					{showLabels}
 					{block}
 					{allowLinks}
+					{allowFindLinks}
 					{allowPopovers}
 					{keyed}
 				/>
@@ -201,6 +212,7 @@
 					{showLabels}
 					{block}
 					{allowLinks}
+					{allowFindLinks}
 					{allowPopovers}
 					{keyed}
 				/>
@@ -232,6 +244,7 @@
 							{showLabels}
 							{block}
 							{allowLinks}
+							{allowFindLinks}
 							{allowPopovers}
 							{keyed}
 						/>

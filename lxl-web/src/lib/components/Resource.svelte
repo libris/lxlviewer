@@ -198,6 +198,7 @@
 							<DecoratedData
 								data={overview}
 								showLabels={ShowLabelsOptions.DefaultOff}
+								allowFindLinks={true}
 								block
 								limit={{ contribution: 5, hasVariant: 10 }}
 							/>
@@ -213,6 +214,7 @@
 							<DecoratedData
 								data={overview2}
 								showLabels={ShowLabelsOptions.DefaultOn}
+								allowFindLinks={true}
 								block
 								limit={{ contribution: 5, hasVariant: 5 }}
 							/>
@@ -344,6 +346,7 @@
 							<DecoratedData
 								data={details}
 								showLabels={ShowLabelsOptions.Always}
+								allowFindLinks={true}
 								block
 								limit={{ contribution: 5, hasVariant: 10 }}
 							/>

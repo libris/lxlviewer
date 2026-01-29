@@ -1281,6 +1281,12 @@
 			"fresnel:propertyFormatDomain": ["hasNote"],
 			"fresnel:propertyStyle": ["hasNote"]
 		},
+		"Classification-format": {
+			"@id": "Classification-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Classification"],
+			"fresnel:resourceStyle": ["findToId()"]
+		},
 		"Classification-inScheme-format": {
 			"@id": "Classification-inScheme-format",
 			"@type": "fresnel:Format",
@@ -1350,7 +1356,7 @@
 			"@id": "Agent-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["link", "findToId()"]
 		},
 		"seeAlso-format": {
 			"@id": "seeAlso-format",
