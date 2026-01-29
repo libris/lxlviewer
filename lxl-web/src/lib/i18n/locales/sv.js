@@ -279,6 +279,7 @@ export default {
 		allFormats: 'Alla format',
 		PhysicalResource: 'Fysisk',
 		DigitalResource: 'Digital',
+		shelfMark: 'Placering',
 		location: 'Placering',
 		shelf: 'Hylla',
 		loanPolicy: 'Lånepolitik',

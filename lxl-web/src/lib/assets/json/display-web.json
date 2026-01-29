@@ -511,6 +511,21 @@
 						"isPartOf",
 						"part"
 					]
+				},
+				"Item": {
+					"@id": "Item-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Item",
+					"showProperties": [
+						"hasComponent",
+						"physicalLocation",
+						"shelfMark",
+						"shelfControlNumber",
+						"immediateAcquisition",
+						"availability",
+						{ "inverseOf": "itemUsed" },
+						{ "inverseOf": "hasComponent" }
+					]
 				}
 			}
 		},
@@ -1084,6 +1099,13 @@
 			"fresnel:classFormatDomain": ["Identifier"],
 			"fresnel:resourceStyle": ["ext-link", "displayType()", "uriToId()"]
 		},
+		"ShelfMark-format": {
+			"TODO": "This is an override for displayType() in Identifier. Identifier should use rdf:type in showProperties instead",
+			"@id": "ShelfMark-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["ShelfMark"],
+			"fresnel:resourceStyle": []
+		},
 		"contribution-format": {
 			"@id": "contribution-format",
 			"@type": "fresnel:Format",
@@ -1540,6 +1562,16 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["bibdb:PostalAddress"],
 			"fresnel:propertyFormatDomain": ["bibdb:addressLocality"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Item-format": {
+			"@id": "Item-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Item"],
+			"fresnel:propertyFormatDomain": ["*"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""

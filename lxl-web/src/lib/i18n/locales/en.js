@@ -278,6 +278,7 @@ export default {
 		allFormats: 'All formats',
 		PhysicalResource: 'Physical resource',
 		DigitalResource: 'Digital resource',
+		shelfMark: 'Shelf mark',
 		location: 'Location',
 		shelf: 'Shelf',
 		status: 'Status',

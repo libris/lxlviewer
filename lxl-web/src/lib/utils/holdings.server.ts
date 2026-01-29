@@ -50,7 +50,8 @@ export function getHoldingsByType(mainEntity: HoldingMainEntity): HoldingsByType
 }
 
 export function getHoldingsByInstanceId(
-	data: HoldingMainEntity | HoldingInstance
+	data: HoldingMainEntity | HoldingInstance,
+	displayUtil: DisplayUtil
 ): HoldersByInstanceId {
 	const reverse = data?.[JsonLd.REVERSE];
 	const instances =
@@ -62,10 +63,19 @@ export function getHoldingsByInstanceId(
 		if (!id) continue;
 
 		const items = instance[JsonLd.REVERSE]?.itemOf ?? [];
-		result[id] = items.map((item) => item.heldBy[JsonLd.ID]);
+		result[id] = items.map((item) => {
+			return {
+				[JsonLd.ID]: item.heldBy[JsonLd.ID],
+				itemStr: getItemStr(item, displayUtil)
+			};
+		});
 	}
 
 	return result;
+}
+
+function getItemStr(item: FramedData, displayUtil: DisplayUtil) {
+	return toString(displayUtil.lensAndFormat(item, LensType.WebCard, ''));
 }
 
 export function getBibIdsByInstanceId(
@@ -102,11 +112,11 @@ export function getBibIdsByInstanceId(
 		result[id] = {
 			bibId,
 			[JsonLd.TYPE]: type,
-			// holders,
 			onr,
 			isbn,
 			issn,
-			str
+			str,
+			itemStr: undefined // append real item data per holder in component
 		};
 	}
 	return result;

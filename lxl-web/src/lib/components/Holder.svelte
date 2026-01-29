@@ -106,12 +106,19 @@
 			<p>{page.data.t('errors.notAvailable')}</p>
 		</div>
 	{:else}
-		<ul class="flex flex-col [&>li]:flex [&>li]:flex-col [&>li]:items-start">
+		<ul class="flex flex-col">
 			{#if numInstances > 1 && expanded}
 				<!-- multiple instances list -->
 				{#each shownInstances as instance (instance.bibId)}
 					<li class="instance-one-of-many gap-1">
-						<h4 class="text-subtle font-medium">{instance.str || '-'}</h4>
+						<h4 class="mb-1 font-medium">{instance.str || '-'}</h4>
+						<!-- instance item data -->
+						{#if instance.itemStr}
+							<p>
+								<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
+								<span>{instance.itemStr}</span>
+							</p>
+						{/if}
 						<!-- instance best link -->
 						<a href={getBestLink(instance)} target="_blank" class="ext-link">
 							{page.data.t('holdings.linkToLocal')}
@@ -139,12 +146,20 @@
 					</li>
 				{/if}
 			{/if}
-			<!-- loan status for single instance -->
-			{#if numInstances === 1 && instances[0].itemStatus?.[0]}
+			<!-- single instance item data & loan status -->
+			{#if numInstances === 1}
 				{@const singleInstance = instances[0]}
-				<li class="mt-1">
-					<LoanStatus sigel={holder.sigel} bibIdObj={singleInstance} />
-				</li>
+				{#if singleInstance.itemStr}
+					<li class="my-0.5">
+						<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
+						<span>{singleInstance.itemStr}</span>
+					</li>
+				{/if}
+				{#if singleInstance.itemStatus?.[0]}
+					<li class="mt-1">
+						<LoanStatus sigel={holder.sigel} bibIdObj={singleInstance} />
+					</li>
+				{/if}
 			{/if}
 			<!-- Lopac general links -->
 			{#if holder._links.myLoansLink || holder._links.registrationLink}
