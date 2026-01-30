@@ -75,6 +75,8 @@ export function createHoldingLinks(
 	};
 }
 
+// https://en.wikipedia.org/wiki/OpenURL
+// https://help.oclc.org/Resource_Sharing/Relais_ILL/Relais_Portal/OpenURL/OpenURL
 function buildLinkServerLink(linkResolver: LinkResolver, obj: BibIdObj) {
 	const linkResolverParams = {
 		url_ver: 'Z39.88-2004',
