@@ -54,7 +54,7 @@
 					return page.data.localizeHref(trimSlashes(relativizeUrl(id)));
 				}
 			}
-			if (depth > 1 && (hasStyle(data, 'ext-link') || hasStyle(data, 'find-link'))) {
+			if (depth > 1 && hasStyle(data, 'ext-link')) {
 				const id = getResourceId(value);
 				if (id) {
 					return id;
@@ -63,7 +63,7 @@
 			if (allowFindLinks && depth > 1 && hasStyle(data, 'find-link')) {
 				const link = getPropertyValue(value, '_findLink');
 				if (link) {
-					return link;
+					return page.data.localizeHref(link);
 				}
 			}
 		}

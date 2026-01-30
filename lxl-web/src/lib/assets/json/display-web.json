@@ -1277,7 +1277,7 @@
 			"@id": "Classification-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Classification"],
-			"fresnel:resourceStyle": ["findToId()"]
+			"fresnel:resourceStyle": ["findToTop()"]
 		},
 		"Classification-inScheme-format": {
 			"@id": "Classification-inScheme-format",
@@ -1348,7 +1348,7 @@
 			"@id": "Agent-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:resourceStyle": ["link", "findToId()"]
+			"fresnel:resourceStyle": ["link", "findToTop()"]
 		},
 		"seeAlso-format": {
 			"@id": "seeAlso-format",

@@ -641,7 +641,7 @@ class Formatter {
 
 			return v;
 		},
-		'findToId()': (v) => {
+		'findToTop()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				const display = v[Fmt.DISPLAY] as Array<unknown>;
 				const ix = display.findIndex((d) => isObject(d) && '_find' in d);
