@@ -33,7 +33,7 @@
 	}: Props = $props();
 
 	const SCROLL_AMOUNT = 0.85;
-	let clientWidth: number | undefined = $state();
+
 	let disabledLeftScrollButton = $state(true);
 	let disabledRightScrollButton = $state(false);
 	let lazyImagesAfterIndex: number | undefined = $state();
@@ -102,7 +102,6 @@
 			aria-labelledby={ariaLabelledBy}
 			class="scrollbar-hidden flex overflow-x-auto overscroll-x-contain"
 			bind:this={listElement}
-			bind:clientWidth
 			onscroll={updateDisabledScrollButtons}
 			aria-live={ariaLive}
 			aria-busy={ariaBusy}
