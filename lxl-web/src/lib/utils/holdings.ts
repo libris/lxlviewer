@@ -82,7 +82,7 @@ function buildLinkServerLink(linkResolver: LinkResolver, obj: BibIdObj) {
 		'rft.id': `info:SE-LIBR/${obj.bibId}`,
 		'rft.isbn': obj?.isbn?.[0],
 		'rft.issn': obj?.issn?.[0],
-		'rft.btitle': obj?.titleStr
+		'rft.title': obj?.titleStr
 	};
 	try {
 		const url = new URL(linkResolver.uri);
