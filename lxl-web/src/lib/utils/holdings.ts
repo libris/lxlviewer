@@ -82,15 +82,21 @@ function buildLinkServerLink(linkResolver: LinkResolver, obj: BibIdObj) {
 		url_ver: 'Z39.88-2004',
 		rfr_id: 'info:sid/libris.kb.se:libris',
 		'rft.id': `info:SE-LIBR/${obj.bibId}`,
-		'rft.isbn': obj?.isbn?.[0],
-		'rft.issn': obj?.issn?.[0],
+		'rft.isbn': obj?.isbn,
+		'rft.issn': obj?.issn,
 		'rft.title': obj?.titleStr
 	};
 	try {
 		const url = new URL(linkResolver.uri);
 		Object.entries(linkResolverParams).forEach(([key, val]) => {
 			if (val) {
-				url.searchParams.set(key, val);
+				if (Array.isArray(val)) {
+					val.forEach((v) => {
+						url.searchParams.set(key, v);
+					});
+				} else {
+					url.searchParams.set(key, val);
+				}
 			}
 		});
 		return {
