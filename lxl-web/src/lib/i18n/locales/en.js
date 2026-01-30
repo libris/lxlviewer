@@ -20,7 +20,7 @@ export default {
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
 		accessibility: 'Accessibility',
-		changeLang: 'In Swedish'
+		changeLang: 'På svenska'
 	},
 	header: {
 		skipToContent: 'Skip to main content',
@@ -28,7 +28,7 @@ export default {
 		home: 'Home',
 		help: 'Help',
 		myPages: 'My pages',
-		changeLang: 'In Swedish',
+		changeLang: 'På svenska',
 		search: 'Search',
 		login: 'Log in',
 		saved: 'Saved',
