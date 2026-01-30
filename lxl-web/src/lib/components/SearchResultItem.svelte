@@ -8,9 +8,9 @@
 	import TypeIcon from './TypeIcon.svelte';
 	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 
-	type Props = { data: SearchResultItem };
+	type Props = { data: SearchResultItem; lazyImage?: boolean };
 
-	let { data }: Props = $props();
+	let { data, lazyImage = false }: Props = $props();
 </script>
 
 {#snippet image()}
@@ -23,6 +23,7 @@
 				width={data.image.widthPx > 0 ? data.image?.widthPx : undefined}
 				height={data.image.heightPx > 0 ? data.image?.heightPx : undefined}
 				alt={page.data.t('general.latestInstanceCover')}
+				loading={lazyImage ? 'lazy' : undefined}
 				class={[
 					'aspect-square w-full object-bottom',
 					data['@type'] === 'Person' ? 'rounded-full object-cover' : 'object-contain'

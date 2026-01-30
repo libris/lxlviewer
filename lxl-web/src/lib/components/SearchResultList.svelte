@@ -15,6 +15,7 @@
 		withGradient?: boolean;
 		placeholderItems?: number;
 		placeholderSnippet?: Snippet;
+		lazyImages?: boolean;
 		listElement?: HTMLUListElement | undefined;
 	};
 
@@ -27,6 +28,7 @@
 		withGradient,
 		placeholderItems = 0,
 		placeholderSnippet,
+		lazyImages = false,
 		listElement = $bindable()
 	}: Props = $props();
 
@@ -34,6 +36,26 @@
 	let clientWidth: number | undefined = $state();
 	let disabledLeftScrollButton = $state(true);
 	let disabledRightScrollButton = $state(false);
+	let lazyImagesAfterIndex: number | undefined = $state();
+
+	$effect(() => {
+		if (lazyImages && type === 'horizontal' && !placeholderItems) {
+			lazyImagesAfterIndex = getLazyImagesAfterIndex();
+		}
+	});
+
+	function getLazyImagesAfterIndex() {
+		const listWidth = listElement?.offsetWidth || 0;
+		if (listWidth < 576) return 2; /* ... @xl = 48rem (768px) */
+		if (listWidth < 768) return 3; /* ... @3xl = 48rem (768px) */
+		if (listWidth < 1024) return 4; /* ... @5xl = 64rem (1024px) */
+		if (listWidth < 1280) return 5; /* ... @7xl = 80rem (1280px) */
+		if (listWidth < 1920) return 6; /* ... 120rem (1920px) */
+		if (listWidth < 2240) return 7; /* ... 140rem (2240px) */
+		if (listWidth < 2560) return 8; /* ... 160rem (2560px) */
+		if (listWidth < 2880) return 9; /* ... 180rem (2880px) */
+		return 10;
+	}
 
 	function getPreferredScrollBehaviour() {
 		return window.matchMedia(`(prefers-reduced-motion: reduce)`).matches ? 'instant' : 'smooth';
@@ -85,9 +107,12 @@
 			aria-live={ariaLive}
 			aria-busy={ariaBusy}
 		>
-			{#each items as item (item['@id'])}
+			{#each items as item, index (item['@id'])}
 				<li class="@container overflow-x-hidden text-center">
-					<SearchResultItem data={item} />
+					<SearchResultItem
+						data={item}
+						lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
+					/>
 				</li>
 			{/each}
 			{#each { length: placeholderItems }}
@@ -167,6 +192,8 @@
 				gap: calc(var(--spacing) * 6);
 			}
 			& > :global(li) {
+				/* Remember to update getLazyImagesAfterIndex if these values are changed... */
+
 				min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 3) / 2.5));
 
 				@variant @xl {

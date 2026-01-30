@@ -88,9 +88,10 @@
 		{ariaLabelledBy}
 		ariaLive="polite"
 		ariaBusy={!previews || previewsQuery?.loading ? true : false}
-		placeholderItems={!previews && !previewsQuery?.current ? 10 : 0}
+		placeholderItems={!previews && !previewsQuery?.current ? 11 : 0}
 		placeholderSnippet={previewPlaceholder}
 		withGradient
+		lazyImages
 		bind:listElement
 	/>
 </div>
