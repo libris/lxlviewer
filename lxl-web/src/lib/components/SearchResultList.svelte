@@ -111,6 +111,8 @@
 					<SearchResultItem
 						data={item}
 						lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
+						highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
+							index <= lazyImagesAfterIndex}
 					/>
 				</li>
 			{/each}
