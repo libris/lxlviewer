@@ -173,6 +173,12 @@
 						}
 					]
 				},
+				"SeriesMembership": {
+					"@id": "SeriesMembership-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "SeriesMembership",
+					"showProperties": ["inSeries", "seriesStatement", "seriesEnumeration"]
+				},
 				"Subdivision": {
 					"@id": "Subdivision-chips",
 					"@type": "fresnel:Lens",
@@ -186,13 +192,13 @@
 					"@id": "Classification-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Classification",
-					"showProperties": ["code", "prefLabel", "inScheme"]
+					"showProperties": ["code", "prefLabel", "inScheme", "_find"]
 				},
 				"ClassificationDdc": {
 					"@id": "ClassificationDdc-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "ClassificationDdc",
-					"showProperties": ["code", "prefLabel", "rdf:type"],
+					"showProperties": ["code", "prefLabel", "rdf:type", "_find"],
 					"TODO": "Support classLensDomain array, merge with other ClassificationXxx"
 				},
 				"ClassificationLcc": {
@@ -331,6 +337,16 @@
 						"typeNote",
 						"hasNote",
 						"uri"
+					]
+				},
+				"Agent": {
+					"@id": "Agent-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Resource",
+					"showProperties": [
+						{ "alternateProperties": ["prefLabel", "label", "name"] },
+						"isPartOf",
+						"_find"
 					]
 				},
 				"Person": {
@@ -1106,6 +1122,15 @@
 			"fresnel:classFormatDomain": ["ShelfMark"],
 			"fresnel:resourceStyle": []
 		},
+		"_find-format": {
+			"@id": "contribution-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["_find"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"contribution-format": {
 			"@id": "contribution-format",
 			"@type": "fresnel:Format",
@@ -1248,6 +1273,12 @@
 			"fresnel:propertyFormatDomain": ["hasNote"],
 			"fresnel:propertyStyle": ["hasNote"]
 		},
+		"Classification-format": {
+			"@id": "Classification-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Classification"],
+			"fresnel:resourceStyle": ["findToTop()"]
+		},
 		"Classification-inScheme-format": {
 			"@id": "Classification-inScheme-format",
 			"@type": "fresnel:Format",
@@ -1317,7 +1348,7 @@
 			"@id": "Agent-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["link", "findToTop()"]
 		},
 		"seeAlso-format": {
 			"@id": "seeAlso-format",

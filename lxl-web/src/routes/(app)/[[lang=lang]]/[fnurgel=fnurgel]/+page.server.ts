@@ -41,9 +41,12 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const subsetFilter = url.searchParams.get('_r');
 	const _q = url.searchParams.get('_q');
 
-	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
-		headers: { Accept: 'application/ld+json' }
-	});
+	const resourceRes = await fetch(
+		`${env.API_URL}/${params.fnurgel}?framed=true&computedLabel=${locale}&_findBlank=true`,
+		{
+			headers: { Accept: 'application/ld+json' }
+		}
+	);
 
 	if (resourceRes.status === 404) {
 		throw error(resourceRes.status, { message: 'Not found' });

@@ -222,7 +222,8 @@
 @layer components {
 	/* links */
 	a.link,
-	a.ext-link {
+	a.ext-link,
+	a.find-link {
 		color: var(--color-link);
 
 		&:hover,
@@ -232,7 +233,8 @@
 		}
 	}
 
-	.ext-link {
+	.ext-link,
+	.find-link {
 		word-break: break-word;
 	}
 
@@ -244,6 +246,17 @@
 		width: calc(var(--spacing) * 2.5);
 		margin-left: var(--spacing);
 		mask-image: url('$lib/assets/img/ext-link.svg');
+		mask-size: cover;
+	}
+
+	a.find-link::after {
+		background-color: var(--color-link);
+		content: '';
+		display: inline-flex;
+		height: calc(var(--spacing) * 2.5);
+		width: calc(var(--spacing) * 2.5);
+		margin-left: var(--spacing);
+		mask-image: url('$lib/assets/img/find-link.svg');
 		mask-size: cover;
 	}
 

@@ -640,6 +640,24 @@ class Formatter {
 			}
 
 			return v;
+		},
+		'findToTop()': (v) => {
+			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
+				const display = v[Fmt.DISPLAY] as Array<unknown>;
+				const ix = display.findIndex((d) => isObject(d) && '_find' in d);
+
+				if (ix >= 0 && asArray(display[ix]['_find']).length > 0) {
+					const find = asArray(display[ix]['_find'])[0];
+					v['_findLink'] = find[JsonLd.ID];
+					if (!v[Fmt.STYLE]) {
+						v[Fmt.STYLE] = [];
+					}
+
+					v[Fmt.STYLE].push('find-link');
+				}
+			}
+
+			return v;
 		}
 	};
 
