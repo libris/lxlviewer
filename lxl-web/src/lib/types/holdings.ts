@@ -92,7 +92,8 @@ export type BibIdObj = {
 	onr: string | null;
 	isbn: string[];
 	issn: string[];
-	str: string;
+	publicationStr: string;
+	titleStr: string;
 	itemStr: string | undefined;
 };
 
@@ -128,7 +129,6 @@ export type HoldingLinks = {
 	[BibDb.ItemStatus]: string | null;
 	[BibDb.LoanReserveLink]: string[];
 	[BibDb.LinkResolver]: { label: string; uri: string } | undefined;
-	str: string;
 };
 
 export type HoldingsData = {

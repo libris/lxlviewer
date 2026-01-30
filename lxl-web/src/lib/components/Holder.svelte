@@ -111,27 +111,39 @@
 			{#if numInstances > 1 && expanded}
 				<!-- multiple instances list -->
 				{#each shownInstances as instance (instance.bibId)}
+					{@const bestLink = getBestLink(instance)}
 					<li class="instance-one-of-many gap-1">
-						<h4 class="mb-1 font-medium">{instance.str || '-'}</h4>
+						<h4 class="mb-1 font-medium">{instance.publicationStr || '-'}</h4>
 						<!-- instance item data -->
-						{#if instance.itemStr}
-							<p>
-								<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
-								<span>{instance.itemStr}</span>
-							</p>
-						{/if}
-						<!-- instance best link -->
-						<a href={getBestLink(instance)} target="_blank" class="ext-link">
-							{page.data.t('holdings.linkToLocal')}
-						</a>
-						{#if instance.linkResolver}
-							<a href={instance.linkResolver.uri} target="_blank" class="ext-link"
-								>{instance.linkResolver.label}</a
-							>
-						{/if}
-						{#if instance.itemStatus?.[0]}
-							<LoanStatus sigel={holder.sigel} bibIdObj={instance} />
-						{/if}
+						<ul>
+							{#if instance.itemStr}
+								<li>
+									<p>
+										<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
+										<span>{instance.itemStr}</span>
+									</p>
+								</li>
+							{/if}
+							<li class="flex gap-2">
+								<!-- instance best link -->
+								{#if bestLink}
+									<a href={getBestLink(instance)} target="_blank" class="ext-link">
+										{page.data.t('holdings.linkToLocal')}
+									</a>
+								{/if}
+								<!-- instance linkserver link -->
+								{#if instance.linkResolver}
+									<a href={instance.linkResolver.uri} target="_blank" class="ext-link">
+										{instance.linkResolver.label}
+									</a>
+								{/if}
+							</li>
+							{#if instance.itemStatus?.[0]}
+								<li>
+									<LoanStatus sigel={holder.sigel} bibIdObj={instance} />
+								</li>
+							{/if}
+						</ul>
 					</li>
 				{/each}
 				<!-- show more/less button -->
@@ -181,7 +193,7 @@
 								{page.data.t('holdings.applyForCard')}
 							</a>
 						{/if}
-						{#if instances?.[0].linkResolver}
+						{#if numInstances === 1 && instances?.[0].linkResolver}
 							<a href={instances[0].linkResolver.uri} target="_blank" class="ext-link"
 								>{instances[0].linkResolver.label}</a
 							>

@@ -64,25 +64,36 @@ export function createHoldingLinks(
 
 	let linkResolver;
 	if (fullHolderData?.[BibDb.linkResolver]) {
-		linkResolver = buildLinkServerLink(fullHolderData?.[BibDb.linkResolver]);
+		linkResolver = buildLinkServerLink(fullHolderData?.[BibDb.linkResolver], bibIdObj);
 	}
 
 	return {
 		linksToItem: linksToItem || [],
 		itemStatus: itemStatusUri || null,
 		loanReserveLink: lopacLinksLoanReserve || [],
-		str: bibIdObj.str,
 		linkResolver
 	};
 }
 
-function buildLinkServerLink(data: LinkResolver) {
+function buildLinkServerLink(linkResolver: LinkResolver, obj: BibIdObj) {
+	const linkResolverParams = {
+		url_ver: 'Z39.88-2004',
+		rfr_id: 'info:sid/libris.kb.se:libris',
+		'rft.id': `info:SE-LIBR/${obj.bibId}`,
+		'rft.isbn': obj?.isbn?.[0],
+		'rft.issn': obj?.issn?.[0],
+		'rft.btitle': obj?.titleStr
+	};
 	try {
-		const url = new URL(data.uri);
-		// console.log(url)
+		const url = new URL(linkResolver.uri);
+		Object.entries(linkResolverParams).forEach(([key, val]) => {
+			if (val) {
+				url.searchParams.set(key, val);
+			}
+		});
 		return {
 			uri: url.toString(),
-			label: data.label
+			label: linkResolver.label
 		};
 	} catch {
 		return undefined;
