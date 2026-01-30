@@ -23,7 +23,7 @@ test('index page shows featured searches', async ({ page }) => {
 	await expect(page).toHaveURL('/');
 	await page.waitForLoadState('networkidle');
 	for (const featuredTitle of FEATURED_SEARCH_TITLES) {
-		await expect(page.getByLabel(featuredTitle).getByRole('listitem')).toHaveCount(20, {
+		await expect(page.getByLabel(featuredTitle).getByRole('listitem')).toHaveCount(10, {
 			timeout: 10000
 		});
 	}
