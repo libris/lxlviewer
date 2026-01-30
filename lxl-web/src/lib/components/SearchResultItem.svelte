@@ -8,9 +8,20 @@
 	import TypeIcon from './TypeIcon.svelte';
 	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 
-	type Props = { data: SearchResultItem; lazyImage?: boolean; highPriorityImage?: boolean };
+	type Props = {
+		data: SearchResultItem;
+		lazyImage?: boolean;
+		highPriorityImage?: boolean;
+		fadeInImage?: boolean;
+	};
 
-	let { data, lazyImage = false, highPriorityImage = false }: Props = $props();
+	let { data, lazyImage = false, highPriorityImage = false, fadeInImage = false }: Props = $props();
+
+	let loadedImage = $state(false);
+
+	function handleLoadImage() {
+		loadedImage = true;
+	}
 </script>
 
 {#snippet image()}
@@ -28,9 +39,11 @@
 					? 'high'
 					: undefined}
 				class={[
-					'aspect-square w-full object-bottom',
+					'aspect-square w-full object-bottom transition-opacity',
+					fadeInImage && !loadedImage && 'opacity-0 motion-reduce:opacity-100 noscript:opacity-100',
 					data['@type'] === 'Person' ? 'rounded-full object-cover' : 'object-contain'
 				]}
+				onload={fadeInImage ? handleLoadImage : undefined}
 			/>
 		{:else}
 			<div class="relative flex aspect-square w-full items-center justify-center">

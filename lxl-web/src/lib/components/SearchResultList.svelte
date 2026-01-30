@@ -16,6 +16,7 @@
 		placeholderItems?: number;
 		placeholderSnippet?: Snippet;
 		lazyImages?: boolean;
+		fadeInImages?: boolean;
 		listElement?: HTMLUListElement | undefined;
 	};
 
@@ -29,6 +30,7 @@
 		placeholderItems = 0,
 		placeholderSnippet,
 		lazyImages = false,
+		fadeInImages = false,
 		listElement = $bindable()
 	}: Props = $props();
 
@@ -111,6 +113,7 @@
 					<SearchResultItem
 						data={item}
 						lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
+						fadeInImage={fadeInImages}
 						highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
 							index <= lazyImagesAfterIndex}
 					/>

@@ -92,6 +92,7 @@
 		placeholderSnippet={previewPlaceholder}
 		withGradient
 		lazyImages
+		fadeInImages={shouldGetPreviews}
 		bind:listElement
 	/>
 </div>
