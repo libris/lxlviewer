@@ -92,7 +92,7 @@ function buildLinkServerLink(linkResolver: LinkResolver, obj: BibIdObj) {
 			if (val) {
 				if (Array.isArray(val)) {
 					val.forEach((v) => {
-						url.searchParams.set(key, v);
+						url.searchParams.append(key, v);
 					});
 				} else {
 					url.searchParams.set(key, val);
