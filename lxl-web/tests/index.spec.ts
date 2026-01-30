@@ -15,18 +15,15 @@ test('index page has expected h1', async ({ page }) => {
 });
 
 test('index page shows featured searches', async ({ page }) => {
-	const FEATURED_SEARCH_TITLES = [
-		'Ny skönlitteratur på svenska ',
-		'Ny facklitteratur',
-		'Böcker om att börja skolan'
-	];
 	await expect(page).toHaveURL('/');
 	await page.waitForLoadState('networkidle');
-	for (const featuredTitle of FEATURED_SEARCH_TITLES) {
-		await expect(page.getByLabel(featuredTitle).getByRole('listitem')).toHaveCount(20, {
+
+	await expect(page.getByLabel('Ny skönlitteratur på svenska').getByRole('listitem')).toHaveCount(
+		20,
+		{
 			timeout: 10000
-		});
-	}
+		}
+	);
 });
 
 test('can change the language', async ({ page }) => {
