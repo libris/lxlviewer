@@ -61,6 +61,13 @@ export interface LibraryFull extends LibraryChip {
 	[BibDb.ils]: Record<string, string>;
 	[BibDb.lopac]: Record<string, string>;
 	[BibDb.address]?: Record<string, string>[];
+	[BibDb.linkResolver]?: LinkResolver;
+}
+
+export interface LinkResolver {
+	[JsonLd.TYPE]: string;
+	label: string;
+	uri: string;
 }
 
 export interface LibraryWithLinks extends LibraryFull {
@@ -85,7 +92,8 @@ export type BibIdObj = {
 	onr: string | null;
 	isbn: string[];
 	issn: string[];
-	str: string;
+	publicationStr: string;
+	titleStr: string;
 	itemStr: string | undefined;
 };
 
@@ -120,7 +128,7 @@ export type HoldingLinks = {
 	[BibDb.LinksToItem]: string[];
 	[BibDb.ItemStatus]: string | null;
 	[BibDb.LoanReserveLink]: string[];
-	str: string;
+	[BibDb.LinkResolver]: { label: string; uri: string } | undefined;
 };
 
 export type HoldingsData = {

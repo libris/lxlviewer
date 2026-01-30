@@ -6,6 +6,7 @@ import type {
 	LibraryFull,
 	LibraryId,
 	LibraryWithLinks,
+	LinkResolver,
 	OrgId
 } from '$lib/types/holdings';
 import { BibDb } from '$lib/types/xl';
@@ -61,12 +62,50 @@ export function createHoldingLinks(
 
 	const itemStatusUri = getAtPath(fullHolderData, [BibDb.ils, BibDb.itemStatusUri], []);
 
+	let linkResolver;
+	if (fullHolderData?.[BibDb.linkResolver]) {
+		linkResolver = buildLinkServerLink(fullHolderData?.[BibDb.linkResolver], bibIdObj);
+	}
+
 	return {
 		linksToItem: linksToItem || [],
 		itemStatus: itemStatusUri || null,
 		loanReserveLink: lopacLinksLoanReserve || [],
-		str: bibIdObj.str
+		linkResolver
 	};
+}
+
+// https://en.wikipedia.org/wiki/OpenURL
+// https://help.oclc.org/Resource_Sharing/Relais_ILL/Relais_Portal/OpenURL/OpenURL
+function buildLinkServerLink(linkResolver: LinkResolver, obj: BibIdObj) {
+	const linkResolverParams = {
+		url_ver: 'Z39.88-2004',
+		rfr_id: 'info:sid/libris.kb.se:libris',
+		'rft.id': `info:SE-LIBR/${obj.bibId}`,
+		'rft.isbn': obj?.isbn,
+		'rft.issn': obj?.issn,
+		'rft.title': obj?.titleStr
+	};
+	try {
+		const url = new URL(linkResolver.uri);
+		Object.entries(linkResolverParams).forEach(([key, val]) => {
+			if (val) {
+				if (Array.isArray(val)) {
+					val.forEach((v) => {
+						url.searchParams.append(key, v);
+					});
+				} else {
+					url.searchParams.set(key, val);
+				}
+			}
+		});
+		return {
+			uri: url.toString(),
+			label: linkResolver.label
+		};
+	} catch {
+		return undefined;
+	}
 }
 
 function getLinksToItemFor(

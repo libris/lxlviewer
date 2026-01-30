@@ -95,9 +95,12 @@ export function getBibIdsByInstanceId(
 		// const holders = instance[JsonLd.REVERSE]?.itemOf?.map(item => item?.heldBy?.[JsonLd.ID]) ?? [];
 
 		const publication = instance.publication?.[0];
-		const str = publication
+		const publicationStr: string = publication
 			? toString(displayUtil.lensAndFormat(publication, LensType.Token, locale)) || ''
 			: '';
+
+		const titleStr: string =
+			toString(displayUtil.lensAndFormat(instance, LensType.Token, locale)) || '';
 
 		// add Legacy Libris III system number for ONR param
 		const onr =
@@ -115,7 +118,8 @@ export function getBibIdsByInstanceId(
 			onr,
 			isbn,
 			issn,
-			str,
+			publicationStr,
+			titleStr,
 			itemStr: undefined // append real item data per holder in component
 		};
 	}

@@ -10,8 +10,8 @@ const workCenteredMainEntity = centerOnWork(mainEntity);
 
 describe('getBibIdsByInstanceId', () => {
 	it('Returns a correctly mapped object (bibId, type & holders)', () => {
-		const instanceTokenStr = 'Natur och kultur, 2018';
-		const DisplayUtil = { lensAndFormat: () => instanceTokenStr };
+		const publicationStr = 'Natur och kultur, 2018';
+		const DisplayUtil = { lensAndFormat: () => publicationStr };
 
 		// @ts-expect-error - Display is mocked
 		expect(getBibIdsByInstanceId(workCenteredMainEntity, DisplayUtil, record, 'sv')).toStrictEqual({
@@ -21,7 +21,8 @@ describe('getBibIdsByInstanceId', () => {
 				onr: '9176423484',
 				isbn: ['9176423484'],
 				issn: [],
-				str: instanceTokenStr,
+				publicationStr: publicationStr,
+				titleStr: publicationStr,
 				itemStr: undefined
 			}
 		});
