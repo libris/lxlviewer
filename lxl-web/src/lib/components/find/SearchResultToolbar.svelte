@@ -22,16 +22,17 @@
 	const filterCount = $derived(getFiltersCount(searchResult.mapping));
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
-		const _q = mapping.find((item) => item.variable === '_q');
-		if (!_q) return 0;
-
+		const root = mapping.filter((item) => item.variable === '_q' || item.variable === '_r');
 		let count = 0;
-		function _iter(n: DisplayMapping) {
-			if (n.children) {
+
+		function _iter(n: DisplayMapping[] | DisplayMapping) {
+			if (Array.isArray(n)) {
+				n.forEach(_iter);
+			} else if (n.children) {
 				n.children.forEach(_iter);
 			} else if (n?.display !== '*') count++;
 		}
-		_iter(_q);
+		_iter(root);
 		return count;
 	}
 
