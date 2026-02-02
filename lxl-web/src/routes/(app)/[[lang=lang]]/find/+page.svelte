@@ -53,7 +53,11 @@
 	});
 
 	function handleCloseHoldings() {
-		if (!previousURL?.searchParams.has('holdings')) {
+		if (
+			previousURL &&
+			previousURL.pathname === page.url.pathname &&
+			!previousURL?.searchParams.has('holdings')
+		) {
 			history.back();
 		} else {
 			const newSearchParams = new SvelteURLSearchParams([

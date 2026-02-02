@@ -46,7 +46,11 @@
 	});
 
 	function handleCloseModal(param: string) {
-		if (!previousURL?.searchParams.has(param)) {
+		if (
+			previousURL &&
+			previousURL.pathname === page.url.pathname &&
+			!previousURL?.searchParams.has(param)
+		) {
 			history.back();
 		} else {
 			const newSearchParams = new SvelteURLSearchParams([
