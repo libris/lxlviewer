@@ -22,9 +22,17 @@
 	const filterCount = $derived(getFiltersCount(searchResult.mapping));
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
-		return (mapping[0].children || mapping).filter(
-			(filterItem) => !(filterItem.display === '*' && filterItem.operator === 'equals') // TODO: probably best to do wildcard-filtering in an earlier step (in search.ts)?
-		).length;
+		const _q = mapping.find((item) => item.variable === '_q');
+		if (!_q) return 0;
+
+		let count = 0;
+		function _iter(n: DisplayMapping) {
+			if (n.children) {
+				n.children.forEach(_iter);
+			} else if (n?.display !== '*') count++;
+		}
+		_iter(_q);
+		return count;
 	}
 
 	function toggleFiltersModal() {
