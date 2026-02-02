@@ -4,6 +4,10 @@ import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';
 import * as v from 'valibot';
 
+/**
+ * TODO: Move featured content data to Libris XL
+ **/
+
 const FEATURED_QUERIES: {
 	headingByLang: Record<LocaleCode, string>;
 	findHref: string;
