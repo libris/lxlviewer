@@ -2,14 +2,10 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
-	import { getFeaturedSearches } from '$lib/remotes/homepage.remote';
-	import SearchResultList from '$lib/components/SearchResultList.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right';
-	import type { Locales } from '$lib/i18n/locales';
+	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
 
 	const uid = $props.id();
-
-	const featuredSearches = $derived(await getFeaturedSearches(page.data.locale as Locales));
 </script>
 
 <svelte:head>
@@ -23,7 +19,7 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-<header class="page-header bg-primary-100 flex items-center px-3 @sm:px-6">
+<header class="page-header bg-primary-100 flex items-center px-3 @sm:mb-3 @sm:px-6 @5xl:mb-5">
 	<div class="col-start-2 col-end-3 mx-auto mt-8 mb-12 w-full max-w-7xl @5xl:mt-12 @5xl:mb-16">
 		<hgroup>
 			<h1
@@ -39,10 +35,10 @@
 		</hgroup>
 	</div>
 </header>
-{#each await featuredSearches as featured, index (featured.heading)}
+{#each page.data.featuredSearches as featured, index (featured.heading)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
-		class="@5xl-my-8 my-3 flex flex-col gap-3 last-of-type:pb-6 @sm:my-6 @lg:gap-4.5 @5xl:my-8 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
+		class="my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
 	>
 		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
 			<h2
@@ -69,7 +65,11 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			<SearchResultList items={featured.items} type="horizontal" ariaLabelledBy={id} withGradient />
+			<FeaturedPreviewList
+				featuredSearch={featured}
+				ariaLabelledBy={id}
+				lazyload={index === 0 ? 'mount' : 'intersection'}
+			/>
 		</div>
 	</section>
 {/each}
@@ -78,14 +78,13 @@
 	@reference 'tailwindcss';
 
 	.page-header {
-		min-height: calc(38.2vh - var(--app-bar-height) - var(--banner-height, 0));
+		min-height: calc(38.2vh + var(--app-bar-height) - var(--banner-height, 0));
 
 		@variant @md {
 			padding-inline: calc(var(--spacing) * 14);
 		}
 
 		@variant @5xl {
-			min-height: calc(38.2vh - var(--banner-height, 0));
 			display: grid;
 			grid-template-columns: var(--search-grid-template-columns);
 			gap: var(--search-gap);

@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import SearchResultItem from '$lib/components/SearchResultItem.svelte';
 	import type { SearchResultItem as SearchResultItemType } from '$lib/types/search';
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';
 
@@ -10,43 +10,81 @@
 		items: SearchResultItemType[];
 		type: 'horizontal';
 		ariaLabelledBy?: string;
+		ariaLive?: 'polite' | 'off' | 'assertive';
+		ariaBusy?: boolean;
 		withGradient?: boolean;
+		placeholderItems?: number;
+		placeholderSnippet?: Snippet;
+		lazyImages?: boolean;
+		fadeInImages?: boolean;
+		listElement?: HTMLUListElement | undefined;
 	};
 
-	let { items, type, ariaLabelledBy, withGradient }: Props = $props();
+	let {
+		items,
+		type,
+		ariaLabelledBy,
+		ariaLive,
+		ariaBusy,
+		withGradient,
+		placeholderItems = 0,
+		placeholderSnippet,
+		lazyImages = false,
+		fadeInImages = false,
+		listElement = $bindable()
+	}: Props = $props();
 
 	const SCROLL_AMOUNT = 0.85;
-	let ulElement: HTMLUListElement | undefined;
-	let clientWidth: number | undefined = $state();
+
 	let disabledLeftScrollButton = $state(true);
 	let disabledRightScrollButton = $state(false);
+	let lazyImagesAfterIndex: number | undefined = $state();
+
+	$effect(() => {
+		if (lazyImages && type === 'horizontal' && !placeholderItems) {
+			lazyImagesAfterIndex = getLazyImagesAfterIndex();
+		}
+	});
+
+	function getLazyImagesAfterIndex() {
+		const listWidth = listElement?.offsetWidth || 0;
+		if (listWidth < 576) return 2; /* ... @xl = 48rem (768px) */
+		if (listWidth < 768) return 3; /* ... @3xl = 48rem (768px) */
+		if (listWidth < 1024) return 4; /* ... @5xl = 64rem (1024px) */
+		if (listWidth < 1280) return 5; /* ... @7xl = 80rem (1280px) */
+		if (listWidth < 1920) return 6; /* ... 120rem (1920px) */
+		if (listWidth < 2240) return 7; /* ... 140rem (2240px) */
+		if (listWidth < 2560) return 8; /* ... 160rem (2560px) */
+		if (listWidth < 2880) return 9; /* ... 180rem (2880px) */
+		return 10;
+	}
 
 	function getPreferredScrollBehaviour() {
 		return window.matchMedia(`(prefers-reduced-motion: reduce)`).matches ? 'instant' : 'smooth';
 	}
 
 	function scrollLeft() {
-		ulElement?.scrollBy({
-			left: ulElement.clientWidth * -SCROLL_AMOUNT,
+		listElement?.scrollBy({
+			left: listElement.clientWidth * -SCROLL_AMOUNT,
 			behavior: getPreferredScrollBehaviour()
 		});
 	}
 
 	function scrollRight() {
-		ulElement?.scrollBy({
-			left: ulElement.clientWidth * SCROLL_AMOUNT,
+		listElement?.scrollBy({
+			left: listElement.clientWidth * SCROLL_AMOUNT,
 			behavior: getPreferredScrollBehaviour()
 		});
 	}
 
 	function updateDisabledScrollButtons() {
-		if (ulElement) {
-			if (ulElement.scrollLeft <= 0) {
+		if (listElement) {
+			if (listElement.scrollLeft <= 0) {
 				disabledLeftScrollButton = true;
 			} else {
 				disabledLeftScrollButton = false;
 			}
-			if (ulElement.scrollLeft >= ulElement.scrollWidth - ulElement.clientWidth) {
+			if (listElement.scrollLeft >= listElement.scrollWidth - listElement.clientWidth) {
 				disabledRightScrollButton = true;
 			} else {
 				disabledRightScrollButton = false;
@@ -57,18 +95,37 @@
 	onMount(() => updateDisabledScrollButtons());
 </script>
 
+{#snippet fallbackPlaceholderSnippet()}
+	<div class="skeleton aspect-square"></div>
+{/snippet}
 {#snippet horizontalList()}
 	<div class={['horizontal-list relative w-full', withGradient && 'with-gradient']}>
 		<ul
 			aria-labelledby={ariaLabelledBy}
 			class="scrollbar-hidden flex overflow-x-auto overscroll-x-contain"
-			bind:this={ulElement}
-			bind:clientWidth
+			bind:this={listElement}
 			onscroll={updateDisabledScrollButtons}
+			aria-live={ariaLive}
+			aria-busy={ariaBusy}
 		>
-			{#each items as item (item['@id'])}
-				<li class="overflow-x-hidden text-center">
-					<SearchResultItem data={item} />
+			{#each items as item, index (item['@id'])}
+				<li class="@container overflow-x-hidden text-center">
+					<SearchResultItem
+						data={item}
+						lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
+						fadeInImage={fadeInImages}
+						highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
+							index <= lazyImagesAfterIndex}
+					/>
+				</li>
+			{/each}
+			{#each { length: placeholderItems }}
+				<li class="@container overflow-x-hidden text-center">
+					{#if placeholderSnippet}
+						{@render placeholderSnippet()}
+					{:else}
+						{@render fallbackPlaceholderSnippet()}
+					{/if}
 				</li>
 			{/each}
 		</ul>
@@ -139,6 +196,8 @@
 				gap: calc(var(--spacing) * 6);
 			}
 			& > :global(li) {
+				/* Remember to update getLazyImagesAfterIndex if these values are changed... */
+
 				min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 3) / 2.5));
 
 				@variant @xl {
