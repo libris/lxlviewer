@@ -41,7 +41,7 @@
 {#snippet fallbackInput()}
 	<div class="fallback-search relative">
 		<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
-			<IconSearch class="size-4 lg:mt-[1px]" aria-hidden="true" />
+			<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
 		</span>
 		<input type="search" {id} {name} {placeholder} bind:this={fallbackInputElement} />
 		<button

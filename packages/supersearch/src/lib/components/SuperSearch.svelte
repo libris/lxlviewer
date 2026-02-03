@@ -378,7 +378,7 @@
 	}
 
 	function handleCollapsedKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Enter' && value.length) {
+		if (event.key === 'Enter') {
 			submitClosestForm();
 		}
 		if (event.key === 'ArrowDown' && event.altKey) {
@@ -400,7 +400,7 @@
 			/* Fire click event if item cell is focused */
 			if (activeDecendant) {
 				activeDecendant.click();
-			} else if (value.length) {
+			} else {
 				submitClosestForm();
 			}
 		}
@@ -556,10 +556,10 @@
 		}
 	}
 
-	function handleClickSubmit(event: MouseEvent) {
-		if (!value.length) {
-			event.preventDefault();
-		}
+	function handleClickSubmit() {
+		// if (!value.length) {
+		// 	event.preventDefault();
+		// }
 	}
 
 	function handleReset() {

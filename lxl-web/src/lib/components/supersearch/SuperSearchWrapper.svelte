@@ -53,6 +53,13 @@
 	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
 
+	let clearUrl = $derived.by(() => {
+		const url = new URL(page.url);
+		url.searchParams.set('_q', '');
+		url.searchParams.delete('_offset');
+		return url.toString();
+	});
+
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
 	const MIN_LENGTH_FOR_SUGGESTIONS = 3;
@@ -87,8 +94,7 @@
 			if (page.route.id === '/(app)/[[lang=lang]]') {
 				q = ''; // reset query if navigating to start/index page
 			} else if (to.url.searchParams.has('_q')) {
-				const toQ = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
-				q = toQ !== '*' ? toQ : ''; // hide wildcard in input field
+				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
 			}
 
 			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
@@ -99,10 +105,10 @@
 		}
 	});
 
-	function handleSubmit(event: SubmitEvent) {
-		if (!q || !q.trim()) {
-			event.preventDefault();
-		}
+	function handleSubmit() {
+		// if (!q || !q.trim()) {
+		// 	event.preventDefault();
+		// }
 	}
 
 	const editedParentNode = $derived.by(() => {
@@ -244,7 +250,6 @@
 			getCellId,
 			isFocusedCell,
 			isFocusedRow,
-			onclickClear,
 			onclickClose
 		})}
 			<div
@@ -284,14 +289,14 @@
 							class="flex h-full w-full cursor-default items-center justify-center"
 							aria-hidden="true"
 						>
-							<IconSearch aria-hidden="true" class="flex size-4 lg:mt-[1px]" />
+							<IconSearch aria-hidden="true" class="flex size-4 lg:mt-px" />
 						</button>
 					</div>
 					{@render inputField()}
 				</div>
 				{#if q}
-					<button
-						type="reset"
+					<a
+						href={clearUrl}
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
@@ -299,11 +304,10 @@
 							expanded && 'max-sm:h-14 max-sm:w-13'
 						]}
 						aria-label={page.data.t('search.clearFilters')}
-						onclick={onclickClear}
 						title={page.data.t('search.clearFilters')}
 					>
 						<IconClear class="size-4.5 sm:size-4" />
-					</button>
+					</a>
 				{/if}
 				<button
 					type="submit"
