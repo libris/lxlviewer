@@ -105,9 +105,12 @@
 
 			superSearch?.hideExpandedSearch();
 			fetchOnExpand = true;
+
 			if (userClearedSearch) {
 				superSearch?.showExpandedSearch();
 				userClearedSearch = false;
+			} else if (page.route.id === '/(app)/[[lang=lang]]') {
+				superSearch?.focus(); // focus input on start page
 			} else {
 				superSearch?.blur(); // remove focus from input after searching or navigating
 			}
@@ -233,6 +236,7 @@
 		ariaLabel={page.data.t('search.search')}
 		{ariaLabelledBy}
 		{ariaDescribedBy}
+		autofocus={page.route.id === '/(app)/[[lang=lang]]' ? true : undefined}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({

@@ -46,6 +46,7 @@
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		ariaDescribedBy?: string;
+		autofocus?: boolean;
 		endpoint: string | URL;
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
@@ -104,6 +105,7 @@
 		ariaLabelledBy,
 		ariaLabel,
 		ariaDescribedBy,
+		autofocus,
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
 		paginationQueryFn,
@@ -368,6 +370,10 @@
 
 	export function resetData() {
 		search?.resetData();
+	}
+
+	export function focus() {
+		collapsedEditorView?.focus();
 	}
 
 	export function blur() {
@@ -654,6 +660,12 @@
 		expandedEditorView?.dispatch({
 			effects: expandedContentAttributesCompartment.reconfigure(expandedContentAttributes)
 		});
+	});
+
+	$effect(() => {
+		if (autofocus && collapsedEditorView) {
+			collapsedEditorView.focus();
+		}
 	});
 </script>
 
