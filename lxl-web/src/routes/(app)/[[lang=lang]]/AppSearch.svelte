@@ -10,9 +10,11 @@
 		id?: string;
 		name: string;
 		placeholder: string;
+		ariaLabelledBy?: string;
+		ariaDescribedBy?: string;
 	};
 
-	let { id, name, placeholder }: Props = $props();
+	let { id, name, placeholder, ariaLabelledBy, ariaDescribedBy }: Props = $props();
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
@@ -43,7 +45,15 @@
 		<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
 			<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
 		</span>
-		<input type="search" {id} {name} {placeholder} bind:this={fallbackInputElement} />
+		<input
+			type="search"
+			{id}
+			{name}
+			{placeholder}
+			aria-labelledby={ariaLabelledBy}
+			aria-describedby={ariaDescribedBy}
+			bind:this={fallbackInputElement}
+		/>
 		<button
 			type="submit"
 			class={[
@@ -60,7 +70,12 @@
 	{@render fallbackInput()}
 {:then { default: SuperSearchWrapper }}
 	<div class="contents" data-testid="supersearch">
-		<SuperSearchWrapper {placeholder} bind:this={superSearchWrapperComponent} />
+		<SuperSearchWrapper
+			{placeholder}
+			{ariaLabelledBy}
+			{ariaDescribedBy}
+			bind:this={superSearchWrapperComponent}
+		/>
 	</div>
 {:catch}
 	{@render fallbackInput()}

@@ -36,9 +36,11 @@
 
 	interface Props {
 		placeholder: string;
+		ariaLabelledBy?: string;
+		ariaDescribedBy?: string;
 	}
 
-	let { placeholder = '' }: Props = $props();
+	let { placeholder = '', ariaLabelledBy, ariaDescribedBy }: Props = $props();
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
 
@@ -228,6 +230,9 @@
 		bind:isLoading
 		language={lxlQuery}
 		{placeholder}
+		ariaLabel={page.data.t('search.search')}
+		{ariaLabelledBy}
+		{ariaDescribedBy}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({
@@ -242,7 +247,6 @@
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
-		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
