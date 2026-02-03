@@ -634,7 +634,7 @@
           },
           "category": [{"@id": "https://id.kb.se/term/rda/OnlineResource"},
             {
-              "@id": "https://id.kb.se/term/ktg/ComponentPart"
+              "@id": "https://id.kb.se/term/saobf/ComponentPart"
             }]
         }
       }
@@ -821,7 +821,7 @@
             }
           ],
           "category": [
-            {"@id": "https://id.kb.se/term/rda/OnlineResource"}, {"@id": "https://id.kb.se/term/ktg/EBook"}]
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"}, {"@id": "https://id.kb.se/term/saobf/EBook"}]
         }
       }
     },
@@ -1272,7 +1272,8 @@
               }
             ]
           },
-          "category": [{"@id": "https://id.kb.se/term/rda/Volume"}]
+          "category": [{"@id": "https://id.kb.se/term/rda/Volume"},
+          {"@id": "https://id-qa.kb.se/term/saobf/HandmadeMaterial"}]
         }
       }
     },
@@ -1877,7 +1878,7 @@
             "subject": []
           },
           "category": [{
-            "@id": "https://id.kb.se/term/ktg/Print"
+            "@id": "https://id.kb.se/term/saobf/Print"
           }]
         }
       }
@@ -2210,10 +2211,10 @@
             "subject": []
           },
           "category": [ {
-            "@id": "https://id.kb.se/term/ktg/Print"
+            "@id": "https://id.kb.se/term/soabf/Print"
           },
             {
-              "@id": "https://id.kb.se/term/ktg/ComponentPart"
+              "@id": "https://id.kb.se/term/saobf/ComponentPart"
             }]
         }
       }
@@ -2391,7 +2392,7 @@
           ],
           "category": [
             {
-              "@id": "https://id.kb.se/term/ktg/Print"
+              "@id": "https://id.kb.se/term/saobf/Print"
             },
             {
               "@id": "https://id.kb.se/term/rda/Volume"
@@ -2522,7 +2523,7 @@
           },
           "category": [
             {
-              "@id": "https://id.kb.se/term/ktg/Print"
+              "@id": "https://id.kb.se/term/saobf/Print"
             }
           ]
         }
@@ -2857,7 +2858,7 @@
           },
           "category": [
             {
-              "@id": "https://id.kb.se/term/ktg/Print"
+              "@id": "https://id.kb.se/term/saobf/Print"
             },
             {
               "@id": "https://id.kb.se/term/rda/Volume"
