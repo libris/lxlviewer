@@ -163,8 +163,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 			new URLSearchParams({
 				_o: resourceId || '',
 				_p: 'instanceOf',
-				_q: _q || '*',
-				_r: subsetFilter || '',
+				_q: _q || '',
+				...(subsetFilter && { _r: subsetFilter }),
 				_limit: '150',
 				_spell: 'false',
 				_stats: 'false',
