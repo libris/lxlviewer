@@ -5,7 +5,7 @@ describe('addDefaultSearchParams', () => {
 	it('adds default search params if they are missing', () => {
 		expect(addDefaultSearchParams(new URLSearchParams())).toStrictEqual(
 			new URLSearchParams([
-				['_q', '*'],
+				['_q', ''],
 				['_limit', '20'],
 				['_offset', '0'],
 				['_sort', ''],
@@ -28,7 +28,7 @@ describe('addDefaultSearchParams', () => {
 		expect(addDefaultSearchParams(new URLSearchParams([['_offset', '30']]))).toStrictEqual(
 			new URLSearchParams([
 				['_offset', '30'],
-				['_q', '*'],
+				['_q', ''],
 				['_limit', '20'],
 				['_sort', ''],
 				['_spell', 'true']
