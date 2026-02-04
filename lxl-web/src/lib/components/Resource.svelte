@@ -26,6 +26,7 @@
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
 	import ExpandableArea from '$lib/components/ExpandableArea.svelte';
+	import Suggestion from './supersearch/Suggestion.svelte';
 
 	type Props = {
 		fnurgel: string;
@@ -133,6 +134,16 @@
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	</div>
 {/if}
+{#if page.data.workCard && !page.data.isWork}
+	<div class="border-b-neutral @container border-b">
+		<Suggestion item={page.data.workCard}>
+			{#snippet leadingContent()}
+				<p class="text-subtle mr-2 text-sm">--- Utgåva av</p>
+			{/snippet}
+		</Suggestion>
+		<!-- <DecoratedData data={page.data.instanceLinkToWork} showLabels="never" allowPopovers allowLinks /> -->
+	</div>
+{/if}
 <article class="@container @3xl:[&_[id]]:scroll-mt-36">
 	{#if tableOfContents.length}
 		<section data-testid="toc-mobile" class="contents @7xl:hidden">
@@ -181,7 +192,12 @@
 								/>
 							</p>
 							<h1 class="decorated-heading mt-2 mb-1 text-3xl font-medium @3xl:text-3xl">
-								<DecoratedData data={decoratedData.heading} showLabels={ShowLabelsOptions.Never} />
+								<DecoratedData
+									data={decoratedData.heading}
+									showLabels={ShowLabelsOptions.Never}
+									allowLinks={false}
+									allowPopovers={false}
+								/>
 							</h1>
 							<p
 								class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"

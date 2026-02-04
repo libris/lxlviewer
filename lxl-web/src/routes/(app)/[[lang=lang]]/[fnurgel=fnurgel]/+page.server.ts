@@ -63,6 +63,44 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	const resource = await resourceRes.json();
+
+	let workCard;
+	let isWork = false;
+
+	if (resource.mainEntity?.['@reverse']?.instanceOf) {
+		isWork = true;
+		// work - get card
+		workCard = asSearchResultItem(
+			[{ ...resource.mainEntity }],
+			displayUtil,
+			vocabUtil,
+			locale,
+			env.AUXD_SECRET,
+			myLibraries,
+			undefined
+		)[0];
+	} else if (resource.mainEntity.instanceOf) {
+		// instance - fetch work card
+		const workId = (resource.mainEntity.instanceOf[JsonLd.ID] || '').split('/').pop();
+		console.log('will fetch a work card for this instance');
+		if (workId) {
+			const workRes = await fetch(`/api/${locale}/${workId}`);
+			workCard = await workRes.json();
+		}
+	}
+
+	// const instanceCardToWork = resource.mainEntity.instanceOf ?
+	// asSearchResultItem(
+	// 	[{ ...resource.mainEntity.instanceOf }],
+	// 	displayUtil,
+	// 	vocabUtil,
+	// 	locale,
+	// 	env.AUXD_SECRET,
+	// 	myLibraries,
+	// 	undefined
+	// )[0] : null;
+	// displayUtil.lensAndFormat(resource.mainEntity.instanceOf, LensType.WebCard, locale) : null
+
 	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	copyMediaLinksToWork(mainEntity);
 
@@ -102,10 +140,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 	];
 
 	// TODO ...
-	const isWork =
+	const _isWork =
 		vocabUtil.getType(mainEntity) == 'Work' ||
 		vocabUtil.isSubClassOf(vocabUtil.getType(mainEntity), 'Work');
-	const overviewLens = isWork ? LensType.WebOverview2 : LxlLens.PageOverView;
+	const overviewLens = _isWork ? LensType.WebOverview2 : LxlLens.PageOverView;
 	const overview2 = [
 		displayUtil.lensAndFormat(mainEntity, overviewLens, locale),
 		...(_instances.length === 1
@@ -271,19 +309,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdingLibraries: getHoldingLibraries(byType)
 	};
 
-	const mainEntityCopy = { ...mainEntity };
-	mainEntityCopy.meta = { [JsonLd.ID]: mainEntity[JsonLd.ID] };
-
-	const workCard = asSearchResultItem(
-		[mainEntityCopy],
-		displayUtil,
-		vocabUtil,
-		locale,
-		env.AUXD_SECRET,
-		myLibraries,
-		undefined
-	)[0];
-
 	const subsetMapping = locals?.subsetMapping;
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
@@ -313,7 +338,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 		images,
 		tableOfContents,
 		workCard,
-		refinedOrgs
+		// instanceCardToWork,
+		refinedOrgs,
+		mainEntity,
+		isWork
 	};
 };
 

@@ -10,14 +10,16 @@
 	import SuggestionImage from './SuggestionImage.svelte';
 	import MoreIcon from '~icons/bi/three-dots';
 	import dropdownMenu from '$lib/actions/dropDownMenu/index.svelte.js';
+	import type { Snippet } from 'svelte';
 
 	type Props = {
 		item: SuperSearchResultItem;
 		getCellId?: (cellIndex: number) => string;
 		isFocusedCell?: (cellIndex: number) => boolean;
+		leadingContent?: Snippet;
 	};
 
-	const { item, getCellId, isFocusedCell }: Props = $props();
+	const { item, getCellId, isFocusedCell, leadingContent }: Props = $props();
 	const resourceId = $derived(trimSlashes(relativizeUrl(item?.['@id'])));
 	const primaryAddQualifierLink = $derived(item?.qualifiers?.[0]?._q || resourceId);
 </script>
@@ -36,7 +38,7 @@
 	{:else}
 		<div class="sr-only">{page.data.t('search.goTo')}</div>
 	{/if}
-	<div class="resource grid grid-cols-[40px_minmax(0,_1fr)] items-center gap-2">
+	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<hgroup
@@ -60,7 +62,7 @@
 								showLabels={ShowLabelsOptions.Never}
 								allowLinks={false}
 								allowPopovers={false}
-								limit={{ contribution: 3 }}
+								limit={{ contribution: 1 }}
 							/>
 						</span>
 					</p>
@@ -73,11 +75,21 @@
 				{#if item.typeStr?.length}
 					<span class="divider">{' · '}</span>
 				{/if}
-				{#each item?.[LensType.WebCardFooter]?._display as obj, index (index)}
-					{#if 'hasInstance' in obj}
-						{@const instances = getInstanceData(obj.hasInstance)}
+				{#each item?.[LensType.WebCardHeaderTop]?._display as header, index (`header-${index}`)}
+					<DecoratedData
+						data={header}
+						showLabels={ShowLabelsOptions.Never}
+						allowLinks={false}
+						allowPopovers={false}
+					/>
+				{/each}
+				{#if item.typeStr?.length}
+					<span class="divider">{' · '}</span>
+				{/if}
+				{#each item?.[LensType.WebCardFooter]?._display as footer, index (`footer-${index}`)}
+					{#if 'hasInstance' in footer}
+						{@const instances = getInstanceData(footer.hasInstance)}
 						{#if instances?.years}
-							<span class="divider">{' · '}</span>
 							<span>
 								{#if instances.count > 1}
 									{instances?.count}
@@ -90,7 +102,7 @@
 						{/if}
 					{:else}
 						<DecoratedData
-							data={obj}
+							data={footer}
 							showLabels={ShowLabelsOptions.Never}
 							allowLinks={false}
 							allowPopovers={false}
@@ -140,6 +152,7 @@
 		</button>
 	{:else}
 		<a href={page.data.localizeHref(resourceId)} id={getCellId ? getCellId(0) : ''}>
+			{@render leadingContent?.()}
 			{@render resourceSnippet(item)}
 		</a>
 	{/if}
