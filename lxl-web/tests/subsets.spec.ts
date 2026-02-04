@@ -21,3 +21,15 @@ test('_r param is preserved when navigating around the app', async ({ page }) =>
 	await page.getByRole('link', { name: 'Sparat' }).click();
 	await expect(page).toHaveURL(/my-pages\?_r=itemHeldBy%3A%22sigel%3AArkm%22/);
 });
+
+test('A subset filter can be removed', async ({ page }) => {
+	await page.goto('/find?_q=&_r=hej');
+	await page.locator('.subset-container').getByRole('link', { name: 'Ta bort filter' }).click();
+	await expect(page).toHaveURL('/find?_q=&_r=');
+});
+
+test('A subset filter can be removed and preserves lang', async ({ page }) => {
+	await page.goto('/en/find?_q=&_r=hej');
+	await page.locator('.subset-container').getByRole('link', { name: 'Remove filter' }).click();
+	await expect(page).toHaveURL('/en/find?_q=&_r=');
+});

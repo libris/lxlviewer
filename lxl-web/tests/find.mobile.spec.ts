@@ -42,6 +42,28 @@ test('mapping displays the correct search query 3', async ({ page }) => {
 	await expect(mapping).toHaveText(mappingText, { ignoreCase: true });
 });
 
+test('mapping pill can be removed', async ({ page }) => {
+	await page.goto('/find?_q=språk%3A"lang%3Aswe"+sommar');
+	await page.getByRole('link', { name: 'Sökfilter' }).click();
+	page
+		.getByRole('navigation', { name: 'Valda filter' })
+		.getByRole('link', { name: 'Ta bort filter' })
+		.first()
+		.click();
+	await expect(page).toHaveURL('/find?_q=sommar');
+});
+
+test('mapping pill can be removed and preserves lang', async ({ page }) => {
+	await page.goto('/en/find?_q=språk%3A"lang%3Aswe"+sommar');
+	await page.getByRole('link', { name: 'Filters' }).click();
+	page
+		.getByRole('navigation', { name: 'Selected filters' })
+		.getByRole('link', { name: 'Remove filter' })
+		.first()
+		.click();
+	await expect(page).toHaveURL('/en/find?_q=sommar');
+});
+
 test('mapping does not show the wildcard search', async ({ page }) => {
 	await page.goto('/find?_q=*');
 	await page.getByRole('link', { name: 'Sökfilter' }).click();
