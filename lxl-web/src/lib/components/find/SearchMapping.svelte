@@ -62,7 +62,7 @@
 					{#if up}
 						<a
 							class="lxl-qualifier-remove atomic h-8 transition-colors"
-							href={page.data.localizeHref(m.up?.['@id'])}
+							href={m.up?.['@id']}
 							aria-label={page.data.t('search.removeFilter')}
 						>
 							<BiXLg fill="currentColor" />
@@ -87,7 +87,7 @@
 					<SearchMapping depth={depth + 1} mapping={_child} />
 				{/each}
 				{#if up && variable}
-					<a href={page.data.localizeHref(m.up?.['@id'])} class="btn btn-primary">
+					<a href={m.up?.['@id']} class="btn btn-primary">
 						<BiTrash aria-hidden="true" />
 						{page.data.t('search.clearFilters')}
 					</a>

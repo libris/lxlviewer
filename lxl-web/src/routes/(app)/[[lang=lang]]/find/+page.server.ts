@@ -64,7 +64,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		vocabUtil,
 		locale,
 		env.AUXD_SECRET,
-		undefined,
+		url.pathname,
 		myLibraries
 	);
 
