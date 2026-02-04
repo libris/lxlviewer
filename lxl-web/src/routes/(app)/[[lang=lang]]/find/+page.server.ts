@@ -68,12 +68,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		myLibraries
 	);
 
-	const pageTitle = getPageTitle(
-		displayMappingToString(
-			searchResult.mapping.filter((f) => f?.variable !== 'defaultSiteFilters')
-		),
-		locals.site?.name
-	);
+	const pageTitle = getPageTitle(displayMappingToString(searchResult.mapping), locals.site?.name);
 
 	const subsetMapping = locals?.subsetMapping;
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
