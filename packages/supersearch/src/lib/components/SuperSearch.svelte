@@ -23,7 +23,8 @@
 		TransformFunction,
 		ResultItem,
 		ShowExpandedSearchOptions,
-		DebouncedWaitFunction
+		DebouncedWaitFunction,
+		ExpandEvent
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
 
@@ -89,7 +90,7 @@
 		isLoading?: boolean;
 		hasData?: boolean;
 		loadMoreLabel?: string;
-		onexpand?: () => void;
+		onexpand?: (event: ExpandEvent) => void;
 		oncollapse?: () => void;
 		onchange?: (event: ChangeSuperSearchEvent) => void;
 		onexpandedviewupdate?: (event: ViewUpdateSuperSearchEvent) => void;
@@ -344,7 +345,7 @@
 			setDefaultRowAndCols();
 			allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 			expanded = true;
-			onexpand?.();
+			onexpand?.({ windowPageYOffset: window.pageYOffset });
 		}
 		expandedEditorView?.focus();
 	}

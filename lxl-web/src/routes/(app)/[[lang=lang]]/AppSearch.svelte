@@ -11,10 +11,11 @@
 		name: string;
 		placeholder: string;
 		ariaLabelledBy?: string;
+		ariaLabel?: string;
 		ariaDescribedBy?: string;
 	};
 
-	let { id, name, placeholder, ariaLabelledBy, ariaDescribedBy }: Props = $props();
+	let { id, name, placeholder, ariaLabelledBy, ariaLabel, ariaDescribedBy }: Props = $props();
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
@@ -42,7 +43,7 @@
 
 {#snippet fallbackInput()}
 	<div class="fallback-search relative">
-		<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
+		<span class="text-subtle absolute flex h-full w-11 items-center justify-center lg:hidden">
 			<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
 		</span>
 		<input
@@ -51,17 +52,19 @@
 			{name}
 			{placeholder}
 			aria-labelledby={ariaLabelledBy}
+			aria-label={ariaLabel}
 			aria-describedby={ariaDescribedBy}
 			bind:this={fallbackInputElement}
+			class="placeholder:text-placeholder w-full pl-11 focus:outline-none lg:px-3 lg:@3xl:pl-4 @5xl:text-[0.9375rem]"
 		/>
 		<button
 			type="submit"
 			class={[
-				'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
+				'hover:bg-primary-50 hidden h-full w-full max-w-12 items-center justify-center border-l border-l-neutral-300 lg:flex'
 			]}
 			aria-label={page.data.t('supersearch.search')}
 		>
-			<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
+			<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 		</button>
 	</div>
 {/snippet}
@@ -73,6 +76,7 @@
 		<SuperSearchWrapper
 			{placeholder}
 			{ariaLabelledBy}
+			{ariaLabel}
 			{ariaDescribedBy}
 			bind:this={superSearchWrapperComponent}
 		/>
@@ -97,7 +101,7 @@
 		background: var(--color-input);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 		border-radius: var(--radius-md);
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 
 		&:has(:focus) {
 			outline: 4px solid var(--color-primary-200);
@@ -105,26 +109,7 @@
 		}
 
 		& input[type='search'] {
-			width: 100%;
-			padding-left: calc(var(--spacing) * 11);
-
-			@variant sm {
-				padding-left: calc(var(--spacing) * 3);
-			}
-
-			@variant 3xl {
-				padding-left: calc(var(--spacing) * 4);
-			}
-
-			&:focus {
-				outline: none;
-			}
 			&::placeholder {
-				color: var(--color-placeholder);
-			}
-
-			@variant 3xl {
-				font-size: var(--text-sm);
 			}
 		}
 	}

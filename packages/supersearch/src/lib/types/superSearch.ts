@@ -20,3 +20,7 @@ export type ShowExpandedSearchOptions = {
 };
 
 export type DebouncedWaitFunction = (query: string) => number | null;
+
+export type ExpandEvent = {
+	windowPageYOffset: number;
+};

@@ -9,7 +9,8 @@
 		type Selection,
 		type ShowExpandedSearchOptions,
 		type ViewUpdateSuperSearchEvent,
-		type DebouncedWaitFunction
+		type DebouncedWaitFunction,
+		type ExpandEvent
 	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
@@ -37,10 +38,11 @@
 	interface Props {
 		placeholder: string;
 		ariaLabelledBy?: string;
+		ariaLabel?: string;
 		ariaDescribedBy?: string;
 	}
 
-	let { placeholder = '', ariaLabelledBy, ariaDescribedBy }: Props = $props();
+	let { placeholder = '', ariaLabelledBy, ariaLabel, ariaDescribedBy }: Props = $props();
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
 
@@ -48,6 +50,7 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
+	let pageYOffset: number | undefined = $state();
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -63,6 +66,8 @@
 	});
 
 	let userClearedSearch = $state(false);
+	
+	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
@@ -95,7 +100,7 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			if (page.route.id === '/(app)/[[lang=lang]]') {
+			if (isHomeRoute) {
 				q = ''; // reset query if navigating to start/index page
 			} else if (to.url.searchParams.has('_q')) {
 				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
@@ -109,7 +114,7 @@
 			if (userClearedSearch) {
 				superSearch?.showExpandedSearch();
 				userClearedSearch = false;
-			} else if (page.route.id === '/(app)/[[lang=lang]]') {
+			} else if (isHomeRoute) {
 				superSearch?.focus(); // focus input on start page
 			} else {
 				superSearch?.blur(); // remove focus from input after searching or navigating
@@ -201,7 +206,8 @@
 		fetchOnExpand = false;
 	}
 
-	function handleOnExpand() {
+	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
+		pageYOffset = windowPageYOffset;
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
@@ -233,10 +239,10 @@
 		bind:isLoading
 		language={lxlQuery}
 		{placeholder}
-		ariaLabel={page.data.t('search.search')}
 		{ariaLabelledBy}
+		{ariaLabel}
 		{ariaDescribedBy}
-		autofocus={page.route.id === '/(app)/[[lang=lang]]' ? true : undefined}
+		autofocus={isHomeRoute ? true : undefined}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({
@@ -256,6 +262,7 @@
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
+		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -269,7 +276,7 @@
 			<div
 				class={[
 					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
-					expanded && 'expanded',
+					expanded && 'expanded sm:mx-1.5 @5xl:mx-2.25',
 					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
 				]}
@@ -292,8 +299,8 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
-							expanded && 'hidden sm:flex'
+							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md lg:hidden',
+							expanded && 'hidden'
 						]}
 					>
 						<button
@@ -334,16 +341,17 @@
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
 					class={[
-						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
+						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 lg:flex lg:size-12',
+						expanded && 'sm:flex'
 					]}
 					aria-label={page.data.t('supersearch.search')}
 				>
-					<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
+					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 				</button>
 			</div>
 		{/snippet}
 		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav class="mt-2 mb-2 sm:mt-1 sm:mb-3 lg:mt-0">
+			<nav class="mt-3 mb-2 lg:mt-4">
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
@@ -416,6 +424,7 @@
 		font-size: var(--text-xs);
 		border-radius: var(--radius-md);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
+
 		@variant sm {
 			&:hover {
 				box-shadow: 0 0 0 1px var(--color-primary-500);
@@ -433,12 +442,17 @@
 			}
 		}
 
-		@variant 3xl {
+		@variant @3xl {
 			font-size: var(--text-sm);
+		}
+
+		@variant @5xl {
+			font-size: 0.9375rem;
 		}
 	}
 
 	.expanded.supersearch-input {
+		min-height: var(--search-input-height);
 		border-bottom: 1px solid var(--color-neutral);
 		border-radius: 0;
 		box-shadow: none;
@@ -446,9 +460,8 @@
 		@variant sm {
 			border-bottom: none;
 			border-radius: var(--radius-md);
-			margin-inline: calc(var(--spacing) * 2);
+			margin-top: calc(var(--spacing) * 1.5);
 			box-shadow: 0 0 0 1px var(--color-neutral-300);
-			margin-block: calc((var(--spacing) * 2));
 
 			&.focused-row {
 				box-shadow: 0 0 0 1px var(--color-primary-500);
@@ -458,11 +471,29 @@
 		}
 
 		@variant lg {
-			margin-block: calc(var(--spacing) * 3);
-			margin-inline: calc(var(--spacing) * 4);
+			margin-top: 0;
 
 			&.focused-row {
 				outline: 4px solid var(--color-primary-200);
+			}
+		}
+	}
+
+	:global(.supersearch-combobox) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: var(--search-input-height);
+
+		&:has(.expanded) {
+			margin-inline: calc(var(--spacing) * 0.5);
+
+			@variant sm {
+				margin-top: calc(var(--spacing) * 0.5);
+			}
+			@variant lg {
+				margin-top: calc(var(--spacing) * 3.5);
+				margin-inline: calc(var(--spacing) * 1.75);
 			}
 		}
 	}
@@ -489,13 +520,19 @@
 		top: 0;
 
 		@variant sm {
-			position: static;
-			top: var(--sm-dialog-top);
-			height: fit-content;
+			top: calc(var(--banner-height, 0) + var(--app-bar-height) - var(--spacing) * 0.5);
+			margin-top: max(
+				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
+				0px
+			);
 		}
 
 		@variant lg {
-			top: calc(var(--banner-height, 0));
+			top: var(--banner-height, 0);
+			margin-top: max(
+				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
+				0px
+			);
 		}
 	}
 
@@ -506,14 +543,15 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
+			padding-inline: calc(var(--spacing) * 2);
 		}
 
 		@variant lg {
 			display: grid;
 			grid-template-areas: var(--search-grid-template-areas);
 			grid-template-columns: var(--search-grid-template-columns);
-			padding: var(--search-padding);
 			gap: var(--search-gap);
+			padding-inline: calc(var(--spacing) * 1.25);
 		}
 	}
 
@@ -532,8 +570,13 @@
 		@apply max-w-7xl;
 
 		@variant sm {
-			border-radius: var(--radius-lg);
+			border-radius: var(--radius-xl);
+			height: fit-content;
 			@apply drop-shadow-md;
+		}
+
+		@variant lg {
+			border-radius: var(--radius-2xl);
 		}
 	}
 
@@ -586,7 +629,7 @@
 	.supersearch-input :global(.cm-scroller) {
 		font-family: var(--font-sans);
 		scrollbar-width: none;
-		min-height: calc(var(--spacing) * 11);
+		min-height: var(--search-input-height);
 	}
 
 	.expanded.supersearch-input :global(.cm-scroller) {
@@ -598,6 +641,10 @@
 		@variant sm {
 			min-height: calc(var(--spacing) * 11);
 		}
+
+		@variant lg {
+			margin-top: 0px;
+		}
 	}
 
 	.supersearch-input :global(.cm-line) {
@@ -605,11 +652,15 @@
 		padding-left: calc(var(--spacing) * 11);
 
 		@variant sm {
-			padding-left: calc(var(--spacing) * 3);
+			padding-left: calc(var(--spacing) * 11);
 		}
 
-		@variant 3xl {
-			padding-left: calc(var(--spacing) * 4);
+		@variant lg {
+			padding-left: calc(var(--spacing) * 3);
+
+			@variant @3xl {
+				padding-left: calc(var(--spacing) * 4);
+			}
 		}
 	}
 
@@ -620,7 +671,7 @@
 			padding-left: calc(var(--spacing) * 3);
 		}
 
-		@variant 3xl {
+		@variant @3xl {
 			padding-left: calc(var(--spacing) * 4);
 		}
 	}
@@ -674,7 +725,23 @@
 	}
 
 	:global(.codemirror-container .cm-placeholder) {
+		font-size: var(--text-sm);
 		color: var(--color-placeholder);
-		margin: 1px 0;
+		margin-top: 1px;
+
+		@variant @5xl {
+			font-size: 0.9375rem;
+		}
+
+		@variant lg {
+			margin-top: 1px;
+		}
+	}
+	.expanded :global(.codemirror-container .cm-placeholder) {
+		margin-top: 0;
+
+		@variant lg {
+			margin-top: 1px;
+		}
 	}
 </style>
