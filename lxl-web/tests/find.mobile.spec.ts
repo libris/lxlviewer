@@ -1,5 +1,12 @@
+import AxeBuilder from '@axe-core/playwright';
 import { devices, expect, test } from '@playwright/test';
 test.use({ ...devices['iPhone 13'] });
+
+test('should not have any detectable a11y issues', async ({ page }) => {
+	await page.goto('/find?_q=språk%3A"lang%3Aswe"+sommar');
+	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
 
 test('can toggle filters and show facets and mapping', async ({ page }) => {
 	await page.goto('/find?_q=språk%3A"lang%3Aswe"+sommar');
