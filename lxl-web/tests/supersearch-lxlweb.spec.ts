@@ -91,7 +91,7 @@ test('user can jump from first row to bottom by pressing arrow up', async ({ pag
 	await page.waitForResponse(
 		(res) => res.url().includes('/supersearch?_q=Kallocain') && res.status() === 200
 	);
-	await expect(page.getByRole('dialog').getByRole('link')).toHaveCount(5);
+	await expect(page.getByRole('dialog').getByRole('rowgroup').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowUp');
 	await page.keyboard.press('ArrowUp');
 	await page.keyboard.press('Enter');

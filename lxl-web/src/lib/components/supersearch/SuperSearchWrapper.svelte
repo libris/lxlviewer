@@ -60,6 +60,8 @@
 		return url.toString();
 	});
 
+	let userClearedSearch = $state(false);
+
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
 	const MIN_LENGTH_FOR_SUGGESTIONS = 3;
@@ -101,7 +103,11 @@
 
 			superSearch?.hideExpandedSearch();
 			fetchOnExpand = true;
-			superSearch?.blur(); // remove focus from input after searching or navigating
+			if (userClearedSearch) {
+				userClearedSearch = false;
+			} else {
+				superSearch?.blur(); // remove focus from input after searching or navigating
+			}
 		}
 	});
 
@@ -250,6 +256,7 @@
 			getCellId,
 			isFocusedCell,
 			isFocusedRow,
+			onclickClear,
 			onclickClose
 		})}
 			<div
@@ -297,6 +304,10 @@
 				{#if q}
 					<a
 						href={clearUrl}
+						onclick={(e) => {
+							userClearedSearch = true;
+							onclickClear(e);
+						}}
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
