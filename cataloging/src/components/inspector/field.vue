@@ -375,6 +375,27 @@ export default {
       }
       return 'Type';
     },
+    categoryLabel() {
+      if (this.archType === 'Instance') {
+        return 'Instance category';
+      }
+      if (this.archType === 'Work') {
+        return 'Work category';
+      }
+      return 'Category';
+    },
+    fieldLabel() {
+      if (this.fieldKey === '@id') {
+        return capitalize(translatePhrase('ID'))
+      }
+      if (this.fieldKey === '@type') {
+        return capitalize(translatePhrase(this.entityTypeArchLabel))
+      }
+      if (this.fieldKey === 'category') {
+        return capitalize(translatePhrase(this.categoryLabel))
+      }
+      return capitalize(labelByLang((this.fieldRdfType || this.overrideLabel || this.fieldKey)))
+    },
     ...mapGetters([
       'inspector',
       'resources',
@@ -973,13 +994,12 @@ export default {
                v-tooltip.top="translatePhrase(backendValidationError.description)"
             />
           </span>
-          <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
-          <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
+          <span v-show="fieldKey === '@id' || fieldKey === '@type'">{{ fieldLabel }}</span>
           <span
             v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !isEnrichmentSource"
             :title="fieldKey"
             @click="onLabelClick">
-            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
+            {{ fieldLabel }}
           </span>
           <span
             v-if="fieldKey !== '@id' && fieldKey !== '@type' && !diff && isEnrichmentSource"
@@ -993,14 +1013,14 @@ export default {
             @mouseout="labelHover = false"
             tabindex="0"
           >
-            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
+            {{ fieldLabel }}
           </span>
           <span
             class="Field-navigateHistory"
             v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff"
             @click="onLabelClick"
             v-tooltip.top="{ content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 } }">
-            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
+            {{ fieldLabel }}
           </span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ capitalize(translatePhrase('Incoming links')) }}</span>
@@ -1024,9 +1044,8 @@ export default {
            v-tooltip.top="translatePhrase(backendValidationError.description)"
         />
       </span>
-      <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
-      <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !isEnrichmentSource" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
+      <span v-show="fieldKey === '@id' || fieldKey === '@type'">{{ fieldLabel }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !isEnrichmentSource" :title="fieldKey" @click="onLabelClick">{{ fieldLabel }}</span>
       <span
         v-if="fieldKey !== '@id' && fieldKey !== '@type' && !diff && isEnrichmentSource"
         :title="fieldKey"
@@ -1039,14 +1058,14 @@ export default {
         @mouseout="labelHover = false"
         tabindex="0"
       >
-            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
-          </span>
+        {{ fieldLabel }}
+      </span>
       <span
         class="Field-navigateHistory"
         v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff"
         @click="onLabelClick"
         v-tooltip.top="{ content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 } }">
-        {{ capitalize(labelByLang(fieldKey)) }}
+        {{ fieldLabel }}
       </span>
       <!-- Is inner -->
       <div class="Field-actions is-nested">
