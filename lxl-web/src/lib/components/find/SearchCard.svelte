@@ -274,50 +274,55 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					{/each}
 				</div>
 			{/if}
-			<footer class="card-footer mt-1" id={footerId}>
-				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
-					{#if 'hasInstance' in obj}
-						{@const instances = getInstanceData(obj.hasInstance)}
-						{#if instances?.years}
-							{#if instances.count > 1}
-								{instances?.count}
-								{page.data.t('search.editions')}
-								{`(${instances.years})`}
-							{:else}
-								{instances.years}
-							{/if}
-						{/if}
-						{#if instances?.count === 1}
-							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-							<span class="divider">{' · '}</span>
-							{#each obj.hasInstance._display as obj2, index (index)}
-								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
-								{#if !obj2.publication}
-									<DecoratedData
-										data={obj2}
-										showLabels={ShowLabelsOptions.Never}
-										{allowLinks}
-										{allowPopovers}
-									/>
-								{/if}
-							{/each}
-						{/if}
-					{:else}
-						<span>
-							<DecoratedData
-								data={obj}
-								showLabels={ShowLabelsOptions.Never}
-								{allowLinks}
-								{allowPopovers}
-							/>
-						</span>
-					{/if}
-				{/each}
+			<footer
+				class="card-footer @container mt-1 flex flex-col-reverse flex-wrap md:flex-row"
+				id={footerId}
+			>
 				{#if item.selectTypeStr}
+					<span class="text-body font-medium">{item.selectTypeStr}</span>
 					<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-					<span class="divider">{' · '}</span>
-					<span>{item.selectTypeStr}</span>
+					<span class="hidden whitespace-pre-wrap md:inline">{' · '}</span>
 				{/if}
+				<span>
+					{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
+						{#if 'hasInstance' in obj}
+							{@const instances = getInstanceData(obj.hasInstance)}
+							{#if instances?.years}
+								{#if instances.count > 1}
+									{instances?.count}
+									{page.data.t('search.editions')}
+									{`(${instances.years})`}
+								{:else}
+									{instances.years}
+								{/if}
+							{/if}
+							{#if instances?.count === 1}
+								<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+								<span class="divider">{' · '}</span>
+								{#each obj.hasInstance._display as obj2, index (index)}
+									<!-- FIXME we need publication for year, but don't want to show it again with the year -->
+									{#if !obj2.publication}
+										<DecoratedData
+											data={obj2}
+											showLabels={ShowLabelsOptions.Never}
+											{allowLinks}
+											{allowPopovers}
+										/>
+									{/if}
+								{/each}
+							{/if}
+						{:else}
+							<span>
+								<DecoratedData
+									data={obj}
+									showLabels={ShowLabelsOptions.Never}
+									{allowLinks}
+									{allowPopovers}
+								/>
+							</span>
+						{/if}
+					{/each}
+				</span>
 			</footer>
 			{#if allowActions}
 				<div class="card-actions flex gap-1 self-end pt-1">

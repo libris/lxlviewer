@@ -80,7 +80,7 @@ export async function asResult(
 			maxScores
 		),
 		...('stats' in view && {
-			facets: displayFacetGroups(view, displayUtil, locale, translate, usePath)
+			facets: displayFacets(view, displayUtil, locale, translate, usePath)
 		}),
 		...('stats' in view && { predicates: displayPredicates(view, displayUtil, locale, usePath) }),
 		_spell: view._spell
@@ -373,7 +373,7 @@ function isDatatypeProperty(data: unknown): data is DatatypeProperty {
 	return isObject(data) && data['@type'] === 'DatatypeProperty';
 }
 
-function displayFacetGroups(
+function displayFacets(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,

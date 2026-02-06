@@ -9,7 +9,31 @@ export type TypeLike = {
 	select: FramedData[];
 };
 
-const BAD_CARRIER_TYPES = ['https://id.kb.se/term/rda/OnlineResource'];
+const PRINT = 'https://id.kb.se/term/saobf/Print';
+const VOLUME = 'https://id.kb.se/term/rda/Volume';
+const E_BOOK = 'https://id.kb.se/term/saobf/EBook';
+const ONLINE_RESOURCE = 'https://id.kb.se/term/rda/OnlineResource';
+const STORSTIL = 'https://id.kb.se/marc/LargePrint';
+const BRAILLE = 'https://id.kb.se/term/saobf/Braille';
+const COMPONENT_PART = 'https://id.kb.se/term/saobf/ComponentPart';
+const _BOOK = 'ls:book';
+const _BOOK_BRAILLE = 'ls:bookBraille';
+
+const _BOOK_DEF: FramedData = {
+	[JsonLd.TYPE]: 'ManifestationForm',
+	prefLabelByLang: {
+		en: 'Book',
+		sv: 'Bok'
+	}
+};
+
+const _BOOK_BRAILLE_DEF: FramedData = {
+	[JsonLd.TYPE]: 'ManifestationForm',
+	prefLabelByLang: {
+		en: 'Book (braille)',
+		sv: 'Bok (punktskrift)'
+	}
+};
 
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
@@ -33,17 +57,29 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		result.identify.push(...identify);
 		result.none.push(...none);
 
-		const s = {};
-		getAtPath(thing, ['@reverse', 'instanceOf', '*', '_categoryByCollection', JsonLd.NONE], [])
-			.filter(
-				(c: FramedData) =>
-					c[JsonLd.TYPE] === 'ManifestationForm' ||
-					(c[JsonLd.TYPE] === 'CarrierType' && !BAD_CARRIER_TYPES.includes(c[JsonLd.ID]))
+		const instances = getAtPath(thing, ['@reverse', 'instanceOf', '*'], []);
+
+		let selectMap = instances
+			.map((i: FramedData) => getAtPath(i, ['_categoryByCollection', JsonLd.NONE], []))
+			.map((ss: FramedData[]) =>
+				ss.reduce((a, s) => {
+					a[s[JsonLd.ID]] = s;
+					return a;
+				}, {})
 			)
-			.forEach((c: FramedData) => (s[c[JsonLd.ID]] = c));
-		const select = Object.values(s);
+			.map((s: Record<string, FramedData>) => toMultiType(cleanUpInstanceSelect(s, thing)))
+			.reduce((acc, s) => {
+				Object.keys(s).forEach((k) => {
+					acc[k] = s[k];
+				});
+				return acc;
+			}, {});
+
+		selectMap = cleanUpWorkSelect(selectMap);
+
+		const select = Object.values(selectMap);
+
 		result.select.push(...select);
-		//const select = [...new Set(getAtPath(thing, ['@reverse', 'instanceOf', '*', 'category'], []))];
 	} else {
 		const contentTypes: FramedData[] = [];
 		const categories: FramedData[] = [];
@@ -68,6 +104,59 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	}
 
 	return result;
+}
+
+function cleanUpInstanceSelect(s: Record<string, FramedData>, thing: FramedData) {
+	if (thing[JsonLd.TYPE] == 'Monograph' && s[PRINT] && s[VOLUME]) {
+		delete s[PRINT];
+		delete s[VOLUME];
+		s[_BOOK] = _BOOK_DEF;
+	}
+
+	if (thing[JsonLd.TYPE] == 'Monograph' && s[BRAILLE] && s[VOLUME]) {
+		delete s[BRAILLE];
+		delete s[VOLUME];
+		s[_BOOK_BRAILLE] = _BOOK_BRAILLE_DEF;
+	}
+
+	if (s[E_BOOK] && s[ONLINE_RESOURCE]) {
+		delete s[ONLINE_RESOURCE];
+	}
+
+	if (s[_BOOK] && s[STORSTIL]) {
+		delete s[_BOOK];
+	}
+
+	if (s[COMPONENT_PART] && s[PRINT]) {
+		delete s[PRINT];
+	}
+
+	return s;
+}
+
+function cleanUpWorkSelect(s: Record<string, FramedData>) {
+	if (s[E_BOOK] && s[ONLINE_RESOURCE]) {
+		delete s[ONLINE_RESOURCE];
+	}
+
+	if (s[_BOOK] && s[PRINT]) {
+		delete s[PRINT];
+	}
+	return s;
+}
+
+function toMultiType(s: Record<string, FramedData>) {
+	if (Object.keys(s).length <= 1) {
+		return s;
+	}
+
+	const key = Object.keys(s).sort().join();
+	const value = {
+		'@type': '_MultiTypes',
+		_select: Object.values(s)
+	};
+
+	return { [key]: value };
 }
 
 export default getTypeLike;

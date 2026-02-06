@@ -151,6 +151,12 @@
 			"@id": "chips",
 			"@type": "fresnel:Group",
 			"lenses": {
+				"_MultiTypes": {
+					"@type": "fresnel:Lens",
+					"@id": "_MultiTypes-chips",
+					"classLensDomain": "_MultiTypes",
+					"showProperties": ["_find", "_identify", "_none", "_select", "_category"]
+				},
 				"Cartographic": {
 					"@id": "Cartographic-chips",
 					"@type": "fresnel:Lens",
@@ -1635,7 +1641,7 @@
 				"fresnel:contentLast": ""
 			},
 			"fresnel:valueFormat": {
-				"fresnel:contentBefore": " / ",
+				"fresnel:contentBefore": " | ",
 				"fresnel:contentFirst": ""
 			},
 			"fresnel:propertyStyle": ["sort()"]
@@ -1653,6 +1659,17 @@
 				"fresnel:contentBefore": ", ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"_MultiTypes-select": {
+			"@id": "_Types-select",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["_MultiTypes"],
+			"fresnel:propertyFormatDomain": ["*"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			},
+			"fresnel:propertyStyle": ["sort()"]
 		},
 		"default-separators": {
 			"@id": "default-separators",
