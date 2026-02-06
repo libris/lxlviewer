@@ -82,24 +82,11 @@ export const load = async ({ params, locals, fetch, url }) => {
 	} else if (resource.mainEntity.instanceOf) {
 		// instance - fetch work card
 		const workId = (resource.mainEntity.instanceOf[JsonLd.ID] || '').split('/').pop();
-		console.log('will fetch a work card for this instance');
 		if (workId) {
 			const workRes = await fetch(`/api/${locale}/${workId}`);
 			workCard = await workRes.json();
 		}
 	}
-
-	// const instanceCardToWork = resource.mainEntity.instanceOf ?
-	// asSearchResultItem(
-	// 	[{ ...resource.mainEntity.instanceOf }],
-	// 	displayUtil,
-	// 	vocabUtil,
-	// 	locale,
-	// 	env.AUXD_SECRET,
-	// 	myLibraries,
-	// 	undefined
-	// )[0] : null;
-	// displayUtil.lensAndFormat(resource.mainEntity.instanceOf, LensType.WebCard, locale) : null
 
 	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	copyMediaLinksToWork(mainEntity);
@@ -338,7 +325,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 		images,
 		tableOfContents,
 		workCard,
-		// instanceCardToWork,
 		refinedOrgs,
 		mainEntity,
 		isWork
