@@ -104,6 +104,7 @@
 			superSearch?.hideExpandedSearch();
 			fetchOnExpand = true;
 			if (userClearedSearch) {
+				superSearch?.showExpandedSearch();
 				userClearedSearch = false;
 			} else {
 				superSearch?.blur(); // remove focus from input after searching or navigating
