@@ -63,7 +63,7 @@
 	{/each}
 	{#if instances?.length === 1}
 		<a
-			class="btn btn-primary h-8 self-center rounded-full px-6 py-1.5"
+			class="btn btn-primary<h h-8 self-center rounded-full px-6 py-1.5"
 			href={getCiteLink(page.url, fnurgel)}
 			onclick={(event) => handleClickCite(event, page.state, fnurgel)}
 		>

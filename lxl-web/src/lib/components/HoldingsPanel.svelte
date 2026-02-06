@@ -114,9 +114,9 @@
 
 <!-- num libraries -->
 {#if numHolders}
-	<h2 class="my-2">
+	<h2 class="my-2 text-sm">
 		{page.data.t('holdings.availableAt')}
-		{numHolders}
+		<span class="font-medium">{numHolders}</span>
 		{numHolders === 1 ? page.data.t('holdings.library') : page.data.t('holdings.libraries')}
 	</h2>
 {/if}
@@ -170,7 +170,7 @@
 		bind:value={searchPhrase}
 		placeholder={page.data.t('holdings.findLibrary')}
 		aria-label={page.data.t('holdings.findLibrary')}
-		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
+		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-sm"
 		type="search"
 		name={page.data.t('holdings.findLibrary')}
 	/>

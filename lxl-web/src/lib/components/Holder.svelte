@@ -207,7 +207,7 @@
 					<details class="w-full">
 						<summary class="link-subtle flex cursor-pointer items-center gap-1">
 							<span
-								class="text-3xs chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
+								class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
 							>
 								<BiChevronRight />
 							</span>

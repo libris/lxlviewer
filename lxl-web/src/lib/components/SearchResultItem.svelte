@@ -105,7 +105,7 @@
 		</a>
 	</header>
 	{#if data['card-body']?._display}
-		<div class="4xs:text-sm decorated-card-body mt-1 mb-1 text-xs">
+		<div class="decorated-card-body mt-1 mb-1 text-sm">
 			{#each data['card-body']?._display as obj, index (index)}
 				<div class="@4xs:text-sm flex flex-col items-center text-center">
 					<DecoratedData data={obj} showLabels="never" block limit={{ contribution: 3 }} />

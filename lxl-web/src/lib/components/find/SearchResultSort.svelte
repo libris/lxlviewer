@@ -46,7 +46,7 @@
 				<option value={option.value} selected={option.value === sortOrder}>{option.label}</option>
 			{/each}
 		</select>
-		<span class="text-subtle pointer-events-none absolute top-0 right-1.5 py-2.5 text-xs">
+		<span class="text-subtle pointer-events-none absolute top-0 right-1.5 py-2.5 text-sm">
 			<BiChevronDown aria-hidden="true" />
 		</span>
 	</div>

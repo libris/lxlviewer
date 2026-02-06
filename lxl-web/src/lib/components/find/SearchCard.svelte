@@ -208,7 +208,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		<div class="card-content grid">
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
-					<TypeIcon type={item.typeForIcon} class="text-2xs mb-0.25 inline" />
+					<TypeIcon type={item.typeForIcon} class="text-2xs mb-px inline" />
 					{#if item.typeStr && !hideType}
 						<span class="font-medium">
 							{item.typeStr}
@@ -260,7 +260,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				{/if}
 			</header>
 			{#if item[LxlLens.CardBody]?._display}
-				<div class="card-body mt-1 text-xs" id={bodyId}>
+				<div class="card-body mt-1 text-sm" id={bodyId}>
 					{#each item[LxlLens.CardBody]?._display as obj, index (index)}
 						<div>
 							<DecoratedData
@@ -425,7 +425,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 		& :global(.contribution-role) {
 			color: var(--color-subtle);
-			font-size: var(--text-3xs);
+			font-size: var(--text-xs);
 		}
 	}
 

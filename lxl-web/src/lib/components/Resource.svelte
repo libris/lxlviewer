@@ -253,7 +253,7 @@
 					</div>
 					{#if decoratedData.summary.length || instances?.length > 1 || relations.length || decoratedData.resourceTableOfContents.length}
 						<a
-							class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
+							class="btn btn-primary mt-4 mb-2 h-7 w-fit rounded-full md:h-8"
 							href="#{uidPrefix}details"
 							data-sveltekit-preload-data="false"
 							data-testid="details-link"
@@ -529,20 +529,20 @@
 		}
 
 		& :global(.contribution) {
-			font-size: var(--text-lg);
+			font-size: var(--text-base);
 			@apply mb-2;
 			@apply mt-1;
 		}
 
 		& :global(.contribution-role) {
-			font-size: var(--text-2xs);
+			font-size: var(--text-sm);
 			color: var(--color-subtle);
 		}
 
-		& :global(.inScheme) {
+		/* & :global(.inScheme) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
-		}
+		} */
 
 		& :global(.contribution > ._contentBefore),
 		:global(.contribution > ._contentAfter) {
@@ -792,6 +792,14 @@
 	}
 
 	.decorated-details {
+		font-size: var(--text-sm);
+
+		& :global(.contribution) {
+			font-size: var(--text-sm);
+			@apply mb-2;
+			@apply mt-1;
+		}
+
 		& :global(div[data-property='hasTitle'] > span[data-type='Title']) {
 			/* color: var(--color-subtle); */
 			font-weight: var(--font-weight-semibold);
