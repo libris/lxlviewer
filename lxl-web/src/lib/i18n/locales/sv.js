@@ -254,6 +254,7 @@ export default {
 		results: 'träffar',
 		result: 'träff',
 		editions: 'Utgåvor',
+		editionOf: 'Utgåva av',
 		summary: 'Sammanfattning',
 		tableOfContents: 'Innehållsförteckning',
 		details: 'Detaljer',

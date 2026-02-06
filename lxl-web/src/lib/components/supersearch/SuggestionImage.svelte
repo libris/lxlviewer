@@ -11,7 +11,7 @@
 	const { item }: Props = $props();
 </script>
 
-<div class="pointer-events-none relative flex">
+<div class="suggestion-image pointer-events-none relative flex">
 	{#if item.image}
 		<img
 			src={item.image.url}
@@ -24,7 +24,7 @@
 			]}
 		/>
 		{#if item['@type'] !== 'Text' && item['@type'] !== 'Person'}
-			<div class="absolute -top-1.5 -left-1.5">
+			<div class="type-icon absolute -top-1.5 -left-1.5">
 				<div class="bg-page rounded-sm border border-neutral-100 p-1">
 					<TypeIcon type={item.typeForIcon} class="size-3" />
 				</div>

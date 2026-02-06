@@ -135,10 +135,17 @@
 	</div>
 {/if}
 {#if page.data.workCard && !page.data.isWork}
-	<div class="border-b-neutral @container border-b">
+	<div
+		class="back-to-work border-b-neutral border-b px-2 hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
+	>
 		<Suggestion item={page.data.workCard}>
 			{#snippet leadingContent()}
-				<p class="text-subtle mr-2 text-sm">--- Utgåva av</p>
+				<div class="mr-2 flex items-center gap-1 ease-in-out">
+					<IconArrowRight class="arrow rotate-180 transition-transform" />
+					<p class="text-subtle text-sm whitespace-nowrap">
+						{page.data.t('resource.editionOf')}
+					</p>
+				</div>
 			{/snippet}
 		</Suggestion>
 		<!-- <DecoratedData data={page.data.instanceLinkToWork} showLabels="never" allowPopovers allowLinks /> -->
@@ -419,6 +426,27 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	.back-to-work {
+		:global(.resource-content) {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+		}
+
+		:global(hgroup::after) {
+			content: '·';
+			margin-right: calc(var(--spacing) * 1);
+		}
+
+		:global(.suggestion) {
+			height: auto;
+		}
+
+		:global(.type-icon) {
+			top: 0;
+		}
+	}
 
 	.sticky {
 		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
