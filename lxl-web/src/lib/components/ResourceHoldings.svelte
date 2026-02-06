@@ -6,18 +6,15 @@
 	import type { SearchResultItem } from '$lib/types/search';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
-	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import BiQuote from '~icons/bi/quote';
 	import { LxlLens } from '$lib/types/display';
 
 	interface Props {
 		instances: SearchResultItem[] | ResourceData[];
 		holdings: HoldingsData;
-		fnurgel: string;
 	}
 
-	let { holdings, instances, fnurgel }: Props = $props();
+	let { holdings, instances }: Props = $props();
 	const { myLibraries } = getUserSettings();
 
 	function getLocalizedType(type: string) {
@@ -61,14 +58,4 @@
 			</a>
 		</li>
 	{/each}
-	{#if instances?.length === 1}
-		<a
-			class="btn btn-primary<h h-8 self-center rounded-full px-6 py-1.5"
-			href={getCiteLink(page.url, fnurgel)}
-			onclick={(event) => handleClickCite(event, page.state, fnurgel)}
-		>
-			<BiQuote class="size-4 text-neutral-400" />
-			<span>{page.data.t('citations.cite')}</span>
-		</a>
-	{/if}
 </ul>
