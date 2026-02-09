@@ -54,6 +54,7 @@
 	let prevLocale = page.data.locale;
 
 	let clearUrl = $derived.by(() => {
+		if (page.url.pathname !== '/find') return undefined;
 		const url = new URL(page.url);
 		url.searchParams.set('_q', '');
 		url.searchParams.delete('_offset');
@@ -219,6 +220,7 @@
 			superSearch?.fetchData();
 		}
 	});
+	console.log(page.url);
 </script>
 
 {#key page.data.locale}
@@ -303,9 +305,11 @@
 					{@render inputField()}
 				</div>
 				{#if q}
-					<a
+					<svelte:element
+						this={clearUrl ? 'a' : 'button'}
+						role={clearUrl ? undefined : 'button'}
 						href={clearUrl}
-						onclick={(e) => {
+						onclick={(e: MouseEvent) => {
 							userClearedSearch = true;
 							onclickClear(e);
 						}}
@@ -319,7 +323,7 @@
 						title={page.data.t('search.clearFilters')}
 					>
 						<IconClear class="size-4.5 sm:size-4" />
-					</a>
+					</svelte:element>
 				{/if}
 				<button
 					type="submit"
