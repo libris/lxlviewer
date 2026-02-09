@@ -33,6 +33,8 @@ export type QualifierStateField = {
 
 export type QualifierRendererProps = {
 	key: string;
+	atomicFrom?: number;
+	atomicTo?: number;
 	keyLabel?: string;
 	operator: string;
 	value?: string;

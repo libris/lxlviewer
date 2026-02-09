@@ -26,10 +26,15 @@ class QualifierWidget extends WidgetType {
 		container.className = 'atomic';
 
 		container.ondblclick = () => {
-			view.dispatch({
-				// todo real
-				effects: startEditingQualifier.of({ from: this.props.atomicFrom, to: this.props.atomicTo })
-			});
+			if (this.props.atomicFrom != null && this.props.atomicTo != null) {
+				view.dispatch({
+					effects: startEditingQualifier.of({
+						from: this.props.atomicFrom,
+						to: this.props.atomicTo
+					}),
+					selection: { anchor: this.props.atomicTo }
+				});
+			}
 		};
 
 		const render = view.state.facet(qualifierRenderFacet);
