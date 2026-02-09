@@ -110,8 +110,12 @@ export default {
     'heldBy',
   ],
   validateTypesByPath: {
-    'Work' : { 'mainEntity.category' : ['ContentType', 'GenreForm'] },
-    'Instance' : { 'mainEntity.instanceOf.category' : ['ContentType', 'GenreForm'] },
+    'Work': {'mainEntity.category': ['ContentType', 'GenreForm']},
+    'Instance':
+      {
+        'mainEntity.instanceOf.category': ['ContentType', 'GenreForm'],
+        'mainEntity.category': ['CarrierType']
+      },
   },
   broaderRelations: [
     'broader',
