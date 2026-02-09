@@ -283,7 +283,7 @@
 		min-height: calc(var(--spacing) * 8);
 		font-size: var(--text-xs);
 		font-weight: var(--font-weight-medium);
-		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2.5);
+		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
 		border-radius: var(--spacing);
 		transition: background-color var(--default-transition-timing-function)
 			var(--default-transition-duration);

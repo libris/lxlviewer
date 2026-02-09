@@ -46,7 +46,7 @@
 					</div>
 				{/if}
 				<span class="text-nowrap">{getLocalizedType(type)}</span>
-				<span class="text-2xs truncate font-normal opacity-90">
+				<span class="truncate font-normal opacity-90">
 					{' · '}
 					<span class="hidden @3xs:inline">{page.data.t('holdings.availableAt').toLowerCase()}</span
 					>
