@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import type { DisplayMapping, SearchResult } from '$lib/types/search';
 	import { getUserSettings } from '$lib/contexts/userSettings';
+	import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
 	import { fade } from 'svelte/transition';
 	import Modal from '../Modal.svelte';
 	import Toolbar from '../Toolbar.svelte';
@@ -22,7 +23,9 @@
 	const filterCount = $derived(getFiltersCount(searchResult.mapping));
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
-		const root = mapping.filter((item) => item.variable === '_q' || item.variable === '_r');
+		const root = mapping.filter(
+			(item) => item.variable !== undefined && !MAPPING_IGNORE_VARIABLE.includes(item.variable)
+		);
 		let count = 0;
 
 		function _iter(n: DisplayMapping[] | DisplayMapping) {
