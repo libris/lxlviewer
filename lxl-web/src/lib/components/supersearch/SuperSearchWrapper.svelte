@@ -113,12 +113,6 @@
 		}
 	});
 
-	function handleSubmit() {
-		// if (!q || !q.trim()) {
-		// 	event.preventDefault();
-		// }
-	}
-
 	const editedParentNode = $derived.by(() => {
 		if (!q || !selection) {
 			return null;
@@ -333,7 +327,6 @@
 						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
 					]}
 					aria-label={page.data.t('supersearch.search')}
-					onclick={handleSubmit}
 				>
 					<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
 				</button>
@@ -377,7 +370,7 @@
 								{page.data.t('supersearch.suggestions')}
 							{/if}
 						</h2>
-						<button type="submit" onclick={handleSubmit}>
+						<button type="submit">
 							<span class={['text-link flex items-center gap-1 hover:underline']}>
 								{page.data.t('supersearch.showAll')}
 								<IconGo aria-hidden="true" class="text-link size-6" />
