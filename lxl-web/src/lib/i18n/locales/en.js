@@ -255,6 +255,7 @@ export default {
 		results: 'results',
 		result: 'result',
 		editions: 'Editions',
+		summary: 'Summary',
 		details: 'Details',
 		moreDetails: 'More details',
 		previous: 'Previous',

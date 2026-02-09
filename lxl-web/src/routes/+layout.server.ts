@@ -13,7 +13,7 @@ export async function load({ locals, url, params, fetch }) {
 		const res = await fetch(
 			`${env.API_URL}/find.jsonld?${new URLSearchParams({
 				_r: r,
-				_q: '*',
+				_q: '',
 				_mappingOnly: 'true'
 			}).toString()}`
 		);

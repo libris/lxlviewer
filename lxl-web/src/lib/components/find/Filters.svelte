@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page, navigating } from '$app/state';
 	import { getModalContext } from '$lib/contexts/modal';
+	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 	import type { DisplayMapping, Facet } from '$lib/types/search';
 	import FacetGroup from '$lib/components/find/FacetGroup.svelte';
 	import SearchMapping from './SearchMapping.svelte';
@@ -14,16 +15,8 @@
 
 	const { facets, mapping }: Props = $props();
 
-	function shouldShowMapping() {
-		if (
-			mapping &&
-			mapping.length === 1 &&
-			mapping[0].display === '*' &&
-			mapping[0].operator === 'equals'
-		) {
-			return false; // hide if only wildcard search
-		}
-		return true;
+	function shouldShowMapping(m: DisplayMapping[]) {
+		return !!displayMappingToString(m).trim();
 	}
 
 	const inModal = getModalContext();
@@ -32,7 +25,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	{#if mapping && inModal && shouldShowMapping()}
+	{#if mapping && inModal && shouldShowMapping(mapping)}
 		<nav aria-label={page.data.t('search.selectedFilters')}>
 			<SearchMapping {mapping} />
 		</nav>

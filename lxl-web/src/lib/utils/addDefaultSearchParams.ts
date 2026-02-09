@@ -5,7 +5,7 @@ function addDefaultSearchParams(searchParams: URLSearchParams): URLSearchParams 
 	const params = new URLSearchParams([...Array.from(searchParams.entries())]);
 
 	if (!params.has('_q')) {
-		params.set('_q', '*');
+		params.set('_q', '');
 	}
 	if (!params.has('_limit')) {
 		params.set('_limit', '20');

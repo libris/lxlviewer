@@ -23,7 +23,9 @@ export const load = async ({ params, url, locals, fetch }) => {
 	// find page load function reloads on change in these params:
 	const reactiveParams = ['_q', '_limit', '_offset', '_sort', '_spell', '_r'];
 	reactiveParams.forEach((p) => {
-		searchParams.set(p, url.searchParams.get(p) || '');
+		if (url.searchParams.has(p)) {
+			searchParams.set(p, url.searchParams.get(p) || '');
+		}
 	});
 
 	if (locals.site?.searchSite) {
@@ -62,16 +64,11 @@ export const load = async ({ params, url, locals, fetch }) => {
 		vocabUtil,
 		locale,
 		env.AUXD_SECRET,
-		undefined,
+		url.pathname,
 		myLibraries
 	);
 
-	const pageTitle = getPageTitle(
-		displayMappingToString(
-			searchResult.mapping.filter((f) => f?.variable !== 'defaultSiteFilters')
-		),
-		locals.site?.name
-	);
+	const pageTitle = getPageTitle(displayMappingToString(searchResult.mapping), locals.site?.name);
 
 	const subsetMapping = locals?.subsetMapping;
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);

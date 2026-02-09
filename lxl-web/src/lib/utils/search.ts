@@ -237,11 +237,16 @@ export function displayMappings(
 					...('variable' in m && { variable: m.variable }),
 					_value: m?.value
 				} as DisplayMapping;
+			} else if ('variable' in m) {
+				return {
+					children: [],
+					operator,
+					variable: m.variable
+				};
 			} else {
 				return {
 					display: { [JsonLd.VALUE]: '<ERROR>' } as DisplayDecorated,
 					children: [],
-					label: 'no label',
 					operator
 				} as DisplayMapping;
 			}

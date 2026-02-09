@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
+	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_spell=true');
 });
 
 test('should not have any detectable a11y issues', async ({ page }) => {
@@ -13,6 +13,12 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 
 test('page displays the site header', async ({ page }) => {
 	await expect(page.getByRole('banner')).toBeVisible();
+});
+
+test('page displays the correct title', async ({ page }) => {
+	await expect(page).toHaveTitle('f | Libris');
+	await page.goto('/find?_q=*&_limit=20&_offset=0');
+	await expect(page).toHaveTitle('Libris');
 });
 
 test('page has a search input', async ({ page }) => {

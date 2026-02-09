@@ -30,6 +30,16 @@ test('decorated data in holdings modal is not duplicated while closing modal', a
 	await expect(page.getByTestId('modal')).toBeHidden();
 });
 
+test('holding selection controls active tab in holdings panel', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	await page.getByRole('link', { name: /^Digital resurs · finns på / }).click();
+	const tablist = page.locator('dialog').getByRole('tablist', { name: 'Utgåvor' });
+	await expect(tablist.getByRole('tab', { name: 'Digital' })).toHaveAttribute(
+		'aria-selected',
+		'true'
+	);
+});
+
 test('table of contents', async ({ page }) => {
 	await page.goto('/khwz18234vvmvn7');
 	await expect(page.getByTestId('toc')).toBeVisible();
@@ -73,13 +83,4 @@ test('table of contents', async ({ page }) => {
 		page.getByTestId('toc-mobile').locator('a').first(),
 		'enter keypress toggles table of contents while focused on toggle'
 	).toBeVisible();
-
-	// Toc always visible now with summary - details?
-
-	// await page.goto('/2jr64jg10461zcj2');
-	// await expect(
-	// 	page.getByTestId('toc'),
-	// 	'table of contents is hidden if there are no items to show'
-	// ).not.toBeVisible();
-	// await expect(page.getByTestId('toc-mobile')).not.toBeVisible();
 });
