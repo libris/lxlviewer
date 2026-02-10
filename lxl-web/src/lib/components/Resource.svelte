@@ -256,7 +256,7 @@
 					<div class="flex items-center gap-2">
 						{#if decoratedData.summary.length || instances?.length > 1 || relations.length || decoratedData.resourceTableOfContents.length}
 							<a
-								class="btn btn-primary mt-4 mb-2 h-7 w-fit rounded-full md:h-8"
+								class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
 								href="#{uidPrefix}details"
 								data-sveltekit-preload-data="false"
 								data-testid="details-link"
@@ -267,7 +267,7 @@
 						{/if}
 						{#if instances?.length === 1}
 							<a
-								class="btn btn-primary mt-4 mb-2 h-7 w-fit rounded-full md:h-8"
+								class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
 								href={getCiteLink(page.url, fnurgel)}
 								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
 							>
@@ -374,7 +374,9 @@
 					<ExpandableArea content={resourceTableOfContents} collapsedHeightPx={300} />
 				</section>
 			{/if}
-			<section class="-mx-6 my-6 bg-neutral-100 px-6 pb-6 @2xl:mx-0 @2xl:rounded-lg">
+			<section
+				class="-mx-3 my-6 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
+			>
 				<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 					{page.data.t('resource.details')}
 				</h2>
