@@ -160,6 +160,10 @@ export default {
     'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
     'mainEntity.concerning': []
   },
+  blockedForAddition: {
+    'isReplacedBy' : '',
+    'category' : 'https://id.kb.se/term/div/abstract'
+  },
   propertyChains: {
     '@reverse.itemOf.heldBy.@id': {
       sv: 'Har bestånd',

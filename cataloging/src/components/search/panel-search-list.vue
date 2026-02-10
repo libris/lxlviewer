@@ -49,11 +49,13 @@ export default {
     itemIsAdded(item) {
       return this.disabledIds.indexOf(item['@id']) > -1;
     },
-    isReplaced(item) {
-      if ('isReplacedBy' in item) {
-        return true;
+    isBlocked(item) {
+      const blocked = this.settings.blockedForAddition;
+      for (const b in blocked) {
+        if (item.hasOwnProperty(b)) {
+          return blocked[b] === '' || blocked[b] === item[b]['@id'];
+        }
       }
-
       return false;
     },
     useItem(item) {
@@ -87,7 +89,7 @@ export default {
     <ul class="PanelSearchResult-list js-field-list" v-show="results.length > 0">
       <panel-search-item
         v-for="(item, index) in results"
-        :is-replaced="isReplaced(item)"
+        :is-blocked="isBlocked(item)"
         :focus-data="item"
         :is-disabled="itemIsAdded(item)"
         :add-link="false"

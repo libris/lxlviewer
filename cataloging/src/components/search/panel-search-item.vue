@@ -35,7 +35,7 @@ export default {
       type: String,
       default: '',
     },
-    isReplaced: {
+    isBlocked: {
       type: Boolean,
       default: false,
     },
@@ -56,7 +56,7 @@ export default {
   emits: ['use-item'],
   methods: {
     useItem() {
-      if (!this.isDisabled && !this.isReplaced) {
+      if (!this.isDisabled && !this.isBlocked) {
         this.$emit('use-item');
       }
     },
@@ -114,13 +114,13 @@ export default {
 <template>
   <li
     class="PanelSearch-listItem PanelComponent-listItem"
-    :class="{ 'is-added': isDisabled, 'is-replaced': isReplaced }">
+    :class="{ 'is-added': isDisabled, 'is-blocked': isBlocked }">
     <div
       class="PanelSearch-action"
       v-if="hasAction">
       <summary-action
         :disabled="isDisabled"
-        :replaced="isReplaced"
+        :blocked="isBlocked"
         :options="addPayload"
         @action="useItem()" />
       <div
@@ -164,7 +164,7 @@ export default {
     }
 
     &.is-added,
-    &.is-replaced {
+    &.is-blocked {
       cursor: default;
     }
 
@@ -226,7 +226,7 @@ export default {
     }
 
     .PanelComponent-listItem.is-added &,
-    .PanelComponent-listItem.is-replaced & {
+    .PanelComponent-listItem.is-blocked & {
       border-color: @grey-lighter;
     }
   }
