@@ -1,4 +1,17 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, test, devices } from '@playwright/test';
+
+test('should not have any detectable a11y issues', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
+
+test('Open holdings panel should not have any detectable a11y issues', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf?holdings=Electronic');
+	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
 
 test('decorated data label visibilty is correct after page navigations', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
