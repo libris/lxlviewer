@@ -172,7 +172,9 @@
 					<header class="mb-3 flex-1">
 						<hgroup>
 							<p class="text-subtle flex items-center gap-1 text-sm font-medium">
-								<TypeIcon type={typeForIcon} class="mr-0.5 inline text-sm" />
+								<span class="mr-0.5 self-stretch pt-1">
+									<TypeIcon type={typeForIcon} class="size-3" />
+								</span>
 								<DecoratedData
 									data={decoratedData.headingTop}
 									showLabels={ShowLabelsOptions.Never}
