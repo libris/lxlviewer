@@ -23,14 +23,17 @@
         </template>
       </div>
     </div>
+    <TermTree v-if="isSubClassOfConceptScheme" :entity="entityData" />
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import * as DataUtil from 'lxljs/data';
+import * as VocabUtil from 'lxljs/vocab';
 import LensMixin from '@/mixins/lens';
 import ResultItem from '@/components/ResultItem';
+import TermTree from '@/components/TermTree';
 
 export default {
   mixins: [LensMixin],
@@ -86,6 +89,12 @@ export default {
       }
       return null;
     },
+    isSubClassOfConceptScheme() {
+      if (this.entityData.hasOwnProperty('@type')) {
+        const termData = VocabUtil.getTermObject(this.entityData['@type'], this.vocab, this.vocabContext);
+        return !!termData.subClassOf.find(({ '@id': id }) =>  id === `https://id.kb.se/vocab/ConceptScheme`)
+      }
+    }
   },
   methods: {
     ...mapActions(['setCurrentDocument']),
@@ -132,6 +141,7 @@ export default {
   fetchOnServer: false,
   components: {
     ResultItem,
+    TermTree
   },
 }
 </script>
