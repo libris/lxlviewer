@@ -21,9 +21,11 @@
           <ResultItem :entity="entityData" :force-expanded="true" />
         </div>
         </template>
+        <div class="row">
+          <TermTree v-if="isSubClassOfConceptScheme" :entity="entityData" />
+        </div>
       </div>
     </div>
-    <TermTree v-if="isSubClassOfConceptScheme" :entity="entityData" />
   </div>
 </template>
 

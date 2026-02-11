@@ -1,7 +1,8 @@
 <template>
   <div class="TermTree">
-    <h2>Termer i {{ termTitle }}</h2>
-    {{ JSON.stringify(this.terms) }}
+    <h4 class="mt-4">Termer i {{ termTitle }}</h4>
+    <p class="total-term-items">{{ totalTermItems }} termer</p>
+    <!--<pre>{{ JSON.stringify(termItems, null, 2) }}</pre>-->
   </div>
 </template>
 
@@ -12,7 +13,7 @@ import * as DisplayUtil from "lxljs/display";
 export default {
   data() {
     return {
-      terms: []
+      terms: [],
     };
   },
   props: {
@@ -35,13 +36,25 @@ export default {
     termTitle() {
       return this.getEntityTitle(this.entity);
     },
+    termItems() {
+      return this.terms.items;
+    },
+    totalTermItems() {
+      return this.terms.totalItems;
+    },
   },
   methods: {},
   components: {},
   async fetch() {
-    this.terms = await this.$http.$get(`${this.baseUri()}/find.json?inScheme.@id=https://id.kb.se/term/saogf`)
-  }
-}
+    this.terms = await this.$http.$get(
+      `${this.baseUri()}/find.json?inScheme.@id=https://id.kb.se/term/saogf&_limit=2000&_stats=false`
+    );
+  },
+};
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+  .total-term-items {
+    color: $gray-700;
+  }
+</style>
