@@ -140,6 +140,7 @@ function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode)
 	const noFind = typeLike.find.length == 0;
 	const manyFind = typeLike.find.length > 1;
 	const showFind = manyFind || (!noFind && noIdentify);
+	//const showFind = !noFind && noIdentify;
 	const showNone = noFind && noIdentify && typeLike.none.length > 0;
 
 	const t = {

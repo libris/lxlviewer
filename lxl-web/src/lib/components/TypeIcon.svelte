@@ -53,6 +53,7 @@
 		Literature: BiBook,
 		'Sk%C3%B6nlitteratur': BiBook,
 		Facklitteratur: BiBook,
+		'Barn-%20och%20ungdomslitteratur': BiBook,
 		'Kartografiskt%20material': BiMap,
 		MovingImage: BiFilm,
 		Music: BiMusicNoteBeamed,
