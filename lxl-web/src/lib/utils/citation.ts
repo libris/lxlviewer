@@ -17,6 +17,14 @@ export const availableFormats = {
 		name: 'APA', // built-in
 		fullName: 'APA (American Psychological Association 7th edition)'
 	},
+	oxford_umu: {
+		name: 'Oxford',
+		fullName: 'Oxford (Umeå universitet)'
+	},
+	harvard_st: {
+		name: 'Harvard',
+		fullName: 'Harvard (Södertörns högskola — author-date/Harvard)'
+	},
 	ris: {
 		name: 'RIS',
 		fileFormat: 'ris'
@@ -61,6 +69,10 @@ export async function initCite(locale: LocaleCode) {
 				return cite.format('bibliography', { template: 'apa', format: 'html', lang });
 			case 'mla':
 				return cite.format('bibliography', { template: 'mla', format: 'html', lang });
+			case 'oxford_umu':
+				return cite.format('bibliography', { template: 'oxford_umu', format: 'html', lang });
+			case 'harvard_st':
+				return cite.format('bibliography', { template: 'harvard_st', format: 'html', lang });
 			default:
 				console.warn('asked for unavailable format', name);
 				return '-';
@@ -81,7 +93,11 @@ async function loadCiteResources() {
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
 		chicago: (await import('$lib/assets/csl/chicago-author-date.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fmodern-language-association
-		mla: (await import('$lib/assets/csl/modern-language-association.csl?raw')).default
+		mla: (await import('$lib/assets/csl/modern-language-association.csl?raw')).default,
+		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fumea-university-oxford
+		oxford_umu: (await import('$lib/assets/csl/umea-university-oxford.csl?raw')).default,
+		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fsodertorns-hogskola-harvard
+		harvard_st: (await import('$lib/assets/csl/sodertorns-hogskola-harvard.csl?raw')).default
 	};
 
 	// https://github.com/citation-js/citation-js/tree/main/packages/plugin-csl
