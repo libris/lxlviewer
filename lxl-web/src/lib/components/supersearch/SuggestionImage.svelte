@@ -44,3 +44,10 @@
 		</div>
 	{/if}
 </div>
+
+<style lang="postcss">
+	/* hide empty icon containers */
+	.type-icon:not(:has(svg)) {
+		display: none;
+	}
+</style>

@@ -54,14 +54,15 @@
 				</h2>
 				<!-- only show body > contribution next to header header -->
 				{#if item[LxlLens.CardBody]?._display?.[0]?.contribution}
-					<p class="truncate">
+					<p class="truncate font-normal">
 						<span class="divider">{' · '}</span>
 						<span class="suggestion-contribution">
 							<DecoratedData
-								data={item[LxlLens.CardBody]?._display[0]?.contribution}
+								data={item[LxlLens.CardBody]?._display[0]}
 								showLabels={ShowLabelsOptions.Never}
 								allowLinks={false}
 								allowPopovers={false}
+								depth={-1}
 								limit={{ contribution: 1 }}
 							/>
 						</span>
@@ -161,14 +162,6 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	.suggestion :global(.contribution-role) {
-		display: none;
-	}
-
-	.suggestion:has(:global(*:hover)) h2,
-	:global(.focused) > .suggestion h2 {
-	}
-
 	:global(:not(.focused)) > .suggestion:has(:global(*:hover)) {
 		background-color: var(--color-primary-50);
 	}
@@ -202,13 +195,37 @@
 			display: none;
 		}
 
+		& :global(.contribution-role) {
+			display: none;
+		}
+
 		& :global(.agent-lifespan) {
+			color: var(--color-subtle);
+		}
+
+		& :global(.delimiter) {
 			color: var(--color-subtle);
 		}
 	}
 
-	:global(.suggestion-contribution > *:not(:last-child)::after) {
+	.suggestion-contribution {
+		& :global(.agent-lifespan) {
+			display: none;
+		}
+	}
+
+	:global([data-property='contribution'] > *::after) {
 		content: ', ';
+	}
+
+	/* hide last comma */
+	:global([data-property='contribution'] > *:last-child::after) {
+		content: '';
+	}
+
+	/* hide comma before delimiter */
+	:global([data-property='contribution'] > *:has(+ .delimiter)::after) {
+		content: '';
 	}
 
 	.resource-footer {
@@ -217,7 +234,7 @@
 			display: none;
 		}
 
-		& :global(.divider:has(+ span)) {
+		& :global(.divider:has(+ span:not(.divider))) {
 			display: inline;
 		}
 	}

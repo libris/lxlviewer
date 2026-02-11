@@ -480,58 +480,70 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		font-weight: var(--font-weight-normal);
 	}
 
-    .card-header {
-        & :global(.transliteration) {
-        font-size: var(--text-2xs);
-        color: var(--color-subtle);
-        font-weight: var(--font-weight-normal);
-        display: block;
-        }
+	.card-header-top {
+		/* hide dangling divider · */
+		& .divider {
+			display: none;
+		}
 
-        & :global(.transliteration._contentBefore),
-        & :global(.transliteration._contentAfter) {
-            display: none;
-        }
-    }
+		& :global(.divider:has(+ span:not(.divider))) {
+			display: inline;
+		}
+	}
 
-    /* TODO inline label style in DecoratedData */
-    .card-header-extra,
-    .card-body {
-        & :global(div:has(> .property-label)) {
-            /* override e.g isPartOf > hasTitle block */
-            display: inline;
-        }
+	.card-header {
+			& :global(.transliteration) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+			font-weight: var(--font-weight-normal);
+			display: block;
+			}
 
-        & :global(span[data-property]) {
-            display: inline;
-        }
+			& :global(.transliteration._contentBefore),
+			& :global(.transliteration._contentAfter) {
+					display: none;
+			}
+	}
 
-        & :global(div[data-property] > div) {
-            display: inline;
-        }
+	/* TODO inline label style in DecoratedData */
+	.card-header-extra,
+	.card-body {
+		& :global(div:has(> .property-label)) {
+				/* override e.g isPartOf > hasTitle block */
+				display: inline;
+		}
 
-        /* FIXME */
-        & :global(div:has(> div[data-property='isPartOf'])),
-        & :global(div[data-property='isPartOf']),
-        & :global(div:has(> div[data-property='isPartOf']) + div:has(> div[data-property='part'])),
-        & :global(div[data-property='part']) {
-            display: inline;
-        }
+		& :global(span[data-property]) {
+				display: inline;
+		}
 
-        & :global(div > div[data-property='part'])::before {
-            content: ' ; ';
-        }
+		& :global(div[data-property] > div) {
+				display: inline;
+		}
 
-        & :global(.property-label) {
-            color: var(--color-body);
-            font-style: italic;
-        }
+		/* FIXME */
+		& :global(div:has(> div[data-property='isPartOf'])),
+		& :global(div[data-property='isPartOf']),
+		& :global(div:has(> div[data-property='isPartOf']) + div:has(> div[data-property='part'])),
+		& :global(div[data-property='part']) {
+				display: inline;
+		}
 
-        & :global(.property-label):not(:empty)::after {
-            color: var(--color-body);
-            content: ': ';
-        }
-    }
+		& :global(div > div[data-property='part'])::before {
+				content: ' ; ';
+		}
+
+		& :global(.property-label) {
+				color: var(--color-body);
+				font-style: italic;
+		}
+
+		& :global(.property-label):not(:empty)::after {
+				color: var(--color-body);
+				content: ': ';
+		}
+	}
+
 	/* card in dialog */
 	:global(dialog .search-card) {
 		border-top: none;
