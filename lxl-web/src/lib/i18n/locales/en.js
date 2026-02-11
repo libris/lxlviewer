@@ -32,7 +32,7 @@ export default {
 		search: 'Search',
 		login: 'Log in',
 		saved: 'Saved',
-		searchPlaceholder: 'Search for title, author, library, subject...',
+		searchPlaceholder: 'Search for title, author, subject...',
 		searchSubsetPlaceholder: 'Search within',
 		openMenu: 'Open main menu',
 		closeMenu: 'Close menu'
@@ -199,7 +199,7 @@ export default {
 		subjectLabel: 'Subject',
 		subjectPlaceholder: 'Sommaren, Romerska riket',
 		yearKey: 'year',
-		yearLabel: 'Year',
+		yearLabel: 'Year of publication',
 		yearPlaceholder: '1994, 2002, 2025'
 	},
 	sort: {

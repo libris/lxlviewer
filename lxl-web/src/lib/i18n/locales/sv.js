@@ -31,7 +31,7 @@ export default {
 		search: 'Sök',
 		login: 'Logga in',
 		saved: 'Sparat',
-		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
+		searchPlaceholder: 'Sök titel, upphovsperson, ämnen...',
 		searchSubsetPlaceholder: 'Sök inom',
 		openMenu: 'Öppna huvudmeny',
 		closeMenu: 'Stäng meny'
@@ -198,7 +198,7 @@ export default {
 		subjectLabel: 'Ämne',
 		subjectPlaceholder: 'Sommaren, Romerska riket',
 		yearKey: 'år',
-		yearLabel: 'År',
+		yearLabel: 'Utgivningsår',
 		yearPlaceholder: '1994, 2002, 2025'
 	},
 	sort: {
