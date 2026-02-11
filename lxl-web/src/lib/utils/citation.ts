@@ -21,7 +21,7 @@ export const availableFormats = {
 		name: 'Oxford',
 		fullName: 'Oxford (Umeå universitet)'
 	},
-	harvard_st: {
+	harvard_sh: {
 		name: 'Harvard',
 		fullName: 'Harvard (Södertörns högskola — author-date/Harvard)'
 	},
@@ -71,8 +71,8 @@ export async function initCite(locale: LocaleCode) {
 				return cite.format('bibliography', { template: 'mla', format: 'html', lang });
 			case 'oxford_umu':
 				return cite.format('bibliography', { template: 'oxford_umu', format: 'html', lang });
-			case 'harvard_st':
-				return cite.format('bibliography', { template: 'harvard_st', format: 'html', lang });
+			case 'harvard_sh':
+				return cite.format('bibliography', { template: 'harvard_sh', format: 'html', lang });
 			default:
 				console.warn('asked for unavailable format', name);
 				return '-';
@@ -97,7 +97,7 @@ async function loadCiteResources() {
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fumea-university-oxford
 		oxford_umu: (await import('$lib/assets/csl/umea-university-oxford.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fsodertorns-hogskola-harvard
-		harvard_st: (await import('$lib/assets/csl/sodertorns-hogskola-harvard.csl?raw')).default
+		harvard_sh: (await import('$lib/assets/csl/sodertorns-hogskola-harvard.csl?raw')).default
 	};
 
 	// https://github.com/citation-js/citation-js/tree/main/packages/plugin-csl
