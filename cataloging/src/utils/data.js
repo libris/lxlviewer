@@ -234,6 +234,8 @@ export async function fetchBroader(broader, all) {
 
   for (const thing of things) {
     for (const rel of settings.broaderRelations) {
+      // console.log('thing', JSON.stringify(thing));
+      // console.log('thing.inCollection', JSON.stringify(thing.inCollection));
       if (thing[rel]) {
         const broader = asArray(thing[rel]);
         all.push(...broader);
@@ -247,6 +249,8 @@ export async function fetchBroader(broader, all) {
   if (nextBroader.length === 0) {
     return uniq(all.map(b => b['@id']));
   }
+  // Return it in a map where the collection is find, identify, skon etc.
+  // [{"@id":"https://id.kb.se/term/skon"},{"@id":"https://id.kb.se/term/div/identify"}]
   return fetchBroader(nextBroader, all);
 }
 

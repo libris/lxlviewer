@@ -757,14 +757,20 @@ export default {
             for (const broader of this.settings.broaderRelations) {
               if (categoryCard && categoryCard[broader]) {
                 const broaderForEntity = await DataUtil.fetchBroader(categoryCard[broader], cloneDeep(categoryCard[broader]));
+                console.log('broaderForEntity', broaderForEntity);
                 allBroader = [...allBroader, ...broaderForEntity];
               }
             }
           }
         }
-        this.broaderCategories = uniq(allBroader);
+        const broaderCategories = uniq(allBroader);
+        this.broaderCategories = broaderCategories;
+        // this.setCategoryByCollection(broaderCategories);
       }
     },
+    // setCategoryByCollection(broaderCategories) {
+    //
+    // },
     isLinked(o) {
       if (o === null) {
         return false;
