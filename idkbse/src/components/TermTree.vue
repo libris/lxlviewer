@@ -1,6 +1,7 @@
 <template>
   <div class="TermTree">
     <h2>Termer i {{ termTitle }}</h2>
+    {{ JSON.stringify(this.terms) }}
   </div>
 </template>
 
@@ -10,7 +11,9 @@ import * as DisplayUtil from "lxljs/display";
 
 export default {
   data() {
-    return {};
+    return {
+      terms: []
+    };
   },
   props: {
     entity: {
@@ -35,7 +38,10 @@ export default {
   },
   methods: {},
   components: {},
-};
+  async fetch() {
+    this.terms = await this.$http.$get(`${this.baseUri()}/find.json?inScheme.@id=https://id.kb.se/term/saogf`)
+  }
+}
 </script>
 
 <style lang="scss"></style>
