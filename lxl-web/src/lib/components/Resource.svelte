@@ -454,6 +454,14 @@
 		:global(.type-icon) {
 			top: 0;
 		}
+
+		:global(.suggestion a:first-child) {
+			padding: 0 calc(var(--spacing) * 2);
+		}
+
+		@variant sm {
+			padding: 0 calc(var(--spacing) * 4);
+		}
 	}
 
 	.sticky {
