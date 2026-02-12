@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
@@ -17,7 +16,7 @@
 			src={item.image.url}
 			width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
 			height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
-			alt={page.data.t('general.latestInstanceCover')}
+			alt=""
 			class={[
 				'aspect-square object-contain object-top',
 				item['@type'] === 'Person' && 'rounded-full'

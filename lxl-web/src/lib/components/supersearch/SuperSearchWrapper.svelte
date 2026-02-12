@@ -213,7 +213,6 @@
 			superSearch?.fetchData();
 		}
 	});
-	console.log(page.url);
 </script>
 
 {#key page.data.locale}

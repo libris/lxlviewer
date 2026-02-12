@@ -438,13 +438,12 @@
 			display: none;
 		}
 
-		:global(.suggestion-contribution) {
-			display: none;
+		:global(.resource-heading) {
+			margin-right: calc(var(--spacing) * 1);
 		}
 
-		:global(hgroup::after) {
-			content: '·';
-			margin-right: calc(var(--spacing) * 1);
+		:global(.suggestion-contribution) {
+			display: none;
 		}
 
 		:global(.suggestion) {

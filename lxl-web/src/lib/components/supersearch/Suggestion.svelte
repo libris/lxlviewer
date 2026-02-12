@@ -35,40 +35,34 @@
 				{item.qualifiers[0].label}
 			</span>
 		</span>
-	{:else}
-		<div class="sr-only">{page.data.t('search.goTo')}</div>
 	{/if}
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<hgroup
-				class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap"
-			>
-				<h2 class="truncate">
+			<h2 class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap">
+				<span class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
 						showLabels={ShowLabelsOptions.Never}
 						allowPopovers={false}
 						allowLinks={false}
 					/>
-				</h2>
+				</span>
 				<!-- only show body > contribution next to header header -->
 				{#if item[LxlLens.CardBody]?._display?.[0]?.contribution}
-					<p class="suggestion-contribution truncate font-normal">
-						<span class="divider">{' · '}</span>
-						<span>
-							<DecoratedData
-								data={item[LxlLens.CardBody]?._display[0]}
-								showLabels={ShowLabelsOptions.Never}
-								allowLinks={false}
-								allowPopovers={false}
-								depth={-1}
-								limit={{ contribution: 1 }}
-							/>
-						</span>
-					</p>
+					<span class="divider">{' · '}</span>
+					<span class="suggestion-contribution truncate font-normal">
+						<DecoratedData
+							data={item[LxlLens.CardBody]?._display[0]}
+							showLabels={ShowLabelsOptions.Never}
+							allowLinks={false}
+							allowPopovers={false}
+							depth={-1}
+							limit={{ contribution: 1 }}
+						/>
+					</span>
 				{/if}
-			</hgroup>
+			</h2>
 			<div class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
 				<strong class="font-medium">
 					{item.typeStr}
@@ -230,7 +224,7 @@
 
 	.resource-footer {
 		/* hide dangling divider · */
-		& :global(.divider:not(:has(+ span))) {
+		& :global(.divider:not(:has(+ span:not(.divider)))) {
 			display: none;
 		}
 	}
