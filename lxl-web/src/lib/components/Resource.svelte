@@ -136,13 +136,13 @@
 {/if}
 {#if page.data.workCard && !page.data.isWork}
 	<div
-		class="back-to-work border-b-neutral border-b px-2 hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
+		class="back-to-work border-b-neutral border-b hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
 	>
 		<Suggestion item={page.data.workCard}>
 			{#snippet leadingContent()}
-				<div class="mr-2 flex items-center gap-1 ease-in-out">
+				<div class="mr-4 flex items-center gap-1 ease-in-out">
 					<IconArrowRight class="arrow rotate-180 transition-transform" />
-					<p class="text-subtle text-sm whitespace-nowrap">
+					<p class="text-subtle text-xs whitespace-nowrap">
 						{page.data.t('resource.editionOf')}
 					</p>
 				</div>
@@ -432,6 +432,14 @@
 			display: flex;
 			flex-wrap: wrap;
 			align-items: center;
+		}
+
+		:global(.resource-footer > *:not(.editions)) {
+			display: none;
+		}
+
+		:global(.suggestion-contribution) {
+			display: none;
 		}
 
 		:global(hgroup::after) {

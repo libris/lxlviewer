@@ -42,7 +42,7 @@
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<hgroup
-				class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap sm:text-sm lg:text-xs"
+				class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap"
 			>
 				<h2 class="truncate">
 					<DecoratedData
@@ -54,9 +54,9 @@
 				</h2>
 				<!-- only show body > contribution next to header header -->
 				{#if item[LxlLens.CardBody]?._display?.[0]?.contribution}
-					<p class="truncate font-normal">
+					<p class="suggestion-contribution truncate font-normal">
 						<span class="divider">{' · '}</span>
-						<span class="suggestion-contribution">
+						<span>
 							<DecoratedData
 								data={item[LxlLens.CardBody]?._display[0]}
 								showLabels={ShowLabelsOptions.Never}
@@ -91,7 +91,7 @@
 					{#if 'hasInstance' in footer}
 						{@const instances = getInstanceData(footer.hasInstance)}
 						{#if instances?.years}
-							<span>
+							<span class="editions">
 								{#if instances.count > 1}
 									{instances?.count}
 									{page.data.t('search.editions')}
@@ -230,12 +230,8 @@
 
 	.resource-footer {
 		/* hide dangling divider · */
-		& .divider {
+		& :global(.divider:not(:has(+ span))) {
 			display: none;
-		}
-
-		& :global(.divider:has(+ span:not(.divider))) {
-			display: inline;
 		}
 	}
 
