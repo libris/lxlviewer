@@ -5,7 +5,7 @@
       class="TermTreeItem-group"
       :style="{ '--level': level }"
     >
-      <summary class="TermTreeItem-label">
+      <summary class="TermTreeItem-label" :id="this['@id'].split('/').pop()">
         <div class="TermTreeItem-group-icon">
           <i class="bi bi-chevron-right"></i>
         </div>
@@ -26,7 +26,7 @@
         />
       </ul>
     </details>
-    <div v-else class="TermTreeItem-label">
+    <div v-else class="TermTreeItem-label" :id="this['@id'].split('/').pop()">
       <h5>
         <a :href="translateUriEnv(this['@id'])">
           {{ this.label }}
