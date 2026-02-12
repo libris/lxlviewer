@@ -148,7 +148,6 @@
 				</div>
 			{/snippet}
 		</Suggestion>
-		<!-- <DecoratedData data={page.data.instanceLinkToWork} showLabels="never" allowPopovers allowLinks /> -->
 	</div>
 {/if}
 <article class="@container @3xl:[&_[id]]:scroll-mt-36">
