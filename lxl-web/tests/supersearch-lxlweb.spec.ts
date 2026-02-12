@@ -65,7 +65,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 	await expect(
 		page.getByRole('combobox'),
 		'...except when navigating to start/index (which should be seen as a reset)'
-	).toContainText('Sök titel, upphovsperson, bibliotek, ämnen...');
+	).toContainText('Sök titel, upphovsperson, ämnen...');
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
