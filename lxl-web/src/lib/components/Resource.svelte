@@ -24,10 +24,10 @@
 	import TabList, { type Tab } from './TabList.svelte';
 	import SearchMapping from './find/SearchMapping.svelte';
 	import ExpandableArea from '$lib/components/ExpandableArea.svelte';
+	import Suggestion from './supersearch/Suggestion.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
-	import Suggestion from './supersearch/Suggestion.svelte';
 	import BiQuote from '~icons/bi/quote';
 
 	type Props = {
