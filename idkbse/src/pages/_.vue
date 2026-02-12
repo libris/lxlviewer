@@ -94,9 +94,11 @@ export default {
       return null;
     },
     showTermTree() {
-      if (this.entityData.hasOwnProperty('@type')) {
-        const termData = VocabUtil.getTermObject(this.entityData['@type'], this.vocab, this.vocabContext);
-        return !!termData.subClassOf.find(({ '@id': id }) =>  id === `https://id.kb.se/vocab/ConceptScheme`)
+      if (this.entityData['@id'] === 'https://id.kb.se/term/saogf') { // For now check explicitly for SAOGF...
+        if (this.entityData.hasOwnProperty('@type')) {
+          const termData = VocabUtil.getTermObject(this.entityData['@type'], this.vocab, this.vocabContext);
+          return !!termData.subClassOf.find(({ '@id': id }) =>  id === `https://id.kb.se/vocab/ConceptScheme`)
+        }
       }
     }
   },
