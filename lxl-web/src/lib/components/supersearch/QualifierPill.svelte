@@ -18,7 +18,7 @@
 {#if keyLabel}
 	<span
 		data-qualifier-key={key}
-		class="lxl-qualifier-key"
+		class="lxl-qualifier-key cursor-text"
 		role="button"
 		tabindex="-1"
 		{onclick}
@@ -29,7 +29,7 @@
 {/if}
 {#if operator}
 	<span
-		class="lxl-qualifier-operator"
+		class="lxl-qualifier-operator cursor-text"
 		data-qualifier-operator={operator}
 		role="button"
 		tabindex="-1"
@@ -41,7 +41,7 @@
 {/if}
 {#if valueLabel}
 	<span
-		class={keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias'}
+		class={[keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias', 'cursor-text']}
 		data-qualifier-value={value}
 		role="button"
 		tabindex="-1"

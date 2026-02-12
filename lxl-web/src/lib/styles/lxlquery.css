@@ -63,7 +63,6 @@
 	border-bottom-left-radius: var(--radius-md);
 	user-select: none;
 	pointer-events: auto;
-	cursor: pointer;
 }
 
 .atomic:has(.lxl-qualifier-remove) {
@@ -111,12 +110,15 @@
 
 .lxl-not-term {
 	color: var(--color-severe-600);
+	color: var(--color-body);
+}
+
+.lxl-not-term .atomic {
+	background-color: var(--color-severe-50);
 }
 
 .lxl-not-term .lxl-qualifier {
-	background-color: var(--color-severe-50);
-	border: 1px solid var(--color-severe-200);
-	color: var(--color-body);
+	outline-color: var(--color-severe-200);
 }
 
 .lxl-not-term .lxl-qualifier-remove:hover {
