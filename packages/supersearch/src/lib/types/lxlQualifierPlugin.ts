@@ -12,19 +12,29 @@ export interface QualifierValidationResponse {
 	invalid: boolean;
 }
 
+export type QualifierId = string;
+
 export interface QualifierState extends QualifierValidationResponse {
 	atomicFrom?: number;
 	atomicTo?: number;
 	node: SyntaxNode;
+	editing?: boolean;
 }
 
 export type QualifierStateField = {
 	qualifiers: Map<string, QualifierState>;
 	atomicRanges: RangeSet<RangeValue>;
+	editing: {
+		from: number;
+		to: number;
+	} | null;
+	version: number;
 };
 
 export type QualifierRendererProps = {
 	key: string;
+	atomicFrom?: number;
+	atomicTo?: number;
 	keyLabel?: string;
 	operator: string;
 	value?: string;

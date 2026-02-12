@@ -4,6 +4,7 @@ import type { QualifierValidator, QualifierRenderer } from '$lib/types/lxlQualif
 import { qualifierValidatorFacet, qualifierRenderFacet } from './qualifierFacet.js';
 import { qualifierStateField } from './qualifierValidation.js';
 import { addDecorations } from './qualifierDecoration.js';
+import { stopEditingOnEnterOrEsc } from './qualifierKeyMaps.js';
 import {
 	balanceInnerParens,
 	createGhostGroup,
@@ -35,6 +36,7 @@ const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn?: Qualifier
 			decorations: (instance) => instance.decorations,
 			provide: () => [
 				qualifierStateField,
+				stopEditingOnEnterOrEsc,
 				qualifierValidatorFacet.of(validateFn),
 				renderFn ? qualifierRenderFacet.of(renderFn) : [],
 

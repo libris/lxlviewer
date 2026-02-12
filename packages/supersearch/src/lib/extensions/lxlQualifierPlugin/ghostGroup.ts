@@ -2,6 +2,7 @@ import { EditorState, Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 import { qualifierStateField } from './qualifierValidation.js';
+import { startEditingQualifier, stopEditingQualifier } from './qualifierEffects.js';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically
@@ -11,6 +12,13 @@ import { qualifierStateField } from './qualifierValidation.js';
  * If not - add/repair it. Exception: quoted qualifier values
  */
 export const createGhostGroup = (tr: Transaction) => {
+	// don't run on edit qualifier start/stop events
+	for (const e of tr.effects) {
+		if (e.is(stopEditingQualifier) || e.is(startEditingQualifier)) {
+			return tr;
+		}
+	}
+
 	// run on valdation change -> atomic range change
 	const rangesChanged =
 		tr.startState.field(qualifierStateField).atomicRanges.size !==
@@ -28,6 +36,9 @@ export const createGhostGroup = (tr: Transaction) => {
 	// validate qualifier
 	const validQualifier = getValidQualifier(tr.state, prevNode);
 	if (!validQualifier) return tr;
+
+	// check if in edit mode
+	if (isEditingQualifier(tr.state, prevNode)) return tr;
 
 	if (prevNode.name === 'QualifierOperator') {
 		const operator = tr.state.sliceDoc(prevNode.from, prevNode.to);
@@ -465,4 +476,14 @@ export function isValidQualifier(state: EditorState, node: SyntaxNode | false): 
 const getValidQualifier = (state: EditorState, node: SyntaxNode) => {
 	const parent = getParent(node, 'Qualifier');
 	return parent && isValidQualifier(state, parent.node) ? parent : null;
+};
+
+export const isEditingQualifier = (state: EditorState, node: SyntaxNode) => {
+	const { editing } = state.field(qualifierStateField);
+	if (!editing) return false;
+
+	const parent = getParent(node, 'Qualifier');
+	if (!parent) return false;
+
+	return parent.node.from === editing.from;
 };

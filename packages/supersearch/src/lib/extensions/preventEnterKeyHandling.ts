@@ -11,7 +11,7 @@ const preventEnterKeyHandling = () => {
 		return true; // return true to prevent further commands to be tried
 	};
 
-	return Prec.highest(
+	return Prec.high(
 		keymap.of([
 			{
 				key: 'Enter',

@@ -3,8 +3,11 @@
 	import type { QualifierRendererProps } from 'supersearch';
 	import IconClose from '~icons/bi/x-lg';
 
-	const { key, keyLabel, operator, value, valueLabel, removeLink }: QualifierRendererProps =
-		$props();
+	interface Props extends QualifierRendererProps {
+		onclick?: () => void;
+	}
+
+	const { key, keyLabel, operator, value, valueLabel, removeLink, onclick }: Props = $props();
 
 	/**
 	 * TODO: Add resource links when API exposes the record ids/fnurgels in mappings
@@ -13,19 +16,37 @@
 </script>
 
 {#if keyLabel}
-	<span class="lxl-qualifier-key" data-qualifier-key={key}>
+	<span
+		data-qualifier-key={key}
+		class="lxl-qualifier-key cursor-text"
+		role="button"
+		tabindex="-1"
+		{onclick}
+		onkeypress={onclick}
+	>
 		{keyLabel}
 	</span>
 {/if}
 {#if operator}
-	<span class="lxl-qualifier-operator" data-qualifier-operator={operator}>
+	<span
+		class="lxl-qualifier-operator cursor-text"
+		data-qualifier-operator={operator}
+		role="button"
+		tabindex="-1"
+		{onclick}
+		onkeypress={onclick}
+	>
 		{operator}
 	</span>
 {/if}
 {#if valueLabel}
 	<span
-		class={keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias'}
+		class={[keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias', 'cursor-text']}
 		data-qualifier-value={value}
+		role="button"
+		tabindex="-1"
+		{onclick}
+		onkeypress={onclick}
 	>
 		<!--
 		{#if resourceLink}
