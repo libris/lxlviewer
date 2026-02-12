@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import type { DisplayMapping, SearchResult } from '$lib/types/search';
 	import { getUserSettings } from '$lib/contexts/userSettings';
+	import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
 	import { fade } from 'svelte/transition';
 	import Modal from '../Modal.svelte';
 	import Toolbar from '../Toolbar.svelte';
@@ -22,9 +23,20 @@
 	const filterCount = $derived(getFiltersCount(searchResult.mapping));
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
-		return (mapping[0].children || mapping).filter(
-			(filterItem) => !(filterItem.display === '*' && filterItem.operator === 'equals') // TODO: probably best to do wildcard-filtering in an earlier step (in search.ts)?
-		).length;
+		const root = mapping.filter(
+			(item) => item.variable !== undefined && !MAPPING_IGNORE_VARIABLE.includes(item.variable)
+		);
+		let count = 0;
+
+		function _iter(n: DisplayMapping[] | DisplayMapping) {
+			if (Array.isArray(n)) {
+				n.forEach(_iter);
+			} else if (n.children) {
+				n.children.forEach(_iter);
+			} else if (n?.display !== '*') count++;
+		}
+		_iter(root);
+		return count;
 	}
 
 	function toggleFiltersModal() {

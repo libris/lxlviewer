@@ -8,6 +8,24 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 	expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
 
+test('button displays the correct filter count 1', async ({ page }) => {
+	await page.goto('/find?_q=&_r=');
+	const filterButton = await page.getByRole('link', { name: 'Sökfilter' });
+	await expect(filterButton).toHaveText('Sökfilter');
+});
+
+test('button displays the correct filter count 2', async ({ page }) => {
+	await page.goto('/find?_q=hej&_r=');
+	const filterButton = await page.getByRole('link', { name: 'Sökfilter' });
+	await expect(filterButton).toHaveText('Sökfilter 1');
+});
+
+test('button displays the correct filter count 3', async ({ page }) => {
+	await page.goto('/find?_q=hej+category:"saogf:Romaner"&_r=');
+	const filterButton = await page.getByRole('link', { name: 'Sökfilter' });
+	await expect(filterButton).toHaveText('Sökfilter 2');
+});
+
 test('can toggle filters and show facets and mapping', async ({ page }) => {
 	await page.goto('/find?_q=språk%3A"lang%3Aswe"+sommar');
 	const filterButton = await page.getByRole('link', { name: 'Sökfilter' });
