@@ -326,7 +326,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 		tableOfContents,
 		workCard,
 		refinedOrgs,
-		mainEntity,
 		isWork
 	};
 };
