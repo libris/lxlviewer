@@ -21,9 +21,11 @@
           <ResultItem :entity="entityData" :force-expanded="true" />
         </div>
         </template>
-        <div class="row">
-          <TermTree v-if="isSubClassOfConceptScheme" :entity="entityData" />
-        </div>
+        <section v-if="showTermTree">
+          <div class="col-md-12 col-lg-12 col-xl-10 col-xxl-9 mt-4">
+          <TermTree :entity="entityData" />
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -91,7 +93,7 @@ export default {
       }
       return null;
     },
-    isSubClassOfConceptScheme() {
+    showTermTree() {
       if (this.entityData.hasOwnProperty('@type')) {
         const termData = VocabUtil.getTermObject(this.entityData['@type'], this.vocab, this.vocabContext);
         return !!termData.subClassOf.find(({ '@id': id }) =>  id === `https://id.kb.se/vocab/ConceptScheme`)

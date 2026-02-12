@@ -1,14 +1,25 @@
 <template>
   <div class="TermTree">
-    <h4 class="mt-4">Termer i {{ termTitle }}</h4>
-    <p class="total-term-items">{{ totalTermItems }} termer</p>
-    <!--<pre>{{ JSON.stringify(termItems, null, 2) }}</pre>-->
+    <hgroup class="TermTree-header">
+      <h4>Termer i {{ termTitle }}</h4>
+      <p class="total-term-items ">{{ totalTermItems }} termer</p>
+    </hgroup>
+    <ul class="TermTree-list">
+      <TermTreeItem
+        v-for="treeItem in tree"
+        :key="treeItem['@id']"
+        :@id="treeItem['@id']"
+        :label="treeItem.label"
+        :narrower="treeItem.narrower"
+      />
+    </ul>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import * as DisplayUtil from "lxljs/display";
+import TermTreeItem from "@/components/TermTreeItem";
 
 export default {
   data() {
@@ -39,22 +50,74 @@ export default {
     termItems() {
       return this.terms.items;
     },
+    tree() {
+      const getNarrower = (parent) => {
+        return parent?.["@reverse"]?.broader
+          ?.map((child) => ({
+            "@id": child["@id"],
+            label: DisplayUtil.getItemLabel(
+              child,
+              this.resources,
+              this.quoted,
+              this.settings
+            ),
+            narrower: getNarrower(
+              this.terms.items.find((t) => t["@id"] === child["@id"])
+            ),
+          }))
+          ?.sort((a, b) => a.label.localeCompare(b.label, "sv"));
+      };
+
+      return this.terms.items
+        .filter((term) => !term.broader) // get root terms
+        .map((term) => ({
+          "@id": term["@id"],
+          label: DisplayUtil.getItemLabel(
+            term,
+            this.resources,
+            this.quoted,
+            this.settings
+          ),
+          narrower: getNarrower(term),
+        }));
+    },
     totalTermItems() {
       return this.terms.totalItems;
     },
   },
   methods: {},
-  components: {},
+  components: {
+    TermTreeItem,
+  },
   async fetch() {
     this.terms = await this.$http.$get(
-      `${this.baseUri()}/find.json?inScheme.@id=https://id.kb.se/term/saogf&_limit=2000&_stats=false`
+      `${this.baseUri()}/find.json?inScheme.@id=https://id.kb.se/${
+        this.$route.params.pathMatch
+      }&_limit=2000&_stats=false&_sort=_sortKeyByLang.sv`
     );
   },
 };
 </script>
 
 <style lang="scss">
-  .total-term-items {
-    color: $gray-700;
+.total-term-items {
+  color: $gray-700;
+}
+.TermTree {
+  &-header {
+    padding: 0.5em 0;
+
+    & h4 {
+      margin: 0 0 0.25em 0;
+    }
+
+    & p {
+      margin: 0 0 0.25em 0;
+    }
   }
+  &-list {
+    list-style-type: none;
+    padding: 0;
+  }
+}
 </style>
