@@ -238,7 +238,7 @@ export default {
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren',
-		more: 'fler'
+		more: 'till'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
