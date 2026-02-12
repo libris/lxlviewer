@@ -455,10 +455,10 @@
 
 		:global(.suggestion a:first-child) {
 			padding: 0 calc(var(--spacing) * 2);
-		}
 
-		@variant sm {
-			padding: 0 calc(var(--spacing) * 4);
+			@variant sm {
+				padding: 0 calc(var(--spacing) * 5);
+			}
 		}
 	}
 
