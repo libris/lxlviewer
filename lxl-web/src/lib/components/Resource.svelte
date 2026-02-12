@@ -26,6 +26,7 @@
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
 	import ExpandableArea from '$lib/components/ExpandableArea.svelte';
+	import Suggestion from './supersearch/Suggestion.svelte';
 
 	type Props = {
 		fnurgel: string;
@@ -133,6 +134,22 @@
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	</div>
 {/if}
+{#if page.data.workCard && !page.data.isWork}
+	<div
+		class="back-to-work border-b-neutral border-b hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
+	>
+		<Suggestion item={page.data.workCard}>
+			{#snippet leadingContent()}
+				<div class="mr-4 flex items-center gap-1 ease-in-out">
+					<IconArrowRight class="arrow rotate-180 transition-transform" />
+					<p class="text-subtle text-xs whitespace-nowrap">
+						{page.data.t('resource.editionOf')}
+					</p>
+				</div>
+			{/snippet}
+		</Suggestion>
+	</div>
+{/if}
 <article class="@container @3xl:[&_[id]]:scroll-mt-36">
 	{#if tableOfContents.length}
 		<section data-testid="toc-mobile" class="contents @7xl:hidden">
@@ -181,7 +198,12 @@
 								/>
 							</p>
 							<h1 class="decorated-heading mt-2 mb-1 text-3xl font-medium @3xl:text-3xl">
-								<DecoratedData data={decoratedData.heading} showLabels={ShowLabelsOptions.Never} />
+								<DecoratedData
+									data={decoratedData.heading}
+									showLabels={ShowLabelsOptions.Never}
+									allowLinks={false}
+									allowPopovers={false}
+								/>
 							</h1>
 							<p
 								class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
@@ -403,6 +425,42 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	.back-to-work {
+		:global(.resource-content) {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+		}
+
+		:global(.resource-footer > *:not(.editions)) {
+			display: none;
+		}
+
+		:global(.resource-heading) {
+			margin-right: calc(var(--spacing) * 1);
+		}
+
+		:global(.suggestion-contribution) {
+			display: none;
+		}
+
+		:global(.suggestion) {
+			height: auto;
+		}
+
+		:global(.type-icon) {
+			top: 0;
+		}
+
+		:global(.suggestion a:first-child) {
+			padding: 0 calc(var(--spacing) * 2);
+
+			@variant sm {
+				padding: 0 calc(var(--spacing) * 5);
+			}
+		}
+	}
 
 	.sticky {
 		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));

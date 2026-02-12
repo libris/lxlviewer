@@ -259,7 +259,9 @@
 									onclick={() => (delimitedShown = !delimitedShown)}>{delimitText}</button
 								>
 							{:else}
-								<span>{` +${propertyData.length - limitTo} ${page.data.t('general.more')}`}</span>
+								<span class="delimiter"
+									>{` +${propertyData.length - limitTo} ${page.data.t('general.more')}`}</span
+								>
 							{/if}
 						{/if}
 					</svelte:element>

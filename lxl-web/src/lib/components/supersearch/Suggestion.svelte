@@ -10,14 +10,16 @@
 	import SuggestionImage from './SuggestionImage.svelte';
 	import MoreIcon from '~icons/bi/three-dots';
 	import dropdownMenu from '$lib/actions/dropDownMenu/index.svelte.js';
+	import type { Snippet } from 'svelte';
 
 	type Props = {
 		item: SuperSearchResultItem;
 		getCellId?: (cellIndex: number) => string;
 		isFocusedCell?: (cellIndex: number) => boolean;
+		leadingContent?: Snippet;
 	};
 
-	const { item, getCellId, isFocusedCell }: Props = $props();
+	const { item, getCellId, isFocusedCell, leadingContent }: Props = $props();
 	const resourceId = $derived(trimSlashes(relativizeUrl(item?.['@id'])));
 	const primaryAddQualifierLink = $derived(item?.qualifiers?.[0]?._q || resourceId);
 </script>
@@ -33,39 +35,34 @@
 				{item.qualifiers[0].label}
 			</span>
 		</span>
-	{:else}
-		<div class="sr-only">{page.data.t('search.goTo')}</div>
 	{/if}
-	<div class="resource grid grid-cols-[40px_minmax(0,_1fr)] items-center gap-2">
+	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<hgroup
-				class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap sm:text-sm lg:text-xs"
-			>
-				<h2 class="truncate">
+			<h2 class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap">
+				<span class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
 						showLabels={ShowLabelsOptions.Never}
 						allowPopovers={false}
 						allowLinks={false}
 					/>
-				</h2>
+				</span>
 				<!-- only show body > contribution next to header header -->
 				{#if item[LxlLens.CardBody]?._display?.[0]?.contribution}
-					<p class="truncate">
-						<span class="divider">{' · '}</span>
-						<span class="suggestion-contribution">
-							<DecoratedData
-								data={item[LxlLens.CardBody]?._display[0]?.contribution}
-								showLabels={ShowLabelsOptions.Never}
-								allowLinks={false}
-								allowPopovers={false}
-								limit={{ contribution: 3 }}
-							/>
-						</span>
-					</p>
+					<span class="divider">{' · '}</span>
+					<span class="suggestion-contribution truncate font-normal">
+						<DecoratedData
+							data={item[LxlLens.CardBody]?._display[0]}
+							showLabels={ShowLabelsOptions.Never}
+							allowLinks={false}
+							allowPopovers={false}
+							depth={-1}
+							limit={{ contribution: 1 }}
+						/>
+					</span>
 				{/if}
-			</hgroup>
+			</h2>
 			<div class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
 				<strong class="font-medium">
 					{item.typeStr}
@@ -73,12 +70,22 @@
 				{#if item.typeStr?.length}
 					<span class="divider">{' · '}</span>
 				{/if}
-				{#each item?.[LensType.WebCardFooter]?._display as obj, index (index)}
-					{#if 'hasInstance' in obj}
-						{@const instances = getInstanceData(obj.hasInstance)}
+				{#each item?.[LensType.WebCardHeaderTop]?._display as header, index (`header-${index}`)}
+					<DecoratedData
+						data={header}
+						showLabels={ShowLabelsOptions.Never}
+						allowLinks={false}
+						allowPopovers={false}
+					/>
+				{/each}
+				{#if item.typeStr?.length}
+					<span class="divider">{' · '}</span>
+				{/if}
+				{#each item?.[LensType.WebCardFooter]?._display as footer, index (`footer-${index}`)}
+					{#if 'hasInstance' in footer}
+						{@const instances = getInstanceData(footer.hasInstance)}
 						{#if instances?.years}
-							<span class="divider">{' · '}</span>
-							<span>
+							<span class="editions">
 								{#if instances.count > 1}
 									{instances?.count}
 									{page.data.t('search.editions')}
@@ -90,7 +97,7 @@
 						{/if}
 					{:else}
 						<DecoratedData
-							data={obj}
+							data={footer}
 							showLabels={ShowLabelsOptions.Never}
 							allowLinks={false}
 							allowPopovers={false}
@@ -140,6 +147,7 @@
 		</button>
 	{:else}
 		<a href={page.data.localizeHref(resourceId)} id={getCellId ? getCellId(0) : ''}>
+			{@render leadingContent?.()}
 			{@render resourceSnippet(item)}
 		</a>
 	{/if}
@@ -147,14 +155,6 @@
 
 <style lang="postcss">
 	@reference "tailwindcss";
-
-	.suggestion :global(.contribution-role) {
-		display: none;
-	}
-
-	.suggestion:has(:global(*:hover)) h2,
-	:global(.focused) > .suggestion h2 {
-	}
 
 	:global(:not(.focused)) > .suggestion:has(:global(*:hover)) {
 		background-color: var(--color-primary-50);
@@ -189,23 +189,43 @@
 			display: none;
 		}
 
+		& :global(.contribution-role) {
+			display: none;
+		}
+
 		& :global(.agent-lifespan) {
+			color: var(--color-subtle);
+		}
+
+		& :global(.delimiter) {
 			color: var(--color-subtle);
 		}
 	}
 
-	:global(.suggestion-contribution > *:not(:last-child)::after) {
+	.suggestion-contribution {
+		& :global(.agent-lifespan) {
+			display: none;
+		}
+	}
+
+	:global([data-property='contribution'] > *::after) {
 		content: ', ';
+	}
+
+	/* hide last comma */
+	:global([data-property='contribution'] > *:last-child::after) {
+		content: '';
+	}
+
+	/* hide comma before delimiter */
+	:global([data-property='contribution'] > *:has(+ .delimiter)::after) {
+		content: '';
 	}
 
 	.resource-footer {
 		/* hide dangling divider · */
-		& .divider {
+		& :global(.divider:not(:has(+ span:not(.divider)))) {
 			display: none;
-		}
-
-		& :global(.divider:has(+ span)) {
-			display: inline;
 		}
 	}
 

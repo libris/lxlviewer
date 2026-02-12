@@ -238,7 +238,7 @@ export default {
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren',
-		more: 'fler'
+		more: 'till'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
@@ -254,6 +254,7 @@ export default {
 		results: 'träffar',
 		result: 'träff',
 		editions: 'Utgåvor',
+		editionOf: 'Utgåva av',
 		summary: 'Sammanfattning',
 		tableOfContents: 'Innehållsförteckning',
 		details: 'Detaljer',

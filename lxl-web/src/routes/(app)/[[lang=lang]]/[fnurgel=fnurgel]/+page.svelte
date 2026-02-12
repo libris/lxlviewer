@@ -32,11 +32,13 @@
 	const holdingsParam = $derived(page.state.holdings || page.url.searchParams.get('holdings'));
 	const modalCard = $derived(
 		(holdingsParam &&
-			data.instances.filter(
+			(data.instances || []).filter(
 				(instance: { [JsonLd.ID]: string }) =>
 					`${stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])))}` === holdingsParam
 			)[0]) ||
-			data.workCard
+			data.isWork
+			? data.workCard
+			: data.instances?.[0]
 	);
 
 	afterNavigate(({ to }) => {
