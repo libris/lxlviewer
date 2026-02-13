@@ -19,19 +19,56 @@ const COMPONENT_PART = 'https://id.kb.se/term/saobf/ComponentPart';
 const _BOOK = 'ls:book';
 const _BOOK_BRAILLE = 'ls:bookBraille';
 
-const _BOOK_DEF: FramedData = {
-	[JsonLd.TYPE]: 'ManifestationForm',
-	prefLabelByLang: {
-		en: 'Book',
-		sv: 'Bok'
+const INSTANCE_RULES = [
+	{
+		matchWorkType: 'Monograph',
+		match: [PRINT, VOLUME],
+		to: [_BOOK]
+	},
+	{
+		matchWorkType: 'Monograph',
+		match: [BRAILLE, VOLUME],
+		to: [_BOOK_BRAILLE]
+	},
+	{
+		match: [E_BOOK, ONLINE_RESOURCE],
+		to: [E_BOOK]
+	},
+	{
+		match: [_BOOK, STORSTIL],
+		to: [STORSTIL]
+	},
+	{
+		match: [COMPONENT_PART, PRINT],
+		to: [COMPONENT_PART]
 	}
-};
+];
 
-const _BOOK_BRAILLE_DEF: FramedData = {
-	[JsonLd.TYPE]: 'ManifestationForm',
-	prefLabelByLang: {
-		en: 'Book (braille)',
-		sv: 'Bok (punktskrift)'
+const WORK_INSTANCES_RULES = [
+	{
+		match: [E_BOOK, ONLINE_RESOURCE],
+		to: [E_BOOK]
+	},
+	{
+		match: [_BOOK, PRINT],
+		to: [_BOOK]
+	}
+];
+
+const DEFS = {
+	[_BOOK]: {
+		[JsonLd.TYPE]: 'ManifestationForm',
+		prefLabelByLang: {
+			en: 'Book',
+			sv: 'Bok'
+		}
+	},
+	[_BOOK_BRAILLE]: {
+		[JsonLd.TYPE]: 'ManifestationForm',
+		prefLabelByLang: {
+			en: 'Book (braille)',
+			sv: 'Bok (punktskrift)'
+		}
 	}
 };
 
@@ -67,7 +104,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 					return a;
 				}, {})
 			)
-			.map((s: Record<string, FramedData>) => toMultiType(cleanUpInstanceSelect(s, thing)))
+			.map((s: Record<string, FramedData>) => toMultiType(cleanUpSelect(s, thing, INSTANCE_RULES)))
 			.reduce((acc, s) => {
 				Object.keys(s).forEach((k) => {
 					acc[k] = s[k];
@@ -75,7 +112,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 				return acc;
 			}, {});
 
-		selectMap = cleanUpWorkSelect(selectMap);
+		selectMap = cleanUpSelect(selectMap, thing, WORK_INSTANCES_RULES);
 
 		const select = Object.values(selectMap);
 
@@ -106,42 +143,26 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	return result;
 }
 
-function cleanUpInstanceSelect(s: Record<string, FramedData>, thing: FramedData) {
-	if (thing[JsonLd.TYPE] == 'Monograph' && s[PRINT] && s[VOLUME]) {
-		delete s[PRINT];
-		delete s[VOLUME];
-		s[_BOOK] = _BOOK_DEF;
+function cleanUpSelect(s: Record<string, FramedData>, thing: FramedData, rules) {
+	for (const rule of rules) {
+		if (rule.matchWorkType && thing[JsonLd.TYPE] !== rule.matchWorkType) {
+			continue;
+		}
+
+		if (rule.match.every((c) => c in s)) {
+			rule.match.forEach((c) => {
+				if (!rule.to.includes(c)) {
+					delete s[c];
+				}
+			});
+			rule.to.forEach((c) => {
+				if (!(c in s)) {
+					s[c] = DEFS[c];
+				}
+			});
+		}
 	}
 
-	if (thing[JsonLd.TYPE] == 'Monograph' && s[BRAILLE] && s[VOLUME]) {
-		delete s[BRAILLE];
-		delete s[VOLUME];
-		s[_BOOK_BRAILLE] = _BOOK_BRAILLE_DEF;
-	}
-
-	if (s[E_BOOK] && s[ONLINE_RESOURCE]) {
-		delete s[ONLINE_RESOURCE];
-	}
-
-	if (s[_BOOK] && s[STORSTIL]) {
-		delete s[_BOOK];
-	}
-
-	if (s[COMPONENT_PART] && s[PRINT]) {
-		delete s[PRINT];
-	}
-
-	return s;
-}
-
-function cleanUpWorkSelect(s: Record<string, FramedData>) {
-	if (s[E_BOOK] && s[ONLINE_RESOURCE]) {
-		delete s[ONLINE_RESOURCE];
-	}
-
-	if (s[_BOOK] && s[PRINT]) {
-		delete s[PRINT];
-	}
 	return s;
 }
 
@@ -152,7 +173,7 @@ function toMultiType(s: Record<string, FramedData>) {
 
 	const key = Object.keys(s).sort().join();
 	const value = {
-		'@type': '_MultiTypes',
+		'@type': '_MultipleTypes',
 		_select: Object.values(s)
 	};
 

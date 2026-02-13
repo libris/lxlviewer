@@ -151,10 +151,10 @@
 			"@id": "chips",
 			"@type": "fresnel:Group",
 			"lenses": {
-				"_MultiTypes": {
+				"_MultipleTypes": {
 					"@type": "fresnel:Lens",
-					"@id": "_MultiTypes-chips",
-					"classLensDomain": "_MultiTypes",
+					"@id": "_MultipleTypes-chips",
+					"classLensDomain": "_MultipleTypes",
 					"showProperties": ["_find", "_identify", "_none", "_select", "_category"]
 				},
 				"Cartographic": {
@@ -1660,10 +1660,10 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"_MultiTypes-select": {
+		"_MultipleTypes-select": {
 			"@id": "_Types-select",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["_MultiTypes"],
+			"fresnel:classFormatDomain": ["_MultipleTypes"],
 			"fresnel:propertyFormatDomain": ["*"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ", ",
