@@ -112,6 +112,8 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 				return acc;
 			}, {});
 
+		// when we display instance categories for multiple works together
+		// there might be a mix of Book and Print which looks messy -> drop Print etc. etc.
 		selectMap = cleanUpSelect(selectMap, thing, WORK_INSTANCES_RULES);
 
 		const select = Object.values(selectMap);
