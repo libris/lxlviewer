@@ -206,20 +206,20 @@
 		& :global(.agent-lifespan) {
 			display: none;
 		}
-	}
 
-	:global([data-property='contribution'] > *::after) {
-		content: ', ';
-	}
+		& :global([data-property='contribution'] > *::after) {
+			content: ', ';
+		}
 
-	/* hide last comma */
-	:global([data-property='contribution'] > *:last-child::after) {
-		content: '';
-	}
+		/* hide last comma */
+		& :global([data-property='contribution'] > *:last-child::after) {
+			content: '';
+		}
 
-	/* hide comma before delimiter */
-	:global([data-property='contribution'] > *:has(+ .delimiter)::after) {
-		content: '';
+		/* hide comma before delimiter */
+		& :global([data-property='contribution'] > *:has(+ .delimiter)::after) {
+			content: '';
+		}
 	}
 
 	.resource-footer {
