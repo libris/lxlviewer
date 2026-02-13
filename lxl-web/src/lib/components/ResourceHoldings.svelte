@@ -48,8 +48,6 @@
 				<span class="text-nowrap">{getLocalizedType(type)}</span>
 				<span class="truncate font-normal opacity-90">
 					{' · '}
-					<span class="hidden @3xs:inline">{page.data.t('holdings.availableAt').toLowerCase()}</span
-					>
 					{holdings.byType[type].length}
 					{holdings.byType[type].length === 1
 						? page.data.t('holdings.library')

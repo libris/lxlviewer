@@ -256,7 +256,7 @@
 					<div class="flex items-center gap-2">
 						{#if decoratedData.summary.length || instances?.length > 1 || relations.length || decoratedData.resourceTableOfContents.length}
 							<a
-								class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
+								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
 								href="#{uidPrefix}details"
 								data-sveltekit-preload-data="false"
 								data-testid="details-link"
@@ -267,7 +267,7 @@
 						{/if}
 						{#if instances?.length === 1}
 							<a
-								class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
+								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
 								href={getCiteLink(page.url, fnurgel)}
 								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
 							>

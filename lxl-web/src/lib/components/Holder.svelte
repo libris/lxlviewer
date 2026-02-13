@@ -81,7 +81,9 @@
 	]}
 >
 	<div class="holder-heading flex items-baseline justify-between">
-		<h3 class="text-sm font-medium">{holder.displayStr || holder.name || holder[JsonLd.ID]}</h3>
+		<h3 class="text-base font-medium sm:text-sm">
+			{holder.displayStr || holder.name || holder[JsonLd.ID]}
+		</h3>
 		<!-- ext link or expand instances -->
 		{#if (numInstances === 1 || !hasSomeItemLink) && getBestLink(instances[0])}
 			<a
@@ -107,7 +109,7 @@
 			<p>{page.data.t('errors.notAvailable')}</p>
 		</div>
 	{:else}
-		<ul class="flex flex-col">
+		<ul class="flex flex-col gap-0.5 text-sm sm:text-xs">
 			{#if numInstances > 1 && expanded}
 				<!-- multiple instances list -->
 				{#each shownInstances as instance (instance.bibId)}
@@ -115,7 +117,7 @@
 					<li class="instance-one-of-many gap-1">
 						<h4 class="mb-1 font-medium">{instance.publicationStr || '-'}</h4>
 						<!-- instance item data -->
-						<ul>
+						<ul class="flex flex-col gap-0.5">
 							{#if instance.itemStr}
 								<li>
 									<p>
