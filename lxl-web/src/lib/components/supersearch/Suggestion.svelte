@@ -81,6 +81,12 @@
 				{#if item.typeStr?.length}
 					<span class="divider">{' · '}</span>
 				{/if}
+				<span class="font-medium">
+					{item.selectTypeStr}
+				</span>
+				{#if item.selectTypeStr?.length}
+					<span class="divider">{' · '}</span>
+				{/if}
 				{#each item?.[LensType.WebCardFooter]?._display as footer, index (`footer-${index}`)}
 					{#if 'hasInstance' in footer}
 						{@const instances = getInstanceData(footer.hasInstance)}
