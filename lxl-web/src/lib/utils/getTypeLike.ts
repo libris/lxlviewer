@@ -35,6 +35,14 @@ const INSTANCE_RULES = [
 		to: [E_BOOK]
 	},
 	{
+		match: [E_BOOK, VOLUME],
+		to: [E_BOOK]
+	},
+	{
+		match: [ONLINE_RESOURCE, VOLUME],
+		to: [ONLINE_RESOURCE]
+	},
+	{
 		match: [_BOOK, STORSTIL],
 		to: [STORSTIL]
 	},
