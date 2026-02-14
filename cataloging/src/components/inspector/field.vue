@@ -749,28 +749,47 @@ export default {
     },
     async getBroaderCategories() {
       if (this.fieldKey === 'category' && !this.isLocked) {
-          let allBroader = [];
-        const values = this.valueAsArray;
-        for (const entity of values) {
+        let allBroader = [];
+        let collectionToId = {};
+        const categories = this.valueAsArray;
+        for (const entity of categories) {
           if (entity['@id']) {
             const categoryCard =  this.inspector.data.quoted[entity['@id']] || null;
+            DataUtil.populateCollectionToId(categoryCard, collectionToId);
             for (const broader of this.settings.broaderRelations) {
               if (categoryCard && categoryCard[broader]) {
-                const broaderForEntity = await DataUtil.fetchBroader(categoryCard[broader], cloneDeep(categoryCard[broader]));
-                console.log('broaderForEntity', broaderForEntity);
+                const broaderForEntity = await DataUtil.fetchBroader(categoryCard[broader], cloneDeep(categoryCard[broader]), collectionToId);
                 allBroader = [...allBroader, ...broaderForEntity];
               }
             }
           }
         }
-        const broaderCategories = uniq(allBroader);
-        this.broaderCategories = broaderCategories;
-        // this.setCategoryByCollection(broaderCategories);
+        this.broaderCategories = uniq(allBroader);
+        this.setCategoryByCollection(collectionToId, categories);
       }
     },
-    // setCategoryByCollection(broaderCategories) {
-    //
-    // },
+    setCategoryByCollection(collectionToId, categories) {
+      const keysToKeep = ['find', 'identify'];
+      const filtered = Object.fromEntries(
+        Object.entries(collectionToId).filter(([key]) => keysToKeep.includes(key))
+      );
+      const existingIds = Object.values(filtered).flat();
+
+      filtered['@none'] = categories
+        .map(obj => obj['@id'])
+        .filter(id => !existingIds.includes(id))
+        .map(id => ({['@id']: id}));
+
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: `${this.parentPath}._categoryByCollection`,
+            value: filtered,
+          },
+        ],
+        addToHistory: false,
+      });
+    },
     isLinked(o) {
       if (o === null) {
         return false;
