@@ -1119,7 +1119,7 @@
 			"@id": "Identifier-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Identifier"],
-			"fresnel:resourceStyle": ["ext-link", "displayType()", "uriToId()"]
+			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
 		},
 		"ShelfMark-format": {
 			"TODO": "This is an override for displayType() in Identifier. Identifier should use rdf:type in showProperties instead",
