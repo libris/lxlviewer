@@ -125,7 +125,7 @@
 
 {#snippet panelAllInstances()}
 	{#each instances as instance (instance?.[JsonLd.ID])}
-		<SearchCard item={instance as SearchResultItem} />
+		<SearchCard item={instance as SearchResultItem} hideType={true} />
 	{/each}
 {/snippet}
 

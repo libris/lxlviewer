@@ -529,6 +529,7 @@
 						"hasTitle",
 						"responsibilityStatement",
 						"identifier",
+						"identifiedBy",
 						"publication",
 						"isPartOf",
 						"part"
@@ -565,7 +566,7 @@
 					"@id": "Instance-web-card-header-top",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["identifiedBy"]
+					"showProperties": []
 				},
 				"Agent": {
 					"@id": "Agent-web-card-header-top",

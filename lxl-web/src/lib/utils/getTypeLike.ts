@@ -1,4 +1,4 @@
-import { type FramedData, JsonLd } from '$lib/types/xl';
+import { Bibframe, type FramedData, JsonLd } from '$lib/types/xl';
 import { asArray, first, VocabUtil } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
 
@@ -102,7 +102,21 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		result.identify.push(...identify);
 		result.none.push(...none);
 
-		const instances = getAtPath(thing, ['@reverse', 'instanceOf', '*'], []);
+		const thingType = thing[JsonLd.TYPE];
+		// FIXME
+		const isSingleInstance = thingType === 'PhysicalResource' || thingType === 'DigitalResource';
+
+		if (isSingleInstance) {
+			console.log('AD');
+		}
+
+		const instances = isSingleInstance
+			? [thing]
+			: getAtPath(thing, ['@reverse', 'instanceOf', '*'], []);
+
+		const workType = isSingleInstance
+			? thing[Bibframe.instanceOf][JsonLd.TYPE]
+			: thing[JsonLd.TYPE];
 
 		let selectMap = instances
 			.map((i: FramedData) => getAtPath(i, ['_categoryByCollection', JsonLd.NONE], []))
@@ -112,7 +126,9 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 					return a;
 				}, {})
 			)
-			.map((s: Record<string, FramedData>) => toMultiType(cleanUpSelect(s, thing, INSTANCE_RULES)))
+			.map((s: Record<string, FramedData>) =>
+				toMultiType(cleanUpSelect(s, workType, INSTANCE_RULES))
+			)
 			.reduce((acc, s) => {
 				Object.keys(s).forEach((k) => {
 					acc[k] = s[k];
@@ -122,7 +138,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 
 		// when we display instance categories for multiple works together
 		// there might be a mix of Book and Print which looks messy -> drop Print etc. etc.
-		selectMap = cleanUpSelect(selectMap, thing, WORK_INSTANCES_RULES);
+		selectMap = cleanUpSelect(selectMap, workType, WORK_INSTANCES_RULES);
 
 		const select = Object.values(selectMap);
 
@@ -153,9 +169,9 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	return result;
 }
 
-function cleanUpSelect(s: Record<string, FramedData>, thing: FramedData, rules) {
+function cleanUpSelect(s: Record<string, FramedData>, workType: string, rules) {
 	for (const rule of rules) {
-		if (rule.matchWorkType && thing[JsonLd.TYPE] !== rule.matchWorkType) {
+		if (rule.matchWorkType && workType !== rule.matchWorkType) {
 			continue;
 		}
 

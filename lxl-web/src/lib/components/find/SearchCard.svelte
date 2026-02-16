@@ -32,6 +32,7 @@
 		allowPopovers?: boolean;
 		allowLinks?: boolean;
 		allowActions?: boolean;
+		hideType?: boolean;
 	}
 
 	let articleElement: HTMLElement;
@@ -40,7 +41,8 @@
 		uidPrefix = '',
 		allowPopovers = true,
 		allowLinks = true,
-		allowActions = true
+		allowActions = true,
+		hideType = false
 	}: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
@@ -207,7 +209,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
 					<TypeIcon type={item.typeForIcon} class="text-2xs mb-0.25 inline" />
-					{#if item.typeStr}
+					{#if item.typeStr && !hideType}
 						<span class="font-medium">
 							{item.typeStr}
 						</span>
@@ -547,6 +549,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				color: var(--color-body);
 				content: ': ';
 		}
+
+        & :global(div[data-property='identifiedBy']) {
+                color: var(--color-subtle);
+        }
 	}
 
 	/* card in dialog */
