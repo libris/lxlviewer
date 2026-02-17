@@ -66,7 +66,7 @@
 	});
 
 	let userClearedSearch = $state(false);
-	
+
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
@@ -512,6 +512,7 @@
 		position: fixed;
 		height: 100%;
 		max-height: 100vh;
+		max-height: 100lvh;
 		width: 100%;
 		max-width: 100%;
 		background-color: transparent;
@@ -560,6 +561,7 @@
 		background: var(--color-page);
 		pointer-events: auto;
 		max-height: 100vh;
+		max-height: 100lvh;
 		overflow-y: scroll;
 		overflow-x: hidden;
 		overscroll-behavior: contain;

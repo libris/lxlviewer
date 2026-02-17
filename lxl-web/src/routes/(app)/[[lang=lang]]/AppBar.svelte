@@ -453,29 +453,6 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
-
-	.temp {
-		height: round(calc((100vh - var(--banner-height, 0)) * 0.618), 1px);
-		width: 48px;
-		position: absolute;
-		top: var(--banner-height, 0);
-		left: 0;
-		z-index: 999;
-		background: rgba(255, 0, 0, 0.125);
-		pointer-events: none;
-	}
-
-	.temp3 {
-		height: round(calc(((100vh - var(--banner-height, 0)) * 0.73)) / 2, 1px);
-		width: 25%;
-		position: absolute;
-		top: var(--banner-height, 0);
-		left: 48px;
-		z-index: 999;
-		background: rgba(0, 255, 0, 0.125);
-		pointer-events: none;
-	}
-
 	.app-bar {
 		--app-bar-shadows: 0 1px 0 0 var(--color-primary-200);
 		margin-top: var(--banner-height, 0);
@@ -512,20 +489,25 @@
 	.home.app-bar {
 		height: auto;
 		--header-margin-top: round(
-			calc(((80vh - var(--banner-height, 0) - var(--app-bar-height)) / 2)),
+			calc(((73vh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
+			1px
+		);
+		--header-margin-top: round(
+			calc(((73svh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
 			1px
 		);
 		margin-top: var(--header-margin-top);
 
 		@variant lg {
-			--header-margin-top: round(calc(((80vh - var(--banner-height, 0)) / 2)), 1px);
+			--header-margin-top: round(calc((73svh + var(--banner-height, 0)) / 2), 1px);
 		}
 	}
 	.home-intro-background {
 		top: var(--banner-height, 0);
 		background: var(--color-app-bar);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
-		height: round(calc((100vh - var(--banner-height, 0)) * 0.8), 1px);
+		height: round(calc(73vh + var(--banner-height, 0)), 1px);
+		height: round(calc(73svh + var(--banner-height, 0)), 1px);
 	}
 
 	.app-bar-shadow-trigger {
@@ -534,10 +516,8 @@
 	}
 
 	.search-shortcuts {
-		height: round(
-			calc((100vh - var(--banner-height, 0)) * 0.8) / 2 - var(--app-bar-height) / 2,
-			1px
-		);
+		height: round(calc((73vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
+		height: round(calc((73svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
 
 		& > nav {
 			grid-template-areas: var(--search-grid-template-areas);
@@ -647,7 +627,7 @@
 
 	.menu-dialog {
 		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
-		max-height: calc(100vh - calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px));
+		max-height: calc(100svh - calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px));
 		overflow-y: auto;
 
 		&::before {
@@ -663,6 +643,7 @@
 		@variant sm {
 			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 4px);
 			max-height: calc(100vh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
+			max-height: calc(100svh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
 		}
 	}
 

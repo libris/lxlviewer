@@ -61,27 +61,6 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	/*
-	.page-header {
-		min-height: calc(38.2vh + var(--app-bar-height) - var(--banner-height, 0));
-
-		@variant @md {
-			padding-inline: calc(var(--spacing) * 14);
-		}
-
-		@variant @5xl {
-			display: grid;
-			grid-template-columns: var(--search-grid-template-columns);
-			gap: var(--search-gap);
-			padding: var(--search-padding);
-
-			& hgroup {
-				padding-inline: calc(var(--spacing) * 4);
-			}
-		}
-	}
-		*/
-
 	.featured-list-container {
 		& :global(.horizontal-list > ul > li) {
 			&:global(:first-child) {
