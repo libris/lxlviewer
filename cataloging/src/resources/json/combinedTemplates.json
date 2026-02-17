@@ -2230,6 +2230,14 @@
             "@id": "https://id.kb.se/TEMPID#it"
           },
           "bibliography": [],
+          "hasNote": [
+        {
+          "@type": "marc:SourceOfDescriptionNote",
+          "label": [
+            ""
+          ]
+        }
+           ],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
