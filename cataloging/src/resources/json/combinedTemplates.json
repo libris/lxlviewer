@@ -2211,7 +2211,7 @@
             "subject": []
           },
           "category": [ {
-            "@id": "https://id.kb.se/term/soabf/Print"
+            "@id": "https://id.kb.se/term/saobf/Print"
           },
             {
               "@id": "https://id.kb.se/term/saobf/ComponentPart"
