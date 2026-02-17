@@ -311,6 +311,7 @@
 					name="_q"
 					ariaLabelledBy={isHomeRoute ? 'page-title' : undefined}
 					ariaDescribedBy={isHomeRoute ? 'page-description' : undefined}
+					ariaLabel={!isHomeRoute ? page.data.t('header.search') : undefined}
 					placeholder={subsetPlaceholder
 						? `${page.data.t('header.searchSubsetPlaceholder')}: ${subsetPlaceholder}`
 						: page.data.t('header.searchPlaceholder')}
@@ -393,7 +394,10 @@
 		-->
 	</figure>
 	<section class="search-shortcuts @container">
-		<nav class="sticky mx-auto grid pt-3 pb-5 @5xl:pt-4 @5xl:pb-6">
+		<nav
+			class="sticky mx-auto grid pt-3 pb-5 @5xl:pt-4 @5xl:pb-6"
+			aria-label={page.data.t('home.searchShortcuts')}
+		>
 			<div class="filters @container mx-auto w-full max-w-7xl px-2 lg:px-4">
 				<div class="mx-auto flex w-full items-center">
 					<div
