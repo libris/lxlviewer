@@ -776,9 +776,7 @@ export default {
       const existingIds = Object.values(filtered).flat();
 
       filtered['@none'] = categories
-        .map(obj => obj['@id'])
-        .filter(id => !existingIds.includes(id))
-        .map(id => ({['@id']: id}));
+        .filter(id => !existingIds.some(obj => obj['@id'] === id))
 
       this.$store.dispatch('updateInspectorData', {
         changeList: [
