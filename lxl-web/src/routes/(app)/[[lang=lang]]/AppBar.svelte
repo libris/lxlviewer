@@ -87,7 +87,7 @@
 	}
 
 	function handleClickAddFilter() {
-		appSearchComponent?.showExpandedSearch({ cursorAtEnd: true });
+		appSearchComponent?.showExpandedSearch({ cursorAtEnd: true, focusRow: 1 });
 	}
 
 	function handleBackgroundObserve(entries: IntersectionObserverEntry[]) {

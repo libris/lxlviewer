@@ -256,8 +256,8 @@
 		if (!dialog?.open) showExpandedSearch();
 	}
 
-	function setDefaultRowAndCols() {
-		activeRowIndex = defaultResultRow;
+	function setDefaultRowAndCols(options?: { focusRow?: number }) {
+		activeRowIndex = options?.focusRow || defaultResultRow;
 		if (activeRowIndex > 0) {
 			activeColIndex = defaultResultCol;
 		} else {
@@ -342,7 +342,7 @@
 						: collapsedEditorView?.state.selection.main
 			});
 			dialog?.showModal();
-			setDefaultRowAndCols();
+			setDefaultRowAndCols({ focusRow: options?.focusRow });
 			allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 			expanded = true;
 			onexpand?.({ windowPageYOffset: window.pageYOffset });
