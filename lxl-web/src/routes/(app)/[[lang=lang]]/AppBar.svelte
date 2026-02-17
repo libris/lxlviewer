@@ -111,7 +111,7 @@
 		disconnectObservers();
 		if (isHomeRoute) {
 			backgroundObserver = new IntersectionObserver(handleBackgroundObserve, {
-				threshold: 0.75
+				threshold: 0.87
 			});
 			shadowObserver = new IntersectionObserver(handleShadowObserve, { threshold: 0.5 });
 			if (backgroundSentinelElement) {
