@@ -4414,8 +4414,14 @@ lru-cache@^6.0.0:
     yallist "^4.0.0"
 
 "lxljs@link:../lxljs":
-  version "0.0.0"
-  uid ""
+  version "1.1.0"
+  dependencies:
+    "@types/node" "18.18.2"
+    eslint "^7.32.0"
+    eslint-config-airbnb-base "^14.2.1"
+    eslint-plugin-import "^2.25.2"
+    lodash-es "^4.17.21"
+    sjcl "^1.0.8"
 
 lz-string@^1.5.0:
   version "1.5.0"
@@ -5638,9 +5644,9 @@ tinyspy@^3.0.0:
   integrity sha512-q5nmENpTHgiPVd1cJDDc9cVoYN5x4vCvwT3FMilvKPKneCBZAxn2YWQjDF0UMcE9k0Cay1gBiDfTMU0g+mPMQA==
 
 tmp@~0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.3.tgz#eb783cc22bc1e8bebd0671476d46ea4eb32a79ae"
-  integrity sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.4.tgz#c6db987a2ccc97f812f17137b36af2b6521b0d13"
+  integrity sha512-UdiSoX6ypifLmrfQ/XfiawN6hkjSBpCjhKxxZcWlUUmoXLaCKQU0bx4HF/tdDK2uzRuchf1txGvrWBzYREssoQ==
 
 to-fast-properties@^2.0.0:
   version "2.0.0"
