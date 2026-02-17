@@ -32,31 +32,35 @@ export const load = async ({ params, url, locals, fetch }) => {
 		searchParams.set('_site', locals.site?.searchSite);
 	}
 
-	const recordsRes = await fetch(
+	let result = await doFetch(
 		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}${debug}`,
-		{
-			// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
-			redirect: 'manual'
-		}
+		url,
+		fetch
 	);
 
-	if (!recordsRes.ok) {
-		if (recordsRes.status > 299 && recordsRes.status < 400) {
-			// redirect from api -> redirect in app
-			const location = recordsRes.headers.get('location');
+	if (result.totalItems === 0 && url.searchParams.get('_cursor')) {
+		const cursor = url.searchParams.get('_cursor');
+		const tryAgainParams = new URLSearchParams(url.searchParams);
+		const _q = tryAgainParams.get('_q');
 
-			if (location) {
-				const apiSearch = new URL(location).search;
-				console.log('redirecting to', `${url.pathname}${apiSearch}`);
-				redirect(recordsRes.status, `${url.pathname}${apiSearch}`);
+		if (cursor && _q) {
+			const _qWithWildCard = _q.slice(0, parseInt(cursor)) + '*' + _q.slice(parseInt(cursor));
+			tryAgainParams.set('_q', _qWithWildCard);
+
+			// tryAgainParams.set('cursor', cursor)
+			// tryAgainParams.set('_suggest', 'true')
+
+			const newResult = await doFetch(
+				`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(tryAgainParams, myLibraries).toString()}${debug}`,
+				url,
+				fetch
+			);
+
+			if (newResult.totalItems > 0) {
+				result = newResult;
 			}
-		} else {
-			const err = (await recordsRes.json()) as ApiError;
-			throw error(err.status_code, { message: err.message, status: err.status });
 		}
 	}
-
-	const result = (await recordsRes.json()) as PartialCollectionView;
 
 	const searchResult = await asResult(
 		result,
@@ -75,3 +79,33 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	return { searchResult, pageTitle, refinedOrgs };
 };
+
+async function doFetch(
+	endpoint: string,
+	url: URL,
+	fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
+) {
+	const recordsRes = await fetch(endpoint, {
+		// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
+		redirect: 'manual'
+	});
+
+	if (!recordsRes.ok) {
+		if (recordsRes.status > 299 && recordsRes.status < 400) {
+			// redirect from api -> redirect in app
+			const location = recordsRes.headers.get('location');
+
+			if (location) {
+				const apiSearch = new URL(location).search;
+				console.log('redirecting to', `${url.pathname}${apiSearch}`);
+				redirect(recordsRes.status, `${url.pathname}${apiSearch}`);
+			}
+		} else {
+			const err = (await recordsRes.json()) as ApiError;
+			throw error(err.status_code, { message: err.message, status: err.status });
+		}
+	}
+
+	const result = (await recordsRes.json()) as PartialCollectionView;
+	return result;
+}

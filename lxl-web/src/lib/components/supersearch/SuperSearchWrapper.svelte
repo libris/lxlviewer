@@ -40,9 +40,10 @@
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		ariaDescribedBy?: string;
+		onCursorChange: (cursor: number | null) => void;
 	}
 
-	let { placeholder = '', ariaLabelledBy, ariaLabel, ariaDescribedBy }: Props = $props();
+	let { placeholder = '', ariaLabelledBy, ariaLabel, ariaDescribedBy, onCursorChange }: Props = $props();
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
 
@@ -224,6 +225,14 @@
 		if (page.data.locale !== prevLocale) {
 			prevLocale = page.data.locale;
 			superSearch?.fetchData();
+		}
+	});
+
+	$effect(() => {
+		if (charBefore) {
+			onCursorChange?.(cursor);
+		} else {
+			onCursorChange?.(null);
 		}
 	});
 </script>
