@@ -737,7 +737,8 @@
 						"seriesMembership",
 						"responsibilityStatement",
 						"isPartOf",
-						"part"
+						"part",
+						"_select"
 					]
 				},
 				"Bibliography": {

@@ -117,6 +117,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	const _instances = mainEntity?.['@reverse']?.instanceOf || [];
 
+	if (_instances.length == 1 && typeLike.select.length > 0) {
+		_instances[0]['_select'] = typeLike.select;
+	}
+
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
 	const overview = [

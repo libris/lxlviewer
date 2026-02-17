@@ -736,6 +736,10 @@
 			@apply py-1;
 		}
 
+		& :global(div[data-property='_select']) {
+			font-weight: bold;
+		}
+
 		& :global(.property-label) {
 			color: var(--color-body);
 			font-style: italic;
