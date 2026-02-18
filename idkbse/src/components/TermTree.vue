@@ -91,7 +91,7 @@ export default {
   },
   async fetch() {
     this.terms = await this.$http.$get(
-      `${this.baseUri()}/find.json?inScheme.@id=https://id.kb.se/${
+      `${this.activeHost()}/find.json?inScheme.@id=https://id.kb.se/${
         this.$route.params.pathMatch
       }&_limit=2000&_stats=false&_sort=_sortKeyByLang.sv`
     );
