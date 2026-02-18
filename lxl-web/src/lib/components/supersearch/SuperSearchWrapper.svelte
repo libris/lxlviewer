@@ -136,8 +136,6 @@
 		!charBefore && !charAfter && editedParentNode !== 'QualifierValue'
 	);
 
-	const showAllResultsButton = $derived(editedParentNode !== 'QualifierValue');
-
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
 		return data;
@@ -362,13 +360,13 @@
 						</div>
 					</div>
 				{/if}
-				{#if showAllResultsButton && q.trim().length}
+				{#if q.trim().length}
 					<div
 						role="row"
 						class="text-subtle mb-2 flex items-center justify-between px-4 text-xs sm:mb-3 sm:text-sm"
 					>
 						<h2 id="supersearch-results-label" class="font-medium">
-							{#if q.trim().length >= MIN_LENGTH_FOR_SUGGESTIONS || resultsCount}
+							{#if resultsCount}
 								{page.data.t('supersearch.suggestions')}
 							{/if}
 						</h2>
