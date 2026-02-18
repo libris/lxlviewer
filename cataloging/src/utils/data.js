@@ -220,7 +220,7 @@ export async function fetchMissingLinkedToQuoted(obj, store) {
     .catch((e) => console.log(e));
 }
 
-export async function fetchBroader(broader, all) {
+export async function fetchBroader(broader, all, collectionToId) {
   const results = await Promise.allSettled(
     broader.map(l => HttpUtil.getDocument(l['@id'], undefined, false))
   );
@@ -234,10 +234,11 @@ export async function fetchBroader(broader, all) {
 
   for (const thing of things) {
     for (const rel of settings.broaderRelations) {
+      populateCollectionToId(thing, collectionToId);
       if (thing[rel]) {
         const broader = asArray(thing[rel]);
-        all.push(...broader);
         const visited = new Set(all.map(o => o['@id']));
+        all.push(...broader);
         for (const b of broader) {
           !visited.has(b['@id']) && nextBroader.push(b);
         }
@@ -247,7 +248,18 @@ export async function fetchBroader(broader, all) {
   if (nextBroader.length === 0) {
     return uniq(all.map(b => b['@id']));
   }
-  return fetchBroader(nextBroader, all);
+  return fetchBroader(nextBroader, all, collectionToId);
+}
+
+export function populateCollectionToId(thing, collectionToId) {
+  if (thing['inCollection']) {
+    const collection = asArray(thing['inCollection']);
+    for (const c of collection) {
+      const key = c['@id'].split('/').pop(); //e.g. identify, skon
+      const arr = (collectionToId[key] ??= []);
+      !arr.some(obj => obj['@id'] === thing['@id']) && arr.push({['@id']: thing['@id']});
+    }
+  }
 }
 
 function asArray(v) {
