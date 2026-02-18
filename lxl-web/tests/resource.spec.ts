@@ -45,7 +45,7 @@ test('decorated data in holdings modal is not duplicated while closing modal', a
 
 test('holding selection controls active tab in holdings panel', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
-	await page.getByRole('link', { name: /^Digital resurs · finns på / }).click();
+	await page.getByRole('link', { name: /^Digital resurs · / }).click();
 	const tablist = page.locator('dialog').getByRole('tablist', { name: 'Utgåvor' });
 	await expect(tablist.getByRole('tab', { name: 'Digital' })).toHaveAttribute(
 		'aria-selected',
