@@ -106,10 +106,6 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		// FIXME
 		const isSingleInstance = thingType === 'PhysicalResource' || thingType === 'DigitalResource';
 
-		if (isSingleInstance) {
-			console.log('AD');
-		}
-
 		const instances = isSingleInstance
 			? [thing]
 			: getAtPath(thing, ['@reverse', 'instanceOf', '*'], []);
