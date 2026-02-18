@@ -68,8 +68,13 @@ export default {
           ?.sort((a, b) => a.label.localeCompare(b.label, "sv"));
       };
 
+      const schemeIri = this.entity["@id"];
+
       return this.terms.items
-        .filter((term) => !term.broader) // get root terms
+        .filter((term) =>
+          !Array.isArray(term.broader) ||
+          !term.broader.find(t => typeof t === 'object' && t?.["inScheme"]?.["@id"] === schemeIri)
+        ) // get root terms
         .map((term) => ({
           "@id": term["@id"],
           label: DisplayUtil.getItemLabel(
