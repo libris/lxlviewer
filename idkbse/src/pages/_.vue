@@ -21,6 +21,11 @@
           <ResultItem :entity="entityData" :force-expanded="true" />
         </div>
         </template>
+        <section v-if="showTermTree">
+          <div class="col-md-12 col-lg-12 col-xl-10 col-xxl-9 mt-4">
+          <TermTree :entity="entityData" />
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -29,8 +34,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import * as DataUtil from 'lxljs/data';
+import * as VocabUtil from 'lxljs/vocab';
 import LensMixin from '@/mixins/lens';
 import ResultItem from '@/components/ResultItem';
+import TermTree from '@/components/TermTree';
 
 export default {
   mixins: [LensMixin],
@@ -86,6 +93,14 @@ export default {
       }
       return null;
     },
+    showTermTree() {
+      if (this.entityData['@id'] === 'https://id.kb.se/term/saogf') { // For now check explicitly for SAOGF...
+        if (this.entityData.hasOwnProperty('@type')) {
+          const termData = VocabUtil.getTermObject(this.entityData['@type'], this.vocab, this.vocabContext);
+          return !!termData.subClassOf.find(({ '@id': id }) =>  id === `https://id.kb.se/vocab/ConceptScheme`)
+        }
+      }
+    }
   },
   methods: {
     ...mapActions(['setCurrentDocument']),
@@ -132,6 +147,7 @@ export default {
   fetchOnServer: false,
   components: {
     ResultItem,
+    TermTree
   },
 }
 </script>
