@@ -149,4 +149,10 @@ summary.TermTreeItem-label {
   border: solid $gray-200;
   border-width: 1px 1px 1px 1px;
 }
+
+.TermTreeRootItem > .TermTreeItem-label {
+  & h5 {
+    font-weight: 500;
+  }
+}
 </style>
