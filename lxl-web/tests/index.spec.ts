@@ -50,7 +50,7 @@ test('can perform a search', async ({ page }) => {
 });
 
 test('url is populated with correct searchparams', async ({ page }) => {
-	await page.getByTestId('supersearch').getByRole('combobox').fill('somephrase');
+	await page.getByTestId('supersearch').getByRole('combobox').fill('hello');
 	await page.keyboard.press('Enter');
-	await expect(page).toHaveURL(/_q=somephrase&_limit=20&_offset=0&_sort=&_spell=true/);
+	await expect(page).toHaveURL(/_q=hello&_limit=20&_offset=0&_sort=&_spell=true/);
 });
