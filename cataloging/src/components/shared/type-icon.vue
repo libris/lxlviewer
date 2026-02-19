@@ -19,21 +19,21 @@ export default {
   data() {
     return {
       iconMap: {
-        Text: 'file-text',
-        ManuscriptText: 'file-text',
-        Audio: 'volume-up',
-        Music: 'volume-up',
-        Kit: 'archive',
-        StillImage: 'picture-o',
-        MixedMaterial: 'cubes',
-        Object: 'cube',
-        MovingImage: 'film',
-        Cartography: 'map',
-        ManuscriptCartography: 'map',
-        Dataset: 'database',
-        Multimedia: 'laptop',
-        NotatedMusic: 'music',
-        ManuscriptNotatedMusic: 'music',
+        // Text: 'file-text',
+        // ManuscriptText: 'file-text',
+        // Audio: 'volume-up',
+        // Music: 'volume-up',
+        // Kit: 'archive',
+        // StillImage: 'picture-o',
+        // MixedMaterial: 'cubes',
+        // Object: 'cube',
+        // MovingImage: 'film',
+        // Cartography: 'map',
+        // ManuscriptCartography: 'map',
+        // Dataset: 'database',
+        // Multimedia: 'laptop',
+        // NotatedMusic: 'music',
+        // ManuscriptNotatedMusic: 'music',
         InquiryAction: 'question',
         ChangeNotice: 'exclamation',
         // Place: 'map-marker',
@@ -74,8 +74,8 @@ export default {
 </script>
 
 <template>
-  <div class="TypeIcon" v-if="showIconless === true || iconClass !== '' || isForcedUnspecified">
-    <span class="TypeIcon-label" v-if="iconClass === '' || isForcedUnspecified">/</span>
+  <div class="TypeIcon" v-if="iconClass !== '' || isForcedUnspecified">
+    <span class="TypeIcon-label" v-if="isForcedUnspecified">/</span>
     <i :class="iconClass" v-if="iconClass !== ''" />
   </div>
 </template>
