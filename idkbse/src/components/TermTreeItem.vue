@@ -11,7 +11,7 @@
         </div>
         <h5>
           <a :href="translateUriEnv(this['@id'])">
-            {{ this.label.replace(` · ${this.code}`, "") }}
+            {{ this.conciseLabel }}
           </a>
         </h5>
       </summary>
@@ -28,9 +28,12 @@
       </ul>
     </details>
     <div v-else class="TermTreeItem-label" :id="this['@id'].split('/').pop()">
+      <div class="TermTreeItem-group-icon">
+        <!-- fill same width as chevron -->
+      </div>
       <h5>
         <a :href="translateUriEnv(this['@id'])">
-          {{ this.label.replace(` · ${this.code}`, "") }}
+          {{ this.conciseLabel }}
         </a>
       </h5>
     </div>
@@ -65,6 +68,12 @@ export default {
       "settings",
       "appState",
     ]),
+    conciseLabel() {
+      // FIXME
+      return this.label
+        .replace(` · ${this.code}`, "")
+        .replace(' · Genre/form', "")
+    },
   },
   methods: {},
 };
@@ -93,7 +102,7 @@ export default {
       }
     }
     & > ul {
-      padding-left: calc(var(--level, 0) * 32px);
+      padding-left: 32px;
     }
 
     &-icon {
@@ -142,9 +151,6 @@ summary.TermTreeItem-label {
       box-shadow: 0 0.15em 0.25em 0 rgba(0, 0, 0, 0.25);
     }
   }
-  & h5 {
-    font-weight: 500;
-  }
 }
 
 .TermTreeRootItem {
@@ -153,9 +159,4 @@ summary.TermTreeItem-label {
   border-width: 1px 1px 1px 1px;
 }
 
-.TermTreeRootItem > .TermTreeItem-label {
-  & h5 {
-    font-weight: 500;
-  }
-}
 </style>

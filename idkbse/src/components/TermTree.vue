@@ -3,6 +3,7 @@
     <hgroup class="TermTree-header">
       <h4>Termer i {{ termTitle }}</h4>
       <p class="total-term-items">{{ totalTermItems }} termer</p>
+      <p class="tip"><i>Tips:</i> Ctrl+F för att hitta term</p>
     </hgroup>
     <ul class="TermTree-list">
       <TermTreeItem
@@ -117,6 +118,9 @@ export default {
 
 <style lang="scss">
 .total-term-items {
+  color: $gray-700;
+}
+.tip {
   color: $gray-700;
 }
 .TermTree {
