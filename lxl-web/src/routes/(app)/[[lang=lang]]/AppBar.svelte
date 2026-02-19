@@ -467,7 +467,7 @@
 		}
 		@media (scripting: none) {
 			background: var(--color-app-bar);
-			box-shadow: var(--app-bar-shadows);
+			box-shadow: none;
 		}
 
 		& > nav {
