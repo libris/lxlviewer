@@ -11,7 +11,7 @@
         </div>
         <h5>
           <a :href="translateUriEnv(this['@id'])">
-            {{ this.label }}
+            {{ this.label.replace(` · ${this.code}`, "") }}
           </a>
         </h5>
       </summary>
@@ -20,6 +20,7 @@
           v-for="childItem in this.narrower"
           :key="childItem['@id']"
           :@id="childItem['@id']"
+          :code="childItem.code"
           :label="childItem.label"
           :narrower="childItem.narrower"
           :level="level + 1"
@@ -29,7 +30,7 @@
     <div v-else class="TermTreeItem-label" :id="this['@id'].split('/').pop()">
       <h5>
         <a :href="translateUriEnv(this['@id'])">
-          {{ this.label }}
+          {{ this.label.replace(` · ${this.code}`, "") }}
         </a>
       </h5>
     </div>
@@ -48,6 +49,7 @@ export default {
   },
   props: {
     "@id": String,
+    code: String,
     label: String,
     narrower: Array,
     level: {
@@ -128,6 +130,9 @@ export default {
 }
 
 summary.TermTreeItem-label {
+  &::-webkit-details-marker {
+      display: none;
+  }
   &:hover {
     @media (min-width: 768px) {
       position: relative;
@@ -146,5 +151,11 @@ summary.TermTreeItem-label {
   background-color: $gray-100;
   border: solid $gray-200;
   border-width: 1px 1px 1px 1px;
+}
+
+.TermTreeRootItem > .TermTreeItem-label {
+  & h5 {
+    font-weight: 500;
+  }
 }
 </style>
