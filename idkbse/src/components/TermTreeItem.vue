@@ -130,6 +130,9 @@ export default {
 }
 
 summary.TermTreeItem-label {
+  &::-webkit-details-marker {
+      display: none;
+  }
   &:hover {
     @media (min-width: 768px) {
       position: relative;
