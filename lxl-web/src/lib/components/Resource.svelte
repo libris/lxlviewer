@@ -585,6 +585,11 @@
 			display: block;
 		}
 
+		& :global(div[data-property='hasTitle'] > span)::before {
+			content: ' • ';
+			color: var(--color-subtle);
+		}
+
 		& :global(div[data-property='hasTitle'] > ._contentBefore),
 		:global(div[data-property='hasTitle'] > ._contentAfter) {
 			display: none;
@@ -624,6 +629,11 @@
 
 			& :global(> span) {
 				display: block;
+			}
+
+			& :global(> span)::before {
+				content: ' • ';
+				color: var(--color-subtle);
 			}
 
 			& :global(span[data-type='PrimaryPublication']) {
