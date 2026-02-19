@@ -40,6 +40,7 @@
 	const showSearchInputOnMobile = $derived(isHomeRoute || isFindRoute);
 	let showBackground = $derived(!isHomeRoute);
 	let showShadow = $derived(!isHomeRoute);
+	let showSearchIcon = $derived(!isHomeRoute && !isFindRoute);
 
 	const findActionUrl = $derived(
 		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
@@ -321,7 +322,7 @@
 			</form>
 		</search>
 		<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">
-			<li class="lg:hidden">
+			<li class={['lg:hidden', !showSearchIcon && 'hidden']}>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
 					type={mounted ? 'button' : undefined}
