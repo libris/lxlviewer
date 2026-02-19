@@ -22,8 +22,8 @@ function addDefaultSearchParams(searchParams: URLSearchParams): URLSearchParams 
 	if (params.has('q')) {
 		params.delete('q'); // used in my-pages
 	}
-	if (params.has('_retried')) {
-		params.delete('_retried');
+	if (params.has('_relaxed')) {
+		params.delete('_relaxed');
 	}
 
 	return params;

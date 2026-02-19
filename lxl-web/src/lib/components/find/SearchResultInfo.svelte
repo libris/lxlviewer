@@ -19,7 +19,7 @@
 			(!userSettings.myLibraries || Object.keys(userSettings.myLibraries).length === 0)
 	);
 
-	const retried = $derived(page.url.searchParams.get('_retried'));
+	const relaxedSearch = $derived(page.url.searchParams.get('_relaxed'));
 </script>
 
 <div
@@ -28,7 +28,7 @@
 	aria-atomic="true"
 	data-testid="result-info"
 >
-	{#if retried && numHits && numHits > 0}
+	{#if relaxedSearch && numHits && numHits > 0}
 		{@const searchStr = displayMappingToString(page.data.searchResult.mapping)}
 		<p>
 			{page.data.t('search.noExactMatches')}. {page.data.t('search.showingResultsFor')}
