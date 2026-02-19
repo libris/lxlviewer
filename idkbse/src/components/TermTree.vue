@@ -9,6 +9,7 @@
         v-for="treeItem in tree"
         :key="treeItem['@id']"
         :@id="treeItem['@id']"
+        :code="treeItem.code"
         :label="treeItem.label"
         :narrower="treeItem.narrower"
       />
@@ -55,6 +56,7 @@ export default {
         return parent?.["@reverse"]?.broader
           ?.map((child) => ({
             "@id": child["@id"],
+            code: this.entity.code,
             label: DisplayUtil.getItemLabel(
               child,
               this.resources,
@@ -77,6 +79,7 @@ export default {
         ) // get root terms
         .map((term) => ({
           "@id": term["@id"],
+          code: this.entity.code,
           label: DisplayUtil.getItemLabel(
             term,
             this.resources,
