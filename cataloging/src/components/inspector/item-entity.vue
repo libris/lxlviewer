@@ -10,6 +10,7 @@ import ItemMixin from '@/components/mixins/item-mixin.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import PreviewCard from '@/components/shared/preview-card.vue';
 import ReverseRelations from '@/components/inspector/reverse-relations.vue';
+import * as DisplayUtil from 'lxljs/display';
 
 export default {
   name: 'item-entity',
@@ -116,6 +117,16 @@ export default {
         }
       }
       return null;
+    },
+    itemLabel() {
+      return DisplayUtil.getItemLabel(
+        this.focusData,
+        this.resources,
+        this.inspector.data.quoted,
+        this.settings,
+        '',
+        true
+      );
     },
   },
   watch: {
@@ -269,10 +280,10 @@ export default {
           <span class="ItemEntity-label chip-label"
           :class="{'to-be-removed-text': toBeRemoved }">
             <span v-if="(!isCardWithData || !expanded) && isLibrisResource">
-              <router-link :to="routerPath">{{getItemLabel}}</router-link>
+              <router-link :to="routerPath">{{itemLabel}}</router-link>
             </span>
             <span v-if="(!isCardWithData || !expanded) && !isLibrisResource">
-              <a :href="convertResourceLink(item['@id'])">{{getItemLabel}} <span class="fa fa-arrow-circle-right" /></a>
+              <a :href="convertResourceLink(item['@id'])">{{itemLabel}} <span class="fa fa-arrow-circle-right" /></a>
             </span>
             <span class="placeholder" /></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
