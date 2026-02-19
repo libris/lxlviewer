@@ -264,7 +264,6 @@ export default {
             v-if="group.dimension === 'meta.encodingLevel'"
             :encodingLevel="facetItem.object['@id']" />
           <type-icon
-            :show-iconless="false"
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
           <check-box
@@ -287,7 +286,6 @@ export default {
             :encodingLevel="facetItem.object['@id']" />
           <type-icon
             slot="icon"
-            :show-iconless="false"
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
           <check-box
