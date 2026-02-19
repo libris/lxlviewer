@@ -82,7 +82,7 @@ const CATEGORY_SHORTCUTS: {
 		id: 'periodical-category',
 		href: '/find?_q=category:"saogf:Periodika"',
 		labelByLang: {
-			sv: 'Tidskrifter',
+			sv: 'Periodika',
 			en: 'Periodicals'
 		}
 	},
