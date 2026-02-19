@@ -147,6 +147,16 @@
 		!charBefore && !charAfter && editedParentNode !== 'QualifierValue'
 	);
 
+	const isValidWildcardPosition = $derived.by(() => {
+		// a valid wildcard position is at end of word (inside group, not inside quote)
+		if (charBefore && q.charAt(cursor - 1) !== ')' && q.charAt(cursor - 1) !== '"') {
+			if (!charAfter || q.charAt(cursor) === ')') {
+				return true;
+			}
+		}
+		return false;
+	});
+
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
 		return data;
@@ -229,7 +239,8 @@
 	});
 
 	$effect(() => {
-		if (charBefore) {
+		// call back with cursor pos to append it to search
+		if (isValidWildcardPosition) {
 			onCursorChange?.(cursor);
 		} else {
 			onCursorChange?.(null);
