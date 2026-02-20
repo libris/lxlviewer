@@ -396,14 +396,14 @@
 	</figure>
 	<section class="search-shortcuts @container">
 		<nav
-			class="sticky mx-auto grid pt-3 pb-5 @5xl:pt-4 @5xl:pb-6"
+			class="sticky mx-auto grid pt-2 pb-4 @5xl:pt-3 @5xl:pb-5"
 			aria-label={page.data.t('home.searchShortcuts')}
 		>
 			<div class="filters @container mx-auto w-full max-w-7xl px-2 lg:px-4">
 				<div class="mx-auto flex w-full items-center">
 					<div
 						tabindex="-1"
-						class="filters-scroller scrollbar-hidden flex max-w-160 items-center overflow-x-scroll px-3 @3xl:px-4 @5xl:max-w-3xl"
+						class="filters-scroller scrollbar-hidden flex max-w-160 items-center overflow-x-scroll px-3 py-1 @3xl:px-4 @5xl:max-w-3xl"
 					>
 						<h2
 							id="search-for"

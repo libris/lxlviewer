@@ -299,7 +299,7 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md lg:hidden',
+							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
 							expanded && 'hidden'
 						]}
 					>
@@ -341,8 +341,7 @@
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
 					class={[
-						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 lg:flex lg:size-12',
-						expanded && 'sm:flex'
+						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
 					]}
 					aria-label={page.data.t('supersearch.search')}
 				>
@@ -553,6 +552,10 @@
 			grid-template-columns: var(--search-grid-template-columns);
 			gap: var(--search-gap);
 			padding-inline: calc(var(--spacing) * 1.25);
+
+			@variant @5xl {
+				padding-inline: 0;
+			}
 		}
 	}
 
@@ -637,7 +640,7 @@
 	.expanded.supersearch-input :global(.cm-scroller) {
 		min-height: calc(var(--spacing) * 14);
 		scrollbar-width: thin;
-		max-height: 100px;
+		max-height: 106px;
 		overflow-x: hidden;
 
 		@variant sm {
@@ -654,10 +657,6 @@
 		padding-left: calc(var(--spacing) * 11);
 
 		@variant sm {
-			padding-left: calc(var(--spacing) * 11);
-		}
-
-		@variant lg {
 			padding-left: calc(var(--spacing) * 3);
 
 			@variant @3xl {
@@ -681,6 +680,7 @@
 	.supersearch-input :global(.cm-content) {
 		margin: 0;
 		padding: calc(var(--spacing) * 1.5) 0;
+		min-height: var(--search-input-height);
 
 		@variant lg {
 			padding: calc(var(--spacing) * 2) 0;
@@ -696,18 +696,6 @@
 
 		@variant lg {
 			padding: calc(var(--spacing) * 2) 0;
-		}
-	}
-
-	.expanded.supersearch-input.wrapped :global(.cm-content) {
-		padding: calc(var(--spacing) * 0.5) 0;
-
-		@variant sm {
-			padding: calc(var(--spacing) * 0.5) 0;
-		}
-
-		@variant lg {
-			padding: calc(var(--spacing) * 0.5) 0;
 		}
 	}
 
@@ -731,17 +719,14 @@
 		color: var(--color-placeholder);
 		margin-top: 1px;
 
+		@variant @7xl {
+			margin-top: 0px;
+		}
 		@variant @5xl {
 			font-size: 0.9375rem;
 		}
-
-		@variant lg {
-			margin-top: 1px;
-		}
 	}
 	.expanded :global(.codemirror-container .cm-placeholder) {
-		margin-top: 0;
-
 		@variant lg {
 			margin-top: 1px;
 		}

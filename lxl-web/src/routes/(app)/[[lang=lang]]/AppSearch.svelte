@@ -43,7 +43,7 @@
 
 {#snippet fallbackInput()}
 	<div class="fallback-search relative">
-		<span class="text-subtle absolute flex h-full w-11 items-center justify-center lg:hidden">
+		<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
 			<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
 		</span>
 		<input
@@ -55,12 +55,12 @@
 			aria-label={ariaLabel}
 			aria-describedby={ariaDescribedBy}
 			bind:this={fallbackInputElement}
-			class="placeholder:text-placeholder w-full pl-11 focus:outline-none lg:px-3 lg:@3xl:pl-4 @5xl:text-[0.9375rem]"
+			class="placeholder:text-placeholder w-full pl-11 focus:outline-none sm:px-3 sm:@3xl:pl-4 @5xl:text-[0.9375rem]"
 		/>
 		<button
 			type="submit"
 			class={[
-				'hover:bg-primary-50 hidden h-full w-full max-w-12 items-center justify-center border-l border-l-neutral-300 lg:flex'
+				'hover:bg-primary-50 hidden h-full w-full max-w-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:max-w-12'
 			]}
 			aria-label={page.data.t('supersearch.search')}
 		>
@@ -104,13 +104,9 @@
 		font-size: var(--text-sm);
 
 		&:has(:focus) {
-			outline: 4px solid var(--color-primary-200);
-			outline-offset: 1px;
-		}
-
-		& input[type='search'] {
-			&::placeholder {
-			}
+			box-shadow: 0 0 0 2px var(--color-accent-500);
+			outline: 4px solid var(--color-accent-100);
+			outline-offset: 2px;
 		}
 	}
 </style>
