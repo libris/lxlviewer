@@ -177,6 +177,7 @@
 	--color-input: var(--color-page);
 	--color-placeholder: var(--color-neutral-500);
 	--color-disabled: var(--color-neutral-400);
+	--color-outline: var(--color-accent-500);
 
 	--color-aside: oklch(0.994 0 0);
 }

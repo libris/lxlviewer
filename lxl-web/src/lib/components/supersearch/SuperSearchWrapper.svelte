@@ -327,7 +327,7 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center lg:size-12',
+							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 lg:size-12',
 							expanded && 'max-sm:h-14 max-sm:w-13'
 						]}
 						aria-label={page.data.t('search.clearFilters')}
@@ -341,7 +341,7 @@
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
 					class={[
-						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
+						'action hidden size-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 -outline-offset-2 sm:flex lg:size-12'
 					]}
 					aria-label={page.data.t('supersearch.search')}
 				>
@@ -365,9 +365,8 @@
 									type="button"
 									id={getCellId(1, cellIndex)}
 									class={[
-										'text-body bg-accent-50 text-2xs  border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
-										isFocusedCell(1, cellIndex) &&
-											'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
+										'qualifier-suggestion text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
+										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
 									]}
 									onclick={() => addQualifierKey(key)}
 								>
@@ -424,15 +423,13 @@
 		border-radius: var(--radius-md);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 
-		@variant sm {
-			&:hover {
-				box-shadow: 0 0 0 1px var(--color-primary-500);
-			}
+		&:hover {
+			box-shadow: 0 0 0 1px var(--color-primary-500);
+		}
 
-			&:focus-within {
-				outline: 3px solid var(--color-primary-200);
-				outline-offset: 1px;
-			}
+		&:focus-within {
+			outline: 3px solid var(--color-primary-100);
+			outline-offset: 1px;
 		}
 
 		@variant lg {
@@ -456,25 +453,25 @@
 		border-radius: 0;
 		box-shadow: none;
 
+		&:focus-within {
+			outline: none;
+		}
+
 		@variant sm {
 			border-bottom: none;
 			border-radius: var(--radius-md);
 			margin-top: calc(var(--spacing) * 1.5);
-			box-shadow: 0 0 0 1px var(--color-neutral-300);
+			box-shadow: 0 0 0 1px var(--color-neutral-400);
 
-			&.focused-row {
-				box-shadow: 0 0 0 1px var(--color-primary-500);
-				outline: 3px solid var(--color-primary-200);
-				outline-offset: 1px;
+			&.focused-row:not(:has(:global(.focused-cell))) {
+				box-shadow: 0 0 0 6px var(--color-accent-100);
+				outline: 2px solid var(--color-outline);
+				outline-offset: 0;
 			}
 		}
 
 		@variant lg {
 			margin-top: 0;
-
-			&.focused-row {
-				outline: 4px solid var(--color-primary-200);
-			}
 		}
 	}
 
@@ -499,11 +496,11 @@
 
 	.action {
 		&:hover {
-			background: var(--color-primary-50);
+			background: var(--color-accent-50);
 		}
 
 		&:focus {
-			background: var(--color-primary-100);
+			background: var(--color-accent-100);
 		}
 	}
 
@@ -589,12 +586,14 @@
 		@apply min-h-2;
 	}
 
-	:global(.supersearch-dialog .focused) {
-		background-color: var(--color-primary-100);
+	:global(.supersearch-dialog .focused .suggestion) {
+		background-color: var(--color-accent-100);
+		outline: 2px solid var(--color-outline);
 	}
 
-	:global(.focused-cell) {
-		background-color: var(--color-primary-100);
+	:global(.supersearch-dialog .focused-cell) {
+		background-color: var(--color-accent-50);
+		outline: 2px solid var(--color-accent);
 	}
 
 	/* :global(.button-primary.focused-cell) {
@@ -729,6 +728,19 @@
 	.expanded :global(.codemirror-container .cm-placeholder) {
 		@variant lg {
 			margin-top: 1px;
+		}
+	}
+
+	.qualifier-suggestion {
+		box-shadow: 0 0 0 1px var(--color-accent-200);
+
+		&.focused-cell {
+			box-shadow: 0 0 0 5px var(--color-accent-100);
+			outline: 2px solid var(--color-outline);
+
+			&:hover {
+				background: var(--color-accent-100);
+			}
 		}
 	}
 </style>
