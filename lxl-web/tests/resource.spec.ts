@@ -1,4 +1,17 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, test, devices } from '@playwright/test';
+
+test('should not have any detectable a11y issues', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
+
+test('Open holdings panel should not have any detectable a11y issues', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf?holdings=Electronic');
+	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
 
 test('decorated data label visibilty is correct after page navigations', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
@@ -32,7 +45,7 @@ test('decorated data in holdings modal is not duplicated while closing modal', a
 
 test('holding selection controls active tab in holdings panel', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
-	await page.getByRole('link', { name: /^Digital resurs · finns på / }).click();
+	await page.getByRole('link', { name: /^Digital resurs · / }).click();
 	const tablist = page.locator('dialog').getByRole('tablist', { name: 'Utgåvor' });
 	await expect(tablist.getByRole('tab', { name: 'Digital' })).toHaveAttribute(
 		'aria-selected',

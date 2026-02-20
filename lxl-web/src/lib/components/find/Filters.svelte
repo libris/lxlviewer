@@ -32,15 +32,16 @@
 	{/if}
 	{#if facets?.length}
 		<nav class="facet-nav" aria-label={page.data.t('search.filters')} data-testid="facets">
-			<div class="relative mt-3 px-3">
+			<div class="relative mx-3 mt-3">
 				<input
 					bind:value={searchPhrase}
 					placeholder={page.data.t('search.findFilter')}
 					aria-label={page.data.t('search.findFilter')}
-					class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
+					class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-sm"
 					type="search"
+					name={page.data.t('search.findFilter')}
 				/>
-				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
+				<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm" />
 			</div>
 			<ul
 				aria-labelledby={'tab-filters'}
@@ -62,7 +63,7 @@
 					</li>
 				{/each}
 			</ul>
-			<span role="status" class="no-hits-msg px-4 text-sm" aria-atomic="true">
+			<span role="status" class="no-hits-msg mt-4 px-4 text-sm" aria-atomic="true">
 				{page.data.t('search.noFiltersFound')}
 			</span>
 		</nav>

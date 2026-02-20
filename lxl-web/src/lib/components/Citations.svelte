@@ -83,7 +83,9 @@
 					<li
 						class="bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs"
 					>
-						<h2 class="mb-2 font-medium" id={format.key}>{format.fullName || format.name}</h2>
+						<h2 class="mb-2 text-sm font-medium" id={format.key}>
+							{format.fullName || format.name}
+						</h2>
 						<svelte:element
 							this={isFileFormat ? 'pre' : 'p'}
 							class={[

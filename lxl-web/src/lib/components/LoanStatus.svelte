@@ -109,7 +109,7 @@
 >
 	<summary class="link-subtle flex cursor-pointer items-center gap-1">
 		<span
-			class="text-3xs chevron text-subtle item-center flex h-3 origin-center rotate-0 transition-transform"
+			class="chevron text-subtle item-center flex h-3 origin-center rotate-0 transition-transform"
 		>
 			<BiChevronRight />
 		</span>
