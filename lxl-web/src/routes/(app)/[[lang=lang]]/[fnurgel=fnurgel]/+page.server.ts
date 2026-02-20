@@ -1,5 +1,4 @@
 import { error } from '@sveltejs/kit';
-import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
@@ -13,8 +12,9 @@ import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte
 import type { HoldingsData } from '$lib/types/holdings.js';
 
 import { asArray, first, pickProperty, toString } from '$lib/utils/xl.js';
-import { getImages, toSecure } from '$lib/utils/auxd';
+import { bestImage, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
+import { getSortedInstances } from '$lib/utils/getSortedInstances';
 import {
 	getBibIdsByInstanceId,
 	getHoldersByType,
@@ -292,7 +292,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [_, overviewWithoutHasInstance] = pickProperty(overview[0], ['hasInstance']);
 
-	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
+	const image = toSecure(bestImage(mainEntity, locale), env.AUXD_SECRET);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const byType = getHoldersByType(holdingsByType);
 
@@ -329,29 +329,13 @@ export const load = async ({ params, locals, fetch, url }) => {
 		},
 		searchResult,
 		holdings,
-		images,
+		image,
 		tableOfContents,
 		workCard,
 		refinedOrgs,
 		isWork
 	};
 };
-
-function getSortedInstances(instances: Record<string, unknown>[]) {
-	return instances.sort((a, b) => {
-		const yearA = parseInt(jmespath.search(a, 'publication[0].year'), 10);
-		const yearB = parseInt(jmespath.search(b, 'publication[0].year'), 10);
-
-		if (Number.isNaN(yearA)) {
-			return 1;
-		}
-
-		if (Number.isNaN(yearB)) {
-			return -1;
-		}
-		return yearB - yearA;
-	});
-}
 
 function copyMediaLinksToWork(mainEntity: FramedData) {
 	const cp = (thing: FramedData, fromPath: (string | number | object)[], toProp: string) => {

@@ -35,7 +35,7 @@
 		controlNumber: string;
 		uid?: string;
 		typeForIcon: string;
-		images: SecureImage[];
+		image: SecureImage;
 		decoratedData: {
 			headingTop: DecoratedData;
 			heading: DecoratedData;
@@ -63,7 +63,7 @@
 		controlNumber,
 		uid,
 		typeForIcon,
-		images,
+		image,
 		decoratedData,
 		relations,
 		relationsPreviewsByQualifierKey,
@@ -169,7 +169,7 @@
 		<div>
 			<div class="sticky mx-auto pt-3 @sm:pt-6 @3xl:max-w-xs @3xl:pb-6">
 				<ResourceImage
-					{images}
+					{image}
 					type={typeForIcon}
 					alt={page.data.t('general.instanceCover')}
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
