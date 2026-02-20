@@ -409,7 +409,8 @@ export function getDisplayObject(item, level, resources, quoted, settings, inclu
 
     // If the item lacks a type, just return it as an anonymous object with a label
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
-      return { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris || []) };
+      const label = StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris || []);
+      return { label: label.replace(/^term\//, '') };
     }
   }
 
