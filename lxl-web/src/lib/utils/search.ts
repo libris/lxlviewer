@@ -13,27 +13,32 @@ import {
 	type ApiItemDebugInfo,
 	type DatatypeProperty,
 	type DisplayMapping,
-	type FacetGroup,
+	type Facet,
+	type FacetOperator,
+	type FacetValue,
 	type ItemDebugInfo,
 	type MappingsOnlyPartialCollectionView,
-	type MultiSelectFacet,
 	type Observation,
 	type PartialCollectionView,
 	type SearchMapping,
 	SearchOperators,
 	type SearchResult,
-	type SearchResultItem
+	type SearchResultItem,
+	type Slice
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { LibraryItem, UserSettings } from '$lib/types/userSettings';
+import type { MyLibrariesType } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-import { getHoldersCount, getHoldingsByInstanceId, getMyLibsFromHoldings } from './holdings';
+import { isLibraryOrg } from '$lib/utils/holdings';
+import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
+import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
+import { getMyLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
@@ -45,7 +50,7 @@ export async function asResult(
 	locale: LangCode,
 	auxdSecret: string,
 	usePath?: string,
-	myLibraries?: Record<string, LibraryItem>
+	myLibraries?: MyLibrariesType
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
 
@@ -75,7 +80,7 @@ export async function asResult(
 			maxScores
 		),
 		...('stats' in view && {
-			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
+			facets: displayFacets(view, displayUtil, locale, translate, usePath)
 		}),
 		...('stats' in view && { predicates: displayPredicates(view, displayUtil, locale, usePath) }),
 		_spell: view._spell
@@ -95,14 +100,14 @@ export function asSearchResultItem(
 	vocabUtil: VocabUtil,
 	locale: LangCode,
 	auxdSecret: string,
-	myLibraries?: Record<string, LibraryItem>,
+	myLibraries?: MyLibrariesType,
 	maxScores?: Record<string, number>
 ): SearchResultItem[] {
 	return items
 		?.map((i) => cleanUpItem(i))
 		.map((i) => ({
 			...(myLibraries && {
-				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries, displayUtil, locale)
+				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries)
 			}),
 			...('_debug' in i && {
 				_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
@@ -122,7 +127,11 @@ export function asSearchResultItem(
 			typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
 			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
-			numberOfHolders: getHoldersCount(i, vocabUtil)
+			numberOfHolders: getHoldersCount(i, vocabUtil),
+			...(isLibrary(i) && {
+				libraryId: i[JsonLd.ID],
+				displayStr: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale))
+			})
 		}));
 }
 
@@ -131,6 +140,7 @@ function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode)
 	const noFind = typeLike.find.length == 0;
 	const manyFind = typeLike.find.length > 1;
 	const showFind = manyFind || (!noFind && noIdentify);
+	//const showFind = !noFind && noIdentify;
 	const showNone = noFind && noIdentify && typeLike.none.length > 0;
 
 	const t = {
@@ -169,12 +179,19 @@ export function displayMappings(
 
 				let label = '';
 				// FIXME
-				if (Owl.PROPERTY_CHAIN_AXIOM in m.property && !(JsonLd.TYPE in m.property)) {
+				if (
+					Owl.PROPERTY_CHAIN_AXIOM in (m.property || []) &&
+					!(JsonLd.TYPE in (m.property || []))
+				) {
 					label = label = m.alias
 						? translate(`facet.${m.alias}`)
 						: m.property[Owl.PROPERTY_CHAIN_AXIOM]
-								.map((p) => toString(displayUtil.lensAndFormat(p, LensType.Token, locale)))
-								.join('/');
+								.map((pcas) =>
+									pcas[JsonLd.LIST]
+										.map((p) => toString(displayUtil.lensAndFormat(p, LensType.Token, locale)))
+										.join('/')
+								)
+								.join(', ');
 				} else {
 					label = m.alias
 						? translate(`facet.${m.alias}`)
@@ -221,11 +238,16 @@ export function displayMappings(
 					...('variable' in m && { variable: m.variable }),
 					_value: m?.value
 				} as DisplayMapping;
+			} else if ('variable' in m) {
+				return {
+					children: [],
+					operator,
+					variable: m.variable
+				};
 			} else {
 				return {
 					display: { [JsonLd.VALUE]: '<ERROR>' } as DisplayDecorated,
 					children: [],
-					label: 'no label',
 					operator
 				} as DisplayMapping;
 			}
@@ -271,6 +293,20 @@ function cleanUpItem(item: FramedData): FramedData {
 		}
 	});
 
+	// TODO: don't copy these from the instance when we have fresnel:fslselector (path) support in lenses
+	if (getAtPath(item, ['@reverse', 'instanceOf', '*']).length === 1) {
+		const instanceIsPartOf = asArray(
+			getAtPath(item, ['@reverse', 'instanceOf', '*', 'isPartOf', '*'])
+		);
+		if (instanceIsPartOf.length > 0) {
+			item['isPartOf'] = instanceIsPartOf;
+		}
+		const instancePart = asArray(getAtPath(item, ['@reverse', 'instanceOf', '*', 'part', '*']));
+		if (instancePart.length > 0) {
+			item['part'] = instancePart;
+		}
+	}
+
 	return item;
 }
 
@@ -279,6 +315,10 @@ function isSerial(item: FramedData): boolean {
 		item[JsonLd.TYPE] === 'Serial' ||
 		getAtPath(item, ['@reverse', 'instanceOf', '*', 'issuanceType']).every((v) => v === 'Serial')
 	);
+}
+
+function isLibrary(item: FramedData): boolean {
+	return item[JsonLd.TYPE] === 'Library' || item[JsonLd.TYPE] === 'bibdb:Organization';
 }
 
 function getMaxScores(itemDebugs: ApiItemDebugInfo[]) {
@@ -319,14 +359,10 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getHeldByMyLibraries(
-	item: FramedData,
-	myLibraries: Record<string, LibraryItem>,
-	display: DisplayUtil,
-	locale: LangCode
-) {
-	const res = getHoldingsByInstanceId(item, display, locale);
-	return getMyLibsFromHoldings(myLibraries, res);
+function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
+	const orgs = getRefinedOrgs(myLibraries);
+	const holdingsByType = getHoldersByType(getHoldingsByType(item));
+	return getMyLibsFromHoldings(myLibraries, holdingsByType, orgs);
 }
 
 function isFreeTextQuery(property: unknown): boolean {
@@ -337,16 +373,16 @@ function isDatatypeProperty(data: unknown): data is DatatypeProperty {
 	return isObject(data) && data['@type'] === 'DatatypeProperty';
 }
 
-function displayFacetGroups(
+function displayFacets(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
 	usePath?: string
-): FacetGroup[] {
+): Facet[] {
 	const slices = view.stats?.sliceByDimension || {};
 	// manually add myLibraries to boolfilters
-	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, locale, translate) || [];
+	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, translate) || [];
 
 	const result = [];
 
@@ -386,20 +422,21 @@ function mapSlices(
 	translate: TranslateFn,
 	usePath?: string,
 	parentDimension?: string
-): FacetGroup[] {
-	return Object.values(slices).map((g) => {
-		const dimension = parentDimension ? `${parentDimension}/${g.dimension}` : g.dimension;
+): Facet[] {
+	return Object.values(slices).map((slice) => {
+		const dimension = parentDimension ? `${parentDimension}/${slice.dimension}` : slice.dimension;
 		return {
-			label: translate(`facet.${g.alias || g.dimension}`),
+			label: translate(`facet.${slice.alias || slice.dimension}`),
 			dimension: dimension,
-			maxItems: g.maxItems,
-			...('search' in g && { search: g.search }),
-			facets: g.observation.map((o) => {
+			maxItems: slice.maxItems,
+			operator: slice._connective ? (slice._connective as FacetOperator) : undefined,
+			...('search' in slice && { search: slice.search }),
+			values: slice.observation.map((o) => {
 				const str = toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '';
 				return {
 					...('_selected' in o && { selected: o._selected }),
 					...('sliceByDimension' in o && {
-						facetGroups: mapSlices(
+						facets: mapSlices(
 							o.sliceByDimension,
 							displayUtil,
 							locale,
@@ -410,7 +447,7 @@ function mapSlices(
 					}),
 					totalItems: o.totalItems,
 					view: replacePath(o.view, usePath),
-					object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+					label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 					str: str,
 					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
 				};
@@ -424,7 +461,7 @@ export function displayPredicates(
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	usePath?: string
-): MultiSelectFacet[] {
+): FacetValue[] {
 	const predicates = view.stats?._predicates || [];
 
 	return predicates.map((o) => {
@@ -432,7 +469,7 @@ export function displayPredicates(
 			...('_selected' in o && { selected: o._selected }),
 			totalItems: o.totalItems,
 			view: replacePath(o.view, usePath),
-			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
+			label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.WebChip, locale)) || ''
 		};
 	});
@@ -446,25 +483,24 @@ function displayBoolFilters(
 	locale: LangCode,
 	translate: TranslateFn,
 	usePath?: string
-): FacetGroup {
+): Facet {
 	const filters = boolFilters?.filter(predicate) || [];
 
-	const facets = filters.map((o) => {
+	const values = filters.map((o) => {
 		return {
 			selected: o._selected || false,
 			totalItems: o.totalItems,
 			view: replacePath(o.view, usePath),
-			object: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+			label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
-			discriminator: '',
-			alias: o.object.alias
+			alias: Object.hasOwn(o.object, 'alias') ? (o.object.alias as string) : undefined
 		};
 	});
 
 	return {
 		label: translate(`facet.${dimension}`),
 		dimension: dimension,
-		facets: facets
+		values
 	};
 }
 
@@ -481,11 +517,7 @@ function replacePath(view: Link, usePath: string | undefined) {
 }
 
 // TODO: we should get this from the backend...
-function addMyLibrariesBoolFilter(
-	boolFilters: Observation[] | undefined,
-	locale: LangCode,
-	translate: TranslateFn
-) {
+function addMyLibrariesBoolFilter(boolFilters: Observation[] | undefined, translate: TranslateFn) {
 	if (boolFilters) {
 		let existingBoolFilter: Observation | undefined;
 		const rest: Observation[] = [];
@@ -525,18 +557,21 @@ function addMyLibrariesBoolFilter(
  */
 export function appendMyLibrariesParam(
 	searchParams: URLSearchParams,
-	userSettings: UserSettings
+	myLibraries: MyLibrariesType | undefined
 ): URLSearchParams {
 	if (['_q', '_r'].some((key) => searchParams.get(key)?.includes(MY_LIBRARIES_FILTER_ALIAS))) {
 		let sigelStr;
-		if (userSettings?.myLibraries) {
-			sigelStr = Object.values(userSettings?.myLibraries)
-				.map((lib) =>
-					lib.sigel ? `itemHeldBy:"sigel:${lib.sigel}"` : `itemHeldByOrg:"sigel:org/${lib.code}"`
-				)
+		if (myLibraries) {
+			sigelStr = Object.keys(myLibraries)
+				.map((id) => {
+					const slug = getUriSlug(id);
+					return isLibraryOrg(id)
+						? `itemHeldByOrg:"sigel:org/${slug}"`
+						: `itemHeldBy:"sigel:${slug}"`;
+				})
 				.join(' OR ');
 		}
-		searchParams.append(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
+		searchParams.set(`_${MY_LIBRARIES_FILTER_ALIAS}`, sigelStr || '""');
 	}
 	return searchParams;
 }

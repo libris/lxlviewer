@@ -7,6 +7,7 @@
 	import { popover } from '$lib/actions/popover';
 	import InfoIcon from '~icons/bi/info-circle';
 	import TypeIcon from './TypeIcon.svelte';
+	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 
 	interface Props {
 		images: Image[];
@@ -94,7 +95,7 @@
 			class={[
 				'size-full max-w-40 object-cover @3xl:max-w-48',
 				geometry === 'circle' ? 'rounded-full' : 'rounded-lg',
-				(type === 'Text' || type === 'Literature') && 'aspect-3/4'
+				bookAspectRatio(type) && 'aspect-3/4'
 			]}
 		/>
 		{#if !image}

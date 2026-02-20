@@ -22,6 +22,11 @@
 				<li>
 					<button onclick={CookieConsent.showPreferences}>{page.data.t('footer.cookies')}</button>
 				</li>
+				<li>
+					<a href="https://www.kb.se/om-oss/hantering-av-personuppgifter#Librissok"
+						>{page.data.t('footer.gdpr')}</a
+					>
+				</li>
 			</ul>
 		</nav>
 		<nav class="flex flex-col gap-2" aria-labelledby="nav-contact">

@@ -5,6 +5,8 @@
 	import type { SearchResult } from '$lib/types/search';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import SiteFooter from '../SiteFooter.svelte';
+	import { USE_HOLDING_PANE } from '$lib/constants/panels';
+	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 	import Toolbar from '$lib/components/Toolbar.svelte';
 	import LeadingPane from '$lib/components/find/LeadingPane.svelte';
 	import Filters from '$lib/components/find/Filters.svelte';
@@ -16,18 +18,30 @@
 	import Spinner from '$lib/components/Spinner.svelte';
 	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
 	import Modal from '$lib/components/Modal.svelte';
-	import { USE_HOLDING_PANE } from '$lib/constants/panels';
-	import { getSigelsFromMapping } from '$lib/utils/getSigelsFromMapping';
+	import Meta from '$lib/components/Meta.svelte';
+	import getPageTitle from '$lib/utils/getPageTitle';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
-	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
-	const refinedLibraries = $derived(
-		getSigelsFromMapping([searchResult.mapping, page.data.subsetMapping])
+
+	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
+	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
+	const description = $derived(
+		searchQuery
+			? `${page.data.t('search.searchResults')} ${searchQuery} - ${siteName}`
+			: `${page.data.t('search.searchResults')} - ${siteName}`
 	);
+	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
 
 	const HoldingsComponent = $derived(
 		USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
+	);
+	const holdingsParam = $derived(page.url.searchParams.get('holdings'));
+	const modalCard = $derived(
+		holdingsParam &&
+			searchResult.items.filter(
+				(item) => `${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}` === holdingsParam
+			)[0]
 	);
 
 	let previousURL: URL;
@@ -39,7 +53,11 @@
 	});
 
 	function handleCloseHoldings() {
-		if (!previousURL?.searchParams.has('holdings')) {
+		if (
+			previousURL &&
+			previousURL.pathname === page.url.pathname &&
+			!previousURL?.searchParams.has('holdings')
+		) {
 			history.back();
 		} else {
 			const newSearchParams = new SvelteURLSearchParams([
@@ -54,6 +72,9 @@
 <svelte:head>
 	<title>{page.data.pageTitle}</title>
 </svelte:head>
+
+<Meta title={page.data.pageTitle} {description} url={page.url.href} {siteName} />
+
 {#if searchResult}
 	<div
 		class={[
@@ -63,7 +84,7 @@
 	>
 		<LeadingPane>
 			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
-				<Filters facets={searchResult.facetGroups || []} />
+				<Filters facets={searchResult.facets || []} />
 			</div>
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">
@@ -90,10 +111,10 @@
 			</div>
 			<SiteFooter />
 		</div>
-		{#if holdings && page.url.searchParams.get('holdings')}
+		{#if holdings && holdingsParam}
 			<HoldingsComponent close={handleCloseHoldings}>
 				{#snippet title()}
-					<span>{page.data.t('holdings.findAtYourNearestLibrary')}</span>
+					<span>{page.data.t('holdings.findAtLibrary')}</span>
 				{/snippet}
 				{#await holdings}
 					<div class="m-6 flex h-full items-center justify-center">
@@ -102,11 +123,13 @@
 						</span>
 					</div>
 				{:then holdings}
-					<HoldingsContent
-						{holdings}
-						{refinedLibraries}
-						showSummary={isSmallScreen.current || !USE_HOLDING_PANE ? true : false}
-					/>
+					<HoldingsContent {holdings}>
+						{#snippet card()}
+							{#if modalCard}
+								<SearchCard item={modalCard} />
+							{/if}
+						{/snippet}
+					</HoldingsContent>
 				{:catch err}
 					<p>{err}</p>
 				{/await}

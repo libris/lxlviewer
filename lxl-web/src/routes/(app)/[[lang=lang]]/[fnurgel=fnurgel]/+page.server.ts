@@ -3,45 +3,50 @@ import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
+import * as v from 'valibot';
 
-import { type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
+import { Bibframe, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
+import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
+import type { HoldingsData } from '$lib/types/holdings.js';
 
-import { pickProperty, toString, asArray, first } from '$lib/utils/xl.js';
+import { asArray, first, pickProperty, toString } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import {
-	getHoldingsByInstanceId,
-	getHoldingsByType,
+	getBibIdsByInstanceId,
 	getHoldersByType,
-	getBibIdsByInstanceId
-} from '$lib/utils/holdings.js';
+	getHoldingLibraries,
+	getHoldingsByInstanceId,
+	getHoldingsByType
+} from '$lib/utils/holdings.server';
 import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
-import {
-	appendMyLibrariesParam,
-	asResult,
-	asSearchResultItem,
-	displayMappings
-} from '$lib/utils/search';
-import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
+import { appendMyLibrariesParam, asSearchResultItem, displayMappings } from '$lib/utils/search';
+import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
+import { getSearchResults } from '$lib/remotes/searchResult.remote';
+import { SearchResultsSchema } from '$lib/schemas/searchResult';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 	const translate = await getTranslator(locale);
+	const myLibraries = locals.userSettings?.myLibraries;
 
 	let resourceId: null | string = null;
 	const subsetFilter = url.searchParams.get('_r');
 	const _q = url.searchParams.get('_q');
 
-	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
-		headers: { Accept: 'application/ld+json' }
-	});
+	const resourceRes = await fetch(
+		`${env.API_URL}/${params.fnurgel}?framed=true&computedLabel=${locale}&_findBlank=true`,
+		{
+			headers: { Accept: 'application/ld+json' }
+		}
+	);
 
 	if (resourceRes.status === 404) {
 		throw error(resourceRes.status, { message: 'Not found' });
@@ -58,7 +63,32 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	const resource = await resourceRes.json();
-	const mainEntity = centerOnWork(resource['mainEntity'] as FramedData);
+
+	let workCard;
+	let isWork = false;
+
+	if (resource.mainEntity?.['@reverse']?.instanceOf) {
+		isWork = true;
+		// work - get card
+		workCard = asSearchResultItem(
+			[{ ...resource.mainEntity }],
+			displayUtil,
+			vocabUtil,
+			locale,
+			env.AUXD_SECRET,
+			myLibraries,
+			undefined
+		)[0];
+	} else if (resource.mainEntity.instanceOf) {
+		// instance - fetch work card
+		const workId = (resource.mainEntity.instanceOf[JsonLd.ID] || '').split('/').pop();
+		if (workId) {
+			const workRes = await fetch(`/api/${locale}/${workId}`);
+			workCard = await workRes.json();
+		}
+	}
+
+	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	copyMediaLinksToWork(mainEntity);
 
 	resourceId = resource.mainEntity['@id'];
@@ -85,29 +115,79 @@ export const load = async ({ params, locals, fetch, url }) => {
 		delete mainEntity['language'];
 	}
 
+	const _instances = mainEntity?.['@reverse']?.instanceOf || [];
+
+	if (_instances.length == 1 && typeLike.select.length > 0) {
+		_instances[0]['_select'] = typeLike.select;
+	}
+
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
-	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
+	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
+	const overview = [
+		displayUtil.lensAndFormat(mainEntity, LensType.WebOverview, locale),
+		...(_instances.length === 1
+			? [displayUtil.lensAndFormat(_instances[0], LensType.WebOverview, locale)]
+			: [])
+	];
 
-	let instances;
+	// TODO ...
+	const _isWork =
+		vocabUtil.getType(mainEntity) == 'Work' ||
+		vocabUtil.isSubClassOf(vocabUtil.getType(mainEntity), 'Work');
+	const overviewLens = _isWork ? LensType.WebOverview2 : LxlLens.PageOverView;
+	const overview2 = [
+		displayUtil.lensAndFormat(mainEntity, overviewLens, locale),
+		...(_instances.length === 1
+			? [displayUtil.lensAndFormat(_instances[0], overviewLens, locale)]
+			: [])
+	];
+
+	const details = [
+		displayUtil.lensAndFormat(mainEntity, LensType.WebDetails, locale),
+		...(_instances.length === 1
+			? [displayUtil.lensAndFormat(_instances[0], LensType.WebDetails, locale)]
+			: [])
+	];
+
 	let searchResult: ResourceSearchResult | undefined;
-
-	// Format & sort instances; single instance -> pick from resource overview
-	if (mainEntity?.['@reverse']?.instanceOf?.length === 1) {
-		// TODO: Replace with a custom getProperty method (similar to pickProperty)
-		instances = jmespath.search(overview, '*[].hasInstance[]');
-	} else if (mainEntity?.['@reverse']?.instanceOf?.length > 1) {
-		// multiple instances -> format as web cards
+	let instances;
+	if (mainEntity?.['@reverse']?.instanceOf?.length > 0) {
 		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
+		sortedInstances.forEach(
+			(i) => (i[Bibframe.instanceOf] = { [JsonLd.TYPE]: mainEntity[JsonLd.TYPE] })
+		);
 		instances = asSearchResultItem(
 			sortedInstances,
 			displayUtil,
 			vocabUtil,
 			locale,
 			env.AUXD_SECRET,
-			locals.userSettings?.myLibraries,
+			myLibraries,
 			undefined
 		);
 	}
+
+	const creations = [mainEntity].concat(mainEntity?.['@reverse']?.instanceOf || []);
+	const summary = creations
+		.filter((c: FramedData) => c[Bibframe.summary])
+		.map((c: FramedData) => ({
+			[JsonLd.TYPE]: c[JsonLd.TYPE],
+			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
+			[Bibframe.summary]: c[Bibframe.summary]
+		}))
+		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
+
+	const resourceTableOfContents = creations
+		.filter((c: FramedData) => c[Bibframe.tableOfContents])
+
+		.map((c: FramedData) => ({
+			[JsonLd.TYPE]: c[JsonLd.TYPE],
+			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
+			[Bibframe.tableOfContents]: c[Bibframe.tableOfContents]
+		}))
+		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
 
 	// Search for instances that matches query
 	if ((subsetFilter && subsetFilter !== '*') || (_q && _q !== '*') || locals.site) {
@@ -115,13 +195,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 			new URLSearchParams({
 				_o: resourceId || '',
 				_p: 'instanceOf',
-				_q: _q || '*',
-				_r: subsetFilter || '',
+				_q: _q || '',
+				...(subsetFilter && { _r: subsetFilter }),
+				_limit: '150',
 				_spell: 'false',
 				_stats: 'false',
 				_site: locals.site?.searchSite || ''
 			}),
-			locals.userSettings
+			myLibraries
 		);
 
 		const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
@@ -146,17 +227,13 @@ export const load = async ({ params, locals, fetch, url }) => {
 	/** TODO: Better error handling while fetching relations previews */
 	const relationsPreviews = await Promise.all(
 		relations.map(async (relation) => {
-			const previewRes = await fetch(relation.previewUrl);
-			const previewData = await previewRes.json();
-			return asResult(
-				previewData,
-				displayUtil,
-				vocabUtil,
-				locale,
-				env.AUXD_SECRET,
-				undefined,
-				locals.userSettings?.myLibraries
-			);
+			const url = new URL(relation.previewUrl);
+			const params = Object.fromEntries(url.searchParams);
+
+			if (v.is(SearchResultsSchema, params)) {
+				const preview = await getSearchResults(params);
+				return preview;
+			}
 		})
 	);
 	const relationsPreviewsByQualifierKey = relations.reduce(
@@ -170,6 +247,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 	);
 
 	const tableOfContents: TableOfContentsItem[] = [
+		...(summary.length
+			? [
+					{
+						id: 'summary',
+						label: translate('resource.summary')
+					}
+				]
+			: []),
 		...(instances?.length > 1
 			? [
 					{
@@ -189,37 +274,66 @@ export const load = async ({ params, locals, fetch, url }) => {
 						}))
 					}
 				]
-			: [])
+			: []),
+		...(resourceTableOfContents.length
+			? [
+					{
+						id: 'resourceTableOfContents',
+						label: translate('resource.tableOfContents')
+					}
+				]
+			: []),
+		{
+			id: 'details',
+			label: translate('resource.details')
+		}
 	];
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
+	const [_, overviewWithoutHasInstance] = pickProperty(overview[0], ['hasInstance']);
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
-	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const holdingsByType = getHoldingsByType(mainEntity);
-	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
-	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
+	const byType = getHoldersByType(holdingsByType);
+
+	const holdings: HoldingsData = {
+		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil),
+		byType,
+		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
+		holdingLibraries: getHoldingLibraries(byType)
+	};
+
+	const subsetMapping = locals?.subsetMapping;
+	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return {
-		uri: resource['@id'] as string,
+		uri: resourceId,
+		recordUri: resource['@id'] as string,
+		controlNumber: resource['controlNumber'] as string,
 		type: mainEntity[JsonLd.TYPE],
-		types: types,
 		typeForIcon: getTypeForIcon(typeLike), // FIXME
 		title: toString(heading),
-		heading,
-		overview: overviewWithoutHasInstance,
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
-		searchResult,
-		holdings: {
-			holdingsByInstanceId,
-			holdersByType,
-			bibIdsByInstanceId
+		decoratedData: {
+			headingTop: types,
+			heading: heading,
+			headingExtra: headingExtra,
+			overview: overview,
+			overview2: overview2,
+			overviewFooter: {},
+			summary: summary,
+			resourceTableOfContents: resourceTableOfContents,
+			details: details
 		},
+		searchResult,
+		holdings,
 		images,
-		tableOfContents
+		tableOfContents,
+		workCard,
+		refinedOrgs,
+		isWork
 	};
 };
 

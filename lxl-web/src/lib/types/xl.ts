@@ -21,6 +21,10 @@ export enum Owl {
 	PROPERTY_CHAIN_AXIOM = 'propertyChainAxiom'
 }
 
+export enum Rdfs {
+	RDF_TYPE = 'rdf:type'
+}
+
 export enum Fmt {
 	DISPLAY = '_display',
 	PROPS = '_props',
@@ -50,7 +54,11 @@ export enum Platform {
 
 export enum Bibframe {
 	Work = 'Work',
-	Instance = 'Instance'
+	Instance = 'Instance',
+	summary = 'summary',
+	tableOfContents = 'tableOfContents',
+	publication = 'publication',
+	instanceOf = 'instanceOf'
 }
 
 export enum BibDb {
@@ -66,17 +74,21 @@ export enum BibDb {
 	itemStatusUri = 'bibdb:itemStatusUri',
 	openingHours = 'bibdb:openingHours',
 	address = 'bibdb:address',
+	addressLocality = 'bibdb:addressLocality',
 	postalAddress = 'bibdb:PostalAddress',
 	visitingAddress = 'bibdb:VisitingAddress',
+	linkResolver = 'bibdb:linkResolver',
 	LinksToCatalog = 'linksToCatalog',
 	LinksToSite = 'linksToSite',
 	LinksToItem = 'linksToItem',
 	Address = 'address',
+	AddressLocality = 'addressLocality',
 	ItemStatus = 'itemStatus',
 	OpeningHours = 'openingHours',
 	LoanReserveLink = 'loanReserveLink',
 	MyLoansLink = 'myLoansLink',
-	RegistrationLink = 'registrationLink'
+	RegistrationLink = 'registrationLink',
+	LinkResolver = 'linkResolver'
 }
 
 export type ClassName = string;
@@ -174,6 +186,9 @@ export enum LensType {
 	SearchCard = 'search-cards',
 	WebChip = 'web-chips',
 	WebCard = 'web-card',
+	WebOverview = 'web-overview',
+	WebOverview2 = 'web-overview2',
+	WebDetails = 'web-details',
 	WebCardFooter = 'web-card-footer',
 	WebCardHeaderTop = 'web-card-header-top',
 	WebCardHeaderExtra = 'web-card-header-extra',

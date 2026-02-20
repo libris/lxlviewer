@@ -7,7 +7,7 @@
 	import IconChevronRight from '~icons/bi/chevron-right';
 	import capitalize from '$lib/utils/capitalize';
 	import { getPreviousItemFnurgel, getNextItemFnurgel } from '$lib/utils/adjecentSearchResult';
-	import { getAdjecentSearchResult } from '$lib/remotes/adjecentSearchResult.remote';
+	import { getAdjecentSearchResult } from '$lib/remotes/searchResult.remote';
 
 	type Props = {
 		fnurgel: string;
@@ -19,7 +19,7 @@
 	let previousQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
 	let nextQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
 
-	let adjecentSearchResults = $state(adjecentSearchResultsFromPageState);
+	let adjecentSearchResults = $derived(adjecentSearchResultsFromPageState);
 
 	const currentSearchResult = $derived(
 		adjecentSearchResults?.find((searchResult) =>

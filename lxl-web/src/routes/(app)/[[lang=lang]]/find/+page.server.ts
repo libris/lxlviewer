@@ -8,6 +8,7 @@ import { appendMyLibrariesParam, asResult } from '$lib/utils/search';
 import { DebugFlags } from '$lib/types/userSettings';
 import { displayMappingToString } from '$lib/utils/displayMappingToString.js';
 import getPageTitle from '$lib/utils/getPageTitle';
+import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server.js';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -15,13 +16,16 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const locale = getSupportedLocale(params?.lang);
 
 	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
+	const myLibraries = locals.userSettings?.myLibraries;
 
 	const searchParams = new URLSearchParams();
 
 	// find page load function reloads on change in these params:
 	const reactiveParams = ['_q', '_limit', '_offset', '_sort', '_spell', '_r'];
 	reactiveParams.forEach((p) => {
-		searchParams.set(p, url.searchParams.get(p) || '');
+		if (url.searchParams.has(p)) {
+			searchParams.set(p, url.searchParams.get(p) || '');
+		}
 	});
 
 	if (locals.site?.searchSite) {
@@ -29,7 +33,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 	}
 
 	const recordsRes = await fetch(
-		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, locals.userSettings).toString()}${debug}`,
+		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}${debug}`,
 		{
 			// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
 			redirect: 'manual'
@@ -60,16 +64,14 @@ export const load = async ({ params, url, locals, fetch }) => {
 		vocabUtil,
 		locale,
 		env.AUXD_SECRET,
-		undefined,
-		locals.userSettings?.myLibraries
+		url.pathname,
+		myLibraries
 	);
 
-	const pageTitle = getPageTitle(
-		displayMappingToString(
-			searchResult.mapping.filter((f) => f?.variable !== 'defaultSiteFilters')
-		),
-		locals.site?.name
-	);
+	const pageTitle = getPageTitle(displayMappingToString(searchResult.mapping), locals.site?.name);
 
-	return { searchResult, pageTitle };
+	const subsetMapping = locals?.subsetMapping;
+	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
+
+	return { searchResult, pageTitle, refinedOrgs };
 };

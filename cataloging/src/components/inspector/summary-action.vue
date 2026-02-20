@@ -15,7 +15,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    replaced: {
+    blocked: {
       type: Boolean,
       default: false,
     },
@@ -41,13 +41,13 @@ export default {
     ]),
     getIcon() {
       if (this.disabled) return 'check';
-      if (this.replaced) return 'ban';
+      if (this.blocked) return 'ban';
       if (this.options.icon) return this.options.icon;
       return false;
     },
     getTooltipText() {
       if (this.disabled) return 'Added';
-      if (this.replaced) return 'Replaced';
+      if (this.blocked) return 'Blocked';
       if (this.options.text) return this.options.text;
       return false;
     },
@@ -68,10 +68,10 @@ export default {
   <div class="SummaryAction">
     <div class="SummaryAction-button">
       <button-component
-        :disabled="disabled || replaced || extracting"
+        :disabled="disabled || blocked || extracting"
         :variant="options.styling"
         :icon="getIcon"
-        :indicator="!disabled || !replaced"
+        :indicator="!disabled || !blocked"
         :label="getTooltipText"
         size="large"
         v-tooltip.right="translatePhrase(getTooltipText)"

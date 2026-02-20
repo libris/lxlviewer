@@ -1,29 +1,22 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { page, navigating } from '$app/state';
 	import { getModalContext } from '$lib/contexts/modal';
-	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
-	import FacetGroup from './FacetGroup.svelte';
+	import { displayMappingToString } from '$lib/utils/displayMappingToString';
+	import type { DisplayMapping, Facet } from '$lib/types/search';
+	import FacetGroup from '$lib/components/find/FacetGroup.svelte';
 	import SearchMapping from './SearchMapping.svelte';
 	import BiSearch from '~icons/bi/search';
 	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 
-	type filtersPropsType = {
-		facets: TypedFacetGroup[];
+	type Props = {
+		facets: Facet[];
 		mapping?: DisplayMapping[];
 	};
 
-	const { facets, mapping }: filtersPropsType = $props();
+	const { facets, mapping }: Props = $props();
 
-	function shouldShowMapping() {
-		if (
-			mapping &&
-			mapping.length === 1 &&
-			mapping[0].display === '*' &&
-			mapping[0].operator === 'equals'
-		) {
-			return false; // hide if only wildcard search
-		}
-		return true;
+	function shouldShowMapping(m: DisplayMapping[]) {
+		return !!displayMappingToString(m).trim();
 	}
 
 	const inModal = getModalContext();
@@ -32,18 +25,14 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	{#if mapping && inModal && shouldShowMapping()}
+	{#if mapping && inModal && shouldShowMapping(mapping)}
 		<nav aria-label={page.data.t('search.selectedFilters')}>
 			<SearchMapping {mapping} />
 		</nav>
 	{/if}
 	{#if facets?.length}
-		<nav
-			class="facet-nav relative flex flex-col gap-2 text-sm"
-			aria-label={page.data.t('search.filters')}
-			data-testid="facets"
-		>
-			<div class="px-3">
+		<nav class="facet-nav" aria-label={page.data.t('search.filters')} data-testid="facets">
+			<div class="relative mt-3 px-3">
 				<input
 					bind:value={searchPhrase}
 					placeholder={page.data.t('search.findFilter')}
@@ -53,27 +42,39 @@
 				/>
 				<BiSearch class="text-subtle absolute top-0 left-6 h-9" />
 			</div>
-			<ol>
-				{#each facets as group, i (group.dimension)}
-					<FacetGroup
-						{group}
-						locale={page.data.locale}
-						{searchPhrase}
-						isDefaultExpanded={i < DEFAULT_FACETS_EXPANDED}
-					/>
-				{/each}
-			</ol>
-			<span role="status" class="no-hits-msg px-4 text-xs" aria-atomic="true"
-				>{page.data.t('search.noResults')}</span
+			<ul
+				aria-labelledby={'tab-filters'}
+				class={[
+					'text-sm',
+					navigating.to &&
+						navigating.from?.url.pathname === navigating.to?.url.pathname &&
+						'pointer-events-none opacity-50'
+				]}
 			>
+				{#each facets as facet, index (facet.dimension)}
+					<li>
+						<FacetGroup
+							data={facet}
+							level={1}
+							{searchPhrase}
+							isDefaultExpanded={index < DEFAULT_FACETS_EXPANDED}
+						/>
+					</li>
+				{/each}
+			</ul>
+			<span role="status" class="no-hits-msg px-4 text-sm" aria-atomic="true">
+				{page.data.t('search.noFiltersFound')}
+			</span>
 		</nav>
 	{/if}
 </div>
 
 <style lang="postcss">
 	/* hide 'no hits' msg as long as there's results displaying */
-	:global(.facet-nav:has(.has-hits) .no-hits-msg) {
-		display: none;
+	.facet-nav {
+		&:global(:has(.has-hits) .no-hits-msg) {
+			display: none;
+		}
 	}
 
 	:global(dialog .facet-nav) {

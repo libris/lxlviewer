@@ -1,6 +1,8 @@
-import { Transaction } from '@codemirror/state';
+import { EditorState, Transaction } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
+import { qualifierStateField } from './qualifierValidation.js';
+import { startEditingQualifier, stopEditingQualifier } from './qualifierEffects.js';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically
@@ -10,7 +12,19 @@ import type { SyntaxNode } from '@lezer/common';
  * If not - add/repair it. Exception: quoted qualifier values
  */
 export const createGhostGroup = (tr: Transaction) => {
-	if (!tr.docChanged || !tr.isUserEvent('input')) {
+	// don't run on edit qualifier start/stop events
+	for (const e of tr.effects) {
+		if (e.is(stopEditingQualifier) || e.is(startEditingQualifier)) {
+			return tr;
+		}
+	}
+
+	// run on valdation change -> atomic range change
+	const rangesChanged =
+		tr.startState.field(qualifierStateField).atomicRanges.size !==
+		tr.state.field(qualifierStateField).atomicRanges.size;
+
+	if (!tr.isUserEvent('input') && !rangesChanged) {
 		return tr;
 	}
 
@@ -18,6 +32,14 @@ export const createGhostGroup = (tr: Transaction) => {
 	let selection: { anchor: number } | undefined;
 
 	const prevNode = syntaxTree(tr.state).resolveInner(tr.state.selection.main.head, -1);
+
+	// validate qualifier
+	const validQualifier = getValidQualifier(tr.state, prevNode);
+	if (!validQualifier) return tr;
+
+	// check if in edit mode
+	if (isEditingQualifier(tr.state, prevNode)) return tr;
+
 	if (prevNode.name === 'QualifierOperator') {
 		const operator = tr.state.sliceDoc(prevNode.from, prevNode.to);
 		if (operator === ':' || operator === '=') {
@@ -77,6 +99,10 @@ export const removeGhostGroup = (tr: Transaction) => {
 	startTree.iterate({
 		enter(node) {
 			if (node.name !== 'Qualifier') return;
+
+			// validate qualifier
+			const validQualifier = getValidQualifier(tr.startState, node.node);
+			if (!validQualifier) return;
 
 			// map approximate qualifier position into new document
 			const mappedFrom = tr.changes.mapPos(node.from, 1);
@@ -423,7 +449,7 @@ export const balanceInnerParens = (tr: Transaction) => {
 };
 
 /**
- * If a node belongs to a qualifier value "ghost group", return the group.
+ * If a node belongs to a named parent, return the parent.
  */
 function getParent(node: SyntaxNode, name: string): SyntaxNode | false {
 	if (!node || !name) return false;
@@ -436,3 +462,28 @@ function getParent(node: SyntaxNode, name: string): SyntaxNode | false {
 
 	return current?.name === name ? current : false;
 }
+
+export function isValidQualifier(state: EditorState, node: SyntaxNode | false): boolean {
+	if (!node || node.name !== 'Qualifier') return false;
+
+	const stateField = state.field(qualifierStateField);
+	const key = `${node.from}-${node.to}`;
+
+	const qualifier = stateField.qualifiers.get(key);
+	return !!qualifier && !qualifier.invalid;
+}
+
+const getValidQualifier = (state: EditorState, node: SyntaxNode) => {
+	const parent = getParent(node, 'Qualifier');
+	return parent && isValidQualifier(state, parent.node) ? parent : null;
+};
+
+export const isEditingQualifier = (state: EditorState, node: SyntaxNode) => {
+	const { editing } = state.field(qualifierStateField);
+	if (!editing) return false;
+
+	const parent = getParent(node, 'Qualifier');
+	if (!parent) return false;
+
+	return parent.node.from === editing.from;
+};

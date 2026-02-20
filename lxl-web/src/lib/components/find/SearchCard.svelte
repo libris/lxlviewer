@@ -2,8 +2,9 @@
 	import { browser } from '$app/environment';
 	import { onDestroy } from 'svelte';
 	import { goto, onNavigate, replaceState } from '$app/navigation';
-	import type { SearchResultItem } from '$lib/types/search';
-	import { LensType } from '$lib/types/xl';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+	import type { LibraryResultItem, SearchResultItem } from '$lib/types/search';
+	import { JsonLd, LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
 	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
@@ -21,14 +22,28 @@
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import BiHouse from '~icons/bi/house';
 	import BiQuote from '~icons/bi/quote';
+	import BiHeartFill from '~icons/bi/heart-fill';
+	import BiHeart from '~icons/bi/heart';
+	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 
 	interface Props {
-		item: SearchResultItem;
+		item: SearchResultItem | LibraryResultItem;
 		uidPrefix?: string;
+		allowPopovers?: boolean;
+		allowLinks?: boolean;
+		allowActions?: boolean;
+		hideType?: boolean;
 	}
 
 	let articleElement: HTMLElement;
-	let { item, uidPrefix = '' }: Props = $props();
+	let {
+		item,
+		uidPrefix = '',
+		allowPopovers = true,
+		allowLinks = true,
+		allowActions = true,
+		hideType = false
+	}: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
 	let titleId = $derived(`card-title-${id}`);
@@ -44,8 +59,11 @@
 		(!page.state.dimissedHighlighting && page.url.hash === `#${id}`) || modalParam === id
 	);
 
-	// safer way to check if data is an instance?
-	const isInstanceCard = $derived(!!page.params.fnurgel);
+	// better way to check if data is an instance?
+	const isInstanceCard = $derived(
+		item[JsonLd.TYPE] === 'PhysicalResource' || item[JsonLd.TYPE] === 'DigitalResource'
+	);
+
 	const resourceLink = $derived.by(() => {
 		const url = new URL(page.url.origin + page.data.localizeHref(id));
 		// pass on _q to resource page
@@ -82,6 +100,12 @@
 		}
 	}
 
+	function isLibraryCard(item: SearchResultItem | LibraryResultItem): item is LibraryResultItem {
+		if (item[JsonLd.TYPE] !== 'Library' && item[JsonLd.TYPE] !== 'bibdb:Organization') return false;
+		if (!('libraryId' in item) || !('displayStr' in item)) return false;
+		return true;
+	}
+
 	$effect(() => {
 		if (showHighlight && page.data.locale) {
 			document?.addEventListener('click', handleRemoveHighlighting);
@@ -111,7 +135,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			onclick={(event) => isInstanceCard && handleClickHoldings(event, page.state, id)}
 		>
 			<span class="text-base">
-				{#if item.heldByMyLibraries?.length}
+				{#if item.heldByMyLibraries}
 					<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
 				{:else}
 					<BiHouse class="text-neutral-400" />
@@ -123,7 +147,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	{/if}
 {/snippet}
 
-<div class="@container/card">
+<div class="search-card-container @container/card">
 	<article
 		{id}
 		class={[
@@ -171,8 +195,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								class:rounded-full={item['@type'] === 'Person'}
 								class:rounded-sm={item['@type'] !== 'Person'}
 								class={[
-									'object-contain object-top'
-									//(item.typeForIcon === 'Text' || item.typeForIcon === 'Literature') && 'aspect-3/4'
+									'placeholder object-cover object-top',
+									bookAspectRatio(item.typeForIcon) && 'aspect-3/4'
 								]}
 							/>
 							<TypeIcon type={item.typeForIcon} class="absolute text-2xl text-neutral-400" />
@@ -185,7 +209,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
 					<TypeIcon type={item.typeForIcon} class="text-2xs mb-0.25 inline" />
-					{#if item.typeStr}
+					{#if item.typeStr && !hideType}
 						<span class="font-medium">
 							{item.typeStr}
 						</span>
@@ -194,7 +218,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					{/if}
 					{#each item[LensType.WebCardHeaderTop]?._display as obj, index (index)}
 						<span>
-							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
+							<DecoratedData
+								data={obj}
+								showLabels={ShowLabelsOptions.Never}
+								{allowLinks}
+								{allowPopovers}
+							/>
 						</span>
 					{/each}
 				</p>
@@ -206,7 +235,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							aria-describedby={`${bodyId} ${footerId}`}
 							onclick={passAlongAdjecentSearchResults}
 						>
-							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
+							<DecoratedData
+								data={item['card-heading']}
+								showLabels={ShowLabelsOptions.Never}
+								{allowLinks}
+								{allowPopovers}
+							/>
 						</a>
 					</h2>
 				</hgroup>
@@ -214,7 +248,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<p class="card-header-extra">
 						{#each item[LensType.WebCardHeaderExtra]?._display as obj, index (index)}
 							<span>
-								<DecoratedData data={obj} showLabels={ShowLabelsOptions.DefaultOn} />
+								<DecoratedData
+									data={obj}
+									showLabels={ShowLabelsOptions.DefaultOn}
+									{allowLinks}
+									{allowPopovers}
+								/>
 							</span>
 						{/each}
 					</p>
@@ -226,62 +265,104 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						<div>
 							<DecoratedData
 								data={obj}
-								showLabels={ShowLabelsOptions.Never}
+								showLabels={ShowLabelsOptions.DefaultOff}
+								depth={2}
 								block
-								limit={{ contribution: 3 }}
+								limit={{ contribution: 3, hasPart: 5, related: 5 }}
+								allowLinks={true}
+								{allowPopovers}
 							/>
 						</div>
 					{/each}
 				</div>
 			{/if}
-			<footer class="card-footer mt-1" id={footerId}>
-				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
-					{#if 'hasInstance' in obj}
-						{@const instances = getInstanceData(obj.hasInstance)}
-						{#if instances?.years}
-							{#if instances.count > 1}
-								{instances?.count}
-								{page.data.t('search.editions')}
-								{`(${instances.years})`}
-							{:else}
-								{instances.years}
-							{/if}
-						{/if}
-						{#if instances?.count === 1}
-							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-							<span class="divider">{' · '}</span>
-							{#each obj.hasInstance._display as obj2, index (index)}
-								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
-								{#if !obj2.publication}
-									<DecoratedData data={obj2} showLabels={ShowLabelsOptions.Never} />
-								{/if}
-							{/each}
-						{/if}
-					{:else}
-						<span>
-							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
-						</span>
-					{/if}
-				{/each}
+			<footer
+				class="card-footer @container mt-1 flex flex-col-reverse flex-wrap md:flex-row"
+				id={footerId}
+			>
 				{#if item.selectTypeStr}
+					<span class="text-body font-medium">{item.selectTypeStr}</span>
 					<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-					<span class="divider">{' · '}</span>
-					<span>{item.selectTypeStr}</span>
+					<span class="hidden whitespace-pre-wrap md:inline">{' · '}</span>
 				{/if}
+				<span>
+					{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
+						{#if 'hasInstance' in obj}
+							{@const instances = getInstanceData(obj.hasInstance)}
+							{#if instances?.years}
+								{#if instances.count > 1}
+									{instances?.count}
+									{page.data.t('search.editions')}
+									{`(${instances.years})`}
+								{:else}
+									{instances.years}
+								{/if}
+							{/if}
+							{#if instances?.count === 1}
+								<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+								<span class="divider">{' · '}</span>
+								{#each obj.hasInstance._display as obj2, index (index)}
+									<!-- FIXME we need publication for year, but don't want to show it again with the year -->
+									{#if !obj2.publication}
+										<DecoratedData
+											data={obj2}
+											showLabels={ShowLabelsOptions.Never}
+											{allowLinks}
+											{allowPopovers}
+										/>
+									{/if}
+								{/each}
+							{/if}
+						{:else}
+							<span>
+								<DecoratedData
+									data={obj}
+									showLabels={ShowLabelsOptions.Never}
+									{allowLinks}
+									{allowPopovers}
+								/>
+							</span>
+						{/if}
+					{/each}
+				</span>
 			</footer>
-			<div class="card-actions flex gap-1 self-end pt-1">
-				{#if isInstanceCard}
-					<a
-						class="btn btn-primary h-7 rounded-full md:h-8"
-						href={getCiteLink(page.url, id)}
-						onclick={(event) => handleClickCite(event, page.state, id)}
-					>
-						<BiQuote class="size-4 text-neutral-400" />
-						<span>{page.data.t('citations.cite')}</span>
-					</a>
-				{/if}
-				{@render holdingsButton()}
-			</div>
+			{#if allowActions}
+				<div class="card-actions flex gap-1 self-end pt-1">
+					{#if isInstanceCard}
+						<a
+							class="btn btn-primary h-7 rounded-full md:h-8"
+							href={getCiteLink(page.url, id)}
+							onclick={(event) => handleClickCite(event, page.state, id)}
+						>
+							<BiQuote class="size-4 text-neutral-400" />
+							<span>{page.data.t('citations.cite')}</span>
+						</a>
+					{/if}
+					{#if isLibraryCard(item)}
+						{@const userSettings = getUserSettings()}
+						{@const alreadyAdded =
+							userSettings.myLibraries &&
+							Object.keys(userSettings.myLibraries).includes(item.libraryId)}
+						<button
+							class="btn btn-primary h-7 rounded-full md:h-8"
+							type="button"
+							onclick={() =>
+								alreadyAdded
+									? userSettings.removeLibrary(item.libraryId)
+									: userSettings.addLibrary(item.libraryId, item.displayStr)}
+						>
+							{#if alreadyAdded}
+								<BiHeartFill class="text-primary-600" />
+								<span>{page.data.t('myPages.remove')}</span>
+							{:else}
+								<BiHeart class="text-primary-600" />
+								<span>{page.data.t('myPages.add')}</span>
+							{/if}
+						</button>
+					{/if}
+					{@render holdingsButton()}
+				</div>
+			{/if}
 		</div>
 
 		{#if item._debug}
@@ -324,6 +405,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	.card-header-extra {
+		& :global(span[data-type='KeyTitle'] > span[data-property='rdf:type']) {
+			display: none;
+		}
+	}
 
 	.search-card {
 		grid-template-areas:
@@ -394,10 +481,131 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.card-header-top,
 	.card-header-extra,
-	.card-footer,
-	.card-header :global(.transliteration) {
+	.card-footer {
 		font-size: var(--text-2xs);
 		color: var(--color-subtle);
 		font-weight: var(--font-weight-normal);
+	}
+
+	.card-header-top {
+		/* hide dangling divider · */
+		& .divider {
+			display: none;
+		}
+
+		& :global(.divider:has(+ span:not(.divider))) {
+			display: inline;
+		}
+	}
+
+	.card-header {
+			& :global(.transliteration) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+			font-weight: var(--font-weight-normal);
+			display: block;
+			}
+
+			& :global(.transliteration._contentBefore),
+			& :global(.transliteration._contentAfter) {
+					display: none;
+			}
+	}
+
+	/* TODO inline label style in DecoratedData */
+	.card-header-extra,
+	.card-body {
+		& :global(div:has(> .property-label)) {
+				/* override e.g isPartOf > hasTitle block */
+				display: inline;
+		}
+
+		& :global(span[data-property]) {
+				display: inline;
+		}
+
+		& :global(div[data-property] > div) {
+				display: inline;
+		}
+
+		/* FIXME */
+		& :global(div:has(> div[data-property='isPartOf'])),
+		& :global(div[data-property='isPartOf']),
+		& :global(div:has(> div[data-property='isPartOf']) + div:has(> div[data-property='part'])),
+		& :global(div[data-property='part']) {
+				display: inline;
+		}
+
+		& :global(div > div[data-property='part'])::before {
+				content: ' ; ';
+		}
+
+		& :global(.property-label) {
+				color: var(--color-body);
+				font-style: italic;
+		}
+
+		& :global(.property-label):not(:empty)::after {
+				color: var(--color-body);
+				content: ': ';
+		}
+
+        & :global(div[data-property='identifiedBy']) {
+                color: var(--color-subtle);
+        }
+	}
+
+	/* card in dialog */
+	:global(dialog .search-card) {
+		border-top: none;
+		border-bottom: 1px solid var(--color-neutral);
+		background-color: var(--color-page);
+		border-radius: var(--radius-sm);
+
+		& .card-actions {
+			display: none;
+		}
+		/* todo: allow links? */
+		& .card-image,
+		.card-header-title {
+			pointer-events: none;
+		}
+	}
+
+	/* slim card in myLibraries search */
+	:global(.my-libraries-result .search-card) {
+		grid-template-columns: 48px 1fr;
+		padding: calc(var(--spacing) * 2);
+
+		& .card-header-title {
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* card in popover */
+	:global(.popover .search-card-container) {
+		container-type: normal;
+
+		& .search-card {
+			padding: 0;
+			column-gap: calc(var(--spacing) * 2);
+			border: none;
+
+			&:has(img.placeholder) {
+				// hide placeholder in popover
+				grid-template-areas:
+				'content';
+				grid-template-columns: 1fr;
+
+				& .card-image {
+					display: none;
+				}
+			}
+		}
+
+		& .card-header-title {
+			pointer-events: none;
+			font-size: var(--text-sm);
+		}
 	}
 </style>

@@ -6,8 +6,7 @@
       "inScheme",
       "mediaType",
       "carrierType",
-      "inDataset",
-      "category"
+      "inDataset"
     ],
     "header": [
       "hasTitle",
@@ -37,7 +36,10 @@
       "@reverse/broader",
       "@reverse/broadMatch",
       "@reverse/continues",
-      "@reverse/continuedBy"
+      "@reverse/continuedBy",
+      "@reverse/exactMatch",
+      "@reverse/narrowMatch",
+      "@reverse/closeMatch"
     ],
     "hidden": [
       "@reverse/itemOf",

@@ -300,7 +300,8 @@ test('fetches and displays paginated results', async ({ page }) => {
 
 test('submits form when pressing submit action', async ({ page }) => {
 	await page.locator('[type=submit]').first().click();
-	await expect(page, 'submit action should only be triggered if there is a value').toHaveURL('/');
+	await expect(page, 'submit action can trigger without a value').toHaveURL('/test1?q=');
+	await page.goBack();
 	await page.getByRole('combobox').fill('hello world');
 	await page.getByRole('dialog').locator('[type=submit]').click();
 	await expect(page).toHaveURL('/test1?q=hello+world');

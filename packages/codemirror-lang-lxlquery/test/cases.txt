@@ -1,10 +1,19 @@
-# PARSE - normal parse
+# PARSE - normal tree
 
 AAA BBB AND (CCC OR DDD)
 
 ==>
 
 Query(String String AndOperator Group(String OrOperator String))
+
+
+# normal tree swedish
+
+AAA BBB OCH (CCC ELLER DDD) INTE EEE
+
+==>
+
+Query(String String AndOperator Group(String OrOperator String) UTerm(UOperator String))
 
 
 # implicit and group
@@ -18,7 +27,7 @@ Query(String String Group(String OrOperator String))
 
 # parse negative
 
-!AAA
+NOT AAA
 
 ==>
 
@@ -27,7 +36,7 @@ Query(UTerm (UOperator String))
 
 # parse negative 2
 
-NOT AAA
+INTE AAA
 
 ==>
 
@@ -298,15 +307,6 @@ Query(Qualifier(QualifierKey(String) QualifierOperator ⚠ ) Group(String))
 
 # fail compare with not
 
-AAA < ! CCC
-
-==>
-
-Query(Qualifier(QualifierKey(String) QualifierOperator ⚠ ) UTerm(...))
-
-
-# fail compare with not 2
-
 AAA < NOT CCC
 
 ==>
@@ -314,13 +314,31 @@ AAA < NOT CCC
 Query(Qualifier(QualifierKey(String) QualifierOperator ⚠ ) UTerm(...))
 
 
-# fail compare with like
+# empty group
 
-AAA < ~ CCC
+()
 
 ==>
 
-Query(Qualifier(QualifierKey(String) QualifierOperator ⚠ QualifierValue(String)))
+Query(Group)
+
+
+# empty group 2
+
+AAA AND ()
+
+==>
+
+Query(String AndOperator Group)
+
+
+# empty group 3
+
+AAA AND ( BBB OR (()) )
+
+==>
+
+Query(String AndOperator Group( String OrOperator Group(Group)))
 
 
 # codes and quotes
@@ -344,7 +362,7 @@ Query(String)
 
 # negative group
 
-!(AAAA OR BBBB)
+INTE (AAAA OR BBBB)
 
 ==>
 

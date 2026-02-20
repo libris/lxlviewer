@@ -1,3 +1,4 @@
+import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
 import type { DisplayMapping } from '$lib/types/search';
 
 export function displayMappingToString(mapping: DisplayMapping[]): string {
@@ -6,8 +7,9 @@ export function displayMappingToString(mapping: DisplayMapping[]): string {
 		mapping.forEach((m) => _iterate(m));
 
 		function _iterate(mapping: DisplayMapping) {
+			if (MAPPING_IGNORE_VARIABLE.some((v) => v === mapping.variable)) return;
 			const { children, operator, variable, displayStr, label, _key, _value } = mapping;
-			if ((displayStr || label) && !isWildcardQuery(mapping)) {
+			if (displayStr || label) {
 				if (!_key && !_value && displayStr) {
 					// don't show 'free text search' label
 					result.push(displayStr);
@@ -31,7 +33,7 @@ export function displayMappingToString(mapping: DisplayMapping[]): string {
 		}
 		return result
 			.filter((m) => !!m)
-			.join(', ')
+			.join(' ')
 			.trim();
 	}
 	return '';
@@ -40,15 +42,9 @@ export function displayMappingToString(mapping: DisplayMapping[]): string {
 function formatBooleanOperator(operator: string) {
 	switch (operator) {
 		case 'and':
+		case 'none':
 			return '';
 		default:
 			return ` ${operator.toUpperCase()} `;
 	}
-}
-
-export function isWildcardQuery(m: DisplayMapping) {
-	if (!m._key && !m._value && m.displayStr === '*') {
-		return true;
-	}
-	return false;
 }

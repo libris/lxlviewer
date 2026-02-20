@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
+	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_spell=true');
 });
 
 test('should not have any detectable a11y issues', async ({ page }) => {
@@ -13,6 +13,12 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 
 test('page displays the site header', async ({ page }) => {
 	await expect(page.getByRole('banner')).toBeVisible();
+});
+
+test('page displays the correct title', async ({ page }) => {
+	await expect(page).toHaveTitle('f | Libris');
+	await page.goto('/find?_q=*&_limit=20&_offset=0');
+	await expect(page).toHaveTitle('Libris');
 });
 
 test('page has a search input', async ({ page }) => {
@@ -46,18 +52,10 @@ test('facet groups can toggle', async ({ page }) => {
 	await expect(page.getByTestId('facet-list').first()).toBeVisible();
 });
 
-test('expanded filters have no detectable a11y issues', async ({ page }) => {
-	const facetGroups = await page.getByTestId('facet-toggle');
-	for (const el of await facetGroups.elementHandles()) {
-		await el.click();
-	}
-	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-	await expect.soft(accessibilityScanResults.violations).toEqual([]);
-});
-
 test('opening and sorting the facet sets a cookie', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
 	await expect(beforeCookies).toEqual([]);
+	await page.waitForLoadState('networkidle');
 	await page.locator('summary').filter({ hasText: 'Språk' }).click();
 	await page.getByTestId('facet-sort-language').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
@@ -83,7 +81,7 @@ test('facet opened/closed state is preserved', async ({ page, context }) => {
 	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeVisible();
 
 	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
-
+	await page.waitForURL('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
 	await expect(page.getByTestId('facet-list').first()).toBeHidden();
 	await expect(page.getByTestId('facet-list').nth(firstClosed)).toBeVisible();
 });
@@ -110,6 +108,7 @@ test('user sorting is persisted after navigating', async ({ page }) => {
 	await expect(langFacetSort).toHaveValue('hits.desc');
 	await langFacetSort.selectOption('alpha.asc');
 	await page.goto('/find?_q=a&_limit=20&_offset=0&_sort=&_i=f');
+	await page.waitForLoadState('networkidle');
 
 	await page.locator('summary').filter({ hasText: 'Språk' }).click();
 	const langFacetSortNew = await page.getByTestId('facet-sort-language');

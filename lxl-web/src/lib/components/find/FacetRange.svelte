@@ -35,7 +35,7 @@
 </script>
 
 <form
-	class="[&_label]:text-subtle mb-2 grid grid-cols-[1fr_1fr_auto] items-end gap-2 p-2"
+	class="[&_label]:text-subtle grid grid-cols-[1fr_1fr_auto] items-end gap-2 p-2"
 	action=""
 	onsubmit={handleSubmit}
 >
@@ -81,3 +81,11 @@
 	{/each}
 	<input type="hidden" name="_q" value={qOutput} />
 </form>
+
+<style lang="postcss">
+	@reference 'tailwindcss';
+
+	form {
+		padding-left: calc((var(--level, 0) * var(--spacing) * 4));
+	}
+</style>

@@ -26,6 +26,7 @@ import {
 	Platform,
 	type PropertyName,
 	type RangeRestriction,
+	Rdfs,
 	type ShowProperties,
 	type ShowProperty,
 	type VocabData
@@ -81,8 +82,9 @@ export class VocabUtil {
 
 	isKeyword(propertyName: PropertyName) {
 		return (
-			propertyName in this.contextTerms() &&
-			this.contextTerms()[propertyName][JsonLd.TYPE] === JsonLd.VOCAB
+			(propertyName in this.contextTerms() &&
+				this.contextTerms()[propertyName][JsonLd.TYPE] === JsonLd.VOCAB) ||
+			propertyName === Rdfs.RDF_TYPE
 		);
 	}
 
@@ -167,6 +169,9 @@ export class DisplayUtil {
 			case LensType.WebCard:
 			case LensType.WebCardHeaderTop:
 			case LensType.WebCardHeaderExtra:
+			case LensType.WebOverview:
+			case LensType.WebOverview2:
+			case LensType.WebDetails:
 				return LensType.Chip;
 			case LensType.WebCardFooter:
 			case LensType.Chip:
@@ -318,7 +323,11 @@ export class DisplayUtil {
 		const result = ackInit();
 
 		const has = (src: Data, key: string): boolean => {
-			return key in src || (key in this.langContainerAlias && this.langContainerAlias[key] in src);
+			return (
+				key in src ||
+				(key in this.langContainerAlias && this.langContainerAlias[key] in src) ||
+				(key === Rdfs.RDF_TYPE && JsonLd.TYPE in src)
+			);
 		};
 
 		const accumulate = (src: Data, key: string) => {
@@ -363,6 +372,8 @@ export class DisplayUtil {
 				// This is incorrect semantically but keeps links within the platform for display purposes
 				// TODO revisit when we want to be able to display the correct id as well...
 				accumulate(src[Platform.meta], JsonLd.ID);
+			} else if (key === Rdfs.RDF_TYPE) {
+				accumulate({ [Rdfs.RDF_TYPE]: src[JsonLd.TYPE] }, Rdfs.RDF_TYPE);
 			} else if (key in this.langContainerAlias) {
 				const alias = this.langContainerAlias[key];
 				if (alias in src) {
@@ -629,6 +640,24 @@ class Formatter {
 			}
 
 			return v;
+		},
+		'findToTop()': (v) => {
+			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
+				const display = v[Fmt.DISPLAY] as Array<unknown>;
+				const ix = display.findIndex((d) => isObject(d) && '_find' in d);
+
+				if (ix >= 0 && asArray(display[ix]['_find']).length > 0) {
+					const find = asArray(display[ix]['_find'])[0];
+					v['_findLink'] = find[JsonLd.ID];
+					if (!v[Fmt.STYLE]) {
+						v[Fmt.STYLE] = [];
+					}
+
+					v[Fmt.STYLE].push('find-link');
+				}
+			}
+
+			return v;
 		}
 	};
 
@@ -718,7 +747,11 @@ class Formatter {
 		// FIXME reaching inside
 		if (this.displayUtil.langContainerAliasInverted[propertyName]) {
 			return {
-				[this.displayUtil.langContainerAliasInverted[propertyName]]: this.pickLanguage(value)
+				[this.displayUtil.langContainerAliasInverted[propertyName]]: this.formatValues(
+					this.pickLanguage(value),
+					className,
+					propertyName
+				)
 			};
 		}
 

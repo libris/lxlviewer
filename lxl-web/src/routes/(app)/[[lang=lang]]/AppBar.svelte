@@ -101,9 +101,9 @@
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
 	<div
-		class="text-2xs text-subtle 3xl:text-sm 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1.25 px-1 font-medium xl:text-xs"
+		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-xs font-medium 2xl:text-sm @2xl:gap-0"
 	>
-		<Icon class="3xl:size-5.5 size-5" />
+		<Icon class="size-5" />
 		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
 			{label}
 		</p>
@@ -116,11 +116,17 @@
 >
 	{page.data.t('header.skipToContent')}
 </a>
-<header class="sticky top-0 z-20">
+<header class="sticky top-0 z-40">
 	{#if !dismissedBanner}
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
-	<nav class={['app-bar bg-app-header grid items-stretch', subset && 'with-subset']}>
+	<nav
+		class={[
+			'app-bar bg-app-header grid items-stretch',
+			page.route.id === '/(app)/[[lang=lang]]' && 'home',
+			subset && 'with-subset'
+		]}
+	>
 		<ul class="leading-actions ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
 				<svelte:element
@@ -226,7 +232,7 @@
 			</form>
 		</search>
 		<ul class="trailing-actions mr-2 flex items-center justify-end lg:mr-0 lg:gap-2">
-			<li class="lg:hidden">
+			<li class={[showSearchInputOnMobile && 'hidden', 'lg:hidden']}>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
 					type={mounted ? 'button' : undefined}
@@ -288,7 +294,10 @@
 		grid-template-columns: var(--search-grid-template-columns);
 		padding: var(--search-padding);
 		gap: var(--search-gap);
-		box-shadow: 0 1px 0 0 var(--color-primary-200);
+
+		&:not(.home) {
+			box-shadow: 0 1px 0 0 var(--color-primary-200);
+		}
 	}
 
 	.leading-actions {

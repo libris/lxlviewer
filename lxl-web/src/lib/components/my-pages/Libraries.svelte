@@ -1,37 +1,91 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { useSearchRequest } from 'supersearch';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { getUserSettings } from '$lib/contexts/userSettings';
+	import { JsonLd } from '$lib/types/xl';
+	import { type LibraryResult, type LibraryResultItem } from '$lib/types/search';
+	import { useSearchRequest } from 'supersearch';
+	import SearchCard from '$lib/components/find/SearchCard.svelte';
 	import BiSearch from '~icons/bi/search';
-	import { type LibraryResult } from '$lib/types/search';
+	import BiHouseHeart from '~icons/bi/house-heart';
 
-	let searchPhrase = $state('');
+	type Props = {
+		q: string | null;
+	};
+	const { q }: Props = $props();
+
+	const myLibraries: LibraryResultItem[] | undefined = $derived(page.data.myLibraries);
+	const myLibsError: string | undefined = $derived(page.data.error);
+
+	let searchPhrase = $state(q || '');
 	let endpoint = '/api/my-pages';
 	let queryFn = (query: string) =>
 		new URLSearchParams({
 			_q: query,
-			_limit: '10'
+			_limit: '20',
+			_stats: 'false',
+			_spell: 'false'
 		});
 	const debouncedWait = 300;
+
+	const myLibsCookie = $derived(Object.keys(getUserSettings().myLibraries || {}));
+	const addedFromSearch: LibraryResultItem[] = $state([]);
+
+	// "current state" of myLibs is page data + newly added search results
+	const mergedLibraries = $derived.by(() => {
+		return myLibsCookie
+			.map(
+				(id) =>
+					(myLibraries ?? []).find((m) => m.libraryId === id) ||
+					addedFromSearch.find((a) => a.libraryId === id)
+			)
+			.filter((lib) => !!lib);
+	});
+
+	function onResponse() {
+		const params = new SvelteURLSearchParams();
+		params.set('q', searchPhrase);
+		goto(page.url.pathname + `?${params.toString()}`, { replaceState: true, keepFocus: true });
+	}
 
 	let search = useSearchRequest({
 		endpoint,
 		queryFn,
+		transformFn: onResponse,
 		debouncedWait
 	});
 
-	const userSettings = getUserSettings();
-	const myLibraries = $derived(userSettings.myLibraries || {});
-
 	function handleInputChange() {
-		search.debouncedFetchData(searchPhrase);
+		if (searchPhrase) {
+			search.debouncedFetchData(searchPhrase);
+		}
 	}
+
+	onMount(() => {
+		if (searchPhrase) {
+			search.debouncedFetchData(searchPhrase);
+		}
+	});
+
+	$effect(() => {
+		const items: LibraryResultItem[] = search?.data?.items || [];
+		const matches = items.filter((i) => myLibsCookie.includes(i.libraryId));
+
+		for (const m of matches) {
+			if (!addedFromSearch.find((x) => x.libraryId === m.libraryId)) {
+				// when adding a lib from the search results, display that card in list on the right
+				addedFromSearch.push(m);
+			}
+		}
+	});
 </script>
 
-<h2 class="mt-6 text-lg font-medium">{page.data.t('myPages.libraries')}</h2>
-<div class="flex flex-col justify-between gap-6 py-4 lg:flex-row">
-	<div class="w-full shrink-0 lg:w-1/2">
-		<label for="my-libraries-search" class="text-sm font-medium"
+<div class="flex flex-col-reverse justify-between gap-6 py-2 md:flex-row">
+	<div class="w-full max-w-xl lg:w-6/12">
+		<h2 class="mt-4 font-medium">{page.data.t('myPages.findAndAdd')}</h2>
+		<label for="my-libraries-search" class="sr-only text-sm font-medium"
 			>{page.data.t('myPages.findAndAdd')}</label
 		>
 		<div class="relative mt-2">
@@ -39,63 +93,71 @@
 				id="my-libraries-search"
 				bind:value={searchPhrase}
 				placeholder={page.data.t('myPages.findLibrary')}
-				class="bg-input h-9 w-full max-w-md rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
+				class="bg-input h-9 w-full max-w-xl rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
 				oninput={handleInputChange}
 				type="search"
 			/>
 			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 		</div>
-		{#if searchPhrase && search.data}
-			{@const searchResult = search.data as LibraryResult}
-			<span class="text-2xs my-3 block" role="status">
-				{#if searchResult?.totalItems && searchResult?.totalItems !== 0}
+		<span class="my-3 block text-xs font-medium" role="status">
+			{#if search.isLoading}
+				{page.data.t('search.loading')}
+			{:else if search.error && !search.data}
+				<span class="bg-severe-50 rounded-sm p-1.5">{page.data.t('errors.somethingWentWrong')}</span
+				>
+			{:else if searchPhrase && search.data}
+				{@const searchResult = search.data as LibraryResult}
+				{@const hasResults = searchResult?.totalItems && searchResult?.totalItems !== 0}
+				{#if hasResults}
 					{searchResult?.totalItems}
 					{page.data.t('myPages.hitsFor')} "{searchPhrase}"
 				{:else}
 					{page.data.t('myPages.noResultsFor')} "{searchPhrase}"
 				{/if}
-			</span>
+			{/if}
+		</span>
+		{#if searchPhrase && search.data}
+			{@const searchResult = search.data as LibraryResult}
 			{#if searchResult?.items && searchResult?.items.length !== 0}
-				<ol class="text-xs">
-					{#each searchResult.items as resultItem (resultItem['@id'])}
-						{@const alreadyAdded = myLibraries?.[resultItem['@id']]}
-						<li
-							class="flex items-center justify-between p-1"
-							id="library-search-item-{resultItem.sigel}"
-						>
-							<span>{resultItem.label}</span>
-							<button
-								class="btn btn-primary text-nowrap"
-								aria-describedby="library-search-item-{resultItem.sigel}"
-								type="button"
-								onclick={() =>
-									alreadyAdded
-										? userSettings.removeLibrary(resultItem['@id'])
-										: userSettings.addLibrary(resultItem)}
-								>{alreadyAdded ? page.data.t('myPages.remove') : page.data.t('myPages.add')}
-							</button>
+				<ol class="my-libraries-result flex flex-col rounded-sm p-1">
+					{#each searchResult.items as resultItem (resultItem[JsonLd.ID])}
+						<li>
+							<SearchCard item={resultItem} />
 						</li>
 					{/each}
 				</ol>
 			{/if}
 		{/if}
 	</div>
-	<div class="w-full shrink-0 lg:w-1/2">
-		<span id="my-libraries" class="mb-2 block text-sm font-medium"
-			>{page.data.t('myPages.favouriteLibraries')}</span
-		>
-		<ol class="text-xs" aria-labelledby="my-libraries">
-			{#each Object.entries(myLibraries) as [id, item] (id)}
-				<li class="mb-1 flex items-center justify-between" id="added-library-item-{item.sigel}">
-					<span>{item.label}</span>
-					<button
-						class="btn btn-primary text-nowrap"
-						aria-describedby="added-library-item-{item.sigel}"
-						type="button"
-						onclick={() => userSettings.removeLibrary(id)}>{page.data.t('myPages.remove')}</button
-					>
-				</li>
-			{/each}
-		</ol>
+	<!-- favourite libraries -->
+	<div class="w-full lg:w-6/12">
+		<h2 id="my-libraries" class="mt-4 flex items-center gap-2 font-medium">
+			<BiHouseHeart class="libraries-indicator" aria-hidden="true" />
+			<span>{page.data.t('myPages.favouriteLibraries')}</span>
+		</h2>
+		{#if mergedLibraries.length}
+			<ol
+				class="my-libraries-result border-neutral mt-2 rounded-sm border"
+				aria-labelledby="my-libraries"
+			>
+				{#each mergedLibraries as myLib (myLib[JsonLd.ID])}
+					<li>
+						<SearchCard item={myLib} />
+					</li>
+				{/each}
+			</ol>
+		{:else if myLibsError}
+			<p class="bg-severe-50 mt-2 rounded-sm p-1 text-xs">
+				{page.data.t('errors.somethingWentWrong')}: {myLibsError}
+			</p>
+		{:else}
+			<p class="mt-2 text-xs">{page.data.t('search.noAddedLibrariesText')}</p>
+		{/if}
 	</div>
 </div>
+
+<style>
+	:global(.my-libraries-result li:first-of-type .search-card) {
+		border-top: none;
+	}
+</style>

@@ -1,51 +1,144 @@
 <script lang="ts">
 	import { page } from '$app/state';
 
-	import BiCheckSquareFill from '~icons/bi/check-square-fill';
-	import BiSquare from '~icons/bi/square';
 	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
-	import type { Facet, MultiSelectFacet } from '$lib/types/search';
-	import type { LocaleCode } from '$lib/i18n/locales';
+
+	import type { FacetValue } from '$lib/types/search';
+
+	import IconClose from '~icons/bi/x-lg';
 
 	interface Props {
-		facet: Facet | MultiSelectFacet;
-		locale: LocaleCode;
-		isEmbedded?: boolean; // should we not draw our own borders
+		data: FacetValue;
+		variant?: 'radio' | 'checkbox';
 	}
 
-	let { facet, locale, isEmbedded = false }: Props = $props();
+	let { data, variant }: Props = $props();
+
+	/*
+	const role = $derived.by(() => {
+		if (variant === 'radio') return 'menuitemradio';
+		if (variant === 'checkbox') return 'menuitemcheckbox';
+		return 'menuitem';
+	});
+	*/
 </script>
 
 <a
 	class={[
-		`facet-link grid flex-1 grid-cols-[auto_auto] items-end justify-between gap-2 py-1.5 font-normal no-underline`,
-		isEmbedded ? 'hover:bg-primary-100' : 'ml-4.5 border-l border-l-neutral-200 pr-3 pl-4'
+		`focusable flex min-h-8 items-center text-xs no-underline`,
+		data.selected && 'selected',
+		variant === 'checkbox' && 'with-checkbox',
+		variant === 'radio' && 'with-radio',
+		!variant && 'with-and'
 	]}
-	href={page.data.localizeHref(facet.view['@id'])}
+	href={page.data.localizeHref(data.view['@id'])}
 	data-sveltekit-preload-data="false"
 >
-	<span class="truncate" title={facet.str}>
-		{#if 'selected' in facet}
-			<!-- checkboxes -->
-			<span class="sr-only">{facet.selected ? page.data.t('search.activeFilter') : ''}</span>
-			<div class="bg-page mr-1 inline-block rounded-sm text-xs" aria-hidden="true">
-				{#if facet.selected}
-					<BiCheckSquareFill class="text-accent" />
-				{:else}
-					<BiSquare class="text-subtle" />
-				{/if}
-			</div>
-		{/if}
-		<span>
-			<DecoratedDataLite data={facet.object} />
-			{#if facet.discriminator}
-				<span class="text-subtle">({facet.discriminator})</span>
+	<span class="truncate" title={data.str}>
+		<span class={['truncate', data.selected && 'text-accent font-medium']}>
+			{#if typeof data.label === 'string'}
+				{data.label}
+			{:else}
+				<DecoratedDataLite data={data.label} />
+			{/if}
+			{#if data.discriminator}
+				<span class="text-subtle text-3xs">({data.discriminator})</span>
 			{/if}
 		</span>
 	</span>
-	{#if facet.totalItems > 0}
-		<span class="badge" aria-label="{facet.totalItems} {page.data.t('search.hits')}"
-			>{facet.totalItems.toLocaleString(locale)}</span
-		>
+	{#if data.totalItems !== 0 && !(data.selected && !variant)}
+		<span class="text-placeholder text-2xs ml-2">
+			<span class="text-3xs">
+				{data.totalItems.toLocaleString(page.data.locale)}
+			</span>
+			<span class="sr-only">
+				{data.totalItems === 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}
+			</span>
+		</span>
+	{/if}
+	{#if data.selected && !variant}
+		<span class="text-subtle ml-auto" aria-hidden="true">
+			<IconClose />
+		</span>
 	{/if}
 </a>
+
+<style lang="postcss">
+	@reference 'tailwindcss';
+
+	a {
+		padding-left: calc(((var(--level, 0) - 1) * var(--spacing) * 5.5) + var(--spacing) * 4);
+		padding-right: calc(var(--spacing) * 3);
+	}
+
+	/** A rather hacky way to style nested identify categories... */
+	/*
+	[role='menuitem'].identify-category:not(:first-child),
+	[role='menuitemcheckbox'].identify-category:not(:first-child) {
+		padding-left: calc((var(--level, 0) * var(--spacing) * 8) + var(--spacing) * 3);
+		@apply text-xs;
+	}
+	*/
+
+	/*
+    a[aria-checked='true'] {
+        font-weight: var(--font-weight-semibold);
+    }
+     */
+
+	.with-checkbox::before,
+	.with-radio::before {
+		content: '';
+		mask-size: cover;
+		mask-repeat: no-repeat;
+		background: var(--color-neutral-400);
+		width: 14px;
+		height: 14px;
+		flex-shrink: 0;
+		margin-right: calc(var(--spacing) * 2);
+	}
+
+	.with-checkbox:hover::before,
+	.with-radio:hover::before {
+		background: var(--color-neutral-500);
+	}
+
+	.with-checkbox::before {
+		mask-image: url('$lib/assets/img/checkbox-unchecked.svg');
+	}
+	.with-radio::before {
+		mask-image: url('$lib/assets/img/radio-unchecked.svg');
+	}
+
+	.with-checkbox.selected::before {
+		mask-image: url('$lib/assets/img/checkbox-checked.svg');
+	}
+
+	.with-radio.selected::before {
+		mask-image: url('$lib/assets/img/radio-checked.svg');
+	}
+
+	.with-checkbox.selected::before,
+	.with-radio.selected::before {
+		background: var(--color-accent);
+	}
+
+	.with-checkbox.selected:hover::before,
+	.with-radio.selected:hover::before {
+		background: var(--color-accent-700);
+	}
+
+	.focusable {
+		outline-offset: -2px;
+
+		&:hover {
+			background: var(--color-primary-100);
+		}
+		&:focus-visible,
+		&:has(:focus) {
+			background: var(--color-accent-50);
+			outline-color: var(--color-active);
+			@apply outline-2;
+		}
+	}
+</style>

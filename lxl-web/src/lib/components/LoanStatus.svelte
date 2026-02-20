@@ -107,11 +107,13 @@
 		}
 	}}
 >
-	<summary class="link-subtle flex cursor-pointer items-center gap-0.5">
-		<span class="text-3xs arrow text-subtle mr-0.5 h-3 origin-center rotate-0 transition-transform">
+	<summary class="link-subtle flex cursor-pointer items-center gap-1">
+		<span
+			class="text-3xs chevron text-subtle item-center flex h-3 origin-center rotate-0 transition-transform"
+		>
 			<BiChevronRight />
 		</span>
-		{page.data.t('holdings.loanStatus')}
+		<span>{page.data.t('holdings.loanStatus')}</span>
 	</summary>
 	<div
 		class="status-container border-neutral bg-page mt-2 flex max-w-md flex-col gap-4 rounded-sm border p-2"
@@ -191,7 +193,7 @@
 
 <style lang="postcss">
 	details[open] {
-		& .arrow {
+		& .chevron {
 			transform: rotate(90deg);
 		}
 	}

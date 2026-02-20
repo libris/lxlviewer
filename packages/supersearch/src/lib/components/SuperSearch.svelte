@@ -7,9 +7,10 @@
 		type ViewUpdateCodeMirrorEvent,
 		type Selection
 	} from '$lib/components/CodeMirror.svelte';
+	import { sendMessage } from '$lib/utils/sendMessage.js';
 	import type { ChangeSuperSearchEvent, ViewUpdateSuperSearchEvent } from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
-	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
+	import { Compartment, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import preventEnterKeyHandling from '$lib/extensions/preventEnterKeyHandling.js';
 	import arrowKeyCursorHandling from '$lib/extensions/arrowKeyCursorHandling.js';
@@ -21,7 +22,8 @@
 		PaginationQueryFunction,
 		TransformFunction,
 		ResultItem,
-		ShowExpandedSearchOptions
+		ShowExpandedSearchOptions,
+		DebouncedWaitFunction
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
 
@@ -79,6 +81,7 @@
 		toggleWithKeyboardShortcut?: boolean;
 		wrappingArrowKeyNavigation?: boolean;
 		debouncedWait?: number;
+		getDebouncedWait?: DebouncedWaitFunction;
 		selection?: Selection;
 		isLoading?: boolean;
 		hasData?: boolean;
@@ -112,6 +115,7 @@
 		defaultResultRow = 0,
 		defaultResultCol = 0,
 		debouncedWait = 300,
+		getDebouncedWait,
 		selection = $bindable(),
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable(), // should be treated as readonly
@@ -148,11 +152,11 @@
 		queryFn,
 		paginationQueryFn,
 		transformFn,
-		debouncedWait
+		debouncedWait,
+		getDebouncedWait
 	});
 
 	let prevSearchDataId: string | undefined;
-	const sendMessage = StateEffect.define<{ message: string }>({});
 	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
 
 	$effect(() => {
@@ -243,7 +247,7 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (!dialog?.open && event.value && value !== event.value) {
+		if (!dialog?.open && value !== event.value) {
 			showExpandedSearch();
 		}
 		value = event.value;
@@ -374,7 +378,7 @@
 	}
 
 	function handleCollapsedKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Enter' && value.length) {
+		if (event.key === 'Enter') {
 			submitClosestForm();
 		}
 		if (event.key === 'ArrowDown' && event.altKey) {
@@ -396,7 +400,7 @@
 			/* Fire click event if item cell is focused */
 			if (activeDecendant) {
 				activeDecendant.click();
-			} else if (value.length) {
+			} else {
 				submitClosestForm();
 			}
 		}
@@ -552,10 +556,10 @@
 		}
 	}
 
-	function handleClickSubmit(event: MouseEvent) {
-		if (!value.length) {
-			event.preventDefault();
-		}
+	function handleClickSubmit() {
+		// if (!value.length) {
+		// 	event.preventDefault();
+		// }
 	}
 
 	function handleReset() {

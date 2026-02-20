@@ -1,17 +1,15 @@
 import { env } from '$env/dynamic/private';
+import { error, json } from '@sveltejs/kit';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import type { ApiError } from '$lib/types/api';
-import type { FramedData } from '$lib/types/xl';
-import { LxlLens } from '$lib/types/display';
-import { pickProperty, toString } from '$lib/utils/xl';
+import type { HoldingMainEntity, HoldingsData } from '$lib/types/holdings.js';
 import {
-	getBibIdsByInstanceId,
-	getHoldersByType,
+	getHoldingLibraries,
 	getHoldingsByInstanceId,
-	getHoldingsByType
-} from '$lib/utils/holdings';
-import { error, json } from '@sveltejs/kit';
-import jmespath from 'jmespath';
+	getBibIdsByInstanceId,
+	getHoldingsByType,
+	getHoldersByType
+} from '$lib/utils/holdings.server';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 
 export async function GET({ params, locals }) {
@@ -35,31 +33,20 @@ export async function GET({ params, locals }) {
 		}
 	}
 	const resource = await resourceRes.json();
-	const mainEntity = centerOnWork(resource['mainEntity'] as FramedData);
-	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
-
-	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
-	const instances = jmespath.search(overview, '*[].hasInstance[]');
-
-	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
-	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale);
-
-	// Should this be passed as a parameter to HoldingsModal.svelte instead?
+	const mainEntity = centerOnWork(resource['mainEntity']) as HoldingMainEntity;
 	const holdingsByType = getHoldingsByType(mainEntity);
-	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
+	const byType = getHoldersByType(holdingsByType);
 
-	// FIXME: beware holdingsByInstanceId => has .heldBy.obj
-	// holdingsByType => has just .heldBy without .obj
+	const holdings: HoldingsData = {
+		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil),
+		byType,
+		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
+		holdingLibraries: getHoldingLibraries(byType)
+	};
 
-	//TODO: cache response for a short amount of time?
-	return json({
-		bibIdsByInstanceId,
-		holdingsByInstanceId,
-		instances,
-		title: toString(heading),
-		overview: overviewWithoutHasInstance,
-		holdersByType
+	return json(holdings, {
+		headers: {
+			'cache-control': 'public, max-age=1800' // 30 mins
+		}
 	});
 }

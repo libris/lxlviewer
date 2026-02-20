@@ -1,6 +1,10 @@
 export default {
 	home: {
-		searchPlaceholder: 'Titel, författare, ämne med mera'
+		pageHeadingTitle: 'Sök på alla svenska bibliotek',
+		pageHeadingDescription:
+			'Libris är de svenska bibliotekens gemensamma katalog med över 9 miljoner titlar.',
+		metaDescription:
+			'Libris är en nationell söktjänst med information om titlar på cirka 600 svenska bibliotek, däribland KB. Med hjälp av tjänsten kan du hitta det du söker på ett bibliotek nära dig. Här finns närmare 13 miljoner objekt: böcker, tidskrifter, bilder, kartor, noter, e-böcker med mera. Libris innehåller även digitalt material som är fritt att ta del av hemifrån.'
 	},
 	appMenu: {
 		skipToContent: 'Hoppa till innehåll',
@@ -27,7 +31,7 @@ export default {
 		search: 'Sök',
 		login: 'Logga in',
 		saved: 'Sparat',
-		searchPlaceholder: 'Sök titel, upphovsperson, bibliotek, ämnen...',
+		searchPlaceholder: 'Sök titel, upphovsperson, ämnen...',
 		searchSubsetPlaceholder: 'Sök inom',
 		openMenu: 'Öppna huvudmeny',
 		closeMenu: 'Stäng meny'
@@ -41,9 +45,18 @@ export default {
 		dismiss: 'Dölj information om betan'
 	},
 	about: {
-		pageTitle: 'Om betan'
+		pageTitle: 'Om betan',
+		pageDescription:
+			'Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog. Just nu pågår ett initiativ att ersätta den redan existerande och välanvända tjänsten libris.kb.se och detta är vår publika betaversion av den kommande tjänsten.'
+	},
+	help: {
+		pageTitle: 'Hjälp',
+		pageDescription:
+			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.'
 	},
 	myPages: {
+		pageTitle: 'My pages',
+		pageDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Mina bibliotek',
@@ -62,15 +75,13 @@ export default {
 		feedback: 'Lämna synpunkter',
 		feedbackLink: 'https://survey.kb.se/librisbeta',
 		customerSupport: 'Libris kundtjänst',
-		cookies: 'Hantera kakor'
+		cookies: 'Hantera kakor',
+		gdpr: 'Om dataskydd (GDPR)'
 	},
 	facet: {
 		q: 'Fritextsökning',
-		'_categoryByCollection.find': 'Kategori',
-		'_categoryByCollection.identify': '"Identifierande kategori"  🚧👷🏗️',
-		'_categoryByCollection.@none': '"Kategori"  🚧👷🏗️',
-		category: '"Kategori"  🚧👷🏗️',
-		hasInstanceCategory: '"Format"  🚧👷🏗',
+		'librissearch:findCategory': 'Kategori',
+		'librissearch:hasInstanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'instanceOf.@type': 'Verkstyp',
 		issuanceType: 'Utgivningssätt',
@@ -96,10 +107,11 @@ export default {
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Beskrivningsnivå',
 		'rdf:type': 'Typ',
-		hasInstanceType: 'Format', // 'Bärare',
-		instanceOfType: 'Verkstyp',
+		'librissearch:hasInstanceType': 'Format', // 'Bärare',
+		'librissearch:instanceOfType': 'Verkstyp',
 		genreForm: 'Genre/form',
-		itemHeldBy: 'Bibliotek',
+		'librissearch:itemHeldBy': 'Bibliotek',
+		'librissearch:itemHeldByOrg': 'Bibliotek',
 		bibliography: 'Bibliografi',
 		contributor: 'Författare/upphov',
 		language: 'Språk',
@@ -124,9 +136,11 @@ export default {
 		filters: 'Sökfilter',
 		activeFilter: 'Aktivt filter',
 		selectedFilters: 'Valda filter',
+		selectedFiltersOne: 'Valt filter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
 		removeFilter: 'Ta bort filter',
+		noFiltersFound: 'Inga filter hittades',
 		noResults: 'Inga resultat',
 		hitsOf: 'av',
 		hits: 'träffar',
@@ -157,13 +171,16 @@ export default {
 		goToResource: 'Gå till resursen',
 		addLibraries: 'Lägg till bibliotek',
 		changeLibraries: 'Ändra bibliotek',
-		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek.',
-		libraries: 'bibliotek'
+		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek',
+		libraries: 'bibliotek',
+		allInFacet: 'Allt inom'
 	},
 	supersearch: {
+		search: 'Sök',
 		addQualifiers: 'Lägg till filter',
+		loading: 'Laddar...',
 		suggestions: 'Förslag',
-		showAll: 'Visa alla träffar'
+		showAll: 'Visa sökresultat'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
@@ -181,7 +198,7 @@ export default {
 		subjectLabel: 'Ämne',
 		subjectPlaceholder: 'Sommaren, Romerska riket',
 		yearKey: 'år',
-		yearLabel: 'År',
+		yearLabel: 'Utgivningsår',
 		yearPlaceholder: '1994, 2002, 2025'
 	},
 	sort: {
@@ -199,6 +216,7 @@ export default {
 	},
 	errors: {
 		somethingWentWrong: 'Något gick fel',
+		notAvailable: 'Information saknas',
 		notFound: 'Sidan hittades inte',
 		wrongLink: 'Klickade du på en länk i Libris som inte fungerade?',
 		sendEmail: 'Skicka e-post till',
@@ -220,7 +238,7 @@ export default {
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren',
-		more: 'fler'
+		more: 'till'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
@@ -236,35 +254,49 @@ export default {
 		results: 'träffar',
 		result: 'träff',
 		editions: 'Utgåvor',
+		editionOf: 'Utgåva av',
+		summary: 'Sammanfattning',
+		tableOfContents: 'Innehållsförteckning',
+		details: 'Detaljer',
+		moreDetails: 'Fler detaljer',
 		previous: 'Föregående',
 		next: 'Nästa',
 		resultOf: 'av',
 		showInSearchResults: 'Visa i träfflista',
-		showInSearchResultsShort: 'Visa träfflista'
+		showInSearchResultsShort: 'Visa träfflista',
+		uriLink: 'URI (länk till resurs)',
+		downloadDescription: 'Ladda ner beskrivning',
+		showIn: 'Visa i',
+		librisCataloging: 'Libris katalogisering',
+		librisOld: 'gamla Libris'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',
 		availableAt: 'Finns på',
 		library: 'bibliotek',
 		libraries: 'bibliotek',
-		findLibrary: 'Hitta bibliotek',
-		findAtYourNearestLibrary: 'Hitta på ditt närmaste bibliotek',
+		findLibrary: 'Sök bibliotek eller ort',
+		findAtLibrary: 'Hitta på bibliotek',
+		allFormats: 'Alla format',
+		PhysicalResource: 'Fysisk',
+		DigitalResource: 'Digital',
+		shelfMark: 'Placering',
 		location: 'Placering',
 		shelf: 'Hylla',
 		loanPolicy: 'Lånepolitik',
 		status: 'Status',
 		date: 'Datum',
-		loanStatus: 'Utlånad?',
+		loanStatus: 'Se utlåningsstatus',
 		libraryUnvaliable: 'Lånestatus är inte tillgänglig för detta bibliotek',
 		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',
 		unavailable: 'Ej tillgänglig',
 		map: 'karta',
-		linkToLocal: 'Visa i bibliotekets katalog',
-		loanReserveLink: 'Låna/reservera',
+		linkToLocal: 'Hitta',
 		linkToCatalog: 'Bibliotekets lokala katalog',
 		linkToSite: 'Bibliotekets webbplats',
 		openingHoursEtc: 'Öppettider, adress m.m.',
+		chooseEdition: 'Välj utgåva',
 		showAll: 'Visa alla utgåvor',
 		showFewer: 'Visa färre utgåvor',
 		myLoans: 'Mina lån',
@@ -290,5 +322,9 @@ export default {
 		copyToClipboard: 'Kopiera till urklipp',
 		copied: 'Kopierad!',
 		saveAsFile: 'Spara som fil'
+	},
+	horizontalList: {
+		goForward: 'Gå framåt i lista',
+		goBackward: 'Gå bakåt i lista'
 	}
 };

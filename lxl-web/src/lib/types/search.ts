@@ -1,7 +1,15 @@
-import { type DisplayDecorated, type FramedData, JsonLd, LensType, type Link } from '$lib/types/xl';
+import {
+	type DisplayDecorated,
+	type DisplayDecoratedLite,
+	type FramedData,
+	JsonLd,
+	LensType,
+	type Link,
+	Owl
+} from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
-import { type LibraryItem } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
+import type { LibraryId, OrgId } from '$lib/types/holdings';
 
 export interface SearchResult {
 	[JsonLd.ID]: string;
@@ -15,8 +23,8 @@ export interface SearchResult {
 	next?: Link;
 	previous?: Link;
 	items: SearchResultItem[];
-	facetGroups?: FacetGroup[];
-	predicates?: MultiSelectFacet[];
+	facets?: Facet[];
+	predicates?: FacetValue[];
 	_spell: SpellingSuggestion[] | [];
 }
 
@@ -26,10 +34,15 @@ export interface ResourceSearchResult {
 	mapping: DisplayMapping[];
 }
 
+export interface LibraryResultItem extends SearchResultItem {
+	libraryId: LibraryId;
+	displayStr: string;
+}
+
 export interface LibraryResult {
 	totalItems: number;
 	maxItems: number;
-	items: LibraryItem[];
+	items: LibraryResultItem[];
 }
 
 export interface SearchResultItem {
@@ -44,44 +57,45 @@ export interface SearchResultItem {
 	typeForIcon: string; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
-	heldByMyLibraries?: LibraryItem[];
+	heldByMyLibraries?: (LibraryId | OrgId)[] | null;
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }
 
-type FacetGroupId = string;
+type FacetId = string;
 
 export type FacetSearch = {
 	mapping: {
 		greaterThanOrEquals: string;
 		lessThanOrEquals: string;
-		variable: FacetGroupId;
+		variable: FacetId;
 	};
 	template: string;
 };
 
-export interface FacetGroup {
+export interface Facet {
 	label: string;
-	dimension: FacetGroupId;
+	dimension: FacetId;
 	search?: FacetSearch;
 	maxItems?: number;
-	// TODO better to do this distinction on the group level?
-	facets: (Facet | MultiSelectFacet)[];
+	values: FacetValue[];
+	operator?: FacetOperator;
 }
 
-export interface Facet {
+export interface FacetValue {
 	totalItems: number;
 	view: Link;
-	object: DisplayDecorated;
+	label: DisplayDecoratedLite | string;
 	str: string;
-	discriminator: string;
-	facetGroups?: FacetGroup[];
+	discriminator?: string;
+	facets?: Facet[];
+	alias?: string;
+	selected?: boolean;
+	operator?: FacetOperator;
+	all?: boolean;
 }
 
-export interface MultiSelectFacet extends Facet {
-	selected: boolean;
-	alias?: string;
-}
+export type FacetOperator = 'AND' | 'OR';
 
 interface SpellingSuggestion {
 	label: string;
@@ -121,7 +135,7 @@ export interface PartialCollectionView {
 	items: FramedData[];
 	stats?: {
 		[JsonLd.ID]: '#stats';
-		sliceByDimension: Record<FacetGroupId, Slice>;
+		sliceByDimension: Record<FacetId, Slice>;
 		_predicates: Observation[];
 		_boolFilters?: Observation[];
 	};
@@ -137,12 +151,13 @@ export interface MappingsOnlyPartialCollectionView {
 	};
 }
 
-interface Slice {
+export interface Slice {
 	alias: string;
-	dimension: FacetGroupId;
+	dimension: FacetId;
 	observation: Observation[];
 	search?: FacetSearch;
 	maxItems: number;
+	_connective: string;
 }
 
 export interface Observation {
@@ -150,6 +165,7 @@ export interface Observation {
 	view: Link;
 	object: FramedData;
 	_selected?: boolean;
+	sliceByDimension: Record<FacetId, Slice>;
 }
 
 export enum SearchOperators {
@@ -195,9 +211,9 @@ interface InvalidProperty {
 }
 
 interface PropertyChainAxiom {
-	propertyChainAxiom: (ObjectProperty | DatatypeProperty)[];
-	label: string; // e.g. "instanceOf language"
-	_key: string; // e.g. "instanceOf.language"
+	[Owl.PROPERTY_CHAIN_AXIOM]: { [JsonLd.LIST]: (ObjectProperty | DatatypeProperty)[] }[];
+	// label: string; // e.g. "instanceOf language"
+	// _key: string; // e.g. "instanceOf.language"
 }
 
 export interface ApiItemDebugInfo {
@@ -236,7 +252,7 @@ export interface SuperSearchResult extends SearchResult {
 }
 
 export interface SuperSearchResultItem extends SearchResultItem {
-	qualifiers: QualifierSuggestion[];
+	qualifiers?: QualifierSuggestion[];
 }
 
 export interface QualifierSuggestion {

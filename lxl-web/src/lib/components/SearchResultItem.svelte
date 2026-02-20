@@ -6,51 +6,74 @@
 	import placeholderImage from '$lib/assets/img/placeholder.svg';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import TypeIcon from './TypeIcon.svelte';
+	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 
-	type Props = { data: SearchResultItem; headerClass?: string };
+	type Props = {
+		data: SearchResultItem;
+		lazyImage?: boolean;
+		highPriorityImage?: boolean;
+		fadeInImage?: boolean;
+	};
 
-	let { data, headerClass }: Props = $props();
+	let { data, lazyImage = false, highPriorityImage = false, fadeInImage = false }: Props = $props();
+
+	let loadedImage = $state(false);
+
+	function handleLoadImage() {
+		loadedImage = true;
+	}
 </script>
 
 {#snippet image()}
-	<div class="flex aspect-square w-full max-w-48 items-end justify-center">
+	<div
+		class="resource-image mx-auto mb-2 flex aspect-square w-full items-end justify-center rounded-lg bg-neutral-100 p-3"
+	>
 		{#if data.image}
 			<img
 				src={data.image.url}
 				width={data.image.widthPx > 0 ? data.image?.widthPx : undefined}
 				height={data.image.heightPx > 0 ? data.image?.heightPx : undefined}
 				alt={page.data.t('general.latestInstanceCover')}
+				loading={lazyImage ? 'lazy' : undefined}
+				fetchpriority={typeof highPriorityImage === 'boolean' && highPriorityImage
+					? 'high'
+					: undefined}
 				class={[
-					'aspect-square w-full object-bottom',
+					'aspect-square w-full object-bottom transition-opacity',
+					fadeInImage && !loadedImage && 'opacity-0 motion-reduce:opacity-100 noscript:opacity-100',
 					data['@type'] === 'Person' ? 'rounded-full object-cover' : 'object-contain'
 				]}
+				onload={fadeInImage ? handleLoadImage : undefined}
 			/>
 		{:else}
-			<div class="relative flex items-center justify-center">
+			<div class="relative flex aspect-square w-full items-center justify-center">
 				<img
 					src={placeholderImage}
 					alt=""
 					class={[
-						'object-cover',
+						'h-full object-cover',
 						data?.['@type'] === 'Person' ? 'rounded-full' : 'rounded-lg',
-						(data?.typeForIcon === 'Text' || data?.typeForIcon === 'Literature') && 'aspect-3/4'
+						bookAspectRatio(data?.typeForIcon) && 'aspect-3/4'
 					]}
 				/>
-				<TypeIcon type={data.typeForIcon} class="absolute text-4xl text-neutral-300" />
+				<TypeIcon type={data.typeForIcon} class="@4xs:size-14! absolute size-10 text-neutral-300" />
 			</div>
 		{/if}
 	</div>
 {/snippet}
 
-<article>
+<article class="@container min-w-36">
 	<header>
 		<a
 			href={page.data.localizeHref(relativizeUrl(data['@id']))}
-			class="flex flex-col items-center outline-0 hover:[&_h2]:underline focus:[&_h2]:underline"
+			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
 			{@render image()}
-			<p class="decorated-card-header-top">
-				<TypeIcon type={data.typeForIcon} class="text-3xs mb-0.25 inline" />
+			<p class="text-subtle line-clamp-1 text-xs break-all">
+				<TypeIcon
+					type={data.typeForIcon}
+					class="text-3xs @4xs:text-2xs inline -translate-y-px leading-none"
+				/>
 				{#if data.typeStr}
 					<span class="font-medium">
 						{data.typeStr}
@@ -58,37 +81,39 @@
 					<span class="hidden has-[+*]:inline"> · </span>
 				{/if}
 				{#each data['web-card-header-top']?._display as displayObj, index (index)}
-					<span>
-						<DecoratedData data={displayObj} showLabels="never" />
-					</span>
+					<DecoratedData data={displayObj} showLabels="never" />
 				{/each}
 			</p>
 			<hgroup>
-				<h2 class={['decorated-card-heading font-medium', headerClass]}>
+				<h2
+					class={[
+						'decorated-card-heading mt-0.5 line-clamp-2 text-sm leading-snug font-medium hover:underline @min-[16rem]:text-[0.9375rem]'
+					]}
+				>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
+				{#if data['web-card-header-extra']?._display && data['web-card-header-extra']?._display.length}
+					<p class="text-subtle mt-0.5 truncate text-xs">
+						{#each data['web-card-header-extra']?._display as displayObj, index (index)}
+							<span>
+								<DecoratedData data={displayObj} showLabels="defaultOn" />
+							</span>
+						{/each}
+					</p>
+				{/if}
 			</hgroup>
-			{#if data['web-card-header-extra']?._display}
-				<p class="decorated-card-header-extra">
-					{#each data['web-card-header-extra']?._display as displayObj, index (index)}
-						<span>
-							<DecoratedData data={displayObj} showLabels="defaultOn" />
-						</span>
-					{/each}
-				</p>
-			{/if}
 		</a>
 	</header>
 	{#if data['card-body']?._display}
-		<div class="decorated-card-body">
+		<div class="4xs:text-sm decorated-card-body mt-1 mb-1 text-xs">
 			{#each data['card-body']?._display as obj, index (index)}
-				<div>
+				<div class="@4xs:text-sm flex flex-col items-center text-center">
 					<DecoratedData data={obj} showLabels="never" block limit={{ contribution: 3 }} />
 				</div>
 			{/each}
 		</div>
 	{/if}
-	<footer class="decorated-card-footer">
+	<footer class="@4xs:text-[0.8125rem] text-xs">
 		{#each data['web-card-footer']?._display as obj, index (index)}
 			{#if 'hasInstance' in obj}
 				{@const instances = getInstanceData(obj.hasInstance)}
@@ -119,11 +144,29 @@
 </article>
 
 <style lang="postcss">
-	.decorated-card-header-top,
-	.decorated-card-header-extra,
-	.decorated-card-footer {
-		font-size: var(--text-2xs);
-		color: var(--color-subtle);
-		font-weight: var(--font-weight-normal);
+	.decorated-card-heading {
+		& :global(.transliteration) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+			font-weight: var(--font-weight-normal);
+			display: block;
+		}
+
+		& :global(.transliteration._contentBefore),
+		& :global(.transliteration._contentAfter) {
+			display: none;
+		}
+	}
+
+	.decorated-card-body {
+		& :global([data-property='contribution']) {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+
+			&::global(> *) {
+				@apply truncate;
+			}
+		}
 	}
 </style>

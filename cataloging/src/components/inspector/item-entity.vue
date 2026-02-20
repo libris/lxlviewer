@@ -10,6 +10,7 @@ import ItemMixin from '@/components/mixins/item-mixin.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import PreviewCard from '@/components/shared/preview-card.vue';
 import ReverseRelations from '@/components/inspector/reverse-relations.vue';
+import * as DisplayUtil from 'lxljs/display';
 
 export default {
   name: 'item-entity',
@@ -31,6 +32,10 @@ export default {
     isEnrichmentSource: {
       type: Boolean,
       default: false,
+    },
+    broaderCategories: {
+      type: Array,
+      default: () => [],
     }
   },
   data() {
@@ -62,6 +67,12 @@ export default {
       if (enriched.length > 0) {
         return enriched.some((el) => el.path === this.path);
       } return false;
+    },
+    toBeRemoved() {
+      if (this.broaderCategories.length > 0 && !this.isLocked) {
+        return this.broaderCategories.some(b => b === this.item['@id']);
+      }
+      return false;
     },
     isMarc() {
       if (this.item.hasOwnProperty('@type') && this.item['@type'].startsWith('marc:')) {
@@ -106,6 +117,16 @@ export default {
         }
       }
       return null;
+    },
+    itemLabel() {
+      return DisplayUtil.getItemLabel(
+        this.focusData,
+        this.resources,
+        this.inspector.data.quoted,
+        this.settings,
+        '',
+        true
+      );
     },
   },
   watch: {
@@ -228,6 +249,7 @@ export default {
           class="ItemEntity chip"
           tabindex="0"
           ref="chip"
+          v-tooltip.top="toBeRemoved ? translatePhrase('The term is implied by another term and will be removed on save') : null"
           v-if="!isCardWithData || !expanded"
           :class="{
             'is-locked': isLocked,
@@ -240,6 +262,7 @@ export default {
             'is-removed': diffRemoved,
             'is-added': diffAdded,
             'is-highlighted': enriched && !isEnrichmentSource,
+            'to-be-removed': toBeRemoved,
           }">
           <span v-if="!isLocked && hasBackendValidationError">
             <i class="fa fa-warning fa-fw icon--warn icon--sm"
@@ -254,12 +277,13 @@ export default {
           <span class="ItemEntity-history-icon" v-if="diffAdded">
             <i class="fa fa-plus-circle icon--sm icon-added" />
           </span>
-          <span class="ItemEntity-label chip-label">
+          <span class="ItemEntity-label chip-label"
+          :class="{'to-be-removed-text': toBeRemoved }">
             <span v-if="(!isCardWithData || !expanded) && isLibrisResource">
-              <router-link :to="routerPath">{{getItemLabel}}</router-link>
+              <router-link :to="routerPath">{{itemLabel}}</router-link>
             </span>
             <span v-if="(!isCardWithData || !expanded) && !isLibrisResource">
-              <a :href="convertResourceLink(item['@id'])">{{getItemLabel}} <span class="fa fa-arrow-circle-right" /></a>
+              <a :href="convertResourceLink(item['@id'])">{{itemLabel}} <span class="fa fa-arrow-circle-right" /></a>
             </span>
             <span class="placeholder" /></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
@@ -396,6 +420,10 @@ export default {
     background-color: @form-highlight;
   }
 
+  &.to-be-removed {
+    border: 1px dashed;
+  }
+
   &.expanded {
     margin: 0 0 2em 0;
   }
@@ -416,6 +444,15 @@ export default {
       color: @link-color;
       &:hover {
         color: @link-color;
+      }
+    }
+    &.to-be-removed-text {
+      a {
+        color: @form-faded;
+
+        &:hover {
+          color: @form-faded;
+        }
       }
     }
   }

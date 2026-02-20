@@ -11,7 +11,26 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 });
 
 test('index page has expected h1', async ({ page }) => {
-	await expect(page.getByRole('heading', { name: 'Välkommen till öppen beta!' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Sök på alla svenska bibliotek' })).toBeVisible();
+});
+
+test('index page shows featured searches', async ({ page }) => {
+	await expect(page).toHaveURL('/');
+	await page.waitForLoadState('networkidle');
+
+	await expect(page.getByLabel('Ny skönlitteratur på svenska').getByRole('listitem')).toHaveCount(
+		20,
+		{
+			timeout: 10000
+		}
+	);
+	await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
+	await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
+		20,
+		{
+			timeout: 10000
+		}
+	);
 });
 
 test('can change the language', async ({ page }) => {
@@ -26,6 +45,7 @@ test('index page has a search input', async ({ page }) => {
 test('can perform a search', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').fill('*');
 	await page.keyboard.press('Enter');
+	await page.waitForLoadState('networkidle');
 	await expect(page).toHaveURL(/\/find/);
 });
 

@@ -1,7 +1,11 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
 	home: {
-		searchPlaceholder: 'Title, author, subject etc'
+		pageHeadingTitle: 'Search all Swedish libraries',
+		pageHeadingDescription:
+			"Libris is the Swedish libraries' joint catalogue with over 9 million items.",
+		metaDescription:
+			'Libris is a national search service with information about titles in about 600 Swedish libraries, including the National Library. With Libris you can find what you are looking for at a library near you. The search service contains almost 13 million items: books, journals, pictures, maps, notes, e-books and more. Libris also contains digital material that is free to access from home.'
 	},
 	appMenu: {
 		skipToContent: 'Skip to main content',
@@ -16,7 +20,7 @@ export default {
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
 		accessibility: 'Accessibility',
-		changeLang: 'In Swedish'
+		changeLang: 'På svenska'
 	},
 	header: {
 		skipToContent: 'Skip to main content',
@@ -24,11 +28,11 @@ export default {
 		home: 'Home',
 		help: 'Help',
 		myPages: 'My pages',
-		changeLang: 'In Swedish',
+		changeLang: 'På svenska',
 		search: 'Search',
 		login: 'Log in',
 		saved: 'Saved',
-		searchPlaceholder: 'Search for title, author, library, subject...',
+		searchPlaceholder: 'Search for title, author, subject...',
 		searchSubsetPlaceholder: 'Search within',
 		openMenu: 'Open main menu',
 		closeMenu: 'Close menu'
@@ -42,13 +46,22 @@ export default {
 		dismiss: 'Hide beta info'
 	},
 	about: {
-		pageTitle: 'About the beta'
+		pageTitle: 'About the beta',
+		pageDescription:
+			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog. Right now, an initiative is underway to replace the already existing and well-used service libris.kb.se and this is our public beta version of the upcoming service.'
+	},
+	help: {
+		pageTitle: 'Help',
+		pageDescription:
+			'Help and documentation for using Libris, the Swedish national union catalogue.'
 	},
 	myPages: {
+		pageTitle: 'My pages',
+		pageDescription: 'Here you can manage your favourite libraries, among other things.',
 		myPages: 'My pages',
 		libraries: 'Libraries',
 		favouriteLibraries: 'My libraries',
-		findLibrary: 'Search for libraries',
+		findLibrary: 'Search library or location',
 		findAndAdd: 'Find and add favourite libraries',
 		noResultsFor: 'No results for',
 		hitsFor: 'hits for',
@@ -63,15 +76,13 @@ export default {
 		feedback: 'Give feedback',
 		feedbackLink: 'http://survey.kb.se/librisbeta/en',
 		customerSupport: 'Libris customer support',
-		cookies: 'Manage cookies'
+		cookies: 'Manage cookies',
+		gdpr: 'Processing of personal data'
 	},
 	facet: {
 		q: 'Free text search',
-		'_categoryByCollection.find': '"Find category" 🚧👷🏗️',
-		'_categoryByCollection.identify': '"Identifying category"  🚧👷🏗️',
-		'_categoryByCollection.@none': '"Category"  🚧👷🏗️',
-		category: '"Category"  🚧👷🏗️',
-		hasInstanceCategory: '"Format"  🚧👷🏗',
+		'librissearch:findCategory': 'Category',
+		'librissearch:hasInstanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
 		issuanceType: 'Issuance type',
@@ -97,10 +108,11 @@ export default {
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Encoding level',
 		'rdf:type': 'Type',
-		hasInstanceType: 'Format', // 'Carrier',
-		instanceOfType: 'Work type',
+		'librissearch:hasInstanceType': 'Format', // 'Carrier',
+		'librissearch:instanceOfType': 'Work type',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
+		'librissearch:itemHeldByOrg': 'Library',
 		bibliography: 'Bibliography',
 		contributor: 'Author/Contributor',
 		language: 'Language',
@@ -125,9 +137,11 @@ export default {
 		filters: 'Filters',
 		activeFilter: 'Active filter',
 		selectedFilters: 'Selected filters',
+		selectedFiltersOne: 'Selected filter',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		removeFilter: 'Remove filter',
+		noFiltersFound: 'No filters found',
 		noResults: 'No results',
 		hitsOf: 'of',
 		hits: 'hits',
@@ -158,13 +172,16 @@ export default {
 		goToResource: 'Go to the resource',
 		addLibraries: 'Add libraries',
 		changeLibraries: 'Change libraries',
-		noAddedLibrariesText: 'You have not chosen any favourite libraries.',
-		libraries: 'libraries'
+		noAddedLibrariesText: 'You have not chosen any favourite libraries',
+		libraries: 'libraries',
+		allInFacet: 'All in'
 	},
 	supersearch: {
+		search: 'Search',
 		addQualifiers: 'Add filter',
+		loading: 'Loading...',
 		suggestions: 'Suggestions',
-		showAll: 'Show all results'
+		showAll: 'Show search results'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
@@ -182,7 +199,7 @@ export default {
 		subjectLabel: 'Subject',
 		subjectPlaceholder: 'Sommaren, Romerska riket',
 		yearKey: 'year',
-		yearLabel: 'Year',
+		yearLabel: 'Year of publication',
 		yearPlaceholder: '1994, 2002, 2025'
 	},
 	sort: {
@@ -200,6 +217,7 @@ export default {
 	},
 	errors: {
 		somethingWentWrong: 'Something went wrong',
+		notAvailable: 'Information is not available',
 		notFound: 'Page not found',
 		wrongLink: "Did you click on a link that didn't work?",
 		sendEmail: 'Send an e-mail to',
@@ -237,11 +255,20 @@ export default {
 		results: 'results',
 		result: 'result',
 		editions: 'Editions',
+		editionOf: 'Edition of',
+		summary: 'Summary',
+		details: 'Details',
+		moreDetails: 'More details',
 		previous: 'Previous',
 		next: 'Next',
 		resultOf: 'of',
 		showInSearchResults: 'Show in search results',
-		showInSearchResultsShort: 'Show all results'
+		showInSearchResultsShort: 'Show all results',
+		uriLink: 'URI (link to resource)',
+		downloadDescription: 'Download description',
+		showIn: 'Show in',
+		librisCataloging: 'Libris cataloging',
+		librisOld: 'old Libris'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',
@@ -249,23 +276,27 @@ export default {
 		library: 'library',
 		libraries: 'libraries',
 		findLibrary: 'Find library',
-		findAtYourNearestLibrary: 'Find it at your nearest library',
+		findAtLibrary: 'Find at a library',
+		allFormats: 'All formats',
+		PhysicalResource: 'Physical resource',
+		DigitalResource: 'Digital resource',
+		shelfMark: 'Shelf mark',
 		location: 'Location',
 		shelf: 'Shelf',
 		status: 'Status',
 		date: 'Date',
 		loanPolicy: 'Loan policy',
-		loanStatus: 'Available?',
+		loanStatus: 'See loan status',
 		libraryUnvaliable: 'Loan status is not available for this library',
 		loanStatusFailed: 'Failed to get loan status',
 		available: 'Available',
 		unavailable: 'Not available',
 		map: 'map',
-		linkToLocal: 'Show in local library catalog',
-		loanReserveLink: 'Loan/reserve',
+		linkToLocal: 'Find',
 		linkToCatalog: 'Local library catalog',
 		linkToSite: 'Library website',
 		openingHoursEtc: 'Opening hours, address etc',
+		chooseEdition: 'Choose edition',
 		showAll: 'Show all editions',
 		showFewer: 'Show fewer editions',
 		myLoans: 'My loans',
@@ -291,5 +322,9 @@ export default {
 		copyToClipboard: 'Copy to clipboard',
 		copied: 'Copied!',
 		saveAsFile: 'Save as file'
+	},
+	horizontalList: {
+		goForward: 'Go forward in list',
+		goBackward: 'Go backward in list'
 	}
 };

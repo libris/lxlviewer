@@ -1,223 +1,213 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import { page } from '$app/state';
-	import type { FramedData } from '$lib/types/xl';
 	import type {
-		BibIdByInstanceId,
-		DecoratedHolder,
-		HolderLinks,
-		HoldingLinks
+		BibIdObj,
+		HoldingLinks,
+		LibraryWithLinks,
+		LibraryWithLinksAndInstances,
+		UnknownLibrary
 	} from '$lib/types/holdings';
+	import { JsonLd } from '$lib/types/xl';
+	import BiChevronRight from '~icons/bi/chevron-right';
+	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 	import { createHoldingLinks } from '$lib/utils/holdings';
 	import LoanStatus from './LoanStatus.svelte';
-	import BiChevronRight from '~icons/bi/chevron-right';
 
 	type Props = {
-		holder: DecoratedHolder;
-		instances: BibIdByInstanceId;
+		holder: LibraryWithLinksAndInstances | UnknownLibrary;
 		hidden?: boolean;
 	};
-	const { holder, instances, hidden = false }: Props = $props();
 
-	let holderLinks: HolderLinks | undefined = $state();
-	let holdingLinks: Record<string, HoldingLinks> | undefined = $state();
+	type InstanceWithLinks = HoldingLinks & BibIdObj;
 
-	// load data when in viewport
-	let root: Element;
-	let observer: IntersectionObserver;
+	const { holder, hidden = false }: Props = $props();
+	let expanded = $state(false);
 
-	let loading = $state(false);
-	let error = $state(false);
-
-	onMount(() => {
-		if (browser) {
-			observer = new IntersectionObserver((entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						loadHolder();
-						observer?.disconnect();
-					}
-				});
-			});
-			observer.observe(root);
-		}
+	const instances: InstanceWithLinks[] = $derived.by(() => {
+		return isLibraryWithLinks(holder)
+			? Object.values(holder._instances).map((instance) => {
+					return {
+						...instance,
+						...createHoldingLinks(instance, holder, page.data.locale)
+					};
+				})
+			: [];
 	});
 
-	onDestroy(() => {
-		observer?.disconnect();
-	});
+	const numInstances = $derived(instances.length);
 
-	async function loadHolder() {
-		loading = true;
-		const holderId: string = holder.obj?.['@id'] || '';
-		try {
-			const res = await fetch(`/api/${page.data.locale}/holder?id=${holderId}`);
-			if (res.ok) {
-				type HolderResponse = { links: HolderLinks; libraryMainEntity: FramedData };
-				const { links, libraryMainEntity }: HolderResponse = await res.json();
-				holderLinks = links;
-
-				// create holder-specific links for its held instances
-				let tempHoldingLinks: Record<string, HoldingLinks> = {};
-				for (const [key, bibIdObj] of Object.entries(instances)) {
-					tempHoldingLinks[key] = createHoldingLinks(bibIdObj, libraryMainEntity, page.data.locale);
-				}
-				holdingLinks = tempHoldingLinks;
-				loading = false;
-			} else {
-				error = true;
-				loading = false;
-			}
-		} catch (e) {
-			console.error(e);
-			loading = false;
-			error = true;
-		}
-	}
-
-	const hasSomeItemLink = $derived(
-		holdingLinks
-			? Object.values(holdingLinks).some(
-					(item) =>
-						item.linksToItem.length || item.loanReserveLink.length || item.itemStatus?.length
-				)
-			: false
-	);
-
-	const hasEveryItemLink = $derived(
-		holdingLinks
-			? Object.values(holdingLinks).every(
-					(item) => item.linksToItem.length || item.loanReserveLink.length
-				)
-			: false
-	);
+	const DEFAULT_INSTANCE_LIMIT = 5;
+	let instanceLimit = $state(DEFAULT_INSTANCE_LIMIT);
+	const shownInstances = $derived(instances.filter((instance, index) => index < instanceLimit));
+	const instancesCanExpand = $derived(numInstances > instanceLimit);
+	const instancesCanCollapse = $derived(shownInstances.length > DEFAULT_INSTANCE_LIMIT);
 
 	const hasOpeningHoursEtc = $derived(
-		holderLinks && !!(holderLinks.openingHours?.join('') + holderLinks.address?.join('').trim())
+		'_links' in holder &&
+			!!(holder._links.openingHours?.join('') + holder._links.address?.join('').trim())
 	);
 
-	const INSTANCE_LIMIT = 5;
-	let currentInstanceLimit = $state(INSTANCE_LIMIT);
-	const totalNumInstances = $derived(Object.keys(holdingLinks || {}).length);
-	const shownInstances = $derived(
-		Object.entries(holdingLinks || {}).filter((item, index) => index < currentInstanceLimit)
+	const hasSomeItemLink = $derived(
+		instances.some(
+			(instance) =>
+				instance?.linksToItem.length ||
+				instance?.loanReserveLink.length ||
+				instance?.itemStatus?.length ||
+				instance?.itemStr
+		)
 	);
 
-	const instancesCanExpand = $derived(currentInstanceLimit < totalNumInstances);
-	const instancesCanCollapse = $derived(currentInstanceLimit > INSTANCE_LIMIT);
+	function isLibraryWithLinks(
+		holder: LibraryWithLinks | UnknownLibrary
+	): holder is LibraryWithLinks {
+		return '_links' in holder && 'sigel' in holder;
+	}
+
+	function getBestLink(instance: InstanceWithLinks): string | undefined {
+		let link: string | undefined;
+		link = instance?.loanReserveLink?.[0] || instance?.linksToItem?.[0];
+		if (link) return link;
+		else if (isLibraryWithLinks(holder)) {
+			return holder._links?.linksToCatalog?.[0] || holder._links?.linksToSite?.[0];
+		}
+		return link;
+	}
 </script>
 
 <li
-	class={['border-neutral flex flex-col gap-2 pb-3 not-last:border-b', hidden && 'hidden']}
-	bind:this={root}
+	class={[
+		'holder border-neutral bg-page flex flex-col rounded-sm border-b p-3',
+		hidden && 'hidden'
+	]}
 >
-	<h3 class="text-sm font-medium">{holder.str}</h3>
-	{#if loading}
-		<p class="animate-pulse">{page.data.t('search.loading')}</p>
-	{/if}
-	{#if error}
-		<div class="text-error bg-severe-50 rounded-sm p-2">
-			<p>{page.data.t('errors.somethingWentWrong')}</p>
+	<div class="holder-heading flex items-baseline justify-between">
+		<h3 class="text-sm font-medium">{holder.displayStr || holder.name || holder[JsonLd.ID]}</h3>
+		<!-- ext link or expand instances -->
+		{#if (numInstances === 1 || !hasSomeItemLink) && getBestLink(instances[0])}
+			<a
+				href={getBestLink(instances[0])}
+				target="_blank"
+				aria-label={page.data.t('holdings.findAtLibrary')}
+			>
+				<BiBoxArrowUpRight class="text-link ml-2 size-4" />
+			</a>
+		{:else if numInstances > 1 && hasSomeItemLink}
+			<button
+				class="text-link ml-2 whitespace-nowrap"
+				type="button"
+				onclick={() => (expanded = !expanded)}
+			>
+				{page.data.t('holdings.chooseEdition')}
+				({numInstances})</button
+			>
+		{/if}
+	</div>
+	{#if !isLibraryWithLinks(holder)}
+		<div class="text-severe-600 bg-severe-50 mt-2 rounded-sm p-2">
+			<p>{page.data.t('errors.notAvailable')}</p>
 		</div>
-	{/if}
-	{#if holderLinks}
-		<ul class="flex flex-col gap-2 [&>li]:flex [&>li]:flex-col [&>li]:items-start">
-			{#if hasSomeItemLink}
-				<!-- instance-specific links -->
-				<!-- loan reserve link OR item link AND loan status  -->
-				{#each shownInstances as [key, holding] (key)}
-					{@const manyInstances = Object.keys(holdingLinks || {}).length > 1}
-					<li class={['flex flex-col', manyInstances ? 'instance-one-of-many gap-1' : 'gap-2']}>
-						{#if manyInstances}
-							<h4 class="text-subtle font-medium">{holding.str || '-'}</h4>
-						{/if}
-						{#if holding.loanReserveLink?.[0]}
-							<a
-								href={holding.loanReserveLink[0]}
-								target="_blank"
-								class="holder-cta-btn ext-link btn btn-cta mb-1"
-							>
-								{page.data.t('holdings.loanReserveLink')}
-							</a>
-						{:else if holding.linksToItem?.[0]}
-							<a href={holding.linksToItem[0]} target="_blank" class="ext-link">
-								{page.data.t('holdings.linkToLocal')}
-							</a>
-						{/if}
-						{#if holding.itemStatus?.[0]}
-							{@const bibIdObj = instances[key]}
-							{#if bibIdObj}
-								<LoanStatus sigel={holder.sigel} {bibIdObj} />
+	{:else}
+		<ul class="flex flex-col">
+			{#if numInstances > 1 && expanded}
+				<!-- multiple instances list -->
+				{#each shownInstances as instance (instance.bibId)}
+					{@const bestLink = getBestLink(instance)}
+					<li class="instance-one-of-many gap-1">
+						<h4 class="mb-1 font-medium">{instance.publicationStr || '-'}</h4>
+						<!-- instance item data -->
+						<ul>
+							{#if instance.itemStr}
+								<li>
+									<p>
+										<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
+										<span>{instance.itemStr}</span>
+									</p>
+								</li>
 							{/if}
-						{/if}
+							<li class="flex gap-2">
+								<!-- instance best link -->
+								{#if bestLink}
+									<a href={getBestLink(instance)} target="_blank" class="ext-link">
+										{page.data.t('holdings.linkToLocal')}
+									</a>
+								{/if}
+								<!-- instance linkserver link -->
+								{#if instance.linkResolver}
+									<a href={instance.linkResolver.uri} target="_blank" class="ext-link">
+										{instance.linkResolver.label}
+									</a>
+								{/if}
+							</li>
+							{#if instance.itemStatus?.[0]}
+								<li>
+									<LoanStatus sigel={holder.sigel} bibIdObj={instance} />
+								</li>
+							{/if}
+						</ul>
 					</li>
 				{/each}
 				<!-- show more/less button -->
 				{#if instancesCanExpand}
 					<li class="mb-2">
-						<button
-							class="link-subtle text-xs"
-							onclick={() => (currentInstanceLimit = totalNumInstances)}
-						>
-							{page.data.t('holdings.showAll')} ({totalNumInstances})
+						<button class="link-subtle text-xs" onclick={() => (instanceLimit = numInstances)}>
+							{page.data.t('holdings.showAll')} ({numInstances})
 						</button>
 					</li>
 				{:else if instancesCanCollapse}
 					<li class="mb-2">
 						<button
 							class="link-subtle text-xs"
-							onclick={() => (currentInstanceLimit = INSTANCE_LIMIT)}
+							onclick={() => (instanceLimit = DEFAULT_INSTANCE_LIMIT)}
 						>
 							{page.data.t('holdings.showFewer')}
 						</button>
 					</li>
 				{/if}
 			{/if}
-			<!-- Lopac general links -->
-			{#if holderLinks.myLoansLink || holderLinks.registrationLink}
-				<li>
-					<div class="flex flex-row gap-2">
-						{#if holderLinks.myLoansLink}
-							<a target="_blank" class="ext-link" href={holderLinks.myLoansLink}>
+			<!-- single instance item data & loan status -->
+			{#if numInstances === 1}
+				{@const singleInstance = instances[0]}
+				{#if singleInstance.itemStr}
+					<li class="my-0.5">
+						<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
+						<span>{singleInstance.itemStr}</span>
+					</li>
+				{/if}
+				{#if singleInstance.itemStatus?.[0]}
+					<li class="mt-1">
+						<LoanStatus sigel={holder.sigel} bibIdObj={singleInstance} />
+					</li>
+				{/if}
+			{/if}
+			<!-- Lopac general links / single instance linkserver link -->
+			{#if holder._links.myLoansLink || holder._links.registrationLink || instances[0].linkResolver}
+				<li class="mt-1">
+					<div class="ml-4 flex flex-row gap-2">
+						{#if holder._links.myLoansLink}
+							<a target="_blank" class="ext-link" href={holder._links.myLoansLink}>
 								{page.data.t('holdings.myLoans')}
 							</a>
 						{/if}
-						{#if holderLinks.registrationLink}
-							<a target="_blank" class="ext-link" href={holderLinks.registrationLink}>
+						{#if holder._links.registrationLink}
+							<a target="_blank" class="ext-link" href={holder._links.registrationLink}>
 								{page.data.t('holdings.applyForCard')}
 							</a>
+						{/if}
+						{#if numInstances === 1 && instances?.[0].linkResolver}
+							<a href={instances[0].linkResolver.uri} target="_blank" class="ext-link"
+								>{instances[0].linkResolver.label}</a
+							>
 						{/if}
 					</div>
 				</li>
 			{/if}
-			{#if !hasEveryItemLink}
-				<!-- general holder links -->
-				{#if holderLinks.linksToCatalog.length}
-					{#each holderLinks.linksToCatalog as linkToCatalog, i (i)}
-						<li>
-							<a href={linkToCatalog} target="_blank" class="ext-link">
-								{page.data.t('holdings.linkToCatalog')}
-							</a>
-						</li>
-					{/each}
-				{:else if holderLinks.linksToSite.length}
-					{#each holderLinks.linksToSite as linkToSite, i (i)}
-						<li>
-							<a href={linkToSite} target="_blank" class="ext-link">
-								{page.data.t('holdings.linkToSite')}
-							</a>
-						</li>
-					{/each}
-				{/if}
-			{/if}
+			<!-- opening hours / adress -->
 			{#if hasOpeningHoursEtc}
-				<li>
-					<!-- opening hours / adress -->
+				<li class="mt-1">
 					<details class="w-full">
-						<summary class="link-subtle flex cursor-pointer items-center gap-0.5">
+						<summary class="link-subtle flex cursor-pointer items-center gap-1">
 							<span
-								class="text-3xs arrow text-subtle h-3 origin-center rotate-0 transition-transform"
+								class="text-3xs chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
 							>
 								<BiChevronRight />
 							</span>
@@ -225,10 +215,10 @@
 						</summary>
 						<div class="border-neutral bg-page mt-2 max-w-md rounded-sm border p-2">
 							<ul class="whitespace-pre-line">
-								{#each holderLinks.openingHours as openingHours, i (i)}
+								{#each holder._links.openingHours as openingHours, i (i)}
 									<li>{openingHours}</li>
 								{/each}
-								{#each holderLinks.address as address, i (i)}
+								{#each holder._links.address as address, i (i)}
 									<li>{address}</li>
 								{/each}
 							</ul>
@@ -242,26 +232,15 @@
 
 <style>
 	details[open] {
-		& .arrow {
+		& .chevron {
 			rotate: 90deg;
 		}
 	}
 
 	.instance-one-of-many {
+		margin-top: calc(var(--spacing) * 2);
 		margin-bottom: calc(var(--spacing) * 2);
 		border-left: 2px solid var(--color-neutral-300);
 		padding-left: calc(var(--spacing) * 2);
-	}
-
-	.holder-cta-btn {
-		color: var(--color-white);
-		text-decoration: none;
-		height: auto;
-		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
-		border-radius: var(--spacing);
-
-		&::after {
-			background-color: var(--color-white);
-		}
 	}
 </style>

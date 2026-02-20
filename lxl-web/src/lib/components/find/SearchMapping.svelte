@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
 	import { getRelationSymbol } from '$lib/utils/getRelationSymbol';
-	import { isWildcardQuery } from '$lib/utils/displayMappingToString';
 	import SearchMapping from './SearchMapping.svelte';
 	import type { DisplayMapping } from '$lib/types/search';
 	import { page } from '$app/state';
@@ -23,72 +23,78 @@
 	]}
 >
 	{#each mapping as m, i (`outer-${i}-${depth}`)}
-		{@const { children, operator, up, variable, displayStr, label, display } = m}
-		{#if (displayStr || label) && !isWildcardQuery(m)}
-			{@const isLinked = !!display?.['@id']}
-			<li
-				class={[
-					'lxl-qualifier pill bg-neutral flex h-8 max-w-full items-center rounded-sm',
-					variable && `variable-${variable}`
-				]}
-			>
-				<span class="atomic">
-					{#if label}
-						<span class="lxl-qualifier-key atomic h-full content-center whitespace-nowrap">
-							{label}
-						</span>
-					{/if}
-					{#if operator && operator !== 'none'}
-						<span
-							class="lxl-qualifier-operator atomic h-full content-center pr-1.5 {operator ===
-								'existence' && 'pl-1.5'}">{getRelationSymbol(m.operator)}</span
-						>
-					{/if}
-					{#if displayStr}
-						<span
-							class={[
-								'h-full content-center overflow-hidden',
-								operator === 'none' ? 'lxl-qualifier-alias atomic' : 'lxl-qualifier-value',
-								isLinked && 'atomic'
-							]}
-						>
-							<span class="block truncate">{displayStr}</span>
-						</span>
-					{/if}
-					{#if up}
-						<a
-							class="lxl-qualifier-remove atomic h-8 transition-colors"
-							href={page.data.localizeHref(m.up?.['@id'])}
-							aria-label={page.data.t('search.removeFilter')}
-						>
-							<BiXLg fill="currentColor" />
+		{#if !MAPPING_IGNORE_VARIABLE.some((v) => v === m.variable)}
+			{@const { children, operator, up, variable, displayStr, label, display, invalid } = m}
+			{#if displayStr || label}
+				{@const isLinked = !!display?.['@id']}
+				<li
+					class={[
+						'lxl-qualifier pill bg-neutral flex h-8 max-w-full items-center rounded-sm',
+						variable && `variable-${variable}`
+					]}
+				>
+					<span class="atomic truncate">
+						{#if label}
+							<span class="lxl-qualifier-key h-full content-center whitespace-nowrap">
+								{#if invalid}
+									{invalid}
+								{:else}
+									{label}
+								{/if}
+							</span>
+						{/if}
+						{#if operator && operator !== 'none'}
+							<span
+								class="lxl-qualifier-operator h-full content-center pr-1.5 {operator ===
+									'existence' && 'pl-1.5'}">{getRelationSymbol(m.operator)}</span
+							>
+						{/if}
+						{#if displayStr}
+							<span
+								class={[
+									'h-full content-center overflow-hidden',
+									operator === 'none' ? 'lxl-qualifier-alias' : 'lxl-qualifier-value',
+									isLinked && 'atomic'
+								]}
+							>
+								<span class="block truncate">{displayStr}</span>
+							</span>
+						{/if}
+						{#if up}
+							<a
+								class="lxl-qualifier-remove atomic h-8 transition-colors"
+								href={m.up?.['@id']}
+								aria-label={page.data.t('search.removeFilter')}
+							>
+								<BiXLg fill="currentColor" />
+							</a>
+						{/if}
+					</span>
+				</li>
+			{:else if children && variable !== 'defaultSiteFilters'}
+				<li
+					class={[
+						'group flex max-w-full flex-wrap items-center gap-1.5',
+						`group-${operator}`,
+						`${operator === 'not' && 'lxl-not-term'}`,
+						variable ? `variable-${variable}` : `${children.length > 1 ? 'group-inner' : ''}`
+					]}
+				>
+					{#each children as child, i (`${i}-${depth}`)}
+						{@const _child = Array.isArray(child) ? child : [child]}
+						{#if operator}
+							<span class="operator-{operator} text-2xs uppercase">{operator}</span>
+						{/if}
+						<SearchMapping depth={depth + 1} mapping={_child} />
+					{/each}
+					{#if up && variable}
+						<a href={m.up?.['@id']} class="btn btn-primary">
+							<BiTrash aria-hidden="true" />
+							{page.data.t('search.clearFilters')}
 						</a>
 					{/if}
-				</span>
-			</li>
-		{:else if children && variable !== 'defaultSiteFilters'}
-			<li
-				class={[
-					'group flex max-w-full flex-wrap items-center gap-1.5',
-					`group-${operator}`,
-					`${operator === 'not' && 'lxl-not-term'}`,
-					variable ? `variable-${variable}` : `${children.length > 1 ? 'group-inner' : ''}`
-				]}
-			>
-				{#each children as child, i (`${i}-${depth}`)}
-					{@const _child = Array.isArray(child) ? child : [child]}
-					{#if operator}
-						<span class="operator-{operator} text-2xs uppercase">{operator}</span>
-					{/if}
-					<SearchMapping depth={depth + 1} mapping={_child} />
-				{/each}
-				{#if up && variable}
-					<a href={page.data.localizeHref(m.up?.['@id'])} class="btn btn-primary">
-						<BiTrash aria-hidden="true" />
-						{page.data.t('search.clearFilters')}
-					</a>
-				{/if}
-			</li>
+				</li>
+			{/if}
 		{/if}
 	{/each}
 </ul>

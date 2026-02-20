@@ -15,7 +15,7 @@ function getLabelFromMappings(
 
 	const keyLabel = suggestLabels.keyLabel || pageLabels.keyLabel;
 	const valueLabel = suggestLabels.valueLabel || pageLabels.valueLabel;
-	const invalid = suggestLabels.invalid || pageLabels.invalid;
+	let invalid = suggestLabels.invalid !== false && pageLabels.invalid !== false;
 	const removeLink = suggestLabels.removeLink || pageLabels.removeLink;
 
 	if (suggestMapping?.length) {
@@ -23,7 +23,12 @@ function getLabelFromMappings(
 		prevSuggestMapping = suggestMapping;
 	}
 
-	return { keyLabel, valueLabel, removeLink, invalid };
+	// display labels - valid?
+	if (keyLabel || valueLabel) {
+		invalid = false;
+	}
+
+	return { key, value, keyLabel, valueLabel, removeLink, invalid };
 }
 
 function iterateMapping(
@@ -34,7 +39,7 @@ function iterateMapping(
 	let keyLabel: string | undefined;
 	let valueLabel: string | undefined;
 	let removeLink: string | undefined;
-	let invalid: boolean = false;
+	let invalid: boolean | undefined;
 
 	if (mapping && Array.isArray(mapping)) {
 		_iterate(mapping);
@@ -47,6 +52,7 @@ function iterateMapping(
 					if (el?.invalid === el?._key) {
 						invalid = true;
 					} else {
+						invalid = false;
 						keyLabel = el.label;
 					}
 					const isLinked = !!el.display?.['@id'];

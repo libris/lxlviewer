@@ -109,6 +109,20 @@ export default {
     'itemOf',
     'heldBy',
   ],
+  validateTypesByPath: {
+    'Work': {'mainEntity.category': ['ContentType', 'GenreForm']},
+    'Instance':
+      {
+        'mainEntity.instanceOf.category': ['ContentType', 'GenreForm'],
+        'mainEntity.category': ['CarrierType']
+      },
+  },
+  broaderRelations: [
+    'broader',
+    'broadMatch',
+    'exactMatch',
+    'locatedIn'
+  ],
   defaultExpandedProperties: [
     'hasComponent',
     '@reverse/reproductionOf',
@@ -145,6 +159,10 @@ export default {
   warnOnSave: {
     'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
     'mainEntity.concerning': []
+  },
+  blockedForAddition: {
+    'isReplacedBy' : '',
+    'category' : 'https://id.kb.se/term/div/abstract'
   },
   propertyChains: {
     '@reverse.itemOf.heldBy.@id': {

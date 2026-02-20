@@ -1,5 +1,30 @@
+import AxeBuilder from '@axe-core/playwright';
 import { devices, expect, test } from '@playwright/test';
 test.use({ ...devices['iPhone 13'] });
+
+test('should not have any detectable a11y issues', async ({ page }) => {
+	await page.goto('/find?_q=språk%3A"lang%3Aswe"+sommar');
+	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
+
+test('button displays the correct filter count 1', async ({ page }) => {
+	await page.goto('/find?_q=&_r=');
+	const filterButton = await page.getByRole('link', { name: 'Sökfilter' });
+	await expect(filterButton).toHaveText('Sökfilter');
+});
+
+test('button displays the correct filter count 2', async ({ page }) => {
+	await page.goto('/find?_q=hej&_r=');
+	const filterButton = await page.getByRole('link', { name: 'Sökfilter' });
+	await expect(filterButton).toHaveText('Sökfilter 1');
+});
+
+test('button displays the correct filter count 3', async ({ page }) => {
+	await page.goto('/find?_q=hej+category:"saogf:Romaner"&_r=');
+	const filterButton = await page.getByRole('link', { name: 'Sökfilter' });
+	await expect(filterButton).toHaveText('Sökfilter 2');
+});
 
 test('can toggle filters and show facets and mapping', async ({ page }) => {
 	await page.goto('/find?_q=språk%3A"lang%3Aswe"+sommar');
@@ -25,7 +50,7 @@ test('mapping displays the correct search query 2', async ({ page }) => {
 		'/find?_q=%28contribution:*+OR+%28category:"https://id.kb.se/term/ktg/Literature"+NOT+titel:"pirater"%29%29+existsImage'
 	);
 	await page.getByRole('link', { name: 'Sökfilter' }).click();
-	const mapping = page.getByRole('navigation', { name: 'Valda filter' });
+	const mapping = await page.getByRole('navigation', { name: 'Valda filter' });
 	const innerText =
 		'and or Medverkan och funktion ∃ or and Kategori : Litteratur and not Titel : "pirater" and Har omslags-/miniatyrbild Rensa';
 	await expect(mapping).toHaveText(innerText, { ignoreCase: true });
@@ -40,6 +65,28 @@ test('mapping displays the correct search query 3', async ({ page }) => {
 	const mappingText =
 		'and Titel : "pippi långstrump" and or Språk : Engelska or and Språk : Franska and not Språk : tyska and Fritextsökning : lindgren Rensa';
 	await expect(mapping).toHaveText(mappingText, { ignoreCase: true });
+});
+
+test('mapping pill can be removed', async ({ page }) => {
+	await page.goto('/find?_q=språk%3A"lang%3Aswe"+sommar');
+	await page.getByRole('link', { name: 'Sökfilter' }).click();
+	page
+		.getByRole('navigation', { name: 'Valda filter' })
+		.getByRole('link', { name: 'Ta bort filter' })
+		.first()
+		.click();
+	await expect(page).toHaveURL('/find?_q=sommar');
+});
+
+test('mapping pill can be removed and preserves lang', async ({ page }) => {
+	await page.goto('/en/find?_q=språk%3A"lang%3Aswe"+sommar');
+	await page.getByRole('link', { name: 'Filters' }).click();
+	page
+		.getByRole('navigation', { name: 'Selected filters' })
+		.getByRole('link', { name: 'Remove filter' })
+		.first()
+		.click();
+	await expect(page).toHaveURL('/en/find?_q=sommar');
 });
 
 test('mapping does not show the wildcard search', async ({ page }) => {

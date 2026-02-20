@@ -3,9 +3,17 @@
 	import SiteFooter from './SiteFooter.svelte';
 	import AppBar from './AppBar.svelte';
 	import { page } from '$app/state';
+	import { setHomepageContext } from '$lib/contexts/homepage';
+
 	const { children } = $props();
 
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
+
+	let homepageCache = $state({
+		previews: undefined
+	});
+
+	setHomepageContext(homepageCache);
 </script>
 
 <svelte:head>
@@ -18,7 +26,7 @@
 		{@render children()}
 	</div>
 {:else}
-	<main id="content" class="flex flex-1 flex-col">
+	<main id="content" class="@container flex flex-1 flex-col">
 		{@render children()}
 	</main>
 	<SiteFooter />

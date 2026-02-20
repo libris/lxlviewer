@@ -23,6 +23,14 @@ describe('getInstanceData', () => {
 	it('can handle an unknown object', () => {
 		expect(getInstanceData({ foo: 'bar' })).toStrictEqual({ count: 1, years: '' });
 	});
+
+	it('gets span for serials', () => {
+		expect(getInstanceData(serial)).toStrictEqual({ count: 1, years: '1904-1912' });
+	});
+
+	it('gets span for serials (non-array publication)', () => {
+		expect(getInstanceData(serial2)).toStrictEqual({ count: 1, years: '1881-' });
+	});
 });
 
 const multipleInstances = [
@@ -547,4 +555,108 @@ const oneInstance = {
 	],
 	_style: ['link'],
 	_label: 'Ljudinspelning'
+};
+
+const serial = {
+	'@id': 'https://libris-qa.kb.se/r88v5ct4pjxz1hrb#it',
+	'@type': 'PhysicalResource',
+	_display: [
+		{
+			publication: [
+				{
+					'@type': 'PrimaryPublication',
+					_display: [
+						{
+							agent: {
+								'@type': 'Agent',
+								_display: [
+									{
+										label: 'Andover Press',
+										_label: 'benämning'
+									}
+								],
+								_style: ['link'],
+								_label: 'Agent'
+							},
+							_label: 'agent'
+						},
+						{
+							_contentBefore: ', ',
+							startYear: '1904',
+							_label: 'startår'
+						},
+						{
+							_contentBefore: '-',
+							endYear: '1912',
+							_label: 'slutår'
+						}
+					],
+					_style: ['block'],
+					_label: 'Primär utgivning'
+				},
+				{
+					'@type': 'Publication',
+					_display: [
+						{
+							agent: {
+								'@type': 'Agent',
+								_display: [
+									{
+										label: 'Norwood Press',
+										_label: 'benämning'
+									}
+								],
+								_style: ['link'],
+								_label: 'Agent'
+							},
+							_label: 'agent'
+						}
+					],
+					_style: ['block'],
+					_label: 'Utgivning'
+				}
+			],
+			_label: 'utgivning'
+		}
+	],
+	_style: ['link'],
+	_label: 'Fysisk resurs'
+};
+
+const serial2 = {
+	'@id': 'https://libris-qa.kb.se/tb4101952lnr755#it',
+	'@type': 'PhysicalResource',
+	_display: [
+		{
+			publication: {
+				'@type': 'PrimaryPublication',
+				_display: [
+					{
+						agent: {
+							'@type': 'Agent',
+							_display: [
+								{
+									label: 'Svenska sällskapet för antropologi och geografi',
+									_label: 'benämning'
+								}
+							],
+							_style: ['link'],
+							_label: 'Agent'
+						},
+						_label: 'agent'
+					},
+					{
+						_contentBefore: ', ',
+						startYear: '1881',
+						_label: 'startår'
+					}
+				],
+				_style: ['block'],
+				_label: 'Primär utgivning'
+			},
+			_label: 'utgivning'
+		}
+	],
+	_style: ['link'],
+	_label: 'Fysisk resurs'
 };
