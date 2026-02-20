@@ -204,7 +204,9 @@
 		})
 	);
 
-	let includeAriaActiveDescendant = $derived(activeRowIndex >= 0 && activeColIndex >= 0); // ensures aria-activedecendant is only shown if the element exists in the DOM
+	let includeAriaActiveDescendant = $derived(
+		activeRowIndex > 0 || (activeRowIndex === 0 && activeColIndex !== defaultInputCol)
+	); // ensures aria-activedecendant is only shown if the element exists in the DOM
 	let expandedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
 			id: `${id}-content`,
@@ -254,6 +256,13 @@
 
 	function handleClickCollapsed() {
 		if (!dialog?.open) showExpandedSearch();
+	}
+
+	function handleClickExpanded() {
+		setDefaultRowAndCols();
+		if (!expandedEditorView?.hasFocus) {
+			expandedEditorView?.focus();
+		}
 	}
 
 	function setDefaultRowAndCols(options?: { focusRow?: number }) {
@@ -722,6 +731,7 @@
 	<CodeMirror
 		{value}
 		extensions={expandedExtensions}
+		onclick={handleClickExpanded}
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
 		onviewupdate={handleExpandedViewUpdate}
