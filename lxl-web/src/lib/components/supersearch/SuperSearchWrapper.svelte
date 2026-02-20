@@ -40,9 +40,10 @@
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		ariaDescribedBy?: string;
+		onCursorChange: (cursor: number | null) => void;
 	}
 
-	let { placeholder = '', ariaLabelledBy, ariaLabel, ariaDescribedBy }: Props = $props();
+	let { placeholder = '', ariaLabelledBy, ariaLabel, ariaDescribedBy, onCursorChange }: Props = $props();
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
 
@@ -146,6 +147,16 @@
 		!charBefore && !charAfter && editedParentNode !== 'QualifierValue'
 	);
 
+	const isValidWildcardPosition = $derived.by(() => {
+		// a valid wildcard position is at end of word (inside group, not inside quote)
+		if (charBefore && q.charAt(cursor - 1) !== ')' && q.charAt(cursor - 1) !== '"') {
+			if (!charAfter || q.charAt(cursor) === ')') {
+				return true;
+			}
+		}
+		return false;
+	});
+
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
 		return data;
@@ -224,6 +235,15 @@
 		if (page.data.locale !== prevLocale) {
 			prevLocale = page.data.locale;
 			superSearch?.fetchData();
+		}
+	});
+
+	$effect(() => {
+		// call back with cursor pos to append it to search
+		if (isValidWildcardPosition) {
+			onCursorChange?.(cursor);
+		} else {
+			onCursorChange?.(null);
 		}
 	});
 </script>

@@ -58,6 +58,26 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	const result = (await recordsRes.json()) as PartialCollectionView;
 
+	// zero hits -> redirect to a search with wildcard at cursor position
+	if (
+		result.totalItems === 0 &&
+		url.searchParams.get('_cursor') &&
+		!url.searchParams.has('_relaxed')
+	) {
+		const cursor = url.searchParams.get('_cursor');
+		const retryParams = new URLSearchParams(url.searchParams);
+		const _q = retryParams.get('_q');
+
+		if (cursor && _q) {
+			const _qWithWildCard = _q.slice(0, parseInt(cursor)) + '*' + _q.slice(parseInt(cursor));
+			retryParams.set('_q', _qWithWildCard);
+			retryParams.set('_relaxed', 'true');
+			retryParams.delete('_cursor');
+
+			redirect(302, `${url.pathname}?${retryParams.toString()}`);
+		}
+	}
+
 	const searchResult = await asResult(
 		result,
 		displayUtil,

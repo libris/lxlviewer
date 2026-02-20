@@ -176,7 +176,9 @@ export default {
 		changeLibraries: 'Ändra bibliotek',
 		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek',
 		libraries: 'bibliotek',
-		allInFacet: 'Allt inom'
+		allInFacet: 'Allt inom',
+		noExactMatches: 'Inga exakta träffar',
+		showingResultsFor: 'Visar resultat för'
 	},
 	supersearch: {
 		search: 'Sök',

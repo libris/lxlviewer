@@ -176,7 +176,9 @@ export default {
 		changeLibraries: 'Change libraries',
 		noAddedLibrariesText: 'You have not chosen any favourite libraries',
 		libraries: 'libraries',
-		allInFacet: 'All in'
+		allInFacet: 'All in',
+		noExactMatches: 'No exact matches',
+		showingResultsFor: 'Showing results for'
 	},
 	supersearch: {
 		search: 'Search',
