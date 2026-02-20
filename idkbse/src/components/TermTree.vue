@@ -2,13 +2,15 @@
   <div class="TermTree">
     <hgroup class="TermTree-header">
       <h4>Termer i {{ termTitle }}</h4>
-      <p class="total-term-items ">{{ totalTermItems }} termer</p>
+      <p class="total-term-items">{{ totalTermItems }} termer</p>
+      <p class="tip"><i>Tips:</i> Ctrl+F för att hitta term</p>
     </hgroup>
     <ul class="TermTree-list">
       <TermTreeItem
         v-for="treeItem in tree"
         :key="treeItem['@id']"
         :@id="treeItem['@id']"
+        :code="treeItem.code"
         :label="treeItem.label"
         :narrower="treeItem.narrower"
       />
@@ -55,6 +57,7 @@ export default {
         return parent?.["@reverse"]?.broader
           ?.map((child) => ({
             "@id": child["@id"],
+            code: this.entity.code,
             label: DisplayUtil.getItemLabel(
               child,
               this.resources,
@@ -68,10 +71,24 @@ export default {
           ?.sort((a, b) => a.label.localeCompare(b.label, "sv"));
       };
 
+      const schemeIri = this.entity["@id"];
+
+      const asArray = (o) => {
+        if (Array.isArray(o)) return o;
+        return o != null && o != undefined ? [o] : [];
+      };
+
       return this.terms.items
-        .filter((term) => !term.broader) // get root terms
+        .filter(
+          (term) =>
+            !asArray(term.broader).find(
+              (t) =>
+                typeof t === "object" && t?.["inScheme"]?.["@id"] === schemeIri
+            )
+        ) // get root terms
         .map((term) => ({
           "@id": term["@id"],
+          code: this.entity.code,
           label: DisplayUtil.getItemLabel(
             term,
             this.resources,
@@ -101,6 +118,9 @@ export default {
 
 <style lang="scss">
 .total-term-items {
+  color: $gray-700;
+}
+.tip {
   color: $gray-700;
 }
 .TermTree {
