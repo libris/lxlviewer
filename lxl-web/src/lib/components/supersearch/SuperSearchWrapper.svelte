@@ -288,8 +288,8 @@
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center sm:hidden',
-							expanded && 'h-14 w-13 sm:size-11 lg:size-12'
+							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 sm:hidden',
+							expanded && 'h-14 w-13'
 						]}
 						onclick={onclickClose}
 					>
@@ -419,12 +419,12 @@
 	.supersearch-input {
 		height: 100%;
 		min-height: var(--search-input-height);
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		border-radius: var(--radius-md);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 
 		&:hover {
-			box-shadow: 0 0 0 1px var(--color-primary-500);
+			box-shadow: 0 0 0 1px var(--color-primary-600);
 		}
 
 		&:focus-within {
@@ -436,10 +436,6 @@
 			&:focus-within {
 				outline: 4px solid var(--color-primary-200);
 			}
-		}
-
-		@variant @3xl {
-			font-size: var(--text-sm);
 		}
 
 		@variant @5xl {
@@ -463,6 +459,9 @@
 			margin-top: calc(var(--spacing) * 1.5);
 			box-shadow: 0 0 0 1px var(--color-neutral-400);
 
+			&:hover {
+				box-shadow: 0 0 0 1px var(--color-neutral-600);
+			}
 			&.focused-row:not(:has(:global(.focused-cell))) {
 				box-shadow: 0 0 0 6px var(--color-accent-100);
 				outline: 2px solid var(--color-outline);
@@ -482,9 +481,8 @@
 		min-height: var(--search-input-height);
 
 		&:has(.expanded) {
-			margin-inline: calc(var(--spacing) * 0.5);
-
 			@variant sm {
+				margin-inline: calc(var(--spacing) * 0.5);
 				margin-top: calc(var(--spacing) * 0.5);
 			}
 			@variant lg {
@@ -515,6 +513,10 @@
 		margin: 0;
 		padding: 0;
 		top: 0;
+
+		&::backdrop {
+			background: var(--color-backdrop);
+		}
 
 		@variant sm {
 			top: calc(var(--banner-height, 0) + var(--app-bar-height) - var(--spacing) * 0.5);
@@ -587,7 +589,7 @@
 	}
 
 	:global(.supersearch-dialog .focused .suggestion) {
-		background-color: var(--color-accent-100);
+		background-color: var(--color-accent-50);
 		outline: 2px solid var(--color-outline);
 	}
 
@@ -714,9 +716,13 @@
 	}
 
 	:global(.codemirror-container .cm-placeholder) {
-		font-size: var(--text-sm);
+		font-size: var(--text-xs);
 		color: var(--color-placeholder);
 		margin-top: 1px;
+
+		@variant sm {
+			font-size: var(--text-sm);
+		}
 
 		@variant @7xl {
 			margin-top: 0px;
@@ -735,6 +741,7 @@
 		box-shadow: 0 0 0 1px var(--color-accent-200);
 
 		&.focused-cell {
+			background-color: var(--color-accent-100);
 			box-shadow: 0 0 0 5px var(--color-accent-100);
 			outline: 2px solid var(--color-outline);
 

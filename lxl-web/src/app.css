@@ -178,7 +178,7 @@
 	--color-placeholder: var(--color-neutral-500);
 	--color-disabled: var(--color-neutral-400);
 	--color-outline: var(--color-accent-500);
-
+	--color-backdrop: --alpha(var(--color-black) / 15%);
 	--color-aside: oklch(0.994 0 0);
 }
 
@@ -471,12 +471,6 @@
 }
 
 /* OLD THEME */
-
-/* custom bg colors  */
-
-@utility bg-backdrop {
-	background-color: --alpha(var(--color-black) / 25%);
-}
 
 /* layout */
 

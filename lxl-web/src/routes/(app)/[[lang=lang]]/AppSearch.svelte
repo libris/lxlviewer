@@ -60,7 +60,7 @@
 		<button
 			type="submit"
 			class={[
-				'hover:bg-primary-50 hidden h-full w-full max-w-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:max-w-12'
+				'hover:bg-primary-50 hidden h-full w-full max-w-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 sm:flex lg:max-w-12'
 			]}
 			aria-label={page.data.t('supersearch.search')}
 		>
@@ -101,12 +101,17 @@
 		background: var(--color-input);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 		border-radius: var(--radius-md);
-		font-size: var(--text-sm);
+		font-size: var(--text-xs);
+		@variant sm {
+			font-size: var(--text-sm);
+		}
 
-		&:has(:focus) {
-			box-shadow: 0 0 0 2px var(--color-accent-500);
-			outline: 4px solid var(--color-accent-100);
-			outline-offset: 2px;
+		&:not(:has([type='submit']:focus)) {
+			&:has(:focus) {
+				box-shadow: 0 0 0 2px var(--color-accent-500);
+				outline: 4px solid var(--color-accent-100);
+				outline-offset: 2px;
+			}
 		}
 	}
 </style>
