@@ -52,7 +52,7 @@ test('mapping displays the correct search query 2', async ({ page }) => {
 	await page.getByRole('link', { name: 'Sökfilter' }).click();
 	const mapping = await page.getByRole('navigation', { name: 'Valda filter' });
 	const innerText =
-		'and or Medverkan och funktion ∃ or and Kategori : Litteratur and not Titel : "pirater" and Har omslags-/miniatyrbild Rensa';
+		'and or Medverkan och funktion ∃  or and Kategori : Litteratur · Genre/form and not Titel : "pirater"    and   Har omslags-/miniatyrbild   Rensa';
 	await expect(mapping).toHaveText(innerText, { ignoreCase: true });
 });
 
