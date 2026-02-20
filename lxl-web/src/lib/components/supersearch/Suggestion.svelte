@@ -163,9 +163,8 @@
 	@reference "tailwindcss";
 
 	:global(:not(.focused)) > .suggestion:has(:global(*:hover)) {
-		background-color: var(--color-primary-50);
+		background-color: var(--color-accent-50);
 	}
-
 	.suggestion button,
 	.suggestion a {
 		display: flex;

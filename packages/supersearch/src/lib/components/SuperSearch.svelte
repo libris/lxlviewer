@@ -23,7 +23,8 @@
 		TransformFunction,
 		ResultItem,
 		ShowExpandedSearchOptions,
-		DebouncedWaitFunction
+		DebouncedWaitFunction,
+		ExpandEvent
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
 
@@ -43,12 +44,15 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
+		ariaLabelledBy?: string;
+		ariaLabel?: string;
+		ariaDescribedBy?: string;
+		autofocus?: boolean;
 		endpoint: string | URL;
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
-		comboboxAriaLabel?: string;
 		inputRow?: Snippet<
 			[
 				{
@@ -86,7 +90,7 @@
 		isLoading?: boolean;
 		hasData?: boolean;
 		loadMoreLabel?: string;
-		onexpand?: () => void;
+		onexpand?: (event: ExpandEvent) => void;
 		oncollapse?: () => void;
 		onchange?: (event: ChangeSuperSearchEvent) => void;
 		onexpandedviewupdate?: (event: ViewUpdateSuperSearchEvent) => void;
@@ -99,12 +103,15 @@
 		form,
 		language,
 		placeholder = '',
+		ariaLabelledBy,
+		ariaLabel,
+		ariaDescribedBy,
+		autofocus,
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
 		paginationQueryFn,
 		transformFn,
 		extensions = [],
-		comboboxAriaLabel,
 		inputRow = fallbackInputRow,
 		expandedContent = fallbackExpandedContent,
 		resultItemRow = fallbackResultItemRow,
@@ -181,24 +188,38 @@
 		EditorView.contentAttributes.of({
 			role: 'combobox',
 			enterkeyhint: 'search',
-			...(comboboxAriaLabel && {
-				'aria-label': comboboxAriaLabel
+			...(ariaLabelledBy && {
+				'aria-labelledby': ariaLabelledBy
+			}),
+			...(ariaLabel && {
+				'aria-label': ariaLabel
+			}),
+			...(ariaDescribedBy && {
+				'aria-describedby': ariaDescribedBy
 			}),
 			'aria-haspopup': 'dialog', // indicates the availability and type of interactive popup element that can be triggered by the element
 			'aria-controls': `${id}-dialog`, // identifies the popup element
 			'aria-expanded': expanded.toString(), // indicates if the popup element is open
-			'aria-multiline': 'false' // aria-multiline isn't allowed inside elements with role=combobox
+			'aria-multiline': 'false' // aria-multiline isn't allowed inside elements with role=combobox,
 		})
 	);
 
-	let includeAriaActiveDescendant = $derived(activeRowIndex >= 0 && activeColIndex >= 0); // ensures aria-activedecendant is only shown if the element exists in the DOM
+	let includeAriaActiveDescendant = $derived(
+		activeRowIndex > 0 || (activeRowIndex === 0 && activeColIndex !== defaultInputCol)
+	); // ensures aria-activedecendant is only shown if the element exists in the DOM
 	let expandedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
 			id: `${id}-content`,
 			role: 'combobox', // identifies the element as a combobox
 			enterkeyhint: 'search',
-			...(comboboxAriaLabel && {
-				'aria-label': comboboxAriaLabel
+			...(ariaLabelledBy && {
+				'aria-labelledby': ariaLabelledBy
+			}),
+			...(ariaLabel && {
+				'aria-label': ariaLabel
+			}),
+			...(ariaDescribedBy && {
+				'aria-describedby': ariaDescribedBy
 			}),
 			'aria-haspopup': 'grid', // indicates that the combobox can popup a grid to suggest values
 			'aria-expanded': 'true', // indicates that the popup element is displayed
@@ -237,8 +258,15 @@
 		if (!dialog?.open) showExpandedSearch();
 	}
 
-	function setDefaultRowAndCols() {
-		activeRowIndex = defaultResultRow;
+	function handleClickExpanded() {
+		setDefaultRowAndCols();
+		if (!expandedEditorView?.hasFocus) {
+			expandedEditorView?.focus();
+		}
+	}
+
+	function setDefaultRowAndCols(options?: { focusRow?: number }) {
+		activeRowIndex = options?.focusRow || defaultResultRow;
 		if (activeRowIndex > 0) {
 			activeColIndex = defaultResultCol;
 		} else {
@@ -323,10 +351,10 @@
 						: collapsedEditorView?.state.selection.main
 			});
 			dialog?.showModal();
-			setDefaultRowAndCols();
+			setDefaultRowAndCols({ focusRow: options?.focusRow });
 			allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 			expanded = true;
-			onexpand?.();
+			onexpand?.({ windowPageYOffset: window.pageYOffset });
 		}
 		expandedEditorView?.focus();
 	}
@@ -352,6 +380,10 @@
 
 	export function resetData() {
 		search?.resetData();
+	}
+
+	export function focus() {
+		collapsedEditorView?.focus();
 	}
 
 	export function blur() {
@@ -639,6 +671,12 @@
 			effects: expandedContentAttributesCompartment.reconfigure(expandedContentAttributes)
 		});
 	});
+
+	$effect(() => {
+		if (autofocus && collapsedEditorView) {
+			collapsedEditorView.focus();
+		}
+	});
 </script>
 
 {#snippet fallbackExpandedContent({ search }: { search: ReturnType<typeof useSearchRequest> })}
@@ -693,6 +731,7 @@
 	<CodeMirror
 		{value}
 		extensions={expandedExtensions}
+		onclick={handleClickExpanded}
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
 		onviewupdate={handleExpandedViewUpdate}

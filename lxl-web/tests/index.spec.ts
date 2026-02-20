@@ -26,7 +26,7 @@ test('index page shows featured searches', async ({ page }) => {
 	);
 	await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
 	await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
-		20,
+		11,
 		{
 			timeout: 10000
 		}

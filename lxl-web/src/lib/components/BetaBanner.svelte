@@ -14,7 +14,7 @@
 
 <div
 	class={[
-		'beta-banner bg-warning-300 flex min-h-9 place-content-between items-stretch gap-1.5 px-3 font-medium',
+		'beta-banner bg-warning-300 fixed top-0 z-50 flex min-h-9 w-full place-content-between items-stretch gap-1.5 px-3 font-medium',
 		dismissable && 'pr-0'
 	]}
 >

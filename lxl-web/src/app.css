@@ -69,15 +69,14 @@
 	--search-grid-template-areas: 'leading-actions leading-actions trailing-actions'
 		'search search search';
 	--search-grid-template-columns: auto 1fr 1fr;
-	--search-padding: 0;
 	--search-gap: 0 calc(var(--spacing) * 3);
 
 	@variant lg {
-		--app-bar-height: 72px;
+		--app-bar-height: 76px;
 		--search-input-height: 48px;
 		--search-grid-template-areas: 'leading-actions search trailing-actions';
 		--search-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
-		--search-padding: 0 calc(var(--spacing) * 2);
+		/* --search-grid-template-rows: var(--app-bar-height); */
 	}
 }
 
@@ -174,11 +173,12 @@
 	--color-subtle: var(--color-neutral-600);
 	--color-link: var(--color-accent-600);
 	--color-error: var(--color-severe);
-	--color-app-header: var(--color-primary-100);
+	--color-app-bar: var(--color-primary-100);
 	--color-input: var(--color-page);
 	--color-placeholder: var(--color-neutral-500);
 	--color-disabled: var(--color-neutral-400);
-
+	--color-outline: var(--color-accent-500);
+	--color-backdrop: --alpha(var(--color-black) / 15%);
 	--color-aside: oklch(0.994 0 0);
 }
 
@@ -195,9 +195,11 @@
 		color: var(--color-body);
 	}
 
-	html:has(dialog[open]),
+	html:has(dialog[open]) {
+		overflow: hidden;
+	}
 	body:has(dialog[open]) {
-		overflow: clip;
+		overflow: clip; /* body is scrollable on firefox with overflow:clip */
 	}
 
 	button:not(:disabled),
@@ -369,6 +371,10 @@
 		}
 	}
 
+	.btn-outlined {
+		display: inline-block;
+		@apply rounded-full border border-neutral-400;
+	}
 	.btn-scroll {
 		display: flex;
 		align-items: center;
@@ -465,12 +471,6 @@
 }
 
 /* OLD THEME */
-
-/* custom bg colors  */
-
-@utility bg-backdrop {
-	background-color: --alpha(var(--color-black) / 25%);
-}
 
 /* layout */
 

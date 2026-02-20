@@ -25,11 +25,13 @@ test('_r param is preserved when navigating around the app', async ({ page }) =>
 test('A subset filter can be removed', async ({ page }) => {
 	await page.goto('/find?_q=&_r=hej');
 	await page.locator('.subset-container').getByRole('link', { name: 'Ta bort filter' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page).toHaveURL('/find?_q=&_r=');
 });
 
 test('A subset filter can be removed and preserves lang', async ({ page }) => {
 	await page.goto('/en/find?_q=&_r=hej');
 	await page.locator('.subset-container').getByRole('link', { name: 'Remove filter' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page).toHaveURL('/en/find?_q=&_r=');
 });

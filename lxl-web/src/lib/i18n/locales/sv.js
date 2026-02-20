@@ -2,9 +2,10 @@ export default {
 	home: {
 		pageHeadingTitle: 'Sök på alla svenska bibliotek',
 		pageHeadingDescription:
-			'Libris är de svenska bibliotekens gemensamma katalog med över 9 miljoner titlar.',
+			'är de svenska bibliotekens gemensamma katalog med över 9 miljoner titlar.',
 		metaDescription:
-			'Libris är en nationell söktjänst med information om titlar på cirka 600 svenska bibliotek, däribland KB. Med hjälp av tjänsten kan du hitta det du söker på ett bibliotek nära dig. Här finns närmare 13 miljoner objekt: böcker, tidskrifter, bilder, kartor, noter, e-böcker med mera. Libris innehåller även digitalt material som är fritt att ta del av hemifrån.'
+			'Libris är en nationell söktjänst med information om titlar på cirka 600 svenska bibliotek, däribland KB. Med hjälp av tjänsten kan du hitta det du söker på ett bibliotek nära dig. Här finns närmare 13 miljoner objekt: böcker, tidskrifter, bilder, kartor, noter, e-böcker med mera. Libris innehåller även digitalt material som är fritt att ta del av hemifrån.',
+		searchShortcuts: 'Sökgenvägar'
 	},
 	appMenu: {
 		skipToContent: 'Hoppa till innehåll',
@@ -131,7 +132,9 @@ export default {
 	search: {
 		search: 'Sök',
 		searchResults: 'Sökresultat',
+		searchFor: 'Sök efter',
 		loading: 'Laddar...',
+		filter: 'Filter',
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',
 		activeFilter: 'Aktivt filter',
@@ -238,7 +241,8 @@ export default {
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren',
-		more: 'till'
+		more: 'till',
+		readMore: 'Läs mer'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',

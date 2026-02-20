@@ -47,20 +47,26 @@
 		if (entries[0].isIntersecting) shouldGetPreviews = true;
 	}
 
-	afterNavigate(() => {
+	function initObserver() {
 		observer?.disconnect();
-
 		if (lazyload === 'intersection') {
 			observer = new IntersectionObserver(handleObserve, {});
 			if (listElement) {
 				observer.observe(listElement);
 			}
 		}
+	}
+
+	afterNavigate(() => {
+		initObserver();
 	});
 
 	onMount(() => {
 		if (lazyload === 'mount') {
 			shouldGetPreviews = true;
+		}
+		if (lazyload === 'intersection') {
+			initObserver();
 		}
 	});
 
@@ -92,7 +98,7 @@
 		placeholderSnippet={previewPlaceholder}
 		withGradient
 		lazyImages
-		fadeInImages={shouldGetPreviews}
+		fadeInImages={!previews && shouldGetPreviews}
 		bind:listElement
 	/>
 </div>

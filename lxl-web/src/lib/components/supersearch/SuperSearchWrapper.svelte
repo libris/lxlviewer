@@ -9,7 +9,8 @@
 		type Selection,
 		type ShowExpandedSearchOptions,
 		type ViewUpdateSuperSearchEvent,
-		type DebouncedWaitFunction
+		type DebouncedWaitFunction,
+		type ExpandEvent
 	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
@@ -36,9 +37,12 @@
 
 	interface Props {
 		placeholder: string;
+		ariaLabelledBy?: string;
+		ariaLabel?: string;
+		ariaDescribedBy?: string;
 	}
 
-	let { placeholder = '' }: Props = $props();
+	let { placeholder = '', ariaLabelledBy, ariaLabel, ariaDescribedBy }: Props = $props();
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
 
@@ -46,6 +50,7 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
+	let pageYOffset: number | undefined = $state();
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -61,6 +66,8 @@
 	});
 
 	let userClearedSearch = $state(false);
+
+	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
@@ -93,7 +100,7 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			if (page.route.id === '/(app)/[[lang=lang]]') {
+			if (isHomeRoute) {
 				q = ''; // reset query if navigating to start/index page
 			} else if (to.url.searchParams.has('_q')) {
 				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
@@ -103,9 +110,12 @@
 
 			superSearch?.hideExpandedSearch();
 			fetchOnExpand = true;
+
 			if (userClearedSearch) {
 				superSearch?.showExpandedSearch();
 				userClearedSearch = false;
+			} else if (isHomeRoute) {
+				superSearch?.focus(); // focus input on start page
 			} else {
 				superSearch?.blur(); // remove focus from input after searching or navigating
 			}
@@ -194,7 +204,8 @@
 		fetchOnExpand = false;
 	}
 
-	function handleOnExpand() {
+	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
+		pageYOffset = windowPageYOffset;
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
@@ -226,6 +237,10 @@
 		bind:isLoading
 		language={lxlQuery}
 		{placeholder}
+		{ariaLabelledBy}
+		{ariaLabel}
+		{ariaDescribedBy}
+		autofocus={isHomeRoute ? true : undefined}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({
@@ -240,12 +255,12 @@
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
-		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
+		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -259,7 +274,7 @@
 			<div
 				class={[
 					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
-					expanded && 'expanded',
+					expanded && 'expanded sm:mx-1.5 @5xl:mx-2.25',
 					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
 				]}
@@ -271,8 +286,8 @@
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center sm:hidden',
-							expanded && 'h-14 w-13 sm:size-11 lg:size-12'
+							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 sm:hidden',
+							expanded && 'h-14 w-13'
 						]}
 						onclick={onclickClose}
 					>
@@ -283,7 +298,7 @@
 					<div
 						class={[
 							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
-							expanded && 'hidden sm:flex'
+							expanded && 'hidden'
 						]}
 					>
 						<button
@@ -310,7 +325,7 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center lg:size-12',
+							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 lg:size-12',
 							expanded && 'max-sm:h-14 max-sm:w-13'
 						]}
 						aria-label={page.data.t('search.clearFilters')}
@@ -324,16 +339,16 @@
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
 					class={[
-						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
+						'action hidden size-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 -outline-offset-2 sm:flex lg:size-12'
 					]}
 					aria-label={page.data.t('supersearch.search')}
 				>
-					<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
+					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 				</button>
 			</div>
 		{/snippet}
 		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav class="mt-2 mb-2 sm:mt-1 sm:mb-3 lg:mt-0">
+			<nav class="mt-3 mb-2 lg:mt-4">
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
@@ -348,9 +363,8 @@
 									type="button"
 									id={getCellId(1, cellIndex)}
 									class={[
-										'text-body bg-accent-50 text-2xs  border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
-										isFocusedCell(1, cellIndex) &&
-											'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
+										'qualifier-suggestion text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
+										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
 									]}
 									onclick={() => addQualifierKey(key)}
 								>
@@ -403,18 +417,17 @@
 	.supersearch-input {
 		height: 100%;
 		min-height: var(--search-input-height);
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		border-radius: var(--radius-md);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
-		@variant sm {
-			&:hover {
-				box-shadow: 0 0 0 1px var(--color-primary-500);
-			}
 
-			&:focus-within {
-				outline: 3px solid var(--color-primary-200);
-				outline-offset: 1px;
-			}
+		&:hover {
+			box-shadow: 0 0 0 1px var(--color-primary-600);
+		}
+
+		&:focus-within {
+			outline: 3px solid var(--color-primary-100);
+			outline-offset: 1px;
 		}
 
 		@variant lg {
@@ -423,47 +436,67 @@
 			}
 		}
 
-		@variant 3xl {
-			font-size: var(--text-sm);
+		@variant @5xl {
+			font-size: 0.9375rem;
 		}
 	}
 
 	.expanded.supersearch-input {
+		min-height: var(--search-input-height);
 		border-bottom: 1px solid var(--color-neutral);
 		border-radius: 0;
 		box-shadow: none;
 
+		&:focus-within {
+			outline: none;
+		}
+
 		@variant sm {
 			border-bottom: none;
 			border-radius: var(--radius-md);
-			margin-inline: calc(var(--spacing) * 2);
-			box-shadow: 0 0 0 1px var(--color-neutral-300);
-			margin-block: calc((var(--spacing) * 2));
+			margin-top: calc(var(--spacing) * 1.5);
+			box-shadow: 0 0 0 1px var(--color-neutral-400);
 
-			&.focused-row {
-				box-shadow: 0 0 0 1px var(--color-primary-500);
-				outline: 3px solid var(--color-primary-200);
-				outline-offset: 1px;
+			&:hover {
+				box-shadow: 0 0 0 1px var(--color-neutral-600);
+			}
+			&.focused-row:not(:has(:global(.focused-cell))) {
+				box-shadow: 0 0 0 6px var(--color-accent-100);
+				outline: 2px solid var(--color-outline);
+				outline-offset: 0;
 			}
 		}
 
 		@variant lg {
-			margin-block: calc(var(--spacing) * 3);
-			margin-inline: calc(var(--spacing) * 4);
+			margin-top: 0;
+		}
+	}
 
-			&.focused-row {
-				outline: 4px solid var(--color-primary-200);
+	:global(.supersearch-combobox) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: var(--search-input-height);
+
+		&:has(.expanded) {
+			@variant sm {
+				margin-inline: calc(var(--spacing) * 0.5);
+				margin-top: calc(var(--spacing) * 0.5);
+			}
+			@variant lg {
+				margin-top: calc(var(--spacing) * 3.5);
+				margin-inline: calc(var(--spacing) * 1.75);
 			}
 		}
 	}
 
 	.action {
 		&:hover {
-			background: var(--color-primary-50);
+			background: var(--color-accent-50);
 		}
 
 		&:focus {
-			background: var(--color-primary-100);
+			background: var(--color-accent-100);
 		}
 	}
 
@@ -471,6 +504,7 @@
 		position: fixed;
 		height: 100%;
 		max-height: 100vh;
+		max-height: 100lvh;
 		width: 100%;
 		max-width: 100%;
 		background-color: transparent;
@@ -478,14 +512,24 @@
 		padding: 0;
 		top: 0;
 
+		&::backdrop {
+			background: var(--color-backdrop);
+		}
+
 		@variant sm {
-			position: static;
-			top: var(--sm-dialog-top);
-			height: fit-content;
+			top: calc(var(--banner-height, 0) + var(--app-bar-height) - var(--spacing) * 0.5);
+			margin-top: max(
+				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
+				0px
+			);
 		}
 
 		@variant lg {
-			top: calc(var(--banner-height, 0));
+			top: var(--banner-height, 0);
+			margin-top: max(
+				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
+				0px
+			);
 		}
 	}
 
@@ -496,14 +540,19 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
+			padding-inline: calc(var(--spacing) * 2);
 		}
 
 		@variant lg {
 			display: grid;
 			grid-template-areas: var(--search-grid-template-areas);
 			grid-template-columns: var(--search-grid-template-columns);
-			padding: var(--search-padding);
 			gap: var(--search-gap);
+			padding-inline: calc(var(--spacing) * 1.25);
+
+			@variant @5xl {
+				padding-inline: 0;
+			}
 		}
 	}
 
@@ -512,6 +561,7 @@
 		background: var(--color-page);
 		pointer-events: auto;
 		max-height: 100vh;
+		max-height: 100lvh;
 		overflow-y: scroll;
 		overflow-x: hidden;
 		overscroll-behavior: contain;
@@ -522,8 +572,13 @@
 		@apply max-w-7xl;
 
 		@variant sm {
-			border-radius: var(--radius-lg);
+			border-radius: var(--radius-xl);
+			height: fit-content;
 			@apply drop-shadow-md;
+		}
+
+		@variant lg {
+			border-radius: var(--radius-2xl);
 		}
 	}
 
@@ -531,12 +586,14 @@
 		@apply min-h-2;
 	}
 
-	:global(.supersearch-dialog .focused) {
-		background-color: var(--color-primary-100);
+	:global(.supersearch-dialog .focused .suggestion) {
+		background-color: var(--color-accent-50);
+		outline: 2px solid var(--color-outline);
 	}
 
-	:global(.focused-cell) {
-		background-color: var(--color-primary-100);
+	:global(.supersearch-dialog .focused-cell) {
+		background-color: var(--color-accent-50);
+		outline: 2px solid var(--color-accent);
 	}
 
 	/* :global(.button-primary.focused-cell) {
@@ -576,17 +633,21 @@
 	.supersearch-input :global(.cm-scroller) {
 		font-family: var(--font-sans);
 		scrollbar-width: none;
-		min-height: calc(var(--spacing) * 11);
+		min-height: var(--search-input-height);
 	}
 
 	.expanded.supersearch-input :global(.cm-scroller) {
 		min-height: calc(var(--spacing) * 14);
 		scrollbar-width: thin;
-		max-height: 100px;
+		max-height: 106px;
 		overflow-x: hidden;
 
 		@variant sm {
 			min-height: calc(var(--spacing) * 11);
+		}
+
+		@variant lg {
+			margin-top: 0px;
 		}
 	}
 
@@ -596,10 +657,10 @@
 
 		@variant sm {
 			padding-left: calc(var(--spacing) * 3);
-		}
 
-		@variant 3xl {
-			padding-left: calc(var(--spacing) * 4);
+			@variant @3xl {
+				padding-left: calc(var(--spacing) * 4);
+			}
 		}
 	}
 
@@ -610,7 +671,7 @@
 			padding-left: calc(var(--spacing) * 3);
 		}
 
-		@variant 3xl {
+		@variant @3xl {
 			padding-left: calc(var(--spacing) * 4);
 		}
 	}
@@ -618,6 +679,7 @@
 	.supersearch-input :global(.cm-content) {
 		margin: 0;
 		padding: calc(var(--spacing) * 1.5) 0;
+		min-height: var(--search-input-height);
 
 		@variant lg {
 			padding: calc(var(--spacing) * 2) 0;
@@ -633,18 +695,6 @@
 
 		@variant lg {
 			padding: calc(var(--spacing) * 2) 0;
-		}
-	}
-
-	.expanded.supersearch-input.wrapped :global(.cm-content) {
-		padding: calc(var(--spacing) * 0.5) 0;
-
-		@variant sm {
-			padding: calc(var(--spacing) * 0.5) 0;
-		}
-
-		@variant lg {
-			padding: calc(var(--spacing) * 0.5) 0;
 		}
 	}
 
@@ -664,7 +714,38 @@
 	}
 
 	:global(.codemirror-container .cm-placeholder) {
+		font-size: var(--text-xs);
 		color: var(--color-placeholder);
-		margin: 1px 0;
+		margin-top: 1px;
+
+		@variant sm {
+			font-size: var(--text-sm);
+		}
+
+		@variant @7xl {
+			margin-top: 0px;
+		}
+		@variant @5xl {
+			font-size: 0.9375rem;
+		}
+	}
+	.expanded :global(.codemirror-container .cm-placeholder) {
+		@variant lg {
+			margin-top: 1px;
+		}
+	}
+
+	.qualifier-suggestion {
+		box-shadow: 0 0 0 1px var(--color-accent-200);
+
+		&.focused-cell {
+			background-color: var(--color-accent-100);
+			box-shadow: 0 0 0 5px var(--color-accent-100);
+			outline: 2px solid var(--color-outline);
+
+			&:hover {
+				background: var(--color-accent-100);
+			}
+		}
 	}
 </style>

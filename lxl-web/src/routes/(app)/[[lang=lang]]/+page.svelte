@@ -19,30 +19,14 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-<header class="page-header bg-primary-100 flex items-center px-3 @sm:mb-3 @sm:px-6 @5xl:mb-5">
-	<div class="col-start-2 col-end-3 mx-auto mt-8 mb-12 w-full max-w-7xl @5xl:mt-12 @5xl:mb-16">
-		<hgroup>
-			<h1
-				class="mb-2 font-serif text-2xl @md:text-[1.6875rem] @3xl:text-4xl @3xl:tracking-[-0.0125rem] @7xl:text-5xl"
-			>
-				{page.data.t('home.pageHeadingTitle')}
-			</h1>
-			<p
-				class="text-body/87.5 max-w-[40ch] text-sm @3xl:text-base @7xl:max-w-none @min-[120rem]:text-lg"
-			>
-				{page.data.t('home.pageHeadingDescription')}
-			</p>
-		</hgroup>
-	</div>
-</header>
 {#each page.data.featuredSearches as featured, index (featured.heading)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
-		class="my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:last-of-type:pb-10 @min-[120rem]:gap-6"
+		class="my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6"
 	>
 		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
 			<h2
-				class="font-serif text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[120rem]:text-3xl"
+				class="font-serif text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[110rem]:text-3xl"
 				{id}
 			>
 				<a
@@ -76,25 +60,6 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
-
-	.page-header {
-		min-height: calc(38.2vh + var(--app-bar-height) - var(--banner-height, 0));
-
-		@variant @md {
-			padding-inline: calc(var(--spacing) * 14);
-		}
-
-		@variant @5xl {
-			display: grid;
-			grid-template-columns: var(--search-grid-template-columns);
-			gap: var(--search-gap);
-			padding: var(--search-padding);
-
-			& hgroup {
-				padding-inline: calc(var(--spacing) * 4);
-			}
-		}
-	}
 
 	.featured-list-container {
 		& :global(.horizontal-list > ul > li) {

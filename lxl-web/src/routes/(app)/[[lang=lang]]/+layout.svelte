@@ -7,6 +7,7 @@
 
 	const { children } = $props();
 
+	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
 	let homepageCache = $state({
@@ -22,13 +23,25 @@
 </svelte:head>
 <AppBar />
 {#if isFindRoute}
-	<div class="flex flex-1 flex-col">
+	<div class="content flex flex-1 flex-col">
 		{@render children()}
 	</div>
 {:else}
-	<main id="content" class="@container flex flex-1 flex-col">
+	<main
+		id="content"
+		class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
+	>
 		{@render children()}
 	</main>
 	<SiteFooter />
 {/if}
 <div id="floating-elements-container"></div>
+
+<style lang="postcss">
+	@reference 'tailwindcss';
+
+	.content {
+		@variant lg {
+		}
+	}
+</style>
