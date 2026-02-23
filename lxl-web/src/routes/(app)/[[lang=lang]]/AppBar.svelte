@@ -195,7 +195,10 @@
 	{#if !dismissedBanner}
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
-	<nav class={['grid items-stretch', subset && 'with-subset']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
+	<nav
+		class={['grid items-stretch', subset && 'with-subset']}
+		aria-label={`Libris ${page.data.t('appMenu.label')}`}
+	>
 		<ul class="leading-actions z-43 ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
 				<svelte:element
@@ -311,7 +314,6 @@
 					id="search"
 					name="_q"
 					ariaLabelledBy={isHomeRoute ? 'page-title' : undefined}
-					ariaDescribedBy={isHomeRoute ? 'page-description' : undefined}
 					ariaLabel={!isHomeRoute ? page.data.t('header.search') : undefined}
 					placeholder={subsetPlaceholder
 						? `${page.data.t('header.searchSubsetPlaceholder')}: ${subsetPlaceholder}`
