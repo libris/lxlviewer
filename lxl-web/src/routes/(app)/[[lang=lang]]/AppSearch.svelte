@@ -19,6 +19,7 @@
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
+	let cursor: number | null = $state(null);
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -27,6 +28,10 @@
 		p.delete('_i');
 		p.delete('_o');
 		p.delete('_p');
+
+		if (cursor) {
+			p.set('_cursor', cursor.toString());
+		}
 		return p;
 	});
 
@@ -79,6 +84,7 @@
 			{ariaLabel}
 			{ariaDescribedBy}
 			bind:this={superSearchWrapperComponent}
+			onCursorChange={(value) => (cursor = value)}
 		/>
 	</div>
 {:catch}

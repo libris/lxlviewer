@@ -15,12 +15,12 @@ test('click input expands dialog', async ({ page }) => {
 test('type & enter performs search', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').fill('hej');
 	await page.keyboard.press('Enter');
-	await expect(page).toHaveURL('/find?_q=hej&_limit=20&_offset=0&_sort=&_spell=true');
+	await expect(page).toHaveURL('/find?_q=hej&_limit=20&_offset=0&_sort=&_spell=true&_cursor=3');
 });
 
 test('expanded content shows persistant items and results', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').click();
-	await expect(
+	expect(
 		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
 		'persistent items are shown on empty input'
 	).toBeGreaterThan(0);
@@ -34,7 +34,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 	await page.waitForResponse(
 		(res) => res.url().includes('supersearch?_q=hej') && res.status() === 200
 	);
-	await expect(
+	expect(
 		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
 		'persistent items are also shown after typing'
 	).toBeGreaterThan(0);
@@ -137,7 +137,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		(res) => res.url().includes('supersearch?_q=contributor%3A%28jan%29') && res.status() === 200
 	);
 	await expect(
-		await page
+		page
 			.getByRole('dialog')
 			.getByRole('link')
 			.filter({ hasText: /Person|Organisation/ })
@@ -146,7 +146,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	).toHaveCount(5);
 	await page.getByRole('dialog').locator('.suggestion').first().getByRole('link').click();
 	await page.waitForURL('**/find?**');
-	await expect(page.url()).toContain('contributor');
+	expect(page.url()).toContain('contributor');
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-key').first(),
 		'pill with selected qualifier key exists...'
@@ -177,8 +177,8 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.getByRole('dialog').getByRole('combobox').pressSequentially('wahili');
 	await page.getByRole('dialog').locator('.suggestion').getByRole('link').first().click();
 	await page.waitForURL(/spr%C3%A5k/);
-	await expect(page.url()).toContain('contributor');
-	await expect(page.url(), 'url contains both contributor and language').toContain(
+	expect(page.url()).toContain('contributor');
+	expect(page.url(), 'url contains both contributor and language').toContain(
 		encodeURIComponent('språk')
 	);
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').first()).toContainText(
