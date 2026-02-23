@@ -1273,7 +1273,8 @@
             ]
           },
           "category": [{"@id": "https://id.kb.se/term/rda/Volume"},
-          {"@id": "https://id-qa.kb.se/term/saobf/HandmadeMaterial"}]
+
+          {"@id": "https://id.kb.se/term/saobf/HandmadeMaterial"}]
         }
       }
     },
@@ -2210,7 +2211,11 @@
             ],
             "subject": []
           },
-          "category": [ {
+          "category": [ 
+            {
+            "@id": "https://id.kb.se/term/rda/Volume"
+          },
+          {
             "@id": "https://id.kb.se/term/saobf/Print"
           },
             {
@@ -2400,10 +2405,10 @@
           ],
           "category": [
             {
-              "@id": "https://id.kb.se/term/saobf/Print"
+              "@id": "https://id.kb.se/term/rda/Volume" 
             },
             {
-              "@id": "https://id.kb.se/term/rda/Volume"
+              "@id": "https://id.kb.se/term/saobf/Print"
             }
           ]
         }
@@ -2530,6 +2535,9 @@
             "subject": []
           },
           "category": [
+            {
+              "@id": "https://id.kb.se/term/rda/Volume"
+            },
             {
               "@id": "https://id.kb.se/term/saobf/Print"
             }
@@ -2866,10 +2874,10 @@
           },
           "category": [
             {
-              "@id": "https://id.kb.se/term/saobf/Print"
+              "@id": "https://id.kb.se/term/rda/Volume"
             },
             {
-              "@id": "https://id.kb.se/term/rda/Volume"
+              "@id": "https://id.kb.se/term/saobf/Print"
             }
           ]
         }
