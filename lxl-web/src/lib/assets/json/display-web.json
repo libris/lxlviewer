@@ -179,6 +179,22 @@
 						}
 					]
 				},
+				"Category": {
+					"@id": "Category-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Category",
+					"showProperties": [
+						{
+							"alternateProperties": [
+								"singularLabel",
+								"prefLabel",
+								"label",
+								"termComponentList",
+								"code"
+							]
+						}
+					]
+				},
 				"SeriesMembership": {
 					"@id": "SeriesMembership-chips",
 					"@type": "fresnel:Lens",
