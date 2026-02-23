@@ -579,12 +579,15 @@
 
 	function handleKeyboardShortcut(event: KeyboardEvent) {
 		if (controlOrMetaKey(event) && event.key === 'k') {
-			event.preventDefault();
-			if (dialog?.open) {
-				hideExpandedSearch();
-			} else {
+			if (!dialog?.open) {
+				event.preventDefault();
 				showExpandedSearch();
 			}
+		}
+
+		if (event.shiftKey && event.key === '/' && !dialog?.open) {
+			event.preventDefault();
+			showExpandedSearch();
 		}
 	}
 
@@ -741,7 +744,7 @@
 {/snippet}
 
 <div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
-	<div class="supersearch-combobox">
+	<div class="supersearch-combobox" aria-keyshortcuts="Shift+7 Control+K Meta+K">
 		{@render inputRow?.({
 			expanded: false,
 			inputField: collapsedInputSnippet,
