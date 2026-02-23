@@ -22,7 +22,7 @@ import {
 	getHoldingsByInstanceId,
 	getHoldingsByType
 } from '$lib/utils/holdings.server';
-import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
+import getTypeLike, { getTypeForIcon, toTypes } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
 import { appendMyLibrariesParam, asSearchResultItem, displayMappings } from '$lib/utils/search';
@@ -94,14 +94,11 @@ export const load = async ({ params, locals, fetch, url }) => {
 	resourceId = resource.mainEntity['@id'];
 
 	const typeLike = getTypeLike(mainEntity, vocabUtil);
-	const t = {
-		'@type': '_Types', // FIXME? DisplayDecorated needs a dummy wrapper to get the styling right
-		...(typeLike.find.length > 0 && { _find: typeLike.find }),
-		...(typeLike.identify.length > 0 && { _identify: typeLike.identify }),
-		//...(typeLike.select.length > 0 && { _select: typeLike.select }),
+	const t = toTypes(typeLike);
+	if (mainEntity['language']) {
 		// FIXME: don't do this here
-		...(!!mainEntity['language'] && { language: mainEntity['language'] })
-	};
+		t.language = mainEntity['language'];
+	}
 	const types = displayUtil.lensAndFormat(t, LensType.Card, locale);
 
 	if (mainEntity['category']) {

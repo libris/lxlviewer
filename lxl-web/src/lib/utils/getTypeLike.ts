@@ -202,6 +202,22 @@ function toMultiType(s: Record<string, FramedData>) {
 	return { [key]: value };
 }
 
+export function toTypes(typeLike: TypeLike) {
+	const noIdentify = typeLike.identify.length == 0;
+	const noFind = typeLike.find.length == 0;
+	const manyFind = typeLike.find.length > 1;
+	const showFind = manyFind || (!noFind && noIdentify);
+	//const showFind = !noFind && noIdentify;
+	const showNone = noFind && noIdentify && typeLike.none.length > 0;
+
+	return {
+		'@type': '_Types',
+		...(showFind && { _find: typeLike.find }),
+		...(!noIdentify && { _identify: typeLike.identify }),
+		...(showNone && { _none: typeLike.none })
+	};
+}
+
 export default getTypeLike;
 
 const PRIORITIZED_ICONS = [
