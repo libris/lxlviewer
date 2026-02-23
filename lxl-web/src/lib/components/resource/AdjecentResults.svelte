@@ -110,11 +110,11 @@
 {/snippet}
 
 {#if currentSearchResult}
-	<div class="my-1 flex items-center gap-2 px-3 text-xs">
+	<div class="my-1 flex items-center gap-2 px-3 text-xs sm:text-sm">
 		{#if typeof indexOfTotalSearchResults === 'number'}
 			<a
 				href={page.data.localizeHref(relativizeUrl(currentSearchResult['@id']) + `#${fnurgel}`)}
-				class="link flex min-h-8 whitespace-nowrap @7xl:min-h-9 [&>*]:items-center"
+				class="link flex min-h-8 whitespace-nowrap *:items-center @7xl:min-h-9"
 			>
 				<span class="flex @xl:hidden">{page.data.t('resource.showInSearchResultsShort')}</span>
 				<span class="hidden @xl:flex">{page.data.t('resource.showInSearchResults')}</span>
@@ -132,7 +132,7 @@
 		{/if}
 		<span class="ml-auto flex items-center gap-2">
 			<span
-				class="after:text-subtle flex items-center after:ml-2 after:content-['·'] [&>*]:whitespace-nowrap"
+				class="after:text-subtle flex items-center *:whitespace-nowrap after:ml-2 after:content-['·']"
 			>
 				{#if previousItemFnurgel}
 					<a
@@ -148,7 +148,7 @@
 					</span>
 				{/if}
 			</span>
-			<span class="flex [&>*]:whitespace-nowrap">
+			<span class="flex *:whitespace-nowrap">
 				{#if nextItemFnurgel}
 					<a
 						href={page.data.localizeHref(nextItemFnurgel + page.url.search)}
