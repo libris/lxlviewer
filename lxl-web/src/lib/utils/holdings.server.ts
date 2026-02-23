@@ -10,12 +10,13 @@ import type {
 	LibraryFull,
 	LibraryWithLinks
 } from '$lib/types/holdings';
-import { BibDb, Bibframe, JsonLd, LensType, type FramedData } from '$lib/types/xl';
+import { Base, BibDb, Bibframe, JsonLd, LensType, type FramedData } from '$lib/types/xl';
 import { toString, VocabUtil, type DisplayUtil } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
 import { getLibrary } from '$lib/utils/getLibraries.server';
 import type { LocaleCode } from '$lib/i18n/locales';
 import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
+import { COMPONENT_PART } from '$lib/utils/getTypeLike';
 
 type BibDbObj = {
 	[JsonLd.TYPE]: string;
@@ -38,6 +39,10 @@ export function getHoldingsByType(mainEntity: HoldingMainEntity): HoldingsByType
 	const result: HoldingsByType = {};
 
 	for (const instance of instances) {
+		if (isComponentPart(instance)) {
+			continue;
+		}
+
 		const type = instance[JsonLd.TYPE];
 		const items = instance[JsonLd.REVERSE]?.itemOf ?? [];
 
@@ -221,6 +226,10 @@ export function getHoldersCount(
 	const holders = new Set<string>();
 
 	for (const instance of instances) {
+		if (isComponentPart(instance)) {
+			return -1;
+		}
+
 		const itemOf = instance[JsonLd.REVERSE]?.itemOf ?? [];
 		for (const item of itemOf) {
 			const heldById = item.heldBy?.[JsonLd.ID];
@@ -229,4 +238,8 @@ export function getHoldersCount(
 	}
 
 	return holders.size;
+}
+
+function isComponentPart(instance) {
+	return (instance[Base.category] || []).some((c) => c[JsonLd.ID] === COMPONENT_PART);
 }

@@ -9,13 +9,14 @@ export type TypeLike = {
 	select: FramedData[];
 };
 
+export const COMPONENT_PART = 'https://id.kb.se/term/saobf/ComponentPart';
+
 const PRINT = 'https://id.kb.se/term/saobf/Print';
 const VOLUME = 'https://id.kb.se/term/rda/Volume';
 const E_BOOK = 'https://id.kb.se/term/saobf/EBook';
 const ONLINE_RESOURCE = 'https://id.kb.se/term/rda/OnlineResource';
 const STORSTIL = 'https://id.kb.se/marc/LargePrint';
 const BRAILLE = 'https://id.kb.se/term/saobf/Braille';
-const COMPONENT_PART = 'https://id.kb.se/term/saobf/ComponentPart';
 const _BOOK = 'ls:book';
 const _BOOK_BRAILLE = 'ls:bookBraille';
 

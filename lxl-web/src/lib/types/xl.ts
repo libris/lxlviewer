@@ -38,7 +38,8 @@ export enum Fmt {
 export enum Base {
 	Resource = 'Resource',
 	StructuredValue = 'StructuredValue',
-	Identity = 'Identity'
+	Identity = 'Identity',
+	category = 'category'
 }
 
 // https://github.com/libris/definitions/blob/develop/source/vocab/concepts.ttl
