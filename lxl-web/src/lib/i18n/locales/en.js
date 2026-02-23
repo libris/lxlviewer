@@ -8,6 +8,7 @@ export default {
 		searchShortcuts: 'Search shortcuts'
 	},
 	appMenu: {
+		label: 'main navigation',
 		skipToContent: 'Skip to main content',
 		findOnWebsite: 'Find on Libris',
 		home: 'Home',

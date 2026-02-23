@@ -13,6 +13,7 @@
 	} from '$lib/types/search';
 	import capitalize from '$lib/utils/capitalize';
 	import type { Relation } from '$lib/utils/relations';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
@@ -22,11 +23,12 @@
 	import SearchCard from './find/SearchCard.svelte';
 	import TabList, { type Tab } from './TabList.svelte';
 	import SearchMapping from './find/SearchMapping.svelte';
+	import ExpandableArea from '$lib/components/ExpandableArea.svelte';
+	import Suggestion from './supersearch/Suggestion.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
-	import ExpandableArea from '$lib/components/ExpandableArea.svelte';
-	import Suggestion from './supersearch/Suggestion.svelte';
+	import BiQuote from '~icons/bi/quote';
 
 	type Props = {
 		fnurgel: string;
@@ -178,7 +180,7 @@
 				{#if holdings.byType && Object.keys(holdings.byType).length && instances}
 					<section class="mt-5">
 						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
-						<ResourceHoldings {holdings} {instances} {fnurgel} />
+						<ResourceHoldings {holdings} {instances} />
 					</section>
 				{/if}
 			</div>
@@ -251,17 +253,29 @@
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>
-					{#if decoratedData.summary.length || instances?.length > 1 || relations.length || decoratedData.resourceTableOfContents.length}
-						<a
-							class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
-							href="#{uidPrefix}details"
-							data-sveltekit-preload-data="false"
-							data-testid="details-link"
-						>
-							<IconArrowDown />
-							{page.data.t('resource.moreDetails')}
-						</a>
-					{/if}
+					<div class="flex items-center gap-2">
+						{#if decoratedData.summary.length || instances?.length > 1 || relations.length || decoratedData.resourceTableOfContents.length}
+							<a
+								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
+								href="#{uidPrefix}details"
+								data-sveltekit-preload-data="false"
+								data-testid="details-link"
+							>
+								<IconArrowDown />
+								{page.data.t('resource.moreDetails')}
+							</a>
+						{/if}
+						{#if instances?.length === 1}
+							<a
+								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
+								href={getCiteLink(page.url, fnurgel)}
+								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
+							>
+								<BiQuote class="text-neutral-400" />
+								<span>{page.data.t('citations.cite')}</span>
+							</a>
+						{/if}
+					</div>
 				</div>
 			</section>
 			{#if decoratedData.summary.length}
@@ -270,7 +284,7 @@
 						{page.data.t('resource.summary')}
 					</h2>
 					{#snippet summary()}
-						<div class="flex flex-col gap-6">
+						<div class="flex flex-col gap-4">
 							{#each decoratedData.summary as s (s)}
 								<div class="summary-or-toc w-full">
 									<DecoratedData data={s} showLabels={ShowLabelsOptions.Never} block />
@@ -348,7 +362,7 @@
 						{page.data.t('resource.tableOfContents')}
 					</h2>
 					{#snippet resourceTableOfContents()}
-						<div class="flex flex-col gap-6">
+						<div class="flex flex-col gap-4">
 							{#each decoratedData.resourceTableOfContents as r (r)}
 								<div class="summary-or-toc w-full">
 									<DecoratedData data={r} showLabels={ShowLabelsOptions.Never} block />
@@ -360,7 +374,9 @@
 					<ExpandableArea content={resourceTableOfContents} collapsedHeightPx={300} />
 				</section>
 			{/if}
-			<section class="-mx-6 my-6 bg-neutral-100 px-6 pb-6 @2xl:mx-0 @2xl:rounded-lg">
+			<section
+				class="-mx-3 my-6 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
+			>
 				<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 					{page.data.t('resource.details')}
 				</h2>
@@ -529,20 +545,20 @@
 		}
 
 		& :global(.contribution) {
-			font-size: var(--text-lg);
+			font-size: var(--text-base);
 			@apply mb-2;
 			@apply mt-1;
 		}
 
 		& :global(.contribution-role) {
-			font-size: var(--text-2xs);
+			font-size: var(--text-sm);
 			color: var(--color-subtle);
 		}
 
-		& :global(.inScheme) {
+		/* & :global(.inScheme) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
-		}
+		} */
 
 		& :global(.contribution > ._contentBefore),
 		:global(.contribution > ._contentAfter) {
@@ -792,6 +808,14 @@
 	}
 
 	.decorated-details {
+		font-size: var(--text-sm);
+
+		& :global(.contribution) {
+			font-size: var(--text-sm);
+			@apply mb-2;
+			@apply mt-1;
+		}
+
 		& :global(div[data-property='hasTitle'] > span[data-type='Title']) {
 			/* color: var(--color-subtle); */
 			font-weight: var(--font-weight-semibold);

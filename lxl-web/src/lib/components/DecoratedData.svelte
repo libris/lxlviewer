@@ -298,7 +298,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: calc(var(--spacing) * 1.5);
-		font-size: var(--text-2xs);
+		font-size: var(--text-xs);
 
 		/* pill */
 		& > * {

@@ -195,7 +195,7 @@
 	{#if !dismissedBanner}
 		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
 	{/if}
-	<nav class={['grid items-stretch', subset && 'with-subset']}>
+	<nav class={['grid items-stretch', subset && 'with-subset']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
 		<ul class="leading-actions z-43 ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
 				<svelte:element

@@ -39,7 +39,7 @@
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap">
+			<h2 class="resource-heading flex gap-1 overflow-hidden text-sm font-medium whitespace-nowrap">
 				<span class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}

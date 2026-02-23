@@ -8,6 +8,7 @@ export default {
 		searchShortcuts: 'Sökgenvägar'
 	},
 	appMenu: {
+		label: 'huvudmeny',
 		skipToContent: 'Hoppa till innehåll',
 		findOnWebsite: 'Hitta på hemsidan',
 		home: 'Hem',
