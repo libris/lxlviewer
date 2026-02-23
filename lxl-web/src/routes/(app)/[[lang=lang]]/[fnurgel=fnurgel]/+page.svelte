@@ -13,16 +13,13 @@
 	import Citations from '$lib/components/Citations.svelte';
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 	import { bestSize } from '$lib/utils/auxd';
-	import { first } from '$lib/utils/xl';
 	import { Width } from '$lib/types/auxd';
 	import SearchCard from '$lib/components/find/SearchCard.svelte';
 
 	const { data } = $props();
 
 	const description = $derived(getMetaDescription(data.decoratedData.overview?.[0]));
-	const ogImage = $derived(
-		data.images?.length ? bestSize(first(data.images), Width.MEDIUM)?.url : undefined
-	);
+	const ogImage = $derived(data.image ? bestSize(data.image, Width.MEDIUM)?.url : undefined);
 
 	// TODO: Possibly figure out some mapping and set og:type,
 	// see https://ogp.me/#types. Unclear how meaningful this would be.
@@ -88,7 +85,7 @@
 		controlNumber={data.controlNumber}
 		type={data.type}
 		typeForIcon={data.typeForIcon}
-		images={data.images}
+		image={data.image}
 		decoratedData={data.decoratedData}
 		relations={data.relations}
 		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}

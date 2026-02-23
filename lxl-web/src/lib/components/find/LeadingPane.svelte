@@ -113,4 +113,8 @@
 		);
 		scrollbar-width: thin;
 	}
+
+	:global(.leading-pane .tab) {
+		font-size: var(--text-xs);
+	}
 </style>

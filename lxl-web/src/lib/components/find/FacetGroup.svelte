@@ -188,11 +188,13 @@
 				/>
 			</li>
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
-			<li class={['flex', permanentlyExpanded && '[&>a]:pl-4!']}>
+			<li
+				class={['flex', permanentlyExpanded && '[&>a:first-child]:w-full [&>a:first-child]:pl-4!']}
+			>
 				<FacetValue data={value} />
 				<a
 					href={page.data.localizeHref('/my-pages')}
-					class="btn btn-primary mr-2 border-0"
+					class="btn btn-primary mr-2 size-8 border-0"
 					aria-label={page.data.t('search.changeLibraries')}
 				>
 					<BiPencil />
@@ -239,11 +241,11 @@
 	<ul data-testid={level === 1 ? 'facet-list' : undefined}>
 		{@render values(shownItems)}
 	</ul>
-	<div class="text-2xs flex flex-col justify-start">
+	<div class="flex flex-col justify-start text-xs">
 		<!-- 'show more' btn -->
 		{#if canShowMoreItems || canShowFewerItems}
 			<button
-				class="hover:bg-primary-100 w-full"
+				class="hover:bg-primary-100 link-subtle w-full text-sm"
 				onclick={() =>
 					canShowMoreItems
 						? (defaultItemsShown = totalItems)
@@ -317,7 +319,7 @@
 			class={[
 				'focusable text-subtle hover:bg-primary-100 flex min-h-8 cursor-pointer items-center',
 				level === 1 && 'min-h-11 pl-4 font-medium',
-				level > 1 && 'pl-1.5 text-xs'
+				level > 1 && 'pl-1.5 text-sm'
 			]}
 			data-testid={level === 1 ? 'facet-toggle' : undefined}
 		>
@@ -326,7 +328,7 @@
 			{/if}
 			<span class="text-body truncate">{parent?.label || data.label}</span>
 			{#if level > 1 && parent}
-				<span class="text-placeholder text-3xs ml-2">
+				<span class="text-placeholder text-2xs ml-2">
 					{parent.totalItems.toLocaleString(page.data.locale)}
 					<span class="sr-only">
 						{parent.totalItems === 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}

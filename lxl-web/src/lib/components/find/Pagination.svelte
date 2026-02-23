@@ -144,6 +144,7 @@
 		@reference 'tailwindcss';
 
 		& li > a {
+			font-size: var(--text-sm);
 			min-height: calc(var(--spacing) * 8);
 			min-width: calc(var(--spacing) * 8);
 		}

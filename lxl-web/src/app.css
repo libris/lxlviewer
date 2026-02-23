@@ -281,7 +281,7 @@
 		align-items: center;
 		gap: var(--spacing);
 		min-height: calc(var(--spacing) * 8);
-		font-size: var(--text-2xs);
+		font-size: var(--text-xs);
 		font-weight: var(--font-weight-medium);
 		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
 		border-radius: var(--spacing);
@@ -341,7 +341,7 @@
 	.btn-cta {
 		background-color: var(--color-accent);
 		color: var(--color-white);
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 6);
 		height: calc(var(--spacing) * 10);
 		border-radius: calc(infinity * 1px);
@@ -410,6 +410,7 @@
 		border: 1px solid transparent;
 		color: var(--color-subtle);
 		background-color: transparent;
+		font-size: var(--text-sm);
 
 		&:hover {
 			background-color: var(--color-primary-100);
