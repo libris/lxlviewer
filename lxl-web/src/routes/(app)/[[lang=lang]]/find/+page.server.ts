@@ -64,7 +64,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		vocabUtil,
 		locale,
 		env.AUXD_SECRET,
-		url.pathname,
+		`${params?.lang ? `/${params.lang}` : ''}/find`, // avoid creating a dependency to url.pathName!
 		myLibraries
 	);
 
