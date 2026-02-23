@@ -84,10 +84,9 @@
 
 <div class="flex flex-col-reverse justify-between gap-6 py-2 md:flex-row">
 	<div class="w-full max-w-xl lg:w-6/12">
-		<h2 class="mt-4 font-medium">{page.data.t('myPages.findAndAdd')}</h2>
-		<label for="my-libraries-search" class="sr-only text-sm font-medium"
-			>{page.data.t('myPages.findAndAdd')}</label
-		>
+		<h2 class="mt-4 font-medium">
+			<label for="my-libraries-search">{page.data.t('myPages.findAndAdd')}</label>
+		</h2>
 		<div class="relative mt-2">
 			<input
 				id="my-libraries-search"
