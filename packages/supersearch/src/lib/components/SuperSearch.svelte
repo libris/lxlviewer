@@ -758,7 +758,7 @@
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
 </div>
-<dialog class="supersearch-dialog" id={`${id}-dialog`} bind:this={dialog}>
+<dialog class="supersearch-dialog" id={`${id}-dialog`} bind:this={dialog} closedby="any">
 	<div
 		class="supersearch-dialog-wrapper"
 		role="presentation"
