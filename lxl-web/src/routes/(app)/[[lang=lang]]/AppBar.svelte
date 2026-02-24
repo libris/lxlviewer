@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { type Component, onDestroy, onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
 	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
@@ -211,6 +212,7 @@
 						? undefined
 						: (page.route.id === '/(app)/[[lang=lang]]/browse' && 'page') || undefined}
 					aria-controls={IDs.appBarMenu}
+					aria-haspopup="dialog"
 					aria-expanded={(mounted && expandedMenu) || undefined}
 					class="action max-sm:hover:bg-primary-200 lg:min-w-16"
 					aria-label={page.data.t('header.menu')}
@@ -254,7 +256,7 @@
 			<li>
 				<a
 					class="action px-1.5"
-					href={page.data.localizeHref(page.data.base)}
+					href={resolve(page.data.localizeHref(page.data.base))}
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 					data-testid="home"
 				>
@@ -346,9 +348,11 @@
 			<li class="hidden lg:block">
 				<a
 					class="action"
-					href={page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
-						locale: otherLangCode
-					})}
+					href={resolve(
+						page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
+							locale: otherLangCode
+						})
+					)}
 					hreflang={otherLangCode}
 					aria-label={page.data.t('header.changeLang')}
 					aria-labelledby={IDs.appBarChangeLangLabel}
@@ -364,7 +368,7 @@
 			<li>
 				<a
 					class="action max-sm:hover:bg-primary-200"
-					href={page.data.localizeHref('/my-pages')}
+					href={resolve(page.data.localizeHref('/my-pages'))}
 					aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
 				>
 					{@render actionItemContents({
@@ -417,7 +421,7 @@
 							{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
 								<li>
 									<a
-										href={page.data.localizeHref(category.href)}
+										href={resolve(page.data.localizeHref(category.href))}
 										id={category.id}
 										aria-labelledby="search-for {category.id}"
 										class="btn-outlined text-primary-900 border-primary-600/75 focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 px-2 py-1.5 text-center whitespace-nowrap @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
