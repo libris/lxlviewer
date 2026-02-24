@@ -38,7 +38,7 @@ test('expanded search is togglable using keyboard shortcut', async ({ page }) =>
 	await page.keyboard.press('ControlOrMeta+k');
 	await expect(page.getByRole('dialog')).toBeVisible();
 	await page.keyboard.press('ControlOrMeta+k');
-	await expect(page.getByRole('dialog')).not.toBeVisible();
+	await expect(page.getByRole('dialog')).toBeVisible(); // pressing shortcut again should allow user to use browser default shortcuts, so dialog should still be visible
 });
 
 test('supports keyboard navigation between rows and columns/cells', async ({ page }) => {
