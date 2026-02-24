@@ -149,19 +149,21 @@
 	let cursorHandlingCompartment = new Compartment();
 
 	let placeholderCompartment = new Compartment();
-	let prevPlaceholder = placeholder;
+	let prevPlaceholder = $derived(placeholder);
 
 	let collapsedContentAttributesCompartment = new Compartment();
 	let expandedContentAttributesCompartment = new Compartment();
 
-	let search = useSearchRequest({
-		endpoint,
-		queryFn,
-		paginationQueryFn,
-		transformFn,
-		debouncedWait,
-		getDebouncedWait
-	});
+	let search = $derived.by(() =>
+		useSearchRequest({
+			endpoint,
+			queryFn,
+			paginationQueryFn,
+			transformFn,
+			debouncedWait,
+			getDebouncedWait
+		})
+	);
 
 	let prevSearchDataId: string | undefined;
 	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
@@ -174,7 +176,7 @@
 		}
 	});
 
-	const extensionsWithDefaults = [
+	const extensionsWithDefaults = $derived([
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		preventEnterKeyHandling(),
 		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: true, horizontal: true })),
@@ -182,7 +184,7 @@
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
 		...extensions
-	];
+	]);
 
 	let collapsedContentAttributes = $derived(
 		EditorView.contentAttributes.of({

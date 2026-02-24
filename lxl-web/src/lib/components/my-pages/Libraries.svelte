@@ -19,7 +19,7 @@
 	const myLibraries: LibraryResultItem[] | undefined = $derived(page.data.myLibraries);
 	const myLibsError: string | undefined = $derived(page.data.error);
 
-	let searchPhrase = $state(q || '');
+	let searchPhrase = $derived(q || '');
 	let endpoint = '/api/my-pages';
 	let queryFn = (query: string) =>
 		new URLSearchParams({

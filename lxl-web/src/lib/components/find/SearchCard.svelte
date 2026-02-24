@@ -499,33 +499,33 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	}
 
 	.card-header {
-			& :global(.transliteration) {
+		& :global(.transliteration) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
 			font-weight: var(--font-weight-normal);
 			display: block;
-			}
+		}
 
-			& :global(.transliteration._contentBefore),
-			& :global(.transliteration._contentAfter) {
-					display: none;
-			}
+		& :global(.transliteration._contentBefore),
+		& :global(.transliteration._contentAfter) {
+			display: none;
+		}
 	}
 
 	/* TODO inline label style in DecoratedData */
 	.card-header-extra,
 	.card-body {
 		& :global(div:has(> .property-label)) {
-				/* override e.g isPartOf > hasTitle block */
-				display: inline;
+			/* override e.g isPartOf > hasTitle block */
+			display: inline;
 		}
 
 		& :global(span[data-property]) {
-				display: inline;
+			display: inline;
 		}
 
 		& :global(div[data-property] > div) {
-				display: inline;
+			display: inline;
 		}
 
 		/* FIXME */
@@ -533,26 +533,26 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		& :global(div[data-property='isPartOf']),
 		& :global(div:has(> div[data-property='isPartOf']) + div:has(> div[data-property='part'])),
 		& :global(div[data-property='part']) {
-				display: inline;
+			display: inline;
 		}
 
 		& :global(div > div[data-property='part'])::before {
-				content: ' ; ';
+			content: ' ; ';
 		}
 
 		& :global(.property-label) {
-				color: var(--color-body);
-				font-style: italic;
+			color: var(--color-body);
+			font-style: italic;
 		}
 
 		& :global(.property-label):not(:empty)::after {
-				color: var(--color-body);
-				content: ': ';
+			color: var(--color-body);
+			content: ': ';
 		}
 
-        & :global(div[data-property='identifiedBy']) {
-                color: var(--color-subtle);
-        }
+		& :global(div[data-property='identifiedBy']) {
+			color: var(--color-subtle);
+		}
 	}
 
 	/* card in dialog */
@@ -592,9 +592,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			border: none;
 
 			&:has(img.placeholder) {
-				// hide placeholder in popover
-				grid-template-areas:
-				'content';
+				/* hide placeholder in popover */
+				grid-template-areas: 'content';
 				grid-template-columns: 1fr;
 
 				& .card-image {
