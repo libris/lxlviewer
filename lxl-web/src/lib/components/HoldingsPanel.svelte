@@ -1,15 +1,22 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import type { LibraryWithLinksAndInstances, OrgId, UnknownLibrary } from '$lib/types/holdings';
+	import type {
+		LatLng,
+		LibraryWithLinksAndInstances,
+		OrgId,
+		UnknownLibrary
+	} from '$lib/types/holdings';
 	import { JsonLd } from '$lib/types/xl';
 	import { getMyLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
+	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
+	import { sortByDistance } from '$lib/utils/coordinates';
+	import HoldingsNearMeBtn from './HoldingsNearMeBtn.svelte';
 	import Holder from './Holder.svelte';
 	import BiSearch from '~icons/bi/search';
 	// import BiHouseHeart from '~icons/bi/house-heart';
 	import IconChevron from '~icons/bi/chevron-down';
 	import BiBank from '~icons/bi/bank';
-	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 
 	type Props = {
 		holders: (LibraryWithLinksAndInstances | UnknownLibrary)[];
@@ -29,6 +36,14 @@
 	const libOrgs: Record<OrgId, string[]> = page.data.refinedOrgs;
 	const { myLibraries } = getUserSettings();
 	const numHolders = $derived(holders?.length);
+	let userCoords: LatLng | null = $state(null);
+
+	let sortedHolders = $derived.by(() => {
+		if (!userCoords) return holders;
+		else {
+			return sortByDistance(holders, userCoords);
+		}
+	});
 
 	const filteredHolders = $derived(
 		holders.filter((holder) => {
@@ -176,9 +191,11 @@
 	/>
 	<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 </div>
+<!-- near me -->
+<HoldingsNearMeBtn onSucess={(coords) => (userCoords = coords)} />
 <!-- list holders -->
 <ul class="flex flex-col gap-2 text-xs">
-	{#each holders as holder, i (`${holder[JsonLd.ID]}-${i}`)}
+	{#each sortedHolders as holder, i (`${holder[JsonLd.ID]}-${i}`)}
 		<Holder {holder} hidden={!filteredHolders.find((h) => h[JsonLd.ID] === holder[JsonLd.ID])} />
 	{/each}
 	{#if filteredHolders.length === 0}

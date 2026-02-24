@@ -333,5 +333,14 @@ export default {
 	horizontalList: {
 		goForward: 'Gå framåt i lista',
 		goBackward: 'Gå bakåt i lista'
+	},
+	geolocation: {
+		sort: 'Hitta bibliotek nära mig',
+		unsupported: 'Platsåtkomst stöds inte',
+		permissionDenied:
+			'För hitta bibliotek nära dig behöver du tillåta platsåtkomst i din webbläsare',
+		positionUnavailable: 'Kunde inte hämta din plats',
+		timeOut: 'Att hämta din plats tog för lång tid. Försök igen',
+		unknown: 'Ett okänt fel inträffade när din plats skulle hämtas'
 	}
 };

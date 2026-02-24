@@ -229,6 +229,9 @@
 				</li>
 			{/if}
 		</ul>
+		{#if holder?.distance}
+			<footer><p class="text-subtle text-right">{holder.distance} km</p></footer>
+		{/if}
 	{/if}
 </li>
 

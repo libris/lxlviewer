@@ -79,6 +79,8 @@ export enum BibDb {
 	postalAddress = 'bibdb:PostalAddress',
 	visitingAddress = 'bibdb:VisitingAddress',
 	linkResolver = 'bibdb:linkResolver',
+	latitude = 'bibdb:latitude',
+	longitude = 'bibdb:longitude',
 	LinksToCatalog = 'linksToCatalog',
 	LinksToSite = 'linksToSite',
 	LinksToItem = 'linksToItem',

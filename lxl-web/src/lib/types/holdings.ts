@@ -62,6 +62,8 @@ export interface LibraryFull extends LibraryChip {
 	[BibDb.lopac]: Record<string, string>;
 	[BibDb.address]?: Record<string, string>[];
 	[BibDb.linkResolver]?: LinkResolver;
+	[BibDb.latitude]?: number;
+	[BibDb.longitude]?: number;
 }
 
 export interface LinkResolver {
@@ -73,6 +75,7 @@ export interface LinkResolver {
 export interface LibraryWithLinks extends LibraryFull {
 	displayStr: string;
 	_links: HolderLinks;
+	distance?: number;
 }
 
 export interface LibraryWithLinksAndInstances extends LibraryWithLinks {
@@ -136,4 +139,9 @@ export type HoldingsData = {
 	byInstanceId: HoldersByInstanceId;
 	byType: HoldersByType;
 	holdingLibraries: Record<LibraryId, LibraryWithLinks | null>;
+};
+
+export type LatLng = {
+	lat: number;
+	lng: number;
 };
