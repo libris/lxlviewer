@@ -414,7 +414,7 @@ export default {
         // Wait so that the change is available in the index when the search hitlist is loaded
         setTimeout(() => {
           this.$router.go(-1);
-        }, 1100);
+        }, 2000);
 
       }, (error) => {
         if (error.status === 403) {
