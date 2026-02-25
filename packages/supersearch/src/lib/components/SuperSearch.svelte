@@ -136,6 +136,7 @@
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
 	let dialog: HTMLDialogElement | undefined = $state();
+	let comboboxElement: HTMLDivElement | undefined = $state();
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(0);
@@ -448,13 +449,32 @@
 			event.key === 'Tab'
 		) {
 			const rows = Array.from(dialog?.querySelectorAll(':scope [role=row]') || []);
-			const getColsInRow = (rowIndex: number) =>
-				Array.from(rows[rowIndex].querySelectorAll(':scope button, :scope a')).filter((colItem) => {
-					if (typeof colItem?.checkVisibility === 'function') {
-						return colItem.checkVisibility();
-					}
-					return true; // always return true as a fallback if checkVisiblity isn't available
-				});
+
+			const getColsInInputRow = () => {
+				return comboboxElement
+					? Array.from(comboboxElement.querySelectorAll(':scope button, :scope a')).filter(
+							(colItem) => {
+								if (typeof colItem?.checkVisibility === 'function') {
+									return colItem.checkVisibility();
+								}
+								return true; // always return true as a fallback if checkVisiblity isn't available
+							}
+						)
+					: [];
+			};
+
+			const getColsInRow = (rowIndex: number) => {
+				return rows?.[rowIndex]
+					? Array.from(rows[rowIndex].querySelectorAll(':scope button, :scope a')).filter(
+							(colItem) => {
+								if (typeof colItem?.checkVisibility === 'function') {
+									return colItem.checkVisibility();
+								}
+								return true; // always return true as a fallback if checkVisiblity isn't available
+							}
+						)
+					: [];
+			};
 
 			const getColIndexFromId = (itemId: string) => {
 				const colRegex = new RegExp(`${id}-item-\\d+x(\\d+)`);
@@ -462,7 +482,7 @@
 			};
 
 			const getColIndexBefore = (rowIndex: number, colIndex: number) => {
-				if (rowIndex < rows.length) {
+				if (rowIndex <= rows.length) {
 					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
 					return colIndeces[colIndeces.indexOf(colIndex) - 1];
 				}
@@ -470,104 +490,131 @@
 			};
 
 			const getColIndexAfter = (rowIndex: number, colIndex: number) => {
-				if (rowIndex < rows.length) {
+				if (rowIndex <= rows.length) {
 					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
 					return colIndeces[colIndeces.indexOf(colIndex) + 1];
 				}
 				return -1;
 			};
 
-			if (rows.length) {
-				switch (event.key) {
-					case 'ArrowUp':
-						if (event.altKey) {
-							event.preventDefault();
-							hideExpandedSearch();
+			switch (event.key) {
+				case 'ArrowUp':
+					if (event.altKey) {
+						event.preventDefault();
+						hideExpandedSearch();
+					} else {
+						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
+							activeRowIndex = rows.length;
+							activeColIndex = 0;
+						} else if (activeRowIndex >= 1) {
+							activeRowIndex--;
+							if (activeRowIndex < 1) {
+								activeColIndex = defaultInputCol;
+								allowArrowKeyCursorHandling = {
+									...allowArrowKeyCursorHandling,
+									horizontal: true
+								};
+							} else {
+								const cols = getColsInRow(activeRowIndex - 1);
+								activeColIndex = Math.min(activeColIndex, cols.length - 1);
+								allowArrowKeyCursorHandling = {
+									...allowArrowKeyCursorHandling,
+									horizontal: cols.length <= 1
+								};
+							}
+						}
+					}
+					break;
+				case 'ArrowDown':
+					if (wrappingArrowKeyNavigation && activeRowIndex === rows.length) {
+						activeRowIndex = 0;
+						activeColIndex = defaultInputCol;
+					} else if (activeRowIndex < rows.length) {
+						activeRowIndex++;
+						const cols = getColsInRow(activeRowIndex - 1);
+						if (activeRowIndex === 1) {
+							activeColIndex = 0;
 						} else {
-							if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
-								activeRowIndex = rows.length - 1;
-								activeColIndex = 0;
-							} else if (activeRowIndex >= 1) {
-								activeRowIndex--;
-								if (activeRowIndex < 1) {
-									activeColIndex = defaultInputCol;
-									allowArrowKeyCursorHandling = {
-										...allowArrowKeyCursorHandling,
-										horizontal: true
-									};
+							activeColIndex = Math.min(activeColIndex, cols.length - 1);
+						}
+						allowArrowKeyCursorHandling = {
+							...allowArrowKeyCursorHandling,
+							horizontal: cols.length <= 1
+						};
+					}
+					break;
+				case 'ArrowLeft':
+					if (activeRowIndex >= 1 && activeColIndex > 0) {
+						activeColIndex = getColIndexBefore(activeRowIndex - 1, activeColIndex);
+					}
+					break;
+				case 'ArrowRight':
+					if (activeRowIndex >= 1 && activeColIndex < getColsInRow(activeRowIndex - 1).length - 1) {
+						activeColIndex = getColIndexAfter(activeRowIndex - 1, activeColIndex);
+					}
+
+					break;
+				case 'Tab':
+					event.preventDefault();
+					if (event.shiftKey) {
+						if (activeRowIndex === 0) {
+							const colIndeces = getColsInInputRow().map((item) => getColIndexFromId(item.id));
+							activeColIndex = colIndeces.findLast((index) => index < activeColIndex) || -1;
+						} else {
+							const closestBefore = getColIndexBefore(activeRowIndex - 1, activeColIndex);
+							if (typeof closestBefore !== 'number') {
+								activeRowIndex = activeRowIndex - 1;
+								if (activeRowIndex > 0) {
+									activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex).at(-1)!.id);
 								} else {
-									const cols = getColsInRow(activeRowIndex);
-									activeColIndex = Math.min(activeColIndex, cols.length - 1);
-									allowArrowKeyCursorHandling = {
-										...allowArrowKeyCursorHandling,
-										horizontal: cols.length <= 1
-									};
+									const lastCol = getColsInInputRow().at(-1)?.id;
+									activeColIndex = lastCol ? getColIndexFromId(lastCol) : 0;
 								}
 							}
-						}
-						break;
-					case 'ArrowDown':
-						if (wrappingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
-							activeRowIndex = 0;
-							activeColIndex = defaultInputCol;
-						} else if (activeRowIndex < rows.length - 1) {
-							activeRowIndex++;
-							const cols = getColsInRow(activeRowIndex);
-							if (activeRowIndex === 1) {
-								activeColIndex = 0;
-							} else {
-								activeColIndex = Math.min(activeColIndex, cols.length - 1);
-							}
-							allowArrowKeyCursorHandling = {
-								...allowArrowKeyCursorHandling,
-								horizontal: cols.length <= 1
-							};
-						}
-						break;
-					case 'ArrowLeft':
-						if (activeRowIndex >= 1 && activeColIndex > 0) {
-							activeColIndex = getColIndexBefore(activeRowIndex, activeColIndex);
-						}
-						break;
-					case 'ArrowRight':
-						if (activeRowIndex >= 1 && activeColIndex < getColsInRow(activeRowIndex).length - 1) {
-							activeColIndex = getColIndexAfter(activeRowIndex, activeColIndex);
-						}
-						break;
-					case 'Tab':
-						event.preventDefault();
-						if (event.shiftKey) {
-							const closestBefore = getColIndexBefore(activeRowIndex, activeColIndex);
-							if (typeof closestBefore !== 'number' && activeRowIndex > 0) {
-								activeRowIndex = Math.max(0, activeRowIndex - 1);
-								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex).at(-1)!.id);
-							}
 							if (typeof closestBefore === 'number') {
-								activeColIndex = getColIndexBefore(activeRowIndex, activeColIndex);
+								activeColIndex = getColIndexBefore(activeRowIndex - 1, activeColIndex);
 							}
-						} else {
-							const closestAfter = getColIndexAfter(activeRowIndex, activeColIndex);
+						}
+					} else {
+						const closestAfter =
+							activeRowIndex >= 1
+								? getColIndexAfter(Math.max(0, activeRowIndex - 1), activeColIndex)
+								: undefined;
 
-							if (typeof closestAfter !== 'number' && activeRowIndex < rows.length - 1) {
+						if (typeof closestAfter !== 'number' && activeRowIndex === 0) {
+							const colIndeces = getColsInInputRow().map((item) => getColIndexFromId(item.id));
+							const indexAfter = colIndeces.find((index) => index > activeColIndex);
+							if (typeof indexAfter === 'number') {
+								activeColIndex = indexAfter;
+							} else if (rows.length) {
 								activeRowIndex++;
-								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex)[0].id) || 0;
+								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1)[0].id) || 0;
 							}
-							if (typeof closestAfter === 'number') {
+						} else if (typeof closestAfter !== 'number' && activeRowIndex < rows.length) {
+							activeRowIndex++;
+							activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1)[0].id) || 0;
+						} else if (typeof closestAfter === 'number') {
+							if (activeRowIndex === 0) {
+								const firstCol = getColsInInputRow()[0].id;
+								if (firstCol) {
+									activeColIndex = getColIndexFromId(firstCol);
+								}
+							} else {
 								activeColIndex = closestAfter || 0;
 							}
 						}
-						break;
-				}
-
-				/**
-				 * TODO: Ensure the input is in view
-				 * const activeCellElement = document.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`);
-				 *
-				 * if (!isElementInView(activeCellElement)) {
-				 *		activeCellElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-				 * }
-				 */
+					}
+					break;
 			}
+
+			/**
+			 * TODO: Ensure the input is in view
+			 * const activeCellElement = document.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`);
+			 *
+			 * if (!isElementInView(activeCellElement)) {
+			 *		activeCellElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+			 * }
+			 */
 		}
 	}
 
@@ -750,7 +797,7 @@
 			inputField: collapsedInputSnippet,
 			getCellId: () => undefined,
 			isFocusedCell: () => false,
-			isFocusedRow: () => activeRowIndex === 0,
+			isFocusedRow: () => activeRowIndex === -1,
 			onclickSubmit: handleClickSubmit,
 			onclickClear: handleReset,
 			onclickClose: hideExpandedSearch
@@ -758,15 +805,23 @@
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
 </div>
-<dialog class="supersearch-dialog" id={`${id}-dialog`} bind:this={dialog} closedby="any">
+
+<dialog
+	class="supersearch-dialog"
+	id={`${id}-dialog`}
+	bind:this={dialog}
+	closedby="any"
+	tabindex="-1"
+	onclose={() => hideExpandedSearch()}
+>
 	<div
 		class="supersearch-dialog-wrapper"
 		role="presentation"
 		onkeydown={handleExpandedKeyDown}
 		onclick={handleClickOutsideDialog}
 	>
-		<div class="supersearch-dialog-content" role="grid">
-			<div class="supersearch-combobox" role="row">
+		<div class="supersearch-dialog-content">
+			<div class="supersearch-combobox" bind:this={comboboxElement}>
 				{@render inputRow?.({
 					expanded: true,
 					inputField: expandedInputSnippet,
@@ -778,15 +833,17 @@
 					onclickClose: hideExpandedSearch
 				})}
 			</div>
-			{@render expandedContent({
-				search,
-				resultsSnippet,
-				resultsCount: resultItemRows?.length,
-				getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-				isFocusedCell: (rowIndex: number, colIndex: number) =>
-					rowIndex === activeRowIndex && colIndex === activeColIndex,
-				isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
-			})}
+			<div id={`${id}-grid`} role="grid">
+				{@render expandedContent({
+					search,
+					resultsSnippet,
+					resultsCount: resultItemRows?.length,
+					getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+					isFocusedCell: (rowIndex: number, colIndex: number) =>
+						rowIndex === activeRowIndex && colIndex === activeColIndex,
+					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
+				})}
+			</div>
 		</div>
 	</div>
 </dialog>
