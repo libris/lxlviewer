@@ -46,7 +46,6 @@ export default {
     '~plugins/filters.js',
     '~mixins/lxl.js',
     '~plugins/envInjects.js'
-    //'~/plugins/matomo.client.js'
   ],
 
   router: {
