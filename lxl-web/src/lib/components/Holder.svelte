@@ -81,7 +81,7 @@
 	]}
 >
 	<div class="holder-heading flex items-baseline justify-between">
-		<h3 class="text-base font-medium sm:text-sm">
+		<h3 class="text-base font-medium sm:text-sm" id={`holder-${holder[JsonLd.ID]}`}>
 			{holder.displayStr || holder.name || holder[JsonLd.ID]}
 		</h3>
 		<!-- ext link or expand instances -->
@@ -90,8 +90,9 @@
 				href={getBestLink(instances[0])}
 				target="_blank"
 				aria-label={page.data.t('holdings.findAtLibrary')}
+				aria-describedby={`holder-${holder[JsonLd.ID]}`}
 			>
-				<BiBoxArrowUpRight class="text-link ml-2 size-4" />
+				<BiBoxArrowUpRight aria-hidden="true" class="text-link ml-2 size-4" />
 			</a>
 		{:else if numInstances > 1 && hasSomeItemLink}
 			<button
@@ -129,7 +130,13 @@
 							<li class="flex gap-2">
 								<!-- instance best link -->
 								{#if bestLink}
-									<a href={getBestLink(instance)} target="_blank" class="ext-link">
+									<a
+										href={getBestLink(instance)}
+										target="_blank"
+										class="ext-link"
+										aria-label={page.data.t('holdings.findAtLibrary')}
+										aria-describedby={`holder-${holder[JsonLd.ID]}`}
+									>
 										{page.data.t('holdings.linkToLocal')}
 									</a>
 								{/if}
