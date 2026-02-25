@@ -78,7 +78,7 @@ export default {
       ['nuxt-matomo', {
       matomoUrl: process.env.PUBLIC_MATOMO_URL,
       siteId: 27,
-      debug: true 
+      debug: process.env.NODE_ENV === 'development' ? true : false
     }],
     '@nuxtjs/style-resources',
     '@nuxt/http',
