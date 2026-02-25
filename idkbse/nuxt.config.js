@@ -45,7 +45,8 @@ export default {
   plugins: [
     '~plugins/filters.js',
     '~mixins/lxl.js',
-    '~plugins/envInjects.js'
+    '~plugins/envInjects.js',
+    { src: '~/plugins/cookieConsent.js', mode: 'client' }
   ],
 
   router: {
@@ -77,7 +78,8 @@ export default {
       ['nuxt-matomo', {
       matomoUrl: process.env.PUBLIC_MATOMO_URL,
       siteId: 27,
-      debug: process.env.NODE_ENV === 'development' ? true : false
+      debug: process.env.NODE_ENV === 'development' ? true : false ,
+      requireConsent: true
     }],
     '@nuxtjs/style-resources',
     '@nuxt/http',

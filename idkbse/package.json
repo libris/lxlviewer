@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@kungbib/cookie-consent": "^0.9.1",
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/style-resources": "^1.2.1",
     "bootstrap": "https://github.com/twbs/bootstrap/archive/v5.2.3.tar.gz",
