@@ -62,6 +62,10 @@ export class VocabUtil {
 		}
 	}
 
+	getPropertiesByCategory(category: string): FramedData[] {
+		return Array.from(this.vocabIndex.values()).filter((p) => this.hasCategory(p, category));
+	}
+
 	getInverseProperty(name: PropertyName): PropertyName | undefined {
 		const def = this.getDefinition(name);
 		const inverseId = def?.inverseOf?.[JsonLd.ID];
@@ -89,8 +93,8 @@ export class VocabUtil {
 	}
 
 	// TODO? reimplement?
-	hasCategory(propertyName: PropertyName, category: string) {
-		return lxljsVocab.hasCategory(propertyName, category, {
+	hasCategory(property: PropertyName | FramedData, category: string) {
+		return lxljsVocab.hasCategory(property, category, {
 			vocab: this.vocabIndex,
 			context: this.context
 		});

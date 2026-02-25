@@ -50,6 +50,7 @@ export enum Concepts {
 // https://github.com/libris/definitions/blob/develop/source/vocab/platform.ttl
 export enum Platform {
 	integral = 'integral',
+	searchfilter = 'searchfilter',
 	meta = 'meta'
 }
 
