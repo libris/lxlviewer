@@ -229,6 +229,11 @@
 				</li>
 			{/if}
 		</ul>
+		{#if holder?.distance}
+			<footer>
+				<p class="text-subtle text-right">{holder.distance.toLocaleString(page.data.locale)} km</p>
+			</footer>
+		{/if}
 	{/if}
 </li>
 

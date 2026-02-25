@@ -332,5 +332,13 @@ export default {
 	horizontalList: {
 		goForward: 'Go forward in list',
 		goBackward: 'Go backward in list'
+	},
+	geolocation: {
+		sort: 'Find libraries near me',
+		unsupported: 'Geolocation is not supported',
+		permissionDenied: 'Location permission denied, please enable it in your browser',
+		positionUnavailable: 'Location information is unavailable',
+		timeOut: 'Location request timed out. Try again',
+		unknown: 'An unknown error occurred while fetching location'
 	}
 };
