@@ -45,7 +45,8 @@ export default {
   plugins: [
     '~plugins/filters.js',
     '~mixins/lxl.js',
-    '~plugins/envInjects.js',
+    '~plugins/envInjects.js'
+    //'~/plugins/matomo.client.js'
   ],
 
   router: {
@@ -74,6 +75,11 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+      ['nuxt-matomo', {
+      matomoUrl: process.env.PUBLIC_MATOMO_URL,
+      siteId: 27,
+      debug: true 
+    }],
     '@nuxtjs/style-resources',
     '@nuxt/http',
     '~/modules/vocab-cache'
