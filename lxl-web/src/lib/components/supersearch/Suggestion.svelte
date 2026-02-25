@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
@@ -118,7 +119,7 @@
 <div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers?.length}>
 	{#if item.qualifiers?.length}
 		<a
-			href={page.data.localizeHref(primaryAddQualifierLink)}
+			href={resolve(page.data.localizeHref(primaryAddQualifierLink))}
 			id={getCellId?.(0)}
 			class:focused-cell={isFocusedCell?.(0)}
 		>
@@ -137,11 +138,11 @@
 						menuItems: [
 							...item.qualifiers.map((qualifier) => ({
 								label: `${page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
-								href: qualifier._q
+								href: resolve(qualifier._q)
 							})),
 							{
 								label: `${page.data.t('search.goToResource')}`,
-								href: resourceId || ''
+								href: resolve(resourceId || '')
 							}
 						],
 						placeAsSibling: true
@@ -152,7 +153,11 @@
 			{/key}
 		</button>
 	{:else}
-		<a href={page.data.localizeHref(resourceId)} id={getCellId ? getCellId(0) : ''}>
+		<a
+			href={resolve(page.data.localizeHref(resourceId))}
+			id={getCellId ? getCellId(0) : ''}
+			class:focused-cell={isFocusedCell?.(0)}
+		>
 			{@render leadingContent?.()}
 			{@render resourceSnippet(item)}
 		</a>
@@ -162,7 +167,7 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	:global(:not(.focused)) > .suggestion:has(:global(*:hover)) {
+	.suggestion:has(:global(*:hover)) {
 		background-color: var(--color-accent-50);
 	}
 	.suggestion button,
@@ -236,6 +241,6 @@
 
 	.more.focused-cell .more-icon-container,
 	.more:hover .more-icon-container {
-		background-color: var(--color-primary-200);
+		background-color: var(--color-accent-100);
 	}
 </style>
