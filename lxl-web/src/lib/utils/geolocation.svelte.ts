@@ -1,6 +1,12 @@
 import type { LatLng, LibraryWithLinksAndInstances, UnknownLibrary } from '$lib/types/holdings';
 import { BibDb } from '$lib/types/xl';
 
+export const userLocation: { coords: LatLng | null } = $state({ coords: null });
+
+export function saveUserLocation(loc: LatLng | null) {
+	userLocation.coords = loc;
+}
+
 export function sortByDistance(
 	holders: (LibraryWithLinksAndInstances | UnknownLibrary)[],
 	userCoords: LatLng

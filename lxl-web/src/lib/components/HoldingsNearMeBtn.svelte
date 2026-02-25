@@ -1,34 +1,42 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
+	import { getUserSettings } from '$lib/contexts/userSettings';
+	import { saveUserLocation } from '$lib/utils/geolocation.svelte';
 	import type { LatLng } from '$lib/types/holdings';
 	import Spinner from './Spinner.svelte';
 	import BiToggleOff from '~icons/bi/toggle-off';
 	import BiToggleOn from '~icons/bi/toggle-on';
 
 	type Props = {
-		onSucess(coords: LatLng | null): void;
+		location: LatLng | null;
 	};
 
-	const { onSucess }: Props = $props();
+	const { location }: Props = $props();
 
-	let userLocation: LatLng | null = $state(null);
 	let error: string | null | GeolocationPositionError = $state(null);
 	let loading = $state(false);
 
+	const userSettings = getUserSettings();
+	const prefersNearMe = userSettings.prefersNearMe;
+
+	const userLocation = $derived(location);
 	const ToggleComponent = $derived(userLocation ? BiToggleOn : BiToggleOff);
 
-	async function handleNearMeClick() {
-		error = null;
+	async function toggleNearMe() {
 		if (userLocation) {
-			userLocation = null;
-			onSucess(userLocation);
+			saveUserLocation(null);
+			userSettings.setPrefersNearMe(false);
 		} else {
 			loading = true;
 			try {
-				userLocation = await getUserLocation();
-				onSucess(userLocation);
+				const _loc = await getUserLocation();
+				saveUserLocation(_loc);
+				userSettings.setPrefersNearMe(true);
+				error = null;
 			} catch (e) {
+				userSettings.setPrefersNearMe(false);
 				error = page.data.t(`geolocation.${e}`);
 			} finally {
 				loading = false;
@@ -76,6 +84,13 @@
 			);
 		});
 	}
+
+	onMount(() => {
+		// saved location resets between reloads, try to get it again
+		if (prefersNearMe && !userLocation) {
+			toggleNearMe();
+		}
+	});
 </script>
 
 <div class="flex items-center gap-2" aria-busy={loading ? 'true' : undefined}>
@@ -84,7 +99,7 @@
 		role="switch"
 		aria-checked={!!userLocation}
 		class="btn btn-ghost gap-2"
-		onclick={handleNearMeClick}
+		onclick={toggleNearMe}
 	>
 		<span>
 			{page.data.t('geolocation.sort')}
