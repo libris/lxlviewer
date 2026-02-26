@@ -561,13 +561,24 @@
 					if (event.shiftKey) {
 						if (activeRowIndex === 0) {
 							const colIndeces = getColsInInputRow().map((item) => getColIndexFromId(item.id));
-							activeColIndex = colIndeces.findLast((index) => index < activeColIndex) || -1;
+							const closestBefore = colIndeces.findLast((index) => index < activeColIndex);
+							if (typeof closestBefore === 'number') {
+								activeColIndex = closestBefore;
+							} else if (activeColIndex === -1) {
+								activeRowIndex = Math.max(0, rows.length);
+								const lastRowColIndeces = getColsInRow(Math.max(0, rows.length - 1)).map((item) =>
+									getColIndexFromId(item.id)
+								);
+								activeColIndex = lastRowColIndeces[lastRowColIndeces.length - 1] || 0;
+							} else {
+								activeColIndex = -1;
+							}
 						} else {
 							const closestBefore = getColIndexBefore(activeRowIndex - 1, activeColIndex);
 							if (typeof closestBefore !== 'number') {
 								activeRowIndex = activeRowIndex - 1;
 								if (activeRowIndex > 0) {
-									activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex).at(-1)!.id);
+									activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1).at(-1)!.id);
 								} else {
 									const lastCol = getColsInInputRow().at(-1)?.id;
 									activeColIndex = lastCol ? getColIndexFromId(lastCol) : 0;
@@ -591,10 +602,15 @@
 							} else if (rows.length) {
 								activeRowIndex++;
 								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1)[0].id) || 0;
+							} else {
+								activeColIndex = -1;
 							}
 						} else if (typeof closestAfter !== 'number' && activeRowIndex < rows.length) {
 							activeRowIndex++;
 							activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1)[0].id) || 0;
+						} else if (typeof closestAfter !== 'number' && activeRowIndex === rows.length) {
+							activeRowIndex = 0;
+							activeColIndex = -1;
 						} else if (typeof closestAfter === 'number') {
 							if (activeRowIndex === 0) {
 								const firstCol = getColsInInputRow()[0].id;

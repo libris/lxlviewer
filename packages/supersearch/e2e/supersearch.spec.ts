@@ -73,11 +73,24 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		'supersearch-item-0x2'
 	);
 	await page.keyboard.press('Shift+Tab');
-	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
 		'supersearch-item-0x1'
 	);
+	await page.keyboard.press('Shift+Tab');
+	await expect(page.getByRole('dialog').getByRole('combobox')).not.toHaveAttribute(
+		'aria-activedescendant'
+	);
+	await page.keyboard.press('Shift+Tab');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-item-10x2'
+	);
+	await page.keyboard.press('Tab');
+	await expect(page.getByRole('dialog').getByRole('combobox')).not.toHaveAttribute(
+		'aria-activedescendant'
+	);
+
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
@@ -114,13 +127,13 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
-	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-0x1');
+	await expect(comboboxElement).not.toHaveAttribute('aria-activedescendant');
 	await expect(
-		page.locator('#supersearch-item-0x1'),
+		page.locator('#supersearch-item-0x0'),
 		'hidden items cannot receive focus'
-	).toHaveClass(/focused-cell/);
+	).not.toHaveClass(/focused-cell/);
 	await page.setViewportSize(devices['iPhone X'].viewport);
-	await page.keyboard.press('Shift+Tab');
+	await page.keyboard.press('Tab');
 	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-0x0');
 	await expect(page.locator('#supersearch-item-0x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('ArrowDown');
@@ -136,12 +149,7 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Tab');
 	await page.keyboard.press('Tab');
-	await page.keyboard.press('Tab');
-
-	await expect(
-		page.locator('#supersearch-item-10x2'),
-		'ensure focus is kept inside result items when tabbing on last row'
-	).toHaveClass(/focused-cell/);
+	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await expect(
 		page.locator('#supersearch-item-10x2'),
