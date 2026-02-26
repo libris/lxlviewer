@@ -85,6 +85,7 @@
 			{ariaDescribedBy}
 			bind:this={superSearchWrapperComponent}
 			onCursorChange={(value) => (cursor = value)}
+			qualifierSuggestions={page.data.qualifierSuggestions || []}
 		/>
 	</div>
 {:catch}

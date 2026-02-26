@@ -16,7 +16,7 @@
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping } from '$lib/types/search';
+	import type { DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
@@ -24,23 +24,13 @@
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 
-	const qualifierSuggestions = $derived([
-		{
-			key: page.data.t('qualifiers.contributorKey'),
-			label: page.data.t('qualifiers.contributorLabel')
-		},
-		{ key: page.data.t('qualifiers.languageKey'), label: page.data.t('qualifiers.languageLabel') },
-		{ key: page.data.t('qualifiers.titleKey'), label: page.data.t('qualifiers.titleLabel') },
-		{ key: page.data.t('qualifiers.yearKey'), label: page.data.t('qualifiers.yearLabel') },
-		{ key: page.data.t('qualifiers.subjectKey'), label: page.data.t('qualifiers.subjectLabel') }
-	]);
-
 	interface Props {
 		placeholder: string;
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		ariaDescribedBy?: string;
 		onCursorChange: (cursor: number | null) => void;
+		qualifierSuggestions: QualifierSuggestion2[];
 	}
 
 	let {
@@ -48,7 +38,8 @@
 		ariaLabelledBy,
 		ariaLabel,
 		ariaDescribedBy,
-		onCursorChange
+		onCursorChange,
+		qualifierSuggestions
 	}: Props = $props();
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
@@ -75,6 +66,9 @@
 	let userClearedSearch = $state(false);
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
+
+	// TODO min 3 for prefix match, while allowing exactMatch år?
+	const MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS = 2;
 
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
@@ -146,22 +140,100 @@
 		return null;
 	});
 
-	const charBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
-	const charAfter = $derived(/\S/.test(q.charAt(cursor)));
+	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
+	const hasCharAfter = $derived(/\S/.test(q.charAt(cursor)));
 
-	const showAddQualifiers = $derived(
-		!charBefore && !charAfter && editedParentNode !== 'QualifierValue'
-	);
+	const filteredQualifierSuggestions = $derived.by(() => {
+		if (qualifierSuggestionNeedle.word.length >= MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS) {
+			return qualifierSuggestions
+				.map((q) => ({ q: q, score: score(q, qualifierSuggestionNeedle.word) }))
+				.filter((qs) => qs.score > 0)
+				.sort((a, b) => b.score - a.score)
+				.map((qs) => qs.q);
+		}
+
+		if (!hasCharBefore && !hasCharAfter && editedParentNode !== 'QualifierValue') {
+			return qualifierSuggestions;
+		}
+
+		return [];
+	});
+
+	function score(q: QualifierSuggestion2, needle: string): number {
+		// TODO only match query codes uppercase? e.g. WHYL
+		const needleLower = needle.toLowerCase();
+
+		if (prefixMatch(needleLower, q.label)) {
+			return 20;
+		}
+		if (prefixMatch(needleLower, q.key)) {
+			return 10;
+		}
+
+		let score = 0;
+		for (const s of q.altCodesAndLabels) {
+			if (prefixMatch(needleLower, s)) {
+				score += 1;
+			}
+		}
+		return score;
+	}
+
+	function prefixMatch(needleLower: string, haystack: string) {
+		return haystack
+			.toLowerCase()
+			.split(/\s/)
+			.find((s) => s.startsWith(needleLower));
+	}
+
+	const showAddQualifiers = $derived(filteredQualifierSuggestions.length > 0);
 
 	const isValidWildcardPosition = $derived.by(() => {
 		// a valid wildcard position is at end of word (inside group, not inside quote)
-		if (charBefore && q.charAt(cursor - 1) !== ')' && q.charAt(cursor - 1) !== '"') {
-			if (!charAfter || q.charAt(cursor) === ')') {
+		if (hasCharBefore && q.charAt(cursor - 1) !== ')' && q.charAt(cursor - 1) !== '"') {
+			if (!hasCharAfter || q.charAt(cursor) === ')') {
 				return true;
 			}
 		}
 		return false;
 	});
+
+	const qualifierSuggestionNeedle = $derived.by(() => {
+		if (
+			editedParentNode === 'QualifierValue' ||
+			editedParentNode === 'QualifierOuterGroup' ||
+			[':', '=', '<', '>'].includes(q.charAt(cursor - 1))
+		) {
+			return { from: cursor, to: cursor, word: '' };
+		}
+
+		return editedWord(q, cursor);
+	});
+
+	function editedWord(str: string, cursor: number) {
+		let from = cursor;
+		for (let i = cursor - 1; i >= 0; i--) {
+			if (/\s|[()"<>:=]/.test(str.charAt(i))) {
+				break;
+			}
+			from = i;
+		}
+
+		let to = cursor - 1;
+		for (let i = cursor; i < q.length; i++) {
+			if (/\s|[()"<>:=]/.test(str.charAt(i))) {
+				break;
+			}
+			to = i;
+		}
+		to += 1;
+
+		return {
+			from: from,
+			to: to,
+			word: str.slice(from, to)
+		};
+	}
 
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
@@ -171,19 +243,43 @@
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
-		const insert = `${qualifierKey}:`;
-		superSearch?.dispatchChange({
-			change: {
-				from: cursor,
-				to: cursor,
-				insert
-			},
-			selection: {
-				anchor: cursor + insert.length,
-				head: cursor + insert.length
-			},
-			userEvent: 'input.complete'
-		});
+
+		if (qualifierSuggestionNeedle.word.length > 0) {
+			// TODO don't need this if we can check qualifier editing state?
+			// TODO don't suggest same
+			// TODO handle replacement of qualifier more smoothly
+			const insert = [':', '=', '<', '>'].includes(q.charAt(qualifierSuggestionNeedle.to))
+				? qualifierKey
+				: `${qualifierKey}:`;
+
+			superSearch?.dispatchChange({
+				change: {
+					from: qualifierSuggestionNeedle.from,
+					to: qualifierSuggestionNeedle.to,
+					insert
+				},
+				selection: {
+					anchor: qualifierSuggestionNeedle.from + insert.length,
+					head: qualifierSuggestionNeedle.from + insert.length
+				},
+				userEvent: 'input.complete'
+			});
+		} else {
+			const insert = `${qualifierKey}:`;
+
+			superSearch?.dispatchChange({
+				change: {
+					from: cursor,
+					to: cursor,
+					insert
+				},
+				selection: {
+					anchor: cursor + insert.length,
+					head: cursor + insert.length
+				},
+				userEvent: 'input.complete'
+			});
+		}
 	}
 
 	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
@@ -384,7 +480,7 @@
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
 						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
-							{#each qualifierSuggestions as { key, label }, cellIndex (key)}
+							{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
 								<button
 									type="button"
 									id={getCellId(1, cellIndex)}
@@ -762,6 +858,7 @@
 	}
 
 	.qualifier-suggestion {
+		text-transform: capitalize;
 		box-shadow: 0 0 0 1px var(--color-accent-200);
 
 		&.focused-cell {
