@@ -149,7 +149,7 @@
 	let cursorHandlingCompartment = new Compartment();
 
 	let placeholderCompartment = new Compartment();
-	let prevPlaceholder = $derived(placeholder);
+	let prevPlaceholder = (() => $state.snapshot(placeholder))();
 
 	let collapsedContentAttributesCompartment = new Compartment();
 	let expandedContentAttributesCompartment = new Compartment();
