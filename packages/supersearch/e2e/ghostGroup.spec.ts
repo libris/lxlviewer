@@ -48,7 +48,9 @@ test("don't destroy succeeding qualifiers by treating them as a qualifier value 
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.pressSequentially('title:pippi');
-	await combo.press('Home');
+	for (let i = 0; i < 12; i++) {
+		await combo.press('ArrowLeft');
+	}
 	await combo.pressSequentially('contributor:');
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText(
 		'contributor:()title:(pippi)'
