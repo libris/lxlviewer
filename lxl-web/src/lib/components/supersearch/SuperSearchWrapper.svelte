@@ -43,7 +43,13 @@
 		onCursorChange: (cursor: number | null) => void;
 	}
 
-	let { placeholder = '', ariaLabelledBy, ariaLabel, ariaDescribedBy, onCursorChange }: Props = $props();
+	let {
+		placeholder = '',
+		ariaLabelledBy,
+		ariaLabel,
+		ariaDescribedBy,
+		onCursorChange
+	}: Props = $props();
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
 
@@ -77,7 +83,7 @@
 		const trimmedLength = query.trim().length;
 		if (trimmedLength < MIN_LENGTH_FOR_SUGGESTIONS) return null;
 		if (trimmedLength === MIN_LENGTH_FOR_SUGGESTIONS) return 3000;
-		if (trimmedLength === 4) return 1500;
+		if (trimmedLength === MIN_LENGTH_FOR_SUGGESTIONS + 1) return 1500;
 		return 400;
 	};
 
