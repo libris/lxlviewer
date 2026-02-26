@@ -19,7 +19,7 @@
 	let loading = $state(false);
 
 	const userSettings = getUserSettings();
-	const prefersNearMe = userSettings.prefersNearMe;
+	const prefersNearMe = userSettings?.prefersNearMe;
 
 	const userLocation = $derived(location);
 	const ToggleComponent = $derived(userLocation ? BiToggleOn : BiToggleOff);
