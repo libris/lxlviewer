@@ -398,7 +398,7 @@ test('reverses autocompletion of group, remove stray )', async ({ page }) => {
 test('reverses autocompletion of group, remove multiple stray )', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.pressSequentially('title:pippi))), { delay: 50 }');
+	await combo.pressSequentially('title:pippi)))', { delay: 50 });
 	for (let i = 0; i < 3; i++) await combo.press('Backspace');
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi)');
 });
