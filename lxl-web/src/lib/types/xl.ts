@@ -31,7 +31,8 @@ export enum Fmt {
 	CONTENT_AFTER = '_contentAfter',
 	CONTENT_BEFORE = '_contentBefore',
 	STYLE = '_style',
-	LABEL = '_label'
+	LABEL = '_label',
+	FIND_LINK = '_findLink'
 }
 
 // https://github.com/libris/definitions/blob/develop/source/vocab/base.ttl
