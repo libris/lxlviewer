@@ -747,7 +747,7 @@
 		@apply min-h-2;
 	}
 
-	:global(.supersearch-dialog .focused .suggestion) {
+	:global(.supersearch-dialog .focused .suggestion .focused-cell) {
 		background-color: var(--color-accent-50);
 		outline: 2px solid var(--color-outline);
 	}
@@ -899,14 +899,13 @@
 	.qualifier-suggestion {
 		box-shadow: 0 0 0 1px var(--color-accent-200);
 
+		&:hover {
+			background: var(--color-accent-100);
+		}
 		&.focused-cell {
-			background-color: var(--color-accent-100);
+			background: var(--color-accent-100);
 			box-shadow: 0 0 0 5px var(--color-accent-100);
 			outline: 2px solid var(--color-outline);
-
-			&:hover {
-				background: var(--color-accent-100);
-			}
 		}
 	}
 </style>
