@@ -1,5 +1,7 @@
 const { gitDescribeSync } = require('git-describe');
 
+import { hostPath } from './src/plugins/env';
+
 process.env.APP_VERSION = require('./package.json').version;
 process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
   longSemver: true,
@@ -7,6 +9,19 @@ process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
   requireAnnotated: false,
   match: '*',
 }));
+
+const publicRuntimeConfig = {
+  siteName: 'id.kb.se',
+  environment: process.env.ENV || 'local',
+  defaultSite: process.env.DEFAULT_SITE || 'id.kb.se',
+  siteAlias: JSON.parse(process.env.XL_SITE_ALIAS || '{}'),
+  siteConfig: JSON.parse(process.env.XL_SITE_CONFIG || '{}'),
+  vocab: process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld',
+  context: process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld',
+  display: process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
+};
+
+const defaultHostPath = hostPath(publicRuntimeConfig.defaultSite, publicRuntimeConfig.siteAlias, publicRuntimeConfig.siteConfig);
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -22,10 +37,10 @@ export default {
       { hid:'og:title', property:'og:title', content:'id.kb.se' },
       { hid:'og:site_name', property:'og:site_name', content:'id.kb.se' },
       { hid:'og:description', property:'og:description', content:'Grundstenar för länkade data hos Kungliga biblioteket.' },
-      { hid:'og:image', property:'og:image', content:'https://id.kb.se/opengraph_id.png' },
+      { hid:'og:image', property:'og:image', content: defaultHostPath + '/opengraph_id.png' },
       { hid:'og:image:width', property:'og:image:width', content:'1200' },
       { hid:'og:image:height', property:'og:image:height', content:'600' },
-      { hid:'twitter:image', property:'twitter:image', content:'https://id.kb.se/opengraph_id.png' },
+      { hid:'twitter:image', property:'twitter:image', content: defaultHostPath + '/opengraph_id.png' },
       { hid:'twitter:card', name:'twitter:card', content:'summary_large_image' },
     ],
     link: [
@@ -76,7 +91,7 @@ export default {
   modules: [
       ['nuxt-matomo', {
       matomoUrl: process.env.PUBLIC_MATOMO_URL,
-      siteId: 27,
+      siteId: process.env.IDKBSE_MATOMO_ID,
       debug: process.env.NODE_ENV === 'development' ? true : false ,
       consentRequired: true
     }],
@@ -99,16 +114,7 @@ export default {
     ],
   },
 
-  publicRuntimeConfig: {
-    siteName: 'id.kb.se',
-    environment: process.env.ENV || 'local',
-    defaultSite: process.env.DEFAULT_SITE || 'id.kb.se',
-    siteAlias: JSON.parse(process.env.XL_SITE_ALIAS || '{}'),
-    siteConfig: JSON.parse(process.env.XL_SITE_CONFIG || '{}'),
-    vocab: process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld',
-    context: process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld',
-    display: process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
-  },
+  publicRuntimeConfig,
 
   privateRuntimeConfig: {
   },
