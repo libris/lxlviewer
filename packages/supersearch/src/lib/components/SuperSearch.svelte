@@ -805,7 +805,6 @@
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
 </div>
-
 <dialog
 	class="supersearch-dialog"
 	id={`${id}-dialog`}

@@ -3162,9 +3162,6 @@
             },
               {
                 "@id": "https://id.kb.se/term/saogf/Bilder"
-              },
-              {
-                "@id": "https://id.kb.se/term/gmgpc/swe/Bilder"
               }],
             "contribution": [{
               "@type": "PrimaryContribution",
