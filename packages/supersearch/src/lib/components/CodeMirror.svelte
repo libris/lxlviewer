@@ -116,7 +116,7 @@
 		domEventHandler,
 		...extensions
 	]);
-	let prevExtensions: Extension[] = extensions;
+	let prevExtensions: Extension[] = $derived(extensions);
 
 	function createEditorState({ doc, selection }: { doc?: string; selection?: EditorSelection }) {
 		return EditorState.create({

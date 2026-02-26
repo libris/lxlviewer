@@ -16,7 +16,7 @@
 	};
 
 	const { tabs, ariaLabel = 'tablist' }: TabList = $props();
-	let activeTabIndex = $state(
+	let activeTabIndex = $derived(
 		Math.max(
 			0,
 			tabs.findIndex((tab) => tab.active)

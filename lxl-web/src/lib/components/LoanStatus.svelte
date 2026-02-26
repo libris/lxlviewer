@@ -17,7 +17,7 @@
 	let loading = $state(false);
 	let statusData: HoldingStatus[] | undefined = $state();
 	let error: string | undefined = $state();
-	let bibIds: BibIdObj[] = [bibIdObj];
+	let bibIds: BibIdObj[] = $derived([bibIdObj]);
 
 	async function getHoldingStatus() {
 		if (!sigel || !bibIds || bibIds.length < 1) {

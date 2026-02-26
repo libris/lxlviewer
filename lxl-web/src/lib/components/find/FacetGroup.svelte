@@ -44,7 +44,7 @@
 
 	const showSort = $derived((level === 1 && data.dimension !== 'boolFilters') || level === 3);
 
-	let currentSort = $state(
+	let currentSort = $derived(
 		userSettings.facetSort?.[data.dimension] ||
 			CUSTOM_FACET_SORT[data.dimension as keyof typeof CUSTOM_FACET_SORT] ||
 			DEFAULT_FACET_SORT

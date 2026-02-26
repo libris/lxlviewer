@@ -10,8 +10,8 @@
 
 	let { search }: Props = $props();
 
-	let rangeFrom = $state(search.mapping.greaterThanOrEquals);
-	let rangeTo = $state(search.mapping.lessThanOrEquals);
+	let rangeFrom = $derived(search.mapping.greaterThanOrEquals);
+	let rangeTo = $derived(search.mapping.lessThanOrEquals);
 
 	afterNavigate(() => {
 		rangeFrom = search.mapping.greaterThanOrEquals;
