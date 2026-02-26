@@ -22,7 +22,7 @@ test('place the cursor inside the group', async ({ page }) => {
 test('re-add group when deleting it', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
-	await combo.pressSequentially('titel:pippi', { delay: 100 });
+	await combo.pressSequentially('titel:pippi', { delay: 50 });
 	await page.keyboard.down('Shift');
 	for (let i = 0; i < 6; i++) {
 		await combo.press('ArrowLeft');
