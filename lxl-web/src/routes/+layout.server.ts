@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/private';
 import type { MappingsOnlyPartialCollectionView, QualifierSuggestion2 } from '$lib/types/search';
 import { getTranslator } from '$lib/i18n/index.js';
-import { getSupportedLocale, type LocaleCode } from '$lib/i18n/locales.js';
+import { getSupportedLocale, type LocaleCode, otherLocales } from '$lib/i18n/locales.js';
 import { displayMappings } from '$lib/utils/search';
 import { type FramedData, JsonLd, LensType, Platform } from '$lib/types/xl';
 import { type DisplayUtil, toString, VocabUtil } from '$lib/utils/xl';
@@ -77,13 +77,17 @@ function mapSearchFilterDefinition(
 	locale,
 	display: DisplayUtil
 ): QualifierSuggestion2 | null {
-	console.log('LOCALE', locale);
 	try {
+		const codes = def['librisQueryCode'] || [];
+		const otherLangLabels = otherLocales(locale).map((l) =>
+			toString(display.lensAndFormat(def, LensType.Chip, l))
+		);
+
 		return {
 			// FIXME???,
 			key: getUriSlug(def[JsonLd.ID]),
 			label: toString(display.lensAndFormat(def, LensType.Chip, locale)),
-			altCodesAndLabels: def['librisQueryCode'] || []
+			altCodesAndLabels: codes.concat(otherLangLabels)
 		};
 	} catch {
 		return null;

@@ -27,6 +27,10 @@ export function initLocalizeHref(locale: LocaleCode, currentUrl: URL) {
 		);
 }
 
+export function otherLocales(locale: LocaleCode): LocaleCode[] {
+	return Object.keys(Locales).filter((l) => l !== locale);
+}
+
 function localizeHref(
 	href: string | URL,
 	options: { locale: LocaleCode; baseUrl: URL | string },
