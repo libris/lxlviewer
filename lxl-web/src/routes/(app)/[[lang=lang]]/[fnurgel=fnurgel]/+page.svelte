@@ -27,16 +27,18 @@
 	let previousURL: URL;
 
 	const holdingsParam = $derived(page.state.holdings || page.url.searchParams.get('holdings'));
-	const modalCard = $derived(
-		(holdingsParam &&
-			(data.instances || []).filter(
-				(instance: { [JsonLd.ID]: string }) =>
-					`${stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])))}` === holdingsParam
-			)[0]) ||
-			data.isWork
-			? data.workCard
-			: data.instances?.[0]
-	);
+
+	const modalCard = $derived.by(() => {
+		const instances = data.instances ?? [];
+		const matchingInstance = holdingsParam
+			? instances.find(
+					(instance: { [JsonLd.ID]: string }) =>
+						stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID]))) === holdingsParam
+				)
+			: undefined;
+
+		return matchingInstance ?? (data.isWork ? data.workCard : instances[0]);
+	});
 
 	afterNavigate(({ to }) => {
 		if (to) {
