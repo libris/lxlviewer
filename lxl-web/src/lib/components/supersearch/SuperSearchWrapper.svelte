@@ -485,7 +485,7 @@
 									type="button"
 									id={getCellId(1, cellIndex)}
 									class={[
-										'qualifier-suggestion text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
+										'qualifier-suggestion  text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap capitalize last-of-type:mr-4',
 										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
 									]}
 									onclick={() => addQualifierKey(key)}
@@ -858,7 +858,6 @@
 	}
 
 	.qualifier-suggestion {
-		text-transform: capitalize;
 		box-shadow: 0 0 0 1px var(--color-accent-200);
 
 		&.focused-cell {
