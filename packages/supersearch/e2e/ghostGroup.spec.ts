@@ -51,6 +51,7 @@ test("don't destroy succeeding qualifiers by treating them as a qualifier value 
 	for (let i = 0; i < 12; i++) {
 		await combo.press('ArrowLeft');
 	}
+	await page.waitForTimeout(1000);
 	await combo.pressSequentially('contributor:');
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText(
 		'contributor:()title:(pippi)'
