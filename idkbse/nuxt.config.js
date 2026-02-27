@@ -91,7 +91,7 @@ export default {
   modules: [
       ['nuxt-matomo', {
       matomoUrl: process.env.PUBLIC_MATOMO_URL,
-      siteId: process.env.IDKBSE_MATOMO_ID,
+      siteId: process.env.PUBLIC_MATOMO_ID,
       debug: process.env.NODE_ENV === 'development' ? true : false ,
       consentRequired: true
     }],
