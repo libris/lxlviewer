@@ -57,25 +57,34 @@ const cookieConsentConfig = {
         }
       }
     }
-  },
-  onConsent: ({ cookie }) => {
-    if (cookie.categories.includes('analytics')) {
-      window._paq = window._paq || []
-      window._paq.push(['rememberConsentGiven'])
-    }
-  },
-  onChange: ({ cookie }) => {
-    window._paq = window._paq || []
-    if (cookie.categories.includes('analytics')) {
-      window._paq.push(['rememberConsentGiven'])
-    } else {
-      window._paq.push(['forgetConsentGiven'])
-    }
   }
 }
 
-export default () => {
+export default (context, inject) => {
   if (process.client) {
+    // Initialize _paq queue before Matomo loads
+    window._paq = window._paq || []
+    
+    // Store consent callbacks to use Matomo's setConsent method when available
+    const matomoCallbacks = {
+      onConsent: ({ cookie }) => {
+        if (window.$nuxt && window.$nuxt.$matomo) {
+          const hasAnalytics = cookie.categories.includes('analytics')
+          window.$nuxt.$matomo.setConsent(hasAnalytics)
+        }
+      },
+      onChange: ({ cookie }) => {
+        if (window.$nuxt && window.$nuxt.$matomo) {
+          const hasAnalytics = cookie.categories.includes('analytics')
+          window.$nuxt.$matomo.setConsent(hasAnalytics)
+        }
+      }
+    }
+    
+    // Merge callbacks into the config
+    cookieConsentConfig.onConsent = matomoCallbacks.onConsent
+    cookieConsentConfig.onChange = matomoCallbacks.onChange
+    
     KbCookieConsent.run(cookieConsentConfig)
   }
 }
