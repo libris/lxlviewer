@@ -166,9 +166,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.keyboard.press('S');
 	await page.waitForResponse(
 		(res) =>
-			res.url().includes('/supersearch?') &&
-			res.url().includes('spr%C3%A5k') &&
-			res.status() === 200
+			res.url().includes('/supersearch?') && res.url().includes('language') && res.status() === 200
 	);
 	await expect(
 		page.getByRole('dialog').locator('.suggestion').getByRole('link').filter({ hasText: 'Språk' }),
@@ -176,10 +174,10 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	).toHaveCount(5);
 	await page.getByRole('dialog').getByRole('combobox').pressSequentially('wahili');
 	await page.getByRole('dialog').locator('.suggestion').getByRole('link').first().click();
-	await page.waitForURL(/spr%C3%A5k/);
+	await page.waitForURL(/language/);
 	expect(page.url()).toContain('contributor');
 	expect(page.url(), 'url contains both contributor and language').toContain(
-		encodeURIComponent('språk')
+		encodeURIComponent('language')
 	);
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').first()).toContainText(
 		'Författare/upphov'
@@ -203,22 +201,22 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.keyboard.press('A');
 	await page.waitForResponse(
 		(res) =>
-			res.url().includes('/supersearch?') && res.url().includes('A4mne') && res.status() === 200
+			res.url().includes('/supersearch?') && res.url().includes('subject') && res.status() === 200
 	);
 	await expect(page.getByRole('dialog').getByRole('link').filter({ hasText: 'ämne' })).toHaveCount(
 		5
 	);
 	await page.getByRole('dialog').locator('.suggestion').getByRole('link').first().click();
-	await page.waitForURL(/A4mne/);
+	await page.waitForURL(/subject/);
 	await expect(
 		page.getByRole('combobox').locator('.lxl-qualifier-key').first(),
 		'qualifier is added in the beginning if the cursor is placed there'
-	).toContainText('Ämne');
+	).toContainText(/ämne/i);
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').nth(1)).toContainText(
 		'Författare/upphov'
 	);
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-key').last()).toContainText(
-		'Språk'
+		/språk/i
 	);
 });
 
