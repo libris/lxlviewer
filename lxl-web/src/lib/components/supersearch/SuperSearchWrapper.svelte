@@ -153,7 +153,7 @@
 		}
 
 		if (!hasCharBefore && !hasCharAfter && editedParentNode !== 'QualifierValue') {
-			return qualifierSuggestions;
+			return qualifierSuggestions.filter((q) => q?.curated);
 		}
 
 		return [];
@@ -171,7 +171,12 @@
 		}
 
 		let score = 0;
-		for (const s of q.altCodesAndLabels) {
+		for (const s of q.queryCodes) {
+			if (prefixMatch(needleLower, s)) {
+				score += 1;
+			}
+		}
+		for (const s of q.altLabels) {
 			if (prefixMatch(needleLower, s)) {
 				score += 1;
 			}

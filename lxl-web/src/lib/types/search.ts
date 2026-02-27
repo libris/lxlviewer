@@ -264,7 +264,9 @@ export interface QualifierSuggestion {
 export interface QualifierSuggestion2 {
 	label: string;
 	key: string;
-	altCodesAndLabels: string[];
+	queryCodes: string[];
+	altLabels: string[];
+	curated?: boolean;
 }
 
 export interface AdjecentSearchResult {

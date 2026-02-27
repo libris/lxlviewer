@@ -78,16 +78,18 @@ function mapSearchFilterDefinition(
 	display: DisplayUtil
 ): QualifierSuggestion2 | null {
 	try {
-		const codes = def['librisQueryCode'] || [];
 		const otherLangLabels = otherLocales(locale).map((l) =>
 			toString(display.lensAndFormat(def, LensType.Chip, l))
 		);
+		const key = getUriSlug(def[JsonLd.ID]) as string;
 
 		return {
 			// FIXME???,
-			key: getUriSlug(def[JsonLd.ID]),
+			key: key,
 			label: toString(display.lensAndFormat(def, LensType.Chip, locale)),
-			altCodesAndLabels: codes.concat(otherLangLabels)
+			queryCodes: (def['librisQueryCode'] || []) as string[],
+			altLabels: otherLangLabels,
+			...(CURATED_QUALIFIERS.includes(key) && { curated: true })
 		};
 	} catch {
 		return null;
@@ -95,6 +97,13 @@ function mapSearchFilterDefinition(
 }
 
 // TODO where do we specify this?
-const CURATED_QUALIFIERS = ['contributor', 'language', 'title', 'yearPublished', 'subject'];
+const CURATED_QUALIFIERS = [
+	'contributor',
+	'title',
+	'language',
+	'yearPublished',
+	'subject',
+	'originalLanguage'
+];
 
 const CURATED_ORDER = new Map(CURATED_QUALIFIERS.map((value, index) => [value, index]));

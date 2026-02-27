@@ -955,7 +955,7 @@ function toLabel(data: DisplayDecorated) {
 }
 
 // TODO
-export function toString(data: DisplayDecorated) {
+export function toString(data: DisplayDecorated): string {
 	if (isObject(data)) {
 		const v = [];
 		if (Fmt.CONTENT_BEFORE in data && data[Fmt.CONTENT_BEFORE] !== '') {
