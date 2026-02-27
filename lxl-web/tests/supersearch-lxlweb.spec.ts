@@ -160,7 +160,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByRole('dialog')
 		.getByLabel('Lägg till filter')
 		.getByRole('button')
-		.getByText('Språk')
+		.getByText(/^språk/i)
 		.click();
 
 	await page.keyboard.press('S');
@@ -197,7 +197,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByRole('dialog')
 		.getByLabel('Lägg till filter')
 		.getByRole('button')
-		.getByText('Ämne')
+		.getByText(/^ämne/i)
 		.click();
 
 	await page.keyboard.press('A');
