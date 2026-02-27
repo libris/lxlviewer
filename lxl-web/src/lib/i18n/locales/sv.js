@@ -188,25 +188,6 @@ export default {
 		suggestions: 'Förslag',
 		showAll: 'Visa sökresultat'
 	},
-	qualifiers: {
-		contributorKey: 'contributor',
-		contributorLabel: 'Författare/upphov',
-		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
-		categoryKey: 'category',
-		categoryLabel: 'Kategori',
-		titleKey: 'titel',
-		titleLabel: 'Titel',
-		titlePlaceholder: 'Röda rummet, Casablanca',
-		languageKey: 'språk',
-		languageLabel: 'Språk',
-		languagePlaceholder: 'Svenska, Engelska, Arabiska',
-		subjectKey: 'ämne',
-		subjectLabel: 'Ämne',
-		subjectPlaceholder: 'Sommaren, Romerska riket',
-		yearKey: 'år',
-		yearLabel: 'Utgivningsår',
-		yearPlaceholder: '1994, 2002, 2025'
-	},
 	sort: {
 		sort: 'Sortera',
 		relevancy: 'Relevans',
