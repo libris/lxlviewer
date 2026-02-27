@@ -143,8 +143,10 @@
 	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
 	const hasCharAfter = $derived(/\S/.test(q.charAt(cursor)));
 
+	let qualifierSuggestionsExpanded = $state(false);
+
 	const filteredQualifierSuggestions = $derived.by(() => {
-		if (qualifierSuggestionNeedle.word.length >= MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS) {
+		if (isSuggestingQualifiers) {
 			return qualifierSuggestions
 				.map((q) => ({ q: q, score: score(q, qualifierSuggestionNeedle.word) }))
 				.filter((qs) => qs.score > 0)
@@ -153,7 +155,9 @@
 		}
 
 		if (!hasCharBefore && !hasCharAfter && editedParentNode !== 'QualifierValue') {
-			return qualifierSuggestions.filter((q) => q?.curated);
+			return qualifierSuggestionsExpanded
+				? qualifierSuggestions
+				: qualifierSuggestions.filter((q) => q?.curated);
 		}
 
 		return [];
@@ -214,6 +218,10 @@
 
 		return editedWord(q, cursor);
 	});
+
+	const isSuggestingQualifiers = $derived(
+		qualifierSuggestionNeedle.word.length >= MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS
+	);
 
 	function editedWord(str: string, cursor: number) {
 		let from = cursor;
@@ -484,7 +492,7 @@
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
+						<div role="row" class="flex flex-wrap items-center gap-2 py-2 pl-4">
 							{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
 								<button
 									type="button"
@@ -498,6 +506,22 @@
 									{label}:
 								</button>
 							{/each}
+							{#if !isSuggestingQualifiers && filteredQualifierSuggestions.length > 0}
+								<button
+									type="button"
+									id={getCellId(1, filteredQualifierSuggestions.length + 1)}
+									class={[
+										'text-2xs link-subtle ml-1',
+										isFocusedCell(1, filteredQualifierSuggestions.length + 1) &&
+											'focused-cell outline-2'
+									]}
+									onclick={() => (qualifierSuggestionsExpanded = !qualifierSuggestionsExpanded)}
+								>
+									{qualifierSuggestionsExpanded
+										? page.data.t('search.showFewer')
+										: page.data.t('search.showMore')}
+								</button>
+							{/if}
 						</div>
 					</div>
 				{/if}
