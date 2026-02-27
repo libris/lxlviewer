@@ -104,42 +104,16 @@ export default {
 }
 
 .TermTreeItem {
-  width: 100%;
-  &-label {
-    display: flex;
-    align-items: center;
-
-    &-row {
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-      align-items: center;
-
-      &:hover > .TermTreeItem-anchor,
-      &:focus-within > .TermTreeItem-anchor {
-        display: inline-flex;
-      }
-    }
-  }
-
-  &-anchor {
-    display: none;
-    margin-right: 0.5em;
-    line-height: 1;
-    padding: 1em 0.5em;
-    color: $gray-500 !important;
-    &:hover,
-    &:focus {
-      color: $gray-700 !important;
-    }
-  }
-
   &-group {
     position: relative;
 
     & > summary {
       &::-webkit-details-marker {
         display: none;
+      }
+
+      &:focus-within .TermTreeItemLabel-anchor {
+        display: inline-flex;
       }
     }
 
@@ -201,7 +175,7 @@ export default {
   &:target,
   &.target {
     background: rgba($kb-secondary-turquoise, 0.1) !important;
-   }
+  }
 
   &summary:hover {
     @media (min-width: 768px) {

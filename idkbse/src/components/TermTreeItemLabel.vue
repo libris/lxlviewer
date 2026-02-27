@@ -65,8 +65,7 @@ export default {
   justify-content: space-between;
   align-items: center;
 
-  &:hover > .TermTreeItemLabel-anchor,
-  & > .TermTreeItemLabel-anchor:focus-visible {
+  &:hover > .TermTreeItemLabel-anchor {
     display: inline-flex;
   }
 
