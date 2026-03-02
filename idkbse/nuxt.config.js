@@ -1,7 +1,5 @@
 const { gitDescribeSync } = require('git-describe');
 
-import { hostPath } from './src/plugins/env';
-
 process.env.APP_VERSION = require('./package.json').version;
 process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
   longSemver: true,
@@ -21,8 +19,6 @@ const publicRuntimeConfig = {
   display: process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
 };
 
-const defaultHostPath = hostPath(publicRuntimeConfig.defaultSite, publicRuntimeConfig.siteAlias, publicRuntimeConfig.siteConfig);
-
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -37,10 +33,10 @@ export default {
       { hid:'og:title', property:'og:title', content:'id.kb.se' },
       { hid:'og:site_name', property:'og:site_name', content:'id.kb.se' },
       { hid:'og:description', property:'og:description', content:'Grundstenar för länkade data hos Kungliga biblioteket.' },
-      { hid:'og:image', property:'og:image', content: defaultHostPath + '/opengraph_id.png' },
+      { hid:'og:image', property:'og:image', content: '/opengraph_id.png' },
       { hid:'og:image:width', property:'og:image:width', content:'1200' },
       { hid:'og:image:height', property:'og:image:height', content:'600' },
-      { hid:'twitter:image', property:'twitter:image', content: defaultHostPath + '/opengraph_id.png' },
+      { hid:'twitter:image', property:'twitter:image', content: '/opengraph_id.png' },
       { hid:'twitter:card', name:'twitter:card', content:'summary_large_image' },
     ],
     link: [
