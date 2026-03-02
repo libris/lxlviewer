@@ -244,9 +244,9 @@ test('access filters can be added/removed', async ({ page }) => {
 	await page.keyboard.press('Enter');
 	await page.getByText('Fritt online').click();
 	await expect(page, 'user can add access filters').toHaveURL('/find?_q=hej+freeOnline');
-	await page.getByLabel('Rensa').first().click();
+	await page.getByLabel('ta bort filter Fritt Online').first().click();
 	await expect(page, 'user can remove access filters by pressing clear icon').toHaveURL(
-		'/find?_q=hej+freeOnline'
+		'/find?_q=hej'
 	);
 	await page.getByText('Fritt online').first().click();
 	await expect(page).toHaveURL('/find?_q=hej+freeOnline');
