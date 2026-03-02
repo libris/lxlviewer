@@ -9,6 +9,8 @@
 
 	const { key, keyLabel, operator, value, valueLabel, removeLink, onclick }: Props = $props();
 
+	const pillText = $derived(`${keyLabel || ''}${operator} ${valueLabel || ''}`);
+
 	/**
 	 * TODO: Add resource links when API exposes the record ids/fnurgels in mappings
 	 * const resourceLink = value?.match(/([a-z0-9]{15})#it"$/m)?.[1]; // only create links for fnurgels for now (lang:sv and similar should also be linkable in the future...)
@@ -64,9 +66,9 @@
 	<a
 		href={page.data.localizeHref(removeLink)}
 		class="lxl-qualifier-remove"
-		aria-label={page.data.t('search.clearFilters')}
+		aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
 	>
-		<IconClose />
+		<IconClose aria-hidden="true" />
 	</a>
 {/if}
 

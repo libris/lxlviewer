@@ -463,8 +463,8 @@
 							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 lg:size-12',
 							expanded && 'max-sm:h-14 max-sm:w-13'
 						]}
-						aria-label={page.data.t('search.clearFilters')}
-						title={page.data.t('search.clearFilters')}
+						aria-label={page.data.t('search.clear')}
+						title={page.data.t('search.clear')}
 					>
 						<IconClear class="size-4.5 sm:size-4" />
 					</svelte:element>
