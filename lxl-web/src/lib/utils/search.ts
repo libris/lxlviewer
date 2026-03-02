@@ -128,6 +128,7 @@ export function asSearchResultItem(
 			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
 			numberOfHolders: getHoldersCount(i, vocabUtil),
+			associatedMedia: getAtPath(i, ['@reverse', 'instanceOf', '*', 'associatedMedia', '*']),
 			...(isLibrary(i) && {
 				libraryId: i[JsonLd.ID],
 				displayStr: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale))
