@@ -271,6 +271,12 @@ export interface QualifierSuggestion2 {
 
 export interface QualifierDefinition extends QualifierSuggestion2 {
 	comment?: string;
+	propertyChainAxiom?: PropertyChain[];
+}
+
+export interface PropertyChain {
+	label: string;
+	path: string;
 }
 
 export interface AdjecentSearchResult {

@@ -25,6 +25,11 @@ export enum Rdfs {
 	RDF_TYPE = 'rdf:type'
 }
 
+export enum LxlJs {
+	// https://github.com/libris/lxlviewer/blob/2e70e6845c90457e1381de5a8fa75d0de9fdcbea/lxljs/vocab.js#L819
+	BASE_PROPERTY_OF = 'basePropertyOf'
+}
+
 export enum Fmt {
 	DISPLAY = '_display',
 	PROPS = '_props',
@@ -51,6 +56,7 @@ export enum Concepts {
 export enum Platform {
 	integral = 'integral',
 	searchfilter = 'searchfilter',
+	composite = 'https://id.kb.se/ns/librissearch/composite',
 	meta = 'meta'
 }
 

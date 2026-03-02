@@ -23,6 +23,7 @@ import {
 	type Lens,
 	type LensedOrdered,
 	LensType,
+	type Link,
 	Platform,
 	type PropertyName,
 	type RangeRestriction,
@@ -56,9 +57,12 @@ export class VocabUtil {
 		return thing[JsonLd.TYPE] as ClassName;
 	}
 
-	getDefinition(name: ClassName | PropertyName): FramedData {
+	getDefinition(name: ClassName | PropertyName | Link): FramedData {
 		if (typeof name === 'string') {
 			return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
+		}
+		if (isLink(name)) {
+			return lxljsVocab.getTermObject(name[JsonLd.ID], this.vocabIndex, this.context);
 		}
 	}
 
@@ -1129,13 +1133,9 @@ function mapMaybeArray(v, fn) {
 	return Array.isArray(v) ? v.map(fn) : fn(v);
 }
 
-/*
-function isLink(data: unknown): data is Link {
-	return isObject(data)
-		&& Object.keys(data).length === 1
-		&& Key.ID in data;
+export function isLink(data: unknown): data is Link {
+	return isObject(data) && Object.keys(data).length === 1 && data[JsonLd.ID];
 }
- */
 
 export function isObject(data: unknown): data is Data {
 	return typeof data === 'object' && !Array.isArray(data) && data !== null;

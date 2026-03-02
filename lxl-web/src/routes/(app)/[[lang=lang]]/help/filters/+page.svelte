@@ -42,7 +42,22 @@
 							{/each}
 						</ul>
 					</td>
-					<td>{f.comment}</td>
+					<td>
+						<span class=" pl-2">{f.comment}</span>
+						{#if f.propertyChainAxiom}
+							<ul
+								class={[
+									'grid grid-cols-1 gap-2 pl-2 sm:grid-cols-2',
+									f.propertyChainAxiom.length > 1 && 'rounded-lg border-l border-gray-400'
+								]}
+							>
+								{#each f.propertyChainAxiom as p (p)}
+									<li class="text-xs">{p.label}</li>
+									<li class="font-mono text-xs">{p.path}</li>
+								{/each}
+							</ul>
+						{/if}
+					</td>
 				</tr>
 			{/each}
 		</tbody>
@@ -51,6 +66,9 @@
 	{#each data.filters as f (f['@id'])}
 		<pre>{JSON.stringify(f, null, 2)}</pre>
 	{/each}
+    {#each data.filterDefs as f (f.key)}
+        <pre>{JSON.stringify(f, null, 2)}</pre>
+    {/each}
     -->
 </article>
 
