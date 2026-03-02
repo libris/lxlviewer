@@ -43,14 +43,9 @@
 						</ul>
 					</td>
 					<td>
-						<span class=" pl-2">{f.comment}</span>
+						{f.comment}
 						{#if f.propertyChainAxiom}
-							<ul
-								class={[
-									'grid grid-cols-1 gap-2 pl-2 sm:grid-cols-2',
-									f.propertyChainAxiom.length > 1 && 'rounded-lg border-l border-gray-400'
-								]}
-							>
+							<ul class={['mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2']}>
 								{#each f.propertyChainAxiom as p (p)}
 									<li class="text-xs">{p.label}</li>
 									<li class="font-mono text-xs">{p.path}</li>
