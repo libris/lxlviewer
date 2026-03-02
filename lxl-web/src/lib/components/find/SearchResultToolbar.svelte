@@ -53,7 +53,7 @@
 					`${page.url.pathname}?${page.url.searchParams.toString()}#filters`
 				)}
 				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
-				aria-label={page.data.t('search.filters')}
+				aria-label={`${page.data.t('general.show')} ${page.data.t('search.filters')}. ${page.data.t('search.selectedFilters')}: ${filterCount}`}
 				onclick={(e) => {
 					e.preventDefault();
 					toggleFiltersModal();

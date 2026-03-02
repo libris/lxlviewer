@@ -232,7 +232,8 @@ export default {
 		more: 'till',
 		readMore: 'Läs mer',
 		add: 'Lägg till',
-		remove: 'Ta bort'
+		remove: 'Ta bort',
+		show: 'Visa'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
@@ -242,7 +243,6 @@ export default {
 	},
 	resource: {
 		occurrences: 'Förekomster',
-		show: 'Visa',
 		all: 'alla',
 		matching: 'Matchar din sökning',
 		results: 'träffar',

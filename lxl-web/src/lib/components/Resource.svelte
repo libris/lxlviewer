@@ -334,7 +334,7 @@
 									>
 										<IconArrowRight class="inline size-5 text-neutral-500" />
 										<span>
-											{page.data.t('resource.show')}
+											{page.data.t('general.show')}
 											{#if relationItem.totalItems > 10}
 												{page.data.t('resource.all')}
 											{/if}

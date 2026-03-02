@@ -233,7 +233,8 @@ export default {
 		more: 'more',
 		readMore: 'Read more',
 		add: 'Add',
-		remove: 'Remove'
+		remove: 'Remove',
+		show: 'Show'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',
@@ -243,7 +244,6 @@ export default {
 	},
 	resource: {
 		occurrences: 'Occurrences',
-		show: 'Show',
 		all: 'all',
 		matching: 'Matching your search',
 		results: 'results',
