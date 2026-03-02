@@ -16,8 +16,10 @@ const publicRuntimeConfig = {
   siteConfig: JSON.parse(process.env.XL_SITE_CONFIG || '{}'),
   vocab: process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld',
   context: process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld',
-  display: process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
-};
+  display: process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld',
+  matomoUrl: process.env.PUBLIC_MATOMO_URL,
+  matomoId: process.env.PUBLIC_MATOMO_ID
+}
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -86,8 +88,8 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
       ['nuxt-matomo', {
-      matomoUrl: process.env.PUBLIC_MATOMO_URL,
-      siteId: process.env.PUBLIC_MATOMO_ID,
+      matomoUrl: publicRuntimeConfig.matomoUrl,
+      siteId: publicRuntimeConfig.matomoId,
       debug: process.env.NODE_ENV === 'development' ? true : false ,
       consentRequired: true
     }],
