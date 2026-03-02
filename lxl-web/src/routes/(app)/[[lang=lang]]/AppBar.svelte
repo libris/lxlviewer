@@ -83,6 +83,12 @@
 		}
 	}
 
+	function handleClickPageTitle() {
+		if (window.getSelection()?.type === 'Caret') {
+			appSearchComponent?.showExpandedSearch({ cursorAtEnd: true });
+		}
+	}
+
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
 		appSearchComponent?.showExpandedSearch({ cursorAtEnd: true });
@@ -298,13 +304,19 @@
 						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
 					>
 						<h1
-							id="page-title"
 							class="my-1.5 font-serif text-[1.625rem] tracking-[-0.0125rem] italic lg:my-2 lg:text-[2.1875rem] @md:tracking-[-0.025rem] @lg:text-3xl @xl:my-2 @xl:text-[2.1875rem] @3xl:my-1.5 @3xl:text-[2.5rem] lg:@3xl:my-2 @5xl:my-4 @5xl:text-5xl"
 						>
-							{page.data.t('home.pageHeadingTitle')}
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+							<label
+								id="page-title"
+								for="supersearch-collapsed-combobox"
+								onclick={handleClickPageTitle}
+							>
+								{page.data.t('home.pageHeadingTitle')}
+							</label>
 						</h1>
 						<p
-							id="page-description"
 							class="text-subtle max-w-[40ch] font-serif text-base lg:text-lg @xl:text-lg @3xl:max-w-max @3xl:text-lg @5xl:text-xl"
 						>
 							<strong class="font-normal">Libris</strong>

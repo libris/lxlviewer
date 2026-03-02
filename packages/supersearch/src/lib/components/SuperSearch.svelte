@@ -189,6 +189,7 @@
 
 	let collapsedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
+			id: `${id}-collapsed-combobox`,
 			role: 'combobox',
 			enterkeyhint: 'search',
 			...(ariaLabelledBy && {
@@ -212,7 +213,7 @@
 	); // ensures aria-activedecendant is only shown if the element exists in the DOM
 	let expandedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
-			id: `${id}-content`,
+			id: `${id}-expanded-combobox`,
 			role: 'combobox', // identifies the element as a combobox
 			enterkeyhint: 'search',
 			...(ariaLabelledBy && {
