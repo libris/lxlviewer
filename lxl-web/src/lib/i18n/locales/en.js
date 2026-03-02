@@ -65,12 +65,11 @@ export default {
 		myPages: 'My pages',
 		libraries: 'Libraries',
 		favouriteLibraries: 'My libraries',
+		favouriteLibrary: 'favourite library',
 		findLibrary: 'Search library or location',
 		findAndAdd: 'Find and add favourite libraries',
 		noResultsFor: 'No results for',
-		hitsFor: 'hits for',
-		add: 'Add',
-		remove: 'Remove'
+		hitsFor: 'hits for'
 	},
 	footer: {
 		logo: 'National Library of Sweden logotype',
@@ -175,12 +174,11 @@ export default {
 		relatedSearchLabel: 'Search the results',
 		didYouMean: 'Did you mean',
 		showAllResults: 'Show all results',
-		add: 'add',
 		addAs: 'Add as',
 		goTo: 'Go to',
 		goToResource: 'Go to the resource',
 		addLibraries: 'Add libraries',
-		changeLibraries: 'Change libraries',
+		changeLibraries: 'Change favourite libraries',
 		noAddedLibrariesText: 'You have not chosen any favourite libraries',
 		libraries: 'libraries',
 		allInFacet: 'All in',
@@ -232,7 +230,9 @@ export default {
 		usagePolicy: 'License terms',
 		cropped: 'Cropped',
 		more: 'more',
-		readMore: 'Read more'
+		readMore: 'Read more',
+		add: 'Add',
+		remove: 'Remove'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',

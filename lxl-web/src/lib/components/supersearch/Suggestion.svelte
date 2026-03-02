@@ -30,7 +30,7 @@
 		<span
 			class="text-subtle order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline"
 		>
-			{page.data.t('search.add')}
+			{page.data.t('general.add')}
 
 			<span class="hidden lowercase lg:inline">
 				{item.qualifiers[0].label}

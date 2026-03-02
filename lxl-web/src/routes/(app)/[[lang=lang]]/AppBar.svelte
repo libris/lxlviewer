@@ -442,7 +442,7 @@
 						>
 							<IconAddFilter class="mr-2 hidden size-4 @xl:inline @5xl:size-4.5" />
 							<span>
-								<span id="add-label" class="hidden @xl:inline">{page.data.t('search.add')}</span>
+								<span id="add-label" class="hidden @xl:inline">{page.data.t('general.add')}</span>
 								<span class="capitalize @xl:lowercase">
 									{page.data.t('search.filter').toLowerCase()}
 								</span>

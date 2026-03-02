@@ -65,12 +65,11 @@ export default {
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Mina bibliotek',
+		favouriteLibrary: 'favoritbibliotek',
 		findLibrary: 'Sök efter bibliotek',
 		findAndAdd: 'Hitta och lägg till favoritbibliotek',
 		noResultsFor: 'Inga sökträffar för',
-		hitsFor: 'träffar för',
-		add: 'Lägg till',
-		remove: 'Ta bort'
+		hitsFor: 'träffar för'
 	},
 	footer: {
 		logo: 'Kungliga bibliotekets logotyp',
@@ -174,12 +173,11 @@ export default {
 		relatedSearchLabel: 'Sök i resultaten',
 		didYouMean: 'Menade du',
 		showAllResults: 'Visa alla sökresultat',
-		add: 'Lägg till',
 		addAs: 'Lägg till som',
 		goTo: 'Gå till',
 		goToResource: 'Gå till resursen',
 		addLibraries: 'Lägg till bibliotek',
-		changeLibraries: 'Ändra bibliotek',
+		changeLibraries: 'Ändra favoritbibliotek',
 		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek',
 		libraries: 'bibliotek',
 		allInFacet: 'Allt inom',
@@ -231,7 +229,9 @@ export default {
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren',
 		more: 'till',
-		readMore: 'Läs mer'
+		readMore: 'Läs mer',
+		add: 'Lägg till',
+		remove: 'Ta bort'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
