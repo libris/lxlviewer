@@ -269,6 +269,10 @@ export interface QualifierSuggestion2 {
 	curated?: boolean;
 }
 
+export interface QualifierDefinition extends QualifierSuggestion2 {
+	comment?: string;
+}
+
 export interface AdjecentSearchResult {
 	[JsonLd.ID]: string;
 	itemOffset: number;

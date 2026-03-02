@@ -49,13 +49,13 @@ export async function load({ locals, url, params, fetch }) {
 }
 
 function getQualifierSuggestions(locale: LocaleCode, vocab: VocabUtil, display: DisplayUtil) {
-	const collator = new Intl.Collator(locale).compare;
+	const compare = new Intl.Collator(locale).compare;
 
 	return vocab
 		.getPropertiesByCategory(Platform.searchfilter)
-		.map((p) => mapSearchFilterDefinition(p, locale, display))
+		.map((p) => mapSearchFilterDefinition(p, locale, display, compare))
 		.filter((p) => p !== null)
-		.sort((a, b) => collator(a?.label, b?.label))
+		.sort((a, b) => compare(a?.label, b?.label))
 		.sort((a, b) => {
 			const aIx = CURATED_ORDER.get(a.key);
 			const bIx = CURATED_ORDER.get(b.key);
@@ -75,7 +75,8 @@ function getQualifierSuggestions(locale: LocaleCode, vocab: VocabUtil, display: 
 function mapSearchFilterDefinition(
 	def: FramedData,
 	locale,
-	display: DisplayUtil
+	display: DisplayUtil,
+	compare
 ): QualifierSuggestion2 | null {
 	try {
 		const otherLangLabels = otherLocales(locale).map((l) =>
@@ -87,7 +88,7 @@ function mapSearchFilterDefinition(
 			// FIXME???,
 			key: key,
 			label: toString(display.lensAndFormat(def, LensType.Chip, locale)),
-			queryCodes: (def['librisQueryCode'] || []) as string[],
+			queryCodes: ((def['librisQueryCode'] || []) as string[]).sort((a, b) => compare(a, b)),
 			altLabels: otherLangLabels,
 			...(CURATED_QUALIFIERS.includes(key) && { curated: true })
 		};
