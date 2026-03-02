@@ -12,7 +12,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@kungbib/cookie-consent": "^0.9.1",
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/style-resources": "^1.2.1",
     "bootstrap": "https://github.com/twbs/bootstrap/archive/v5.2.3.tar.gz",
@@ -24,7 +23,6 @@
     "lodash-es": "^4.17.21",
     "lxljs": "file:../lxljs",
     "nuxt": "^2.17.1",
-    "nuxt-matomo": "^1.2.4",
     "sass": "^1.35.1",
     "sass-loader": "^10"
   },
