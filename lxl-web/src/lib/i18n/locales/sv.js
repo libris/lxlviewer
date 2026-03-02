@@ -20,7 +20,7 @@ export default {
 		aboutBeta: 'Frågor och svar om betan',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
-		accessibility: 'Tillgänglighet',
+		accessibilityStatement: 'Tillgänglighetsredogörelse',
 		changeLang: 'In English'
 	},
 	header: {
