@@ -29,7 +29,7 @@
 		</thead>
 		<tbody class="divide-y divide-gray-300 [&>tr>td]:p-3 [&>tr>td]:text-left [&>tr>td]:align-top">
 			{#each data.filterDefs as f (f.key)}
-				<tr>
+				<tr id={f.key}>
 					<td>
 						<button
 							class="qualifier text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap capitalize"
