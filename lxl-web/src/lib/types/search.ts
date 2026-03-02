@@ -261,6 +261,24 @@ export interface QualifierSuggestion {
 	cursor: number;
 }
 
+export interface QualifierSuggestion2 {
+	label: string;
+	key: string;
+	queryCodes: string[];
+	altLabels: string[];
+	curated?: boolean;
+}
+
+export interface QualifierDefinition extends QualifierSuggestion2 {
+	comment?: string;
+	propertyChainAxiom?: PropertyChain[];
+}
+
+export interface PropertyChain {
+	label: string;
+	path: string;
+}
+
 export interface AdjecentSearchResult {
 	[JsonLd.ID]: string;
 	itemOffset: number;

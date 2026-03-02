@@ -10,6 +10,16 @@ export async function load({ params, data, url }) {
 	const userSettings = data.userSettings;
 	const subsetMapping = data.subsetMapping;
 	const siteName = data.siteName;
+	const qualifierSuggestions = data.qualifierSuggestions;
 
-	return { locale, t, localizeHref, base, userSettings, subsetMapping, siteName };
+	return {
+		locale,
+		t,
+		localizeHref,
+		base,
+		userSettings,
+		subsetMapping,
+		siteName,
+		qualifierSuggestions
+	};
 }

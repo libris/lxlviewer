@@ -23,6 +23,7 @@ import {
 	type Lens,
 	type LensedOrdered,
 	LensType,
+	type Link,
 	Platform,
 	type PropertyName,
 	type RangeRestriction,
@@ -56,10 +57,17 @@ export class VocabUtil {
 		return thing[JsonLd.TYPE] as ClassName;
 	}
 
-	getDefinition(name: ClassName | PropertyName): FramedData {
+	getDefinition(name: ClassName | PropertyName | Link): FramedData {
 		if (typeof name === 'string') {
 			return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
 		}
+		if (isLink(name)) {
+			return lxljsVocab.getTermObject(name[JsonLd.ID], this.vocabIndex, this.context);
+		}
+	}
+
+	getPropertiesByCategory(category: string): FramedData[] {
+		return Array.from(this.vocabIndex.values()).filter((p) => this.hasCategory(p, category));
 	}
 
 	getInverseProperty(name: PropertyName): PropertyName | undefined {
@@ -89,8 +97,8 @@ export class VocabUtil {
 	}
 
 	// TODO? reimplement?
-	hasCategory(propertyName: PropertyName, category: string) {
-		return lxljsVocab.hasCategory(propertyName, category, {
+	hasCategory(property: PropertyName | FramedData, category: string) {
+		return lxljsVocab.hasCategory(property, category, {
 			vocab: this.vocabIndex,
 			context: this.context
 		});
@@ -951,7 +959,7 @@ function toLabel(data: DisplayDecorated) {
 }
 
 // TODO
-export function toString(data: DisplayDecorated) {
+export function toString(data: DisplayDecorated): string {
 	if (isObject(data)) {
 		const v = [];
 		if (Fmt.CONTENT_BEFORE in data && data[Fmt.CONTENT_BEFORE] !== '') {
@@ -1125,13 +1133,9 @@ function mapMaybeArray(v, fn) {
 	return Array.isArray(v) ? v.map(fn) : fn(v);
 }
 
-/*
-function isLink(data: unknown): data is Link {
-	return isObject(data)
-		&& Object.keys(data).length === 1
-		&& Key.ID in data;
+export function isLink(data: unknown): data is Link {
+	return isObject(data) && Object.keys(data).length === 1 && data[JsonLd.ID];
 }
- */
 
 export function isObject(data: unknown): data is Data {
 	return typeof data === 'object' && !Array.isArray(data) && data !== null;

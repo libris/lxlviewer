@@ -54,7 +54,10 @@ export default {
 	help: {
 		pageTitle: 'Hjälp',
 		pageDescription:
-			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.'
+			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.',
+		description: 'Beskrivning',
+		filter: 'Filter',
+		reference: 'Referens'
 	},
 	myPages: {
 		pageTitle: 'My pages',
@@ -187,25 +190,6 @@ export default {
 		loading: 'Laddar...',
 		suggestions: 'Förslag',
 		showAll: 'Visa sökresultat'
-	},
-	qualifiers: {
-		contributorKey: 'contributor',
-		contributorLabel: 'Författare/upphov',
-		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
-		categoryKey: 'category',
-		categoryLabel: 'Kategori',
-		titleKey: 'titel',
-		titleLabel: 'Titel',
-		titlePlaceholder: 'Röda rummet, Casablanca',
-		languageKey: 'språk',
-		languageLabel: 'Språk',
-		languagePlaceholder: 'Svenska, Engelska, Arabiska',
-		subjectKey: 'ämne',
-		subjectLabel: 'Ämne',
-		subjectPlaceholder: 'Sommaren, Romerska riket',
-		yearKey: 'år',
-		yearLabel: 'Utgivningsår',
-		yearPlaceholder: '1994, 2002, 2025'
 	},
 	sort: {
 		sort: 'Sortera',

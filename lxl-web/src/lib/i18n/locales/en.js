@@ -54,7 +54,10 @@ export default {
 	help: {
 		pageTitle: 'Help',
 		pageDescription:
-			'Help and documentation for using Libris, the Swedish national union catalogue.'
+			'Help and documentation for using Libris, the Swedish national union catalogue.',
+		description: 'Description',
+		filter: 'Filter',
+		reference: 'Reference'
 	},
 	myPages: {
 		pageTitle: 'My pages',
@@ -188,25 +191,6 @@ export default {
 		loading: 'Loading...',
 		suggestions: 'Suggestions',
 		showAll: 'Show search results'
-	},
-	qualifiers: {
-		contributorKey: 'contributor',
-		contributorLabel: 'Author/Contributor',
-		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
-		categoryKey: 'category',
-		categoryLabel: 'Category',
-		titleKey: 'title',
-		titleLabel: 'Title',
-		titlePlaceholder: 'The Serious Game, Casablanca',
-		languageKey: 'language',
-		languageLabel: 'Language',
-		languagePlaceholder: 'Swedish, English, Arabic',
-		subjectKey: 'subject',
-		subjectLabel: 'Subject',
-		subjectPlaceholder: 'Sommaren, Romerska riket',
-		yearKey: 'year',
-		yearLabel: 'Year of publication',
-		yearPlaceholder: '1994, 2002, 2025'
 	},
 	sort: {
 		sort: 'Sort',
