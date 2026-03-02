@@ -521,6 +521,19 @@
 										? page.data.t('search.showFewer')
 										: page.data.t('search.showMore')}
 								</button>
+								{#if qualifierSuggestionsExpanded}
+									<a
+										href={page.data.localizeHref('/help/filters')}
+										id={getCellId(1, filteredQualifierSuggestions.length + 2)}
+										class={[
+											'text-2xs link-subtle ml-1',
+											isFocusedCell(1, filteredQualifierSuggestions.length + 2) &&
+												'focused-cell outline-2'
+										]}
+									>
+										{page.data.t('help.reference')}
+									</a>
+								{/if}
 							{/if}
 						</div>
 					</div>
