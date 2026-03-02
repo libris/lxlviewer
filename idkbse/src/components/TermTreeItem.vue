@@ -4,16 +4,17 @@
       v-if="this.narrower?.length > 0"
       class="TermTreeItem-group"
       :style="{ '--level': level }"
+      :open="this.open"
     >
-      <summary class="TermTreeItem-label" :id="this['@id'].split('/').pop()">
+      <summary
+        class="TermTreeItem-content"
+        :id="this.hashId"
+        :class="{ target: this.hashId === $nuxt.$route.hash.replace('#', '') }"
+      >
         <div class="TermTreeItem-group-icon">
           <i class="bi bi-chevron-right"></i>
         </div>
-        <h5>
-          <a :href="translateUriEnv(this['@id'])">
-            {{ this.conciseLabel }}
-          </a>
-        </h5>
+        <TermTreeItemLabel :@id="this['@id']" :label="this.label" />
       </summary>
       <ul class="TermTreeItem-list">
         <TermTreeItem
@@ -27,15 +28,11 @@
         />
       </ul>
     </details>
-    <div v-else class="TermTreeItem-label" :id="this['@id'].split('/').pop()">
+    <div v-else class="TermTreeItem-content" :id="this.hashId">
       <div class="TermTreeItem-group-icon">
         <!-- fill same width as chevron -->
       </div>
-      <h5>
-        <a :href="translateUriEnv(this['@id'])">
-          {{ this.conciseLabel }}
-        </a>
-      </h5>
+      <TermTreeItemLabel :@id="this['@id']" :label="this.label" />
     </div>
   </li>
 </template>
@@ -43,6 +40,7 @@
 <script>
 import { mapGetters } from "vuex";
 import LensMixin from "@/mixins/lens";
+import TermTreeItemLabel from "./TermTreeItemLabel.vue";
 
 export default {
   mixins: [LensMixin],
@@ -60,6 +58,9 @@ export default {
       default: 1,
     },
   },
+  components: {
+    TermTreeItemLabel,
+  },
   computed: {
     ...mapGetters([
       "vocab",
@@ -68,11 +69,29 @@ export default {
       "settings",
       "appState",
     ]),
-    conciseLabel() {
-      // FIXME
-      return this.label
-        .replace(` · ${this.code}`, "")
-        .replace(' · Genre/form', "")
+    hashId() {
+      return encodeURI(this["@id"].split("/").pop());
+    },
+    open() {
+      if (this.$nuxt.$route.hash.replace("#", "") === this.hashId) {
+        return true;
+      }
+      if (this.narrower) {
+        const hasNarrowerWithHash = (narrower) => {
+          return narrower.find((item) => {
+            if (
+              encodeURI(item["@id"].split("/").pop()) ===
+              this.$nuxt.$route.hash.replace("#", "")
+            ) {
+              return true;
+            }
+            if (item.narrower) {
+              return hasNarrowerWithHash(item.narrower);
+            }
+          });
+        };
+        return hasNarrowerWithHash(this.narrower) ? true : undefined;
+      }
     },
   },
   methods: {},
@@ -85,14 +104,18 @@ export default {
 }
 
 .TermTreeItem {
-  &-label {
-    display: flex;
-    align-items: center;
-    padding: 1em 0.5em;
-  }
-
   &-group {
     position: relative;
+
+    & > summary {
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &:focus-within .TermTreeItemLabel-anchor {
+        display: inline-flex;
+      }
+    }
 
     &[open] {
       background: $white;
@@ -111,7 +134,7 @@ export default {
       align-items: center;
       width: 24px;
       height: 16px;
-      margin-right: 8px;
+      margin-left: 8px;
     }
     &[open] > summary > .TermTreeItem-group-icon .bi-chevron-right {
       transform: rotate(90deg);
@@ -127,6 +150,7 @@ export default {
     font-size: var(--bs-body-font-size);
     font-weight: normal;
     margin: 0;
+    padding: 1em 0.5em;
   }
 
   & a {
@@ -138,11 +162,22 @@ export default {
   }
 }
 
-summary.TermTreeItem-label {
-  &::-webkit-details-marker {
-      display: none;
+.TermTreeItem-content {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+
+  &:target {
+    scroll-margin-top: 160px;
   }
-  &:hover {
+
+  &:target,
+  &.target {
+    background: rgba($kb-secondary-turquoise, 0.1) !important;
+  }
+
+  &summary:hover {
     @media (min-width: 768px) {
       position: relative;
       background-color: $white;
@@ -158,5 +193,4 @@ summary.TermTreeItem-label {
   border: solid $gray-200;
   border-width: 1px 1px 1px 1px;
 }
-
 </style>
