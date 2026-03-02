@@ -526,10 +526,7 @@
 					</div>
 				{/if}
 				{#if q.trim().length}
-					<div
-						role="row"
-						class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3"
-					>
+					<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
 						<h2 id="supersearch-results-label" class="font-medium">
 							{#if resultsCount}
 								{page.data.t('supersearch.suggestions')}
