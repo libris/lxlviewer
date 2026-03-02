@@ -20,11 +20,11 @@
 />
 
 <article class="mt-8 mb-12 p-4 sm:px-6">
-	<table>
+	<table class="w-full">
 		<thead class="border-b border-gray-300">
 			<tr class="[&>th]:p-3 [&>th]:text-left [&>th]:align-top">
-				<th>Filter</th>
-				<th>Beskrivning</th>
+				<th>{page.data.t('help.filter')}</th>
+				<th>{page.data.t('help.description')}</th>
 			</tr>
 		</thead>
 		<tbody class="divide-y divide-gray-300 [&>tr>td]:p-3 [&>tr>td]:text-left [&>tr>td]:align-top">
