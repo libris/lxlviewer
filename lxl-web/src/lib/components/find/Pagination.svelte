@@ -66,7 +66,7 @@
 				<a
 					class={['btn btn-primary', p.page === currentPage ? 'bg-accent-50' : 'border-0']}
 					href={page.data.localizeHref(getOffsetLink(p.offset))}
-					aria-label="{page.data.t('search.page')} {p}"
+					aria-label="{page.data.t('search.page')} {p.page}"
 					aria-current={p.page === currentPage ? 'page' : null}
 					>{p.page.toLocaleString(page.data.locale)}</a
 				>
@@ -100,6 +100,7 @@
 			<li>
 				<a
 					aria-label="{page.data.t('search.page')} 1"
+					aria-current={currentPage === 1 ? 'page' : null}
 					class={['btn btn-primary', currentPage === 1 ? 'bg-accent-50' : 'border-0']}
 					href={page.data.localizeHref(first['@id'])}>1</a
 				>
@@ -120,6 +121,7 @@
 			<li>
 				<a
 					aria-label="{page.data.t('search.page')} {lastPage}"
+					aria-current={currentPage === lastPage ? 'page' : null}
 					class={['btn btn-primary', currentPage === lastPage ? 'bg-accent-50' : 'border-0']}
 					href={page.data.localizeHref(last['@id'])}>{lastPage.toLocaleString(page.data.locale)}</a
 				>
