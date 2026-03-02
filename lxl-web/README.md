@@ -69,3 +69,5 @@ The [`+layout.svelte`](https://kit.svelte.dev/docs/routing#layout) component con
 ### +layout.ts
 
 Just like `+page.svelte` loading data from `+page.js`, the `+layout.svelte` component can get data from a load function in `+layout.ts`. This data will be accessible to all nested `load` functions using `await parent()`.
+
+### Temporary change to trigger github action
