@@ -259,7 +259,7 @@
 		<!-- limit reached info -->
 		{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
 			<button
-				class="text-error bg-severe-50 indented flex items-center gap-1 rounded-sm py-1"
+				class="text-severe-700 bg-severe-50 indented flex items-center gap-1 rounded-sm py-1"
 				use:popover={{
 					title: page.data.t('facet.limitText'),
 					placeAsSibling: false
@@ -302,7 +302,6 @@
 	<details
 		class={[
 			'relative w-full',
-			hasHits && 'has-hits',
 			searchPhrase && !hasHits && 'hidden',
 			level === 1 && 'border-b border-neutral-200',
 			level === 1 && expanded && 'pb-2'

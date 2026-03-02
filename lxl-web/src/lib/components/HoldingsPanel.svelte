@@ -194,7 +194,7 @@
 		<Holder {holder} hidden={!filteredHolders.find((h) => h[JsonLd.ID] === holder[JsonLd.ID])} />
 	{/each}
 	{#if filteredHolders.length === 0}
-		<li>
+		<li class="text-sm">
 			<span role="alert">{page.data.t('search.noResults')}</span>
 		</li>
 	{/if}

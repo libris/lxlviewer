@@ -63,21 +63,11 @@
 					</li>
 				{/each}
 			</ul>
-			<span role="status" class="no-hits-msg mt-4 px-4 text-sm" aria-atomic="true">
-				{page.data.t('search.noFiltersFound')}
-			</span>
 		</nav>
 	{/if}
 </div>
 
 <style lang="postcss">
-	/* hide 'no hits' msg as long as there's results displaying */
-	.facet-nav {
-		&:global(:has(.has-hits) .no-hits-msg) {
-			display: none;
-		}
-	}
-
 	:global(dialog .facet-nav) {
 		margin-right: calc(var(--spacing) * -4);
 		margin-left: calc(var(--spacing) * -4);

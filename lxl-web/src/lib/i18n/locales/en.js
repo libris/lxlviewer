@@ -183,7 +183,8 @@ export default {
 		libraries: 'libraries',
 		allInFacet: 'All in',
 		noExactMatches: 'No exact matches',
-		showingResultsFor: 'Showing results for'
+		showingResultsFor: 'Showing results for',
+		searchHelp: 'Libris search help'
 	},
 	supersearch: {
 		search: 'Search',

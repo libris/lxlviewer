@@ -146,11 +146,11 @@
 				{/each}
 			</ol>
 		{:else if myLibsError}
-			<p class="bg-severe-50 mt-2 rounded-sm p-1 text-xs">
+			<p class="bg-severe-50 mt-2 rounded-sm p-1 text-sm">
 				{page.data.t('errors.somethingWentWrong')}: {myLibsError}
 			</p>
 		{:else}
-			<p class="mt-2 text-xs">{page.data.t('search.noAddedLibrariesText')}</p>
+			<p class="mt-2 text-sm">{page.data.t('search.noAddedLibrariesText')}</p>
 		{/if}
 	</div>
 </div>

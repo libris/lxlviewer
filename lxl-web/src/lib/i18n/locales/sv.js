@@ -182,7 +182,8 @@ export default {
 		libraries: 'bibliotek',
 		allInFacet: 'Allt inom',
 		noExactMatches: 'Inga exakta träffar',
-		showingResultsFor: 'Visar resultat för'
+		showingResultsFor: 'Visar resultat för',
+		searchHelp: 'Så söker du i Libris'
 	},
 	supersearch: {
 		search: 'Sök',
