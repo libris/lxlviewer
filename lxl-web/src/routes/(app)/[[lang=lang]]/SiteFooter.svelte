@@ -27,6 +27,12 @@
 						>{page.data.t('footer.gdpr')}</a
 					>
 				</li>
+				<li>
+					<a
+						href="https://www.kb.se/om-oss/tillganglighet-pa-kbs-webbplatser-och-digitala-tjanster.html#item_125b5507eb18cedffd1a436125_45b5507eb18cedffd1a4317ec"
+						>{page.data.t('appMenu.accessibilityStatement')}</a
+					>
+				</li>
 			</ul>
 		</nav>
 		<nav class="flex flex-col gap-2" aria-labelledby="nav-contact">

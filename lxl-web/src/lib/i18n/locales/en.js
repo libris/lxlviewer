@@ -20,7 +20,7 @@ export default {
 		aboutBeta: 'About the beta',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
-		accessibility: 'Accessibility',
+		accessiblityStatement: 'Accessibility statement',
 		changeLang: 'På svenska'
 	},
 	header: {
@@ -78,7 +78,8 @@ export default {
 		feedbackLink: 'http://survey.kb.se/librisbeta/en',
 		customerSupport: 'Libris customer support',
 		cookies: 'Manage cookies',
-		gdpr: 'Processing of personal data'
+		gdpr: 'Processing of personal data',
+		accessibilityStatement: 'Accessibility statement'
 	},
 	facet: {
 		q: 'Free text search',
