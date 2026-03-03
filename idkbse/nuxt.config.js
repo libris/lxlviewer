@@ -17,8 +17,8 @@ const publicRuntimeConfig = {
   vocab: process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld',
   context: process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld',
   display: process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld',
-  matomoUrl: process.env.PUBLIC_MATOMO_URL,
-  matomoId: process.env.PUBLIC_MATOMO_ID
+  matomoUrl: process.env.PUBLIC_MATOMO_URL || 'https://analytics.kb.se/',
+  matomoId: process.env.PUBLIC_MATOMO_ID || '27'
 }
 
 export default {
