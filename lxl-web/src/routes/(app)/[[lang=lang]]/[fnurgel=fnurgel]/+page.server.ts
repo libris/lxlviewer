@@ -13,7 +13,6 @@ import type { HoldingsData } from '$lib/types/holdings.js';
 
 import { asArray, first, pickProperty, toString } from '$lib/utils/xl.js';
 import { bestImage, toSecure } from '$lib/utils/auxd';
-import getAtPath from '$lib/utils/getAtPath';
 import { getSortedInstances } from '$lib/utils/getSortedInstances';
 import {
 	getBibIdsByInstanceId,
@@ -29,6 +28,7 @@ import { appendMyLibrariesParam, asSearchResultItem, displayMappings } from '$li
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';
+import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
@@ -333,14 +333,3 @@ export const load = async ({ params, locals, fetch, url }) => {
 		isWork
 	};
 };
-
-function copyMediaLinksToWork(mainEntity: FramedData) {
-	const cp = (thing: FramedData, fromPath: (string | number | object)[], toProp: string) => {
-		const v = getAtPath(thing, fromPath).filter((v) => v['cataloguersNote'] != 'digipic');
-		if (v.length > 0) {
-			thing[toProp] = asArray(thing[toProp]).concat(v);
-		}
-	};
-	cp(mainEntity, ['@reverse', 'instanceOf', '*', 'associatedMedia', '*'], 'associatedMedia');
-	cp(mainEntity, ['@reverse', 'instanceOf', '*', 'isPrimaryTopicOf', '*'], 'isPrimaryTopicOf');
-}

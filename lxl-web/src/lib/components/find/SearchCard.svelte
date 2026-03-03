@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { onDestroy } from 'svelte';
 	import { goto, onNavigate, replaceState } from '$app/navigation';
+	import popover from '$lib/actions/popover';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { LibraryResultItem, SearchResultItem } from '$lib/types/search';
 	import { JsonLd, LensType } from '$lib/types/xl';
@@ -75,6 +76,12 @@
 		}
 		return url.toString();
 	});
+
+	const firstFreeOnlineLink = $derived(
+		item.freeOnline &&
+			(item.freeOnline?._display?.[0]?.associatedMedia?.[0]?.[JsonLd.ID] ||
+				item.freeOnline?._display?.[0]?.associatedMedia?.[JsonLd.ID])
+	);
 
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
@@ -339,11 +346,22 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							<span>{page.data.t('citations.cite')}</span>
 						</a>
 					{/if}
-					{#if item.associatedMedia?.length}
+					{#if firstFreeOnlineLink}
+						{#snippet freeLinks()}
+							<DecoratedData
+								data={item.freeOnline}
+								showLabels={ShowLabelsOptions.Never}
+								allowPopovers={false}
+								block
+							/>
+						{/snippet}
 						<a
 							class="btn btn-primary h-7 rounded-full md:h-8"
-							href={item.associatedMedia?.[0].uri[0]}
+							href={firstFreeOnlineLink}
 							target="_blank"
+							use:popover={{
+								snippet: freeLinks
+							}}
 						>
 							<span>Fritt online</span>
 							<BiBoxArrowUpRight />

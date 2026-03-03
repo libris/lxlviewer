@@ -1,4 +1,12 @@
-import { asArray, DisplayUtil, isObject, toLite, toString, VocabUtil } from '$lib/utils/xl';
+import {
+	asArray,
+	DisplayUtil,
+	isObject,
+	pickProperty,
+	toLite,
+	toString,
+	VocabUtil
+} from '$lib/utils/xl';
 import {
 	Base,
 	type DisplayDecorated,
@@ -28,7 +36,7 @@ import {
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
-import { type LocaleCode as LangCode } from '$lib/i18n/locales';
+import { type LocaleCode as LangCode, type LocaleCode } from '$lib/i18n/locales';
 import type { MyLibrariesType } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
@@ -37,6 +45,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { isLibraryOrg } from '$lib/utils/holdings';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
+import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
 import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
 import { getMyLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike';
@@ -128,7 +137,7 @@ export function asSearchResultItem(
 			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
 			numberOfHolders: getHoldersCount(i, vocabUtil),
-			associatedMedia: displayUtil.lensAndFormat(getMediaLinks(i), LensType.Card, locale),
+			freeOnline: getMediaLinks(i, displayUtil, locale),
 			...(isLibrary(i) && {
 				libraryId: i[JsonLd.ID],
 				displayStr: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale))
@@ -541,8 +550,20 @@ function addMyLibrariesBoolFilter(boolFilters: Observation[] | undefined, transl
 	return boolFilters;
 }
 
-function getMediaLinks(item: FramedData) {
-	return getAtPath(item, ['@reverse', 'instanceOf', '*', 'associatedMedia', '*']);
+function getMediaLinks(
+	item: FramedData,
+	displayUtil: DisplayUtil,
+	locale: LocaleCode
+): DisplayDecorated | null {
+	const _item = { ...item };
+	copyMediaLinksToWork(_item);
+	const formatted = displayUtil.lensAndFormat(_item, LensType.WebOverview2, locale);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [freeOnline, _] = pickProperty(formatted, ['associatedMedia']);
+	if (freeOnline._display?.length) {
+		return freeOnline;
+	}
+	return null;
 }
 
 /**
