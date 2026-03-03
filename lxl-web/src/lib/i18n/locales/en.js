@@ -239,7 +239,7 @@ export default {
 		hide: 'Hide table of contents for this page'
 	},
 	resource: {
-		occurrences: 'Occurrences',
+		relations: 'Related',
 		show: 'Show',
 		all: 'all',
 		matching: 'Matching your search',
