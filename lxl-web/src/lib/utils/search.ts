@@ -128,7 +128,7 @@ export function asSearchResultItem(
 			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
 			numberOfHolders: getHoldersCount(i, vocabUtil),
-			associatedMedia: getAtPath(i, ['@reverse', 'instanceOf', '*', 'associatedMedia', '*']),
+			associatedMedia: displayUtil.lensAndFormat(getMediaLinks(i), LensType.Card, locale),
 			...(isLibrary(i) && {
 				libraryId: i[JsonLd.ID],
 				displayStr: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale))
@@ -539,6 +539,10 @@ function addMyLibrariesBoolFilter(boolFilters: Observation[] | undefined, transl
 		}
 	}
 	return boolFilters;
+}
+
+function getMediaLinks(item: FramedData) {
+	return getAtPath(item, ['@reverse', 'instanceOf', '*', 'associatedMedia', '*']);
 }
 
 /**

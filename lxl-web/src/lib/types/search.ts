@@ -57,6 +57,7 @@ export interface SearchResultItem {
 	typeForIcon: string; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
+	associatedMedia?: DisplayDecorated[];
 	heldByMyLibraries?: (LibraryId | OrgId)[] | null;
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;

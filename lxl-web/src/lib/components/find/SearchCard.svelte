@@ -20,11 +20,12 @@
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
+	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 	import BiHouse from '~icons/bi/house';
 	import BiQuote from '~icons/bi/quote';
 	import BiHeartFill from '~icons/bi/heart-fill';
 	import BiHeart from '~icons/bi/heart';
-	import { bookAspectRatio } from '$lib/utils/getTypeLike';
+	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 
 	interface Props {
 		item: SearchResultItem | LibraryResultItem;
@@ -336,6 +337,16 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						>
 							<BiQuote class="size-4 text-neutral-400" />
 							<span>{page.data.t('citations.cite')}</span>
+						</a>
+					{/if}
+					{#if item.associatedMedia?.length}
+						<a
+							class="btn btn-primary h-7 rounded-full md:h-8"
+							href={item.associatedMedia?.[0].uri[0]}
+							target="_blank"
+						>
+							<span>Fritt online</span>
+							<BiBoxArrowUpRight />
 						</a>
 					{/if}
 					{#if isLibraryCard(item)}
