@@ -83,6 +83,7 @@ export default {
       idListTempPath: '',
       currentPreviewUrl: null,
       initializingPreview: false,
+      previewTimeoutId: null
     };
   },
   computed: {
@@ -557,7 +558,7 @@ export default {
       }, (error) => {
         console.error('Failed to fetch preview', error);
         this.previewError = error;
-        setTimeout(() => {
+        this.previewTimeoutId = setTimeout(() => {
           if (this.currentPreviewUrl === fetchUrl) {
             this.getPreviewFromUrl(fetchUrl);
           }
@@ -825,6 +826,7 @@ export default {
     this.$store.dispatch('setInspectorStatusValue', {property: 'editing', value: true});
   },
   unmounted() {
+    clearTimeout(this.previewTimeoutId);
     this.reset();
   },
 };
