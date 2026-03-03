@@ -238,7 +238,7 @@ export default {
 		hide: 'Dölj innehållsförteckning för denna sida'
 	},
 	resource: {
-		occurrences: 'Förekomster',
+		relations: 'Relaterat',
 		show: 'Visa',
 		all: 'alla',
 		matching: 'Matchar din sökning',

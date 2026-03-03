@@ -85,7 +85,7 @@ test('table of contents', async ({ page }) => {
 	await page.getByTestId('toc-mobile').locator('a').nth(1).click();
 	await expect(page.locator('#top')).not.toBeInViewport({ ratio: 0.1 });
 	await expect(
-		page.locator('#occurrences'),
+		page.locator('#relations'),
 		'links in mobile table of contents works'
 	).toBeInViewport();
 	await page.getByTestId('toc-mobile').locator('label input[type="checkbox"]').focus();

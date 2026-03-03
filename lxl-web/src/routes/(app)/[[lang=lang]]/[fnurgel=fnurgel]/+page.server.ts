@@ -126,6 +126,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			? [displayUtil.lensAndFormat(_instances[0], LensType.WebOverview, locale)]
 			: [])
 	];
+	const token = displayUtil.lensAndFormat(mainEntity, LensType.WebToken, locale);
 
 	// TODO ...
 	const _isWork =
@@ -263,10 +264,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 		...(relations.length
 			? [
 					{
-						id: 'occurrences',
-						label: translate('resource.occurrences'),
+						id: 'relations',
+						label: translate('resource.relations'),
 						children: relations.map((relationItem) => ({
-							id: `occurrences-${relationItem.qualifierKey}`, // all ids should  be prefixed in +page.svelte
+							id: `relations-${relationItem.qualifierKey}`, // all ids should  be prefixed in +page.svelte
 							label: relationItem.label
 						}))
 					}
@@ -322,7 +323,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 			overviewFooter: {},
 			summary: summary,
 			resourceTableOfContents: resourceTableOfContents,
-			details: details
+			details: details,
+			token: token
 		},
 		searchResult,
 		holdings,

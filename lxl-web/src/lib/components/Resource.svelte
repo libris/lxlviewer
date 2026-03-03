@@ -48,6 +48,7 @@
 			summary: DecoratedData[];
 			resourceTableOfContents: DecoratedData[];
 			details: DecoratedData[];
+			token: DecoratedData;
 		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
@@ -312,12 +313,12 @@
 			{/if}
 			{#if relations.length}
 				<section>
-					<h2 id={`${uidPrefix}occurrences`} class="mb-6 text-xl font-medium">
-						{page.data.t('resource.occurrences')}
+					<h2 id={`${uidPrefix}relations`} class="mb-6 text-xl font-medium">
+						{page.data.t('resource.relations')}
 					</h2>
 					<ul>
 						{#each relations as relationItem (relationItem.qualifierKey)}
-							<li id="{uidPrefix}occurrences-{relationItem.qualifierKey}" class="mb-12">
+							<li id="{uidPrefix}relations-{relationItem.qualifierKey}" class="mb-12">
 								<div class="border-b-neutral mb-6 flex place-content-between border-b pb-3">
 									<h3 class="font-medium">
 										<a
@@ -325,7 +326,13 @@
 											class="hover:underline focus:underline"
 											tabindex={-1}
 										>
-											{relationItem.label}
+											{relationItem.label}:
+											<DecoratedData
+												data={decoratedData.token}
+												showLabels={ShowLabelsOptions.Never}
+												allowLinks={false}
+												allowPopovers={false}
+											/>
 										</a>
 									</h3>
 									<a
