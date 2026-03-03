@@ -255,9 +255,9 @@ export default {
 		resultOf: 'of',
 		showInSearchResults: 'Show in search results',
 		showInSearchResultsShort: 'Show all results',
-		uriLink: 'URI (link to resource)',
-		downloadDescription: 'Download description',
-		showIn: 'Show in',
+		uriLink: 'ID / Permalink',
+		downloadDescription: 'Download metadata',
+		showIn: 'Show metadata in',
 		librisCataloging: 'Libris cataloging',
 		librisOld: 'old Libris'
 	},

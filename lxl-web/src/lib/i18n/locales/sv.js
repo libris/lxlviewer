@@ -255,9 +255,9 @@ export default {
 		resultOf: 'av',
 		showInSearchResults: 'Visa i träfflista',
 		showInSearchResultsShort: 'Visa träfflista',
-		uriLink: 'URI (länk till resurs)',
-		downloadDescription: 'Ladda ner beskrivning',
-		showIn: 'Visa i',
+		uriLink: 'ID / Permalänk',
+		downloadDescription: 'Ladda ner metadata',
+		showIn: 'Visa metadata i',
 		librisCataloging: 'Libris katalogisering',
 		librisOld: 'gamla Libris'
 	},
