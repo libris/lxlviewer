@@ -88,7 +88,7 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
       ['nuxt-matomo', {
-      matomoUrl: publicRuntimeConfig.matomoUrl,
+      matomoUrl: 'https://analytics.kb.se/',
       siteId: publicRuntimeConfig.matomoId,
       debug: process.env.NODE_ENV === 'development' ? true : false ,
       consentRequired: true
