@@ -13,9 +13,16 @@
 		lazyImage?: boolean;
 		highPriorityImage?: boolean;
 		fadeInImage?: boolean;
+		suppressProperty?: string;
 	};
 
-	let { data, lazyImage = false, highPriorityImage = false, fadeInImage = false }: Props = $props();
+	let {
+		data,
+		lazyImage = false,
+		highPriorityImage = false,
+		fadeInImage = false,
+		suppressProperty = undefined
+	}: Props = $props();
 
 	let loadedImage = $state(false);
 
@@ -108,7 +115,13 @@
 		<div class="decorated-card-body mt-1 mb-1 text-sm">
 			{#each data['card-body']?._display as obj, index (index)}
 				<div class="@4xs:text-sm flex flex-col items-center text-center">
-					<DecoratedData data={obj} showLabels="never" block limit={{ contribution: 3 }} />
+					<DecoratedData
+						data={obj}
+						showLabels="never"
+						block
+						limit={{ contribution: 3 }}
+						{suppressProperty}
+					/>
 				</div>
 			{/each}
 		</div>
