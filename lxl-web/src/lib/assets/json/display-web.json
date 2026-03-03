@@ -471,17 +471,6 @@
 			"@id": "web-tokens",
 			"@type": "fresnel:Group",
 			"lenses": {
-				"Agent": {
-					"@id": "Agent-web-tokens",
-					"@type": "fresnel:Lens",
-					"classLensDomain": "Resource",
-					"showProperties": [
-						{
-							"alternateProperties": ["prefLabel", "label", "name"]
-						},
-						"isPartOf"
-					]
-				},
 				"Person": {
 					"@id": "Person-web-tokens",
 					"@type": "fresnel:Lens",
