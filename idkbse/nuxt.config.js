@@ -90,7 +90,7 @@ export default {
       ['nuxt-matomo', {
       matomoUrl: publicRuntimeConfig.matomoUrl,
       siteId: publicRuntimeConfig.matomoId,
-      debug: process.env.NODE_ENV === 'development' ? true : false ,
+      debug: true, //process.env.NODE_ENV === 'development' ? true : false ,
       consentRequired: true
     }],
     '@nuxtjs/style-resources',
