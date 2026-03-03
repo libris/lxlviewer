@@ -65,7 +65,7 @@ test('table of contents', async ({ page }) => {
 	await expect(
 		page.getByTestId('toc').locator('a[aria-current]'),
 		'active link is changed when clicking on link'
-	).toHaveText('Förekomster');
+	).toHaveText('Relaterat');
 	await page.waitForTimeout(60);
 
 	await page.evaluate(() => window.scrollTo(0, 0));
