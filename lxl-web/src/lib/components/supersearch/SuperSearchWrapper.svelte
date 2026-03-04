@@ -468,7 +468,7 @@
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
 					>
-						<IconClear class="size-4.5 sm:size-4" />
+						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
 					</svelte:element>
 				{/if}
 				<button
