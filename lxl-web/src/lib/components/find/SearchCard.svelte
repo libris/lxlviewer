@@ -7,6 +7,7 @@
 	import type { LibraryResultItem, SearchResultItem } from '$lib/types/search';
 	import { JsonLd, LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { type ResourceData } from '$lib/types/resourceData';
 	import { LxlLens } from '$lib/types/display';
 	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 	import getInstanceData from '$lib/utils/getInstanceData';
@@ -77,10 +78,10 @@
 		return url.toString();
 	});
 
-	const firstFreeOnlineLink = $derived(
-		item.freeOnline &&
-			(item.freeOnline?._display?.[0]?.associatedMedia?.[0]?.[JsonLd.ID] ||
-				item.freeOnline?._display?.[0]?.associatedMedia?.[JsonLd.ID])
+	const firstMediaLink = $derived(
+		item.mediaLinks &&
+			(item.mediaLinks?._display?.[0]?.associatedMedia?.[0]?.[JsonLd.ID] ||
+				item.mediaLinks?._display?.[0]?.associatedMedia?.[JsonLd.ID])
 	);
 
 	let showDebugExplain = $state(false);
@@ -336,10 +337,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			</footer>
 			{#if allowActions}
 				<div class="card-actions flex gap-1 self-end pt-1">
-					{#if firstFreeOnlineLink}
-						{#snippet freeLinks()}
+					{#if firstMediaLink}
+						{#snippet mediaLinksPopover()}
 							<DecoratedData
-								data={item.freeOnline}
+								data={item.mediaLinks as ResourceData}
 								showLabels={ShowLabelsOptions.Never}
 								allowPopovers={false}
 								block
@@ -347,11 +348,11 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						{/snippet}
 						<a
 							class="btn btn-primary h-7 rounded-full md:h-8"
-							href={firstFreeOnlineLink}
+							href={firstMediaLink}
 							target="_blank"
 							use:popover={{
 								onFocus: false,
-								snippet: freeLinks
+								snippet: mediaLinksPopover
 							}}
 						>
 							<BiBoxArrowUpRight class="text-neutral-400" />

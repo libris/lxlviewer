@@ -137,7 +137,7 @@ export function asSearchResultItem(
 			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
 			numberOfHolders: getHoldersCount(i, vocabUtil),
-			freeOnline: getMediaLinks(i, displayUtil, locale),
+			mediaLinks: getMediaLinks(i, displayUtil, locale),
 			...(isLibrary(i) && {
 				libraryId: i[JsonLd.ID],
 				displayStr: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale))
@@ -559,9 +559,9 @@ function getMediaLinks(
 	copyMediaLinksToWork(_item);
 	const formatted = displayUtil.lensAndFormat(_item, LensType.WebOverview2, locale);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [freeOnline, _] = pickProperty(formatted, ['associatedMedia']);
-	if (freeOnline._display?.length) {
-		return freeOnline;
+	const [mediaLinks, _] = pickProperty(formatted, ['associatedMedia']);
+	if (mediaLinks._display?.length) {
+		return mediaLinks;
 	}
 	return null;
 }
