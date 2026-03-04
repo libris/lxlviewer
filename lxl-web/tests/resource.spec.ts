@@ -69,7 +69,7 @@ test('table of contents', async ({ page }) => {
 	await expect(
 		page.getByTestId('toc').locator('a[aria-current]'),
 		'active link is changed when clicking on link'
-	).toHaveText('Förekomster');
+	).toHaveText('Relaterat');
 	await page.waitForTimeout(60);
 
 	await page.evaluate(() => window.scrollTo(0, 0));
@@ -89,7 +89,7 @@ test('table of contents', async ({ page }) => {
 	await page.getByTestId('toc-mobile').locator('a').nth(1).click();
 	await expect(page.locator('#top')).not.toBeInViewport({ ratio: 0.1 });
 	await expect(
-		page.locator('#occurrences'),
+		page.locator('#relations'),
 		'links in mobile table of contents works'
 	).toBeInViewport();
 	await page.getByTestId('toc-mobile').locator('label input[type="checkbox"]').focus();

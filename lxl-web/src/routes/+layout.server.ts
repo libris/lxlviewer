@@ -4,7 +4,7 @@ import { getTranslator } from '$lib/i18n/index.js';
 import { getSupportedLocale, type LocaleCode, otherLocales } from '$lib/i18n/locales.js';
 import { displayMappings } from '$lib/utils/search';
 import { type FramedData, JsonLd, LensType, Platform } from '$lib/types/xl';
-import { type DisplayUtil, toString, VocabUtil } from '$lib/utils/xl';
+import { asArray, type DisplayUtil, toString, VocabUtil } from '$lib/utils/xl';
 import { getUriSlug } from '$lib/utils/http';
 
 export async function load({ locals, url, params, fetch }) {
@@ -88,11 +88,14 @@ function mapSearchFilterDefinition(
 			// FIXME???,
 			key: key,
 			label: toString(display.lensAndFormat(def, LensType.Chip, locale)),
-			queryCodes: ((def['librisQueryCode'] || []) as string[]).sort((a, b) => compare(a, b)),
+			queryCodes: ((asArray(def['librisQueryCode']) || []) as string[]).sort((a, b) =>
+				compare(a, b)
+			),
 			altLabels: otherLangLabels,
 			...(CURATED_QUALIFIERS.includes(key) && { curated: true })
 		};
-	} catch {
+	} catch (error) {
+		console.warn('Error mapping filter definition', error);
 		return null;
 	}
 }

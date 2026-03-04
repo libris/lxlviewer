@@ -48,6 +48,7 @@
 			summary: DecoratedData[];
 			resourceTableOfContents: DecoratedData[];
 			details: DecoratedData[];
+			token: DecoratedData;
 		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
@@ -312,12 +313,12 @@
 			{/if}
 			{#if relations.length}
 				<section>
-					<h2 id={`${uidPrefix}occurrences`} class="mb-6 text-xl font-medium">
-						{page.data.t('resource.occurrences')}
+					<h2 id={`${uidPrefix}relations`} class="mb-6 text-xl font-medium">
+						{page.data.t('resource.relations')}
 					</h2>
 					<ul>
 						{#each relations as relationItem (relationItem.qualifierKey)}
-							<li id="{uidPrefix}occurrences-{relationItem.qualifierKey}" class="mb-12">
+							<li id="{uidPrefix}relations-{relationItem.qualifierKey}" class="mb-12">
 								<div class="border-b-neutral mb-6 flex place-content-between border-b pb-3">
 									<h3 class="font-medium">
 										<a
@@ -325,7 +326,13 @@
 											class="hover:underline focus:underline"
 											tabindex={-1}
 										>
-											{relationItem.label}
+											{relationItem.label}:
+											<DecoratedData
+												data={decoratedData.token}
+												showLabels={ShowLabelsOptions.Never}
+												allowLinks={false}
+												allowPopovers={false}
+											/>
 										</a>
 									</h3>
 									<a
@@ -351,6 +358,7 @@
 									<SearchResultList
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
+										suppressProperty={relationItem.qualifierKey}
 									/>
 								</div>
 							</li>
@@ -395,48 +403,48 @@
 						</div>
 					{/each}
 				</div>
-				<div class="mt-5 text-sm">
-					<p>
-						{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
-					</p>
-					<p>
-						{page.data.t('resource.downloadDescription')}:
-						<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
-						· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
-						· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
-						{#if instances?.length === 1}
-							· <a
-								href="{recordUri
-									.split('/')
-									.toSpliced(-1, 1)
-									.join('/')}/_compilemarc?library=Foo&id={recordUri}"
-								target="_blank"
-								download="{fnurgel}.marc"
-								class="link">MARC21 (ISO 2709) <BiDownload class="inline" /></a
-							>
-							<!--
+			</section>
+			<div class="text-sm">
+				<p>
+					{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
+				</p>
+				<p>
+					{page.data.t('resource.downloadDescription')}:
+					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
+					· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
+					· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
+					{#if instances?.length === 1}
+						· <a
+							href="{recordUri
+								.split('/')
+								.toSpliced(-1, 1)
+								.join('/')}/_compilemarc?library=Foo&id={recordUri}"
+							target="_blank"
+							download="{fnurgel}.marc"
+							class="link">MARC21 (ISO 2709) <BiDownload class="inline" /></a
+						>
+						<!--
                             TODO _compilemarc can only create ISO 2709
                             TODO _compilemarc can only handle bib
                             TODO? select export profile (library)?
                             <a href="{fnurgel}" target="_blank" class="ext-link">MARC-XML</a> ·
                             -->
-						{/if}
-					</p>
-					<p>
-						<a
-							href={recordUri.split('/').toSpliced(-1, 0, 'katalogisering').join('/')}
-							target="_blank"
-							class="ext-link"
-							>{page.data.t('resource.showIn')} {page.data.t('resource.librisCataloging')}</a
+					{/if}
+				</p>
+				<p>
+					<a
+						href={recordUri.split('/').toSpliced(-1, 0, 'katalogisering').join('/')}
+						target="_blank"
+						class="ext-link"
+						>{page.data.t('resource.showIn')} {page.data.t('resource.librisCataloging')}</a
+					>
+					{#if instances?.length === 1}
+						· <a href="https://libris.kb.se/bib/{controlNumber}" target="_blank" class="ext-link"
+							>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
 						>
-						{#if instances?.length === 1}
-							· <a href="https://libris.kb.se/bib/{controlNumber}" target="_blank" class="ext-link"
-								>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
-							>
-						{/if}
-					</p>
-				</div>
-			</section>
+					{/if}
+				</p>
+			</div>
 		</div>
 	</div>
 </article>

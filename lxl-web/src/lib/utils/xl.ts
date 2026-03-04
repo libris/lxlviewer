@@ -187,6 +187,8 @@ export class DisplayUtil {
 			case LensType.WebChip:
 			case LensType.Token:
 				return LensType.Token;
+			case LensType.WebToken:
+				return LensType.WebToken;
 		}
 	};
 
@@ -489,7 +491,7 @@ export class DisplayUtil {
 			}
 
 			// TODO... decide what we want
-			if (lens == LensType.Token) {
+			if (lens == LensType.Token || lens == LensType.WebToken) {
 				for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 					if (cls in this.display.lensGroups[LensType.Chip].lenses) {
 						return this.display.lensGroups[LensType.Chip].lenses[cls];

@@ -57,7 +57,7 @@ export default {
 			'Help and documentation for using Libris, the Swedish national union catalogue.',
 		description: 'Description',
 		filter: 'Filter',
-		reference: 'Reference'
+		reference: 'List'
 	},
 	myPages: {
 		pageTitle: 'My pages',
@@ -243,7 +243,8 @@ export default {
 		hide: 'Hide table of contents for this page'
 	},
 	resource: {
-		occurrences: 'Occurrences',
+		relations: 'Related',
+		show: 'Show',
 		all: 'all',
 		matching: 'Matching your search',
 		results: 'results',
@@ -258,9 +259,9 @@ export default {
 		resultOf: 'of',
 		showInSearchResults: 'Show in search results',
 		showInSearchResultsShort: 'Show all results',
-		uriLink: 'URI (link to resource)',
-		downloadDescription: 'Download description',
-		showIn: 'Show in',
+		uriLink: 'ID / Permalink',
+		downloadDescription: 'Download metadata',
+		showIn: 'Show metadata in',
 		librisCataloging: 'Libris cataloging',
 		librisOld: 'old Libris'
 	},

@@ -195,6 +195,7 @@ export enum LensType {
 	Full = 'full',
 	SearchChip = 'search-chips',
 	SearchCard = 'search-cards',
+	WebToken = 'web-tokens',
 	WebChip = 'web-chips',
 	WebCard = 'web-card',
 	WebOverview = 'web-overview',

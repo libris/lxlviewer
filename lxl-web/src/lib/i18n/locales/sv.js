@@ -57,7 +57,7 @@ export default {
 			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.',
 		description: 'Beskrivning',
 		filter: 'Filter',
-		reference: 'Referens'
+		reference: 'Lista'
 	},
 	myPages: {
 		pageTitle: 'My pages',
@@ -242,7 +242,8 @@ export default {
 		hide: 'Dölj innehållsförteckning för denna sida'
 	},
 	resource: {
-		occurrences: 'Förekomster',
+		relations: 'Relaterat',
+		show: 'Visa',
 		all: 'alla',
 		matching: 'Matchar din sökning',
 		results: 'träffar',
@@ -258,9 +259,9 @@ export default {
 		resultOf: 'av',
 		showInSearchResults: 'Visa i träfflista',
 		showInSearchResultsShort: 'Visa träfflista',
-		uriLink: 'URI (länk till resurs)',
-		downloadDescription: 'Ladda ner beskrivning',
-		showIn: 'Visa i',
+		uriLink: 'ID / Permalänk',
+		downloadDescription: 'Ladda ner metadata',
+		showIn: 'Visa metadata i',
 		librisCataloging: 'Libris katalogisering',
 		librisOld: 'gamla Libris'
 	},

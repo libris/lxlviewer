@@ -18,6 +18,7 @@
 		block?: boolean;
 		limit?: Record<string, number>;
 		keyed?: boolean;
+		suppressProperty?: string;
 	}
 
 	let {
@@ -29,7 +30,8 @@
 		allowFindLinks = false,
 		block = false,
 		limit = undefined,
-		keyed = true
+		keyed = true,
+		suppressProperty = undefined
 	}: Props = $props();
 
 	let key = $derived(keyed && data); // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what the root cause is...) – we should try to remove the need for this when updating to Svelte 5.
@@ -165,6 +167,7 @@
 					{allowPopovers}
 					{limit}
 					{keyed}
+					{suppressProperty}
 				/>
 			{/each}
 		{:else}
@@ -192,6 +195,7 @@
 						{allowPopovers}
 						{limit}
 						{keyed}
+						{suppressProperty}
 					/>
 				</svelte:element>
 			{:else if data['@value']}
@@ -204,6 +208,7 @@
 					{allowFindLinks}
 					{allowPopovers}
 					{keyed}
+					{suppressProperty}
 				/>
 			{:else if data['_display']}
 				<DecoratedData
@@ -215,10 +220,11 @@
 					{allowFindLinks}
 					{allowPopovers}
 					{keyed}
+					{suppressProperty}
 				/>
 			{:else}
 				{@const [propertyName, propertyData] = getProperty(data)}
-				{#if propertyName && propertyData}
+				{#if propertyName && propertyData && (suppressProperty === undefined || suppressProperty !== propertyName)}
 					<!-- don't use 'show more' when exceeding limit by one -->
 					{@const limitTo = limit?.[propertyName]}
 					{@const delimited =
@@ -247,6 +253,7 @@
 							{allowFindLinks}
 							{allowPopovers}
 							{keyed}
+							{suppressProperty}
 						/>
 						{#if delimited}
 							{#if allowLinks}
