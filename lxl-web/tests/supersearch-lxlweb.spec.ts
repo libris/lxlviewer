@@ -258,3 +258,40 @@ test('access filters can be added/removed', async ({ page }) => {
 	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('combobox').first()).toHaveText('hej');
 });
+
+test('qualifier keys can be added', async ({ page, context }) => {
+	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+	await page.getByTestId('supersearch').click();
+	await page.getByTestId('supersearch').getByText('Författare/Upphov:').click();
+	await expect(page.getByRole('combobox').first()).toContainText('Författare/upphov');
+	await page.keyboard.press('a');
+	await page.keyboard.press('ControlOrMeta+A');
+	await page.keyboard.press('ControlOrMeta+C');
+	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
+	await expect(clipboardContent).toBe('contributor:(a)');
+});
+
+test('qualifier keys can be added using keyboard only', async ({ page, context }) => {
+	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+	await page.getByTestId('supersearch').focus();
+	await page.keyboard.press('Alt+ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('Enter');
+	await expect(page.getByRole('combobox').first()).toContainText('Författare/upphov');
+	await page.keyboard.press('a');
+	await page.keyboard.press('ArrowRight');
+	await page.keyboard.press('b');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('c');
+	await page.keyboard.press('ControlOrMeta+A');
+	await page.keyboard.press('ControlOrMeta+C');
+	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
+	await expect(
+		clipboardContent,
+		'arrow key navigation works as intended after adding qualifier key'
+	).toBe('c contributor:(a)b');
+});

@@ -355,10 +355,14 @@
 						: collapsedEditorView?.state.selection.main
 			});
 			dialog?.showModal();
-			setDefaultRowAndCols({ focusRow: options?.focusRow });
-			allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 			expanded = true;
 			onexpand?.({ windowPageYOffset: window.pageYOffset });
+		}
+		setDefaultRowAndCols({ focusRow: options?.focusRow });
+		if (!options?.focusRow || options.focusRow < 1) {
+			allowArrowKeyCursorHandling = { vertical: false, horizontal: true };
+		} else {
+			allowArrowKeyCursorHandling = { vertical: false, horizontal: false };
 		}
 		expandedEditorView?.focus();
 	}
@@ -371,9 +375,9 @@
 			});
 			collapsedEditorView?.focus();
 			expanded = false;
-			allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
 			oncollapse?.();
 		}
+		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
 	}
 
 	export function fetchData() {
@@ -514,14 +518,14 @@
 							if (activeRowIndex < 1) {
 								activeColIndex = defaultInputCol;
 								allowArrowKeyCursorHandling = {
-									...allowArrowKeyCursorHandling,
+									vertical: false,
 									horizontal: true
 								};
 							} else {
 								const cols = getColsInRow(activeRowIndex - 1);
 								activeColIndex = Math.min(activeColIndex, cols.length - 1);
 								allowArrowKeyCursorHandling = {
-									...allowArrowKeyCursorHandling,
+									vertical: false,
 									horizontal: cols.length <= 1
 								};
 							}
@@ -541,7 +545,7 @@
 							activeColIndex = Math.min(activeColIndex, cols.length - 1);
 						}
 						allowArrowKeyCursorHandling = {
-							...allowArrowKeyCursorHandling,
+							vertical: false,
 							horizontal: cols.length <= 1
 						};
 					}
@@ -622,6 +626,18 @@
 								activeColIndex = closestAfter || 0;
 							}
 						}
+					}
+					if (activeRowIndex === 0) {
+						allowArrowKeyCursorHandling = {
+							vertical: false,
+							horizontal: true
+						};
+					} else {
+						const cols = getColsInRow(activeRowIndex);
+						allowArrowKeyCursorHandling = {
+							vertical: false,
+							horizontal: cols.length <= 1
+						};
 					}
 					break;
 			}
