@@ -36,7 +36,7 @@ import {
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
-import { type LocaleCode as LangCode, type LocaleCode } from '$lib/i18n/locales';
+import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import type { MyLibrariesType } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
@@ -553,7 +553,7 @@ function addMyLibrariesBoolFilter(boolFilters: Observation[] | undefined, transl
 function getMediaLinks(
 	item: FramedData,
 	displayUtil: DisplayUtil,
-	locale: LocaleCode
+	locale: LangCode
 ): DisplayDecorated | null {
 	const _item = { ...item };
 	copyMediaLinksToWork(_item);
