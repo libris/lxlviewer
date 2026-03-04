@@ -57,7 +57,7 @@ export default {
 			'Help and documentation for using Libris, the Swedish national union catalogue.',
 		description: 'Description',
 		filter: 'Filter',
-		reference: 'Reference'
+		reference: 'List'
 	},
 	myPages: {
 		pageTitle: 'My pages',

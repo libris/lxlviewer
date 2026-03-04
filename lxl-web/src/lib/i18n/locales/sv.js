@@ -57,7 +57,7 @@ export default {
 			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.',
 		description: 'Beskrivning',
 		filter: 'Filter',
-		reference: 'Referens'
+		reference: 'Lista'
 	},
 	myPages: {
 		pageTitle: 'My pages',
