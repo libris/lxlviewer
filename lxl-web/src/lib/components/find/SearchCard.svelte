@@ -350,7 +350,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							href={firstFreeOnlineLink}
 							target="_blank"
 							use:popover={{
-								placeAsSibling: true,
+								onFocus: false,
 								snippet: freeLinks
 							}}
 						>

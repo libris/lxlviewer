@@ -24,16 +24,12 @@ type Parameter = {
 	resource?: { id: string; lang: LocaleCode } | { data: ResourceData[] };
 	snippet?: Snippet;
 	placeAsSibling?: boolean; // place popover next to node in the DOM (to force it on top of modal, for example)
+	onFocus?: boolean;
 };
 
 export const popover: Action<HTMLElement, Parameter> = (
 	node,
-	{ title, resource, snippet, placeAsSibling }: Parameter = {
-		title: undefined,
-		resource: undefined,
-		snippet: undefined,
-		placeAsSibling: false
-	}
+	{ title, resource, snippet, placeAsSibling = false, onFocus = true }: Parameter = {}
 ) => {
 	const FETCH_DELAY = 250;
 	const ATTACH_DELAY = 500;
@@ -52,8 +48,11 @@ export const popover: Action<HTMLElement, Parameter> = (
 
 	node.addEventListener('mouseover', attachPopover);
 	node.addEventListener('mouseout', removePopover);
-	node.addEventListener('focus', attachPopover);
-	node.addEventListener('blur', removePopover);
+
+	if (onFocus) {
+		node.addEventListener('focus', attachPopover);
+		node.addEventListener('blur', removePopover);
+	}
 
 	async function attachPopover() {
 		try {
