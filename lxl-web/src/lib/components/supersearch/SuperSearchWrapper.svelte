@@ -223,6 +223,8 @@
 		qualifierSuggestionNeedle.word.length >= MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS
 	);
 
+	const numCuratedQualifiers = $derived(qualifierSuggestions.filter((q) => q.curated).length);
+
 	function editedWord(str: string, cursor: number) {
 		let from = cursor;
 		for (let i = cursor - 1; i >= 0; i--) {
@@ -505,6 +507,9 @@
 								>
 									{label}:
 								</button>
+								{#if filteredQualifierSuggestions.length > numCuratedQualifiers && cellIndex + 1 === numCuratedQualifiers}
+									<span class="text-subtle" aria-hidden="true">|</span>
+								{/if}
 							{/each}
 							{#if !isSuggestingQualifiers && filteredQualifierSuggestions.length > 0}
 								<button
