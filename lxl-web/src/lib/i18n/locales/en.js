@@ -179,7 +179,8 @@ export default {
 		libraries: 'libraries',
 		allInFacet: 'All in',
 		noExactMatches: 'No exact matches',
-		showingResultsFor: 'Showing results for'
+		showingResultsFor: 'Showing results for',
+		freeOnline: 'Free online'
 	},
 	supersearch: {
 		search: 'Search',

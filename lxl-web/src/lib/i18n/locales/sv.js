@@ -179,7 +179,8 @@ export default {
 		libraries: 'bibliotek',
 		allInFacet: 'Allt inom',
 		noExactMatches: 'Inga exakta träffar',
-		showingResultsFor: 'Visar resultat för'
+		showingResultsFor: 'Visar resultat för',
+		freeOnline: 'Fritt online'
 	},
 	supersearch: {
 		search: 'Sök',

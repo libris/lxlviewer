@@ -336,16 +336,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			</footer>
 			{#if allowActions}
 				<div class="card-actions flex gap-1 self-end pt-1">
-					{#if isInstanceCard}
-						<a
-							class="btn btn-primary h-7 rounded-full md:h-8"
-							href={getCiteLink(page.url, id)}
-							onclick={(event) => handleClickCite(event, page.state, id)}
-						>
-							<BiQuote class="size-4 text-neutral-400" />
-							<span>{page.data.t('citations.cite')}</span>
-						</a>
-					{/if}
 					{#if firstFreeOnlineLink}
 						{#snippet freeLinks()}
 							<DecoratedData
@@ -360,11 +350,22 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							href={firstFreeOnlineLink}
 							target="_blank"
 							use:popover={{
+								placeAsSibling: true,
 								snippet: freeLinks
 							}}
 						>
-							<span>Fritt online</span>
-							<BiBoxArrowUpRight />
+							<BiBoxArrowUpRight class="text-neutral-400" />
+							<span>{page.data.t('search.freeOnline')}</span>
+						</a>
+					{/if}
+					{#if isInstanceCard}
+						<a
+							class="btn btn-primary h-7 rounded-full md:h-8"
+							href={getCiteLink(page.url, id)}
+							onclick={(event) => handleClickCite(event, page.state, id)}
+						>
+							<BiQuote class="size-4 text-neutral-400" />
+							<span>{page.data.t('citations.cite')}</span>
 						</a>
 					{/if}
 					{#if isLibraryCard(item)}
