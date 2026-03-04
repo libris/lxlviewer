@@ -44,7 +44,8 @@ function mapSearchFilterDefinition(
 			...(def['commentByLang']?.[locale] && { comment: def['commentByLang'][locale] }),
 			...(propertyChain && { propertyChainAxiom: propertyChain })
 		};
-	} catch {
+	} catch (error) {
+		console.warn('Error mapping filter definition', error);
 		return null;
 	}
 }
