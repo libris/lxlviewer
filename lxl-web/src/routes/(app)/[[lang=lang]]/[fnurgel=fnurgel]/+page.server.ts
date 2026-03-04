@@ -89,7 +89,9 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
-	copyMediaLinksToWork(mainEntity);
+	if (isWork) {
+		copyMediaLinksToWork(mainEntity);
+	}
 
 	resourceId = resource.mainEntity['@id'];
 
