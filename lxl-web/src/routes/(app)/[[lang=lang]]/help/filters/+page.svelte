@@ -21,7 +21,7 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-<article class="mt-8 mb-12 p-4 sm:px-6">
+<article class="mx-auto mt-8 mb-12 w-7xl p-4 sm:px-6">
 	<table class="w-full">
 		<thead class="border-b border-gray-300">
 			<tr class="[&>th]:p-3 [&>th]:text-left [&>th]:align-top">
@@ -46,15 +46,18 @@
 							{/each}
 						</ul>
 					</td>
-					<td>
-						{f.comment}
+					<td class={['grid grid-cols-1 gap-3 sm:grid-cols-2']}>
+						<span>{f.comment}</span>
 						{#if f.propertyChainAxiom}
-							<ul class={['mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2']}>
-								{#each f.propertyChainAxiom as p (p)}
-									<li class="text-xs">{p.label}</li>
-									<li class="font-mono text-xs">{p.path}</li>
-								{/each}
-							</ul>
+							<div>
+								<span class="text-2s text-subtle">{page.data.t('help.searchIn')}</span>
+								<ul>
+									{#each f.propertyChainAxiom as p (p)}
+										<li class="text-s">{p.label}</li>
+										<li class="text-2xs text-subtle mb-2 font-mono">{p.path}</li>
+									{/each}
+								</ul>
+							</div>
 						{/if}
 					</td>
 				</tr>
