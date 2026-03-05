@@ -51,7 +51,7 @@ export default {
         }
       }
 
-      if (object.hasOwnProperty('propertyChainAxiom')) {
+      if (object.hasOwnProperty('propertyChainAxiom') && !object.hasOwnProperty('labelByLang')) {
         return object.propertyChainAxiom
           .map((o) => capitalize(this.determineLabel(o)))
           .join('/');
@@ -66,7 +66,7 @@ export default {
       );
 
       if (label) {
-        return label;
+        return capitalize(label);
       }
       if (this.getRecordType(object) === 'Agent') {
         return this.getLabel(object);
