@@ -495,10 +495,10 @@
 							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 lg:size-12',
 							expanded && 'max-sm:h-14 max-sm:w-13'
 						]}
-						aria-label={page.data.t('search.clearFilters')}
-						title={page.data.t('search.clearFilters')}
+						aria-label={page.data.t('search.clear')}
+						title={page.data.t('search.clear')}
 					>
-						<IconClear class="size-4.5 sm:size-4" />
+						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
 					</svelte:element>
 				{/if}
 				<button
@@ -575,9 +575,9 @@
 				{/if}
 				{#if q.trim().length}
 					<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
-						<h2 id="supersearch-results-label" class="font-medium">
+						<h2 id="supersearch-results-label" aria-live="polite" class="font-medium">
 							{#if resultsCount}
-								{page.data.t('supersearch.suggestions')}
+								<span class="sr-only">{resultsCount}</span> {page.data.t('supersearch.suggestions')}
 							{/if}
 						</h2>
 						<button type="submit">
@@ -782,7 +782,7 @@
 		@apply min-h-2;
 	}
 
-	:global(.supersearch-dialog .focused .suggestion) {
+	:global(.supersearch-dialog .focused .suggestion .focused-cell) {
 		background-color: var(--color-accent-50);
 		outline: 2px solid var(--color-outline);
 	}
@@ -934,14 +934,13 @@
 	.qualifier-suggestion {
 		box-shadow: 0 0 0 1px var(--color-accent-200);
 
+		&:hover {
+			background: var(--color-accent-100);
+		}
 		&.focused-cell {
-			background-color: var(--color-accent-100);
+			background: var(--color-accent-100);
 			box-shadow: 0 0 0 5px var(--color-accent-100);
 			outline: 2px solid var(--color-outline);
-
-			&:hover {
-				background: var(--color-accent-100);
-			}
 		}
 	}
 </style>

@@ -61,12 +61,13 @@
 							</span>
 						{/if}
 						{#if up}
+							{@const pillText = `${label || ''}${getRelationSymbol(m.operator)} ${displayStr || ''}`}
 							<a
 								class="lxl-qualifier-remove atomic h-8 transition-colors"
 								href={m.up?.['@id']}
-								aria-label={page.data.t('search.removeFilter')}
+								aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
 							>
-								<BiXLg fill="currentColor" />
+								<BiXLg aria-hidden="true" fill="currentColor" />
 							</a>
 						{/if}
 					</span>
@@ -88,9 +89,13 @@
 						<SearchMapping depth={depth + 1} mapping={_child} />
 					{/each}
 					{#if up && variable}
-						<a href={m.up?.['@id']} class="btn btn-primary">
+						<a
+							href={m.up?.['@id']}
+							class="btn btn-primary"
+							aria-label={page.data.t('search.clearAllFilters')}
+						>
 							<BiTrash aria-hidden="true" />
-							{page.data.t('search.clearFilters')}
+							{page.data.t('search.clear')}
 						</a>
 					{/if}
 				</li>

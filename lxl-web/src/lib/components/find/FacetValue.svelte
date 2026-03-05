@@ -35,6 +35,9 @@
 	data-sveltekit-preload-data="false"
 >
 	<span class="truncate" title={data.str}>
+		{#if data.selected}
+			<span class="sr-only">{page.data.t('search.activeFilter')}: </span>
+		{/if}
 		<span class={['truncate', data.selected && 'text-accent font-medium']}>
 			{#if typeof data.label === 'string'}
 				{data.label}
@@ -61,6 +64,14 @@
 			<IconClose />
 		</span>
 	{/if}
+	<span class="sr-only">
+		{page.data.t('search.clickTo')}
+		{#if data.selected}
+			{page.data.t('search.removeFilter')}
+		{:else}
+			{page.data.t('search.addFilter')}
+		{/if}
+	</span>
 </a>
 
 <style lang="postcss">

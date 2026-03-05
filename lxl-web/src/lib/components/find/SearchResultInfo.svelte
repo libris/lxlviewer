@@ -3,8 +3,9 @@
 	import type { SearchResult } from '$lib/types/search';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
-	import BiInfo from '~icons/bi/info-circle';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
+	import BiInfo from '~icons/bi/info-circle';
+	import BiQuestionCircle from '~icons/bi/question-circle';
 
 	type SearchResultInfoProps = {
 		searchResult: SearchResult;
@@ -23,7 +24,7 @@
 </script>
 
 <div
-	class="search-result-info text-2xs flex flex-col justify-center px-3 py-1.5"
+	class="search-result-info flex flex-col justify-center gap-1 px-3 py-1.5 text-sm"
 	role="status"
 	aria-atomic="true"
 	data-testid="result-info"
@@ -79,12 +80,19 @@
 	<!-- no fav libraries + myLibraries filter warning -->
 	{#if showMyLibrariesWarning}
 		<div role="alert" data-testid="my-libraries-warning">
-			<BiInfo aria-hidden="true" class="text-subtle mb-0.5 inline align-middle" />
+			<BiInfo aria-hidden="true" class="mb-0.5 inline size-3 align-middle" />
 			<p class="inline">{page.data.t('search.noAddedLibrariesText')}.</p>
 			<a class="link inline" href={page.data.localizeHref('/my-pages')}
 				>{page.data.t('search.addLibraries')}</a
 			>
 		</div>
+	{/if}
+	<!-- search help link -->
+	{#if !showMyLibrariesWarning && numHits === 0}
+		<a href={page.data.localizeHref('/help')} class="link-subtle flex items-center">
+			<BiQuestionCircle class="mr-1 size-3" />
+			{page.data.t('search.searchHelp')}
+		</a>
 	{/if}
 </div>
 

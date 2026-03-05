@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { type Component, onDestroy, onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
 	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
@@ -79,6 +80,12 @@
 			!menuToggleElement?.contains(event.relatedTarget as Element)
 		) {
 			closeExpandedMenu();
+		}
+	}
+
+	function handleClickPageTitle() {
+		if (window.getSelection()?.type === 'Caret') {
+			appSearchComponent?.showExpandedSearch({ cursorAtEnd: true });
 		}
 	}
 
@@ -211,6 +218,7 @@
 						? undefined
 						: (page.route.id === '/(app)/[[lang=lang]]/browse' && 'page') || undefined}
 					aria-controls={IDs.appBarMenu}
+					aria-haspopup="dialog"
 					aria-expanded={(mounted && expandedMenu) || undefined}
 					class="action max-sm:hover:bg-primary-200 lg:min-w-16"
 					aria-label={page.data.t('header.menu')}
@@ -254,7 +262,7 @@
 			<li>
 				<a
 					class="action px-1.5"
-					href={page.data.localizeHref(page.data.base)}
+					href={resolve(page.data.localizeHref(page.data.base))}
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 					data-testid="home"
 				>
@@ -296,13 +304,19 @@
 						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
 					>
 						<h1
-							id="page-title"
 							class="my-1.5 font-serif text-[1.625rem] tracking-[-0.0125rem] italic lg:my-2 lg:text-[2.1875rem] @md:tracking-[-0.025rem] @lg:text-3xl @xl:my-2 @xl:text-[2.1875rem] @3xl:my-1.5 @3xl:text-[2.5rem] lg:@3xl:my-2 @5xl:my-4 @5xl:text-5xl"
 						>
-							{page.data.t('home.pageHeadingTitle')}
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+							<label
+								id="page-title"
+								for="supersearch-collapsed-combobox"
+								onclick={handleClickPageTitle}
+							>
+								{page.data.t('home.pageHeadingTitle')}
+							</label>
 						</h1>
 						<p
-							id="page-description"
 							class="text-subtle max-w-[40ch] font-serif text-base lg:text-lg @xl:text-lg @3xl:max-w-max @3xl:text-lg @5xl:text-xl"
 						>
 							<strong class="font-normal">Libris</strong>
@@ -346,9 +360,11 @@
 			<li class="hidden lg:block">
 				<a
 					class="action"
-					href={page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
-						locale: otherLangCode
-					})}
+					href={resolve(
+						page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
+							locale: otherLangCode
+						})
+					)}
 					hreflang={otherLangCode}
 					aria-label={page.data.t('header.changeLang')}
 					aria-labelledby={IDs.appBarChangeLangLabel}
@@ -364,7 +380,7 @@
 			<li>
 				<a
 					class="action max-sm:hover:bg-primary-200"
-					href={page.data.localizeHref('/my-pages')}
+					href={resolve(page.data.localizeHref('/my-pages'))}
 					aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
 				>
 					{@render actionItemContents({
@@ -417,7 +433,7 @@
 							{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
 								<li>
 									<a
-										href={page.data.localizeHref(category.href)}
+										href={resolve(page.data.localizeHref(category.href))}
 										id={category.id}
 										aria-labelledby="search-for {category.id}"
 										class="btn-outlined text-primary-900 border-primary-600/75 focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 px-2 py-1.5 text-center whitespace-nowrap @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
@@ -438,7 +454,7 @@
 						>
 							<IconAddFilter class="mr-2 hidden size-4 @xl:inline @5xl:size-4.5" />
 							<span>
-								<span id="add-label" class="hidden @xl:inline">{page.data.t('search.add')}</span>
+								<span id="add-label" class="hidden @xl:inline">{page.data.t('general.add')}</span>
 								<span class="capitalize @xl:lowercase">
 									{page.data.t('search.filter').toLowerCase()}
 								</span>

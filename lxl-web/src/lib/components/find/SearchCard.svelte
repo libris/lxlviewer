@@ -150,8 +150,11 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<BiHouse class="text-neutral-400" />
 				{/if}
 			</span>
-			{item.numberOfHolders}
-			{page.data.t('search.libraries')}
+			<span class="sr-only">{`${page.data.t('holdings.availableAt')}`}</span>
+			<span>
+				{item.numberOfHolders}
+				{page.data.t('search.libraries')}
+			</span>
 		</a>
 	{/if}
 {/snippet}
@@ -361,12 +364,13 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					{/if}
 					{#if isInstanceCard}
 						<a
+							aria-labelledby={`cite-${id} ${titleId}`}
 							class="btn btn-primary h-7 rounded-full md:h-8"
 							href={getCiteLink(page.url, id)}
 							onclick={(event) => handleClickCite(event, page.state, id)}
 						>
-							<BiQuote class="size-4 text-neutral-400" />
-							<span>{page.data.t('citations.cite')}</span>
+							<BiQuote aria-hidden="true" class="size-4 text-neutral-400" />
+							<span id={`cite-${id}`}> {page.data.t('citations.cite')}</span>
 						</a>
 					{/if}
 					{#if isLibraryCard(item)}
@@ -383,11 +387,19 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 									: userSettings.addLibrary(item.libraryId, item.displayStr)}
 						>
 							{#if alreadyAdded}
-								<BiHeartFill class="text-primary-600" />
-								<span>{page.data.t('myPages.remove')}</span>
+								<BiHeartFill aria-hidden="true" class="text-primary-600" />
+								<span
+									aria-label={`${page.data.t('general.remove')} ${page.data.t('myPages.favouriteLibrary')}`}
+								>
+									{page.data.t('general.remove')}</span
+								>
 							{:else}
-								<BiHeart class="text-primary-600" />
-								<span>{page.data.t('myPages.add')}</span>
+								<BiHeart aria-hidden="true" class="text-primary-600" />
+								<span
+									aria-label={`${page.data.t('general.add')} ${page.data.t('myPages.favouriteLibrary')}`}
+								>
+									{page.data.t('general.add')}</span
+								>
 							{/if}
 						</button>
 					{/if}
