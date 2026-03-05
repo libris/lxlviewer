@@ -2,10 +2,12 @@
 	import { browser } from '$app/environment';
 	import { onDestroy } from 'svelte';
 	import { goto, onNavigate, replaceState } from '$app/navigation';
+	import popover from '$lib/actions/popover';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { LibraryResultItem, SearchResultItem } from '$lib/types/search';
 	import { JsonLd, LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { type ResourceData } from '$lib/types/resourceData';
 	import { LxlLens } from '$lib/types/display';
 	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 	import getInstanceData from '$lib/utils/getInstanceData';
@@ -20,11 +22,12 @@
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
+	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 	import BiHouse from '~icons/bi/house';
 	import BiQuote from '~icons/bi/quote';
 	import BiHeartFill from '~icons/bi/heart-fill';
 	import BiHeart from '~icons/bi/heart';
-	import { bookAspectRatio } from '$lib/utils/getTypeLike';
+	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 
 	interface Props {
 		item: SearchResultItem | LibraryResultItem;
@@ -74,6 +77,12 @@
 		}
 		return url.toString();
 	});
+
+	const firstMediaLink = $derived(
+		item.mediaLinks &&
+			(item.mediaLinks?._display?.[0]?.associatedMedia?.[0]?.[JsonLd.ID] ||
+				item.mediaLinks?._display?.[0]?.associatedMedia?.[JsonLd.ID])
+	);
 
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
@@ -328,6 +337,28 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			</footer>
 			{#if allowActions}
 				<div class="card-actions flex gap-1 self-end pt-1">
+					{#if firstMediaLink}
+						{#snippet mediaLinksPopover()}
+							<DecoratedData
+								data={item.mediaLinks as ResourceData}
+								showLabels={ShowLabelsOptions.Never}
+								allowPopovers={false}
+								block
+							/>
+						{/snippet}
+						<a
+							class="btn btn-primary h-7 rounded-full md:h-8"
+							href={firstMediaLink}
+							target="_blank"
+							use:popover={{
+								onFocus: false,
+								snippet: mediaLinksPopover
+							}}
+						>
+							<BiBoxArrowUpRight class="text-neutral-400" />
+							<span>{page.data.t('search.freeOnline')}</span>
+						</a>
+					{/if}
 					{#if isInstanceCard}
 						<a
 							class="btn btn-primary h-7 rounded-full md:h-8"

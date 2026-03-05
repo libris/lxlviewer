@@ -2,7 +2,7 @@ import type { Action } from 'svelte/action';
 import Popover from './Popover.svelte';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { ResourceData } from '$lib/types/resourceData';
-import { mount, unmount } from 'svelte';
+import { mount, unmount, type Snippet } from 'svelte';
 
 /**
  * Svelte action used for showing either a generic title or decorated data for a resource (by supplying the resource id or resource data).
@@ -22,16 +22,14 @@ import { mount, unmount } from 'svelte';
 type Parameter = {
 	title?: string;
 	resource?: { id: string; lang: LocaleCode } | { data: ResourceData[] };
+	snippet?: Snippet;
 	placeAsSibling?: boolean; // place popover next to node in the DOM (to force it on top of modal, for example)
+	onFocus?: boolean;
 };
 
 export const popover: Action<HTMLElement, Parameter> = (
 	node,
-	{ title, resource, placeAsSibling }: Parameter = {
-		title: undefined,
-		resource: undefined,
-		placeAsSibling: false
-	}
+	{ title, resource, snippet, placeAsSibling = false, onFocus = true }: Parameter = {}
 ) => {
 	const FETCH_DELAY = 250;
 	const ATTACH_DELAY = 500;
@@ -50,8 +48,11 @@ export const popover: Action<HTMLElement, Parameter> = (
 
 	node.addEventListener('mouseover', attachPopover);
 	node.addEventListener('mouseout', removePopover);
-	node.addEventListener('focus', attachPopover);
-	node.addEventListener('blur', removePopover);
+
+	if (onFocus) {
+		node.addEventListener('focus', attachPopover);
+		node.addEventListener('blur', removePopover);
+	}
 
 	async function attachPopover() {
 		try {
@@ -73,6 +74,7 @@ export const popover: Action<HTMLElement, Parameter> = (
 						referenceElement: node,
 						title,
 						resourceData,
+						snippet,
 						onMouseOver: startFloatingElementInteraction,
 						onFocus: startFloatingElementInteraction,
 						onMouseLeave: endFloatingElementInteraction,
