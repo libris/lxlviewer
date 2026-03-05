@@ -2,12 +2,13 @@
 	import { page } from '$app/state';
 	import type { QualifierRendererProps } from 'supersearch';
 	import IconClose from '~icons/bi/x-lg';
+	import TypeIcon from '../TypeIcon.svelte';
 
 	interface Props extends QualifierRendererProps {
 		onclick?: () => void;
 	}
 
-	const { key, keyLabel, operator, value, valueLabel, removeLink, onclick }: Props = $props();
+	const { key, keyLabel, operator, value, valueLabel, removeLink, type, onclick }: Props = $props();
 
 	const pillText = $derived(`${keyLabel || ''}${operator} ${valueLabel || ''}`);
 
@@ -59,6 +60,9 @@
 			{valueLabel}
 		{/if}
 		-->
+		{#if type}
+			<TypeIcon {type} class="mr-0.5 mb-0.5 inline align-middle" />
+		{/if}
 		{valueLabel}
 	</span>
 {/if}
