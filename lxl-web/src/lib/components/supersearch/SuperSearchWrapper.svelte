@@ -2,6 +2,7 @@
 	import { mount, unmount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import {
 		SuperSearch,
 		lxlQualifierPlugin,
@@ -454,7 +455,7 @@
 					<svelte:element
 						this={clearUrl ? 'a' : 'button'}
 						role={clearUrl ? undefined : 'button'}
-						href={clearUrl}
+						href={clearUrl ? resolve(clearUrl) : undefined}
 						onclick={(e: MouseEvent) => {
 							userClearedSearch = true;
 							onclickClear(e);
@@ -528,7 +529,7 @@
 								</button>
 								{#if qualifierSuggestionsExpanded}
 									<a
-										href={page.data.localizeHref('/help/filters')}
+										href={resolve(page.data.localizeHref('/help/filters'))}
 										id={getCellId(1, filteredQualifierSuggestions.length + 2)}
 										class={[
 											'text-2xs link-subtle ml-1',
@@ -545,9 +546,9 @@
 				{/if}
 				{#if q.trim().length}
 					<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
-						<h2 id="supersearch-results-label" class="font-medium">
+						<h2 id="supersearch-results-label" aria-live="polite" class="font-medium">
 							{#if resultsCount}
-								{page.data.t('supersearch.suggestions')}
+								<span class="sr-only">{resultsCount}</span> {page.data.t('supersearch.suggestions')}
 							{/if}
 						</h2>
 						<button type="submit">
