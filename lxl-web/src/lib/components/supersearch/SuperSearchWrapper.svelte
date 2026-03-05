@@ -535,7 +535,7 @@
 									]}
 									onclick={() => addQualifierKey(key)}
 								>
-									{label}:
+									{label}
 								</button>
 								{#if filteredQualifierSuggestions.length > numCuratedQualifiers && cellIndex + 1 === numCuratedQualifiers}
 									<span class="text-subtle" aria-hidden="true">|</span>
