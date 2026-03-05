@@ -184,7 +184,7 @@ export default {
 		allInFacet: 'All in',
 		noExactMatches: 'No exact matches',
 		showingResultsFor: 'Showing results for',
-		searchHelp: 'Libris search help'
+		freeOnline: 'Free online'
 	},
 	supersearch: {
 		search: 'Search',

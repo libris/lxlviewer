@@ -2,9 +2,11 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
+	import { getSearchContext } from '$lib/contexts/search';
 
 	let { data } = $props();
 
+	const searchContext = getSearchContext();
 	const pageTitle = page.data.t('help.pageTitle');
 </script>
 
@@ -33,8 +35,10 @@
 					<td>
 						<button
 							class="qualifier text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap capitalize"
-							>{f.label}</button
+							onclick={() => searchContext.changeQuery?.({ insert: ` ${f.key}:` })}
 						>
+							{f.label}
+						</button>
 						<ul class="mt-2 font-mono">
 							<li class="text-xs">{f.key}</li>
 							{#each f.queryCodes as q (q)}

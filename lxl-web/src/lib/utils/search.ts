@@ -1,4 +1,12 @@
-import { asArray, DisplayUtil, isObject, toLite, toString, VocabUtil } from '$lib/utils/xl';
+import {
+	asArray,
+	DisplayUtil,
+	isObject,
+	pickProperty,
+	toLite,
+	toString,
+	VocabUtil
+} from '$lib/utils/xl';
 import {
 	Base,
 	type DisplayDecorated,
@@ -37,6 +45,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { isLibraryOrg } from '$lib/utils/holdings';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
+import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
 import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
 import { getMyLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike';
@@ -128,6 +137,7 @@ export function asSearchResultItem(
 			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
 			numberOfHolders: getHoldersCount(i, vocabUtil),
+			mediaLinks: getMediaLinks(i, displayUtil, locale),
 			...(isLibrary(i) && {
 				libraryId: i[JsonLd.ID],
 				displayStr: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale))
@@ -538,6 +548,22 @@ function addMyLibrariesBoolFilter(boolFilters: Observation[] | undefined, transl
 		}
 	}
 	return boolFilters;
+}
+
+function getMediaLinks(
+	item: FramedData,
+	displayUtil: DisplayUtil,
+	locale: LangCode
+): DisplayDecorated | null {
+	const _item = { ...item };
+	copyMediaLinksToWork(_item);
+	const formatted = displayUtil.lensAndFormat(_item, LensType.WebOverview2, locale);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [mediaLinks, _] = pickProperty(formatted, ['associatedMedia']);
+	if (mediaLinks._display?.length) {
+		return mediaLinks;
+	}
+	return null;
 }
 
 /**
