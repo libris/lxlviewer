@@ -190,8 +190,8 @@ export function displayMappings(
 
 				return {
 					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
-					display: displayUtil.lensAndFormat(value, LensType.Chip, locale),
-					displayStr: toString(displayUtil.lensAndFormat(value, LensType.Chip, locale)) || '',
+					display: displayUtil.lensAndFormat(value, LensType.WebToken, locale),
+					displayStr: toString(displayUtil.lensAndFormat(value, LensType.WebToken, locale)) || '',
 					label,
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
@@ -213,12 +213,12 @@ export function displayMappings(
 				return {
 					display: displayUtil.lensAndFormat(
 						{ ...defaultType, ...m.object },
-						LensType.Chip,
+						LensType.WebToken,
 						locale
 					),
 					displayStr:
 						toString(
-							displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.Chip, locale)
+							displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.WebToken, locale)
 						) || translate(`filterAlias.${m.object?.alias}`), // Allow frontend-defined displayStr for custom filter aliases
 					label: '',
 					operator,
