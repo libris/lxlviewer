@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { mount, unmount } from 'svelte';
+	import { mount, onMount, unmount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import {
 		SuperSearch,
 		lxlQualifierPlugin,
@@ -23,6 +24,7 @@
 	import IconGo from '~icons/bi/arrow-right-short';
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
+	import { getSearchContext } from '$lib/contexts/search';
 
 	interface Props {
 		placeholder: string;
@@ -33,6 +35,8 @@
 		qualifierSuggestions: QualifierSuggestion2[];
 	}
 
+	export type ChangeQueryParams = { insert: string; from?: number; to?: number };
+
 	let {
 		placeholder = '',
 		ariaLabelledBy,
@@ -41,6 +45,9 @@
 		onCursorChange,
 		qualifierSuggestions
 	}: Props = $props();
+
+	const searchContext = getSearchContext();
+
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
 
@@ -255,6 +262,25 @@
 		return data;
 	}
 
+	export function changeQuery(params: ChangeQueryParams) {
+		const { insert } = params;
+		const from = params.from || q.length;
+		const to = params.to || q.length;
+		const before = q.slice(0, from);
+		superSearch?.dispatchChange({
+			change: {
+				from,
+				to,
+				insert
+			},
+			selection: {
+				anchor: (before + insert).length,
+				head: (before + insert).length
+			},
+			userEvent: 'input'
+		});
+	}
+
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
@@ -363,6 +389,10 @@
 			onCursorChange?.(null);
 		}
 	});
+
+	onMount(() => {
+		searchContext.changeQuery = changeQuery;
+	});
 </script>
 
 {#key page.data.locale}
@@ -454,7 +484,7 @@
 					<svelte:element
 						this={clearUrl ? 'a' : 'button'}
 						role={clearUrl ? undefined : 'button'}
-						href={clearUrl}
+						href={clearUrl ? resolve(clearUrl) : undefined}
 						onclick={(e: MouseEvent) => {
 							userClearedSearch = true;
 							onclickClear(e);
@@ -528,7 +558,7 @@
 								</button>
 								{#if qualifierSuggestionsExpanded}
 									<a
-										href={page.data.localizeHref('/help/filters')}
+										href={resolve(page.data.localizeHref('/help/filters'))}
 										id={getCellId(1, filteredQualifierSuggestions.length + 2)}
 										class={[
 											'text-2xs link-subtle ml-1',

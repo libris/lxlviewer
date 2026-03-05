@@ -4,6 +4,7 @@
 	import AppBar from './AppBar.svelte';
 	import { page } from '$app/state';
 	import { setHomepageContext } from '$lib/contexts/homepage';
+	import { setSearchContext } from '$lib/contexts/search';
 
 	const { children } = $props();
 
@@ -15,6 +16,7 @@
 	});
 
 	setHomepageContext(homepageCache);
+	setSearchContext({});
 </script>
 
 <svelte:head>
