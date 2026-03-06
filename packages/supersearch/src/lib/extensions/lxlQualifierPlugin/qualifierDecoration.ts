@@ -20,6 +20,9 @@ class QualifierWidget extends WidgetType {
 			this.props.removeLink === other.props.removeLink
 		);
 	}
+	get estimatedHeight(): number {
+		return 30;
+	}
 
 	toDOM(view: EditorView): HTMLElement {
 		const container = document.createElement('span');
