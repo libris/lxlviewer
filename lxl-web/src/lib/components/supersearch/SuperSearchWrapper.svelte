@@ -407,6 +407,7 @@
 		{ariaLabelledBy}
 		{ariaLabel}
 		{ariaDescribedBy}
+		collapsedAriaKeyshortcuts={`Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`}
 		autofocus={isHomeRoute ? true : undefined}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {

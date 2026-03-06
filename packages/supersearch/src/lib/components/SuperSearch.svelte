@@ -47,6 +47,8 @@
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		ariaDescribedBy?: string;
+		collapsedAriaKeyshortcuts?: string;
+		expandedAriaKeyshortcuts?: string;
 		autofocus?: boolean;
 		endpoint: string | URL;
 		queryFn?: QueryFunction;
@@ -106,6 +108,8 @@
 		ariaLabelledBy,
 		ariaLabel,
 		ariaDescribedBy,
+		collapsedAriaKeyshortcuts,
+		expandedAriaKeyshortcuts,
 		autofocus,
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
@@ -204,7 +208,10 @@
 			'aria-haspopup': 'dialog', // indicates the availability and type of interactive popup element that can be triggered by the element
 			'aria-controls': `${id}-dialog`, // identifies the popup element
 			'aria-expanded': expanded.toString(), // indicates if the popup element is open
-			'aria-multiline': 'false' // aria-multiline isn't allowed inside elements with role=combobox,
+			'aria-multiline': 'false', // aria-multiline isn't allowed inside elements with role=combobox
+			...(collapsedAriaKeyshortcuts && {
+				'aria-keyshortcuts': collapsedAriaKeyshortcuts
+			})
 		})
 	);
 
@@ -230,6 +237,9 @@
 			'aria-autocomplete': 'list', // indicates that the autocomplete behavior of the input is to suggest a list of possible values in a popup
 			'aria-controls': `${id}-grid`, // identifies the popup element that lists suggested values
 			'aria-multiline': 'false',
+			...(expandedAriaKeyshortcuts && {
+				'aria-keyshortcuts': expandedAriaKeyshortcuts
+			}),
 			...(includeAriaActiveDescendant && {
 				'aria-activedescendant': `${id}-item-${activeRowIndex}x${activeColIndex}` // enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element
 			})
@@ -826,7 +836,7 @@
 {/snippet}
 
 <div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
-	<div class="supersearch-combobox" aria-keyshortcuts="Shift+7 Control+K Meta+K">
+	<div class="supersearch-combobox">
 		{@render inputRow?.({
 			expanded: false,
 			inputField: collapsedInputSnippet,
