@@ -20,7 +20,7 @@ export default {
 		aboutBeta: 'About the beta',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
-		accessiblityStatement: 'Accessibility statement',
+		accessibilityStatement: 'Accessibility statement',
 		changeLang: 'På svenska'
 	},
 	header: {
