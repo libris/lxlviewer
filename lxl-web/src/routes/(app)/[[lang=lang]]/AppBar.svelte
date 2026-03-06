@@ -3,7 +3,6 @@
 	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
 	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
-	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
@@ -48,7 +47,6 @@
 	);
 
 	const subset = $derived(page.data.subsetMapping);
-	const subsetPlaceholder = $derived(subset && displayMappingToString(subset));
 
 	function handleDismissBanner() {
 		dismissedBanner = true;
@@ -327,11 +325,6 @@
 				<AppSearch
 					id="search"
 					name="_q"
-					ariaLabelledBy={isHomeRoute ? 'page-title' : undefined}
-					ariaLabel={!isHomeRoute ? page.data.t('header.search') : undefined}
-					placeholder={subsetPlaceholder
-						? `${page.data.t('header.searchSubsetPlaceholder')}: ${subsetPlaceholder}`
-						: page.data.t('header.searchPlaceholder')}
 					--page-y-offset={pageYOffset}
 					bind:this={appSearchComponent}
 				/>
