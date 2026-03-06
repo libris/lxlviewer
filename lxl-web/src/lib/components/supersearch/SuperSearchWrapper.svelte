@@ -28,9 +28,12 @@
 
 	interface Props {
 		placeholder: string;
-		ariaLabelledBy?: string;
-		ariaLabel?: string;
-		ariaDescribedBy?: string;
+		collapsedAriaLabelledBy?: string;
+		collapsedAriaLabel?: string;
+		collapsedAriaDescribedBy?: string;
+		expandedAriaLabelledBy?: string;
+		expandedAriaLabel?: string;
+		expandedAriaDescribedBy?: string;
 		onCursorChange: (cursor: number | null) => void;
 		qualifierSuggestions: QualifierSuggestion2[];
 	}
@@ -38,10 +41,13 @@
 	export type ChangeQueryParams = { insert: string; from?: number; to?: number };
 
 	let {
-		placeholder = '',
-		ariaLabelledBy,
-		ariaLabel,
-		ariaDescribedBy,
+		placeholder,
+		collapsedAriaLabelledBy,
+		collapsedAriaLabel,
+		collapsedAriaDescribedBy,
+		expandedAriaLabelledBy,
+		expandedAriaLabel,
+		expandedAriaDescribedBy,
 		onCursorChange,
 		qualifierSuggestions
 	}: Props = $props();
@@ -404,9 +410,12 @@
 		bind:isLoading
 		language={lxlQuery}
 		{placeholder}
-		{ariaLabelledBy}
-		{ariaLabel}
-		{ariaDescribedBy}
+		{collapsedAriaLabelledBy}
+		{collapsedAriaLabel}
+		{collapsedAriaDescribedBy}
+		{expandedAriaLabelledBy}
+		{expandedAriaLabel}
+		{expandedAriaDescribedBy}
 		autofocus={isHomeRoute ? true : undefined}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {

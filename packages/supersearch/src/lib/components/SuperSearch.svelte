@@ -44,9 +44,12 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
-		ariaLabelledBy?: string;
-		ariaLabel?: string;
-		ariaDescribedBy?: string;
+		collapsedAriaLabelledBy?: string;
+		collapsedAriaLabel?: string;
+		collapsedAriaDescribedBy?: string;
+		expandedAriaLabelledBy?: string;
+		expandedAriaLabel?: string;
+		expandedAriaDescribedBy?: string;
 		autofocus?: boolean;
 		endpoint: string | URL;
 		queryFn?: QueryFunction;
@@ -103,9 +106,12 @@
 		form,
 		language,
 		placeholder = '',
-		ariaLabelledBy,
-		ariaLabel,
-		ariaDescribedBy,
+		collapsedAriaLabelledBy,
+		collapsedAriaLabel,
+		collapsedAriaDescribedBy,
+		expandedAriaLabelledBy,
+		expandedAriaLabel,
+		expandedAriaDescribedBy,
 		autofocus,
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
@@ -192,14 +198,14 @@
 			id: `${id}-collapsed-combobox`,
 			role: 'combobox',
 			enterkeyhint: 'search',
-			...(ariaLabelledBy && {
-				'aria-labelledby': ariaLabelledBy
+			...(collapsedAriaLabelledBy && {
+				'aria-labelledby': collapsedAriaLabelledBy
 			}),
-			...(ariaLabel && {
-				'aria-label': ariaLabel
+			...(collapsedAriaLabel && {
+				'aria-label': collapsedAriaLabel
 			}),
-			...(ariaDescribedBy && {
-				'aria-describedby': ariaDescribedBy
+			...(collapsedAriaDescribedBy && {
+				'aria-describedby': collapsedAriaDescribedBy
 			}),
 			'aria-haspopup': 'dialog', // indicates the availability and type of interactive popup element that can be triggered by the element
 			'aria-controls': `${id}-dialog`, // identifies the popup element
@@ -216,14 +222,14 @@
 			id: `${id}-expanded-combobox`,
 			role: 'combobox', // identifies the element as a combobox
 			enterkeyhint: 'search',
-			...(ariaLabelledBy && {
-				'aria-labelledby': ariaLabelledBy
+			...(expandedAriaLabelledBy && {
+				'aria-labelledby': expandedAriaLabelledBy
 			}),
-			...(ariaLabel && {
-				'aria-label': ariaLabel
+			...(expandedAriaLabel && {
+				'aria-label': expandedAriaLabel
 			}),
-			...(ariaDescribedBy && {
-				'aria-describedby': ariaDescribedBy
+			...(expandedAriaDescribedBy && {
+				'aria-describedby': expandedAriaDescribedBy
 			}),
 			'aria-haspopup': 'grid', // indicates that the combobox can popup a grid to suggest values
 			'aria-expanded': 'true', // indicates that the popup element is displayed

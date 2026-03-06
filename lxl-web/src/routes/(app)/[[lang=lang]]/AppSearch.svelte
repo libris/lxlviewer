@@ -5,21 +5,24 @@
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import IconSearch from '~icons/bi/search';
 	import type { ShowExpandedSearchOptions } from 'supersearch';
+	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 
 	type Props = {
 		id?: string;
 		name: string;
-		placeholder: string;
-		ariaLabelledBy?: string;
-		ariaLabel?: string;
-		ariaDescribedBy?: string;
 	};
 
-	let { id, name, placeholder, ariaLabelledBy, ariaLabel, ariaDescribedBy }: Props = $props();
+	let { id, name }: Props = $props();
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
 	let cursor: number | null = $state(null);
+
+	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
+	const placeholder = $derived(
+		(page.data.subsetMapping && displayMappingToString(page.data.subsetMapping)) ||
+			page.data.t('header.searchPlaceholder')
+	);
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -56,9 +59,8 @@
 			{id}
 			{name}
 			{placeholder}
-			aria-labelledby={ariaLabelledBy}
-			aria-label={ariaLabel}
-			aria-describedby={ariaDescribedBy}
+			aria-labelledby={isHomeRoute ? 'page-title' : undefined}
+			aria-label={!isHomeRoute ? page.data.t('header.search') : undefined}
 			bind:this={fallbackInputElement}
 			class="placeholder:text-placeholder w-full pl-11 focus:outline-none sm:px-3 sm:@3xl:pl-4 @5xl:text-[0.9375rem]"
 		/>
@@ -80,9 +82,9 @@
 	<div class="contents" data-testid="supersearch">
 		<SuperSearchWrapper
 			{placeholder}
-			{ariaLabelledBy}
-			{ariaLabel}
-			{ariaDescribedBy}
+			collapsedAriaLabelledBy={isHomeRoute ? 'page-title' : undefined}
+			collapsedAriaLabel={!isHomeRoute ? page.data.t('header.search') : undefined}
+			expandedAriaLabel={page.data.t('header.search')}
 			bind:this={superSearchWrapperComponent}
 			onCursorChange={(value) => (cursor = value)}
 			qualifierSuggestions={page.data.qualifierSuggestions || []}
