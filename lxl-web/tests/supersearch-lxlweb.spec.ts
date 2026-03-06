@@ -262,7 +262,7 @@ test('access filters can be added/removed', async ({ page }) => {
 test('qualifier keys can be added', async ({ page, context }) => {
 	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 	await page.getByTestId('supersearch').click();
-	await page.getByTestId('supersearch').getByText('Författare/Upphov:').click();
+	await page.getByTestId('supersearch').getByText('Författare/Upphov').click();
 	await expect(page.getByRole('combobox').first()).toContainText('Författare/upphov');
 	await page.keyboard.press('a');
 	await page.keyboard.press('ControlOrMeta+A');
