@@ -19,6 +19,7 @@ function getLabelFromMappings(
 	let invalid = suggestLabels.invalid !== false && pageLabels.invalid !== false;
 	const removeLink = suggestLabels.removeLink || pageLabels.removeLink;
 	const type = suggestLabels.type || pageLabels.type;
+	const id = suggestLabels.id || pageLabels.id;
 
 	if (suggestMapping?.length) {
 		// save latest mapping as fallback for error responses etc
@@ -30,7 +31,7 @@ function getLabelFromMappings(
 		invalid = false;
 	}
 
-	return { key, value, keyLabel, valueLabel, removeLink, invalid, type };
+	return { key, value, keyLabel, valueLabel, removeLink, invalid, type, id };
 }
 
 function iterateMapping(
@@ -43,6 +44,7 @@ function iterateMapping(
 	let removeLink: string | undefined;
 	let invalid: boolean | undefined;
 	let type: string | undefined;
+	let id: string | undefined;
 
 	if (mapping && Array.isArray(mapping)) {
 		_iterate(mapping);
@@ -64,6 +66,9 @@ function iterateMapping(
 						valueLabel = el.displayStr;
 						removeLink = el.up?.[JsonLd.ID];
 						type = el?.display?.[JsonLd.TYPE];
+						if (type === 'Person') {
+							id = el?.display?.[JsonLd.ID];
+						}
 					}
 				} else if (!key && value === el?._value && el?.displayStr) {
 					// ...unless a filter alias (no key, only value)
@@ -73,7 +78,7 @@ function iterateMapping(
 			});
 		}
 	}
-	return { keyLabel, valueLabel, removeLink, invalid, type };
+	return { keyLabel, valueLabel, removeLink, invalid, type, id };
 }
 
 export default getLabelFromMappings;

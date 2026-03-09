@@ -41,6 +41,7 @@ export type QualifierRendererProps = {
 	value?: string;
 	valueLabel?: string;
 	type?: string;
+	id?: string;
 	removeLink?: string;
 };
 
