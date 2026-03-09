@@ -143,7 +143,7 @@
 	let comboboxElement: HTMLDivElement | undefined = $state();
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
-	let activeColIndex: number = $state(0);
+	let activeColIndex: number = $state(-1);
 	let prevValue: string = value;
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
@@ -756,15 +756,19 @@
 	});
 
 	$effect(() => {
-		collapsedEditorView?.dispatch({
-			effects: collapsedContentAttributesCompartment.reconfigure(collapsedContentAttributes)
-		});
+		if (collapsedContentAttributes !== initialCollapsedContentAttributes) {
+			collapsedEditorView?.dispatch({
+				effects: collapsedContentAttributesCompartment.reconfigure(collapsedContentAttributes)
+			});
+		}
 	});
 
 	$effect(() => {
-		expandedEditorView?.dispatch({
-			effects: expandedContentAttributesCompartment.reconfigure(expandedContentAttributes)
-		});
+		if (expandedContentAttributes !== initialExpandedContentAttributes) {
+			expandedEditorView?.dispatch({
+				effects: expandedContentAttributesCompartment.reconfigure(expandedContentAttributes)
+			});
+		}
 	});
 
 	$effect(() => {
