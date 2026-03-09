@@ -36,12 +36,6 @@
 	position: relative;
 }
 
-.lxl-qualifier-value:not(:has(~ .lxl-ghost-group)) {
-	/* make up for missing ghost group width */
-	padding-right: calc(var(--spacing) * 1.5);
-	padding-left: calc(var(--spacing) * 1.5);
-}
-
 .lxl-ghost-group ~ .lxl-not-term > .lxl-qualifier-value {
 	padding: 0;
 }
