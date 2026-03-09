@@ -23,9 +23,8 @@ Sökfilter kan också läggas till genom att välja dem i vänsterpanelen.
 ## Operatorer
 
 Sökfilter och ord i fritext kan kombineras med operatorerna `AND`,`OR` och `NOT`.
-Om ingen operator anges mellan ord eller filter i en följd tillämpas ett underförstått `AND`.
-DET MÅSTE VARA VERSALER
-Det FUNKAR OCKSÅ MED OCH ELLER INTE
+Operatorer måste anges med versaler. Det går också att använda de svenska varianterna `OCH`,`ELLER` och `INTE`.
+Om ingen operator anges mellan ord eller filter i en följd tillämpas ett underförstått `AND/OCH`.
 
 ### NOT
 
@@ -43,6 +42,7 @@ Exempel:
 
 ### OR --
 
+Genom att lägga till `OR` mellan söktermer gör att fler dokument matchar sökningen.
 `OR`
 ![OR](/docs/img/OR.png)
 
@@ -50,13 +50,13 @@ Exempel:
 
 ## Frassökning
 
-avvaktiverar mjuk matchning (stemming i elastic)
-matchar diakriter
-"bananer" inga träffar på "banan"
-Om du vill söka på en exakt sökfras där ordföljden är viktig kan du sätta citationstecken (`""`) runt sökfrasen.
+Om du vill söka på en exakt sökfras kan du sätta citationstecken (`""`) runt sökfrasen.
+En sökning utan citationstecken gör att fler dokument matchar sökningen, då variationer på sökfrasen också inkluderas
+(s.k. mjuk matchning).
 
-Exempel: `"Hundra år av ensamhet"`
-I normala fall ....?? Brasklapp om att det inte behövs i vanliga fall?
+Exempel: `"Désert"` (franska för öken) inom citationstecken utesluter träffar på engelskans `Desert`
+
+Exempel: `"His dark materials"` ger enbart träffar som innehåller exakt den angivna ordföljden.
 
 ## Trunkering
 
@@ -66,7 +66,6 @@ Exempel: `kulturarv*`ger träffar där orden kulturarv, kulturarvet och kulturar
 
 ## Maskering
 
-Ett eller flera tecken?
-För att söka på ord som kan ha varierad stavning går det bra att maskera med hjälp av frågetecken (`?`).
+För att söka på ord som kan ha varierad stavning kan du maskera med hjälp av frågetecken (`?`).
 
 Exempel: `organi?ation` ger träffar på både organisation och organization (brittisk och amerikansk stavning).
