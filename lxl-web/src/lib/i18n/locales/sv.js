@@ -122,6 +122,7 @@ export default {
 		language: 'Språk',
 		subject: 'Ämne',
 		yearPublished: 'Utgivningsår',
+		'librissearch:yearPublished': 'Utgivningsår',
 		intendedAudience: 'Målgrupp',
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',

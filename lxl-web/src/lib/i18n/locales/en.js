@@ -123,6 +123,7 @@ export default {
 		language: 'Language',
 		subject: 'Subject',
 		yearPublished: 'Year published',
+		'librissearch:yearPublished': 'Year published',
 		intendedAudience: 'Intended audience',
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
