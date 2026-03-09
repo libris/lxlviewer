@@ -60,7 +60,8 @@ class GhostGroupWidget extends WidgetType {
 	}
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
-		container.className = 'lxl-ghost-group';
+		// container.className = 'lxl-ghost-group';
+		container.textContent = ' ';
 		return container;
 	}
 }

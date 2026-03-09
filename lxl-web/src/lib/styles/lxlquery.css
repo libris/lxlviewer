@@ -26,12 +26,6 @@
 	position: relative;
 }
 
-.lxl-qualifier-value:not(:has(~ .lxl-ghost-group)) {
-	/* make up for missing ghost group width */
-	padding-right: calc(var(--spacing) * 1.5);
-	padding-left: calc(var(--spacing) * 1.5);
-}
-
 .lxl-ghost-group ~ .lxl-not-term > .lxl-qualifier-value {
 	padding: 0;
 }
@@ -136,13 +130,6 @@
 
 .lxl-boolean-operator {
 	color: var(--color-body);
-}
-
-.lxl-ghost-group {
-	display: inline-block;
-	width: 6px;
-	height: 20px;
-	background-color: transparent;
 }
 
 /* hide key and operator for linked values in supersearch */
