@@ -78,4 +78,4 @@ T.ex. kommer träffar där sökfrasen ingår i titeln eller i de medverkandes na
 
 ## Maskinell sökning
 
-Se vår API-dokumentation för information om mer specialiserad sökning. Här kan du också läsa om hur du gör anrop för att skapa integrationer mot andra system.
+Se vår [API-dokumentation](https://libris.kb.se/api/docs/) för information om mer specialiserad sökning. Här kan du också läsa om hur du gör anrop för att skapa integrationer mot andra system.
