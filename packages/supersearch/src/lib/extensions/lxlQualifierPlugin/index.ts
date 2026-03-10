@@ -9,6 +9,7 @@ import {
 	balanceInnerParens,
 	createGhostGroup,
 	handleInputBeforeGroup,
+	handleInputAfterGroup,
 	jumpPastParens,
 	removeGhostGroup,
 	repairGhostGroup
@@ -46,6 +47,7 @@ const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn?: Qualifier
 				EditorState.transactionFilter.of(jumpPastParens),
 				EditorState.transactionFilter.of(createGhostGroup),
 				EditorState.transactionFilter.of(handleInputBeforeGroup),
+				EditorState.transactionFilter.of(handleInputAfterGroup),
 				EditorState.transactionFilter.of(removeGhostGroup),
 				EditorState.transactionFilter.of(repairGhostGroup),
 				EditorState.transactionFilter.of(balanceInnerParens),

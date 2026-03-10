@@ -274,6 +274,68 @@ export const handleInputBeforeGroup = (tr: Transaction) => {
 	];
 };
 
+export const handleInputAfterGroup = (tr: Transaction) => {
+	if (!tr.docChanged || !tr.isUserEvent('input')) return tr;
+
+	const start = tr.startState;
+	const minStartSelection = Math.min(start.selection.main.head, start.selection.main.anchor);
+
+	// detect ghost group directly before cursor
+	const nodeBefore = syntaxTree(start).resolveInner(minStartSelection, -1);
+
+	const ghostGroup = getParent(nodeBefore, 'QualifierOuterGroup');
+	if (!ghostGroup) return tr;
+	if (minStartSelection !== ghostGroup.to) return tr;
+
+	/** Check if there already is a space after the cursor, if so skip inserting a space but modify the changes so it is done one step ahead */
+	if (
+		/^\s/.test(tr.startState.sliceDoc(minStartSelection)) &&
+		tr.startState.selection.main.anchor === tr.startState.selection.main.head
+	) {
+		const modifiedChanges: { from: number; to?: number; insert?: string }[] = [];
+		let totalInsertedLength = 0;
+
+		tr.changes.iterChanges((fromA, toA, _fromB, _toB, inserted) => {
+			modifiedChanges.push({
+				from: fromA + 1,
+				to: toA + 1,
+				insert: inserted.toString()
+			});
+			totalInsertedLength += inserted.length;
+		});
+
+		if (!modifiedChanges.length) return tr;
+
+		return [
+			{
+				changes: modifiedChanges,
+				sequential: true,
+				userEvent: 'input.complete',
+				selection: {
+					anchor: minStartSelection + totalInsertedLength + 1,
+					head: minStartSelection + totalInsertedLength + 1
+				}
+			}
+		];
+	}
+
+	if (
+		/^\s/.test(tr.state.sliceDoc(Math.min(start.selection.main.head, start.selection.main.anchor)))
+	)
+		return tr;
+
+	/** Add space before change if there is no space after ghostgroup  */
+	return [
+		{
+			changes: {
+				from: Math.min(start.selection.main.head, start.selection.main.anchor),
+				insert: ' '
+			}
+		},
+		tr
+	];
+};
+
 /**
  * Re-add parens on bulk changes (select - delete)
  * Prevents any following qualifiers being parsed as belonging to the same group...
