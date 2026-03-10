@@ -8,7 +8,7 @@ import { stopEditingOnEnterOrEsc } from './qualifierKeyMaps.js';
 import {
 	balanceInnerParens,
 	createGhostGroup,
-	handleInputBeforeGroup,
+	handleChangesInGhostGroup,
 	jumpPastParens,
 	removeGhostGroup,
 	repairGhostGroup
@@ -45,7 +45,7 @@ const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn?: Qualifier
 				// ghost group filters -->
 				EditorState.transactionFilter.of(jumpPastParens),
 				EditorState.transactionFilter.of(createGhostGroup),
-				EditorState.transactionFilter.of(handleInputBeforeGroup),
+				EditorState.transactionFilter.of(handleChangesInGhostGroup),
 				EditorState.transactionFilter.of(removeGhostGroup),
 				EditorState.transactionFilter.of(repairGhostGroup),
 				EditorState.transactionFilter.of(balanceInnerParens),

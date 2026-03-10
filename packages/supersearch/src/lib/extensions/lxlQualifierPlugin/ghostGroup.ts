@@ -3,6 +3,7 @@ import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 import { qualifierStateField } from './qualifierValidation.js';
 import { startEditingQualifier, stopEditingQualifier } from './qualifierEffects.js';
+import { env } from '$env/dynamic/public';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically
@@ -18,7 +19,6 @@ export const createGhostGroup = (tr: Transaction) => {
 			return tr;
 		}
 	}
-
 	// run on valdation change -> atomic range change
 	const rangesChanged =
 		tr.startState.field(qualifierStateField).atomicRanges.size !==
@@ -229,49 +229,271 @@ export const jumpPastParens = (tr: Transaction) => {
 	return tr;
 };
 
-/**
- * Prevents dislocating the ghost group by typing between the operator and group
- */
-export const handleInputBeforeGroup = (tr: Transaction) => {
-	if (!tr.docChanged || !tr.isUserEvent('input')) return tr;
+function debugLog(message: unknown) {
+	if (env.PUBLIC_DEBUG_GHOST_GROUP && env.PUBLIC_DEBUG_GHOST_GROUP.toLowerCase() === 'true') {
+		console.log('DEBUG GHOST GROUP:', (message as object).toString());
+	}
+}
 
-	const start = tr.startState;
-	const head = start.selection.main.head;
+export const handleChangesInGhostGroup = (tr: Transaction) => {
+	// Ensure the transaction is the result of direct user input (Transaction.isUserEvent only checks for a specific user event type while checking the annotation directly allows for any type of user event)
+	if (!tr.annotation(Transaction.userEvent)) {
+		return tr;
+	}
+	if (
+		!tr.docChanged ||
+		tr.isUserEvent('select') ||
+		tr.isUserEvent('undo') ||
+		tr.isUserEvent('redo')
+	)
+		return tr;
 
-	// detect ghost group directly after cursor
-	const nodeAfter = syntaxTree(start).resolveInner(head, +1);
-	const ghostGroup = getParent(nodeAfter, 'QualifierOuterGroup');
-	if (!ghostGroup) return tr;
+	const tree = syntaxTree(tr.startState);
 
-	if (head !== ghostGroup.from) return tr;
+	const anchorGroup = getParent(
+		tree.resolveInner(tr.startState.selection.main.anchor),
+		'QualifierOuterGroup'
+	);
 
-	// shift text changes +1 position to the right
-	const shiftedChanges: { from: number; to?: number; insert?: string }[] = [];
-	let totalInsertedLength = 0;
+	const headGroup = getParent(
+		tree.resolveInner(tr.startState.selection.main.head),
+		'QualifierOuterGroup'
+	);
 
-	tr.changes.iterChanges((fromA, toA, _fromB, _toB, inserted) => {
-		if (inserted.toString() === ')') {
-			// don't shift ')' and break the group
-			return;
+	const groupAfterAnchor = getParent(
+		tree.resolveInner(tr.startState.selection.main.anchor, 1),
+		'QualifierOuterGroup'
+	);
+
+	const groupBeforeAnchor = getParent(
+		tree.resolveInner(tr.startState.selection.main.anchor, -1),
+		'QualifierOuterGroup'
+	);
+
+	const groupAfterHead = getParent(
+		tree.resolveInner(tr.startState.selection.main.head, 1),
+		'QualifierOuterGroup'
+	);
+	if (tr.startState.selection.main.empty) {
+		if (
+			!headGroup &&
+			groupAfterHead &&
+			tr.newSelection.main.from >= tr.startState.selection.main.from
+		) {
+			debugLog('Add space after insert and rebuild parenthesis');
+			// this could probably be simplified (so rebuilding of parenthesis isn't needed)
+			return [
+				{
+					changes: [
+						{
+							from: tr.startState.selection.main.from,
+							to: tr.startState.selection.main.from + 1,
+							insert: ' '
+						}
+					],
+					sequential: true,
+					userEvent: 'input'
+				},
+				tr,
+				{
+					changes: [
+						{
+							from: tr.startState.selection.main.from,
+							insert: '('
+						}
+					],
+					sequential: true,
+					userEvent: 'input'
+				}
+			];
 		}
-		shiftedChanges.push({
-			from: fromA + 1,
-			to: toA + 1,
-			insert: inserted.toString()
-		});
-		totalInsertedLength += inserted.length;
-	});
+		return tr;
+	}
 
-	const newSelection = { anchor: head + 1 + totalInsertedLength };
+	if (
+		anchorGroup &&
+		headGroup &&
+		anchorGroup.from === headGroup.from &&
+		anchorGroup.to === headGroup.to
+	) {
+		debugLog("Don't do anything as changes are made inside the same group");
+		return tr;
+	}
 
-	return [
-		{
-			changes: shiftedChanges,
-			sequential: true,
-			selection: newSelection,
-			userEvent: tr.annotation(Transaction.userEvent) || 'input.complete'
+	if (!anchorGroup && !headGroup && groupBeforeAnchor && groupAfterHead) {
+		debugLog("Don't do anything special...");
+		return tr;
+	}
+
+	if (!anchorGroup && !headGroup && groupAfterHead) {
+		debugLog('Remove parentheses before-hand');
+		return [
+			{
+				changes: [
+					{
+						from: tr.startState.selection.main.from,
+						to: tr.startState.selection.main.from + 1,
+						insert: ''
+					},
+					{
+						from: tr.startState.selection.main.to - 1,
+						to: tr.startState.selection.main.to,
+						insert: ''
+					}
+				],
+				sequential: true,
+				userEvent: 'input'
+			},
+			tr
+		];
+	}
+
+	if (anchorGroup && anchorGroup.to < tr.startState.selection.main.to) {
+		if (groupAfterHead) {
+			debugLog(
+				'Remove following closing parenthesis as selection is done rightward and selection head is followed directly by another ghost group'
+			);
+			return [
+				tr,
+				{
+					changes: [
+						{ from: tr.newSelection.main.from, to: tr.newSelection.main.from + 1, insert: ' ' }
+					],
+					sequential: true,
+					userEvent: 'input'
+				}
+			];
+		} else if (headGroup && headGroup.from < tr.startState.selection.main.to) {
+			debugLog('Is this needed?');
+			return tr;
+		} else {
+			debugLog(
+				'Insert a closing parenthesis as selection is done rightward and selection head is outside ghost group'
+			);
+
+			return [
+				tr,
+				{
+					changes: [{ from: tr.newSelection.main.to, insert: ')' }],
+					sequential: true,
+					userEvent: 'input'
+				}
+			];
 		}
-	];
+	}
+
+	if (anchorGroup && anchorGroup.from === tr.startState.selection.main.from) {
+		debugLog(
+			'Insert a opening parenthesis if anchor group starts at the same position as the selection'
+		);
+		return [
+			tr,
+			{
+				changes: [{ from: tr.startState.selection.main.from, insert: '(' }],
+				sequential: true,
+				userEvent: 'input'
+			}
+		];
+	}
+
+	if (anchorGroup && anchorGroup.from < tr.startState.selection.main.from) {
+		debugLog(
+			'Insert a closing parenthesis as selection is done rightward and selection anchor is outside ghost group'
+		);
+		return [
+			tr,
+			{
+				changes: [{ from: tr.newSelection.main.to, insert: ')' }],
+				sequential: true,
+				userEvent: 'input'
+			}
+		];
+	}
+
+	if (
+		anchorGroup &&
+		!headGroup &&
+		anchorGroup.from > tr.startState.selection.main.from &&
+		!groupAfterHead
+	) {
+		debugLog(
+			'Remove opening parenthesis in anchor group as selection is done leftward and selection head is outside group.'
+		);
+		return [
+			{
+				changes: [{ from: anchorGroup.to - 1, to: anchorGroup.to, insert: '' }],
+				sequential: true,
+				userEvent: 'input'
+			},
+			tr
+		];
+	}
+
+	if (anchorGroup && !headGroup && !groupAfterHead) {
+		debugLog('Insert an opening parenthesis .... ');
+		return [
+			tr,
+			{
+				changes: [{ from: tr.newSelection.main.from, insert: '(' }],
+				sequential: true,
+				userEvent: 'input'
+			}
+		];
+	}
+
+	if (!anchorGroup && groupAfterAnchor && headGroup) {
+		debugLog('Re-add opening parenthesis');
+		return [
+			tr,
+			{
+				changes: [{ from: tr.startState.selection.main.from, insert: '(' }],
+				sequential: true,
+				userEvent: 'input'
+			}
+		];
+	}
+
+	if (headGroup) {
+		if (headGroup.from <= tr.startState.selection.main.from) {
+			if (anchorGroup) {
+				debugLog('Keep as is... because?');
+				return tr;
+			} else {
+				debugLog('Add a closing parenthesis!');
+				return [
+					tr,
+					{
+						changes: [{ from: tr.newSelection.main.to, insert: ')' }],
+						sequential: true,
+						userEvent: 'input'
+					}
+				];
+			}
+		}
+	}
+
+	if (groupAfterHead) {
+		debugLog('Remove parentheses from following group after selection');
+		return [
+			{
+				changes: [
+					{ from: groupAfterHead.to - 1, to: groupAfterHead.to, insert: '' },
+					{
+						from: groupAfterHead.from,
+						to: groupAfterHead.from + 1,
+						insert: ''
+					}
+				],
+				sequential: true,
+				userEvent: 'input'
+			},
+			tr
+		];
+	}
+
+	// console.log('tr.ss',  tr.newSelection.main.from, tr.newSelection.main.to)
+	// Get ghost group on newSelection
+	return tr;
 };
 
 /**
