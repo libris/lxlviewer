@@ -87,7 +87,7 @@
 				{#if image}
 					<img src={image} alt="" class="aspect-square rounded-full object-contain object-top" />
 				{:else if type}
-					<TypeIcon {type} class="text-[15px]" />
+					<TypeIcon {type} class="text-sm" />
 				{/if}
 			</span>
 		{/if}
