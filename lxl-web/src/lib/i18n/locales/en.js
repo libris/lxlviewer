@@ -81,8 +81,7 @@ export default {
 		feedbackLink: 'http://survey.kb.se/librisbeta/en',
 		customerSupport: 'Libris customer support',
 		cookies: 'Manage cookies',
-		gdpr: 'Processing of personal data',
-		accessibilityStatement: 'Accessibility statement'
+		gdpr: 'Processing of personal data'
 	},
 	facet: {
 		q: 'Free text search',
@@ -186,7 +185,8 @@ export default {
 		allInFacet: 'All in',
 		noExactMatches: 'No exact matches',
 		showingResultsFor: 'Showing results for',
-		freeOnline: 'Free online'
+		freeOnline: 'Free online',
+		searchHelp: 'Libris search help'
 	},
 	supersearch: {
 		search: 'Search',

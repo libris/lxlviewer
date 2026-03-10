@@ -185,7 +185,8 @@ export default {
 		allInFacet: 'Allt inom',
 		noExactMatches: 'Inga exakta träffar',
 		showingResultsFor: 'Visar resultat för',
-		freeOnline: 'Fritt online'
+		freeOnline: 'Fritt online',
+		searchHelp: 'Så söker du i Libris'
 	},
 	supersearch: {
 		search: 'Sök',
