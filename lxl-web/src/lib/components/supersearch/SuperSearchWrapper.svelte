@@ -485,7 +485,7 @@
 					<svelte:element
 						this={clearUrl ? 'a' : 'button'}
 						role={clearUrl ? undefined : 'button'}
-						href={clearUrl ? resolve(clearUrl) : undefined}
+						href={clearUrl ? clearUrl : undefined}
 						onclick={(e: MouseEvent) => {
 							userClearedSearch = true;
 							onclickClear(e);
