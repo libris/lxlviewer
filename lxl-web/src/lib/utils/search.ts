@@ -359,8 +359,8 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 
 function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
 	const orgs = getRefinedOrgs(myLibraries);
-	const holdingsByType = getHoldersByType(getHoldingsByType(item));
-	return getMyLibsFromHoldings(myLibraries, holdingsByType, orgs);
+	const holdersByType = getHoldersByType(getHoldingsByType(item));
+	return getMyLibsFromHoldings(myLibraries, holdersByType, orgs);
 }
 
 function isFreeTextQuery(property: unknown): boolean {
