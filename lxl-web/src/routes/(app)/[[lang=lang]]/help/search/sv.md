@@ -9,11 +9,37 @@ Klicka på exemplen längre ner på den här sidan för att se hur filter och s�
 
 ## Filter
 
-En sökning kan snävas ner genom att lägga till olika sökfilter. Dessa kan skrivas in för hand, genom att skriva in något av de tillåtna [nyckelorden](/help/filters) följt av ett kolon (`:`). Enklast är att välja bland de förslag som dyker upp när sökrutan är markerad.
+En sökning kan snävas ner genom att lägga till olika sökfilter.
+Enklast är att välja bland de förslag på filter som dyker upp när sökrutan är markerad, eller från listan i vänsterpanelen.
+Filter kan också läggas till för hand, genom att skriva in något av de tillåtna [nyckelorden](/help/filters) följt av ett kolon (`:`).
+Exempel på nyckelord är `Författare/Upphov`, `Titel`, `Språk` etc.
 
-Exempel på nyckelord är `Författare/Upphov`, `Titel`, `Språk` etc. I filtret väljer du sen ett värde bland förslagen, t.ex. en specifik författare, boktitel eller ett språk.
+I filtret väljer du sen ett värde bland förslagen, t.ex. en specifik författare, boktitel eller ett språk.
+Det går också bra att ange filtrets värde i fritext.
 
-Sökfilter kan också läggas till genom att välja dem i vänsterpanelen.
+## Frassökning
+
+Om du vill söka mer exakt kan du sätta citationstecken (`""`) runt sökfrasen.
+En sökning utan citationstecken gör att fler dokument matchar sökningen, då variationer på sökfrasen också inkluderas
+(s.k. mjuk matchning).
+
+- Exempel: [`"Désert"`](https://beta.libris.kb.se/find?_q="Désert") (franska för öken) inom citationstecken utesluter träffar på engelskans `Desert`.
+- Exempel: [`"Gift"`](https://beta.libris.kb.se/find?_q="Gift") ger träffar där Tove Ditlevsens roman _Gift_ ingår men inte August Strindbergs _Giftas_.
+- Exempel: [`"His dark materials"`](https://beta.libris.kb.se/find?_q="His+dark+materials") ger enbart träffar som innehåller exakt den angivna ordföljden (i det här fallet titeln på en TV-serie).
+
+## Trunkering
+
+Använd asterisk (`*`) för att inkludera flera olika ändelser för ett sökord.
+
+- Exempel: [`kulturarv*`](https://beta.libris.kb.se/find?_q=kulturarv*) ger träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
+
+## Maskering
+
+För att söka på ord som kan ha varierad stavning kan du maskera med hjälp av frågetecken (`?`).
+
+- Exempel: [`organi?ation`](https://beta.libris.kb.se/find?_q=organi?ation) ger träffar på både organisation och organization (brittisk och amerikansk stavning).
+
+Maskering av sista bokstaven i ett ord görs med `\?`.
 
 ## Operatorer
 
@@ -40,7 +66,7 @@ Lägg till `OR` mellan söktermer eller filter för att få fler sökträffar. T
 
 ### AND -- alla sökord eller filter måste finnas med
 
-`AND` behöver sällan anges direkt utan tillämpas automatiskt av systemet om ingen annan operator anges.
+`AND` behöver sällan anges direkt utan tillämpas automatiskt om ingen annan operator anges.
 
 ![AND](/docs/img/AND.png)
 
@@ -50,32 +76,12 @@ Använd parenteser `()` för att konstruera mer komplicerade sökfrågor som inn
 
 - Exempel: [Sök efter romaner eller noveller som handlar om kärlek eller vänskap.](<https://beta.libris.kb.se/find?_q=(Kategori:"saogf:Noveller"+OR+Kategori:"saogf:Romaner")+(subject:"sao:K%25C3%25A4rlek"+OR+subject:"sao:V%25C3%25A4nskap")>)
 
-## Frassökning
-
-Om du vill söka mer exakt kan du sätta citationstecken (`""`) runt sökfrasen.
-En sökning utan citationstecken gör att fler dokument matchar sökningen, då variationer på sökfrasen också inkluderas
-(s.k. mjuk matchning).
-
-- Exempel: [`"Désert"`](https://beta.libris.kb.se/find?_q="Désert") (franska för öken) inom citationstecken utesluter träffar på engelskans `Desert`.
-- Exempel: [`"His dark materials"`](https://beta.libris.kb.se/find?_q="His+dark+materials") ger enbart träffar som innehåller exakt den angivna ordföljden (i det här fallet titeln på en TV-serie).
-
-## Trunkering
-
-Använd asterisk (`*`) för att inkludera flera olika ändelser för ett sökord.
-
-- Exempel: [`kulturarv*`](https://beta.libris.kb.se/find?_q=kulturarv*) ger träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
-
-## Maskering
-
-För att söka på ord som kan ha varierad stavning kan du maskera med hjälp av frågetecken (`?`).
-
-- Exempel: [`organi?ation`](https://beta.libris.kb.se/find?_q=organi?ation) ger träffar på både organisation och organization (brittisk och amerikansk stavning).
-
 ## Relevans och rankning av sökträffar
 
 Sökträffar rangordnas automatiskt enligt vissa kriterier.
-T.ex. kommer träffar där sökfrasen ingår i titeln eller i de medverkandes namn (författare, illustratörer, översättare osv) rangordnas högre och därför hamna längre upp i träfflistan.
+Till exempel kommer träffar där sökfrasen ingår i titeln eller i de medverkandes namn (författare, illustratörer, översättare osv) högre upp i träfflistan.
 
 ## Maskinell sökning
 
-Se vår [API-dokumentation](https://libris.kb.se/api/docs/) för information om mer specialiserad sökning. Här kan du också läsa om hur du gör anrop för att skapa integrationer mot andra system.
+Se vår [API-dokumentation](https://libris.kb.se/api/docs/) för information om mer specialiserad sökning.
+Här kan du också läsa om hur du gör anrop för att skapa integrationer mot andra system.
