@@ -10,7 +10,7 @@ Klicka på exemplen längre ner på den här sidan för att se hur filter och s�
 ## Filter
 
 En sökning kan snävas ner genom att lägga till olika sökfilter.
-Enklast är att välja bland de förslag på filter som dyker upp när sökrutan är markerad, eller från listan i vänsterpanelen.
+Enklast är att välja bland de förslag som dyker upp när sökrutan är markerad, eller från listan i vänsterpanelen.
 Filter kan också läggas till för hand, genom att skriva in något av de tillåtna [nyckelorden](/help/filters) följt av ett kolon (`:`).
 Exempel på nyckelord är `Författare/Upphov`, `Titel`, `Språk` etc.
 
