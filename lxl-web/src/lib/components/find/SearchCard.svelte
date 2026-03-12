@@ -288,126 +288,125 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					{/each}
 				</div>
 			{/if}
-			<footer
-				class="card-footer @container mt-1 flex flex-col-reverse flex-wrap md:flex-row"
-				id={footerId}
-			>
-				{#if item.selectTypeStr}
-					<span class="text-body font-medium">{item.selectTypeStr}</span>
-					<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-					<span class="hidden whitespace-pre-wrap md:inline">{' · '}</span>
-				{/if}
-				<span>
-					{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
-						{#if 'hasInstance' in obj}
-							{@const instances = getInstanceData(obj.hasInstance)}
-							{#if instances?.years}
-								{#if instances.count > 1}
-									{instances?.count}
-									{page.data.t('search.editions')}
-									{`(${instances.years})`}
-								{:else}
-									{instances.years}
-								{/if}
-							{/if}
-							{#if instances?.count === 1}
-								<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-								<span class="divider">{' · '}</span>
-								{#each obj.hasInstance._display as obj2, index (index)}
-									<!-- FIXME we need publication for year, but don't want to show it again with the year -->
-									{#if !obj2.publication}
-										<DecoratedData
-											data={obj2}
-											showLabels={ShowLabelsOptions.Never}
-											{allowLinks}
-											{allowPopovers}
-										/>
-									{/if}
-								{/each}
-							{/if}
-						{:else}
-							<span>
-								<DecoratedData
-									data={obj}
-									showLabels={ShowLabelsOptions.Never}
-									{allowLinks}
-									{allowPopovers}
-								/>
-							</span>
-						{/if}
-					{/each}
-				</span>
-			</footer>
-			{#if allowActions}
-				<div class="card-actions flex gap-1 self-end pt-3 @lg/card:pt-0">
-					{#if firstMediaLink}
-						{#snippet mediaLinksPopover()}
-							<DecoratedData
-								data={item.mediaLinks as ResourceData}
-								showLabels={ShowLabelsOptions.Never}
-								allowPopovers={false}
-								block
-							/>
-						{/snippet}
-						<a
-							class="btn btn-primary h-7 rounded-full md:h-8"
-							href={firstMediaLink}
-							target="_blank"
-							use:popover={{
-								onFocus: false,
-								snippet: mediaLinksPopover
-							}}
-						>
-							<BiBoxArrowUpRight class="text-neutral-400" />
-							<span>{page.data.t('search.freeOnline')}</span>
-						</a>
-					{/if}
-					{#if isInstanceCard}
-						<a
-							aria-labelledby={`cite-${id} ${titleId}`}
-							class="btn btn-primary h-7 min-w-22.5 rounded-full md:h-8"
-							href={getCiteLink(page.url, id)}
-							onclick={(event) => handleClickCite(event, page.state, id)}
-						>
-							<BiQuote aria-hidden="true" class="size-4 text-neutral-400" />
-							<span id={`cite-${id}`}> {page.data.t('citations.cite')}</span>
-						</a>
-					{/if}
-					{#if isLibraryCard(item)}
-						{@const userSettings = getUserSettings()}
-						{@const alreadyAdded =
-							userSettings.myLibraries &&
-							Object.keys(userSettings.myLibraries).includes(item.libraryId)}
-						<button
-							class="btn btn-primary h-7 rounded-full md:h-8"
-							type="button"
-							onclick={() =>
-								alreadyAdded
-									? userSettings.removeLibrary(item.libraryId)
-									: userSettings.addLibrary(item.libraryId, item.displayStr)}
-						>
-							{#if alreadyAdded}
-								<BiHeartFill aria-hidden="true" class="text-primary-600" />
-								<span
-									aria-label={`${page.data.t('general.remove')} ${page.data.t('myPages.favouriteLibrary')}`}
-								>
-									{page.data.t('general.remove')}</span
-								>
-							{:else}
-								<BiHeart aria-hidden="true" class="text-primary-600" />
-								<span
-									aria-label={`${page.data.t('general.add')} ${page.data.t('myPages.favouriteLibrary')}`}
-								>
-									{page.data.t('general.add')}</span
-								>
-							{/if}
-						</button>
-					{/if}
-					{@render holdingsButton()}
-				</div>
-			{/if}
 		</div>
-
+		<footer
+			class="card-footer @container mt-1 flex flex-col-reverse flex-wrap md:flex-row"
+			id={footerId}
+		>
+			{#if item.selectTypeStr}
+				<span class="text-body font-medium">{item.selectTypeStr}</span>
+				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+				<span class="hidden whitespace-pre-wrap md:inline">{' · '}</span>
+			{/if}
+			<span>
+				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
+					{#if 'hasInstance' in obj}
+						{@const instances = getInstanceData(obj.hasInstance)}
+						{#if instances?.years}
+							{#if instances.count > 1}
+								{instances?.count}
+								{page.data.t('search.editions')}
+								{`(${instances.years})`}
+							{:else}
+								{instances.years}
+							{/if}
+						{/if}
+						{#if instances?.count === 1}
+							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+							<span class="divider">{' · '}</span>
+							{#each obj.hasInstance._display as obj2, index (index)}
+								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
+								{#if !obj2.publication}
+									<DecoratedData
+										data={obj2}
+										showLabels={ShowLabelsOptions.Never}
+										{allowLinks}
+										{allowPopovers}
+									/>
+								{/if}
+							{/each}
+						{/if}
+					{:else}
+						<span>
+							<DecoratedData
+								data={obj}
+								showLabels={ShowLabelsOptions.Never}
+								{allowLinks}
+								{allowPopovers}
+							/>
+						</span>
+					{/if}
+				{/each}
+			</span>
+		</footer>
+		{#if allowActions}
+			<div class="card-actions flex gap-1 self-end pt-3">
+				{#if firstMediaLink}
+					{#snippet mediaLinksPopover()}
+						<DecoratedData
+							data={item.mediaLinks as ResourceData}
+							showLabels={ShowLabelsOptions.Never}
+							allowPopovers={false}
+							block
+						/>
+					{/snippet}
+					<a
+						class="btn btn-primary h-7 rounded-full md:h-8"
+						href={firstMediaLink}
+						target="_blank"
+						use:popover={{
+							onFocus: false,
+							snippet: mediaLinksPopover
+						}}
+					>
+						<BiBoxArrowUpRight class="text-neutral-400" />
+						<span>{page.data.t('search.freeOnline')}</span>
+					</a>
+				{/if}
+				{#if isInstanceCard}
+					<a
+						aria-labelledby={`cite-${id} ${titleId}`}
+						class="btn btn-primary h-7 min-w-22.5 rounded-full md:h-8"
+						href={getCiteLink(page.url, id)}
+						onclick={(event) => handleClickCite(event, page.state, id)}
+					>
+						<BiQuote aria-hidden="true" class="size-4 text-neutral-400" />
+						<span id={`cite-${id}`}> {page.data.t('citations.cite')}</span>
+					</a>
+				{/if}
+				{#if isLibraryCard(item)}
+					{@const userSettings = getUserSettings()}
+					{@const alreadyAdded =
+						userSettings.myLibraries &&
+						Object.keys(userSettings.myLibraries).includes(item.libraryId)}
+					<button
+						class="btn btn-primary h-7 rounded-full md:h-8"
+						type="button"
+						onclick={() =>
+							alreadyAdded
+								? userSettings.removeLibrary(item.libraryId)
+								: userSettings.addLibrary(item.libraryId, item.displayStr)}
+					>
+						{#if alreadyAdded}
+							<BiHeartFill aria-hidden="true" class="text-primary-600" />
+							<span
+								aria-label={`${page.data.t('general.remove')} ${page.data.t('myPages.favouriteLibrary')}`}
+							>
+								{page.data.t('general.remove')}</span
+							>
+						{:else}
+							<BiHeart aria-hidden="true" class="text-primary-600" />
+							<span
+								aria-label={`${page.data.t('general.add')} ${page.data.t('myPages.favouriteLibrary')}`}
+							>
+								{page.data.t('general.add')}</span
+							>
+						{/if}
+					</button>
+				{/if}
+				{@render holdingsButton()}
+			</div>
+		{/if}
 		{#if item._debug}
 			{#key item._debug}
 				<div class="card-debug z-20 self-start text-left select-text">
@@ -457,13 +456,28 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.search-card {
 		grid-template-areas:
-			'image content'
-			'debug .';
-		grid-template-columns: 64px 1fr;
+			'image content content'
+			'image footer footer'
+			'actions actions actions'
+			'debug . .';
+
+		grid-template-columns: 64px 1fr auto;
 
 		@container card (min-width: 768px) {
+			grid-template-columns: 72px 1fr auto;
 			@apply gap-x-6 px-6 py-4;
-			grid-template-columns: 72px 1fr;
+		}
+
+		@container card (min-width: 640px) {
+			grid-template-areas:
+				'image content content'
+				'image content content'
+				'image footer actions'
+				'debug . .';
+
+			& .card-actions {
+				padding-top: calc(var(--spacing) * 1);
+			}
 		}
 
 		& :global(.contribution-role) {
@@ -480,19 +494,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		grid-area: content;
 
 		grid-template-areas:
-			'header header'
-			'body body'
-			'footer footer'
-			'actions actions';
-
-		grid-template-columns: 1fr auto;
-
-		@container card (min-width: 30rem) {
-			grid-template-areas:
-				'header header'
-				'body actions'
-				'footer actions';
-		}
+			'header'
+			'body';
 	}
 
 	.card-debug {
