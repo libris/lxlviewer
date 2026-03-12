@@ -42,7 +42,7 @@ test('mapping displays the correct search query', async ({ page }) => {
 	await page.goto('/find?_q=språk%3A"lang%3Aswe"+sommar');
 	await page.getByRole('link', { name: 'Sökfilter' }).click();
 	const mapping = page.getByRole('navigation', { name: 'Valda filter' });
-	await expect(mapping).toHaveText('and Språk : Svenska and Fritextsökning : sommar Rensa', {
+	await expect(mapping).toHaveText('and   Svenska and Fritextsökning : sommar   Rensa', {
 		ignoreCase: true
 	});
 });
@@ -54,7 +54,7 @@ test('mapping displays the correct search query 2', async ({ page }) => {
 	await page.getByRole('link', { name: 'Sökfilter' }).click();
 	const mapping = await page.getByRole('navigation', { name: 'Valda filter' });
 	const innerText =
-		'and or Medverkan och funktion ∃  or and Kategori : Litteratur and not Titel : "pirater"    and   Har omslags-/miniatyrbild   Rensa';
+		'and or Medverkan och funktion ∃  or and   Litteratur and not Titel : \\"pirater\\"    and   Har omslags-/miniatyrbild   Rensa';
 	await expect(mapping).toHaveText(innerText, { ignoreCase: true });
 });
 
@@ -65,7 +65,7 @@ test('mapping displays the correct search query 3', async ({ page }) => {
 	await page.getByRole('link', { name: 'Sökfilter' }).click();
 	const mapping = page.getByRole('navigation', { name: 'Valda filter' });
 	const mappingText =
-		'and Titel : "pippi långstrump" and or Språk : Engelska or and Språk : Franska and not Språk : tyska and Fritextsökning : lindgren Rensa';
+		'and Titel : \\"pippi långstrump\\" and or   Engelska or and   Franska and not   tyska    and Fritextsökning : lindgren   Rensa';
 	await expect(mapping).toHaveText(mappingText, { ignoreCase: true });
 });
 
