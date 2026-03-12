@@ -19,7 +19,7 @@ It is also possible to enter the filter value as free text.
 
 ## Phrase search
 
-If you want to search more precisely, you can put quotation marks ("") around the search phrase.
+If you want to search more precisely, you can put quotation marks (`""`) around the search phrase.
 A search query without quotation marks matches more documents, since variations of the search phrase are also included
 (so-called soft matching).
 
