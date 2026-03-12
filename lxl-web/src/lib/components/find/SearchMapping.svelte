@@ -24,7 +24,17 @@
 >
 	{#each mapping as m, i (`outer-${i}-${depth}`)}
 		{#if !MAPPING_IGNORE_VARIABLE.some((v) => v === m.variable)}
-			{@const { children, operator, up, variable, displayStr, label, display, invalid } = m}
+			{@const {
+				children,
+				operator,
+				up,
+				variable,
+				displayStr,
+				label,
+				display,
+				isRedundantKeyLabel,
+				invalid
+			} = m}
 			{#if displayStr || label}
 				{@const isLinked = !!display?.['@id']}
 				<li
@@ -34,7 +44,7 @@
 					]}
 				>
 					<span class="atomic truncate">
-						{#if label}
+						{#if label && !isRedundantKeyLabel}
 							<span class="lxl-qualifier-key h-full content-center whitespace-nowrap">
 								{#if invalid}
 									{invalid}
@@ -43,7 +53,7 @@
 								{/if}
 							</span>
 						{/if}
-						{#if operator && operator !== 'none'}
+						{#if operator && operator !== 'none' && !isRedundantKeyLabel}
 							<span
 								class="lxl-qualifier-operator h-full content-center pr-1.5 {operator ===
 									'existence' && 'pl-1.5'}">{getRelationSymbol(m.operator)}</span

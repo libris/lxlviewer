@@ -14,7 +14,8 @@ import {
 	JsonLd,
 	LensType,
 	type Link,
-	Owl
+	Owl,
+	Platform
 } from '$lib/types/xl';
 
 import {
@@ -198,6 +199,10 @@ export function displayMappings(
 							m._key;
 				}
 
+				const redundantLabel = asArray(m.property?.category).some(
+					(c) => getUriSlug(c[JsonLd.ID]) === Platform.impliedByObject
+				);
+
 				return {
 					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
 					display: displayUtil.lensAndFormat(value, LensType.WebToken, locale),
@@ -208,7 +213,8 @@ export function displayMappings(
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
 					...('variable' in m && { variable: m.variable }),
 					_key: m._key,
-					_value: m._value
+					_value: m._value,
+					...(redundantLabel && { isRedundantKeyLabel: true })
 				} as DisplayMapping;
 			} else if (operator && operator in m) {
 				const mappingArr = Array.isArray(m[operator]) ? m[operator] : [m[operator]];
