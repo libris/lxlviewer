@@ -4,7 +4,7 @@ import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
 import * as v from 'valibot';
 
-import { Bibframe, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
+import { Bibframe, Fmt, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
@@ -283,10 +283,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 					}
 				]
 			: []),
-		{
-			id: 'details',
-			label: translate('resource.details')
-		}
+		...(details.length && details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)
+			? [
+					{
+						id: 'resourceTableOfContents',
+						label: translate('resource.tableOfContents')
+					}
+				]
+			: [])
 	];
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
