@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 	import type { QualifierRendererProps } from 'supersearch';
 	import IconClose from '~icons/bi/x-lg';
 
@@ -40,7 +41,7 @@
 {/if}
 {#if operator}
 	<span
-		class={['lxl-qualifier-operator cursor-text', isRedundantKeyLabel && 'redundant-label']}
+		class={['lxl-qualifier-operator cursor-text', (isRedundantKeyLabel || operator === ':') && 'hidden']}
 		data-qualifier-operator={operator}
 		role="button"
 		tabindex="-1"
@@ -73,7 +74,7 @@
 {/if}
 {#if valueLabel && removeLink}
 	<a
-		href={page.data.localizeHref(removeLink)}
+		href={resolve(page.data.localizeHref(removeLink))}
 		class="lxl-qualifier-remove"
 		aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
 	>

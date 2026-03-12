@@ -20,6 +20,11 @@
 
 .lxl-qualifier-key {
 	padding-left: calc(var(--spacing) * 1.5);
+	padding-right: calc(var(--spacing) * 1.5);
+}
+
+.lxl-qualifier-key + .lxl-qualifier-operator.hidden {
+	padding-right: 0;
 }
 
 .lxl-qualifier-operator {
