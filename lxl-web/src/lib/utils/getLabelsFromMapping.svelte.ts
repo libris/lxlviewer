@@ -20,6 +20,7 @@ function getLabelFromMappings(
 	const removeLink = suggestLabels.removeLink || pageLabels.removeLink;
 	const type = suggestLabels.type || pageLabels.type;
 	const id = suggestLabels.id || pageLabels.id;
+	const isRedundantKeyLabel = pageLabels?.isRedundantKeyLabel || suggestLabels?.isRedundantKeyLabel;
 
 	if (suggestMapping?.length) {
 		// save latest mapping as fallback for error responses etc
@@ -31,7 +32,7 @@ function getLabelFromMappings(
 		invalid = false;
 	}
 
-	return { key, value, keyLabel, valueLabel, removeLink, invalid, type, id };
+	return { key, value, keyLabel, valueLabel, removeLink, invalid, type, id, isRedundantKeyLabel };
 }
 
 function iterateMapping(
@@ -45,6 +46,7 @@ function iterateMapping(
 	let invalid: boolean | undefined;
 	let type: string | undefined;
 	let id: string | undefined;
+	let isRedundantKeyLabel: boolean | undefined;
 
 	if (mapping && Array.isArray(mapping)) {
 		_iterate(mapping);
@@ -70,6 +72,7 @@ function iterateMapping(
 							id = el?.display?.[JsonLd.ID];
 						}
 					}
+					isRedundantKeyLabel = el.isRedundantKeyLabel;
 				} else if (!key && value === el?._value && el?.displayStr) {
 					// ...unless a filter alias (no key, only value)
 					valueLabel = el.displayStr;
@@ -78,7 +81,7 @@ function iterateMapping(
 			});
 		}
 	}
-	return { keyLabel, valueLabel, removeLink, invalid, type, id };
+	return { keyLabel, valueLabel, removeLink, invalid, type, id, isRedundantKeyLabel };
 }
 
 export default getLabelFromMappings;

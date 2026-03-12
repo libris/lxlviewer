@@ -43,6 +43,7 @@ export type QualifierRendererProps = {
 	type?: string;
 	id?: string;
 	removeLink?: string;
+	isRedundantKeyLabel?: boolean;
 };
 
 export type QualifierRenderer = (

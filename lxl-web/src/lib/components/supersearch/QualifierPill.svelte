@@ -11,8 +11,18 @@
 		onclick?: () => void;
 	}
 
-	const { key, keyLabel, operator, value, valueLabel, removeLink, type, id, onclick }: Props =
-		$props();
+  const {
+		key,
+		keyLabel,
+		operator,
+		value,
+		valueLabel,
+		removeLink,
+    type, 
+    id, 
+		isRedundantKeyLabel,
+		onclick
+	}: Props = $props();
 
 	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(id))));
 	let image = $state(null);
@@ -38,7 +48,7 @@
 {#if keyLabel}
 	<span
 		data-qualifier-key={key}
-		class="lxl-qualifier-key cursor-text"
+		class={['lxl-qualifier-key cursor-text', isRedundantKeyLabel && 'redundant-label']}
 		role="button"
 		tabindex="-1"
 		{onclick}
@@ -50,7 +60,7 @@
 {/if}
 {#if operator}
 	<span
-		class="lxl-qualifier-operator cursor-text"
+		class={['lxl-qualifier-operator cursor-text', isRedundantKeyLabel && 'redundant-label']}
 		data-qualifier-operator={operator}
 		role="button"
 		tabindex="-1"

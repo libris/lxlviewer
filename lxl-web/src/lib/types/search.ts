@@ -116,6 +116,7 @@ export interface DisplayMapping {
 	variable?: string;
 	_key?: string;
 	_value?: string;
+	isRedundantKeyLabel?: boolean;
 }
 
 export interface PartialCollectionView {
@@ -198,12 +199,15 @@ export interface SearchMapping extends MappingObj {
 }
 
 interface ObjectProperty {
+	'@type': 'ObjectProperty';
 	'@id'?: string;
+	category?: Link[];
 }
 
 export interface DatatypeProperty {
 	'@type': 'DataTypeProperty';
 	'@id': string;
+	category?: Link[];
 }
 
 interface InvalidProperty {
