@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
-	import { JsonLd } from '$lib/types/xl';
+	import { type DisplayDecorated, Fmt, JsonLd } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
@@ -39,16 +39,16 @@
 		typeForIcon: string;
 		image: SecureImage;
 		decoratedData: {
-			headingTop: DecoratedData;
-			heading: DecoratedData;
-			headingExtra: DecoratedData;
-			overview: DecoratedData[];
-			overview2: DecoratedData[];
-			overviewFooter: DecoratedData;
-			summary: DecoratedData[];
-			resourceTableOfContents: DecoratedData[];
-			details: DecoratedData[];
-			token: DecoratedData;
+			headingTop: DisplayDecorated;
+			heading: DisplayDecorated;
+			headingExtra: DisplayDecorated;
+			overview: DisplayDecorated[];
+			overview2: DisplayDecorated[];
+			overviewFooter: DisplayDecorated;
+			summary: DisplayDecorated[];
+			resourceTableOfContents: DisplayDecorated[];
+			details: DisplayDecorated[];
+			token: DisplayDecorated;
 		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
@@ -384,26 +384,28 @@
 					<ExpandableArea content={resourceTableOfContents} collapsedHeightPx={300} />
 				</section>
 			{/if}
-			<section
-				class="-mx-3 my-6 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
-			>
-				<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
-					{page.data.t('resource.details')}
-				</h2>
-				<div class="decorated-data-section decorated-spacious decorated-details">
-					{#each decoratedData.details as details (details)}
-						<div class="mb-2">
-							<DecoratedData
-								data={details}
-								showLabels={ShowLabelsOptions.Always}
-								allowFindLinks={true}
-								block
-								limit={{ contribution: 5, hasVariant: 10 }}
-							/>
-						</div>
-					{/each}
-				</div>
-			</section>
+			{#if decoratedData.details.length && decoratedData.details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)}
+				<section
+					class="-mx-3 my-6 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
+				>
+					<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
+						{page.data.t('resource.details')}
+					</h2>
+					<div class="decorated-data-section decorated-spacious decorated-details">
+						{#each decoratedData.details as details (details)}
+							<div class="mb-2">
+								<DecoratedData
+									data={details}
+									showLabels={ShowLabelsOptions.Always}
+									allowFindLinks={true}
+									block
+									limit={{ contribution: 5, hasVariant: 10 }}
+								/>
+							</div>
+						{/each}
+					</div>
+				</section>
+			{/if}
 			<div class="text-sm">
 				<p>
 					{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
