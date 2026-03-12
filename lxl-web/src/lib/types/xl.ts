@@ -57,6 +57,7 @@ export enum Concepts {
 export enum Platform {
 	integral = 'integral',
 	searchfilter = 'searchfilter',
+	mainfilterforrange = 'mainfilterforrange',
 	composite = 'https://id.kb.se/ns/librissearch/composite',
 	meta = 'meta'
 }
