@@ -89,6 +89,10 @@
 	white-space: nowrap;
 }
 
+.lxl-qualifier-key:not(.redundant-label) ~ .lxl-qualifier-value {
+	padding-left: 0;
+}
+
 .atomic .lxl-qualifier-operator {
 	padding-right: calc(var(--spacing) * 1.5);
 }
