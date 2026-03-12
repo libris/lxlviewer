@@ -407,6 +407,7 @@
 		{ariaLabelledBy}
 		{ariaLabel}
 		{ariaDescribedBy}
+		collapsedAriaKeyshortcuts={`Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`}
 		autofocus={isHomeRoute ? true : undefined}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
@@ -484,7 +485,7 @@
 					<svelte:element
 						this={clearUrl ? 'a' : 'button'}
 						role={clearUrl ? undefined : 'button'}
-						href={clearUrl ? resolve(clearUrl) : undefined}
+						href={clearUrl ? clearUrl : undefined}
 						onclick={(e: MouseEvent) => {
 							userClearedSearch = true;
 							onclickClear(e);

@@ -146,12 +146,11 @@
 .lxl-ghost-group {
 	display: inline-block;
 	width: 6px;
-	height: 10px;
+	height: 20px;
 	background-color: transparent;
 }
 
 /* hide key and operator for linked values in supersearch */
-.codemirror-container .atomic .lxl-qualifier-key:has(~ .lxl-qualifier-value),
-.codemirror-container .atomic .lxl-qualifier-operator:has(~ .lxl-qualifier-value) {
+.codemirror-container .atomic .redundant-label:has(~ .lxl-qualifier-value) {
 	display: none;
 }

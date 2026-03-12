@@ -8,7 +8,16 @@
 		onclick?: () => void;
 	}
 
-	const { key, keyLabel, operator, value, valueLabel, removeLink, onclick }: Props = $props();
+	const {
+		key,
+		keyLabel,
+		operator,
+		value,
+		valueLabel,
+		removeLink,
+		isRedundantKeyLabel,
+		onclick
+	}: Props = $props();
 
 	const pillText = $derived(`${keyLabel || ''}${operator} ${valueLabel || ''}`);
 
@@ -21,7 +30,7 @@
 {#if keyLabel}
 	<span
 		data-qualifier-key={key}
-		class="lxl-qualifier-key cursor-text"
+		class={['lxl-qualifier-key cursor-text', isRedundantKeyLabel && 'redundant-label']}
 		role="button"
 		tabindex="-1"
 		{onclick}
@@ -32,7 +41,7 @@
 {/if}
 {#if operator}
 	<span
-		class={['lxl-qualifier-operator cursor-text', operator === ':' && 'hidden']}
+		class={['lxl-qualifier-operator cursor-text', (isRedundantKeyLabel || operator === ':') && 'hidden']}
 		data-qualifier-operator={operator}
 		role="button"
 		tabindex="-1"

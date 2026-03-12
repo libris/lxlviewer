@@ -14,7 +14,8 @@ import {
 	JsonLd,
 	LensType,
 	type Link,
-	Owl
+	Owl,
+	Platform
 } from '$lib/types/xl';
 
 import {
@@ -198,17 +199,22 @@ export function displayMappings(
 							m._key;
 				}
 
+				const redundantLabel = asArray(m.property?.category).some(
+					(c) => getUriSlug(c[JsonLd.ID]) === Platform.impliedByObject
+				);
+
 				return {
 					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
-					display: displayUtil.lensAndFormat(value, LensType.Chip, locale),
-					displayStr: toString(displayUtil.lensAndFormat(value, LensType.Chip, locale)) || '',
+					display: displayUtil.lensAndFormat(value, LensType.WebToken, locale),
+					displayStr: toString(displayUtil.lensAndFormat(value, LensType.WebToken, locale)) || '',
 					label,
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
 					...('variable' in m && { variable: m.variable }),
 					_key: m._key,
-					_value: m._value
+					_value: m._value,
+					...(redundantLabel && { isRedundantKeyLabel: true })
 				} as DisplayMapping;
 			} else if (operator && operator in m) {
 				const mappingArr = Array.isArray(m[operator]) ? m[operator] : [m[operator]];
@@ -223,12 +229,12 @@ export function displayMappings(
 				return {
 					display: displayUtil.lensAndFormat(
 						{ ...defaultType, ...m.object },
-						LensType.Chip,
+						LensType.WebToken,
 						locale
 					),
 					displayStr:
 						toString(
-							displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.Chip, locale)
+							displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.WebToken, locale)
 						) || translate(`filterAlias.${m.object?.alias}`), // Allow frontend-defined displayStr for custom filter aliases
 					label: '',
 					operator,
@@ -359,8 +365,8 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 
 function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
 	const orgs = getRefinedOrgs(myLibraries);
-	const holdingsByType = getHoldersByType(getHoldingsByType(item));
-	return getMyLibsFromHoldings(myLibraries, holdingsByType, orgs);
+	const holdersByType = getHoldersByType(getHoldingsByType(item));
+	return getMyLibsFromHoldings(myLibraries, holdersByType, orgs);
 }
 
 function isFreeTextQuery(property: unknown): boolean {
