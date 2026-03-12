@@ -9,6 +9,7 @@ export interface QualifierValidationResponse {
 	keyLabel?: string;
 	valueLabel?: string;
 	removeLink?: string;
+	type?: string;
 	invalid: boolean;
 }
 
@@ -39,6 +40,8 @@ export type QualifierRendererProps = {
 	operator: string;
 	value?: string;
 	valueLabel?: string;
+	type?: string;
+	id?: string;
 	removeLink?: string;
 	isRedundantKeyLabel?: boolean;
 };

@@ -1,23 +1,42 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import type { QualifierRendererProps } from 'supersearch';
+	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
+	import { getPersonImage } from '$lib/utils/getPersonImage';
 	import IconClose from '~icons/bi/x-lg';
+	import TypeIcon from '../TypeIcon.svelte';
 
 	interface Props extends QualifierRendererProps {
 		onclick?: () => void;
 	}
 
-	const {
+  const {
 		key,
 		keyLabel,
 		operator,
 		value,
 		valueLabel,
 		removeLink,
+    type, 
+    id, 
 		isRedundantKeyLabel,
 		onclick
 	}: Props = $props();
+
+	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(id))));
+	let image = $state(null);
+
+	const getImage = async () => {
+		image = await getPersonImage(resourceId as string);
+	};
+
+	onMount(() => {
+		if (type === 'Person' && resourceId) {
+			getImage();
+		}
+	});
 
 	const pillText = $derived(`${keyLabel || ''}${operator} ${valueLabel || ''}`);
 
@@ -38,6 +57,7 @@
 	>
 		{keyLabel}
 	</span>
+	<span class="sr-only">{keyLabel}</span>
 {/if}
 {#if operator}
 	<span
@@ -69,6 +89,19 @@
 			{valueLabel}
 		{/if}
 		-->
+
+		{#if image || type}
+			<span
+				class="icon-wrapper mr-0.5 mb-1 inline-flex size-5 items-center justify-center align-middle"
+				aria-hidden="true"
+			>
+				{#if image}
+					<img src={image} alt="" class="aspect-square rounded-full object-contain object-top" />
+				{:else if type}
+					<TypeIcon {type} class="text-sm" />
+				{/if}
+			</span>
+		{/if}
 		{valueLabel}
 	</span>
 {/if}
@@ -94,4 +127,8 @@
 		}
 	}
 		*/
+
+	.icon-wrapper:empty {
+		display: none;
+	}
 </style>
