@@ -200,7 +200,7 @@ export function displayMappings(
 				}
 
 				const redundantLabel = asArray(m.property?.category).some(
-					(c) => getUriSlug(c[JsonLd.ID]) === Platform.mainfilterforrange
+					(c) => getUriSlug(c[JsonLd.ID]) === Platform.impliedByObject
 				);
 
 				return {
