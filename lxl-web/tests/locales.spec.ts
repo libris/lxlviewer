@@ -5,7 +5,7 @@ const ROUTES_TO_CHECK = [
 	'/',
 	'/find?_q=a&_limit=20',
 	'/h08ndxddfg5v2pjf',
-	'/help',
+	'/help/search',
 	'/about',
 	'/my-pages'
 ];
