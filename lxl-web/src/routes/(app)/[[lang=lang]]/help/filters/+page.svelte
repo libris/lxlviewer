@@ -3,6 +3,8 @@
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
 	import { getSearchContext } from '$lib/contexts/search';
+	import SvContent from './sv.md';
+	import EnContent from './en.md';
 
 	let { data } = $props();
 
@@ -22,10 +24,15 @@
 />
 
 <article class="mx-auto mt-8 mb-12 w-7xl p-4 sm:px-6">
-	<table class="w-full">
+	{#if data.locale === 'en'}
+		<EnContent />
+	{:else}
+		<SvContent />
+	{/if}
+	<table class="mt-2 w-full">
 		<thead class="border-b border-gray-300">
 			<tr class="[&>th]:p-3 [&>th]:text-left [&>th]:align-top">
-				<th>{page.data.t('help.filter')}</th>
+				<th>{page.data.t('help.keyword')}</th>
 				<th>{page.data.t('help.description')}</th>
 			</tr>
 		</thead>
