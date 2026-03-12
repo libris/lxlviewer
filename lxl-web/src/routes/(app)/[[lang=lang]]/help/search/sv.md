@@ -23,21 +23,21 @@ Om du vill söka mer exakt kan du sätta citationstecken (`""`) runt sökfrasen.
 En sökning utan citationstecken gör att fler dokument matchar sökningen, då variationer på sökfrasen också inkluderas
 (s.k. mjuk matchning).
 
-- Exempel: [`"Désert"`](https://beta.libris.kb.se/find?_q="Désert") (franska för öken) inom citationstecken utesluter träffar på engelskans `Desert`.
-- Exempel: [`"Gift"`](https://beta.libris.kb.se/find?_q="Gift") ger träffar där Tove Ditlevsens roman _Gift_ ingår men inte August Strindbergs _Giftas_.
-- Exempel: [`"His dark materials"`](https://beta.libris.kb.se/find?_q="His+dark+materials") ger enbart träffar som innehåller exakt den angivna ordföljden (i det här fallet titeln på en TV-serie).
+- Exempel: [`"Désert"`](/find?_q="Désert") (franska för öken) inom citationstecken utesluter träffar på engelskans `Desert`.
+- Exempel: [`"Gift"`](/find?_q="Gift") ger träffar där Tove Ditlevsens roman _Gift_ ingår men inte August Strindbergs _Giftas_.
+- Exempel: [`"His dark materials"`](/find?_q="His+dark+materials") ger enbart träffar som innehåller exakt den angivna ordföljden (i det här fallet titeln på en TV-serie).
 
 ## Trunkering
 
 Använd asterisk (`*`) för att inkludera flera olika ändelser för ett sökord.
 
-- Exempel: [`kulturarv*`](https://beta.libris.kb.se/find?_q=kulturarv*) ger träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
+- Exempel: [`kulturarv*`](/find?_q=kulturarv*) ger träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
 
 ## Maskering
 
 För att söka på ord som kan ha varierad stavning kan du maskera med hjälp av frågetecken (`?`).
 
-- Exempel: [`organi?ation`](https://beta.libris.kb.se/find?_q=organi?ation) ger träffar på både organisation och organization (brittisk och amerikansk stavning).
+- Exempel: [`organi?ation`](/find?_q=organi?ation) ger träffar på både organisation och organization (brittisk och amerikansk stavning).
 
 Maskering av sista bokstaven i ett ord görs med `\?`.
 
@@ -52,7 +52,7 @@ Det går lika bra att använda de svenska varianterna `OCH`,`ELLER` och `INTE`.
 
 Med `NOT` kan du utesluta sökord, filter eller fraser från träffmängden.
 
-- Exempel: [Sök på Astrid Lindgren men uteslut träffar om Pippi Långstrump.](https://beta.libris.kb.se/find?_q=contributor:"libris:fcrtpljz1qp2bdv%23it"+NOT+"Pippi+långstrump")
+- Exempel: [Sök på Astrid Lindgren men uteslut träffar om Pippi Långstrump.](/find?_q=contributor:"libris:fcrtpljz1qp2bdv%23it"+NOT+"Pippi+långstrump")
 
 ![NOT](/docs/img/NOT.png)
 
@@ -60,7 +60,7 @@ Med `NOT` kan du utesluta sökord, filter eller fraser från träffmängden.
 
 Lägg till `OR` mellan söktermer eller filter för att få fler sökträffar. Träffarna innehåller då en eller fler av de angivna söktermerna.
 
-- Exempel: [Sök efter poesi på meänkieli eller finska.](<https://beta.libris.kb.se/find?_q=(Språk:"lang:9mk"+OR+Språk:"lang:fin")+Kategori:"saogf:Poesi">)
+- Exempel: [Sök efter poesi på meänkieli eller finska.](</find?_q=(Språk:"lang:9mk"+OR+Språk:"lang:fin")+Kategori:"saogf:Poesi"%3E>)
 
 ![OR](/docs/img/OR.png)
 
@@ -74,7 +74,7 @@ Lägg till `OR` mellan söktermer eller filter för att få fler sökträffar. T
 
 Använd parenteser `()` för att konstruera mer komplicerade sökfrågor som innehåller kombinationer av operatorer, sökfilter och sökfraser.
 
-- Exempel: [Sök efter romaner eller noveller som handlar om kärlek eller vänskap.](<https://beta.libris.kb.se/find?_q=(Kategori:"saogf:Noveller"+OR+Kategori:"saogf:Romaner")+(subject:"sao:K%25C3%25A4rlek"+OR+subject:"sao:V%25C3%25A4nskap")>)
+- Exempel: [Sök efter romaner eller noveller som handlar om kärlek eller vänskap.](</find?_q=(Kategori:"saogf:Noveller"+OR+Kategori:"saogf:Romaner")+(subject:"sao:K%25C3%25A4rlek"+OR+subject:"sao:V%25C3%25A4nskap")>)
 
 ## Relevans och rankning av sökträffar
 
