@@ -521,6 +521,12 @@
 					"@type": "fresnel:Lens",
 					"showProperties": ["name", "qualifier"],
 					"classLensDomain": "Library"
+				},
+				"bibdb:Organization": {
+					"@id": "bibdb:Organization-web-tokens",
+					"@type": "fresnel:Lens",
+					"showProperties": ["name"],
+					"classLensDomain": "bibdb:Organization"
 				}
 			}
 		},
