@@ -79,7 +79,7 @@
 					{#if up && variable}
 						<a
 							href={m.up?.['@id']}
-							class="btn btn-ghost h-7 rounded-sm text-sm"
+							class="search-mapping-clear btn btn-ghost h-7 rounded-sm text-sm"
 							aria-label={page.data.t('search.clearAllFilters')}
 						>
 							<BiTrash aria-hidden="true" />
