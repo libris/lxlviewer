@@ -30,10 +30,10 @@
 			{@const { children, operator, up, variable, displayStr, label, isRedundantKeyLabel } = m}
 			{#if displayStr || label}
 				<li class={['lxl-qualifier inline-block', variable && `variable-${variable}`]}>
-					{#if m._key}
+					{#if m._key || m._value}
 						<span class="atomic truncate">
 							<QualifierPill
-								key={m._key}
+								key={m._key || ''}
 								keyLabel={label}
 								operator={getRelationSymbol(m.operator)}
 								value={m._value}
