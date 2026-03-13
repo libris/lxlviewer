@@ -15,7 +15,7 @@
 	});
 </script>
 
-<div id="yasgui"></div>
+<div id="yasgui" class="mt-3"></div>
 
 <style>
 	:global(.yasgui .controlbar) {
