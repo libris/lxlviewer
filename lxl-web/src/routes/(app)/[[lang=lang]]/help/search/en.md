@@ -60,7 +60,7 @@ With `NOT` you can exclude search terms, filters, or phrases from the result set
 
 Add `OR` between search terms or filters to get more results. The results will then contain one or more of the specified search terms.
 
-- Example: [Search for poetry in Meänkieli or Finnish.](</find?_q=(Språk:"lang:9mk"+OR+Språk:"lang:fin")+Kategori:"saogf:Poesi"%3E>)
+- Example: [Search for poetry in Meänkieli or Finnish.](</find?_q=(Språk:"lang:9mk"+OR+Språk:"lang:fin")+Kategori:"saogf:Poesi">)
 
 ![OR](/docs/img/OR.png)
 

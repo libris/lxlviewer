@@ -60,7 +60,7 @@ Med `NOT` kan du utesluta sökord, filter eller fraser från träffmängden.
 
 Lägg till `OR` mellan söktermer eller filter för att få fler sökträffar. Träffarna innehåller då en eller fler av de angivna söktermerna.
 
-- Exempel: [Sök efter poesi på meänkieli eller finska.](</find?_q=(Språk:"lang:9mk"+OR+Språk:"lang:fin")+Kategori:"saogf:Poesi"%3E>)
+- Exempel: [Sök efter poesi på meänkieli eller finska.](</find?_q=(Språk:"lang:9mk"+OR+Språk:"lang:fin")+Kategori:"saogf:Poesi">)
 
 ![OR](/docs/img/OR.png)
 
