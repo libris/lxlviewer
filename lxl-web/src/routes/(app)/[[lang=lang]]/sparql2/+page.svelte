@@ -42,4 +42,8 @@ ORDER BY DESC(?count)
 	:global(.yasgui .controlbar) {
 		display: none !important;
 	}
+
+	:global(.yasr_btn.yasr_external_ref_btn) {
+		display: none !important;
+	}
 </style>
