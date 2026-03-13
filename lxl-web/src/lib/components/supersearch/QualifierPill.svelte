@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { resolve } from '$app/paths';
 	import type { QualifierRendererProps } from 'supersearch';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 	import { getPersonImage } from '$lib/utils/getPersonImage';
@@ -57,7 +56,6 @@
 	>
 		{keyLabel}
 	</span>
-	<span class="sr-only">{keyLabel}</span>
 {/if}
 {#if operator}
 	<span
@@ -110,7 +108,7 @@
 {/if}
 {#if valueLabel && removeLink}
 	<a
-		href={resolve(page.data.localizeHref(removeLink))}
+		href={page.data.localizeHref(removeLink)}
 		class="lxl-qualifier-remove"
 		aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
 	>
