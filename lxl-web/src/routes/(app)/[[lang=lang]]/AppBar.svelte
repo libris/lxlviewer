@@ -695,6 +695,10 @@
 		max-width: none;
 	}
 
+	.subset-container :global(.search-mapping-clear) {
+		display: none;
+	}
+
 	.subset-container::after {
 		content: '';
 		position: absolute;

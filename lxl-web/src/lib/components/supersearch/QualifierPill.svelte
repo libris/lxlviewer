@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { resolve } from '$app/paths';
 	import type { QualifierRendererProps } from 'supersearch';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 	import { getPersonImage } from '$lib/utils/getPersonImage';
@@ -12,15 +11,15 @@
 		onclick?: () => void;
 	}
 
-  const {
+	const {
 		key,
 		keyLabel,
 		operator,
 		value,
 		valueLabel,
 		removeLink,
-    type, 
-    id, 
+		type,
+		id,
 		isRedundantKeyLabel,
 		onclick
 	}: Props = $props();
@@ -57,11 +56,13 @@
 	>
 		{keyLabel}
 	</span>
-	<span class="sr-only">{keyLabel}</span>
 {/if}
 {#if operator}
 	<span
-		class={['lxl-qualifier-operator cursor-text', (isRedundantKeyLabel || operator === ':') && 'hidden']}
+		class={[
+			'lxl-qualifier-operator cursor-text',
+			(isRedundantKeyLabel || operator === ':') && 'hidden'
+		]}
 		data-qualifier-operator={operator}
 		role="button"
 		tabindex="-1"
@@ -92,7 +93,7 @@
 
 		{#if image || type}
 			<span
-				class="icon-wrapper mr-0.5 mb-1 inline-flex size-5 items-center justify-center align-middle"
+				class="icon-wrapper my-1.25 inline-flex size-5 items-center justify-center align-bottom"
 				aria-hidden="true"
 			>
 				{#if image}
@@ -102,12 +103,12 @@
 				{/if}
 			</span>
 		{/if}
-		{valueLabel}
+		<span>{valueLabel}</span>
 	</span>
 {/if}
 {#if valueLabel && removeLink}
 	<a
-		href={resolve(page.data.localizeHref(removeLink))}
+		href={page.data.localizeHref(removeLink)}
 		class="lxl-qualifier-remove"
 		aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
 	>

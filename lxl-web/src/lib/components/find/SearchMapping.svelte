@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
+	import { JsonLd } from '$lib/types/xl';
+	import type { DisplayMapping } from '$lib/types/search';
 	import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
 	import { getRelationSymbol } from '$lib/utils/getRelationSymbol';
 	import SearchMapping from './SearchMapping.svelte';
-	import type { DisplayMapping } from '$lib/types/search';
-	import { page } from '$app/state';
-	import BiXLg from '~icons/bi/x-lg';
+	import QualifierPill from '../supersearch/QualifierPill.svelte';
+	import IconClose from '~icons/bi/x-lg';
 	import BiTrash from '~icons/bi/trash';
 
 	interface Props {
@@ -17,70 +20,43 @@
 
 <ul
 	class={[
-		'max-w-full',
+		'max-w-full leading-7.5',
 		depth === 0 ? 'search-mapping flex-col-reverse gap-2' : 'flex-col',
 		'flex items-start text-xs'
 	]}
 >
 	{#each mapping as m, i (`outer-${i}-${depth}`)}
 		{#if !MAPPING_IGNORE_VARIABLE.some((v) => v === m.variable)}
-			{@const {
-				children,
-				operator,
-				up,
-				variable,
-				displayStr,
-				label,
-				display,
-				isRedundantKeyLabel,
-				invalid
-			} = m}
+			{@const { children, operator, up, variable, displayStr, label, isRedundantKeyLabel } = m}
 			{#if displayStr || label}
-				{@const isLinked = !!display?.['@id']}
-				<li
-					class={[
-						'lxl-qualifier pill bg-neutral flex h-8 max-w-full items-center rounded-sm',
-						variable && `variable-${variable}`
-					]}
-				>
-					<span class="atomic truncate">
-						{#if label && !isRedundantKeyLabel}
-							<span class="lxl-qualifier-key h-full content-center whitespace-nowrap">
-								{#if invalid}
-									{invalid}
-								{:else}
-									{label}
-								{/if}
-							</span>
-						{/if}
-						{#if operator && operator !== 'none' && !isRedundantKeyLabel}
-							<span
-								class="lxl-qualifier-operator h-full content-center pr-1.5 {operator ===
-									'existence' && 'pl-1.5'}">{getRelationSymbol(m.operator)}</span
-							>
-						{/if}
-						{#if displayStr}
-							<span
-								class={[
-									'h-full content-center overflow-hidden',
-									operator === 'none' ? 'lxl-qualifier-alias' : 'lxl-qualifier-value',
-									isLinked && 'atomic'
-								]}
-							>
-								<span class="block truncate">{displayStr}</span>
-							</span>
-						{/if}
-						{#if up}
-							{@const pillText = `${label || ''}${getRelationSymbol(m.operator)} ${displayStr || ''}`}
+				<li class={['lxl-qualifier inline-block', variable && `variable-${variable}`]}>
+					{#if m._key || m._value}
+						<span class="atomic truncate">
+							<QualifierPill
+								key={m._key || ''}
+								keyLabel={label}
+								operator={getRelationSymbol(m.operator)}
+								value={m._value}
+								valueLabel={displayStr || m._value}
+								removeLink={up?.['@id']}
+								type={m.display?.[JsonLd.TYPE]}
+								id={m.display[JsonLd.ID]}
+								{isRedundantKeyLabel}
+							/>
+						</span>
+					{:else}
+						<!-- free text search -->
+						<span class="flex h-full items-center gap-1 pl-1.5">
+							<span>{displayStr}</span>
 							<a
-								class="lxl-qualifier-remove atomic h-8 transition-colors"
-								href={m.up?.['@id']}
-								aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
+								href={resolve(page.data.localizeHref(up?.['@id']))}
+								class="lxl-qualifier-remove"
+								aria-label={`${page.data.t('search.removeFilter')} ${displayStr}`}
 							>
-								<BiXLg aria-hidden="true" fill="currentColor" />
+								<IconClose aria-hidden="true" />
 							</a>
-						{/if}
-					</span>
+						</span>
+					{/if}
 				</li>
 			{:else if children && variable !== 'defaultSiteFilters'}
 				<li
@@ -88,20 +64,22 @@
 						'group flex max-w-full flex-wrap items-center gap-1.5',
 						`group-${operator}`,
 						`${operator === 'not' && 'lxl-not-term'}`,
-						variable ? `variable-${variable}` : `${children.length > 1 ? 'group-inner' : ''}`
+						variable
+							? `variable-${variable}`
+							: `${children.length > 1 ? 'group-inner text-sm' : ''}`
 					]}
 				>
 					{#each children as child, i (`${i}-${depth}`)}
 						{@const _child = Array.isArray(child) ? child : [child]}
 						{#if operator}
-							<span class="operator-{operator} text-2xs uppercase">{operator}</span>
+							<span class="operator-{operator} text-sm uppercase">{operator}</span>
 						{/if}
 						<SearchMapping depth={depth + 1} mapping={_child} />
 					{/each}
 					{#if up && variable}
 						<a
 							href={m.up?.['@id']}
-							class="btn btn-primary"
+							class="search-mapping-clear btn btn-ghost h-7 rounded-sm text-sm"
 							aria-label={page.data.t('search.clearAllFilters')}
 						>
 							<BiTrash aria-hidden="true" />
@@ -126,8 +104,8 @@
 	}
 
 	/* we can give _r pills a special styling if we want */
-	.variable-_r .pill,
-	.variable-_r.pill {
+	.variable-_r .lxl-qualifier,
+	.variable-_r.lxl-qualifier {
 	}
 
 	.group-inner::after {
