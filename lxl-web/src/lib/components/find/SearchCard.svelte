@@ -340,7 +340,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			</span>
 		</footer>
 		{#if allowActions}
-			<div class="card-actions flex gap-1 self-end pt-3">
+			<div class="card-actions ml-auto flex gap-1 self-end pt-3">
 				{#if firstMediaLink}
 					{#snippet mediaLinksPopover()}
 						<DecoratedData
