@@ -180,7 +180,7 @@
 		bind:value={searchPhrase}
 		placeholder={page.data.t('holdings.findLibrary')}
 		aria-label={page.data.t('holdings.findLibrary')}
-		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-sm"
+		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-base sm:text-sm"
 		type="search"
 		name={page.data.t('holdings.findLibrary')}
 	/>

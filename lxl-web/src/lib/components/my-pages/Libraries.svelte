@@ -92,13 +92,13 @@
 				id="my-libraries-search"
 				bind:value={searchPhrase}
 				placeholder={page.data.t('myPages.findLibrary')}
-				class="bg-input h-9 w-full max-w-xl rounded-sm border border-neutral-300 pr-2 pl-8 text-sm"
+				class="bg-input h-9 w-full max-w-xl rounded-sm border border-neutral-300 pr-2 pl-8 text-base sm:text-sm"
 				oninput={handleInputChange}
 				type="search"
 			/>
 			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm" />
 		</div>
-		<span class="my-3 block text-sm" role="status">
+		<span class="mt-4 mb-2 block text-sm" role="status">
 			{#if search.isLoading}
 				{page.data.t('search.loading')}
 			{:else if search.error && !search.data}

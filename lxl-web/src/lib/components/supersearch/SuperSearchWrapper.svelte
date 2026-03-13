@@ -455,7 +455,7 @@
 						aria-label={page.data.t('general.close')}
 						class={[
 							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 sm:hidden',
-							expanded && 'h-14 w-13'
+							expanded && 'mr-1 h-14 w-13'
 						]}
 						onclick={onclickClose}
 					>
@@ -525,7 +525,7 @@
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="flex flex-wrap items-center gap-2 py-2 pl-4">
+						<div role="row" class="flex flex-wrap items-center gap-2 px-4 py-2">
 							{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
 								<button
 									type="button"
@@ -547,7 +547,7 @@
 									type="button"
 									id={getCellId(1, filteredQualifierSuggestions.length + 1)}
 									class={[
-										'text-2xs link-subtle ml-1',
+										'link-subtle ml-1 text-sm sm:text-xs',
 										isFocusedCell(1, filteredQualifierSuggestions.length + 1) &&
 											'focused-cell outline-2'
 									]}
@@ -562,7 +562,7 @@
 										href={resolve(page.data.localizeHref('/help/filters'))}
 										id={getCellId(1, filteredQualifierSuggestions.length + 2)}
 										class={[
-											'text-2xs link-subtle ml-1',
+											'link-subtle ml-1 text-sm sm:text-xs',
 											isFocusedCell(1, filteredQualifierSuggestions.length + 2) &&
 												'focused-cell outline-2'
 										]}
@@ -614,7 +614,7 @@
 	.supersearch-input {
 		height: 100%;
 		min-height: var(--search-input-height);
-		font-size: var(--text-sm);
+		font-size: var(--text-base);
 		border-radius: var(--radius-md);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 
@@ -631,6 +631,10 @@
 			&:focus-within {
 				outline: 4px solid var(--color-primary-200);
 			}
+		}
+
+		@variant sm {
+			font-size: var(--text-sm);
 		}
 
 		@variant @5xl {
@@ -911,7 +915,7 @@
 	}
 
 	:global(.codemirror-container .cm-placeholder) {
-		font-size: var(--text-xs);
+		font-size: var(--text-base);
 		color: var(--color-placeholder);
 		margin-top: 1px;
 

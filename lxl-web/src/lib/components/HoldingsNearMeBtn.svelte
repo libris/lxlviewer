@@ -98,7 +98,7 @@
 		type="button"
 		role="switch"
 		aria-checked={!!userLocation}
-		class="btn btn-ghost gap-2"
+		class="btn btn-ghost gap-2 text-sm sm:text-xs"
 		onclick={toggleNearMe}
 	>
 		<span>
