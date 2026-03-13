@@ -19,6 +19,7 @@
 }
 
 .lxl-qualifier-key {
+	position: relative;
 	padding-left: calc(var(--spacing) * 1.5);
 	padding-right: calc(var(--spacing) * 1.5);
 }
@@ -89,15 +90,11 @@
 	white-space: nowrap;
 }
 
-.lxl-qualifier-key:not(.redundant-label) ~ .lxl-qualifier-value {
-	padding-left: 0;
-}
-
 .atomic .lxl-qualifier-operator {
 	padding-right: calc(var(--spacing) * 1.5);
 }
 
-.atomic .lxl-qualifier-operator::after {
+.atomic .lxl-qualifier-key::after {
 	content: '';
 	position: absolute;
 	top: 0px;
@@ -117,11 +114,6 @@
 	text-underline-offset: 2px;
 }
 
-.lxl-not-term {
-	color: var(--color-severe-600);
-	color: var(--color-body);
-}
-
 .lxl-not-term .atomic {
 	background-color: var(--color-severe-50);
 }
@@ -134,7 +126,7 @@
 	background-color: var(--color-severe-100);
 }
 
-.lxl-not-term .atomic .lxl-qualifier-operator::after {
+.lxl-not-term .atomic .lxl-qualifier-key::after {
 	background-color: var(--color-severe-200);
 }
 
@@ -154,7 +146,7 @@
 	background-color: transparent;
 }
 
-/* hide key and operator for linked values in supersearch */
-.codemirror-container .atomic .redundant-label:has(~ .lxl-qualifier-value) {
+/* hide key and operator for linked values */
+.atomic .redundant-label:has(~ .lxl-qualifier-value) {
 	display: none;
 }

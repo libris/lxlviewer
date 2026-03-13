@@ -12,15 +12,15 @@
 		onclick?: () => void;
 	}
 
-  const {
+	const {
 		key,
 		keyLabel,
 		operator,
 		value,
 		valueLabel,
 		removeLink,
-    type, 
-    id, 
+		type,
+		id,
 		isRedundantKeyLabel,
 		onclick
 	}: Props = $props();
@@ -61,7 +61,10 @@
 {/if}
 {#if operator}
 	<span
-		class={['lxl-qualifier-operator cursor-text', (isRedundantKeyLabel || operator === ':') && 'hidden']}
+		class={[
+			'lxl-qualifier-operator cursor-text',
+			(isRedundantKeyLabel || operator === ':') && 'hidden'
+		]}
 		data-qualifier-operator={operator}
 		role="button"
 		tabindex="-1"
@@ -92,7 +95,7 @@
 
 		{#if image || type}
 			<span
-				class="icon-wrapper mr-0.5 mb-1 inline-flex size-5 items-center justify-center align-middle"
+				class="icon-wrapper my-1.25 inline-flex size-5 items-center justify-center align-bottom"
 				aria-hidden="true"
 			>
 				{#if image}
@@ -102,7 +105,7 @@
 				{/if}
 			</span>
 		{/if}
-		{valueLabel}
+		<span>{valueLabel}</span>
 	</span>
 {/if}
 {#if valueLabel && removeLink}
