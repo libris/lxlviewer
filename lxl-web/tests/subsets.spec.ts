@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test('A subset filter can display on any page', async ({ page }) => {
-	await page.goto('/help?_r=itemHeldBy%3A"sigel%3AArkm"');
+	await page.goto('/help/search?_r=itemHeldBy%3A"sigel%3AArkm"');
 	await expect(page.locator('.subset-container').getByText('ArkDes')).toBeVisible();
 });
 

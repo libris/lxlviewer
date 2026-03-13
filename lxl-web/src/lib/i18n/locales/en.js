@@ -58,7 +58,8 @@ export default {
 		description: 'Description',
 		filter: 'Filter',
 		reference: 'List',
-		searchIn: 'Search in'
+		searchIn: 'Search in',
+		keyword: 'Filter / keyword'
 	},
 	myPages: {
 		pageTitle: 'My pages',
