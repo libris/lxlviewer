@@ -204,9 +204,22 @@
 
 	const showAddQualifiers = $derived(filteredQualifierSuggestions.length > 0);
 
+	const NO_WILDCARD_AFTER_CHAR = [')', '"', '*', '?'];
+	const NO_WILDCARD_AFTER_WORD = ['AND', 'OR', 'NOT'];
+
+	const lastWordBeforeCursor = $derived.by(() => {
+		const before = q.slice(0, cursor);
+		const match = before.match(/(\S+)$/);
+		return match ? match[1] : '';
+	});
+
 	const isValidWildcardPosition = $derived.by(() => {
 		// a valid wildcard position is at end of word (inside group, not inside quote)
-		if (hasCharBefore && ![')', '"', '*'].includes(q.charAt(cursor - 1))) {
+		if (
+			hasCharBefore &&
+			!NO_WILDCARD_AFTER_CHAR.includes(q.charAt(cursor - 1)) &&
+			!NO_WILDCARD_AFTER_WORD.includes(lastWordBeforeCursor)
+		) {
 			if (!hasCharAfter || q.charAt(cursor) === ')') {
 				return true;
 			}
