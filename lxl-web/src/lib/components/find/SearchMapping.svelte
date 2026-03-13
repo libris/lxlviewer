@@ -37,7 +37,7 @@
 								keyLabel={label}
 								operator={getRelationSymbol(m.operator)}
 								value={m._value}
-								valueLabel={displayStr}
+								valueLabel={displayStr || m._value}
 								removeLink={up?.['@id']}
 								type={m.display?.[JsonLd.TYPE]}
 								id={m.display[JsonLd.ID]}
