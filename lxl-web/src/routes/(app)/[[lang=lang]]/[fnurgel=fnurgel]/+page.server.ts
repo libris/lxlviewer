@@ -286,8 +286,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		...(details.length && details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)
 			? [
 					{
-						id: 'resourceTableOfContents',
-						label: translate('resource.tableOfContents')
+						id: 'details',
+						label: translate('resource.details')
 					}
 				]
 			: [])
