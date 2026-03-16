@@ -747,6 +747,20 @@
 				display: none;
 			}
 		}
+
+		& :global(div[data-property='bibliography'] > a) {
+			display: block;
+		}
+
+		& :global(div[data-property='bibliography'] > a)::before {
+			content: ' • ';
+			color: var(--color-subtle);
+		}
+
+		& :global(div[data-property='bibliography'] > ._contentBefore),
+		:global(div[data-property='bibliography'] > ._contentAfter) {
+			display: none;
+		}
 	}
 
 	.decorated-compact {

@@ -146,7 +146,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		displayUtil.lensAndFormat(mainEntity, LensType.WebDetails, locale),
 		...(_instances.length === 1
 			? [displayUtil.lensAndFormat(_instances[0], LensType.WebDetails, locale)]
-			: [])
+			: []),
+		displayUtil.lensAndFormat(resource, LensType.WebDetails, locale) // record
 	];
 
 	let searchResult: ResourceSearchResult | undefined;

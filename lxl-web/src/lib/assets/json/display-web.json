@@ -355,6 +355,7 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Identifier",
 					"showProperties": [
+						"rdf:type",
 						{ "alternateProperties": ["value", "marc:hiddenValue"] },
 						"typeNote",
 						"hasNote",
@@ -957,6 +958,27 @@
 						"soundContent",
 						"soundCharacteristic"
 					]
+				},
+				"Record": {
+					"@id": "Record-web-details",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Record",
+					"NOTE": "Avoiding SystemNumber e.g. (BOKR)9789198057300 with the identifiedBy below",
+					"showProperties": [
+						"bibliography",
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "identifiedBy", "range": "LibrisIIINumber" }
+							]
+						},
+						{
+							"alternateProperties": [{ "subPropertyOf": "identifiedBy", "range": "Local" }]
+						},
+						{
+							"alternateProperties": [{ "subPropertyOf": "identifiedBy", "range": "SMDBNumber" }]
+						},
+						"controlNumber"
+					]
 				}
 			}
 		}
@@ -1264,6 +1286,7 @@
 			"@id": "sorted-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
+				"bibliography",
 				"classification",
 				"closeMatch",
 				"hasDataset",
