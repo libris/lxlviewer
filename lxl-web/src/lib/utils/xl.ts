@@ -137,7 +137,10 @@ export class DisplayUtil {
 		propertyName: PropertyName
 	) => {
 		// FIXME - hardcoded workaround to get title + language in translationOf - should we use sublenses?
-		if (lensType == LensType.WebCardHeaderExtra && propertyName === 'translationOf') {
+		if (
+			(lensType == LensType.WebCardHeaderExtra || lensType == LensType.WebDetails) &&
+			propertyName === 'translationOf'
+		) {
 			// return LensType.WebChip; // without language
 			return LensType.Card; // with language
 		}
