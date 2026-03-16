@@ -545,6 +545,19 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	}
 
 	.card-header {
+		& :global(span[data-property='hasTitle'] > span) {
+			display: block;
+		}
+
+		& :global(span.Title-type) {
+			font-size: var(--text-2xs);
+			color: var(--color-subtle);
+		}
+
+		& :global(span.Title-type)::before {
+			content: ' ';
+		}
+
 		& :global(.transliteration) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);

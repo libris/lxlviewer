@@ -556,7 +556,17 @@
 					"@id": "Instance-web-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["hasTitle"]
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{
+									"subPropertyOf": "hasTitle",
+									"range": "Title"
+								},
+								"hasTitle"
+							]
+						}
+					]
 				}
 			}
 		},
