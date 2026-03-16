@@ -85,3 +85,17 @@ Till exempel kommer träffar där sökfrasen ingår i titeln eller i de medverka
 
 Se vår [API-dokumentation](https://libris.kb.se/api/docs/) för information om mer specialiserad sökning.
 Här kan du också läsa om hur du gör anrop för att skapa integrationer mot andra system.
+
+## (i) Tips
+
+### Kopiera sökningar
+
+Det går enkelt att kopiera sökningar (inklusive filter) genom att markera innehållet i sökrutan och kopiera det som om det vore vanlig text.
+
+- Exempel: [En sökning på datorspel som finns på Bergslagsbibblan](/find?_q=category:"saogf:Datorspel"+itemHeldByOrg:"sigel:org/BER"), som klickats fram från föreslagna filter, kan omvandlas till dess textrepresentation (`category:"saogf:Datorspel" itemHeldByOrg:"sigel:org/BER"`) genom att markera och kopiera den.
+
+### Tomma filter -- kräv att en egenskap ska finnas
+
+Ett tomt filter kan användas för att kräva att sökträffarna ska innehålla egenskapen som filtret beskriver (oavsett värde).
+
+- Exempel: [Sök på allt material i Libris som har en ISMN-kod.](</find?_q=ISMN%3A()>)
