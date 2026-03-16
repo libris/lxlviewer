@@ -860,8 +860,6 @@
 						{ "inverseOf": "continuedBy" },
 						"continuedBy",
 						{ "inverseOf": "continues" },
-						"continues",
-						{ "inverseOf": "continuedBy" },
 						"continuesInPart",
 						"continuedInPartBy",
 						"relatedTo",
