@@ -22,7 +22,7 @@
 {#each page.data.featuredSearches as featured, index (featured.heading)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
-		class="my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6"
+		class="featured-preview-section my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6"
 	>
 		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
 			<h2
@@ -101,5 +101,10 @@
 				}
 			}
 		}
+	}
+
+	/* hide empty sections */
+	.featured-preview-section:global(:has(.featured-previews.empty)) {
+		display: none;
 	}
 </style>
