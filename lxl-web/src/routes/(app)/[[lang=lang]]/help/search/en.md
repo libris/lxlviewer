@@ -25,7 +25,7 @@ A search query without quotation marks matches more documents, since variations 
 
 - Example: [`"Désert"`](/find?_q="Désert") (French for desert) between quotation marks excludes results for the English word `Desert`.
 - Example: [`"Gift"`](/find?_q="Gift") returns results that include Tove Ditlevsen's novel _Gift_ but not August Strindberg's _Giftas_.
-- Example: [`"His dark materials"`](/find?_q="His+dark+materials") returns only results containing that specific word order (in this case the title of a TV series).
+- Example: [`"His dark materials"`](/find?_q="His+dark+materials") returns only results containing that specific word order (in this case the title of both a novel series and a TV series).
 
 ## Truncation
 

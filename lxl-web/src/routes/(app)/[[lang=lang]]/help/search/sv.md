@@ -25,7 +25,7 @@ En sökning utan citationstecken gör att fler dokument matchar sökningen, då 
 
 - Exempel: [`"Désert"`](/find?_q="Désert") (franska för öken) inom citationstecken utesluter träffar på engelskans `Desert`.
 - Exempel: [`"Gift"`](/find?_q="Gift") ger träffar där Tove Ditlevsens roman _Gift_ ingår men inte August Strindbergs _Giftas_.
-- Exempel: [`"His dark materials"`](/find?_q="His+dark+materials") ger enbart träffar som innehåller exakt den angivna ordföljden (i det här fallet titeln på en TV-serie).
+- Exempel: [`"His dark materials"`](/find?_q="His+dark+materials") ger enbart träffar som innehåller exakt den angivna ordföljden (i det här fallet titeln på en roman- och TV-serie).
 
 ## Trunkering
 
