@@ -170,7 +170,7 @@
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
 	<div
-		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-[0.84375rem] font-medium @7xl:text-sm"
+		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-sm font-medium @min-[110rem]:text-base"
 	>
 		<Icon class="size-5" />
 		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
@@ -204,7 +204,7 @@
 	{/if}
 	<nav
 		class={['grid items-stretch', subset && 'with-subset']}
-		aria-label={`Libris ${page.data.t('appMenu.label')}`}
+		aria-label={page.data.t('appMenu.label')}
 	>
 		<ul class="leading-actions z-43 ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
@@ -236,7 +236,7 @@
 				{#if mounted}
 					<dialog
 						id={IDs.appBarMenu}
-						class="menu-dialog sm:border-neutral fixed z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-md sm:border"
+						class="menu-dialog sm:border-neutral fixed z-50 hidden w-full flex-col shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-md sm:border"
 						closedby="any"
 						tabindex="-1"
 						bind:this={menuDialogElement}
@@ -250,7 +250,7 @@
 							<button
 								type="button"
 								onclick={closeExpandedMenu}
-								class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 flex min-h-9 w-full items-center justify-center gap-2 text-xs"
+								class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 flex min-h-9 w-full items-center justify-center gap-2"
 							>
 								<IconCloseMenu />
 								{page.data.t('header.closeMenu')}
@@ -301,10 +301,10 @@
 			<form action={findActionUrl} class="mx-auto w-full min-w-0">
 				{#if isHomeRoute}
 					<hgroup
-						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
+						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:px-4"
 					>
 						<h1
-							class="my-1.5 font-serif text-[1.625rem] tracking-[-0.0125rem] italic lg:my-2 lg:text-[2.1875rem] @md:tracking-[-0.025rem] @lg:text-3xl @xl:my-2 @xl:text-[2.1875rem] @3xl:my-1.5 @3xl:text-[2.5rem] lg:@3xl:my-2 @5xl:my-4 @5xl:text-5xl"
+							class="font-display my-1 text-2xl tracking-[-0.0125rem] @sm:text-[1.68755rem] @lg:my-1.5 @lg:text-4xl @3xl:text-5xl @5xl:my-3 @5xl:text-6xl"
 						>
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -313,15 +313,17 @@
 								for="supersearch-collapsed-combobox"
 								onclick={handleClickPageTitle}
 							>
-								{page.data.t('home.pageHeadingTitle')}
+								<span class="italic">{page.data.t('home.pageHeadingTitleStart')}</span>
+								{page.data.t('home.pageHeadingTitleEnd')}
 							</label>
 						</h1>
+						<!--
 						<p
-							class="text-subtle max-w-[40ch] font-serif text-base lg:text-lg @xl:text-lg @3xl:max-w-max @3xl:text-lg @5xl:text-xl"
+							class="text-subtle max-w-[40ch] hidden font-serif italic text-base lg:text-lg @xl:text-xl @3xl:max-w-max @5xl:text-xl"
 						>
-							<strong class="font-normal">Libris</strong>
 							{page.data.t('home.pageHeadingDescription')}
 						</p>
+						-->
 					</hgroup>
 				{/if}
 				<AppSearch
@@ -413,10 +415,7 @@
 		-->
 	</figure>
 	<section class="search-shortcuts @container">
-		<nav
-			class="sticky mx-auto grid pt-2 pb-4 @5xl:pt-3 @5xl:pb-5"
-			aria-label={page.data.t('home.searchShortcuts')}
-		>
+		<nav class="sticky mx-auto grid py-4" aria-label={page.data.t('home.searchShortcuts')}>
 			<div class="filters @container mx-auto w-full max-w-7xl px-2 lg:px-4">
 				<div class="mx-auto flex w-full items-center">
 					<div
@@ -425,11 +424,11 @@
 					>
 						<h2
 							id="search-for"
-							class="mr-3 hidden font-serif font-medium whitespace-nowrap italic @xl:block @5xl:text-[1.0625rem]"
+							class="mr-3 hidden font-serif text-lg whitespace-nowrap italic @xl:block @5xl:text-xl"
 						>
 							{page.data.t('search.searchFor')}
 						</h2>
-						<ul class="flex gap-2 pr-3 text-xs @3xl:text-sm @5xl:text-[0.9375rem]">
+						<ul class="flex gap-2 pr-3 text-sm @3xl:text-base">
 							{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
 								<li>
 									<a
@@ -448,11 +447,11 @@
 						<button
 							id="add-filter"
 							type="button"
-							class="text-primary-900 focus-visible:bg-primary-200 hover:bg-primary-200 hover:border-primary-200/50 focus-visible:border-primary-200 mr-4 flex min-w-14 items-center rounded-full px-3 py-2 text-center text-xs font-medium whitespace-nowrap @xl:font-normal @3xl:text-sm @5xl:min-h-10 @5xl:text-[0.9375rem]"
+							class="text-primary-900 focus-visible:bg-primary-200 hover:bg-primary-200 hover:border-primary-200/50 focus-visible:border-primary-200 mr-4 flex min-w-14 items-center rounded-full px-3 py-2 text-center whitespace-nowrap @xl:font-normal @5xl:min-h-10 @5xl:text-[1.0625rem]"
 							aria-labelledby="add-label add-filter"
 							onclick={handleClickAddFilter}
 						>
-							<IconAddFilter class="mr-2 hidden size-4 @xl:inline @5xl:size-4.5" />
+							<IconAddFilter class="mr-2 hidden size-4 @xl:inline @3xl:size-4.5" />
 							<span>
 								<span id="add-label" class="hidden @xl:inline">{page.data.t('general.add')}</span>
 								<span class="capitalize @xl:lowercase">
