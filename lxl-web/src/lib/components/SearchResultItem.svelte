@@ -69,17 +69,17 @@
 	</div>
 {/snippet}
 
-<article class="@container min-w-36">
+<article class="@container min-w-36 overflow-hidden">
 	<header>
 		<a
 			href={page.data.localizeHref(relativizeUrl(data['@id']))}
 			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
 			{@render image()}
-			<p class="text-subtle line-clamp-1 text-xs break-all">
+			<p class="text-subtle line-clamp-1 text-sm break-all">
 				<TypeIcon
 					type={data.typeForIcon}
-					class="text-3xs @4xs:text-2xs inline -translate-y-px leading-none"
+					class="text-2xs @4xs:text-xs inline -translate-y-px leading-none"
 				/>
 				{#if data.typeStr}
 					<span class="font-medium">
@@ -94,13 +94,13 @@
 			<hgroup>
 				<h2
 					class={[
-						'decorated-card-heading mt-0.5 line-clamp-2 text-sm leading-snug font-medium hover:underline @min-[16rem]:text-[0.9375rem]'
+						'decorated-card-heading mt-0.5 line-clamp-2 text-sm leading-snug font-medium hover:underline @min-[12rem]:text-base'
 					]}
 				>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
 				{#if data['web-card-header-extra']?._display && data['web-card-header-extra']?._display.length}
-					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
+					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-sm">
 						{#each data['web-card-header-extra']?._display as displayObj, index (index)}
 							<span>
 								<DecoratedData data={displayObj} showLabels="defaultOn" />
@@ -112,7 +112,7 @@
 		</a>
 	</header>
 	{#if data['card-body']?._display}
-		<div class="decorated-card-body mt-1 mb-1 text-sm">
+		<div class="decorated-card-body mt-1 mb-1 text-sm @min-[12rem]:text-[0.9375rem]">
 			{#each data['card-body']?._display as obj, index (index)}
 				<div class="@4xs:text-sm flex flex-col items-center text-center">
 					<DecoratedData
@@ -126,7 +126,7 @@
 			{/each}
 		</div>
 	{/if}
-	<footer class="@4xs:text-[0.8125rem] text-xs">
+	<footer class="@4xs:text-[0.8125rem] text-sm">
 		{#each data['web-card-footer']?._display as obj, index (index)}
 			{#if 'hasInstance' in obj}
 				{@const instances = getInstanceData(obj.hasInstance)}
@@ -159,7 +159,7 @@
 <style lang="postcss">
 	.decorated-card-heading {
 		& :global(.transliteration) {
-			font-size: var(--text-2xs);
+			font-size: var(--text-xs);
 			color: var(--color-subtle);
 			font-weight: var(--font-weight-normal);
 			display: block;

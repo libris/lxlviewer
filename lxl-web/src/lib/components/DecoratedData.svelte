@@ -337,7 +337,7 @@
 	/* decorated data in popover */
 	:global(.popover) {
 		& .property-label {
-			font-size: var(--text-3xs);
+			font-size: var(--text-xs);
 		}
 
 		& div[data-property]:not(:last-child) {

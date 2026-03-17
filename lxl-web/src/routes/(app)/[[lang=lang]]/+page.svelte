@@ -22,11 +22,11 @@
 {#each page.data.featuredSearches as featured, index (featured.heading)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
-		class="my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6"
+		class="my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-6 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6"
 	>
 		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
 			<h2
-				class="font-serif text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[110rem]:text-3xl"
+				class="font-serif text-xl tracking-[-0.0125rem] @md:text-2xl @7xl:text-[1.6875rem] @min-[110rem]:text-3xl"
 				{id}
 			>
 				<a

@@ -544,7 +544,7 @@
 									type="button"
 									id={getCellId(1, cellIndex)}
 									class={[
-										'qualifier-suggestion  text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize last-of-type:mr-4',
+										'qualifier-suggestion  text-body bg-accent-50 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 text-sm whitespace-nowrap first-letter:capitalize last-of-type:mr-4',
 										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
 									]}
 									onclick={() => addQualifierKey(key)}
@@ -560,7 +560,7 @@
 									type="button"
 									id={getCellId(1, filteredQualifierSuggestions.length + 1)}
 									class={[
-										'link-subtle ml-1 text-sm sm:text-xs',
+										'link-subtle ml-1 text-sm',
 										isFocusedCell(1, filteredQualifierSuggestions.length + 1) &&
 											'focused-cell outline-2'
 									]}
@@ -575,7 +575,7 @@
 										href={resolve(page.data.localizeHref('/help/filters'))}
 										id={getCellId(1, filteredQualifierSuggestions.length + 2)}
 										class={[
-											'link-subtle ml-1 text-sm sm:text-xs',
+											'link-subtle ml-1 text-sm',
 											isFocusedCell(1, filteredQualifierSuggestions.length + 2) &&
 												'focused-cell outline-2'
 										]}
@@ -651,7 +651,7 @@
 		}
 
 		@variant @5xl {
-			font-size: 0.9375rem;
+			font-size: var(--text-lg);
 		}
 	}
 
@@ -928,19 +928,18 @@
 	}
 
 	:global(.codemirror-container .cm-placeholder) {
-		font-size: var(--text-base);
 		color: var(--color-placeholder);
 		margin-top: 1px;
 
 		@variant sm {
-			font-size: var(--text-sm);
+			font-size: var(--text-base);
 		}
 
 		@variant @7xl {
 			margin-top: 0px;
 		}
 		@variant @5xl {
-			font-size: 0.9375rem;
+			font-size: var(--text-lg);
 		}
 	}
 	.expanded :global(.codemirror-container .cm-placeholder) {

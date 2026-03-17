@@ -60,7 +60,7 @@
 			aria-label={ariaLabel}
 			aria-describedby={ariaDescribedBy}
 			bind:this={fallbackInputElement}
-			class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:px-3 sm:text-sm sm:@3xl:pl-4 @5xl:text-[0.9375rem]"
+			class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:px-3 sm:@3xl:pl-4 @5xl:text-lg"
 		/>
 		<button
 			type="submit"

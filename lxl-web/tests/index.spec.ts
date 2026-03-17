@@ -13,7 +13,9 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 });
 
 test('index page has expected h1', async ({ page }) => {
-	await expect(page.getByRole('heading', { name: 'Sök på alla svenska bibliotek' })).toBeVisible();
+	await expect(
+		page.getByRole('heading', { name: 'Sök och hitta på svenska bibliotek' })
+	).toBeVisible();
 });
 
 test('index page shows featured searches', async ({ page }) => {

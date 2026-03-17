@@ -64,7 +64,7 @@
 					</span>
 				{/if}
 			</h2>
-			<div class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
+			<div class="resource-footer text-subtle truncate text-xs sm:text-sm">
 				<strong class="font-medium">
 					{item.typeStr}
 				</strong>

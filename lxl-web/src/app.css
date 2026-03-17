@@ -1,8 +1,113 @@
 @import 'tailwindcss';
 
-/**
-	TODO: Add @font-face for KB fonts here
-*/
+@font-face {
+	font-family: 'KB Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/KBSansBETA-Regular.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Sans';
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/KBSansBETA-Italic.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Sans';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/KBSansBETA-Medium.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Sans';
+	font-style: italic;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/KBSansBETA-MediumItalic.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Sans';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/KBSansBETA-Bold.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Sans';
+	font-style: italic;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/KBSansBETA-BoldItalic.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Serif';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/KBSerif12-Regular.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Serif';
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/KBSerif12-Italic.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Serif';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/KBSerif12-Medium.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Serif';
+	font-style: italic;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/KBSerif12-MediumItalic.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Serif';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/KBSerif12-Bold.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'KB Serif';
+	font-style: italic;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/KBSerif12-BoldItalic.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Serif Display';
+	font-style: normal;
+	font-display: swap;
+	src: url('/fonts/KBSerifDisplay12-Regular.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'KB Serif Display';
+	font-style: italic;
+	font-display: swap;
+	src: url('/fonts/KBSerifDisplay12-Italic.woff2') format('woff2');
+}
 
 :root {
 	/* default primary color */
