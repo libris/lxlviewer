@@ -1,44 +1,8 @@
 @import 'tailwindcss';
 
-@font-face {
-	font-family: 'Inter';
-	font-style: normal;
-	font-weight: 400;
-	font-display: swap;
-	src: url('/fonts/Inter-Regular.woff2') format('woff2');
-}
-
-@font-face {
-	font-family: 'Inter';
-	font-style: italic;
-	font-weight: 400;
-	font-display: swap;
-	src: url('/fonts/Inter-Italic.woff2') format('woff2');
-}
-
-@font-face {
-	font-family: 'Inter';
-	font-style: normal;
-	font-weight: 500;
-	font-display: swap;
-	src: url('/fonts/Inter-Medium.woff2') format('woff2');
-}
-
-@font-face {
-	font-family: 'Inter';
-	font-style: italic;
-	font-weight: 500;
-	font-display: swap;
-	src: url('/fonts/Inter-MediumItalic.woff2') format('woff2');
-}
-
-@font-face {
-	font-family: 'InterDisplay';
-	font-style: normal;
-	font-weight: 500;
-	font-display: swap;
-	src: url('/fonts/InterDisplay-Medium.woff2') format('woff2');
-}
+/**
+	TODO: Add @font-face for KB fonts here
+*/
 
 :root {
 	/* default primary color */
@@ -55,7 +19,10 @@
 	--theme-primary-900: oklch(42.94% 0.087 126.62);
 	--theme-primary-950: oklch(33.73% 0.064 125.83);
 
-	--font-fallback: ui-sans-serif, system-ui, sans-serif;
+	--font-sans: 'KB Sans', ui-sans-serif, system-ui, sans-serif;
+	--font-serif: 'KB Serif', Georgia, serif;
+	--font-display: 'KB Serif Display', Georgia, sans-serif;
+
 	--color-success: #2ab061;
 
 	--app-bar-height: 56px;
@@ -87,9 +54,9 @@
 	--container-9xl: 96rem; /* 1536px */
 	--container-10xl: 110rem; /* 1760px */
 
-	--font-sans: 'Inter', var(--font-fallback);
 	--font-body: var(--font-sans);
-	--font-heading: 'InterDisplay', var(--font-fallback);
+	--font-heading: var(--font-serif);
+	--font-display: var(--font-display);
 
 	--text-5xs: 0.5625rem; /* 9px */
 	--text-4xs: 0.625rem; /* 10px */
