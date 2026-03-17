@@ -48,7 +48,7 @@ Operatorer måste anges med versaler. Om ingen operator anges mellan ord eller f
 
 Det går lika bra att använda de svenska varianterna `OCH`,`ELLER` och `INTE`.
 
-### NOT -- uteslut sökord eller filter
+### NOT – uteslut sökord eller filter
 
 Med `NOT` kan du utesluta sökord, filter eller fraser från träffmängden.
 
@@ -56,7 +56,7 @@ Med `NOT` kan du utesluta sökord, filter eller fraser från träffmängden.
 
 ![NOT](/docs/img/NOT.png)
 
-### OR -- bredda sökningen
+### OR – bredda sökningen
 
 Lägg till `OR` mellan söktermer eller filter för att få fler sökträffar. Träffarna innehåller då en eller fler av de angivna söktermerna.
 
@@ -64,7 +64,7 @@ Lägg till `OR` mellan söktermer eller filter för att få fler sökträffar. T
 
 ![OR](/docs/img/OR.png)
 
-### AND -- alla sökord eller filter måste finnas med
+### AND – alla sökord eller filter måste finnas med
 
 `AND` behöver sällan anges direkt utan tillämpas automatiskt om ingen annan operator anges.
 
@@ -94,7 +94,7 @@ Det går enkelt att kopiera sökningar (inklusive filter) genom att markera inne
 
 - Exempel: [En sökning på datorspel som finns på Bergslagsbibblan](/find?_q=category:"saogf:Datorspel"+itemHeldByOrg:"sigel:org/BER"), som klickats fram från föreslagna filter, kan omvandlas till dess textrepresentation (`category:"saogf:Datorspel" itemHeldByOrg:"sigel:org/BER"`) genom att markera och kopiera den.
 
-### Tomma filter -- kräv att en egenskap ska finnas
+### Tomma filter – kräv att en egenskap ska finnas
 
 Ett tomt filter kan användas för att kräva att sökträffarna ska innehålla egenskapen som filtret beskriver (oavsett värde).
 
