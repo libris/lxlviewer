@@ -170,7 +170,7 @@
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
 	<div
-		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-sm font-medium @min-[110rem]:text-base"
+		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-sm font-medium @7xl:text-[0.9375rem] @min-[110rem]:text-base"
 	>
 		<Icon class="size-5" />
 		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
@@ -414,8 +414,8 @@
 		</figcaption>
 		-->
 	</figure>
-	<section class="search-shortcuts @container">
-		<nav class="sticky mx-auto grid py-4" aria-label={page.data.t('home.searchShortcuts')}>
+	<section class="search-shortcuts @container pb-8">
+		<nav class="sticky mx-auto grid pt-3" aria-label={page.data.t('home.searchShortcuts')}>
 			<div class="filters @container mx-auto w-full max-w-7xl px-2 lg:px-4">
 				<div class="mx-auto flex w-full items-center">
 					<div
