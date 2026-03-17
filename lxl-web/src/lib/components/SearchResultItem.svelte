@@ -100,7 +100,7 @@
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
 				{#if data['web-card-header-extra']?._display && data['web-card-header-extra']?._display.length}
-					<p class="text-subtle mt-0.5 truncate text-xs">
+					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
 						{#each data['web-card-header-extra']?._display as displayObj, index (index)}
 							<span>
 								<DecoratedData data={displayObj} showLabels="defaultOn" />
@@ -167,6 +167,12 @@
 
 		& :global(.transliteration._contentBefore),
 		& :global(.transliteration._contentAfter) {
+			display: none;
+		}
+	}
+
+	.decorated-card-heading-extra {
+		& :global(.Title-type) {
 			display: none;
 		}
 	}
