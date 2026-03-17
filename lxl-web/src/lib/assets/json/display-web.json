@@ -515,7 +515,17 @@
 					"@id": "Instance-web-tokens",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["hasTitle"]
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{
+									"subPropertyOf": "hasTitle",
+									"range": "Title"
+								},
+								"hasTitle"
+							]
+						}
+					]
 				},
 				"Library": {
 					"@id": "Library-web-tokens",
