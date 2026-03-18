@@ -669,13 +669,18 @@
 	.shadow-app-bar {
 		box-shadow: var(--app-bar-shadows);
 	}
+
 	/* subset in header */
 	.with-subset {
-		--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 22);
-		@variant lg {
-			--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 30);
+		--search-grid-template-columns: minmax(300px, 1fr) minmax(0, 3fr) calc(var(--spacing) * 40);
+
+		.leading-actions {
+			position: static;
 		}
-		grid-template-columns: var(--search-grid-template-columns);
+	}
+
+	:global(.home .with-subset .leading-actions) {
+		position: fixed;
 	}
 
 	.app-bar :global(.search-mapping) {
@@ -687,11 +692,6 @@
 
 	.app-bar :global(.search-mapping .group) {
 		flex-wrap: nowrap;
-		max-width: none;
-	}
-
-	.app-bar :global(.search-mapping .pill),
-	.subset-container :global(ul) {
 		max-width: none;
 	}
 
