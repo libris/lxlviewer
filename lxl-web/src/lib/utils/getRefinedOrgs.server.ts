@@ -9,13 +9,13 @@ import { isLibraryOrg } from './holdings';
  * Get orgs and its members currently in search mapping and/or myLibraries
  */
 export function getRefinedOrgs(
-	myLibraries?: MyLibrariesType,
+	libraries?: MyLibrariesType,
 	mapping: (DisplayMapping[] | undefined)[] = []
 ): Record<OrgId, LibraryId[]> {
 	const mappingIds = getLibraryIdsFromMapping(mapping) ?? {};
 
 	const mappingOrgs = Object.keys(mappingIds).filter(isLibraryOrg);
-	const myLibsOrgs = Object.keys(myLibraries ?? {}).filter(isLibraryOrg);
+	const myLibsOrgs = Object.keys(libraries ?? {}).filter(isLibraryOrg);
 
 	const orgIds = new Set([...mappingOrgs, ...myLibsOrgs]);
 

@@ -1,7 +1,6 @@
 import { redirect, error } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
 import { appendMyLibrariesParam, asResult } from '$lib/utils/search';
@@ -9,6 +8,7 @@ import { DebugFlags } from '$lib/types/userSettings';
 import { displayMappingToString } from '$lib/utils/displayMappingToString.js';
 import getPageTitle from '$lib/utils/getPageTitle';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server.js';
+import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -16,6 +16,8 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const locale = getSupportedLocale(params?.lang);
 
 	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
+	const subsetMapping = locals?.subsetMapping;
+	const subsetLibraries = getLibraryIdsFromMapping([subsetMapping]) || undefined;
 	const myLibraries = locals.userSettings?.myLibraries;
 
 	const searchParams = new URLSearchParams();
@@ -85,12 +87,11 @@ export const load = async ({ params, url, locals, fetch }) => {
 		locale,
 		env.AUXD_SECRET,
 		`${params?.lang ? `/${params.lang}` : ''}/find`, // avoid creating a dependency to url.pathName!
-		myLibraries
+		myLibraries,
+		subsetLibraries
 	);
 
 	const pageTitle = getPageTitle(displayMappingToString(searchResult.mapping), locals.site?.name);
-
-	const subsetMapping = locals?.subsetMapping;
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return { searchResult, pageTitle, refinedOrgs };

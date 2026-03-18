@@ -58,7 +58,8 @@ export interface SearchResultItem {
 	typeStr: string;
 	selectTypeStr: string; // FIXME
 	mediaLinks: DisplayDecorated | null;
-	heldByMyLibraries?: (LibraryId | OrgId)[] | null;
+	heldByMyLibraries?: (LibraryId | OrgId)[];
+	heldBySubset?: (LibraryId | OrgId)[];
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }

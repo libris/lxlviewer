@@ -5,7 +5,7 @@
 	import type { HoldingsData } from '$lib/types/holdings';
 	import type { SearchResultItem } from '$lib/types/search';
 	import type { ResourceData } from '$lib/types/resourceData';
-	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
+	import { getHoldingsLink, getLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import { LxlLens } from '$lib/types/display';
 
@@ -27,7 +27,7 @@
 
 <ul class="@container flex flex-col gap-2">
 	{#each Object.keys(holdings.byType) as type (type)}
-		{@const myLibsHoldingByType = getMyLibsFromHoldings(
+		{@const myLibsHoldingByType = getLibsFromHoldings(
 			myLibraries,
 			holdings.byType[type],
 			page.data.refinedOrgs

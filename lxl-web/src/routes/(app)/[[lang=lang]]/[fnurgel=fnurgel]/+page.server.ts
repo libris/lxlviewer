@@ -29,12 +29,16 @@ import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';
 import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
+import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 	const translate = await getTranslator(locale);
+
+	const subsetMapping = locals?.subsetMapping;
+	const subsetLibraries = getLibraryIdsFromMapping([subsetMapping]) || undefined;
 	const myLibraries = locals.userSettings?.myLibraries;
 
 	let resourceId: null | string = null;
@@ -76,8 +80,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			vocabUtil,
 			locale,
 			env.AUXD_SECRET,
-			myLibraries,
-			undefined
+			myLibraries
 		)[0];
 	} else if (resource.mainEntity.instanceOf) {
 		// instance - fetch work card
@@ -163,7 +166,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			locale,
 			env.AUXD_SECRET,
 			myLibraries,
-			undefined
+			subsetLibraries
 		);
 	}
 
@@ -307,7 +310,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdingLibraries: getHoldingLibraries(byType)
 	};
 
-	const subsetMapping = locals?.subsetMapping;
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return {

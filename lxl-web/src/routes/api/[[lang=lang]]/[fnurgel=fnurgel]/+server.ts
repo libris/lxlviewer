@@ -23,9 +23,7 @@ export async function GET({ params, locals }) {
 		displayUtil,
 		vocabUtil,
 		getSupportedLocale(params?.lang),
-		env.AUXD_SECRET,
-		undefined,
-		undefined
+		env.AUXD_SECRET
 	)[0];
 
 	return json(searchCard, {
