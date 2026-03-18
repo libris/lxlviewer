@@ -64,6 +64,7 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
-		"dotenv": "^17.2.1"
+		"dotenv": "^17.2.1",
+		"@triply/yasgui": "^4.2.28"
 	}
 }
