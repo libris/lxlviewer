@@ -389,7 +389,15 @@ export class DisplayUtil {
 				accumulate({ [Rdfs.RDF_TYPE]: src[JsonLd.TYPE] }, Rdfs.RDF_TYPE);
 			} else if (key in this.langContainerAlias) {
 				const alias = this.langContainerAlias[key];
-				if (alias in src) {
+				if (alias in src && key in src) {
+					const merged = {
+						[alias]: {
+							...src[alias],
+							[JsonLd.NONE]: src[key]
+						}
+					};
+					accumulate(merged, alias);
+				} else if (alias in src) {
 					accumulate(src, alias);
 				} else if (key in src) {
 					accumulate(src, key); // TODO: do this as xByLang[@none] ??
@@ -954,7 +962,7 @@ class Formatter {
 
 	private pickLanguage(container: LangContainer) {
 		// TODO handle missing
-		return container[this.locale];
+		return container[this.locale] || container[JsonLd.NONE];
 	}
 }
 
