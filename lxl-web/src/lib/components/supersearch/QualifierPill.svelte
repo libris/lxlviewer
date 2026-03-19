@@ -45,53 +45,7 @@
 	 */
 </script>
 
-{#if keyLabel}
-	<span
-		data-qualifier-key={key}
-		class={['lxl-qualifier-key cursor-text', isRedundantKeyLabel && 'redundant-label']}
-		role="button"
-		tabindex="-1"
-		{onclick}
-		onkeypress={onclick}
-	>
-		{keyLabel}
-	</span>
-{/if}
-{#if operator}
-	<span
-		class={[
-			'lxl-qualifier-operator cursor-text',
-			(isRedundantKeyLabel || operator === ':') && 'hidden'
-		]}
-		data-qualifier-operator={operator}
-		role="button"
-		tabindex="-1"
-		{onclick}
-		onkeypress={onclick}
-	>
-		{operator}
-	</span>
-{/if}
-{#if valueLabel}
-	<span
-		class={[keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias', 'cursor-text']}
-		data-qualifier-value={value}
-		role="button"
-		tabindex="-1"
-		{onclick}
-		onkeypress={onclick}
-	>
-		<!--
-		{#if resourceLink}
-			<span class="hidden">{valueLabel}</span><a href={page.data.localizeHref(`/${resourceLink}`)} class="link inline-block"
-				>{valueLabel}</a
-			>
-		{:else}
-			{valueLabel}
-		{/if}
-		-->
-
-		{#if image || type}
+{#snippet imageSnippet()}
 			<span
 				class="icon-wrapper my-1.25 inline-flex size-5 items-center justify-center align-bottom"
 				aria-hidden="true"
@@ -103,18 +57,50 @@
 				{/if}
 			</span>
 		{/if}
-		<span>{valueLabel}</span>
-	</span>
-{/if}
-{#if valueLabel && removeLink}
+{#snippet keyLabelSnippet()}
+	<span
+		data-qualifier-key={key}
+		class={['lxl-qualifier-key cursor-text', isRedundantKeyLabel && 'redundant-label']}
+		role="button"
+		tabindex="-1"
+		{onclick}
+		onkeypress={onclick}>&nbsp;{keyLabel}</span
+	>
+{/snippet}
+{#snippet operatorSnippet()}
+	<span
+		class={[
+			'lxl-qualifier-operator cursor-text',
+			(isRedundantKeyLabel || operator === ':') && 'hidden'
+		]}
+		data-qualifier-operator={operator}
+		role="button"
+		tabindex="-1"
+		{onclick}
+		onkeypress={onclick}>{operator}</span
+	>
+{/snippet}
+{#snippet valueLabelSnippet()}
+	<span
+		class={[keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias', 'cursor-text']}
+		data-qualifier-value={value}
+		role="button"
+		tabindex="-1"
+		{onclick}
+		onkeypress={onclick}
+	></span>
+{/snippet}
+{#snippet removeLinkSnippet()}
 	<a
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
 		href={page.data.localizeHref(removeLink)}
 		class="lxl-qualifier-remove"
 		aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
+		><IconClose class="inline" aria-hidden="true" /></a
 	>
-		<IconClose aria-hidden="true" />
-	</a>
-{/if}
+{/snippet}
+
+{#if keyLabel}{@render keyLabelSnippet()}{/if}{#if operator}{@render operatorSnippet()}{/if}{#if image || type}{@render imageSnippet()}{/if}{#if valueLabel}{@render valueLabelSnippet()}{/if}{#if valueLabel && removeLink}{@render removeLinkSnippet()}{/if}
 
 <style lang="postcss">
 	/** TODO: Add when resource links are available 
