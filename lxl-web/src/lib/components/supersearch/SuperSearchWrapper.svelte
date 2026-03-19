@@ -866,7 +866,7 @@
 	}
 
 	.supersearch-input :global(.cm-line) {
-		line-height: 30px;
+		line-height: 32px;
 		padding-left: calc(var(--spacing) * 11);
 
 		@variant sm {
@@ -894,18 +894,6 @@
 		margin: 0;
 		padding: calc(var(--spacing) * 1.5) 0;
 		min-height: var(--search-input-height);
-
-		@variant lg {
-			padding: calc(var(--spacing) * 2) 0;
-		}
-	}
-
-	.expanded.supersearch-input :global(.cm-content) {
-		padding: calc(var(--spacing) * 3) 0;
-
-		@variant sm {
-			padding: calc(var(--spacing) * 1.5) 0;
-		}
 
 		@variant lg {
 			padding: calc(var(--spacing) * 2) 0;

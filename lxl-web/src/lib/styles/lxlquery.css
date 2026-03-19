@@ -1,13 +1,8 @@
 .lxl-qualifier {
-	position: relative;
-	height: calc(var(--spacing) * 7.5);
 	color: var(--text-body);
-	outline: 1px solid var(--color-accent-200);
-	outline-offset: -1px;
-	border-radius: var(--radius-md);
 	transition: background-color 0.1s ease;
-	z-index: 1;
-	font-size: var(--text-base);
+	font-size: var(--text-sm);
+	white-space: nowrap;
 	/* pointer-events: none; */
 
 	@media screen and (min-width: 640px) {
@@ -16,24 +11,54 @@
 }
 
 .lxl-qualifier.editing {
-	padding-left: calc(var(--spacing) * 1.5);
-	padding-right: calc(var(--spacing) * 1.5);
-	outline-color: var(--color-accent-400);
-	outline-style: dashed;
+	padding-block: calc(var(--spacing) * 1.5);
+	padding-inline: var(--spacing);
+	border: 2px dashed var(--color-accent-400);
+	border-radius: var(--radius-md);
 }
 
 .lxl-qualifier-key {
-	position: relative;
-	padding-left: calc(var(--spacing) * 1.5);
-	padding-right: calc(var(--spacing) * 1.5);
+	padding-block: calc(var(--spacing) * 1.5);
+	border-block: 1px solid var(--color-accent-200);
+	border-inline-start: 1px solid var(--color-accent-200);
+
+	border-radius: var(--radius-md) 0 0 var(--radius-md);
+	background-color: var(--color-accent-50);
 }
 
-.lxl-qualifier-key + .lxl-qualifier-operator.hidden {
-	padding-right: 0;
+.lxl-qualifier-value {
+	padding-block: calc(var(--spacing) * 1.5);
+	border-block: 1px solid var(--color-accent-200);
+	border-inline-end: 1px solid var(--color-accent-200);
+	border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.atomic .lxl-qualifier-value,
+.atomic .lxl-qualifier-alias {
+	color: var(--color-link);
+	font-weight: var(--font-weight-medium);
+	padding-block: calc(var(--spacing) * 1.5);
+	padding-inline: var(--spacing);
+	border: 1px solid var(--color-accent-200);
+	background-color: var(--color-accent-50);
+	border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
 .lxl-qualifier-operator {
-	position: relative;
+	padding-block: calc(var(--spacing) * 1.5);
+	border-block: 1px solid var(--color-accent-200);
+	border-inline-end: 1px solid var(--color-accent-200);
+	background-color: var(--color-accent-50);
+
+	&[data-qualifier-operator='\:'] {
+		color: transparent;
+	}
+}
+
+.lxl-ghost-paren {
+	padding-block: calc(var(--spacing) * 1.5);
+	color: transparent;
+	user-select: none;
 }
 
 .lxl-ghost-group ~ .lxl-not-term > .lxl-qualifier-value {
@@ -41,11 +66,11 @@
 }
 
 .lxl-qualifier-remove {
-	display: flex;
-	align-items: center;
-	height: 100%;
-	padding-right: calc(var(--spacing) * 1.5);
-	padding-left: calc(var(--spacing) * 1.5);
+	border-block: 1px solid var(--color-accent-200);
+	border-inline-end: 1px solid var(--color-accent-200);
+	padding-block: calc(var(--spacing) * 1.5);
+
+	padding-inline: var(--spacing);
 	color: var(--color-subtle);
 	background-color: inherit;
 	transition: background-color 0.1s ease;
@@ -58,49 +83,17 @@
 }
 
 .atomic {
-	background-color: var(--color-accent-50);
-	display: inline-flex;
-	align-items: center;
-	height: 100%;
-	margin-right: 1px;
-	border-top-left-radius: var(--radius-md);
-	border-bottom-left-radius: var(--radius-md);
-	user-select: none;
+	user-select: all;
 	pointer-events: auto;
 }
 
 .atomic:has(.lxl-qualifier-remove) {
 	border-top-right-radius: var(--radius-md);
-	border-bottom-right-radius: var(--radius-md);
 }
 
 .atomic .lxl-qualifier-key {
 	/* font-weight: var(--font-weight-medium); */
 	white-space: nowrap;
-}
-
-.atomic .lxl-qualifier-value,
-.atomic .lxl-qualifier-alias {
-	color: var(--color-link);
-	font-weight: var(--font-weight-medium);
-	padding-left: calc(var(--spacing) * 1.5);
-	padding-right: calc(var(--spacing) * 1.5);
-	white-space: nowrap;
-}
-
-.atomic .lxl-qualifier-operator {
-	padding-right: calc(var(--spacing) * 1.5);
-}
-
-.atomic .lxl-qualifier-key::after {
-	content: '';
-	position: absolute;
-	top: 0px;
-	right: 0px;
-	height: calc(var(--spacing) * 7.5);
-	width: 1px;
-	background-color: var(--color-accent-200);
-	z-index: 0;
 }
 
 .lxl-invalid,
