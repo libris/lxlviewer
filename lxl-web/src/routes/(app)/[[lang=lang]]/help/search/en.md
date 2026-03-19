@@ -25,7 +25,7 @@ A search query without quotation marks matches more documents, since variations 
 
 - Example: [`"Désert"`](/find?_q="Désert") (French for desert) between quotation marks excludes results for the English word `Desert`.
 - Example: [`"Gift"`](/find?_q="Gift") returns results that include Tove Ditlevsen's novel _Gift_ but not August Strindberg's _Giftas_.
-- Example: [`"His dark materials"`](/find?_q="His+dark+materials") returns only results containing that specific word order (in this case the title of a TV series).
+- Example: [`"His dark materials"`](/find?_q="His+dark+materials") returns only results containing that specific word order (in this case the title of both a novel series and a TV series).
 
 ## Truncation
 
@@ -84,3 +84,17 @@ For example, results where the search phrase appears in the title or in the cont
 ## Search APIs
 
 See our [API-documentation](https://libris.kb.se/api/docs/) for information about more specialized search. Here you can also read about how to make requests to create integrations with other systems.
+
+## Tips
+
+### Copying searches
+
+It’s easy to copy searches (including filters) by selecting the contents of the search box and copying it as if it were plain text.
+
+- Example: [A search for computer games held by Bergslagsbibblan](/find?_q=category:"saogf:Datorspel"+itemHeldByOrg:"sigel:org/BER"), which has been created by clicking suggested search filters, can be transformed to its text representation (`category:"saogf:Datorspel" itemHeldByOrg:"sigel:org/BER"`) by marking and copying it.
+
+### Empty filters -- required a specific property to be present
+
+An empty filter can be used to require that the search results contain the property described by the filter (regardless of its value).
+
+- Example: [Search Libris for all material that has an ISMN code.](</find?_q=ISMN%3A()>)
