@@ -46,17 +46,17 @@
 </script>
 
 {#snippet imageSnippet()}
-			<span
-				class="icon-wrapper my-1.25 inline-flex size-5 items-center justify-center align-bottom"
-				aria-hidden="true"
-			>
-				{#if image}
-					<img src={image} alt="" class="aspect-square rounded-full object-contain object-top" />
-				{:else if type}
-					<TypeIcon {type} class="text-sm" />
-				{/if}
-			</span>
+	<span
+		class="icon-wrapper my-1.25 inline-flex size-5 items-center justify-center align-bottom"
+		aria-hidden="true"
+	>
+		{#if image}
+			<img src={image} alt="" class="aspect-square rounded-full object-contain object-top" />
+		{:else if type}
+			<TypeIcon {type} class="text-sm" />
 		{/if}
+	</span>
+{/snippet}
 {#snippet keyLabelSnippet()}
 	<span
 		data-qualifier-key={key}
@@ -92,7 +92,6 @@
 {/snippet}
 {#snippet removeLinkSnippet()}
 	<a
-		// eslint-disable-next-line svelte/no-navigation-without-resolve
 		href={page.data.localizeHref(removeLink)}
 		class="lxl-qualifier-remove"
 		aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
@@ -100,7 +99,7 @@
 	>
 {/snippet}
 
-{#if keyLabel}{@render keyLabelSnippet()}{/if}{#if operator}{@render operatorSnippet()}{/if}{#if image || type}{@render imageSnippet()}{/if}{#if valueLabel}{@render valueLabelSnippet()}{/if}{#if valueLabel && removeLink}{@render removeLinkSnippet()}{/if}
+{#if keyLabel}{@render keyLabelSnippet()}{/if}{#if operator}{@render operatorSnippet()}{/if}{#if image || type}{@render imageSnippet()}{/if}{#if valueLabel}{@render valueLabelSnippet()}{/if}{#if valueLabel && removeLink}{@render removeLinkSnippet()}{/if}
 
 <style lang="postcss">
 	/** TODO: Add when resource links are available 
