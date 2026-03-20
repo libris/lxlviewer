@@ -151,8 +151,3 @@
 .lxl-boolean-operator {
 	color: var(--color-body);
 }
-
-/* hide key and operator for linked values */
-.atomic .redundant-label:has(~ .lxl-qualifier-value) {
-	display: none;
-}
