@@ -943,6 +943,7 @@
 	:global(.codemirror-container .cm-placeholder) {
 		font-size: var(--text-base);
 		color: var(--color-placeholder);
+		white-space: nowrap;
 		margin-top: 1px;
 
 		@variant sm {
