@@ -57,7 +57,7 @@
 {#snippet keyLabelSnippet()}
 	<span
 		data-qualifier-key={key}
-		class={['lxl-qualifier-key cursor-text', isRedundantKeyLabel && 'redundant-label sr-only']}
+		class={['lxl-qualifier-key cursor-text', isRedundantKeyLabel && 'redundant-label']}
 		role="button"
 		tabindex="-1"
 		{onclick}
