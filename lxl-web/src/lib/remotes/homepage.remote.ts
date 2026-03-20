@@ -17,21 +17,21 @@ const FEATURED_QUERIES: {
 	{
 		headingByLang: { sv: 'Ny skönlitteratur på svenska', en: 'New fiction in Swedish' },
 		findHref:
-			'/find?_q=language%3A"lang%3Aswe"+category:"saogf:Sk%25C3%25B6nlitteratur"&_sort=-%40reverse.instanceOf.publication.year',
+			'/find?_q=language%3A"lang%3Aswe"+category:"saogf:Sk%25C3%25B6nlitteratur"&_sort=-%40reverse.instanceOf.publication.librissearch:year',
 		previewParams: {
 			_q: 'language:"lang:swe" category:"saogf:Sk%C3%B6nlitteratur" existsImage',
 			_limit: 20,
-			_sort: '-@reverse.instanceOf.publication.year'
+			_sort: '-@reverse.instanceOf.publication.librissearch:year'
 		}
 	},
 	{
 		headingByLang: { sv: 'Ny facklitteratur', en: 'New non-fiction' },
 		findHref:
-			'/find?_q=category:"saogf:Facklitteratur"+yearPublished%3A-2026&_sort=-%40reverse.instanceOf.publication.year',
+			'/find?_q=category:"saogf:Facklitteratur"+yearPublished%3A-2026&_sort=-%40reverse.instanceOf.publication.librissearch:year',
 		previewParams: {
 			_q: 'category:"saogf:Facklitteratur" yearPublished:-2026 existsImage',
 			_limit: 20,
-			_sort: '-@reverse.instanceOf.publication.year'
+			_sort: '-@reverse.instanceOf.publication.librissearch:year'
 		}
 	},
 	{
