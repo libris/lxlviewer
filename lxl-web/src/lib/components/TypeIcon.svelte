@@ -20,7 +20,8 @@
 	import BiVectorPen from '~icons/bi/vector-pen';
 	import BiTag from '~icons/bi/tag';
 	import BiGlobe from '~icons/bi/globe';
-	import BiHouseHeart from '~icons/bi/house-heart';
+	import BiHouse from '~icons/bi/house';
+	import BiHouses from '~icons/bi/houses';
 	import BiAlphabet from '~icons/bi/alphabet-uppercase';
 	import BiGeoAlt from '~icons/bi/geo-alt';
 	import BiClockHistory from '~icons/bi/clock-history';
@@ -39,7 +40,8 @@
 		GenreForm: BiTag,
 		Geographic: BiGeoAlt,
 		Language: BiGlobe,
-		Library: BiHouseHeart,
+		Library: BiHouse,
+		'bibdb:Organization': BiHouses,
 		Organization: BiBank,
 		Person: BiPerson,
 		Temporal: BiClockHistory,
