@@ -236,7 +236,9 @@ const PRIORITIZED_ICONS = [
 export function getTypeForIcon(typeLike: TypeLike) {
 	for (const t of typeLike.identify.concat(typeLike.find)) {
 		if (t) {
-			const slugStr = slug(t[JsonLd.ID]);
+			const slugStr = slug(
+				((typeLike.find?.[0]?.[JsonLd.ID] as string) || '').replace('/bibdb/', '/bibdb:')
+			);
 			if (slugStr && PRIORITIZED_ICONS.includes(slugStr)) {
 				return slugStr;
 			}
@@ -244,7 +246,7 @@ export function getTypeForIcon(typeLike: TypeLike) {
 	}
 
 	return typeLike.find.length > 0 && typeLike.find[0] !== undefined
-		? slug(typeLike.find[0][JsonLd.ID])
+		? slug(((typeLike.find?.[0]?.[JsonLd.ID] as string) || '').replace('/bibdb/', '/bibdb:'))
 		: '';
 }
 
