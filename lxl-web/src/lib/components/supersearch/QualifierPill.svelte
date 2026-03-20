@@ -46,14 +46,11 @@
 </script>
 
 {#snippet imageSnippet()}
-	<span
-		class="icon-wrapper my-1.25 inline-flex size-5 items-center justify-center align-bottom"
-		aria-hidden="true"
-	>
+	<span class="empty:hidden" aria-hidden="true">
 		{#if image}
-			<img src={image} alt="" class="aspect-square rounded-full object-contain object-top" />
+			<img src={image} alt="" class="mr-0.75 mb-0.75 inline size-5 rounded-full object-contain" />
 		{:else if type}
-			<TypeIcon {type} class="text-sm" />
+			<TypeIcon {type} class="mr-0.75 mb-0.75 inline text-sm" />
 		{/if}
 	</span>
 {/snippet}
@@ -64,7 +61,7 @@
 		role="button"
 		tabindex="-1"
 		{onclick}
-		onkeypress={onclick}>&nbsp;{keyLabel}</span
+		onkeypress={onclick}>{keyLabel}</span
 	>
 {/snippet}
 {#snippet operatorSnippet()}
@@ -88,18 +85,19 @@
 		tabindex="-1"
 		{onclick}
 		onkeypress={onclick}
-	></span>
+		>{#if image || type}{@render imageSnippet()}{/if}{valueLabel}</span
+	>
 {/snippet}
 {#snippet removeLinkSnippet()}
 	<a
 		href={page.data.localizeHref(removeLink)}
 		class="lxl-qualifier-remove"
 		aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
-		><IconClose class="inline" aria-hidden="true" /></a
+		><IconClose class="mb-0.5 inline" aria-hidden="true" /></a
 	>
 {/snippet}
 
-{#if keyLabel}{@render keyLabelSnippet()}{/if}{#if operator}{@render operatorSnippet()}{/if}{#if image || type}{@render imageSnippet()}{/if}{#if valueLabel}{@render valueLabelSnippet()}{/if}{#if valueLabel && removeLink}{@render removeLinkSnippet()}{/if}
+{#if keyLabel}{@render keyLabelSnippet()}{/if}{#if operator}{@render operatorSnippet()}{/if}{#if valueLabel}{@render valueLabelSnippet()}{/if}{#if valueLabel && removeLink}{@render removeLinkSnippet()}{/if}
 
 <style lang="postcss">
 	/** TODO: Add when resource links are available 
@@ -113,8 +111,4 @@
 		}
 	}
 		*/
-
-	.icon-wrapper:empty {
-		display: none;
-	}
 </style>

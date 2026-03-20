@@ -18,10 +18,9 @@
 }
 
 .lxl-qualifier-key {
+	padding-inline: var(--spacing);
 	padding-block: calc(var(--spacing) * 1.5);
-	border-block: 1px solid var(--color-accent-200);
-	border-inline-start: 1px solid var(--color-accent-200);
-
+	border: 1px solid var(--color-accent-200);
 	border-radius: var(--radius-md) 0 0 var(--radius-md);
 	background-color: var(--color-accent-50);
 }
@@ -39,9 +38,17 @@
 	font-weight: var(--font-weight-medium);
 	padding-block: calc(var(--spacing) * 1.5);
 	padding-inline: var(--spacing);
-	border: 1px solid var(--color-accent-200);
+	border-inline-end: none;
 	background-color: var(--color-accent-50);
+}
+
+.atomic .lxl-qualifier-value {
+	border-radius: 0;
+}
+
+.redundant-label ~ .lxl-qualifier-value {
 	border-radius: var(--radius-md) 0 0 var(--radius-md);
+	border-inline-start: 1px solid var(--color-accent-200);
 }
 
 .lxl-qualifier-operator {
@@ -49,10 +56,14 @@
 	border-block: 1px solid var(--color-accent-200);
 	border-inline-end: 1px solid var(--color-accent-200);
 	background-color: var(--color-accent-50);
-
+	white-space: nowrap;
 	&[data-qualifier-operator='\:'] {
 		color: transparent;
 	}
+}
+
+.atomic .lxl-qualifier-operator {
+	border-inline-end: none;
 }
 
 .lxl-ghost-paren {
@@ -60,7 +71,6 @@
 	color: transparent;
 	user-select: none;
 }
-
 .lxl-ghost-group ~ .lxl-not-term > .lxl-qualifier-value {
 	padding: 0;
 }
@@ -69,10 +79,9 @@
 	border-block: 1px solid var(--color-accent-200);
 	border-inline-end: 1px solid var(--color-accent-200);
 	padding-block: calc(var(--spacing) * 1.5);
-
 	padding-inline: var(--spacing);
 	color: var(--color-subtle);
-	background-color: inherit;
+	background-color: var(--color-accent-50);
 	transition: background-color 0.1s ease;
 	border-top-right-radius: var(--radius-md);
 	border-bottom-right-radius: var(--radius-md);
@@ -80,6 +89,10 @@
 
 .lxl-qualifier-remove:hover {
 	background-color: var(--color-accent-100);
+}
+
+.lxl-not-term .atomic .lxl-qualifier-remove:hover {
+	background-color: var(--color-severe-100);
 }
 
 .atomic {
@@ -107,23 +120,32 @@
 
 .lxl-not-term .atomic {
 	background-color: var(--color-severe-50);
+	border-color: var(--color-severe-200);
 }
 
 .lxl-not-term .lxl-qualifier {
-	outline-color: var(--color-severe-200);
+	border-color: var(--color-severe-200);
 }
 
 .lxl-not-term .lxl-qualifier-remove:hover {
-	background-color: var(--color-severe-100);
+	border-color: var(--color-severe-100);
 }
 
 .lxl-not-term .atomic .lxl-qualifier-key::after {
 	background-color: var(--color-severe-200);
 }
 
+.lxl-not-term .atomic .lxl-qualifier-key,
 .lxl-not-term .atomic .lxl-qualifier-value,
-.lxl-not-term .atomic .lxl-qualifier-alias {
+.lxl-not-term .atomic .lxl-qualifier-alias,
+.lxl-not-term .atomic .lxl-qualifier-remove {
+	background-color: var(--color-severe-50);
+	border-color: var(--color-severe-200);
 	color: var(--color-body);
+}
+
+.lxl-not-term .atomic .lxl-qualifier-key {
+	color: var(--color-severe-600);
 }
 
 .lxl-boolean-operator {
