@@ -35,3 +35,22 @@ test('A subset filter can be removed and preserves lang', async ({ page }) => {
 	await page.waitForLoadState('networkidle');
 	await expect(page).toHaveURL('/en/find?_q=&_r=');
 });
+
+test('Holding button changes text when using a library subset filter', async ({ page }) => {
+	await page.goto('/find?_q=&_r=itemHeldByOrg:%22sigel:org/ARKM%22');
+	await expect(page.getByTestId('holding-link').first()).toHaveText('Hitta titeln');
+});
+
+test('Holding button does not change text when subset filter is not a library', async ({
+	page
+}) => {
+	await page.goto('/find?_q=&_r=language:"lang:swe"');
+	await expect(page.getByTestId('holding-link').first()).not.toHaveText('Hitta titeln');
+});
+
+test('Holdings panel highlights the library subset holding', async ({ page }) => {
+	await page.goto('/find?_q=&_r=itemHeldByOrg:%22sigel:org/ARKM%22');
+	await page.getByTestId('holding-link').first().click();
+	await expect(page.locator('.special-section')).toContainText('Avgränsade bibliotek');
+	await expect(page.locator('.special-section')).toContainText('ArkDes');
+});

@@ -146,15 +146,15 @@ export function isLibraryOrg(id: LibraryId): boolean {
 }
 
 /**
- * Get myLibraries id:s that are holders of a resource -
+ * Get Library id:s that are holders of a resource -
  * orgs will be included if passed (with its members) as argument
  */
-export function getMyLibsFromHoldings(
+export function getLibsFromHoldings(
 	myLibraries: MyLibrariesType | undefined,
 	holdings: string[] | HoldersByType | HoldersByType[string],
 	orgs?: Record<string, string[]>
-): (LibraryId | OrgId)[] | null {
-	if (!myLibraries) return null;
+): (LibraryId | OrgId)[] | undefined {
+	if (!myLibraries) return undefined;
 
 	const holdingIds = Array.isArray(holdings) ? holdings : Object.values(holdings).flat();
 
@@ -184,5 +184,5 @@ export function getMyLibsFromHoldings(
 		}
 	}
 
-	return result.size ? [...result] : null;
+	return result.size ? [...result] : undefined;
 }

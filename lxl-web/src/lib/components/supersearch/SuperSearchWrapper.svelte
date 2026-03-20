@@ -704,6 +704,19 @@
 		}
 	}
 
+	/* adjust combobox for navbar with subset filter */
+	:global(.with-subset .supersearch-combobox) {
+		&:has(.expanded) {
+			@variant lg {
+				margin-inline: calc(var(--spacing) * 1.25);
+			}
+
+			@media screen and (min-width: 1380px) {
+				margin-inline: calc(var(--spacing) * 1.75);
+			}
+		}
+	}
+
 	.action {
 		&:hover {
 			background: var(--color-accent-50);
@@ -930,6 +943,7 @@
 	:global(.codemirror-container .cm-placeholder) {
 		font-size: var(--text-base);
 		color: var(--color-placeholder);
+		white-space: nowrap;
 		margin-top: 1px;
 
 		@variant sm {
