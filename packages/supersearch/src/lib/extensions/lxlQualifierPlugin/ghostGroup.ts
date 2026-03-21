@@ -270,36 +270,81 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		'QualifierOuterGroup'
 	);
 
+	const groupBeforeHead = getParent(
+		tree.resolveInner(tr.startState.selection.main.head, -1),
+		'QualifierOuterGroup'
+	);
+
 	const groupAfterHead = getParent(
 		tree.resolveInner(tr.startState.selection.main.head, 1),
 		'QualifierOuterGroup'
 	);
+
 	if (tr.startState.selection.main.empty) {
 		if (
+			groupAfterAnchor &&
+			!anchorGroup &&
 			!headGroup &&
-			groupAfterHead &&
-			tr.newSelection.main.from >= tr.startState.selection.main.from
+			tr.newDoc.slice(tr.newSelection.main.from - 1, tr.newSelection.main.from).toString() === '('
 		) {
-			debugLog('Add space after insert and rebuild parenthesis');
-			// this could probably be simplified (so rebuilding of parenthesis isn't needed)
+			debugLog('remove newly added opening parens');
 			return [
+				tr,
 				{
-					changes: [
-						{
-							from: tr.startState.selection.main.from,
-							to: tr.startState.selection.main.from + 1,
-							insert: ' '
-						}
-					],
+					changes: {
+						from: tr.newSelection.main.from - 1,
+						to: tr.newSelection.main.from,
+						insert: ''
+					},
+					selection: { anchor: tr.newSelection.main.from },
 					sequential: true,
 					userEvent: 'input'
-				},
+				}
+			];
+		}
+
+		if (
+			groupAfterAnchor &&
+			!anchorGroup &&
+			!headGroup &&
+			tr.newDoc.slice(tr.newSelection.main.from - 1, tr.newSelection.main.from).toString() === ')'
+		) {
+			debugLog('add new group if closing parenthesis is inserted before group');
+			return [
 				tr,
 				{
 					changes: [
 						{
-							from: tr.startState.selection.main.from,
+							from: tr.newSelection.main.from,
+							insert: ' '
+						},
+						{
+							from: tr.newSelection.main.from - 1,
 							insert: '('
+						}
+					],
+					selection: { anchor: tr.newSelection.main.from },
+					sequential: true,
+					userEvent: 'input'
+				}
+			];
+		}
+
+		if (
+			groupAfterAnchor &&
+			!anchorGroup &&
+			tr.startState.sliceDoc(0, tr.startState.selection.main.from).toString() ===
+				tr.newDoc.sliceString(0, tr.startState.selection.main.from)
+		) {
+			debugLog('Add space after insert and remove newly added parens');
+			return [
+				tr,
+				{
+					changes: [
+						{
+							from: tr.newSelection.main.head,
+							to: tr.newSelection.main.head + 2,
+							insert: ' '
 						}
 					],
 					sequential: true,
@@ -320,9 +365,29 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		return tr;
 	}
 
-	if (!anchorGroup && !headGroup && groupBeforeAnchor && groupAfterHead) {
-		debugLog("Don't do anything special...");
-		return tr;
+	if (
+		!anchorGroup &&
+		!headGroup &&
+		((groupBeforeAnchor && !groupBeforeHead) || (groupAfterAnchor && !groupAfterHead)) &&
+		tr.newDoc.length ===
+			tr.startState.doc.length -
+				(tr.startState.selection.main.to - tr.startState.selection.main.from)
+	) {
+		debugLog('Re-add parens as entire group was removed');
+		return [
+			tr,
+			{
+				changes: [
+					{
+						from: tr.newSelection.main.from,
+						insert: '()'
+					}
+				],
+				sequential: true,
+				selection: { anchor: tr.newSelection.main.from + 1 },
+				userEvent: 'input'
+			}
+		];
 	}
 
 	if (!anchorGroup && !headGroup && groupAfterHead) {
@@ -381,21 +446,6 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 			];
 		}
 	}
-
-	if (anchorGroup && anchorGroup.from === tr.startState.selection.main.from) {
-		debugLog(
-			'Insert a opening parenthesis if anchor group starts at the same position as the selection'
-		);
-		return [
-			tr,
-			{
-				changes: [{ from: tr.startState.selection.main.from, insert: '(' }],
-				sequential: true,
-				userEvent: 'input'
-			}
-		];
-	}
-
 	if (anchorGroup && anchorGroup.from < tr.startState.selection.main.from) {
 		debugLog(
 			'Insert a closing parenthesis as selection is done rightward and selection anchor is outside ghost group'
@@ -442,57 +492,29 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 	}
 
 	if (!anchorGroup && groupAfterAnchor && headGroup) {
-		debugLog('Re-add opening parenthesis');
+		debugLog('Editing from start of group to inside of head, space is added after');
 		return [
 			tr,
 			{
-				changes: [{ from: tr.startState.selection.main.from, insert: '(' }],
+				changes: [{ from: tr.newSelection.main.to, to: tr.newSelection.main.to + 1, insert: '' }],
 				sequential: true,
-				userEvent: 'input'
+				userEvent: 'delete'
 			}
 		];
 	}
 
-	if (headGroup) {
-		if (headGroup.from <= tr.startState.selection.main.from) {
-			if (anchorGroup) {
-				debugLog('Keep as is... because?');
-				return tr;
-			} else {
-				debugLog('Add a closing parenthesis!');
-				return [
-					tr,
-					{
-						changes: [{ from: tr.newSelection.main.to, insert: ')' }],
-						sequential: true,
-						userEvent: 'input'
-					}
-				];
-			}
-		}
-	}
-
-	if (groupAfterHead) {
-		debugLog('Remove parentheses from following group after selection');
+	if (headGroup && !anchorGroup && headGroup.from <= tr.startState.selection.main.from) {
+		debugLog('Add a closing parenthesis!');
 		return [
+			tr,
 			{
-				changes: [
-					{ from: groupAfterHead.to - 1, to: groupAfterHead.to, insert: '' },
-					{
-						from: groupAfterHead.from,
-						to: groupAfterHead.from + 1,
-						insert: ''
-					}
-				],
+				changes: [{ from: tr.newSelection.main.to, insert: ')' }],
 				sequential: true,
 				userEvent: 'input'
-			},
-			tr
+			}
 		];
 	}
 
-	// console.log('tr.ss',  tr.newSelection.main.from, tr.newSelection.main.to)
-	// Get ghost group on newSelection
 	return tr;
 };
 

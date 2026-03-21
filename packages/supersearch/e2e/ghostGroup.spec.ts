@@ -20,8 +20,9 @@ test('re-add group when deleting it', async ({ page }) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.pressSequentially('titel:pippi');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('titel:(pippi)');
 	await page.keyboard.down('Shift');
-	for (let i = 0; i < 6; i++) {
+	for (let i = 0; i < 5; i++) {
 		await combo.press('ArrowLeft');
 	}
 	await page.keyboard.up('Shift');
@@ -169,11 +170,11 @@ test('user selects and deletes the start of a group; repair start', async ({ pag
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.pressSequentially('titel:pippi långstrump');
-	for (let i = 0; i < 17; i++) {
+	for (let i = 0; i < 16; i++) {
 		await combo.press('ArrowLeft');
 	}
 	await page.keyboard.down('Shift');
-	for (let i = 0; i < 6; i++) {
+	for (let i = 0; i < 5; i++) {
 		await combo.press('ArrowRight');
 	}
 	await page.keyboard.up('Shift');
@@ -297,7 +298,7 @@ test('typing text between the operator and group ends up inside the group', asyn
 		await combo.press('ArrowLeft');
 	}
 	await combo.pressSequentially('hej');
-	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(hejpippi)');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(hej pippi)');
 });
 
 test('pasting text between the operator and group ends up inside the group', async ({ page }) => {
@@ -308,10 +309,12 @@ test('pasting text between the operator and group ends up inside the group', asy
 		await combo.press('ArrowLeft');
 	}
 	await combo.pressSequentially('hej');
-	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(hejpippi)');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(hej pippi)');
 });
 
-test('typing ")" between the operator and group is skipped', async ({ page }) => {
+test('typing ")" between the operator and group creates a new group before the previous', async ({
+	page
+}) => {
 	await page.getByRole('combobox').click();
 	const combo = page.getByRole('dialog').getByRole('combobox');
 	await combo.pressSequentially('title:pippi');
@@ -319,7 +322,7 @@ test('typing ")" between the operator and group is skipped', async ({ page }) =>
 		await combo.press('ArrowLeft');
 	}
 	await combo.pressSequentially(')');
-	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(pippi)');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:() (pippi)');
 });
 
 test('No longer a valid qualifier; remove group', async ({ page }) => {
