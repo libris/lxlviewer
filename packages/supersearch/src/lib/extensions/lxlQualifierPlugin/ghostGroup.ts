@@ -250,12 +250,12 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 
 	const tree = syntaxTree(tr.startState);
 
-	const anchorGroup = getParent(
+	const groupAtAnchor = getParent(
 		tree.resolveInner(tr.startState.selection.main.anchor),
 		'QualifierOuterGroup'
 	);
 
-	const headGroup = getParent(
+	const groupAtHead = getParent(
 		tree.resolveInner(tr.startState.selection.main.head),
 		'QualifierOuterGroup'
 	);
@@ -283,8 +283,8 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 	if (tr.startState.selection.main.empty) {
 		if (
 			groupAfterAnchor &&
-			!anchorGroup &&
-			!headGroup &&
+			!groupAtAnchor &&
+			!groupAtHead &&
 			tr.newDoc.slice(tr.newSelection.main.from - 1, tr.newSelection.main.from).toString() === '('
 		) {
 			debugLog('remove newly added opening parens');
@@ -305,8 +305,8 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 
 		if (
 			groupAfterAnchor &&
-			!anchorGroup &&
-			!headGroup &&
+			!groupAtAnchor &&
+			!groupAtHead &&
 			tr.newDoc.slice(tr.newSelection.main.from - 1, tr.newSelection.main.from).toString() === ')'
 		) {
 			debugLog('add new group if closing parenthesis is inserted before group');
@@ -332,7 +332,7 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 
 		if (
 			groupAfterAnchor &&
-			!anchorGroup &&
+			!groupAtAnchor &&
 			tr.startState.sliceDoc(0, tr.startState.selection.main.from).toString() ===
 				tr.newDoc.sliceString(0, tr.startState.selection.main.from)
 		) {
@@ -356,18 +356,18 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 	}
 
 	if (
-		anchorGroup &&
-		headGroup &&
-		anchorGroup.from === headGroup.from &&
-		anchorGroup.to === headGroup.to
+		groupAtAnchor &&
+		groupAtHead &&
+		groupAtAnchor.from === groupAtHead.from &&
+		groupAtAnchor.to === groupAtHead.to
 	) {
 		debugLog("Don't do anything as changes are made inside the same group");
 		return tr;
 	}
 
 	if (
-		!anchorGroup &&
-		!headGroup &&
+		!groupAtAnchor &&
+		!groupAtHead &&
 		((groupBeforeAnchor && !groupBeforeHead) || (groupAfterAnchor && !groupAfterHead)) &&
 		tr.newDoc.length ===
 			tr.startState.doc.length -
@@ -390,7 +390,7 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		];
 	}
 
-	if (!anchorGroup && !headGroup && groupAfterHead) {
+	if (!groupAtAnchor && !groupAtHead && groupAfterHead) {
 		debugLog('Remove parentheses before-hand');
 		return [
 			{
@@ -413,7 +413,7 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		];
 	}
 
-	if (anchorGroup && anchorGroup.to < tr.startState.selection.main.to) {
+	if (groupAtAnchor && groupAtAnchor.to < tr.startState.selection.main.to) {
 		if (groupAfterHead) {
 			debugLog(
 				'Remove following closing parenthesis as selection is done rightward and selection head is followed directly by another ghost group'
@@ -428,7 +428,7 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 					userEvent: 'input'
 				}
 			];
-		} else if (headGroup && headGroup.from < tr.startState.selection.main.to) {
+		} else if (groupAtHead && groupAtHead.from < tr.startState.selection.main.to) {
 			debugLog('Is this needed?');
 			return tr;
 		} else {
@@ -446,7 +446,7 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 			];
 		}
 	}
-	if (anchorGroup && anchorGroup.from < tr.startState.selection.main.from) {
+	if (groupAtAnchor && groupAtAnchor.from < tr.startState.selection.main.from) {
 		debugLog(
 			'Insert a closing parenthesis as selection is done rightward and selection anchor is outside ghost group'
 		);
@@ -461,9 +461,9 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 	}
 
 	if (
-		anchorGroup &&
-		!headGroup &&
-		anchorGroup.from > tr.startState.selection.main.from &&
+		groupAtAnchor &&
+		!groupAtHead &&
+		groupAtAnchor.from > tr.startState.selection.main.from &&
 		!groupAfterHead
 	) {
 		debugLog(
@@ -471,7 +471,7 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		);
 		return [
 			{
-				changes: [{ from: anchorGroup.to - 1, to: anchorGroup.to, insert: '' }],
+				changes: [{ from: groupAtAnchor.to - 1, to: groupAtAnchor.to, insert: '' }],
 				sequential: true,
 				userEvent: 'input'
 			},
@@ -479,7 +479,7 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		];
 	}
 
-	if (anchorGroup && !headGroup && !groupAfterHead) {
+	if (groupAtAnchor && !groupAtHead && !groupAfterHead) {
 		debugLog('Insert an opening parenthesis .... ');
 		return [
 			tr,
@@ -491,7 +491,7 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		];
 	}
 
-	if (!anchorGroup && groupAfterAnchor && headGroup) {
+	if (!groupAtAnchor && groupAfterAnchor && groupAtHead) {
 		debugLog('Editing from start of group to inside of head, space is added after');
 		return [
 			tr,
@@ -503,7 +503,7 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		];
 	}
 
-	if (headGroup && !anchorGroup && headGroup.from <= tr.startState.selection.main.from) {
+	if (groupAtHead && !groupAtAnchor && groupAtHead.from <= tr.startState.selection.main.from) {
 		debugLog('Add a closing parenthesis!');
 		return [
 			tr,
