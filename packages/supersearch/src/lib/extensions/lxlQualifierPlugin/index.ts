@@ -11,7 +11,6 @@ import {
 	handleChangesInGhostGroup,
 	jumpPastParens,
 	removeGhostGroup
-	// repairGhostGroup
 } from './ghostGroup.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 

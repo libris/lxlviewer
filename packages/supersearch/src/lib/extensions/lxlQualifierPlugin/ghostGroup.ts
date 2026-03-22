@@ -519,61 +519,6 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 };
 
 /**
- * Re-add parens on bulk changes (select - delete)
- * Prevents any following qualifiers being parsed as belonging to the same group...
- */
-export const repairGhostGroup = (tr: Transaction) => {
-	if (!tr.docChanged || (!tr.isUserEvent('delete') && !tr.isUserEvent('input'))) {
-		return tr;
-	}
-
-	const start = tr.startState;
-	const after = tr.state;
-	const startTree = syntaxTree(start);
-	const afterDoc = after.doc;
-
-	const repairs: { from: number; insert: string }[] = [];
-
-	tr.changes.iterChanges((fromA, toA) => {
-		// only react to larger deletions (backspaces jumps over ')')
-		if (toA - fromA <= 1) return;
-
-		const deletedText = start.sliceDoc(fromA, toA);
-		if (!deletedText.includes(')') && !deletedText.includes('(')) return;
-
-		// Find if deleted parens belonged to a ghost group
-		const nodeBefore = startTree.resolveInner(fromA, -1);
-		const nodeAfter = startTree.resolveInner(toA, 1);
-
-		const ghostGroup =
-			getParent(nodeBefore, 'QualifierOuterGroup') || getParent(nodeAfter, 'QualifierOuterGroup');
-		if (!ghostGroup) return;
-
-		// Map ghost group to after-state
-		const mappedFrom = tr.changes.mapPos(ghostGroup.from, 1);
-		const mappedTo = tr.changes.mapPos(ghostGroup.to, -1);
-
-		// Repair
-		const openChar = afterDoc.sliceString(mappedFrom, mappedFrom + 1);
-		if (openChar !== '(') repairs.push({ from: mappedFrom, insert: '(' });
-
-		const closeChar = afterDoc.sliceString(mappedTo - 1, mappedTo);
-		if (closeChar !== ')') repairs.push({ from: mappedTo, insert: ')' });
-	});
-
-	if (!repairs.length) return tr;
-
-	return [
-		tr,
-		{
-			changes: repairs,
-			sequential: true,
-			userEvent: 'input.complete'
-		}
-	];
-};
-
-/**
  * Prevents destroying the ghost group by typing ')' inside the group, parsed as end of group.
  * Or typing '(' which can interfere with succeeding qualifiers
  * Autocompletes ')' with '(' and reverse; removes any stray ')' when deleting '('.
