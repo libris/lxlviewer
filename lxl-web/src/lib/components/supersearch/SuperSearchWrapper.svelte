@@ -646,11 +646,7 @@
 			}
 		}
 
-		@variant sm {
-			font-size: var(--text-sm);
-		}
-
-		@variant @5xl {
+		@variant lg {
 			font-size: 0.9375rem;
 		}
 	}
@@ -853,20 +849,24 @@
 	.expanded.supersearch-input :global(.cm-scroller) {
 		min-height: calc(var(--spacing) * 14);
 		scrollbar-width: thin;
-		max-height: 106px;
+		max-height: 128px;
 		overflow-x: hidden;
 
 		@variant sm {
 			min-height: calc(var(--spacing) * 11);
 		}
+	}
 
-		@variant lg {
-			margin-top: 0px;
+	.expanded.supersearch-input :global(.cm-content) {
+		margin-block: calc(var(--spacing) * 1.5);
+
+		@variant sm {
+			margin-block: 0;
 		}
 	}
 
 	.supersearch-input :global(.cm-line) {
-		line-height: 30px;
+		line-height: 32px;
 		padding-left: calc(var(--spacing) * 11);
 
 		@variant sm {
@@ -900,18 +900,6 @@
 		}
 	}
 
-	.expanded.supersearch-input :global(.cm-content) {
-		padding: calc(var(--spacing) * 3) 0;
-
-		@variant sm {
-			padding: calc(var(--spacing) * 1.5) 0;
-		}
-
-		@variant lg {
-			padding: calc(var(--spacing) * 2) 0;
-		}
-	}
-
 	:global(.supersearch-dialog .supersearch-input .cm-line) {
 		padding-left: 0;
 		@variant sm {
@@ -930,22 +918,9 @@
 	:global(.codemirror-container .cm-placeholder) {
 		font-size: var(--text-base);
 		color: var(--color-placeholder);
-		margin-top: 1px;
 
-		@variant sm {
-			font-size: var(--text-sm);
-		}
-
-		@variant @7xl {
-			margin-top: 0px;
-		}
-		@variant @5xl {
-			font-size: 0.9375rem;
-		}
-	}
-	.expanded :global(.codemirror-container .cm-placeholder) {
 		@variant lg {
-			margin-top: 1px;
+			font-size: 0.9375rem;
 		}
 	}
 

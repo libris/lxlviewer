@@ -11,7 +11,7 @@ test('The search placeholder is replaced when using a subset', async ({ page }) 
 });
 
 test('_r param is preserved when navigating around the app', async ({ page }) => {
-	await page.goto('/find?_q=f&_offset=0&_limit=20&_r=itemHeldBy%3A"sigel%3AArkm"');
+	await page.goto('/find?_q=a&_offset=0&_limit=20&_r=itemHeldBy%3A%22sigel%3AArkm%22');
 	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
 	await expect(page).toHaveURL(/_r=itemHeldBy%3A%22sigel%3AArkm%22/);
 	await page.getByRole('main').getByRole('link').getByText('Nästa').click();

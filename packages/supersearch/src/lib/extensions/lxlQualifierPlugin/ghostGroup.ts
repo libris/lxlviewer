@@ -3,6 +3,7 @@ import { syntaxTree } from '@codemirror/language';
 import type { SyntaxNode } from '@lezer/common';
 import { qualifierStateField } from './qualifierValidation.js';
 import { startEditingQualifier, stopEditingQualifier } from './qualifierEffects.js';
+import { env } from '$env/dynamic/public';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically
@@ -18,7 +19,6 @@ export const createGhostGroup = (tr: Transaction) => {
 			return tr;
 		}
 	}
-
 	// run on valdation change -> atomic range change
 	const rangesChanged =
 		tr.startState.field(qualifierStateField).atomicRanges.size !==
@@ -229,104 +229,293 @@ export const jumpPastParens = (tr: Transaction) => {
 	return tr;
 };
 
-/**
- * Prevents dislocating the ghost group by typing between the operator and group
- */
-export const handleInputBeforeGroup = (tr: Transaction) => {
-	if (!tr.docChanged || !tr.isUserEvent('input')) return tr;
+function debugLog(message: unknown) {
+	if (env.PUBLIC_DEBUG_GHOST_GROUP && env.PUBLIC_DEBUG_GHOST_GROUP.toLowerCase() === 'true') {
+		console.log('DEBUG GHOST GROUP:', (message as object).toString());
+	}
+}
 
-	const start = tr.startState;
-	const head = start.selection.main.head;
+export const handleChangesInGhostGroup = (tr: Transaction) => {
+	// Ensure the transaction is the result of direct user input (Transaction.isUserEvent only checks for a specific user event type while checking the annotation directly allows for any type of user event)
+	if (!tr.annotation(Transaction.userEvent)) {
+		return tr;
+	}
+	if (
+		!tr.docChanged ||
+		tr.isUserEvent('select') ||
+		tr.isUserEvent('undo') ||
+		tr.isUserEvent('redo')
+	)
+		return tr;
 
-	// detect ghost group directly after cursor
-	const nodeAfter = syntaxTree(start).resolveInner(head, +1);
-	const ghostGroup = getParent(nodeAfter, 'QualifierOuterGroup');
-	if (!ghostGroup) return tr;
+	const tree = syntaxTree(tr.startState);
 
-	if (head !== ghostGroup.from) return tr;
+	const groupAtAnchor = getParent(
+		tree.resolveInner(tr.startState.selection.main.anchor),
+		'QualifierOuterGroup'
+	);
 
-	// shift text changes +1 position to the right
-	const shiftedChanges: { from: number; to?: number; insert?: string }[] = [];
-	let totalInsertedLength = 0;
+	const groupAtHead = getParent(
+		tree.resolveInner(tr.startState.selection.main.head),
+		'QualifierOuterGroup'
+	);
 
-	tr.changes.iterChanges((fromA, toA, _fromB, _toB, inserted) => {
-		if (inserted.toString() === ')') {
-			// don't shift ')' and break the group
-			return;
+	const groupAfterAnchor = getParent(
+		tree.resolveInner(tr.startState.selection.main.anchor, 1),
+		'QualifierOuterGroup'
+	);
+
+	const groupBeforeAnchor = getParent(
+		tree.resolveInner(tr.startState.selection.main.anchor, -1),
+		'QualifierOuterGroup'
+	);
+
+	const groupBeforeHead = getParent(
+		tree.resolveInner(tr.startState.selection.main.head, -1),
+		'QualifierOuterGroup'
+	);
+
+	const groupAfterHead = getParent(
+		tree.resolveInner(tr.startState.selection.main.head, 1),
+		'QualifierOuterGroup'
+	);
+
+	if (tr.startState.selection.main.empty) {
+		if (
+			groupAfterAnchor &&
+			!groupAtAnchor &&
+			!groupAtHead &&
+			tr.newDoc.slice(tr.newSelection.main.from - 1, tr.newSelection.main.from).toString() === '('
+		) {
+			debugLog('remove newly added opening parens');
+			return [
+				tr,
+				{
+					changes: {
+						from: tr.newSelection.main.from - 1,
+						to: tr.newSelection.main.from,
+						insert: ''
+					},
+					selection: { anchor: tr.newSelection.main.from },
+					sequential: true,
+					userEvent: 'input'
+				}
+			];
 		}
-		shiftedChanges.push({
-			from: fromA + 1,
-			to: toA + 1,
-			insert: inserted.toString()
-		});
-		totalInsertedLength += inserted.length;
-	});
 
-	const newSelection = { anchor: head + 1 + totalInsertedLength };
-
-	return [
-		{
-			changes: shiftedChanges,
-			sequential: true,
-			selection: newSelection,
-			userEvent: tr.annotation(Transaction.userEvent) || 'input.complete'
+		if (
+			groupAfterAnchor &&
+			!groupAtAnchor &&
+			!groupAtHead &&
+			tr.newDoc.slice(tr.newSelection.main.from - 1, tr.newSelection.main.from).toString() === ')'
+		) {
+			debugLog('add new group if closing parenthesis is inserted before group');
+			return [
+				tr,
+				{
+					changes: [
+						{
+							from: tr.newSelection.main.from,
+							insert: ' '
+						},
+						{
+							from: tr.newSelection.main.from - 1,
+							insert: '('
+						}
+					],
+					selection: { anchor: tr.newSelection.main.from },
+					sequential: true,
+					userEvent: 'input'
+				}
+			];
 		}
-	];
-};
 
-/**
- * Re-add parens on bulk changes (select - delete)
- * Prevents any following qualifiers being parsed as belonging to the same group...
- */
-export const repairGhostGroup = (tr: Transaction) => {
-	if (!tr.docChanged || (!tr.isUserEvent('delete') && !tr.isUserEvent('input'))) {
+		if (
+			groupAfterAnchor &&
+			!groupAtAnchor &&
+			tr.startState.sliceDoc(0, tr.startState.selection.main.from).toString() ===
+				tr.newDoc.sliceString(0, tr.startState.selection.main.from)
+		) {
+			debugLog('Add space after insert and remove newly added parens');
+			return [
+				tr,
+				{
+					changes: [
+						{
+							from: tr.newSelection.main.head,
+							to: tr.newSelection.main.head + 2,
+							insert: ' '
+						}
+					],
+					sequential: true,
+					userEvent: 'input'
+				}
+			];
+		}
 		return tr;
 	}
 
-	const start = tr.startState;
-	const after = tr.state;
-	const startTree = syntaxTree(start);
-	const afterDoc = after.doc;
+	if (
+		groupAtAnchor &&
+		groupAtHead &&
+		groupAtAnchor.from === groupAtHead.from &&
+		groupAtAnchor.to === groupAtHead.to
+	) {
+		debugLog("Don't do anything as changes are made inside the same group");
+		return tr;
+	}
 
-	const repairs: { from: number; insert: string }[] = [];
+	if (
+		!groupAtAnchor &&
+		!groupAtHead &&
+		((groupBeforeAnchor && !groupBeforeHead) || (groupAfterAnchor && !groupAfterHead)) &&
+		tr.newDoc.length ===
+			tr.startState.doc.length -
+				(tr.startState.selection.main.to - tr.startState.selection.main.from)
+	) {
+		debugLog('Re-add parens as entire group was removed');
+		return [
+			tr,
+			{
+				changes: [
+					{
+						from: tr.newSelection.main.from,
+						insert: '()'
+					}
+				],
+				sequential: true,
+				selection: { anchor: tr.newSelection.main.from + 1 },
+				userEvent: 'input'
+			}
+		];
+	}
 
-	tr.changes.iterChanges((fromA, toA) => {
-		// only react to larger deletions (backspaces jumps over ')')
-		if (toA - fromA <= 1) return;
+	if (!groupAtAnchor && !groupAtHead && groupAfterHead) {
+		debugLog('Remove parentheses before-hand');
+		return [
+			{
+				changes: [
+					{
+						from: tr.startState.selection.main.from,
+						to: tr.startState.selection.main.from + 1,
+						insert: ''
+					},
+					{
+						from: tr.startState.selection.main.to - 1,
+						to: tr.startState.selection.main.to,
+						insert: ''
+					}
+				],
+				sequential: true,
+				userEvent: 'input'
+			},
+			tr
+		];
+	}
 
-		const deletedText = start.sliceDoc(fromA, toA);
-		if (!deletedText.includes(')') && !deletedText.includes('(')) return;
+	if (groupAtAnchor && groupAtAnchor.to < tr.startState.selection.main.to) {
+		if (groupAfterHead) {
+			debugLog(
+				'Remove following closing parenthesis as selection is done rightward and selection head is followed directly by another ghost group'
+			);
+			return [
+				tr,
+				{
+					changes: [
+						{ from: tr.newSelection.main.from, to: tr.newSelection.main.from + 1, insert: ' ' }
+					],
+					sequential: true,
+					userEvent: 'input'
+				}
+			];
+		} else if (groupAtHead && groupAtHead.from < tr.startState.selection.main.to) {
+			debugLog('Is this needed?');
+			return tr;
+		} else {
+			debugLog(
+				'Insert a closing parenthesis as selection is done rightward and selection head is outside ghost group'
+			);
 
-		// Find if deleted parens belonged to a ghost group
-		const nodeBefore = startTree.resolveInner(fromA, -1);
-		const nodeAfter = startTree.resolveInner(toA, 1);
-
-		const ghostGroup =
-			getParent(nodeBefore, 'QualifierOuterGroup') || getParent(nodeAfter, 'QualifierOuterGroup');
-		if (!ghostGroup) return;
-
-		// Map ghost group to after-state
-		const mappedFrom = tr.changes.mapPos(ghostGroup.from, 1);
-		const mappedTo = tr.changes.mapPos(ghostGroup.to, -1);
-
-		// Repair
-		const openChar = afterDoc.sliceString(mappedFrom, mappedFrom + 1);
-		if (openChar !== '(') repairs.push({ from: mappedFrom, insert: '(' });
-
-		const closeChar = afterDoc.sliceString(mappedTo - 1, mappedTo);
-		if (closeChar !== ')') repairs.push({ from: mappedTo, insert: ')' });
-	});
-
-	if (!repairs.length) return tr;
-
-	return [
-		tr,
-		{
-			changes: repairs,
-			sequential: true,
-			userEvent: 'input.complete'
+			return [
+				tr,
+				{
+					changes: [{ from: tr.newSelection.main.to, insert: ')' }],
+					sequential: true,
+					userEvent: 'input'
+				}
+			];
 		}
-	];
+	}
+	if (groupAtAnchor && groupAtAnchor.from < tr.startState.selection.main.from) {
+		debugLog(
+			'Insert a closing parenthesis as selection is done rightward and selection anchor is outside ghost group'
+		);
+		return [
+			tr,
+			{
+				changes: [{ from: tr.newSelection.main.to, insert: ')' }],
+				sequential: true,
+				userEvent: 'input'
+			}
+		];
+	}
+
+	if (
+		groupAtAnchor &&
+		!groupAtHead &&
+		groupAtAnchor.from > tr.startState.selection.main.from &&
+		!groupAfterHead
+	) {
+		debugLog(
+			'Remove opening parenthesis in anchor group as selection is done leftward and selection head is outside group.'
+		);
+		return [
+			{
+				changes: [{ from: groupAtAnchor.to - 1, to: groupAtAnchor.to, insert: '' }],
+				sequential: true,
+				userEvent: 'input'
+			},
+			tr
+		];
+	}
+
+	if (groupAtAnchor && !groupAtHead && !groupAfterHead) {
+		debugLog('Insert an opening parenthesis .... ');
+		return [
+			tr,
+			{
+				changes: [{ from: tr.newSelection.main.from, insert: '(' }],
+				sequential: true,
+				userEvent: 'input'
+			}
+		];
+	}
+
+	if (!groupAtAnchor && groupAfterAnchor && groupAtHead) {
+		debugLog('Editing from start of group to inside of head, space is added after');
+		return [
+			tr,
+			{
+				changes: [{ from: tr.newSelection.main.to, to: tr.newSelection.main.to + 1, insert: '' }],
+				sequential: true,
+				userEvent: 'delete'
+			}
+		];
+	}
+
+	if (groupAtHead && !groupAtAnchor && groupAtHead.from <= tr.startState.selection.main.from) {
+		debugLog('Add a closing parenthesis!');
+		return [
+			tr,
+			{
+				changes: [{ from: tr.newSelection.main.to, insert: ')' }],
+				sequential: true,
+				userEvent: 'input'
+			}
+		];
+	}
+
+	return tr;
 };
 
 /**

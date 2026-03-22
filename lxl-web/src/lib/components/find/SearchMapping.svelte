@@ -42,8 +42,8 @@
 								type={m.display?.[JsonLd.TYPE]}
 								id={m.display[JsonLd.ID]}
 								{isRedundantKeyLabel}
-							/>
-						</span>
+							/>{' '}</span
+						>
 					{:else}
 						<!-- free text search -->
 						<span class="flex h-full items-center gap-1 pl-1.5">
@@ -72,7 +72,16 @@
 					{#each children as child, i (`${i}-${depth}`)}
 						{@const _child = Array.isArray(child) ? child : [child]}
 						{#if operator}
-							<span class="operator-{operator} text-sm uppercase">{operator}</span>
+							<span
+								class={[
+									`operator-${operator}`,
+									'text-sm uppercase',
+									operator === 'and' && 'sr-only',
+									operator === 'or' && 'first-of-type:sr-only'
+								]}
+							>
+								{operator}
+							</span>
 						{/if}
 						<SearchMapping depth={depth + 1} mapping={_child} />
 					{/each}
@@ -94,14 +103,6 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
-
-	.operator-and {
-		display: none;
-	}
-
-	.group-or .operator-or:first-of-type {
-		display: none;
-	}
 
 	/* we can give _r pills a special styling if we want */
 	.variable-_r .lxl-qualifier,

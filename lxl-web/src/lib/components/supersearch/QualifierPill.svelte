@@ -45,34 +45,39 @@
 	 */
 </script>
 
-{#if keyLabel}
+{#snippet imageSnippet()}
+	<span class="empty:hidden" aria-hidden="true">
+		{#if image}
+			<img src={image} alt="" class="mr-0.75 mb-0.75 inline size-5 rounded-full object-contain" />
+		{:else if type}
+			<TypeIcon {type} class="mr-0.75 mb-0.75 inline text-sm" />
+		{/if}
+	</span>
+{/snippet}
+{#snippet keyLabelSnippet()}
 	<span
 		data-qualifier-key={key}
 		class={['lxl-qualifier-key cursor-text', isRedundantKeyLabel && 'redundant-label']}
 		role="button"
 		tabindex="-1"
 		{onclick}
-		onkeypress={onclick}
+		onkeypress={onclick}>{keyLabel}</span
 	>
-		{keyLabel}
-	</span>
-{/if}
-{#if operator}
+{/snippet}
+{#snippet operatorSnippet()}
 	<span
 		class={[
 			'lxl-qualifier-operator cursor-text',
-			(isRedundantKeyLabel || operator === ':') && 'hidden'
+			(isRedundantKeyLabel || operator === ':') && 'sr-only'
 		]}
 		data-qualifier-operator={operator}
 		role="button"
 		tabindex="-1"
 		{onclick}
-		onkeypress={onclick}
+		onkeypress={onclick}>{operator}</span
 	>
-		{operator}
-	</span>
-{/if}
-{#if valueLabel}
+{/snippet}
+{#snippet valueLabelSnippet()}
 	<span
 		class={[keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias', 'cursor-text']}
 		data-qualifier-value={value}
@@ -80,41 +85,19 @@
 		tabindex="-1"
 		{onclick}
 		onkeypress={onclick}
+		>{#if image || type}{@render imageSnippet()}{/if}{valueLabel}</span
 	>
-		<!--
-		{#if resourceLink}
-			<span class="hidden">{valueLabel}</span><a href={page.data.localizeHref(`/${resourceLink}`)} class="link inline-block"
-				>{valueLabel}</a
-			>
-		{:else}
-			{valueLabel}
-		{/if}
-		-->
-
-		{#if image || type}
-			<span
-				class="icon-wrapper my-1.25 inline-flex size-5 items-center justify-center align-bottom"
-				aria-hidden="true"
-			>
-				{#if image}
-					<img src={image} alt="" class="aspect-square rounded-full object-contain object-top" />
-				{:else if type}
-					<TypeIcon {type} class="text-sm" />
-				{/if}
-			</span>
-		{/if}
-		<span>{valueLabel}</span>
-	</span>
-{/if}
-{#if valueLabel && removeLink}
+{/snippet}
+{#snippet removeLinkSnippet()}
 	<a
 		href={page.data.localizeHref(removeLink)}
 		class="lxl-qualifier-remove"
 		aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
+		><IconClose class="mb-0.5 inline" aria-hidden="true" /></a
 	>
-		<IconClose aria-hidden="true" />
-	</a>
-{/if}
+{/snippet}
+
+{#if keyLabel}{@render keyLabelSnippet()}{/if}{#if operator}{@render operatorSnippet()}{/if}{#if valueLabel}{@render valueLabelSnippet()}{/if}{#if valueLabel && removeLink}{@render removeLinkSnippet()}{/if}
 
 <style lang="postcss">
 	/** TODO: Add when resource links are available 
@@ -128,8 +111,4 @@
 		}
 	}
 		*/
-
-	.icon-wrapper:empty {
-		display: none;
-	}
 </style>
