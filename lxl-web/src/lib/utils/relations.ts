@@ -2,12 +2,14 @@ import { env } from '$env/dynamic/private';
 import { error } from '@sveltejs/kit';
 import type { VocabUtil } from '$lib/utils/xl';
 import type { PartialCollectionView } from '$lib/types/search';
-import { JsonLd } from '$lib/types/xl';
+import { Base, JsonLd, Platform } from '$lib/types/xl';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 import prefixesByNamespace from '$lib/assets/json/prefixesByNamespace.json';
 import capitalize from '$lib/utils/capitalize';
 import { type ApiError } from '$lib/types/api.js';
+import getAtPath from '$lib/utils/getAtPath';
+import { getUriSlug } from '$lib/utils/http';
 
 export type Relation = {
 	qualifierKey: string;
@@ -15,6 +17,7 @@ export type Relation = {
 	totalItems: number;
 	findUrl: string;
 	previewUrl: string;
+	isLike: boolean;
 };
 
 export async function getRelations(
@@ -55,10 +58,14 @@ export async function getRelations(
 			const label = capitalize(
 				vocabUtil.getLabelByLang(qualifierKey as string, locale) || qualifierKey
 			);
+			const preferLike: boolean = getAtPath(p.object, [Base.category, '*', JsonLd.ID])
+				.map(getUriSlug)
+				.some((c) => c === Platform.preferLike);
+			const op = preferLike ? '~' : ':';
 			const findUrl = `/find?${getSortedSearchParams(
 				addDefaultSearchParams(
 					new URLSearchParams({
-						_q: `${qualifierKey}:${qualifierValue}`,
+						_q: `${qualifierKey}${op}${qualifierValue}`,
 						_spell: 'false'
 					})
 				)
@@ -66,7 +73,7 @@ export async function getRelations(
 			const previewUrl = `${env.API_URL}/find.jsonld?${getSortedSearchParams(
 				addDefaultSearchParams(
 					new URLSearchParams({
-						_q: `${qualifierKey}:${qualifierValue}`,
+						_q: `${qualifierKey}${op}${qualifierValue}`,
 						_limit: '10',
 						_spell: 'false',
 						...(subsetFilter && { _r: subsetFilter }),
@@ -80,7 +87,8 @@ export async function getRelations(
 				label,
 				totalItems: p.totalItems,
 				findUrl,
-				previewUrl
+				previewUrl,
+				isLike: preferLike
 			};
 		});
 	}

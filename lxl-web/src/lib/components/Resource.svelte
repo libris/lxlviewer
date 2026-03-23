@@ -345,8 +345,8 @@
 											{#if relationItem.totalItems > 10}
 												{page.data.t('resource.all')}
 											{/if}
-											{relationItem.totalItems.toLocaleString()}
-											{#if relationItem.totalItems === 1}
+											{relationItem.totalItems.toLocaleString() + (relationItem.isLike ? '+' : '')}
+											{#if relationItem.totalItems === 1 && !relationItem.isLike}
 												{page.data.t('resource.result')}
 											{:else}
 												{page.data.t('resource.results')}

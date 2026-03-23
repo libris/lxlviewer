@@ -58,6 +58,7 @@ export enum Platform {
 	integral = 'integral',
 	searchfilter = 'searchfilter',
 	impliedByObject = 'impliedByObject',
+	preferLike = 'preferLike',
 	composite = 'https://id.kb.se/ns/librissearch/composite',
 	meta = 'meta'
 }
