@@ -150,11 +150,15 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<BiHouse class="text-neutral-400" />
 				{/if}
 			</span>
-			<span class="sr-only">{`${page.data.t('holdings.availableAt')}`}</span>
-			<span>
-				{item.numberOfHolders}
-				{page.data.t('search.libraries')}
-			</span>
+			{#if item.heldBySubset}
+				<span>{page.data.t('holdings.findTitle')}</span>
+			{:else}
+				<span class="sr-only">{`${page.data.t('holdings.availableAt')}`}</span>
+				<span>
+					{item.numberOfHolders}
+					{page.data.t('search.libraries')}
+				</span>
+			{/if}
 		</a>
 	{/if}
 {/snippet}

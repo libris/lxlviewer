@@ -669,13 +669,29 @@
 	.shadow-app-bar {
 		box-shadow: var(--app-bar-shadows);
 	}
+
 	/* subset in header */
 	.with-subset {
-		--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 22);
-		@variant lg {
-			--search-grid-template-columns: minmax(auto, 400px) minmax(0, 3fr) calc(var(--spacing) * 30);
+		--search-grid-template-columns: minmax(0, auto) minmax(0, auto)
+			minmax(0, calc(var(--spacing) * 22));
+
+		.leading-actions {
+			position: static;
 		}
-		grid-template-columns: var(--search-grid-template-columns);
+
+		@variant lg {
+			--search-grid-template-columns: minmax(calc(var(--spacing) * 75), 1fr) minmax(0, 3fr)
+				minmax(0, calc(var(--spacing) * 40));
+		}
+	}
+
+	:global(.home .with-subset .leading-actions) {
+		position: fixed;
+
+		/* hide the subset pill on the front page for now */
+		& .subset-container {
+			display: none;
+		}
 	}
 
 	.app-bar :global(.search-mapping) {
@@ -687,11 +703,6 @@
 
 	.app-bar :global(.search-mapping .group) {
 		flex-wrap: nowrap;
-		max-width: none;
-	}
-
-	.app-bar :global(.search-mapping .pill),
-	.subset-container :global(ul) {
 		max-width: none;
 	}
 

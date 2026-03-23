@@ -48,7 +48,7 @@ import { isLibraryOrg } from '$lib/utils/holdings';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
 import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
-import { getMyLibsFromHoldings } from '$lib/utils/holdings';
+import { getLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
@@ -60,7 +60,8 @@ export async function asResult(
 	locale: LangCode,
 	auxdSecret: string,
 	usePath?: string,
-	myLibraries?: MyLibrariesType
+	myLibraries?: MyLibrariesType,
+	subsetLibraries?: MyLibrariesType
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
 
@@ -87,6 +88,7 @@ export async function asResult(
 			locale,
 			auxdSecret,
 			myLibraries,
+			subsetLibraries,
 			maxScores
 		),
 		...('stats' in view && {
@@ -111,13 +113,17 @@ export function asSearchResultItem(
 	locale: LangCode,
 	auxdSecret: string,
 	myLibraries?: MyLibrariesType,
+	subsetLibraries?: MyLibrariesType,
 	maxScores?: Record<string, number>
 ): SearchResultItem[] {
 	return items
 		?.map((i) => cleanUpItem(i))
 		.map((i) => ({
 			...(myLibraries && {
-				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries)
+				heldByMyLibraries: getHeldByLibraries(i, myLibraries)
+			}),
+			...(subsetLibraries && {
+				heldBySubset: getHeldByLibraries(i, subsetLibraries)
 			}),
 			...('_debug' in i && {
 				_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
@@ -363,10 +369,10 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
-	const orgs = getRefinedOrgs(myLibraries);
+function getHeldByLibraries(item: FramedData, libraries: MyLibrariesType) {
+	const orgs = getRefinedOrgs(libraries);
 	const holdersByType = getHoldersByType(getHoldingsByType(item));
-	return getMyLibsFromHoldings(myLibraries, holdersByType, orgs);
+	return getLibsFromHoldings(libraries, holdersByType, orgs);
 }
 
 function isFreeTextQuery(property: unknown): boolean {
