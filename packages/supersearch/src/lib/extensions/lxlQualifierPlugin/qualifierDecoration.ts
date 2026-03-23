@@ -21,7 +21,7 @@ class QualifierWidget extends WidgetType {
 		);
 	}
 	get estimatedHeight(): number {
-		return 30;
+		return 32;
 	}
 
 	toDOM(view: EditorView): HTMLElement {
@@ -54,17 +54,6 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-class GhostGroupWidget extends WidgetType {
-	eq(): boolean {
-		return true;
-	}
-	toDOM(): HTMLElement {
-		const container = document.createElement('span');
-		container.className = 'lxl-ghost-group';
-		return container;
-	}
-}
-
 export function addDecorations(view: EditorView) {
 	const SHOW_GHOST_GROUP = false;
 	const { qualifiers, editing } = view.state.field(qualifierStateField);
@@ -79,9 +68,6 @@ export function addDecorations(view: EditorView) {
 			decorations.push(
 				Decoration.mark({
 					class: `lxl-qualifier${isEditing ? ' editing' : ''}`,
-					attributes: {
-						style: 'display: inline-block; margin-left: 1px; margin-right: 1px;'
-					},
 					inclusive: true
 				}).range(qualifier.node.from, qualifier.node.to)
 			);
@@ -111,13 +97,13 @@ export function addDecorations(view: EditorView) {
 						doc.slice(openingParens, openingParens + 1) === '(' &&
 						doc.slice(closingParens - 1, closingParens) === ')'
 					) {
-						const parensMark = Decoration.replace({
-							widget: new GhostGroupWidget(),
-							inclusive: false
+						const ghostParenMark = Decoration.mark({
+							class: 'lxl-ghost-paren',
+							attributes: { 'aria-hidden': 'true' }
 						});
 
-						decorations.push(parensMark.range(openingParens, openingParens + 1));
-						decorations.push(parensMark.range(closingParens - 1, closingParens));
+						decorations.push(ghostParenMark.range(openingParens, openingParens + 1));
+						decorations.push(ghostParenMark.range(closingParens - 1, closingParens));
 					}
 				}
 			}
