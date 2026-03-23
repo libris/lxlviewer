@@ -176,6 +176,7 @@ export enum SearchOperators {
 	or = 'or',
 	not = 'not',
 	equals = 'equals',
+	like = 'like',
 	notEquals = 'notEquals',
 	greaterThan = 'greaterThan',
 	greaterThanOrEquals = 'greaterThanOrEquals',

@@ -30,9 +30,9 @@ QualifierInnerGroup { "(" qualifierOrcomb? ")" }
   AndOperator { "AND" | "OCH" }
   UOperator { "NOT" | "INTE" }
   bOperator {"<" | ">" | "<=" | ">=" }
-  bOperatorEq { ":" | "=" }
+  bOperatorEq { ":" | "=" | "~" }
   strliteral { '"' (!["\\] | "\\" _)* '"' }
-  str { ![:><=()"\ ]+ }
+  str { ![:~><=()"\ ]+ }
   filterAlias { "includeEplikt" | "includePreliminary" | "existsImage" | "alias-myLibraries" | "freeOnline" | "_suecia" }
   space { @whitespace+ }
 

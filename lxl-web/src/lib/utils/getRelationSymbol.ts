@@ -5,6 +5,8 @@ export function getRelationSymbol(operator: keyof typeof SearchOperators): strin
 		case 'equals':
 		case 'existence':
 			return ':';
+		case 'like':
+			return '~';
 		case 'not':
 			return '≠';
 		case 'greaterThan':

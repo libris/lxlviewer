@@ -145,6 +145,15 @@ förf=AAA
 Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
 
 
+# basic code 3
+
+förf~AAA
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
+
+
 # quoted code
 
 förf:"AAA"
@@ -179,6 +188,24 @@ Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
 ==>
 
 Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(QualifierOuterGroup(String OrOperator String))))
+
+
+# quoted code 5
+
+förf~"förf:"
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
+
+
+# quoted code 6
+
+"förf:"~"AAA"
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
 
 
 # code group
