@@ -117,6 +117,8 @@ export interface DisplayMapping {
 	variable?: string;
 	_key?: string;
 	_value?: string;
+	toEquals?: Link;
+	toLike?: Link;
 	isRedundantKeyLabel?: boolean;
 }
 
@@ -196,6 +198,8 @@ export interface SearchMapping extends MappingObj {
 	value?: string;
 	variable?: string;
 	up: { '@id': string };
+	toEquals?: { '@id': string };
+	toLike?: { '@id': string };
 	_key?: string;
 	_value?: string;
 }

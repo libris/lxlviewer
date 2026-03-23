@@ -187,7 +187,11 @@ export default {
 		noExactMatches: 'Inga exakta träffar',
 		showingResultsFor: 'Visar resultat för',
 		freeOnline: 'Fritt online',
-		searchHelp: 'Så söker du i Libris'
+		searchHelp: 'Så söker du i Libris',
+		showingLike: 'Visar även liknande träffar för',
+		showingEquals: 'Visar exakta träffar för',
+		showLike: 'Visa liknande också.',
+		showEquals: 'Visa bara exakta.'
 	},
 	supersearch: {
 		search: 'Sök',

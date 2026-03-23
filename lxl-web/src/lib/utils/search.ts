@@ -220,6 +220,8 @@ export function displayMappings(
 					...('variable' in m && { variable: m.variable }),
 					_key: m._key,
 					_value: m._value,
+					...('toEquals' in m && { toEquals: replacePath(m.toEquals as Link, usePath) }),
+					...('toLike' in m && { toLike: replacePath(m.toLike as Link, usePath) }),
 					...(redundantLabel && { isRedundantKeyLabel: true })
 				} as DisplayMapping;
 			} else if (operator && operator in m) {

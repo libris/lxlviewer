@@ -188,7 +188,11 @@ export default {
 		noExactMatches: 'No exact matches',
 		showingResultsFor: 'Showing results for',
 		freeOnline: 'Free online',
-		searchHelp: 'Libris search help'
+		searchHelp: 'Libris search help',
+		showingLike: 'Showing similar matches for',
+		showingEquals: 'Showing exact matches for',
+		showLike: 'Also show similar.',
+		showEquals: 'Only show exact.'
 	},
 	supersearch: {
 		search: 'Search',

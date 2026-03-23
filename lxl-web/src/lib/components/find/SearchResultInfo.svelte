@@ -36,6 +36,24 @@
 			<span class="italic">{searchStr}.</span>
 		</p>
 	{/if}
+	{#each page.data.searchResult.mapping as m (m)}
+		{#if m.toEquals}
+			<p>
+				<span>{page.data.t('search.showingLike')} <i>{m.displayStr}</i>.</span>
+				<a href={page.data.localizeHref(m.toEquals['@id'])} class="link-subtle whitespace-nowrap"
+					>{page.data.t('search.showEquals')}</a
+				>
+			</p>
+		{/if}
+		{#if m.toLike}
+			<p>
+				<span>{page.data.t('search.showingEquals')} <i>{m.displayStr}</i>.</span>
+				<a href={page.data.localizeHref(m.toLike['@id'])} class="link-subtle whitespace-nowrap"
+					>{page.data.t('search.showLike')}</a
+				>
+			</p>
+		{/if}
+	{/each}
 	<div class="flex gap-1">
 		{#if numHits && numHits > 0}
 			<p class="hits-count">
