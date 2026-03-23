@@ -259,22 +259,18 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		tree.resolveInner(tr.startState.selection.main.head),
 		'QualifierOuterGroup'
 	);
-
 	const groupAfterAnchor = getParent(
 		tree.resolveInner(tr.startState.selection.main.anchor, 1),
 		'QualifierOuterGroup'
 	);
-
 	const groupBeforeAnchor = getParent(
 		tree.resolveInner(tr.startState.selection.main.anchor, -1),
 		'QualifierOuterGroup'
 	);
-
 	const groupBeforeHead = getParent(
 		tree.resolveInner(tr.startState.selection.main.head, -1),
 		'QualifierOuterGroup'
 	);
-
 	const groupAfterHead = getParent(
 		tree.resolveInner(tr.startState.selection.main.head, 1),
 		'QualifierOuterGroup'
@@ -355,6 +351,25 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		return tr;
 	}
 
+	if (groupAtAnchor && !groupAtHead && groupAfterHead) {
+		debugLog(
+			'Remove closing parenthesis before-hand when selecting from anchor group to group start'
+		);
+		return [
+			{
+				changes: [
+					{
+						from: groupAfterHead.to - 1,
+						to: groupAfterHead.to,
+						insert: ''
+					}
+				],
+				sequential: true,
+				userEvent: 'input'
+			},
+			tr
+		];
+	}
 	if (
 		groupAtAnchor &&
 		groupAtHead &&
