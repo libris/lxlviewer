@@ -21,8 +21,8 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
-	import IconGo from '~icons/bi/arrow-right-short';
 	import IconSearch from '~icons/bi/search';
+	import IconAddFilter from '~icons/bi/plus-circle';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 
@@ -160,11 +160,14 @@
 
 	const filteredQualifierSuggestions = $derived.by(() => {
 		if (isSuggestingQualifiers) {
-			return qualifierSuggestions
+			const filtered = qualifierSuggestions
 				.map((q) => ({ q: q, score: score(q, qualifierSuggestionNeedle.word) }))
 				.filter((qs) => qs.score > 0)
 				.sort((a, b) => b.score - a.score)
 				.map((qs) => qs.q);
+
+			if (filtered.length) return filtered;
+			return qualifierSuggestions.filter((q) => q?.curated);
 		}
 
 		if (!hasCharBefore && !hasCharAfter && editedParentNode !== 'QualifierValue') {
@@ -173,7 +176,7 @@
 				: qualifierSuggestions.filter((q) => q?.curated);
 		}
 
-		return [];
+		return qualifierSuggestions.filter((q) => q?.curated);
 	});
 
 	function score(q: QualifierSuggestion2, needle: string): number {
@@ -208,7 +211,7 @@
 			.find((s) => s.startsWith(needleLower));
 	}
 
-	const showAddQualifiers = $derived(filteredQualifierSuggestions.length > 0);
+	const showAddQualifiers = $derived(true);
 
 	const NO_WILDCARD_AFTER_CHAR = [')', '"', '*', '?'];
 	const NO_WILDCARD_AFTER_WORD = ['AND', 'OR', 'NOT'];
@@ -537,35 +540,40 @@
 				</button>
 			</div>
 		{/snippet}
-		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
+		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedRow, isFocusedCell })}
 			{@const searchHelpRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
 			<nav class="mt-3 lg:mt-4">
 				{#if showAddQualifiers}
-					<div
-						id="supersearch-add-qualifier-key-label"
-						class="text-subtle mt-1.5 mb-1 px-4 text-sm font-medium lg:mt-0"
-					>
-						{page.data.t('supersearch.addQualifiers')}
-					</div>
-					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="flex flex-wrap items-center gap-2 px-4 py-2">
+					<div role="rowgroup" aria-label={page.data.t('supersearch.addQualifiers')}>
+						<div
+							role="row"
+							class={[
+								'flex min-h-14 flex-wrap items-center gap-2 px-4',
+								isFocusedRow(1) && 'focused-row bg-accent-50'
+							]}
+						>
+							<span
+								class="bg-accent-50/60 text-link mr-0.5 flex size-10 items-center justify-center rounded-lg"
+							>
+								<IconAddFilter class="size-4.5" />
+							</span>
 							{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
 								<button
 									type="button"
 									id={getCellId(1, cellIndex)}
 									class={[
-										'qualifier-suggestion  text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize last-of-type:mr-4',
+										'qualifier-suggestion text-body  hover:bg-accent-50 border-accent-200 inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap last-of-type:mr-4',
 										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
 									]}
 									onclick={() => addQualifierKey(key)}
 								>
-									{label}
+									<span class="first-letter:capitalize">{label}</span>
 								</button>
 								{#if filteredQualifierSuggestions.length > numCuratedQualifiers && cellIndex + 1 === numCuratedQualifiers}
 									<span class="text-subtle" aria-hidden="true">|</span>
 								{/if}
 							{/each}
-							{#if !isSuggestingQualifiers && filteredQualifierSuggestions.length > 0}
+							{#if !isSuggestingQualifiers && filteredQualifierSuggestions.length}
 								<button
 									type="button"
 									id={getCellId(1, filteredQualifierSuggestions.length + 1)}
@@ -597,27 +605,26 @@
 						</div>
 					</div>
 				{/if}
-				{#if q.trim().length}
-					<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
-						<h2 id="supersearch-results-label" aria-live="polite" class="font-medium">
-							{#if resultsCount}
-								<span class="sr-only">{resultsCount}</span> {page.data.t('supersearch.suggestions')}
-							{/if}
-						</h2>
-						<button type="submit">
-							<span class={['text-link flex items-center gap-1 hover:underline']}>
-								{page.data.t('supersearch.showAll')}
-								<IconGo aria-hidden="true" class="text-link size-6" />
+				<div
+					role="row"
+					class={[
+						'flex min-h-14 flex-wrap items-center gap-2 px-4 ',
+						isFocusedRow(1) && 'focused-row bg-accent-50'
+					]}
+				>
+					<button type="submit">
+						<span class={['text-link flex items-center gap-1 hover:underline']}>
+							<span
+								class="bg-accent-50/60 text-link mr-1 flex size-10 items-center justify-center rounded-lg"
+							>
+								<IconSearch aria-hidden="true" class="size-4.5" />
 							</span>
-						</button>
-					</div>
-				{/if}
+							{page.data.t('supersearch.showAll')}
+						</span>
+					</button>
+				</div>
 				{#if resultsCount && q.trim().length}
-					<div
-						role="rowgroup"
-						aria-labelledby="supersearch-results-label"
-						class="border-neutral border-t"
-					>
+					<div role="rowgroup" aria-label={page.data.t('supersearch.suggestions')}>
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
@@ -839,6 +846,7 @@
 	:global(.supersearch-dialog .focused .suggestion .focused-cell) {
 		background-color: var(--color-accent-50);
 		outline: 2px solid var(--color-outline);
+		@apply -outline-offset-2;
 	}
 
 	:global(.supersearch-dialog .focused-cell) {
@@ -966,15 +974,23 @@
 	}
 
 	.qualifier-suggestion {
-		box-shadow: 0 0 0 1px var(--color-accent-200);
-
-		&:hover {
-			background: var(--color-accent-100);
-		}
 		&.focused-cell {
-			background: var(--color-accent-100);
-			box-shadow: 0 0 0 5px var(--color-accent-100);
-			outline: 2px solid var(--color-outline);
+			background: var(--color-accent-200);
 		}
+	}
+
+	.commands kbd {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid var(--color-neutral-300);
+		font-size: 16px;
+		background-color: none;
+		aspect-ratio: 1 / 1;
+		width: 28px;
+		height: 28px;
+		border-radius: var(--radius-md);
+		margin-right: var(--spacing);
+		color: var(--color-placeholder);
 	}
 </style>
