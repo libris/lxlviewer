@@ -8,6 +8,7 @@ import { DebugFlags, type MyLibrariesType, type UserSettings } from '$lib/types/
 import displayWeb from '$lib/assets/json/display-web.json';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import { startRefreshLibraries } from '$lib/utils/getLibraries.server';
+import { getSubsetMapping } from '$lib/utils/subsetCache.server';
 
 type Util = [VocabUtil, DisplayUtil];
 let utilCache: Util | undefined;
@@ -86,6 +87,11 @@ export const handle = async ({ event, resolve }) => {
 
 	// set data-theme defined in themes.css
 	const dataTheme = site?.themeName || 'libris';
+
+	// get subset mapping
+	const _r = event.url.searchParams.get('_r');
+	const subsetMapping = await getSubsetMapping(_r, event.locals, lang);
+	event.locals.subsetMapping = subsetMapping;
 
 	return resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)

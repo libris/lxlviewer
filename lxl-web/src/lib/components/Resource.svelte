@@ -79,7 +79,7 @@
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
-	let searchMapping = $derived(searchResult?.mapping);
+	let searchMapping = $derived(searchResult?.mapping.filter((m) => m.variable === '_q'));
 	let filteredInstances = $derived(searchResult?.items);
 
 	const derivedFilteredInstances = $derived.by(() => {

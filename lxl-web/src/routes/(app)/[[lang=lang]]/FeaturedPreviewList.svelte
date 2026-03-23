@@ -87,7 +87,7 @@
 	</div>
 {/snippet}
 
-<div class="featured-previews contents">
+<div class={['featured-previews contents', previews?.totalItems === 0 && 'empty']}>
 	<SearchResultList
 		items={previews?.items || []}
 		type="horizontal"

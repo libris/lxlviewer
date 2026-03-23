@@ -300,7 +300,8 @@ export default {
 		showFewer: 'Visa färre utgåvor',
 		myLoans: 'Mina lån',
 		applyForCard: 'Ansök om lånekort',
-		refinedLibraries: 'Avgränsade bibliotek'
+		refinedLibraries: 'Avgränsade bibliotek',
+		findTitle: 'Hitta titeln'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'
