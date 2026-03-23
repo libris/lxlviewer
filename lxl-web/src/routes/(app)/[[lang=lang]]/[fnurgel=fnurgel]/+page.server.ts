@@ -4,7 +4,7 @@ import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
 import * as v from 'valibot';
 
-import { Bibframe, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
+import { Bibframe, Fmt, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
@@ -29,12 +29,16 @@ import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';
 import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
+import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 	const translate = await getTranslator(locale);
+
+	const subsetMapping = locals?.subsetMapping;
+	const subsetLibraries = getLibraryIdsFromMapping([subsetMapping]) || undefined;
 	const myLibraries = locals.userSettings?.myLibraries;
 
 	let resourceId: null | string = null;
@@ -76,8 +80,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			vocabUtil,
 			locale,
 			env.AUXD_SECRET,
-			myLibraries,
-			undefined
+			myLibraries
 		)[0];
 	} else if (resource.mainEntity.instanceOf) {
 		// instance - fetch work card
@@ -146,7 +149,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		displayUtil.lensAndFormat(mainEntity, LensType.WebDetails, locale),
 		...(_instances.length === 1
 			? [displayUtil.lensAndFormat(_instances[0], LensType.WebDetails, locale)]
-			: [])
+			: []),
+		displayUtil.lensAndFormat(resource, LensType.WebDetails, locale) // record
 	];
 
 	let searchResult: ResourceSearchResult | undefined;
@@ -163,7 +167,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			locale,
 			env.AUXD_SECRET,
 			myLibraries,
-			undefined
+			subsetLibraries
 		);
 	}
 
@@ -283,10 +287,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 					}
 				]
 			: []),
-		{
-			id: 'details',
-			label: translate('resource.details')
-		}
+		...(details.length && details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)
+			? [
+					{
+						id: 'details',
+						label: translate('resource.details')
+					}
+				]
+			: [])
 	];
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -303,7 +311,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdingLibraries: getHoldingLibraries(byType)
 	};
 
-	const subsetMapping = locals?.subsetMapping;
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return {

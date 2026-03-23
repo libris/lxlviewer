@@ -61,9 +61,9 @@
 		},
 		*/
 		{
-			href: page.data.localizeHref('/help'),
+			href: page.data.localizeHref('/help/search'),
 			label: page.data.t('appMenu.help'),
-			currentPage: page.route.id === '/(app)/[[lang=lang]]/help'
+			currentPage: page.route.id === '/(app)/[[lang=lang]]/help/search'
 		},
 		{
 			href: page.data.localizeHref('/about'),

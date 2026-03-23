@@ -1,4 +1,5 @@
 import type { DisplayMapping } from '$lib/types/search';
+import { JsonLd } from '$lib/types/xl';
 
 let prevSuggestMapping: DisplayMapping[] | undefined;
 
@@ -17,6 +18,9 @@ function getLabelFromMappings(
 	const valueLabel = suggestLabels.valueLabel || pageLabels.valueLabel;
 	let invalid = suggestLabels.invalid !== false && pageLabels.invalid !== false;
 	const removeLink = suggestLabels.removeLink || pageLabels.removeLink;
+	const type = suggestLabels.type || pageLabels.type;
+	const id = suggestLabels.id || pageLabels.id;
+	const isRedundantKeyLabel = pageLabels?.isRedundantKeyLabel || suggestLabels?.isRedundantKeyLabel;
 
 	if (suggestMapping?.length) {
 		// save latest mapping as fallback for error responses etc
@@ -28,7 +32,7 @@ function getLabelFromMappings(
 		invalid = false;
 	}
 
-	return { key, value, keyLabel, valueLabel, removeLink, invalid };
+	return { key, value, keyLabel, valueLabel, removeLink, invalid, type, id, isRedundantKeyLabel };
 }
 
 function iterateMapping(
@@ -40,6 +44,9 @@ function iterateMapping(
 	let valueLabel: string | undefined;
 	let removeLink: string | undefined;
 	let invalid: boolean | undefined;
+	let type: string | undefined;
+	let id: string | undefined;
+	let isRedundantKeyLabel: boolean | undefined;
 
 	if (mapping && Array.isArray(mapping)) {
 		_iterate(mapping);
@@ -55,12 +62,17 @@ function iterateMapping(
 						invalid = false;
 						keyLabel = el.label;
 					}
-					const isLinked = !!el.display?.['@id'];
+					const isLinked = !!el.display?.[JsonLd.ID];
 					if (isLinked && value === el?._value && el?.displayStr) {
 						// only use atomic ranges for linked values
 						valueLabel = el.displayStr;
-						removeLink = el.up?.['@id'];
+						removeLink = el.up?.[JsonLd.ID];
+						type = el?.display?.[JsonLd.TYPE];
+						if (type === 'Person') {
+							id = el?.display?.[JsonLd.ID];
+						}
 					}
+					isRedundantKeyLabel = el.isRedundantKeyLabel;
 				} else if (!key && value === el?._value && el?.displayStr) {
 					// ...unless a filter alias (no key, only value)
 					valueLabel = el.displayStr;
@@ -69,7 +81,7 @@ function iterateMapping(
 			});
 		}
 	}
-	return { keyLabel, valueLabel, removeLink, invalid };
+	return { keyLabel, valueLabel, removeLink, invalid, type, id, isRedundantKeyLabel };
 }
 
 export default getLabelFromMappings;

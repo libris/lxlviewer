@@ -331,11 +331,18 @@ export default {
         order: 22,
       },
     },
-    'concerning.issuanceType': {
-      sv: 'Utgivningssätt',
-      en: 'Issuance type',
+    'concerning.instanceOf.@type': {
+      sv: 'Verkstyp',
+      en: 'Work type',
       facet: {
         order: 23,
+      },
+    },
+    'concerning.@type': {
+      sv: 'Typ',
+      en: 'Type',
+      facet: {
+        order: 24,
       },
     },
     '@reverse': {

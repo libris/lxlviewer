@@ -3,7 +3,7 @@
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { LibraryWithLinksAndInstances, OrgId, UnknownLibrary } from '$lib/types/holdings';
 	import { JsonLd } from '$lib/types/xl';
-	import { getMyLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
+	import { getLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
 	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 	import { sortByDistance, userLocation } from '$lib/utils/geolocation.svelte';
 	import HoldingsNearMeBtn from './HoldingsNearMeBtn.svelte';
@@ -53,7 +53,7 @@
 	const myLibsHolders = $derived.by(() => {
 		if (!myLibraries) return [];
 		const holderIds = holders.map((holder) => holder[JsonLd.ID]);
-		const ids = getMyLibsFromHoldings(myLibraries, holderIds, libOrgs);
+		const ids = getLibsFromHoldings(myLibraries, holderIds, libOrgs);
 		return buildNestedLibraries(ids, myLibraries, holders);
 	});
 
@@ -180,7 +180,7 @@
 		bind:value={searchPhrase}
 		placeholder={page.data.t('holdings.findLibrary')}
 		aria-label={page.data.t('holdings.findLibrary')}
-		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-sm"
+		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-base sm:text-sm"
 		type="search"
 		name={page.data.t('holdings.findLibrary')}
 	/>

@@ -82,7 +82,7 @@
 	<nav
 		aria-label={page.data.t('search.pagination')}
 		data-testid="pagination"
-		class="pagination mt-4 py-4"
+		class="pagination @container/pagination mt-4 py-4"
 	>
 		<ol class="flex items-center justify-center">
 			<!-- prev -->
@@ -106,13 +106,13 @@
 				>
 			</li>
 			<!-- sm sequence -->
-			<li class="flex sm:hidden">
+			<li class="flex @lg/pagination:hidden">
 				<ol class="sequence flex items-center justify-center">
 					{@render sequence(MAX_PAGES_SM)}
 				</ol>
 			</li>
 			<!-- md sequence -->
-			<li class="hidden sm:flex">
+			<li class="hidden @lg/pagination:flex">
 				<ol class="sequence flex items-center justify-center">
 					{@render sequence(MAX_PAGES_MD)}
 				</ol>

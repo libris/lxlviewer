@@ -56,7 +56,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 	await page.waitForURL(/\/[a-z0-9]{15,}$/); // fnurgel route
 	await page.waitForLoadState('networkidle');
 	await expect(
-		page.getByRole('combobox').locator('.lxl-qualifier-key'),
+		page.getByRole('combobox').first().locator('.lxl-qualifier-key'),
 		'query is kept when navigating from find routes...'
 	).toContainText('Språk');
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-value')).toContainText('Svenska');

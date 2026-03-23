@@ -9,8 +9,14 @@
 		{ value: '', label: page.data.t('sort.relevancy') },
 		{ value: `_sortKeyByLang.${page.data.locale}`, label: page.data.t('sort.alphaAsc') },
 		{ value: `-_sortKeyByLang.${page.data.locale}`, label: page.data.t('sort.alphaDesc') },
-		{ value: '-@reverse.instanceOf.publication.year', label: page.data.t('sort.publicationDesc') },
-		{ value: '@reverse.instanceOf.publication.year', label: page.data.t('sort.publicationAsc') },
+		{
+			value: '-@reverse.instanceOf.publication.librissearch:year',
+			label: page.data.t('sort.publicationDesc')
+		},
+		{
+			value: '@reverse.instanceOf.publication.librissearch:year',
+			label: page.data.t('sort.publicationAsc')
+		},
 		{
 			value: '-reverseLinks.totalItemsByRelation.itemOf.instanceOf',
 			label: page.data.t('sort.holdingsDesc')

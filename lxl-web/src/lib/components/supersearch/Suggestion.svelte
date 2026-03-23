@@ -119,7 +119,7 @@
 <div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers?.length}>
 	{#if item.qualifiers?.length}
 		<a
-			href={resolve(page.data.localizeHref(primaryAddQualifierLink))}
+			href={page.data.localizeHref(primaryAddQualifierLink)}
 			id={getCellId?.(0)}
 			class:focused-cell={isFocusedCell?.(0)}
 		>

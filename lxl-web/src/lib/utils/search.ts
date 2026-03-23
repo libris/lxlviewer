@@ -14,7 +14,8 @@ import {
 	JsonLd,
 	LensType,
 	type Link,
-	Owl
+	Owl,
+	Platform
 } from '$lib/types/xl';
 
 import {
@@ -47,7 +48,7 @@ import { isLibraryOrg } from '$lib/utils/holdings';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
 import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
-import { getMyLibsFromHoldings } from '$lib/utils/holdings';
+import { getLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
@@ -59,7 +60,8 @@ export async function asResult(
 	locale: LangCode,
 	auxdSecret: string,
 	usePath?: string,
-	myLibraries?: MyLibrariesType
+	myLibraries?: MyLibrariesType,
+	subsetLibraries?: MyLibrariesType
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
 
@@ -86,6 +88,7 @@ export async function asResult(
 			locale,
 			auxdSecret,
 			myLibraries,
+			subsetLibraries,
 			maxScores
 		),
 		...('stats' in view && {
@@ -110,13 +113,17 @@ export function asSearchResultItem(
 	locale: LangCode,
 	auxdSecret: string,
 	myLibraries?: MyLibrariesType,
+	subsetLibraries?: MyLibrariesType,
 	maxScores?: Record<string, number>
 ): SearchResultItem[] {
 	return items
 		?.map((i) => cleanUpItem(i))
 		.map((i) => ({
 			...(myLibraries && {
-				heldByMyLibraries: getHeldByMyLibraries(i, myLibraries)
+				heldByMyLibraries: getHeldByLibraries(i, myLibraries)
+			}),
+			...(subsetLibraries && {
+				heldBySubset: getHeldByLibraries(i, subsetLibraries)
 			}),
 			...('_debug' in i && {
 				_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
@@ -198,17 +205,22 @@ export function displayMappings(
 							m._key;
 				}
 
+				const redundantLabel = asArray(m.property?.category).some(
+					(c) => getUriSlug(c[JsonLd.ID]) === Platform.impliedByObject
+				);
+
 				return {
 					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
-					display: displayUtil.lensAndFormat(value, LensType.Chip, locale),
-					displayStr: toString(displayUtil.lensAndFormat(value, LensType.Chip, locale)) || '',
+					display: displayUtil.lensAndFormat(value, LensType.WebToken, locale),
+					displayStr: toString(displayUtil.lensAndFormat(value, LensType.WebToken, locale)) || '',
 					label,
 					operator,
 					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
 					...('variable' in m && { variable: m.variable }),
 					_key: m._key,
-					_value: m._value
+					_value: m._value,
+					...(redundantLabel && { isRedundantKeyLabel: true })
 				} as DisplayMapping;
 			} else if (operator && operator in m) {
 				const mappingArr = Array.isArray(m[operator]) ? m[operator] : [m[operator]];
@@ -223,12 +235,12 @@ export function displayMappings(
 				return {
 					display: displayUtil.lensAndFormat(
 						{ ...defaultType, ...m.object },
-						LensType.Chip,
+						LensType.WebToken,
 						locale
 					),
 					displayStr:
 						toString(
-							displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.Chip, locale)
+							displayUtil.lensAndFormat({ ...defaultType, ...m.object }, LensType.WebToken, locale)
 						) || translate(`filterAlias.${m.object?.alias}`), // Allow frontend-defined displayStr for custom filter aliases
 					label: '',
 					operator,
@@ -357,10 +369,10 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getHeldByMyLibraries(item: FramedData, myLibraries: MyLibrariesType) {
-	const orgs = getRefinedOrgs(myLibraries);
-	const holdingsByType = getHoldersByType(getHoldingsByType(item));
-	return getMyLibsFromHoldings(myLibraries, holdingsByType, orgs);
+function getHeldByLibraries(item: FramedData, libraries: MyLibrariesType) {
+	const orgs = getRefinedOrgs(libraries);
+	const holdersByType = getHoldersByType(getHoldingsByType(item));
+	return getLibsFromHoldings(libraries, holdersByType, orgs);
 }
 
 function isFreeTextQuery(property: unknown): boolean {

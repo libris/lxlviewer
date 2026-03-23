@@ -20,7 +20,7 @@ export default {
 		aboutBeta: 'About the beta',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
-		accessiblityStatement: 'Accessibility statement',
+		accessibilityStatement: 'Accessibility statement',
 		changeLang: 'På svenska'
 	},
 	header: {
@@ -58,7 +58,8 @@ export default {
 		description: 'Description',
 		filter: 'Filter',
 		reference: 'List',
-		searchIn: 'Search in'
+		searchIn: 'Search in',
+		keyword: 'Filter / keyword'
 	},
 	myPages: {
 		pageTitle: 'My pages',
@@ -81,12 +82,12 @@ export default {
 		feedbackLink: 'http://survey.kb.se/librisbeta/en',
 		customerSupport: 'Libris customer support',
 		cookies: 'Manage cookies',
-		gdpr: 'Processing of personal data',
-		accessibilityStatement: 'Accessibility statement'
+		gdpr: 'Processing of personal data'
 	},
 	facet: {
 		q: 'Free text search',
 		'librissearch:findCategory': 'Category',
+		'librissearch:identifyCategory': 'Category',
 		'librissearch:hasInstanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
@@ -123,6 +124,7 @@ export default {
 		language: 'Language',
 		subject: 'Subject',
 		yearPublished: 'Year published',
+		'librissearch:yearPublished': 'Year published',
 		intendedAudience: 'Intended audience',
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
@@ -185,7 +187,8 @@ export default {
 		allInFacet: 'All in',
 		noExactMatches: 'No exact matches',
 		showingResultsFor: 'Showing results for',
-		freeOnline: 'Free online'
+		freeOnline: 'Free online',
+		searchHelp: 'Libris search help'
 	},
 	supersearch: {
 		search: 'Search',
@@ -297,7 +300,8 @@ export default {
 		showFewer: 'Show fewer editions',
 		myLoans: 'My loans',
 		applyForCard: 'Apply for library card',
-		refinedLibraries: 'Refined libraries'
+		refinedLibraries: 'Refined libraries',
+		findTitle: 'Find the title'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'

@@ -3,7 +3,8 @@ export const DEFAULT_FACET_VALUES_SHOWN = 8;
 export const DEFAULT_FACET_SORT = 'hits.desc';
 export const CUSTOM_FACET_SORT = {
 	bibliography: 'alpha.asc',
-	itemHeldBy: 'alpha.asc',
+	'librissearch:itemHeldBy': 'alpha.asc',
+	'librissearch:itemHeldByOrg': 'alpha.asc',
 	'_categoryByCollection.identify': 'alpha.asc'
 };
 export const ACCESS_FILTERS = ['freeOnline', 'alias-myLibraries'];

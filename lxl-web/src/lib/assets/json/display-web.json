@@ -355,6 +355,7 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Identifier",
 					"showProperties": [
+						"rdf:type",
 						{ "alternateProperties": ["value", "marc:hiddenValue"] },
 						"typeNote",
 						"hasNote",
@@ -514,7 +515,29 @@
 					"@id": "Instance-web-tokens",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["hasTitle"]
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{
+									"subPropertyOf": "hasTitle",
+									"range": "Title"
+								},
+								"hasTitle"
+							]
+						}
+					]
+				},
+				"Library": {
+					"@id": "Library-web-tokens",
+					"@type": "fresnel:Lens",
+					"showProperties": ["name", "qualifier"],
+					"classLensDomain": "Library"
+				},
+				"bibdb:Organization": {
+					"@id": "bibdb:Organization-web-tokens",
+					"@type": "fresnel:Lens",
+					"showProperties": ["name"],
+					"classLensDomain": "bibdb:Organization"
 				}
 			}
 		},
@@ -544,7 +567,17 @@
 					"@id": "Instance-web-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["hasTitle"]
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{
+									"subPropertyOf": "hasTitle",
+									"range": "Title"
+								},
+								"hasTitle"
+							]
+						}
+					]
 				}
 			}
 		},
@@ -686,8 +719,9 @@
 						{
 							"alternateProperties": [{ "subPropertyOf": "hasTitle", "range": "KeyTitle" }]
 						},
-						"translationOf",
-						"_uniformTitle"
+						{
+							"alternateProperties": ["translationOf", "_uniformTitle"]
+						}
 					]
 				},
 				"Instance": {
@@ -837,8 +871,6 @@
 						{ "inverseOf": "continuedBy" },
 						"continuedBy",
 						{ "inverseOf": "continues" },
-						"continues",
-						{ "inverseOf": "continuedBy" },
 						"continuesInPart",
 						"continuedInPartBy",
 						"relatedTo",
@@ -935,6 +967,27 @@
 						"videoCharacteristic",
 						"soundContent",
 						"soundCharacteristic"
+					]
+				},
+				"Record": {
+					"@id": "Record-web-details",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Record",
+					"NOTE": "Avoiding SystemNumber e.g. (BOKR)9789198057300 with the identifiedBy below",
+					"showProperties": [
+						"bibliography",
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "identifiedBy", "range": "LibrisIIINumber" }
+							]
+						},
+						{
+							"alternateProperties": [{ "subPropertyOf": "identifiedBy", "range": "Local" }]
+						},
+						{
+							"alternateProperties": [{ "subPropertyOf": "identifiedBy", "range": "SMDBNumber" }]
+						},
+						"controlNumber"
 					]
 				}
 			}
@@ -1243,6 +1296,7 @@
 			"@id": "sorted-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
+				"bibliography",
 				"classification",
 				"closeMatch",
 				"hasDataset",

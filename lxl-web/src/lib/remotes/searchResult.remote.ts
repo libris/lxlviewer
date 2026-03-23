@@ -12,11 +12,16 @@ import { SearchResultsSchema } from '$lib/schemas/searchResult';
 import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 
 export const getSearchResults = query(SearchResultsSchema, async (params) => {
-	const { fetch, locals, params: routeParams } = getRequestEvent();
+	const { fetch, locals, params: routeParams, url } = getRequestEvent();
 	const searchParams = new URLSearchParams(Object.entries(params));
 
 	if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
 		searchParams.set('_debug', 'true');
+	}
+
+	const _r = url.searchParams.get('_r');
+	if (_r) {
+		searchParams.set('_r', _r);
 	}
 
 	const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);

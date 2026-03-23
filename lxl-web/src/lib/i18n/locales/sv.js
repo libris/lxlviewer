@@ -56,9 +56,9 @@ export default {
 		pageDescription:
 			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.',
 		description: 'Beskrivning',
-		filter: 'Filter',
 		reference: 'Lista',
-		searchIn: 'Söker i'
+		searchIn: 'Söker i',
+		keyword: 'Filter / nyckelord'
 	},
 	myPages: {
 		pageTitle: 'My pages',
@@ -86,6 +86,7 @@ export default {
 	facet: {
 		q: 'Fritextsökning',
 		'librissearch:findCategory': 'Kategori',
+		'librissearch:identifyCategory': 'Kategori',
 		'librissearch:hasInstanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'instanceOf.@type': 'Verkstyp',
@@ -122,6 +123,7 @@ export default {
 		language: 'Språk',
 		subject: 'Ämne',
 		yearPublished: 'Utgivningsår',
+		'librissearch:yearPublished': 'Utgivningsår',
 		intendedAudience: 'Målgrupp',
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
@@ -184,7 +186,8 @@ export default {
 		allInFacet: 'Allt inom',
 		noExactMatches: 'Inga exakta träffar',
 		showingResultsFor: 'Visar resultat för',
-		freeOnline: 'Fritt online'
+		freeOnline: 'Fritt online',
+		searchHelp: 'Så söker du i Libris'
 	},
 	supersearch: {
 		search: 'Sök',
@@ -297,7 +300,8 @@ export default {
 		showFewer: 'Visa färre utgåvor',
 		myLoans: 'Mina lån',
 		applyForCard: 'Ansök om lånekort',
-		refinedLibraries: 'Avgränsade bibliotek'
+		refinedLibraries: 'Avgränsade bibliotek',
+		findTitle: 'Hitta titeln'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'

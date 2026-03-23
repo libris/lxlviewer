@@ -32,9 +32,19 @@ export function getHoldersByType(holdingsByType: HoldingsByType): HoldersByType 
 	);
 }
 
-export function getHoldingsByType(mainEntity: HoldingMainEntity): HoldingsByType {
-	const instances = mainEntity[JsonLd.REVERSE]?.instanceOf;
-	if (!instances) return {};
+export function getHoldingsByType(mainEntity: HoldingMainEntity | HoldingInstance): HoldingsByType {
+	let instances = null;
+	if (!mainEntity[JsonLd.REVERSE]) return {};
+	if ('instanceOf' in mainEntity[JsonLd.REVERSE]) {
+		instances = mainEntity[JsonLd.REVERSE].instanceOf;
+	}
+	if ('itemOf' in mainEntity[JsonLd.REVERSE]) {
+		instances = [mainEntity] as HoldingInstance[];
+	}
+
+	if (!instances) {
+		return {};
+	}
 
 	const result: HoldingsByType = {};
 

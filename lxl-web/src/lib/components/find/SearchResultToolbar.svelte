@@ -20,7 +20,8 @@
 
 	let showFiltersModal = $state(false);
 	const numHits = $derived(searchResult.totalItems);
-	const filterCount = $derived(getFiltersCount(searchResult.mapping));
+	const mapping = $derived(searchResult.mapping.filter((m) => m.variable === '_q'));
+	const filterCount = $derived(getFiltersCount(mapping));
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
 		const root = mapping.filter(
@@ -95,6 +96,6 @@
 				{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
 			</span>
 		{/snippet}
-		<Filters facets={searchResult.facets || []} mapping={searchResult.mapping} />
+		<Filters facets={searchResult.facets || []} {mapping} />
 	</Modal>
 {/if}

@@ -102,7 +102,7 @@
 					</ol>
 					<Pagination data={searchResult} />
 				</main>
-				<aside class="search-result-aside min-w-[300px]">
+				<aside class="search-result-aside min-w-75">
 					<div class="hidden @5xl/content:block">
 						<Toolbar />
 					</div>

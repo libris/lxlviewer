@@ -92,7 +92,7 @@
 				</a>
 			{:else if numInstances > 1 && hasSomeItemLink}
 				<button
-					class="text-link ml-2 whitespace-nowrap"
+					class="text-link ml-2 text-sm whitespace-nowrap"
 					type="button"
 					onclick={() => (expanded = !expanded)}
 				>

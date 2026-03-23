@@ -58,7 +58,8 @@ export interface SearchResultItem {
 	typeStr: string;
 	selectTypeStr: string; // FIXME
 	mediaLinks: DisplayDecorated | null;
-	heldByMyLibraries?: (LibraryId | OrgId)[] | null;
+	heldByMyLibraries?: (LibraryId | OrgId)[];
+	heldBySubset?: (LibraryId | OrgId)[];
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }
@@ -116,6 +117,7 @@ export interface DisplayMapping {
 	variable?: string;
 	_key?: string;
 	_value?: string;
+	isRedundantKeyLabel?: boolean;
 }
 
 export interface PartialCollectionView {
@@ -198,12 +200,15 @@ export interface SearchMapping extends MappingObj {
 }
 
 interface ObjectProperty {
+	'@type': 'ObjectProperty';
 	'@id'?: string;
+	category?: Link[];
 }
 
 export interface DatatypeProperty {
 	'@type': 'DataTypeProperty';
 	'@id': string;
+	category?: Link[];
 }
 
 interface InvalidProperty {

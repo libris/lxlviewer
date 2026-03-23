@@ -50,6 +50,8 @@
 		expandedAriaLabelledBy?: string;
 		expandedAriaLabel?: string;
 		expandedAriaDescribedBy?: string;
+		collapsedAriaKeyshortcuts?: string;
+		expandedAriaKeyshortcuts?: string;
 		autofocus?: boolean;
 		endpoint: string | URL;
 		queryFn?: QueryFunction;
@@ -112,6 +114,8 @@
 		expandedAriaLabelledBy,
 		expandedAriaLabel,
 		expandedAriaDescribedBy,
+		collapsedAriaKeyshortcuts,
+		expandedAriaKeyshortcuts,
 		autofocus,
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
@@ -145,7 +149,7 @@
 	let comboboxElement: HTMLDivElement | undefined = $state();
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
-	let activeColIndex: number = $state(0);
+	let activeColIndex: number = $state(-1);
 	let prevValue: string = value;
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
@@ -210,7 +214,10 @@
 			'aria-haspopup': 'dialog', // indicates the availability and type of interactive popup element that can be triggered by the element
 			'aria-controls': `${id}-dialog`, // identifies the popup element
 			'aria-expanded': expanded.toString(), // indicates if the popup element is open
-			'aria-multiline': 'false' // aria-multiline isn't allowed inside elements with role=combobox,
+			'aria-multiline': 'false', // aria-multiline isn't allowed inside elements with role=combobox
+			...(collapsedAriaKeyshortcuts && {
+				'aria-keyshortcuts': collapsedAriaKeyshortcuts
+			})
 		})
 	);
 
@@ -236,6 +243,9 @@
 			'aria-autocomplete': 'list', // indicates that the autocomplete behavior of the input is to suggest a list of possible values in a popup
 			'aria-controls': `${id}-grid`, // identifies the popup element that lists suggested values
 			'aria-multiline': 'false',
+			...(expandedAriaKeyshortcuts && {
+				'aria-keyshortcuts': expandedAriaKeyshortcuts
+			}),
 			...(includeAriaActiveDescendant && {
 				'aria-activedescendant': `${id}-item-${activeRowIndex}x${activeColIndex}` // enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element
 			})
@@ -752,15 +762,19 @@
 	});
 
 	$effect(() => {
-		collapsedEditorView?.dispatch({
-			effects: collapsedContentAttributesCompartment.reconfigure(collapsedContentAttributes)
-		});
+		if (collapsedContentAttributes !== initialCollapsedContentAttributes) {
+			collapsedEditorView?.dispatch({
+				effects: collapsedContentAttributesCompartment.reconfigure(collapsedContentAttributes)
+			});
+		}
 	});
 
 	$effect(() => {
-		expandedEditorView?.dispatch({
-			effects: expandedContentAttributesCompartment.reconfigure(expandedContentAttributes)
-		});
+		if (expandedContentAttributes !== initialExpandedContentAttributes) {
+			expandedEditorView?.dispatch({
+				effects: expandedContentAttributesCompartment.reconfigure(expandedContentAttributes)
+			});
+		}
 	});
 
 	$effect(() => {
@@ -832,7 +846,7 @@
 {/snippet}
 
 <div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
-	<div class="supersearch-combobox" aria-keyshortcuts="Shift+7 Control+K Meta+K">
+	<div class="supersearch-combobox">
 		{@render inputRow?.({
 			expanded: false,
 			inputField: collapsedInputSnippet,

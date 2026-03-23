@@ -210,9 +210,22 @@
 
 	const showAddQualifiers = $derived(filteredQualifierSuggestions.length > 0);
 
+	const NO_WILDCARD_AFTER_CHAR = [')', '"', '*', '?'];
+	const NO_WILDCARD_AFTER_WORD = ['AND', 'OR', 'NOT'];
+
+	const lastWordBeforeCursor = $derived.by(() => {
+		const before = q.slice(0, cursor);
+		const match = before.match(/(\S+)$/);
+		return match ? match[1] : '';
+	});
+
 	const isValidWildcardPosition = $derived.by(() => {
 		// a valid wildcard position is at end of word (inside group, not inside quote)
-		if (hasCharBefore && ![')', '"', '*'].includes(q.charAt(cursor - 1))) {
+		if (
+			hasCharBefore &&
+			!NO_WILDCARD_AFTER_CHAR.includes(q.charAt(cursor - 1)) &&
+			!NO_WILDCARD_AFTER_WORD.includes(lastWordBeforeCursor)
+		) {
 			if (!hasCharAfter || q.charAt(cursor) === ')') {
 				return true;
 			}
@@ -416,6 +429,7 @@
 		{expandedAriaLabelledBy}
 		{expandedAriaLabel}
 		{expandedAriaDescribedBy}
+		collapsedAriaKeyshortcuts={`Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`}
 		autofocus={isHomeRoute ? true : undefined}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
@@ -463,7 +477,7 @@
 						aria-label={page.data.t('general.close')}
 						class={[
 							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 sm:hidden',
-							expanded && 'h-14 w-13'
+							expanded && 'mr-1 h-14 w-13'
 						]}
 						onclick={onclickClose}
 					>
@@ -493,7 +507,7 @@
 					<svelte:element
 						this={clearUrl ? 'a' : 'button'}
 						role={clearUrl ? undefined : 'button'}
-						href={clearUrl ? resolve(clearUrl) : undefined}
+						href={clearUrl ? clearUrl : undefined}
 						onclick={(e: MouseEvent) => {
 							userClearedSearch = true;
 							onclickClear(e);
@@ -533,13 +547,13 @@
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="flex flex-wrap items-center gap-2 py-2 pl-4">
+						<div role="row" class="flex flex-wrap items-center gap-2 px-4 py-2">
 							{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
 								<button
 									type="button"
 									id={getCellId(1, cellIndex)}
 									class={[
-										'qualifier-suggestion  text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap capitalize last-of-type:mr-4',
+										'qualifier-suggestion  text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize last-of-type:mr-4',
 										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
 									]}
 									onclick={() => addQualifierKey(key)}
@@ -555,7 +569,7 @@
 									type="button"
 									id={getCellId(1, filteredQualifierSuggestions.length + 1)}
 									class={[
-										'text-2xs link-subtle ml-1',
+										'link-subtle ml-1 text-sm sm:text-xs',
 										isFocusedCell(1, filteredQualifierSuggestions.length + 1) &&
 											'focused-cell outline-2'
 									]}
@@ -570,7 +584,7 @@
 										href={resolve(page.data.localizeHref('/help/filters'))}
 										id={getCellId(1, filteredQualifierSuggestions.length + 2)}
 										class={[
-											'text-2xs link-subtle ml-1',
+											'link-subtle ml-1 text-sm sm:text-xs',
 											isFocusedCell(1, filteredQualifierSuggestions.length + 2) &&
 												'focused-cell outline-2'
 										]}
@@ -622,7 +636,7 @@
 	.supersearch-input {
 		height: 100%;
 		min-height: var(--search-input-height);
-		font-size: var(--text-sm);
+		font-size: var(--text-base);
 		border-radius: var(--radius-md);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 
@@ -641,7 +655,7 @@
 			}
 		}
 
-		@variant @5xl {
+		@variant lg {
 			font-size: 0.9375rem;
 		}
 	}
@@ -690,6 +704,19 @@
 			}
 			@variant lg {
 				margin-top: calc(var(--spacing) * 3.5);
+				margin-inline: calc(var(--spacing) * 1.75);
+			}
+		}
+	}
+
+	/* adjust combobox for navbar with subset filter */
+	:global(.with-subset .supersearch-combobox) {
+		&:has(.expanded) {
+			@variant lg {
+				margin-inline: calc(var(--spacing) * 1.25);
+			}
+
+			@media screen and (min-width: 1380px) {
 				margin-inline: calc(var(--spacing) * 1.75);
 			}
 		}
@@ -844,20 +871,24 @@
 	.expanded.supersearch-input :global(.cm-scroller) {
 		min-height: calc(var(--spacing) * 14);
 		scrollbar-width: thin;
-		max-height: 106px;
+		max-height: 128px;
 		overflow-x: hidden;
 
 		@variant sm {
 			min-height: calc(var(--spacing) * 11);
 		}
+	}
 
-		@variant lg {
-			margin-top: 0px;
+	.expanded.supersearch-input :global(.cm-content) {
+		margin-block: calc(var(--spacing) * 1.5);
+
+		@variant sm {
+			margin-block: 0;
 		}
 	}
 
 	.supersearch-input :global(.cm-line) {
-		line-height: 30px;
+		line-height: 32px;
 		padding-left: calc(var(--spacing) * 11);
 
 		@variant sm {
@@ -891,18 +922,6 @@
 		}
 	}
 
-	.expanded.supersearch-input :global(.cm-content) {
-		padding: calc(var(--spacing) * 3) 0;
-
-		@variant sm {
-			padding: calc(var(--spacing) * 1.5) 0;
-		}
-
-		@variant lg {
-			padding: calc(var(--spacing) * 2) 0;
-		}
-	}
-
 	:global(.supersearch-dialog .supersearch-input .cm-line) {
 		padding-left: 0;
 		@variant sm {
@@ -919,24 +938,12 @@
 	}
 
 	:global(.codemirror-container .cm-placeholder) {
-		font-size: var(--text-xs);
+		font-size: var(--text-base);
 		color: var(--color-placeholder);
-		margin-top: 1px;
+		white-space: nowrap;
 
-		@variant sm {
-			font-size: var(--text-sm);
-		}
-
-		@variant @7xl {
-			margin-top: 0px;
-		}
-		@variant @5xl {
-			font-size: 0.9375rem;
-		}
-	}
-	.expanded :global(.codemirror-container .cm-placeholder) {
 		@variant lg {
-			margin-top: 1px;
+			font-size: 0.9375rem;
 		}
 	}
 
