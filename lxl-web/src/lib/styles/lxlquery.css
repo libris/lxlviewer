@@ -25,11 +25,20 @@
 	background-color: var(--color-accent-50);
 }
 
-.lxl-qualifier-value {
+.lxl-qualifier-value,
+.lxl-qualifier-alias {
 	padding-block: calc(var(--spacing) * 1.5);
 	border-block: 1px solid var(--color-accent-200);
-	border-inline-end: 1px solid var(--color-accent-200);
+}
+
+.lxl-qualifier-value {
 	border-radius: 0 var(--radius-md) var(--radius-md) 0;
+	border-inline-end: 1px solid var(--color-accent-200);
+}
+
+.lxl-qualifier-alias {
+	border-radius: var(--radius-md) 0 0 var(--radius-md);
+	border-inline-start: 1px solid var(--color-accent-200);
 }
 
 .atomic .lxl-qualifier-value,
