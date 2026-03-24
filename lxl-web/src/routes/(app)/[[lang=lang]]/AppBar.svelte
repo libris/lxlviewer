@@ -152,7 +152,7 @@
 	});
 
 	const IDs = {
-		search: 'search',
+		search: 'app-bar-search',
 		appBarMenu: 'app-bar-menu',
 		appBarMenuLabel: 'app-bar-menu-label',
 		appBarSearchLabel: 'app-bar-search-label',
@@ -296,7 +296,7 @@
 					'hidden target:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit' // enable toggling using target/anchor (so it also works when JavaScript is disabled)
 			]}
 		>
-			<form action={findActionUrl} class="mx-auto w-full min-w-0">
+			<form id="search-form" action={findActionUrl} class="mx-auto w-full min-w-0">
 				{#if isHomeRoute}
 					<hgroup
 						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
@@ -323,7 +323,7 @@
 					</hgroup>
 				{/if}
 				<AppSearch
-					id="search"
+					id="app-search"
 					name="_q"
 					--page-y-offset={pageYOffset}
 					bind:this={appSearchComponent}
@@ -399,7 +399,7 @@
 			height="100"
 			alt=""
 			class="pointer-events-none h-full w-full  select-none"
-		/>
+		>
 		<figcaption class="text-3xs absolute right-3 bottom-3 opacity-50">
 			Namn Namnsson, Lorem ipsum dolor (1924). Foto: Namn Namnsson
 		</figcaption>

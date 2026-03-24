@@ -143,13 +143,14 @@
 
 <div bind:this={tocElement} class="contents">
 	{#if mobile}
+		<h2 class="sr-only">{page.data.t('tableOfContents.onThisPage')}</h2>
 		<div class="border-b-neutral border-b p-1 text-xs sm:text-sm">
 			<label
 				id={`${uidPrefix}toc-label`}
 				class="bg-page text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2 has-checked:[&+nav]:block"
 			>
 				<IconToC class="size-4" />
-				<h2>{page.data.t('tableOfContents.onThisPage')}</h2>
+				<span>{page.data.t('tableOfContents.onThisPage')}</span>
 				<input
 					type="checkbox"
 					role="switch"
@@ -157,7 +158,6 @@
 					aria-label={openOnMobile
 						? page.data.t('tableOfContents.hide')
 						: page.data.t('tableOfContents.show')}
-					aria-expanded={openOnMobile}
 					aria-controls={`${uidPrefix}toc-items`}
 					class="h-0 appearance-none focus:outline-0"
 					onkeydown={handleCheckboxKeydown}
