@@ -383,7 +383,12 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 	if (
 		!groupAtAnchor &&
 		!groupAtHead &&
-		((groupBeforeAnchor && !groupBeforeHead) || (groupAfterAnchor && !groupAfterHead)) &&
+		((groupBeforeAnchor &&
+			tr.newSelection.main.from >= groupBeforeAnchor.from &&
+			!groupBeforeHead) ||
+			(groupAfterAnchor &&
+				tr.newSelection.main.from >= groupAfterAnchor.from &&
+				!groupAfterHead)) &&
 		tr.newDoc.length ===
 			tr.startState.doc.length -
 				(tr.startState.selection.main.to - tr.startState.selection.main.from)
