@@ -188,7 +188,8 @@ test('user can toggle expanded search using alt key + arrow up or down (without 
 	await expect(page.getByRole('dialog')).not.toBeVisible();
 	await page.keyboard.press('Alt+ArrowDown');
 	await expect(page.getByRole('dialog')).toBeVisible();
-	await page.getByRole('dialog').getByRole('combobox').pressSequentially('x');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toBeVisible();
+	await page.getByRole('dialog').getByRole('combobox').press('x');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('abxc');
 });
 
