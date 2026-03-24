@@ -35,6 +35,8 @@ const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn?: Qualifier
 		{
 			decorations: (instance) => instance.decorations,
 			provide: () => [
+				EditorState.transactionFilter.of(replaceNbspWithSpace),
+
 				qualifierStateField,
 				stopEditingOnEnterOrEsc,
 				qualifierValidatorFacet.of(validateFn),
@@ -51,8 +53,7 @@ const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn?: Qualifier
 				EditorState.transactionFilter.of(balanceInnerParens),
 				// <--
 
-				EditorState.transactionFilter.of(insertSpaceAroundQualifier),
-				EditorState.transactionFilter.of(replaceNbspWithSpace)
+				EditorState.transactionFilter.of(insertSpaceAroundQualifier)
 			]
 		}
 	);
