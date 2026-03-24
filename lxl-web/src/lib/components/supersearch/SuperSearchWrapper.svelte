@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mount, onMount, unmount } from 'svelte';
+	import { mount, onMount, unmount, onDestroy } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -103,6 +103,10 @@
 		timeout = setTimeout(() => {
 			debouncedLoading = current;
 		}, 300);
+	});
+
+	onDestroy(() => {
+		if (timeout) clearTimeout(timeout);
 	});
 
 	let cursor = $derived(selection?.head || 0);
