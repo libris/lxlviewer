@@ -17,9 +17,9 @@ export async function getPersonImage(id: string) {
 		}
 
 		const data = await res.json();
-		const image = data.image.url;
+		const image = data.image?.url;
 
-		images.set(id, image);
+		if (image) images.set(id, image);
 		pending.delete(id);
 
 		return image;
