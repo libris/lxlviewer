@@ -486,3 +486,21 @@ test('selecting from anchor ghost group to ghost group start and then inserting 
 	await combo.pressSequentially('a');
 	await expect(page.getByTestId('supersearch-input-value')).toHaveText('title:(a)');
 });
+
+test("doesn't re-add parens if entire qualifier is removed/edited", async ({ page }) => {
+	await page.getByRole('combobox').click();
+	const combo = page.getByRole('dialog').getByRole('combobox');
+	await combo.pressSequentially('title:hej');
+	await page.keyboard.down('Shift');
+	for (let i = 0; i < 6; i++) await combo.press('ArrowLeft');
+	await page.keyboard.up('Shift');
+	await combo.press('Backspace');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('');
+	await combo.pressSequentially('title:hej');
+	await combo.press('Home');
+	await page.keyboard.down('Shift');
+	for (let i = 0; i < 11; i++) await combo.press('ArrowRight');
+	await page.keyboard.up('Shift');
+	await combo.press('a');
+	await expect(page.getByTestId('supersearch-input-value')).toHaveText('(a)');
+});
