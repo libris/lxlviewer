@@ -13,6 +13,7 @@ import {
 	removeGhostGroup
 } from './ghostGroup.js';
 import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
+import replaceNbspWithSpace from './replaceNbspWithSpace.js';
 
 const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn?: QualifierRenderer) => {
 	return ViewPlugin.fromClass(
@@ -50,7 +51,8 @@ const lxlQualifierPlugin = (validateFn: QualifierValidator, renderFn?: Qualifier
 				EditorState.transactionFilter.of(balanceInnerParens),
 				// <--
 
-				EditorState.transactionFilter.of(insertSpaceAroundQualifier)
+				EditorState.transactionFilter.of(insertSpaceAroundQualifier),
+				EditorState.transactionFilter.of(replaceNbspWithSpace)
 			]
 		}
 	);
