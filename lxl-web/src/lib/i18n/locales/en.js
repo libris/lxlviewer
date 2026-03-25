@@ -199,7 +199,8 @@ export default {
 		addQualifiers: 'Add filter',
 		loading: 'Loading...',
 		suggestions: 'Suggestions',
-		showAll: 'Show search results'
+		showAll: 'Show search results',
+		searchHelp: 'Search help'
 	},
 	sort: {
 		sort: 'Sort',

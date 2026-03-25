@@ -538,7 +538,7 @@
 			</div>
 		{/snippet}
 		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav class="mt-3 mb-2 lg:mt-4">
+			<nav class="mt-3 lg:mt-4">
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
@@ -620,6 +620,17 @@
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
+				<div role="row" class="border-neutral mt-2 flex justify-end gap-4 border-t px-4 text-sm">
+					<!-- TODO: Add keyboard interaction help here -->
+					<a
+						href={resolve(page.data.localizeHref('/help'))}
+						class={[
+							'text-link flex min-h-14 items-center justify-end overflow-hidden px-4 hover:underline focus:underline'
+						]}
+					>
+						{page.data.t('supersearch.searchHelp')}
+					</a>
+				</div>
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
