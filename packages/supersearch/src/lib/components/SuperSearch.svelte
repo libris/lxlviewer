@@ -471,7 +471,14 @@
 			event.key === 'ArrowRight' ||
 			event.key === 'Tab'
 		) {
-			const rows = Array.from(dialog?.querySelectorAll(':scope [role=row]') || []);
+			const arrowKeyRows = Array.from(
+				dialog?.querySelectorAll(':scope [role=row]:not([data-skip-row-on-arrow-key])') || []
+			);
+
+			const rows =
+				event.key === 'Tab'
+					? Array.from(dialog?.querySelectorAll(':scope [role=row]') || [])
+					: arrowKeyRows;
 
 			const getColsInInputRow = () => {
 				return comboboxElement
@@ -527,7 +534,7 @@
 						hideExpandedSearch();
 					} else {
 						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
-							activeRowIndex = rows.length;
+							activeRowIndex = arrowKeyRows.length;
 							activeColIndex = 0;
 						} else if (activeRowIndex >= 1) {
 							activeRowIndex--;
@@ -549,10 +556,10 @@
 					}
 					break;
 				case 'ArrowDown':
-					if (wrappingArrowKeyNavigation && activeRowIndex === rows.length) {
+					if (wrappingArrowKeyNavigation && activeRowIndex === arrowKeyRows.length) {
 						activeRowIndex = 0;
 						activeColIndex = defaultInputCol;
-					} else if (activeRowIndex < rows.length) {
+					} else if (activeRowIndex < arrowKeyRows.length) {
 						activeRowIndex++;
 						const cols = getColsInRow(activeRowIndex - 1);
 						if (activeRowIndex === 1) {
