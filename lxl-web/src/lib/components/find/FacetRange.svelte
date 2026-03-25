@@ -36,7 +36,6 @@
 
 <form
 	class="[&_label]:text-subtle grid grid-cols-[1fr_1fr_auto] items-end gap-2 p-2"
-	action=""
 	onsubmit={handleSubmit}
 >
 	<div class="flex flex-col gap-1">

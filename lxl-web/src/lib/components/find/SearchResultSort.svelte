@@ -45,7 +45,7 @@
 		<select
 			id="search-sort"
 			class="btn btn-primary w-px sm:w-auto"
-			form="search"
+			form="search-form"
 			onchange={handleSortChange}
 		>
 			{#each sortOptions as option (option.value)}

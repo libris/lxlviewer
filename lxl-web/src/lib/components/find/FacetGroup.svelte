@@ -227,8 +227,7 @@
 				data-testid={`facet-sort-${data.dimension}`}
 			>
 				{#each sortOptions as option (option.value)}
-					<option selected={option.value == currentSort} value={option.value}>{option.label}</option
-					>
+					<option value={option.value}>{option.label}</option>
 				{/each}
 			</select>
 			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
