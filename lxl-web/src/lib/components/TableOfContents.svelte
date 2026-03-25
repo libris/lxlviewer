@@ -158,6 +158,7 @@
 					aria-label={openOnMobile
 						? page.data.t('tableOfContents.hide')
 						: page.data.t('tableOfContents.show')}
+					aria-expanded={openOnMobile}
 					aria-controls={`${uidPrefix}toc-items`}
 					class="h-0 appearance-none focus:outline-0"
 					onkeydown={handleCheckboxKeydown}
