@@ -23,7 +23,6 @@
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
 	import IconSearch from '~icons/bi/search';
-	import IconAddFilter from '~icons/bi/plus-circle';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 
@@ -563,18 +562,18 @@
 									type="button"
 									id={getCellId(1, 0)}
 									class={['flex w-full items-center gap-2 px-4']}
+									aria-keyshortcuts="Shift+7"
 								>
-									<span
-										class="bg-accent-200/30 text-link mr-0.5 flex size-10 items-center justify-center rounded-lg"
+									<kbd
+										class="bg-accent-200/30 text-link mr-0.5 flex size-10 items-center justify-center rounded-lg text-xl"
+										title="Shift+7"
+										aria-hidden="true"
 									>
-										<IconAddFilter class="size-4.5" />
-									</span>
-									<span class="text-link mr-1.5">
+										/
+									</kbd>
+									<span class="text-link whitespace-nowrap">
 										{page.data.t('supersearch.add')}
 										{page.data.t('supersearch.filter')}
-										<span class="sr-only"
-											>{page.data.t('search.showMore')} {page.data.t('supersearch.filter')}</span
-										>
 									</span>
 								</button>
 								<ul class="flex items-center gap-2">
@@ -675,9 +674,22 @@
 				<div
 					role="row"
 					data-skip-row-on-arrow-key
-					class="border-neutral mt-2 flex justify-end gap-4 border-t px-4 text-sm"
+					class="border-neutral mt-2 flex justify-between gap-4 border-t px-4 text-sm"
 				>
-					<!-- TODO: Add keyboard interaction help here -->
+					<ul class="commands text-placeholder flex cursor-default items-center gap-4">
+						<li>
+							<kbd title="Arrow up">↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
+							{page.data.t('supersearch.navigate')}
+						</li>
+						<li>
+							<kbd>↵</kbd>
+							{#if isFocusedCell(0, 1)}
+								{page.data.t('search.clear')}
+							{:else}
+								{page.data.t('supersearch.search')}
+							{/if}
+						</li>
+					</ul>
 					<a
 						href={resolve(page.data.localizeHref('/help'))}
 						id={getCellId(searchHelpRowIndex, 0)}
