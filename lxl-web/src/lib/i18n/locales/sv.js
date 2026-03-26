@@ -202,8 +202,8 @@ export default {
 		goto: 'Gå till',
 		add: 'Lägg till',
 		filter: 'filter',
-		showAllSearchResults: 'Visa alla sökresultat',
-		showResultsFor: 'Visa resultat för'
+		showResultsFor: 'Visa resultat för',
+		showMoreQualifiers: 'Visa fler sökfilter'
 	},
 	sort: {
 		sort: 'Sortera',

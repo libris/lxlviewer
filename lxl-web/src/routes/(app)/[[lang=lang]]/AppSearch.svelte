@@ -62,7 +62,7 @@
 			aria-labelledby={isHomeRoute ? 'page-title' : undefined}
 			aria-label={!isHomeRoute ? page.data.t('header.search') : undefined}
 			bind:this={fallbackInputElement}
-			class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:px-3 lg:text-[0.9375rem] sm:@3xl:pl-4"
+			class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:px-3 sm:@3xl:pl-4"
 		/>
 		<button
 			type="submit"

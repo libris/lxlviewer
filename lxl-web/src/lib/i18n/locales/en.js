@@ -203,8 +203,8 @@ export default {
 		goto: 'Go to',
 		add: 'Add',
 		filter: 'filter',
-		showAllSearchResults: 'Show all search results',
-		showResultsFor: 'Show results for'
+		showResultsFor: 'Show all results for',
+		showMoreQualifiers: 'Show more filters'
 	},
 	sort: {
 		sort: 'Sort',

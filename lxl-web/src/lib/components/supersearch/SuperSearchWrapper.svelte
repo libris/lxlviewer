@@ -23,6 +23,8 @@
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
 	import IconSearch from '~icons/bi/search';
+	import IconShowMore from '~icons/bi/three-dots-vertical';
+	//import IconSearchHistory from '~icons/bi/clock-history';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 
@@ -215,7 +217,9 @@
 			.find((s) => s.startsWith(needleLower));
 	}
 
-	const showAddQualifiers = $derived(true);
+	const showQualifiersRow = $derived(true);
+	const showResultRows = $derived(q.trim().length);
+	const showHistoryRows = $derived(!showResultRows);
 
 	const NO_WILDCARD_AFTER_CHAR = [')', '"', '*', '?'];
 	const NO_WILDCARD_AFTER_WORD = ['AND', 'OR', 'NOT'];
@@ -551,59 +555,80 @@
 			isFocusedRow,
 			isFocusedCell
 		})}
-			{@const searchHelpRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
-
+			{@const searchHelpRowIndex = 3 + (resultsCount || 0)}
+			{@const qualifiersRowIndex = 1}
 			<nav class="@container mt-3 lg:mt-4">
-				{#if showAddQualifiers}
-					<div role="rowgroup" aria-label={page.data.t('supersearch.addQualifiers')}>
-						<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(1) && 'focused-row']}>
-							<div class={['flex min-h-14', isFocusedCell(1, 0) && 'focused-cell outline-2']}>
+				{#if showQualifiersRow}
+					{#snippet addQualifiersLabel(options?: { invisible: boolean })}
+						<span class="flex min-h-14 items-center gap-2 pr-2 pl-4">
+							<kbd
+								class="bg-accent-50 text-link mr-0.5 flex size-10 items-center justify-center rounded-lg text-xl"
+								title={options?.invisible ? undefined : 'Shift+7'}
+							>
+								/
+							</kbd>
+							<span class="text-link whitespace-nowrap">
+								{page.data.t('supersearch.add')}
+								{page.data.t('supersearch.filter')}
+							</span>
+						</span>
+					{/snippet}
+					<div
+						role="row"
+						class={[
+							'has-[:hover]:bg-accent-50 relative',
+							isFocusedRow(qualifiersRowIndex) && 'focused-row'
+						]}
+					>
+						<button
+							type="button"
+							id={getCellId(1, 0)}
+							class={[
+								'z-10 w-full -outline-offset-2',
+								isFocusedCell(qualifiersRowIndex, 0) && 'focused-cell'
+							]}
+						>
+							{@render addQualifiersLabel()}
+						</button>
+						<span class="pointer-events-none absolute top-0 left-0 flex size-full items-center">
+							<span class="invisible" aria-hidden="true">
+								{@render addQualifiersLabel({ invisible: true })}
+							</span>
+							<ul
+								class="relative z-20 flex h-14 items-center gap-2 overflow-x-hidden overflow-y-visible px-2"
+							>
+								{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
+									<li>
+										<button
+											type="button"
+											id={getCellId(qualifiersRowIndex, cellIndex + 1)}
+											class={[
+												'qualifier-suggestion text-body border-accent-200 hover:bg-accent-200/50 pointer-events-auto inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap',
+												isFocusedCell(qualifiersRowIndex, cellIndex + 1) && 'focused-cell'
+											]}
+											onclick={() => addQualifierKey(key)}
+										>
+											<span class="first-letter:capitalize">{label}</span>
+										</button>
+									</li>
+								{/each}
+							</ul>
+							<div class="flex-1">
 								<button
 									type="button"
-									id={getCellId(1, 0)}
-									class={['flex w-full items-center gap-2 px-4']}
-									aria-keyshortcuts="Shift+7"
+									id={getCellId(1, 100)}
+									class={[
+										'qualifier-suggestion text-body hover:bg-accent-50 border-accent-200 inline-flex size-10 shrink-0 items-center justify-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap last-of-type:mr-4',
+										isFocusedCell(1, 100) && 'focused-cell outline-2'
+									]}
+									onclick={() => {}}
+									aria-label={page.data.t('supersearch.showAllQualifiers')}
 								>
-									<kbd
-										class="bg-accent-200/30 text-link mr-0.5 flex size-10 items-center justify-center rounded-lg text-xl"
-										title="Shift+7"
-										aria-hidden="true"
-									>
-										/
-									</kbd>
-									<span class="text-link whitespace-nowrap">
-										{page.data.t('supersearch.add')}
-										{page.data.t('supersearch.filter')}
-									</span>
+									<IconShowMore class="text-subtle size-4" />
 								</button>
-								<ul class="flex items-center gap-2">
-									{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
-										<li>
-											<button
-												type="button"
-												id={getCellId(1, cellIndex + 1)}
-												class={[
-													'qualifier-suggestion text-body hover:bg-accent-50 border-accent-200 inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap'
-												]}
-												onclick={() => addQualifierKey(key)}
-											>
-												<span class="first-letter:capitalize">{label}</span>
-											</button>
-										</li>
-									{/each}
-									<button
-										type="button"
-										id={getCellId(1, 100)}
-										class={[
-											'qualifier-suggestion text-body hover:bg-accent-50 border-accent-200 inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap last-of-type:mr-4',
-											isFocusedCell(1, 100) && 'focused-cell outline-2'
-										]}
-										onclick={() => {}}
-									>
-										:
-									</button>
-								</ul>
-								<!--
+							</div>
+						</span>
+						<!--
 							{#if !isSuggestingQualifiers && filteredQualifierSuggestions.length}
 								<button
 									type="button"
@@ -633,48 +658,63 @@
 									</a>
 								{/if}
 							{/if}
-														-->
-							</div>
-						</div>
+						-->
 					</div>
 				{/if}
-				<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
-					<button
-						type="submit"
-						id={getCellId(2, 0)}
-						class={[
-							'flex min-h-14 w-full items-center px-4 hover:*:underline',
-							isFocusedCell(2, 0) && 'focused-cell'
-						]}
-					>
-						<span class={['text-link flex items-center gap-1 whitespace-nowrap hover:underline']}>
-							<span
-								class="bg-accent-200/30 text-link mr-1 flex size-10 items-center justify-center rounded-lg"
+				{#if showHistoryRows}
+					<div role="rowgroup" class="min-h-14">
+						<!--
+						<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
+							<button
+								type="button"
+								id={getCellId(2, 0)}
+								class={[
+									'flex min-h-14 w-full items-center px-4 hover:*:underline',
+									isFocusedCell(2, 0) && 'focused-cell'
+								]}
 							>
-								<IconSearch aria-hidden="true" class="size-4.5" />
-							</span>
-							{#if q.trim().length}
+								<span
+									class={['text-link flex items-center gap-1 whitespace-nowrap hover:underline']}
+								>
+									<span
+										class="bg-accent-200/30 text-link mr-1 flex size-10 items-center justify-center rounded-lg"
+									>
+										<IconSearchHistory aria-hidden="true" class="size-4.5" />
+									</span>
+								</span>
+							</button>
+						</div>
+						-->
+					</div>
+				{:else if showResultRows}
+					<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
+						<button
+							type="submit"
+							id={getCellId(2, 0)}
+							class={[
+								'flex min-h-14 w-full items-center px-4 hover:*:underline',
+								isFocusedCell(2, 0) && 'focused-cell'
+							]}
+						>
+							<span class={['text-link flex items-center gap-1 whitespace-nowrap hover:underline']}>
+								<span
+									class="bg-accent-200/30 text-link mr-1 flex size-10 items-center justify-center rounded-lg"
+								>
+									<IconSearch aria-hidden="true" class="size-4.5" />
+								</span>
 								{page.data.t('supersearch.showResultsFor')}
 								'{q.trim()}'
-							{:else}
-								{page.data.t('supersearch.showAllSearchResults')}
-							{/if}
-						</span>
-					</button>
-				</div>
-				{#if resultsCount && q.trim().length}
-					<div
-						role="rowgroup"
-						class="border-neutral mt-2 border-t pt-3"
-						aria-label={page.data.t('supersearch.suggestions')}
-					>
-						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 3 : 2 })}
+							</span>
+						</button>
+					</div>
+					<div role="rowgroup" aria-label={page.data.t('supersearch.suggestions')}>
+						{@render resultsSnippet({ rowOffset: showQualifiersRow ? 3 : 2 })}
 					</div>
 				{/if}
 				<div
 					role="row"
 					data-skip-row-on-arrow-key
-					class="border-neutral mt-2 flex justify-between gap-4 border-t px-4 text-sm"
+					class="border-neutral flex justify-between gap-4 border-t pl-4 text-sm"
 				>
 					<ul class="commands text-placeholder flex cursor-default items-center gap-4">
 						<li>
@@ -694,8 +734,8 @@
 						href={resolve(page.data.localizeHref('/help'))}
 						id={getCellId(searchHelpRowIndex, 0)}
 						class={[
-							'text-link flex min-h-14 items-center justify-end overflow-hidden px-4 hover:underline',
-							isFocusedCell(searchHelpRowIndex, 0) && 'underline'
+							'text-link mr-3 flex min-h-14 items-center justify-end px-1 hover:underline',
+							isFocusedCell(searchHelpRowIndex, 0) && 'underline outline-2 -outline-offset-2'
 						]}
 					>
 						{page.data.t('supersearch.searchHelp')}
@@ -734,10 +774,6 @@
 			&:focus-within {
 				outline: 4px solid var(--color-primary-200);
 			}
-		}
-
-		@variant lg {
-			font-size: 0.9375rem;
 		}
 	}
 
@@ -1025,10 +1061,6 @@
 		font-size: var(--text-base);
 		color: var(--color-placeholder);
 		white-space: nowrap;
-
-		@variant lg {
-			font-size: 0.9375rem;
-		}
 	}
 
 	.qualifier-suggestion {
