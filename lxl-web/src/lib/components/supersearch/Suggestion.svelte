@@ -16,6 +16,7 @@
 	type Props = {
 		item: SuperSearchResultItem;
 		getCellId?: (cellIndex: number) => string;
+		// isFocusedRow?: (rowIndex: number) => boolean,
 		isFocusedCell?: (cellIndex: number) => boolean;
 		leadingContent?: Snippet;
 	};
@@ -28,10 +29,9 @@
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
 	{#if item.qualifiers?.length}
 		<span
-			class="text-subtle order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline"
+			class="qualifier-label text-subtle order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline"
 		>
 			{page.data.t('general.add')}
-
 			<span class="hidden lowercase lg:inline">
 				{item.qualifiers[0].label}
 			</span>
@@ -40,7 +40,9 @@
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="resource-heading flex gap-1 overflow-hidden text-sm font-medium whitespace-nowrap">
+			<h2
+				class="resource-heading text-body flex gap-1 overflow-hidden text-sm font-medium whitespace-nowrap @3xl:text-base"
+			>
 				<span class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}

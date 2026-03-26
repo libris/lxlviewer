@@ -1,17 +1,13 @@
 .lxl-qualifier {
 	color: var(--text-body);
 	transition: background-color 0.1s ease;
-	font-size: var(--text-sm);
+	font-size: 0.9375rem;
 	white-space: nowrap;
 	/* pointer-events: none; */
-
-	@media screen and (min-width: 640px) {
-		font-size: var(--text-sm);
-	}
 }
 
 .lxl-qualifier.editing {
-	padding-block: calc(var(--spacing) * 1.5);
+	padding-block: calc(var(--spacing) * 1.75);
 	padding-inline: var(--spacing);
 	border: 2px dashed var(--color-accent-400);
 	border-radius: var(--radius-md);
@@ -19,7 +15,7 @@
 
 .lxl-qualifier-key {
 	padding-inline: var(--spacing);
-	padding-block: calc(var(--spacing) * 1.5);
+	padding-block: calc(var(--spacing) * 1.75);
 	border: 1px solid var(--color-accent-200);
 	border-radius: var(--radius-md) 0 0 var(--radius-md);
 	background-color: var(--color-accent-50);
@@ -27,7 +23,7 @@
 
 .lxl-qualifier-value,
 .lxl-qualifier-alias {
-	padding-block: calc(var(--spacing) * 1.5);
+	padding-block: calc(var(--spacing) * 1.75);
 	border-block: 1px solid var(--color-accent-200);
 }
 
@@ -45,7 +41,7 @@
 .atomic .lxl-qualifier-alias {
 	color: var(--color-link);
 	font-weight: var(--font-weight-medium);
-	padding-block: calc(var(--spacing) * 1.5);
+	padding-block: calc(var(--spacing) * 1.75);
 	padding-inline: var(--spacing);
 	border-inline-end: none;
 	background-color: var(--color-accent-50);
@@ -61,7 +57,7 @@
 }
 
 .lxl-qualifier-operator {
-	padding-block: calc(var(--spacing) * 1.5);
+	padding-block: calc(var(--spacing) * 1.75);
 	border-block: 1px solid var(--color-accent-200);
 	border-inline-end: 1px solid var(--color-accent-200);
 	background-color: var(--color-accent-50);
@@ -76,7 +72,7 @@
 }
 
 .lxl-ghost-paren {
-	padding-block: calc(var(--spacing) * 1.5);
+	padding-block: calc(var(--spacing) * 1.75);
 	color: transparent;
 	user-select: none;
 }
@@ -87,7 +83,7 @@
 .lxl-qualifier-remove {
 	border-block: 1px solid var(--color-accent-200);
 	border-inline-end: 1px solid var(--color-accent-200);
-	padding-block: calc(var(--spacing) * 1.5);
+	padding-block: calc(var(--spacing) * 1.75);
 	padding-inline: var(--spacing);
 	color: var(--color-subtle);
 	background-color: var(--color-accent-50);

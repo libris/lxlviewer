@@ -48,7 +48,13 @@
 {#snippet imageSnippet()}
 	<span class="empty:hidden" aria-hidden="true">
 		{#if image}
-			<img src={image} alt="" class="mr-0.75 mb-0.75 inline size-5 rounded-full object-contain" />
+			<img
+				src={image}
+				alt=""
+				width={20}
+				height={20}
+				class="mr-0.75 mb-0.75 inline size-5 rounded-full object-contain"
+			/>
 		{:else if type}
 			<TypeIcon {type} class="mr-0.75 mb-0.75 inline text-sm" />
 		{/if}

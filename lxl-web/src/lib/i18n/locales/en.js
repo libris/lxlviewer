@@ -197,8 +197,14 @@ export default {
 		addQualifiers: 'Add filter',
 		loading: 'Loading...',
 		suggestions: 'Suggestions',
-		showAll: 'Show search results',
-		searchHelp: 'Search help'
+		searchHelp: 'Search help',
+		navigate: 'Navigate',
+		showAll: 'Show all',
+		goto: 'Go to',
+		add: 'Add',
+		filter: 'filter',
+		showAllSearchResults: 'Show all search results',
+		showResultsFor: 'Show results for'
 	},
 	sort: {
 		sort: 'Sort',

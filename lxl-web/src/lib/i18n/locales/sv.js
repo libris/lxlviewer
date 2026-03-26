@@ -196,8 +196,14 @@ export default {
 		addQualifiers: 'Lägg till filter',
 		loading: 'Laddar...',
 		suggestions: 'Förslag',
-		showAll: 'Visa sökresultat',
-		searchHelp: 'Sökhjälp'
+		searchHelp: 'Sökhjälp',
+		showAll: 'Visa alla',
+		navigate: 'Navigera',
+		goto: 'Gå till',
+		add: 'Lägg till',
+		filter: 'filter',
+		showAllSearchResults: 'Visa alla sökresultat',
+		showResultsFor: 'Visa resultat för'
 	},
 	sort: {
 		sort: 'Sortera',

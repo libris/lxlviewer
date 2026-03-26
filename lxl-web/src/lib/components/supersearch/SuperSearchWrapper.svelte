@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { mount, onMount, unmount, onDestroy } from 'svelte';
 	import { page } from '$app/state';
-	import { afterNavigate } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { afterNavigate } from '$app/navigation';
+	// import { resolve } from '$app/paths';
 	import {
 		SuperSearch,
 		lxlQualifierPlugin,
@@ -256,7 +257,7 @@
 		qualifierSuggestionNeedle.word.length >= MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS
 	);
 
-	const numCuratedQualifiers = $derived(qualifierSuggestions.filter((q) => q.curated).length);
+	// const numCuratedQualifiers = $derived(qualifierSuggestions.filter((q) => q.curated).length);
 
 	function editedWord(str: string, cursor: number) {
 		let from = cursor;
@@ -315,7 +316,7 @@
 			// TODO don't need this if we can check qualifier editing state?
 			// TODO don't suggest same
 			// TODO handle replacement of qualifier more smoothly
-			const insert = [':', '=', '<', '>'].includes(q.charAt(qualifierSuggestionNeedle.to))
+			const insert = [':', '=', '<', '>', '~'].includes(q.charAt(qualifierSuggestionNeedle.to))
 				? qualifierKey
 				: `${qualifierKey}:`;
 
@@ -332,7 +333,7 @@
 				userEvent: 'input.complete'
 			});
 		} else {
-			const insert = `${qualifierKey}:`;
+			const insert = `${qualifierKey}: `;
 
 			superSearch?.dispatchChange({
 				change: {
@@ -341,8 +342,8 @@
 					insert
 				},
 				selection: {
-					anchor: cursor + insert.length,
-					head: cursor + insert.length
+					anchor: cursor + insert.length - 1,
+					head: cursor + insert.length - 1
 				},
 				userEvent: 'input.complete'
 			});
@@ -470,7 +471,7 @@
 		})}
 			<div
 				class={[
-					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
+					'supersearch-input bg-input! flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
 					expanded && 'expanded sm:mx-1.5 @5xl:mx-2.25',
 					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
@@ -544,39 +545,66 @@
 				</button>
 			</div>
 		{/snippet}
-		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedRow, isFocusedCell })}
+		{#snippet expandedContent({
+			resultsCount,
+			resultsSnippet,
+			getCellId,
+			isFocusedRow,
+			isFocusedCell
+		})}
 			{@const searchHelpRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
-			<nav class="mt-3 lg:mt-4">
+
+			<nav class="@container mt-3 lg:mt-4">
 				{#if showAddQualifiers}
 					<div role="rowgroup" aria-label={page.data.t('supersearch.addQualifiers')}>
-						<div
-							role="row"
-							class={[
-								'flex min-h-14 flex-wrap items-center gap-2 px-4',
-								isFocusedRow(1) && 'focused-row bg-accent-50'
-							]}
-						>
-							<span
-								class="bg-accent-50/60 text-link mr-0.5 flex size-10 items-center justify-center rounded-lg"
-							>
-								<IconAddFilter class="size-4.5" />
-							</span>
-							{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
+						<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(1) && 'focused-row']}>
+							<div class={['flex min-h-14', isFocusedCell(1, 0) && 'focused-cell outline-2']}>
 								<button
 									type="button"
-									id={getCellId(1, cellIndex)}
-									class={[
-										'qualifier-suggestion text-body  hover:bg-accent-50 border-accent-200 inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap last-of-type:mr-4',
-										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
-									]}
-									onclick={() => addQualifierKey(key)}
+									id={getCellId(1, 0)}
+									class={['flex w-full items-center gap-2 px-4']}
 								>
-									<span class="first-letter:capitalize">{label}</span>
+									<span
+										class="bg-accent-200/30 text-link mr-0.5 flex size-10 items-center justify-center rounded-lg"
+									>
+										<IconAddFilter class="size-4.5" />
+									</span>
+									<span class="text-link mr-1.5">
+										{page.data.t('supersearch.add')}
+										{page.data.t('supersearch.filter')}
+										<span class="sr-only"
+											>{page.data.t('search.showMore')} {page.data.t('supersearch.filter')}</span
+										>
+									</span>
 								</button>
-								{#if filteredQualifierSuggestions.length > numCuratedQualifiers && cellIndex + 1 === numCuratedQualifiers}
-									<span class="text-subtle" aria-hidden="true">|</span>
-								{/if}
-							{/each}
+								<ul class="flex items-center gap-2">
+									{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
+										<li>
+											<button
+												type="button"
+												id={getCellId(1, cellIndex + 1)}
+												class={[
+													'qualifier-suggestion text-body hover:bg-accent-50 border-accent-200 inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap'
+												]}
+												onclick={() => addQualifierKey(key)}
+											>
+												<span class="first-letter:capitalize">{label}</span>
+											</button>
+										</li>
+									{/each}
+									<button
+										type="button"
+										id={getCellId(1, 100)}
+										class={[
+											'qualifier-suggestion text-body hover:bg-accent-50 border-accent-200 inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap last-of-type:mr-4',
+											isFocusedCell(1, 100) && 'focused-cell outline-2'
+										]}
+										onclick={() => {}}
+									>
+										:
+									</button>
+								</ul>
+								<!--
 							{#if !isSuggestingQualifiers && filteredQualifierSuggestions.length}
 								<button
 									type="button"
@@ -606,30 +634,42 @@
 									</a>
 								{/if}
 							{/if}
+														-->
+							</div>
 						</div>
 					</div>
 				{/if}
-				<div
-					role="row"
-					class={[
-						'flex min-h-14 flex-wrap items-center gap-2 px-4 ',
-						isFocusedRow(1) && 'focused-row bg-accent-50'
-					]}
-				>
-					<button type="submit">
-						<span class={['text-link flex items-center gap-1 hover:underline']}>
+				<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
+					<button
+						type="submit"
+						id={getCellId(2, 0)}
+						class={[
+							'flex min-h-14 w-full items-center px-4 hover:*:underline',
+							isFocusedCell(2, 0) && 'focused-cell'
+						]}
+					>
+						<span class={['text-link flex items-center gap-1 whitespace-nowrap hover:underline']}>
 							<span
-								class="bg-accent-50/60 text-link mr-1 flex size-10 items-center justify-center rounded-lg"
+								class="bg-accent-200/30 text-link mr-1 flex size-10 items-center justify-center rounded-lg"
 							>
 								<IconSearch aria-hidden="true" class="size-4.5" />
 							</span>
-							{page.data.t('supersearch.showAll')}
+							{#if q.trim().length}
+								{page.data.t('supersearch.showResultsFor')}
+								'{q.trim()}'
+							{:else}
+								{page.data.t('supersearch.showAllSearchResults')}
+							{/if}
 						</span>
 					</button>
 				</div>
 				{#if resultsCount && q.trim().length}
-					<div role="rowgroup" aria-label={page.data.t('supersearch.suggestions')}>
-						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+					<div
+						role="rowgroup"
+						class="border-neutral mt-2 border-t pt-3"
+						aria-label={page.data.t('supersearch.suggestions')}
+					>
+						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 3 : 2 })}
 					</div>
 				{/if}
 				<div
@@ -853,8 +893,10 @@
 		@apply -outline-offset-2;
 	}
 
+	:global(.supersearch-dialog .focused-row) {
+		background-color: var(--color-accent-100);
+	}
 	:global(.supersearch-dialog .focused-cell) {
-		background-color: var(--color-accent-50);
 		outline: 2px solid var(--color-accent);
 	}
 
