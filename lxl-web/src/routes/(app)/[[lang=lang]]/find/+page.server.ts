@@ -3,14 +3,15 @@ import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
-import { appendMyLibrariesParam, asResult } from '$lib/utils/search';
+import { appendMyLibrariesParam, asResult, displayFacets } from '$lib/utils/search';
 import { DebugFlags } from '$lib/types/userSettings';
 import { displayMappingToString } from '$lib/utils/displayMappingToString.js';
 import getPageTitle from '$lib/utils/getPageTitle';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server.js';
 import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
+import { getTranslator } from '$lib/i18n';
 
-export const load = async ({ params, url, locals, fetch }) => {
+export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
@@ -33,6 +34,8 @@ export const load = async ({ params, url, locals, fetch }) => {
 	if (locals.site?.searchSite) {
 		searchParams.set('_site', locals.site?.searchSite);
 	}
+
+	searchParams.set('_stats', 'falseThisRequest');
 
 	const recordsRes = await fetch(
 		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}${debug}`,
@@ -94,5 +97,28 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const pageTitle = getPageTitle(displayMappingToString(searchResult.mapping), locals.site?.name);
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
-	return { searchResult, pageTitle, refinedOrgs };
+	async function getFacets() {
+		const paramsMappingOnly = new URLSearchParams(searchParams);
+		paramsMappingOnly.set('_stats', 'true');
+		paramsMappingOnly.set('_limit', '0');
+		const recordsRes = await fetch(
+			`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(paramsMappingOnly, myLibraries).toString()}${debug}`
+		);
+		const view = (await recordsRes.json()) as PartialCollectionView;
+
+		const translate = await getTranslator(locale);
+
+		return displayFacets(view, displayUtil, locale, translate, '');
+	}
+
+	const facetsPromise = getFacets();
+
+	return {
+		searchResult,
+		pageTitle,
+		refinedOrgs,
+		streamed: {
+			facets: isDataRequest ? facetsPromise : await facetsPromise
+		}
+	};
 };
