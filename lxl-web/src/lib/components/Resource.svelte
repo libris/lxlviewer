@@ -500,9 +500,11 @@
 		}
 
 		& :global(.summary) {
-			display: inline-block;
-			/*max-width: 60ch;*/
-			text-align: justify;
+			max-width: 60ch;
+		}
+
+		& :global(div[data-property='tableOfContents']) {
+			max-width: 60ch;
 		}
 
 		& :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents']) {
