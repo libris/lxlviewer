@@ -22,7 +22,7 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
-	const facets: Promise<Facet[]> = $derived(page.data.streamed.facets);
+	const facets: Promise<Facet[]> = $derived(page.data.facets);
 
 	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
 	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
@@ -85,7 +85,7 @@
 	>
 		<LeadingPane>
 			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
-				<Filters facets={facets || []} />
+				<Filters {facets} />
 			</div>
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">

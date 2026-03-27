@@ -30,7 +30,7 @@
 		if (searchParams.has('_offset')) {
 			searchParams.set('_offset', '0');
 		}
-		goto(`${page.url.pathname}?${searchParams.toString()}`, { invalidateAll: true });
+		goto(`${page.url.pathname}?${searchParams.toString()}`, { invalidate: ['app:search'] });
 	}
 </script>
 

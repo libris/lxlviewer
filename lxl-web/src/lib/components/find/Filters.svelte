@@ -9,7 +9,7 @@
 	import SearchMapping from './SearchMapping.svelte';
 
 	type Props = {
-		facets: Promise<Facet[]>;
+		facets: Promise<Facet[]> | null;
 		mapping?: DisplayMapping[];
 	};
 
@@ -21,7 +21,10 @@
 	let current = 0;
 
 	$effect(() => {
-		if (!facets) return;
+		if (!facets) {
+			if (!data) loading = true;
+			return;
+		}
 
 		const id = ++current;
 		loading = true;
