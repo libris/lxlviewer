@@ -169,9 +169,12 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	.suggestion:has(:global(*:hover)) {
-		background-color: var(--color-accent-50);
+	.focused-cell .resource-heading,
+	.suggestion:has(:global(*:hover)) .resource-heading {
+		text-decoration: underline;
+		color: var(--color-link) !important;
 	}
+
 	.suggestion button,
 	.suggestion a {
 		display: flex;

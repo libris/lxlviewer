@@ -110,16 +110,11 @@
 		background: var(--color-input);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 		border-radius: var(--radius-md);
-		font-size: var(--text-xs);
-		@variant sm {
-			font-size: var(--text-sm);
-		}
 
 		&:not(:has([type='submit']:focus)) {
 			&:has(:focus) {
-				box-shadow: 0 0 0 2px var(--color-accent-500);
-				outline: 4px solid var(--color-accent-100);
-				outline-offset: 2px;
+				box-shadow: 0 0 0 8px var(--color-primary-200);
+				outline: 2px solid var(--color-outline);
 			}
 		}
 	}

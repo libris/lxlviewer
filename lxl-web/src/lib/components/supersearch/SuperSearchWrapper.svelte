@@ -23,7 +23,7 @@
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
 	import IconSearch from '~icons/bi/search';
-	import IconShowMore from '~icons/bi/three-dots-vertical';
+	import IconAddFilter from '~icons/bi/plus-circle';
 	//import IconSearchHistory from '~icons/bi/clock-history';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
@@ -559,14 +559,9 @@
 			{@const qualifiersRowIndex = 1}
 			<nav class="@container mt-3 lg:mt-4">
 				{#if showQualifiersRow}
-					{#snippet addQualifiersLabel(options?: { invisible: boolean })}
-						<span class="flex min-h-14 items-center gap-2 pr-2 pl-4">
-							<kbd
-								class="bg-accent-50 text-link mr-0.5 flex size-10 items-center justify-center rounded-lg text-xl"
-								title={options?.invisible ? undefined : 'Shift+7'}
-							>
-								/
-							</kbd>
+					{#snippet addQualifiersLabel()}
+						<span class="flex min-h-14 items-center gap-2 pl-4">
+							<IconAddFilter class="text-link size-4.5" />
 							<span class="text-link whitespace-nowrap">
 								{page.data.t('supersearch.add')}
 								{page.data.t('supersearch.filter')}
@@ -576,7 +571,7 @@
 					<div
 						role="row"
 						class={[
-							'has-[:hover]:bg-accent-50 relative',
+							'has-[:hover]:bg-accent-50/75 relative',
 							isFocusedRow(qualifiersRowIndex) && 'focused-row'
 						]}
 					>
@@ -584,7 +579,7 @@
 							type="button"
 							id={getCellId(1, 0)}
 							class={[
-								'z-10 w-full -outline-offset-2',
+								'z-10 w-full -outline-offset-2 hover:underline',
 								isFocusedCell(qualifiersRowIndex, 0) && 'focused-cell'
 							]}
 						>
@@ -592,7 +587,7 @@
 						</button>
 						<span class="pointer-events-none absolute top-0 left-0 flex size-full items-center">
 							<span class="invisible" aria-hidden="true">
-								{@render addQualifiersLabel({ invisible: true })}
+								{@render addQualifiersLabel()}
 							</span>
 							<ul
 								class="relative z-20 flex h-14 items-center gap-2 overflow-x-hidden overflow-y-visible px-2"
@@ -618,13 +613,12 @@
 									type="button"
 									id={getCellId(1, 100)}
 									class={[
-										'qualifier-suggestion text-body hover:bg-accent-50 border-accent-200 inline-flex size-10 shrink-0 items-center justify-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap last-of-type:mr-4',
+										'qualifier-suggestion text-body hover:bg-accent-50 inline-flex size-10 shrink-0 items-center justify-center gap-1.5 rounded-md px-2 text-sm font-medium whitespace-nowrap',
 										isFocusedCell(1, 100) && 'focused-cell outline-2'
 									]}
 									onclick={() => {}}
 									aria-label={page.data.t('supersearch.showAllQualifiers')}
 								>
-									<IconShowMore class="text-subtle size-4" />
 								</button>
 							</div>
 						</span>
@@ -697,11 +691,7 @@
 							]}
 						>
 							<span class={['text-link flex items-center gap-1 whitespace-nowrap hover:underline']}>
-								<span
-									class="bg-accent-200/30 text-link mr-1 flex size-10 items-center justify-center rounded-lg"
-								>
-									<IconSearch aria-hidden="true" class="size-4.5" />
-								</span>
+								<IconSearch aria-hidden="true" class="size-4.5" />
 								{page.data.t('supersearch.showResultsFor')}
 								'{q.trim()}'
 							</span>
@@ -759,21 +749,21 @@
 		min-height: var(--search-input-height);
 		font-size: var(--text-base);
 		border-radius: var(--radius-md);
-		box-shadow: 0 0 0 1px var(--color-primary-400);
+		box-shadow: 0 0 0 1px var(--color-neutral-400);
 
 		&:hover {
-			box-shadow: 0 0 0 1px var(--color-primary-600);
 		}
 
-		&:focus-within {
-			outline: 3px solid var(--color-primary-100);
-			outline-offset: 1px;
-		}
-
-		@variant lg {
-			&:focus-within {
-				outline: 4px solid var(--color-primary-200);
+		&:not(.expanded) {
+			&:focus-within:not(:has(button:focus)) {
+				outline: 2px solid var(--color-outline);
+				box-shadow: 0 0 0 8px var(--color-primary-200);
 			}
+		}
+
+		& button:focus {
+			outline: 2px solid var(--color-outline);
+			background: var(--color-accent-100);
 		}
 	}
 
@@ -789,23 +779,31 @@
 
 		@variant sm {
 			border-bottom: none;
-			border-radius: var(--radius-md);
+			border-radius: var(--radius-sm);
 			margin-top: calc(var(--spacing) * 1.5);
 			box-shadow: 0 0 0 1px var(--color-neutral-400);
 
 			&:hover {
 				box-shadow: 0 0 0 1px var(--color-neutral-600);
 			}
+
 			&.focused-row:not(:has(:global(.focused-cell))) {
-				box-shadow: 0 0 0 6px var(--color-accent-100);
 				outline: 2px solid var(--color-outline);
-				outline-offset: 0;
+
+				outline: 2px solid var(--color-outline);
+				box-shadow: 0 0 0 8px var(--color-accent-100);
 			}
 		}
 
 		@variant lg {
+			border-radius: var(--radius-md);
 			margin-top: 0;
 		}
+	}
+
+	.action.focused-cell {
+		background-color: var(--color-accent-50);
+		outline-color: var(--color-outline);
 	}
 
 	:global(.supersearch-combobox) {
@@ -942,7 +940,7 @@
 	}
 
 	:global(.supersearch-dialog .focused-row) {
-		background-color: var(--color-accent-100);
+		@apply bg-accent-100;
 	}
 	:global(.supersearch-dialog .focused-cell) {
 		outline: 2px solid var(--color-accent);
