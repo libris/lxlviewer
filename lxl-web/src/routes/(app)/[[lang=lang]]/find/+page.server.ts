@@ -28,8 +28,9 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 	// reruns on change in these params:
 	const reactiveParams = ['_q', '_limit', '_offset', '_sort', '_r'];
 	reactiveParams.forEach((p) => {
-		const param = url.searchParams.get(p);
-		searchParams.set(p, param || '');
+		if (url.searchParams.has(p) || p === '_q') {
+			searchParams.set(p, url.searchParams.get(p) || '');
+		}
 	});
 
 	// fetch facets separately in layout
