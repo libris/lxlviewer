@@ -5,15 +5,10 @@ import { getTranslator } from '$lib/i18n';
 import { appendMyLibrariesParam, displayFacets } from '$lib/utils/search.js';
 import type { PartialCollectionView } from '$lib/types/search';
 
-export const load = async ({ url, params, fetch, locals }) => {
+export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 	const locale = getSupportedLocale(params?.lang);
 	const displayUtil = locals.display;
 	const myLibraries = locals.userSettings?.myLibraries;
-
-	// makes load function run on every navigation
-	// if (!url.searchParams.size) {
-	// 	redirect(303, `/`); // redirect to home page if no search params are given
-	// }
 
 	const searchParams = new URLSearchParams();
 
@@ -45,8 +40,12 @@ export const load = async ({ url, params, fetch, locals }) => {
 	}
 
 	if (holdingsParam) {
-		return { holdings: getHoldings(holdingsParam || ''), facets: null };
+		// support javascript disabled by fully SSR if "true" http request
+		return {
+			holdings: isDataRequest ? getHoldings(holdingsParam) : await getHoldings(holdingsParam),
+			facets: null
+		};
 	} else {
-		return { facets: getFacets() };
+		return { facets: isDataRequest ? getFacets() : await getFacets() };
 	}
 };
