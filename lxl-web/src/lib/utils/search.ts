@@ -385,7 +385,7 @@ function isDatatypeProperty(data: unknown): data is DatatypeProperty {
 	return isObject(data) && data['@type'] === 'DatatypeProperty';
 }
 
-function displayFacets(
+export function displayFacets(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,

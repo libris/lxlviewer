@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { DisplayMapping, SearchResult } from '$lib/types/search';
+	import type { DisplayMapping, Facet, SearchResult } from '$lib/types/search';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
 	import { fade } from 'svelte/transition';
@@ -22,6 +22,7 @@
 	const numHits = $derived(searchResult.totalItems);
 	const mapping = $derived(searchResult.mapping.filter((m) => m.variable === '_q'));
 	const filterCount = $derived(getFiltersCount(mapping));
+	const facets: Promise<Facet[]> = $derived(page.data.facets);
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
 		const root = mapping.filter(
@@ -96,6 +97,6 @@
 				{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
 			</span>
 		{/snippet}
-		<Filters facets={searchResult.facets || []} {mapping} />
+		<Filters {facets} {mapping} />
 	</Modal>
 {/if}

@@ -10,7 +10,7 @@ import getPageTitle from '$lib/utils/getPageTitle';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server.js';
 import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
 
-export const load = async ({ params, url, locals, fetch }) => {
+export const load = async ({ params, url, locals, fetch, depends }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
@@ -22,13 +22,19 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	const searchParams = new URLSearchParams();
 
-	// find page load function reloads on change in these params:
-	const reactiveParams = ['_q', '_limit', '_offset', '_sort', '_spell', '_r'];
+	// used by sort to invalidate search results
+	depends('app:search');
+
+	// reruns on change in these params:
+	const reactiveParams = ['_q', '_limit', '_offset', '_sort', '_r'];
 	reactiveParams.forEach((p) => {
-		if (url.searchParams.has(p)) {
+		if (url.searchParams.has(p) || p === '_q') {
 			searchParams.set(p, url.searchParams.get(p) || '');
 		}
 	});
+
+	// fetch facets separately in layout
+	searchParams.set('_stats', 'falseThisRequest');
 
 	if (locals.site?.searchSite) {
 		searchParams.set('_site', locals.site?.searchSite);
@@ -94,5 +100,9 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const pageTitle = getPageTitle(displayMappingToString(searchResult.mapping), locals.site?.name);
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
-	return { searchResult, pageTitle, refinedOrgs };
+	return {
+		searchResult,
+		pageTitle,
+		refinedOrgs
+	};
 };

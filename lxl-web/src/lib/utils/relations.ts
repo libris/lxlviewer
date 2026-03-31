@@ -76,6 +76,7 @@ export async function getRelations(
 						_q: `${qualifierKey}${op}${qualifierValue}`,
 						_limit: '10',
 						_spell: 'false',
+						_stats: 'falseThisRequest',
 						...(subsetFilter && { _r: subsetFilter }),
 						...(searchSite && { _site: searchSite })
 					})

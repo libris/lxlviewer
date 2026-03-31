@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
-	import type { SearchResult } from '$lib/types/search';
+	import type { Facet, SearchResult } from '$lib/types/search';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import SiteFooter from '../SiteFooter.svelte';
 	import { USE_HOLDING_PANE } from '$lib/constants/panels';
@@ -22,6 +22,7 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
+	const facets: Promise<Facet[]> = $derived(page.data.facets);
 
 	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
 	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
@@ -84,7 +85,7 @@
 	>
 		<LeadingPane>
 			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
-				<Filters facets={searchResult.facets || []} />
+				<Filters {facets} />
 			</div>
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">

@@ -468,7 +468,7 @@
 }
 
 @utility skeleton {
-	@apply rounded-lg bg-neutral-100;
+	@apply animate-pulse rounded-lg bg-neutral-100;
 }
 
 /* OLD THEME */
