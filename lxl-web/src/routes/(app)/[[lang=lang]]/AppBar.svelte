@@ -29,7 +29,6 @@
 	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
-	let pageYOffset: number | undefined = $state();
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -322,12 +321,7 @@
 						</p>
 					</hgroup>
 				{/if}
-				<AppSearch
-					id="app-search"
-					name="_q"
-					--page-y-offset={pageYOffset}
-					bind:this={appSearchComponent}
-				/>
+				<AppSearch id="app-search" name="_q" bind:this={appSearchComponent} />
 			</form>
 		</search>
 		<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">
