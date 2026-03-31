@@ -188,8 +188,10 @@ export default {
 		showingResultsFor: 'Visar resultat för',
 		freeOnline: 'Fritt online',
 		searchHelp: 'Så söker du i Libris',
-		showLike: 'Visa även liknande träffar för ',
-		showEquals: 'Visa bara exakta träffar för'
+		showingLike: 'Visar även liknande träffar för',
+		showingEquals: 'Visar exakta träffar för',
+		showLike: 'Visa liknande också.',
+		showEquals: 'Visa bara exakta.'
 	},
 	supersearch: {
 		search: 'Sök',
