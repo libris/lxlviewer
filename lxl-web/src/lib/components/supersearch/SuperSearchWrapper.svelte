@@ -27,6 +27,7 @@
 	//import IconSearchHistory from '~icons/bi/clock-history';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
+	import Spinner from '$lib/components/Spinner.svelte';
 
 	interface Props {
 		placeholder: string;
@@ -560,8 +561,8 @@
 			<nav class="@container mt-3 lg:mt-4">
 				{#if showQualifiersRow}
 					{#snippet addQualifiersLabel()}
-						<span class="flex min-h-14 items-center gap-2 pl-4">
-							<IconAddFilter class="text-link size-4.5" />
+						<span class="flex min-h-14 w-fit cursor-pointer items-center px-4 hover:underline">
+							<IconAddFilter class="text-link mr-2 size-4.5" />
 							<span class="text-link whitespace-nowrap">
 								{page.data.t('supersearch.add')}
 								{page.data.t('supersearch.filter')}
@@ -571,15 +572,16 @@
 					<div
 						role="row"
 						class={[
-							'has-[:hover]:bg-accent-50/75 relative',
+							'has-[:hover]:bg-accent-50/50 relative',
 							isFocusedRow(qualifiersRowIndex) && 'focused-row'
 						]}
 					>
 						<button
 							type="button"
 							id={getCellId(1, 0)}
+							onclick={() => console.log('aaa')}
 							class={[
-								'z-10 w-full -outline-offset-2 hover:underline',
+								'z-10 w-full cursor-default',
 								isFocusedCell(qualifiersRowIndex, 0) && 'focused-cell'
 							]}
 						>
@@ -590,7 +592,7 @@
 								{@render addQualifiersLabel()}
 							</span>
 							<ul
-								class="relative z-20 flex h-14 items-center gap-2 overflow-x-hidden overflow-y-visible px-2"
+								class="scrollbar-hidden relative z-20 flex h-14 items-center gap-2 overflow-x-auto overflow-y-visible"
 							>
 								{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
 									<li>
@@ -598,7 +600,7 @@
 											type="button"
 											id={getCellId(qualifiersRowIndex, cellIndex + 1)}
 											class={[
-												'qualifier-suggestion text-body border-accent-200 hover:bg-accent-200/50 pointer-events-auto inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap',
+												'qualifier-suggestion text-body border-accent-200 hover:bg-accent-50 pointer-events-auto inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap -outline-offset-2',
 												isFocusedCell(qualifiersRowIndex, cellIndex + 1) && 'focused-cell'
 											]}
 											onclick={() => addQualifierKey(key)}
@@ -608,17 +610,16 @@
 									</li>
 								{/each}
 							</ul>
-							<div class="flex-1">
+							<div class="flex-1 pr-4 pl-2 text-right">
 								<button
 									type="button"
-									id={getCellId(1, 100)}
-									class={[
-										'qualifier-suggestion text-body hover:bg-accent-50 inline-flex size-10 shrink-0 items-center justify-center gap-1.5 rounded-md px-2 text-sm font-medium whitespace-nowrap',
-										isFocusedCell(1, 100) && 'focused-cell outline-2'
-									]}
-									onclick={() => {}}
-									aria-label={page.data.t('supersearch.showAllQualifiers')}
+									class="text-placeholder pointer-events-auto cursor-pointer items-center text-sm whitespace-nowrap hover:[&>span]:underline"
+									title={`${page.data.t('supersearch.keyboardShortcut')}: Shift+7`}
+									onclick={() => console.log('baba')}
 								>
+									<span>{page.data.t('supersearch.showMore')}</span>
+									<span class="sr-only">{page.data.t('supersearch.filters')}</span>
+									<kbd class="ml-0.5 cursor-pointer!">/</kbd>
 								</button>
 							</div>
 						</span>
@@ -686,14 +687,17 @@
 							type="submit"
 							id={getCellId(2, 0)}
 							class={[
-								'flex min-h-14 w-full items-center px-4 hover:*:underline',
+								'flex min-h-14 w-full items-center px-4',
 								isFocusedCell(2, 0) && 'focused-cell'
 							]}
 						>
-							<span class={['text-link flex items-center gap-1 whitespace-nowrap hover:underline']}>
+							<span class={['text-link flex items-center gap-2 whitespace-nowrap hover:underline']}>
 								<IconSearch aria-hidden="true" class="size-4.5" />
 								{page.data.t('supersearch.showResultsFor')}
 								'{q.trim()}'
+								<div class="ml-auto h-5 w-5">
+									<Spinner />
+								</div>
 							</span>
 						</button>
 					</div>
@@ -706,18 +710,21 @@
 					data-skip-row-on-arrow-key
 					class="border-neutral flex justify-between gap-4 border-t pl-4 text-sm"
 				>
-					<ul class="commands text-placeholder flex cursor-default items-center gap-4">
+					<ul class="text-placeholder flex cursor-default items-center gap-4">
 						<li>
-							<kbd title="Arrow up">↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
-							{page.data.t('supersearch.navigate')}
+							<kbd title={page.data.t('supersearch.arrowUp')}>↑</kbd>
+							<kbd title={page.data.t('supersearch.arrowDown')}>↓</kbd>
+							<kbd title={page.data.t('supersearch.arrowLeft')}>←</kbd>
+							<kbd title={page.data.t('supersearch.arrowRight')}>→</kbd>
+							<span class="ml-0.5">
+								{page.data.t('supersearch.navigate')}
+							</span>
 						</li>
 						<li>
-							<kbd>↵</kbd>
-							{#if isFocusedCell(0, 1)}
-								{page.data.t('search.clear')}
-							{:else}
-								{page.data.t('supersearch.search')}
-							{/if}
+							<kbd title={page.data.t('supersearch.returnKey')}>↵</kbd>
+							<span class="ml-0.5">
+								{`${isFocusedCell(0, 1) ? page.data.t('search.clear') : page.data.t('supersearch.search')}`}
+							</span>
 						</li>
 					</ul>
 					<a
@@ -788,8 +795,6 @@
 			}
 
 			&.focused-row:not(:has(:global(.focused-cell))) {
-				outline: 2px solid var(--color-outline);
-
 				outline: 2px solid var(--color-outline);
 				box-shadow: 0 0 0 8px var(--color-accent-100);
 			}
@@ -936,11 +941,10 @@
 	:global(.supersearch-dialog .focused .suggestion .focused-cell) {
 		background-color: var(--color-accent-50);
 		outline: 2px solid var(--color-outline);
-		@apply -outline-offset-2;
 	}
 
 	:global(.supersearch-dialog .focused-row) {
-		@apply bg-accent-100;
+		@apply bg-accent-100/75;
 	}
 	:global(.supersearch-dialog .focused-cell) {
 		outline: 2px solid var(--color-accent);
@@ -1067,18 +1071,17 @@
 		}
 	}
 
-	.commands kbd {
+	kbd {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		border: 1px solid var(--color-neutral-300);
-		font-size: 16px;
+		color: var(--color-placeholder);
 		background-color: none;
 		aspect-ratio: 1 / 1;
-		width: 28px;
-		height: 28px;
+		width: calc(var(--spacing) * 7);
+		height: calc(var(--spacing) * 7);
 		border-radius: var(--radius-md);
-		margin-right: var(--spacing);
-		color: var(--color-placeholder);
+		cursor: default;
 	}
 </style>

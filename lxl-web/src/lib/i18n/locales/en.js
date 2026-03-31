@@ -203,8 +203,15 @@ export default {
 		goto: 'Go to',
 		add: 'Add',
 		filter: 'filter',
+		filters: 'filters',
 		showResultsFor: 'Show all results for',
-		showMoreQualifiers: 'Show more filters'
+		showMore: 'Show more',
+		keyboardShortcut: 'Keyboard shortcut',
+		arrowUp: 'Up arrow key',
+		arrowRight: 'Right arrow key',
+		arrowDown: 'Down arrow key',
+		arrowLeft: 'Left arrow key',
+		returnKey: 'Return key'
 	},
 	sort: {
 		sort: 'Sort',

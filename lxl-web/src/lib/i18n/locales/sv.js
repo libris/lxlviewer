@@ -202,8 +202,15 @@ export default {
 		goto: 'Gå till',
 		add: 'Lägg till',
 		filter: 'filter',
+		filters: 'filter',
 		showResultsFor: 'Visa resultat för',
-		showMoreQualifiers: 'Visa fler sökfilter'
+		showMore: 'Visa fler',
+		keyboardShortcut: 'Tangentbordsgenväg',
+		arrowUp: 'Piltangent uppåt',
+		arrowRight: 'Piltangent höger',
+		arrowDown: 'Piltangent neråt',
+		arrowLeft: 'Piltangent vänster',
+		returnKey: 'Returtangent'
 	},
 	sort: {
 		sort: 'Sortera',
