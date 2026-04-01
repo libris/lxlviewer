@@ -443,6 +443,7 @@
 							type="button"
 							class="text-primary-900 focus-visible:bg-primary-200 hover:bg-primary-200 hover:border-primary-200/50 focus-visible:border-primary-200 mr-4 flex min-w-14 items-center rounded-full px-3 py-2 text-center text-xs font-medium whitespace-nowrap @xl:font-normal @3xl:text-sm @5xl:min-h-10 @5xl:text-[0.9375rem]"
 							aria-labelledby="add-label add-filter"
+							title={`${page.data.t('supersearch.keyboardShortcut')}: Shift+7`}
 							onclick={handleClickAddFilter}
 						>
 							<IconAddFilter class="mr-2 hidden size-4 @xl:inline @5xl:size-4.5" />

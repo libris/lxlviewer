@@ -613,13 +613,15 @@
 							<div class="flex-1 pr-4 pl-2 text-right">
 								<button
 									type="button"
-									class="text-placeholder pointer-events-auto cursor-pointer items-center text-sm whitespace-nowrap hover:[&>span]:underline"
-									title={`${page.data.t('supersearch.keyboardShortcut')}: Shift+7`}
+									class="text-placeholder hover:[&>span]:text-link pointer-events-auto cursor-pointer items-center text-sm whitespace-nowrap hover:[&>span]:underline"
 									onclick={() => console.log('baba')}
 								>
 									<span>{page.data.t('supersearch.showMore')}</span>
 									<span class="sr-only">{page.data.t('supersearch.filters')}</span>
-									<kbd class="ml-0.5 cursor-pointer!">/</kbd>
+									<kbd
+										class="keyboard-shortcut ml-0.5"
+										title={`${page.data.t('supersearch.keyboardShortcut')}: Shift+7`}>/</kbd
+									>
 								</button>
 							</div>
 						</span>
@@ -712,16 +714,16 @@
 				>
 					<ul class="text-placeholder flex cursor-default items-center gap-4">
 						<li>
-							<kbd title={page.data.t('supersearch.arrowUp')}>↑</kbd>
-							<kbd title={page.data.t('supersearch.arrowDown')}>↓</kbd>
-							<kbd title={page.data.t('supersearch.arrowLeft')}>←</kbd>
-							<kbd title={page.data.t('supersearch.arrowRight')}>→</kbd>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowUp')}>↑</kbd>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowDown')}>↓</kbd>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowLeft')}>←</kbd>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowRight')}>→</kbd>
 							<span class="ml-0.5">
 								{page.data.t('supersearch.navigate')}
 							</span>
 						</li>
 						<li>
-							<kbd title={page.data.t('supersearch.returnKey')}>↵</kbd>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.returnKey')}>↵</kbd>
 							<span class="ml-0.5">
 								{`${isFocusedCell(0, 1) ? page.data.t('search.clear') : page.data.t('supersearch.search')}`}
 							</span>
@@ -941,6 +943,7 @@
 	:global(.supersearch-dialog .focused .suggestion .focused-cell) {
 		background-color: var(--color-accent-50);
 		outline: 2px solid var(--color-outline);
+		outline-offset: -2px;
 	}
 
 	:global(.supersearch-dialog .focused-row) {
@@ -948,6 +951,7 @@
 	}
 	:global(.supersearch-dialog .focused-cell) {
 		outline: 2px solid var(--color-accent);
+		outline-offset: -2px;
 	}
 
 	/* :global(.button-primary.focused-cell) {
@@ -1069,19 +1073,5 @@
 		&.focused-cell {
 			background: var(--color-accent-200);
 		}
-	}
-
-	kbd {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		border: 1px solid var(--color-neutral-300);
-		color: var(--color-placeholder);
-		background-color: none;
-		aspect-ratio: 1 / 1;
-		width: calc(var(--spacing) * 7);
-		height: calc(var(--spacing) * 7);
-		border-radius: var(--radius-md);
-		cursor: default;
 	}
 </style>
