@@ -575,12 +575,23 @@
 					}
 					break;
 				case 'ArrowLeft':
-					if (activeRowIndex >= 1 && activeColIndex > 0) {
+					if (wrappingArrowKeyNavigation && activeRowIndex >= 1 && activeColIndex === 0) {
+						activeColIndex = Math.max(0, getColsInRow(activeRowIndex - 1).length - 1);
+					} else if (activeRowIndex >= 1 && activeColIndex > 0) {
 						activeColIndex = getColIndexBefore(activeRowIndex - 1, activeColIndex);
 					}
 					break;
 				case 'ArrowRight':
-					if (activeRowIndex >= 1 && activeColIndex < getColsInRow(activeRowIndex - 1).length - 1) {
+					if (
+						wrappingArrowKeyNavigation &&
+						activeRowIndex >= 1 &&
+						activeColIndex === getColsInRow(activeRowIndex - 1).length - 1
+					) {
+						activeColIndex = 0;
+					} else if (
+						activeRowIndex >= 1 &&
+						activeColIndex < getColsInRow(activeRowIndex - 1).length - 1
+					) {
 						activeColIndex = getColIndexAfter(activeRowIndex - 1, activeColIndex);
 					}
 

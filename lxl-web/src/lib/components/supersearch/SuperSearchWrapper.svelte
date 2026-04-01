@@ -615,8 +615,9 @@
 								{/each}
 							</ul>
 							<div class="flex-1 pr-4 pl-2 text-right">
-								<button
-									type="button"
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<span
 									class="text-placeholder hover:[&>span]:text-link pointer-events-auto cursor-pointer items-center text-sm whitespace-nowrap hover:[&>span]:underline"
 									onclick={() => console.log('baba')}
 								>
@@ -626,7 +627,7 @@
 										class="keyboard-shortcut ml-0.5"
 										title={`${page.data.t('supersearch.keyboardShortcut')}: Shift+7`}>/</kbd
 									>
-								</button>
+								</span>
 							</div>
 						</span>
 						<!--
