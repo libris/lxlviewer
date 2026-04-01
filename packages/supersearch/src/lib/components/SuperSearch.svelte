@@ -35,6 +35,7 @@
 		getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
 		isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
 		isFocusedRow: (rowIndex: number) => boolean;
+		activeRowIndex: number;
 	};
 
 	interface Props {
@@ -902,7 +903,8 @@
 					getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 					isFocusedCell: (rowIndex: number, colIndex: number) =>
 						rowIndex === activeRowIndex && colIndex === activeColIndex,
-					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
+					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex,
+					activeRowIndex
 				})}
 			</div>
 		</div>

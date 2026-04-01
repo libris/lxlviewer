@@ -554,8 +554,12 @@
 			resultsSnippet,
 			getCellId,
 			isFocusedRow,
-			isFocusedCell
+			isFocusedCell,
+			activeRowIndex
 		})}
+			{@const inputRowIndex = 0}
+			{@const filtersRowIndex = 1}
+			{@const resultsRowIndex = 2}
 			{@const searchHelpRowIndex = 3 + (resultsCount || 0)}
 			{@const qualifiersRowIndex = 1}
 			<nav class="@container mt-3 lg:mt-4">
@@ -725,7 +729,21 @@
 						<li>
 							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.returnKey')}>↵</kbd>
 							<span class="ml-0.5">
-								{`${isFocusedCell(0, 1) ? page.data.t('search.clear') : page.data.t('supersearch.search')}`}
+								{#if isFocusedCell(inputRowIndex, 1)}
+									{page.data.t('search.clear')}
+								{:else if isFocusedRow(inputRowIndex) || isFocusedRow(resultsRowIndex)}
+									{page.data.t('supersearch.search')}
+								{:else if isFocusedCell(filtersRowIndex, 0)}
+									{page.data.t('supersearch.showMore')}
+								{:else if isFocusedRow(filtersRowIndex)}
+									{page.data.t('supersearch.add')}
+								{:else if isFocusedRow(searchHelpRowIndex)}
+									{page.data.t('supersearch.goto')}
+								{:else if isFocusedCell(activeRowIndex, 1)}
+									{page.data.t('supersearch.add')}
+								{:else}
+									{page.data.t('supersearch.goto')}
+								{/if}
 							</span>
 						</li>
 					</ul>
