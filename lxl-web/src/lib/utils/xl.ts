@@ -182,6 +182,7 @@ export class DisplayUtil {
 			case LensType.WebCardHeaderExtra:
 			case LensType.WebOverview:
 			case LensType.WebOverview2:
+			case LensType.WebOverviewFooter:
 			case LensType.WebDetails:
 				return LensType.Chip;
 			case LensType.WebCardFooter:

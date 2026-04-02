@@ -145,6 +145,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 			: [])
 	];
 
+	const overviewFooter = displayUtil.lensAndFormat(mainEntity, LensType.WebOverviewFooter, locale);
+
 	const details = [
 		displayUtil.lensAndFormat(mainEntity, LensType.WebDetails, locale),
 		...(_instances.length === 1
@@ -329,7 +331,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			headingExtra: headingExtra,
 			overview: overview,
 			overview2: overview2,
-			overviewFooter: {},
+			overviewFooter: overviewFooter,
 			summary: summary,
 			resourceTableOfContents: resourceTableOfContents,
 			details: details,

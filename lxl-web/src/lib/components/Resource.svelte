@@ -253,6 +253,8 @@
 						<DecoratedData
 							data={decoratedData.overviewFooter}
 							block
+							showLabels={ShowLabelsOptions.DefaultOn}
+							allowFindLinks={true}
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>

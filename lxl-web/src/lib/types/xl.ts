@@ -202,6 +202,7 @@ export enum LensType {
 	WebCard = 'web-card',
 	WebOverview = 'web-overview',
 	WebOverview2 = 'web-overview2',
+	WebOverviewFooter = 'web-overview-footer',
 	WebDetails = 'web-details',
 	WebCardFooter = 'web-card-footer',
 	WebCardHeaderTop = 'web-card-header-top',

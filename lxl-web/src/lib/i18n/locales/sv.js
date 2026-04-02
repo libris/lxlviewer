@@ -283,6 +283,7 @@ export default {
 		PhysicalResource: 'Fysisk',
 		DigitalResource: 'Digital',
 		shelfMark: 'Placering',
+		itemNote: 'Bestånd',
 		location: 'Placering',
 		shelf: 'Hylla',
 		loanPolicy: 'Lånepolitik',

@@ -23,7 +23,8 @@ describe('getBibIdsByInstanceId', () => {
 				issn: [],
 				publicationStr: publicationStr,
 				titleStr: publicationStr,
-				itemStr: undefined
+				shelfData: undefined,
+				itemNoteData: undefined
 			}
 		});
 	});

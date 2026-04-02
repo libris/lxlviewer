@@ -338,11 +338,23 @@
 						}
 					]
 				},
+				"Item": {
+					"@id": "Item-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Item",
+					"showProperties": ["heldBy", "itemOf"]
+				},
 				"Library": {
 					"@id": "Library-chips",
 					"@type": "fresnel:Lens",
 					"showProperties": ["name", "qualifier", "sigel"],
 					"classLensDomain": "Library"
+				},
+				"ItemAvailability": {
+					"@id": "ItemAvailability-chips",
+					"@type": "fresnel:Lens",
+					"showProperties": ["label"],
+					"classLensDomain": "ItemAvailability"
 				},
 				"Bibliography": {
 					"@id": "Bibliography-chips",
@@ -635,21 +647,6 @@
 						"isPartOf",
 						"part"
 					]
-				},
-				"Item": {
-					"@id": "Item-web-card",
-					"@type": "fresnel:Lens",
-					"classLensDomain": "Item",
-					"showProperties": [
-						"hasComponent",
-						"physicalLocation",
-						"shelfMark",
-						"shelfControlNumber",
-						"immediateAcquisition",
-						"availability",
-						{ "inverseOf": "itemUsed" },
-						{ "inverseOf": "hasComponent" }
-					]
 				}
 			}
 		},
@@ -875,6 +872,41 @@
 						"continuedInPartBy",
 						"relatedTo",
 						"accompaniedBy"
+					]
+				},
+				"Item": {
+					"@id": "Item-web-overview2",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Item",
+					"showProperties": [
+						"shelfLabel",
+						"physicalLocation",
+						"shelfMark",
+						"shelfControlNumber",
+						"availability",
+						"hasNote",
+						"hasComponent",
+						"immediateAcquisition"
+					]
+				}
+			}
+		},
+		"web-overview-footer": {
+			"@id": "web-overview-footer",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Item": {
+					"@id": "Item-web-overview-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Item",
+					"showProperties": [
+						"cataloguersNote",
+						"custodialHistory",
+						"summary",
+						"appliesTo",
+						"marc:hasCopyAndVersionIdentificationNote",
+						"marc:hasBindingInformation",
+						"marc:hasTextualHoldingsBasicBibliographicUnit"
 					]
 				}
 			}

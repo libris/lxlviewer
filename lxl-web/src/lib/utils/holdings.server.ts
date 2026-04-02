@@ -81,16 +81,13 @@ export function getHoldingsByInstanceId(
 		result[id] = items.map((item) => {
 			return {
 				[JsonLd.ID]: item.heldBy[JsonLd.ID],
-				itemStr: getItemStr(item, displayUtil)
+				shelfData: displayUtil.lensAndFormat(item, LensType.WebOverview2, ''),
+				itemNoteData: displayUtil.lensAndFormat(item, LensType.WebOverviewFooter, '')
 			};
 		});
 	}
 
 	return result;
-}
-
-function getItemStr(item: FramedData, displayUtil: DisplayUtil) {
-	return toString(displayUtil.lensAndFormat(item, LensType.WebCard, ''));
 }
 
 export function getBibIdsByInstanceId(
@@ -135,7 +132,8 @@ export function getBibIdsByInstanceId(
 			issn,
 			publicationStr,
 			titleStr,
-			itemStr: undefined // append real item data per holder in component
+			shelfData: undefined, // append real item data per holder in component,
+			itemNoteData: undefined
 		};
 	}
 	return result;

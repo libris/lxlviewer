@@ -1,4 +1,4 @@
-import type { BibDb, FramedData, JsonLd } from './xl';
+import type { BibDb, DisplayDecorated, FramedData, JsonLd } from './xl';
 
 export type HoldingMainEntity = {
 	[JsonLd.REVERSE]?: {
@@ -97,7 +97,8 @@ export type BibIdObj = {
 	issn: string[];
 	publicationStr: string;
 	titleStr: string;
-	itemStr: string | undefined;
+	shelfData: DisplayDecorated | undefined;
+	itemNoteData: DisplayDecorated | undefined;
 };
 
 export type BibIdData = { [instanceId: string]: BibIdObj };
@@ -105,7 +106,8 @@ export type BibIdData = { [instanceId: string]: BibIdObj };
 export type HoldersByInstanceId = {
 	[id: LibraryId]: {
 		[JsonLd.ID]: string;
-		itemStr?: string;
+		shelfData?: DisplayDecorated;
+		itemNoteData?: DisplayDecorated;
 	}[];
 };
 
