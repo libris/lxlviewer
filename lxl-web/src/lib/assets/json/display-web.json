@@ -840,6 +840,12 @@
 						"_select"
 					]
 				},
+				"Item": {
+					"@id": "Item-web-overview",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Item",
+					"showProperties": ["associatedMedia", "isPrimaryTopicOf"]
+				},
 				"Bibliography": {
 					"@id": "Bibliography-web-overview",
 					"@type": "fresnel:Lens",

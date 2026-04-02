@@ -81,6 +81,7 @@ export function getHoldingsByInstanceId(
 		result[id] = items.map((item) => {
 			return {
 				[JsonLd.ID]: item.heldBy[JsonLd.ID],
+				itemMedia: displayUtil.lensAndFormat(item, LensType.WebOverview, ''),
 				shelfData: displayUtil.lensAndFormat(item, LensType.WebOverview2, ''),
 				itemNoteData: displayUtil.lensAndFormat(item, LensType.WebOverviewFooter, '')
 			};
@@ -133,7 +134,8 @@ export function getBibIdsByInstanceId(
 			publicationStr,
 			titleStr,
 			shelfData: undefined, // append real item data per holder in component,
-			itemNoteData: undefined
+			itemNoteData: undefined,
+			itemMedia: undefined
 		};
 	}
 	return result;

@@ -99,6 +99,7 @@ export type BibIdObj = {
 	titleStr: string;
 	shelfData: DisplayDecorated | undefined;
 	itemNoteData: DisplayDecorated | undefined;
+	itemMedia: DisplayDecorated | undefined;
 };
 
 export type BibIdData = { [instanceId: string]: BibIdObj };
@@ -108,6 +109,7 @@ export type HoldersByInstanceId = {
 		[JsonLd.ID]: string;
 		shelfData?: DisplayDecorated;
 		itemNoteData?: DisplayDecorated;
+		itemMedia?: DisplayDecorated;
 	}[];
 };
 

@@ -284,6 +284,7 @@ export default {
 		DigitalResource: 'Digital',
 		shelfMark: 'Placering',
 		itemNote: 'Bestånd',
+		itemMedia: 'Relaterad länk',
 		location: 'Placering',
 		shelf: 'Hylla',
 		loanPolicy: 'Lånepolitik',

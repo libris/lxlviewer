@@ -77,24 +77,6 @@
 </script>
 
 {#snippet ItemSnippet(instance: InstanceWithLinks, bestLink?: string)}
-	{#if instance.shelfData}
-		<!-- shelfData -->
-		<li>
-			<p>
-				<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
-				<DecoratedData data={instance.shelfData} showLabels={ShowLabelsOptions.Never} />
-			</p>
-		</li>
-	{/if}
-	{#if instance.itemNoteData?._display?.length}
-		<!-- Item notes -->
-		<li>
-			<p>
-				<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
-				<DecoratedData data={instance.itemNoteData} showLabels={ShowLabelsOptions.Never} />
-			</p>
-		</li>
-	{/if}
 	{#if bestLink || instance.linkResolver}
 		<li class="flex gap-2">
 			<!-- instance best link -->
@@ -115,6 +97,33 @@
 					{instance.linkResolver.label}
 				</a>
 			{/if}
+		</li>
+	{/if}
+	{#if instance.shelfData}
+		<!-- shelf data -->
+		<li>
+			<p>
+				<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
+				<DecoratedData data={instance.shelfData} showLabels={ShowLabelsOptions.Never} />
+			</p>
+		</li>
+	{/if}
+	{#if instance.itemMedia}
+		<!-- item media -->
+		<li>
+			<p>
+				<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
+				<DecoratedData data={instance.itemMedia} showLabels={ShowLabelsOptions.Never} />
+			</p>
+		</li>
+	{/if}
+	{#if instance.itemNoteData?._display?.length}
+		<!-- Item notes -->
+		<li>
+			<p>
+				<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
+				<DecoratedData data={instance.itemNoteData} showLabels={ShowLabelsOptions.Never} />
+			</p>
 		</li>
 	{/if}
 	{#if instance.itemStatus?.[0]}
