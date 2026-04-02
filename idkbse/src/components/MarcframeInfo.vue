@@ -1,0 +1,264 @@
+<template>
+  <main>
+    <div v-if="settings.language == 'sv'">
+      <div class="alert alert-warning">
+        I och med Libris 1.42 har följande förändringar skett i MARC-mappningarna för bibliografisk information (BIB):
+        <dl>
+        <dt>Verk</dt>
+        <dd> Egenskaperna <code>contentType</code> och <code>genreForm</code> utgår och ersätts av egenskapen <code>category</code>.</dd>
+        <dt>Instans</dt>
+        <dd>Egenskaperna <code>mediaType</code>, <code>carrierType</code> och <code>genreForm</code> utgår och ersätts av egenskapen <code>category</code>.
+          Egenskapen <code>issuanceType</code> utgår och ersätts av egenskapen <code>@type</code> <em>på verket</em>.</dd>
+        </dl>
+        Den påverkan detta har i relation till MARC-formatet exemplifieras i nedanstående sektioner.
+      </div>
+    </div>
+    <div v-else>
+      <div class="alert alert-warning">
+        Mapping of the following MARC fields has been changed after Libris release 1.42
+      </div>
+    </div>
+
+    <section v-for="fieldSpec in marcExamples" class="MarcframeExample">
+      <div class="MarcframeExample-header">{{ fieldSpec.field }}</div>
+      <p v-if="settings.language == 'sv'" v-for="note in fieldSpec.notes">{{ note }}</p>
+      <MarcframeExample :example="example" v-for="(example, index) in fieldSpec.examples" :key="index" />
+    </section>
+  </main>
+</template>
+
+<script setup>
+  import MarcframeExample from '@/components/MarcframeExample';
+
+  const marcExamples = [
+    {
+      "field": "BIB leader (000)",
+      "notes": [
+        "Leader/06: Koder förekommer som tidigare men 1-till-1-förhållandet till verkstyperna har försvunnet och koden genereras istället från verksegenskapen category. Eftersom flera position 6-genererande termer kan förekomma i category, väljer mappningen kod enligt en prioordning. Ibland leder detta till en annan kod än tidigare. Se exemplet för Monograph Text och StillImage.",
+        "Leader/07: Koder förekommer som tidigare men genereras nu istället från verksegenskapen type respektive instansegenskapen category."
+      ],
+      "examples": [
+        {
+          "name": "Monograph Text",
+          "source": {
+            "leader": "     cam a        a 4500",
+            "fields": [
+              {
+                "001": "0000000"
+              }
+            ]
+          },
+          "result": {
+            "@type": "Record",
+            "mainEntity": {
+              "@type": "PhysicalResource",
+              "@id": "http://libris.kb.se/resource/bib/0000000",
+              "instanceOf": {
+                "@type": "Monograph"
+              },
+              "category": [
+                {
+                  "@id": "https://id.kb.se/term/rda/Text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "ComponentPart Text",
+          "source": {
+            "leader": "     caa a        a 4500",
+            "fields": [
+              {
+                "001": "0000000"
+              }
+            ]
+          },
+          "result": {
+            "@type": "Record",
+            "@id": "http://libris.kb.se/bib/0000000",
+            "mainEntity": {
+              "@type": "PhysicalResource",
+              "category": [
+                {
+                  "@id": "https://id.kb.se/term/saobf/ComponentPart"
+                }
+              ],
+              "@id": "http://libris.kb.se/resource/bib/0000000",
+              "instanceOf": {
+                "@type": "Monograph",
+                "category": [
+                  {
+                    "@id": "https://id.kb.se/term/rda/Text"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "Monograph Text och StillImage. Leader/06 = a pga prioriteringsordning",
+          "source": {
+            "leader": "     cam a        a 4500",
+            "fields": [
+              {
+                "001": "0000000"
+              },
+              {
+                "336": {
+                  "ind1": " ",
+                  "ind2": " ",
+                  "subfields": [
+                    {
+                      "a": "Stillbild"
+                    },
+                    {
+                      "a": "Text"
+                    },
+                    {
+                      "b": "sti"
+                    },
+                    {
+                      "b": "txt"
+                    },
+                    {
+                      "2": "rdacontent"
+                    },
+                    {
+                      "2": "rdacontent"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "result": {
+            "@type": "Record",
+            "@id": "http://libris.kb.se/bib/0000000",
+            "mainEntity": {
+              "@type": "PhysicalResource",
+              "@id": "http://libris.kb.se/resource/bib/0000000",
+              "instanceOf": {
+                "@type": "Monograph",
+                "category": [
+                  {
+                    "@id": "https://id.kb.se/term/rda/StillImage"
+                  },
+                  {
+                    "@id": "https://id.kb.se/term/rda/Text"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "field": "BIB 007",
+      "notes": [
+        "Koder förekommer vanligtvis men genereras nu istället från instansegenskapen category. Undantag: nykatalogiserade, fysiska kartor (000/06=e) genererar ingen 007/00-01; nykatalogiserade, fysiska bilder (000/06=k) genererar ingen 007/01.",
+        "Liksom tidigare genereras ingen 007/00-01=ta från category Print."
+      ],
+      "examples": [
+        {
+          "name": "Tryckt volym",
+          "source": {
+            "fields": [
+              {
+                "007": "ta"
+              }
+            ]
+          },
+          "result": {
+            "@type": "PhysicalResource",
+            "@id": "http://libris.kb.se/bib/0000000",
+            "mainEntity": {
+              "@id": "http://libris.kb.se/resource/bib/0000000"
+            },
+            "category": [
+              {
+                "@id": "https://id.kb.se/term/rda/Volume"
+              },
+              {
+                "@id": "https://id.kb.se/term/saobf/Print"
+              }
+            ],
+            "instanceOf": {
+              "@type": "Monograph",
+              "category": [
+                {
+                  "@id": "https://id.kb.se/term/rda/StillImage"
+                },
+                {
+                  "@id": "https://id.kb.se/term/rda/Text"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "field": "BIB 008",
+      "notes": [
+        "Koder förekommer som tidigare men de genre/form-specifika koderna genereras nu istället från verksegenskapen category."
+      ],
+      "examples": [
+        {
+          "name": "Example 008 mapping",
+          "source": {
+            "fields": [
+              {
+                "008": "240627s2024 sw ||||j||||||000 1|swe|d"
+              },
+              {
+                "655": {
+                  "ind1": " ",
+                  "ind2": "7",
+                  "subfields": [
+                    {
+                      "a": "Skönlitteratur"
+                    },
+                    {
+                      "0": "https://id.kb.se/term/saogf/Sk%C3%B6nlitteratur"
+                    },
+                    {
+                      "2": "saogf"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "result": {
+            "@type": "PhysicalResource",
+            "@id": "http://libris.kb.se/bib/0000000",
+            "mainEntity": {
+              "@id": "http://libris.kb.se/resource/bib/0000000"
+            },
+            "category": [
+              {
+                "@id": "https://id.kb.se/term/rda/Volume"
+              },
+              {
+                "@id": "https://id.kb.se/term/saobf/Print"
+              }
+            ],
+            "instanceOf": {
+              "@type": "Monograph",
+              "category": [
+                {
+                  "@id": "https://id.kb.se/term/saogf/Sk%C3%B6nlitteratur"
+                },
+                {
+                  "@id": "https://id.kb.se/term/rda/Text"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ];
+</script>
