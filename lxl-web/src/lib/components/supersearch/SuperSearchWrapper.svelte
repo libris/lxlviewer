@@ -499,7 +499,7 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
+							'text-subtle bg-input absolute flex size-11 items-center justify-center rounded-md sm:hidden',
 							expanded && 'hidden'
 						]}
 					>
@@ -558,13 +558,14 @@
 			activeRowIndex
 		})}
 			{@const inputRowIndex = 0}
-			{@const filtersRowIndex = 1}
-			{@const resultsRowIndex = 2}
-			{@const searchHelpRowIndex = 3 + (resultsCount || 0)}
 			{@const qualifiersRowIndex = 1}
+			{@const showMoreQualifiersColIndex = filteredQualifierSuggestions.length}
+			{@const resultsRowIndex = 2}
+			{@const resultRowsOffset = 1 + (showQualifiersRow ? 1 : 0) + (showResultRows ? 1 : 0)}
+			{@const searchHelpRowIndex = resultRowsOffset + (resultsCount || 0)}
 			<nav class="@container mt-3 lg:mt-4">
 				{#if showQualifiersRow}
-					{#snippet addQualifiersLabel()}
+					{#snippet addFiltersLabel()}
 						<span class="flex min-h-14 w-fit cursor-pointer items-center px-4 hover:underline">
 							<IconAddFilter class="text-link mr-2 size-4.5" />
 							<span class="text-link whitespace-nowrap">
@@ -580,33 +581,23 @@
 							isFocusedRow(qualifiersRowIndex) && 'focused-row'
 						]}
 					>
-						<button
-							type="button"
-							id={getCellId(1, 0)}
-							onclick={() => console.log('aaa')}
-							class={[
-								'z-10 w-full cursor-default',
-								isFocusedCell(qualifiersRowIndex, 0) && 'focused-cell'
-							]}
-						>
-							{@render addQualifiersLabel()}
-						</button>
 						<span class="pointer-events-none absolute top-0 left-0 flex size-full items-center">
 							<span class="invisible" aria-hidden="true">
-								{@render addQualifiersLabel()}
+								{@render addFiltersLabel()}
 							</span>
 							<ul
-								class="scrollbar-hidden relative z-20 flex h-14 items-center gap-2 overflow-x-auto overflow-y-visible"
+								class="scrollbar-hidden relative flex h-14 items-center gap-2 overflow-x-auto overflow-y-visible"
 							>
 								{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
 									<li>
 										<button
 											type="button"
-											id={getCellId(qualifiersRowIndex, cellIndex + 1)}
+											id={getCellId(qualifiersRowIndex, cellIndex)}
 											class={[
 												'qualifier-suggestion text-body border-accent-200 hover:bg-accent-50 pointer-events-auto inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap -outline-offset-2',
-												isFocusedCell(qualifiersRowIndex, cellIndex + 1) && 'focused-cell'
+												isFocusedCell(qualifiersRowIndex, cellIndex) && 'focused-cell'
 											]}
+											title={`${page.data.t('supersearch.add')} ${label.toLocaleLowerCase()}`}
 											onclick={() => addQualifierKey(key)}
 										>
 											<span class="first-letter:capitalize">{label}</span>
@@ -617,16 +608,15 @@
 							<div class="flex-1 pr-4 pl-2 text-right">
 								<!-- svelte-ignore a11y_click_events_have_key_events -->
 								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<!-- We need a clickable span here as the pointer events otherwise won't reach the button under -->
 								<span
 									class="text-placeholder hover:[&>span]:text-link pointer-events-auto cursor-pointer items-center text-sm whitespace-nowrap hover:[&>span]:underline"
+									title={`${page.data.t('supersearch.showMore')} ${page.data.t('supersearch.filters')} (Shift+7)`}
 									onclick={() => console.log('baba')}
 								>
 									<span>{page.data.t('supersearch.showMore')}</span>
 									<span class="sr-only">{page.data.t('supersearch.filters')}</span>
-									<kbd
-										class="keyboard-shortcut ml-0.5"
-										title={`${page.data.t('supersearch.keyboardShortcut')}: Shift+7`}>/</kbd
-									>
+									<kbd class="keyboard-shortcut ml-0.5">/</kbd>
 								</span>
 							</div>
 						</span>
@@ -661,6 +651,18 @@
 								{/if}
 							{/if}
 						-->
+						<button
+							type="button"
+							id={getCellId(qualifiersRowIndex, showMoreQualifiersColIndex)}
+							title={`${page.data.t('supersearch.add')} ${page.data.t('supersearch.filters')} (Shift+7)`}
+							onclickcapture={() => console.log('aaa')}
+							class={[
+								'w-full cursor-default',
+								isFocusedCell(qualifiersRowIndex, showMoreQualifiersColIndex) && 'focused-cell'
+							]}
+						>
+							{@render addFiltersLabel()}
+						</button>
 					</div>
 				{/if}
 				{#if showHistoryRows}
@@ -692,10 +694,10 @@
 					<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
 						<button
 							type="submit"
-							id={getCellId(2, 0)}
+							id={getCellId(resultsRowIndex, 0)}
 							class={[
 								'flex min-h-14 w-full items-center px-4',
-								isFocusedCell(2, 0) && 'focused-cell'
+								isFocusedCell(resultsRowIndex, 0) && 'focused-cell'
 							]}
 						>
 							<span class={['text-link flex items-center gap-2 whitespace-nowrap hover:underline']}>
@@ -709,7 +711,9 @@
 						</button>
 					</div>
 					<div role="rowgroup" aria-label={page.data.t('supersearch.suggestions')}>
-						{@render resultsSnippet({ rowOffset: showQualifiersRow ? 3 : 2 })}
+						{@render resultsSnippet({
+							rowOffset: resultRowsOffset
+						})}
 					</div>
 				{/if}
 				<div
@@ -734,9 +738,9 @@
 									{page.data.t('search.clear')}
 								{:else if isFocusedRow(inputRowIndex) || isFocusedRow(resultsRowIndex)}
 									{page.data.t('supersearch.search')}
-								{:else if isFocusedCell(filtersRowIndex, 0)}
+								{:else if isFocusedCell(qualifiersRowIndex, 0)}
 									{page.data.t('supersearch.showMore')}
-								{:else if isFocusedRow(filtersRowIndex)}
+								{:else if isFocusedRow(qualifiersRowIndex)}
 									{page.data.t('supersearch.add')}
 								{:else if isFocusedRow(searchHelpRowIndex)}
 									{page.data.t('supersearch.goto')}
@@ -807,7 +811,7 @@
 
 		@variant sm {
 			border-bottom: none;
-			border-radius: var(--radius-sm);
+			border-radius: var(--radius-md);
 			margin-top: calc(var(--spacing) * 1.5);
 			box-shadow: 0 0 0 1px var(--color-neutral-400);
 
@@ -817,7 +821,11 @@
 
 			&.focused-row:not(:has(:global(.focused-cell))) {
 				outline: 2px solid var(--color-outline);
-				box-shadow: 0 0 0 8px var(--color-accent-100);
+				box-shadow: 0 0 0 9px var(--color-accent-100);
+
+				@variant lg {
+					box-shadow: 0 0 0 8px var(--color-accent-100);
+				}
 			}
 		}
 
