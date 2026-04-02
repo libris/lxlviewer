@@ -557,7 +557,7 @@
 					}
 					break;
 				case 'ArrowDown':
-					if (wrappingArrowKeyNavigation && activeRowIndex === arrowKeyRows.length) {
+					if (wrappingArrowKeyNavigation && activeRowIndex >= arrowKeyRows.length) {
 						activeRowIndex = 0;
 						activeColIndex = defaultInputCol;
 					} else if (activeRowIndex < arrowKeyRows.length) {
