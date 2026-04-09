@@ -799,54 +799,54 @@
 							})}
 						</div>
 					{/if}
-					<div
-						role="row"
-						data-skip-row-on-arrow-key
-						class="border-neutral flex justify-between gap-4 border-t pl-4 text-sm"
-					>
-						<ul class="text-placeholder flex cursor-default items-center gap-4">
-							<li>
-								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowUp')}>↑</kbd>
-								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowDown')}>↓</kbd>
-								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowLeft')}>←</kbd>
-								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowRight')}>→</kbd>
-								<span class="ml-0.5">
-									{page.data.t('supersearch.navigate')}
-								</span>
-							</li>
-							<li>
-								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.returnKey')}>↵</kbd>
-								<span class="ml-0.5">
-									{#if isFocusedCell(inputRowIndex, 1)}
-										{page.data.t('search.clear')}
-									{:else if isFocusedRow(inputRowIndex) || isFocusedRow(resultsRowIndex)}
-										{page.data.t('supersearch.search')}
-									{:else if isFocusedCell(qualifiersRowIndex, 0)}
-										{page.data.t('supersearch.showMore')}
-									{:else if isFocusedRow(qualifiersRowIndex)}
-										{page.data.t('supersearch.add')}
-									{:else if isFocusedRow(searchHelpRowIndex)}
-										{page.data.t('supersearch.goto')}
-									{:else if isFocusedCell(activeRowIndex, 1)}
-										{page.data.t('supersearch.add')}
-									{:else}
-										{page.data.t('supersearch.goto')}
-									{/if}
-								</span>
-							</li>
-						</ul>
-						<a
-							href={resolve(page.data.localizeHref('/help'))}
-							id={getCellId(searchHelpRowIndex, 0)}
-							class={[
-								'text-link mr-3 flex min-h-14 items-center justify-end px-1 hover:underline',
-								isFocusedCell(searchHelpRowIndex, 0) && 'underline outline-2 -outline-offset-2'
-							]}
-						>
-							{page.data.t('supersearch.searchHelp')}
-						</a>
-					</div>
 				{/if}
+				<div
+					role="row"
+					data-skip-row-on-arrow-key
+					class="border-neutral flex justify-between gap-4 border-t pl-4 text-sm"
+				>
+					<ul class="text-placeholder flex cursor-default items-center gap-4">
+						<li>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowUp')}>↑</kbd>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowDown')}>↓</kbd>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowLeft')}>←</kbd>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowRight')}>→</kbd>
+							<span class="ml-0.5">
+								{page.data.t('supersearch.navigate')}
+							</span>
+						</li>
+						<li>
+							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.returnKey')}>↵</kbd>
+							<span class="ml-0.5">
+								{#if isFocusedCell(inputRowIndex, 1)}
+									{page.data.t('search.clear')}
+								{:else if isFocusedRow(inputRowIndex) || isFocusedRow(resultsRowIndex)}
+									{page.data.t('supersearch.search')}
+								{:else if isFocusedCell(qualifiersRowIndex, 0)}
+									{page.data.t('supersearch.showMore')}
+								{:else if isFocusedRow(qualifiersRowIndex)}
+									{page.data.t('supersearch.add')}
+								{:else if isFocusedRow(searchHelpRowIndex)}
+									{page.data.t('supersearch.goto')}
+								{:else if isFocusedCell(activeRowIndex, 1)}
+									{page.data.t('supersearch.add')}
+								{:else}
+									{page.data.t('supersearch.goto')}
+								{/if}
+							</span>
+						</li>
+					</ul>
+					<a
+						href={resolve(page.data.localizeHref('/help'))}
+						id={getCellId(searchHelpRowIndex, 0)}
+						class={[
+							'text-link mr-3 flex min-h-14 items-center justify-end px-1 hover:underline',
+							isFocusedCell(searchHelpRowIndex, 0) && 'underline outline-2 -outline-offset-2'
+						]}
+					>
+						{page.data.t('supersearch.searchHelp')}
+					</a>
+				</div>
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
