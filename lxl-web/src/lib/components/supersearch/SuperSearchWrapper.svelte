@@ -224,8 +224,8 @@
 	}
 
 	const showQualifiersRow = $derived(true);
-	const showResultRows = $derived(q.trim().length);
-	const showHistoryRows = $derived(!showResultRows);
+	const showResultRows = $derived(mode === 'DEFAULT');
+	const showHistoryRows = $derived(false);
 
 	const NO_WILDCARD_AFTER_CHAR = [')', '"', '*', '?'];
 	const NO_WILDCARD_AFTER_WORD = ['AND', 'OR', 'NOT'];
