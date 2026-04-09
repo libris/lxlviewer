@@ -99,8 +99,8 @@
 			{/if}
 		</li>
 	{/if}
-	{#if instance.shelfData}
-		<!-- shelf data -->
+	<!-- shelf data -->
+	{#if instance.shelfData?._display?.length}
 		<li>
 			<p>
 				<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
@@ -108,8 +108,8 @@
 			</p>
 		</li>
 	{/if}
-	{#if instance.itemMedia}
-		<!-- item media -->
+	<!-- item media -->
+	{#if instance.itemMedia?._display?.length}
 		<li>
 			<p>
 				<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
@@ -117,8 +117,8 @@
 			</p>
 		</li>
 	{/if}
+	<!-- Item notes -->
 	{#if instance.itemNoteData?._display?.length}
-		<!-- Item notes -->
 		<li>
 			<p>
 				<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
