@@ -88,6 +88,7 @@
 		defaultResultRow?: number;
 		defaultResultCol?: number;
 		wrappingArrowKeyNavigation?: boolean;
+		hideOnEscapeKey?: boolean;
 		debouncedWait?: number;
 		getDebouncedWait?: DebouncedWaitFunction;
 		selection?: Selection;
@@ -126,6 +127,7 @@
 		resultItemRow = fallbackResultItemRow,
 		loadingIndicator,
 		wrappingArrowKeyNavigation = false,
+		hideOnEscapeKey = true,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -442,7 +444,7 @@
 	}
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
+		if (hideOnEscapeKey && event.key === 'Escape') {
 			hideExpandedSearch();
 		}
 
@@ -860,7 +862,7 @@
 	class="supersearch-dialog"
 	id={`${id}-dialog`}
 	bind:this={dialog}
-	closedby="any"
+	closedby={hideOnEscapeKey ? 'closerequest' : 'any'}
 	tabindex="-1"
 	onclose={() => hideExpandedSearch()}
 >

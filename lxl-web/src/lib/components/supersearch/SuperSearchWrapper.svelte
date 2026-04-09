@@ -446,7 +446,7 @@
 		qualifierSlashPos = undefined;
 	}
 
-	function handleKeyboardShortcut(event: KeyboardEvent) {
+	function handleKeyDown(event: KeyboardEvent) {
 		if (controlOrMetaKey(event) && event.key === 'k' && !superSearch?.isExpanded()) {
 			event.preventDefault();
 			showExpandedSearch();
@@ -457,6 +457,11 @@
 			if (mode !== 'QUALIFIERS') {
 				showQualifiersMode();
 			}
+		}
+
+		if (mode === 'QUALIFIERS' && event.key === 'Escape') {
+			event.preventDefault();
+			mode = 'DEFAULT';
 		}
 	}
 
@@ -485,11 +490,11 @@
 		searchContext.addQualifierKey = addQualifierKey;
 		searchContext.showQualifiersMode = showQualifiersMode;
 		searchContext.isExpanded = isExpanded;
-		document.addEventListener('keydown', handleKeyboardShortcut);
+		document.addEventListener('keydown', handleKeyDown);
 	});
 
 	onDestroy(() => {
-		document.removeEventListener('keydown', handleKeyboardShortcut);
+		document.removeEventListener('keydown', handleKeyDown);
 	});
 </script>
 
@@ -523,6 +528,7 @@
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
 		wrappingArrowKeyNavigation
+		hideOnEscapeKey={mode === 'DEFAULT'}
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
