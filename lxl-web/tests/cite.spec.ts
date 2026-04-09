@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Zotero support', async () => {
 	const id = 'z7p0lb61wvsdl3x7';
-	test('A resource page should have a script tag with unapi link', async ({ page }) => {
+	test('A resource page should have a link tag to unapi server', async ({ page }) => {
 		await page.goto(`/${id}`);
 		const link = page.locator('link[rel="unapi-server"]');
 		await expect(link).toHaveAttribute('type', 'application/xml');
