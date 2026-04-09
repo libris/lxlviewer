@@ -383,10 +383,10 @@
 
 	export function hideExpandedSearch() {
 		if (expanded) {
-			dialog?.close();
 			collapsedEditorView?.dispatch({
 				selection: expandedEditorView?.state.selection.main
 			});
+			dialog?.close();
 			collapsedEditorView?.focus();
 			expanded = false;
 			oncollapse?.();
