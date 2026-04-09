@@ -621,8 +621,7 @@
 			resultsSnippet,
 			getCellId,
 			isFocusedRow,
-			isFocusedCell,
-			activeRowIndex
+			isFocusedCell
 		})}
 			{@const inputRowIndex = 0}
 			{@const qualifiersRowIndex = 1}
@@ -820,18 +819,12 @@
 							<span class="ml-0.5">
 								{#if isFocusedCell(inputRowIndex, 1)}
 									{page.data.t('search.clear')}
-								{:else if isFocusedRow(inputRowIndex) || isFocusedRow(resultsRowIndex)}
+								{:else if isFocusedRow(inputRowIndex)}
 									{page.data.t('supersearch.search')}
-								{:else if isFocusedCell(qualifiersRowIndex, 0)}
-									{page.data.t('supersearch.showMore')}
-								{:else if isFocusedRow(qualifiersRowIndex)}
-									{page.data.t('supersearch.add')}
-								{:else if isFocusedRow(searchHelpRowIndex)}
-									{page.data.t('supersearch.goto')}
-								{:else if isFocusedCell(activeRowIndex, 1)}
+								{:else if isFocusedRow(qualifiersRowIndex) && !isFocusedCell(qualifiersRowIndex, 0)}
 									{page.data.t('supersearch.add')}
 								{:else}
-									{page.data.t('supersearch.goto')}
+									{page.data.t('supersearch.select')}
 								{/if}
 							</span>
 						</li>
