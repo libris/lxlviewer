@@ -28,6 +28,7 @@
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 	import Spinner from '$lib/components/Spinner.svelte';
+	import { controlOrMetaKey } from '$lib/utils/controlOrMetaKey';
 
 	interface Props {
 		placeholder: string;
@@ -42,6 +43,7 @@
 	}
 
 	export type ChangeQueryParams = { insert: string; from?: number; to?: number };
+	export type SuperSearchMode = 'DEFAULT' | 'QUALIFIERS';
 
 	let {
 		placeholder,
@@ -59,6 +61,7 @@
 
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
+	let mode: SuperSearchMode = $state('DEFAULT');
 
 	let isLoading: boolean | undefined = $state();
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -129,16 +132,16 @@
 
 			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
 
-			superSearch?.hideExpandedSearch();
+			hideExpandedSearch();
 			fetchOnExpand = true;
 
 			if (userClearedSearch) {
-				superSearch?.showExpandedSearch();
+				showExpandedSearch();
 				userClearedSearch = false;
 			} else if (isHomeRoute) {
-				superSearch?.focus(); // focus input on start page
+				focus(); // focus input on start page
 			} else {
-				superSearch?.blur(); // remove focus from input after searching or navigating
+				blur(); // remove focus from input after searching or navigating
 			}
 		}
 	});
@@ -312,9 +315,9 @@
 		});
 	}
 
-	function addQualifierKey(qualifierKey: string) {
+	export function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
-		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
+		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
 
 		if (qualifierSuggestionNeedle.word.length > 0) {
 			// TODO don't need this if we can check qualifier editing state?
@@ -385,6 +388,31 @@
 		superSearch?.showExpandedSearch(options);
 	}
 
+	export function hideExpandedSearch() {
+		superSearch?.hideExpandedSearch();
+	}
+
+	export function showQualifiersMode() {
+		mode = 'QUALIFIERS';
+		showExpandedSearch({ focusRow: 1 });
+	}
+
+	export function focus() {
+		superSearch?.focus();
+	}
+
+	export function blur() {
+		superSearch?.blur();
+	}
+
+	export function isExpanded() {
+		return superSearch?.isExpanded();
+	}
+
+	export function getSelection() {
+		return superSearch?.getSelection();
+	}
+
 	function handleOnChange() {
 		fetchOnExpand = false;
 	}
@@ -405,6 +433,20 @@
 		}
 	}
 
+	function handleOnCollapse() {
+		mode = 'DEFAULT';
+	}
+
+	function handleKeyboardShortcut(event: KeyboardEvent) {
+		if (controlOrMetaKey(event) && event.key === 'k' && !superSearch?.isExpanded()) {
+			event.preventDefault();
+			showExpandedSearch();
+		}
+
+		if (event.shiftKey && event.key === '/' && mode !== 'QUALIFIERS') {
+			showQualifiersMode();
+		}
+	}
 	$effect(() => {
 		if (page.data.locale !== prevLocale) {
 			prevLocale = page.data.locale;
@@ -422,7 +464,19 @@
 	});
 
 	onMount(() => {
+		searchContext.showExpandedSearch = showExpandedSearch;
+		searchContext.hideExpandedSearch = hideExpandedSearch;
+		searchContext.focus = focus;
+		searchContext.blur = blur;
 		searchContext.changeQuery = changeQuery;
+		searchContext.addQualifierKey = addQualifierKey;
+		searchContext.showQualifiersMode = showQualifiersMode;
+		searchContext.isExpanded = isExpanded;
+		document.addEventListener('keydown', handleKeyboardShortcut);
+	});
+
+	onDestroy(() => {
+		document.removeEventListener('keydown', handleKeyboardShortcut);
 	});
 </script>
 
@@ -455,12 +509,12 @@
 		}}
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
-		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
+		oncollapse={handleOnCollapse}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
 	>
@@ -564,63 +618,77 @@
 			{@const resultRowsOffset = 1 + (showQualifiersRow ? 1 : 0) + (showResultRows ? 1 : 0)}
 			{@const searchHelpRowIndex = resultRowsOffset + (resultsCount || 0)}
 			<nav class="@container mt-3 lg:mt-4">
-				{#if showQualifiersRow}
-					{#snippet addFiltersLabel()}
-						<span class="flex min-h-14 w-fit cursor-pointer items-center px-4 hover:underline">
-							<IconAddFilter class="text-link mr-2 size-4.5" />
-							<span class="text-link whitespace-nowrap">
-								{page.data.t('supersearch.add')}
-								{page.data.t('supersearch.filter')}
-							</span>
-						</span>
-					{/snippet}
+				{#if mode === 'QUALIFIERS'}
 					<div
 						role="row"
-						class={[
-							'has-[:hover]:bg-accent-50/50 relative',
-							isFocusedRow(qualifiersRowIndex) && 'focused-row'
-						]}
+						class={['has-[:hover]:bg-accent-50/50 relative', isFocusedRow(1) && 'focused-row']}
 					>
-						<span class="pointer-events-none absolute top-0 left-0 flex size-full items-center">
-							<span class="invisible" aria-hidden="true">
-								{@render addFiltersLabel()}
-							</span>
-							<ul
-								class="scrollbar-hidden relative flex h-14 items-center gap-2 overflow-x-auto overflow-y-visible"
-							>
-								{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
-									<li>
-										<button
-											type="button"
-											id={getCellId(qualifiersRowIndex, cellIndex)}
-											class={[
-												'qualifier-suggestion text-body border-accent-200 hover:bg-accent-50 pointer-events-auto inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap -outline-offset-2',
-												isFocusedCell(qualifiersRowIndex, cellIndex) && 'focused-cell'
-											]}
-											title={`${page.data.t('supersearch.add')} ${label.toLocaleLowerCase()}`}
-											onclick={() => addQualifierKey(key)}
-										>
-											<span class="first-letter:capitalize">{label}</span>
-										</button>
-									</li>
-								{/each}
-							</ul>
-							<div class="flex-1 pr-4 pl-2 text-right">
-								<!-- svelte-ignore a11y_click_events_have_key_events -->
-								<!-- svelte-ignore a11y_no_static_element_interactions -->
-								<!-- We need a clickable span here as the pointer events otherwise won't reach the button under -->
-								<span
-									class="text-placeholder hover:[&>span]:text-link pointer-events-auto cursor-pointer items-center text-sm whitespace-nowrap hover:[&>span]:underline"
-									title={`${page.data.t('supersearch.showMore')} ${page.data.t('supersearch.filters')} (Shift+7)`}
-									onclick={() => console.log('baba')}
-								>
-									<span>{page.data.t('supersearch.showMore')}</span>
-									<span class="sr-only">{page.data.t('supersearch.filters')}</span>
-									<kbd class="keyboard-shortcut ml-0.5">/</kbd>
+						aaa
+					</div>
+					<div
+						role="row"
+						class={['has-[:hover]:bg-accent-50/50 relative', isFocusedRow(2) && 'focused-row']}
+					>
+						bbb
+					</div>
+				{:else}
+					{#if showQualifiersRow}
+						{#snippet addFiltersLabel()}
+							<span class="flex min-h-14 w-fit cursor-pointer items-center px-4 hover:underline">
+								<IconAddFilter class="text-link mr-2 size-4.5" />
+								<span class="text-link whitespace-nowrap">
+									{page.data.t('supersearch.add')}
+									{page.data.t('supersearch.filter')}
 								</span>
-							</div>
-						</span>
-						<!--
+							</span>
+						{/snippet}
+						<div
+							role="row"
+							class={[
+								'has-[:hover]:bg-accent-50/50 relative',
+								isFocusedRow(qualifiersRowIndex) && 'focused-row'
+							]}
+						>
+							<span class="pointer-events-none absolute top-0 left-0 flex size-full items-center">
+								<span class="invisible" aria-hidden="true">
+									{@render addFiltersLabel()}
+								</span>
+								<ul
+									class="scrollbar-hidden relative flex h-14 items-center gap-2 overflow-x-auto overflow-y-visible"
+								>
+									{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
+										<li>
+											<button
+												type="button"
+												id={getCellId(qualifiersRowIndex, cellIndex)}
+												class={[
+													'qualifier-suggestion text-body border-accent-200 hover:bg-accent-50 pointer-events-auto inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap -outline-offset-2',
+													isFocusedCell(qualifiersRowIndex, cellIndex) && 'focused-cell'
+												]}
+												title={`${page.data.t('supersearch.add')} ${label.toLocaleLowerCase()}`}
+												onclick={() => addQualifierKey(key)}
+											>
+												<span class="first-letter:capitalize">{label}</span>
+											</button>
+										</li>
+									{/each}
+								</ul>
+								<div class="flex-1 pr-4 pl-2 text-right">
+									<!-- svelte-ignore a11y_click_events_have_key_events -->
+									<!-- svelte-ignore a11y_no_static_element_interactions -->
+									<!-- We need a clickable span here as the pointer events otherwise won't reach the button under -->
+									<span
+										class="text-placeholder hover:[&>span]:text-link pointer-events-auto cursor-pointer items-center text-sm whitespace-nowrap hover:[&>span]:underline"
+										title={`${page.data.t('supersearch.showMore')} ${page.data.t('supersearch.filters')} (Shift+7)`}
+										onclick={showQualifiersMode}
+									>
+										<span>{page.data.t('supersearch.showMore')}</span>
+										<span class="sr-only">{page.data.t('supersearch.filters')}</span>
+										<kbd class="keyboard-shortcut ml-0.5">/</kbd>
+									</span>
+								</div>
+							</span>
+							<!--
 							{#if !isSuggestingQualifiers && filteredQualifierSuggestions.length}
 								<button
 									type="button"
@@ -651,23 +719,23 @@
 								{/if}
 							{/if}
 						-->
-						<button
-							type="button"
-							id={getCellId(qualifiersRowIndex, showMoreQualifiersColIndex)}
-							title={`${page.data.t('supersearch.add')} ${page.data.t('supersearch.filters')} (Shift+7)`}
-							onclickcapture={() => console.log('aaa')}
-							class={[
-								'w-full cursor-default',
-								isFocusedCell(qualifiersRowIndex, showMoreQualifiersColIndex) && 'focused-cell'
-							]}
-						>
-							{@render addFiltersLabel()}
-						</button>
-					</div>
-				{/if}
-				{#if showHistoryRows}
-					<div role="rowgroup" class="min-h-14">
-						<!--
+							<button
+								type="button"
+								id={getCellId(qualifiersRowIndex, showMoreQualifiersColIndex)}
+								title={`${page.data.t('supersearch.add')} ${page.data.t('supersearch.filters')} (Shift+7)`}
+								onclick={showQualifiersMode}
+								class={[
+									'w-full cursor-default',
+									isFocusedCell(qualifiersRowIndex, showMoreQualifiersColIndex) && 'focused-cell'
+								]}
+							>
+								{@render addFiltersLabel()}
+							</button>
+						</div>
+					{/if}
+					{#if showHistoryRows}
+						<div role="rowgroup" class="min-h-14">
+							<!--
 						<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
 							<button
 								type="button"
@@ -689,80 +757,84 @@
 							</button>
 						</div>
 						-->
-					</div>
-				{:else if showResultRows}
-					<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
-						<button
-							type="submit"
-							id={getCellId(resultsRowIndex, 0)}
+						</div>
+					{:else if showResultRows}
+						<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
+							<button
+								type="submit"
+								id={getCellId(resultsRowIndex, 0)}
+								class={[
+									'flex min-h-14 w-full items-center px-4',
+									isFocusedCell(resultsRowIndex, 0) && 'focused-cell'
+								]}
+							>
+								<span
+									class={['text-link flex items-center gap-2 whitespace-nowrap hover:underline']}
+								>
+									<IconSearch aria-hidden="true" class="size-4.5" />
+									{page.data.t('supersearch.showResults')}
+									{#if isLoading}
+										<div class="ml-auto h-5 w-5">
+											<Spinner />
+										</div>
+									{/if}
+								</span>
+							</button>
+						</div>
+						<div role="rowgroup" aria-label={page.data.t('supersearch.suggestions')}>
+							{@render resultsSnippet({
+								rowOffset: resultRowsOffset
+							})}
+						</div>
+					{/if}
+					<div
+						role="row"
+						data-skip-row-on-arrow-key
+						class="border-neutral flex justify-between gap-4 border-t pl-4 text-sm"
+					>
+						<ul class="text-placeholder flex cursor-default items-center gap-4">
+							<li>
+								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowUp')}>↑</kbd>
+								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowDown')}>↓</kbd>
+								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowLeft')}>←</kbd>
+								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowRight')}>→</kbd>
+								<span class="ml-0.5">
+									{page.data.t('supersearch.navigate')}
+								</span>
+							</li>
+							<li>
+								<kbd class="keyboard-shortcut" title={page.data.t('supersearch.returnKey')}>↵</kbd>
+								<span class="ml-0.5">
+									{#if isFocusedCell(inputRowIndex, 1)}
+										{page.data.t('search.clear')}
+									{:else if isFocusedRow(inputRowIndex) || isFocusedRow(resultsRowIndex)}
+										{page.data.t('supersearch.search')}
+									{:else if isFocusedCell(qualifiersRowIndex, 0)}
+										{page.data.t('supersearch.showMore')}
+									{:else if isFocusedRow(qualifiersRowIndex)}
+										{page.data.t('supersearch.add')}
+									{:else if isFocusedRow(searchHelpRowIndex)}
+										{page.data.t('supersearch.goto')}
+									{:else if isFocusedCell(activeRowIndex, 1)}
+										{page.data.t('supersearch.add')}
+									{:else}
+										{page.data.t('supersearch.goto')}
+									{/if}
+								</span>
+							</li>
+						</ul>
+						<a
+							href={resolve(page.data.localizeHref('/help'))}
+							id={getCellId(searchHelpRowIndex, 0)}
 							class={[
-								'flex min-h-14 w-full items-center px-4',
-								isFocusedCell(resultsRowIndex, 0) && 'focused-cell'
+								'text-link mr-3 flex min-h-14 items-center justify-end px-1 hover:underline',
+								isFocusedCell(searchHelpRowIndex, 0) && 'underline outline-2 -outline-offset-2'
 							]}
 						>
-							<span class={['text-link flex items-center gap-2 whitespace-nowrap hover:underline']}>
-								<IconSearch aria-hidden="true" class="size-4.5" />
-								{page.data.t('supersearch.showResultsFor')}
-								'{q.trim()}'
-								<div class="ml-auto h-5 w-5">
-									<Spinner />
-								</div>
-							</span>
-						</button>
-					</div>
-					<div role="rowgroup" aria-label={page.data.t('supersearch.suggestions')}>
-						{@render resultsSnippet({
-							rowOffset: resultRowsOffset
-						})}
+							{page.data.t('supersearch.searchHelp')}
+						</a>
 					</div>
 				{/if}
-				<div
-					role="row"
-					data-skip-row-on-arrow-key
-					class="border-neutral flex justify-between gap-4 border-t pl-4 text-sm"
-				>
-					<ul class="text-placeholder flex cursor-default items-center gap-4">
-						<li>
-							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowUp')}>↑</kbd>
-							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowDown')}>↓</kbd>
-							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowLeft')}>←</kbd>
-							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.arrowRight')}>→</kbd>
-							<span class="ml-0.5">
-								{page.data.t('supersearch.navigate')}
-							</span>
-						</li>
-						<li>
-							<kbd class="keyboard-shortcut" title={page.data.t('supersearch.returnKey')}>↵</kbd>
-							<span class="ml-0.5">
-								{#if isFocusedCell(inputRowIndex, 1)}
-									{page.data.t('search.clear')}
-								{:else if isFocusedRow(inputRowIndex) || isFocusedRow(resultsRowIndex)}
-									{page.data.t('supersearch.search')}
-								{:else if isFocusedCell(qualifiersRowIndex, 0)}
-									{page.data.t('supersearch.showMore')}
-								{:else if isFocusedRow(qualifiersRowIndex)}
-									{page.data.t('supersearch.add')}
-								{:else if isFocusedRow(searchHelpRowIndex)}
-									{page.data.t('supersearch.goto')}
-								{:else if isFocusedCell(activeRowIndex, 1)}
-									{page.data.t('supersearch.add')}
-								{:else}
-									{page.data.t('supersearch.goto')}
-								{/if}
-							</span>
-						</li>
-					</ul>
-					<a
-						href={resolve(page.data.localizeHref('/help'))}
-						id={getCellId(searchHelpRowIndex, 0)}
-						class={[
-							'text-link mr-3 flex min-h-14 items-center justify-end px-1 hover:underline',
-							isFocusedCell(searchHelpRowIndex, 0) && 'underline outline-2 -outline-offset-2'
-						]}
-					>
-						{page.data.t('supersearch.searchHelp')}
-					</a>
-				</div>
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}

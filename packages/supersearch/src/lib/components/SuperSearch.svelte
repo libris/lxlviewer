@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
-	import { BROWSER } from 'esm-env';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
@@ -88,7 +87,6 @@
 		defaultInputCol?: number;
 		defaultResultRow?: number;
 		defaultResultCol?: number;
-		toggleWithKeyboardShortcut?: boolean;
 		wrappingArrowKeyNavigation?: boolean;
 		debouncedWait?: number;
 		getDebouncedWait?: DebouncedWaitFunction;
@@ -127,7 +125,6 @@
 		expandedContent = fallbackExpandedContent,
 		resultItemRow = fallbackResultItemRow,
 		loadingIndicator,
-		toggleWithKeyboardShortcut = false,
 		wrappingArrowKeyNavigation = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
@@ -415,6 +412,14 @@
 		collapsedEditorView?.contentDOM.blur();
 	}
 
+	export function isExpanded() {
+		return expanded;
+	}
+
+	export function getSelection(): Selection | undefined {
+		return selection;
+	}
+
 	function submitClosestForm() {
 		const formElement = form
 			? document.getElementById(form)
@@ -424,14 +429,6 @@
 			formElement.requestSubmit();
 			hideExpandedSearch();
 		}
-	}
-
-	function controlOrMetaKey(event: KeyboardEvent) {
-		if (!event.ctrlKey && !event.metaKey) return false;
-		const isMac = navigator.userAgent.includes('Mac OS X');
-		if (isMac && event.metaKey) return true;
-		if (!isMac && event.ctrlKey) return true;
-		return false;
 	}
 
 	function handleCollapsedKeyDown(event: KeyboardEvent) {
@@ -694,20 +691,6 @@
 		}
 	}
 
-	function handleKeyboardShortcut(event: KeyboardEvent) {
-		if (controlOrMetaKey(event) && event.key === 'k') {
-			if (!dialog?.open) {
-				event.preventDefault();
-				showExpandedSearch();
-			}
-		}
-
-		if (event.shiftKey && event.key === '/' && !dialog?.open) {
-			event.preventDefault();
-			showExpandedSearch();
-		}
-	}
-
 	function handleClickSubmit() {
 		// if (!value.length) {
 		// 	event.preventDefault();
@@ -728,16 +711,10 @@
 	}
 
 	onMount(() => {
-		if (BROWSER && toggleWithKeyboardShortcut) {
-			document.addEventListener('keydown', handleKeyboardShortcut);
-		}
 		dialog?.addEventListener('click', handleClickOutsideDialog);
 	});
 
 	onDestroy(() => {
-		if (BROWSER) {
-			document.removeEventListener('keydown', handleKeyboardShortcut);
-		}
 		dialog?.removeEventListener('click', handleClickOutsideDialog);
 	});
 

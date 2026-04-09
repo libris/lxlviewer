@@ -205,7 +205,7 @@ export default {
 		add: 'Lägg till',
 		filter: 'filter',
 		filters: 'filter',
-		showResultsFor: 'Visa resultat för',
+		showResults: 'Visa sökresultat',
 		keyboardShortcut: 'Tangentbordsgenväg',
 		arrowUp: 'Piltangent uppåt',
 		arrowRight: 'Piltangent höger',

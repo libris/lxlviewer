@@ -206,7 +206,7 @@ export default {
 		add: 'Add',
 		filter: 'filter',
 		filters: 'filters',
-		showResultsFor: 'Show all results for',
+		showResults: 'Show results',
 		keyboardShortcut: 'Keyboard shortcut',
 		arrowUp: 'Up arrow key',
 		arrowRight: 'Right arrow key',

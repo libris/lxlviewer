@@ -17,6 +17,7 @@
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
+	import { getSearchContext } from '$lib/contexts/search';
 
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
@@ -47,6 +48,8 @@
 	);
 
 	const subset = $derived(page.data.subsetMapping);
+
+	const searchContext = getSearchContext();
 
 	function handleDismissBanner() {
 		dismissedBanner = true;
@@ -83,17 +86,17 @@
 
 	function handleClickPageTitle() {
 		if (window.getSelection()?.type === 'Caret') {
-			appSearchComponent?.showExpandedSearch({ cursorAtEnd: true });
+			searchContext.showExpandedSearch?.({ cursorAtEnd: true });
 		}
 	}
 
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
-		appSearchComponent?.showExpandedSearch({ cursorAtEnd: true });
+		searchContext.showExpandedSearch?.({ cursorAtEnd: true });
 	}
 
 	function handleClickAddFilter() {
-		appSearchComponent?.showExpandedSearch({ cursorAtEnd: true, focusRow: 1 });
+		searchContext.showQualifiersMode?.();
 	}
 
 	function handleBackgroundObserve(entries: IntersectionObserverEntry[]) {
