@@ -626,7 +626,6 @@
 		})}
 			{@const inputRowIndex = 0}
 			{@const qualifiersRowIndex = 1}
-			{@const showMoreQualifiersColIndex = filteredQualifierSuggestions.length}
 			{@const resultsRowIndex = 2}
 			{@const resultRowsOffset = 1 + (showQualifiersRow ? 1 : 0) + (showResultRows ? 1 : 0)}
 			{@const searchHelpRowIndex = resultRowsOffset + (resultsCount || 0)}
@@ -662,6 +661,18 @@
 								isFocusedRow(qualifiersRowIndex) && 'focused-row'
 							]}
 						>
+							<button
+								type="button"
+								id={getCellId(qualifiersRowIndex, 0)}
+								title={`${page.data.t('supersearch.add')} ${page.data.t('supersearch.filters')} (Shift+7)`}
+								onclick={showQualifiersMode}
+								class={[
+									'w-full cursor-default',
+									isFocusedCell(qualifiersRowIndex, 0) && 'focused-cell'
+								]}
+							>
+								{@render addFiltersLabel()}
+							</button>
 							<span class="pointer-events-none absolute top-0 left-0 flex size-full items-center">
 								<span class="invisible" aria-hidden="true">
 									{@render addFiltersLabel()}
@@ -673,10 +684,10 @@
 										<li>
 											<button
 												type="button"
-												id={getCellId(qualifiersRowIndex, cellIndex)}
+												id={getCellId(qualifiersRowIndex, cellIndex + 1)}
 												class={[
 													'qualifier-suggestion text-body border-accent-200 hover:bg-accent-50 pointer-events-auto inline-flex min-h-10 min-w-9 shrink-0 items-center gap-1.5 rounded-md border px-2 text-sm font-medium whitespace-nowrap -outline-offset-2',
-													isFocusedCell(qualifiersRowIndex, cellIndex) && 'focused-cell'
+													isFocusedCell(qualifiersRowIndex, cellIndex + 1) && 'focused-cell'
 												]}
 												title={`${page.data.t('supersearch.add')} ${label.toLocaleLowerCase()}`}
 												onclick={() => addQualifierKey(key)}
@@ -732,18 +743,6 @@
 								{/if}
 							{/if}
 						-->
-							<button
-								type="button"
-								id={getCellId(qualifiersRowIndex, showMoreQualifiersColIndex)}
-								title={`${page.data.t('supersearch.add')} ${page.data.t('supersearch.filters')} (Shift+7)`}
-								onclick={showQualifiersMode}
-								class={[
-									'w-full cursor-default',
-									isFocusedCell(qualifiersRowIndex, showMoreQualifiersColIndex) && 'focused-cell'
-								]}
-							>
-								{@render addFiltersLabel()}
-							</button>
 						</div>
 					{/if}
 					{#if showHistoryRows}
