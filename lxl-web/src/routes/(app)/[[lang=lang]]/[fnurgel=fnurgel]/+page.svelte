@@ -78,7 +78,9 @@
 <div data-testid="resource-page" class="contents">
 	<!-- Zotero tag -->
 	{#if data.instances?.length}
-		<abbr class="unapi-id hidden" title={data.uri}></abbr>
+		{#each data.instances as instance (instance[JsonLd.ID])}
+			<abbr class="unapi-id hidden" title={instance[JsonLd.ID]}></abbr>
+		{/each}
 	{/if}
 	<Resource
 		fnurgel={page.params.fnurgel}
