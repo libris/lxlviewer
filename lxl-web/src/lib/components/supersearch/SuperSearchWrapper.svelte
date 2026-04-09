@@ -12,7 +12,8 @@
 		type ShowExpandedSearchOptions,
 		type ViewUpdateSuperSearchEvent,
 		type DebouncedWaitFunction,
-		type ExpandEvent
+		type ExpandEvent,
+		type ChangeSuperSearchEvent
 	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
@@ -68,6 +69,7 @@
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
 	let pageYOffset: number | undefined = $state();
+	let qualifierSlashPos: number | undefined = $state();
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -394,7 +396,7 @@
 
 	export function showQualifiersMode() {
 		mode = 'QUALIFIERS';
-		showExpandedSearch({ focusRow: 1 });
+		showExpandedSearch();
 	}
 
 	export function focus() {
@@ -413,8 +415,14 @@
 		return superSearch?.getSelection();
 	}
 
-	function handleOnChange() {
+	function handleOnChange({ value }: ChangeSuperSearchEvent) {
 		fetchOnExpand = false;
+		if (
+			typeof qualifierSlashPos === 'number' &&
+			value.slice(qualifierSlashPos, qualifierSlashPos + 1) !== '/'
+		) {
+			mode = 'DEFAULT'; // TODO: Do something smarter here (with the syntax tree?)
+		}
 	}
 
 	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
@@ -435,6 +443,7 @@
 
 	function handleOnCollapse() {
 		mode = 'DEFAULT';
+		qualifierSlashPos = undefined;
 	}
 
 	function handleKeyboardShortcut(event: KeyboardEvent) {
@@ -443,10 +452,14 @@
 			showExpandedSearch();
 		}
 
-		if (event.shiftKey && event.key === '/' && mode !== 'QUALIFIERS') {
-			showQualifiersMode();
+		if (event.shiftKey && event.key === '/') {
+			qualifierSlashPos = superSearch?.getSelection?.()?.from || 0;
+			if (mode !== 'QUALIFIERS') {
+				showQualifiersMode();
+			}
 		}
 	}
+
 	$effect(() => {
 		if (page.data.locale !== prevLocale) {
 			prevLocale = page.data.locale;
