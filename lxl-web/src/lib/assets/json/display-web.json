@@ -1441,6 +1441,16 @@
 			"fresnel:propertyFormatDomain": ["hasNote"],
 			"fresnel:propertyStyle": ["hasNote"]
 		},
+		"Item-hasNote-format": {
+			"@id": "Item-hasNote-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Item"],
+			"fresnel:propertyFormatDomain": ["hasNote"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentAfter": ")"
+			}
+		},
 		"Classification-format": {
 			"@id": "Classification-format",
 			"@type": "fresnel:Format",
