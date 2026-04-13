@@ -1446,6 +1446,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Item"],
 			"fresnel:propertyFormatDomain": ["hasNote"],
+			"fresnel:propertyStyle": [""],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentAfter": ")"
