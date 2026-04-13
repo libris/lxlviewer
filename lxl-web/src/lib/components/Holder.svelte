@@ -55,7 +55,9 @@
 				instance?.linksToItem.length ||
 				instance?.loanReserveLink.length ||
 				instance?.itemStatus?.length ||
-				instance?.shelfData
+				instance?.shelfData?._display?.length ||
+				instance?.itemNoteData?._display?.length ||
+				instance?.itemMedia?._display?.length
 		)
 	);
 
