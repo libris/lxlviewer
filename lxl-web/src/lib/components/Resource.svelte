@@ -416,21 +416,21 @@
 					· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
 					· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
 					{#if instances?.length === 1}
-						· <a
-							href="{recordUri
-								.split('/')
-								.toSpliced(-1, 1)
-								.join('/')}/_compilemarc?library=Foo&id={recordUri}"
-							target="_blank"
-							download="{fnurgel}.marc"
-							class="link">MARC21 (ISO 2709) <BiDownload class="inline" /></a
-						>
 						<!--
-                            TODO _compilemarc can only create ISO 2709
-                            TODO _compilemarc can only handle bib
+                            TODO - agents? - _compilemarc can only handle bib
                             TODO? select export profile (library)?
-                            <a href="{fnurgel}" target="_blank" class="ext-link">MARC-XML</a> ·
-                            -->
+                        -->
+						{@const base = recordUri.split('/').toSpliced(-1, 1).join('/')}
+						·
+						<a href="{base}/_compilemarc?library=Foo&id={recordUri}" target="_blank" class="link"
+							>MARC21 (ISO 2709) <BiDownload class="inline" /></a
+						>
+						·
+						<a
+							href="{base}/_compilemarc?library=Foo&id={recordUri}&format=marcxml"
+							target="_blank"
+							class="link">MARC21 (XML) <BiDownload class="inline" /></a
+						>
 					{/if}
 				</p>
 				<p>
