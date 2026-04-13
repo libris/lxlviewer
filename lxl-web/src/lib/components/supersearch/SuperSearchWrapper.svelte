@@ -78,16 +78,6 @@
 	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
 
-	let clearUrl = $derived.by(() => {
-		if (page.url.pathname !== '/find') return undefined;
-		const url = new URL(page.url);
-		url.searchParams.set('_q', '');
-		url.searchParams.delete('_offset');
-		return url.toString();
-	});
-
-	let userClearedSearch = $state(false);
-
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
 	// TODO min 3 for prefix match, while allowing exactMatch år?
@@ -139,10 +129,7 @@
 			hideExpandedSearch();
 			fetchOnExpand = true;
 
-			if (userClearedSearch) {
-				showExpandedSearch();
-				userClearedSearch = false;
-			} else if (isHomeRoute) {
+			if (isHomeRoute) {
 				focus(); // focus input on start page
 			} else {
 				blur(); // remove focus from input after searching or navigating
@@ -319,6 +306,9 @@
 		});
 	}
 
+	function handleReset() {
+		mode = 'DEFAULT';
+	}
 	export function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
@@ -541,6 +531,7 @@
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
 		oncollapse={handleOnCollapse}
+		onreset={handleReset}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
 	>
@@ -596,14 +587,9 @@
 					{@render inputField()}
 				</div>
 				{#if q}
-					<svelte:element
-						this={clearUrl ? 'a' : 'button'}
-						role={clearUrl ? undefined : 'button'}
-						href={clearUrl ? clearUrl : undefined}
-						onclick={(e: MouseEvent) => {
-							userClearedSearch = true;
-							onclickClear(e);
-						}}
+					<button
+						type="button"
+						onclick={onclickClear}
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
@@ -614,7 +600,7 @@
 						title={page.data.t('search.clear')}
 					>
 						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
-					</svelte:element>
+					</button>
 				{/if}
 				<button
 					type="submit"

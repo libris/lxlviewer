@@ -26,7 +26,6 @@
 	let backgroundObserver: IntersectionObserver | undefined = $state();
 	let shadowSentinelElement: HTMLElement | undefined = $state();
 	let shadowObserver: IntersectionObserver | undefined = $state();
-	let appSearchComponent: AppSearch | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
@@ -135,6 +134,11 @@
 	function disconnectObservers() {
 		backgroundObserver?.disconnect();
 		shadowObserver?.disconnect();
+	}
+
+	function handleSubmit() {
+		closeExpandedMenu();
+		searchContext.hideExpandedSearch();
 	}
 
 	beforeNavigate(() => {
@@ -299,7 +303,12 @@
 					'hidden target:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit' // enable toggling using target/anchor (so it also works when JavaScript is disabled)
 			]}
 		>
-			<form id="search-form" action={findActionUrl} class="mx-auto w-full min-w-0">
+			<form
+				id="search-form"
+				action={findActionUrl}
+				class="mx-auto w-full min-w-0"
+				onsubmit={handleSubmit}
+			>
 				{#if isHomeRoute}
 					<hgroup
 						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
@@ -325,12 +334,7 @@
 						</p>
 					</hgroup>
 				{/if}
-				<AppSearch
-					id="app-search"
-					name="_q"
-					--page-y-offset={pageYOffset}
-					bind:this={appSearchComponent}
-				/>
+				<AppSearch id="app-search" name="_q" --page-y-offset={pageYOffset} />
 			</form>
 		</search>
 		<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">

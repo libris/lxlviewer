@@ -98,6 +98,7 @@
 		onexpand?: (event: ExpandEvent) => void;
 		oncollapse?: () => void;
 		onchange?: (event: ChangeSuperSearchEvent) => void;
+		onreset?: () => void;
 		onexpandedviewupdate?: (event: ViewUpdateSuperSearchEvent) => void;
 	}
 
@@ -118,7 +119,7 @@
 		expandedAriaKeyshortcuts,
 		autofocus,
 		endpoint,
-		queryFn = (value) => new URLSearchParams({ q: value }),
+		queryFn = (value) => new URLSearchParams({ q: value as string }),
 		paginationQueryFn,
 		transformFn,
 		extensions = [],
@@ -140,6 +141,7 @@
 		onexpand,
 		oncollapse,
 		onchange,
+		onreset,
 		onexpandedviewupdate
 	}: Props = $props();
 
@@ -699,7 +701,7 @@
 		// }
 	}
 
-	function handleReset() {
+	export function reset() {
 		collapsedEditorView?.dispatch({
 			changes: { from: 0, to: value.length, insert: '' },
 			userEvent: 'delete'
@@ -710,6 +712,7 @@
 		} else {
 			collapsedEditorView?.focus();
 		}
+		onreset?.();
 	}
 
 	onMount(() => {
@@ -852,7 +855,7 @@
 			isFocusedCell: () => false,
 			isFocusedRow: () => activeRowIndex === -1,
 			onclickSubmit: handleClickSubmit,
-			onclickClear: handleReset,
+			onclickClear: reset,
 			onclickClose: hideExpandedSearch
 		})}
 		<textarea {value} {name} {form} hidden readonly></textarea>
@@ -881,7 +884,7 @@
 					isFocusedCell: (colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex,
 					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
-					onclickClear: handleReset,
+					onclickClear: reset,
 					onclickClose: hideExpandedSearch
 				})}
 			</div>
