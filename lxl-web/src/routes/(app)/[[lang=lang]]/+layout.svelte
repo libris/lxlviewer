@@ -16,7 +16,20 @@
 	});
 
 	setHomepageContext(homepageCache);
-	setSearchContext({});
+
+	// Search context is updated in SuperSearchWrapper.svelte onMount lifecycle hook
+	setSearchContext({
+		showExpandedSearch: () => {},
+		hideExpandedSearch: () => {},
+		focus: () => {},
+		blur: () => {},
+		changeQuery: () => {},
+		addQualifierKey: () => {},
+		showQualifiersMode: () => {},
+		getSelection: () => undefined,
+		isExpanded: () => undefined,
+		isMounted: false
+	});
 </script>
 
 <svelte:head>

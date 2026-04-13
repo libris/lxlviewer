@@ -86,17 +86,17 @@
 
 	function handleClickPageTitle() {
 		if (window.getSelection()?.type === 'Caret') {
-			searchContext.showExpandedSearch?.({ cursorAtEnd: true });
+			searchContext.showExpandedSearch({ cursorAtEnd: true });
 		}
 	}
 
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
-		searchContext.showExpandedSearch?.({ cursorAtEnd: true });
+		searchContext.showExpandedSearch({ cursorAtEnd: true });
 	}
 
 	function handleClickAddFilter() {
-		searchContext.showQualifiersMode?.();
+		searchContext.showQualifiersMode();
 	}
 
 	function handleBackgroundObserve(entries: IntersectionObserverEntry[]) {

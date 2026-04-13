@@ -42,7 +42,7 @@
 					<td>
 						<button
 							class="qualifier text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize"
-							onclick={() => searchContext.changeQuery?.({ insert: ` ${f.key}:` })}
+							onclick={() => searchContext.changeQuery({ insert: ` ${f.key}:` })}
 						>
 							{f.label}
 						</button>
