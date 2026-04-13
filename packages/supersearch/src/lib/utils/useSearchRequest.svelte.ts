@@ -58,6 +58,9 @@ export function useSearchRequest({
 			return _data;
 		} catch (err) {
 			if (err instanceof Error) {
+				if (err.name === 'AbortError') {
+					return; // don't set an error message when intentionally aborting fetch
+				}
 				error = 'Failed to fetch data: ' + err.message;
 			} else {
 				error = 'Failed to fetch data';
