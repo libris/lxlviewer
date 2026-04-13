@@ -39,10 +39,20 @@ export class VocabUtil {
 	//vocabId: string
 	vocabIndex: Map;
 	context;
+	labelCache: Record<LangCode, Map>;
 
 	constructor(vocab: VocabData, context: ContextData) {
 		this.context = lxljsVocab.preprocessContext(context)[JsonLd.CONTEXT];
 		this.vocabIndex = lxljsVocab.preprocessVocab(vocab);
+		this.labelCache = {};
+	}
+
+	getLabelCache(locale: LangCode) {
+		if (this.labelCache[locale] == undefined) {
+			this.labelCache[locale] = new Map();
+		}
+
+		return this.labelCache[locale];
 	}
 
 	getBaseClasses(className: ClassName | ClassName[]): ClassName[] {
@@ -730,12 +740,19 @@ class Formatter {
 	}
 
 	private getVocabLabel(vocabName) {
+		const cache = this.vocabUtil.getLabelCache(this.locale);
+		if (cache.has(vocabName)) {
+			return cache.get(vocabName);
+		}
+
 		try {
-			return toLabel(
+			const label = toLabel(
 				this.displayDecorate(
 					this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName), LensType.None)
 				)
 			);
+			cache.set(vocabName, label);
+			return label;
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (ignored) {
 			console.warn(`Error getting vocab label for: ${vocabName}`);
