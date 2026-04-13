@@ -215,11 +215,6 @@
 									{page.data.t('holdings.applyForCard')}
 								</a>
 							{/if}
-							<!-- {#if numInstances === 1 && instances?.[0].linkResolver}
-								<a href={instances[0].linkResolver.uri} target="_blank" class="ext-link"
-									>{instances[0].linkResolver.label}</a
-								>
-							{/if} -->
 						</div>
 					</li>
 				{/if}
