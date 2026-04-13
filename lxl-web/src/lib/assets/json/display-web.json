@@ -890,8 +890,8 @@
 						"shelfMark",
 						"shelfControlNumber",
 						"availability",
-						"hasNote",
 						"hasComponent",
+						"hasNote",
 						"immediateAcquisition"
 					]
 				}
@@ -907,11 +907,8 @@
 					"classLensDomain": "Item",
 					"showProperties": [
 						"cataloguersNote",
-						"custodialHistory",
 						"summary",
 						"appliesTo",
-						"marc:hasCopyAndVersionIdentificationNote",
-						"marc:hasBindingInformation",
 						"marc:hasTextualHoldingsBasicBibliographicUnit"
 					]
 				}
