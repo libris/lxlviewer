@@ -89,6 +89,8 @@ export function useSearchRequest({
 	}
 
 	function resetData() {
+		controller?.abort();
+		debouncedFetchData?.cancel();
 		data = undefined;
 		paginatedData = undefined;
 		moreSearchParams = undefined;

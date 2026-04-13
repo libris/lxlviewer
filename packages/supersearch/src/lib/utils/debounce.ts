@@ -2,13 +2,19 @@
 function debounce(callback: Function, wait: number | ((...args: any[]) => number | null) = 300) {
 	let timeout: ReturnType<typeof setTimeout>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (...args: any[]) => {
+	const debounced = (...args: any[]) => {
 		clearTimeout(timeout);
 		const resolvedWait = typeof wait === 'function' ? wait(...args) : wait;
 		if (resolvedWait !== null) {
 			timeout = setTimeout(() => callback(...args), resolvedWait);
 		}
 	};
+
+	debounced.cancel = () => {
+		clearTimeout(timeout);
+	};
+
+	return debounced;
 }
 
 export default debounce;
