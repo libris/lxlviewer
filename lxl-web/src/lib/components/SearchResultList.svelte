@@ -18,6 +18,7 @@
 		lazyImages?: boolean;
 		fadeInImages?: boolean;
 		listElement?: HTMLUListElement | undefined;
+		suppressProperty?: string;
 	};
 
 	let {
@@ -31,7 +32,8 @@
 		placeholderSnippet,
 		lazyImages = false,
 		fadeInImages = false,
-		listElement = $bindable()
+		listElement = $bindable(),
+		suppressProperty = undefined
 	}: Props = $props();
 
 	const SCROLL_AMOUNT = 0.85;
@@ -116,6 +118,7 @@
 						fadeInImage={fadeInImages}
 						highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
 							index <= lazyImagesAfterIndex}
+						{suppressProperty}
 					/>
 				</li>
 			{/each}

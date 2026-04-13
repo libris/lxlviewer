@@ -25,7 +25,7 @@
 
 <a
 	class={[
-		`focusable flex min-h-8 items-center text-xs no-underline`,
+		`focusable flex min-h-8 items-center text-sm no-underline`,
 		data.selected && 'selected',
 		variant === 'checkbox' && 'with-checkbox',
 		variant === 'radio' && 'with-radio',
@@ -35,6 +35,9 @@
 	data-sveltekit-preload-data="false"
 >
 	<span class="truncate" title={data.str}>
+		{#if data.selected}
+			<span class="sr-only">{page.data.t('search.activeFilter')}: </span>
+		{/if}
 		<span class={['truncate', data.selected && 'text-accent font-medium']}>
 			{#if typeof data.label === 'string'}
 				{data.label}
@@ -42,13 +45,13 @@
 				<DecoratedDataLite data={data.label} />
 			{/if}
 			{#if data.discriminator}
-				<span class="text-subtle text-3xs">({data.discriminator})</span>
+				<span class="text-subtle text-2xs">({data.discriminator})</span>
 			{/if}
 		</span>
 	</span>
 	{#if data.totalItems !== 0 && !(data.selected && !variant)}
-		<span class="text-placeholder text-2xs ml-2">
-			<span class="text-3xs">
+		<span class="text-placeholder ml-2 text-xs">
+			<span class="text-2xs">
 				{data.totalItems.toLocaleString(page.data.locale)}
 			</span>
 			<span class="sr-only">
@@ -61,6 +64,14 @@
 			<IconClose />
 		</span>
 	{/if}
+	<span class="sr-only">
+		{page.data.t('search.clickTo')}
+		{#if data.selected}
+			{page.data.t('search.removeFilter')}
+		{:else}
+			{page.data.t('search.addFilter')}
+		{/if}
+	</span>
 </a>
 
 <style lang="postcss">

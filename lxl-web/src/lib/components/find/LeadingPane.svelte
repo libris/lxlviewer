@@ -42,7 +42,7 @@
 	aria-label={page.data.t('panes.leadingPane')}
 	id="leading-pane"
 	class={[
-		'leading-pane sticky top-0 hidden w-0 sm:block',
+		'leading-pane sticky top-0 z-10 hidden w-0 sm:block',
 		// Enable transition for the collapse animation. But disable it while resizing the panel!
 		!isDragging && 'transition-[padding] duration-150 ease-in motion-reduce:transition-none'
 	]}
@@ -112,5 +112,9 @@
 			100vh - var(--app-bar-height) - var(--banner-height, 0) - var(--toolbar-height, 0)
 		);
 		scrollbar-width: thin;
+	}
+
+	:global(.leading-pane .tab) {
+		font-size: var(--text-xs);
 	}
 </style>

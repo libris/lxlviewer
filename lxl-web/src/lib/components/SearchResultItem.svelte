@@ -13,9 +13,16 @@
 		lazyImage?: boolean;
 		highPriorityImage?: boolean;
 		fadeInImage?: boolean;
+		suppressProperty?: string;
 	};
 
-	let { data, lazyImage = false, highPriorityImage = false, fadeInImage = false }: Props = $props();
+	let {
+		data,
+		lazyImage = false,
+		highPriorityImage = false,
+		fadeInImage = false,
+		suppressProperty = undefined
+	}: Props = $props();
 
 	let loadedImage = $state(false);
 
@@ -93,7 +100,7 @@
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
 				{#if data['web-card-header-extra']?._display && data['web-card-header-extra']?._display.length}
-					<p class="text-subtle mt-0.5 truncate text-xs">
+					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
 						{#each data['web-card-header-extra']?._display as displayObj, index (index)}
 							<span>
 								<DecoratedData data={displayObj} showLabels="defaultOn" />
@@ -105,10 +112,16 @@
 		</a>
 	</header>
 	{#if data['card-body']?._display}
-		<div class="4xs:text-sm decorated-card-body mt-1 mb-1 text-xs">
+		<div class="decorated-card-body mt-1 mb-1 text-sm">
 			{#each data['card-body']?._display as obj, index (index)}
 				<div class="@4xs:text-sm flex flex-col items-center text-center">
-					<DecoratedData data={obj} showLabels="never" block limit={{ contribution: 3 }} />
+					<DecoratedData
+						data={obj}
+						showLabels="never"
+						block
+						limit={{ contribution: 3 }}
+						{suppressProperty}
+					/>
 				</div>
 			{/each}
 		</div>
@@ -154,6 +167,12 @@
 
 		& :global(.transliteration._contentBefore),
 		& :global(.transliteration._contentAfter) {
+			display: none;
+		}
+	}
+
+	.decorated-card-heading-extra {
+		& :global(.Title-type) {
 			display: none;
 		}
 	}

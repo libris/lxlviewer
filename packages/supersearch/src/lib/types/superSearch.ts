@@ -16,7 +16,12 @@ export interface ResultItem {
 }
 
 export type ShowExpandedSearchOptions = {
-	cursorAtEnd: boolean;
+	cursorAtEnd?: boolean;
+	focusRow?: number;
 };
 
 export type DebouncedWaitFunction = (query: string) => number | null;
+
+export type ExpandEvent = {
+	windowPageYOffset: number;
+};

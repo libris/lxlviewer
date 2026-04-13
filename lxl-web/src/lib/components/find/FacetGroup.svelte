@@ -44,7 +44,7 @@
 
 	const showSort = $derived((level === 1 && data.dimension !== 'boolFilters') || level === 3);
 
-	let currentSort = $state(
+	let currentSort = $derived(
 		userSettings.facetSort?.[data.dimension] ||
 			CUSTOM_FACET_SORT[data.dimension as keyof typeof CUSTOM_FACET_SORT] ||
 			DEFAULT_FACET_SORT
@@ -188,14 +188,16 @@
 				/>
 			</li>
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
-			<li class={['flex', permanentlyExpanded && '[&>a]:pl-4!']}>
+			<li
+				class={['flex', permanentlyExpanded && '[&>a:first-child]:w-full [&>a:first-child]:pl-4!']}
+			>
 				<FacetValue data={value} />
 				<a
 					href={page.data.localizeHref('/my-pages')}
-					class="btn btn-primary mr-2 border-0"
+					class="btn btn-primary mr-2 size-8 border-0"
 					aria-label={page.data.t('search.changeLibraries')}
 				>
-					<BiPencil />
+					<BiPencil aria-hidden="true" />
 				</a>
 			</li>
 		{:else}
@@ -225,8 +227,7 @@
 				data-testid={`facet-sort-${data.dimension}`}
 			>
 				{#each sortOptions as option (option.value)}
-					<option selected={option.value == currentSort} value={option.value}>{option.label}</option
-					>
+					<option value={option.value}>{option.label}</option>
 				{/each}
 			</select>
 			<BiSortDown class="pointer-events-none absolute top-0 right-0 m-2 text-base" />
@@ -239,11 +240,11 @@
 	<ul data-testid={level === 1 ? 'facet-list' : undefined}>
 		{@render values(shownItems)}
 	</ul>
-	<div class="text-2xs flex flex-col justify-start">
+	<div class="flex flex-col justify-start text-xs">
 		<!-- 'show more' btn -->
 		{#if canShowMoreItems || canShowFewerItems}
 			<button
-				class="hover:bg-primary-100 w-full"
+				class="hover:bg-primary-100 link-subtle w-full text-sm"
 				onclick={() =>
 					canShowMoreItems
 						? (defaultItemsShown = totalItems)
@@ -257,7 +258,7 @@
 		<!-- limit reached info -->
 		{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
 			<button
-				class="text-error bg-severe-50 indented flex items-center gap-1 rounded-sm py-1"
+				class="text-severe-700 bg-severe-50 indented flex items-center gap-1 rounded-sm py-1"
 				use:popover={{
 					title: page.data.t('facet.limitText'),
 					placeAsSibling: false
@@ -300,7 +301,6 @@
 	<details
 		class={[
 			'relative w-full',
-			hasHits && 'has-hits',
 			searchPhrase && !hasHits && 'hidden',
 			level === 1 && 'border-b border-neutral-200',
 			level === 1 && expanded && 'pb-2'
@@ -317,7 +317,7 @@
 			class={[
 				'focusable text-subtle hover:bg-primary-100 flex min-h-8 cursor-pointer items-center',
 				level === 1 && 'min-h-11 pl-4 font-medium',
-				level > 1 && 'pl-1.5 text-xs'
+				level > 1 && 'pl-1.5 text-sm'
 			]}
 			data-testid={level === 1 ? 'facet-toggle' : undefined}
 		>
@@ -326,7 +326,7 @@
 			{/if}
 			<span class="text-body truncate">{parent?.label || data.label}</span>
 			{#if level > 1 && parent}
-				<span class="text-placeholder text-3xs ml-2">
+				<span class="text-placeholder text-2xs ml-2">
 					{parent.totalItems.toLocaleString(page.data.locale)}
 					<span class="sr-only">
 						{parent.totalItems === 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}

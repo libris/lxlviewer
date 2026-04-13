@@ -25,20 +25,27 @@ export enum Rdfs {
 	RDF_TYPE = 'rdf:type'
 }
 
+export enum LxlJs {
+	// https://github.com/libris/lxlviewer/blob/2e70e6845c90457e1381de5a8fa75d0de9fdcbea/lxljs/vocab.js#L819
+	BASE_PROPERTY_OF = 'basePropertyOf'
+}
+
 export enum Fmt {
 	DISPLAY = '_display',
 	PROPS = '_props',
 	CONTENT_AFTER = '_contentAfter',
 	CONTENT_BEFORE = '_contentBefore',
 	STYLE = '_style',
-	LABEL = '_label'
+	LABEL = '_label',
+	FIND_LINK = '_findLink'
 }
 
 // https://github.com/libris/definitions/blob/develop/source/vocab/base.ttl
 export enum Base {
 	Resource = 'Resource',
 	StructuredValue = 'StructuredValue',
-	Identity = 'Identity'
+	Identity = 'Identity',
+	category = 'category'
 }
 
 // https://github.com/libris/definitions/blob/develop/source/vocab/concepts.ttl
@@ -49,6 +56,10 @@ export enum Concepts {
 // https://github.com/libris/definitions/blob/develop/source/vocab/platform.ttl
 export enum Platform {
 	integral = 'integral',
+	searchfilter = 'searchfilter',
+	impliedByObject = 'impliedByObject',
+	preferLike = 'preferLike',
+	composite = 'https://id.kb.se/ns/librissearch/composite',
 	meta = 'meta'
 }
 
@@ -78,6 +89,8 @@ export enum BibDb {
 	postalAddress = 'bibdb:PostalAddress',
 	visitingAddress = 'bibdb:VisitingAddress',
 	linkResolver = 'bibdb:linkResolver',
+	latitude = 'bibdb:latitude',
+	longitude = 'bibdb:longitude',
 	LinksToCatalog = 'linksToCatalog',
 	LinksToSite = 'linksToSite',
 	LinksToItem = 'linksToItem',
@@ -184,6 +197,7 @@ export enum LensType {
 	Full = 'full',
 	SearchChip = 'search-chips',
 	SearchCard = 'search-cards',
+	WebToken = 'web-tokens',
 	WebChip = 'web-chips',
 	WebCard = 'web-card',
 	WebOverview = 'web-overview',

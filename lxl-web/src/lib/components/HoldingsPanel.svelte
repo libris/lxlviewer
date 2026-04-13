@@ -3,13 +3,15 @@
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { LibraryWithLinksAndInstances, OrgId, UnknownLibrary } from '$lib/types/holdings';
 	import { JsonLd } from '$lib/types/xl';
-	import { getMyLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
+	import { getLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
+	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
+	import { sortByDistance, userLocation } from '$lib/utils/geolocation.svelte';
+	import HoldingsNearMeBtn from './HoldingsNearMeBtn.svelte';
 	import Holder from './Holder.svelte';
 	import BiSearch from '~icons/bi/search';
 	// import BiHouseHeart from '~icons/bi/house-heart';
 	import IconChevron from '~icons/bi/chevron-down';
 	import BiBank from '~icons/bi/bank';
-	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 
 	type Props = {
 		holders: (LibraryWithLinksAndInstances | UnknownLibrary)[];
@@ -29,6 +31,14 @@
 	const libOrgs: Record<OrgId, string[]> = page.data.refinedOrgs;
 	const { myLibraries } = getUserSettings();
 	const numHolders = $derived(holders?.length);
+	let location = $derived(userLocation.coords);
+
+	let sortedHolders = $derived.by(() => {
+		if (!location) return holders;
+		else {
+			return sortByDistance(holders, location);
+		}
+	});
 
 	const filteredHolders = $derived(
 		holders.filter((holder) => {
@@ -43,7 +53,7 @@
 	const myLibsHolders = $derived.by(() => {
 		if (!myLibraries) return [];
 		const holderIds = holders.map((holder) => holder[JsonLd.ID]);
-		const ids = getMyLibsFromHoldings(myLibraries, holderIds, libOrgs);
+		const ids = getLibsFromHoldings(myLibraries, holderIds, libOrgs);
 		return buildNestedLibraries(ids, myLibraries, holders);
 	});
 
@@ -114,9 +124,9 @@
 
 <!-- num libraries -->
 {#if numHolders}
-	<h2 class="my-2">
+	<h2 class="my-2 text-sm">
 		{page.data.t('holdings.availableAt')}
-		{numHolders}
+		<span class="font-medium">{numHolders}</span>
 		{numHolders === 1 ? page.data.t('holdings.library') : page.data.t('holdings.libraries')}
 	</h2>
 {/if}
@@ -170,19 +180,21 @@
 		bind:value={searchPhrase}
 		placeholder={page.data.t('holdings.findLibrary')}
 		aria-label={page.data.t('holdings.findLibrary')}
-		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
+		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-base sm:text-sm"
 		type="search"
 		name={page.data.t('holdings.findLibrary')}
 	/>
 	<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
 </div>
+<!-- near me -->
+<HoldingsNearMeBtn {location} />
 <!-- list holders -->
 <ul class="flex flex-col gap-2 text-xs">
-	{#each holders as holder, i (`${holder[JsonLd.ID]}-${i}`)}
+	{#each sortedHolders as holder, i (`${holder[JsonLd.ID]}-${i}`)}
 		<Holder {holder} hidden={!filteredHolders.find((h) => h[JsonLd.ID] === holder[JsonLd.ID])} />
 	{/each}
 	{#if filteredHolders.length === 0}
-		<li>
+		<li class="text-sm">
 			<span role="alert">{page.data.t('search.noResults')}</span>
 		</li>
 	{/if}

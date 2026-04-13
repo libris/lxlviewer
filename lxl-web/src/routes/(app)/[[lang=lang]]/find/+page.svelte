@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
-	import type { SearchResult } from '$lib/types/search';
+	import type { Facet, SearchResult } from '$lib/types/search';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import SiteFooter from '../SiteFooter.svelte';
 	import { USE_HOLDING_PANE } from '$lib/constants/panels';
@@ -22,6 +22,7 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
+	const facets: Promise<Facet[]> = $derived(page.data.facets);
 
 	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
 	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
@@ -84,16 +85,16 @@
 	>
 		<LeadingPane>
 			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
-				<Filters facets={searchResult.facets || []} />
+				<Filters {facets} />
 			</div>
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">
 			<div class="flex flex-1 flex-col @5xl/content:flex-row">
 				<main id="content" class="flex-1">
-					<h1 class="sr-only">{page.data.t('search.searchResults')}</h1>
+					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar {searchResult} />
 					<SearchResultInfo {searchResult} />
-					<ol class="flex flex-col">
+					<ol aria-labelledby="search-results" class="flex flex-col">
 						{#each searchResult.items as item (item['@id'])}
 							<li>
 								<SearchCard {item} />
@@ -102,7 +103,7 @@
 					</ol>
 					<Pagination data={searchResult} />
 				</main>
-				<aside class="search-result-aside min-w-[300px]">
+				<aside class="search-result-aside min-w-75">
 					<div class="hidden @5xl/content:block">
 						<Toolbar />
 					</div>

@@ -94,6 +94,11 @@ export class UserSettings {
 	saveSelectedCitationFormat(format: AvailableCitationFormat) {
 		this.update('selectedCitationFormat', format);
 	}
+
+	setPrefersNearMe(setting: boolean) {
+		this.update('prefersNearMe', setting);
+	}
+
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
@@ -115,5 +120,9 @@ export class UserSettings {
 
 	get trailingPane() {
 		return this.settings?.trailingPane;
+	}
+
+	get prefersNearMe() {
+		return this.settings.prefersNearMe;
 	}
 }

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
+	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
+	import { resolve } from '$app/paths';
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
@@ -20,7 +21,7 @@
 	};
 
 	const { item, getCellId, isFocusedCell, leadingContent }: Props = $props();
-	const resourceId = $derived(trimSlashes(relativizeUrl(item?.['@id'])));
+	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(item?.['@id']))));
 	const primaryAddQualifierLink = $derived(item?.qualifiers?.[0]?._q || resourceId);
 </script>
 
@@ -29,7 +30,7 @@
 		<span
 			class="text-subtle order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline"
 		>
-			{page.data.t('search.add')}
+			{page.data.t('general.add')}
 
 			<span class="hidden lowercase lg:inline">
 				{item.qualifiers[0].label}
@@ -39,7 +40,7 @@
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="resource-heading flex gap-1 overflow-hidden text-xs font-medium whitespace-nowrap">
+			<h2 class="resource-heading flex gap-1 overflow-hidden text-sm font-medium whitespace-nowrap">
 				<span class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
@@ -137,11 +138,11 @@
 						menuItems: [
 							...item.qualifiers.map((qualifier) => ({
 								label: `${page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
-								href: qualifier._q
+								href: resolve(qualifier._q)
 							})),
 							{
 								label: `${page.data.t('search.goToResource')}`,
-								href: resourceId || ''
+								href: resolve(resourceId || '')
 							}
 						],
 						placeAsSibling: true
@@ -152,7 +153,11 @@
 			{/key}
 		</button>
 	{:else}
-		<a href={page.data.localizeHref(resourceId)} id={getCellId ? getCellId(0) : ''}>
+		<a
+			href={resolve(page.data.localizeHref(resourceId))}
+			id={getCellId ? getCellId(0) : ''}
+			class:focused-cell={isFocusedCell?.(0)}
+		>
 			{@render leadingContent?.()}
 			{@render resourceSnippet(item)}
 		</a>
@@ -162,10 +167,9 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	:global(:not(.focused)) > .suggestion:has(:global(*:hover)) {
-		background-color: var(--color-primary-50);
+	.suggestion:has(:global(*:hover)) {
+		background-color: var(--color-accent-50);
 	}
-
 	.suggestion button,
 	.suggestion a {
 		display: flex;
@@ -237,6 +241,6 @@
 
 	.more.focused-cell .more-icon-container,
 	.more:hover .more-icon-container {
-		background-color: var(--color-primary-200);
+		background-color: var(--color-accent-100);
 	}
 </style>

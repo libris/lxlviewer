@@ -2,11 +2,13 @@ export default {
 	home: {
 		pageHeadingTitle: 'Sök på alla svenska bibliotek',
 		pageHeadingDescription:
-			'Libris är de svenska bibliotekens gemensamma katalog med över 9 miljoner titlar.',
+			'är de svenska bibliotekens gemensamma katalog med över 9 miljoner titlar.',
 		metaDescription:
-			'Libris är en nationell söktjänst med information om titlar på cirka 600 svenska bibliotek, däribland KB. Med hjälp av tjänsten kan du hitta det du söker på ett bibliotek nära dig. Här finns närmare 13 miljoner objekt: böcker, tidskrifter, bilder, kartor, noter, e-böcker med mera. Libris innehåller även digitalt material som är fritt att ta del av hemifrån.'
+			'Libris är en nationell söktjänst med information om titlar på cirka 600 svenska bibliotek, däribland KB. Med hjälp av tjänsten kan du hitta det du söker på ett bibliotek nära dig. Här finns närmare 13 miljoner objekt: böcker, tidskrifter, bilder, kartor, noter, e-böcker med mera. Libris innehåller även digitalt material som är fritt att ta del av hemifrån.',
+		searchShortcuts: 'Sökgenvägar'
 	},
 	appMenu: {
+		label: 'huvudmeny',
 		skipToContent: 'Hoppa till innehåll',
 		findOnWebsite: 'Hitta på hemsidan',
 		home: 'Hem',
@@ -18,7 +20,7 @@ export default {
 		aboutBeta: 'Frågor och svar om betan',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
-		accessibility: 'Tillgänglighet',
+		accessibilityStatement: 'Tillgänglighetsredogörelse',
 		changeLang: 'In English'
 	},
 	header: {
@@ -52,7 +54,11 @@ export default {
 	help: {
 		pageTitle: 'Hjälp',
 		pageDescription:
-			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.'
+			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.',
+		description: 'Beskrivning',
+		reference: 'Lista',
+		searchIn: 'Söker i',
+		keyword: 'Filter / nyckelord'
 	},
 	myPages: {
 		pageTitle: 'My pages',
@@ -60,12 +66,11 @@ export default {
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Mina bibliotek',
+		favouriteLibrary: 'favoritbibliotek',
 		findLibrary: 'Sök efter bibliotek',
 		findAndAdd: 'Hitta och lägg till favoritbibliotek',
 		noResultsFor: 'Inga sökträffar för',
-		hitsFor: 'träffar för',
-		add: 'Lägg till',
-		remove: 'Ta bort'
+		hitsFor: 'träffar för'
 	},
 	footer: {
 		logo: 'Kungliga bibliotekets logotyp',
@@ -81,6 +86,7 @@ export default {
 	facet: {
 		q: 'Fritextsökning',
 		'librissearch:findCategory': 'Kategori',
+		'librissearch:identifyCategory': 'Kategori',
 		'librissearch:hasInstanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'instanceOf.@type': 'Verkstyp',
@@ -117,6 +123,7 @@ export default {
 		language: 'Språk',
 		subject: 'Ämne',
 		yearPublished: 'Utgivningsår',
+		'librissearch:yearPublished': 'Utgivningsår',
 		intendedAudience: 'Målgrupp',
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
@@ -131,15 +138,19 @@ export default {
 	search: {
 		search: 'Sök',
 		searchResults: 'Sökresultat',
+		searchFor: 'Sök efter',
 		loading: 'Laddar...',
+		filter: 'Filter',
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',
 		activeFilter: 'Aktivt filter',
 		selectedFilters: 'Valda filter',
 		selectedFiltersOne: 'Valt filter',
-		clearFilters: 'Rensa',
-		editFilters: 'Redigera',
-		removeFilter: 'Ta bort filter',
+		clickTo: 'Klicka för att',
+		removeFilter: 'ta bort filter',
+		addFilter: 'lägga till filter',
+		clear: 'Rensa',
+		clearAllFilters: 'Rensa alla filter',
 		noFiltersFound: 'Inga filter hittades',
 		noResults: 'Inga resultat',
 		hitsOf: 'av',
@@ -165,41 +176,28 @@ export default {
 		relatedSearchLabel: 'Sök i resultaten',
 		didYouMean: 'Menade du',
 		showAllResults: 'Visa alla sökresultat',
-		add: 'Lägg till',
 		addAs: 'Lägg till som',
 		goTo: 'Gå till',
 		goToResource: 'Gå till resursen',
 		addLibraries: 'Lägg till bibliotek',
-		changeLibraries: 'Ändra bibliotek',
+		changeLibraries: 'Ändra favoritbibliotek',
 		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek',
 		libraries: 'bibliotek',
-		allInFacet: 'Allt inom'
+		allInFacet: 'Allt inom',
+		noExactMatches: 'Inga exakta träffar',
+		showingResultsFor: 'Visar resultat för',
+		freeOnline: 'Fritt online',
+		searchHelp: 'Så söker du i Libris',
+		showLike: 'Visa även liknande träffar för ',
+		showEquals: 'Visa bara exakta träffar för'
 	},
 	supersearch: {
 		search: 'Sök',
 		addQualifiers: 'Lägg till filter',
 		loading: 'Laddar...',
 		suggestions: 'Förslag',
-		showAll: 'Visa sökresultat'
-	},
-	qualifiers: {
-		contributorKey: 'contributor',
-		contributorLabel: 'Författare/upphov',
-		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
-		categoryKey: 'category',
-		categoryLabel: 'Kategori',
-		titleKey: 'titel',
-		titleLabel: 'Titel',
-		titlePlaceholder: 'Röda rummet, Casablanca',
-		languageKey: 'språk',
-		languageLabel: 'Språk',
-		languagePlaceholder: 'Svenska, Engelska, Arabiska',
-		subjectKey: 'ämne',
-		subjectLabel: 'Ämne',
-		subjectPlaceholder: 'Sommaren, Romerska riket',
-		yearKey: 'år',
-		yearLabel: 'Utgivningsår',
-		yearPlaceholder: '1994, 2002, 2025'
+		showAll: 'Visa sökresultat',
+		searchHelp: 'Sökhjälp'
 	},
 	sort: {
 		sort: 'Sortera',
@@ -238,7 +236,11 @@ export default {
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren',
-		more: 'till'
+		more: 'till',
+		readMore: 'Läs mer',
+		add: 'Lägg till',
+		remove: 'Ta bort',
+		show: 'Visa'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
@@ -247,7 +249,7 @@ export default {
 		hide: 'Dölj innehållsförteckning för denna sida'
 	},
 	resource: {
-		occurrences: 'Förekomster',
+		relations: 'Relaterat',
 		show: 'Visa',
 		all: 'alla',
 		matching: 'Matchar din sökning',
@@ -264,9 +266,9 @@ export default {
 		resultOf: 'av',
 		showInSearchResults: 'Visa i träfflista',
 		showInSearchResultsShort: 'Visa träfflista',
-		uriLink: 'URI (länk till resurs)',
-		downloadDescription: 'Ladda ner beskrivning',
-		showIn: 'Visa i',
+		uriLink: 'ID / Permalänk',
+		downloadDescription: 'Ladda ner metadata',
+		showIn: 'Visa metadata i',
 		librisCataloging: 'Libris katalogisering',
 		librisOld: 'gamla Libris'
 	},
@@ -301,7 +303,8 @@ export default {
 		showFewer: 'Visa färre utgåvor',
 		myLoans: 'Mina lån',
 		applyForCard: 'Ansök om lånekort',
-		refinedLibraries: 'Avgränsade bibliotek'
+		refinedLibraries: 'Avgränsade bibliotek',
+		findTitle: 'Hitta titeln'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'Mina bibliotek'
@@ -326,5 +329,14 @@ export default {
 	horizontalList: {
 		goForward: 'Gå framåt i lista',
 		goBackward: 'Gå bakåt i lista'
+	},
+	geolocation: {
+		sort: 'Hitta bibliotek nära mig',
+		unsupported: 'Platsåtkomst stöds inte',
+		permissionDenied:
+			'För hitta bibliotek nära dig behöver du tillåta platsåtkomst i din webbläsare',
+		positionUnavailable: 'Kunde inte hämta din plats',
+		timeOut: 'Att hämta din plats tog för lång tid. Försök igen',
+		unknown: 'Ett okänt fel inträffade när din plats skulle hämtas'
 	}
 };

@@ -7,7 +7,7 @@
 	}
 
 	let { debugInfo }: Props = $props();
-	let score = debugInfo.score;
+	let score = $derived(debugInfo.score);
 
 	function fmt(x: number) {
 		return x.toLocaleString(page.data.locale, { maximumFractionDigits: 2 });

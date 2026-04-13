@@ -10,6 +10,7 @@ import {
 import { Concepts, type FramedData, JsonLd, Owl } from '$lib/types/xl';
 import { first, isObject, asArray } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
+import { getSortedInstances } from '$lib/utils/getSortedInstances';
 import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 import type { LocaleCode } from '$lib/i18n/locales';
 
@@ -49,7 +50,7 @@ export function getImages(thing: FramedData, lang: LocaleCode): Image[] {
 		...asArray(thing.image).map((i) =>
 			toImage(i as KbvImageObject, stripAnchor(trimSlashes(relativizeUrl(thing['@id']))), lang)
 		),
-		...getInstances(thing).flatMap((instance) => getImages(instance, lang))
+		...getSortedInstances(getInstances(thing)).flatMap((instance) => getImages(instance, lang))
 	];
 }
 

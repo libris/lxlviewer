@@ -13,16 +13,13 @@
 	import Citations from '$lib/components/Citations.svelte';
 	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
 	import { bestSize } from '$lib/utils/auxd';
-	import { first } from '$lib/utils/xl';
 	import { Width } from '$lib/types/auxd';
 	import SearchCard from '$lib/components/find/SearchCard.svelte';
 
 	const { data } = $props();
 
 	const description = $derived(getMetaDescription(data.decoratedData.overview?.[0]));
-	const ogImage = $derived(
-		data.images?.length ? bestSize(first(data.images), Width.MEDIUM)?.url : undefined
-	);
+	const ogImage = $derived(data.image ? bestSize(data.image, Width.MEDIUM)?.url : undefined);
 
 	// TODO: Possibly figure out some mapping and set og:type,
 	// see https://ogp.me/#types. Unclear how meaningful this would be.
@@ -30,16 +27,18 @@
 	let previousURL: URL;
 
 	const holdingsParam = $derived(page.state.holdings || page.url.searchParams.get('holdings'));
-	const modalCard = $derived(
-		(holdingsParam &&
-			(data.instances || []).filter(
-				(instance: { [JsonLd.ID]: string }) =>
-					`${stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])))}` === holdingsParam
-			)[0]) ||
-			data.isWork
-			? data.workCard
-			: data.instances?.[0]
-	);
+
+	const modalCard = $derived.by(() => {
+		const instances = data.instances ?? [];
+		const matchingInstance = holdingsParam
+			? instances.find(
+					(instance: { [JsonLd.ID]: string }) =>
+						stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID]))) === holdingsParam
+				)
+			: undefined;
+
+		return matchingInstance ?? (data.isWork ? data.workCard : instances[0]);
+	});
 
 	afterNavigate(({ to }) => {
 		if (to) {
@@ -79,7 +78,9 @@
 <div data-testid="resource-page" class="contents">
 	<!-- Zotero tag -->
 	{#if data.instances?.length}
-		<abbr class="unapi-id hidden" title={data.uri}></abbr>
+		{#each data.instances as instance (instance[JsonLd.ID])}
+			<abbr class="unapi-id hidden" title={instance[JsonLd.ID]}></abbr>
+		{/each}
 	{/if}
 	<Resource
 		fnurgel={page.params.fnurgel}
@@ -88,7 +89,7 @@
 		controlNumber={data.controlNumber}
 		type={data.type}
 		typeForIcon={data.typeForIcon}
-		images={data.images}
+		image={data.image}
 		decoratedData={data.decoratedData}
 		relations={data.relations}
 		relationsPreviewsByQualifierKey={data.relationsPreviewsByQualifierKey}

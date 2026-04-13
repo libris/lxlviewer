@@ -27,6 +27,10 @@ export function initLocalizeHref(locale: LocaleCode, currentUrl: URL) {
 		);
 }
 
+export function otherLocales(locale: LocaleCode): LocaleCode[] {
+	return Object.keys(Locales).filter((l) => l !== locale);
+}
+
 function localizeHref(
 	href: string | URL,
 	options: { locale: LocaleCode; baseUrl: URL | string },
@@ -36,7 +40,7 @@ function localizeHref(
 
 	// hijacking this function to pass on 'r' param to all links,
 	// should we rename this function?
-	if (currentUrl.searchParams.get('_r') && !url.searchParams.get('_r')) {
+	if (currentUrl.searchParams.get('_r') && !url.searchParams.has('_r')) {
 		url.searchParams.set('_r', currentUrl.searchParams?.get('_r') || '');
 	}
 

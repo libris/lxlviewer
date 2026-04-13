@@ -21,6 +21,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	}
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
+	newSearchParams.set('_stats', 'falseThisRequest');
 	const findRes = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`);
 
 	if (!findRes.ok) {

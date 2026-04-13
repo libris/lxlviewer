@@ -25,6 +25,7 @@ export type UserSettings = {
 		width?: number;
 	};
 	debug?: DebugFlags[];
+	prefersNearMe?: boolean;
 };
 
 export enum DebugFlags {

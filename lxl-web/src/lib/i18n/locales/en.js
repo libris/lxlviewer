@@ -2,12 +2,13 @@
 export default {
 	home: {
 		pageHeadingTitle: 'Search all Swedish libraries',
-		pageHeadingDescription:
-			"Libris is the Swedish libraries' joint catalogue with over 9 million items.",
+		pageHeadingDescription: "is the Swedish libraries' joint catalogue with over 9 million items.",
 		metaDescription:
-			'Libris is a national search service with information about titles in about 600 Swedish libraries, including the National Library. With Libris you can find what you are looking for at a library near you. The search service contains almost 13 million items: books, journals, pictures, maps, notes, e-books and more. Libris also contains digital material that is free to access from home.'
+			'Libris is a national search service with information about titles in about 600 Swedish libraries, including the National Library. With Libris you can find what you are looking for at a library near you. The search service contains almost 13 million items: books, journals, pictures, maps, notes, e-books and more. Libris also contains digital material that is free to access from home.',
+		searchShortcuts: 'Search shortcuts'
 	},
 	appMenu: {
+		label: 'main navigation',
 		skipToContent: 'Skip to main content',
 		findOnWebsite: 'Find on Libris',
 		home: 'Home',
@@ -19,7 +20,7 @@ export default {
 		aboutBeta: 'About the beta',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
-		accessibility: 'Accessibility',
+		accessibilityStatement: 'Accessibility statement',
 		changeLang: 'På svenska'
 	},
 	header: {
@@ -53,7 +54,12 @@ export default {
 	help: {
 		pageTitle: 'Help',
 		pageDescription:
-			'Help and documentation for using Libris, the Swedish national union catalogue.'
+			'Help and documentation for using Libris, the Swedish national union catalogue.',
+		description: 'Description',
+		filter: 'Filter',
+		reference: 'List',
+		searchIn: 'Search in',
+		keyword: 'Filter / keyword'
 	},
 	myPages: {
 		pageTitle: 'My pages',
@@ -61,12 +67,11 @@ export default {
 		myPages: 'My pages',
 		libraries: 'Libraries',
 		favouriteLibraries: 'My libraries',
+		favouriteLibrary: 'favourite library',
 		findLibrary: 'Search library or location',
 		findAndAdd: 'Find and add favourite libraries',
 		noResultsFor: 'No results for',
-		hitsFor: 'hits for',
-		add: 'Add',
-		remove: 'Remove'
+		hitsFor: 'hits for'
 	},
 	footer: {
 		logo: 'National Library of Sweden logotype',
@@ -82,6 +87,7 @@ export default {
 	facet: {
 		q: 'Free text search',
 		'librissearch:findCategory': 'Category',
+		'librissearch:identifyCategory': 'Category',
 		'librissearch:hasInstanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
@@ -118,6 +124,7 @@ export default {
 		language: 'Language',
 		subject: 'Subject',
 		yearPublished: 'Year published',
+		'librissearch:yearPublished': 'Year published',
 		intendedAudience: 'Intended audience',
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
@@ -132,15 +139,19 @@ export default {
 	search: {
 		search: 'Search',
 		searchResults: 'Search results',
+		searchFor: 'Search for',
 		loading: 'Loading...',
+		filter: 'Filter',
 		findFilter: 'Find filter',
 		filters: 'Filters',
 		activeFilter: 'Active filter',
 		selectedFilters: 'Selected filters',
 		selectedFiltersOne: 'Selected filter',
-		clearFilters: 'Clear',
-		editFilters: 'Edit',
-		removeFilter: 'Remove filter',
+		clickTo: 'Click to',
+		removeFilter: 'remove filter',
+		addFilter: 'add filter',
+		clear: 'Clear',
+		clearAllFilters: 'Clear all filters',
 		noFiltersFound: 'No filters found',
 		noResults: 'No results',
 		hitsOf: 'of',
@@ -166,41 +177,28 @@ export default {
 		relatedSearchLabel: 'Search the results',
 		didYouMean: 'Did you mean',
 		showAllResults: 'Show all results',
-		add: 'Add',
 		addAs: 'Add as',
 		goTo: 'Go to',
 		goToResource: 'Go to the resource',
 		addLibraries: 'Add libraries',
-		changeLibraries: 'Change libraries',
+		changeLibraries: 'Change favourite libraries',
 		noAddedLibrariesText: 'You have not chosen any favourite libraries',
 		libraries: 'libraries',
-		allInFacet: 'All in'
+		allInFacet: 'All in',
+		noExactMatches: 'No exact matches',
+		showingResultsFor: 'Showing results for',
+		freeOnline: 'Free online',
+		searchHelp: 'Libris search help',
+		showLike: 'Also show similar matches for',
+		showEquals: 'Only show exact matches for'
 	},
 	supersearch: {
 		search: 'Search',
 		addQualifiers: 'Add filter',
 		loading: 'Loading...',
 		suggestions: 'Suggestions',
-		showAll: 'Show search results'
-	},
-	qualifiers: {
-		contributorKey: 'contributor',
-		contributorLabel: 'Author/Contributor',
-		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
-		categoryKey: 'category',
-		categoryLabel: 'Category',
-		titleKey: 'title',
-		titleLabel: 'Title',
-		titlePlaceholder: 'The Serious Game, Casablanca',
-		languageKey: 'language',
-		languageLabel: 'Language',
-		languagePlaceholder: 'Swedish, English, Arabic',
-		subjectKey: 'subject',
-		subjectLabel: 'Subject',
-		subjectPlaceholder: 'Sommaren, Romerska riket',
-		yearKey: 'year',
-		yearLabel: 'Year of publication',
-		yearPlaceholder: '1994, 2002, 2025'
+		showAll: 'Show search results',
+		searchHelp: 'Search help'
 	},
 	sort: {
 		sort: 'Sort',
@@ -239,7 +237,11 @@ export default {
 		year: 'year',
 		usagePolicy: 'License terms',
 		cropped: 'Cropped',
-		more: 'more'
+		more: 'more',
+		readMore: 'Read more',
+		add: 'Add',
+		remove: 'Remove',
+		show: 'Show'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',
@@ -248,7 +250,7 @@ export default {
 		hide: 'Hide table of contents for this page'
 	},
 	resource: {
-		occurrences: 'Occurrences',
+		relations: 'Related',
 		show: 'Show',
 		all: 'all',
 		matching: 'Matching your search',
@@ -264,9 +266,9 @@ export default {
 		resultOf: 'of',
 		showInSearchResults: 'Show in search results',
 		showInSearchResultsShort: 'Show all results',
-		uriLink: 'URI (link to resource)',
-		downloadDescription: 'Download description',
-		showIn: 'Show in',
+		uriLink: 'ID / Permalink',
+		downloadDescription: 'Download metadata',
+		showIn: 'Show metadata in',
 		librisCataloging: 'Libris cataloging',
 		librisOld: 'old Libris'
 	},
@@ -301,7 +303,8 @@ export default {
 		showFewer: 'Show fewer editions',
 		myLoans: 'My loans',
 		applyForCard: 'Apply for library card',
-		refinedLibraries: 'Refined libraries'
+		refinedLibraries: 'Refined libraries',
+		findTitle: 'Find the title'
 	},
 	filterAlias: {
 		'alias-myLibraries': 'My Libraries'
@@ -326,5 +329,13 @@ export default {
 	horizontalList: {
 		goForward: 'Go forward in list',
 		goBackward: 'Go backward in list'
+	},
+	geolocation: {
+		sort: 'Find libraries near me',
+		unsupported: 'Geolocation is not supported',
+		permissionDenied: 'Location permission denied, please enable it in your browser',
+		positionUnavailable: 'Location information is unavailable',
+		timeOut: 'Location request timed out. Try again',
+		unknown: 'An unknown error occurred while fetching location'
 	}
 };

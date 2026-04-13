@@ -179,6 +179,22 @@
 						}
 					]
 				},
+				"Category": {
+					"@id": "Category-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Category",
+					"showProperties": [
+						{
+							"alternateProperties": [
+								"singularLabel",
+								"prefLabel",
+								"label",
+								"termComponentList",
+								"code"
+							]
+						}
+					]
+				},
 				"SeriesMembership": {
 					"@id": "SeriesMembership-chips",
 					"@type": "fresnel:Lens",
@@ -339,6 +355,7 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Identifier",
 					"showProperties": [
+						"rdf:type",
 						{ "alternateProperties": ["value", "marc:hiddenValue"] },
 						"typeNote",
 						"hasNote",
@@ -450,6 +467,80 @@
 				}
 			}
 		},
+		"web-tokens": {
+			"TODO": "this group is just because we don't want to always go: chips -> _these_ tokens",
+			"@id": "web-tokens",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Person": {
+					"@id": "Person-web-tokens",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Person",
+					"showProperties": [
+						"givenName",
+						"familyName",
+						"name",
+						"marc:numeration",
+						"marc:titlesAndOtherWordsAssociatedWithAName",
+						"fullerFormOfName"
+					]
+				},
+				"Title": {
+					"@id": "Title-web-tokens",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Title",
+					"showProperties": ["mainTitle"]
+				},
+				"Work": {
+					"@id": "Work-web-tokens",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{
+									"subPropertyOf": "hasTitle",
+									"range": "Title"
+								},
+								{
+									"subPropertyOf": "hasTitle",
+									"range": "KeyTitle"
+								},
+								"hasTitle"
+							]
+						}
+					]
+				},
+				"Instance": {
+					"@id": "Instance-web-tokens",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{
+									"subPropertyOf": "hasTitle",
+									"range": "Title"
+								},
+								"hasTitle"
+							]
+						}
+					]
+				},
+				"Library": {
+					"@id": "Library-web-tokens",
+					"@type": "fresnel:Lens",
+					"showProperties": ["name", "qualifier"],
+					"classLensDomain": "Library"
+				},
+				"bibdb:Organization": {
+					"@id": "bibdb:Organization-web-tokens",
+					"@type": "fresnel:Lens",
+					"showProperties": ["name"],
+					"classLensDomain": "bibdb:Organization"
+				}
+			}
+		},
 		"web-chips": {
 			"@id": "web-chips",
 			"@type": "fresnel:Group",
@@ -476,7 +567,17 @@
 					"@id": "Instance-web-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["hasTitle"]
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{
+									"subPropertyOf": "hasTitle",
+									"range": "Title"
+								},
+								"hasTitle"
+							]
+						}
+					]
 				}
 			}
 		},
@@ -618,8 +719,9 @@
 						{
 							"alternateProperties": [{ "subPropertyOf": "hasTitle", "range": "KeyTitle" }]
 						},
-						"translationOf",
-						"_uniformTitle"
+						{
+							"alternateProperties": ["translationOf", "_uniformTitle"]
+						}
 					]
 				},
 				"Instance": {
@@ -769,8 +871,6 @@
 						{ "inverseOf": "continuedBy" },
 						"continuedBy",
 						{ "inverseOf": "continues" },
-						"continues",
-						{ "inverseOf": "continuedBy" },
 						"continuesInPart",
 						"continuedInPartBy",
 						"relatedTo",
@@ -867,6 +967,27 @@
 						"videoCharacteristic",
 						"soundContent",
 						"soundCharacteristic"
+					]
+				},
+				"Record": {
+					"@id": "Record-web-details",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Record",
+					"NOTE": "Avoiding SystemNumber e.g. (BOKR)9789198057300 with the identifiedBy below",
+					"showProperties": [
+						"bibliography",
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "identifiedBy", "range": "LibrisIIINumber" }
+							]
+						},
+						{
+							"alternateProperties": [{ "subPropertyOf": "identifiedBy", "range": "Local" }]
+						},
+						{
+							"alternateProperties": [{ "subPropertyOf": "identifiedBy", "range": "SMDBNumber" }]
+						},
+						"controlNumber"
 					]
 				}
 			}
@@ -1175,6 +1296,7 @@
 			"@id": "sorted-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
+				"bibliography",
 				"classification",
 				"closeMatch",
 				"hasDataset",

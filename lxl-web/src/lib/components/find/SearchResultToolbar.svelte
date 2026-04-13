@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { DisplayMapping, SearchResult } from '$lib/types/search';
+	import type { DisplayMapping, Facet, SearchResult } from '$lib/types/search';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
 	import { fade } from 'svelte/transition';
@@ -20,7 +20,9 @@
 
 	let showFiltersModal = $state(false);
 	const numHits = $derived(searchResult.totalItems);
-	const filterCount = $derived(getFiltersCount(searchResult.mapping));
+	const mapping = $derived(searchResult.mapping.filter((m) => m.variable === '_q'));
+	const filterCount = $derived(getFiltersCount(mapping));
+	const facets: Promise<Facet[]> = $derived(page.data.facets);
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
 		const root = mapping.filter(
@@ -53,7 +55,7 @@
 					`${page.url.pathname}?${page.url.searchParams.toString()}#filters`
 				)}
 				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
-				aria-label={page.data.t('search.filters')}
+				aria-label={`${page.data.t('general.show')} ${page.data.t('search.filters')}. ${page.data.t('search.selectedFilters')}: ${filterCount}`}
 				onclick={(e) => {
 					e.preventDefault();
 					toggleFiltersModal();
@@ -95,6 +97,6 @@
 				{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
 			</span>
 		{/snippet}
-		<Filters facets={searchResult.facets || []} mapping={searchResult.mapping} />
+		<Filters {facets} {mapping} />
 	</Modal>
 {/if}

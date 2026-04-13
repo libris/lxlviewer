@@ -6,8 +6,10 @@
 
 	let { debugInfo }: Props = $props();
 
-	let uniqueFields = debugInfo.score.perField.filter(
-		(field, index, array) => array.findIndex((f) => f.name === field.name) == index
+	let uniqueFields = $derived(
+		debugInfo.score.perField.filter(
+			(field, index, array) => array.findIndex((f) => f.name === field.name) == index
+		)
 	);
 </script>
 

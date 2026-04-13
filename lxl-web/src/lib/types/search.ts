@@ -57,7 +57,9 @@ export interface SearchResultItem {
 	typeForIcon: string; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
-	heldByMyLibraries?: (LibraryId | OrgId)[] | null;
+	mediaLinks: DisplayDecorated | null;
+	heldByMyLibraries?: (LibraryId | OrgId)[];
+	heldBySubset?: (LibraryId | OrgId)[];
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
 }
@@ -115,6 +117,9 @@ export interface DisplayMapping {
 	variable?: string;
 	_key?: string;
 	_value?: string;
+	toEquals?: Link;
+	toLike?: Link;
+	isRedundantKeyLabel?: boolean;
 }
 
 export interface PartialCollectionView {
@@ -173,6 +178,7 @@ export enum SearchOperators {
 	or = 'or',
 	not = 'not',
 	equals = 'equals',
+	like = 'like',
 	notEquals = 'notEquals',
 	greaterThan = 'greaterThan',
 	greaterThanOrEquals = 'greaterThanOrEquals',
@@ -192,17 +198,22 @@ export interface SearchMapping extends MappingObj {
 	value?: string;
 	variable?: string;
 	up: { '@id': string };
+	toEquals?: { '@id': string };
+	toLike?: { '@id': string };
 	_key?: string;
 	_value?: string;
 }
 
 interface ObjectProperty {
+	'@type': 'ObjectProperty';
 	'@id'?: string;
+	category?: Link[];
 }
 
 export interface DatatypeProperty {
 	'@type': 'DataTypeProperty';
 	'@id': string;
+	category?: Link[];
 }
 
 interface InvalidProperty {
@@ -259,6 +270,24 @@ export interface QualifierSuggestion {
 	label: string;
 	_q: string;
 	cursor: number;
+}
+
+export interface QualifierSuggestion2 {
+	label: string;
+	key: string;
+	queryCodes: string[];
+	altLabels: string[];
+	curated?: boolean;
+}
+
+export interface QualifierDefinition extends QualifierSuggestion2 {
+	comment?: string;
+	propertyChainAxiom?: PropertyChain[];
+}
+
+export interface PropertyChain {
+	label: string;
+	path: string;
 }
 
 export interface AdjecentSearchResult {

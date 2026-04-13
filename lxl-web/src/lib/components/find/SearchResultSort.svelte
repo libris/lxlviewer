@@ -9,8 +9,14 @@
 		{ value: '', label: page.data.t('sort.relevancy') },
 		{ value: `_sortKeyByLang.${page.data.locale}`, label: page.data.t('sort.alphaAsc') },
 		{ value: `-_sortKeyByLang.${page.data.locale}`, label: page.data.t('sort.alphaDesc') },
-		{ value: '-@reverse.instanceOf.publication.year', label: page.data.t('sort.publicationDesc') },
-		{ value: '@reverse.instanceOf.publication.year', label: page.data.t('sort.publicationAsc') },
+		{
+			value: '-@reverse.instanceOf.publication.librissearch:year',
+			label: page.data.t('sort.publicationDesc')
+		},
+		{
+			value: '@reverse.instanceOf.publication.librissearch:year',
+			label: page.data.t('sort.publicationAsc')
+		},
 		{
 			value: '-reverseLinks.totalItemsByRelation.itemOf.instanceOf',
 			label: page.data.t('sort.holdingsDesc')
@@ -24,7 +30,7 @@
 		if (searchParams.has('_offset')) {
 			searchParams.set('_offset', '0');
 		}
-		goto(`${page.url.pathname}?${searchParams.toString()}`, { invalidateAll: true });
+		goto(`${page.url.pathname}?${searchParams.toString()}`, { invalidate: ['app:search'] });
 	}
 </script>
 
@@ -39,14 +45,14 @@
 		<select
 			id="search-sort"
 			class="btn btn-primary w-px sm:w-auto"
-			form="search"
+			form="search-form"
 			onchange={handleSortChange}
 		>
 			{#each sortOptions as option (option.value)}
 				<option value={option.value} selected={option.value === sortOrder}>{option.label}</option>
 			{/each}
 		</select>
-		<span class="text-subtle pointer-events-none absolute top-0 right-1.5 py-2.5 text-xs">
+		<span class="text-subtle pointer-events-none absolute top-0 right-1.5 py-2.5 text-sm">
 			<BiChevronDown aria-hidden="true" />
 		</span>
 	</div>

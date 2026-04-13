@@ -10,20 +10,25 @@
 	const { libraries }: IndicatorProps = $props();
 	const { myLibraries } = getUserSettings();
 
-	function getIndicatorText() {
+	const indicatorText = $derived.by(() => {
 		if (myLibraries) {
-			return libraries.map((lib) => myLibraries[lib] || '').join(', ');
+			return (
+				page.data.t('holdings.availableAt') +
+				': ' +
+				libraries.map((lib) => myLibraries[lib] || '').join(', ')
+			);
 		}
 		return '';
-	}
+	});
 </script>
 
 <span
+	aria-label={indicatorText}
 	use:popover={{
-		title: `${page.data.t('holdings.availableAt')}: ${getIndicatorText()}`
+		title: indicatorText
 	}}
 >
-	<BiHouseHeart class="libraries-indicator" />
+	<BiHouseHeart aria-hidden="true" class="libraries-indicator" />
 </span>
 
 <style>

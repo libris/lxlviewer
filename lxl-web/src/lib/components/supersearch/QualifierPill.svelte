@@ -1,13 +1,43 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import type { QualifierRendererProps } from 'supersearch';
+	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
+	import { getPersonImage } from '$lib/utils/getPersonImage';
 	import IconClose from '~icons/bi/x-lg';
+	import TypeIcon from '../TypeIcon.svelte';
 
 	interface Props extends QualifierRendererProps {
 		onclick?: () => void;
 	}
 
-	const { key, keyLabel, operator, value, valueLabel, removeLink, onclick }: Props = $props();
+	const {
+		key,
+		keyLabel,
+		operator,
+		value,
+		valueLabel,
+		removeLink,
+		type,
+		id,
+		isRedundantKeyLabel,
+		onclick
+	}: Props = $props();
+
+	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(id))));
+	let image = $state(null);
+
+	const getImage = async () => {
+		image = await getPersonImage(resourceId as string);
+	};
+
+	onMount(() => {
+		if (type === 'Person' && resourceId) {
+			getImage();
+		}
+	});
+
+	const pillText = $derived(`${keyLabel || ''}${operator} ${valueLabel || ''}`);
 
 	/**
 	 * TODO: Add resource links when API exposes the record ids/fnurgels in mappings
@@ -15,31 +45,39 @@
 	 */
 </script>
 
-{#if keyLabel}
+{#snippet imageSnippet()}
+	<span class="empty:hidden" aria-hidden="true">
+		{#if image}
+			<img src={image} alt="" class="mr-0.75 mb-0.75 inline size-5 rounded-full object-contain" />
+		{:else if type}
+			<TypeIcon {type} class="mr-0.75 mb-0.75 inline text-sm" />
+		{/if}
+	</span>
+{/snippet}
+{#snippet keyLabelSnippet()}
 	<span
 		data-qualifier-key={key}
-		class="lxl-qualifier-key cursor-text"
+		class={['lxl-qualifier-key cursor-text', isRedundantKeyLabel && 'redundant-label']}
 		role="button"
 		tabindex="-1"
 		{onclick}
-		onkeypress={onclick}
+		onkeypress={onclick}>{keyLabel}</span
 	>
-		{keyLabel}
-	</span>
-{/if}
-{#if operator}
+{/snippet}
+{#snippet operatorSnippet()}
 	<span
-		class="lxl-qualifier-operator cursor-text"
+		class={[
+			'lxl-qualifier-operator cursor-text',
+			(isRedundantKeyLabel || operator === ':') && 'sr-only'
+		]}
 		data-qualifier-operator={operator}
 		role="button"
 		tabindex="-1"
 		{onclick}
-		onkeypress={onclick}
+		onkeypress={onclick}>{operator}</span
 	>
-		{operator}
-	</span>
-{/if}
-{#if valueLabel}
+{/snippet}
+{#snippet valueLabelSnippet()}
 	<span
 		class={[keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias', 'cursor-text']}
 		data-qualifier-value={value}
@@ -47,28 +85,19 @@
 		tabindex="-1"
 		{onclick}
 		onkeypress={onclick}
+		>{#if image || type}{@render imageSnippet()}{/if}{valueLabel}</span
 	>
-		<!--
-		{#if resourceLink}
-			<span class="hidden">{valueLabel}</span><a href={page.data.localizeHref(`/${resourceLink}`)} class="link inline-block"
-				>{valueLabel}</a
-			>
-		{:else}
-			{valueLabel}
-		{/if}
-		-->
-		{valueLabel}
-	</span>
-{/if}
-{#if valueLabel && removeLink}
+{/snippet}
+{#snippet removeLinkSnippet()}
 	<a
 		href={page.data.localizeHref(removeLink)}
 		class="lxl-qualifier-remove"
-		aria-label={page.data.t('search.clearFilters')}
+		aria-label={`${page.data.t('search.removeFilter')} ${pillText}`}
+		><IconClose class="mb-0.5 inline" aria-hidden="true" /></a
 	>
-		<IconClose />
-	</a>
-{/if}
+{/snippet}
+
+{#if keyLabel}{@render keyLabelSnippet()}{/if}{#if operator}{@render operatorSnippet()}{/if}{#if valueLabel}{@render valueLabelSnippet()}{/if}{#if valueLabel && removeLink}{@render removeLinkSnippet()}{/if}
 
 <style lang="postcss">
 	/** TODO: Add when resource links are available 

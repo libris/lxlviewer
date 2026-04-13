@@ -2,7 +2,6 @@
 	import { type Image, type ImageResolution, Width } from '$lib/types/auxd';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import { bestSize } from '$lib/utils/auxd';
-	import { first } from '$lib/utils/xl';
 	import { page } from '$app/state';
 	import { popover } from '$lib/actions/popover';
 	import InfoIcon from '~icons/bi/info-circle';
@@ -10,7 +9,7 @@
 	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 
 	interface Props {
-		images: Image[];
+		image: Image;
 		alt?: string;
 		linkToFull?: boolean;
 		type?: string;
@@ -20,7 +19,7 @@
 	}
 
 	let {
-		images,
+		image,
 		alt,
 		linkToFull = false,
 		type = '',
@@ -29,7 +28,6 @@
 		loading = 'eager'
 	}: Props = $props();
 
-	let image = $derived(first(images));
 	let thumb = $derived(image ? bestSize(image, thumbnailTargetWidth) : undefined);
 	let full = $derived(image ? bestSize(image, Width.FULL) : undefined);
 	let geometry = $derived(type === 'Person' ? 'circle' : 'rectangle');

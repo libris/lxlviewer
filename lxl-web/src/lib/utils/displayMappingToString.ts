@@ -8,10 +8,11 @@ export function displayMappingToString(mapping: DisplayMapping[]): string {
 
 		function _iterate(mapping: DisplayMapping) {
 			if (MAPPING_IGNORE_VARIABLE.some((v) => v === mapping.variable)) return;
-			const { children, operator, variable, displayStr, label, _key, _value } = mapping;
+			const { children, operator, variable, displayStr, label, _key, _value, isRedundantKeyLabel } =
+				mapping;
 			if (displayStr || label) {
-				if (!_key && !_value && displayStr) {
-					// don't show 'free text search' label
+				const isFreeText = !_key && !_value;
+				if ((isFreeText || isRedundantKeyLabel) && displayStr) {
 					result.push(displayStr);
 				} else {
 					result.push(

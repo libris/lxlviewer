@@ -1,4 +1,21 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, test, devices } from '@playwright/test';
+
+test('should not have any detectable a11y issues', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	const accessibilityScanResults = await new AxeBuilder({ page })
+		.exclude('[role="combobox"][aria-placeholder]') // aria-placeholder issue in supersearch is a false alarm (see https://github.com/w3c/aria/issues/2689)
+		.analyze();
+	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
+
+test('Open holdings panel should not have any detectable a11y issues', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf?holdings=Electronic');
+	const accessibilityScanResults = await new AxeBuilder({ page })
+		.exclude('[role="combobox"][aria-placeholder]')
+		.analyze();
+	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
 
 test('decorated data label visibilty is correct after page navigations', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
@@ -32,7 +49,7 @@ test('decorated data in holdings modal is not duplicated while closing modal', a
 
 test('holding selection controls active tab in holdings panel', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
-	await page.getByRole('link', { name: /^Digital resurs · finns på / }).click();
+	await page.getByRole('link', { name: /^Digital resurs · / }).click();
 	const tablist = page.locator('dialog').getByRole('tablist', { name: 'Utgåvor' });
 	await expect(tablist.getByRole('tab', { name: 'Digital' })).toHaveAttribute(
 		'aria-selected',
@@ -52,7 +69,7 @@ test('table of contents', async ({ page }) => {
 	await expect(
 		page.getByTestId('toc').locator('a[aria-current]'),
 		'active link is changed when clicking on link'
-	).toHaveText('Förekomster');
+	).toHaveText('Relaterat');
 	await page.waitForTimeout(60);
 
 	await page.evaluate(() => window.scrollTo(0, 0));
@@ -72,7 +89,7 @@ test('table of contents', async ({ page }) => {
 	await page.getByTestId('toc-mobile').locator('a').nth(1).click();
 	await expect(page.locator('#top')).not.toBeInViewport({ ratio: 0.1 });
 	await expect(
-		page.locator('#occurrences'),
+		page.locator('#relations'),
 		'links in mobile table of contents works'
 	).toBeInViewport();
 	await page.getByTestId('toc-mobile').locator('label input[type="checkbox"]').focus();

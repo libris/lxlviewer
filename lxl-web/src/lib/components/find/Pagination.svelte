@@ -66,7 +66,7 @@
 				<a
 					class={['btn btn-primary', p.page === currentPage ? 'bg-accent-50' : 'border-0']}
 					href={page.data.localizeHref(getOffsetLink(p.offset))}
-					aria-label="{page.data.t('search.page')} {p}"
+					aria-label="{page.data.t('search.page')} {p.page}"
 					aria-current={p.page === currentPage ? 'page' : null}
 					>{p.page.toLocaleString(page.data.locale)}</a
 				>
@@ -82,7 +82,7 @@
 	<nav
 		aria-label={page.data.t('search.pagination')}
 		data-testid="pagination"
-		class="pagination mt-4 py-4"
+		class="pagination @container/pagination mt-4 py-4"
 	>
 		<ol class="flex items-center justify-center">
 			<!-- prev -->
@@ -100,18 +100,19 @@
 			<li>
 				<a
 					aria-label="{page.data.t('search.page')} 1"
+					aria-current={currentPage === 1 ? 'page' : null}
 					class={['btn btn-primary', currentPage === 1 ? 'bg-accent-50' : 'border-0']}
 					href={page.data.localizeHref(first['@id'])}>1</a
 				>
 			</li>
 			<!-- sm sequence -->
-			<li class="flex sm:hidden">
+			<li class="flex @lg/pagination:hidden">
 				<ol class="sequence flex items-center justify-center">
 					{@render sequence(MAX_PAGES_SM)}
 				</ol>
 			</li>
 			<!-- md sequence -->
-			<li class="hidden sm:flex">
+			<li class="hidden @lg/pagination:flex">
 				<ol class="sequence flex items-center justify-center">
 					{@render sequence(MAX_PAGES_MD)}
 				</ol>
@@ -120,6 +121,7 @@
 			<li>
 				<a
 					aria-label="{page.data.t('search.page')} {lastPage}"
+					aria-current={currentPage === lastPage ? 'page' : null}
 					class={['btn btn-primary', currentPage === lastPage ? 'bg-accent-50' : 'border-0']}
 					href={page.data.localizeHref(last['@id'])}>{lastPage.toLocaleString(page.data.locale)}</a
 				>
@@ -144,6 +146,7 @@
 		@reference 'tailwindcss';
 
 		& li > a {
+			font-size: var(--text-sm);
 			min-height: calc(var(--spacing) * 8);
 			min-width: calc(var(--spacing) * 8);
 		}

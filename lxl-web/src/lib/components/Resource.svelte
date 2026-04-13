@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
-	import { JsonLd } from '$lib/types/xl';
+	import { type DisplayDecorated, Fmt, JsonLd } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
@@ -13,6 +13,7 @@
 	} from '$lib/types/search';
 	import capitalize from '$lib/utils/capitalize';
 	import type { Relation } from '$lib/utils/relations';
+	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
@@ -22,11 +23,12 @@
 	import SearchCard from './find/SearchCard.svelte';
 	import TabList, { type Tab } from './TabList.svelte';
 	import SearchMapping from './find/SearchMapping.svelte';
+	import ExpandableArea from '$lib/components/ExpandableArea.svelte';
+	import Suggestion from './supersearch/Suggestion.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
-	import ExpandableArea from '$lib/components/ExpandableArea.svelte';
-	import Suggestion from './supersearch/Suggestion.svelte';
+	import BiQuote from '~icons/bi/quote';
 
 	type Props = {
 		fnurgel: string;
@@ -35,17 +37,18 @@
 		controlNumber: string;
 		uid?: string;
 		typeForIcon: string;
-		images: SecureImage[];
+		image: SecureImage;
 		decoratedData: {
-			headingTop: DecoratedData;
-			heading: DecoratedData;
-			headingExtra: DecoratedData;
-			overview: DecoratedData[];
-			overview2: DecoratedData[];
-			overviewFooter: DecoratedData;
-			summary: DecoratedData[];
-			resourceTableOfContents: DecoratedData[];
-			details: DecoratedData[];
+			headingTop: DisplayDecorated;
+			heading: DisplayDecorated;
+			headingExtra: DisplayDecorated;
+			overview: DisplayDecorated[];
+			overview2: DisplayDecorated[];
+			overviewFooter: DisplayDecorated;
+			summary: DisplayDecorated[];
+			resourceTableOfContents: DisplayDecorated[];
+			details: DisplayDecorated[];
+			token: DisplayDecorated;
 		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
@@ -63,7 +66,7 @@
 		controlNumber,
 		uid,
 		typeForIcon,
-		images,
+		image,
 		decoratedData,
 		relations,
 		relationsPreviewsByQualifierKey,
@@ -76,7 +79,7 @@
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
-	let searchMapping = $derived(searchResult?.mapping);
+	let searchMapping = $derived(searchResult?.mapping.filter((m) => m.variable === '_q'));
 	let filteredInstances = $derived(searchResult?.items);
 
 	const derivedFilteredInstances = $derived.by(() => {
@@ -169,7 +172,7 @@
 		<div>
 			<div class="sticky mx-auto pt-3 @sm:pt-6 @3xl:max-w-xs @3xl:pb-6">
 				<ResourceImage
-					{images}
+					{image}
 					type={typeForIcon}
 					alt={page.data.t('general.instanceCover')}
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
@@ -178,7 +181,7 @@
 				{#if holdings.byType && Object.keys(holdings.byType).length && instances}
 					<section class="mt-5">
 						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
-						<ResourceHoldings {holdings} {instances} {fnurgel} />
+						<ResourceHoldings {holdings} {instances} />
 					</section>
 				{/if}
 			</div>
@@ -189,9 +192,11 @@
 					<header class="mb-3 flex-1">
 						<hgroup>
 							<p class="text-subtle flex items-center gap-1 text-sm font-medium">
-								<span class="mr-0.5 self-stretch pt-1">
-									<TypeIcon type={typeForIcon} class="size-3" />
-								</span>
+								{#if typeForIcon}
+									<span class="mr-0.5 self-stretch pt-1">
+										<TypeIcon type={typeForIcon} class="size-3" />
+									</span>
+								{/if}
 								<DecoratedData
 									data={decoratedData.headingTop}
 									showLabels={ShowLabelsOptions.Never}
@@ -251,17 +256,29 @@
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>
-					{#if decoratedData.summary.length || instances?.length > 1 || relations.length || decoratedData.resourceTableOfContents.length}
-						<a
-							class="btn btn-primary my-2 h-7 w-fit rounded-full md:h-8"
-							href="#{uidPrefix}details"
-							data-sveltekit-preload-data="false"
-							data-testid="details-link"
-						>
-							<IconArrowDown />
-							{page.data.t('resource.moreDetails')}
-						</a>
-					{/if}
+					<div class="flex items-center gap-2">
+						{#if decoratedData.summary.length || instances?.length > 1 || relations.length || decoratedData.resourceTableOfContents.length}
+							<a
+								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
+								href="#{uidPrefix}details"
+								data-sveltekit-preload-data="false"
+								data-testid="details-link"
+							>
+								<IconArrowDown />
+								{page.data.t('resource.moreDetails')}
+							</a>
+						{/if}
+						{#if instances?.length === 1}
+							<a
+								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
+								href={getCiteLink(page.url, fnurgel)}
+								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
+							>
+								<BiQuote class="text-neutral-400" />
+								<span>{page.data.t('citations.cite')}</span>
+							</a>
+						{/if}
+					</div>
 				</div>
 			</section>
 			{#if decoratedData.summary.length}
@@ -270,7 +287,7 @@
 						{page.data.t('resource.summary')}
 					</h2>
 					{#snippet summary()}
-						<div class="flex flex-col gap-6">
+						<div class="flex flex-col gap-4">
 							{#each decoratedData.summary as s (s)}
 								<div class="summary-or-toc w-full">
 									<DecoratedData data={s} showLabels={ShowLabelsOptions.Never} block />
@@ -296,12 +313,12 @@
 			{/if}
 			{#if relations.length}
 				<section>
-					<h2 id={`${uidPrefix}occurrences`} class="mb-6 text-xl font-medium">
-						{page.data.t('resource.occurrences')}
+					<h2 id={`${uidPrefix}relations`} class="mb-6 text-xl font-medium">
+						{page.data.t('resource.relations')}
 					</h2>
 					<ul>
 						{#each relations as relationItem (relationItem.qualifierKey)}
-							<li id="{uidPrefix}occurrences-{relationItem.qualifierKey}" class="mb-12">
+							<li id="{uidPrefix}relations-{relationItem.qualifierKey}" class="mb-12">
 								<div class="border-b-neutral mb-6 flex place-content-between border-b pb-3">
 									<h3 class="font-medium">
 										<a
@@ -309,7 +326,13 @@
 											class="hover:underline focus:underline"
 											tabindex={-1}
 										>
-											{relationItem.label}
+											{relationItem.label}:
+											<DecoratedData
+												data={decoratedData.token}
+												showLabels={ShowLabelsOptions.Never}
+												allowLinks={false}
+												allowPopovers={false}
+											/>
 										</a>
 									</h3>
 									<a
@@ -318,12 +341,12 @@
 									>
 										<IconArrowRight class="inline size-5 text-neutral-500" />
 										<span>
-											{page.data.t('resource.show')}
+											{page.data.t('general.show')}
 											{#if relationItem.totalItems > 10}
 												{page.data.t('resource.all')}
 											{/if}
-											{relationItem.totalItems.toLocaleString()}
-											{#if relationItem.totalItems === 1}
+											{relationItem.totalItems.toLocaleString() + (relationItem.isLike ? '+' : '')}
+											{#if relationItem.totalItems === 1 && !relationItem.isLike}
 												{page.data.t('resource.result')}
 											{:else}
 												{page.data.t('resource.results')}
@@ -335,6 +358,7 @@
 									<SearchResultList
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
+										suppressProperty={relationItem.qualifierKey}
 									/>
 								</div>
 							</li>
@@ -348,7 +372,7 @@
 						{page.data.t('resource.tableOfContents')}
 					</h2>
 					{#snippet resourceTableOfContents()}
-						<div class="flex flex-col gap-6">
+						<div class="flex flex-col gap-4">
 							{#each decoratedData.resourceTableOfContents as r (r)}
 								<div class="summary-or-toc w-full">
 									<DecoratedData data={r} showLabels={ShowLabelsOptions.Never} block />
@@ -360,65 +384,69 @@
 					<ExpandableArea content={resourceTableOfContents} collapsedHeightPx={300} />
 				</section>
 			{/if}
-			<section class="-mx-6 my-6 bg-neutral-100 px-6 pb-6 @2xl:mx-0 @2xl:rounded-lg">
-				<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
-					{page.data.t('resource.details')}
-				</h2>
-				<div class="decorated-data-section decorated-spacious decorated-details">
-					{#each decoratedData.details as details (details)}
-						<div class="mb-2">
-							<DecoratedData
-								data={details}
-								showLabels={ShowLabelsOptions.Always}
-								allowFindLinks={true}
-								block
-								limit={{ contribution: 5, hasVariant: 10 }}
-							/>
-						</div>
-					{/each}
-				</div>
-				<div class="mt-5 text-sm">
-					<p>
-						{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
-					</p>
-					<p>
-						{page.data.t('resource.downloadDescription')}:
-						<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
-						· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
-						· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
-						{#if instances?.length === 1}
-							· <a
-								href="{recordUri
-									.split('/')
-									.toSpliced(-1, 1)
-									.join('/')}/_compilemarc?library=Foo&id={recordUri}"
-								target="_blank"
-								download="{fnurgel}.marc"
-								class="link">MARC21 (ISO 2709) <BiDownload class="inline" /></a
-							>
-							<!--
+			{#if decoratedData.details.length && decoratedData.details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)}
+				<section
+					class="-mx-3 my-6 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
+				>
+					<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
+						{page.data.t('resource.details')}
+					</h2>
+					<div class="decorated-data-section decorated-spacious decorated-details">
+						{#each decoratedData.details as details (details)}
+							<div class="mb-2">
+								<DecoratedData
+									data={details}
+									showLabels={ShowLabelsOptions.Always}
+									allowFindLinks={true}
+									block
+									limit={{ contribution: 5, hasVariant: 10 }}
+								/>
+							</div>
+						{/each}
+					</div>
+				</section>
+			{/if}
+			<div class="text-sm">
+				<p>
+					{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
+				</p>
+				<p>
+					{page.data.t('resource.downloadDescription')}:
+					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
+					· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
+					· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
+					{#if instances?.length === 1}
+						· <a
+							href="{recordUri
+								.split('/')
+								.toSpliced(-1, 1)
+								.join('/')}/_compilemarc?library=Foo&id={recordUri}"
+							target="_blank"
+							download="{fnurgel}.marc"
+							class="link">MARC21 (ISO 2709) <BiDownload class="inline" /></a
+						>
+						<!--
                             TODO _compilemarc can only create ISO 2709
                             TODO _compilemarc can only handle bib
                             TODO? select export profile (library)?
                             <a href="{fnurgel}" target="_blank" class="ext-link">MARC-XML</a> ·
                             -->
-						{/if}
-					</p>
-					<p>
-						<a
-							href={recordUri.split('/').toSpliced(-1, 0, 'katalogisering').join('/')}
-							target="_blank"
-							class="ext-link"
-							>{page.data.t('resource.showIn')} {page.data.t('resource.librisCataloging')}</a
+					{/if}
+				</p>
+				<p>
+					<a
+						href={recordUri.split('/').toSpliced(-1, 0, 'katalogisering').join('/')}
+						target="_blank"
+						class="ext-link"
+						>{page.data.t('resource.showIn')} {page.data.t('resource.librisCataloging')}</a
+					>
+					{#if instances?.length === 1}
+						· <a href="https://libris.kb.se/bib/{controlNumber}" target="_blank" class="ext-link"
+							>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
 						>
-						{#if instances?.length === 1}
-							· <a href="https://libris.kb.se/bib/{controlNumber}" target="_blank" class="ext-link"
-								>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
-							>
-						{/if}
-					</p>
-				</div>
-			</section>
+					{/if}
+				</p>
+			</div>
 		</div>
 	</div>
 </article>
@@ -472,9 +500,11 @@
 		}
 
 		& :global(.summary) {
-			display: inline-block;
-			/*max-width: 60ch;*/
-			text-align: justify;
+			max-width: 60ch;
+		}
+
+		& :global(div[data-property='tableOfContents']) {
+			max-width: 60ch;
 		}
 
 		& :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents']) {
@@ -529,20 +559,20 @@
 		}
 
 		& :global(.contribution) {
-			font-size: var(--text-lg);
+			font-size: var(--text-base);
 			@apply mb-2;
 			@apply mt-1;
 		}
 
 		& :global(.contribution-role) {
-			font-size: var(--text-2xs);
+			font-size: var(--text-sm);
 			color: var(--color-subtle);
 		}
 
-		& :global(.inScheme) {
+		/* & :global(.inScheme) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
-		}
+		} */
 
 		& :global(.contribution > ._contentBefore),
 		:global(.contribution > ._contentAfter) {
@@ -719,6 +749,20 @@
 				display: none;
 			}
 		}
+
+		& :global(div[data-property='bibliography'] > a) {
+			display: block;
+		}
+
+		& :global(div[data-property='bibliography'] > a)::before {
+			content: ' • ';
+			color: var(--color-subtle);
+		}
+
+		& :global(div[data-property='bibliography'] > ._contentBefore),
+		:global(div[data-property='bibliography'] > ._contentAfter) {
+			display: none;
+		}
 	}
 
 	.decorated-compact {
@@ -792,6 +836,14 @@
 	}
 
 	.decorated-details {
+		font-size: var(--text-sm);
+
+		& :global(.contribution) {
+			font-size: var(--text-sm);
+			@apply mb-2;
+			@apply mt-1;
+		}
+
 		& :global(div[data-property='hasTitle'] > span[data-type='Title']) {
 			/* color: var(--color-subtle); */
 			font-weight: var(--font-weight-semibold);

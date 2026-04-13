@@ -5,17 +5,24 @@
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import IconSearch from '~icons/bi/search';
 	import type { ShowExpandedSearchOptions } from 'supersearch';
+	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 
 	type Props = {
 		id?: string;
 		name: string;
-		placeholder: string;
 	};
 
-	let { id, name, placeholder }: Props = $props();
+	let { id, name }: Props = $props();
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
 	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
+	let cursor: number | null = $state(null);
+
+	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
+	const placeholder = $derived(
+		(page.data.subsetMapping && displayMappingToString(page.data.subsetMapping)) ||
+			page.data.t('header.searchPlaceholder')
+	);
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -24,6 +31,10 @@
 		p.delete('_i');
 		p.delete('_o');
 		p.delete('_p');
+
+		if (cursor) {
+			p.set('_cursor', cursor.toString());
+		}
 		return p;
 	});
 
@@ -43,15 +54,24 @@
 		<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
 			<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
 		</span>
-		<input type="search" {id} {name} {placeholder} bind:this={fallbackInputElement} />
+		<input
+			type="search"
+			{id}
+			{name}
+			{placeholder}
+			aria-labelledby={isHomeRoute ? 'page-title' : undefined}
+			aria-label={!isHomeRoute ? page.data.t('header.search') : undefined}
+			bind:this={fallbackInputElement}
+			class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:px-3 lg:text-[0.9375rem] sm:@3xl:pl-4"
+		/>
 		<button
 			type="submit"
 			class={[
-				'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
+				'hover:bg-primary-50 hidden h-full w-full max-w-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 sm:flex lg:max-w-12'
 			]}
 			aria-label={page.data.t('supersearch.search')}
 		>
-			<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
+			<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 		</button>
 	</div>
 {/snippet}
@@ -60,7 +80,15 @@
 	{@render fallbackInput()}
 {:then { default: SuperSearchWrapper }}
 	<div class="contents" data-testid="supersearch">
-		<SuperSearchWrapper {placeholder} bind:this={superSearchWrapperComponent} />
+		<SuperSearchWrapper
+			{placeholder}
+			collapsedAriaLabelledBy={isHomeRoute ? 'page-title' : undefined}
+			collapsedAriaLabel={!isHomeRoute ? page.data.t('header.search') : undefined}
+			expandedAriaLabel={page.data.t('header.search')}
+			bind:this={superSearchWrapperComponent}
+			onCursorChange={(value) => (cursor = value)}
+			qualifierSuggestions={page.data.qualifierSuggestions || []}
+		/>
 	</div>
 {:catch}
 	{@render fallbackInput()}
@@ -83,33 +111,15 @@
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 		border-radius: var(--radius-md);
 		font-size: var(--text-xs);
-
-		&:has(:focus) {
-			outline: 4px solid var(--color-primary-200);
-			outline-offset: 1px;
+		@variant sm {
+			font-size: var(--text-sm);
 		}
 
-		& input[type='search'] {
-			width: 100%;
-			padding-left: calc(var(--spacing) * 11);
-
-			@variant sm {
-				padding-left: calc(var(--spacing) * 3);
-			}
-
-			@variant 3xl {
-				padding-left: calc(var(--spacing) * 4);
-			}
-
-			&:focus {
-				outline: none;
-			}
-			&::placeholder {
-				color: var(--color-placeholder);
-			}
-
-			@variant 3xl {
-				font-size: var(--text-sm);
+		&:not(:has([type='submit']:focus)) {
+			&:has(:focus) {
+				box-shadow: 0 0 0 2px var(--color-accent-500);
+				outline: 4px solid var(--color-accent-100);
+				outline-offset: 2px;
 			}
 		}
 	}

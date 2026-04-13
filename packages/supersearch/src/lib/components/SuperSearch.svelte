@@ -23,7 +23,8 @@
 		TransformFunction,
 		ResultItem,
 		ShowExpandedSearchOptions,
-		DebouncedWaitFunction
+		DebouncedWaitFunction,
+		ExpandEvent
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
 
@@ -43,12 +44,20 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
+		collapsedAriaLabelledBy?: string;
+		collapsedAriaLabel?: string;
+		collapsedAriaDescribedBy?: string;
+		expandedAriaLabelledBy?: string;
+		expandedAriaLabel?: string;
+		expandedAriaDescribedBy?: string;
+		collapsedAriaKeyshortcuts?: string;
+		expandedAriaKeyshortcuts?: string;
+		autofocus?: boolean;
 		endpoint: string | URL;
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
-		comboboxAriaLabel?: string;
 		inputRow?: Snippet<
 			[
 				{
@@ -86,7 +95,7 @@
 		isLoading?: boolean;
 		hasData?: boolean;
 		loadMoreLabel?: string;
-		onexpand?: () => void;
+		onexpand?: (event: ExpandEvent) => void;
 		oncollapse?: () => void;
 		onchange?: (event: ChangeSuperSearchEvent) => void;
 		onexpandedviewupdate?: (event: ViewUpdateSuperSearchEvent) => void;
@@ -99,12 +108,20 @@
 		form,
 		language,
 		placeholder = '',
+		collapsedAriaLabelledBy,
+		collapsedAriaLabel,
+		collapsedAriaDescribedBy,
+		expandedAriaLabelledBy,
+		expandedAriaLabel,
+		expandedAriaDescribedBy,
+		collapsedAriaKeyshortcuts,
+		expandedAriaKeyshortcuts,
+		autofocus,
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
 		paginationQueryFn,
 		transformFn,
 		extensions = [],
-		comboboxAriaLabel,
 		inputRow = fallbackInputRow,
 		expandedContent = fallbackExpandedContent,
 		resultItemRow = fallbackResultItemRow,
@@ -129,9 +146,10 @@
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
 	let dialog: HTMLDialogElement | undefined = $state();
+	let comboboxElement: HTMLDivElement | undefined = $state();
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
-	let activeColIndex: number = $state(0);
+	let activeColIndex: number = $state(-1);
 	let prevValue: string = value;
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
@@ -142,19 +160,21 @@
 	let cursorHandlingCompartment = new Compartment();
 
 	let placeholderCompartment = new Compartment();
-	let prevPlaceholder = placeholder;
+	let prevPlaceholder = (() => $state.snapshot(placeholder))();
 
 	let collapsedContentAttributesCompartment = new Compartment();
 	let expandedContentAttributesCompartment = new Compartment();
 
-	let search = useSearchRequest({
-		endpoint,
-		queryFn,
-		paginationQueryFn,
-		transformFn,
-		debouncedWait,
-		getDebouncedWait
-	});
+	let search = $derived.by(() =>
+		useSearchRequest({
+			endpoint,
+			queryFn,
+			paginationQueryFn,
+			transformFn,
+			debouncedWait,
+			getDebouncedWait
+		})
+	);
 
 	let prevSearchDataId: string | undefined;
 	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
@@ -167,7 +187,7 @@
 		}
 	});
 
-	const extensionsWithDefaults = [
+	const extensionsWithDefaults = $derived([
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		preventEnterKeyHandling(),
 		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: true, horizontal: true })),
@@ -175,36 +195,57 @@
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
 		...extensions
-	];
+	]);
 
 	let collapsedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
+			id: `${id}-collapsed-combobox`,
 			role: 'combobox',
 			enterkeyhint: 'search',
-			...(comboboxAriaLabel && {
-				'aria-label': comboboxAriaLabel
+			...(collapsedAriaLabelledBy && {
+				'aria-labelledby': collapsedAriaLabelledBy
+			}),
+			...(collapsedAriaLabel && {
+				'aria-label': collapsedAriaLabel
+			}),
+			...(collapsedAriaDescribedBy && {
+				'aria-describedby': collapsedAriaDescribedBy
 			}),
 			'aria-haspopup': 'dialog', // indicates the availability and type of interactive popup element that can be triggered by the element
 			'aria-controls': `${id}-dialog`, // identifies the popup element
 			'aria-expanded': expanded.toString(), // indicates if the popup element is open
-			'aria-multiline': 'false' // aria-multiline isn't allowed inside elements with role=combobox
+			'aria-multiline': 'false', // aria-multiline isn't allowed inside elements with role=combobox
+			...(collapsedAriaKeyshortcuts && {
+				'aria-keyshortcuts': collapsedAriaKeyshortcuts
+			})
 		})
 	);
 
-	let includeAriaActiveDescendant = $derived(activeRowIndex >= 0 && activeColIndex >= 0); // ensures aria-activedecendant is only shown if the element exists in the DOM
+	let includeAriaActiveDescendant = $derived(
+		activeRowIndex > 0 || (activeRowIndex === 0 && activeColIndex !== defaultInputCol)
+	); // ensures aria-activedecendant is only shown if the element exists in the DOM
 	let expandedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
-			id: `${id}-content`,
+			id: `${id}-expanded-combobox`,
 			role: 'combobox', // identifies the element as a combobox
 			enterkeyhint: 'search',
-			...(comboboxAriaLabel && {
-				'aria-label': comboboxAriaLabel
+			...(expandedAriaLabelledBy && {
+				'aria-labelledby': expandedAriaLabelledBy
+			}),
+			...(expandedAriaLabel && {
+				'aria-label': expandedAriaLabel
+			}),
+			...(expandedAriaDescribedBy && {
+				'aria-describedby': expandedAriaDescribedBy
 			}),
 			'aria-haspopup': 'grid', // indicates that the combobox can popup a grid to suggest values
 			'aria-expanded': 'true', // indicates that the popup element is displayed
 			'aria-autocomplete': 'list', // indicates that the autocomplete behavior of the input is to suggest a list of possible values in a popup
 			'aria-controls': `${id}-grid`, // identifies the popup element that lists suggested values
 			'aria-multiline': 'false',
+			...(expandedAriaKeyshortcuts && {
+				'aria-keyshortcuts': expandedAriaKeyshortcuts
+			}),
 			...(includeAriaActiveDescendant && {
 				'aria-activedescendant': `${id}-item-${activeRowIndex}x${activeColIndex}` // enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element
 			})
@@ -237,8 +278,15 @@
 		if (!dialog?.open) showExpandedSearch();
 	}
 
-	function setDefaultRowAndCols() {
-		activeRowIndex = defaultResultRow;
+	function handleClickExpanded() {
+		setDefaultRowAndCols();
+		if (!expandedEditorView?.hasFocus) {
+			expandedEditorView?.focus();
+		}
+	}
+
+	function setDefaultRowAndCols(options?: { focusRow?: number }) {
+		activeRowIndex = options?.focusRow || defaultResultRow;
 		if (activeRowIndex > 0) {
 			activeColIndex = defaultResultCol;
 		} else {
@@ -323,10 +371,14 @@
 						: collapsedEditorView?.state.selection.main
 			});
 			dialog?.showModal();
-			setDefaultRowAndCols();
-			allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 			expanded = true;
-			onexpand?.();
+			onexpand?.({ windowPageYOffset: window.pageYOffset });
+		}
+		setDefaultRowAndCols({ focusRow: options?.focusRow });
+		if (!options?.focusRow || options.focusRow < 1) {
+			allowArrowKeyCursorHandling = { vertical: false, horizontal: true };
+		} else {
+			allowArrowKeyCursorHandling = { vertical: false, horizontal: false };
 		}
 		expandedEditorView?.focus();
 	}
@@ -339,9 +391,9 @@
 			});
 			collapsedEditorView?.focus();
 			expanded = false;
-			allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
 			oncollapse?.();
 		}
+		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
 	}
 
 	export function fetchData() {
@@ -352,6 +404,10 @@
 
 	export function resetData() {
 		search?.resetData();
+	}
+
+	export function focus() {
+		collapsedEditorView?.focus();
 	}
 
 	export function blur() {
@@ -415,14 +471,40 @@
 			event.key === 'ArrowRight' ||
 			event.key === 'Tab'
 		) {
-			const rows = Array.from(dialog?.querySelectorAll(':scope [role=row]') || []);
-			const getColsInRow = (rowIndex: number) =>
-				Array.from(rows[rowIndex].querySelectorAll(':scope button, :scope a')).filter((colItem) => {
-					if (typeof colItem?.checkVisibility === 'function') {
-						return colItem.checkVisibility();
-					}
-					return true; // always return true as a fallback if checkVisiblity isn't available
-				});
+			const arrowKeyRows = Array.from(
+				dialog?.querySelectorAll(':scope [role=row]:not([data-skip-row-on-arrow-key])') || []
+			);
+
+			const rows =
+				event.key === 'Tab'
+					? Array.from(dialog?.querySelectorAll(':scope [role=row]') || [])
+					: arrowKeyRows;
+
+			const getColsInInputRow = () => {
+				return comboboxElement
+					? Array.from(comboboxElement.querySelectorAll(':scope button, :scope a')).filter(
+							(colItem) => {
+								if (typeof colItem?.checkVisibility === 'function') {
+									return colItem.checkVisibility();
+								}
+								return true; // always return true as a fallback if checkVisiblity isn't available
+							}
+						)
+					: [];
+			};
+
+			const getColsInRow = (rowIndex: number) => {
+				return rows?.[rowIndex]
+					? Array.from(rows[rowIndex].querySelectorAll(':scope button, :scope a')).filter(
+							(colItem) => {
+								if (typeof colItem?.checkVisibility === 'function') {
+									return colItem.checkVisibility();
+								}
+								return true; // always return true as a fallback if checkVisiblity isn't available
+							}
+						)
+					: [];
+			};
 
 			const getColIndexFromId = (itemId: string) => {
 				const colRegex = new RegExp(`${id}-item-\\d+x(\\d+)`);
@@ -430,7 +512,7 @@
 			};
 
 			const getColIndexBefore = (rowIndex: number, colIndex: number) => {
-				if (rowIndex < rows.length) {
+				if (rowIndex <= rows.length) {
 					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
 					return colIndeces[colIndeces.indexOf(colIndex) - 1];
 				}
@@ -438,104 +520,159 @@
 			};
 
 			const getColIndexAfter = (rowIndex: number, colIndex: number) => {
-				if (rowIndex < rows.length) {
+				if (rowIndex <= rows.length) {
 					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
 					return colIndeces[colIndeces.indexOf(colIndex) + 1];
 				}
 				return -1;
 			};
 
-			if (rows.length) {
-				switch (event.key) {
-					case 'ArrowUp':
-						if (event.altKey) {
-							event.preventDefault();
-							hideExpandedSearch();
+			switch (event.key) {
+				case 'ArrowUp':
+					if (event.altKey) {
+						event.preventDefault();
+						hideExpandedSearch();
+					} else {
+						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
+							activeRowIndex = arrowKeyRows.length;
+							activeColIndex = 0;
+						} else if (activeRowIndex >= 1) {
+							activeRowIndex--;
+							if (activeRowIndex < 1) {
+								activeColIndex = defaultInputCol;
+								allowArrowKeyCursorHandling = {
+									vertical: false,
+									horizontal: true
+								};
+							} else {
+								const cols = getColsInRow(activeRowIndex - 1);
+								activeColIndex = Math.min(activeColIndex, cols.length - 1);
+								allowArrowKeyCursorHandling = {
+									vertical: false,
+									horizontal: cols.length <= 1
+								};
+							}
+						}
+					}
+					break;
+				case 'ArrowDown':
+					if (wrappingArrowKeyNavigation && activeRowIndex === arrowKeyRows.length) {
+						activeRowIndex = 0;
+						activeColIndex = defaultInputCol;
+					} else if (activeRowIndex < arrowKeyRows.length) {
+						activeRowIndex++;
+						const cols = getColsInRow(activeRowIndex - 1);
+						if (activeRowIndex === 1) {
+							activeColIndex = 0;
 						} else {
-							if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
-								activeRowIndex = rows.length - 1;
-								activeColIndex = 0;
-							} else if (activeRowIndex >= 1) {
-								activeRowIndex--;
-								if (activeRowIndex < 1) {
-									activeColIndex = defaultInputCol;
-									allowArrowKeyCursorHandling = {
-										...allowArrowKeyCursorHandling,
-										horizontal: true
-									};
+							activeColIndex = Math.min(activeColIndex, cols.length - 1);
+						}
+						allowArrowKeyCursorHandling = {
+							vertical: false,
+							horizontal: cols.length <= 1
+						};
+					}
+					break;
+				case 'ArrowLeft':
+					if (activeRowIndex >= 1 && activeColIndex > 0) {
+						activeColIndex = getColIndexBefore(activeRowIndex - 1, activeColIndex);
+					}
+					break;
+				case 'ArrowRight':
+					if (activeRowIndex >= 1 && activeColIndex < getColsInRow(activeRowIndex - 1).length - 1) {
+						activeColIndex = getColIndexAfter(activeRowIndex - 1, activeColIndex);
+					}
+
+					break;
+				case 'Tab':
+					event.preventDefault();
+					if (event.shiftKey) {
+						if (activeRowIndex === 0) {
+							const colIndeces = getColsInInputRow().map((item) => getColIndexFromId(item.id));
+							const closestBefore = colIndeces.findLast((index) => index < activeColIndex);
+							if (typeof closestBefore === 'number') {
+								activeColIndex = closestBefore;
+							} else if (activeColIndex === -1) {
+								activeRowIndex = Math.max(0, rows.length);
+								const lastRowColIndeces = getColsInRow(Math.max(0, rows.length - 1)).map((item) =>
+									getColIndexFromId(item.id)
+								);
+								activeColIndex = lastRowColIndeces[lastRowColIndeces.length - 1] || 0;
+							} else {
+								activeColIndex = -1;
+							}
+						} else {
+							const closestBefore = getColIndexBefore(activeRowIndex - 1, activeColIndex);
+							if (typeof closestBefore !== 'number') {
+								activeRowIndex = activeRowIndex - 1;
+								if (activeRowIndex > 0) {
+									activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1).at(-1)!.id);
 								} else {
-									const cols = getColsInRow(activeRowIndex);
-									activeColIndex = Math.min(activeColIndex, cols.length - 1);
-									allowArrowKeyCursorHandling = {
-										...allowArrowKeyCursorHandling,
-										horizontal: cols.length <= 1
-									};
+									const lastCol = getColsInInputRow().at(-1)?.id;
+									activeColIndex = lastCol ? getColIndexFromId(lastCol) : 0;
 								}
 							}
-						}
-						break;
-					case 'ArrowDown':
-						if (wrappingArrowKeyNavigation && activeRowIndex === rows.length - 1) {
-							activeRowIndex = 0;
-							activeColIndex = defaultInputCol;
-						} else if (activeRowIndex < rows.length - 1) {
-							activeRowIndex++;
-							const cols = getColsInRow(activeRowIndex);
-							if (activeRowIndex === 1) {
-								activeColIndex = 0;
-							} else {
-								activeColIndex = Math.min(activeColIndex, cols.length - 1);
-							}
-							allowArrowKeyCursorHandling = {
-								...allowArrowKeyCursorHandling,
-								horizontal: cols.length <= 1
-							};
-						}
-						break;
-					case 'ArrowLeft':
-						if (activeRowIndex >= 1 && activeColIndex > 0) {
-							activeColIndex = getColIndexBefore(activeRowIndex, activeColIndex);
-						}
-						break;
-					case 'ArrowRight':
-						if (activeRowIndex >= 1 && activeColIndex < getColsInRow(activeRowIndex).length - 1) {
-							activeColIndex = getColIndexAfter(activeRowIndex, activeColIndex);
-						}
-						break;
-					case 'Tab':
-						event.preventDefault();
-						if (event.shiftKey) {
-							const closestBefore = getColIndexBefore(activeRowIndex, activeColIndex);
-							if (typeof closestBefore !== 'number' && activeRowIndex > 0) {
-								activeRowIndex = Math.max(0, activeRowIndex - 1);
-								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex).at(-1)!.id);
-							}
 							if (typeof closestBefore === 'number') {
-								activeColIndex = getColIndexBefore(activeRowIndex, activeColIndex);
+								activeColIndex = getColIndexBefore(activeRowIndex - 1, activeColIndex);
 							}
-						} else {
-							const closestAfter = getColIndexAfter(activeRowIndex, activeColIndex);
+						}
+					} else {
+						const closestAfter =
+							activeRowIndex >= 1
+								? getColIndexAfter(Math.max(0, activeRowIndex - 1), activeColIndex)
+								: undefined;
 
-							if (typeof closestAfter !== 'number' && activeRowIndex < rows.length - 1) {
+						if (typeof closestAfter !== 'number' && activeRowIndex === 0) {
+							const colIndeces = getColsInInputRow().map((item) => getColIndexFromId(item.id));
+							const indexAfter = colIndeces.find((index) => index > activeColIndex);
+							if (typeof indexAfter === 'number') {
+								activeColIndex = indexAfter;
+							} else if (rows.length) {
 								activeRowIndex++;
-								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex)[0].id) || 0;
+								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1)[0].id) || 0;
+							} else {
+								activeColIndex = -1;
 							}
-							if (typeof closestAfter === 'number') {
+						} else if (typeof closestAfter !== 'number' && activeRowIndex < rows.length) {
+							activeRowIndex++;
+							activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1)[0].id) || 0;
+						} else if (typeof closestAfter !== 'number' && activeRowIndex === rows.length) {
+							activeRowIndex = 0;
+							activeColIndex = -1;
+						} else if (typeof closestAfter === 'number') {
+							if (activeRowIndex === 0) {
+								const firstCol = getColsInInputRow()[0].id;
+								if (firstCol) {
+									activeColIndex = getColIndexFromId(firstCol);
+								}
+							} else {
 								activeColIndex = closestAfter || 0;
 							}
 						}
-						break;
-				}
-
-				/**
-				 * TODO: Ensure the input is in view
-				 * const activeCellElement = document.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`);
-				 *
-				 * if (!isElementInView(activeCellElement)) {
-				 *		activeCellElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-				 * }
-				 */
+					}
+					if (activeRowIndex === 0) {
+						allowArrowKeyCursorHandling = {
+							vertical: false,
+							horizontal: true
+						};
+					} else {
+						const cols = getColsInRow(activeRowIndex);
+						allowArrowKeyCursorHandling = {
+							vertical: false,
+							horizontal: cols.length <= 1
+						};
+					}
+					break;
 			}
+
+			/**
+			 * TODO: Ensure the input is in view
+			 * const activeCellElement = document.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`);
+			 *
+			 * if (!isElementInView(activeCellElement)) {
+			 *		activeCellElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+			 * }
+			 */
 		}
 	}
 
@@ -547,12 +684,15 @@
 
 	function handleKeyboardShortcut(event: KeyboardEvent) {
 		if (controlOrMetaKey(event) && event.key === 'k') {
-			event.preventDefault();
-			if (dialog?.open) {
-				hideExpandedSearch();
-			} else {
+			if (!dialog?.open) {
+				event.preventDefault();
 				showExpandedSearch();
 			}
+		}
+
+		if (event.shiftKey && event.key === '/' && !dialog?.open) {
+			event.preventDefault();
+			showExpandedSearch();
 		}
 	}
 
@@ -629,15 +769,25 @@
 	});
 
 	$effect(() => {
-		collapsedEditorView?.dispatch({
-			effects: collapsedContentAttributesCompartment.reconfigure(collapsedContentAttributes)
-		});
+		if (collapsedContentAttributes !== initialCollapsedContentAttributes) {
+			collapsedEditorView?.dispatch({
+				effects: collapsedContentAttributesCompartment.reconfigure(collapsedContentAttributes)
+			});
+		}
 	});
 
 	$effect(() => {
-		expandedEditorView?.dispatch({
-			effects: expandedContentAttributesCompartment.reconfigure(expandedContentAttributes)
-		});
+		if (expandedContentAttributes !== initialExpandedContentAttributes) {
+			expandedEditorView?.dispatch({
+				effects: expandedContentAttributesCompartment.reconfigure(expandedContentAttributes)
+			});
+		}
+	});
+
+	$effect(() => {
+		if (autofocus && collapsedEditorView) {
+			collapsedEditorView.focus();
+		}
 	});
 </script>
 
@@ -693,6 +843,7 @@
 	<CodeMirror
 		{value}
 		extensions={expandedExtensions}
+		onclick={handleClickExpanded}
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
 		onviewupdate={handleExpandedViewUpdate}
@@ -708,7 +859,7 @@
 			inputField: collapsedInputSnippet,
 			getCellId: () => undefined,
 			isFocusedCell: () => false,
-			isFocusedRow: () => activeRowIndex === 0,
+			isFocusedRow: () => activeRowIndex === -1,
 			onclickSubmit: handleClickSubmit,
 			onclickClear: handleReset,
 			onclickClose: hideExpandedSearch
@@ -716,15 +867,22 @@
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
 </div>
-<dialog class="supersearch-dialog" id={`${id}-dialog`} bind:this={dialog}>
+<dialog
+	class="supersearch-dialog"
+	id={`${id}-dialog`}
+	bind:this={dialog}
+	closedby="any"
+	tabindex="-1"
+	onclose={() => hideExpandedSearch()}
+>
 	<div
 		class="supersearch-dialog-wrapper"
 		role="presentation"
 		onkeydown={handleExpandedKeyDown}
 		onclick={handleClickOutsideDialog}
 	>
-		<div class="supersearch-dialog-content" role="grid">
-			<div class="supersearch-combobox" role="row">
+		<div class="supersearch-dialog-content">
+			<div class="supersearch-combobox" bind:this={comboboxElement}>
 				{@render inputRow?.({
 					expanded: true,
 					inputField: expandedInputSnippet,
@@ -736,15 +894,17 @@
 					onclickClose: hideExpandedSearch
 				})}
 			</div>
-			{@render expandedContent({
-				search,
-				resultsSnippet,
-				resultsCount: resultItemRows?.length,
-				getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-				isFocusedCell: (rowIndex: number, colIndex: number) =>
-					rowIndex === activeRowIndex && colIndex === activeColIndex,
-				isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
-			})}
+			<div id={`${id}-grid`} role="grid">
+				{@render expandedContent({
+					search,
+					resultsSnippet,
+					resultsCount: resultItemRows?.length,
+					getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+					isFocusedCell: (rowIndex: number, colIndex: number) =>
+						rowIndex === activeRowIndex && colIndex === activeColIndex,
+					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
+				})}
+			</div>
 		</div>
 	</div>
 </dialog>

@@ -5,20 +5,21 @@
 	import type { HoldingsData } from '$lib/types/holdings';
 	import type { SearchResultItem } from '$lib/types/search';
 	import type { ResourceData } from '$lib/types/resourceData';
-	import { getHoldingsLink, getMyLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
-	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
-	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
-	import BiQuote from '~icons/bi/quote';
 	import { LxlLens } from '$lib/types/display';
+	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
+	import { getHoldingsLink, getLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
+	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 
 	interface Props {
 		instances: SearchResultItem[] | ResourceData[];
 		holdings: HoldingsData;
-		fnurgel: string;
 	}
 
-	let { holdings, instances, fnurgel }: Props = $props();
+	let { holdings, instances }: Props = $props();
 	const { myLibraries } = getUserSettings();
+	const subsetLibraries = $derived(
+		getLibraryIdsFromMapping([page.data.subsetMapping]) || undefined
+	);
 
 	function getLocalizedType(type: string) {
 		const found = instances.find((instanceItem) => type === instanceItem[JsonLd.TYPE]);
@@ -30,14 +31,25 @@
 
 <ul class="@container flex flex-col gap-2">
 	{#each Object.keys(holdings.byType) as type (type)}
-		{@const myLibsHoldingByType = getMyLibsFromHoldings(
+		{@const myLibsHoldingByType = getLibsFromHoldings(
 			myLibraries,
 			holdings.byType[type],
 			page.data.refinedOrgs
 		)}
+		{@const subsetHoldingByType = getLibsFromHoldings(
+			subsetLibraries,
+			holdings.byType[type],
+			page.data.refinedOrgs
+		)}
 		<li class="@md:self-center">
+			<!-- use regular btn if subset library but no holding for type -->
 			<a
-				class="btn btn-cta @md:max-w-sm"
+				class={[
+					'btn @md:max-w-sm',
+					!subsetLibraries || (subsetLibraries && subsetHoldingByType)
+						? 'btn-cta'
+						: 'btn-primary h-10 rounded-full text-sm'
+				]}
 				href={page.data.localizeHref(getHoldingsLink(page.url, type))}
 				data-sveltekit-preload-data="false"
 				data-testid="holding-link"
@@ -49,26 +61,20 @@
 					</div>
 				{/if}
 				<span class="text-nowrap">{getLocalizedType(type)}</span>
-				<span class="text-2xs truncate font-normal opacity-90">
+				<span class="truncate font-normal opacity-90">
 					{' · '}
-					<span class="hidden @3xs:inline">{page.data.t('holdings.availableAt').toLowerCase()}</span
-					>
-					{holdings.byType[type].length}
-					{holdings.byType[type].length === 1
-						? page.data.t('holdings.library')
-						: page.data.t('holdings.libraries')}
+					{#if subsetLibraries && subsetHoldingByType}
+						<span>{page.data.t('holdings.findTitle')}</span>
+					{:else}
+						<span>
+							{holdings.byType[type].length}
+							{holdings.byType[type].length === 1
+								? page.data.t('holdings.library')
+								: page.data.t('holdings.libraries')}
+						</span>
+					{/if}
 				</span>
 			</a>
 		</li>
 	{/each}
-	{#if instances?.length === 1}
-		<a
-			class="btn btn-primary h-8 self-center rounded-full px-6 py-1.5"
-			href={getCiteLink(page.url, fnurgel)}
-			onclick={(event) => handleClickCite(event, page.state, fnurgel)}
-		>
-			<BiQuote class="size-4 text-neutral-400" />
-			<span>{page.data.t('citations.cite')}</span>
-		</a>
-	{/if}
 </ul>

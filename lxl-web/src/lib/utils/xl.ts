@@ -23,6 +23,7 @@ import {
 	type Lens,
 	type LensedOrdered,
 	LensType,
+	type Link,
 	Platform,
 	type PropertyName,
 	type RangeRestriction,
@@ -56,10 +57,17 @@ export class VocabUtil {
 		return thing[JsonLd.TYPE] as ClassName;
 	}
 
-	getDefinition(name: ClassName | PropertyName): FramedData {
+	getDefinition(name: ClassName | PropertyName | Link): FramedData {
 		if (typeof name === 'string') {
 			return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
 		}
+		if (isLink(name)) {
+			return lxljsVocab.getTermObject(name[JsonLd.ID], this.vocabIndex, this.context);
+		}
+	}
+
+	getPropertiesByCategory(category: string): FramedData[] {
+		return Array.from(this.vocabIndex.values()).filter((p) => this.hasCategory(p, category));
 	}
 
 	getInverseProperty(name: PropertyName): PropertyName | undefined {
@@ -89,8 +97,8 @@ export class VocabUtil {
 	}
 
 	// TODO? reimplement?
-	hasCategory(propertyName: PropertyName, category: string) {
-		return lxljsVocab.hasCategory(propertyName, category, {
+	hasCategory(property: PropertyName | FramedData, category: string) {
+		return lxljsVocab.hasCategory(property, category, {
 			vocab: this.vocabIndex,
 			context: this.context
 		});
@@ -129,7 +137,10 @@ export class DisplayUtil {
 		propertyName: PropertyName
 	) => {
 		// FIXME - hardcoded workaround to get title + language in translationOf - should we use sublenses?
-		if (lensType == LensType.WebCardHeaderExtra && propertyName === 'translationOf') {
+		if (
+			(lensType == LensType.WebCardHeaderExtra || lensType == LensType.WebDetails) &&
+			propertyName === 'translationOf'
+		) {
 			// return LensType.WebChip; // without language
 			return LensType.Card; // with language
 		}
@@ -179,6 +190,8 @@ export class DisplayUtil {
 			case LensType.WebChip:
 			case LensType.Token:
 				return LensType.Token;
+			case LensType.WebToken:
+				return LensType.WebToken;
 		}
 	};
 
@@ -376,7 +389,15 @@ export class DisplayUtil {
 				accumulate({ [Rdfs.RDF_TYPE]: src[JsonLd.TYPE] }, Rdfs.RDF_TYPE);
 			} else if (key in this.langContainerAlias) {
 				const alias = this.langContainerAlias[key];
-				if (alias in src) {
+				if (alias in src && key in src) {
+					const merged = {
+						[alias]: {
+							...src[alias],
+							[JsonLd.NONE]: src[key]
+						}
+					};
+					accumulate(merged, alias);
+				} else if (alias in src) {
 					accumulate(src, alias);
 				} else if (key in src) {
 					accumulate(src, key); // TODO: do this as xByLang[@none] ??
@@ -481,7 +502,7 @@ export class DisplayUtil {
 			}
 
 			// TODO... decide what we want
-			if (lens == LensType.Token) {
+			if (lens == LensType.Token || lens == LensType.WebToken) {
 				for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 					if (cls in this.display.lensGroups[LensType.Chip].lenses) {
 						return this.display.lensGroups[LensType.Chip].lenses[cls];
@@ -941,7 +962,7 @@ class Formatter {
 
 	private pickLanguage(container: LangContainer) {
 		// TODO handle missing
-		return container[this.locale];
+		return container[this.locale] || container[JsonLd.NONE];
 	}
 }
 
@@ -951,7 +972,7 @@ function toLabel(data: DisplayDecorated) {
 }
 
 // TODO
-export function toString(data: DisplayDecorated) {
+export function toString(data: DisplayDecorated): string {
 	if (isObject(data)) {
 		const v = [];
 		if (Fmt.CONTENT_BEFORE in data && data[Fmt.CONTENT_BEFORE] !== '') {
@@ -1125,13 +1146,9 @@ function mapMaybeArray(v, fn) {
 	return Array.isArray(v) ? v.map(fn) : fn(v);
 }
 
-/*
-function isLink(data: unknown): data is Link {
-	return isObject(data)
-		&& Object.keys(data).length === 1
-		&& Key.ID in data;
+export function isLink(data: unknown): data is Link {
+	return isObject(data) && Object.keys(data).length === 1 && data[JsonLd.ID];
 }
- */
 
 export function isObject(data: unknown): data is Data {
 	return typeof data === 'object' && !Array.isArray(data) && data !== null;

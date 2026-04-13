@@ -10,8 +10,8 @@
 
 	let { search }: Props = $props();
 
-	let rangeFrom = $state(search.mapping.greaterThanOrEquals);
-	let rangeTo = $state(search.mapping.lessThanOrEquals);
+	let rangeFrom = $derived(search.mapping.greaterThanOrEquals);
+	let rangeTo = $derived(search.mapping.lessThanOrEquals);
 
 	afterNavigate(() => {
 		rangeFrom = search.mapping.greaterThanOrEquals;
@@ -36,13 +36,12 @@
 
 <form
 	class="[&_label]:text-subtle grid grid-cols-[1fr_1fr_auto] items-end gap-2 p-2"
-	action=""
 	onsubmit={handleSubmit}
 >
 	<div class="flex flex-col gap-1">
 		<label class="sr-only" for="facet-range-from">{page.data.t('general.from')}</label>
 		<input
-			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1"
+			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1 text-base sm:text-sm"
 			id="facet-range-from"
 			type="number"
 			min="1000"
@@ -55,7 +54,7 @@
 	<div class="flex flex-col gap-1">
 		<label class="sr-only" for="facet-range-to">{page.data.t('general.to')}</label>
 		<input
-			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1"
+			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1 text-base sm:text-sm"
 			id="facet-range-to"
 			type="number"
 			min="1000"

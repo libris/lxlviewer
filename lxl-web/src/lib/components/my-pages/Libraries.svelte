@@ -19,7 +19,7 @@
 	const myLibraries: LibraryResultItem[] | undefined = $derived(page.data.myLibraries);
 	const myLibsError: string | undefined = $derived(page.data.error);
 
-	let searchPhrase = $state(q || '');
+	let searchPhrase = $derived(q || '');
 	let endpoint = '/api/my-pages';
 	let queryFn = (query: string) =>
 		new URLSearchParams({
@@ -84,22 +84,21 @@
 
 <div class="flex flex-col-reverse justify-between gap-6 py-2 md:flex-row">
 	<div class="w-full max-w-xl lg:w-6/12">
-		<h2 class="mt-4 font-medium">{page.data.t('myPages.findAndAdd')}</h2>
-		<label for="my-libraries-search" class="sr-only text-sm font-medium"
-			>{page.data.t('myPages.findAndAdd')}</label
-		>
+		<h2 class="mt-4 font-medium">
+			<label for="my-libraries-search">{page.data.t('myPages.findAndAdd')}</label>
+		</h2>
 		<div class="relative mt-2">
 			<input
 				id="my-libraries-search"
 				bind:value={searchPhrase}
 				placeholder={page.data.t('myPages.findLibrary')}
-				class="bg-input h-9 w-full max-w-xl rounded-sm border border-neutral-300 pr-2 pl-8 text-xs"
+				class="bg-input h-9 w-full max-w-xl rounded-sm border border-neutral-300 pr-2 pl-8 text-base sm:text-sm"
 				oninput={handleInputChange}
 				type="search"
 			/>
-			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
+			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm" />
 		</div>
-		<span class="my-3 block text-xs font-medium" role="status">
+		<span class="mt-4 mb-2 block text-sm" role="status">
 			{#if search.isLoading}
 				{page.data.t('search.loading')}
 			{:else if search.error && !search.data}
@@ -109,7 +108,7 @@
 				{@const searchResult = search.data as LibraryResult}
 				{@const hasResults = searchResult?.totalItems && searchResult?.totalItems !== 0}
 				{#if hasResults}
-					{searchResult?.totalItems}
+					<span class="font-medium">{searchResult?.totalItems}</span>
 					{page.data.t('myPages.hitsFor')} "{searchPhrase}"
 				{:else}
 					{page.data.t('myPages.noResultsFor')} "{searchPhrase}"
@@ -147,11 +146,11 @@
 				{/each}
 			</ol>
 		{:else if myLibsError}
-			<p class="bg-severe-50 mt-2 rounded-sm p-1 text-xs">
+			<p class="bg-severe-50 mt-2 rounded-sm p-1 text-sm">
 				{page.data.t('errors.somethingWentWrong')}: {myLibsError}
 			</p>
 		{:else}
-			<p class="mt-2 text-xs">{page.data.t('search.noAddedLibrariesText')}</p>
+			<p class="mt-2 text-sm">{page.data.t('search.noAddedLibrariesText')}</p>
 		{/if}
 	</div>
 </div>

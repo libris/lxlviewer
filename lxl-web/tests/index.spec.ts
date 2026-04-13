@@ -6,7 +6,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('should not have any detectable a11y issues', async ({ page }) => {
-	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+	const accessibilityScanResults = await new AxeBuilder({ page })
+		.exclude('[role="combobox"][aria-placeholder]') // aria-placeholder issue in supersearch is a false alarm (see https://github.com/w3c/aria/issues/2689)
+		.analyze();
 	await expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
 
@@ -26,7 +28,7 @@ test('index page shows featured searches', async ({ page }) => {
 	);
 	await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
 	await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
-		20,
+		11,
 		{
 			timeout: 10000
 		}
@@ -50,7 +52,7 @@ test('can perform a search', async ({ page }) => {
 });
 
 test('url is populated with correct searchparams', async ({ page }) => {
-	await page.getByTestId('supersearch').getByRole('combobox').fill('somephrase');
+	await page.getByTestId('supersearch').getByRole('combobox').fill('hello');
 	await page.keyboard.press('Enter');
-	await expect(page).toHaveURL(/_q=somephrase&_limit=20&_offset=0&_sort=&_spell=true/);
+	await expect(page).toHaveURL(/_q=hello&_limit=20&_offset=0&_sort=&_spell=true/);
 });

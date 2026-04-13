@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { mount, unmount } from 'svelte';
+	import { mount, onMount, unmount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import {
 		SuperSearch,
 		lxlQualifierPlugin,
@@ -9,36 +10,50 @@
 		type Selection,
 		type ShowExpandedSearchOptions,
 		type ViewUpdateSuperSearchEvent,
-		type DebouncedWaitFunction
+		type DebouncedWaitFunction,
+		type ExpandEvent
 	} from 'supersearch';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping } from '$lib/types/search';
+	import type { DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
 	import IconGo from '~icons/bi/arrow-right-short';
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
-
-	const qualifierSuggestions = $derived([
-		{
-			key: page.data.t('qualifiers.contributorKey'),
-			label: page.data.t('qualifiers.contributorLabel')
-		},
-		{ key: page.data.t('qualifiers.languageKey'), label: page.data.t('qualifiers.languageLabel') },
-		{ key: page.data.t('qualifiers.titleKey'), label: page.data.t('qualifiers.titleLabel') },
-		{ key: page.data.t('qualifiers.yearKey'), label: page.data.t('qualifiers.yearLabel') },
-		{ key: page.data.t('qualifiers.subjectKey'), label: page.data.t('qualifiers.subjectLabel') }
-	]);
+	import { getSearchContext } from '$lib/contexts/search';
 
 	interface Props {
 		placeholder: string;
+		collapsedAriaLabelledBy?: string;
+		collapsedAriaLabel?: string;
+		collapsedAriaDescribedBy?: string;
+		expandedAriaLabelledBy?: string;
+		expandedAriaLabel?: string;
+		expandedAriaDescribedBy?: string;
+		onCursorChange: (cursor: number | null) => void;
+		qualifierSuggestions: QualifierSuggestion2[];
 	}
 
-	let { placeholder = '' }: Props = $props();
+	export type ChangeQueryParams = { insert: string; from?: number; to?: number };
+
+	let {
+		placeholder,
+		collapsedAriaLabelledBy,
+		collapsedAriaLabel,
+		collapsedAriaDescribedBy,
+		expandedAriaLabelledBy,
+		expandedAriaLabel,
+		expandedAriaDescribedBy,
+		onCursorChange,
+		qualifierSuggestions
+	}: Props = $props();
+
+	const searchContext = getSearchContext();
+
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
 	let selection: Selection | undefined = $state();
 
@@ -46,6 +61,7 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
+	let pageYOffset: number | undefined = $state();
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -62,6 +78,11 @@
 
 	let userClearedSearch = $state(false);
 
+	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
+
+	// TODO min 3 for prefix match, while allowing exactMatch år?
+	const MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS = 2;
+
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
 	const MIN_LENGTH_FOR_SUGGESTIONS = 3;
@@ -69,7 +90,7 @@
 		const trimmedLength = query.trim().length;
 		if (trimmedLength < MIN_LENGTH_FOR_SUGGESTIONS) return null;
 		if (trimmedLength === MIN_LENGTH_FOR_SUGGESTIONS) return 3000;
-		if (trimmedLength === 4) return 1500;
+		if (trimmedLength === MIN_LENGTH_FOR_SUGGESTIONS + 1) return 1500;
 		return 400;
 	};
 
@@ -93,7 +114,7 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			if (page.route.id === '/(app)/[[lang=lang]]') {
+			if (isHomeRoute) {
 				q = ''; // reset query if navigating to start/index page
 			} else if (to.url.searchParams.has('_q')) {
 				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
@@ -103,9 +124,12 @@
 
 			superSearch?.hideExpandedSearch();
 			fetchOnExpand = true;
+
 			if (userClearedSearch) {
 				superSearch?.showExpandedSearch();
 				userClearedSearch = false;
+			} else if (isHomeRoute) {
+				superSearch?.focus(); // focus input on start page
 			} else {
 				superSearch?.blur(); // remove focus from input after searching or navigating
 			}
@@ -129,34 +153,193 @@
 		return null;
 	});
 
-	const charBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
-	const charAfter = $derived(/\S/.test(q.charAt(cursor)));
+	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
+	const hasCharAfter = $derived(/\S/.test(q.charAt(cursor)));
 
-	const showAddQualifiers = $derived(
-		!charBefore && !charAfter && editedParentNode !== 'QualifierValue'
+	let qualifierSuggestionsExpanded = $state(false);
+
+	const filteredQualifierSuggestions = $derived.by(() => {
+		if (isSuggestingQualifiers) {
+			return qualifierSuggestions
+				.map((q) => ({ q: q, score: score(q, qualifierSuggestionNeedle.word) }))
+				.filter((qs) => qs.score > 0)
+				.sort((a, b) => b.score - a.score)
+				.map((qs) => qs.q);
+		}
+
+		if (!hasCharBefore && !hasCharAfter && editedParentNode !== 'QualifierValue') {
+			return qualifierSuggestionsExpanded
+				? qualifierSuggestions
+				: qualifierSuggestions.filter((q) => q?.curated);
+		}
+
+		return [];
+	});
+
+	function score(q: QualifierSuggestion2, needle: string): number {
+		// TODO only match query codes uppercase? e.g. WHYL
+		const needleLower = needle.toLowerCase();
+
+		if (prefixMatch(needleLower, q.label)) {
+			return 20;
+		}
+		if (prefixMatch(needleLower, q.key)) {
+			return 10;
+		}
+
+		let score = 0;
+		for (const s of q.queryCodes) {
+			if (prefixMatch(needleLower, s)) {
+				score += 1;
+			}
+		}
+		for (const s of q.altLabels) {
+			if (prefixMatch(needleLower, s)) {
+				score += 1;
+			}
+		}
+		return score;
+	}
+
+	function prefixMatch(needleLower: string, haystack: string) {
+		return haystack
+			.toLowerCase()
+			.split(/\s/)
+			.find((s) => s.startsWith(needleLower));
+	}
+
+	const showAddQualifiers = $derived(filteredQualifierSuggestions.length > 0);
+
+	const NO_WILDCARD_AFTER_CHAR = [')', '"', '*', '?'];
+	const NO_WILDCARD_AFTER_WORD = ['AND', 'OR', 'NOT'];
+
+	const lastWordBeforeCursor = $derived.by(() => {
+		const before = q.slice(0, cursor);
+		const match = before.match(/(\S+)$/);
+		return match ? match[1] : '';
+	});
+
+	const isValidWildcardPosition = $derived.by(() => {
+		// a valid wildcard position is at end of word (inside group, not inside quote)
+		if (
+			hasCharBefore &&
+			!NO_WILDCARD_AFTER_CHAR.includes(q.charAt(cursor - 1)) &&
+			!NO_WILDCARD_AFTER_WORD.includes(lastWordBeforeCursor)
+		) {
+			if (!hasCharAfter || q.charAt(cursor) === ')') {
+				return true;
+			}
+		}
+		return false;
+	});
+
+	const qualifierSuggestionNeedle = $derived.by(() => {
+		if (
+			editedParentNode === 'QualifierValue' ||
+			editedParentNode === 'QualifierOuterGroup' ||
+			[':', '=', '<', '>'].includes(q.charAt(cursor - 1))
+		) {
+			return { from: cursor, to: cursor, word: '' };
+		}
+
+		return editedWord(q, cursor);
+	});
+
+	const isSuggestingQualifiers = $derived(
+		qualifierSuggestionNeedle.word.length >= MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS
 	);
+
+	const numCuratedQualifiers = $derived(qualifierSuggestions.filter((q) => q.curated).length);
+
+	function editedWord(str: string, cursor: number) {
+		let from = cursor;
+		for (let i = cursor - 1; i >= 0; i--) {
+			if (/\s|[()"<>:=]/.test(str.charAt(i))) {
+				break;
+			}
+			from = i;
+		}
+
+		let to = cursor - 1;
+		for (let i = cursor; i < q.length; i++) {
+			if (/\s|[()"<>:=]/.test(str.charAt(i))) {
+				break;
+			}
+			to = i;
+		}
+		to += 1;
+
+		return {
+			from: from,
+			to: to,
+			word: str.slice(from, to)
+		};
+	}
 
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
 		return data;
 	}
 
-	function addQualifierKey(qualifierKey: string) {
-		superSearch?.resetData();
-		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
-		const insert = `${qualifierKey}:`;
+	export function changeQuery(params: ChangeQueryParams) {
+		const { insert } = params;
+		const from = params.from || q.length;
+		const to = params.to || q.length;
+		const before = q.slice(0, from);
 		superSearch?.dispatchChange({
 			change: {
-				from: cursor,
-				to: cursor,
+				from,
+				to,
 				insert
 			},
 			selection: {
-				anchor: cursor + insert.length,
-				head: cursor + insert.length
+				anchor: (before + insert).length,
+				head: (before + insert).length
 			},
-			userEvent: 'input.complete'
+			userEvent: 'input'
 		});
+	}
+
+	function addQualifierKey(qualifierKey: string) {
+		superSearch?.resetData();
+		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
+
+		if (qualifierSuggestionNeedle.word.length > 0) {
+			// TODO don't need this if we can check qualifier editing state?
+			// TODO don't suggest same
+			// TODO handle replacement of qualifier more smoothly
+			const insert = [':', '=', '<', '>'].includes(q.charAt(qualifierSuggestionNeedle.to))
+				? qualifierKey
+				: `${qualifierKey}:`;
+
+			superSearch?.dispatchChange({
+				change: {
+					from: qualifierSuggestionNeedle.from,
+					to: qualifierSuggestionNeedle.to,
+					insert
+				},
+				selection: {
+					anchor: qualifierSuggestionNeedle.from + insert.length,
+					head: qualifierSuggestionNeedle.from + insert.length
+				},
+				userEvent: 'input.complete'
+			});
+		} else {
+			const insert = `${qualifierKey}:`;
+
+			superSearch?.dispatchChange({
+				change: {
+					from: cursor,
+					to: cursor,
+					insert
+				},
+				selection: {
+					anchor: cursor + insert.length,
+					head: cursor + insert.length
+				},
+				userEvent: 'input.complete'
+			});
+		}
 	}
 
 	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
@@ -194,7 +377,8 @@
 		fetchOnExpand = false;
 	}
 
-	function handleOnExpand() {
+	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
+		pageYOffset = windowPageYOffset;
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
@@ -215,6 +399,19 @@
 			superSearch?.fetchData();
 		}
 	});
+
+	$effect(() => {
+		// call back with cursor pos to append it to search
+		if (isValidWildcardPosition) {
+			onCursorChange?.(cursor);
+		} else {
+			onCursorChange?.(null);
+		}
+	});
+
+	onMount(() => {
+		searchContext.changeQuery = changeQuery;
+	});
 </script>
 
 {#key page.data.locale}
@@ -226,6 +423,14 @@
 		bind:isLoading
 		language={lxlQuery}
 		{placeholder}
+		{collapsedAriaLabelledBy}
+		{collapsedAriaLabel}
+		{collapsedAriaDescribedBy}
+		{expandedAriaLabelledBy}
+		{expandedAriaLabel}
+		{expandedAriaDescribedBy}
+		collapsedAriaKeyshortcuts={`Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`}
+		autofocus={isHomeRoute ? true : undefined}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({
@@ -240,12 +445,12 @@
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
-		comboboxAriaLabel={page.data.t('search.search')}
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
+		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -259,7 +464,7 @@
 			<div
 				class={[
 					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
-					expanded && 'expanded',
+					expanded && 'expanded sm:mx-1.5 @5xl:mx-2.25',
 					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
 				]}
@@ -271,8 +476,8 @@
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center sm:hidden',
-							expanded && 'h-14 w-13 sm:size-11 lg:size-12'
+							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 sm:hidden',
+							expanded && 'mr-1 h-14 w-13'
 						]}
 						onclick={onclickClose}
 					>
@@ -283,7 +488,7 @@
 					<div
 						class={[
 							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
-							expanded && 'hidden sm:flex'
+							expanded && 'hidden'
 						]}
 					>
 						<button
@@ -302,7 +507,7 @@
 					<svelte:element
 						this={clearUrl ? 'a' : 'button'}
 						role={clearUrl ? undefined : 'button'}
-						href={clearUrl}
+						href={clearUrl ? clearUrl : undefined}
 						onclick={(e: MouseEvent) => {
 							userClearedSearch = true;
 							onclickClear(e);
@@ -310,13 +515,13 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center lg:size-12',
+							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 lg:size-12',
 							expanded && 'max-sm:h-14 max-sm:w-13'
 						]}
-						aria-label={page.data.t('search.clearFilters')}
-						title={page.data.t('search.clearFilters')}
+						aria-label={page.data.t('search.clear')}
+						title={page.data.t('search.clear')}
 					>
-						<IconClear class="size-4.5 sm:size-4" />
+						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
 					</svelte:element>
 				{/if}
 				<button
@@ -324,16 +529,17 @@
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
 					class={[
-						'hover:bg-primary-50 hidden size-11 items-center justify-center border-l border-l-neutral-300 sm:flex lg:size-12'
+						'action hidden size-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 -outline-offset-2 sm:flex lg:size-12'
 					]}
 					aria-label={page.data.t('supersearch.search')}
 				>
-					<IconSearch aria-hidden="true" class={['flex size-4.5 ']} />
+					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 				</button>
 			</div>
 		{/snippet}
 		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			<nav class="mt-2 mb-2 sm:mt-1 sm:mb-3 lg:mt-0">
+			{@const searchHelpRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
+			<nav class="mt-3 lg:mt-4">
 				{#if showAddQualifiers}
 					<div
 						id="supersearch-add-qualifier-key-label"
@@ -342,32 +548,60 @@
 						{page.data.t('supersearch.addQualifiers')}
 					</div>
 					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="flex w-screen items-center gap-2 overflow-x-auto py-2 pl-4">
-							{#each qualifierSuggestions as { key, label }, cellIndex (key)}
+						<div role="row" class="flex flex-wrap items-center gap-2 px-4 py-2">
+							{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
 								<button
 									type="button"
 									id={getCellId(1, cellIndex)}
 									class={[
-										'text-body bg-accent-50 text-2xs  border-accent-200 hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md border px-1.5 font-medium whitespace-nowrap last-of-type:mr-4',
-										isFocusedCell(1, cellIndex) &&
-											'border-accent-500 bg-accent-100 outline-accent-100 outline-4'
+										'qualifier-suggestion  text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize last-of-type:mr-4',
+										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
 									]}
 									onclick={() => addQualifierKey(key)}
 								>
-									{label}:
+									{label}
 								</button>
+								{#if filteredQualifierSuggestions.length > numCuratedQualifiers && cellIndex + 1 === numCuratedQualifiers}
+									<span class="text-subtle" aria-hidden="true">|</span>
+								{/if}
 							{/each}
+							{#if !isSuggestingQualifiers && filteredQualifierSuggestions.length > 0}
+								<button
+									type="button"
+									id={getCellId(1, filteredQualifierSuggestions.length + 1)}
+									class={[
+										'link-subtle ml-1 text-sm sm:text-xs',
+										isFocusedCell(1, filteredQualifierSuggestions.length + 1) &&
+											'focused-cell outline-2'
+									]}
+									onclick={() => (qualifierSuggestionsExpanded = !qualifierSuggestionsExpanded)}
+								>
+									{qualifierSuggestionsExpanded
+										? page.data.t('search.showFewer')
+										: page.data.t('search.showMore')}
+								</button>
+								{#if qualifierSuggestionsExpanded}
+									<a
+										href={resolve(page.data.localizeHref('/help/filters'))}
+										id={getCellId(1, filteredQualifierSuggestions.length + 2)}
+										class={[
+											'link-subtle ml-1 text-sm sm:text-xs',
+											isFocusedCell(1, filteredQualifierSuggestions.length + 2) &&
+												'focused-cell outline-2'
+										]}
+									>
+										{page.data.t('help.reference')}
+									</a>
+								{/if}
+							{/if}
 						</div>
 					</div>
 				{/if}
 				{#if q.trim().length}
-					<div
-						role="row"
-						class="text-subtle mb-2 flex items-center justify-between px-4 text-xs sm:mb-3 sm:text-sm"
-					>
-						<h2 id="supersearch-results-label" class="font-medium">
+					<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
+						<h2 id="supersearch-results-label" aria-live="polite" class="font-medium">
 							{#if resultsCount}
-								{page.data.t('supersearch.suggestions')}
+								<span class="sr-only">{resultsCount}</span> {page.data.t('supersearch.suggestions')}
 							{/if}
 						</h2>
 						<button type="submit">
@@ -387,6 +621,23 @@
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
+				<div
+					role="row"
+					data-skip-row-on-arrow-key
+					class="border-neutral mt-2 flex justify-end gap-4 border-t px-4 text-sm"
+				>
+					<!-- TODO: Add keyboard interaction help here -->
+					<a
+						href={resolve(page.data.localizeHref('/help'))}
+						id={getCellId(searchHelpRowIndex, 0)}
+						class={[
+							'text-link flex min-h-14 items-center justify-end overflow-hidden px-4 hover:underline',
+							isFocusedCell(searchHelpRowIndex, 0) && 'underline'
+						]}
+					>
+						{page.data.t('supersearch.searchHelp')}
+					</a>
+				</div>
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
@@ -403,18 +654,17 @@
 	.supersearch-input {
 		height: 100%;
 		min-height: var(--search-input-height);
-		font-size: var(--text-xs);
+		font-size: var(--text-base);
 		border-radius: var(--radius-md);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
-		@variant sm {
-			&:hover {
-				box-shadow: 0 0 0 1px var(--color-primary-500);
-			}
 
-			&:focus-within {
-				outline: 3px solid var(--color-primary-200);
-				outline-offset: 1px;
-			}
+		&:hover {
+			box-shadow: 0 0 0 1px var(--color-primary-600);
+		}
+
+		&:focus-within {
+			outline: 3px solid var(--color-primary-100);
+			outline-offset: 1px;
 		}
 
 		@variant lg {
@@ -423,47 +673,80 @@
 			}
 		}
 
-		@variant 3xl {
-			font-size: var(--text-sm);
+		@variant lg {
+			font-size: 0.9375rem;
 		}
 	}
 
 	.expanded.supersearch-input {
+		min-height: var(--search-input-height);
 		border-bottom: 1px solid var(--color-neutral);
 		border-radius: 0;
 		box-shadow: none;
 
+		&:focus-within {
+			outline: none;
+		}
+
 		@variant sm {
 			border-bottom: none;
 			border-radius: var(--radius-md);
-			margin-inline: calc(var(--spacing) * 2);
-			box-shadow: 0 0 0 1px var(--color-neutral-300);
-			margin-block: calc((var(--spacing) * 2));
+			margin-top: calc(var(--spacing) * 1.5);
+			box-shadow: 0 0 0 1px var(--color-neutral-400);
 
-			&.focused-row {
-				box-shadow: 0 0 0 1px var(--color-primary-500);
-				outline: 3px solid var(--color-primary-200);
-				outline-offset: 1px;
+			&:hover {
+				box-shadow: 0 0 0 1px var(--color-neutral-600);
+			}
+			&.focused-row:not(:has(:global(.focused-cell))) {
+				box-shadow: 0 0 0 6px var(--color-accent-100);
+				outline: 2px solid var(--color-outline);
+				outline-offset: 0;
 			}
 		}
 
 		@variant lg {
-			margin-block: calc(var(--spacing) * 3);
-			margin-inline: calc(var(--spacing) * 4);
+			margin-top: 0;
+		}
+	}
 
-			&.focused-row {
-				outline: 4px solid var(--color-primary-200);
+	:global(.supersearch-combobox) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: var(--search-input-height);
+
+		&:has(.expanded) {
+			@variant sm {
+				margin-inline: calc(var(--spacing) * 0.5);
+				margin-top: calc(var(--spacing) * 0.5);
+			}
+			@variant lg {
+				margin-top: calc(var(--spacing) * 3.5);
+				margin-inline: calc(var(--spacing) * 1.75);
+			}
+		}
+	}
+
+	/* adjust combobox for navbar with subset filter */
+	:global(.with-subset .supersearch-combobox) {
+		&:has(.expanded) {
+			@variant lg {
+				margin-inline: calc(var(--spacing) * 1.25);
+			}
+
+			@media screen and (min-width: 1380px) {
+				margin-inline: calc(var(--spacing) * 1.75);
 			}
 		}
 	}
 
 	.action {
 		&:hover {
-			background: var(--color-primary-50);
+			background: var(--color-accent-50);
 		}
 
 		&:focus {
-			background: var(--color-primary-100);
+			background: var(--color-accent-100);
 		}
 	}
 
@@ -471,6 +754,7 @@
 		position: fixed;
 		height: 100%;
 		max-height: 100vh;
+		max-height: 100lvh;
 		width: 100%;
 		max-width: 100%;
 		background-color: transparent;
@@ -478,14 +762,24 @@
 		padding: 0;
 		top: 0;
 
+		&::backdrop {
+			background: var(--color-backdrop);
+		}
+
 		@variant sm {
-			position: static;
-			top: var(--sm-dialog-top);
-			height: fit-content;
+			top: calc(var(--banner-height, 0) + var(--app-bar-height) - var(--spacing) * 0.5);
+			margin-top: max(
+				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
+				0px
+			);
 		}
 
 		@variant lg {
-			top: calc(var(--banner-height, 0));
+			top: var(--banner-height, 0);
+			margin-top: max(
+				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
+				0px
+			);
 		}
 	}
 
@@ -496,14 +790,19 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
+			padding-inline: calc(var(--spacing) * 2);
 		}
 
 		@variant lg {
 			display: grid;
 			grid-template-areas: var(--search-grid-template-areas);
 			grid-template-columns: var(--search-grid-template-columns);
-			padding: var(--search-padding);
 			gap: var(--search-gap);
+			padding-inline: calc(var(--spacing) * 1.25);
+
+			@variant @5xl {
+				padding-inline: 0;
+			}
 		}
 	}
 
@@ -512,6 +811,7 @@
 		background: var(--color-page);
 		pointer-events: auto;
 		max-height: 100vh;
+		max-height: 100lvh;
 		overflow-y: scroll;
 		overflow-x: hidden;
 		overscroll-behavior: contain;
@@ -522,8 +822,13 @@
 		@apply max-w-7xl;
 
 		@variant sm {
-			border-radius: var(--radius-lg);
+			border-radius: var(--radius-xl);
+			height: fit-content;
 			@apply drop-shadow-md;
+		}
+
+		@variant lg {
+			border-radius: var(--radius-2xl);
 		}
 	}
 
@@ -531,12 +836,14 @@
 		@apply min-h-2;
 	}
 
-	:global(.supersearch-dialog .focused) {
-		background-color: var(--color-primary-100);
+	:global(.supersearch-dialog .focused .suggestion .focused-cell) {
+		background-color: var(--color-accent-50);
+		outline: 2px solid var(--color-outline);
 	}
 
-	:global(.focused-cell) {
-		background-color: var(--color-primary-100);
+	:global(.supersearch-dialog .focused-cell) {
+		background-color: var(--color-accent-50);
+		outline: 2px solid var(--color-accent);
 	}
 
 	/* :global(.button-primary.focused-cell) {
@@ -576,13 +883,13 @@
 	.supersearch-input :global(.cm-scroller) {
 		font-family: var(--font-sans);
 		scrollbar-width: none;
-		min-height: calc(var(--spacing) * 11);
+		min-height: var(--search-input-height);
 	}
 
 	.expanded.supersearch-input :global(.cm-scroller) {
 		min-height: calc(var(--spacing) * 14);
 		scrollbar-width: thin;
-		max-height: 100px;
+		max-height: 128px;
 		overflow-x: hidden;
 
 		@variant sm {
@@ -590,16 +897,24 @@
 		}
 	}
 
+	.expanded.supersearch-input :global(.cm-content) {
+		margin-block: calc(var(--spacing) * 1.5);
+
+		@variant sm {
+			margin-block: 0;
+		}
+	}
+
 	.supersearch-input :global(.cm-line) {
-		line-height: 30px;
+		line-height: 32px;
 		padding-left: calc(var(--spacing) * 11);
 
 		@variant sm {
 			padding-left: calc(var(--spacing) * 3);
-		}
 
-		@variant 3xl {
-			padding-left: calc(var(--spacing) * 4);
+			@variant @3xl {
+				padding-left: calc(var(--spacing) * 4);
+			}
 		}
 	}
 
@@ -610,7 +925,7 @@
 			padding-left: calc(var(--spacing) * 3);
 		}
 
-		@variant 3xl {
+		@variant @3xl {
 			padding-left: calc(var(--spacing) * 4);
 		}
 	}
@@ -618,33 +933,10 @@
 	.supersearch-input :global(.cm-content) {
 		margin: 0;
 		padding: calc(var(--spacing) * 1.5) 0;
+		min-height: var(--search-input-height);
 
 		@variant lg {
 			padding: calc(var(--spacing) * 2) 0;
-		}
-	}
-
-	.expanded.supersearch-input :global(.cm-content) {
-		padding: calc(var(--spacing) * 3) 0;
-
-		@variant sm {
-			padding: calc(var(--spacing) * 1.5) 0;
-		}
-
-		@variant lg {
-			padding: calc(var(--spacing) * 2) 0;
-		}
-	}
-
-	.expanded.supersearch-input.wrapped :global(.cm-content) {
-		padding: calc(var(--spacing) * 0.5) 0;
-
-		@variant sm {
-			padding: calc(var(--spacing) * 0.5) 0;
-		}
-
-		@variant lg {
-			padding: calc(var(--spacing) * 0.5) 0;
 		}
 	}
 
@@ -664,7 +956,25 @@
 	}
 
 	:global(.codemirror-container .cm-placeholder) {
+		font-size: var(--text-base);
 		color: var(--color-placeholder);
-		margin: 1px 0;
+		white-space: nowrap;
+
+		@variant lg {
+			font-size: 0.9375rem;
+		}
+	}
+
+	.qualifier-suggestion {
+		box-shadow: 0 0 0 1px var(--color-accent-200);
+
+		&:hover {
+			background: var(--color-accent-100);
+		}
+		&.focused-cell {
+			background: var(--color-accent-100);
+			box-shadow: 0 0 0 5px var(--color-accent-100);
+			outline: 2px solid var(--color-outline);
+		}
 	}
 </style>

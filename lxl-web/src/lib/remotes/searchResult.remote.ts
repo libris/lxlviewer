@@ -12,12 +12,19 @@ import { SearchResultsSchema } from '$lib/schemas/searchResult';
 import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 
 export const getSearchResults = query(SearchResultsSchema, async (params) => {
-	const { fetch, locals, params: routeParams } = getRequestEvent();
+	const { fetch, locals, params: routeParams, url } = getRequestEvent();
 	const searchParams = new URLSearchParams(Object.entries(params));
 
 	if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
 		searchParams.set('_debug', 'true');
 	}
+
+	const _r = url.searchParams.get('_r');
+	if (_r) {
+		searchParams.set('_r', _r);
+	}
+
+	searchParams.set('_stats', 'falseThisRequest');
 
 	const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
 
@@ -47,6 +54,7 @@ export const getSearchResults = query(SearchResultsSchema, async (params) => {
 export const getAdjecentSearchResult = query(v.string(), async (viewId) => {
 	const { fetch, url } = getRequestEvent();
 	const searchParams = new URL(url.origin + viewId).searchParams;
+	searchParams.set('_stats', 'falseThisRequest');
 	const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
 
 	if (!res.ok) {

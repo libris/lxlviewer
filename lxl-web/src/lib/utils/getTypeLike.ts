@@ -9,13 +9,14 @@ export type TypeLike = {
 	select: FramedData[];
 };
 
+export const COMPONENT_PART = 'https://id.kb.se/term/saobf/ComponentPart';
+
 const PRINT = 'https://id.kb.se/term/saobf/Print';
 const VOLUME = 'https://id.kb.se/term/rda/Volume';
 const E_BOOK = 'https://id.kb.se/term/saobf/EBook';
 const ONLINE_RESOURCE = 'https://id.kb.se/term/rda/OnlineResource';
 const STORSTIL = 'https://id.kb.se/marc/LargePrint';
 const BRAILLE = 'https://id.kb.se/term/saobf/Braille';
-const COMPONENT_PART = 'https://id.kb.se/term/saobf/ComponentPart';
 const _BOOK = 'ls:book';
 const _BOOK_BRAILLE = 'ls:bookBraille';
 
@@ -202,6 +203,22 @@ function toMultiType(s: Record<string, FramedData>) {
 	return { [key]: value };
 }
 
+export function toTypes(typeLike: TypeLike) {
+	const noIdentify = typeLike.identify.length == 0;
+	const noFind = typeLike.find.length == 0;
+	const manyFind = typeLike.find.length > 1;
+	const showFind = manyFind || (!noFind && noIdentify);
+	//const showFind = !noFind && noIdentify;
+	const showNone = noFind && noIdentify && typeLike.none.length > 0;
+
+	return {
+		'@type': '_Types',
+		...(showFind && { _find: typeLike.find }),
+		...(!noIdentify && { _identify: typeLike.identify }),
+		...(showNone && { _none: typeLike.none })
+	};
+}
+
 export default getTypeLike;
 
 const PRIORITIZED_ICONS = [
@@ -219,7 +236,7 @@ const PRIORITIZED_ICONS = [
 export function getTypeForIcon(typeLike: TypeLike) {
 	for (const t of typeLike.identify.concat(typeLike.find)) {
 		if (t) {
-			const slugStr = slug(t[JsonLd.ID]);
+			const slugStr = slug((t[JsonLd.ID] as string) || ''.replace('/bibdb/', '/bibdb:'));
 			if (slugStr && PRIORITIZED_ICONS.includes(slugStr)) {
 				return slugStr;
 			}
@@ -227,7 +244,7 @@ export function getTypeForIcon(typeLike: TypeLike) {
 	}
 
 	return typeLike.find.length > 0 && typeLike.find[0] !== undefined
-		? slug(typeLike.find[0][JsonLd.ID])
+		? slug((typeLike.find[0][JsonLd.ID] as string) || ''.replace('/bibdb/', '/bibdb:'))
 		: '';
 }
 

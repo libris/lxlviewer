@@ -1,11 +1,10 @@
 import { error } from '@sveltejs/kit';
-import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
 import * as v from 'valibot';
 
-import { Bibframe, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
+import { Bibframe, Fmt, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
@@ -13,8 +12,8 @@ import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte
 import type { HoldingsData } from '$lib/types/holdings.js';
 
 import { asArray, first, pickProperty, toString } from '$lib/utils/xl.js';
-import { getImages, toSecure } from '$lib/utils/auxd';
-import getAtPath from '$lib/utils/getAtPath';
+import { bestImage, toSecure } from '$lib/utils/auxd';
+import { getSortedInstances } from '$lib/utils/getSortedInstances';
 import {
 	getBibIdsByInstanceId,
 	getHoldersByType,
@@ -22,19 +21,24 @@ import {
 	getHoldingsByInstanceId,
 	getHoldingsByType
 } from '$lib/utils/holdings.server';
-import getTypeLike, { getTypeForIcon } from '$lib/utils/getTypeLike';
+import getTypeLike, { getTypeForIcon, toTypes } from '$lib/utils/getTypeLike';
 import { centerOnWork } from '$lib/utils/centerOnWork';
 import { getRelations, type Relation } from '$lib/utils/relations';
 import { appendMyLibrariesParam, asSearchResultItem, displayMappings } from '$lib/utils/search';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';
+import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
+import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 	const translate = await getTranslator(locale);
+
+	const subsetMapping = locals?.subsetMapping;
+	const subsetLibraries = getLibraryIdsFromMapping([subsetMapping]) || undefined;
 	const myLibraries = locals.userSettings?.myLibraries;
 
 	let resourceId: null | string = null;
@@ -76,8 +80,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			vocabUtil,
 			locale,
 			env.AUXD_SECRET,
-			myLibraries,
-			undefined
+			myLibraries
 		)[0];
 	} else if (resource.mainEntity.instanceOf) {
 		// instance - fetch work card
@@ -89,19 +92,18 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
-	copyMediaLinksToWork(mainEntity);
+	if (isWork) {
+		copyMediaLinksToWork(mainEntity);
+	}
 
 	resourceId = resource.mainEntity['@id'];
 
 	const typeLike = getTypeLike(mainEntity, vocabUtil);
-	const t = {
-		'@type': '_Types', // FIXME? DisplayDecorated needs a dummy wrapper to get the styling right
-		...(typeLike.find.length > 0 && { _find: typeLike.find }),
-		...(typeLike.identify.length > 0 && { _identify: typeLike.identify }),
-		//...(typeLike.select.length > 0 && { _select: typeLike.select }),
+	const t = toTypes(typeLike);
+	if (mainEntity['language']) {
 		// FIXME: don't do this here
-		...(!!mainEntity['language'] && { language: mainEntity['language'] })
-	};
+		t.language = mainEntity['language'];
+	}
 	const types = displayUtil.lensAndFormat(t, LensType.Card, locale);
 
 	if (mainEntity['category']) {
@@ -129,6 +131,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			? [displayUtil.lensAndFormat(_instances[0], LensType.WebOverview, locale)]
 			: [])
 	];
+	const token = displayUtil.lensAndFormat(mainEntity, LensType.WebToken, locale);
 
 	// TODO ...
 	const _isWork =
@@ -146,7 +149,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		displayUtil.lensAndFormat(mainEntity, LensType.WebDetails, locale),
 		...(_instances.length === 1
 			? [displayUtil.lensAndFormat(_instances[0], LensType.WebDetails, locale)]
-			: [])
+			: []),
+		displayUtil.lensAndFormat(resource, LensType.WebDetails, locale) // record
 	];
 
 	let searchResult: ResourceSearchResult | undefined;
@@ -163,7 +167,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			locale,
 			env.AUXD_SECRET,
 			myLibraries,
-			undefined
+			subsetLibraries
 		);
 	}
 
@@ -266,10 +270,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 		...(relations.length
 			? [
 					{
-						id: 'occurrences',
-						label: translate('resource.occurrences'),
+						id: 'relations',
+						label: translate('resource.relations'),
 						children: relations.map((relationItem) => ({
-							id: `occurrences-${relationItem.qualifierKey}`, // all ids should  be prefixed in +page.svelte
+							id: `relations-${relationItem.qualifierKey}`, // all ids should  be prefixed in +page.svelte
 							label: relationItem.label
 						}))
 					}
@@ -283,16 +287,20 @@ export const load = async ({ params, locals, fetch, url }) => {
 					}
 				]
 			: []),
-		{
-			id: 'details',
-			label: translate('resource.details')
-		}
+		...(details.length && details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)
+			? [
+					{
+						id: 'details',
+						label: translate('resource.details')
+					}
+				]
+			: [])
 	];
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [_, overviewWithoutHasInstance] = pickProperty(overview[0], ['hasInstance']);
 
-	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
+	const image = toSecure(bestImage(mainEntity, locale), env.AUXD_SECRET);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const byType = getHoldersByType(holdingsByType);
 
@@ -303,7 +311,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 		holdingLibraries: getHoldingLibraries(byType)
 	};
 
-	const subsetMapping = locals?.subsetMapping;
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return {
@@ -325,41 +332,15 @@ export const load = async ({ params, locals, fetch, url }) => {
 			overviewFooter: {},
 			summary: summary,
 			resourceTableOfContents: resourceTableOfContents,
-			details: details
+			details: details,
+			token: token
 		},
 		searchResult,
 		holdings,
-		images,
+		image,
 		tableOfContents,
 		workCard,
 		refinedOrgs,
 		isWork
 	};
 };
-
-function getSortedInstances(instances: Record<string, unknown>[]) {
-	return instances.sort((a, b) => {
-		const yearA = parseInt(jmespath.search(a, 'publication[0].year'), 10);
-		const yearB = parseInt(jmespath.search(b, 'publication[0].year'), 10);
-
-		if (Number.isNaN(yearA)) {
-			return 1;
-		}
-
-		if (Number.isNaN(yearB)) {
-			return -1;
-		}
-		return yearB - yearA;
-	});
-}
-
-function copyMediaLinksToWork(mainEntity: FramedData) {
-	const cp = (thing: FramedData, fromPath: (string | number | object)[], toProp: string) => {
-		const v = getAtPath(thing, fromPath).filter((v) => v['cataloguersNote'] != 'digipic');
-		if (v.length > 0) {
-			thing[toProp] = asArray(thing[toProp]).concat(v);
-		}
-	};
-	cp(mainEntity, ['@reverse', 'instanceOf', '*', 'associatedMedia', '*'], 'associatedMedia');
-	cp(mainEntity, ['@reverse', 'instanceOf', '*', 'isPrimaryTopicOf', '*'], 'isPrimaryTopicOf');
-}

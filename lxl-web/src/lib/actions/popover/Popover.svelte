@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
 	import SearchCard from '$lib/components/find/SearchCard.svelte';
 	import type { SearchResultItem } from '$lib/types/search';
@@ -7,6 +7,7 @@
 	interface PopoverProps {
 		title?: string | undefined;
 		resourceData?: SearchResultItem | undefined;
+		snippet?: Snippet;
 		referenceElement: HTMLElement;
 		onMouseOver: (event: MouseEvent) => void;
 		onMouseLeave: (event: MouseEvent) => void;
@@ -21,7 +22,8 @@
 		onMouseOver,
 		onMouseLeave,
 		onFocus,
-		onBlur
+		onBlur,
+		snippet
 	}: PopoverProps = $props();
 
 	let popoverElement: HTMLElement;
@@ -93,6 +95,8 @@
 	<div class="p-2">
 		{#if resourceData}
 			<SearchCard item={resourceData} allowPopovers={false} allowActions={false} />
+		{:else if snippet}
+			{@render snippet?.()}
 		{:else if title}
 			{title}
 		{/if}

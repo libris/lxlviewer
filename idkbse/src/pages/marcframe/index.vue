@@ -10,6 +10,7 @@
       <a class="ext" target="_blank" rel="noopener noreferrer" :href="marcFrameUri">source file</a>
       and <a class="ext" target="_blank" rel="noopener noreferrer" href="https://github.com/libris/librisxl/blob/master/whelk-core/src/main/resources/ext/marcframe.md">documentation</a>.
     </p>
+    <MarcframeInfo />
   </div>
 </template>
 
@@ -17,6 +18,7 @@
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import ResultItem from '@/components/ResultItem';
+import MarcframeInfo from '@/components/MarcframeInfo';
 
 export default {
   head() {
@@ -53,6 +55,7 @@ export default {
   watchQuery: true,
   components: {
     ResultItem,
+    MarcframeInfo,
   },
 }
 </script>

@@ -143,39 +143,36 @@
 
 <div bind:this={tocElement} class="contents">
 	{#if mobile}
-		<div class="border-b-neutral border-b p-1">
+		<h2 class="sr-only">{page.data.t('tableOfContents.onThisPage')}</h2>
+		<div class="border-b-neutral border-b p-1 text-xs sm:text-sm">
 			<label
 				id={`${uidPrefix}toc-label`}
-				class="bg-page text-2xs text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2 sm:px-5 has-checked:[&+nav]:block"
+				class="bg-page text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2 has-checked:[&+nav]:block"
 			>
 				<IconToC class="size-4" />
-				<h2>{page.data.t('tableOfContents.onThisPage')}</h2>
+				<span>{page.data.t('tableOfContents.onThisPage')}</span>
 				<input
 					type="checkbox"
-					role="button"
+					role="switch"
 					bind:checked={openOnMobile}
 					aria-label={openOnMobile
 						? page.data.t('tableOfContents.hide')
 						: page.data.t('tableOfContents.show')}
 					aria-expanded={openOnMobile}
 					aria-controls={`${uidPrefix}toc-items`}
-					aria-haspopup="true"
 					class="h-0 appearance-none focus:outline-0"
 					onkeydown={handleCheckboxKeydown}
 				/>
 			</label>
-			<nav
-				id={`${uidPrefix}toc-items`}
-				class="bg-page text-subtle mb-3 hidden px-3 text-xs sm:px-6"
-			>
+			<nav id={`${uidPrefix}toc-items`} class="bg-page text-subtle mb-3 hidden px-3 sm:px-6">
 				{@render tocList(itemsWithTop)}
 			</nav>
 		</div>
 	{:else}
-		<header class="text-subtle mb-2 text-xs font-medium">
+		<header class="text-subtle mb-2 text-xs font-medium sm:text-sm">
 			<h2>{page.data.t('tableOfContents.onThisPage')}</h2>
 		</header>
-		<nav class="text-placeholder text-xs">{@render tocList(itemsWithTop)}</nav>
+		<nav class="text-placeholder text-xs sm:text-sm">{@render tocList(itemsWithTop)}</nav>
 	{/if}
 </div>
 
