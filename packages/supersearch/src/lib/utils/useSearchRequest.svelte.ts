@@ -69,16 +69,21 @@ export function useSearchRequest({
 		}
 	}
 
-	async function fetchData(query: string, cursor: number) {
-		data = await _fetchData(queryFn(query, cursor));
-		if (paginationQueryFn) {
-			paginatedData = [data];
+	async function fetchData(query: unknown) {
+		if (typeof query !== 'undefined') {
+			const searchParams = queryFn(query);
+			if (typeof searchParams !== 'undefined') {
+				data = await _fetchData(searchParams);
+				if (paginationQueryFn) {
+					paginatedData = [data];
+				}
+			}
 		}
 	}
 
 	const debouncedFetchData = debounce(
-		(query: string, cursor: number) => fetchData(query, cursor),
-		getDebouncedWait ? (query: string) => getDebouncedWait(query) : debouncedWait
+		(query: unknown) => fetchData(query),
+		getDebouncedWait ? (query: unknown) => getDebouncedWait(query) : debouncedWait
 	);
 
 	async function fetchMoreData() {

@@ -304,12 +304,12 @@
 
 		if (value.trim() && value.trim() !== prevValue.trim()) {
 			prevValue = value;
-			search.debouncedFetchData(value, selection.head);
+			search.debouncedFetchData?.({ value, selection });
 		}
 
 		if (!value.trim()) {
 			prevValue = value;
-			if (search.data) search.resetData();
+			if (search.data || search.isLoading) search.resetData();
 		}
 
 		onchange?.(event);
@@ -398,7 +398,7 @@
 
 	export function fetchData() {
 		if (selection) {
-			search?.fetchData(value, selection.head);
+			search?.fetchData({ value, selection });
 		}
 	}
 

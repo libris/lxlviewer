@@ -21,13 +21,14 @@
 
 	let searchPhrase = $derived(q || '');
 	let endpoint = '/api/my-pages';
-	let queryFn = (query: string) =>
-		new URLSearchParams({
-			_q: query,
+	let queryFn = (query: unknown) => {
+		return new URLSearchParams({
+			_q: query as string,
 			_limit: '20',
 			_stats: 'false',
 			_spell: 'false'
 		});
+	};
 	const debouncedWait = 300;
 
 	const myLibsCookie = $derived(Object.keys(getUserSettings().myLibraries || {}));
@@ -59,13 +60,13 @@
 
 	function handleInputChange() {
 		if (searchPhrase) {
-			search.debouncedFetchData(searchPhrase);
+			search.debouncedFetchData?.(searchPhrase);
 		}
 	}
 
 	onMount(() => {
 		if (searchPhrase) {
-			search.debouncedFetchData(searchPhrase);
+			search.debouncedFetchData?.(searchPhrase);
 		}
 	});
 

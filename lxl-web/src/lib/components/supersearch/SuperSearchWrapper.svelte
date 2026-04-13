@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
+	import { browser } from '$app/environment';
 	// import { resolve } from '$app/paths';
 	import {
 		SuperSearch,
@@ -43,6 +44,7 @@
 		qualifierSuggestions: QualifierSuggestion2[];
 	}
 
+	export type SuperSearchQueryParams = { value: string; selection: Selection };
 	export type ChangeQueryParams = { insert: string; from?: number; to?: number };
 	export type SuperSearchMode = 'DEFAULT' | 'QUALIFIERS';
 
@@ -95,7 +97,7 @@
 	// they are expensive. Use decreasing debounce as query gets longer.
 	const MIN_LENGTH_FOR_SUGGESTIONS = 3;
 	const getDebouncedWait: DebouncedWaitFunction = (query) => {
-		const trimmedLength = query.trim().length;
+		const trimmedLength = (query as SuperSearchQueryParams).value.trim().length;
 		if (trimmedLength < MIN_LENGTH_FOR_SUGGESTIONS) return null;
 		if (trimmedLength === MIN_LENGTH_FOR_SUGGESTIONS) return 3000;
 		if (trimmedLength === MIN_LENGTH_FOR_SUGGESTIONS + 1) return 1500;
@@ -490,11 +492,14 @@
 		searchContext.addQualifierKey = addQualifierKey;
 		searchContext.showQualifiersMode = showQualifiersMode;
 		searchContext.isExpanded = isExpanded;
+		searchContext.isMounted = true;
 		document.addEventListener('keydown', handleKeyDown);
 	});
 
 	onDestroy(() => {
-		document.removeEventListener('keydown', handleKeyDown);
+		if (browser) {
+			document.removeEventListener('keydown', handleKeyDown);
+		}
 	});
 </script>
 
@@ -516,9 +521,11 @@
 		collapsedAriaKeyshortcuts={`Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`}
 		autofocus={isHomeRoute ? true : undefined}
 		endpoint={`/api/${page.data.locale}/supersearch`}
-		queryFn={(query, cursor) => {
+		queryFn={(query) => {
+			const _q = (query as unknown as SuperSearchQueryParams).value;
+			const cursor = (query as unknown as SuperSearchQueryParams).selection.head;
 			return new URLSearchParams({
-				_q: query,
+				_q,
 				_limit: '5',
 				cursor: cursor.toString(),
 				_sort: page.url.searchParams.get('_sort') || '',
