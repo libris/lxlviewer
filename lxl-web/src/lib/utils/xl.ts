@@ -35,6 +35,9 @@ import {
 
 // TODO TESTS!
 
+// PERF: only build this array once
+const BASE_LENSES = Object.values(LensType);
+
 export class VocabUtil {
 	//vocabId: string
 	vocabIndex: Map;
@@ -304,7 +307,7 @@ export class DisplayUtil {
 	}
 
 	private isDerivedLens(lensType: LensType | DerivedLensType) {
-		if (Object.values(LensType).includes(lensType)) {
+		if (BASE_LENSES.includes(lensType)) {
 			return false;
 		}
 		if (!(lensType in this.registeredDerivedLensTypes)) {
