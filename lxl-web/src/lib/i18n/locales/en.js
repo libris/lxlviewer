@@ -206,6 +206,7 @@ export default {
 		select: 'Select',
 		filter: 'filter',
 		filters: 'filters',
+		for: 'for',
 		showResults: 'Show results',
 		keyboardShortcut: 'Keyboard shortcut',
 		arrowUp: 'Up arrow key',

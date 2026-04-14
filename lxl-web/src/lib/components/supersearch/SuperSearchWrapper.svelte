@@ -31,6 +31,8 @@
 	import { getSearchContext } from '$lib/contexts/search';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import { controlOrMetaKey } from '$lib/utils/controlOrMetaKey';
+	import { flip } from 'svelte/animate';
+	import { send, receive } from '$lib/transitions/list';
 
 	interface Props {
 		placeholder: string;
@@ -157,12 +159,13 @@
 	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
 	const hasCharAfter = $derived(/\S/.test(q.charAt(cursor)));
 
-	let qualifierSuggestionsExpanded = $state(false);
-
 	const filteredQualifierSuggestions = $derived.by(() => {
 		if (isSuggestingQualifiers) {
+			const input = qualifierSuggestionNeedle.word.replace(/^[/]+/, '');
 			const filtered = qualifierSuggestions
-				.map((q) => ({ q: q, score: score(q, qualifierSuggestionNeedle.word) }))
+				.map((q) => {
+					return { q: q, score: score(q, input) };
+				})
 				.filter((qs) => qs.score > 0)
 				.sort((a, b) => b.score - a.score)
 				.map((qs) => qs.q);
@@ -172,7 +175,7 @@
 		}
 
 		if (!hasCharBefore && !hasCharAfter && editedParentNode !== 'QualifierValue') {
-			return qualifierSuggestionsExpanded
+			return mode === 'QUALIFIERS'
 				? qualifierSuggestions
 				: qualifierSuggestions.filter((q) => q?.curated);
 		}
@@ -214,7 +217,6 @@
 
 	const showQualifiersRow = $derived(true);
 	const showResultRows = $derived(mode === 'DEFAULT');
-	const showHistoryRows = $derived(false);
 
 	const NO_WILDCARD_AFTER_CHAR = [')', '"', '*', '?'];
 	const NO_WILDCARD_AFTER_WORD = ['AND', 'OR', 'NOT'];
@@ -629,18 +631,31 @@
 			{@const searchHelpRowIndex = resultRowsOffset + (resultsCount || 0)}
 			<nav class="@container mt-3 lg:mt-4">
 				{#if mode === 'QUALIFIERS'}
-					<div
-						role="row"
-						class={['has-[:hover]:bg-accent-50/50 relative', isFocusedRow(1) && 'focused-row']}
-					>
-						aaa
-					</div>
-					<div
-						role="row"
-						class={['has-[:hover]:bg-accent-50/50 relative', isFocusedRow(2) && 'focused-row']}
-					>
-						bbb
-					</div>
+					<ul class="max-h-[40vh] overflow-y-auto">
+						{#each isSuggestingQualifiers && filteredQualifierSuggestions.length ? filteredQualifierSuggestions : qualifierSuggestions as { key, label }, index (key)}
+							{@const rowIndex = index + 1}
+							<li
+								role="row"
+								class={[
+									'has-[:hover]:bg-accent-50/50 relative',
+									isFocusedRow(rowIndex) && 'focused-row'
+								]}
+							>
+								<button
+									type="button"
+									id={getCellId(rowIndex, 0)}
+									class={[
+										'text-[ flex min-h-11 w-full items-center px-4 font-medium',
+										isFocusedCell(qualifiersRowIndex, rowIndex) && 'focused-cell'
+									]}
+									title={`${page.data.t('supersearch.add')} ${page.data.t('supersearch.filter')} ${page.data.t('supersearch.for')} ${label.toLocaleLowerCase()}`}
+									onclick={() => addQualifierKey(key)}
+								>
+									<span class="first-letter:capitalize">{label}</span>
+								</button>
+							</li>
+						{/each}
+					</ul>
 				{:else}
 					{#if showQualifiersRow}
 						{#snippet addFiltersLabel()}
@@ -679,7 +694,7 @@
 									class="scrollbar-hidden relative flex h-14 items-center gap-2 overflow-x-auto overflow-y-visible"
 								>
 									{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
-										<li>
+										<li animate:flip={{ duration: 200 }} in:receive={{ key }} out:send={{ key }}>
 											<button
 												type="button"
 												id={getCellId(qualifiersRowIndex, cellIndex + 1)}
@@ -743,32 +758,7 @@
 						-->
 						</div>
 					{/if}
-					{#if showHistoryRows}
-						<div role="rowgroup" class="min-h-14">
-							<!--
-						<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
-							<button
-								type="button"
-								id={getCellId(2, 0)}
-								class={[
-									'flex min-h-14 w-full items-center px-4 hover:*:underline',
-									isFocusedCell(2, 0) && 'focused-cell'
-								]}
-							>
-								<span
-									class={['text-link flex items-center gap-1 whitespace-nowrap hover:underline']}
-								>
-									<span
-										class="bg-accent-200/30 text-link mr-1 flex size-10 items-center justify-center rounded-lg"
-									>
-										<IconSearchHistory aria-hidden="true" class="size-4.5" />
-									</span>
-								</span>
-							</button>
-						</div>
-						-->
-						</div>
-					{:else if showResultRows}
+					{#if showResultRows}
 						<div role="row" class={['has-[:hover]:bg-accent-50', isFocusedRow(2) && 'focused-row']}>
 							<button
 								type="submit"

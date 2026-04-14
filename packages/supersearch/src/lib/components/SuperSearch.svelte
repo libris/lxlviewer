@@ -555,6 +555,7 @@
 								};
 							}
 						}
+						scrollItemIntoView();
 					}
 					break;
 				case 'ArrowDown':
@@ -574,6 +575,7 @@
 							horizontal: cols.length <= 1
 						};
 					}
+					scrollItemIntoView();
 					break;
 				case 'ArrowLeft':
 					if (wrappingArrowKeyNavigation && activeRowIndex >= 1 && activeColIndex === 0) {
@@ -677,16 +679,12 @@
 					}
 					break;
 			}
-
-			/**
-			 * TODO: Ensure the input is in view
-			 * const activeCellElement = document.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`);
-			 *
-			 * if (!isElementInView(activeCellElement)) {
-			 *		activeCellElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-			 * }
-			 */
 		}
+	}
+
+	function scrollItemIntoView() {
+		const activeItemId = `${id}-item-${activeRowIndex}x${activeColIndex}`;
+		if (activeItemId) document.getElementById(activeItemId)?.scrollIntoView({ block: 'nearest' });
 	}
 
 	function handleClickOutsideDialog(event: MouseEvent) {

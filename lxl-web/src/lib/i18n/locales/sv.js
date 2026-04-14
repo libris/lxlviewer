@@ -205,6 +205,7 @@ export default {
 		select: 'Välj',
 		filter: 'filter',
 		filters: 'filter',
+		for: 'för',
 		showResults: 'Visa sökresultat',
 		keyboardShortcut: 'Tangentbordsgenväg',
 		arrowUp: 'Piltangent uppåt',
