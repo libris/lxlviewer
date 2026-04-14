@@ -51,6 +51,10 @@
 	background-color: var(--color-accent-50);
 }
 
+.lxl-qualifier-value:not(:has(.lxl-ghost-paren)) {
+	padding-inline: calc(var(--spacing) * 1.5);
+}
+
 .atomic .lxl-qualifier-value {
 	border-radius: 0;
 }
