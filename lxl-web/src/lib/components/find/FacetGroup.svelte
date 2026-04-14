@@ -33,7 +33,7 @@
 
 	const uid = $props.id();
 
-	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters', 'librissearch:instanceType'];
+	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters', 'librissearch:hasInstanceType'];
 	const permanentlyExpanded = $derived(PERMANENTLY_EXPANDED_FACETS.includes(data.dimension));
 
 	const matomoTracker = getMatomoTracker();
