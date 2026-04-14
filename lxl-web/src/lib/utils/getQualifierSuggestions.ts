@@ -34,9 +34,9 @@ export function getQualifierSuggestions(
 
 function mapSearchFilterDefinition(
 	def: FramedData,
-	locale,
+	locale: LocaleCode,
 	display: DisplayUtil,
-	compare
+	compare: (x: string, y: string) => number
 ): QualifierSuggestion2 | null {
 	try {
 		const otherLangLabels = otherLocales(locale).map((l) =>
