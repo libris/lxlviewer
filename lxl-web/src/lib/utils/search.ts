@@ -462,7 +462,7 @@ function mapSlices(
 					label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 					str: str,
 					// @ts-expect-error Element implicitly has an any type
-					discriminator: getUriSlug(o.object?.inScheme?.[JsonLd.ID]) || ''
+					discriminator: getUriSlug(o.object?.inScheme?.[JsonLd.ID])
 				};
 			})
 		};
