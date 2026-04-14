@@ -39,7 +39,7 @@ export class VocabUtil {
 	//vocabId: string
 	vocabIndex: Map;
 	context;
-	labelCache: Record<LangCode, Map>;
+	labelCache: Record<LangCode, Record<string, string>>;
 
 	constructor(vocab: VocabData, context: ContextData) {
 		this.context = lxljsVocab.preprocessContext(context)[JsonLd.CONTEXT];
@@ -49,7 +49,7 @@ export class VocabUtil {
 
 	getLabelCache(locale: LangCode) {
 		if (this.labelCache[locale] == undefined) {
-			this.labelCache[locale] = new Map();
+			this.labelCache[locale] = {};
 		}
 
 		return this.labelCache[locale];
@@ -741,8 +741,9 @@ class Formatter {
 
 	private getVocabLabel(vocabName) {
 		const cache = this.vocabUtil.getLabelCache(this.locale);
-		if (cache.has(vocabName)) {
-			return cache.get(vocabName);
+		const cacheKey = Array.isArray(vocabName) ? vocabName.join('-') : vocabName;
+		if (cache[cacheKey]) {
+			return cache[cacheKey];
 		}
 
 		try {
@@ -751,7 +752,7 @@ class Formatter {
 					this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName), LensType.None)
 				)
 			);
-			cache.set(vocabName, label);
+			cache[cacheKey] = label;
 			return label;
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (ignored) {
