@@ -35,8 +35,9 @@ import {
 
 // TODO TESTS!
 
-// PERF: only build this array once
-const BASE_LENSES = Object.values(LensType);
+// PERF: only build these arrays once, not in hot path
+const LENS_TYPE_VALUES = Object.values(LensType);
+const FMT_VALUES = Object.values(Fmt);
 
 export class VocabUtil {
 	//vocabId: string
@@ -320,7 +321,7 @@ export class DisplayUtil {
 	}
 
 	private isDerivedLens(lensType: LensType | DerivedLensType) {
-		if (BASE_LENSES.includes(lensType)) {
+		if (LENS_TYPE_VALUES.includes(lensType)) {
 			return false;
 		}
 		if (!(lensType in this.registeredDerivedLensTypes)) {
@@ -1033,7 +1034,7 @@ export function toString(data: DisplayDecorated): string {
 		}
 		v.push(
 			...Object.entries(data)
-				.filter(([k]) => !(Object.values(Fmt).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
+				.filter(([k]) => !(FMT_VALUES.includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
 				.map(([, v]) => toString(v))
 		);
 		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
@@ -1072,7 +1073,9 @@ function _toLite(data: DisplayDecorated, result: DisplayDecoratedLite) {
 		}
 		v.push(
 			...Object.entries(data)
-				.filter(([k]) => !(Object.values(Fmt).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
+				.filter(
+					([k]) => !(Object.values(FMT_VALUES).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k))
+				)
 				.map(([, v]) => toString(v))
 		);
 		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
