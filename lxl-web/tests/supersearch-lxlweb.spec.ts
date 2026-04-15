@@ -295,3 +295,16 @@ test('qualifier keys can be added using keyboard only', async ({ page, context }
 		'arrow key navigation works as intended after adding qualifier key'
 	).toBe('c contributor:(a)b');
 });
+
+test('return key label is context-aware', async ({ page }) => {
+	await page.getByTestId('supersearch').getByRole('combobox').click();
+	expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
+	await page.getByTestId('supersearch').getByRole('dialog').getByRole('combobox').fill('a');
+	await page.keyboard.press('Tab');
+	expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Rensa');
+	await page.keyboard.press('Enter');
+	expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
+	await page.keyboard.press('ArrowUp');
+	expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Lägg till');
+	// TODO: Add test for 'Välj' label
+});

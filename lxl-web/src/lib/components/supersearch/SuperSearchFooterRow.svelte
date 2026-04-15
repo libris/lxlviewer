@@ -70,7 +70,7 @@
 				<IconReturnKey class="absolute mt-0.5 size-3" aria-hidden="true" />
 				<span class="text-transparent">↵</span>
 			</kbd>
-			{returnKeyLabel}
+			<span data-testid="supersearch-return-key-label">{returnKeyLabel}</span>
 		</li>
 	</ul>
 	<a
