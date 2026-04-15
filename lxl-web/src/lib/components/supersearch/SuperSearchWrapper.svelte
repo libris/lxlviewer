@@ -538,7 +538,15 @@
 				</button>
 			</div>
 		{/snippet}
-		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
+		{#snippet expandedContent({
+			resultsCount,
+			resultsSnippet,
+			getCellId,
+			isFocusedRow,
+			isFocusedCell
+		})}
+			{@const inputRowIndex = 0}
+			{@const qualifiersRowIndex = showAddQualifiers ? 1 : -1}
 			{@const footerRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
 			<nav class="mt-3 lg:mt-4">
 				{#if showAddQualifiers}
@@ -622,7 +630,14 @@
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
-				<SuperSearchFooterRow {footerRowIndex} {getCellId} {isFocusedCell} />
+				<SuperSearchFooterRow
+					{inputRowIndex}
+					{qualifiersRowIndex}
+					{footerRowIndex}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+				/>
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
