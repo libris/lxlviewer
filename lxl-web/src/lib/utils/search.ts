@@ -461,7 +461,8 @@ function mapSlices(
 					view: replacePath(o.view, usePath),
 					label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 					str: str,
-					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
+					// @ts-expect-error Element implicitly has an any type
+					discriminator: getUriSlug(o.object?.inScheme?.[JsonLd.ID])
 				};
 			})
 		};

@@ -8,10 +8,12 @@
 		UnknownLibrary
 	} from '$lib/types/holdings';
 	import { JsonLd } from '$lib/types/xl';
-	import BiChevronRight from '~icons/bi/chevron-right';
-	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { createHoldingLinks } from '$lib/utils/holdings';
 	import LoanStatus from './LoanStatus.svelte';
+	import DecoratedData from './DecoratedData.svelte';
+	import BiChevronRight from '~icons/bi/chevron-right';
+	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 
 	type Props = {
 		holder: LibraryWithLinksAndInstances | UnknownLibrary;
@@ -53,7 +55,9 @@
 				instance?.linksToItem.length ||
 				instance?.loanReserveLink.length ||
 				instance?.itemStatus?.length ||
-				instance?.itemStr
+				instance?.shelfData?._display?.length ||
+				instance?.itemNoteData?._display?.length ||
+				instance?.itemMedia?._display?.length
 		)
 	);
 
@@ -73,6 +77,63 @@
 		return link;
 	}
 </script>
+
+{#snippet ItemSnippet(instance: InstanceWithLinks, bestLink?: string)}
+	{#if bestLink || instance.linkResolver}
+		<li class="flex gap-2">
+			<!-- instance best link -->
+			{#if bestLink}
+				<a
+					href={getBestLink(instance)}
+					target="_blank"
+					class="ext-link"
+					aria-label={page.data.t('holdings.findAtLibrary')}
+					aria-describedby={`holder-${holder[JsonLd.ID]}`}
+				>
+					{page.data.t('holdings.linkToLocal')}
+				</a>
+			{/if}
+			<!-- instance linkserver link -->
+			{#if instance.linkResolver}
+				<a href={instance.linkResolver.uri} target="_blank" class="ext-link">
+					{instance.linkResolver.label}
+				</a>
+			{/if}
+		</li>
+	{/if}
+	<!-- shelf data -->
+	{#if instance.shelfData?._display?.length}
+		<li>
+			<p>
+				<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
+				<DecoratedData data={instance.shelfData} showLabels={ShowLabelsOptions.Never} />
+			</p>
+		</li>
+	{/if}
+	<!-- item media -->
+	{#if instance.itemMedia?._display?.length}
+		<li>
+			<p>
+				<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
+				<DecoratedData data={instance.itemMedia} showLabels={ShowLabelsOptions.Never} />
+			</p>
+		</li>
+	{/if}
+	<!-- Item notes -->
+	{#if instance.itemNoteData?._display?.length}
+		<li>
+			<p>
+				<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
+				<DecoratedData data={instance.itemNoteData} showLabels={ShowLabelsOptions.Never} />
+			</p>
+		</li>
+	{/if}
+	{#if instance.itemStatus?.[0]}
+		<li>
+			<LoanStatus sigel={holder.sigel} bibIdObj={instance} />
+		</li>
+	{/if}
+{/snippet}
 
 <li class={['holder', hidden && 'hidden']}>
 	<article class="border-neutral bg-page flex flex-col rounded-sm border-b p-3">
@@ -106,7 +167,7 @@
 				<p>{page.data.t('errors.notAvailable')}</p>
 			</div>
 		{:else}
-			<ul class="flex flex-col gap-0.5 text-sm sm:text-xs">
+			<ul class="mt-1 flex flex-col gap-1 text-sm sm:text-xs">
 				{#if numInstances > 1 && expanded}
 					<!-- multiple instances list -->
 					{#each shownInstances as instance (instance.bibId)}
@@ -115,39 +176,7 @@
 							<h4 class="mb-1 font-medium">{instance.publicationStr || '-'}</h4>
 							<!-- instance item data -->
 							<ul class="flex flex-col gap-0.5">
-								{#if instance.itemStr}
-									<li>
-										<p>
-											<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
-											<span>{instance.itemStr}</span>
-										</p>
-									</li>
-								{/if}
-								<li class="flex gap-2">
-									<!-- instance best link -->
-									{#if bestLink}
-										<a
-											href={getBestLink(instance)}
-											target="_blank"
-											class="ext-link"
-											aria-label={page.data.t('holdings.findAtLibrary')}
-											aria-describedby={`holder-${holder[JsonLd.ID]}`}
-										>
-											{page.data.t('holdings.linkToLocal')}
-										</a>
-									{/if}
-									<!-- instance linkserver link -->
-									{#if instance.linkResolver}
-										<a href={instance.linkResolver.uri} target="_blank" class="ext-link">
-											{instance.linkResolver.label}
-										</a>
-									{/if}
-								</li>
-								{#if instance.itemStatus?.[0]}
-									<li>
-										<LoanStatus sigel={holder.sigel} bibIdObj={instance} />
-									</li>
-								{/if}
+								{@render ItemSnippet(instance, bestLink)}
 							</ul>
 						</li>
 					{/each}
@@ -172,21 +201,11 @@
 				<!-- single instance item data & loan status -->
 				{#if numInstances === 1}
 					{@const singleInstance = instances[0]}
-					{#if singleInstance.itemStr}
-						<li class="my-0.5">
-							<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
-							<span>{singleInstance.itemStr}</span>
-						</li>
-					{/if}
-					{#if singleInstance.itemStatus?.[0]}
-						<li class="mt-1">
-							<LoanStatus sigel={holder.sigel} bibIdObj={singleInstance} />
-						</li>
-					{/if}
+					{@render ItemSnippet(singleInstance)}
 				{/if}
 				<!-- Lopac general links / single instance linkserver link -->
-				{#if holder._links.myLoansLink || holder._links.registrationLink || instances[0].linkResolver}
-					<li class="mt-1">
+				{#if holder._links.myLoansLink || holder._links.registrationLink}
+					<li>
 						<div class="ml-4 flex flex-row gap-2">
 							{#if holder._links.myLoansLink}
 								<a target="_blank" class="ext-link" href={holder._links.myLoansLink}>
@@ -198,17 +217,12 @@
 									{page.data.t('holdings.applyForCard')}
 								</a>
 							{/if}
-							{#if numInstances === 1 && instances?.[0].linkResolver}
-								<a href={instances[0].linkResolver.uri} target="_blank" class="ext-link"
-									>{instances[0].linkResolver.label}</a
-								>
-							{/if}
 						</div>
 					</li>
 				{/if}
 				<!-- opening hours / adress -->
 				{#if hasOpeningHoursEtc}
-					<li class="mt-1">
+					<li>
 						<details class="w-full">
 							<summary class="link-subtle flex cursor-pointer items-center gap-1">
 								<span

@@ -4,7 +4,7 @@ import type { CitationsType } from '$lib/types/citation';
 import type { MatomoTracker } from '$lib/types/matomo';
 import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
-import type { AdjecentSearchResult, DisplayMapping } from '$lib/types/search';
+import type { AdjecentSearchResult, DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
 import 'unplugin-icons/types/svelte';
 import type { Site } from '$lib/types/site';
 
@@ -19,6 +19,7 @@ declare global {
 			userSettings: UserSettings;
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
+			qualifierSuggestions: QualifierSuggestion2[];
 		}
 		interface LayoutData {
 			locale: import('$lib/i18n/locales').LocaleCode;

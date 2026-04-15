@@ -283,6 +283,8 @@ export default {
 		PhysicalResource: 'Physical resource',
 		DigitalResource: 'Digital resource',
 		shelfMark: 'Shelf mark',
+		itemNote: 'Item note',
+		itemMedia: 'Related link',
 		location: 'Location',
 		shelf: 'Shelf',
 		status: 'Status',

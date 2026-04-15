@@ -29,8 +29,8 @@
 
 	function getSelectionKind(selection?: string): SelectionKind {
 		if (!selection) return 'all';
-		if (byInstanceId[selection]) return 'instance';
-		if (byType[selection]) return 'type';
+		if (byInstanceId?.[selection]) return 'instance';
+		if (byType?.[selection]) return 'type';
 		if (isFnurgel(selection)) return 'work';
 		return 'all';
 	}
@@ -67,7 +67,12 @@
 				if (!libraries[libraryId]) {
 					libraries[libraryId] = {};
 				}
-				libraries[libraryId][instanceId] = { ...bibIdData[instanceId], itemStr: lib.itemStr };
+				libraries[libraryId][instanceId] = {
+					...bibIdData[instanceId],
+					shelfData: lib.shelfData,
+					itemNoteData: lib.itemNoteData,
+					itemMedia: lib.itemMedia
+				};
 			}
 		}
 
