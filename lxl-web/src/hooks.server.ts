@@ -1,21 +1,24 @@
 import fs from 'fs';
 import type { RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { defaultLocale, Locales } from '$lib/i18n/locales';
+import { defaultLocale, getSupportedLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
+import type { QualifierSuggestion2 } from '$lib/types/search';
 import type { Site } from '$lib/types/site';
 import { DebugFlags, type MyLibrariesType, type UserSettings } from '$lib/types/userSettings';
 import displayWeb from '$lib/assets/json/display-web.json';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import { startRefreshLibraries } from '$lib/utils/getLibraries.server';
 import { getSubsetMapping } from '$lib/utils/subsetCache.server';
+import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions';
 
-type Util = [VocabUtil, DisplayUtil];
+type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
+type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
 let utilCache: Util | undefined;
 let initLibraries: boolean = false;
 
 export const handle = async ({ event, resolve }) => {
-	const [vocabUtil, displayUtil] = await loadUtilCached();
+	const [vocabUtil, displayUtil, qualifierSuggestionsByLocale] = await loadUtilCached();
 
 	if (!initLibraries) {
 		initLibraries = true;
@@ -93,6 +96,8 @@ export const handle = async ({ event, resolve }) => {
 	const subsetMapping = await getSubsetMapping(_r, event.locals, lang);
 	event.locals.subsetMapping = subsetMapping;
 
+	event.locals.qualifierSuggestions = qualifierSuggestionsByLocale[getSupportedLocale(lang)];
+
 	return resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)
 	});
@@ -156,7 +161,13 @@ async function loadUtil(): Promise<Util> {
 
 	DERIVED_LENSES.forEach((l) => displayUtil.registerDerivedLens(l));
 
-	return [vocabUtil, displayUtil];
+	const qualifierSuggestionsByLocale = {} as QualifierSuggestionsByLocale;
+	(Object.keys(Locales) as Array<keyof typeof Locales>).forEach((locale) => {
+		qualifierSuggestionsByLocale[locale] = getQualifierSuggestions(locale, vocabUtil, displayUtil);
+	});
+	console.info('Loaded qualifierSuggestionsByLocale');
+
+	return [vocabUtil, displayUtil, qualifierSuggestionsByLocale];
 }
 
 function getSite(event: RequestEvent): Site | null {

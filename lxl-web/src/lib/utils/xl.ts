@@ -35,14 +35,28 @@ import {
 
 // TODO TESTS!
 
+// PERF: only build these arrays once, not in hot path
+const LENS_TYPE_VALUES = Object.values(LensType);
+const FMT_VALUES = Object.values(Fmt);
+
 export class VocabUtil {
 	//vocabId: string
 	vocabIndex: Map;
 	context;
+	labelCache: Record<LangCode, Record<string, string>>;
 
 	constructor(vocab: VocabData, context: ContextData) {
 		this.context = lxljsVocab.preprocessContext(context)[JsonLd.CONTEXT];
 		this.vocabIndex = lxljsVocab.preprocessVocab(vocab);
+		this.labelCache = {};
+	}
+
+	getLabelCache(locale: LangCode) {
+		if (this.labelCache[locale] == undefined) {
+			this.labelCache[locale] = {};
+		}
+
+		return this.labelCache[locale];
 	}
 
 	getBaseClasses(className: ClassName | ClassName[]): ClassName[] {
@@ -182,6 +196,7 @@ export class DisplayUtil {
 			case LensType.WebCardHeaderExtra:
 			case LensType.WebOverview:
 			case LensType.WebOverview2:
+			case LensType.WebOverviewFooter:
 			case LensType.WebDetails:
 				return LensType.Chip;
 			case LensType.WebCardFooter:
@@ -196,6 +211,7 @@ export class DisplayUtil {
 	};
 
 	private readonly formatIndex: FormatIndex;
+	private readonly formatCache: FormatIndex;
 
 	private registeredDerivedLensTypes: Record<DerivedLensType, DerivedLensTypeDefinition> = {};
 	private derivedLensesCache: Record<string, Lens> = {};
@@ -213,6 +229,7 @@ export class DisplayUtil {
 		this.expandInheritedLensProperties();
 
 		this.formatIndex = buildFormatIndex(this.display);
+		this.formatCache = {};
 		console.log('Initialized DisplayUtil');
 	}
 
@@ -257,7 +274,7 @@ export class DisplayUtil {
 	}
 
 	format(thing: LensedOrdered, locale: LangCode): DisplayDecorated {
-		const f = new Formatter(this, this.vocabUtil, this.formatIndex, locale);
+		const f = new Formatter(this, this.vocabUtil, this.formatIndex, this.formatCache, locale);
 		return f.addLabels(f.displayDecorate(thing));
 	}
 
@@ -304,7 +321,7 @@ export class DisplayUtil {
 	}
 
 	private isDerivedLens(lensType: LensType | DerivedLensType) {
-		if (Object.values(LensType).includes(lensType)) {
+		if (LENS_TYPE_VALUES.includes(lensType)) {
 			return false;
 		}
 		if (!(lensType in this.registeredDerivedLensTypes)) {
@@ -683,6 +700,7 @@ class Formatter {
 	};
 
 	private readonly formatIndex: FormatIndex;
+	private readonly formatCache: FormatIndex;
 	private readonly locale: LangCode;
 	private readonly displayUtil: DisplayUtil;
 	private readonly vocabUtil: VocabUtil;
@@ -691,11 +709,13 @@ class Formatter {
 		displayUtil: DisplayUtil,
 		vocabUtil: VocabUtil,
 		formatIndex: FormatIndex,
+		formatCache: FormatIndex,
 		locale: LangCode
 	) {
 		this.displayUtil = displayUtil;
 		this.vocabUtil = vocabUtil;
 		this.formatIndex = formatIndex;
+		this.formatCache = formatCache;
 		this.locale = locale;
 	}
 
@@ -730,12 +750,20 @@ class Formatter {
 	}
 
 	private getVocabLabel(vocabName) {
+		const cache = this.vocabUtil.getLabelCache(this.locale);
+		const cacheKey = Array.isArray(vocabName) ? vocabName.join('-') : vocabName;
+		if (cache[cacheKey]) {
+			return cache[cacheKey];
+		}
+
 		try {
-			return toLabel(
+			const label = toLabel(
 				this.displayDecorate(
 					this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName), LensType.None)
 				)
 			);
+			cache[cacheKey] = label;
+			return label;
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (ignored) {
 			console.warn(`Error getting vocab label for: ${vocabName}`);
@@ -924,13 +952,23 @@ class Formatter {
 		className: ClassName,
 		key: Fresnel.resourceFormat | Fresnel.resourceStyle
 	) {
+		const cacheKey = `${className}-${key}`;
+		if (this.formatCache[cacheKey]) {
+			return this.formatCache[cacheKey];
+		}
+
 		for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 			const hasFormat = (f: Format) => key in f;
 			if (cls in this.formatIndex && hasFormat(this.formatIndex[cls])) {
-				return this.formatIndex[cls];
+				const result = this.formatIndex[cls];
+				this.formatCache[cacheKey] = result;
+				return result;
 			}
 		}
-		return this.DEFAULT_FORMAT;
+
+		const result = this.DEFAULT_FORMAT;
+		this.formatCache[cacheKey] = result;
+		return result;
 	}
 
 	private _findPropertyOrValueFormat(
@@ -938,26 +976,39 @@ class Formatter {
 		propertyName: PropertyName,
 		key: Fresnel.propertyFormat | Fresnel.propertyStyle | Fresnel.valueFormat | Fresnel.valueStyle
 	) {
-		// TODO precompute / memoize formats for base classes
+		const cacheKey = `${className}-${propertyName}-${key}`;
+		if (this.formatCache[cacheKey]) {
+			return this.formatCache[cacheKey];
+		}
+
 		const hasFormat = (f: Format) => key in f;
 		for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 			const ix = `${cls}/${propertyName}`;
 			if (ix in this.formatIndex && hasFormat(this.formatIndex[ix])) {
 				// console.debug(`${ix} -> ${JSON.stringify(this.formatIndex[ix], null, 2)}`);
-				return this.formatIndex[ix];
+				const result = this.formatIndex[ix];
+				this.formatCache[cacheKey] = result;
+				return result;
 			}
 		}
 		if (propertyName in this.formatIndex && hasFormat(this.formatIndex[propertyName])) {
 			// console.debug(`${className} ${propertyName} ${key} -> ${JSON.stringify(this.formatIndex[propertyName], null, 2)}`);
-			return this.formatIndex[propertyName];
+			const result = this.formatIndex[propertyName];
+			this.formatCache[cacheKey] = result;
+			return result;
 		}
 		for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 			const ix = `${cls}/*`;
 			if (ix in this.formatIndex && hasFormat(this.formatIndex[ix])) {
-				return this.formatIndex[ix];
+				const result = this.formatIndex[ix];
+				this.formatCache[cacheKey] = result;
+				return result;
 			}
 		}
-		return this.DEFAULT_FORMAT;
+
+		const result = this.DEFAULT_FORMAT;
+		this.formatCache[cacheKey] = result;
+		return result;
 	}
 
 	private pickLanguage(container: LangContainer) {
@@ -983,7 +1034,7 @@ export function toString(data: DisplayDecorated): string {
 		}
 		v.push(
 			...Object.entries(data)
-				.filter(([k]) => !(Object.values(Fmt).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
+				.filter(([k]) => !(FMT_VALUES.includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
 				.map(([, v]) => toString(v))
 		);
 		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
@@ -1022,7 +1073,9 @@ function _toLite(data: DisplayDecorated, result: DisplayDecoratedLite) {
 		}
 		v.push(
 			...Object.entries(data)
-				.filter(([k]) => !(Object.values(Fmt).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
+				.filter(
+					([k]) => !(Object.values(FMT_VALUES).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k))
+				)
 				.map(([, v]) => toString(v))
 		);
 		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
