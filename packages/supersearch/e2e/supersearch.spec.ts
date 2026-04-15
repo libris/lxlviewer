@@ -175,6 +175,18 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	).not.toHaveAttribute('aria-activedescendant', /.+/);
 	await page.keyboard.press('ArrowDown');
 	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
+	await page.keyboard.press('ArrowLeft');
+	await expect(
+		comboboxElement,
+		'user can jump from first col to last by pressing arrow left if wrappingArrowKeyNavigation is enabled'
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x2');
+	await page.keyboard.press('ArrowRight');
+	await expect(
+		comboboxElement,
+		'user can jump from last col to first by pressing arrow right if wrappingArrowKeyNavigation is enabled'
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
 });
 
 test('user can toggle expanded search using alt key + arrow up or down (without moving cursor) ', async ({
