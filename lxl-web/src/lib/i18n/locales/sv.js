@@ -17,7 +17,7 @@ export default {
 		saved: 'Sparat',
 		help: 'Hjälp',
 		about: 'Om Libris',
-		aboutBeta: 'Frågor och svar om betan',
+		aboutBeta: 'Frågor och svar',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
 		accessibilityStatement: 'Tillgänglighetsredogörelse',
@@ -75,13 +75,14 @@ export default {
 	footer: {
 		logo: 'Kungliga bibliotekets logotyp',
 		information: 'Information',
-		faq: 'Vanliga frågor om betaversionen',
+		faq: 'Frågor och svar',
 		contact: 'Kontakt',
 		feedback: 'Lämna synpunkter',
 		feedbackLink: 'https://survey.kb.se/librisbeta',
 		customerSupport: 'Libris kundtjänst',
 		cookies: 'Hantera kakor',
-		gdpr: 'Om dataskydd (GDPR)'
+		gdpr: 'Om dataskydd (GDPR)',
+		about: 'Om Libris'
 	},
 	facet: {
 		q: 'Fritextsökning',

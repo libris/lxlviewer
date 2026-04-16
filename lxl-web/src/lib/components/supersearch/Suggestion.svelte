@@ -138,11 +138,11 @@
 						menuItems: [
 							...item.qualifiers.map((qualifier) => ({
 								label: `${page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
-								href: resolve(qualifier._q)
+								href: qualifier._q
 							})),
 							{
 								label: `${page.data.t('search.goToResource')}`,
-								href: resolve(resourceId || '')
+								href: resourceId || ''
 							}
 						],
 						placeAsSibling: true

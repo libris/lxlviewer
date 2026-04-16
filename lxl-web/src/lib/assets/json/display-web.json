@@ -909,6 +909,7 @@
 						"cataloguersNote",
 						"summary",
 						"appliesTo",
+						"hasComponent",
 						"marc:hasTextualHoldingsBasicBibliographicUnit"
 					]
 				}

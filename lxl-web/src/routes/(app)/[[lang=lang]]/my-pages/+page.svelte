@@ -4,7 +4,7 @@
 	import Libraries from '$lib/components/my-pages/Libraries.svelte';
 	import Meta from '$lib/components/Meta.svelte';
 
-	const pageTitle = page.data.t('myPages.pageTitle');
+	const pageTitle = $derived(page.data.t('myPages.pageTitle'));
 	const q = $derived(page.url.searchParams.get('q'));
 </script>
 

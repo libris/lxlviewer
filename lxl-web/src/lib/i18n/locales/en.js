@@ -17,7 +17,7 @@ export default {
 		saved: 'Saved',
 		help: 'Help',
 		about: 'About Libris',
-		aboutBeta: 'About the beta',
+		aboutBeta: 'FAQ',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
 		accessibilityStatement: 'Accessibility statement',
@@ -76,13 +76,14 @@ export default {
 	footer: {
 		logo: 'National Library of Sweden logotype',
 		information: 'Information',
-		faq: 'FAQ about this beta',
+		faq: 'FAQ',
 		contact: 'Contact',
 		feedback: 'Give feedback',
 		feedbackLink: 'http://survey.kb.se/librisbeta/en',
 		customerSupport: 'Libris customer support',
 		cookies: 'Manage cookies',
-		gdpr: 'Processing of personal data'
+		gdpr: 'Processing of personal data',
+		about: 'About Libris'
 	},
 	facet: {
 		q: 'Free text search',
