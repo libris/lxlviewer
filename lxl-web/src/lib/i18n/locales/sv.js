@@ -88,6 +88,7 @@ export default {
 		q: 'Fritextsökning',
 		'librissearch:findCategory': 'Kategori',
 		'librissearch:identifyCategory': 'Kategori',
+		'librissearch:noneCategory': 'Kategori',
 		'librissearch:hasInstanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'instanceOf.@type': 'Verkstyp',
