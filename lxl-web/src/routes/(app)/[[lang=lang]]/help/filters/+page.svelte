@@ -9,7 +9,7 @@
 	let { data } = $props();
 
 	const searchContext = getSearchContext();
-	const pageTitle = page.data.t('help.pageTitle');
+	const pageTitle = $derived(page.data.t('help.pageTitle'));
 </script>
 
 <svelte:head>

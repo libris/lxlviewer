@@ -7,7 +7,7 @@
 
 	let { data } = $props();
 
-	const pageTitle = page.data.t('about.pageTitle');
+	const pageTitle = $derived(page.data.t('about.pageTitle'));
 </script>
 
 <svelte:head>
