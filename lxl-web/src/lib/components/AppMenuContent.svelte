@@ -77,14 +77,6 @@
 				{
 					href: 'https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html',
 					label: page.data.t('appMenu.aboutBeta')
-				},
-				{
-					href: '#cookies',
-					label: page.data.t('appMenu.cookies')
-				},
-				{
-					href: 'https://www.kb.se/om-oss/tillganglighet-pa-kbs-webbplatser-och-digitala-tjanster.html#item_125b5507eb18cedffd1a436125_45b5507eb18cedffd1a4317ec',
-					label: page.data.t('appMenu.accessibilityStatement')
 				}
 			]
 		},
