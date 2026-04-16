@@ -4,71 +4,56 @@ title: 'Om libris'
 
 # Om Libris
 
-Libris är de svenska bibliotekens gemensamma katalog och söktjänst. Här kan du utforska över 9 miljoner verk från mer än 600 bibliotek i Sverige. [Kungliga biblioteket](https://kb.se/) (KB) ansvarar för samordning, utveckling och drift av Libris ekosystem.
+Libris är de svenska bibliotekens gemensamma katalog och söktjänst. Här kan du utforska över nio miljoner verk från mer än 600 bibliotek i Sverige. [Kungliga biblioteket](https://kb.se/) (KB) ansvarar för samordning och utveckling av Libris, samt drift av Libris tekniska dataplattform.
 
-## Vad kan jag göra i libris.kb.se?
+Libris bygger på ett samarbete mellan över 600 svenska bibliotek som tillsammans bidrar till och utvecklar katalogen. På sidan [Librissamarbetet](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/librissamarbetet.html) kan du läsa om hur det fungerar.
 
-På denna söktjänst kan du hitta material från svenska bibliotek och se var det finns tillgängligt för fysiskt lån eller digitalt. Du kan söka fritt, avgränsa med filter eller skapa komplexa sökfrågor. Läs [sökhjälpen](/help/search) för mer tips på hur du kan hitta eller utforska.
-Du kan även söka fram vilka bibliotek som finns och välja dina egna [favoritbibliotek](/my-pages) för att enkelt avgränsa sökningen mot dem.
+## Sök och utforska
 
-## Vad är Librissamarbetet?
+I Libris kan du söka efter material från svenska bibliotek och se var det finns tillgängligt, både för fysiskt lån och digital åtkomst. Du kan göra enkla fritextsökningar, använda filter eller bygga mer avancerade sökfrågor. Se [sökhjälpen](/help/search)
+för tips.
+Du kan även lägga till [favoritbibliotek](/my-pages) för att enkelt hitta material som finns nära dig.
 
-Libris bygger på ett samarbete mellan över 600 svenska bibliotek. Tillsammans skapar och underhåller de katalogen och deltar i samverkan. På sidan [Librissamarbetet](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/librissamarbetet.html) kan du läsa om hur det fungerar.
+## Katalogens innehåll
 
-## Vad finns i katalogen?
+Libris innehåller cirka sju miljoner fysiska titlar och cirka 3,6 miljoner digitala titlar på över 80 språk. Av det digitala materialet är omkring 1,5 miljoner titlar fritt tillgängliga.
 
-Libris består av cirka 7 miljoner fysiska titlar och cirka 3,6 miljoner digitala titlar på över 80 språk.
-Av det digitala materialet är cirka 1,5 miljoner är fritt tillgängliga. Samlingarna består av allt från böcker till dataspel, musik till punktskrifter med mera. Utforska gärna Libris materialkategorier.
+Samlingarna omfattar många typer av material, till exempel böcker, musik, dataspel och punktskrift. Katalogen innehåller även den svenska nationalbibliografin, ämnesbibliografier samt lokala och regionala samlingar.
 
-### Länkade data
+Katalogen har byggts upp under mer än 50 år, vilket innebär att det finns stor variation i innehållet och kvalitetsskillnader i beskrivningarna. Libris är omfattande men inte heltäckande; en del material finns fortfarande enbart i gamla kortkataloger, lokala kataloger eller andra system.
 
-Katalogen innehåller information om personer, ämnen, organisationer och andra delar av Libris länkade data. På [id.kb.se](https://id.kb.se/) kan du läsa mer om de grundstenar KB använder för att publicera strukturerade, länkade data.
+## Länkade data
 
-Allt material i Libris innehåller idag inte länkade data men det återfinns i större utsträckning inom språk, Svenska ämnesord och svensk skönlitteratur.
+Libris innehåller information om verk, personer, ämnen och organisationer. En växande del av katalogen är strukturerad som länkade data. På [id.kb.se](https://id.kb.se/)
+finns mer information om hur KB publicerar och tillgängliggör dessa data.
 
-### Särskilda samlingar
+Allt material i Libris innehåller ännu inte länkade data, men förekomsten är större inom språk, Svenska ämnesord och svensk skönlitteratur.
 
-Libris innehåller den svenska nationalbibliografin, ett urval bibliografier inom olika ämnesområden och lokala/regionala samlingar. Alla bibliografier produceras av Libris-bibliotek och kan avgränsas som särskilda samlingar. 
+## Historiskt språkbruk
 
-## Innehållets variation
+Det kan vara bra att vara medveten om att katalogen kan innehålla vissa äldre begrepp som idag kan uppfattas som stötande, kränkande eller bara allmänt föråldrat.
+Uttryck som återspeglar skaparnas attityder i sin tid kan väcka starka känslor idag, men är en del av vår historia och därför värdefulla för vår förståelse av det förflutna.
 
-Libris har byggts upp under mer än 50 år, därför finns det både variation i innehållet och kvalitetsskillnader i beskrivningarna. Libris är mycket omfattande men inte heltäckande. Det finns exempelvis fortfarande material som endast finns beskrivet i bibliotekens lokala system, gamla kortkataloger, eller i andra kataloger.
+## Användning av data
 
-Praxis för katalogisering av material har också ändrats under årens lopp, därför är katalogen inte helt enhetlig. Exempelvis kan visst material sakna länkar till upphovspersonen eller stavningar skilja sig åt.
-
-## Om äldre och historiskt språkbruk
-
-Som användare kan det också vara bra att vara medveten om att bibliotekens samlingar och söktjänsten innehåller äldre begrepp och annat innehåll som kan uppfattas som stötande såväl som kränkande eller föråldrat. 
-
-Uttryck som återspeglar skaparnas attityder i sin tid kan väcka starka känslor idag, men är nödvändiga för vår förståelse av det förflutna och vår samtid.
-
-## Hur kan jag använda datat?
-
-Data i Libris består både av data från externa källor och av data som Libriskollektivet själv producerar. Med [Libris API:er](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/att-anvanda-librisdata/anvandning-av-apier.html) kan du integrera med Librisdata från och till ditt lokala system. Libris som dataplattform omfattar ett antal publikt tillgängliga API:er. De flesta av dessa API:er ger lästillgång till öppna, allmänt tillgängliga data. Vissa API:er ger också skrivrättigheter och kräver därmed autentisering och överenskommelse med KB för användning. Svensk nationalbibliografi och svenska auktoritetsposter är fritt tillgängliga utan restriktioner.
+Libris innehåller både data från externa källor och data som produceras inom Librissamarbetet. Genom [Libris API:er](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/att-anvanda-librisdata/anvandning-av-apier.html)
+kan du integrera Librisdata i egna system. Libris som dataplattform omfattar ett antal publikt tillgängliga API:er. De flesta av dessa API:er ger lästillgång till öppna, allmänt tillgängliga data. Vissa API:er ger också skrivrättigheter och kräver därmed autentisering och överenskommelse med KB för användning. Svensk nationalbibliografi och svenska auktoritetsposter är fritt tillgängliga.
 
 ## Tillgänglighet
 
-Vi avser att alla ska kunna bli inspirerade att utforska Sveriges biblioteks samlingar, få en samlad överblick av dess material samt åtkomst. Tjänsten utvecklas enligt rekommendationer från [Funka.com](https://www.funka.com/), [W3C](https://www.w3.org/WAI/standards-guidelines/) med flera för en inkluderande design och upplevelse. Läs gärna Libris Söks [tillgänglighetsredogörelse](https://www.kb.se/om-oss/tillganglighet-pa-kbs-webbplatser-och-digitala-tjanster.html#item_125b5507eb18cedffd1a436125_45b5507eb18cedffd1a4317ec) för mer information.
+Målet är att Libris ska vara tillgängligt för alla och erbjuda en tydlig överblick och enkel åtkomst till bibliotekens samlingar. Läs mer i Libris Söks [tillgänglighetsredogörelse](https://www.kb.se/om-oss/tillganglighet-pa-kbs-webbplatser-och-digitala-tjanster.html#item_125b5507eb18cedffd1a436125_45b5507eb18cedffd1a4317ec).
 
-## Sekretess och systemkrav
-
-Söktjänsten använder valfria kakor (små text-/informationsfiler) i din webbläsaren för att förbättra användarupplevelsen, för att tjänsten och dess funktioner ska fungera som de ska samt för analytiska ändamål.
-
-Vid aktiverat överbelastningsskydd kan JavaScript behövas för att komma åt tjänsten.
+Söktjänsten använder valfria kakor för funktionalitet och analys. I vissa fall kan JavaScript krävas, till exempel vid aktiverat överbelastningsskydd.
 
 ## Upphovsrätt
 
-Bilder i Libris – till exempel bokomslag – kan vara upphovsrättsskyddade. Du får inte ladda ned eller använda dem utan tillstånd. Vissa bilder är däremot fria. Som användare ansvarar du själv för att kontrollera vad som gäller.
+Vissa bilder i Libris, till exempel bokomslag, kan vara upphovsrättsskyddade och får inte användas utan tillstånd. Andra bilder är fria att använda. Det är användarens ansvar att kontrollera vad som gäller.
 
-För omslagsbilder i Libris från Nielsen Book Services Limited gäller: "Copyright in any data cover images supplied by Nielsen Book Services Limited is held by Nielsen Book Services Limited or by the publishers or by their respective licensors: all rights reserved"
+## Vidare information och kontakt
 
-## Hur kan jag få veta mera?
+För mer information, se [frågor och svar](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html),
+följ [Librisnyheter](https://www.kb.se/for-bibliotekssektorn/nytt-fran-kb.html?sv.target=12.5b5507eb18cedffd1a434463&sv.12.5b5507eb18cedffd1a434463.route=%2Fnews&keywords%5B%5D=Katalogisering&keywords%5B%5D=Libris&keywords%5B%5D=Libris%20versionsinformation&page=1) och [Librisutveckling](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/libris-utveckling.html).
 
-Läs fler [frågor och svar](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html)
-För aktuell information följ [Librisnyheter](https://www.kb.se/for-bibliotekssektorn/nytt-fran-kb.html?sv.target=12.5b5507eb18cedffd1a434463&sv.12.5b5507eb18cedffd1a434463.route=%2Fnews&keywords%5B%5D=Katalogisering&keywords%5B%5D=Libris&keywords%5B%5D=Libris%20versionsinformation&page=1) och [Librisutveckling](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/libris-utveckling.html).
+Du är alltid välkommen att kontakta oss! Skriv till [Libris kundservice](https://www.kb.se/om-oss/kontakta-oss/#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3).
 
-Observera:
-Du kan inte köpa böcker, tidskrifter med mer hos Libris utan vi hänvisar till bokhandlar.
-För inköpsförslag eller fjärrlånebeställningar hänvisar vi till ditt lokala bibliotek.
-
-Du är alltid välkommen att kontakta oss, skriv till [Libris kundservice](https://www.kb.se/om-oss/kontakta-oss/#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3).
+För inköpsförslag eller fjärrlån, kontakta ditt lokala bibliotek.
