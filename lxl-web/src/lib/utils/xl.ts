@@ -244,6 +244,8 @@ export class DisplayUtil {
 	private registeredDerivedLensTypes: Record<DerivedLensType, DerivedLensTypeDefinition> = {};
 	private derivedLensesCache: Record<string, Lens> = {};
 
+	private readonly lensCache: Record<string, Lens> = {};
+
 	// x -> xByLang
 	langContainerAlias: Record<PropertyName, PropertyName> = {};
 
@@ -315,12 +317,12 @@ export class DisplayUtil {
 			[JsonLd.TYPE]: Fresnel.Lens,
 			classLensDomain: type,
 			showProperties: []
-		};
-		let taken = this.findLens(def.minusFirst, type, empty).showProperties.map((s) =>
+		} as Lens;
+		let taken = this._findLens(def.minusFirst, type, empty).showProperties.map((s) =>
 			JSON.stringify(s)
 		);
 		taken += def.minusAll
-			.map((l) => this.findLens(l, type, empty).showProperties)
+			.map((l) => this._findLens(l, type, empty).showProperties)
 			.flat()
 			.map((s) => JSON.stringify(s));
 
@@ -521,16 +523,19 @@ export class DisplayUtil {
 		return result;
 	}
 
-	private findLens(
-		lenses: LensType | LensType[] | DerivedLensType,
-		className: ClassName,
-		defaultTo: Lens = undefined
-	) {
-		if (!Array.isArray(lenses) && this.isDerivedLens(lenses)) {
-			return this.findDerivedLens(className, lenses);
-		} else {
-			return this._findLens(lenses, className, defaultTo);
+	private findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
+		const cacheKey = `${className}-${Array.isArray(lenses) ? lenses.join(',') : lenses}`;
+		if (this.lensCache[cacheKey]) {
+			return this.lensCache[cacheKey];
 		}
+
+		const result =
+			!Array.isArray(lenses) && this.isDerivedLens(lenses)
+				? this.findDerivedLens(className, lenses)
+				: this._findLens(lenses, className);
+
+		this.lensCache[cacheKey] = result;
+		return result;
 	}
 
 	private _findLens(
