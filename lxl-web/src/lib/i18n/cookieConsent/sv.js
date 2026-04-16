@@ -24,7 +24,29 @@ export default {
 				title: 'Nödvändiga kakor',
 				description:
 					'Dessa kakor krävs för att tjänsten ska vara säker och fungera som den ska. Därför går de inte att inaktivera.',
-				linkedCategory: 'necessary'
+				linkedCategory: 'necessary',
+				cookieTable: {
+					title: 'Lista över kakor',
+					headers: {
+						name: 'Namn',
+						description: 'Beskrivning',
+						duration: 'Varaktighet'
+					},
+					body: [
+						{
+							name: 'techaro.lol-anubis-auth',
+							description:
+								'Sparas när din webbläsare klarat en säkerhetskontroll som skyddar mot automatiserade bottar. Den gör att du slipper genomgå kontrollen på nytt vid varje sidbesök.',
+							duration: '1 vecka'
+						},
+						{
+							name: 'techaro.lol-anubis-cookie-verification',
+							description:
+								'Används för att kontrollera att din webbläsare accepterar kakor, vilket krävs för att säkerhetskontrollen ska fungera.',
+							duration: '30 minuter'
+						}
+					]
+				}
 			},
 			{
 				title: 'Analytiska kakor',

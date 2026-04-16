@@ -557,6 +557,16 @@ export default {
                       name: "cc_cookie",
                       description: "Används för att spara dina kakinställningar.",
                       duration: "6 månader"
+                    },
+                    {
+                      name: "techaro.lol-anubis-auth",
+                      description: "Sparas när din webbläsare klarat en säkerhetskontroll som skyddar mot automatiserade bottar. Den gör att du slipper genomgå kontrollen på nytt vid varje sidbesök.",
+                      duration: "1 vecka"
+                    },
+                    {
+                      name: "techaro.lol-anubis-cookie-verification",
+                      description: "Används för att kontrollera att din webbläsare accepterar kakor, vilket krävs för att säkerhetskontrollen ska fungera.",
+                      duration: "30 minuter"
                     }
                   ]
                 }

@@ -23,7 +23,29 @@ export default {
 				title: 'Necessary cookies',
 				description:
 					'These cookies are essential for the proper functioning of the website and cannot be disabled.',
-				linkedCategory: 'necessary'
+				linkedCategory: 'necessary',
+				cookieTable: {
+					title: 'Lista över kakor',
+					headers: {
+						name: 'Namn',
+						description: 'Beskrivning',
+						duration: 'Varaktighet'
+					},
+					body: [
+						{
+							name: 'techaro.lol-anubis-auth',
+							description:
+								"Saved when your browser has passed a security check against automated bots. It means you don't have to go through the check again on each page visit.",
+							duration: '1 week'
+						},
+						{
+							name: 'techaro.lol-anubis-cookie-verification',
+							description:
+								'Used to check that your browser accepts cookies, which is required for the security check to work.',
+							duration: '30 minutes'
+						}
+					]
+				}
 			},
 			{
 				title: 'Analytical cookies',
