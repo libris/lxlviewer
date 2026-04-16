@@ -49,6 +49,7 @@
 			resourceTableOfContents: DisplayDecorated[];
 			details: DisplayDecorated[];
 			token: DisplayDecorated;
+			itemNote: Record<string, ResourceData>;
 		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
@@ -409,6 +410,21 @@
 								/>
 							</div>
 						{/each}
+						{#if Object.keys(decoratedData.itemNote).length}
+							<details open>
+								<summary>Bibliotekens lokala klassifikation, anmärkningar och ämnesord</summary>
+								<ul>
+									{#each Object.entries(decoratedData.itemNote) as [sigel, itemNote] (sigel)}
+										{#if itemNote?.[Fmt.DISPLAY]?.length}
+											<li class="block">
+												<span class="font-medium">{sigel}:</span>
+												<DecoratedData data={itemNote} showLabels={ShowLabelsOptions.Always} />
+											</li>
+										{/if}
+									{/each}
+								</ul>
+							</details>
+						{/if}
 					</div>
 				</section>
 			{/if}

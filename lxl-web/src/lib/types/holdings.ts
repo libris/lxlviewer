@@ -1,8 +1,8 @@
-import type { BibDb, DisplayDecorated, FramedData, JsonLd } from './xl';
+import type { BibDb, Bibframe, DisplayDecorated, FramedData, JsonLd } from './xl';
 
 export type HoldingMainEntity = {
 	[JsonLd.REVERSE]?: {
-		instanceOf: HoldingInstance[];
+		[Bibframe.instanceOf]: HoldingInstance[];
 	};
 };
 
@@ -22,7 +22,7 @@ export type HoldingInstance = {
 	}[];
 };
 
-type HoldingItem = {
+export type HoldingItem = {
 	[JsonLd.ID]: string;
 	[JsonLd.TYPE]: 'Item';
 	heldBy: LibraryChip;

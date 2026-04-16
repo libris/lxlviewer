@@ -838,6 +838,7 @@
 				},
 				"Item": {
 					"@id": "Item-web-overview",
+					"NOTE": "Related links in panel",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": ["associatedMedia", "isPrimaryTopicOf"]
@@ -878,6 +879,7 @@
 				},
 				"Item": {
 					"@id": "Item-web-overview2",
+					"NOTE": "WHYL properties in panel",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [
@@ -901,6 +903,7 @@
 		},
 		"web-overview-footer": {
 			"@id": "web-overview-footer",
+			"NOTE": "hasItemNote properties in panel",
 			"@type": "fresnel:Group",
 			"lenses": {
 				"Item": {
@@ -1026,6 +1029,26 @@
 							"alternateProperties": [{ "subPropertyOf": "identifiedBy", "range": "SMDBNumber" }]
 						},
 						"controlNumber"
+					]
+				},
+				"Item": {
+					"@id": "Item-web-details",
+					"NOTE": "hasItemNote properties in details",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Item",
+					"showProperties": [
+						"cataloguersNote",
+						"custodialHistory",
+						"summary",
+						"hasNote",
+						"appliesTo",
+						"hasComponent",
+						"marc:hasCopyAndVersionIdentificationNote",
+						"marc:itemCondition",
+						"marc:hasBindingInformation",
+						"marc:hasTextualHoldingsBasicBibliographicUnit",
+						"subject",
+						"classification"
 					]
 				}
 			}
