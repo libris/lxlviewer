@@ -43,11 +43,15 @@ export class VocabUtil {
 	vocabIndex: Map;
 	context;
 	labelCache: Record<LangCode, Record<string, string>>;
+	termDefinitionCache: Record<string, FramedData>;
+	baseClassCache: Record<ClassName, ClassName[]>;
 
 	constructor(vocab: VocabData, context: ContextData) {
 		this.context = lxljsVocab.preprocessContext(context)[JsonLd.CONTEXT];
 		this.vocabIndex = lxljsVocab.preprocessVocab(vocab);
 		this.labelCache = {};
+		this.termDefinitionCache = {};
+		this.baseClassCache = {};
 	}
 
 	getLabelCache(locale: LangCode) {
@@ -58,11 +62,23 @@ export class VocabUtil {
 		return this.labelCache[locale];
 	}
 
+	// TODO reimplement lxljsVocab.getBaseClasses()
 	getBaseClasses(className: ClassName | ClassName[]): ClassName[] {
 		//FIXME? if multiple base classes, base classes are returned in depth-first order instead of breadth-first
 		return Array.isArray(className)
-			? className.map((c) => lxljsVocab.getBaseClasses(c, this.vocabIndex, this.context)).flat()
-			: lxljsVocab.getBaseClasses(className, this.vocabIndex, this.context);
+			? className.map((c) => this.getBaseClasses(c)).flat()
+			: this._getBaseClasses(className);
+	}
+
+	_getBaseClasses(className: ClassName): ClassName[] {
+		if (!this.baseClassCache[className]) {
+			this.baseClassCache[className] = lxljsVocab.getBaseClasses(
+				className,
+				this.vocabIndex,
+				this.context
+			);
+		}
+		return this.baseClassCache[className];
 	}
 
 	// TODO handle missing type
@@ -70,13 +86,27 @@ export class VocabUtil {
 		return thing[JsonLd.TYPE] as ClassName;
 	}
 
+	// TODO reimplement lxljsVocab.getTermObject()
 	getDefinition(name: ClassName | PropertyName | Link): FramedData {
 		if (typeof name === 'string') {
-			return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
+			return this._getDefinition(name);
 		}
 		if (isLink(name)) {
-			return lxljsVocab.getTermObject(name[JsonLd.ID], this.vocabIndex, this.context);
+			return this._getDefinition(name[JsonLd.ID]);
 		}
+
+		return {} as FramedData;
+	}
+
+	_getDefinition(name: string): FramedData {
+		if (!this.termDefinitionCache[name]) {
+			this.termDefinitionCache[name] = lxljsVocab.getTermObject(
+				name,
+				this.vocabIndex,
+				this.context
+			) as FramedData;
+		}
+		return this.termDefinitionCache[name];
 	}
 
 	getPropertiesByCategory(category: string): FramedData[] {
