@@ -44,11 +44,15 @@ export class VocabUtil {
 	vocabIndex: Map;
 	context;
 	labelCache: Record<LangCode, Record<string, string>>;
+	termDefinitionCache: Record<string, FramedData>;
+	baseClassCache: Record<ClassName, ClassName[]>;
 
 	constructor(vocab: VocabData, context: ContextData) {
 		this.context = lxljsVocab.preprocessContext(context)[JsonLd.CONTEXT];
 		this.vocabIndex = lxljsVocab.preprocessVocab(vocab);
 		this.labelCache = {};
+		this.termDefinitionCache = {};
+		this.baseClassCache = {};
 	}
 
 	getLabelCache(locale: LangCode) {
@@ -59,11 +63,23 @@ export class VocabUtil {
 		return this.labelCache[locale];
 	}
 
+	// TODO reimplement lxljsVocab.getBaseClasses()
 	getBaseClasses(className: ClassName | ClassName[]): ClassName[] {
 		//FIXME? if multiple base classes, base classes are returned in depth-first order instead of breadth-first
 		return Array.isArray(className)
-			? className.map((c) => lxljsVocab.getBaseClasses(c, this.vocabIndex, this.context)).flat()
-			: lxljsVocab.getBaseClasses(className, this.vocabIndex, this.context);
+			? className.map((c) => this.getBaseClasses(c)).flat()
+			: this._getBaseClasses(className);
+	}
+
+	_getBaseClasses(className: ClassName): ClassName[] {
+		if (!this.baseClassCache[className]) {
+			this.baseClassCache[className] = lxljsVocab.getBaseClasses(
+				className,
+				this.vocabIndex,
+				this.context
+			);
+		}
+		return this.baseClassCache[className];
 	}
 
 	// TODO handle missing type
@@ -71,13 +87,27 @@ export class VocabUtil {
 		return thing[JsonLd.TYPE] as ClassName;
 	}
 
+	// TODO reimplement lxljsVocab.getTermObject()
 	getDefinition(name: ClassName | PropertyName | Link): FramedData {
 		if (typeof name === 'string') {
-			return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
+			return this._getDefinition(name);
 		}
 		if (isLink(name)) {
-			return lxljsVocab.getTermObject(name[JsonLd.ID], this.vocabIndex, this.context);
+			return this._getDefinition(name[JsonLd.ID]);
 		}
+
+		return {} as FramedData;
+	}
+
+	_getDefinition(name: string): FramedData {
+		if (!this.termDefinitionCache[name]) {
+			this.termDefinitionCache[name] = lxljsVocab.getTermObject(
+				name,
+				this.vocabIndex,
+				this.context
+			) as FramedData;
+		}
+		return this.termDefinitionCache[name];
 	}
 
 	getPropertiesByCategory(category: string): FramedData[] {
@@ -216,6 +246,8 @@ export class DisplayUtil {
 	private registeredDerivedLensTypes: Record<DerivedLensType, DerivedLensTypeDefinition> = {};
 	private derivedLensesCache: Record<string, Lens> = {};
 
+	private readonly lensCache: Record<string, Lens> = {};
+
 	// x -> xByLang
 	langContainerAlias: Record<PropertyName, PropertyName> = {};
 
@@ -287,12 +319,12 @@ export class DisplayUtil {
 			[JsonLd.TYPE]: Fresnel.Lens,
 			classLensDomain: type,
 			showProperties: []
-		};
-		let taken = this.findLens(def.minusFirst, type, empty).showProperties.map((s) =>
+		} as Lens;
+		let taken = this._findLens(def.minusFirst, type, empty).showProperties.map((s) =>
 			JSON.stringify(s)
 		);
 		taken += def.minusAll
-			.map((l) => this.findLens(l, type, empty).showProperties)
+			.map((l) => this._findLens(l, type, empty).showProperties)
 			.flat()
 			.map((s) => JSON.stringify(s));
 
@@ -493,16 +525,19 @@ export class DisplayUtil {
 		return result;
 	}
 
-	private findLens(
-		lenses: LensType | LensType[] | DerivedLensType,
-		className: ClassName,
-		defaultTo: Lens = undefined
-	) {
-		if (!Array.isArray(lenses) && this.isDerivedLens(lenses)) {
-			return this.findDerivedLens(className, lenses);
-		} else {
-			return this._findLens(lenses, className, defaultTo);
+	private findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
+		const cacheKey = `${className}-${Array.isArray(lenses) ? lenses.join(',') : lenses}`;
+		if (this.lensCache[cacheKey]) {
+			return this.lensCache[cacheKey];
 		}
+
+		const result =
+			!Array.isArray(lenses) && this.isDerivedLens(lenses)
+				? this.findDerivedLens(className, lenses)
+				: this._findLens(lenses, className);
+
+		this.lensCache[cacheKey] = result;
+		return result;
 	}
 
 	private _findLens(
