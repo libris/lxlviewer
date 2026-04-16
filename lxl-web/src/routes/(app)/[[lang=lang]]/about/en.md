@@ -1,133 +1,77 @@
 ---
-title: 'Help'
+title: 'About Libris'
 ---
-
-# About
 
 <i>ATTENTION: Automated machine translation</i>
 
-Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog. Right now, an initiative is underway to replace the already existing and well-used service [libris.kb.se](gttps://libris.kb.se) and this is our public beta version of the upcoming service. This new service is based on the new information infrastructure that was launched seven years ago and now it is time to replace the public search service. Both services will be available in parallel until we are ready to phase out the old infrastructure.
+# About Libris
 
-### Why a Public Beta?
+Libris is the shared catalogue and search service of Swedish libraries. Here you can explore over 9 million works from more than 600 libraries across Sweden. The [National Library of Sweden](https://kb.se/) (KB) is responsible for coordination, development, and operation of the Libris ecosystem.
 
-We work for transparency and participation to achieve a successful outcome. This public beta version of the upcoming service is a step to get important feedback from real users. This means that the beta version is shown before all functionality is available or fully completed.
+## What can I do at libris.kb.se?
 
-### Share Your Thoughts on the New Libris
+In this search service, you can find materials from Swedish libraries and see where they are available for physical loan or digitally. You can search freely, narrow your results using filters, or create complex search queries. Read the [search help](/help/search) for more tips on how to find or explore content.  
+You can also search for libraries and choose your own [favorite libraries](/my-pages) to easily limit your searches to them.
 
-You're welcome to try out the service and [share your feedback through this form](https://survey.kb.se/librisbeta/en). Your opinions matter!
+## What is the Libris collaboration?
 
-You can find [answers to frequently asked questions in the FAQ](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html).
+Libris is built on a collaboration between more than 600 Swedish libraries. Together, they create and maintain the catalogue and participate in joint cooperation. On the page [The Libris collaboration](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/librissamarbetet.html), you can read more about how it works.
 
-### General information about the search service and the initiative
+## What is included in the catalogue?
 
-Libris' new search service will eventually replace [libris.kb.se](gttps://libris.kb.se). The old service is technically outdated and needs to be replaced, not least to meet the legal requirements for accessibility in digital public services. This beta version is a first step towards a service that will bring several improvements for users.
+Libris consists of approximately 7 million physical titles and about 3.6 million digital titles in more than 80 languages.  
+Of the digital material, around 1.5 million items are freely available. The collections include everything from books to video games, music to braille materials, and more. Feel free to explore Libris material categories.
 
-A cornerstone of Libris is the information model based on linked data that is used to describe the material in the catalog. The new service is built with a more direct connection to this model, making it both simpler and technically more robust. It also means that changes made using Libris' cataloging tools are reflected in the search service without delay and the material can be explored in new ways.
+### Linked data
 
-The goal is also to build a more user-friendly interface while improving and expanding many of the features that are available today. With a more computer-friendly design, some text may initially be perceived as more technical than before. This is something we will continue to work on to improve. The service's design language and graphic expression will also change and improve along the way.
+The catalogue contains information about people, subjects, organizations, and other components of Libris linked data. On [id.kb.se](https://id.kb.se/) you can read more about the building blocks KB uses to publish structured, linked data.
 
-The goals for the service are: "everyone can be inspired to explore the collections of the Swedish Library , get a comprehensive overview of its materials and access them." This is done by: Providing an overview, being easy to use, reliable, accessible, flexible and inspiring.
+Not all material in Libris currently contains linked data, but it is more prevalent within languages, Swedish Subject Headings, and Swedish fiction.
 
-### A Selection of Planned Improvements
+### Special collections
 
-- Better layout and information content in the search results list
-- Better presentation and selection of information on detail pages
-- Better material categorization (types) such as novel, newspaper, computer game, and physical and digital instead of “text, electronic” (see below).
-- Improved interface for advanced search functionality
-- Ability to save searches and lists of materials
-- Reference tool with additional data mappings
-- Searching in different subsets
-- Libris as a local library catalog
+Libris includes the Swedish National Bibliography, a selection of bibliographies in various subject areas, and local/regional collections. All bibliographies are produced by Libris libraries and can be delimited as special collections.
 
-### Improved material categorization:
+## Variation in the content
 
-The material categories (or “types”) that are visible in the beta version today will eventually be replaced where they are not clear enough. Concepts such as “Text, print”, “ Instance“ , “Monographic resource” and so on will be replaced with clearer concepts such as “ Magazine“ , “ Audiobook“ , “ Poster“ and “ Postcard“ . The goal is understandable and usable types that will last over time.
+Libris has been built up over more than 50 years, which means there is both variation in the content and differences in the quality of descriptions. Libris is very extensive but not exhaustive. For example, there is still material that is only described in local library systems, old card catalogues, or other catalogues.
 
-In today's libris.kb.se, labels such as "book", "e-book" and "poster" are calculated in the search service in a complicated way, based on a number of data points. This unnecessary complexity is due, among other things, to the limitations that existed in the catalog when the service was developed. In parallel with the development of the new search service, we are now working on improving the catalog's data and information model. Since the new search service more directly reflects the catalog, improvements will be visible as soon as they are made.
+Cataloguing practices have also changed over the years, which means the catalogue is not entirely consistent. For example, some material may lack links to the creator, or spellings may differ.
 
-Different concepts and degrees of precision may still be needed in different contexts. But these differences can largely be captured in the common catalog model instead of being, as is the case today, tightly tied to different services.
+## About older and historical language use
 
-## Version Information
+As a user, it may also be helpful to be aware that library collections and the search service contain older terms and other content that may be perceived as offensive, discriminatory, or outdated.
 
-Here we will continuously provide information about newly added features and planned developments:
+Expressions that reflect the attitudes of their creators at the time may evoke strong emotions today, but they are necessary for our understanding of the past and the present.
 
-### 2025-10-20
+## How can I use the data?
 
-- First iteration of improved material types
-- Ability to generate references for materials in a number of different formats, additional data mapping remains.
-- Mobile experience improvements
-- Updated relevance calculation
-- Ability to navigate to the next and previous hit from the resource page
-- Improved inventory panel
-- New logo
-- Improved menu
-- Bug fixes
-- Ability to search by ISBN with and without dashes
-- Borrow buttons for libraries that have Libris as their local library catalog
+Data in Libris consists of both data from external sources and data produced by the Libris collective itself. With the [Libris APIs](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/att-anvanda-librisdata/anvandning-av-apier.html), you can integrate Libris data to and from your local system. Libris as a data platform includes a number of publicly available APIs. Most of these APIs provide read access to open, publicly available data. Some APIs also provide write access and therefore require authentication and an agreement with KB for use. The Swedish National Bibliography and Swedish authority records are freely available without restrictions.
 
-### 2025-06-23
+## Accessibility
 
-- Usability improvements of search user interface
+Our aim is that everyone should be able to be inspired to explore the collections of Sweden’s libraries, gain an overall view of their materials, and access them. The service is developed in accordance with recommendations from [Funka.com](https://www.funka.com/), [W3C](https://www.w3.org/WAI/standards-guidelines/), and others, to ensure an inclusive design and experience. Please read Libris Search’s [accessibility statement](https://www.kb.se/om-oss/tillganglighet-pa-kbs-webbplatser-och-digitala-tjanster.html#item_125b5507eb18cedffd1a436125_45b5507eb18cedffd1a4317ec) for more information.
 
-### 2025-06-19
+## Privacy and system requirements
 
-- Layout modifications including an adjustable left panel
+The search service uses optional cookies (small text/information files) in your web browser to improve the user experience, ensure that the service and its features function correctly, and for analytical purposes.
 
-### 2025-06-01
+When overload protection is activated, JavaScript may be required to access the service.
 
-- Links to library catalogues in holdings modal
+## Copyright
 
-### 2025-05-13
+Images in Libris – for example book covers – may be protected by copyright. You may not download or use them without permission. Some images, however, are free to use. As a user, you are responsible for checking what applies.
 
-- Design updates
-- Filter on free online material
-- Bug fixes
+For cover images in Libris from Nielsen Book Services Limited, the following applies:  
+"Copyright in any data cover images supplied by Nielsen Book Services Limited is held by Nielsen Book Services Limited or by the publishers or by their respective licensors: all rights reserved"
 
-### 2025-04-24
+## How can I learn more?
 
-- Ability to set and filter on favourite libraries
+Read more [questions and answers](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html)  
+For current information, follow [Libris news](https://www.kb.se/for-bibliotekssektorn/nytt-fran-kb.html?sv.target=12.5b5507eb18cedffd1a434463&amp;sv.12.5b5507eb18cedffd1a434463.route=%2Fnews&amp;keywords%5B%5D=Katalogisering&amp;keywords%5B%5D=Libris&amp;keywords%5B%5D=Libris%20versionsinformation&amp;page=1) and [Libris development](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/libris-utveckling.html).
 
-### 2025-03-11
+Note:  
+You cannot purchase books, journals, or other materials through Libris; instead, we refer you to booksellers.  
+For purchase suggestions or interlibrary loan requests, please contact your local library.
 
-- Add advanced search functionality
-
-### 2024-11-07
-
-- Cookie settings
-
-### 2024-10-14
-
-- Improvements in the filter panel, filter items can now be sorted by preference.
-- Bug fixes
-
-### 2024-09-09
-
-- Loan status information now shown in the library holdings list
-- Library list now contains more detailed information and search functionality
-- Spelling suggestions next to search result
-- Access and usage policy for cover images
-- Loading indicator
-- Bug fixes
-
-### 2024-06-27
-
-- Changed default number of hits per page to 20
-- Added search on result list for people and subjects
-- Hide labels for free text queries and add quotes instead
-- Bug fixes
-
-### 2024-06-12
-
-- Improved help text
-- Selectable text in search results
-- Improved pagination
-
-### 2024-05-29
-
-- Standard free text search
-- Filters to narrow down search results
-- Result list with pagination and sorting options
-- Pages for detailed information about materials, including which libraries hold them
-- Pages for persons and subject terms listing related materials
-- Boolean search logic in the search box. Example: pippi SPRÅK:"lang" hasInstanceType itemHeldBy:"sigel S"
-- Basic search filtering that excludes upcoming titles (preliminary information) or electronically deposited resources, with the option to manually deactivate.
+You are always welcome to contact us—write to [Libris customer service](https://www.kb.se/om-oss/kontakta-oss/#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3).
