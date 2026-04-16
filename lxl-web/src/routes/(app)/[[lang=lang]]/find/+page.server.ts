@@ -66,20 +66,27 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 
 	const result = (await recordsRes.json()) as PartialCollectionView;
 
-	// zero hits -> redirect to a search with wildcard at cursor position
-	if (
-		result.totalItems === 0 &&
-		url.searchParams.get('_cursor') &&
-		!url.searchParams.has('_relaxed')
-	) {
-		const cursor = url.searchParams.get('_cursor');
+	// zero hits -> try truncating the search
+	if (result.totalItems === 0) {
+		const _cursor = url.searchParams.get('_cursor');
+		const _relaxed = url.searchParams.has('_relaxed');
 		const retryParams = new URLSearchParams(url.searchParams);
 		const _q = retryParams.get('_q');
 
-		if (cursor && _q) {
-			const _qWithWildCard = _q.slice(0, parseInt(cursor)) + '*' + _q.slice(parseInt(cursor));
-			retryParams.set('_q', _qWithWildCard);
+		if (_cursor && _q && !_relaxed) {
+			// add wildcard
+			const _qWithWildcard = _q.slice(0, parseInt(_cursor)) + '*' + _q.slice(parseInt(_cursor));
+			retryParams.set('_q', _qWithWildcard);
 			retryParams.set('_relaxed', 'true');
+
+			redirect(302, `${url.pathname}?${retryParams.toString()}`);
+		}
+
+		if (_cursor && _q && _relaxed && _q.slice(parseInt(_cursor)).startsWith('*')) {
+			// tried it, still no hits -> remove wildcard
+			const _qWithoutWildcard = _q.slice(0, parseInt(_cursor)) + _q.slice(parseInt(_cursor) + 1);
+			retryParams.set('_q', _qWithoutWildcard);
+			retryParams.delete('_relaxed');
 			retryParams.delete('_cursor');
 
 			redirect(302, `${url.pathname}?${retryParams.toString()}`);
