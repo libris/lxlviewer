@@ -323,7 +323,7 @@
 						</p>
 					</hgroup>
 				{/if}
-				<AppSearch id="app-search" name="_q" />
+				<AppSearch />
 			</form>
 		</search>
 		<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">
