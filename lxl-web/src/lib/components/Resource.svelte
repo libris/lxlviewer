@@ -29,6 +29,7 @@
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
 	import BiQuote from '~icons/bi/quote';
+	import BiChevronRight from '~icons/bi/chevron-right';
 
 	type Props = {
 		fnurgel: string;
@@ -415,7 +416,12 @@
 						{/each}
 						{#if Object.keys(decoratedData.itemDetails).length}
 							<details open class="mt-4">
-								<summary>
+								<summary class="flex cursor-pointer items-center gap-1">
+									<span
+										class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
+									>
+										<BiChevronRight />
+									</span>
 									<h3 class="text-md font-medium">
 										{page.data.t('holdings.itemDetails')}
 									</h3>
@@ -920,6 +926,12 @@
 					@apply mr-6;
 				}
 			}
+		}
+	}
+
+	details[open] {
+		& .chevron {
+			rotate: 90deg;
 		}
 	}
 </style>
