@@ -55,8 +55,8 @@
 				instance?.linksToItem.length ||
 				instance?.loanReserveLink.length ||
 				instance?.itemStatus?.length ||
-				instance?.shelfData?._display?.length ||
-				instance?.itemNoteData?._display?.length ||
+				instance?.itemShelf?._display?.length ||
+				instance?.itemNote?._display?.length ||
 				instance?.itemMedia?._display?.length
 		)
 	);
@@ -102,11 +102,11 @@
 		</li>
 	{/if}
 	<!-- shelf data -->
-	{#if instance.shelfData?._display?.length}
+	{#if instance.itemShelf?._display?.length}
 		<li>
 			<p>
-				<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
-				<DecoratedData data={instance.shelfData} showLabels={ShowLabelsOptions.Never} />
+				<span class="text-subtle">{page.data.t('holdings.itemShelf')}: </span>
+				<DecoratedData data={instance.itemShelf} showLabels={ShowLabelsOptions.Never} />
 			</p>
 		</li>
 	{/if}
@@ -120,11 +120,11 @@
 		</li>
 	{/if}
 	<!-- Item notes -->
-	{#if instance.itemNoteData?._display?.length}
+	{#if instance.itemNote?._display?.length}
 		<li>
 			<p>
 				<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
-				<DecoratedData data={instance.itemNoteData} showLabels={ShowLabelsOptions.Never} />
+				<DecoratedData data={instance.itemNote} showLabels={ShowLabelsOptions.Never} />
 			</p>
 		</li>
 	{/if}

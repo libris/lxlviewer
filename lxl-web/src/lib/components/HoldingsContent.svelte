@@ -69,8 +69,8 @@
 				}
 				libraries[libraryId][instanceId] = {
 					...bibIdData[instanceId],
-					shelfData: lib.shelfData,
-					itemNoteData: lib.itemNoteData,
+					itemShelf: lib.itemShelf,
+					itemNote: lib.itemNote,
 					itemMedia: lib.itemMedia
 				};
 			}

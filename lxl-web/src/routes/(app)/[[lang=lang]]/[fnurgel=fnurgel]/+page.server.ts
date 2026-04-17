@@ -165,7 +165,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	let searchResult: ResourceSearchResult | undefined;
 	let instances;
-	const itemNote: Record<string, DisplayDecorated> = {};
+	const itemDetails: Record<string, DisplayDecorated>[] = [];
 
 	if (mainEntity?.[JsonLd.REVERSE]?.instanceOf?.length > 0) {
 		const sortedInstances = getSortedInstances(mainEntity?.[JsonLd.REVERSE]?.instanceOf);
@@ -185,7 +185,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 		if (!isWork && sortedInstances.length === 1) {
 			const items = sortedInstances[0]?.[JsonLd.REVERSE]?.itemOf ?? [];
 			items.forEach((item: HoldingItem) => {
-				itemNote[item.heldBy.sigel] = displayUtil.lensAndFormat(item, LensType.WebDetails, '');
+				itemDetails.push({
+					heldBy: displayUtil.lensAndFormat(item?.heldBy, LensType.Chip, locale),
+					item: displayUtil.lensAndFormat(item, LensType.WebDetails, locale)
+				});
 			});
 		}
 	}
@@ -353,7 +356,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			resourceTableOfContents: resourceTableOfContents,
 			details: details,
 			token: token,
-			itemNote
+			itemDetails
 		},
 		searchResult,
 		holdings,

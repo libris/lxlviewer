@@ -97,8 +97,8 @@ export type BibIdObj = {
 	issn: string[];
 	publicationStr: string;
 	titleStr: string;
-	shelfData: DisplayDecorated | undefined;
-	itemNoteData: DisplayDecorated | undefined;
+	itemShelf: DisplayDecorated | undefined;
+	itemNote: DisplayDecorated | undefined;
 	itemMedia: DisplayDecorated | undefined;
 };
 
@@ -107,8 +107,8 @@ export type BibIdData = { [instanceId: string]: BibIdObj };
 export type HoldersByInstanceId = {
 	[id: LibraryId]: {
 		[JsonLd.ID]: string;
-		shelfData?: DisplayDecorated;
-		itemNoteData?: DisplayDecorated;
+		itemShelf?: DisplayDecorated;
+		itemNote?: DisplayDecorated;
 		itemMedia?: DisplayDecorated;
 	}[];
 };

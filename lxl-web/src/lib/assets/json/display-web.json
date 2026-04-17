@@ -903,7 +903,7 @@
 		},
 		"web-overview-footer": {
 			"@id": "web-overview-footer",
-			"NOTE": "hasItemNote properties in panel",
+			"NOTE": "itemNote properties in panel",
 			"@type": "fresnel:Group",
 			"lenses": {
 				"Item": {
@@ -1033,7 +1033,7 @@
 				},
 				"Item": {
 					"@id": "Item-web-details",
-					"NOTE": "hasItemNote properties in details",
+					"NOTE": "Item data in details",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [
