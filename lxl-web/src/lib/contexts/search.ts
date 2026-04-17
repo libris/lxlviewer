@@ -6,5 +6,9 @@ export const [getSearchContext, setSearchContext] = createContext<{
 	showExpandedSearch: (options: ShowExpandedSearchOptions) => void;
 	hideExpandedSearch: () => void;
 	changeQuery: (params: ChangeQueryParams) => void;
+	initialStateBeforeMount?: {
+		value: string;
+		selection?: { anchor: number | null | undefined; head: number | null | undefined };
+	};
 	isMounted: boolean;
 }>();

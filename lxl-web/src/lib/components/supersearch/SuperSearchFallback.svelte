@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { getSearchContext } from '$lib/contexts/search';
 	import IconSearch from '~icons/bi/search';
 	import IconClear from '~icons/bi/x-circle';
 
@@ -7,10 +8,12 @@
 		placeholder: string;
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
+		autofocus?: boolean;
 	}
 
-	let { placeholder, ariaLabel, ariaLabelledBy }: Props = $props();
+	let { placeholder, ariaLabel, ariaLabelledBy, autofocus }: Props = $props();
 
+	const searchContext = getSearchContext();
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
 
 	let value = $derived(page.url.searchParams.get('_q'));
@@ -20,6 +23,33 @@
 			fallbackInputElement?.focus();
 		}
 	});
+
+	function getSelectionOnTeardown(): { anchor: number | null; head: number | null } | undefined {
+		if (fallbackInputElement?.selectionStart || fallbackInputElement?.selectionEnd) {
+			if (fallbackInputElement.selectionDirection === 'backward') {
+				return {
+					anchor: fallbackInputElement?.selectionEnd,
+					head: fallbackInputElement?.selectionStart
+				};
+			}
+			return {
+				anchor: fallbackInputElement?.selectionStart,
+				head: fallbackInputElement?.selectionEnd
+			};
+		}
+	}
+
+	$effect(() => {
+		return () => {
+			// Use teardown function to save state before mounting SuperSearchWrapper.svelte (so selection and value is kept...)
+			if (fallbackInputElement) {
+				searchContext.initialStateBeforeMount = {
+					value: fallbackInputElement.value,
+					selection: getSelectionOnTeardown()
+				};
+			}
+		};
+	});
 </script>
 
 <div class="fallback-search relative">
@@ -27,12 +57,14 @@
 		<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
 	</span>
 	<input
+		id="search-fallback"
 		type="search"
 		name="_q"
 		{placeholder}
 		{value}
 		aria-labelledby={ariaLabelledBy}
 		aria-label={ariaLabel}
+		{autofocus}
 		bind:this={fallbackInputElement}
 		class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:pl-3 lg:text-[0.9375rem] sm:@3xl:pl-4"
 	/>
