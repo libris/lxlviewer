@@ -50,10 +50,12 @@
 			resourceTableOfContents: DisplayDecorated[];
 			details: DisplayDecorated[];
 			token: DisplayDecorated;
-			itemDetails: {
-				heldBy: DisplayDecorated;
-				item: DisplayDecorated;
-			}[];
+			itemDetails:
+				| {
+						heldBy: DisplayDecorated;
+						item: DisplayDecorated;
+				  }[]
+				| [];
 		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
@@ -414,7 +416,7 @@
 								/>
 							</div>
 						{/each}
-						{#if Object.keys(decoratedData.itemDetails).length}
+						{#if decoratedData.itemDetails.length}
 							<details class="mt-4">
 								<summary class="flex cursor-pointer items-center gap-1">
 									<span
@@ -427,24 +429,19 @@
 									</h3>
 								</summary>
 								<ul class="mt-2 flex flex-col gap-1">
-									{#each Object.entries(decoratedData.itemDetails) as [sigel, holder] (sigel)}
-										{#if holder.item?.[Fmt.DISPLAY]?.length}
-											<li class="block rounded-sm border border-neutral-200 p-2">
-												<p class="mb-1 font-medium">
-													<DecoratedData
-														data={holder.heldBy}
-														showLabels={ShowLabelsOptions.Never}
-													/>
-												</p>
-												<DecoratedData
-													data={holder.item}
-													showLabels={ShowLabelsOptions.Always}
-													allowFindLinks={false}
-													block
-													limit={{ contribution: 5, hasVariant: 10 }}
-												/>
-											</li>
-										{/if}
+									{#each decoratedData.itemDetails as holder, index (index)}
+										<li class="block rounded-sm border border-neutral-200 p-2">
+											<p class="mb-1 font-medium">
+												<DecoratedData data={holder.heldBy} showLabels={ShowLabelsOptions.Never} />
+											</p>
+											<DecoratedData
+												data={holder.item}
+												showLabels={ShowLabelsOptions.Always}
+												allowFindLinks={false}
+												block
+												limit={{ contribution: 5, hasVariant: 10 }}
+											/>
+										</li>
 									{/each}
 								</ul>
 							</details>

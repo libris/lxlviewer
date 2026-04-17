@@ -165,7 +165,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	let searchResult: ResourceSearchResult | undefined;
 	let instances;
-	const itemDetails: Record<string, DisplayDecorated>[] = [];
+	let itemDetails: Record<string, DisplayDecorated>[] = [];
 
 	if (mainEntity?.[JsonLd.REVERSE]?.instanceOf?.length > 0) {
 		const sortedInstances = getSortedInstances(mainEntity?.[JsonLd.REVERSE]?.instanceOf);
@@ -192,6 +192,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 			});
 		}
 	}
+
+	itemDetails = itemDetails.filter((i) => i.item[Fmt.DISPLAY].length);
 
 	const creations = [mainEntity].concat(mainEntity?.['@reverse']?.instanceOf || []);
 	const summary = creations
