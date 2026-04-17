@@ -199,6 +199,15 @@ export default {
 		loading: 'Laddar...',
 		suggestions: 'Förslag',
 		showAll: 'Visa sökresultat',
+		arrowUpKey: 'Piltangent uppåt',
+		arrowRightKey: 'Piltangent höger',
+		arrowDownKey: 'Piltangent neråt',
+		arrowLeftKey: 'Piltangent vänster',
+		returnKey: 'Returtangent',
+		navigate: 'Navigera',
+		select: 'Välj',
+		clear: 'Rensa',
+		add: 'Lägg till',
 		searchHelp: 'Sökhjälp'
 	},
 	sort: {

@@ -13,6 +13,7 @@
 		type DebouncedWaitFunction,
 		type ExpandEvent
 	} from 'supersearch';
+	import SuperSearchFooterRow from './SuperSearchFooterRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
@@ -537,8 +538,16 @@
 				</button>
 			</div>
 		{/snippet}
-		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			{@const searchHelpRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
+		{#snippet expandedContent({
+			resultsCount,
+			resultsSnippet,
+			getCellId,
+			isFocusedRow,
+			isFocusedCell
+		})}
+			{@const inputRowIndex = 0}
+			{@const qualifiersRowIndex = showAddQualifiers ? 1 : -1}
+			{@const footerRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
 			<nav class="mt-3 lg:mt-4">
 				{#if showAddQualifiers}
 					<div
@@ -621,23 +630,14 @@
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
-				<div
-					role="row"
-					data-skip-row-on-arrow-key
-					class="border-neutral mt-2 flex justify-end gap-4 border-t px-4 text-sm"
-				>
-					<!-- TODO: Add keyboard interaction help here -->
-					<a
-						href={resolve(page.data.localizeHref('/help'))}
-						id={getCellId(searchHelpRowIndex, 0)}
-						class={[
-							'text-link flex min-h-14 items-center justify-end overflow-hidden px-4 hover:underline',
-							isFocusedCell(searchHelpRowIndex, 0) && 'underline'
-						]}
-					>
-						{page.data.t('supersearch.searchHelp')}
-					</a>
-				</div>
+				<SuperSearchFooterRow
+					{inputRowIndex}
+					{qualifiersRowIndex}
+					{footerRowIndex}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+				/>
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}

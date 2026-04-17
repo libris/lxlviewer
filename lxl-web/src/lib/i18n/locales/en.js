@@ -200,6 +200,15 @@ export default {
 		loading: 'Loading...',
 		suggestions: 'Suggestions',
 		showAll: 'Show search results',
+		arrowUpKey: 'Arrow Up key',
+		arrowRightKey: 'Arrow Right key',
+		arrowDownKey: 'Arrow Down key',
+		arrowLeftKey: 'Arrow Left key',
+		returnKey: 'Return key',
+		navigate: 'Navigate',
+		select: 'Select',
+		clear: 'Clear',
+		add: 'Add',
 		searchHelp: 'Search help'
 	},
 	sort: {
