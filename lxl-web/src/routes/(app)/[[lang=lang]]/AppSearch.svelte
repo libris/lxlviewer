@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { type SvelteComponent } from 'svelte';
 	import { page } from '$app/state';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import IconSearch from '~icons/bi/search';
-	import type { ShowExpandedSearchOptions } from 'supersearch';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 
 	type Props = {
@@ -15,7 +13,6 @@
 	let { id, name }: Props = $props();
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
-	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
 	let cursor: number | null = $state(null);
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
@@ -44,10 +41,6 @@
 			fallbackInputElement?.focus();
 		}
 	});
-
-	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
-		superSearchWrapperComponent?.showExpandedSearch(options);
-	}
 </script>
 
 {#snippet fallbackInput()}
@@ -86,7 +79,6 @@
 			collapsedAriaLabelledBy={isHomeRoute ? 'page-title' : undefined}
 			collapsedAriaLabel={!isHomeRoute ? page.data.t('header.search') : undefined}
 			expandedAriaLabel={page.data.t('header.search')}
-			bind:this={superSearchWrapperComponent}
 			onCursorChange={(value) => (cursor = value)}
 			qualifierSuggestions={page.data.qualifierSuggestions || []}
 		/>

@@ -123,11 +123,11 @@
 
 			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
 
-			superSearch?.hideExpandedSearch();
+			hideExpandedSearch();
 			fetchOnExpand = true;
 
 			if (userClearedSearch) {
-				superSearch?.showExpandedSearch();
+				showExpandedSearch();
 				userClearedSearch = false;
 			} else if (isHomeRoute) {
 				superSearch?.focus(); // focus input on start page
@@ -282,7 +282,7 @@
 		return data;
 	}
 
-	export function changeQuery(params: ChangeQueryParams) {
+	function changeQuery(params: ChangeQueryParams) {
 		const { insert } = params;
 		const from = params.from || q.length;
 		const to = params.to || q.length;
@@ -303,7 +303,7 @@
 
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
-		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
+		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
 
 		if (qualifierSuggestionNeedle.word.length > 0) {
 			// TODO don't need this if we can check qualifier editing state?
@@ -370,8 +370,12 @@
 		return lxlQualifierPlugin(getLabels, renderer);
 	});
 
-	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
+	function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		superSearch?.showExpandedSearch(options);
+	}
+
+	function hideExpandedSearch() {
+		superSearch?.hideExpandedSearch();
 	}
 
 	function handleOnChange() {
@@ -411,7 +415,10 @@
 	});
 
 	onMount(() => {
+		searchContext.showExpandedSearch = showExpandedSearch;
+		searchContext.hideExpandedSearch = hideExpandedSearch;
 		searchContext.changeQuery = changeQuery;
+		searchContext.isMounted = true;
 	});
 </script>
 
