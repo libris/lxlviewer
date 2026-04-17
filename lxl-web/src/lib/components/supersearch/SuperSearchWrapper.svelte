@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mount, onMount, unmount } from 'svelte';
+	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -37,9 +37,16 @@
 		expandedAriaDescribedBy?: string;
 		onCursorChange: (cursor: number | null) => void;
 		qualifierSuggestions: QualifierSuggestion2[];
+		autofocus?: boolean;
 	}
 
-	export type ChangeQueryParams = { insert: string; from?: number; to?: number };
+	export type ChangeQueryParams = {
+		change: { insert: string; from?: number; to?: number };
+		selection?: {
+			anchor?: number | null;
+			head?: number | null;
+		};
+	};
 
 	let {
 		placeholder,
@@ -50,12 +57,13 @@
 		expandedAriaLabel,
 		expandedAriaDescribedBy,
 		onCursorChange,
-		qualifierSuggestions
+		qualifierSuggestions,
+		autofocus
 	}: Props = $props();
 
 	const searchContext = getSearchContext();
 
-	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
+	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || ''));
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
@@ -118,7 +126,7 @@
 			if (isHomeRoute) {
 				q = ''; // reset query if navigating to start/index page
 			} else if (to.url.searchParams.has('_q')) {
-				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
+				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '');
 			}
 
 			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
@@ -282,20 +290,25 @@
 		return data;
 	}
 
-	function changeQuery(params: ChangeQueryParams) {
-		const { insert } = params;
-		const from = params.from || q.length;
-		const to = params.to || q.length;
-		const before = q.slice(0, from);
+	function changeQuery({ change, selection }: ChangeQueryParams) {
+		const from = typeof change.from === 'number' ? change.from : q.length;
+		const to = typeof change.to === 'number' ? change.to : q.length;
+
 		superSearch?.dispatchChange({
 			change: {
 				from,
 				to,
-				insert
+				insert: change.insert
 			},
 			selection: {
-				anchor: (before + insert).length,
-				head: (before + insert).length
+				anchor:
+					selection && typeof selection.anchor === 'number'
+						? selection.anchor
+						: (q.slice(0, from) + change.insert).length,
+				head:
+					selection && typeof selection.head === 'number'
+						? selection.head
+						: (q.slice(0, from) + change.insert).length
 			},
 			userEvent: 'input'
 		});
@@ -415,10 +428,24 @@
 	});
 
 	onMount(() => {
+		if (searchContext.initialStateBeforeMount?.value) {
+			changeQuery({
+				change: { insert: searchContext.initialStateBeforeMount.value, from: 0, to: q.length },
+				selection: {
+					anchor: searchContext.initialStateBeforeMount.selection?.anchor,
+					head: searchContext.initialStateBeforeMount.selection?.head
+				}
+			});
+		}
 		searchContext.showExpandedSearch = showExpandedSearch;
 		searchContext.hideExpandedSearch = hideExpandedSearch;
 		searchContext.changeQuery = changeQuery;
 		searchContext.isMounted = true;
+	});
+
+	onDestroy(() => {
+		if (timeout) clearTimeout(timeout); // ensure timeout is cleared to prevent memory leaks
+		searchContext.initialStateBeforeMount = undefined;
 	});
 </script>
 
@@ -438,7 +465,7 @@
 		{expandedAriaLabel}
 		{expandedAriaDescribedBy}
 		collapsedAriaKeyshortcuts={`Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`}
-		autofocus={isHomeRoute ? true : undefined}
+		{autofocus}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({

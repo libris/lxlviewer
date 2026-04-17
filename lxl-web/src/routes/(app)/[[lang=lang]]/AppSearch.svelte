@@ -16,6 +16,7 @@
 			? `${page.data.t('header.searchSubsetPlaceholder')}: ${displayMappingToString(page.data.subsetMapping)}`
 			: page.data.t('header.searchPlaceholder')
 	);
+	const autofocus = $derived(isHomeRoute ? true : undefined);
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -33,7 +34,7 @@
 </script>
 
 {#snippet fallbackInput()}
-	<SuperSearchFallback {placeholder} {ariaLabelledBy} {ariaLabel} />
+	<SuperSearchFallback {placeholder} {ariaLabelledBy} {ariaLabel} {autofocus} />
 {/snippet}
 
 {#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
@@ -47,6 +48,7 @@
 			expandedAriaLabel={page.data.t('header.search')}
 			onCursorChange={(value) => (cursor = value)}
 			qualifierSuggestions={page.data.qualifierSuggestions || []}
+			{autofocus}
 		/>
 	</div>
 {:catch}
