@@ -92,7 +92,7 @@ export async function asResult(
 			maxScores
 		),
 		...('stats' in view && {
-			facets: displayFacets(view, displayUtil, locale, translate, usePath)
+			facets: displayFacets(view, vocabUtil, displayUtil, locale, translate, usePath)
 		}),
 		...('stats' in view && { predicates: displayPredicates(view, displayUtil, locale, usePath) }),
 		_spell: view._spell
@@ -387,6 +387,7 @@ function isDatatypeProperty(data: unknown): data is DatatypeProperty {
 
 export function displayFacets(
 	view: PartialCollectionView,
+	vocabUtil: VocabUtil,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
@@ -410,7 +411,7 @@ export function displayFacets(
 		)
 	);
 
-	result.push(...mapSlices(slices, displayUtil, locale, translate));
+	result.push(...mapSlices(slices, vocabUtil, displayUtil, locale, translate));
 
 	result.push(
 		displayBoolFilters(
@@ -429,6 +430,7 @@ export function displayFacets(
 
 function mapSlices(
 	slices: Record<string, Slice>,
+	vocabUtil: VocabUtil,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
@@ -450,6 +452,7 @@ function mapSlices(
 					...('sliceByDimension' in o && {
 						facets: mapSlices(
 							o.sliceByDimension,
+							vocabUtil,
 							displayUtil,
 							locale,
 							translate,
@@ -462,11 +465,17 @@ function mapSlices(
 					label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 					str: str,
 					// @ts-expect-error Element implicitly has an any type
-					discriminator: getUriSlug(o.object?.inScheme?.[JsonLd.ID])
+					discriminator: discriminator(o.object, vocabUtil)
 				};
 			})
 		};
 	});
+}
+
+function discriminator(d: FramedData, vocabUtil: VocabUtil) {
+	const type = vocabUtil.getType(d);
+	const hide = type && vocabUtil.isSubClassOf(type, 'InstanceCategory');
+	return hide ? undefined : getUriSlug(d?.inScheme?.[JsonLd.ID]);
 }
 
 export function displayPredicates(
