@@ -59,4 +59,8 @@
 	onMount(() => {
 		CookieConsent.run(config);
 	});
+
+	$effect(() => {
+		CookieConsent.setLanguage(page.data.locale);
+	});
 </script>
