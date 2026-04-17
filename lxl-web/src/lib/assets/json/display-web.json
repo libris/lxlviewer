@@ -879,7 +879,7 @@
 				},
 				"Item": {
 					"@id": "Item-web-overview2",
-					"NOTE": "WHYL properties in panel",
+					"NOTE": "itemShelf properties in panel",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [
@@ -1033,7 +1033,7 @@
 				},
 				"Item": {
 					"@id": "Item-web-details",
-					"NOTE": "Item data in details",
+					"NOTE": "itemDetails in resource page",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [
