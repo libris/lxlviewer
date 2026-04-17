@@ -461,12 +461,27 @@ function mapSlices(
 					view: replacePath(o.view, usePath),
 					label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
 					str: str,
-					// @ts-expect-error Element implicitly has an any type
-					discriminator: getUriSlug(o.object?.inScheme?.[JsonLd.ID])
+					discriminator: discriminator(o.object, slice.dimension)
 				};
 			})
 		};
 	});
+}
+
+function discriminator(d: FramedData, dimension: string) {
+	// FIXME
+	if (
+		!d ||
+		dimension === 'librissearch:workCategory' ||
+		dimension === 'librissearch:findCategory' ||
+		dimension === 'librissearch:identifyCategory' ||
+		dimension === 'librissearch:instanceCategory'
+	) {
+		return undefined;
+	}
+
+	// @ts-expect-error Element implicitly has an any type
+	return getUriSlug(d?.inScheme?.[JsonLd.ID]);
 }
 
 export function displayPredicates(
