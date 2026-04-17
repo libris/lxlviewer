@@ -7,7 +7,6 @@ import type { PartialCollectionView } from '$lib/types/search';
 
 export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 	const locale = getSupportedLocale(params?.lang);
-	const vocabUtil = locals.vocab;
 	const displayUtil = locals.display;
 	const myLibraries = locals.userSettings?.myLibraries;
 
@@ -37,7 +36,7 @@ export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 		const view = (await recordsRes.json()) as PartialCollectionView;
 
 		const translate = await getTranslator(locale);
-		return displayFacets(view, vocabUtil, displayUtil, locale, translate, '');
+		return displayFacets(view, displayUtil, locale, translate, '');
 	}
 
 	if (holdingsParam) {
