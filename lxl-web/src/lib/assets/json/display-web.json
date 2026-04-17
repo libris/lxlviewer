@@ -109,7 +109,7 @@
 					"classLensDomain": "Concept",
 					"showProperties": [
 						{
-							"alternateProperties": ["singularLabel", "prefLabel"]
+							"alternateProperties": ["searchLabel", "singularLabel", "prefLabel"]
 						},
 						"inScheme",
 						"altLabel",
@@ -170,6 +170,7 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
+								"searchLabel",
 								"singularLabel",
 								"prefLabel",
 								"label",
@@ -186,6 +187,7 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
+								"searchLabel",
 								"singularLabel",
 								"prefLabel",
 								"label",
