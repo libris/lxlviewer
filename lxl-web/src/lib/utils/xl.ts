@@ -32,6 +32,7 @@ import {
 	type ShowProperty,
 	type VocabData
 } from '$lib/types/xl';
+import { cleanData } from './cleanupDecorated';
 
 // TODO TESTS!
 
@@ -302,7 +303,8 @@ export class DisplayUtil {
 		lensType: LensType | DerivedLensType,
 		locale: LangCode
 	): DisplayDecorated {
-		return this.format(this.applyLensOrdered(thing, lensType), locale);
+		const formatted = this.format(this.applyLensOrdered(thing, lensType), locale);
+		return cleanData(formatted);
 	}
 
 	format(thing: LensedOrdered, locale: LangCode): DisplayDecorated {
