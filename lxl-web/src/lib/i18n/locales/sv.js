@@ -210,7 +210,7 @@ export default {
 		add: 'Lägg till',
 		searchHelp: 'Sökhjälp',
 		expandSearch: 'Expandera sök',
-		or: 'or'
+		or: 'eller'
 	},
 	sort: {
 		sort: 'Sortera',
