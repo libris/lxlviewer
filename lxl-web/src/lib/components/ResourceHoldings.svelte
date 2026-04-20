@@ -29,7 +29,7 @@
 	}
 </script>
 
-<ul class="@container flex flex-col gap-2">
+<ul class="@container my-4 flex flex-wrap gap-2">
 	{#each Object.keys(holdings.byType) as type (type)}
 		{@const myLibsHoldingByType = getLibsFromHoldings(
 			myLibraries,
