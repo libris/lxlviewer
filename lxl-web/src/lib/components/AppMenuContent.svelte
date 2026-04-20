@@ -49,7 +49,7 @@
 		},
 		{
 			href: page.data.localizeHref('/my-pages'),
-			label: page.data.t('appMenu.saved'),
+			label: page.data.t('appMenu.myPages'),
 			currentPage: page.route.id === '/(app)/[[lang=lang]]/my-pages',
 			LeadingIcon: IconSaved
 		},
