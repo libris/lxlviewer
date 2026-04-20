@@ -113,6 +113,10 @@
 	const showTabs = $derived(
 		derivedFilteredInstances?.length && derivedFilteredInstances?.length !== instances?.length
 	);
+
+	const hasHoldingsBtn = $derived(
+		holdings.byType && Object.keys(holdings.byType).length && instances
+	);
 </script>
 
 {#snippet panelMatchingInstances()}
@@ -178,12 +182,6 @@
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
 					linkToFull
 				/>
-				{#if holdings.byType && Object.keys(holdings.byType).length && instances}
-					<section class="mt-5">
-						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
-						<ResourceHoldings {holdings} {instances} />
-					</section>
-				{/if}
 			</div>
 		</div>
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 @sm:gap-6 @3xl:py-6">
@@ -234,8 +232,12 @@
 						</div>
 					{/each}
 				</div>
+				{#if hasHoldingsBtn}
+					<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
+					<ResourceHoldings {holdings} {instances} />
+				{/if}
 				<div class="decorated-data-section decorated-spacious">
-					{#if decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
+					{#if !hasHoldingsBtn && decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
 						<div class="border-b-neutral mb-2 border-b"></div>
 					{/if}
 					{#each decoratedData.overview2 as overview2 (overview2)}
