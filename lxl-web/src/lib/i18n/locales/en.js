@@ -190,6 +190,7 @@ export default {
 		noExactMatches: 'No exact matches',
 		showingResultsFor: 'Showing results for',
 		freeOnline: 'Free online',
+		existsOnline: 'Available online',
 		searchHelp: 'Libris search help',
 		showLike: 'Also show similar matches for',
 		showEquals: 'Only show exact matches for'

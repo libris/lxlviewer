@@ -189,6 +189,7 @@ export default {
 		noExactMatches: 'Inga exakta träffar',
 		showingResultsFor: 'Visar resultat för',
 		freeOnline: 'Fritt online',
+		existsOnline: 'Finns online',
 		searchHelp: 'Så söker du i Libris',
 		showLike: 'Visa även liknande träffar för ',
 		showEquals: 'Visa bara exakta träffar för'
