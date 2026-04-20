@@ -1033,7 +1033,7 @@
 				},
 				"Item": {
 					"@id": "Item-web-details",
-					"NOTE": "itemDetails in resource page",
+					"NOTE": "itemInformation in resource page",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [

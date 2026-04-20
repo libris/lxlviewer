@@ -165,7 +165,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	let searchResult: ResourceSearchResult | undefined;
 	let instances;
-	let itemDetails: Record<string, DisplayDecorated>[] = [];
+	let itemInformation: Record<string, DisplayDecorated>[] = [];
 
 	if (mainEntity?.[JsonLd.REVERSE]?.instanceOf?.length > 0) {
 		const sortedInstances = getSortedInstances(mainEntity?.[JsonLd.REVERSE]?.instanceOf);
@@ -185,7 +185,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		if (!isWork && sortedInstances.length === 1) {
 			const items = sortedInstances[0]?.[JsonLd.REVERSE]?.itemOf ?? [];
 			items.forEach((item: HoldingItem) => {
-				itemDetails.push({
+				itemInformation.push({
 					heldBy: displayUtil.lensAndFormat(item?.heldBy, LensType.Chip, locale),
 					item: displayUtil.lensAndFormat(item, LensType.WebDetails, locale)
 				});
@@ -193,7 +193,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		}
 	}
 
-	itemDetails = itemDetails.filter((i) => i.item[Fmt.DISPLAY].length);
+	itemInformation = itemInformation.filter((i) => i.item[Fmt.DISPLAY].length);
 
 	const creations = [mainEntity].concat(mainEntity?.['@reverse']?.instanceOf || []);
 	const summary = creations
@@ -358,7 +358,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			resourceTableOfContents: resourceTableOfContents,
 			details: details,
 			token: token,
-			itemDetails
+			itemInformation
 		},
 		searchResult,
 		holdings,

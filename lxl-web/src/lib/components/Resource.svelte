@@ -50,7 +50,7 @@
 			resourceTableOfContents: DisplayDecorated[];
 			details: DisplayDecorated[];
 			token: DisplayDecorated;
-			itemDetails:
+			itemInformation:
 				| {
 						heldBy: DisplayDecorated;
 						item: DisplayDecorated;
@@ -416,7 +416,7 @@
 								/>
 							</div>
 						{/each}
-						{#if decoratedData.itemDetails.length}
+						{#if decoratedData.itemInformation.length}
 							<details class="mt-4">
 								<summary class="flex cursor-pointer items-center gap-1">
 									<span
@@ -425,11 +425,11 @@
 										<BiChevronRight />
 									</span>
 									<h3 class="text-md font-medium">
-										{page.data.t('holdings.itemDetails')}
+										{page.data.t('holdings.itemInformation')}
 									</h3>
 								</summary>
 								<ul class="mt-2 flex flex-col gap-1">
-									{#each decoratedData.itemDetails as holder, index (index)}
+									{#each decoratedData.itemInformation as holder, index (index)}
 										<li class="block rounded-sm border border-neutral-200 p-2">
 											<p class="mb-1 font-medium">
 												<DecoratedData data={holder.heldBy} showLabels={ShowLabelsOptions.Never} />

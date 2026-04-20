@@ -300,7 +300,7 @@ export default {
 		itemShelf: 'Placering',
 		itemNote: 'Beståndsuppgift',
 		itemMedia: 'Relaterad länk',
-		itemDetails: 'Biblioteksspecifik information (bestånd)',
+		itemInformation: 'Biblioteksspecifik information (bestånd)',
 		location: 'Placering',
 		shelf: 'Hylla',
 		loanPolicy: 'Lånevillkor',

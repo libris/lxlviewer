@@ -300,7 +300,7 @@ export default {
 		itemShelf: 'Shelf mark',
 		itemNote: 'Item note',
 		itemMedia: 'Related link',
-		itemDetails: 'Library specific information (holding)',
+		itemInformation: 'Library specific information (holding)',
 		location: 'Location',
 		shelf: 'Shelf',
 		status: 'Status',
