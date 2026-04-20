@@ -60,16 +60,16 @@ function cleanRec(value: unknown): CleanResult {
 		return { value: ordered, alive: true };
 	}
 
-	// leaf reached via a real (non-metadata) key path -> alive
 	if (value === null || value === undefined) {
 		return { value, alive: false };
 	}
+	// data reached via a real (non-metadata) path -> alive
 	return { value, alive: true };
 }
 
 /**
- * Removes "dead" branches — sub-trees that contain only formatting/metadata props
- * The root node is always preserved
+ * remove sub-trees that contain only formatting/metadata props,
+ * root node is preserved
  */
 export function cleanData<T>(root: T): T {
 	if (Array.isArray(root)) return root.map((v) => cleanData(v)) as unknown as T;
