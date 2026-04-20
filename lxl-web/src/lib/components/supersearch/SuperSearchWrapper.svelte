@@ -696,14 +696,11 @@
 			box-shadow: 0 0 0 1px var(--color-primary-600);
 		}
 
-		&:focus-within {
-			outline: 3px solid var(--color-primary-100);
-			outline-offset: 1px;
-		}
-
-		@variant lg {
-			&:focus-within {
-				outline: 4px solid var(--color-primary-200);
+		@variant sm {
+			&:focus-within:not(:has(button:focus)) {
+				box-shadow: 0 0 0 6px var(--color-accent-100);
+				outline: 2px solid var(--color-outline);
+				outline-offset: 0;
 			}
 		}
 
@@ -730,11 +727,6 @@
 
 			&:hover {
 				box-shadow: 0 0 0 1px var(--color-neutral-600);
-			}
-			&.focused-row:not(:has(:global(.focused-cell))) {
-				box-shadow: 0 0 0 6px var(--color-accent-100);
-				outline: 2px solid var(--color-outline);
-				outline-offset: 0;
 			}
 		}
 
