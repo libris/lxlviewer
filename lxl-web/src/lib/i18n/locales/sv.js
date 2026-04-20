@@ -65,7 +65,7 @@ export default {
 		pageDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
-		favouriteLibraries: 'Mina bibliotek',
+		favouriteLibraries: 'Favoritbibliotek',
 		favouriteLibrary: 'favoritbibliotek',
 		findLibrary: 'Sök efter bibliotek',
 		findAndAdd: 'Hitta och lägg till favoritbibliotek',
@@ -132,7 +132,7 @@ export default {
 		fieldOfActivity: 'Verksamhetsområde',
 		accessFilters: 'Åtkomst',
 		boolFilters: 'Övrigt',
-		'alias-myLibraries': 'Avgränsa till mina bibliotek',
+		'alias-myLibraries': 'Avgränsa till favoritbibliotek',
 		limitInfo: 'Alla val kan ej visas',
 		limitText:
 			'Listan visar ett begränsat antal alternativ, de mest förekommande kopplade till din sökning. Prova att avgränsa din sökning för att få andra, mer relevanta alternativ.'
@@ -321,7 +321,7 @@ export default {
 		findTitle: 'Hitta titeln'
 	},
 	filterAlias: {
-		'alias-myLibraries': 'Mina bibliotek'
+		'alias-myLibraries': 'Favoritbibliotek'
 	},
 	panes: {
 		leadingPane: 'Vänsterpanel',
