@@ -595,6 +595,14 @@
 			display: block;
 		}
 
+		& :global(div[data-property='indirectlyIdentifiedBy'] > ._contentBefore) {
+			display: none;
+		}
+
+		& :global(div[data-property='indirectlyIdentifiedBy'] > span) {
+			display: block;
+		}
+
 		& :global(.see-also > *) {
 			display: block;
 			width: fit-content;
