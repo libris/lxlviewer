@@ -209,7 +209,9 @@ export default {
 		select: 'Select',
 		clear: 'Clear',
 		add: 'Add',
-		searchHelp: 'Search help'
+		searchHelp: 'Search help',
+		expandSearch: 'Expand search',
+		or: 'or'
 	},
 	sort: {
 		sort: 'Sort',
