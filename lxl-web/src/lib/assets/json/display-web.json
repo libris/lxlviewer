@@ -889,8 +889,7 @@
 						"shelfControlNumber",
 						"availability",
 						"hasComponent",
-						"hasNote",
-						"immediateAcquisition"
+						"hasNote"
 					]
 				},
 				"Bibliography": {
@@ -1041,6 +1040,7 @@
 						"custodialHistory",
 						"summary",
 						"hasNote",
+						"immediateAcquisition",
 						"appliesTo",
 						"hasComponent",
 						"marc:hasCopyAndVersionIdentificationNote",
