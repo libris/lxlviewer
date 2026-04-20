@@ -66,7 +66,7 @@ export default {
 		pageDescription: 'Here you can manage your favourite libraries, among other things.',
 		myPages: 'My pages',
 		libraries: 'Libraries',
-		favouriteLibraries: 'My libraries',
+		favouriteLibraries: 'Favourite libraries',
 		favouriteLibrary: 'favourite library',
 		findLibrary: 'Search library or location',
 		findAndAdd: 'Find and add favourite libraries',
@@ -132,7 +132,7 @@ export default {
 		fieldOfActivity: 'Field of Activity',
 		accessFilters: 'Access',
 		boolFilters: 'Other',
-		'alias-myLibraries': 'Limit to my libraries',
+		'alias-myLibraries': 'Limit to favourite libraries',
 		limitInfo: 'Some options are not displayed',
 		limitText:
 			'The list shows a limited number of options, the most common ones related to your search. Try narrowing your search to get other, more relevant options.'
@@ -311,7 +311,7 @@ export default {
 		findTitle: 'Find the title'
 	},
 	filterAlias: {
-		'alias-myLibraries': 'My Libraries'
+		'alias-myLibraries': 'Favourite Libraries'
 	},
 	panes: {
 		leadingPane: 'Leading pane',
