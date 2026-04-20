@@ -309,6 +309,10 @@ test('return key label is context-aware', async ({ page }) => {
 	await page.keyboard.press('Backspace');
 	expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
 	await page.keyboard.press('ArrowDown');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-item-1x0'
+	);
 	expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Lägg till');
 	await page.keyboard.press('ArrowUp');
 	expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
