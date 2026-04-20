@@ -183,7 +183,7 @@ export default {
 		goToResource: 'Go to the resource',
 		addLibraries: 'Add libraries',
 		changeLibraries: 'Change favourite libraries',
-		noAddedLibrariesText: 'You have not chosen any favourite libraries',
+		noAddedLibrariesText: 'You have not selected any libraries',
 		libraries: 'libraries',
 		allInFacet: 'All in',
 		noExactMatches: 'No exact matches',

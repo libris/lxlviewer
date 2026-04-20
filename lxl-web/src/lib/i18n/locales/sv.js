@@ -182,7 +182,7 @@ export default {
 		goToResource: 'Gå till resursen',
 		addLibraries: 'Lägg till bibliotek',
 		changeLibraries: 'Ändra favoritbibliotek',
-		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek',
+		noAddedLibrariesText: 'Du har inte valt några bibliotek',
 		libraries: 'bibliotek',
 		allInFacet: 'Allt inom',
 		noExactMatches: 'Inga exakta träffar',
