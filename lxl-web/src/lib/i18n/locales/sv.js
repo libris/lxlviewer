@@ -61,7 +61,7 @@ export default {
 		keyword: 'Filter / nyckelord'
 	},
 	myPages: {
-		pageTitle: 'My pages',
+		pageTitle: 'Mina sidor',
 		pageDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
