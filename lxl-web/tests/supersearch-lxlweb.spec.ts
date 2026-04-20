@@ -301,6 +301,7 @@ test('return key label is context-aware', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').click();
 	expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
 	await page.getByTestId('supersearch').getByRole('dialog').getByRole('combobox').fill('a');
+	await expect(page.getByRole('combobox').first()).toHaveText('a');
 	await page.keyboard.press('Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
