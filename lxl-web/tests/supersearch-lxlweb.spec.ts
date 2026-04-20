@@ -315,9 +315,9 @@ test('return key label is context-aware', async ({ page }) => {
 		'aria-activedescendant',
 		'supersearch-item-1x0'
 	);
-	expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Lägg till');
+	await expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Lägg till');
 	await page.keyboard.press('ArrowUp');
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
+	await expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
 	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
