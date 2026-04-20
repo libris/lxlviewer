@@ -372,7 +372,7 @@
 				>
 					{@render actionItemContents({
 						Icon: IconBookmark,
-						label: page.data.t('header.saved')
+						label: page.data.t('header.myPages')
 					})}
 				</a>
 			</li>
