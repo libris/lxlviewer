@@ -300,32 +300,6 @@
 		width: fit-content;
 	}
 
-	/* resource property-specific styles */
-	.genre-form {
-		display: flex;
-		flex-wrap: wrap;
-		gap: calc(var(--spacing) * 1.5);
-		font-size: var(--text-xs);
-
-		/* pill */
-		& > * {
-			border: 1px solid var(--color-neutral-200);
-			border-radius: calc(infinity * 1px);
-			padding-block: calc(var(--spacing) * 1.5);
-			padding-inline: calc(var(--spacing) * 3);
-			text-decoration: none;
-			white-space: nowrap;
-		}
-
-		& > a {
-			border-color: var(--color-accent-200);
-
-			&:hover {
-				background-color: var(--color-primary-100);
-			}
-		}
-	}
-
 	.transliteration {
 		font-style: italic;
 	}
