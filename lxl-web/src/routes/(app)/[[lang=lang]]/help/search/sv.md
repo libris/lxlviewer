@@ -32,7 +32,7 @@ En sökning utan citationstecken gör att fler dokument matchar sökningen, då 
 Använd asterisk (`*`) för att inkludera flera olika ändelser för ett sökord.
 
 - Exempel: [`kulturarv*`](/find?_q=kulturarv*) ger träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
-Om en sökning ger noll träffar läggs automatiskt trunkering till för att fånga eventuella felstavningar med mera.
+  Om en sökning ger noll träffar läggs automatiskt trunkering till för att fånga eventuella felstavningar med mera.
 
 ## Maskering
 
@@ -87,7 +87,7 @@ Till exempel kommer träffar där sökfrasen ingår i titeln eller i de medverka
 Se vår [API-dokumentation](https://libris.kb.se/api/docs/) för information om mer specialiserad sökning.
 Här kan du också läsa om hur du gör anrop för att skapa integrationer mot andra system.
 
-## Tips
+## Söktips
 
 ### Kopiera sökningar
 
@@ -105,16 +105,16 @@ Ett tomt filter kan användas för att kräva att sökträffarna ska innehålla 
 
 När du söker på en person som är kopplad till flera verk visas både exakta och liknande träffar i träfflistan. Det innebär att du även kan få träffar på material där personens namn är likadant stavat, men där det ännu inte är länkat i katalogen. Detta beror på att allt innehåll i katalogen inte är fullständigt länkat. Vill du endast se titlar där personen är korrekt och aktivt länkad, klickar du på länken ”Visa bara exakta träffar för …” som visas under antalet träffar.
 
-## Referenser
-
-Varje utgåva har en knapp ‘Referera‘ som gör det enkelt att skapa referenser i ett antal olika format. När du klickar på knappen öppnas ett fönster där du kan du välja mellan referensformat och kopiera den färdiga referensen som text. Det finns även stöd för vanliga insticksprogram i webbläsaren vilket gör att du kan exportera referensen direkt till ditt referenshanteringsverktyg.
-
 ## Favoritbibliotek
 
 Du kan spara ett eller flera bibliotek som favoriter för att snabbt avgränsa dina sökningar till dessa.
 Du gör detta antingen genom att: klicka på “Mina sidor“ högst upp på sidan eller på “penn-ikonen“ bredvid filtret “Avgränsa till mina bibliotek“ på sökträffsidan.
 På “Mina sidor“ söker du fram önskade bibliotek och klickar på “lägg till“. För att ta bort bibliotek från dina favoriter klickar du på “ta bort“ under respektive bibliotek.
 Informationen om dina favoritbibliotek sparas lokalt i din webbläsare i en kak-fil.
+
+## Referenser
+
+Varje utgåva har en knapp ‘Referera‘ som gör det enkelt att skapa referenser i ett antal olika format. När du klickar på knappen öppnas ett fönster där du kan du välja mellan referensformat och kopiera den färdiga referensen som text. Det finns även stöd för vanliga insticksprogram i webbläsaren vilket gör att du kan exportera referensen direkt till ditt referenshanteringsverktyg.
 
 ## “Finns online”
 
