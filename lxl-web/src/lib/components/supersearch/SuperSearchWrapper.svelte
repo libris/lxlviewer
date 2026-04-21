@@ -87,12 +87,13 @@
 
 	let userClearedSearch = $state(false);
 
-	let activeMode = $state(Mode.DEFAULT_MODE);
 	const {
 		DEFAULT_MODE,
 		SELECT_QUALIFIER_KEY_MODE
 		//SELECT_QUALIFIER_VALUE_MODE
-	} = $derived(Object.fromEntries(Object.keys(Mode).map((mode) => [mode, activeMode === mode])));
+	} = $derived(
+		Object.fromEntries(Object.keys(Mode).map((mode) => [mode, searchContext.mode === mode]))
+	);
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
@@ -417,7 +418,6 @@
 	}
 
 	function handleOnCollapse() {
-		activeMode = Mode.DEFAULT_MODE;
 		searchContext.mode = Mode.DEFAULT_MODE;
 	}
 
@@ -602,14 +602,12 @@
 			{@const qualifiersRowIndex = DEFAULT_MODE ? 1 : -1}
 			{@const footerRowIndex = (DEFAULT_MODE ? 1 : 0) + (resultsCount || 0) + 1}
 			<nav class="mt-3 lg:mt-4">
-				{#if !SELECT_QUALIFIER_KEY_MODE}
-					<SuperSearchQualifierRow
-						rowIndex={qualifiersRowIndex}
-						{getCellId}
-						{isFocusedRow}
-						{isFocusedCell}
-					/>
-				{/if}
+				<SuperSearchQualifierRow
+					rowIndex={qualifiersRowIndex}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+				/>
 				<!--
 						<div
 							id="supersearch-add-qualifier-key-label"
@@ -675,15 +673,17 @@
 								{page.data.t('supersearch.suggestions')}
 							{/if}
 						</h2>
+						<!--
 						<button type="submit">
 							<span class={['text-link flex items-center gap-1 hover:underline']}>
 								{page.data.t('supersearch.showAll')}
 								<IconGo aria-hidden="true" class="text-link size-6" />
 							</span>
 						</button>
+						-->
 					</div>
 				{/if}
-				{#if resultsCount && q.trim().length}
+				{#if !SELECT_QUALIFIER_KEY_MODE && resultsCount && q.trim().length}
 					<div
 						role="rowgroup"
 						aria-labelledby="supersearch-results-label"
