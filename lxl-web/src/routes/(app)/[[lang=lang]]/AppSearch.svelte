@@ -20,8 +20,9 @@
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const placeholder = $derived(
-		(page.data.subsetMapping && displayMappingToString(page.data.subsetMapping)) ||
-			page.data.t('header.searchPlaceholder')
+		page.data.subsetMapping
+			? `${page.data.t('header.searchSubsetPlaceholder')}: ${displayMappingToString(page.data.subsetMapping)}`
+			: page.data.t('header.searchPlaceholder')
 	);
 
 	const pageParams = $derived.by(() => {
