@@ -1742,6 +1742,17 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Bibliography-hasPart-format": {
+			"@id": "Bibliography-hasPart-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Bibliography"],
+			"fresnel:propertyFormatDomain": ["hasPart"],
+			"fresnel:propertyStyle": ["sort()"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"hasReproduction-format": {
 			"@id": "hasReproduction-format",
 			"@type": "fresnel:Format",
