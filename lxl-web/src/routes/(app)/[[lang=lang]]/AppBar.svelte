@@ -675,9 +675,8 @@
 	:global(.home .with-subset .leading-actions) {
 		position: fixed;
 
-		/* hide the subset pill on the front page for now */
-		& .subset-container {
-			display: none;
+		& + #app-bar-search {
+			background-color: var(--color-app-bar);
 		}
 	}
 
