@@ -208,6 +208,9 @@ export default {
 		select: 'Välj',
 		clear: 'Rensa',
 		add: 'Lägg till',
+		show: 'Visa',
+		filter: 'Filter',
+		back: 'Tillbaka',
 		searchHelp: 'Sökhjälp'
 	},
 	sort: {

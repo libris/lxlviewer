@@ -2,7 +2,6 @@
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
-	import { resolve } from '$app/paths';
 	import {
 		SuperSearch,
 		lxlQualifierPlugin,
@@ -22,11 +21,11 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
-	import IconGo from '~icons/bi/arrow-right-short';
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 	import { Mode } from '$lib/types/supersearch';
+	import SuperSearchQualifierRow from './SuperSearchQualifierRow.svelte';
 
 	interface Props {
 		placeholder: string;
@@ -89,14 +88,16 @@
 	let userClearedSearch = $state(false);
 
 	let activeMode = $state(Mode.DEFAULT_MODE);
-	const { DEFAULT_MODE, SELECT_QUALIFIER_KEY_MODE, SELECT_QUALIFIER_VALUE_MODE } = $derived(
-		Object.fromEntries(Object.keys(Mode).map((mode) => [mode, activeMode === mode]))
-	);
+	const {
+		DEFAULT_MODE,
+		SELECT_QUALIFIER_KEY_MODE
+		//SELECT_QUALIFIER_VALUE_MODE
+	} = $derived(Object.fromEntries(Object.keys(Mode).map((mode) => [mode, activeMode === mode])));
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
 	// TODO min 3 for prefix match, while allowing exactMatch år?
-	const MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS = 2;
+	// const MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS = 2;
 
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
@@ -151,6 +152,7 @@
 		}
 	});
 
+	/*
 	const editedParentNode = $derived.by(() => {
 		if (!q || !selection) {
 			return null;
@@ -167,10 +169,12 @@
 
 		return null;
 	});
-
+	*/
 	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
 	const hasCharAfter = $derived(/\S/.test(q.charAt(cursor)));
 
+	$inspect(qualifierSuggestions);
+	/*
 	let qualifierSuggestionsExpanded = $state(false);
 
 	const filteredQualifierSuggestions = $derived.by(() => {
@@ -224,7 +228,7 @@
 	}
 
 	const showAddQualifiers = $derived(filteredQualifierSuggestions.length > 0);
-
+	*/
 	const NO_WILDCARD_AFTER_CHAR = [')', '"', '*', '?'];
 	const NO_WILDCARD_AFTER_WORD = ['AND', 'OR', 'NOT'];
 
@@ -247,7 +251,7 @@
 		}
 		return false;
 	});
-
+	/*
 	const qualifierSuggestionNeedle = $derived.by(() => {
 		if (
 			editedParentNode === 'QualifierValue' ||
@@ -290,6 +294,7 @@
 			word: str.slice(from, to)
 		};
 	}
+	*/
 
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
@@ -320,6 +325,7 @@
 		});
 	}
 
+	/*
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
@@ -361,6 +367,7 @@
 			});
 		}
 	}
+	*/
 
 	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
 		const propsWithHandler = {
@@ -407,6 +414,11 @@
 			superSearch?.fetchData();
 			fetchOnExpand = false;
 		}
+	}
+
+	function handleOnCollapse() {
+		activeMode = Mode.DEFAULT_MODE;
+		searchContext.mode = Mode.DEFAULT_MODE;
 	}
 
 	function handleOnExpandedViewUpdate(event: ViewUpdateSuperSearchEvent) {
@@ -489,6 +501,7 @@
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
+		oncollapse={handleOnCollapse}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
@@ -589,12 +602,15 @@
 			{@const qualifiersRowIndex = DEFAULT_MODE ? 1 : -1}
 			{@const footerRowIndex = (DEFAULT_MODE ? 1 : 0) + (resultsCount || 0) + 1}
 			<nav class="mt-3 lg:mt-4">
-				{#if SELECT_QUALIFIER_KEY_MODE}
-					<!-- TODO: SELECT QUALIFIER KEY MODE -->
-				{:else if SELECT_QUALIFIER_VALUE_MODE}
-					<!-- TODO: SELECT QUALIFIER VALUE MODE -->
-				{:else}
-					{#if showAddQualifiers}
+				{#if !SELECT_QUALIFIER_KEY_MODE}
+					<SuperSearchQualifierRow
+						rowIndex={qualifiersRowIndex}
+						{getCellId}
+						{isFocusedRow}
+						{isFocusedCell}
+					/>
+				{/if}
+				<!--
 						<div
 							id="supersearch-add-qualifier-key-label"
 							class="text-subtle mt-1.5 mb-1 px-4 text-sm font-medium lg:mt-0"
@@ -650,41 +666,40 @@
 								{/if}
 							</div>
 						</div>
-					{/if}
-					{#if q.trim().length}
-						<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
-							<h2 id="supersearch-results-label" aria-live="polite" class="font-medium">
-								{#if resultsCount}
-									<span class="sr-only">{resultsCount}</span>
-									{page.data.t('supersearch.suggestions')}
-								{/if}
-							</h2>
-							<button type="submit">
-								<span class={['text-link flex items-center gap-1 hover:underline']}>
-									{page.data.t('supersearch.showAll')}
-									<IconGo aria-hidden="true" class="text-link size-6" />
-								</span>
-							</button>
-						</div>
-					{/if}
-					{#if resultsCount && q.trim().length}
-						<div
-							role="rowgroup"
-							aria-labelledby="supersearch-results-label"
-							class="border-neutral border-t"
-						>
-							{@render resultsSnippet({ rowOffset: DEFAULT_MODE ? 2 : 1 })}
-						</div>
-					{/if}
-					<SuperSearchFooterRow
-						{inputRowIndex}
-						{qualifiersRowIndex}
-						{footerRowIndex}
-						{getCellId}
-						{isFocusedRow}
-						{isFocusedCell}
-					/>
+					-->
+				{#if q.trim().length}
+					<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
+						<h2 id="supersearch-results-label" aria-live="polite" class="font-medium">
+							{#if resultsCount}
+								<span class="sr-only">{resultsCount}</span>
+								{page.data.t('supersearch.suggestions')}
+							{/if}
+						</h2>
+						<button type="submit">
+							<span class={['text-link flex items-center gap-1 hover:underline']}>
+								{page.data.t('supersearch.showAll')}
+								<IconGo aria-hidden="true" class="text-link size-6" />
+							</span>
+						</button>
+					</div>
 				{/if}
+				{#if resultsCount && q.trim().length}
+					<div
+						role="rowgroup"
+						aria-labelledby="supersearch-results-label"
+						class="border-neutral border-t"
+					>
+						{@render resultsSnippet({ rowOffset: DEFAULT_MODE ? 2 : 1 })}
+					</div>
+				{/if}
+				<SuperSearchFooterRow
+					{inputRowIndex}
+					{qualifiersRowIndex}
+					{footerRowIndex}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+				/>
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
@@ -710,7 +725,7 @@
 		}
 
 		@variant sm {
-			&:focus-within:not(:has(button:focus)) {
+			&.focused-row:focus-within:not(:has(:global([aria-activedescendant]))) {
 				box-shadow: 0 0 0 6px var(--color-accent-100);
 				outline: 2px solid var(--color-outline);
 				outline-offset: 0;

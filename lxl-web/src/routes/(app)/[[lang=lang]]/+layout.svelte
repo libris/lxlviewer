@@ -5,6 +5,7 @@
 	import { page } from '$app/state';
 	import { setHomepageContext } from '$lib/contexts/homepage';
 	import { setSearchContext } from '$lib/contexts/search';
+	import { Mode } from '$lib/types/supersearch';
 
 	const { children } = $props();
 
@@ -22,9 +23,9 @@
 		hideExpandedSearch: () => {},
 		changeQuery: () => {},
 		initialStateBeforeMount: undefined,
-		isMounted: false
+		isMounted: false,
+		mode: Mode.DEFAULT_MODE
 	});
-
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
 	setSearchContext(searchContext);
 </script>
