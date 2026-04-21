@@ -1,131 +1,65 @@
 ---
-title: 'Hjälp'
+title: 'Om libris'
 ---
 
-# Om
+# Om Libris
 
-Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog. Just nu pågår ett initiativ att ersätta den redan existerande och välanvända tjänsten [libris.kb.se](https://libris.kb.se/) och detta är vår publika betaversion av den kommande tjänsten. Denna nya tjänst bygger på den nya informationsinfrastruktur som driftsattes redan för sju år sedan och nu är det dags att ersätta den publika söktjänsten. Båda tjänsterna kommer att finnas tillgängliga parallellt tills vi är redo att avveckla den gamla infrastrukturen.
+Libris är de svenska bibliotekens gemensamma katalog och söktjänst. Här kan du utforska över nio miljoner verk från mer än 600 bibliotek i Sverige. [Kungliga biblioteket](https://kb.se/) (KB) ansvarar för samordning och utveckling av Libris, samt drift av Libris tekniska dataplattform.
 
-### Varför publik beta?
+Libris bygger på ett samarbete mellan över 600 svenska bibliotek som tillsammans bidrar till och utvecklar katalogen. På sidan [Librissamarbetet](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/librissamarbetet.html) kan du läsa om hur det fungerar.
 
-Vi arbetar för transparens och delaktighet för att nå ett lyckat resultat. Denna publika betaversion av den kommande tjänsten är ett steg för att få in viktig återkoppling från riktiga användare. Detta innebär att betaversionen visas upp innan all funktionalitet finns eller är helt färdig.
+## Vad kan jag göra i libris.kb.se?
 
-### Tyck till om nya Libris
+I Libris kan du söka efter material från svenska bibliotek och se var det finns tillgängligt, både för fysiskt lån och digital åtkomst. Du kan göra enkla fritextsökningar, använda filter eller bygga mer avancerade sökfrågor. Se [sökhjälpen](/help/search)
+för tips på hur du kan hitta eller utforska.
+Du kan även lägga till [favoritbibliotek](/my-pages) för att enkelt hitta material avgränsat till dessa.
 
-Du är välkommen att prova tjänsten och [återkoppla via detta formulär](https://survey.kb.se/librisbeta). Dina åsikter är viktiga!
+## Katalogens innehåll
 
-Här hittar du [vanliga frågor och svar](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html).
+Libris innehåller cirka sju miljoner fysiska titlar och cirka 3,6 miljoner digitala titlar på över 80 språk. Av det digitala materialet är omkring 1,5 miljoner titlar fritt tillgängliga. Samlingarna omfattar många typer av material, till exempel böcker, musik, dataspel och punktskrift med mera. Katalogen innehåller även den svenska nationalbibliografin, ämnesbibliografier samt lokala och regionala samlingar.
 
-### Allmänt om söktjänsten och initiativet
+### Länkade data
 
-Libris nya söktjänst ska på sikt ersätta [libris.kb.se](https://libris.kb.se/). Den nuvarande tjänsten är tekniskt utdaterad och behöver bytas ut inte minst bland annat för att möta de lagkrav som finns på tillgänglighet inom digital offentlig service. Den här betaversionen är ett första steg mot en tjänst som kommer medföra flera förbättringar för användarna.
+Libris innehåller information om verk, personer, ämnen och organisationer med mera. En växande del av katalogen är strukturerad som länkade data. På [id.kb.se](https://id.kb.se/) finns mer information om hur KB publicerar och tillgängliggör dessa data.
 
-En grundsten i Libris är den informationsmodell baserad på länkade data som används för att beskriva materialet i katalogen. Den nya tjänsten är byggd med en mer direkt koppling till denna modell, vilket gör den både enklare och tekniskt mer robust. Det innebär också att ändringar som görs med hjälp av [Libris katalogiseringsverktyg (QA-miljö)](https://libris-qa.kb.se/katalogisering/) syns i söktjänsten utan fördröjning och materialet kan utforskas på nya sätt.
+Allt material i Libris innehåller ännu inte länkade data, men förekomsten är större inom språk, Svenska ämnesord och svensk skönlitteratur.
 
-Målet är också att bygga ett mer användarvänligt gränssnitt samtidigt som många av de funktioner som finns idag förbättras och byggs ut. Med en mer datanära design kan viss text till en början upplevas som mer teknisk än tidigare. Detta är något vi kommer att arbeta vidare med för att förbättra. Även tjänstens formspråk och grafiska uttryck kommer att förändras och förbättras under resans gång.
+### Särskilda samlingar
 
-Målsättningar för tjänsten är: _“Alla kan bli inspirerade att utforska Sveriges biblioteks samlingar, få en samlad överblick av dess material samt åtkomst.“_ Detta då genom att: Ge överblick, vara lättanvänd, tillförlitlig, tillgänglig, flexibel och inspirerande.
+Libris innehåller den svenska nationalbibliografin, ett urval bibliografier inom olika ämnesområden och lokala/regionala samlingar. Alla bibliografier produceras av Libris-bibliotek och kan avgränsas som särskilda samlingar. 
 
-### Ett axplock av planerade förbättringar
+### Innehållets variation
 
-- Bättre layout och informationsinnehåll i sökträfflistan
-- Bättre presentation och urval av information på detaljsidorna
-- Bättre materialkategorisering (typer) såsom litteratur, tidsskrift, musik, datorspel samt fysisk och digital istället för “text, elektronisk” (se nedan).
-- Förbättrat gränssnitt för avancerad sökfunktionalitet
-- Möjlighet att spara sökningar och listor med material
-- Referensverktyg med ytterligare datamappningar
-- Sökning i olika delmängder
-- Libris som lokal bibliotekskatalog
+Katalogen har byggts upp under mer än 50 år, vilket innebär att det finns variation i innehållet och kvalitetsskillnader i beskrivningarna. Libris är omfattande men inte heltäckande. En del material finns fortfarande enbart i gamla kortkataloger, lokala kataloger eller andra system.
 
-### Förbättrad materialkategorisering
+### Historiskt språkbruk
 
-De materialkategorier (eller “typer”) som syns i betaversionen idag kommer på sikt att ersättas där de inte är tydliga nog. Begrepp som “Text, tryck”, “Instans“, “Monografisk resurs” och så vidare kommer att bytas ut mot tydligare begrepp i stil med “Tidskrift“, “Ljudbok“, “Affisch” och “Vykort“. Målet är begripliga och användbara typer som håller över tid.
+Som användare kan det också vara bra att vara medveten om att bibliotekens samlingar och söktjänsten innehåller äldre begrepp och annat innehåll som kan uppfattas som stötande såväl som kränkande eller föråldrat. 
 
-I dagens [libris.kb.se](https://libris.kb.se/) räknas etiketter som “bok”, “e-bok” och “affisch” ut i söktjänsten på ett komplicerat sätt utifrån en mängd datapunkter. Denna onödiga komplexitet beror bland annat på begränsningarna som fanns i katalogen då tjänsten togs fram. Parallellt med utvecklingen av den nya söktjänsten jobbar vi nu med att förbättra katalogens data och informationsmodell. Eftersom den nya söktjänsten på ett mer direkt sätt avspeglar katalogen kommer förbättringar synas så fort de är utförda.
+Uttryck som återspeglar skaparnas attityder i sin tid kan väcka starka känslor idag, men är nödvändiga för vår förståelse av det förflutna och vår samtid.
 
-Det kan fortfarande behövas olika begrepp och grad av precision i olika sammanhang. Men dessa skillnader kan i stor utsträckning fångas i den gemensamma katalogmodellen istället för att, som idag, ligga hårt knutna till olika tjänster.
+## Användning av data
 
-## Versionsinformation
+Libris innehåller både data från externa källor och data som produceras inom Librissamarbetet. Genom [Libris API:er](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/att-anvanda-librisdata/anvandning-av-apier.html)
+kan du integrera Librisdata i egna system. Libris som dataplattform omfattar ett antal publikt tillgängliga API:er. De flesta av dessa API:er ger lästillgång till öppna, allmänt tillgängliga data. Vissa API:er ger också skrivrättigheter och kräver därmed autentisering och överenskommelse med KB för användning. Svensk nationalbibliografi och svenska auktoritetsposter är fritt tillgängliga.
 
-Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
+## Tillgänglighet
 
-### 2025-10-14
+Vi avser att alla ska kunna bli inspirerade att utforska Sveriges biblioteks samlingar, få en samlad överblick av dess material samt åtkomst. Läs mer i Libris Söks [tillgänglighetsredogörelse](https://www.kb.se/om-oss/tillganglighet-pa-kbs-webbplatser-och-digitala-tjanster.html#item_125b5507eb18cedffd1a436125_45b5507eb18cedffd1a4317ec).
 
-- Första iteration av förbättrade materialtyper
-- Möjlighet att generera ut referens för material i ett antal olika format, ytterligare datamappning pågår.
-- Förbättringar i mobilupplevelsen
-- Uppdaterad relevansuträkning
-- Möjlighet att navigera till nästa och föregående träff från resurssida
-- Förbättrad beståndspanel
-- Ny logotyp
-- Förbättrad meny
-- Möjlighet att söka på ISBN med och utan streck
-- Låna-knappar för de bibliotek som har Libris som lokal bibliotekskatalog
-- Buggfixar och generella förbättringar
+## Sekretess och systemkrav
 
-### 2025-06-23
+Söktjänsten använder valfria kakor för funktionalitet och analys. I vissa fall kan JavaScript krävas, till exempel vid aktiverat överbelastningsskydd.
 
-- Användarförbättringar av sökgränsnitt
+## Upphovsrätt
 
-### 2025-06-19
+Bilder i Libris, till exempel bokomslag, kan vara upphovsrättsskyddade och får då inte användas utan tillstånd. Vissa bilder är dock fria att använda, som användare ansvarar du själv för att kontrollera vad som gäller.
 
-- Layoutförändringar inklusive justerbar vänsterpanel på sökresultatsidan
+## Vidare information och kontakt
 
-### 2025-06-01
+För mer information, se [frågor och svar](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html),
+följ [Librisnyheter](https://www.kb.se/for-bibliotekssektorn/nytt-fran-kb.html?sv.target=12.5b5507eb18cedffd1a434463&sv.12.5b5507eb18cedffd1a434463.route=%2Fnews&keywords%5B%5D=Katalogisering&keywords%5B%5D=Libris&keywords%5B%5D=Libris%20versionsinformation&page=1) och [Librisutveckling](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/libris-utveckling.html).
 
-- Mer information och länk till lokal bibliotekskatalog i åtkomstpanelen
+Du är alltid välkommen att kontakta oss! Skriv till [Libris kundservice](https://www.kb.se/om-oss/kontakta-oss/#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3).
 
-### 2025-05-13
-
-- Uppdatering av design
-- Filtrera på "fritt online"
-- Buggfixar
-
-### 2025-04-24
-
-- Möjlighet att ange och filtrera på favoritbibliotek
-
-### 2025-03-11
-
-- Lägg till avancerad sök-funktionalitet
-
-### 2024-11-07
-
-- Inställningar för kakor
-
-### 2024-10-14
-
-- Generella förbättringar i filterpanelen, t.ex möjlighet att sortera innehållet.
-- Buggfixar
-
-### 2024-09-09
-
-- Lånestatus visas nu i listan över bibliotek som innehar en viss resurs
-- Mer detaljerad information om bibliotek och möjlighet att söka i bibliotekslistan
-- Stavningsförslag i anslutning till sökresultaten
-- Upphovsinformation för omslagsbilder
-- Laddningsindikator
-- Buggfixar
-
-### 2024-06-27
-
-- Ändrat antal sökträffar per sida till 20
-- Ersätt etikett för fritextsökningar till citattecken
-- Buggrättningar
-- Stöd för sök i träfflistan för personer och ämnen
-
-### 2024-06-12
-
-- Förbättrad hjälptext
-- Markerbar text i sökträffarna
-- Förbättrad paginering
-
-### 2024-05-29
-
-- Vanlig fritextsökning
-- Filter för avgränsning av sökträffarna
-- Träfflista med paginering och möjlighet att sortera
-- Sidor för mer detaljerad information om material med information om vilka bibliotek som har det
-- Sidor för personer och ämnesord med listning av material som är relaterat till dessa
-- Grundläggande stöd för sökkoder i sökrutan. Exempel: `pippi språk:svenska typ:Ljud`
-- Grundläggande sökavgränsning som utesluter kommande titlar (förhandsinformation) eller elektroniska pliktlevererade resurser, med möjlighet att inkludera dem
+För inköpsförslag eller fjärrlån, kontakta ditt lokala bibliotek.
