@@ -1,8 +1,8 @@
 ---
-title: 'en'
+title: 'Help and tips'
 ---
 
-# Search in Libris
+# Help and tips
 
 Use the search box to search! Enter your query as free text, or use the filters suggested in the search box.
 Click the examples further down on this page to see how filters and search operators can be used in practice.
@@ -85,7 +85,7 @@ For example, results where the search phrase appears in the title or in the cont
 
 See our [API-documentation](https://libris.kb.se/api/docs/) for information about more specialized search. Here you can also read about how to make requests to create integrations with other systems.
 
-## Tips
+## Search tips
 
 ### Copying searches
 
@@ -98,3 +98,22 @@ It’s easy to copy searches (including filters) by selecting the contents of th
 An empty filter can be used to require that the search results contain the property described by the filter (regardless of its value).
 
 - Example: [Search Libris for all material that has an ISMN code.](</find?_q=ISMN%3A()>)
+
+### Exact or similar hits
+
+“When you search for a person associated with multiple works, both exact and similar matches are shown in the results list. This means you may also see results where the person’s name is spelled the same way but has not yet been linked in the catalog. This is because not all content in the catalog is fully linked. If you only want to see titles where the person is correctly and actively linked, click the link ‘Only show exact matches for …’, which appears below the number of results.”
+
+## Favourite libraries
+
+You can save one or more libraries as favorites to quickly limit your searches to these.
+You can do this either by clicking on “My Pages” at the top of the page or on the pencil icon next to the filter “Limit to favourite libraries” on the search results page.
+On My Pages, search for the desired libraries and click “add”. To remove libraries from your favorites, click “remove” under each respective library.
+Information about your favorite libraries is stored locally in your web browser in a cookie file.
+
+## References
+
+Each edition has a “Cite” button that makes it easy to create references in a number of different formats. When you click the button, a window opens where you can choose between reference formats and copy the completed reference as text. There is also support for common browser plugins, allowing you to export the reference directly to your reference management tool.
+
+## “Available online”
+
+Material that contain links to content available online has an “Available Online” button. This lists all the links available via libraries or other sources. Much of this material is also freely accessible.

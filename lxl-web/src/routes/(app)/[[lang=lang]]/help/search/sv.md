@@ -108,13 +108,13 @@ När du söker på en person som är kopplad till flera verk visas både exakta 
 ## Favoritbibliotek
 
 Du kan spara ett eller flera bibliotek som favoriter för att snabbt avgränsa dina sökningar till dessa.
-Du gör detta antingen genom att: klicka på “Mina sidor“ högst upp på sidan eller på “penn-ikonen“ bredvid filtret “Avgränsa till mina bibliotek“ på sökträffsidan.
-På “Mina sidor“ söker du fram önskade bibliotek och klickar på “lägg till“. För att ta bort bibliotek från dina favoriter klickar du på “ta bort“ under respektive bibliotek.
+Du gör detta antingen genom att: klicka på “Mina sidor“ högst upp på sidan eller på penn-ikonen bredvid filtret “Avgränsa till favoritbibliotek“ på sökträffsidan.
+På Mina sidor söker du fram önskade bibliotek och klickar på “lägg till“. För att ta bort bibliotek från dina favoriter klickar du på “ta bort“ under respektive bibliotek.
 Informationen om dina favoritbibliotek sparas lokalt i din webbläsare i en kak-fil.
 
 ## Referenser
 
-Varje utgåva har en knapp ‘Referera‘ som gör det enkelt att skapa referenser i ett antal olika format. När du klickar på knappen öppnas ett fönster där du kan du välja mellan referensformat och kopiera den färdiga referensen som text. Det finns även stöd för vanliga insticksprogram i webbläsaren vilket gör att du kan exportera referensen direkt till ditt referenshanteringsverktyg.
+Varje utgåva har en knapp "Referera" som gör det enkelt att skapa referenser i ett antal olika format. När du klickar på knappen öppnas ett fönster där du kan du välja mellan referensformat och kopiera den färdiga referensen som text. Det finns även stöd för vanliga insticksprogram i webbläsaren vilket gör att du kan exportera referensen direkt till ditt referenshanteringsverktyg.
 
 ## “Finns online”
 
