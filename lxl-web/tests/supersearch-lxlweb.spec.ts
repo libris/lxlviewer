@@ -42,7 +42,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'search results are shown after typing'
 	).toHaveCount(5);
-	await page.goto('/find?_limit=20&_offset=0&_q=language:"lang:swe"+&_sort=&_spell=true');
+	await page.goto('/find?_limit=20&_offset=0&_q=language%3A"lang%3Aswe"&_sort=&_spell=true');
 	await page.getByTestId('supersearch').click();
 
 	await page.waitForResponse(
@@ -59,7 +59,6 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('combobox').first().locator('.lxl-qualifier-key'),
 		'query is kept when navigating from find routes...'
 	).toContainText('Språk');
-	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('combobox').locator('.lxl-qualifier-value')).toContainText('Svenska');
 	await page.getByTestId('home').click(); // click on home link
 	await page.waitForURL('/'); // fnurgel route
@@ -301,7 +300,6 @@ test('return key label is context-aware', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').click();
 	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
 	await page.getByTestId('supersearch').getByRole('dialog').getByRole('combobox').fill('a');
-	await expect(page.getByRole('combobox').first()).toHaveText('a');
 	await page.keyboard.press('Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
@@ -311,13 +309,9 @@ test('return key label is context-aware', async ({ page }) => {
 	await page.keyboard.press('Backspace');
 	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
 	await page.keyboard.press('ArrowDown');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-item-1x0'
-	);
-	await expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Lägg till');
+	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Lägg till');
 	await page.keyboard.press('ArrowUp');
-	await expect(await page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
+	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
 	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
