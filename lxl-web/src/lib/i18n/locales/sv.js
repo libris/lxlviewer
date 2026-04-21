@@ -198,7 +198,7 @@ export default {
 		addQualifiers: 'Lägg till filter',
 		loading: 'Laddar...',
 		suggestions: 'Förslag',
-		showAll: 'Visa sökresultat',
+		showResults: 'Visa sökresultat',
 		arrowUpKey: 'Piltangent uppåt',
 		arrowRightKey: 'Piltangent höger',
 		arrowDownKey: 'Piltangent neråt',

@@ -26,6 +26,7 @@
 	import { getSearchContext } from '$lib/contexts/search';
 	import { Mode } from '$lib/types/supersearch';
 	import SuperSearchQualifierRow from './SuperSearchQualifierRow.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
 
 	interface Props {
 		placeholder: string;
@@ -600,7 +601,9 @@
 		})}
 			{@const inputRowIndex = 0}
 			{@const qualifiersRowIndex = DEFAULT_MODE ? 1 : -1}
-			{@const footerRowIndex = (DEFAULT_MODE ? 1 : 0) + (resultsCount || 0) + 1}
+			{@const showResultsRowIndex = DEFAULT_MODE ? 2 : -1}
+			{@const suggestionsRowOffset = DEFAULT_MODE ? 3 : 0}
+			{@const footerRowIndex = (DEFAULT_MODE ? 3 : 0) + (resultsCount ? resultsCount : 0)}
 			<nav class="mt-3 lg:mt-4">
 				<SuperSearchQualifierRow
 					rowIndex={qualifiersRowIndex}
@@ -608,6 +611,29 @@
 					{isFocusedRow}
 					{isFocusedCell}
 				/>
+				{#if DEFAULT_MODE}
+					<div role="row" class={[isFocusedRow(showResultsRowIndex) && 'focused-row']}>
+						<button
+							type="submit"
+							id={getCellId(showResultsRowIndex, 0)}
+							class={[
+								'flex min-h-12 w-full items-center px-4',
+								isFocusedCell(showResultsRowIndex, 0) && 'focused-cell'
+							]}
+							onclick={hideExpandedSearch}
+						>
+							<span class={['text-link flex items-center gap-2 whitespace-nowrap hover:underline']}>
+								<IconSearch aria-hidden="true" class="size-4.5" />
+								{page.data.t('supersearch.showResults')}
+								{#if isLoading}
+									<div class="ml-auto h-5 w-5">
+										<Spinner />
+									</div>
+								{/if}
+							</span>
+						</button>
+					</div>
+				{/if}
 				<!--
 						<div
 							id="supersearch-add-qualifier-key-label"
@@ -673,14 +699,6 @@
 								{page.data.t('supersearch.suggestions')}
 							{/if}
 						</h2>
-						<!--
-						<button type="submit">
-							<span class={['text-link flex items-center gap-1 hover:underline']}>
-								{page.data.t('supersearch.showAll')}
-								<IconGo aria-hidden="true" class="text-link size-6" />
-							</span>
-						</button>
-						-->
 					</div>
 				{/if}
 				{#if !SELECT_QUALIFIER_KEY_MODE && resultsCount && q.trim().length}
@@ -689,12 +707,13 @@
 						aria-labelledby="supersearch-results-label"
 						class="border-neutral border-t"
 					>
-						{@render resultsSnippet({ rowOffset: DEFAULT_MODE ? 2 : 1 })}
+						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
 				{/if}
 				<SuperSearchFooterRow
 					{inputRowIndex}
 					{qualifiersRowIndex}
+					{showResultsRowIndex}
 					{footerRowIndex}
 					{getCellId}
 					{isFocusedRow}
