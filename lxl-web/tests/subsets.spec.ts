@@ -18,7 +18,7 @@ test('_r param is preserved when navigating around the app', async ({ page }) =>
 	await expect(page).toHaveURL(/_r=itemHeldBy%3A%22sigel%3AArkm%22/);
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
 	await expect(page).toHaveURL(/_r=itemHeldBy%3A%22sigel%3AArkm%22/);
-	await page.getByRole('link', { name: 'Sparat' }).click();
+	await page.getByRole('link', { name: 'Mina sidor' }).click();
 	await expect(page).toHaveURL(/my-pages\?_r=itemHeldBy%3A%22sigel%3AArkm%22/);
 });
 

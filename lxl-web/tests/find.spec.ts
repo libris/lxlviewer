@@ -89,18 +89,18 @@ test('facet opened/closed state is preserved', async ({ page, context }) => {
 });
 
 test('myLibraries filter is visible (when not active)', async ({ page }) => {
-	await expect(page.getByText('Avgränsa till mina bibliotek')).toBeVisible();
+	await expect(page.getByText('Avgränsa till favoritbibliotek')).toBeVisible();
 });
 
 test('select myLibraries filter adds filter alias to url', async ({ page }) => {
 	await expect(page).not.toHaveURL(/alias-myLibraries/);
-	await page.getByText('Avgränsa till mina bibliotek').click();
+	await page.getByText('Avgränsa till favoritbibliotek').click();
 	await expect(page).toHaveURL(/alias-myLibraries/);
 });
 
 test('myLibraries without favourite libraries shows a message', async ({ page }) => {
 	await expect(page.getByTestId('my-libraries-warning')).not.toBeVisible();
-	await page.getByText('Avgränsa till mina bibliotek').click();
+	await page.getByText('Avgränsa till favoritbibliotek').click();
 	await expect(page.getByTestId('my-libraries-warning')).toBeVisible();
 });
 
