@@ -1046,7 +1046,6 @@
 						"marc:hasCopyAndVersionIdentificationNote",
 						"marc:itemCondition",
 						"marc:hasBindingInformation",
-						"marc:hasTextualHoldingsBasicBibliographicUnit",
 						"subject",
 						"classification"
 					]
