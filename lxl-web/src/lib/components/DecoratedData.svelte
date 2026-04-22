@@ -244,17 +244,25 @@
 								{' '}
 							</svelte:element>
 						{/if}
-						<DecoratedData
-							data={delimited && !delimitedShown ? propertyData.slice(0, limitTo) : propertyData}
-							depth={depth + 1}
-							{showLabels}
-							{block}
-							{allowLinks}
-							{allowFindLinks}
-							{allowPopovers}
-							{keyed}
-							{suppressProperty}
-						/>
+						{#if '_html' in data}
+							{console.log(propertyData)}
+							<div class="markdown [&>p]:mb-2 [&>ul]:list-inside [&>ul]:list-disc">
+								<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+								{@html propertyData}
+							</div>
+						{:else}
+							<DecoratedData
+								data={delimited && !delimitedShown ? propertyData.slice(0, limitTo) : propertyData}
+								depth={depth + 1}
+								{showLabels}
+								{block}
+								{allowLinks}
+								{allowFindLinks}
+								{allowPopovers}
+								{keyed}
+								{suppressProperty}
+							/>
+						{/if}
 						{#if delimited}
 							{#if allowLinks}
 								{@const delimitText = delimitedShown

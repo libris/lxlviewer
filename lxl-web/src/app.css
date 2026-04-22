@@ -233,7 +233,8 @@ body:has(.dismissed-banner) {
 	/* links */
 	a.link,
 	a.ext-link,
-	a.find-link {
+	a.find-link,
+	.markdown a {
 		color: var(--color-link);
 
 		&:hover,
