@@ -88,7 +88,7 @@ export default {
 		q: 'Free text search',
 		'librissearch:findCategory': 'Category',
 		'librissearch:identifyCategory': 'Category',
-		'librissearch:noneCategory': 'Category',
+		'librissearch:noneCategory': 'Subcategory',
 		'librissearch:instanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
