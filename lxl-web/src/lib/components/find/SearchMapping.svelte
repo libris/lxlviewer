@@ -20,7 +20,7 @@
 
 <ul
 	class={[
-		'max-w-full leading-7.5',
+		'max-w-full py-px leading-7.5',
 		depth === 0 ? 'search-mapping flex-col-reverse gap-2' : 'flex-col',
 		'flex items-start text-xs'
 	]}
