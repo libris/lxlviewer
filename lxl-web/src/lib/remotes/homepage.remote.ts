@@ -8,12 +8,16 @@ import * as v from 'valibot';
  * TODO: Move featured content data to Libris XL
  **/
 
-const FEATURED_QUERIES: {
+type FeaturedQueryType = {
 	headingByLang: Record<LocaleCode, string>;
+	leadingTextByLang?: Record<LocaleCode, string>;
+	footerTextByLang?: Record<LocaleCode, string>;
 	findHref: string;
 	previewParams: v.InferInput<typeof SearchResultsSchema>;
 	showAllLabelByLang?: Record<LocaleCode, string>;
-}[] = [
+};
+
+const FEATURED_QUERIES: FeaturedQueryType[] = [
 	{
 		headingByLang: { sv: 'Ny skönlitteratur på svenska', en: 'New fiction in Swedish' },
 		findHref:
@@ -33,7 +37,10 @@ const FEATURED_QUERIES: {
 			_limit: 20,
 			_sort: '-@reverse.instanceOf.publication.librissearch:year'
 		}
-	},
+	}
+];
+
+const FEATURED_QUERIES2: FeaturedQueryType[] = [
 	{
 		headingByLang: { sv: 'Böcker om att börja skolan', en: 'Books about starting school' },
 		findHref: '/find?_q=category:"barngf:Bilderböcker"+subject:"barn:B%25C3%25B6rja%2520skolan"',
@@ -42,6 +49,23 @@ const FEATURED_QUERIES: {
 			_limit: 20
 		}
 		// showAllLabelByLang: { sv: 'Visa fler titlar', en: 'Show more titles' }
+	}
+];
+
+const FEATURED_BIBLIOGRAPHIES: FeaturedQueryType[] = [
+	{
+		headingByLang: { sv: 'Särskilda samlingar i Libris', en: 'Bibliographies in Libris' },
+		leadingTextByLang: {
+			sv: 'Deldatabaser som omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala bibliografier, samt bibliografier över författare/personer.',
+			en: 'Subdatabases that includes national bibliographic, subject-specialized, and local/regional bibliographies'
+		},
+		footerTextByLang: { sv: 'Utforska särskilda samlingar', en: 'See all bibliographies' },
+		findHref: '/find?_q=typ:(bibliografi) comment:()&_sort=_sortKeyByLang.sv', // TODO alias
+		previewParams: {
+			_q: 'typ:(bibliografi) (000njwvk116zvhz0 OR 000b3thf14vqczrv OR 000n6qq312slvd3k OR bfcc6ldsd1b7vg8t)',
+			_sort: '_sortKeyByLang.sv',
+			_limit: 4
+		}
 	}
 ];
 
@@ -132,21 +156,33 @@ export type FeaturedSearch = {
 	heading: string;
 	findHref: string;
 	previewParams: v.InferInput<typeof SearchResultsSchema>;
+	leadingTextByLang?: string;
+	footerTextByLang?: string;
 	showAllLabel?: string;
 };
 
 export const getFeaturedSearches = query(v.optional(v.string()), async (lang) => {
 	const locale = getSupportedLocale(lang);
 
-	const featuredSearches: FeaturedSearch[] = FEATURED_QUERIES.map(
-		({ headingByLang, showAllLabelByLang, ...rest }) => ({
-			...rest,
-			heading: headingByLang[locale],
-			showAllLabel: showAllLabelByLang?.[locale]
-		})
-	);
+	const _mapFeaturedQuery = ({
+		headingByLang,
+		showAllLabelByLang,
+		leadingTextByLang,
+		footerTextByLang,
+		...rest
+	}: FeaturedQueryType): FeaturedSearch => ({
+		...rest,
+		heading: headingByLang[locale],
+		leadingTextByLang: leadingTextByLang?.[locale],
+		footerTextByLang: footerTextByLang?.[locale],
+		showAllLabel: showAllLabelByLang?.[locale]
+	});
 
-	return featuredSearches;
+	const featuredSearches = FEATURED_QUERIES.map(_mapFeaturedQuery);
+	const featuredSearches2 = FEATURED_QUERIES2.map(_mapFeaturedQuery);
+	const featuredBibliographies = FEATURED_BIBLIOGRAPHIES.map(_mapFeaturedQuery);
+
+	return { featuredSearches, featuredSearches2, featuredBibliographies };
 });
 
 export const getFeaturedPreviews = query(SearchResultsSchema, async (params) => {
