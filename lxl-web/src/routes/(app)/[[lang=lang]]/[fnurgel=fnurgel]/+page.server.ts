@@ -134,13 +134,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const token = displayUtil.lensAndFormat(mainEntity, LensType.WebToken, locale);
 
 	// TODO ...
-	const _isWork =
+	const _isWorkOrBibliography =
 		vocabUtil.getType(mainEntity) == 'Work' ||
+		vocabUtil.getType(mainEntity) == 'Bibliography' ||
 		vocabUtil.isSubClassOf(vocabUtil.getType(mainEntity), 'Work');
-	const overviewLens = _isWork ? LensType.WebOverview2 : LxlLens.PageOverView;
+	const overviewLens = _isWorkOrBibliography ? LensType.WebOverview2 : LxlLens.PageOverView;
 	const overview2 = [
 		displayUtil.lensAndFormat(mainEntity, overviewLens, locale),
-		...(_instances.length === 1
+		...(_instances?.length === 1
 			? [displayUtil.lensAndFormat(_instances[0], overviewLens, locale)]
 			: [])
 	];
