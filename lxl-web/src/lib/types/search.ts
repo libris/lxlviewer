@@ -62,6 +62,8 @@ export interface SearchResultItem {
 	heldBySubset?: (LibraryId | OrgId)[];
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
+	sigel?: string;
+	numberOfItems?: number;
 }
 
 type FacetId = string;

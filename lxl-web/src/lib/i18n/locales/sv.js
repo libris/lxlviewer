@@ -189,6 +189,7 @@ export default {
 		showingResultsFor: 'Visar resultat för',
 		freeOnline: 'Fritt online',
 		existsOnline: 'Finns online',
+		exploreBibliography: 'Visa samlingens innehåll',
 		searchHelp: 'Så söker du i Libris',
 		showLike: 'Visa även liknande träffar för ',
 		showEquals: 'Visa bara exakta träffar för'
@@ -251,7 +252,8 @@ export default {
 		readMore: 'Läs mer',
 		add: 'Lägg till',
 		remove: 'Ta bort',
-		show: 'Visa'
+		show: 'Visa',
+		approx: 'ca'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',

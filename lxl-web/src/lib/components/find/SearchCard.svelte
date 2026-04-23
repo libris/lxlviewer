@@ -28,6 +28,7 @@
 	import BiHeartFill from '~icons/bi/heart-fill';
 	import BiHeart from '~icons/bi/heart';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
+	import IconArrowRight from '~icons/bi/arrow-right';
 
 	interface Props {
 		item: SearchResultItem | LibraryResultItem;
@@ -66,6 +67,13 @@
 	const isInstanceCard = $derived(
 		item[JsonLd.TYPE] === 'PhysicalResource' || item[JsonLd.TYPE] === 'DigitalResource'
 	);
+
+	const bibliographyLink = $derived.by(() => {
+		if (item[JsonLd.TYPE] === 'Bibliography' && item?.sigel) {
+			return page.data.localizeHref(`/find?_q=bibliography:"sigel:${item.sigel}"`);
+		}
+		return null;
+	});
 
 	const resourceLink = $derived.by(() => {
 		const url = new URL(page.url.origin + page.data.localizeHref(id));
@@ -113,6 +121,14 @@
 		if (item[JsonLd.TYPE] !== 'Library' && item[JsonLd.TYPE] !== 'bibdb:Organization') return false;
 		if (!('libraryId' in item) || !('displayStr' in item)) return false;
 		return true;
+	}
+
+	function formatNumItems(n: number | undefined) {
+		if (!n) return null;
+		const digits = Math.floor(Math.log10(n)) + 1;
+		const factor = Math.pow(10, digits - 2);
+		const rounded = Math.floor(n / factor) * factor;
+		return rounded.toLocaleString();
 	}
 
 	$effect(() => {
@@ -344,7 +360,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			</span>
 		</footer>
 		{#if allowActions}
-			<div class="card-actions ml-auto flex gap-1 self-end pt-3">
+			<div class="card-actions ml-auto flex w-full justify-end gap-1 pt-3">
 				{#if firstMediaLink}
 					{#snippet mediaLinksPopover()}
 						<DecoratedData
@@ -377,8 +393,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						<BiQuote aria-hidden="true" class="size-4 text-neutral-400" />
 						<span id={`cite-${id}`}> {page.data.t('citations.cite')}</span>
 					</a>
-				{/if}
-				{#if isLibraryCard(item)}
+				{:else if isLibraryCard(item)}
 					{@const userSettings = getUserSettings()}
 					{@const alreadyAdded =
 						userSettings.myLibraries &&
@@ -409,6 +424,22 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					</button>
 				{/if}
 				{@render holdingsButton()}
+			</div>
+		{/if}
+		{#if bibliographyLink}
+			{@const numItems = formatNumItems(item?.numberOfItems)}
+			<div class="card-explore mt-2">
+				<a
+					href={bibliographyLink}
+					class={[
+						'hover:text-link focus:text-link text-sm ease-in-out hover:underline focus:underline [&>svg]:mb-0.5 [&>svg]:transition-transform hover:[&>svg]:translate-x-1'
+					]}
+				>
+					<span class="font-medium">{page.data.t('search.exploreBibliography')}</span>{numItems &&
+						` (${page.data.t('general.approx')} ${numItems} ${page.data.t('search.hits')})`}<IconArrowRight
+						class={['mx-0.5 inline size-4 transition-transform']}
+					/>
+				</a>
 			</div>
 		{/if}
 		{#if item._debug}
@@ -462,6 +493,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		grid-template-areas:
 			'image content content'
 			'image footer footer'
+			'image explore explore'
 			'actions actions actions'
 			'debug . .';
 
@@ -476,6 +508,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			grid-template-areas:
 				'image content content'
 				'image content content'
+				'image explore explore'
 				'image footer actions'
 				'debug . .';
 
@@ -516,6 +549,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.card-actions {
 		grid-area: actions;
+	}
+
+	.card-explore {
+		grid-area: explore;
 	}
 
 	.card-footer {

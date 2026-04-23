@@ -190,6 +190,7 @@ export default {
 		showingResultsFor: 'Showing results for',
 		freeOnline: 'Free online',
 		existsOnline: 'Available online',
+		exploreBibliography: 'Explore the bibliography',
 		searchHelp: 'Libris search help',
 		showLike: 'Also show similar matches for',
 		showEquals: 'Only show exact matches for'
@@ -252,7 +253,8 @@ export default {
 		readMore: 'Read more',
 		add: 'Add',
 		remove: 'Remove',
-		show: 'Show'
+		show: 'Show',
+		approx: 'approx.'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',
