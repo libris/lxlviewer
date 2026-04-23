@@ -12,7 +12,7 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.2",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.23",
     "sjcl": "^1.0.8",
     "@types/node": "18.18.2"
   },
