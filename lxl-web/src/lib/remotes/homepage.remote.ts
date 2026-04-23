@@ -60,7 +60,7 @@ const FEATURED_BIBLIOGRAPHIES: FeaturedQueryType[] = [
 			en: 'Subdatabases that includes national bibliographic, subject-specialized, and local/regional bibliographies'
 		},
 		footerTextByLang: { sv: 'Utforska särskilda samlingar', en: 'See all bibliographies' },
-		findHref: '/find?_q=typ:(bibliografi) comment:()&_sort=_sortKeyByLang.sv', // TODO alias
+		findHref: '/bibliographies',
 		previewParams: {
 			_q: 'typ:(bibliografi) (000njwvk116zvhz0 OR 000b3thf14vqczrv OR 000n6qq312slvd3k OR bfcc6ldsd1b7vg8t)',
 			_sort: '_sortKeyByLang.sv',
