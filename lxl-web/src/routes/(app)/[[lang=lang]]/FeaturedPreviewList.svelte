@@ -106,10 +106,11 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	.featured-previews {
+	/* prevent vertical scroll on individual items? */
+	/* .featured-previews {
 		& .placeholder,
 		:global(article) {
 			height: calc(100cqw + (var(--spacing) * 3) + 9rem);
 		}
-	}
+	} */
 </style>
