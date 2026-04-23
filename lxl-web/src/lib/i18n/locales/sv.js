@@ -298,7 +298,7 @@ export default {
 		itemMedia: 'Relaterad länk',
 		location: 'Placering',
 		shelf: 'Hylla',
-		loanPolicy: 'Lånepolitik',
+		loanPolicy: 'Lånevillkor',
 		status: 'Status',
 		date: 'Datum',
 		loanStatus: 'Se utlåningsstatus',
