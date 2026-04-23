@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
+	import { page } from '$app/state';
+	import { pushState } from '$app/navigation';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
@@ -89,6 +91,7 @@
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		wrappingArrowKeyNavigation?: boolean;
+		shallowRouting?: boolean;
 		debouncedWait?: number;
 		getDebouncedWait?: DebouncedWaitFunction;
 		selection?: Selection;
@@ -128,6 +131,7 @@
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		wrappingArrowKeyNavigation = false,
+		shallowRouting = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -362,6 +366,12 @@
 		});
 	}
 
+	function handlePopState() {
+		if (dialog?.open) {
+			hideExpandedSearch();
+		}
+	}
+
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		if (!expanded) {
 			expandedEditorView?.dispatch({
@@ -373,6 +383,12 @@
 			dialog?.showModal();
 			expanded = true;
 			onexpand?.({ windowPageYOffset: window.pageYOffset });
+			if (shallowRouting) {
+				if (!options?.preventPushState) {
+					pushState('', { ...page.state, expandedSuperSearch: true });
+				}
+				window.addEventListener('popstate', handlePopState);
+			}
 		}
 		setDefaultRowAndCols({ focusRow: options?.focusRow });
 		if (!options?.focusRow || options.focusRow < 1) {
@@ -385,6 +401,7 @@
 
 	export function hideExpandedSearch() {
 		if (expanded) {
+			window.removeEventListener('popstate', handlePopState);
 			dialog?.close();
 			collapsedEditorView?.dispatch({
 				selection: expandedEditorView?.state.selection.main
@@ -689,7 +706,11 @@
 
 	function handleClickOutsideDialog(event: MouseEvent) {
 		if (event.target === dialog || event.target === event.currentTarget) {
-			hideExpandedSearch();
+			if (shallowRouting) {
+				history.back();
+			} else {
+				hideExpandedSearch();
+			}
 		}
 	}
 
@@ -736,6 +757,7 @@
 	onDestroy(() => {
 		if (BROWSER) {
 			document.removeEventListener('keydown', handleKeyboardShortcut);
+			window.removeEventListener('popstate', handlePopState);
 		}
 		dialog?.removeEventListener('click', handleClickOutsideDialog);
 	});
@@ -798,6 +820,20 @@
 	$effect(() => {
 		if (autofocus && collapsedEditorView) {
 			collapsedEditorView.focus();
+		}
+	});
+
+	$effect(() => {
+		if (shallowRouting && page.state.expandedSuperSearch && !expanded) {
+			showExpandedSearch({ preventPushState: true, focusRow: 0 });
+		}
+	});
+
+	const handleClickClose = $derived(() => {
+		if (shallowRouting) {
+			return history.back();
+		} else {
+			hideExpandedSearch();
 		}
 	});
 </script>
@@ -873,7 +909,7 @@
 			isFocusedRow: () => activeRowIndex === -1,
 			onclickSubmit: handleClickSubmit,
 			onclickClear: handleReset,
-			onclickClose: hideExpandedSearch
+			onclickClose: handleClickClose
 		})}
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
@@ -902,7 +938,7 @@
 					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
 					onclickClear: handleReset,
-					onclickClose: hideExpandedSearch
+					onclickClose: handleClickClose
 				})}
 			</div>
 			<div id={`${id}-grid`} role="grid">

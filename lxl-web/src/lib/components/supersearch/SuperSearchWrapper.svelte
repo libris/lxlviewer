@@ -444,6 +444,7 @@
 		}}
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
+		shallowRouting
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		defaultInputCol={undefined}

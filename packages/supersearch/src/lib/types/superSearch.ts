@@ -18,6 +18,7 @@ export interface ResultItem {
 export type ShowExpandedSearchOptions = {
 	cursorAtEnd?: boolean;
 	focusRow?: number;
+	preventPushState?: boolean;
 };
 
 export type DebouncedWaitFunction = (query: string) => number | null;

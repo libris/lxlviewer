@@ -32,6 +32,7 @@ declare global {
 			siteName?: string;
 		}
 		interface PageState {
+			expandedSuperSearch?: boolean;
 			expandedInstances?: string[];
 			holdings?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
