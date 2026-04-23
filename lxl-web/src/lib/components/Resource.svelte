@@ -323,7 +323,9 @@
 					<ul>
 						{#each relations as relationItem (relationItem.qualifierKey)}
 							<li id="{uidPrefix}relations-{relationItem.qualifierKey}" class="mb-12">
-								<div class="border-b-neutral mb-6 flex place-content-between border-b pb-3">
+								<div
+									class="border-b-neutral mb-6 flex place-content-between items-end border-b pb-3"
+								>
 									<h3 class="font-medium">
 										<a
 											href={page.data.localizeHref(relationItem.findUrl)}
@@ -344,7 +346,7 @@
 										class="flex items-center text-sm font-medium hover:underline focus:underline"
 									>
 										<IconArrowRight class="inline size-5 text-neutral-500" />
-										<span>
+										<span class="whitespace-nowrap">
 											{page.data.t('general.show')}
 											{#if relationItem.totalItems > 10}
 												{page.data.t('resource.all')}
