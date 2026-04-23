@@ -13,7 +13,7 @@ export default {
 		findOnWebsite: 'Hitta på hemsidan',
 		home: 'Hem',
 		search: 'Sök i Libris',
-		// subsets: 'Deldatabaser och avdelningar',
+		bibliographies: 'Särskilda samlingar',
 		myPages: 'Mina sidor',
 		help: 'Hjälp',
 		about: 'Om Libris',
