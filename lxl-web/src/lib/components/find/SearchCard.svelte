@@ -695,7 +695,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 			&:has(img.placeholder) {
 				/* hide placeholder in popover */
-				grid-template-areas: 'content';
+				grid-template-areas:
+					'content'
+					'explore'
+					'footer';
 				grid-template-columns: 1fr;
 
 				& .card-image {

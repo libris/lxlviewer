@@ -766,6 +766,7 @@
 
 		& :global(div[data-property='bibliography'] > a) {
 			display: block;
+			width: fit-content;
 		}
 
 		& :global(div[data-property='bibliography'] > a)::before {
