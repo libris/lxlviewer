@@ -462,7 +462,11 @@
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
-			hideExpandedSearch();
+			if (shallowRouting) {
+				history.back();
+			} else {
+				hideExpandedSearch();
+			}
 		}
 
 		if (event.key === 'Enter') {
@@ -918,7 +922,7 @@
 	class="supersearch-dialog"
 	id={`${id}-dialog`}
 	bind:this={dialog}
-	closedby="any"
+	closedby="none"
 	tabindex="-1"
 	onclose={() => hideExpandedSearch()}
 >
