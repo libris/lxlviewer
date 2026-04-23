@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { FeaturedSearch } from '$lib/remotes/homepage.remote';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
@@ -6,6 +7,9 @@
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
 
 	const uid = $props.id();
+	const featuredSearches: FeaturedSearch[] = page.data.featuredSearches;
+	const featuredSearches2: FeaturedSearch[] = page.data.featuredSearches2;
+	const featuredBibliographies: FeaturedSearch[] = page.data.featuredBibliographies;
 </script>
 
 <svelte:head>
@@ -19,12 +23,15 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-{#each page.data.featuredSearches as featured, index (featured.heading)}
+{#snippet featuredSearch(featured: FeaturedSearch, index: number, landscape: boolean = false)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
-		class="featured-preview-section my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6"
+		class={[
+			'featured-preview-section my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6',
+			landscape && 'landscape-mode bg-neutral-100 py-6'
+		]}
 	>
-		<header class="flex justify-between px-3 @sm:px-6 @5xl:px-20">
+		<header class="flex flex-col px-3 @sm:px-6 @5xl:px-20">
 			<h2
 				class="font-serif text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[110rem]:text-3xl"
 				{id}
@@ -47,6 +54,11 @@
 					{featured.showAllLabel}
 				</a>
 			{/if}
+			{#if featured.leadingTextByLang}
+				<p class="my-2">
+					{featured.leadingTextByLang}
+				</p>
+			{/if}
 		</header>
 		<div class="featured-list-container">
 			<FeaturedPreviewList
@@ -55,7 +67,33 @@
 				lazyload={index === 0 ? 'mount' : 'intersection'}
 			/>
 		</div>
+		{#if featured.footerTextByLang}
+			<footer class="mt-2 flex justify-start px-3 sm:justify-end @sm:px-6 @5xl:px-20">
+				<a
+					href={page.data.localizeHref(featured.findHref)}
+					class={[
+						'ease-in-out hover:underline [&>svg]:mb-0.5 [&>svg]:transition-transform hover:[&>svg]:translate-x-1'
+					]}
+				>
+					{featured.footerTextByLang}
+					<IconArrowRight class={['mx-0.5 inline size-4 transition-transform']} />
+				</a>
+			</footer>
+		{/if}
 	</section>
+{/snippet}
+
+{#each featuredSearches as featured, index (featured.heading)}
+	{@render featuredSearch(featured, index)}
+{/each}
+{#each featuredBibliographies as bibliographies, index (bibliographies.heading)}
+	{@render featuredSearch(bibliographies, featuredSearches.length + index, true)}
+{/each}
+{#each featuredSearches2 as featured, index (featured.heading)}
+	{@render featuredSearch(
+		featured,
+		featuredSearches.length + featuredBibliographies.length + index
+	)}
 {/each}
 
 <style lang="postcss">
@@ -106,5 +144,31 @@
 	/* hide empty sections */
 	.featured-preview-section:global(:has(.featured-previews.empty)) {
 		display: none;
+	}
+
+	/* 'landscape mode' */
+	:global(.featured-preview-section.landscape-mode .horizontal-list) {
+		--card-scale: 1.4;
+
+		&.with-gradient::before,
+		&.with-gradient::after {
+			background: none;
+		}
+
+		& .resource-image {
+			aspect-ratio: 16 / 9;
+		}
+
+		& .resource-image > * {
+			aspect-ratio: 16 / 9;
+		}
+
+		& img {
+			width: 100%;
+		}
+
+		& .decorated-card-heading-top {
+			display: none;
+		}
 	}
 </style>
