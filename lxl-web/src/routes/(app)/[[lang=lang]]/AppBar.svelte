@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type Component, onDestroy, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, replaceState } from '$app/navigation';
 	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
@@ -133,8 +133,19 @@
 		shadowObserver?.disconnect();
 	}
 
-	beforeNavigate(() => {
+	beforeNavigate((navigation) => {
 		closeExpandedMenu();
+
+		/** Replace state before navigating if search is expanded (otherwise search would be expanded when pressing back) */
+		if (
+			(navigation.type === 'form' || navigation.type === 'goto' || navigation.type === 'link') &&
+			navigation.to?.url
+		) {
+			const hasExpandedSearch = document.getElementById('supersearch-dialog')?.hasAttribute('open');
+			if (hasExpandedSearch) {
+				replaceState(navigation.to.url, {});
+			}
+		}
 	});
 
 	afterNavigate(() => {
