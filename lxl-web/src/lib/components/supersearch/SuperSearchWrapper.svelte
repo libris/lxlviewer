@@ -314,6 +314,10 @@
 		});
 	}
 
+	function submit(form: HTMLFormElement) {
+		superSearch?.submit(form);
+	}
+
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
@@ -440,6 +444,7 @@
 		searchContext.showExpandedSearch = showExpandedSearch;
 		searchContext.hideExpandedSearch = hideExpandedSearch;
 		searchContext.changeQuery = changeQuery;
+    searchContext.submit = submit;
 		searchContext.isMounted = true;
 	});
 
@@ -478,6 +483,7 @@
 		}}
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
+		shallowRouting
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		defaultInputCol={undefined}
@@ -591,6 +597,7 @@
 			getCellId,
 			isFocusedRow,
 			isFocusedCell
+			// gotoAfterCollapse
 		})}
 			{@const inputRowIndex = 0}
 			{@const qualifiersRowIndex = showAddQualifiers ? 1 : -1}

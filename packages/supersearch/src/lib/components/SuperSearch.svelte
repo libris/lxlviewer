@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
+	import { page } from '$app/state';
+	import { goto, pushState } from '$app/navigation';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
@@ -35,6 +37,7 @@
 		getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
 		isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
 		isFocusedRow: (rowIndex: number) => boolean;
+		gotoAfterCollapse: (url: string | URL) => void;
 	};
 
 	interface Props {
@@ -69,6 +72,7 @@
 					onclickSubmit: (event: MouseEvent) => void;
 					onclickClear: (event: MouseEvent) => void;
 					onclickClose: (event: MouseEvent) => void;
+					gotoAfterCollapse?: (url: string | URL) => void;
 				}
 			]
 		>;
@@ -80,6 +84,7 @@
 					getCellId: (cellIndex: number) => string;
 					isFocusedCell: (cellIndex: number) => boolean;
 					rowIndex: number;
+					gotoAfterCollapse?: (url: string | URL) => void;
 				}
 			]
 		>;
@@ -89,6 +94,7 @@
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		wrappingArrowKeyNavigation?: boolean;
+		shallowRouting?: boolean;
 		debouncedWait?: number;
 		getDebouncedWait?: DebouncedWaitFunction;
 		selection?: Selection;
@@ -128,6 +134,7 @@
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		wrappingArrowKeyNavigation = false,
+		shallowRouting = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -150,6 +157,7 @@
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(-1);
+	let gotoAfterCollapseUrl: string | URL | undefined = $state();
 	let prevValue: string = value;
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
@@ -362,6 +370,36 @@
 		});
 	}
 
+	export async function submit(form: HTMLFormElement) {
+		hideExpandedSearch();
+		const formData = new FormData(form);
+		const formParams = new URLSearchParams(formData as unknown as Record<string, string>);
+		const actionUrl = new URL(form.action);
+		gotoAfterCollapse(`${actionUrl.href}?${formParams.toString()}`);
+	}
+
+	async function gotoAfterCollapse(url: string | URL) {
+		gotoAfterCollapseUrl = url;
+		history.back();
+	}
+
+	async function handlePopState(event: PopStateEvent) {
+		if (dialog?.open) {
+			hideExpandedSearch();
+		}
+		if (gotoAfterCollapseUrl) {
+			const url = gotoAfterCollapseUrl;
+			gotoAfterCollapseUrl = undefined;
+			await goto(url);
+			collapsedEditorView?.focus();
+		} else if (
+			page.state.expandedSuperSearch &&
+			event.state['sveltekit:states']?.expandedSuperSearch // a little bit hacky way to ensure the dialog doesn't flicker when navigating forward
+		) {
+			showExpandedSearch({ focusRow: 0, preventPushState: true });
+		}
+	}
+
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		if (!expanded) {
 			expandedEditorView?.dispatch({
@@ -373,6 +411,11 @@
 			dialog?.showModal();
 			expanded = true;
 			onexpand?.({ windowPageYOffset: window.pageYOffset });
+			if (shallowRouting) {
+				if (!options?.preventPushState) {
+					pushState('', { ...page.state, expandedSuperSearch: true });
+				}
+			}
 		}
 		setDefaultRowAndCols({ focusRow: options?.focusRow });
 		if (!options?.focusRow || options.focusRow < 1) {
@@ -420,8 +463,10 @@
 			: collapsedEditorView?.dom?.closest('form');
 
 		if (formElement && formElement instanceof HTMLFormElement) {
+			if (!shallowRouting) {
+				hideExpandedSearch();
+			}
 			formElement.requestSubmit();
-			hideExpandedSearch();
 		}
 	}
 
@@ -445,7 +490,11 @@
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
-			hideExpandedSearch();
+			if (shallowRouting) {
+				history.back();
+			} else {
+				hideExpandedSearch();
+			}
 		}
 
 		if (event.key === 'Enter') {
@@ -689,7 +738,11 @@
 
 	function handleClickOutsideDialog(event: MouseEvent) {
 		if (event.target === dialog || event.target === event.currentTarget) {
-			hideExpandedSearch();
+			if (shallowRouting) {
+				history.back();
+			} else {
+				hideExpandedSearch();
+			}
 		}
 	}
 
@@ -711,6 +764,19 @@
 		// if (!value.length) {
 		// 	event.preventDefault();
 		// }
+	}
+
+	function interceptExpandedLinks(event: MouseEvent) {
+		const target = event.target as HTMLElement;
+		const linkElement = target.tagName === 'A' ? target : target.closest('a');
+
+		if (linkElement) {
+			const href = linkElement.getAttribute('href');
+			if (href) {
+				event.preventDefault();
+				gotoAfterCollapse(href);
+			}
+		}
 	}
 
 	function handleReset() {
@@ -800,6 +866,14 @@
 			collapsedEditorView.focus();
 		}
 	});
+
+	const handleClickClose = $derived(() => {
+		if (shallowRouting) {
+			return history.back();
+		} else {
+			hideExpandedSearch();
+		}
+	});
 </script>
 
 {#snippet fallbackExpandedContent({ search }: { search: ReturnType<typeof useSearchRequest> })}
@@ -863,6 +937,7 @@
 	/>
 {/snippet}
 
+<svelte:window onpopstate={handlePopState} />
 <div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
 	<div class="supersearch-combobox">
 		{@render inputRow?.({
@@ -873,7 +948,7 @@
 			isFocusedRow: () => activeRowIndex === -1,
 			onclickSubmit: handleClickSubmit,
 			onclickClear: handleReset,
-			onclickClose: hideExpandedSearch
+			onclickClose: handleClickClose
 		})}
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
@@ -882,7 +957,7 @@
 	class="supersearch-dialog"
 	id={`${id}-dialog`}
 	bind:this={dialog}
-	closedby="any"
+	closedby="none"
 	tabindex="-1"
 	onclose={() => hideExpandedSearch()}
 >
@@ -893,7 +968,13 @@
 		onclick={handleClickOutsideDialog}
 	>
 		<div class="supersearch-dialog-content">
-			<div class="supersearch-combobox" bind:this={comboboxElement}>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				class="supersearch-combobox"
+				bind:this={comboboxElement}
+				onclick={interceptExpandedLinks}
+			>
 				{@render inputRow?.({
 					expanded: true,
 					inputField: expandedInputSnippet,
@@ -902,10 +983,13 @@
 					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
 					onclickClear: handleReset,
-					onclickClose: hideExpandedSearch
+					onclickClose: handleClickClose,
+					gotoAfterCollapse
 				})}
 			</div>
-			<div id={`${id}-grid`} role="grid">
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_interactive_supports_focus -->
+			<div id={`${id}-grid`} role="grid" onclick={interceptExpandedLinks}>
 				{@render expandedContent({
 					search,
 					resultsSnippet,
@@ -913,7 +997,8 @@
 					getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 					isFocusedCell: (rowIndex: number, colIndex: number) =>
 						rowIndex === activeRowIndex && colIndex === activeColIndex,
-					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
+					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex,
+					gotoAfterCollapse
 				})}
 			</div>
 		</div>
