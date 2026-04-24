@@ -268,7 +268,7 @@ test('qualifier keys can be added', async ({ page, context }) => {
 	await page.keyboard.press('ControlOrMeta+A');
 	await page.keyboard.press('ControlOrMeta+C');
 	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
-	await expect(clipboardContent).toBe('contributor:(a)');
+	expect(clipboardContent).toBe('contributor:(a)');
 });
 
 test('qualifier keys can be added using keyboard only', async ({ page, context }) => {
@@ -290,7 +290,7 @@ test('qualifier keys can be added using keyboard only', async ({ page, context }
 	await page.keyboard.press('ControlOrMeta+A');
 	await page.keyboard.press('ControlOrMeta+C');
 	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
-	await expect(
+	expect(
 		clipboardContent,
 		'arrow key navigation works as intended after adding qualifier key'
 	).toBe('c contributor:(a)b');
@@ -317,5 +317,5 @@ test('return key label is context-aware', async ({ page }) => {
 		'aria-activedescendant',
 		'supersearch-item-2x0'
 	);
-	expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Välj');
+	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Välj');
 });
