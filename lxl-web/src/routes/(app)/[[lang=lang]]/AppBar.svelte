@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type Component, onDestroy, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { afterNavigate, replaceState } from '$app/navigation';
+	import { afterNavigate } from '$app/navigation';
 	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
@@ -17,6 +17,9 @@
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
+	import { getSearchContext } from '$lib/contexts/search';
+
+	const searchContext = getSearchContext();
 
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
@@ -133,19 +136,19 @@
 		shadowObserver?.disconnect();
 	}
 
-	beforeNavigate((navigation) => {
-		closeExpandedMenu();
-
-		/** Replace state before navigating if search is expanded (otherwise search would be expanded when pressing back) */
-		if (
-			(navigation.type === 'form' || navigation.type === 'goto' || navigation.type === 'link') &&
-			navigation.to?.url
-		) {
-			const hasExpandedSearch = document.getElementById('supersearch-dialog')?.hasAttribute('open');
-			if (hasExpandedSearch) {
-				replaceState(navigation.to.url, {});
-			}
+	function handleSubmit(event: SubmitEvent) {
+		if (document.getElementById('supersearch-dialog')?.hasAttribute('open') && event.target) {
+			event.preventDefault();
+			const formElement = event.target as HTMLFormElement;
+			const formData = new FormData(formElement);
+			const formParams = new URLSearchParams(formData as unknown as Record<string, string>);
+			const actionUrl = new URL(formElement.action);
+			searchContext.gotoAfterCollapse(`${actionUrl.href}?${formParams.toString()}`);
 		}
+	}
+
+	beforeNavigate(() => {
+		closeExpandedMenu();
 	});
 
 	afterNavigate(() => {
@@ -306,7 +309,12 @@
 					'hidden target:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit' // enable toggling using target/anchor (so it also works when JavaScript is disabled)
 			]}
 		>
-			<form id="search-form" action={findActionUrl} class="mx-auto w-full min-w-0">
+			<form
+				id="search-form"
+				action={findActionUrl}
+				onsubmit={handleSubmit}
+				class="mx-auto w-full min-w-0"
+			>
 				{#if isHomeRoute}
 					<hgroup
 						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"

@@ -16,7 +16,14 @@
 	});
 
 	setHomepageContext(homepageCache);
-	setSearchContext({});
+
+	let searchContext = $state({
+		changeQuery: () => {},
+		gotoAfterCollapse: () => {}
+	});
+
+	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
+	setSearchContext(searchContext);
 </script>
 
 <svelte:head>

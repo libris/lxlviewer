@@ -2,7 +2,7 @@
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
 	import { page } from '$app/state';
-	import { pushState } from '$app/navigation';
+	import { goto, pushState } from '$app/navigation';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
@@ -154,6 +154,7 @@
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(-1);
+	let gotoAfterCollapseUrl: string | URL | undefined = $state();
 	let prevValue: string = value;
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
@@ -366,7 +367,18 @@
 		});
 	}
 
-	function handlePopState() {
+	export async function gotoAfterCollapse(url: string | URL) {
+		gotoAfterCollapseUrl = url;
+		history.back();
+	}
+
+	async function handlePopState() {
+		if (gotoAfterCollapseUrl) {
+			const url = gotoAfterCollapseUrl;
+			gotoAfterCollapseUrl = undefined;
+			await goto(url);
+			collapsedEditorView?.focus();
+		}
 		if (dialog?.open) {
 			hideExpandedSearch();
 		} else if (page.state.expandedSuperSearch) {
@@ -437,8 +449,10 @@
 			: collapsedEditorView?.dom?.closest('form');
 
 		if (formElement && formElement instanceof HTMLFormElement) {
+			if (!shallowRouting) {
+				hideExpandedSearch();
+			}
 			formElement.requestSubmit();
-			hideExpandedSearch();
 		}
 	}
 

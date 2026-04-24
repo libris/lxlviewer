@@ -301,6 +301,10 @@
 		});
 	}
 
+	function gotoAfterCollapse(url: string | URL) {
+		superSearch?.gotoAfterCollapse(url);
+	}
+
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
@@ -412,6 +416,7 @@
 
 	onMount(() => {
 		searchContext.changeQuery = changeQuery;
+		searchContext.gotoAfterCollapse = gotoAfterCollapse;
 	});
 </script>
 
