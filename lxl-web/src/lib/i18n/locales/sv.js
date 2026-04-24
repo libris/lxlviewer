@@ -13,7 +13,7 @@ export default {
 		findOnWebsite: 'Hitta på hemsidan',
 		home: 'Hem',
 		search: 'Sök i Libris',
-		bibliographies: 'Särskilda samlingar',
+		specialCollections: 'Särskilda samlingar',
 		myPages: 'Mina sidor',
 		help: 'Hjälp',
 		about: 'Om Libris',
@@ -189,7 +189,7 @@ export default {
 		showingResultsFor: 'Visar resultat för',
 		freeOnline: 'Fritt online',
 		existsOnline: 'Finns online',
-		exploreBibliography: 'Visa samlingens innehåll',
+		exploreCollection: 'Visa samlingens innehåll',
 		searchHelp: 'Så söker du i Libris',
 		showLike: 'Visa även liknande träffar för ',
 		showEquals: 'Visa bara exakta träffar för'

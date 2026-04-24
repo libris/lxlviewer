@@ -55,9 +55,9 @@
 			LeadingIcon: IconSaved
 		},
 		{
-			href: page.data.localizeHref('/bibliographies'),
-			label: page.data.t('appMenu.bibliographies'),
-			currentPage: page.route.id === '/(app)/[[lang=lang]]/bibliographies',
+			href: page.data.localizeHref('/collections'),
+			label: page.data.t('appMenu.specialCollections'),
+			currentPage: page.route.id === '/(app)/[[lang=lang]]/collections',
 			LeadingIcon: BiListColumnsReversed
 		},
 		/*

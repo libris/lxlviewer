@@ -7,9 +7,9 @@
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
 
 	const uid = $props.id();
-	const featuredSearches: FeaturedSearch[] = page.data.featuredSearches;
-	const featuredSearches2: FeaturedSearch[] = page.data.featuredSearches2;
-	const featuredBibliographies: FeaturedSearch[] = page.data.featuredBibliographies;
+	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
+	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
+	const featuredCollections: FeaturedSearch[] = $derived(page.data.featuredCollections);
 </script>
 
 <svelte:head>
@@ -86,14 +86,11 @@
 {#each featuredSearches as featured, index (featured.heading)}
 	{@render featuredSearch(featured, index)}
 {/each}
-{#each featuredBibliographies as bibliographies, index (bibliographies.heading)}
-	{@render featuredSearch(bibliographies, featuredSearches.length + index, true)}
+{#each featuredCollections as collections, index (collections.heading)}
+	{@render featuredSearch(collections, featuredSearches.length + index, true)}
 {/each}
 {#each featuredSearches2 as featured, index (featured.heading)}
-	{@render featuredSearch(
-		featured,
-		featuredSearches.length + featuredBibliographies.length + index
-	)}
+	{@render featuredSearch(featured, featuredSearches.length + featuredCollections.length + index)}
 {/each}
 
 <style lang="postcss">

@@ -435,7 +435,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						'hover:text-link focus:text-link text-sm ease-in-out hover:underline focus:underline [&>svg]:mb-0.5 [&>svg]:transition-transform hover:[&>svg]:translate-x-1'
 					]}
 				>
-					<span class="font-medium">{page.data.t('search.exploreBibliography')}</span>{numItems &&
+					<span class="font-medium">{page.data.t('search.exploreCollection')}</span>{numItems &&
 						` (${page.data.t('general.approx')} ${numItems} ${page.data.t('search.hits')})`}<IconArrowRight
 						class={['mx-0.5 inline size-4 transition-transform']}
 					/>

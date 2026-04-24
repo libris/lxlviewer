@@ -52,15 +52,15 @@ const FEATURED_QUERIES2: FeaturedQueryType[] = [
 	}
 ];
 
-const FEATURED_BIBLIOGRAPHIES: FeaturedQueryType[] = [
+const FEATURED_COLLECTIONS: FeaturedQueryType[] = [
 	{
-		headingByLang: { sv: 'Särskilda samlingar i Libris', en: 'Bibliographies in Libris' },
+		headingByLang: { sv: 'Särskilda samlingar i Libris', en: 'Special collections in Libris' },
 		leadingTextByLang: {
 			sv: 'Deldatabaser som omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala bibliografier, samt bibliografier över författare/personer.',
 			en: 'Subdatabases that includes national bibliographic, subject-specialized, and local/regional bibliographies.'
 		},
-		footerTextByLang: { sv: 'Utforska särskilda samlingar', en: 'See all bibliographies' },
-		findHref: '/bibliographies',
+		footerTextByLang: { sv: 'Utforska särskilda samlingar', en: 'See all special collections' },
+		findHref: '/collections',
 		previewParams: {
 			_q: 'type:(Bibliography) (000njwvk116zvhz0 OR 000b3thf14vqczrv OR 000n6qq312slvd3k OR bfcc6ldsd1b7vg8t)',
 			_sort: '_sortKeyByLang.sv',
@@ -180,9 +180,9 @@ export const getFeaturedSearches = query(v.optional(v.string()), async (lang) =>
 
 	const featuredSearches = FEATURED_QUERIES.map(_mapFeaturedQuery);
 	const featuredSearches2 = FEATURED_QUERIES2.map(_mapFeaturedQuery);
-	const featuredBibliographies = FEATURED_BIBLIOGRAPHIES.map(_mapFeaturedQuery);
+	const featuredCollections = FEATURED_COLLECTIONS.map(_mapFeaturedQuery);
 
-	return { featuredSearches, featuredSearches2, featuredBibliographies };
+	return { featuredSearches, featuredSearches2, featuredCollections };
 });
 
 export const getFeaturedPreviews = query(SearchResultsSchema, async (params) => {
