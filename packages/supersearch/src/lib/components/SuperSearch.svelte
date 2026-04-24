@@ -461,11 +461,9 @@
 
 		if (formElement && formElement instanceof HTMLFormElement) {
 			if (!shallowRouting) {
-				submit(formElement);
-			} else {
 				hideExpandedSearch();
-				formElement.requestSubmit();
 			}
+			formElement.requestSubmit();
 		}
 	}
 
