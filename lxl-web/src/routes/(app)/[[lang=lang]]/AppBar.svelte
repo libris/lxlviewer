@@ -18,9 +18,6 @@
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
-	import { getSearchContext } from '$lib/contexts/search';
-
-	const searchContext = getSearchContext();
 
 	const searchContext = getSearchContext();
 
