@@ -14,7 +14,7 @@ export default {
 		home: 'Hem',
 		search: 'Sök i Libris',
 		// subsets: 'Deldatabaser och avdelningar',
-		saved: 'Sparat',
+		myPages: 'Mina sidor',
 		help: 'Hjälp',
 		about: 'Om Libris',
 		aboutBeta: 'Frågor och svar',
@@ -32,7 +32,6 @@ export default {
 		changeLang: 'In English',
 		search: 'Sök',
 		login: 'Logga in',
-		saved: 'Sparat',
 		searchPlaceholder: 'Sök titel, upphovsperson, ämnen...',
 		searchSubsetPlaceholder: 'Sök inom',
 		openMenu: 'Öppna huvudmeny',
@@ -47,9 +46,9 @@ export default {
 		dismiss: 'Dölj information om betan'
 	},
 	about: {
-		pageTitle: 'Om betan',
+		pageTitle: 'Om Libris',
 		pageDescription:
-			'Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog. Just nu pågår ett initiativ att ersätta den redan existerande och välanvända tjänsten libris.kb.se och detta är vår publika betaversion av den kommande tjänsten.'
+			'Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog.'
 	},
 	help: {
 		pageTitle: 'Hjälp',
@@ -61,11 +60,11 @@ export default {
 		keyword: 'Filter / nyckelord'
 	},
 	myPages: {
-		pageTitle: 'My pages',
+		pageTitle: 'Mina sidor',
 		pageDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
-		favouriteLibraries: 'Mina bibliotek',
+		favouriteLibraries: 'Favoritbibliotek',
 		favouriteLibrary: 'favoritbibliotek',
 		findLibrary: 'Sök efter bibliotek',
 		findAndAdd: 'Hitta och lägg till favoritbibliotek',
@@ -88,7 +87,7 @@ export default {
 		q: 'Fritextsökning',
 		'librissearch:findCategory': 'Kategori',
 		'librissearch:identifyCategory': 'Kategori',
-		'librissearch:noneCategory': 'Kategori',
+		'librissearch:noneCategory': 'Underkategori',
 		'librissearch:instanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'instanceOf.@type': 'Verkstyp',
@@ -132,7 +131,7 @@ export default {
 		fieldOfActivity: 'Verksamhetsområde',
 		accessFilters: 'Åtkomst',
 		boolFilters: 'Övrigt',
-		'alias-myLibraries': 'Avgränsa till mina bibliotek',
+		'alias-myLibraries': 'Avgränsa till favoritbibliotek',
 		limitInfo: 'Alla val kan ej visas',
 		limitText:
 			'Listan visar ett begränsat antal alternativ, de mest förekommande kopplade till din sökning. Prova att avgränsa din sökning för att få andra, mer relevanta alternativ.'
@@ -183,12 +182,13 @@ export default {
 		goToResource: 'Gå till resursen',
 		addLibraries: 'Lägg till bibliotek',
 		changeLibraries: 'Ändra favoritbibliotek',
-		noAddedLibrariesText: 'Du har inte valt några favoritbibliotek',
+		noAddedLibrariesText: 'Du har inte valt några bibliotek',
 		libraries: 'bibliotek',
 		allInFacet: 'Allt inom',
 		noExactMatches: 'Inga exakta träffar',
 		showingResultsFor: 'Visar resultat för',
 		freeOnline: 'Fritt online',
+		existsOnline: 'Finns online',
 		searchHelp: 'Så söker du i Libris',
 		showLike: 'Visa även liknande träffar för ',
 		showEquals: 'Visa bara exakta träffar för'
@@ -300,7 +300,7 @@ export default {
 		itemMedia: 'Relaterad länk',
 		location: 'Placering',
 		shelf: 'Hylla',
-		loanPolicy: 'Lånepolitik',
+		loanPolicy: 'Lånevillkor',
 		status: 'Status',
 		date: 'Datum',
 		loanStatus: 'Se utlåningsstatus',
@@ -322,7 +322,7 @@ export default {
 		findTitle: 'Hitta titeln'
 	},
 	filterAlias: {
-		'alias-myLibraries': 'Mina bibliotek'
+		'alias-myLibraries': 'Favoritbibliotek'
 	},
 	panes: {
 		leadingPane: 'Vänsterpanel',

@@ -1,28 +1,22 @@
 <script lang="ts">
-	import { type SvelteComponent } from 'svelte';
 	import { page } from '$app/state';
+	import SuperSearchFallback from '$lib/components/supersearch/SuperSearchFallback.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
-	import IconSearch from '~icons/bi/search';
-	import type { ShowExpandedSearchOptions } from 'supersearch';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 
-	type Props = {
-		id?: string;
-		name: string;
-	};
-
-	let { id, name }: Props = $props();
-
-	let fallbackInputElement: HTMLInputElement | undefined = $state();
-	let superSearchWrapperComponent: SvelteComponent | undefined = $state();
 	let cursor: number | null = $state(null);
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
-	const placeholder = $derived(
-		(page.data.subsetMapping && displayMappingToString(page.data.subsetMapping)) ||
-			page.data.t('header.searchPlaceholder')
+
+	const ariaLabelledBy = $derived(isHomeRoute ? 'page-title' : undefined);
+	const ariaLabel = $derived(!isHomeRoute ? page.data.t('header.search') : undefined);
+	const placeholder: string = $derived(
+		page.data.subsetMapping
+			? `${page.data.t('header.searchSubsetPlaceholder')}: ${displayMappingToString(page.data.subsetMapping)}`
+			: page.data.t('header.searchPlaceholder')
 	);
+	const autofocus = $derived(isHomeRoute ? true : undefined);
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -37,43 +31,10 @@
 		}
 		return p;
 	});
-
-	$effect(() => {
-		if (page.url.hash === `#${id}`) {
-			fallbackInputElement?.focus();
-		}
-	});
-
-	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
-		superSearchWrapperComponent?.showExpandedSearch(options);
-	}
 </script>
 
 {#snippet fallbackInput()}
-	<div class="fallback-search relative">
-		<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
-			<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
-		</span>
-		<input
-			type="search"
-			{id}
-			{name}
-			{placeholder}
-			aria-labelledby={isHomeRoute ? 'page-title' : undefined}
-			aria-label={!isHomeRoute ? page.data.t('header.search') : undefined}
-			bind:this={fallbackInputElement}
-			class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:px-3 lg:text-[0.9375rem] sm:@3xl:pl-4"
-		/>
-		<button
-			type="submit"
-			class={[
-				'hover:bg-primary-50 hidden h-full w-full max-w-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 sm:flex lg:max-w-12'
-			]}
-			aria-label={page.data.t('supersearch.search')}
-		>
-			<IconSearch aria-hidden="true" class={['flex size-4.5']} />
-		</button>
-	</div>
+	<SuperSearchFallback {placeholder} {ariaLabelledBy} {ariaLabel} {autofocus} />
 {/snippet}
 
 {#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
@@ -82,12 +43,12 @@
 	<div class="contents" data-testid="supersearch">
 		<SuperSearchWrapper
 			{placeholder}
-			collapsedAriaLabelledBy={isHomeRoute ? 'page-title' : undefined}
-			collapsedAriaLabel={!isHomeRoute ? page.data.t('header.search') : undefined}
+			collapsedAriaLabelledBy={ariaLabelledBy}
+			collapsedAriaLabel={ariaLabel}
 			expandedAriaLabel={page.data.t('header.search')}
-			bind:this={superSearchWrapperComponent}
 			onCursorChange={(value) => (cursor = value)}
 			qualifierSuggestions={page.data.qualifierSuggestions || []}
+			{autofocus}
 		/>
 	</div>
 {:catch}
@@ -98,29 +59,3 @@
 		<input type="hidden" {name} {value} />
 	{/if}
 {/each}
-
-<style lang="postcss">
-	@reference 'tailwindcss';
-	@reference "../../../app.css";
-
-	.fallback-search {
-		display: flex;
-		width: 100%;
-		height: var(--search-input-height);
-		background: var(--color-input);
-		box-shadow: 0 0 0 1px var(--color-primary-400);
-		border-radius: var(--radius-md);
-		font-size: var(--text-xs);
-		@variant sm {
-			font-size: var(--text-sm);
-		}
-
-		&:not(:has([type='submit']:focus)) {
-			&:has(:focus) {
-				box-shadow: 0 0 0 2px var(--color-accent-500);
-				outline: 4px solid var(--color-accent-100);
-				outline-offset: 2px;
-			}
-		}
-	}
-</style>

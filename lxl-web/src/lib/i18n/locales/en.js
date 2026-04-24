@@ -14,7 +14,7 @@ export default {
 		home: 'Home',
 		search: 'Search in Libris',
 		// subsets: 'Subsets and sections',
-		saved: 'Saved',
+		saved: 'My pages',
 		help: 'Help',
 		about: 'About Libris',
 		aboutBeta: 'FAQ',
@@ -32,7 +32,6 @@ export default {
 		changeLang: 'På svenska',
 		search: 'Search',
 		login: 'Log in',
-		saved: 'Saved',
 		searchPlaceholder: 'Search for title, author, subject...',
 		searchSubsetPlaceholder: 'Search within',
 		openMenu: 'Open main menu',
@@ -47,9 +46,9 @@ export default {
 		dismiss: 'Hide beta info'
 	},
 	about: {
-		pageTitle: 'About the beta',
+		pageTitle: 'About Libris',
 		pageDescription:
-			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog. Right now, an initiative is underway to replace the already existing and well-used service libris.kb.se and this is our public beta version of the upcoming service.'
+			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog.'
 	},
 	help: {
 		pageTitle: 'Help',
@@ -66,7 +65,7 @@ export default {
 		pageDescription: 'Here you can manage your favourite libraries, among other things.',
 		myPages: 'My pages',
 		libraries: 'Libraries',
-		favouriteLibraries: 'My libraries',
+		favouriteLibraries: 'Favourite libraries',
 		favouriteLibrary: 'favourite library',
 		findLibrary: 'Search library or location',
 		findAndAdd: 'Find and add favourite libraries',
@@ -89,7 +88,7 @@ export default {
 		q: 'Free text search',
 		'librissearch:findCategory': 'Category',
 		'librissearch:identifyCategory': 'Category',
-		'librissearch:noneCategory': 'Category',
+		'librissearch:noneCategory': 'Subcategory',
 		'librissearch:instanceCategory': 'Format',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
@@ -133,7 +132,7 @@ export default {
 		fieldOfActivity: 'Field of Activity',
 		accessFilters: 'Access',
 		boolFilters: 'Other',
-		'alias-myLibraries': 'Limit to my libraries',
+		'alias-myLibraries': 'Limit to favourite libraries',
 		limitInfo: 'Some options are not displayed',
 		limitText:
 			'The list shows a limited number of options, the most common ones related to your search. Try narrowing your search to get other, more relevant options.'
@@ -184,12 +183,13 @@ export default {
 		goToResource: 'Go to the resource',
 		addLibraries: 'Add libraries',
 		changeLibraries: 'Change favourite libraries',
-		noAddedLibrariesText: 'You have not chosen any favourite libraries',
+		noAddedLibrariesText: 'You have not selected any libraries',
 		libraries: 'libraries',
 		allInFacet: 'All in',
 		noExactMatches: 'No exact matches',
 		showingResultsFor: 'Showing results for',
 		freeOnline: 'Free online',
+		existsOnline: 'Available online',
 		searchHelp: 'Libris search help',
 		showLike: 'Also show similar matches for',
 		showEquals: 'Only show exact matches for'
@@ -322,7 +322,7 @@ export default {
 		findTitle: 'Find the title'
 	},
 	filterAlias: {
-		'alias-myLibraries': 'My Libraries'
+		'alias-myLibraries': 'Favourite Libraries'
 	},
 	panes: {
 		leadingPane: 'Leading pane',

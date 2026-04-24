@@ -817,13 +817,7 @@
 					"@id": "Work-web-overview",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": [
-						"contribution",
-						"category",
-						"hasPart",
-						"relationship",
-						"intendedAudience"
-					]
+					"showProperties": ["contribution", "hasPart", "relationship", "intendedAudience"]
 				},
 				"Instance": {
 					"@id": "Instance-web-overview",
@@ -864,7 +858,7 @@
 					"@id": "Work-web-overview2",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["subject", "associatedMedia"]
+					"showProperties": ["category", "subject", "associatedMedia"]
 				},
 				"Instance": {
 					"@id": "Instance-web-overview2",
@@ -1391,7 +1385,7 @@
 		"needs-label-format": {
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["subject", "seriesMembership", "isPartOf"],
+			"fresnel:propertyFormatDomain": ["category", "subject", "seriesMembership", "isPartOf"],
 			"fresnel:propertyStyle": ["label"]
 		},
 		"Work-hasPart-format": {
@@ -1741,6 +1735,17 @@
 			"@id": "bibdb:Organization-hasPart-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["bibdb:Organization"],
+			"fresnel:propertyFormatDomain": ["hasPart"],
+			"fresnel:propertyStyle": ["sort()"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Bibliography-hasPart-format": {
+			"@id": "Bibliography-hasPart-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Bibliography"],
 			"fresnel:propertyFormatDomain": ["hasPart"],
 			"fresnel:propertyStyle": ["sort()"],
 			"fresnel:valueFormat": {

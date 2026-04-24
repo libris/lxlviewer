@@ -5,6 +5,7 @@
 	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
+	import { getSearchContext } from '$lib/contexts/search';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
 	import AppSearch from './AppSearch.svelte';
 	import IconMenu from '~icons/bi/list';
@@ -18,6 +19,8 @@
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
 
+	const searchContext = getSearchContext();
+
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
 	let menuDialogElement: HTMLDialogElement | undefined = $state();
@@ -25,7 +28,6 @@
 	let backgroundObserver: IntersectionObserver | undefined = $state();
 	let shadowSentinelElement: HTMLElement | undefined = $state();
 	let shadowObserver: IntersectionObserver | undefined = $state();
-	let appSearchComponent: AppSearch | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissableBanner: boolean = $state(false);
 	let dismissedBanner: boolean = $state(false);
@@ -82,17 +84,17 @@
 
 	function handleClickPageTitle() {
 		if (window.getSelection()?.type === 'Caret') {
-			appSearchComponent?.showExpandedSearch({ cursorAtEnd: true });
+			searchContext.showExpandedSearch({ cursorAtEnd: true });
 		}
 	}
 
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
-		appSearchComponent?.showExpandedSearch({ cursorAtEnd: true });
+		searchContext.showExpandedSearch({ cursorAtEnd: true });
 	}
 
 	function handleClickAddFilter() {
-		appSearchComponent?.showExpandedSearch({ cursorAtEnd: true, focusRow: 1 });
+		searchContext.showExpandedSearch({ cursorAtEnd: true, focusRow: 1 });
 	}
 
 	function handleBackgroundObserve(entries: IntersectionObserverEntry[]) {
@@ -321,7 +323,7 @@
 						</p>
 					</hgroup>
 				{/if}
-				<AppSearch id="app-search" name="_q" bind:this={appSearchComponent} />
+				<AppSearch />
 			</form>
 		</search>
 		<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">
@@ -372,7 +374,7 @@
 				>
 					{@render actionItemContents({
 						Icon: IconBookmark,
-						label: page.data.t('header.saved')
+						label: page.data.t('header.myPages')
 					})}
 				</a>
 			</li>
@@ -675,9 +677,8 @@
 	:global(.home .with-subset .leading-actions) {
 		position: fixed;
 
-		/* hide the subset pill on the front page for now */
-		& .subset-container {
-			display: none;
+		& + #app-bar-search {
+			background-color: var(--color-app-bar);
 		}
 	}
 

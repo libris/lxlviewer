@@ -1,8 +1,8 @@
 ---
-title: 'se'
+title: 'Hjälp och tips'
 ---
 
-# Sök i Libris
+# Hjälp och tips
 
 Använd sökrutan för att söka! Skriv in din sökning i fritext, eller använd dig av de filter som föreslås i sökrutan.
 Klicka på exemplen längre ner på den här sidan för att se hur filter och sökoperatorer kan användas i praktiken.
@@ -32,6 +32,7 @@ En sökning utan citationstecken gör att fler dokument matchar sökningen, då 
 Använd asterisk (`*`) för att inkludera flera olika ändelser för ett sökord.
 
 - Exempel: [`kulturarv*`](/find?_q=kulturarv*) ger träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
+  Om en sökning ger noll träffar läggs automatiskt trunkering till för att fånga eventuella felstavningar med mera.
 
 ## Maskering
 
@@ -79,14 +80,14 @@ Använd parenteser `()` för att konstruera mer komplicerade sökfrågor som inn
 ## Relevans och rankning av sökträffar
 
 Sökträffar rangordnas automatiskt enligt vissa kriterier.
-Till exempel kommer träffar där sökfrasen ingår i titeln eller i de medverkandes namn (författare, illustratörer, översättare osv) högre upp i träfflistan.
+Till exempel kommer träffar där sökfrasen ingår i titeln eller i de medverkandes namn (författare, illustratörer, översättare osv) högre upp i träfflistan. Du kan även sortera träfflistan efter A-Ö, Ö-A, Nyast-Äldst, Äldst till nyast och Antal bibliotek.
 
 ## Maskinell sökning
 
 Se vår [API-dokumentation](https://libris.kb.se/api/docs/) för information om mer specialiserad sökning.
 Här kan du också läsa om hur du gör anrop för att skapa integrationer mot andra system.
 
-## Tips
+## Söktips
 
 ### Kopiera sökningar
 
@@ -99,3 +100,22 @@ Det går enkelt att kopiera sökningar (inklusive filter) genom att markera inne
 Ett tomt filter kan användas för att kräva att sökträffarna ska innehålla egenskapen som filtret beskriver (oavsett värde).
 
 - Exempel: [Sök på allt material i Libris som har en ISMN-kod.](</find?_q=ISMN%3A()>)
+
+### Exakta eller liknande träffar
+
+När du söker på en person som är kopplad till flera verk visas både exakta och liknande träffar i träfflistan. Det innebär att du även kan få träffar på material där personens namn är likadant stavat, men där det ännu inte är länkat i katalogen. Detta beror på att allt innehåll i katalogen inte är fullständigt länkat. Vill du endast se titlar där personen är korrekt och aktivt länkad, klickar du på länken ”Visa bara exakta träffar för …” som visas under antalet träffar.
+
+## Favoritbibliotek
+
+Du kan spara ett eller flera bibliotek som favoriter för att snabbt avgränsa dina sökningar till dessa.
+Du gör detta antingen genom att: klicka på “Mina sidor“ högst upp på sidan eller på penn-ikonen bredvid filtret “Avgränsa till favoritbibliotek“ på sökträffsidan.
+På Mina sidor söker du fram önskade bibliotek och klickar på “lägg till“. För att ta bort bibliotek från dina favoriter klickar du på “ta bort“ under respektive bibliotek.
+Informationen om dina favoritbibliotek sparas lokalt i din webbläsare i en kak-fil.
+
+## Referenser
+
+Varje utgåva har en knapp "Referera" som gör det enkelt att skapa referenser i ett antal olika format. När du klickar på knappen öppnas ett fönster där du kan du välja mellan referensformat och kopiera den färdiga referensen som text. Det finns även stöd för vanliga insticksprogram i webbläsaren vilket gör att du kan exportera referensen direkt till ditt referenshanteringsverktyg.
+
+## “Finns online”
+
+Material som innehåller länkar till material som är tillgängligt online har en knapp “Finns online“. Där listas alla de länkar som finns tillgängliga via bibliotek eller andra källor. Mycket av detta material är också fritt tillgängligt.
