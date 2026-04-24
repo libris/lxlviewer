@@ -738,8 +738,7 @@ class Formatter {
 		'markdown()': (v) => {
 			if (typeof v === 'string') {
 				const html = renderMarkdown(v);
-				// return html;
-				return { _html: html };
+				return { [Fmt.HTML]: html };
 			}
 			return v;
 		}
