@@ -367,21 +367,32 @@
 		});
 	}
 
-	export async function gotoAfterCollapse(url: string | URL) {
+	export async function submit(form: HTMLFormElement) {
+		hideExpandedSearch();
+		const formData = new FormData(form);
+		const formParams = new URLSearchParams(formData as unknown as Record<string, string>);
+		const actionUrl = new URL(form.action);
+		gotoAfterCollapse(`${actionUrl.href}?${formParams.toString()}`);
+	}
+
+	async function gotoAfterCollapse(url: string | URL) {
 		gotoAfterCollapseUrl = url;
 		history.back();
 	}
 
-	async function handlePopState() {
+	async function handlePopState(event: PopStateEvent) {
+		if (dialog?.open) {
+			hideExpandedSearch();
+		}
 		if (gotoAfterCollapseUrl) {
 			const url = gotoAfterCollapseUrl;
 			gotoAfterCollapseUrl = undefined;
 			await goto(url);
 			collapsedEditorView?.focus();
-		}
-		if (dialog?.open) {
-			hideExpandedSearch();
-		} else if (page.state.expandedSuperSearch) {
+		} else if (
+			page.state.expandedSuperSearch &&
+			event.state['sveltekit:states']?.expandedSuperSearch // a little bit hacky way to ensure the dialog doesn't flicker when navigating forward
+		) {
 			showExpandedSearch({ focusRow: 0, preventPushState: true });
 		}
 	}
@@ -450,9 +461,11 @@
 
 		if (formElement && formElement instanceof HTMLFormElement) {
 			if (!shallowRouting) {
+				submit(formElement);
+			} else {
 				hideExpandedSearch();
+				formElement.requestSubmit();
 			}
-			formElement.requestSubmit();
 		}
 	}
 

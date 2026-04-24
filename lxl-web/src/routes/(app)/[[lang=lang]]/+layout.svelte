@@ -19,7 +19,7 @@
 
 	let searchContext = $state({
 		changeQuery: () => {},
-		gotoAfterCollapse: () => {}
+		submit: () => {}
 	});
 
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)

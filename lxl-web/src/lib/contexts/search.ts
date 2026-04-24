@@ -3,5 +3,5 @@ import type { ChangeQueryParams } from '$lib/components/supersearch/SuperSearchW
 
 export const [getSearchContext, setSearchContext] = createContext<{
 	changeQuery?: (params: ChangeQueryParams) => void;
-	gotoAfterCollapse: (url: string | URL) => void;
+	submit: (form: HTMLFormElement) => void;
 }>();

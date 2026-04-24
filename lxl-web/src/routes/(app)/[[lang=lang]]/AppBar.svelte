@@ -139,11 +139,7 @@
 	function handleSubmit(event: SubmitEvent) {
 		if (document.getElementById('supersearch-dialog')?.hasAttribute('open') && event.target) {
 			event.preventDefault();
-			const formElement = event.target as HTMLFormElement;
-			const formData = new FormData(formElement);
-			const formParams = new URLSearchParams(formData as unknown as Record<string, string>);
-			const actionUrl = new URL(formElement.action);
-			searchContext.gotoAfterCollapse(`${actionUrl.href}?${formParams.toString()}`);
+			searchContext.submit(event.target as HTMLFormElement);
 		}
 	}
 

@@ -301,8 +301,8 @@
 		});
 	}
 
-	function gotoAfterCollapse(url: string | URL) {
-		superSearch?.gotoAfterCollapse(url);
+	function submit(form: HTMLFormElement) {
+		superSearch?.submit(form);
 	}
 
 	function addQualifierKey(qualifierKey: string) {
@@ -416,7 +416,7 @@
 
 	onMount(() => {
 		searchContext.changeQuery = changeQuery;
-		searchContext.gotoAfterCollapse = gotoAfterCollapse;
+		searchContext.submit = submit;
 	});
 </script>
 
