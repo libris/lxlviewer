@@ -558,6 +558,19 @@
 					>
 						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
 					</svelte:element>
+				{:else if !expanded}
+					<button
+						type="button"
+						onclick={() => showExpandedSearch()}
+						tabindex={-1}
+						class="hidden size-11 cursor-text items-center justify-center select-none sm:flex lg:size-12"
+					>
+						<kbd
+							class="key pointer-events-auto h-[1.75em] w-[1.75em] text-sm"
+							title={`${page.data.t('supersearch.expandSearch')} (Shift+7 ${page.data.t('supersearch.or')} ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'})`}
+							>/</kbd
+						>
+					</button>
 				{/if}
 				<button
 					type="submit"

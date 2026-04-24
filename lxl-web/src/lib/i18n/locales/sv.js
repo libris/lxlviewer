@@ -208,7 +208,9 @@ export default {
 		select: 'Välj',
 		clear: 'Rensa',
 		add: 'Lägg till',
-		searchHelp: 'Sökhjälp'
+		searchHelp: 'Sökhjälp',
+		expandSearch: 'Gå till sökruta',
+		or: 'eller'
 	},
 	sort: {
 		sort: 'Sortera',
