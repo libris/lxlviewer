@@ -369,6 +369,8 @@
 	function handlePopState() {
 		if (dialog?.open) {
 			hideExpandedSearch();
+		} else if (page.state.expandedSuperSearch) {
+			showExpandedSearch({ focusRow: 0, preventPushState: true });
 		}
 	}
 
@@ -387,7 +389,6 @@
 				if (!options?.preventPushState) {
 					pushState('', { ...page.state, expandedSuperSearch: true });
 				}
-				window.addEventListener('popstate', handlePopState);
 			}
 		}
 		setDefaultRowAndCols({ focusRow: options?.focusRow });
@@ -401,7 +402,6 @@
 
 	export function hideExpandedSearch() {
 		if (expanded) {
-			window.removeEventListener('popstate', handlePopState);
 			dialog?.close();
 			collapsedEditorView?.dispatch({
 				selection: expandedEditorView?.state.selection.main
@@ -761,7 +761,6 @@
 	onDestroy(() => {
 		if (BROWSER) {
 			document.removeEventListener('keydown', handleKeyboardShortcut);
-			window.removeEventListener('popstate', handlePopState);
 		}
 		dialog?.removeEventListener('click', handleClickOutsideDialog);
 	});
@@ -824,12 +823,6 @@
 	$effect(() => {
 		if (autofocus && collapsedEditorView) {
 			collapsedEditorView.focus();
-		}
-	});
-
-	$effect(() => {
-		if (shallowRouting && page.state.expandedSuperSearch && !expanded) {
-			showExpandedSearch({ preventPushState: true, focusRow: 0 });
 		}
 	});
 
@@ -903,6 +896,7 @@
 	/>
 {/snippet}
 
+<svelte:window onpopstate={handlePopState} />
 <div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
 	<div class="supersearch-combobox">
 		{@render inputRow?.({
