@@ -391,7 +391,7 @@
 			const url = gotoAfterCollapseUrl;
 			gotoAfterCollapseUrl = undefined;
 			await goto(url);
-			collapsedEditorView?.focus();
+			// collapsedEditorView?.focus();
 		} else if (
 			page.state.expandedSuperSearch &&
 			event.state['sveltekit:states']?.expandedSuperSearch // a little bit hacky way to ensure the dialog doesn't flicker when navigating forward
