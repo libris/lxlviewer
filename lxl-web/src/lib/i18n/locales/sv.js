@@ -209,7 +209,7 @@ export default {
 		clear: 'Rensa',
 		add: 'Lägg till',
 		searchHelp: 'Sökhjälp',
-		expandSearch: 'Expandera sök',
+		expandSearch: 'Gå till sökruta',
 		or: 'eller'
 	},
 	sort: {

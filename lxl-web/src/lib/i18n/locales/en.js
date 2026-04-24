@@ -210,7 +210,7 @@ export default {
 		clear: 'Clear',
 		add: 'Add',
 		searchHelp: 'Search help',
-		expandSearch: 'Expand search',
+		expandSearch: 'Go to search',
 		or: 'or'
 	},
 	sort: {
