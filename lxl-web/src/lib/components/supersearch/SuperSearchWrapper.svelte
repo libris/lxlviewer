@@ -550,6 +550,7 @@
 			getCellId,
 			isFocusedRow,
 			isFocusedCell
+			// gotoAfterCollapse
 		})}
 			{@const inputRowIndex = 0}
 			{@const qualifiersRowIndex = showAddQualifiers ? 1 : -1}

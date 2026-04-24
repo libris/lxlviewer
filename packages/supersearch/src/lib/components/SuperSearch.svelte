@@ -37,6 +37,7 @@
 		getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
 		isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
 		isFocusedRow: (rowIndex: number) => boolean;
+		gotoAfterCollapse: (url: string | URL) => void;
 	};
 
 	interface Props {
@@ -71,6 +72,7 @@
 					onclickSubmit: (event: MouseEvent) => void;
 					onclickClear: (event: MouseEvent) => void;
 					onclickClose: (event: MouseEvent) => void;
+					gotoAfterCollapse?: (url: string | URL) => void;
 				}
 			]
 		>;
@@ -82,6 +84,7 @@
 					getCellId: (cellIndex: number) => string;
 					isFocusedCell: (cellIndex: number) => boolean;
 					rowIndex: number;
+					gotoAfterCollapse?: (url: string | URL) => void;
 				}
 			]
 		>;
@@ -763,6 +766,19 @@
 		// }
 	}
 
+	function interceptExpandedLinks(event: MouseEvent) {
+		const target = event.target as HTMLElement;
+		const linkElement = target.tagName === 'A' ? target : target.closest('a');
+
+		if (linkElement) {
+			const href = linkElement.getAttribute('href');
+			if (href) {
+				event.preventDefault();
+				gotoAfterCollapse(href);
+			}
+		}
+	}
+
 	function handleReset() {
 		collapsedEditorView?.dispatch({
 			changes: { from: 0, to: value.length, insert: '' },
@@ -952,7 +968,13 @@
 		onclick={handleClickOutsideDialog}
 	>
 		<div class="supersearch-dialog-content">
-			<div class="supersearch-combobox" bind:this={comboboxElement}>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				class="supersearch-combobox"
+				bind:this={comboboxElement}
+				onclick={interceptExpandedLinks}
+			>
 				{@render inputRow?.({
 					expanded: true,
 					inputField: expandedInputSnippet,
@@ -961,10 +983,13 @@
 					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
 					onclickClear: handleReset,
-					onclickClose: handleClickClose
+					onclickClose: handleClickClose,
+					gotoAfterCollapse
 				})}
 			</div>
-			<div id={`${id}-grid`} role="grid">
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_interactive_supports_focus -->
+			<div id={`${id}-grid`} role="grid" onclick={interceptExpandedLinks}>
 				{@render expandedContent({
 					search,
 					resultsSnippet,
@@ -972,7 +997,8 @@
 					getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 					isFocusedCell: (rowIndex: number, colIndex: number) =>
 						rowIndex === activeRowIndex && colIndex === activeColIndex,
-					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
+					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex,
+					gotoAfterCollapse
 				})}
 			</div>
 		</div>
