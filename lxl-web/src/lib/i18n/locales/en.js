@@ -13,8 +13,8 @@ export default {
 		findOnWebsite: 'Find on Libris',
 		home: 'Home',
 		search: 'Search in Libris',
-		// subsets: 'Subsets and sections',
-		saved: 'My pages',
+		specialCollections: 'Special collections',
+		myPages: 'My pages',
 		help: 'Help',
 		about: 'About Libris',
 		aboutBeta: 'FAQ',
@@ -190,6 +190,7 @@ export default {
 		showingResultsFor: 'Showing results for',
 		freeOnline: 'Free online',
 		existsOnline: 'Available online',
+		exploreCollection: 'Explore the collection',
 		searchHelp: 'Libris search help',
 		showLike: 'Also show similar matches for',
 		showEquals: 'Only show exact matches for'
@@ -254,7 +255,8 @@ export default {
 		readMore: 'Read more',
 		add: 'Add',
 		remove: 'Remove',
-		show: 'Show'
+		show: 'Show',
+		approx: 'approx.'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',

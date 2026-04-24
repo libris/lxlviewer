@@ -7,6 +7,7 @@
 	import IconSaved from '~icons/bi/bookmark';
 	import IconChangeLang from '~icons/bi/globe';
 	import IconGoto from '~icons/bi/chevron-down';
+	import BiListColumnsReversed from '~icons/bi/list-columns-reverse';
 
 	type Props = {
 		showSkipToContent?: boolean;
@@ -52,6 +53,12 @@
 			label: page.data.t('appMenu.myPages'),
 			currentPage: page.route.id === '/(app)/[[lang=lang]]/my-pages',
 			LeadingIcon: IconSaved
+		},
+		{
+			href: page.data.localizeHref('/collections'),
+			label: page.data.t('appMenu.specialCollections'),
+			currentPage: page.route.id === '/(app)/[[lang=lang]]/collections',
+			LeadingIcon: BiListColumnsReversed
 		},
 		/*
 		{

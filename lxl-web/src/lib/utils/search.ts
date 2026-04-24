@@ -148,6 +148,12 @@ export function asSearchResultItem(
 			...(isLibrary(i) && {
 				libraryId: i[JsonLd.ID],
 				displayStr: toString(displayUtil.lensAndFormat(i, LensType.Chip, locale))
+			}),
+			...(isBibliography(i) && {
+				sigel: i.sigel as string,
+				numberOfItems:
+					i?.reverseLinks?.totalItemsByRelation?.['meta.bibliography'] ||
+					(undefined as number | undefined)
 			})
 		}));
 }
@@ -331,6 +337,10 @@ function isSerial(item: FramedData): boolean {
 
 function isLibrary(item: FramedData): boolean {
 	return item[JsonLd.TYPE] === 'Library' || item[JsonLd.TYPE] === 'bibdb:Organization';
+}
+
+function isBibliography(item: FramedData): boolean {
+	return item[JsonLd.TYPE] === 'Bibliography';
 }
 
 function getMaxScores(itemDebugs: ApiItemDebugInfo[]) {

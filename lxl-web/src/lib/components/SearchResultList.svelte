@@ -111,7 +111,7 @@
 			aria-busy={ariaBusy}
 		>
 			{#each items as item, index (item['@id'])}
-				<li class="@container overflow-x-hidden text-center">
+				<li class="@container overflow-x-hidden">
 					<SearchResultItem
 						data={item}
 						lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
@@ -162,6 +162,7 @@
 	@reference "tailwindcss";
 
 	.horizontal-list {
+		--card-scale: 1;
 		@media (any-pointer: fine) and (scripting: enabled) {
 			&:hover,
 			&:focus-within {
@@ -200,38 +201,66 @@
 			}
 			& > :global(li) {
 				/* Remember to update getLazyImagesAfterIndex if these values are changed... */
+				--cards: 2.5;
+				--gap-count: 3;
+				--edge-offset: 0px;
 
-				min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 3) / 2.5));
+				min-width: max(
+					9rem,
+					calc(
+						(100cqw - var(--spacing) * 6 * var(--gap-count) - var(--edge-offset)) /
+							(var(--cards) / var(--card-scale))
+					)
+				);
 
 				@variant @xl {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 4) / 3.5));
+					--cards: 3.5;
+					--gap-count: 4;
 				}
 				@variant @3xl {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5) / 4.5));
+					--cards: 4.5;
+					--gap-count: 5;
 				}
 				@variant @5xl {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5 - 80px) / 5.5));
+					--cards: 5.5;
+					--gap-count: 5;
+					--edge-offset: 80px;
 				}
 				@variant @7xl {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 4 - 80px) / 4.5));
+					--cards: 4.5;
+					--gap-count: 4;
+					--edge-offset: 80px;
 				}
+
 				@container (width >= 80rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 5 - 80px) / 5.5));
+					--cards: 5.5;
+					--gap-count: 5;
+					--edge-offset: 80px;
 				}
 				@container (width >= 100rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 6 - 80px) / 6.5));
+					--cards: 6.5;
+					--gap-count: 6;
+					--edge-offset: 80px;
 				}
 				@container (width >= 120rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 7 - 80px) / 7.5));
+					--cards: 7.5;
+					--gap-count: 7;
+					--edge-offset: 80px;
 				}
 				@container (width >= 140rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 8 - 80px) / 8.5));
+					--cards: 8.5;
+					--gap-count: 8;
+					--edge-offset: 80px;
 				}
 				@container (width >= 160rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 9 - 80px) / 9.5));
+					--cards: 9.5;
+					--gap-count: 9;
+					--edge-offset: 80px;
 				}
 				@container (width >= 180rem) {
-					min-width: max(9rem, calc((100cqw - var(--spacing) * 6 * 9 - 160px) / 10));
+					--cards: 10;
+					--gap-count: 9;
+					--edge-offset: 160px;
 				}
 			}
 		}
@@ -261,6 +290,6 @@
 	}
 
 	.scroll-button {
-		top: calc(50% - var(--spacing) * 11);
+		top: calc(var(--spacing) * 22);
 	}
 </style>

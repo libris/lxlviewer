@@ -846,7 +846,7 @@
 					"@id": "Bibliography-web-overview",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Bibliography",
-					"showProperties": ["description"]
+					"showProperties": ["comment"]
 				}
 			}
 		},
@@ -890,6 +890,12 @@
 						"hasNote",
 						"immediateAcquisition"
 					]
+				},
+				"Bibliography": {
+					"@id": "Bibliography-web-overview",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Bibliography",
+					"showProperties": ["description"]
 				}
 			}
 		},
