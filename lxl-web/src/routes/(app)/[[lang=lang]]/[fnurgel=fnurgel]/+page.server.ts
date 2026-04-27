@@ -185,15 +185,22 @@ export const load = async ({ params, locals, fetch, url }) => {
 		if (!isWork && sortedInstances.length === 1) {
 			const items = sortedInstances[0]?.[JsonLd.REVERSE]?.itemOf ?? [];
 			items.forEach((item: HoldingItem) => {
+				const _item = { ...item };
+				const component = _item?.hasComponent;
+				delete _item.hasComponent;
+				const allItems = component?.length ? [...component, _item] : [_item];
+
 				itemInformation.push({
 					heldBy: displayUtil.lensAndFormat(item?.heldBy, LensType.Chip, locale),
-					item: displayUtil.lensAndFormat(item, LensType.WebDetails, locale)
+					items: allItems
+						.map((i) => displayUtil.lensAndFormat(i, LensType.WebDetails, locale))
+						.filter((i) => i[Fmt.DISPLAY].length)
 				});
 			});
 		}
 	}
 
-	itemInformation = itemInformation.filter((i) => i.item[Fmt.DISPLAY].length);
+	itemInformation = itemInformation.filter((i) => i.items.length);
 
 	const creations = [mainEntity].concat(mainEntity?.['@reverse']?.instanceOf || []);
 	const summary = creations

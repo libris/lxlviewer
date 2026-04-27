@@ -7,7 +7,7 @@
 		LibraryWithLinksAndInstances,
 		UnknownLibrary
 	} from '$lib/types/holdings';
-	import { JsonLd } from '$lib/types/xl';
+	import { Fmt, JsonLd } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { createHoldingLinks } from '$lib/utils/holdings';
 	import LoanStatus from './LoanStatus.svelte';
@@ -55,9 +55,9 @@
 				instance?.linksToItem.length ||
 				instance?.loanReserveLink.length ||
 				instance?.itemStatus?.length ||
-				instance?.itemShelf?._display?.length ||
-				instance?.itemNote?._display?.length ||
-				instance?.itemMedia?._display?.length
+				instance?.itemShelf?.[Fmt.DISPLAY].length ||
+				instance?.itemNote?.[Fmt.DISPLAY].length ||
+				instance?.itemMedia?.[Fmt.DISPLAY].length
 		)
 	);
 
@@ -103,7 +103,7 @@
 	{/if}
 	<!-- shelf data -->
 	{#each instance?.itemShelf as itemShelf, index (`item-shelf-${index}`)}
-		{#if itemShelf._display.length}
+		{#if itemShelf[Fmt.DISPLAY].length}
 			<li>
 				<p>
 					<span class="text-subtle">{page.data.t('holdings.itemShelf')}: </span>
@@ -114,7 +114,7 @@
 	{/each}
 	<!-- item media -->
 	{#each instance?.itemMedia as itemMedia, index (`item-media-${index}`)}
-		{#if itemMedia?._display?.length}
+		{#if itemMedia[Fmt.DISPLAY].length}
 			<li>
 				<p>
 					<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
@@ -125,7 +125,7 @@
 	{/each}
 	<!-- Item notes -->
 	{#each instance?.itemNote as itemNote, index (`item-note-${index}`)}
-		{#if itemNote?._display?.length}
+		{#if itemNote[Fmt.DISPLAY].length}
 			<li>
 				<p>
 					<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>

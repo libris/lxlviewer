@@ -53,7 +53,7 @@
 			itemInformation:
 				| {
 						heldBy: DisplayDecorated;
-						item: DisplayDecorated;
+						items: DisplayDecorated[];
 				  }[]
 				| [];
 		};
@@ -430,18 +430,25 @@
 								</summary>
 								<ul class="mt-2 flex flex-col gap-1">
 									{#each decoratedData.itemInformation as holder, index (index)}
-										<li class="block rounded-sm border border-neutral-200 p-2">
-											<p class="mb-1 font-medium">
-												<DecoratedData data={holder.heldBy} showLabels={ShowLabelsOptions.Never} />
-											</p>
-											<DecoratedData
-												data={holder.item}
-												showLabels={ShowLabelsOptions.Always}
-												allowFindLinks={false}
-												block
-												limit={{ contribution: 5, hasVariant: 10 }}
-											/>
-										</li>
+										{#if holder.items.some((i) => i[Fmt.DISPLAY].length)}
+											<li class="block rounded-sm border border-neutral-200 p-2">
+												<p class="mb-1 font-medium">
+													<DecoratedData
+														data={holder.heldBy}
+														showLabels={ShowLabelsOptions.Never}
+													/>
+												</p>
+												{#each holder.items as item, index (index)}
+													<DecoratedData
+														data={item}
+														showLabels={ShowLabelsOptions.Always}
+														allowFindLinks={false}
+														block
+														limit={{ contribution: 5, hasVariant: 10 }}
+													/>
+												{/each}
+											</li>
+										{/if}
 									{/each}
 								</ul>
 							</details>
