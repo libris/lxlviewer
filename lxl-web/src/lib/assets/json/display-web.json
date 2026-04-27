@@ -883,13 +883,13 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [
+						"hasComponent",
 						"shelfLabel",
 						"physicalLocation",
 						"shelfMark",
 						"shelfControlNumber",
 						"availability",
-						"hasComponent",
-						"hasNote"
+						"copyNumber"
 					]
 				},
 				"Bibliography": {
@@ -910,11 +910,11 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [
-						"cataloguersNote",
 						"summary",
 						"appliesTo",
+						"marc:hasTextualHoldingsBasicBibliographicUnit",
 						"hasComponent",
-						"marc:hasTextualHoldingsBasicBibliographicUnit"
+						"hasNote"
 					]
 				}
 			}
@@ -1036,10 +1036,8 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [
-						"cataloguersNote",
 						"custodialHistory",
 						"summary",
-						"hasNote",
 						"immediateAcquisition",
 						"appliesTo",
 						"hasComponent",
@@ -1463,17 +1461,6 @@
 			"fresnel:propertyFormatDomain": ["hasNote"],
 			"fresnel:propertyStyle": ["hasNote"]
 		},
-		"Item-hasNote-format": {
-			"@id": "Item-hasNote-format",
-			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Item"],
-			"fresnel:propertyFormatDomain": ["hasNote"],
-			"fresnel:propertyStyle": [""],
-			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " (",
-				"fresnel:contentAfter": ")"
-			}
-		},
 		"Classification-format": {
 			"@id": "Classification-format",
 			"@type": "fresnel:Format",
@@ -1819,6 +1806,17 @@
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"copyNumber-format": {
+			"@id": "copyNumber-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Item"],
+			"fresnel:propertyFormatDomain": ["copyNumber"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentAfter": ")"
+			},
+			"fresnel:propertyStyle": ["label"]
 		},
 		"_Types-identify": {
 			"@id": "_Types-identify",
