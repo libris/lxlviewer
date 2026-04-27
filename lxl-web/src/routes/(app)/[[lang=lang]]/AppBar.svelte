@@ -391,7 +391,7 @@
 		-->
 	</figure>
 	<section class="filters-container sm:px-2 lg:px-1.25">
-		<nav class="sticky mt-1.5 grid pb-4 lg:mt-0.5">
+		<nav class="sticky grid pb-4">
 			<div role="grid" class="filters mx-auto w-full max-w-7xl">
 				<SuperSearchQualifierRow />
 			</div>

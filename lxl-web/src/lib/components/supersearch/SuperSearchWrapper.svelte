@@ -614,7 +614,7 @@
 			<!-- {@const showResultsRowIndex = DEFAULT_MODE ? 2 : -1}-->
 			{@const suggestionsRowOffset = DEFAULT_MODE ? 3 : 0}
 			{@const footerRowIndex = (DEFAULT_MODE ? 3 : 0) + (resultsCount ? resultsCount : 0)}
-			<nav class="mt-3 lg:mt-4">
+			<nav class="mt-0.5 sm:mt-1.5 lg:mt-3.5">
 				<SuperSearchQualifierRow
 					rowIndex={qualifiersRowIndex}
 					{getCellId}
