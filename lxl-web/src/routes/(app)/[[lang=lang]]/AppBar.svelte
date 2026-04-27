@@ -13,11 +13,10 @@
 	import IconBookmark from '~icons/bi/bookmark';
 	import IconSearch from '~icons/bi/search';
 	import IconLanguage from '~icons/bi/globe';
-	import IconAddFilter from '~icons/bi/plus-circle';
 	import BetaBanner from '$lib/components/BetaBanner.svelte';
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
-	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
+	import SuperSearchQualifierRow from '$lib/components/supersearch/SuperSearchQualifierRow.svelte';
 
 	const searchContext = getSearchContext();
 
@@ -91,10 +90,6 @@
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
 		searchContext.showExpandedSearch({ cursorAtEnd: true });
-	}
-
-	function handleClickAddFilter() {
-		searchContext.showExpandedSearch({ cursorAtEnd: true, focusRow: 1 });
 	}
 
 	function handleBackgroundObserve(entries: IntersectionObserverEntry[]) {
@@ -401,56 +396,10 @@
 		</figcaption>
 		-->
 	</figure>
-	<section class="search-shortcuts @container">
-		<nav
-			class="sticky mx-auto grid pt-2 pb-4 @5xl:pt-3 @5xl:pb-5"
-			aria-label={page.data.t('home.searchShortcuts')}
-		>
-			<div class="filters @container mx-auto w-full max-w-7xl px-2 lg:px-4">
-				<div class="mx-auto flex w-full items-center">
-					<div
-						tabindex="-1"
-						class="filters-scroller scrollbar-hidden flex max-w-160 items-center overflow-x-scroll px-3 py-1 @3xl:px-4 @5xl:max-w-3xl"
-					>
-						<h2
-							id="search-for"
-							class="mr-3 hidden font-serif font-medium whitespace-nowrap italic @xl:block @5xl:text-[1.0625rem]"
-						>
-							{page.data.t('search.searchFor')}
-						</h2>
-						<ul class="flex gap-2 pr-3 text-xs @3xl:text-sm @5xl:text-[0.9375rem]">
-							{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
-								<li>
-									<a
-										href={page.data.localizeHref(category.href)}
-										id={category.id}
-										aria-labelledby="search-for {category.id}"
-										class="btn-outlined text-primary-900 border-primary-600/75 focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 px-2 py-1.5 text-center whitespace-nowrap @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
-									>
-										{category.label}
-									</a>
-								</li>
-							{/each}
-						</ul>
-					</div>
-					<div class="border-l border-l-neutral-300 pl-3 @3xl:ml-4.5">
-						<button
-							id="add-filter"
-							type="button"
-							class="text-primary-900 focus-visible:bg-primary-200 hover:bg-primary-200 hover:border-primary-200/50 focus-visible:border-primary-200 mr-4 flex min-w-14 items-center rounded-full px-3 py-2 text-center text-xs font-medium whitespace-nowrap @xl:font-normal @3xl:text-sm @5xl:min-h-10 @5xl:text-[0.9375rem]"
-							aria-labelledby="add-label add-filter"
-							onclick={handleClickAddFilter}
-						>
-							<IconAddFilter class="mr-2 hidden size-4 @xl:inline @5xl:size-4.5" />
-							<span>
-								<span id="add-label" class="hidden @xl:inline">{page.data.t('general.add')}</span>
-								<span class="capitalize @xl:lowercase">
-									{page.data.t('search.filter').toLowerCase()}
-								</span>
-							</span>
-						</button>
-					</div>
-				</div>
+	<section class="filters-container sm:px-2 lg:px-1.25">
+		<nav class="sticky mt-1.5 grid pb-4 lg:mt-0.5">
+			<div role="grid" class="filters mx-auto w-full max-w-7xl">
+				<SuperSearchQualifierRow />
 			</div>
 		</nav>
 	</section>
@@ -523,7 +472,7 @@
 		bottom: calc(var(--app-bar-height) + var(--banner-height, 0));
 	}
 
-	.search-shortcuts {
+	.filters-container {
 		height: round(calc((73vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
 		height: round(calc((73svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
 

@@ -13,6 +13,7 @@
 		SuperSearch,
 		type ViewUpdateSuperSearchEvent
 	} from 'supersearch';
+	import SuperSearchQualifierRow from './SuperSearchQualifierRow.svelte';
 	import SuperSearchFooterRow from './SuperSearchFooterRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
@@ -411,6 +412,10 @@
 		}
 	}
 
+	function handleOnCollapse() {
+		searchContext.mode = Mode.DEFAULT_MODE;
+	}
+
 	function handleOnExpandedViewUpdate(event: ViewUpdateSuperSearchEvent) {
 		if (event.lineHeight >= 60) {
 			wrappedLines = true;
@@ -494,6 +499,7 @@
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
+		oncollapse={handleOnCollapse}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
@@ -604,9 +610,17 @@
 			isFocusedCell
 		})}
 			{@const inputRowIndex = 0}
-			{@const qualifiersRowIndex = showAddQualifiers ? 1 : -1}
-			{@const footerRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
+			{@const qualifiersRowIndex = DEFAULT_MODE ? 1 : -1}
+			<!-- {@const showResultsRowIndex = DEFAULT_MODE ? 2 : -1}-->
+			{@const suggestionsRowOffset = DEFAULT_MODE ? 3 : 0}
+			{@const footerRowIndex = (DEFAULT_MODE ? 3 : 0) + (resultsCount ? resultsCount : 0)}
 			<nav class="mt-3 lg:mt-4">
+				<SuperSearchQualifierRow
+					rowIndex={qualifiersRowIndex}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+				/>
 				{#if SELECT_QUALIFIER_KEY_MODE}
 					<!-- TODO: SELECT QUALIFIER KEY MODE -->
 				{:else if SELECT_QUALIFIER_VALUE_MODE}
@@ -615,11 +629,15 @@
 					{#if showAddQualifiers}
 						<div
 							id="supersearch-add-qualifier-key-label"
-							class="text-subtle mt-1.5 mb-1 px-4 text-sm font-medium lg:mt-0"
+							class="text-subtle mt-1.5 mb-1 hidden px-4 text-sm font-medium lg:mt-0"
 						>
 							{page.data.t('supersearch.addQualifiers')}
 						</div>
-						<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
+						<div
+							role="rowgroup"
+							aria-labelledby="supersearch-add-qualifier-key-label"
+							class="mb-1 hidden"
+						>
 							<div role="row" class="flex flex-wrap items-center gap-2 px-4 py-2">
 								{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
 									<button
@@ -691,7 +709,7 @@
 							aria-labelledby="supersearch-results-label"
 							class="border-neutral border-t"
 						>
-							{@render resultsSnippet({ rowOffset: DEFAULT_MODE ? 2 : 1 })}
+							{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 						</div>
 					{/if}
 					<SuperSearchFooterRow
@@ -728,7 +746,7 @@
 		}
 
 		@variant sm {
-			&:focus-within:not(:has(button:focus)) {
+			&.focused-row:focus-within:not(:has(:global([aria-activedescendant]))) {
 				box-shadow: 0 0 0 6px var(--color-accent-100);
 				outline: 2px solid var(--color-outline);
 				outline-offset: 0;
