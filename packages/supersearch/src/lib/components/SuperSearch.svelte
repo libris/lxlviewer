@@ -308,7 +308,7 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (!dialog?.open && value !== event.value) {
+		if (!dialog?.open && value.trim() !== event.value.trim()) {
 			showExpandedSearch();
 		}
 		value = event.value;
