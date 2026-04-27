@@ -33,7 +33,7 @@ import {
 	type VocabData
 } from '$lib/types/xl';
 import { cleanData } from './cleanupDecorated';
-import { renderMarkdown } from './sanitize';
+import { markdownToHtml } from './markdownToHtml';
 
 // TODO TESTS!
 
@@ -737,7 +737,7 @@ class Formatter {
 		},
 		'markdown()': (v) => {
 			if (typeof v === 'string') {
-				const html = renderMarkdown(v);
+				const html = markdownToHtml(v);
 				return { [Fmt.HTML]: html };
 			}
 			return v;
