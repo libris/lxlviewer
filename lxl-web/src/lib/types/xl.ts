@@ -18,11 +18,17 @@ export enum JsonLd {
 
 export enum Owl {
 	SAME_AS = 'sameAs',
-	PROPERTY_CHAIN_AXIOM = 'propertyChainAxiom'
+	PROPERTY_CHAIN_AXIOM = 'propertyChainAxiom',
+	Restriction = 'Restriction',
+	hasValue = 'hasValue',
+	onProperty = 'onProperty'
 }
 
 export enum Rdfs {
-	RDF_TYPE = 'rdf:type'
+	RDF_TYPE = 'rdf:type',
+	range = 'range',
+	subClassOf = 'subClassOf',
+	subPropertyOf = 'subPropertyOf'
 }
 
 export enum LxlJs {
