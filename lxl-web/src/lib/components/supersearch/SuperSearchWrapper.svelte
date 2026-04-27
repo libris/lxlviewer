@@ -26,6 +26,7 @@
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	interface Props {
 		placeholder: string;
@@ -314,10 +315,6 @@
 		});
 	}
 
-	function submit(form: HTMLFormElement) {
-		superSearch?.submit(form);
-	}
-
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
@@ -444,7 +441,6 @@
 		searchContext.showExpandedSearch = showExpandedSearch;
 		searchContext.hideExpandedSearch = hideExpandedSearch;
 		searchContext.changeQuery = changeQuery;
-    searchContext.submit = submit;
 		searchContext.isMounted = true;
 	});
 
@@ -473,13 +469,15 @@
 		{autofocus}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
-			return new URLSearchParams({
+			const searchParams = new SvelteURLSearchParams({
 				_q: query,
 				_limit: '5',
-				cursor: cursor.toString(),
-				_sort: page.url.searchParams.get('_sort') || '',
-				_r: page.url.searchParams.get('_r') || ''
+				cursor: cursor.toString()
 			});
+			if (page.url.searchParams.get('_r')) {
+				searchParams.set('_r', page.url.searchParams.get('_r')!);
+			}
+			return searchParams;
 		}}
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
@@ -597,7 +595,6 @@
 			getCellId,
 			isFocusedRow,
 			isFocusedCell
-			// gotoAfterCollapse
 		})}
 			{@const inputRowIndex = 0}
 			{@const qualifiersRowIndex = showAddQualifiers ? 1 : -1}

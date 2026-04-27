@@ -63,7 +63,10 @@ function iterateMapping(
 						keyLabel = el.label;
 					}
 					const isLinked = !!el.display?.[JsonLd.ID];
-					if (isLinked && value === el?._value && el?.displayStr) {
+					const valueWithoutWrappingParens = value?.trim().match(/^[(].*[)]$/)
+						? value?.trim().replace(/^[(]/, '').replace(/[)]$/, '')
+						: value;
+					if (isLinked && valueWithoutWrappingParens === el?._value && el?.displayStr) {
 						// only use atomic ranges for linked values
 						valueLabel = el.displayStr;
 						removeLink = el.up?.[JsonLd.ID];

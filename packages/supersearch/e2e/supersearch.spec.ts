@@ -329,15 +329,14 @@ test('submits form when pressing submit action', async ({ page }) => {
 });
 
 test('submits form on enter key press (if no result item is selected)', async ({ page }) => {
-	await page.getByRole('combobox').fill('hello world');
-	await expect(page.getByRole('dialog')).toBeVisible();
-	await page.keyboard.press('Escape');
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('hello world');
 	await page.keyboard.press('Enter');
 	await expect(page, 'submits closest form').toHaveURL('/test1?q=hello+world');
 	await page.goBack();
 	await page.getByTestId('use-form-attribute').check();
-	await page.getByRole('combobox').fill('hello world');
-	await page.keyboard.press('Escape');
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('hello world');
 	await page.keyboard.press('Enter');
 	await expect(page, 'submits form specified form attribute').toHaveURL('/test2?q=hello+world');
 });

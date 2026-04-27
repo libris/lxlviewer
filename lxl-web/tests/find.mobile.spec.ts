@@ -51,6 +51,7 @@ test('mapping displays the correct search query 2', async ({ page }) => {
 	await page.goto(
 		'/find?_q=%28contribution:*+OR+%28category:"https://id.kb.se/term/ktg/Literature"+NOT+titel:"pirater"%29%29+existsImage'
 	);
+	await page.keyboard.press('Escape'); // why is this needed? Why is the dialog expanded here from start?
 	await page.getByRole('link', { name: 'Sökfilter' }).click();
 	const mapping = await page.getByRole('navigation', { name: 'Valda filter' });
 	const innerText =

@@ -2,7 +2,7 @@
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
 	import { page } from '$app/state';
-	import { goto, pushState } from '$app/navigation';
+	import { pushState, beforeNavigate } from '$app/navigation';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
@@ -37,7 +37,6 @@
 		getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
 		isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
 		isFocusedRow: (rowIndex: number) => boolean;
-		gotoAfterCollapse: (url: string | URL) => void;
 	};
 
 	interface Props {
@@ -72,7 +71,6 @@
 					onclickSubmit: (event: MouseEvent) => void;
 					onclickClear: (event: MouseEvent) => void;
 					onclickClose: (event: MouseEvent) => void;
-					gotoAfterCollapse?: (url: string | URL) => void;
 				}
 			]
 		>;
@@ -84,7 +82,6 @@
 					getCellId: (cellIndex: number) => string;
 					isFocusedCell: (cellIndex: number) => boolean;
 					rowIndex: number;
-					gotoAfterCollapse?: (url: string | URL) => void;
 				}
 			]
 		>;
@@ -157,7 +154,9 @@
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(-1);
-	let gotoAfterCollapseUrl: string | URL | undefined = $state();
+	let interceptedLinkElement: HTMLLinkElement | undefined = $state(undefined);
+	let submitLinkElement: HTMLAnchorElement | undefined = $state(undefined);
+
 	let prevValue: string = value;
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
@@ -192,6 +191,12 @@
 			expandedEditorView?.dispatch(newDataMessage);
 			collapsedEditorView?.dispatch(newDataMessage);
 			prevSearchDataId = search.data?.['@id'];
+		}
+	});
+
+	beforeNavigate((navigation) => {
+		if (navigation.to) {
+			hideExpandedSearch();
 		}
 	});
 
@@ -303,7 +308,7 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (!dialog?.open && value !== event.value) {
+		if (!dialog?.open && value.trim() !== event.value.trim()) {
 			showExpandedSearch();
 		}
 		value = event.value;
@@ -370,33 +375,12 @@
 		});
 	}
 
-	export async function submit(form: HTMLFormElement) {
-		hideExpandedSearch();
-		const formData = new FormData(form);
-		const formParams = new URLSearchParams(formData as unknown as Record<string, string>);
-		const actionUrl = new URL(form.action);
-		gotoAfterCollapse(`${actionUrl.href}?${formParams.toString()}`);
-	}
-
-	async function gotoAfterCollapse(url: string | URL) {
-		gotoAfterCollapseUrl = url;
-		history.back();
-	}
-
 	async function handlePopState(event: PopStateEvent) {
+		interceptedLinkElement?.click();
 		if (dialog?.open) {
 			hideExpandedSearch();
-		}
-		if (gotoAfterCollapseUrl) {
-			const url = gotoAfterCollapseUrl;
-			gotoAfterCollapseUrl = undefined;
-			await goto(url);
-			collapsedEditorView?.focus();
-		} else if (
-			page.state.expandedSuperSearch &&
-			event.state['sveltekit:states']?.expandedSuperSearch // a little bit hacky way to ensure the dialog doesn't flicker when navigating forward
-		) {
-			showExpandedSearch({ focusRow: 0, preventPushState: true });
+		} else if (event.state['sveltekit:states']?.expandedSuperSearch) {
+			showExpandedSearch({ focusRow: 0, preventPushState: true }); // a little bit hacky way to ensure the dialog doesn't flicker when navigating forward
 		}
 	}
 
@@ -463,10 +447,26 @@
 			: collapsedEditorView?.dom?.closest('form');
 
 		if (formElement && formElement instanceof HTMLFormElement) {
-			if (!shallowRouting) {
-				hideExpandedSearch();
+			if (expanded) {
+				if (shallowRouting) {
+					const formAction = formElement.getAttribute('action');
+					const formParams = new URLSearchParams(
+						new FormData(formElement) as unknown as Record<string, string>
+					);
+					if (formAction && formParams) {
+						submitLinkElement?.setAttribute(
+							'href',
+							`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}` // A workaround for fixing back/forward navigation when submitting from expanded dialog (link clicks works together with history.back() but not goto() for some reason...)
+						);
+						submitLinkElement?.click();
+					} else {
+						formElement.requestSubmit();
+					}
+					hideExpandedSearch();
+				}
+			} else {
+				formElement.requestSubmit();
 			}
-			formElement.requestSubmit();
 		}
 	}
 
@@ -767,14 +767,17 @@
 	}
 
 	function interceptExpandedLinks(event: MouseEvent) {
-		const target = event.target as HTMLElement;
-		const linkElement = target.tagName === 'A' ? target : target.closest('a');
+		if (interceptedLinkElement) {
+			interceptedLinkElement = undefined; // already intercepted so do nothing
+			return;
+		} else {
+			const target = event.target as HTMLElement;
+			const linkElement = target.tagName === 'A' ? target : target.closest('a');
 
-		if (linkElement) {
-			const href = linkElement.getAttribute('href');
-			if (href) {
+			if (linkElement && linkElement.getAttribute('href')) {
 				event.preventDefault();
-				gotoAfterCollapse(href);
+				interceptedLinkElement = linkElement as HTMLLinkElement;
+				history.back(); // go back before triggering click again in popstate
 			}
 		}
 	}
@@ -975,6 +978,13 @@
 				bind:this={comboboxElement}
 				onclick={interceptExpandedLinks}
 			>
+				<!-- The hidden submit link is used as a workaround to achieve correct history navigations when submitting -->
+				<a
+					href="/"
+					class="supersearch-hidden-submit-link"
+					aria-hidden="true"
+					bind:this={submitLinkElement}
+				></a>
 				{@render inputRow?.({
 					expanded: true,
 					inputField: expandedInputSnippet,
@@ -983,8 +993,7 @@
 					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
 					onclickClear: handleReset,
-					onclickClose: handleClickClose,
-					gotoAfterCollapse
+					onclickClose: handleClickClose
 				})}
 			</div>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -997,8 +1006,7 @@
 					getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 					isFocusedCell: (rowIndex: number, colIndex: number) =>
 						rowIndex === activeRowIndex && colIndex === activeColIndex,
-					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex,
-					gotoAfterCollapse
+					isFocusedRow: (rowIndex: number) => rowIndex === activeRowIndex
 				})}
 			</div>
 		</div>
@@ -1016,5 +1024,9 @@
 
 	.supersearch-suggestions {
 		overflow: hidden;
+	}
+
+	.supersearch-hidden-submit-link {
+		display: none;
 	}
 </style>
