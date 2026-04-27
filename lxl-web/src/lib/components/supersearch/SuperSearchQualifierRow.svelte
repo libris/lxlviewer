@@ -62,7 +62,7 @@
 		{/if}
 	</button>
 	{#if !DEFAULT_MODE}
-		<h2 class="text-subtle ml-3 font-medium">
+		<h2 class="text-subtle font-medium">
 			{page.data.t('supersearch.add')}
 			{page.data.t('supersearch.filter').toLowerCase()}
 		</h2>
