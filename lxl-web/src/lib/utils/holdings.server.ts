@@ -83,14 +83,16 @@ export function getHoldingsByInstanceId(
 			const _item = { ...item };
 			const component = _item?.hasComponent;
 			delete _item.hasComponent;
-			const allItems = component?.length ? [...component, _item] : [_item];
+			const allItems = component?.length ? [_item, ...component] : [_item];
 			return {
 				[JsonLd.ID]: item.heldBy[JsonLd.ID],
-				itemMedia: allItems.map((i) => displayUtil.lensAndFormat(i, LensType.WebOverview, locale)),
-				itemShelf: allItems.map((i) => displayUtil.lensAndFormat(i, LensType.WebOverview2, locale)),
-				itemNote: allItems.map((i) =>
-					displayUtil.lensAndFormat(i, LensType.WebOverviewFooter, locale)
-				)
+				items: allItems.map((i) => {
+					return {
+						itemMedia: displayUtil.lensAndFormat(i, LensType.WebOverview, locale),
+						itemShelf: displayUtil.lensAndFormat(i, LensType.WebOverview2, locale),
+						itemNote: displayUtil.lensAndFormat(i, LensType.WebOverviewFooter, locale)
+					};
+				})
 			};
 		});
 	}
@@ -140,9 +142,7 @@ export function getBibIdsByInstanceId(
 			issn,
 			publicationStr,
 			titleStr,
-			itemShelf: undefined, // append real item data per holder in component,
-			itemNote: undefined,
-			itemMedia: undefined
+			items: [] // append real item data per holder in component,
 		};
 	}
 	return result;

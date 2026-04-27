@@ -55,9 +55,12 @@
 				instance?.linksToItem.length ||
 				instance?.loanReserveLink.length ||
 				instance?.itemStatus?.length ||
-				instance?.itemShelf?.[Fmt.DISPLAY].length ||
-				instance?.itemNote?.[Fmt.DISPLAY].length ||
-				instance?.itemMedia?.[Fmt.DISPLAY].length
+				instance?.items.some(
+					(i) =>
+						i?.itemShelf?.[Fmt.DISPLAY].length ||
+						i?.itemNote?.[Fmt.DISPLAY].length ||
+						i.itemMedia?.[Fmt.DISPLAY].length
+				)
 		)
 	);
 
@@ -101,36 +104,34 @@
 			{/if}
 		</li>
 	{/if}
-	<!-- shelf data -->
-	{#each instance?.itemShelf as itemShelf, index (`item-shelf-${index}`)}
-		{#if itemShelf[Fmt.DISPLAY].length}
+	{#each instance?.items as item, index (`items-${index}`)}
+		{@const hasItemMedia = item.itemMedia?.[Fmt.DISPLAY]?.length}
+		{@const hasItemShelf = item.itemShelf?.[Fmt.DISPLAY]?.length}
+		{@const hasItemNote = item.itemNote?.[Fmt.DISPLAY]?.length}
+
+		{#if hasItemMedia || hasItemShelf || hasItemNote}
 			<li>
-				<p>
-					<span class="text-subtle">{page.data.t('holdings.itemShelf')}: </span>
-					<DecoratedData data={itemShelf} showLabels={ShowLabelsOptions.DefaultOff} />
-				</p>
-			</li>
-		{/if}
-	{/each}
-	<!-- item media -->
-	{#each instance?.itemMedia as itemMedia, index (`item-media-${index}`)}
-		{#if itemMedia[Fmt.DISPLAY].length}
-			<li>
-				<p>
-					<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
-					<DecoratedData data={itemMedia} showLabels={ShowLabelsOptions.DefaultOff} />
-				</p>
-			</li>
-		{/if}
-	{/each}
-	<!-- Item notes -->
-	{#each instance?.itemNote as itemNote, index (`item-note-${index}`)}
-		{#if itemNote[Fmt.DISPLAY].length}
-			<li>
-				<p>
-					<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
-					<DecoratedData data={itemNote} showLabels={ShowLabelsOptions.DefaultOff} />
-				</p>
+				{#if hasItemMedia}
+					<!-- item media -->
+					<p>
+						<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
+						<DecoratedData data={item.itemMedia} showLabels={ShowLabelsOptions.DefaultOff} />
+					</p>
+				{/if}
+				{#if hasItemShelf}
+					<!-- item shelf -->
+					<p>
+						<span class="text-subtle">{page.data.t('holdings.itemShelf')}: </span>
+						<DecoratedData data={item.itemShelf} showLabels={ShowLabelsOptions.DefaultOff} />
+					</p>
+				{/if}
+				{#if hasItemNote}
+					<!-- Item note -->
+					<p>
+						<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
+						<DecoratedData data={item.itemNote} showLabels={ShowLabelsOptions.DefaultOff} />
+					</p>
+				{/if}
 			</li>
 		{/if}
 	{/each}

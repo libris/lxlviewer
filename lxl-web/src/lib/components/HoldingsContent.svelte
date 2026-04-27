@@ -69,9 +69,7 @@
 				}
 				libraries[libraryId][instanceId] = {
 					...bibIdData[instanceId],
-					itemShelf: lib.itemShelf,
-					itemNote: lib.itemNote,
-					itemMedia: lib.itemMedia
+					items: lib.items
 				};
 			}
 		}
