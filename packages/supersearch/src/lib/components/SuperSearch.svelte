@@ -448,7 +448,11 @@
 						new FormData(formElement) as unknown as Record<string, string>
 					);
 					if (formAction && formParams) {
-						submitLinkElement?.setAttribute('href', `/${formAction}?${formParams.toString()}`); // A workaround for fixing back/forward navigation when submitting from expanded dialog (link clicks works together with history.back() but not goto() for some reason...)
+						submitLinkElement?.setAttribute(
+							'href',
+							`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}` // A workaround for fixing back/forward navigation when submitting from expanded dialog (link clicks works together with history.back() but not goto() for some reason...)
+						);
+						console.log('submitLinkElement', submitLinkElement);
 						submitLinkElement?.click();
 					} else {
 						formElement.requestSubmit();
