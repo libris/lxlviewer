@@ -315,10 +315,6 @@
 		});
 	}
 
-	function submit(form: HTMLFormElement) {
-		superSearch?.submit(form);
-	}
-
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)

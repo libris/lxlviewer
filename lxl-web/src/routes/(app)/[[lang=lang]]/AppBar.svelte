@@ -135,13 +135,6 @@
 		shadowObserver?.disconnect();
 	}
 
-	function handleSubmit(event: SubmitEvent) {
-		if (document.getElementById('supersearch-dialog')?.hasAttribute('open') && event.target) {
-			event.preventDefault();
-			searchContext.submit(event.target as HTMLFormElement);
-		}
-	}
-
 	beforeNavigate(() => {
 		closeExpandedMenu();
 	});
@@ -304,12 +297,7 @@
 					'hidden target:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit' // enable toggling using target/anchor (so it also works when JavaScript is disabled)
 			]}
 		>
-			<form
-				id="search-form"
-				action={findActionUrl}
-				onsubmit={handleSubmit}
-				class="mx-auto w-full min-w-0"
-			>
+			<form id="search-form" action={findActionUrl} class="mx-auto w-full min-w-0">
 				{#if isHomeRoute}
 					<hgroup
 						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
