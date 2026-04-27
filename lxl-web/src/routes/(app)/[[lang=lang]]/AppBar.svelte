@@ -295,10 +295,10 @@
 			<form id="search-form" action={findActionUrl} class="mx-auto w-full min-w-0">
 				{#if isHomeRoute}
 					<hgroup
-						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
+						class="absolute my-3 px-3 leading-snug lg:@xl:px-3 @3xl:leading-normal lg:@3xl:px-4"
 					>
 						<h1
-							class="my-1.5 font-serif text-[1.625rem] tracking-[-0.0125rem] italic lg:my-2 lg:text-[2.1875rem] @md:tracking-[-0.025rem] @lg:text-3xl @xl:my-2 @xl:text-[2.1875rem] @3xl:my-1.5 @3xl:text-[2.5rem] lg:@3xl:my-2 @5xl:my-4 @5xl:text-5xl"
+							class="font-serif text-[1.625rem] tracking-[-0.0125rem] italic @lg:text-3xl @lg:tracking-[-0.025rem] @3xl:text-4xl @5xl:text-5xl"
 						>
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -310,12 +310,6 @@
 								{page.data.t('home.pageHeadingTitle')}
 							</label>
 						</h1>
-						<p
-							class="text-subtle max-w-[40ch] font-serif text-base lg:text-lg @xl:text-lg @3xl:max-w-max @3xl:text-lg @5xl:text-xl"
-						>
-							<strong class="font-normal">Libris</strong>
-							{page.data.t('home.pageHeadingDescription')}
-						</p>
 					</hgroup>
 				{/if}
 				<AppSearch />
