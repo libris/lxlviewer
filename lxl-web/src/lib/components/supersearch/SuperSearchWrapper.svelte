@@ -441,7 +441,6 @@
 		searchContext.showExpandedSearch = showExpandedSearch;
 		searchContext.hideExpandedSearch = hideExpandedSearch;
 		searchContext.changeQuery = changeQuery;
-		searchContext.submit = submit;
 		searchContext.isMounted = true;
 	});
 
