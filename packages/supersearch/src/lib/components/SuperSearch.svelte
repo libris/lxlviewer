@@ -2,7 +2,7 @@
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
 	import { page } from '$app/state';
-	import { pushState } from '$app/navigation';
+	import { pushState, beforeNavigate } from '$app/navigation';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
@@ -191,6 +191,12 @@
 			expandedEditorView?.dispatch(newDataMessage);
 			collapsedEditorView?.dispatch(newDataMessage);
 			prevSearchDataId = search.data?.['@id'];
+		}
+	});
+
+	beforeNavigate((navigation) => {
+		if (navigation.to) {
+			hideExpandedSearch();
 		}
 	});
 
