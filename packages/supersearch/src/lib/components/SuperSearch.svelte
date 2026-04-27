@@ -458,7 +458,6 @@
 							'href',
 							`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}` // A workaround for fixing back/forward navigation when submitting from expanded dialog (link clicks works together with history.back() but not goto() for some reason...)
 						);
-						console.log('submitLinkElement', submitLinkElement);
 						submitLinkElement?.click();
 					} else {
 						formElement.requestSubmit();
