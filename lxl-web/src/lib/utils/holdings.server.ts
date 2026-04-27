@@ -66,7 +66,8 @@ export function getHoldingsByType(mainEntity: HoldingMainEntity | HoldingInstanc
 
 export function getHoldingsByInstanceId(
 	data: HoldingMainEntity | HoldingInstance,
-	displayUtil: DisplayUtil
+	displayUtil: DisplayUtil,
+	locale: LocaleCode
 ): HoldersByInstanceId {
 	const reverse = data?.[JsonLd.REVERSE];
 	const instances =
@@ -79,11 +80,17 @@ export function getHoldingsByInstanceId(
 
 		const items = instance[JsonLd.REVERSE]?.itemOf ?? [];
 		result[id] = items.map((item) => {
+			const _item = { ...item };
+			const component = _item?.hasComponent;
+			delete _item.hasComponent;
+			const allItems = component?.length ? [...component, _item] : [_item];
 			return {
 				[JsonLd.ID]: item.heldBy[JsonLd.ID],
-				itemMedia: displayUtil.lensAndFormat(item, LensType.WebOverview, ''),
-				itemShelf: displayUtil.lensAndFormat(item, LensType.WebOverview2, ''),
-				itemNote: displayUtil.lensAndFormat(item, LensType.WebOverviewFooter, '')
+				itemMedia: allItems.map((i) => displayUtil.lensAndFormat(i, LensType.WebOverview, locale)),
+				itemShelf: allItems.map((i) => displayUtil.lensAndFormat(i, LensType.WebOverview2, locale)),
+				itemNote: allItems.map((i) =>
+					displayUtil.lensAndFormat(i, LensType.WebOverviewFooter, locale)
+				)
 			};
 		});
 	}

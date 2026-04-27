@@ -102,32 +102,38 @@
 		</li>
 	{/if}
 	<!-- shelf data -->
-	{#if instance.itemShelf?._display?.length}
-		<li>
-			<p>
-				<span class="text-subtle">{page.data.t('holdings.itemShelf')}: </span>
-				<DecoratedData data={instance.itemShelf} showLabels={ShowLabelsOptions.Never} />
-			</p>
-		</li>
-	{/if}
+	{#each instance?.itemShelf as itemShelf, index (`item-shelf-${index}`)}
+		{#if itemShelf._display.length}
+			<li>
+				<p>
+					<span class="text-subtle">{page.data.t('holdings.itemShelf')}: </span>
+					<DecoratedData data={itemShelf} showLabels={ShowLabelsOptions.DefaultOff} />
+				</p>
+			</li>
+		{/if}
+	{/each}
 	<!-- item media -->
-	{#if instance.itemMedia?._display?.length}
-		<li>
-			<p>
-				<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
-				<DecoratedData data={instance.itemMedia} showLabels={ShowLabelsOptions.Never} />
-			</p>
-		</li>
-	{/if}
+	{#each instance?.itemMedia as itemMedia, index (`item-media-${index}`)}
+		{#if itemMedia?._display?.length}
+			<li>
+				<p>
+					<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
+					<DecoratedData data={itemMedia} showLabels={ShowLabelsOptions.DefaultOff} />
+				</p>
+			</li>
+		{/if}
+	{/each}
 	<!-- Item notes -->
-	{#if instance.itemNote?._display?.length}
-		<li>
-			<p>
-				<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
-				<DecoratedData data={instance.itemNote} showLabels={ShowLabelsOptions.Never} />
-			</p>
-		</li>
-	{/if}
+	{#each instance?.itemNote as itemNote, index (`item-note-${index}`)}
+		{#if itemNote?._display?.length}
+			<li>
+				<p>
+					<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
+					<DecoratedData data={itemNote} showLabels={ShowLabelsOptions.DefaultOff} />
+				</p>
+			</li>
+		{/if}
+	{/each}
 	{#if instance.itemStatus?.[0]}
 		<li>
 			<LoanStatus sigel={holder.sigel} bibIdObj={instance} />

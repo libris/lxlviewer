@@ -329,7 +329,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const byType = getHoldersByType(holdingsByType);
 
 	const holdings: HoldingsData = {
-		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil),
+		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil, locale),
 		byType,
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
 		holdingLibraries: getHoldingLibraries(byType)

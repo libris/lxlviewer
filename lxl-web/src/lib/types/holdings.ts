@@ -30,7 +30,7 @@ export type HoldingItem = {
 	sameAs?: unknown;
 	shelfMark?: unknown;
 	availability?: unknown;
-	hasComponent?: unknown;
+	hasComponent?: HoldingItem[];
 	shelfControlNumber?: string;
 	physicalLocation?: unknown;
 	meta: Record<string, unknown>;
@@ -97,9 +97,9 @@ export type BibIdObj = {
 	issn: string[];
 	publicationStr: string;
 	titleStr: string;
-	itemShelf: DisplayDecorated | undefined;
-	itemNote: DisplayDecorated | undefined;
-	itemMedia: DisplayDecorated | undefined;
+	itemShelf: DisplayDecorated[];
+	itemNote: DisplayDecorated[];
+	itemMedia: DisplayDecorated[];
 };
 
 export type BibIdData = { [instanceId: string]: BibIdObj };
@@ -107,9 +107,9 @@ export type BibIdData = { [instanceId: string]: BibIdObj };
 export type HoldersByInstanceId = {
 	[id: LibraryId]: {
 		[JsonLd.ID]: string;
-		itemShelf?: DisplayDecorated;
-		itemNote?: DisplayDecorated;
-		itemMedia?: DisplayDecorated;
+		itemShelf: DisplayDecorated[];
+		itemNote: DisplayDecorated[];
+		itemMedia: DisplayDecorated[];
 	}[];
 };
 
