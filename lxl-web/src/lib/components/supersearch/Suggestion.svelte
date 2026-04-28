@@ -180,8 +180,12 @@
 	.suggestion button:first-child,
 	.suggestion a:first-child {
 		flex: 1;
-		padding: 0 calc(var(--spacing) * 4);
+		padding: 0 calc(var(--spacing) * 3);
 		text-align: left;
+
+		@variant lg {
+			padding: 0 calc(var(--spacing) * 4);
+		}
 	}
 
 	.qualifier.suggestion button:first-child,

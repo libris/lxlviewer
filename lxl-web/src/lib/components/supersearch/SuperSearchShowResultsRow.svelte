@@ -21,7 +21,10 @@
 	<button
 		type="submit"
 		id={getCellId(rowIndex, 0)}
-		class={['flex h-12 w-full px-2 lg:px-3', isFocusedCell(rowIndex, 0) && 'focused-cell']}
+		class={[
+			'flex h-12 w-full px-0.75 sm:px-2 lg:px-3',
+			isFocusedCell(rowIndex, 0) && 'focused-cell'
+		]}
 		onclick={() => searchContext.hideExpandedSearch()}
 	>
 		<div class={['text-link flex items-center whitespace-nowrap']}>

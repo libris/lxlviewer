@@ -46,7 +46,7 @@
 		id={rowIndex ? getCellId?.(rowIndex, 0) : undefined}
 		class={[
 			'flex h-full cursor-default items-center justify-center',
-			inDialog && DEFAULT_MODE && 'w-full justify-start px-2 lg:px-3',
+			inDialog && DEFAULT_MODE && 'w-full justify-start px-0.75 sm:px-2 lg:px-3',
 			inDialog && !DEFAULT_MODE && 'hidden w-14 sm:flex',
 			DEFAULT_MODE ? 'text-link' : 'text-subtle',
 
@@ -82,7 +82,7 @@
 		</div>
 	</button>
 	{#if !DEFAULT_MODE}
-		<h2 class="text-subtle font-medium">
+		<h2 class="text-subtle px-3 font-medium sm:px-0">
 			{page.data.t('supersearch.add')}
 			{page.data.t('supersearch.filter').toLowerCase()}
 		</h2>

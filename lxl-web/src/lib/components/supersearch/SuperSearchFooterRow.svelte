@@ -45,7 +45,7 @@
 <div
 	role="row"
 	data-skip-row-on-arrow-key
-	class="border-neutral flex min-h-14 items-center justify-between gap-4 pl-4 text-sm sm:border-t"
+	class="border-neutral flex min-h-14 items-center justify-between gap-4 pl-3 text-sm sm:border-t sm:pl-4"
 >
 	<ul class="text-placeholder hidden cursor-default items-center gap-4 sm:flex">
 		<li>
