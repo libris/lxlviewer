@@ -274,12 +274,18 @@ export interface QualifierSuggestion {
 	cursor: number;
 }
 
+export enum QualifierSuggestionShowIn {
+	suggested,
+	showMore,
+	reference
+}
+
 export interface QualifierSuggestion2 {
 	label: string;
 	key: string;
 	queryCodes: string[];
 	altLabels: string[];
-	curated?: boolean;
+	showIn?: QualifierSuggestionShowIn;
 }
 
 export interface QualifierDefinition extends QualifierSuggestion2 {

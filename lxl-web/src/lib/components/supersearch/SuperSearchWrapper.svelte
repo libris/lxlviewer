@@ -4,21 +4,25 @@
 	import { afterNavigate } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import {
-		SuperSearch,
+		type DebouncedWaitFunction,
+		type ExpandEvent,
 		lxlQualifierPlugin,
 		type QualifierRendererProps,
 		type Selection,
 		type ShowExpandedSearchOptions,
-		type ViewUpdateSuperSearchEvent,
-		type DebouncedWaitFunction,
-		type ExpandEvent
+		SuperSearch,
+		type ViewUpdateSuperSearchEvent
 	} from 'supersearch';
 	import SuperSearchFooterRow from './SuperSearchFooterRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
+	import {
+		type DisplayMapping,
+		type QualifierSuggestion2,
+		QualifierSuggestionShowIn
+	} from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
@@ -179,8 +183,12 @@
 
 		if (!hasCharBefore && !hasCharAfter && editedParentNode !== 'QualifierValue') {
 			return qualifierSuggestionsExpanded
-				? qualifierSuggestions
-				: qualifierSuggestions.filter((q) => q?.curated);
+				? qualifierSuggestions.filter(
+						(q) =>
+							q?.showIn == QualifierSuggestionShowIn.suggested ||
+							q?.showIn == QualifierSuggestionShowIn.showMore
+					)
+				: qualifierSuggestions.filter((q) => q?.showIn == QualifierSuggestionShowIn.suggested);
 		}
 
 		return [];
@@ -259,7 +267,9 @@
 		qualifierSuggestionNeedle.word.length >= MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS
 	);
 
-	const numCuratedQualifiers = $derived(qualifierSuggestions.filter((q) => q.curated).length);
+	const numCuratedQualifiers = $derived(
+		qualifierSuggestions.filter((q) => q.showIn == QualifierSuggestionShowIn.suggested).length
+	);
 
 	function editedWord(str: string, cursor: number) {
 		let from = cursor;
