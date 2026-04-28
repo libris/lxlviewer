@@ -1,25 +1,25 @@
 import { expect, test } from '@playwright/test';
 
 test('A subset filter can display on any page', async ({ page }) => {
-	await page.goto('/help/search?_r=itemHeldBy%3A"sigel%3AArkm"');
+	await page.goto('/help/search?_r=library%3A"sigel%3AArkm"');
 	await expect(page.locator('.subset-container').getByText('ArkDes')).toBeVisible();
 });
 
 test('The search placeholder is replaced when using a subset', async ({ page }) => {
-	await page.goto('my-pages?_r=itemHeldBy%3A"sigel%3AArkm"');
+	await page.goto('my-pages?_r=library%3A"sigel%3AArkm"');
 	await expect(page.getByRole('combobox', { name: 'Sök' }).getByText('ArkDes')).toBeVisible();
 });
 
 test('_r param is preserved when navigating around the app', async ({ page }) => {
-	await page.goto('/find?_q=a&_offset=0&_limit=20&_r=itemHeldBy%3A%22sigel%3AArkm%22');
+	await page.goto('/find?_q=a&_offset=0&_limit=20&_r=library%3A%22sigel%3AArkm%22');
 	await page.getByRole('main').getByRole('article').getByRole('link').first().click();
-	await expect(page).toHaveURL(/_r=itemHeldBy%3A%22sigel%3AArkm%22/);
+	await expect(page).toHaveURL(/_r=library%3A%22sigel%3AArkm%22/);
 	await page.getByRole('main').getByRole('link').getByText('Nästa').click();
-	await expect(page).toHaveURL(/_r=itemHeldBy%3A%22sigel%3AArkm%22/);
+	await expect(page).toHaveURL(/_r=library%3A%22sigel%3AArkm%22/);
 	await page.getByRole('main').getByRole('link').getByText('Visa i träfflista').click();
-	await expect(page).toHaveURL(/_r=itemHeldBy%3A%22sigel%3AArkm%22/);
+	await expect(page).toHaveURL(/_r=library%3A%22sigel%3AArkm%22/);
 	await page.getByRole('link', { name: 'Mina sidor' }).click();
-	await expect(page).toHaveURL(/my-pages\?_r=itemHeldBy%3A%22sigel%3AArkm%22/);
+	await expect(page).toHaveURL(/my-pages\?_r=library%3A%22sigel%3AArkm%22/);
 });
 
 test('A subset filter can be removed', async ({ page }) => {
@@ -37,7 +37,7 @@ test('A subset filter can be removed and preserves lang', async ({ page }) => {
 });
 
 test('Holding button changes text when using a library subset filter', async ({ page }) => {
-	await page.goto('/find?_q=&_r=itemHeldByOrg:%22sigel:org/ARKM%22');
+	await page.goto('/find?_q=&_r=library:%22sigel:org/ARKM%22');
 	await expect(page.getByTestId('holding-link').first()).toHaveText('Hitta titeln');
 });
 
@@ -49,7 +49,7 @@ test('Holding button does not change text when subset filter is not a library', 
 });
 
 test('Holdings panel highlights the library subset holding', async ({ page }) => {
-	await page.goto('/find?_q=&_r=itemHeldByOrg:%22sigel:org/ARKM%22');
+	await page.goto('/find?_q=&_r=library:%22sigel:org/ARKM%22');
 	await page.getByTestId('holding-link').first().click();
 	await expect(page.locator('.special-section')).toContainText('Avgränsade bibliotek');
 	await expect(page.locator('.special-section')).toContainText('ArkDes');

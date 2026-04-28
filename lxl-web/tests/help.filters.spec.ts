@@ -13,11 +13,11 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 */
 
 test('qualifier keys can be added from filter list', async ({ page }) => {
-	await page.getByRole('main').getByRole('button').getByText('Bibliografi').click();
+	await page.getByRole('main').getByRole('button').getByText('Ingår i bibliografi').click();
 	await expect(page.getByRole('combobox').first()).toContainText('Ingår i bibliografi');
 	await expect(page.getByRole('combobox').last()).toContainText('Ingår i bibliografi');
 	await page.keyboard.press('Escape');
-	await page.getByRole('main').getByRole('button').getByText('Biblioteksorganisation').click();
+	await page.getByRole('main').getByRole('button').getByText('Bibliotek').click();
 	await expect(page.getByRole('combobox').first()).toContainText('Ingår i bibliografi');
-	await expect(page.getByRole('combobox').first()).toContainText(' Biblioteksorganisation');
+	await expect(page.getByRole('combobox').first()).toContainText(' Bibliotek');
 });
