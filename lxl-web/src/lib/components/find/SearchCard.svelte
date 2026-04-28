@@ -296,7 +296,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							<span>
 								<DecoratedData
 									data={obj}
-									showLabels={ShowLabelsOptions.DefaultOn}
+									showLabels={ShowLabelsOptions.DefaultOff}
 									{allowLinks}
 									{allowPopovers}
 								/>
