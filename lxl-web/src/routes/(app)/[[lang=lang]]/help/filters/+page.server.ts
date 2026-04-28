@@ -1,6 +1,15 @@
 import { getSupportedLocale, otherLocales } from '$lib/i18n/locales';
-import { type FramedData, JsonLd, LensType, LxlJs, Owl, Platform } from '$lib/types/xl';
-import { asArray, type DisplayUtil, isLink, toString, VocabUtil } from '$lib/utils/xl';
+import {
+	type FramedData,
+	JsonLd,
+	LensType,
+	type Link,
+	LxlJs,
+	Owl,
+	Platform,
+	Rdfs
+} from '$lib/types/xl';
+import { asArray, type DisplayUtil, isLink, isObject, toString, VocabUtil } from '$lib/utils/xl';
 import type { PropertyChain, QualifierDefinition } from '$lib/types/search';
 import { getUriSlug } from '$lib/utils/http';
 
@@ -56,11 +65,13 @@ function mapPropertyChain(
 	vocab: VocabUtil,
 	display: DisplayUtil
 ): PropertyChain[] | null {
-	const propertyChainAxiom = asArray(def[Owl.PROPERTY_CHAIN_AXIOM]);
+	const propertyChainAxiom = asArray(def[Owl.PROPERTY_CHAIN_AXIOM]) as PropertyChainAxiom[];
 
 	if (
 		propertyChainAxiom.length == 0 ||
-		propertyChainAxiom.some((a) => !a[JsonLd.LIST] || a[JsonLd.LIST].some((o) => !isLink(o)))
+		propertyChainAxiom.some(
+			(a) => !a[JsonLd.LIST] || a[JsonLd.LIST].some((o) => !isLink(o) && !isRRSC(o))
+		)
 	) {
 		return null;
 	}
@@ -81,10 +92,15 @@ function mapPropertyChain(
 	});
 
 	const chains = propertyChainAxiom.map((c) => {
-		const props = c[JsonLd.LIST].map((p) => vocab.getDefinition(p));
-		const path = props.map((p) => getUriSlug(p[JsonLd.ID])).join('.');
-		const label = props
-			.map((p) => toString(display.lensAndFormat(p, LensType.Chip, locale)))
+		const path = c[JsonLd.LIST]
+			.map((p) => (isLink(p) ? getUriSlug(p[JsonLd.ID]) : formatRRSCPath(p)))
+			.join('.');
+		const label = c[JsonLd.LIST]
+			.map((p) =>
+				isLink(p)
+					? vocabLabel(p, locale, vocab, display)
+					: formatRRSCLabel(p, locale, vocab, display)
+			)
 			.join(' › ');
 		return {
 			label: label,
@@ -94,3 +110,94 @@ function mapPropertyChain(
 
 	return baseOf.concat(chains);
 }
+
+function formatRRSCLabel(
+	def: RangeRestrictionSubClass,
+	locale,
+	vocab: VocabUtil,
+	display: DisplayUtil
+) {
+	const s = vocabLabel(def[Rdfs.subPropertyOf][0], locale, vocab, display);
+	if (isLink(def[Rdfs.range][0])) {
+		const v = vocabLabel(def[Rdfs.range][0], locale, vocab, display);
+
+		return `${s} [${v}]`;
+	} else {
+		const p = vocabLabel(
+			def[Rdfs.range][0][Rdfs.subClassOf][0][Owl.onProperty],
+			locale,
+			vocab,
+			display
+		);
+		const vv = def[Rdfs.range][0][Rdfs.subClassOf][0][Owl.hasValue];
+		const v = isLink(vv) ? `<${getUriSlug(vv[JsonLd.ID])}>` : vv;
+
+		return `${s} [${p}: ${v}]`;
+	}
+}
+
+function formatRRSCPath(def: RangeRestrictionSubClass) {
+	const s = getUriSlug(def[Rdfs.subPropertyOf][0][JsonLd.ID]);
+	if (isLink(def[Rdfs.range][0])) {
+		const v = getUriSlug(def[Rdfs.range][0][JsonLd.ID]);
+		return `${s}[${v}]`;
+	} else {
+		const p = getUriSlug(def[Rdfs.range][0][Rdfs.subClassOf][0][Owl.onProperty][JsonLd.ID]);
+		const vv = def[Rdfs.range][0][Rdfs.subClassOf][0][Owl.hasValue];
+		const v = isLink(vv) ? `<${getUriSlug(vv[JsonLd.ID])}>` : vv;
+
+		return `${s}[${p}=${v}]`;
+	}
+}
+
+function vocabLabel(l: Link, locale, vocab: VocabUtil, display: DisplayUtil): string {
+	return toString(display.lensAndFormat(vocab.getDefinition(l), LensType.Chip, locale));
+}
+
+function isRRSC(data: unknown): data is RangeRestrictionSubClass {
+	// handle this exact shape for now
+	if (!isObject(data)) {
+		return false;
+	}
+
+	const isSubPropertyOf =
+		Array.isArray(data[Rdfs.subPropertyOf]) &&
+		data[Rdfs.subPropertyOf].length === 1 &&
+		isLink(data[Rdfs.subPropertyOf][0]);
+
+	const hasRange =
+		Array.isArray(data[Rdfs.range]) &&
+		data[Rdfs.range].length === 1 &&
+		(isLink(data[Rdfs.range][0]) ||
+			(isObject(data[Rdfs.range][0]) &&
+				Array.isArray(data[Rdfs.range][0][Rdfs.subClassOf]) &&
+				data[Rdfs.range][0][Rdfs.subClassOf].length == 1 &&
+				isOwlRestriction(data[Rdfs.range][0][Rdfs.subClassOf][0])));
+
+	return isSubPropertyOf && hasRange;
+}
+
+type PropertyChainAxiom = {
+	[JsonLd.LIST]: (Link | RangeRestrictionSubClass)[];
+};
+
+function isOwlRestriction(data: unknown): data is OwlRestriction {
+	return (
+		isObject(data) &&
+		data[JsonLd.TYPE] == Owl.Restriction &&
+		(typeof data[Owl.hasValue] === 'string' || isLink(data[Owl.hasValue])) &&
+		isLink(data[Owl.onProperty])
+	);
+}
+
+// TODO? unify with xl.ts RangeRestriction?
+type RangeRestrictionSubClass = {
+	[Rdfs.subPropertyOf]: [Link];
+	[Rdfs.range]: [{ [Rdfs.subClassOf]: [OwlRestriction] } | Link];
+};
+
+type OwlRestriction = {
+	[JsonLd.TYPE]: Owl.Restriction;
+	[Owl.hasValue]: Link | string;
+	[Owl.onProperty]: Link;
+};
