@@ -364,6 +364,12 @@
 					"showProperties": ["name", "qualifier"],
 					"classLensDomain": "Bibliography"
 				},
+				"Extent": {
+					"@id": "Extent-chips",
+					"@type": "fresnel:Lens",
+					"showProperties": ["label", "typeNote"],
+					"classLensDomain": "Extent"
+				},
 				"Identifier": {
 					"@id": "Identifier-chips",
 					"@type": "fresnel:Lens",
