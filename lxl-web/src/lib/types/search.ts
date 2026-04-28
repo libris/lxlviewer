@@ -170,6 +170,7 @@ export interface Slice {
 export interface Observation {
 	totalItems: number;
 	view: Link;
+	predicate?: FramedData;
 	object: FramedData;
 	_selected?: boolean;
 	sliceByDimension: Record<FacetId, Slice>;
