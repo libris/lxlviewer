@@ -301,6 +301,13 @@ function cleanUpItem(item: FramedData): FramedData {
 		);
 	}
 
+	if (Array.isArray(item.language) && item.language.length == 1) {
+		// "Icke-språkligt medium"
+		if (item.language[0][JsonLd.ID] === 'https://id.kb.se/language/zxx') {
+			delete item.language;
+		}
+	}
+
 	const HIDE_ROLES = [
 		'https://id.kb.se/relator/author',
 		'https://id.kb.se/relator/unspecifiedContributor'
