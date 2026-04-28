@@ -9,8 +9,9 @@ import type {
 } from '$lib/types/holdings';
 import { BibDb, JsonLd, LensType } from '$lib/types/xl';
 import { gunzipSync } from 'node:zlib';
-import { createHolderLinks } from './holdings.server';
-import { toString, type DisplayUtil } from './xl.server';
+import { createHolderLinks } from '$lib/utils/holdings.server';
+import { type DisplayUtil } from '$lib/utils/xl.server';
+import { toString } from '$lib/utils/xl';
 import type { LocaleCode } from '$lib/i18n/locales';
 
 type Data = {
