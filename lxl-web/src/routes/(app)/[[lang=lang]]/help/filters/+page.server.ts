@@ -9,7 +9,8 @@ import {
 	Platform,
 	Rdfs
 } from '$lib/types/xl';
-import { asArray, type DisplayUtil, isLink, isObject, toString, VocabUtil } from '$lib/utils/xl';
+import { asArray, toString, isObject } from '$lib/utils/xl';
+import { type DisplayUtil, isLink, VocabUtil } from '$lib/utils/xl.server';
 import type { PropertyChain, QualifierDefinition } from '$lib/types/search';
 import { getUriSlug } from '$lib/utils/http';
 

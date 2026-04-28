@@ -6,7 +6,7 @@
 	import { popover } from '$lib/actions/popover';
 	import InfoIcon from '~icons/bi/info-circle';
 	import TypeIcon from './TypeIcon.svelte';
-	import { bookAspectRatio } from '$lib/utils/getTypeLike';
+	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
 
 	interface Props {
 		image: Image;

@@ -10,7 +10,7 @@ import type {
 import { BibDb, JsonLd, LensType } from '$lib/types/xl';
 import { gunzipSync } from 'node:zlib';
 import { createHolderLinks } from './holdings.server';
-import { toString, type DisplayUtil } from './xl';
+import { toString, type DisplayUtil } from './xl.server';
 import type { LocaleCode } from '$lib/i18n/locales';
 
 type Data = {

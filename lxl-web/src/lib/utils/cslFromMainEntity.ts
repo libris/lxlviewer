@@ -1,8 +1,8 @@
 import jmespath from 'jmespath';
 import type { CSLJSON, CSLName, CSLRoles, CSLType } from '$lib/types/citation';
 import { JsonLd, type FramedData } from '$lib/types/xl';
-import getTypeLike, { slug, type TypeLike } from './getTypeLike';
-import type { VocabUtil } from './xl';
+import getTypeLike, { slug, type TypeLike } from './getTypeLike.server';
+import type { VocabUtil } from './xl.server';
 
 const CSL_KBV_MAPPING: Partial<Record<keyof CSLJSON, string>> = {
 	id: `"@id"`,

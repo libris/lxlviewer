@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types.ts';
 import type { SuperSearchResult } from '$lib/types/search.js';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import addSuggestParams from './addSuggestParams.js';
-import { asResult } from '$lib/utils/search.js';
+import { asResult } from '$lib/utils/search.server';
 import { DebugFlags } from '$lib/types/userSettings.js';
 import itemAsQualifiers from './itemAsQualifiers.js';
 

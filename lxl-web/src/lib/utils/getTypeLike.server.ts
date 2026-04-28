@@ -1,5 +1,6 @@
 import { Bibframe, type FramedData, JsonLd } from '$lib/types/xl';
-import { asArray, first, VocabUtil } from '$lib/utils/xl';
+import { asArray, first } from '$lib/utils/xl';
+import { VocabUtil } from '$lib/utils/xl.server';
 import getAtPath from '$lib/utils/getAtPath';
 
 export type TypeLike = {
@@ -273,21 +274,4 @@ export function getTypeForIcon(typeLike: TypeLike) {
 
 export function slug(s: string) {
 	return s === undefined ? undefined : s.split('/').pop();
-}
-
-export function bookAspectRatio(iconTypeStr: string) {
-	return (
-		iconTypeStr &&
-		[
-			'Literature',
-			'Ej%20sk%C3%B6nlitteratur',
-			'Facklitteratur',
-			'Sk%C3%B6nlitteratur',
-			'Barn-%20och%20ungdomslitteratur',
-			'Text',
-			'Seriella%20publikationer',
-			'Periodika',
-			'NotatedMusic'
-		].includes(iconTypeStr)
-	);
 }

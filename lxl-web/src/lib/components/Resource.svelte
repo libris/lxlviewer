@@ -12,7 +12,7 @@
 		ResourceSearchResult
 	} from '$lib/types/search';
 	import capitalize from '$lib/utils/capitalize';
-	import type { Relation } from '$lib/utils/relations';
+	import type { Relation } from '$lib/types/relations';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';

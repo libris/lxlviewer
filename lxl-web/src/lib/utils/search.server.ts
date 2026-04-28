@@ -1,12 +1,6 @@
-import {
-	asArray,
-	DisplayUtil,
-	isObject,
-	pickProperty,
-	toLite,
-	toString,
-	VocabUtil
-} from '$lib/utils/xl';
+import { asArray, isObject, toString } from '$lib/utils/xl';
+import { DisplayUtil, pickProperty, toLite, VocabUtil } from '$lib/utils/xl.server';
+
 import {
 	Base,
 	type DisplayDecorated,
@@ -49,7 +43,7 @@ import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
 import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
 import { getLibsFromHoldings } from '$lib/utils/holdings';
-import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike';
+import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike.server';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 
@@ -524,7 +518,7 @@ function discriminator(d: FramedData, dimension: string) {
 	return getUriSlug(d?.inScheme?.[JsonLd.ID]);
 }
 
-export function displayPredicates(
+function displayPredicates(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,

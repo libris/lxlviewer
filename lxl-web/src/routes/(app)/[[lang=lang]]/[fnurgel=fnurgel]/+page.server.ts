@@ -18,7 +18,8 @@ import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/sea
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 import type { HoldingsData, HoldingItem } from '$lib/types/holdings.js';
 
-import { asArray, first, pickProperty, toString } from '$lib/utils/xl.js';
+import { asArray, first, toString } from '$lib/utils/xl';
+import { pickProperty } from '$lib/utils/xl.server';
 import { bestImage, toSecure } from '$lib/utils/auxd';
 import { getSortedInstances } from '$lib/utils/getSortedInstances';
 import {
@@ -28,10 +29,15 @@ import {
 	getHoldingsByInstanceId,
 	getHoldingsByType
 } from '$lib/utils/holdings.server';
-import getTypeLike, { getTypeForIcon, toTypes } from '$lib/utils/getTypeLike';
+import getTypeLike, { getTypeForIcon, toTypes } from '$lib/utils/getTypeLike.server';
 import { centerOnWork } from '$lib/utils/centerOnWork';
-import { getRelations, type Relation } from '$lib/utils/relations';
-import { appendMyLibrariesParam, asSearchResultItem, displayMappings } from '$lib/utils/search';
+import { getRelations } from '$lib/utils/relations.server';
+import { type Relation } from '$lib/types/relations';
+import {
+	appendMyLibrariesParam,
+	asSearchResultItem,
+	displayMappings
+} from '$lib/utils/search.server';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';

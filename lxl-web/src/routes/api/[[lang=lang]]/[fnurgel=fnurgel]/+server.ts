@@ -1,9 +1,9 @@
 import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
+import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
 import { JsonLd, type FramedData } from '$lib/types/xl.js';
 import { getSupportedLocale } from '$lib/i18n/locales';
-import { asSearchResultItem } from '$lib/utils/search';
+import { asSearchResultItem } from '$lib/utils/search.server';
 import { centerOnWork } from '$lib/utils/centerOnWork.js';
 
 export async function GET({ params, locals }) {

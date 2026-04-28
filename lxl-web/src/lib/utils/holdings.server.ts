@@ -11,12 +11,13 @@ import type {
 	LibraryWithLinks
 } from '$lib/types/holdings';
 import { Base, BibDb, Bibframe, JsonLd, LensType, type FramedData } from '$lib/types/xl';
-import { toString, VocabUtil, type DisplayUtil } from '$lib/utils/xl';
+import { toString } from '$lib/utils/xl';
+import { VocabUtil, type DisplayUtil } from '$lib/utils/xl.server';
 import getAtPath from '$lib/utils/getAtPath';
 import { getLibrary } from '$lib/utils/getLibraries.server';
 import type { LocaleCode } from '$lib/i18n/locales';
 import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-import { COMPONENT_PART } from '$lib/utils/getTypeLike';
+import { COMPONENT_PART } from '$lib/utils/getTypeLike.server';
 
 type BibDbObj = {
 	[JsonLd.TYPE]: string;

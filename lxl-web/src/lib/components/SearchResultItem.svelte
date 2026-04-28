@@ -6,8 +6,8 @@
 	import placeholderImage from '$lib/assets/img/placeholder.svg';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import TypeIcon from './TypeIcon.svelte';
-	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 	import { LensType } from '$lib/types/xl';
+	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
 
 	type Props = {
 		data: SearchResultItem;
