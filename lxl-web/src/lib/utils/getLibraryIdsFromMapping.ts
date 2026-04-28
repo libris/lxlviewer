@@ -10,7 +10,7 @@ export function getLibraryIdsFromMapping(
 	mappings: (DisplayMapping[] | undefined)[]
 ): Record<LibraryId | OrgId, string> | null {
 	const result: Record<string, string> = {};
-	const validKeys = new Set(['itemHeldBy', 'itemHeldByOrg']);
+	const libraryId = 'https://id.kb.se/ns/librissearch/library';
 	for (const mapping of mappings) {
 		if (mapping) {
 			for (const m of mapping) {
@@ -27,7 +27,7 @@ export function getLibraryIdsFromMapping(
 			return;
 		}
 
-		if (mapping._key && validKeys.has(mapping._key)) {
+		if (mapping[JsonLd.ID] && mapping[JsonLd.ID] === libraryId) {
 			const id = mapping.display[JsonLd.ID];
 			// as long as we don't fetch & cache library organizations
 			// we need to store the labels for reuse too
