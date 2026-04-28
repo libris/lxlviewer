@@ -93,7 +93,7 @@ Här kan du också läsa om hur du gör anrop för att skapa integrationer mot a
 
 Det går enkelt att kopiera sökningar (inklusive filter) genom att markera innehållet i sökrutan och kopiera det som om det vore vanlig text.
 
-- Exempel: [En sökning på datorspel som finns på Bergslagsbibblan](/find?_q=category:"saogf:Datorspel"+itemHeldByOrg:"sigel:org/BER"), som klickats fram från föreslagna filter, kan omvandlas till dess textrepresentation (`category:"saogf:Datorspel" itemHeldByOrg:"sigel:org/BER"`) genom att markera och kopiera den.
+- Exempel: [En sökning på datorspel som finns på Bergslagsbibblan](/find?_q=category:"saogf:Datorspel"+library:"sigel:org/BER"), som klickats fram från föreslagna filter, kan omvandlas till dess textrepresentation (`category:"saogf:Datorspel" library:"sigel:org/BER"`) genom att markera och kopiera den.
 
 ### Tomma filter – kräv att en egenskap ska finnas
 
