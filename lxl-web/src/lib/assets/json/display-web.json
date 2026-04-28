@@ -312,9 +312,9 @@
 						"translationOf",
 						"legalDate",
 						"version",
-						"marc:arrangedStatementForMusic",
 						"musicMedium",
 						"musicKey",
+						"marc:arrangedStatementForMusic",
 						"originDate",
 						"language",
 						{
@@ -579,6 +579,8 @@
 						},
 						"legalDate",
 						"version",
+						"musicMedium",
+						"musicKey",
 						"marc:arrangedStatementForMusic",
 						"originDate"
 					]
@@ -724,9 +726,7 @@
 						{
 							"alternateProperties": [{ "subPropertyOf": "hasTitle", "range": "KeyTitle" }]
 						},
-						{
-							"alternateProperties": ["translationOf", "_uniformTitle"]
-						}
+						"translationOf"
 					]
 				},
 				"Instance": {
@@ -1450,7 +1450,20 @@
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
-			}
+			},
+			"fresnel:propertyStyle": ["nolabel"]
+		},
+		"musicMedium-format": {
+			"@id": "musicMedium-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["musicMedium"],
+			"fresnel:propertyStyle": ["nolabel"]
+		},
+		"musicKey-format": {
+			"@id": "musicKey-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["musicKey"],
+			"fresnel:propertyStyle": ["nolabel"]
 		},
 		"marc:formSubheading-format": {
 			"@id": "marc:formSubheading-format",

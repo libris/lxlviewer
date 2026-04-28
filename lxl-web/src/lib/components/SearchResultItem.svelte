@@ -7,6 +7,7 @@
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import TypeIcon from './TypeIcon.svelte';
 	import { bookAspectRatio } from '$lib/utils/getTypeLike';
+	import { LensType } from '$lib/types/xl';
 
 	type Props = {
 		data: SearchResultItem;
@@ -99,11 +100,20 @@
 				>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
-				{#if data['web-card-header-extra']?._display && data['web-card-header-extra']?._display.length}
+				{#if data[LensType.WebCardHeaderExtra]?._display && data[LensType.WebCardHeaderExtra]?._display.length}
 					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
-						{#each data['web-card-header-extra']?._display as displayObj, index (index)}
+						{#each data[LensType.WebCardHeaderExtra]?._display as displayObj, index (index)}
 							<span>
 								<DecoratedData data={displayObj} showLabels="defaultOn" />
+							</span>
+						{/each}
+					</p>
+				{/if}
+				{#if data['_workTitle2']?._display && data['_workTitle2']?._display.length}
+					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
+						{#each data['_workTitle2']?._display as displayObj, index (index)}
+							<span>
+								<DecoratedData data={displayObj} showLabels="defaultOff" />
 							</span>
 						{/each}
 					</p>
