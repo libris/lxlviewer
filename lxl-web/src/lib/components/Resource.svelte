@@ -29,6 +29,7 @@
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
 	import BiQuote from '~icons/bi/quote';
+	import BiChevronRight from '~icons/bi/chevron-right';
 
 	type Props = {
 		fnurgel: string;
@@ -49,6 +50,12 @@
 			resourceTableOfContents: DisplayDecorated[];
 			details: DisplayDecorated[];
 			token: DisplayDecorated;
+			itemInformation:
+				| {
+						heldBy: DisplayDecorated;
+						items: DisplayDecorated[];
+				  }[]
+				| [];
 		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
@@ -184,7 +191,7 @@
 				/>
 			</div>
 		</div>
-		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 @sm:gap-6 @3xl:py-6">
+		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 py-6 @sm:gap-6">
 			<section id="{uidPrefix}top">
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
 					<header class="mb-3 flex-1">
@@ -392,7 +399,7 @@
 			{/if}
 			{#if decoratedData.details.length && decoratedData.details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)}
 				<section
-					class="-mx-3 my-6 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
+					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
 				>
 					<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 						{page.data.t('resource.details')}
@@ -409,6 +416,43 @@
 								/>
 							</div>
 						{/each}
+						{#if decoratedData.itemInformation.length}
+							<details class="mt-4">
+								<summary class="flex cursor-pointer items-center gap-1">
+									<span
+										class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
+									>
+										<BiChevronRight />
+									</span>
+									<h3 class="text-md font-medium">
+										{page.data.t('holdings.itemInformation')}
+									</h3>
+								</summary>
+								<ul class="mt-2 flex flex-col gap-1">
+									{#each decoratedData.itemInformation as holder, index (index)}
+										{#if holder.items.some((i) => i[Fmt.DISPLAY].length)}
+											<li class="block rounded-sm border border-neutral-200 p-2">
+												<p class="mb-1 font-medium">
+													<DecoratedData
+														data={holder.heldBy}
+														showLabels={ShowLabelsOptions.Never}
+													/>
+												</p>
+												{#each holder.items as item, index (index)}
+													<DecoratedData
+														data={item}
+														showLabels={ShowLabelsOptions.Always}
+														allowFindLinks={false}
+														block
+														limit={{ contribution: 5, hasVariant: 10 }}
+													/>
+												{/each}
+											</li>
+										{/if}
+									{/each}
+								</ul>
+							</details>
+						{/if}
 					</div>
 				</section>
 			{/if}
@@ -886,6 +930,12 @@
 					@apply mr-6;
 				}
 			}
+		}
+	}
+
+	details[open] {
+		& .chevron {
+			rotate: 90deg;
 		}
 	}
 </style>
