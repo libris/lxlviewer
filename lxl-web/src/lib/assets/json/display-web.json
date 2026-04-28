@@ -574,6 +574,8 @@
 						"legalDate",
 						"version",
 						"marc:arrangedStatementForMusic",
+						"musicMedium",
+						"musicKey",
 						"originDate"
 					]
 				},
@@ -1659,6 +1661,12 @@
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["summary"],
 			"fresnel:propertyStyle": ["nolabel", "summary"]
+		},
+		"marc:arrangedStatementForMusic-format": {
+			"@id": "marc:arrangedStatementForMusic-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["marc:arrangedStatementForMusic"],
+			"fresnel:propertyStyle": ["nolabel"]
 		},
 		"Work-language-format": {
 			"@id": "Work-language-format",

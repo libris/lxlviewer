@@ -116,9 +116,21 @@ export function asSearchResultItem(
 	subsetLibraries?: MyLibrariesType,
 	maxScores?: Record<string, number>
 ): SearchResultItem[] {
-	return items
-		?.map((i) => cleanUpItem(i))
-		.map((i) => ({
+	return items?.map((i) => {
+		const isWorkSingleInstance = getAtPath(i, ['@reverse', 'instanceOf', '*']).length === 1;
+		i = cleanUpItem(i, isWorkSingleInstance);
+
+		const headerThing = isWorkSingleInstance ? (i['@reverse']['instanceOf'][0] as FramedData) : i;
+
+		const heading = displayUtil.lensAndFormat(headerThing, LxlLens.CardHeading, locale);
+
+		const workTitle = isWorkSingleInstance
+			? displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale)
+			: undefined;
+
+		const hasWorkTitle = isWorkSingleInstance && toString(heading) !== toString(workTitle);
+
+		return {
 			...(myLibraries && {
 				heldByMyLibraries: getHeldByLibraries(i, myLibraries)
 			}),
@@ -130,7 +142,7 @@ export function asSearchResultItem(
 			}),
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
-			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
+			[LxlLens.CardHeading]: heading,
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
 			[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(i, LensType.WebCardHeaderTop, locale),
 			[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
@@ -138,6 +150,9 @@ export function asSearchResultItem(
 				LensType.WebCardHeaderExtra,
 				locale
 			),
+			...(hasWorkTitle && {
+				_workTitle2: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale)
+			}),
 			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
 			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
 			typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
@@ -155,7 +170,8 @@ export function asSearchResultItem(
 					i?.reverseLinks?.totalItemsByRelation?.['meta.bibliography'] ||
 					(undefined as number | undefined)
 			})
-		}));
+		};
+	});
 }
 
 function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode): string {
@@ -288,7 +304,7 @@ export function displayMappings(
 	}
 }
 
-function cleanUpItem(item: FramedData): FramedData {
+function cleanUpItem(item: FramedData, isWorkSingleInstance: boolean): FramedData {
 	if (isSerial(item)) {
 		const FILTER_ROLES = [
 			'https://id.kb.se/relator/publishingDirector',
@@ -312,7 +328,7 @@ function cleanUpItem(item: FramedData): FramedData {
 	});
 
 	// TODO: don't copy these from the instance when we have fresnel:fslselector (path) support in lenses
-	if (getAtPath(item, ['@reverse', 'instanceOf', '*']).length === 1) {
+	if (isWorkSingleInstance) {
 		const instanceIsPartOf = asArray(
 			getAtPath(item, ['@reverse', 'instanceOf', '*', 'isPartOf', '*'])
 		);

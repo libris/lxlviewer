@@ -290,6 +290,20 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						{/each}
 					</p>
 				{/if}
+				{#if item['_workTitle2']?._display}
+					<p class="card-header-extra">
+						{#each item['_workTitle2']?._display as obj, index (index)}
+							<span>
+								<DecoratedData
+									data={obj}
+									showLabels={ShowLabelsOptions.DefaultOn}
+									{allowLinks}
+									{allowPopovers}
+								/>
+							</span>
+						{/each}
+					</p>
+				{/if}
 			</header>
 			{#if item[LxlLens.CardBody]?._display}
 				<div class="card-body mt-1 text-sm" id={bodyId}>
