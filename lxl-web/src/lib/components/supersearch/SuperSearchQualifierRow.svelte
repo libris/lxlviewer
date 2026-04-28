@@ -31,25 +31,42 @@
 	}
 </script>
 
-<div role="row" class={['flex items-center', isFocusedRow && 'focused-row']}>
+<div
+	role="row"
+	class={[
+		'flex min-h-12 items-center',
+		isFocusedRow && 'focused-row',
+		inDialog && 'mt-0.5 sm:mt-3.5',
+		!inDialog && 'mt-2 ml-2 lg:mt-0 lg:ml-3',
+		inDialog && !DEFAULT_MODE && 'mb-2'
+	]}
+>
 	<button
 		type="button"
 		id={rowIndex ? getCellId?.(rowIndex, 0) : undefined}
 		class={[
-			'flex min-h-11 min-w-11 items-center justify-start',
-			inDialog ? 'h-14' : 'mt-1.5',
-			inDialog && DEFAULT_MODE ? 'w-full px-2 lg:px-3' : 'mx-2 lg:mx-3',
+			'flex h-full cursor-default items-center justify-center',
+			inDialog && DEFAULT_MODE && 'w-full justify-start px-2 lg:px-3',
+			inDialog && !DEFAULT_MODE && 'hidden w-14 sm:flex',
 			DEFAULT_MODE ? 'text-link' : 'text-subtle',
 
 			rowIndex && isFocusedCell?.(rowIndex, 0) && 'focused-cell'
 		]}
 		onclick={handleClickLeadingButton}
-		title={DEFAULT_MODE
-			? `${page.data.t('supersearch.show')} ${page.data.t('supersearch.filter').toLowerCase()} (Shift+7)`
-			: undefined}
 		aria-label={!DEFAULT_MODE ? page.data.t('supersearch.back') : undefined}
 	>
-		<div class="flex min-h-11 items-center rounded-full border border-neutral-300">
+		<div
+			class={[
+				'flex cursor-pointer items-center justify-center rounded-full border',
+				!inDialog && 'min-h-11 border-neutral-300',
+				inDialog && 'border-transparent',
+				inDialog && DEFAULT_MODE && 'min-h-12',
+				inDialog && !DEFAULT_MODE && 'size-8'
+			]}
+			title={DEFAULT_MODE
+				? `${page.data.t('supersearch.show')} ${page.data.t('supersearch.filter').toLowerCase()} (Shift+7)`
+				: undefined}
+		>
 			<div class="flex w-11 items-center justify-center">
 				{#if DEFAULT_MODE}
 					<IconFilter />
@@ -58,7 +75,7 @@
 				{/if}
 			</div>
 			{#if DEFAULT_MODE}
-				<span class="mr-4 hidden sm:inline">
+				<span class={['mr-4', !inDialog && 'hidden sm:inline']}>
 					{page.data.t('supersearch.filter')}
 				</span>
 			{/if}
