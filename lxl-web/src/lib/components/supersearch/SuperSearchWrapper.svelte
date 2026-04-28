@@ -27,12 +27,12 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
-	import IconGo from '~icons/bi/arrow-right-short';
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { Mode, type ChangeQueryParams } from '$lib/contexts/search';
+	import SuperSearchShowResultsRow from './SuperSearchShowResultsRow.svelte';
 
 	interface Props {
 		placeholder: string;
@@ -611,10 +611,10 @@
 		})}
 			{@const inputRowIndex = 0}
 			{@const qualifiersRowIndex = DEFAULT_MODE ? 1 : -1}
-			<!-- {@const showResultsRowIndex = DEFAULT_MODE ? 2 : -1}-->
+			{@const showResultsRowIndex = DEFAULT_MODE ? 2 : -1}
 			{@const suggestionsRowOffset = DEFAULT_MODE ? 3 : 0}
 			{@const footerRowIndex = (DEFAULT_MODE ? 3 : 0) + (resultsCount ? resultsCount : 0)}
-			<nav class="mt-0.5 sm:mt-1.5 lg:mt-3.5">
+			<nav class="sm:mt-1.5 lg:mt-3">
 				<SuperSearchQualifierRow
 					rowIndex={qualifiersRowIndex}
 					{getCellId}
@@ -626,6 +626,13 @@
 				{:else if SELECT_QUALIFIER_VALUE_MODE}
 					<!-- TODO: SELECT QUALIFIER VALUE MODE -->
 				{:else}
+					<SuperSearchShowResultsRow
+						rowIndex={showResultsRowIndex}
+						{getCellId}
+						{isFocusedRow}
+						{isFocusedCell}
+						{isLoading}
+					/>
 					{#if showAddQualifiers}
 						<div
 							id="supersearch-add-qualifier-key-label"
@@ -687,40 +694,24 @@
 							</div>
 						</div>
 					{/if}
-					{#if q.trim().length}
-						<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
-							<h2 id="supersearch-results-label" aria-live="polite" class="font-medium">
-								{#if resultsCount}
-									<span class="sr-only">{resultsCount}</span>
-									{page.data.t('supersearch.suggestions')}
-								{/if}
-							</h2>
-							<button type="submit">
-								<span class={['text-link flex items-center gap-1 hover:underline']}>
-									{page.data.t('supersearch.showAll')}
-									<IconGo aria-hidden="true" class="text-link size-6" />
-								</span>
-							</button>
-						</div>
-					{/if}
-					{#if resultsCount && q.trim().length}
-						<div
-							role="rowgroup"
-							aria-labelledby="supersearch-results-label"
-							class="border-neutral border-t"
-						>
-							{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
-						</div>
-					{/if}
-					<SuperSearchFooterRow
-						{inputRowIndex}
-						{qualifiersRowIndex}
-						{footerRowIndex}
-						{getCellId}
-						{isFocusedRow}
-						{isFocusedCell}
-					/>
+					<div
+						role="rowgroup"
+						aria-live="polite"
+						aria-label={`${resultsCount} ${page.data.t('supersearch.suggestions')}`}
+						class="min-h-3"
+					>
+						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
+					</div>
 				{/if}
+				<SuperSearchFooterRow
+					{inputRowIndex}
+					{qualifiersRowIndex}
+					{showResultsRowIndex}
+					{footerRowIndex}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+				/>
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}

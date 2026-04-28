@@ -196,7 +196,7 @@ export default {
 		search: 'Sök',
 		loading: 'Laddar...',
 		suggestions: 'Förslag',
-		showAll: 'Visa sökresultat',
+		showResults: 'Visa sökresultat',
 		arrowUpKey: 'Piltangent uppåt',
 		arrowRightKey: 'Piltangent höger',
 		arrowDownKey: 'Piltangent neråt',

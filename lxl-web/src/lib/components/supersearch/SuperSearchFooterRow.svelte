@@ -10,6 +10,7 @@
 	type Props = {
 		inputRowIndex: number;
 		qualifiersRowIndex: number;
+		showResultsRowIndex: number;
 		footerRowIndex: number;
 		getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
 		isFocusedRow: (rowIndex: number) => boolean | undefined;
@@ -19,6 +20,7 @@
 	let {
 		inputRowIndex,
 		qualifiersRowIndex,
+		showResultsRowIndex,
 		footerRowIndex,
 		getCellId,
 		isFocusedRow,
@@ -30,7 +32,7 @@
 		if (isFocusedCell(inputRowIndex, 1)) {
 			return page.data.t('supersearch.clear');
 		}
-		if (isFocusedRow(inputRowIndex)) {
+		if (isFocusedRow(inputRowIndex) || isFocusedRow(showResultsRowIndex)) {
 			return page.data.t('supersearch.search');
 		}
 		if (isFocusedRow(qualifiersRowIndex)) {

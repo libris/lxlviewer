@@ -198,7 +198,7 @@ export default {
 		search: 'Search',
 		loading: 'Loading...',
 		suggestions: 'Suggestions',
-		showAll: 'Show search results',
+		showResults: 'Show search results',
 		arrowUpKey: 'Arrow Up key',
 		arrowRightKey: 'Arrow Right key',
 		arrowDownKey: 'Arrow Down key',
