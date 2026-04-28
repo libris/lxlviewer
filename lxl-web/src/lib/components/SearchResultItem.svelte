@@ -113,7 +113,7 @@
 					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
 						{#each data['_workTitle2']?._display as displayObj, index (index)}
 							<span>
-								<DecoratedData data={displayObj} showLabels="defaultOn" />
+								<DecoratedData data={displayObj} showLabels="defaultOff" />
 							</span>
 						{/each}
 					</p>
