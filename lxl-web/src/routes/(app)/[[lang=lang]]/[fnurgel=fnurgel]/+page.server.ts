@@ -188,7 +188,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 				const _item = { ...item };
 				const component = _item?.hasComponent;
 				delete _item.hasComponent;
-				const allItems = component?.length ? [_item, ...component] : [_item];
+				const allItems = component?.length ? [...component, _item] : [_item];
 
 				itemInformation.push({
 					heldBy: displayUtil.lensAndFormat(item?.heldBy, LensType.Chip, locale),

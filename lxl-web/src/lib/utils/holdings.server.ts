@@ -83,7 +83,7 @@ export function getHoldingsByInstanceId(
 			const _item = { ...item };
 			const component = _item?.hasComponent;
 			delete _item.hasComponent;
-			const allItems = component?.length ? [_item, ...component] : [_item];
+			const allItems = component?.length ? [...component, _item] : [_item];
 			return {
 				[JsonLd.ID]: item.heldBy[JsonLd.ID],
 				items: allItems.map((i) => {
