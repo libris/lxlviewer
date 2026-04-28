@@ -1474,6 +1474,15 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"originDate-format": {
+			"@id": "originDate-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["originDate"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"hasNote-format": {
 			"@id": "hasNote-format",
 			"@type": "fresnel:Format",
