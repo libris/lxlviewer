@@ -5,7 +5,6 @@ import type { PartialCollectionView } from '$lib/types/search';
 import { Base, JsonLd, Platform } from '$lib/types/xl';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
-import prefixesByNamespace from '$lib/assets/json/prefixesByNamespace.json';
 import capitalize from '$lib/utils/capitalize';
 import { type ApiError } from '$lib/types/api.js';
 import getAtPath from '$lib/utils/getAtPath';
@@ -53,19 +52,18 @@ export async function getRelations(
 
 	if (data.stats?._predicates) {
 		return data.stats._predicates.map((p) => {
-			const qualifierKey = new URLSearchParams(p.view[JsonLd.ID]).get('_p') as string;
-			const qualifierValue = getQualifierValue(resourceId);
-			const label = capitalize(
-				vocabUtil.getLabelByLang(qualifierKey as string, locale) || qualifierKey
-			);
-			const preferLike: boolean = getAtPath(p.object, [Base.category, '*', JsonLd.ID])
+			const params = p.view[JsonLd.ID].split('?')[1];
+			const q = new URLSearchParams(params).get('_q') as string;
+			const predicateIri = p.predicate[JsonLd.ID] as string;
+			const qualifierKey = getUriSlug(predicateIri);
+			const label = capitalize(vocabUtil.getLabelByLang(predicateIri, locale) || qualifierKey);
+			const preferLike: boolean = getAtPath(p.predicate, [Base.category, '*', JsonLd.ID])
 				.map(getUriSlug)
 				.some((c) => c === Platform.preferLike);
-			const op = preferLike ? '~' : ':';
 			const findUrl = `/find?${getSortedSearchParams(
 				addDefaultSearchParams(
 					new URLSearchParams({
-						_q: `${qualifierKey}${op}${qualifierValue}`,
+						_q: q,
 						_spell: 'false'
 					})
 				)
@@ -73,7 +71,7 @@ export async function getRelations(
 			const previewUrl = `${env.API_URL}/find.jsonld?${getSortedSearchParams(
 				addDefaultSearchParams(
 					new URLSearchParams({
-						_q: `${qualifierKey}${op}${qualifierValue}`,
+						_q: q,
 						_limit: '10',
 						_spell: 'false',
 						_stats: 'falseThisRequest',
@@ -95,35 +93,4 @@ export async function getRelations(
 	}
 
 	return [];
-}
-
-function getQualifierValue(id: string) {
-	const prefix = getPrefix(id);
-	const qId = id.split('/').pop();
-
-	if (prefix && qId) {
-		return '"' + prefix + qId + '"';
-	}
-	if (looksLikeUri(id)) {
-		return '"' + id + '"';
-	}
-	return id;
-}
-
-function looksLikeUri(id: string) {
-	return id.startsWith('https://') || id.startsWith('http://');
-}
-
-function getPrefix(id: string) {
-	const prefixFromNamespace = Object.entries(prefixesByNamespace).find(([ns]) =>
-		id.includes(ns)
-	)?.[1];
-
-	if (prefixFromNamespace) {
-		return prefixFromNamespace;
-	}
-	if (id.includes(env.API_URL)) {
-		return 'libris:';
-	}
-	return '';
 }
