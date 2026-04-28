@@ -20,7 +20,7 @@ import type { HoldingsData, HoldingItem } from '$lib/types/holdings.js';
 
 import { asArray, first, toString } from '$lib/utils/xl';
 import { pickProperty } from '$lib/utils/xl.server';
-import { bestImage, toSecure } from '$lib/utils/auxd';
+import { bestImage, toSecure } from '$lib/utils/auxd.server';
 import { getSortedInstances } from '$lib/utils/getSortedInstances';
 import {
 	getBibIdsByInstanceId,
