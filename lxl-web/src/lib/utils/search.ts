@@ -117,7 +117,7 @@ export function asSearchResultItem(
 	maxScores?: Record<string, number>
 ): SearchResultItem[] {
 	return items?.map((i) => {
-		const isWorkSingleInstance = getAtPath(i, ['@reverse', 'instanceOf', '*']).length === 1;
+		const isWorkSingleInstance = (i?.['@reverse']?.instanceOf || []).length === 1;
 		i = cleanUpItem(i, isWorkSingleInstance);
 
 		const headerThing = isWorkSingleInstance ? (i['@reverse']['instanceOf'][0] as FramedData) : i;
@@ -151,7 +151,7 @@ export function asSearchResultItem(
 				locale
 			),
 			...(hasWorkTitle && {
-				_workTitle2: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale)
+				_workTitle2: workTitle
 			}),
 			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
 			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),

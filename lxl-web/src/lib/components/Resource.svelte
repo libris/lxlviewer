@@ -42,6 +42,7 @@
 			headingTop: DisplayDecorated;
 			heading: DisplayDecorated;
 			headingExtra: DisplayDecorated;
+			_workTitle2?: DisplayDecorated;
 			overview: DisplayDecorated[];
 			overview2: DisplayDecorated[];
 			overviewFooter: DisplayDecorated;
@@ -216,6 +217,16 @@
 									showLabels={ShowLabelsOptions.DefaultOn}
 								/>
 							</p>
+							{#if decoratedData['_workTitle2']?._display}
+								<p
+									class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
+								>
+									<DecoratedData
+										data={decoratedData._workTitle2}
+										showLabels={ShowLabelsOptions.DefaultOff}
+									/>
+								</p>
+							{/if}
 						</hgroup>
 					</header>
 				</div>

@@ -123,7 +123,19 @@ export const load = async ({ params, locals, fetch, url }) => {
 		_instances[0]['_select'] = typeLike.select;
 	}
 
-	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
+	const isWorkSingleInstance = _instances.length == 1;
+
+	const headingThing = isWorkSingleInstance
+		? (mainEntity['@reverse']['instanceOf'][0] as FramedData)
+		: mainEntity;
+
+	const workTitle = isWorkSingleInstance
+		? displayUtil.lensAndFormat(mainEntity, LxlLens.CardHeading, locale)
+		: undefined;
+
+	const heading = displayUtil.lensAndFormat(headingThing, LxlLens.PageHeading, locale);
+	const hasWorkTitle = isWorkSingleInstance && toString(heading) !== toString(workTitle);
+
 	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
 	const overview = [
 		displayUtil.lensAndFormat(mainEntity, LensType.WebOverview, locale),
@@ -330,6 +342,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			headingTop: types,
 			heading: heading,
 			headingExtra: headingExtra,
+			...(hasWorkTitle && { _workTitle2: workTitle }),
 			overview: overview,
 			overview2: overview2,
 			overviewFooter: overviewFooter,
