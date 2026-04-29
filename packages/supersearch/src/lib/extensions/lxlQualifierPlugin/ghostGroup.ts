@@ -230,7 +230,7 @@ export const jumpPastParens = (tr: Transaction) => {
 };
 
 function debugLog(message: unknown) {
-	if (env.PUBLIC_DEBUG_GHOST_GROUP && env.PUBLIC_DEBUG_GHOST_GROUP.toLowerCase() === 'true') {
+	if (env.PUBLIC_DEBUG_SUPERSEARCH && env.PUBLIC_DEBUG_SUPERSEARCH.toLowerCase() === 'true') {
 		console.log('DEBUG GHOST GROUP:', (message as object).toString());
 	}
 }
