@@ -11,7 +11,8 @@
 		type Selection,
 		type ShowExpandedSearchOptions,
 		SuperSearch,
-		type ViewUpdateSuperSearchEvent
+		type ViewUpdateSuperSearchEvent,
+		type UserEvent
 	} from 'supersearch';
 	import SuperSearchFooterRow from './SuperSearchFooterRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
@@ -31,6 +32,7 @@
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import addQualifierKey from './addQualifierKey';
 
 	interface Props {
 		placeholder: string;
@@ -51,6 +53,7 @@
 			anchor?: number | null;
 			head?: number | null;
 		};
+		userEvent?: UserEvent;
 	};
 
 	let {
@@ -301,7 +304,7 @@
 		return data;
 	}
 
-	function changeQuery({ change, selection }: ChangeQueryParams) {
+	function changeQuery({ change, selection, userEvent }: ChangeQueryParams) {
 		const from = typeof change.from === 'number' ? change.from : q.length;
 		const to = typeof change.to === 'number' ? change.to : q.length;
 
@@ -321,10 +324,11 @@
 						? selection.head
 						: (q.slice(0, from) + change.insert).length
 			},
-			userEvent: 'input'
+			userEvent
 		});
 	}
 
+	/*
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
 		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
@@ -366,6 +370,7 @@
 			});
 		}
 	}
+		*/
 
 	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
 		const propsWithHandler = {
@@ -404,6 +409,10 @@
 
 	function handleOnChange() {
 		fetchOnExpand = false;
+	}
+
+	function addQualifierKeyWithContext(qualifierKey: string) {
+		addQualifierKey(searchContext, qualifierKey);
 	}
 
 	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
@@ -448,9 +457,11 @@
 				}
 			});
 		}
+		searchContext.getQuery = () => q;
+		searchContext.getSelection = () => selection;
 		searchContext.showExpandedSearch = showExpandedSearch;
 		searchContext.hideExpandedSearch = hideExpandedSearch;
-		searchContext.addQualifierKey = addQualifierKey;
+		searchContext.addQualifierKey = addQualifierKeyWithContext;
 		searchContext.changeQuery = changeQuery;
 		searchContext.isMounted = true;
 	});
@@ -628,7 +639,7 @@
 										'qualifier-suggestion  text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize last-of-type:mr-4',
 										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
 									]}
-									onclick={() => addQualifierKey(key)}
+									onclick={() => searchContext.addQualifierKey(key)}
 								>
 									{label}
 								</button>

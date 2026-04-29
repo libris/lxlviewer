@@ -319,3 +319,63 @@ test('return key label is context-aware', async ({ page }) => {
 	);
 	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Välj');
 });
+
+test('add qualifier key on empty input', async ({ page, context }) => {
+	await context.grantPermissions(['clipboard-read']);
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:()');
+	await page.keyboard.press('a');
+	await page.keyboard.press('ControlOrMeta+A');
+	await page.keyboard.press('ControlOrMeta+C');
+	await expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('title:(a)');
+});
+
+test('add qualifier key when selection is at end of string', async ({ page }) => {
+	await page.getByRole('combobox').fill('a');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('a');
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await page.keyboard.press('b');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('a Titel:(b)');
+});
+
+test('add qualifier key when selection is at start of string', async ({ page }) => {
+	await page.getByRole('combobox').fill('a');
+	await page.keyboard.press('ArrowLeft');
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await page.keyboard.press('b');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:(b) a');
+});
+
+test('add qualifier key when selection is in the middle of string', async ({ page }) => {
+	await page.getByRole('combobox').fill('1234');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('ArrowLeft');
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await page.keyboard.press('5');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('12 Titel:(5) 34 ');
+});
+
+test('add selected value as qualifier key if both anchor and head is Qualifier or String', async ({
+	page
+}) => {
+	await page.getByRole('combobox').fill('hello world');
+	await page.keyboard.press('ControlOrMeta+A');
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:(hello world)');
+});
+
+test('add qualfier key in group', async ({ page }) => {
+	await page.getByRole('combobox').fill('()');
+	await page.keyboard.press('ArrowLeft');
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await page.keyboard.press('a');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('(Titel:(a))');
+});
+
+test('add qualfier key after Qualifier or QualifierOuterGroup', async ({ page }) => {
+	await page.getByRole('combobox').fill('titel:');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:()');
+	await page.getByRole('dialog').getByRole('button').getByText('Ämne').click();
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:() Ämne:()');
+});
