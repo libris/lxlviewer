@@ -104,6 +104,7 @@
 			paginationQueryFn={handlePaginationQuery}
 			transformFn={handleTransform}
 			language={lxlQuery}
+			shallowRouting
 			toggleWithKeyboardShortcut
 			defaultInputCol={-1}
 			defaultResultRow={0}

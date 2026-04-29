@@ -5,20 +5,20 @@ import { getLibraryIdsFromMapping } from './getLibraryIdsFromMapping';
 describe('getLibraryIdsFromMapping', () => {
 	it('it returns an object of sigels and labels included in mapping', () => {
 		expect(getLibraryIdsFromMapping([mappingOneLib])).toStrictEqual({
-			'https://libris.kb.se/library/Alve': 'Alvesta bibliotek · Alve'
+			'https://libris.kb.se/library/Alve': 'Alvesta bibliotek'
 		});
 	});
 
 	it('it returns an object of sigels and labels included in mapping 2', () => {
 		expect(getLibraryIdsFromMapping([mappingTwoLibs])).toStrictEqual({
-			'https://libris.kb.se/library/Boln': 'Bollnäs bibliotek · Boln',
-			'https://libris.kb.se/library/Hagf': 'Hagfors bibliotek · Hagf'
+			'https://libris.kb.se/library/Boln': 'Bollnäs bibliotek',
+			'https://libris.kb.se/library/Hagf': 'Hagfors bibliotek'
 		});
 	});
 
 	it('does not include explicitly excluded libraries', () => {
 		expect(getLibraryIdsFromMapping([mappingExcludedLib])).toStrictEqual({
-			'https://libris.kb.se/library/Boln': 'Bollnäs bibliotek · Boln'
+			'https://libris.kb.se/library/Boln': 'Bollnäs bibliotek'
 		});
 	});
 
@@ -32,11 +32,12 @@ describe('getLibraryIdsFromMapping', () => {
 	});
 });
 
+// library:"sigel:Alve" hej
 const mappingOneLib: DisplayMapping[] = [
 	{
 		children: [
 			{
-				'@id': 'https://id.kb.se/vocab/itemHeldBy',
+				'@id': 'https://id.kb.se/ns/librissearch/library',
 				display: {
 					'@id': 'https://libris.kb.se/library/Alve',
 					'@type': 'Library',
@@ -44,24 +45,20 @@ const mappingOneLib: DisplayMapping[] = [
 						{
 							name: 'Alvesta bibliotek',
 							_label: 'namn'
-						},
-						{
-							_contentBefore: ' · ',
-							sigel: 'Alve',
-							_label: 'sigel'
 						}
 					],
-					_style: ['link'],
+					_style: ['link', 'block'],
 					_label: 'Bibliotek'
 				},
-				displayStr: 'Alvesta bibliotek · Alve',
+				displayStr: 'Alvesta bibliotek',
 				label: 'Bibliotek',
 				operator: 'equals',
 				up: {
 					'@id': '/find?_q=hej'
 				},
-				_key: 'itemHeldBy',
-				_value: '"sigel:Alve"'
+				_key: 'library',
+				_value: '"sigel:Alve"',
+				isRedundantKeyLabel: true
 			},
 			{
 				'@id': 'https://id.kb.se/vocab/textQuery',
@@ -70,18 +67,19 @@ const mappingOneLib: DisplayMapping[] = [
 				label: 'Fritextsökning',
 				operator: 'equals',
 				up: {
-					'@id': '/find?_q=itemHeldBy:%22sigel:Alve%22'
+					'@id': '/find?_q=library:%22sigel:Alve%22'
 				}
 			}
 		],
 		operator: 'and',
 		up: {
-			'@id': '/find?_q=*'
+			'@id': '/find?_q='
 		},
 		variable: '_q'
 	}
 ];
 
+// språk:"lang:swe" library:"sigel:Boln" library:"sigel:Hagf"
 const mappingTwoLibs: DisplayMapping[] = [
 	{
 		children: [
@@ -102,84 +100,70 @@ const mappingTwoLibs: DisplayMapping[] = [
 				label: 'Språk',
 				operator: 'equals',
 				up: {
-					'@id': '/find?_q=itemHeldBy:%22sigel:Boln%22+OR+itemHeldBy:%22sigel:Hagf%22'
+					'@id': '/find?_q=library:%22sigel:Boln%22+library:%22sigel:Hagf%22'
 				},
 				_key: 'språk',
-				_value: '"lang:swe"'
+				_value: '"lang:swe"',
+				isRedundantKeyLabel: true
 			},
 			{
-				children: [
-					{
-						'@id': 'https://id.kb.se/vocab/itemHeldBy',
-						display: {
-							'@id': 'https://libris.kb.se/library/Boln',
-							'@type': 'Library',
-							_display: [
-								{
-									name: 'Bollnäs bibliotek',
-									_label: 'namn'
-								},
-								{
-									_contentBefore: ' · ',
-									sigel: 'Boln',
-									_label: 'sigel'
-								}
-							],
-							_style: ['link'],
-							_label: 'Bibliotek'
-						},
-						displayStr: 'Bollnäs bibliotek · Boln',
-						label: 'Bibliotek',
-						operator: 'equals',
-						up: {
-							'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+itemHeldBy:%22sigel:Hagf%22'
-						},
-						_key: 'itemHeldBy',
-						_value: '"sigel:Boln"'
-					},
-					{
-						'@id': 'https://id.kb.se/vocab/itemHeldBy',
-						display: {
-							'@id': 'https://libris.kb.se/library/Hagf',
-							'@type': 'Library',
-							_display: [
-								{
-									name: 'Hagfors bibliotek',
-									_label: 'namn'
-								},
-								{
-									_contentBefore: ' · ',
-									sigel: 'Hagf',
-									_label: 'sigel'
-								}
-							],
-							_style: ['link'],
-							_label: 'Bibliotek'
-						},
-						displayStr: 'Hagfors bibliotek · Hagf',
-						label: 'Bibliotek',
-						operator: 'equals',
-						up: {
-							'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+itemHeldBy:%22sigel:Boln%22'
-						},
-						_key: 'itemHeldBy',
-						_value: '"sigel:Hagf"'
-					}
-				],
-				operator: 'or',
+				'@id': 'https://id.kb.se/ns/librissearch/library',
+				display: {
+					'@id': 'https://libris.kb.se/library/Boln',
+					'@type': 'Library',
+					_display: [
+						{
+							name: 'Bollnäs bibliotek',
+							_label: 'namn'
+						}
+					],
+					_style: ['link', 'block'],
+					_label: 'Bibliotek'
+				},
+				displayStr: 'Bollnäs bibliotek',
+				label: 'Bibliotek',
+				operator: 'equals',
 				up: {
-					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22'
-				}
+					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+library:%22sigel:Hagf%22'
+				},
+				_key: 'library',
+				_value: '"sigel:Boln"',
+				isRedundantKeyLabel: true
+			},
+			{
+				'@id': 'https://id.kb.se/ns/librissearch/library',
+				display: {
+					'@id': 'https://libris.kb.se/library/Hagf',
+					'@type': 'Library',
+					_display: [
+						{
+							name: 'Hagfors bibliotek',
+							_label: 'namn'
+						}
+					],
+					_style: ['link', 'block'],
+					_label: 'Bibliotek'
+				},
+				displayStr: 'Hagfors bibliotek',
+				label: 'Bibliotek',
+				operator: 'equals',
+				up: {
+					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+library:%22sigel:Boln%22'
+				},
+				_key: 'library',
+				_value: '"sigel:Hagf"',
+				isRedundantKeyLabel: true
 			}
 		],
 		operator: 'and',
 		up: {
-			'@id': '/find?_q=*'
+			'@id': '/find?_q='
 		},
 		variable: '_q'
 	}
 ];
 
+// språk:"lang:swe" library:"sigel:Boln" NOT library:"sigel:Hagf"
 const mappingExcludedLib: DisplayMapping[] = [
 	{
 		children: [
@@ -200,13 +184,14 @@ const mappingExcludedLib: DisplayMapping[] = [
 				label: 'Språk',
 				operator: 'equals',
 				up: {
-					'@id': '/find?_q=itemHeldBy:%22sigel:Boln%22+NOT+itemHeldBy:%22sigel:Hagf%22'
+					'@id': '/find?_q=library:%22sigel:Boln%22+NOT+library:%22sigel:Hagf%22'
 				},
 				_key: 'språk',
-				_value: '"lang:swe"'
+				_value: '"lang:swe"',
+				isRedundantKeyLabel: true
 			},
 			{
-				'@id': 'https://id.kb.se/vocab/itemHeldBy',
+				'@id': 'https://id.kb.se/ns/librissearch/library',
 				display: {
 					'@id': 'https://libris.kb.se/library/Boln',
 					'@type': 'Library',
@@ -214,29 +199,25 @@ const mappingExcludedLib: DisplayMapping[] = [
 						{
 							name: 'Bollnäs bibliotek',
 							_label: 'namn'
-						},
-						{
-							_contentBefore: ' · ',
-							sigel: 'Boln',
-							_label: 'sigel'
 						}
 					],
-					_style: ['link'],
+					_style: ['link', 'block'],
 					_label: 'Bibliotek'
 				},
-				displayStr: 'Bollnäs bibliotek · Boln',
+				displayStr: 'Bollnäs bibliotek',
 				label: 'Bibliotek',
 				operator: 'equals',
 				up: {
-					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+NOT+itemHeldBy:%22sigel:Hagf%22'
+					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+NOT+library:%22sigel:Hagf%22'
 				},
-				_key: 'itemHeldBy',
-				_value: '"sigel:Boln"'
+				_key: 'library',
+				_value: '"sigel:Boln"',
+				isRedundantKeyLabel: true
 			},
 			{
 				children: [
 					{
-						'@id': 'https://id.kb.se/vocab/itemHeldBy',
+						'@id': 'https://id.kb.se/ns/librissearch/library',
 						display: {
 							'@id': 'https://libris.kb.se/library/Hagf',
 							'@type': 'Library',
@@ -244,40 +225,37 @@ const mappingExcludedLib: DisplayMapping[] = [
 								{
 									name: 'Hagfors bibliotek',
 									_label: 'namn'
-								},
-								{
-									_contentBefore: ' · ',
-									sigel: 'Hagf',
-									_label: 'sigel'
 								}
 							],
-							_style: ['link'],
+							_style: ['link', 'block'],
 							_label: 'Bibliotek'
 						},
-						displayStr: 'Hagfors bibliotek · Hagf',
+						displayStr: 'Hagfors bibliotek',
 						label: 'Bibliotek',
 						operator: 'equals',
 						up: {
-							'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+itemHeldBy:%22sigel:Boln%22'
+							'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+library:%22sigel:Boln%22'
 						},
-						_key: 'itemHeldBy',
-						_value: '"sigel:Hagf"'
+						_key: 'library',
+						_value: '"sigel:Hagf"',
+						isRedundantKeyLabel: true
 					}
 				],
 				operator: 'not',
 				up: {
-					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+itemHeldBy:%22sigel:Boln%22'
+					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+library:%22sigel:Boln%22'
 				}
 			}
 		],
 		operator: 'and',
 		up: {
-			'@id': '/find?_q=*'
+			'@id': '/find?_q='
 		},
 		variable: '_q'
 	}
 ];
 
+// språk:"lang:swe" NOT library:"sigel:Hagf" instanceType:DigitalResource
 const mappingNoLibs: DisplayMapping[] = [
 	{
 		children: [
@@ -298,15 +276,16 @@ const mappingNoLibs: DisplayMapping[] = [
 				label: 'Språk',
 				operator: 'equals',
 				up: {
-					'@id': '/find?_q=NOT+itemHeldBy:%22sigel:Hagf%22+hasInstanceType:DigitalResource+hagfors'
+					'@id': '/find?_q=NOT+library:%22sigel:Hagf%22+instanceType:DigitalResource'
 				},
 				_key: 'språk',
-				_value: '"lang:swe"'
+				_value: '"lang:swe"',
+				isRedundantKeyLabel: true
 			},
 			{
 				children: [
 					{
-						'@id': 'https://id.kb.se/vocab/itemHeldBy',
+						'@id': 'https://id.kb.se/ns/librissearch/library',
 						display: {
 							'@id': 'https://libris.kb.se/library/Hagf',
 							'@type': 'Library',
@@ -314,33 +293,29 @@ const mappingNoLibs: DisplayMapping[] = [
 								{
 									name: 'Hagfors bibliotek',
 									_label: 'namn'
-								},
-								{
-									_contentBefore: ' · ',
-									sigel: 'Hagf',
-									_label: 'sigel'
 								}
 							],
-							_style: ['link'],
+							_style: ['link', 'block'],
 							_label: 'Bibliotek'
 						},
-						displayStr: 'Hagfors bibliotek · Hagf',
+						displayStr: 'Hagfors bibliotek',
 						label: 'Bibliotek',
 						operator: 'equals',
 						up: {
-							'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+hasInstanceType:DigitalResource+hagfors'
+							'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+instanceType:DigitalResource'
 						},
-						_key: 'itemHeldBy',
-						_value: '"sigel:Hagf"'
+						_key: 'library',
+						_value: '"sigel:Hagf"',
+						isRedundantKeyLabel: true
 					}
 				],
 				operator: 'not',
 				up: {
-					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+hasInstanceType:DigitalResource+hagfors'
+					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+instanceType:DigitalResource'
 				}
 			},
 			{
-				'@id': 'https://id.kb.se/vocab/hasInstanceType',
+				'@id': 'https://id.kb.se/ns/librissearch/instanceType',
 				display: {
 					'@id': 'https://id.kb.se/vocab/DigitalResource',
 					'@type': 'Class',
@@ -353,29 +328,19 @@ const mappingNoLibs: DisplayMapping[] = [
 					_label: 'Klass'
 				},
 				displayStr: 'Digital resurs',
-				label: 'Format',
+				label: 'https://id.kb.se/ns/librissearch/instanceType',
 				operator: 'equals',
 				up: {
-					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+NOT+itemHeldBy:%22sigel:Hagf%22+hagfors'
+					'@id': '/find?_q=spr%C3%A5k:%22lang:swe%22+NOT+library:%22sigel:Hagf%22'
 				},
-				_key: 'hasInstanceType',
-				_value: 'DigitalResource'
-			},
-			{
-				'@id': 'https://id.kb.se/vocab/textQuery',
-				display: 'hagfors',
-				displayStr: 'hagfors',
-				label: 'Fritextsökning',
-				operator: 'equals',
-				up: {
-					'@id':
-						'/find?_q=spr%C3%A5k:%22lang:swe%22+NOT+itemHeldBy:%22sigel:Hagf%22+hasInstanceType:DigitalResource'
-				}
+				_key: 'instanceType',
+				_value: 'DigitalResource',
+				isRedundantKeyLabel: true
 			}
 		],
 		operator: 'and',
 		up: {
-			'@id': '/find?_q=*'
+			'@id': '/find?_q='
 		},
 		variable: '_q'
 	}

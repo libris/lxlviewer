@@ -1,8 +1,8 @@
-import type { BibDb, DisplayDecorated, FramedData, JsonLd } from './xl';
+import type { BibDb, Bibframe, DisplayDecorated, FramedData, JsonLd } from './xl';
 
 export type HoldingMainEntity = {
 	[JsonLd.REVERSE]?: {
-		instanceOf: HoldingInstance[];
+		[Bibframe.instanceOf]: HoldingInstance[];
 	};
 };
 
@@ -22,7 +22,7 @@ export type HoldingInstance = {
 	}[];
 };
 
-type HoldingItem = {
+export type HoldingItem = {
 	[JsonLd.ID]: string;
 	[JsonLd.TYPE]: 'Item';
 	heldBy: LibraryChip;
@@ -30,7 +30,7 @@ type HoldingItem = {
 	sameAs?: unknown;
 	shelfMark?: unknown;
 	availability?: unknown;
-	hasComponent?: unknown;
+	hasComponent?: HoldingItem[];
 	shelfControlNumber?: string;
 	physicalLocation?: unknown;
 	meta: Record<string, unknown>;
@@ -97,9 +97,11 @@ export type BibIdObj = {
 	issn: string[];
 	publicationStr: string;
 	titleStr: string;
-	shelfData: DisplayDecorated | undefined;
-	itemNoteData: DisplayDecorated | undefined;
-	itemMedia: DisplayDecorated | undefined;
+	items: {
+		itemShelf: DisplayDecorated;
+		itemNote: DisplayDecorated;
+		itemMedia: DisplayDecorated;
+	}[];
 };
 
 export type BibIdData = { [instanceId: string]: BibIdObj };
@@ -107,9 +109,11 @@ export type BibIdData = { [instanceId: string]: BibIdObj };
 export type HoldersByInstanceId = {
 	[id: LibraryId]: {
 		[JsonLd.ID]: string;
-		shelfData?: DisplayDecorated;
-		itemNoteData?: DisplayDecorated;
-		itemMedia?: DisplayDecorated;
+		items: {
+			itemShelf: DisplayDecorated;
+			itemNote: DisplayDecorated;
+			itemMedia: DisplayDecorated;
+		}[];
 	}[];
 };
 

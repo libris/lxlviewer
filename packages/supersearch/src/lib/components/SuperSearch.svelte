@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
+	import { page } from '$app/state';
+	import { pushState, beforeNavigate } from '$app/navigation';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
@@ -89,6 +91,7 @@
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		wrappingArrowKeyNavigation?: boolean;
+		shallowRouting?: boolean;
 		debouncedWait?: number;
 		getDebouncedWait?: DebouncedWaitFunction;
 		selection?: Selection;
@@ -128,6 +131,7 @@
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		wrappingArrowKeyNavigation = false,
+		shallowRouting = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -150,6 +154,9 @@
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(-1);
+	let interceptedLinkElement: HTMLLinkElement | undefined = $state(undefined);
+	let submitLinkElement: HTMLAnchorElement | undefined = $state(undefined);
+
 	let prevValue: string = value;
 
 	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
@@ -184,6 +191,12 @@
 			expandedEditorView?.dispatch(newDataMessage);
 			collapsedEditorView?.dispatch(newDataMessage);
 			prevSearchDataId = search.data?.['@id'];
+		}
+	});
+
+	beforeNavigate((navigation) => {
+		if (navigation.to) {
+			hideExpandedSearch();
 		}
 	});
 
@@ -295,7 +308,7 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (!dialog?.open && value !== event.value) {
+		if (!dialog?.open && value.trim() !== event.value.trim()) {
 			showExpandedSearch();
 		}
 		value = event.value;
@@ -362,6 +375,15 @@
 		});
 	}
 
+	async function handlePopState(event: PopStateEvent) {
+		interceptedLinkElement?.click();
+		if (dialog?.open) {
+			hideExpandedSearch();
+		} else if (event.state['sveltekit:states']?.expandedSuperSearch) {
+			showExpandedSearch({ focusRow: 0, preventPushState: true }); // a little bit hacky way to ensure the dialog doesn't flicker when navigating forward
+		}
+	}
+
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		if (!expanded) {
 			expandedEditorView?.dispatch({
@@ -373,6 +395,11 @@
 			dialog?.showModal();
 			expanded = true;
 			onexpand?.({ windowPageYOffset: window.pageYOffset });
+			if (shallowRouting) {
+				if (!options?.preventPushState) {
+					pushState('', { ...page.state, expandedSuperSearch: true });
+				}
+			}
 		}
 		setDefaultRowAndCols({ focusRow: options?.focusRow });
 		if (!options?.focusRow || options.focusRow < 1) {
@@ -420,8 +447,26 @@
 			: collapsedEditorView?.dom?.closest('form');
 
 		if (formElement && formElement instanceof HTMLFormElement) {
-			formElement.requestSubmit();
-			hideExpandedSearch();
+			if (expanded) {
+				if (shallowRouting) {
+					const formAction = formElement.getAttribute('action');
+					const formParams = new URLSearchParams(
+						new FormData(formElement) as unknown as Record<string, string>
+					);
+					if (formAction && formParams) {
+						submitLinkElement?.setAttribute(
+							'href',
+							`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}` // A workaround for fixing back/forward navigation when submitting from expanded dialog (link clicks works together with history.back() but not goto() for some reason...)
+						);
+						submitLinkElement?.click();
+					} else {
+						formElement.requestSubmit();
+					}
+					hideExpandedSearch();
+				}
+			} else {
+				formElement.requestSubmit();
+			}
 		}
 	}
 
@@ -445,7 +490,11 @@
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
-			hideExpandedSearch();
+			if (shallowRouting) {
+				history.back();
+			} else {
+				hideExpandedSearch();
+			}
 		}
 
 		if (event.key === 'Enter') {
@@ -556,7 +605,7 @@
 					}
 					break;
 				case 'ArrowDown':
-					if (wrappingArrowKeyNavigation && activeRowIndex === arrowKeyRows.length) {
+					if (wrappingArrowKeyNavigation && activeRowIndex >= arrowKeyRows.length) {
 						activeRowIndex = 0;
 						activeColIndex = defaultInputCol;
 					} else if (activeRowIndex < arrowKeyRows.length) {
@@ -574,12 +623,23 @@
 					}
 					break;
 				case 'ArrowLeft':
-					if (activeRowIndex >= 1 && activeColIndex > 0) {
+					if (wrappingArrowKeyNavigation && activeRowIndex >= 1 && activeColIndex === 0) {
+						activeColIndex = Math.max(0, getColsInRow(activeRowIndex - 1).length - 1);
+					} else if (activeRowIndex >= 1 && activeColIndex > 0) {
 						activeColIndex = getColIndexBefore(activeRowIndex - 1, activeColIndex);
 					}
 					break;
 				case 'ArrowRight':
-					if (activeRowIndex >= 1 && activeColIndex < getColsInRow(activeRowIndex - 1).length - 1) {
+					if (
+						wrappingArrowKeyNavigation &&
+						activeRowIndex >= 1 &&
+						activeColIndex === getColsInRow(activeRowIndex - 1).length - 1
+					) {
+						activeColIndex = 0;
+					} else if (
+						activeRowIndex >= 1 &&
+						activeColIndex < getColsInRow(activeRowIndex - 1).length - 1
+					) {
 						activeColIndex = getColIndexAfter(activeRowIndex - 1, activeColIndex);
 					}
 
@@ -678,7 +738,11 @@
 
 	function handleClickOutsideDialog(event: MouseEvent) {
 		if (event.target === dialog || event.target === event.currentTarget) {
-			hideExpandedSearch();
+			if (shallowRouting) {
+				history.back();
+			} else {
+				hideExpandedSearch();
+			}
 		}
 	}
 
@@ -700,6 +764,22 @@
 		// if (!value.length) {
 		// 	event.preventDefault();
 		// }
+	}
+
+	function interceptExpandedLinks(event: MouseEvent) {
+		if (interceptedLinkElement) {
+			interceptedLinkElement = undefined; // already intercepted so do nothing
+			return;
+		} else {
+			const target = event.target as HTMLElement;
+			const linkElement = target.tagName === 'A' ? target : target.closest('a');
+
+			if (linkElement && linkElement.getAttribute('href')) {
+				event.preventDefault();
+				interceptedLinkElement = linkElement as HTMLLinkElement;
+				history.back(); // go back before triggering click again in popstate
+			}
+		}
 	}
 
 	function handleReset() {
@@ -789,6 +869,14 @@
 			collapsedEditorView.focus();
 		}
 	});
+
+	const handleClickClose = $derived(() => {
+		if (shallowRouting) {
+			return history.back();
+		} else {
+			hideExpandedSearch();
+		}
+	});
 </script>
 
 {#snippet fallbackExpandedContent({ search }: { search: ReturnType<typeof useSearchRequest> })}
@@ -852,6 +940,7 @@
 	/>
 {/snippet}
 
+<svelte:window onpopstate={handlePopState} />
 <div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
 	<div class="supersearch-combobox">
 		{@render inputRow?.({
@@ -862,7 +951,7 @@
 			isFocusedRow: () => activeRowIndex === -1,
 			onclickSubmit: handleClickSubmit,
 			onclickClear: handleReset,
-			onclickClose: hideExpandedSearch
+			onclickClose: handleClickClose
 		})}
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
@@ -871,7 +960,7 @@
 	class="supersearch-dialog"
 	id={`${id}-dialog`}
 	bind:this={dialog}
-	closedby="any"
+	closedby="none"
 	tabindex="-1"
 	onclose={() => hideExpandedSearch()}
 >
@@ -882,7 +971,20 @@
 		onclick={handleClickOutsideDialog}
 	>
 		<div class="supersearch-dialog-content">
-			<div class="supersearch-combobox" bind:this={comboboxElement}>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				class="supersearch-combobox"
+				bind:this={comboboxElement}
+				onclick={interceptExpandedLinks}
+			>
+				<!-- The hidden submit link is used as a workaround to achieve correct history navigations when submitting -->
+				<a
+					href="/"
+					class="supersearch-hidden-submit-link"
+					aria-hidden="true"
+					bind:this={submitLinkElement}
+				></a>
 				{@render inputRow?.({
 					expanded: true,
 					inputField: expandedInputSnippet,
@@ -891,10 +993,12 @@
 					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
 					onclickClear: handleReset,
-					onclickClose: hideExpandedSearch
+					onclickClose: handleClickClose
 				})}
 			</div>
-			<div id={`${id}-grid`} role="grid">
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_interactive_supports_focus -->
+			<div id={`${id}-grid`} role="grid" onclick={interceptExpandedLinks}>
 				{@render expandedContent({
 					search,
 					resultsSnippet,
@@ -920,5 +1024,9 @@
 
 	.supersearch-suggestions {
 		overflow: hidden;
+	}
+
+	.supersearch-hidden-submit-link {
+		display: none;
 	}
 </style>

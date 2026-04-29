@@ -11,7 +11,7 @@
 	import BiSearch from '~icons/bi/search';
 	// import BiHouseHeart from '~icons/bi/house-heart';
 	import IconChevron from '~icons/bi/chevron-down';
-	import BiBank from '~icons/bi/bank';
+	import BiHouses from '~icons/bi/houses';
 
 	type Props = {
 		holders: (LibraryWithLinksAndInstances | UnknownLibrary)[];
@@ -156,7 +156,7 @@
 						<li>
 							<h3 class="mb-3 flex items-center gap-2">
 								<span aria-hidden="true" class="text-subtle text-base">
-									<BiBank class="text-subtle size-3" />
+									<BiHouses class="text-subtle size-3" />
 								</span>
 								<span>{holder._orgLabel}</span>
 							</h3>

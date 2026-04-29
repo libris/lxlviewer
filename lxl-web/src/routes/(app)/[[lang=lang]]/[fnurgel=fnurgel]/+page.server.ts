@@ -4,12 +4,19 @@ import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
 import * as v from 'valibot';
 
-import { Bibframe, Fmt, type FramedData, JsonLd, LensType } from '$lib/types/xl.js';
+import {
+	Bibframe,
+	type DisplayDecorated,
+	Fmt,
+	type FramedData,
+	JsonLd,
+	LensType
+} from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
-import type { HoldingsData } from '$lib/types/holdings.js';
+import type { HoldingsData, HoldingItem } from '$lib/types/holdings.js';
 
 import { asArray, first, pickProperty, toString } from '$lib/utils/xl.js';
 import { bestImage, toSecure } from '$lib/utils/auxd';
@@ -123,7 +130,19 @@ export const load = async ({ params, locals, fetch, url }) => {
 		_instances[0]['_select'] = typeLike.select;
 	}
 
-	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
+	const isWorkSingleInstance = _instances.length == 1;
+
+	const headingThing = isWorkSingleInstance
+		? (mainEntity['@reverse']['instanceOf'][0] as FramedData)
+		: mainEntity;
+
+	const workTitle = isWorkSingleInstance
+		? displayUtil.lensAndFormat(mainEntity, LxlLens.CardHeading, locale)
+		: undefined;
+
+	const heading = displayUtil.lensAndFormat(headingThing, LxlLens.PageHeading, locale);
+	const hasWorkTitle = isWorkSingleInstance && toString(heading) !== toString(workTitle);
+
 	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
 	const overview = [
 		displayUtil.lensAndFormat(mainEntity, LensType.WebOverview, locale),
@@ -134,18 +153,19 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const token = displayUtil.lensAndFormat(mainEntity, LensType.WebToken, locale);
 
 	// TODO ...
-	const _isWork =
+	const _isWorkOrBibliography =
 		vocabUtil.getType(mainEntity) == 'Work' ||
+		vocabUtil.getType(mainEntity) == 'Bibliography' ||
 		vocabUtil.isSubClassOf(vocabUtil.getType(mainEntity), 'Work');
-	const overviewLens = _isWork ? LensType.WebOverview2 : LxlLens.PageOverView;
+	const overviewLens = _isWorkOrBibliography ? LensType.WebOverview2 : LxlLens.PageOverView;
 	const overview2 = [
 		displayUtil.lensAndFormat(mainEntity, overviewLens, locale),
-		...(_instances.length === 1
+		...(_instances?.length === 1
 			? [displayUtil.lensAndFormat(_instances[0], overviewLens, locale)]
 			: [])
 	];
 
-	const overviewFooter = displayUtil.lensAndFormat(mainEntity, LensType.WebOverviewFooter, locale);
+	const overviewFooter = {};
 
 	const details = [
 		displayUtil.lensAndFormat(mainEntity, LensType.WebDetails, locale),
@@ -157,8 +177,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	let searchResult: ResourceSearchResult | undefined;
 	let instances;
-	if (mainEntity?.['@reverse']?.instanceOf?.length > 0) {
-		const sortedInstances = getSortedInstances(mainEntity?.['@reverse']?.instanceOf);
+	let itemInformation: Record<string, DisplayDecorated>[] = [];
+
+	if (mainEntity?.[JsonLd.REVERSE]?.instanceOf?.length > 0) {
+		const sortedInstances = getSortedInstances(mainEntity?.[JsonLd.REVERSE]?.instanceOf);
 		sortedInstances.forEach(
 			(i) => (i[Bibframe.instanceOf] = { [JsonLd.TYPE]: mainEntity[JsonLd.TYPE] })
 		);
@@ -171,7 +193,26 @@ export const load = async ({ params, locals, fetch, url }) => {
 			myLibraries,
 			subsetLibraries
 		);
+
+		if (!isWork && sortedInstances.length === 1) {
+			const items = sortedInstances[0]?.[JsonLd.REVERSE]?.itemOf ?? [];
+			items.forEach((item: HoldingItem) => {
+				const _item = { ...item };
+				const component = _item?.hasComponent;
+				delete _item.hasComponent;
+				const allItems = component?.length ? [...component, _item] : [_item];
+
+				itemInformation.push({
+					heldBy: displayUtil.lensAndFormat(item?.heldBy, LensType.Chip, locale),
+					items: allItems
+						.map((i) => displayUtil.lensAndFormat(i, LensType.WebDetails, locale))
+						.filter((i) => i[Fmt.DISPLAY].length)
+				});
+			});
+		}
 	}
+
+	itemInformation = itemInformation.filter((i) => i.items.length);
 
 	const creations = [mainEntity].concat(mainEntity?.['@reverse']?.instanceOf || []);
 	const summary = creations
@@ -307,7 +348,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const byType = getHoldersByType(holdingsByType);
 
 	const holdings: HoldingsData = {
-		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil),
+		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil, locale),
 		byType,
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
 		holdingLibraries: getHoldingLibraries(byType)
@@ -329,13 +370,15 @@ export const load = async ({ params, locals, fetch, url }) => {
 			headingTop: types,
 			heading: heading,
 			headingExtra: headingExtra,
+			...(hasWorkTitle && { _workTitle2: workTitle }),
 			overview: overview,
 			overview2: overview2,
 			overviewFooter: overviewFooter,
 			summary: summary,
 			resourceTableOfContents: resourceTableOfContents,
 			details: details,
-			token: token
+			token: token,
+			itemInformation
 		},
 		searchResult,
 		holdings,

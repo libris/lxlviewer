@@ -109,7 +109,7 @@
 					"classLensDomain": "Concept",
 					"showProperties": [
 						{
-							"alternateProperties": ["singularLabel", "prefLabel"]
+							"alternateProperties": ["searchLabel", "singularLabel", "prefLabel"]
 						},
 						"inScheme",
 						"altLabel",
@@ -170,6 +170,7 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
+								"searchLabel",
 								"singularLabel",
 								"prefLabel",
 								"label",
@@ -186,6 +187,7 @@
 					"showProperties": [
 						{
 							"alternateProperties": [
+								"searchLabel",
 								"singularLabel",
 								"prefLabel",
 								"label",
@@ -310,9 +312,9 @@
 						"translationOf",
 						"legalDate",
 						"version",
-						"marc:arrangedStatementForMusic",
 						"musicMedium",
 						"musicKey",
+						"marc:arrangedStatementForMusic",
 						"originDate",
 						"language",
 						{
@@ -361,6 +363,12 @@
 					"@type": "fresnel:Lens",
 					"showProperties": ["name", "qualifier"],
 					"classLensDomain": "Bibliography"
+				},
+				"Extent": {
+					"@id": "Extent-chips",
+					"@type": "fresnel:Lens",
+					"showProperties": ["label", "typeNote"],
+					"classLensDomain": "Extent"
 				},
 				"Identifier": {
 					"@id": "Identifier-chips",
@@ -571,6 +579,8 @@
 						},
 						"legalDate",
 						"version",
+						"musicMedium",
+						"musicKey",
 						"marc:arrangedStatementForMusic",
 						"originDate"
 					]
@@ -716,9 +726,7 @@
 						{
 							"alternateProperties": [{ "subPropertyOf": "hasTitle", "range": "KeyTitle" }]
 						},
-						{
-							"alternateProperties": ["translationOf", "_uniformTitle"]
-						}
+						"translationOf"
 					]
 				},
 				"Instance": {
@@ -815,13 +823,7 @@
 					"@id": "Work-web-overview",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": [
-						"contribution",
-						"category",
-						"hasPart",
-						"relationship",
-						"intendedAudience"
-					]
+					"showProperties": ["contribution", "hasPart", "relationship", "intendedAudience"]
 				},
 				"Instance": {
 					"@id": "Instance-web-overview",
@@ -842,6 +844,7 @@
 				},
 				"Item": {
 					"@id": "Item-web-overview",
+					"NOTE": "Related links in panel",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": ["associatedMedia", "isPrimaryTopicOf"]
@@ -850,7 +853,7 @@
 					"@id": "Bibliography-web-overview",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Bibliography",
-					"showProperties": ["description"]
+					"showProperties": ["comment"]
 				}
 			}
 		},
@@ -862,7 +865,7 @@
 					"@id": "Work-web-overview2",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
-					"showProperties": ["subject", "associatedMedia"]
+					"showProperties": ["category", "subject", "associatedMedia"]
 				},
 				"Instance": {
 					"@id": "Instance-web-overview2",
@@ -882,23 +885,30 @@
 				},
 				"Item": {
 					"@id": "Item-web-overview2",
+					"NOTE": "itemShelf properties in panel",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [
+						"hasComponent",
 						"shelfLabel",
 						"physicalLocation",
 						"shelfMark",
 						"shelfControlNumber",
 						"availability",
-						"hasComponent",
-						"hasNote",
-						"immediateAcquisition"
+						"copyNumber"
 					]
+				},
+				"Bibliography": {
+					"@id": "Bibliography-web-overview",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Bibliography",
+					"showProperties": ["description"]
 				}
 			}
 		},
 		"web-overview-footer": {
 			"@id": "web-overview-footer",
+			"NOTE": "itemNote properties in panel",
 			"@type": "fresnel:Group",
 			"lenses": {
 				"Item": {
@@ -906,11 +916,11 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": [
-						"cataloguersNote",
 						"summary",
 						"appliesTo",
+						"marc:hasTextualHoldingsBasicBibliographicUnit",
 						"hasComponent",
-						"marc:hasTextualHoldingsBasicBibliographicUnit"
+						"hasNote"
 					]
 				}
 			}
@@ -1024,6 +1034,24 @@
 							"alternateProperties": [{ "subPropertyOf": "identifiedBy", "range": "SMDBNumber" }]
 						},
 						"controlNumber"
+					]
+				},
+				"Item": {
+					"@id": "Item-web-details",
+					"NOTE": "itemInformation in resource page",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Item",
+					"showProperties": [
+						"custodialHistory",
+						"summary",
+						"immediateAcquisition",
+						"appliesTo",
+						"hasComponent",
+						"marc:hasCopyAndVersionIdentificationNote",
+						"marc:itemCondition",
+						"marc:hasBindingInformation",
+						"subject",
+						"classification"
 					]
 				}
 			}
@@ -1389,7 +1417,7 @@
 		"needs-label-format": {
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["subject", "seriesMembership", "isPartOf"],
+			"fresnel:propertyFormatDomain": ["category", "subject", "seriesMembership", "isPartOf"],
 			"fresnel:propertyStyle": ["label"]
 		},
 		"Work-hasPart-format": {
@@ -1422,7 +1450,20 @@
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
-			}
+			},
+			"fresnel:propertyStyle": ["nolabel"]
+		},
+		"musicMedium-format": {
+			"@id": "musicMedium-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["musicMedium"],
+			"fresnel:propertyStyle": ["nolabel"]
+		},
+		"musicKey-format": {
+			"@id": "musicKey-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["musicKey"],
+			"fresnel:propertyStyle": ["nolabel"]
 		},
 		"marc:formSubheading-format": {
 			"@id": "marc:formSubheading-format",
@@ -1433,22 +1474,20 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"originDate-format": {
+			"@id": "originDate-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["originDate"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"hasNote-format": {
 			"@id": "hasNote-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["hasNote"],
 			"fresnel:propertyStyle": ["hasNote"]
-		},
-		"Item-hasNote-format": {
-			"@id": "Item-hasNote-format",
-			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Item"],
-			"fresnel:propertyFormatDomain": ["hasNote"],
-			"fresnel:propertyStyle": [""],
-			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " (",
-				"fresnel:contentAfter": ")"
-			}
 		},
 		"Classification-format": {
 			"@id": "Classification-format",
@@ -1746,6 +1785,17 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Bibliography-hasPart-format": {
+			"@id": "Bibliography-hasPart-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Bibliography"],
+			"fresnel:propertyFormatDomain": ["hasPart"],
+			"fresnel:propertyStyle": ["sort()"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"hasReproduction-format": {
 			"@id": "hasReproduction-format",
 			"@type": "fresnel:Format",
@@ -1784,6 +1834,17 @@
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"copyNumber-format": {
+			"@id": "copyNumber-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Item"],
+			"fresnel:propertyFormatDomain": ["copyNumber"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentAfter": ")"
+			},
+			"fresnel:propertyStyle": ["label"]
 		},
 		"_Types-identify": {
 			"@id": "_Types-identify",

@@ -7,6 +7,7 @@
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import TypeIcon from './TypeIcon.svelte';
 	import { bookAspectRatio } from '$lib/utils/getTypeLike';
+	import { LensType } from '$lib/types/xl';
 
 	type Props = {
 		data: SearchResultItem;
@@ -76,7 +77,7 @@
 			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
 			{@render image()}
-			<p class="text-subtle line-clamp-1 text-xs break-all">
+			<p class="decorated-card-heading-top text-subtle line-clamp-1 text-xs break-all">
 				<TypeIcon
 					type={data.typeForIcon}
 					class="text-3xs @4xs:text-2xs inline -translate-y-px leading-none"
@@ -99,11 +100,20 @@
 				>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
-				{#if data['web-card-header-extra']?._display && data['web-card-header-extra']?._display.length}
+				{#if data[LensType.WebCardHeaderExtra]?._display && data[LensType.WebCardHeaderExtra]?._display.length}
 					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
-						{#each data['web-card-header-extra']?._display as displayObj, index (index)}
+						{#each data[LensType.WebCardHeaderExtra]?._display as displayObj, index (index)}
 							<span>
 								<DecoratedData data={displayObj} showLabels="defaultOn" />
+							</span>
+						{/each}
+					</p>
+				{/if}
+				{#if data['_workTitle2']?._display && data['_workTitle2']?._display.length}
+					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
+						{#each data['_workTitle2']?._display as displayObj, index (index)}
+							<span>
+								<DecoratedData data={displayObj} showLabels="defaultOff" />
 							</span>
 						{/each}
 					</p>
@@ -114,19 +124,19 @@
 	{#if data['card-body']?._display}
 		<div class="decorated-card-body mt-1 mb-1 text-sm">
 			{#each data['card-body']?._display as obj, index (index)}
-				<div class="@4xs:text-sm flex flex-col items-center text-center">
+				<div class="@4xs:text-sm flex flex-col">
 					<DecoratedData
 						data={obj}
 						showLabels="never"
 						block
-						limit={{ contribution: 3 }}
+						limit={{ contribution: 1 }}
 						{suppressProperty}
 					/>
 				</div>
 			{/each}
 		</div>
 	{/if}
-	<footer class="@4xs:text-[0.8125rem] text-xs">
+	<footer class="decorated-card-footer @4xs:text-[0.8125rem] text-xs">
 		{#each data['web-card-footer']?._display as obj, index (index)}
 			{#if 'hasInstance' in obj}
 				{@const instances = getInstanceData(obj.hasInstance)}
@@ -157,6 +167,20 @@
 </article>
 
 <style lang="postcss">
+	@reference "tailwindcss";
+
+	.decorated-card-heading-top,
+	.decorated-card-heading,
+	.decorated-card-heading-extra,
+	.decorated-card-body,
+	.decorated-card-footer {
+		margin-left: calc(var(--spacing) * 2);
+
+		@variant sm {
+			margin-left: calc(var(--spacing) * 6);
+		}
+	}
+
 	.decorated-card-heading {
 		& :global(.transliteration) {
 			font-size: var(--text-2xs);
@@ -181,7 +205,7 @@
 		& :global([data-property='contribution']) {
 			display: flex;
 			flex-direction: column;
-			align-items: center;
+			align-items: baseline;
 
 			&::global(> *) {
 				@apply truncate;

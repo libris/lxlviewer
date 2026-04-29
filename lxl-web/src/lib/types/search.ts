@@ -51,6 +51,7 @@ export interface SearchResultItem {
 	[LxlLens.CardHeading]: DisplayDecorated;
 	[LxlLens.CardBody]: DisplayDecorated;
 	[LensType.WebCardHeaderExtra]: DisplayDecorated;
+	_workTitle2?: DisplayDecorated;
 	[LensType.WebCardHeaderTop]: DisplayDecorated;
 	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
@@ -62,6 +63,8 @@ export interface SearchResultItem {
 	heldBySubset?: (LibraryId | OrgId)[];
 	numberOfHolders: number;
 	_debug?: ItemDebugInfo;
+	sigel?: string;
+	numberOfItems?: number;
 }
 
 type FacetId = string;
@@ -168,6 +171,7 @@ export interface Slice {
 export interface Observation {
 	totalItems: number;
 	view: Link;
+	predicate?: FramedData;
 	object: FramedData;
 	_selected?: boolean;
 	sliceByDimension: Record<FacetId, Slice>;
@@ -272,12 +276,18 @@ export interface QualifierSuggestion {
 	cursor: number;
 }
 
+export enum QualifierSuggestionShowIn {
+	suggested,
+	showMore,
+	reference
+}
+
 export interface QualifierSuggestion2 {
 	label: string;
 	key: string;
 	queryCodes: string[];
 	altLabels: string[];
-	curated?: boolean;
+	showIn?: QualifierSuggestionShowIn;
 }
 
 export interface QualifierDefinition extends QualifierSuggestion2 {

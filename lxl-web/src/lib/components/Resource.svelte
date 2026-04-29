@@ -29,6 +29,7 @@
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
 	import BiQuote from '~icons/bi/quote';
+	import BiChevronRight from '~icons/bi/chevron-right';
 
 	type Props = {
 		fnurgel: string;
@@ -42,6 +43,7 @@
 			headingTop: DisplayDecorated;
 			heading: DisplayDecorated;
 			headingExtra: DisplayDecorated;
+			_workTitle2?: DisplayDecorated;
 			overview: DisplayDecorated[];
 			overview2: DisplayDecorated[];
 			overviewFooter: DisplayDecorated;
@@ -49,6 +51,12 @@
 			resourceTableOfContents: DisplayDecorated[];
 			details: DisplayDecorated[];
 			token: DisplayDecorated;
+			itemInformation:
+				| {
+						heldBy: DisplayDecorated;
+						items: DisplayDecorated[];
+				  }[]
+				| [];
 		};
 		relations: Relation[];
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
@@ -112,6 +120,10 @@
 	const instanceTabs = $derived([tabMatchingInstances, tabAllInstances].filter((f) => !!f));
 	const showTabs = $derived(
 		derivedFilteredInstances?.length && derivedFilteredInstances?.length !== instances?.length
+	);
+
+	const hasHoldingsBtn = $derived(
+		holdings.byType && Object.keys(holdings.byType).length && instances
 	);
 </script>
 
@@ -178,15 +190,9 @@
 					thumbnailTargetWidth={ImageWidth.MEDIUM}
 					linkToFull
 				/>
-				{#if holdings.byType && Object.keys(holdings.byType).length && instances}
-					<section class="mt-5">
-						<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
-						<ResourceHoldings {holdings} {instances} />
-					</section>
-				{/if}
 			</div>
 		</div>
-		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 @sm:gap-6 @3xl:py-6">
+		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 py-6 @sm:gap-6">
 			<section id="{uidPrefix}top">
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
 					<header class="mb-3 flex-1">
@@ -218,6 +224,16 @@
 									showLabels={ShowLabelsOptions.DefaultOn}
 								/>
 							</p>
+							{#if decoratedData['_workTitle2']?._display}
+								<p
+									class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
+								>
+									<DecoratedData
+										data={decoratedData._workTitle2}
+										showLabels={ShowLabelsOptions.DefaultOff}
+									/>
+								</p>
+							{/if}
 						</hgroup>
 					</header>
 				</div>
@@ -234,8 +250,12 @@
 						</div>
 					{/each}
 				</div>
+				{#if hasHoldingsBtn}
+					<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
+					<ResourceHoldings {holdings} {instances} />
+				{/if}
 				<div class="decorated-data-section decorated-spacious">
-					{#if decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
+					{#if !hasHoldingsBtn && decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
 						<div class="border-b-neutral mb-2 border-b"></div>
 					{/if}
 					{#each decoratedData.overview2 as overview2 (overview2)}
@@ -321,7 +341,9 @@
 					<ul>
 						{#each relations as relationItem (relationItem.qualifierKey)}
 							<li id="{uidPrefix}relations-{relationItem.qualifierKey}" class="mb-12">
-								<div class="border-b-neutral mb-6 flex place-content-between border-b pb-3">
+								<div
+									class="border-b-neutral mb-6 flex place-content-between items-end border-b pb-3"
+								>
 									<h3 class="font-medium">
 										<a
 											href={page.data.localizeHref(relationItem.findUrl)}
@@ -342,7 +364,7 @@
 										class="flex items-center text-sm font-medium hover:underline focus:underline"
 									>
 										<IconArrowRight class="inline size-5 text-neutral-500" />
-										<span>
+										<span class="whitespace-nowrap">
 											{page.data.t('general.show')}
 											{#if relationItem.totalItems > 10}
 												{page.data.t('resource.all')}
@@ -388,7 +410,7 @@
 			{/if}
 			{#if decoratedData.details.length && decoratedData.details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)}
 				<section
-					class="-mx-3 my-6 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
+					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
 				>
 					<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 						{page.data.t('resource.details')}
@@ -405,6 +427,43 @@
 								/>
 							</div>
 						{/each}
+						{#if decoratedData.itemInformation.length}
+							<details class="mt-4">
+								<summary class="flex cursor-pointer items-center gap-1">
+									<span
+										class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
+									>
+										<BiChevronRight />
+									</span>
+									<h3 class="text-md font-medium">
+										{page.data.t('holdings.itemInformation')}
+									</h3>
+								</summary>
+								<ul class="mt-2 flex flex-col gap-1">
+									{#each decoratedData.itemInformation as holder, index (index)}
+										{#if holder.items.some((i) => i[Fmt.DISPLAY].length)}
+											<li class="block rounded-sm border border-neutral-200 p-2">
+												<p class="mb-1 font-medium">
+													<DecoratedData
+														data={holder.heldBy}
+														showLabels={ShowLabelsOptions.Never}
+													/>
+												</p>
+												{#each holder.items as item, index (index)}
+													<DecoratedData
+														data={item}
+														showLabels={ShowLabelsOptions.Always}
+														allowFindLinks={false}
+														block
+														limit={{ contribution: 5, hasVariant: 10 }}
+													/>
+												{/each}
+											</li>
+										{/if}
+									{/each}
+								</ul>
+							</details>
+						{/if}
 					</div>
 				</section>
 			{/if}
@@ -593,6 +652,14 @@
 			display: block;
 		}
 
+		& :global(div[data-property='indirectlyIdentifiedBy'] > ._contentBefore) {
+			display: none;
+		}
+
+		& :global(div[data-property='indirectlyIdentifiedBy'] > span) {
+			display: block;
+		}
+
 		& :global(.see-also > *) {
 			display: block;
 			width: fit-content;
@@ -754,6 +821,7 @@
 
 		& :global(div[data-property='bibliography'] > a) {
 			display: block;
+			width: fit-content;
 		}
 
 		& :global(div[data-property='bibliography'] > a)::before {
@@ -873,6 +941,12 @@
 					@apply mr-6;
 				}
 			}
+		}
+	}
+
+	details[open] {
+		& .chevron {
+			rotate: 90deg;
 		}
 	}
 </style>

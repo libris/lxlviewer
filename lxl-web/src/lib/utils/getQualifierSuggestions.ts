@@ -1,7 +1,7 @@
 import { type LocaleCode, otherLocales } from '$lib/i18n/locales';
 import { asArray, type DisplayUtil, toString, VocabUtil } from '$lib/utils/xl';
 import { type FramedData, JsonLd, LensType, Platform } from '$lib/types/xl';
-import type { QualifierSuggestion2 } from '$lib/types/search';
+import { type QualifierSuggestion2, QualifierSuggestionShowIn } from '$lib/types/search';
 import { getUriSlug } from '$lib/utils/http';
 
 export function getQualifierSuggestions(
@@ -52,7 +52,11 @@ function mapSearchFilterDefinition(
 				compare(a, b)
 			),
 			altLabels: otherLangLabels,
-			...(CURATED_QUALIFIERS.includes(key) && { curated: true })
+			showIn: CURATED_QUALIFIERS.includes(key)
+				? QualifierSuggestionShowIn.suggested
+				: CURATED_QUALIFIERS_MORE.includes(key)
+					? QualifierSuggestionShowIn.showMore
+					: QualifierSuggestionShowIn.reference
 		};
 	} catch (error) {
 		console.warn('Error mapping filter definition', error);
@@ -69,4 +73,7 @@ const CURATED_QUALIFIERS = [
 	'subject',
 	'originalLanguage'
 ];
-const CURATED_ORDER = new Map(CURATED_QUALIFIERS.map((value, index) => [value, index]));
+const CURATED_QUALIFIERS_MORE = ['translator', 'publisher', 'library', 'workCategory'];
+const CURATED_ORDER = new Map(
+	CURATED_QUALIFIERS.concat(CURATED_QUALIFIERS_MORE).map((value, index) => [value, index])
+);

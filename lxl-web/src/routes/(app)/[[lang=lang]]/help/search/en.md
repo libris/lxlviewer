@@ -91,7 +91,7 @@ See our [API-documentation](https://libris.kb.se/api/docs/) for information abou
 
 It’s easy to copy searches (including filters) by selecting the contents of the search box and copying it as if it were plain text.
 
-- Example: [A search for computer games held by Bergslagsbibblan](/find?_q=category:"saogf:Datorspel"+itemHeldByOrg:"sigel:org/BER"), which has been created by clicking suggested search filters, can be transformed to its text representation (`category:"saogf:Datorspel" itemHeldByOrg:"sigel:org/BER"`) by marking and copying it.
+- Example: [A search for computer games held by Bergslagsbibblan](/find?_q=category:"saogf:Datorspel"+library:"sigel:org/BER"), which has been created by clicking suggested search filters, can be transformed to its text representation (`category:"saogf:Datorspel" library:"sigel:org/BER"`) by marking and copying it.
 
 ### Empty filters -- required a specific property to be present
 

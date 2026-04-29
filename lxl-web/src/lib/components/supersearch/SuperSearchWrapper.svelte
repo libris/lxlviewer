@@ -1,23 +1,28 @@
 <script lang="ts">
-	import { mount, onMount, unmount } from 'svelte';
+	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import {
-		SuperSearch,
+		type DebouncedWaitFunction,
+		type ExpandEvent,
 		lxlQualifierPlugin,
 		type QualifierRendererProps,
 		type Selection,
 		type ShowExpandedSearchOptions,
-		type ViewUpdateSuperSearchEvent,
-		type DebouncedWaitFunction,
-		type ExpandEvent
+		SuperSearch,
+		type ViewUpdateSuperSearchEvent
 	} from 'supersearch';
+	import SuperSearchFooterRow from './SuperSearchFooterRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import type { DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
+	import {
+		type DisplayMapping,
+		type QualifierSuggestion2,
+		QualifierSuggestionShowIn
+	} from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
@@ -25,6 +30,7 @@
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	interface Props {
 		placeholder: string;
@@ -36,9 +42,16 @@
 		expandedAriaDescribedBy?: string;
 		onCursorChange: (cursor: number | null) => void;
 		qualifierSuggestions: QualifierSuggestion2[];
+		autofocus?: boolean;
 	}
 
-	export type ChangeQueryParams = { insert: string; from?: number; to?: number };
+	export type ChangeQueryParams = {
+		change: { insert: string; from?: number; to?: number };
+		selection?: {
+			anchor?: number | null;
+			head?: number | null;
+		};
+	};
 
 	let {
 		placeholder,
@@ -49,12 +62,13 @@
 		expandedAriaLabel,
 		expandedAriaDescribedBy,
 		onCursorChange,
-		qualifierSuggestions
+		qualifierSuggestions,
+		autofocus
 	}: Props = $props();
 
 	const searchContext = getSearchContext();
 
-	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q')?.trim() || ''));
+	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || ''));
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
@@ -117,16 +131,16 @@
 			if (isHomeRoute) {
 				q = ''; // reset query if navigating to start/index page
 			} else if (to.url.searchParams.has('_q')) {
-				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q')?.trim() || '');
+				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '');
 			}
 
 			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
 
-			superSearch?.hideExpandedSearch();
+			hideExpandedSearch();
 			fetchOnExpand = true;
 
 			if (userClearedSearch) {
-				superSearch?.showExpandedSearch();
+				showExpandedSearch();
 				userClearedSearch = false;
 			} else if (isHomeRoute) {
 				superSearch?.focus(); // focus input on start page
@@ -169,8 +183,12 @@
 
 		if (!hasCharBefore && !hasCharAfter && editedParentNode !== 'QualifierValue') {
 			return qualifierSuggestionsExpanded
-				? qualifierSuggestions
-				: qualifierSuggestions.filter((q) => q?.curated);
+				? qualifierSuggestions.filter(
+						(q) =>
+							q?.showIn == QualifierSuggestionShowIn.suggested ||
+							q?.showIn == QualifierSuggestionShowIn.showMore
+					)
+				: qualifierSuggestions.filter((q) => q?.showIn == QualifierSuggestionShowIn.suggested);
 		}
 
 		return [];
@@ -249,7 +267,9 @@
 		qualifierSuggestionNeedle.word.length >= MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS
 	);
 
-	const numCuratedQualifiers = $derived(qualifierSuggestions.filter((q) => q.curated).length);
+	const numCuratedQualifiers = $derived(
+		qualifierSuggestions.filter((q) => q.showIn == QualifierSuggestionShowIn.suggested).length
+	);
 
 	function editedWord(str: string, cursor: number) {
 		let from = cursor;
@@ -281,20 +301,25 @@
 		return data;
 	}
 
-	export function changeQuery(params: ChangeQueryParams) {
-		const { insert } = params;
-		const from = params.from || q.length;
-		const to = params.to || q.length;
-		const before = q.slice(0, from);
+	function changeQuery({ change, selection }: ChangeQueryParams) {
+		const from = typeof change.from === 'number' ? change.from : q.length;
+		const to = typeof change.to === 'number' ? change.to : q.length;
+
 		superSearch?.dispatchChange({
 			change: {
 				from,
 				to,
-				insert
+				insert: change.insert
 			},
 			selection: {
-				anchor: (before + insert).length,
-				head: (before + insert).length
+				anchor:
+					selection && typeof selection.anchor === 'number'
+						? selection.anchor
+						: (q.slice(0, from) + change.insert).length,
+				head:
+					selection && typeof selection.head === 'number'
+						? selection.head
+						: (q.slice(0, from) + change.insert).length
 			},
 			userEvent: 'input'
 		});
@@ -302,7 +327,7 @@
 
 	function addQualifierKey(qualifierKey: string) {
 		superSearch?.resetData();
-		superSearch?.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
+		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
 
 		if (qualifierSuggestionNeedle.word.length > 0) {
 			// TODO don't need this if we can check qualifier editing state?
@@ -369,8 +394,12 @@
 		return lxlQualifierPlugin(getLabels, renderer);
 	});
 
-	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
+	function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		superSearch?.showExpandedSearch(options);
+	}
+
+	function hideExpandedSearch() {
+		superSearch?.hideExpandedSearch();
 	}
 
 	function handleOnChange() {
@@ -410,7 +439,24 @@
 	});
 
 	onMount(() => {
+		if (searchContext.initialStateBeforeMount?.value) {
+			changeQuery({
+				change: { insert: searchContext.initialStateBeforeMount.value, from: 0, to: q.length },
+				selection: {
+					anchor: searchContext.initialStateBeforeMount.selection?.anchor,
+					head: searchContext.initialStateBeforeMount.selection?.head
+				}
+			});
+		}
+		searchContext.showExpandedSearch = showExpandedSearch;
+		searchContext.hideExpandedSearch = hideExpandedSearch;
 		searchContext.changeQuery = changeQuery;
+		searchContext.isMounted = true;
+	});
+
+	onDestroy(() => {
+		if (timeout) clearTimeout(timeout); // ensure timeout is cleared to prevent memory leaks
+		searchContext.initialStateBeforeMount = undefined;
 	});
 </script>
 
@@ -430,19 +476,22 @@
 		{expandedAriaLabel}
 		{expandedAriaDescribedBy}
 		collapsedAriaKeyshortcuts={`Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`}
-		autofocus={isHomeRoute ? true : undefined}
+		{autofocus}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
-			return new URLSearchParams({
+			const searchParams = new SvelteURLSearchParams({
 				_q: query,
 				_limit: '5',
-				cursor: cursor.toString(),
-				_sort: page.url.searchParams.get('_sort') || '',
-				_r: page.url.searchParams.get('_r') || ''
+				cursor: cursor.toString()
 			});
+			if (page.url.searchParams.get('_r')) {
+				searchParams.set('_r', page.url.searchParams.get('_r')!);
+			}
+			return searchParams;
 		}}
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
+		shallowRouting
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		defaultInputCol={undefined}
@@ -523,6 +572,19 @@
 					>
 						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
 					</svelte:element>
+				{:else if !expanded}
+					<button
+						type="button"
+						onclick={() => showExpandedSearch()}
+						tabindex={-1}
+						class="hidden size-11 cursor-text items-center justify-center select-none sm:flex lg:size-12"
+					>
+						<kbd
+							class="key pointer-events-auto h-[1.75em] w-[1.75em] text-sm"
+							title={`${page.data.t('supersearch.expandSearch')} (Shift+7 ${page.data.t('supersearch.or')} ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'})`}
+							>/</kbd
+						>
+					</button>
 				{/if}
 				<button
 					type="submit"
@@ -537,8 +599,16 @@
 				</button>
 			</div>
 		{/snippet}
-		{#snippet expandedContent({ resultsCount, resultsSnippet, getCellId, isFocusedCell })}
-			{@const searchHelpRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
+		{#snippet expandedContent({
+			resultsCount,
+			resultsSnippet,
+			getCellId,
+			isFocusedRow,
+			isFocusedCell
+		})}
+			{@const inputRowIndex = 0}
+			{@const qualifiersRowIndex = showAddQualifiers ? 1 : -1}
+			{@const footerRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
 			<nav class="mt-3 lg:mt-4">
 				{#if showAddQualifiers}
 					<div
@@ -621,23 +691,14 @@
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
-				<div
-					role="row"
-					data-skip-row-on-arrow-key
-					class="border-neutral mt-2 flex justify-end gap-4 border-t px-4 text-sm"
-				>
-					<!-- TODO: Add keyboard interaction help here -->
-					<a
-						href={resolve(page.data.localizeHref('/help'))}
-						id={getCellId(searchHelpRowIndex, 0)}
-						class={[
-							'text-link flex min-h-14 items-center justify-end overflow-hidden px-4 hover:underline',
-							isFocusedCell(searchHelpRowIndex, 0) && 'underline'
-						]}
-					>
-						{page.data.t('supersearch.searchHelp')}
-					</a>
-				</div>
+				<SuperSearchFooterRow
+					{inputRowIndex}
+					{qualifiersRowIndex}
+					{footerRowIndex}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+				/>
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
@@ -662,14 +723,11 @@
 			box-shadow: 0 0 0 1px var(--color-primary-600);
 		}
 
-		&:focus-within {
-			outline: 3px solid var(--color-primary-100);
-			outline-offset: 1px;
-		}
-
-		@variant lg {
-			&:focus-within {
-				outline: 4px solid var(--color-primary-200);
+		@variant sm {
+			&:focus-within:not(:has(button:focus)) {
+				box-shadow: 0 0 0 6px var(--color-accent-100);
+				outline: 2px solid var(--color-outline);
+				outline-offset: 0;
 			}
 		}
 
@@ -696,11 +754,6 @@
 
 			&:hover {
 				box-shadow: 0 0 0 1px var(--color-neutral-600);
-			}
-			&.focused-row:not(:has(:global(.focused-cell))) {
-				box-shadow: 0 0 0 6px var(--color-accent-100);
-				outline: 2px solid var(--color-outline);
-				outline-offset: 0;
 			}
 		}
 

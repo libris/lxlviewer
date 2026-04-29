@@ -175,6 +175,18 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	).not.toHaveAttribute('aria-activedescendant', /.+/);
 	await page.keyboard.press('ArrowDown');
 	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
+	await page.keyboard.press('ArrowLeft');
+	await expect(
+		comboboxElement,
+		'user can jump from first col to last by pressing arrow left if wrappingArrowKeyNavigation is enabled'
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x2');
+	await page.keyboard.press('ArrowRight');
+	await expect(
+		comboboxElement,
+		'user can jump from last col to first by pressing arrow right if wrappingArrowKeyNavigation is enabled'
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
 });
 
 test('user can toggle expanded search using alt key + arrow up or down (without moving cursor) ', async ({
@@ -317,15 +329,14 @@ test('submits form when pressing submit action', async ({ page }) => {
 });
 
 test('submits form on enter key press (if no result item is selected)', async ({ page }) => {
-	await page.getByRole('combobox').fill('hello world');
-	await expect(page.getByRole('dialog')).toBeVisible();
-	await page.keyboard.press('Escape');
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('hello world');
 	await page.keyboard.press('Enter');
 	await expect(page, 'submits closest form').toHaveURL('/test1?q=hello+world');
 	await page.goBack();
 	await page.getByTestId('use-form-attribute').check();
-	await page.getByRole('combobox').fill('hello world');
-	await page.keyboard.press('Escape');
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('hello world');
 	await page.keyboard.press('Enter');
 	await expect(page, 'submits form specified form attribute').toHaveURL('/test2?q=hello+world');
 });
@@ -364,4 +375,17 @@ test('exports isLoading and hasResults as bindable props (should be treated as r
 	await expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: true');
 	await expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: false');
 	await expect(page.getByTestId('has-data-bind')).toHaveText('has data: true');
+});
+
+test('shallow routing enables controlling expanded state using the history API', async ({
+	page
+}) => {
+	const initialUrl = page.url;
+	await page.getByRole('combobox').click();
+	await expect(page.getByRole('dialog')).toBeVisible();
+	await page.goBack();
+	await expect(page.url).toEqual(initialUrl);
+	await expect(page.getByRole('dialog')).not.toBeVisible();
+	await page.goForward();
+	await expect(page.getByRole('dialog')).toBeVisible();
 });

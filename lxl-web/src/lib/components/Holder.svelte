@@ -7,7 +7,7 @@
 		LibraryWithLinksAndInstances,
 		UnknownLibrary
 	} from '$lib/types/holdings';
-	import { JsonLd } from '$lib/types/xl';
+	import { Fmt, JsonLd } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { createHoldingLinks } from '$lib/utils/holdings';
 	import LoanStatus from './LoanStatus.svelte';
@@ -55,9 +55,12 @@
 				instance?.linksToItem.length ||
 				instance?.loanReserveLink.length ||
 				instance?.itemStatus?.length ||
-				instance?.shelfData?._display?.length ||
-				instance?.itemNoteData?._display?.length ||
-				instance?.itemMedia?._display?.length
+				instance?.items.some(
+					(i) =>
+						i?.itemShelf?.[Fmt.DISPLAY].length ||
+						i?.itemNote?.[Fmt.DISPLAY].length ||
+						i.itemMedia?.[Fmt.DISPLAY].length
+				)
 		)
 	);
 
@@ -101,33 +104,37 @@
 			{/if}
 		</li>
 	{/if}
-	<!-- shelf data -->
-	{#if instance.shelfData?._display?.length}
-		<li>
-			<p>
-				<span class="text-subtle">{page.data.t('holdings.shelfMark')}: </span>
-				<DecoratedData data={instance.shelfData} showLabels={ShowLabelsOptions.Never} />
-			</p>
-		</li>
-	{/if}
-	<!-- item media -->
-	{#if instance.itemMedia?._display?.length}
-		<li>
-			<p>
-				<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
-				<DecoratedData data={instance.itemMedia} showLabels={ShowLabelsOptions.Never} />
-			</p>
-		</li>
-	{/if}
-	<!-- Item notes -->
-	{#if instance.itemNoteData?._display?.length}
-		<li>
-			<p>
-				<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
-				<DecoratedData data={instance.itemNoteData} showLabels={ShowLabelsOptions.Never} />
-			</p>
-		</li>
-	{/if}
+	{#each instance?.items as item, index (`items-${index}`)}
+		{@const hasItemMedia = item.itemMedia?.[Fmt.DISPLAY]?.length}
+		{@const hasItemShelf = item.itemShelf?.[Fmt.DISPLAY]?.length}
+		{@const hasItemNote = item.itemNote?.[Fmt.DISPLAY]?.length}
+
+		{#if hasItemMedia || hasItemShelf || hasItemNote}
+			<li>
+				{#if hasItemMedia}
+					<!-- item media -->
+					<p>
+						<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
+						<DecoratedData data={item.itemMedia} showLabels={ShowLabelsOptions.DefaultOff} />
+					</p>
+				{/if}
+				{#if hasItemShelf}
+					<!-- item shelf -->
+					<p>
+						<span class="text-subtle">{page.data.t('holdings.itemShelf')}: </span>
+						<DecoratedData data={item.itemShelf} showLabels={ShowLabelsOptions.DefaultOff} />
+					</p>
+				{/if}
+				{#if hasItemNote}
+					<!-- Item note -->
+					<p>
+						<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
+						<DecoratedData data={item.itemNote} showLabels={ShowLabelsOptions.DefaultOff} />
+					</p>
+				{/if}
+			</li>
+		{/if}
+	{/each}
 	{#if instance.itemStatus?.[0]}
 		<li>
 			<LoanStatus sigel={holder.sigel} bibIdObj={instance} />
