@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
 	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
 
-	const data = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`).then((res) =>
+	const data = await fetch(`${env.API_URL}/find.jsonld?${newSearchParams.toString()}`).then((res) =>
 		res.json()
 	);
 
