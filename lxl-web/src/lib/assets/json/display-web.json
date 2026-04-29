@@ -269,8 +269,9 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Publication",
 					"showProperties": [
-						"place",
-						"country",
+						{
+							"alternateProperties": ["place", "country"]
+						},
 						"agent",
 						"hasPart",
 						"year",
@@ -285,8 +286,9 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "ProvisionActivity",
 					"showProperties": [
-						"place",
-						"country",
+						{
+							"alternateProperties": ["place", "country"]
+						},
 						"agent",
 						"hasPart",
 						"year",
