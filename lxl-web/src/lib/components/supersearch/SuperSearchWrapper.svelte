@@ -450,6 +450,7 @@
 		}
 		searchContext.showExpandedSearch = showExpandedSearch;
 		searchContext.hideExpandedSearch = hideExpandedSearch;
+		searchContext.addQualifierKey = addQualifierKey;
 		searchContext.changeQuery = changeQuery;
 		searchContext.isMounted = true;
 	});
