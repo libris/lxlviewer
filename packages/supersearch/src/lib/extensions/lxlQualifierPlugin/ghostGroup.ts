@@ -244,7 +244,8 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		!tr.docChanged ||
 		tr.isUserEvent('select') ||
 		tr.isUserEvent('undo') ||
-		tr.isUserEvent('redo')
+		tr.isUserEvent('redo') ||
+		tr.isUserEvent('input.complete')
 	)
 		return tr;
 
