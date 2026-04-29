@@ -84,6 +84,10 @@
 				{
 					href: 'https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html',
 					label: page.data.t('appMenu.aboutBeta')
+				},
+				{
+					href: 'https://gamla.libris.kb.se/',
+					label: page.data.t('appMenu.oldSite')
 				}
 			]
 		},

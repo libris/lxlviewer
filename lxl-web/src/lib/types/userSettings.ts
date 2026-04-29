@@ -26,6 +26,7 @@ export type UserSettings = {
 	};
 	debug?: DebugFlags[];
 	prefersNearMe?: boolean;
+	dismissedNewBanner?: boolean;
 };
 
 export enum DebugFlags {
