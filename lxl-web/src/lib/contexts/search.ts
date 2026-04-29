@@ -1,8 +1,10 @@
 import { createContext } from 'svelte';
-import type { ShowExpandedSearchOptions } from 'supersearch';
+import type { Selection, ShowExpandedSearchOptions } from 'supersearch';
 import type { ChangeQueryParams } from '$lib/components/supersearch/SuperSearchWrapper.svelte';
 
 export type SearchContext = {
+	getQuery: () => string;
+	getSelection: () => Selection | undefined;
 	showExpandedSearch: (options?: ShowExpandedSearchOptions) => void;
 	hideExpandedSearch: () => void;
 	changeQuery: (params: ChangeQueryParams) => void;
