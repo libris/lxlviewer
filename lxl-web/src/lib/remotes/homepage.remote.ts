@@ -56,13 +56,13 @@ const FEATURED_COLLECTIONS: FeaturedQueryType[] = [
 	{
 		headingByLang: { sv: 'Särskilda samlingar i Libris', en: 'Special collections in Libris' },
 		leadingTextByLang: {
-			sv: 'Deldatabaser som omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala bibliografier, samt bibliografier över författare/personer.',
+			sv: 'Deldatabaser som omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala bibliografier.',
 			en: 'Subdatabases that includes national bibliographic, subject-specialized, and local/regional bibliographies.'
 		},
 		footerTextByLang: { sv: 'Utforska särskilda samlingar', en: 'See all special collections' },
 		findHref: '/collections',
 		previewParams: {
-			_q: 'type:(Bibliography) (000njwvk116zvhz0 OR 000b3thf14vqczrv OR 000n6qq312slvd3k OR bfcc6ldsd1b7vg8t)',
+			_q: 'type:(Bibliography) (000njwvk116zvhz0 OR b3wn529vd2bvdhw1 OR 000n6qq312slvd3k OR bfcc6ldsd1b7vg8t)',
 			_sort: '_sortKeyByLang.sv',
 			_limit: 4
 		}
