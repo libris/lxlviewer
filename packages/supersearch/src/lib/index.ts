@@ -3,7 +3,8 @@ import type {
 	ResultItem,
 	ShowExpandedSearchOptions,
 	DebouncedWaitFunction,
-	ExpandEvent
+	ExpandEvent,
+	UserEvent
 } from './types/superSearch.js';
 import type { Selection } from './components/CodeMirror.svelte';
 import type {
@@ -25,5 +26,6 @@ export {
 	type ViewUpdateSuperSearchEvent,
 	type ShowExpandedSearchOptions,
 	type DebouncedWaitFunction,
-	type ExpandEvent
+	type ExpandEvent,
+	type UserEvent
 };
