@@ -21,7 +21,7 @@
 		showExpandedSearch: () => {},
 		hideExpandedSearch: () => {},
 		changeQuery: () => {},
-    submit: () => {},
+		submit: () => {},
 		initialStateBeforeMount: undefined,
 		isMounted: false
 	});
