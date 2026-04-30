@@ -269,8 +269,9 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Publication",
 					"showProperties": [
-						"place",
-						"country",
+						{
+							"alternateProperties": ["place", "country"]
+						},
 						"agent",
 						"hasPart",
 						"year",
@@ -285,8 +286,9 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "ProvisionActivity",
 					"showProperties": [
-						"place",
-						"country",
+						{
+							"alternateProperties": ["place", "country"]
+						},
 						"agent",
 						"hasPart",
 						"year",
@@ -902,7 +904,7 @@
 					"@id": "Bibliography-web-overview",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Bibliography",
-					"showProperties": ["description"]
+					"showProperties": ["isPartOf", "description", { "inverseOf": "isPartOf" }, "sigel"]
 				}
 			}
 		},
@@ -1053,6 +1055,12 @@
 						"subject",
 						"classification"
 					]
+				},
+				"Bibliography": {
+					"@id": "Bibliography-web-details",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Bibliography",
+					"showProperties": []
 				}
 			}
 		}
