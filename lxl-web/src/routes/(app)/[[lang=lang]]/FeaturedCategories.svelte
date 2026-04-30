@@ -11,14 +11,14 @@
 		{page.data.t('home.pageHeadingDescription')}
 	</h3>
 	<div class="w-full">
-		<nav class="pt-2 pb-4 @5xl:pt-3 @5xl:pb-5" aria-label={page.data.t('home.searchShortcuts')}>
+		<nav class="pt-2 pb-4 @5xl:pt-3 @5xl:pb-5" aria-labelledby="explore-categories">
 			<div class="flex w-full items-center justify-center">
 				<div
 					tabindex="-1"
 					class="filters-scroller scrollbar-hidden flex items-center overflow-x-scroll px-3 py-1 @3xl:px-4"
 				>
 					<h4
-						id="search-for"
+						id="explore-categories"
 						class="mr-3 hidden font-serif font-medium whitespace-nowrap @xl:block @5xl:text-[1.0625rem]"
 					>
 						{page.data.t('search.exploreCategories')}
