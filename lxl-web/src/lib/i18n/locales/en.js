@@ -141,6 +141,7 @@ export default {
 		search: 'Search',
 		searchResults: 'Search results',
 		searchFor: 'Search for',
+		exploreCategories: 'Explore categories',
 		loading: 'Loading...',
 		filter: 'Filter',
 		findFilter: 'Find filter',

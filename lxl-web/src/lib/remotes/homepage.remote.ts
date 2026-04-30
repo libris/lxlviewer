@@ -79,14 +79,6 @@ const CATEGORY_SHORTCUTS: {
 	labelByLang: Record<LocaleCode, string>;
 }[] = [
 	{
-		id: 'all-categories',
-		href: '/find?_q=',
-		labelByLang: {
-			sv: 'Allt',
-			en: 'All'
-		}
-	},
-	{
 		id: 'fiction-category',
 		href: '/find?_q=category:"saogf:Sk%25C3%25B6nlitteratur"',
 		labelByLang: {
