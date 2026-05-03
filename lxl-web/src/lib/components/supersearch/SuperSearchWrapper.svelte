@@ -2,7 +2,6 @@
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
-	import { resolve } from '$app/paths';
 	import {
 		type DebouncedWaitFunction,
 		type ExpandEvent,
@@ -15,15 +14,12 @@
 		type UserEvent
 	} from 'supersearch';
 	import FooterRow from './rows/FooterRow.svelte';
+	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import {
-		type DisplayMapping,
-		type QualifierSuggestion2,
-		QualifierSuggestionShowIn
-	} from '$lib/types/search';
+	import { type DisplayMapping, type QualifierSuggestion2 } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
@@ -97,9 +93,6 @@
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
-	// TODO min 3 for prefix match, while allowing exactMatch år?
-	const MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS = 2;
-
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
 	const MIN_LENGTH_FOR_SUGGESTIONS = 3;
@@ -153,83 +146,8 @@
 		}
 	});
 
-	const editedParentNode = $derived.by(() => {
-		if (!q || !selection) {
-			return null;
-		}
-
-		if (selection) {
-			const tree = lxlQuery.language.parser.parse(q);
-			const node = tree.resolveInner(selection.head, 0);
-
-			if (node.type.name) {
-				return node.parent?.type.name;
-			}
-		}
-
-		return null;
-	});
-
 	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
 	const hasCharAfter = $derived(/\S/.test(q.charAt(cursor)));
-
-	let qualifierSuggestionsExpanded = $state(false);
-
-	const filteredQualifierSuggestions = $derived.by(() => {
-		if (isSuggestingQualifiers) {
-			return qualifierSuggestions
-				.map((q) => ({ q: q, score: score(q, qualifierSuggestionNeedle.word) }))
-				.filter((qs) => qs.score > 0)
-				.sort((a, b) => b.score - a.score)
-				.map((qs) => qs.q);
-		}
-
-		if (!hasCharBefore && !hasCharAfter && editedParentNode !== 'QualifierValue') {
-			return qualifierSuggestionsExpanded
-				? qualifierSuggestions.filter(
-						(q) =>
-							q?.showIn == QualifierSuggestionShowIn.suggested ||
-							q?.showIn == QualifierSuggestionShowIn.showMore
-					)
-				: qualifierSuggestions.filter((q) => q?.showIn == QualifierSuggestionShowIn.suggested);
-		}
-
-		return [];
-	});
-
-	function score(q: QualifierSuggestion2, needle: string): number {
-		// TODO only match query codes uppercase? e.g. WHYL
-		const needleLower = needle.toLowerCase();
-
-		if (prefixMatch(needleLower, q.label)) {
-			return 20;
-		}
-		if (prefixMatch(needleLower, q.key)) {
-			return 10;
-		}
-
-		let score = 0;
-		for (const s of q.queryCodes) {
-			if (prefixMatch(needleLower, s)) {
-				score += 1;
-			}
-		}
-		for (const s of q.altLabels) {
-			if (prefixMatch(needleLower, s)) {
-				score += 1;
-			}
-		}
-		return score;
-	}
-
-	function prefixMatch(needleLower: string, haystack: string) {
-		return haystack
-			.toLowerCase()
-			.split(/\s/)
-			.find((s) => s.startsWith(needleLower));
-	}
-
-	const showAddQualifiers = $derived(filteredQualifierSuggestions.length > 0);
 
 	const NO_WILDCARD_AFTER_CHAR = [')', '"', '*', '?'];
 	const NO_WILDCARD_AFTER_WORD = ['AND', 'OR', 'NOT'];
@@ -253,51 +171,6 @@
 		}
 		return false;
 	});
-
-	const qualifierSuggestionNeedle = $derived.by(() => {
-		if (
-			editedParentNode === 'QualifierValue' ||
-			editedParentNode === 'QualifierOuterGroup' ||
-			[':', '=', '<', '>'].includes(q.charAt(cursor - 1))
-		) {
-			return { from: cursor, to: cursor, word: '' };
-		}
-
-		return editedWord(q, cursor);
-	});
-
-	const isSuggestingQualifiers = $derived(
-		qualifierSuggestionNeedle.word.length >= MIN_LENGTH_FOR_QUALIFIER_SUGGESTIONS
-	);
-
-	const numCuratedQualifiers = $derived(
-		qualifierSuggestions.filter((q) => q.showIn == QualifierSuggestionShowIn.suggested).length
-	);
-
-	function editedWord(str: string, cursor: number) {
-		let from = cursor;
-		for (let i = cursor - 1; i >= 0; i--) {
-			if (/\s|[()"<>:=]/.test(str.charAt(i))) {
-				break;
-			}
-			from = i;
-		}
-
-		let to = cursor - 1;
-		for (let i = cursor; i < q.length; i++) {
-			if (/\s|[()"<>:=]/.test(str.charAt(i))) {
-				break;
-			}
-			to = i;
-		}
-		to += 1;
-
-		return {
-			from: from,
-			to: to,
-			word: str.slice(from, to)
-		};
-	}
 
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
@@ -619,66 +492,19 @@
 			isFocusedCell
 		})}
 			{@const inputRowIndex = 0}
-			{@const qualifiersRowIndex = showAddQualifiers ? 1 : -1}
-			{@const footerRowIndex = (showAddQualifiers ? 1 : 0) + (resultsCount || 0) + 1}
-			<nav class="mt-3 lg:mt-4">
-				{#if showAddQualifiers}
-					<div
-						id="supersearch-add-qualifier-key-label"
-						class="text-subtle mt-1.5 mb-1 px-4 text-sm font-medium lg:mt-0"
-					>
-						{page.data.t('supersearch.addQualifiers')}
-					</div>
-					<div role="rowgroup" aria-labelledby="supersearch-add-qualifier-key-label" class="mb-1">
-						<div role="row" class="flex flex-wrap items-center gap-2 px-4 py-2">
-							{#each filteredQualifierSuggestions as { key, label }, cellIndex (key)}
-								<button
-									type="button"
-									id={getCellId(1, cellIndex)}
-									class={[
-										'qualifier-suggestion  text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize last-of-type:mr-4',
-										isFocusedCell(1, cellIndex) && 'focused-cell outline-2'
-									]}
-									onclick={() => searchContext.addQualifierKey(key)}
-								>
-									{label}
-								</button>
-								{#if filteredQualifierSuggestions.length > numCuratedQualifiers && cellIndex + 1 === numCuratedQualifiers}
-									<span class="text-subtle" aria-hidden="true">|</span>
-								{/if}
-							{/each}
-							{#if !isSuggestingQualifiers && filteredQualifierSuggestions.length > 0}
-								<button
-									type="button"
-									id={getCellId(1, filteredQualifierSuggestions.length + 1)}
-									class={[
-										'link-subtle ml-1 text-sm sm:text-xs',
-										isFocusedCell(1, filteredQualifierSuggestions.length + 1) &&
-											'focused-cell outline-2'
-									]}
-									onclick={() => (qualifierSuggestionsExpanded = !qualifierSuggestionsExpanded)}
-								>
-									{qualifierSuggestionsExpanded
-										? page.data.t('search.showFewer')
-										: page.data.t('search.showMore')}
-								</button>
-								{#if qualifierSuggestionsExpanded}
-									<a
-										href={resolve(page.data.localizeHref('/help/filters'))}
-										id={getCellId(1, filteredQualifierSuggestions.length + 2)}
-										class={[
-											'link-subtle ml-1 text-sm sm:text-xs',
-											isFocusedCell(1, filteredQualifierSuggestions.length + 2) &&
-												'focused-cell outline-2'
-										]}
-									>
-										{page.data.t('help.reference')}
-									</a>
-								{/if}
-							{/if}
-						</div>
-					</div>
-				{/if}
+			{@const qualifiersRowIndex = 1}
+			{@const suggestionsRowOffset = 2}
+			{@const footerRowIndex = suggestionsRowOffset + (resultsCount || 0)}
+			<nav class="expanded-content mt-2 sm:mt-3">
+				<QualifierSuggestionsRow
+					{qualifierSuggestions}
+					rowIndex={qualifiersRowIndex}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+					query={q}
+					{selection}
+				/>
 				{#if q.trim().length}
 					<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
 						<h2 id="supersearch-results-label" aria-live="polite" class="font-medium">
@@ -700,7 +526,7 @@
 						aria-labelledby="supersearch-results-label"
 						class="border-neutral border-t"
 					>
-						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
+						{@render resultsSnippet({ rowOffset: 2 })}
 					</div>
 				{/if}
 				<FooterRow
@@ -735,16 +561,19 @@
 			box-shadow: 0 0 0 1px var(--color-primary-600);
 		}
 
+		@variant lg {
+			font-size: 0.9375rem;
+		}
+	}
+
+	.supersearch-input:not(.expanded),
+	.expanded.supersearch-input.focused-row:not(:has(.focused-cell)) {
 		@variant sm {
 			&:focus-within:not(:has(button:focus)) {
 				box-shadow: 0 0 0 6px var(--color-accent-100);
 				outline: 2px solid var(--color-outline);
 				outline-offset: 0;
 			}
-		}
-
-		@variant lg {
-			font-size: 0.9375rem;
 		}
 	}
 
@@ -901,13 +730,8 @@
 		@apply min-h-2;
 	}
 
-	:global(.supersearch-dialog .focused .suggestion .focused-cell) {
-		background-color: var(--color-accent-50);
-		outline: 2px solid var(--color-outline);
-	}
-
 	:global(.supersearch-dialog .focused-cell) {
-		background-color: var(--color-accent-50);
+		background-color: var(--color-accent-100);
 		outline: 2px solid var(--color-accent);
 	}
 
@@ -1030,15 +854,12 @@
 		}
 	}
 
-	.qualifier-suggestion {
-		box-shadow: 0 0 0 1px var(--color-accent-200);
-
-		&:hover {
-			background: var(--color-accent-100);
+	.expanded-content {
+		& :global([role='row']:not([data-skip-row-on-arrow-key]):hover) {
+			@apply bg-accent-50/75;
 		}
-		&.focused-cell {
-			background: var(--color-accent-100);
-			box-shadow: 0 0 0 5px var(--color-accent-100);
+
+		& :global(.focused-cell) {
 			outline: 2px solid var(--color-outline);
 		}
 	}
