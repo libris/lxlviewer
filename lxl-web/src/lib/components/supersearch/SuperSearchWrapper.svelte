@@ -15,6 +15,7 @@
 	} from 'supersearch';
 	import FooterRow from './rows/FooterRow.svelte';
 	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
+	import ShowAllResultsRow from './rows/ShowAllResultsRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
@@ -23,7 +24,6 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
-	import IconGo from '~icons/bi/arrow-right-short';
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
@@ -493,7 +493,8 @@
 		})}
 			{@const inputRowIndex = 0}
 			{@const qualifiersRowIndex = 1}
-			{@const suggestionsRowOffset = 2}
+			{@const showAllResultsRowIndex = 2}
+			{@const suggestionsRowOffset = 3}
 			{@const footerRowIndex = suggestionsRowOffset + (resultsCount || 0)}
 			<nav class="expanded-content mt-2 sm:mt-3">
 				<QualifierSuggestionsRow
@@ -505,32 +506,26 @@
 					query={q}
 					{selection}
 				/>
-				{#if q.trim().length}
-					<div class="text-subtle mb-2 flex items-center justify-between px-4 text-sm sm:mb-3">
-						<h2 id="supersearch-results-label" aria-live="polite" class="font-medium">
-							{#if resultsCount}
-								<span class="sr-only">{resultsCount}</span> {page.data.t('supersearch.suggestions')}
-							{/if}
-						</h2>
-						<button type="submit">
-							<span class={['text-link flex items-center gap-1 hover:underline']}>
-								{page.data.t('supersearch.showAll')}
-								<IconGo aria-hidden="true" class="text-link size-6" />
-							</span>
-						</button>
-					</div>
-				{/if}
+				<ShowAllResultsRow
+					{resultsCount}
+					{isLoading}
+					rowIndex={showAllResultsRowIndex}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+				/>
 				{#if resultsCount && q.trim().length}
 					<div
 						role="rowgroup"
 						aria-labelledby="supersearch-results-label"
 						class="border-neutral border-t"
 					>
-						{@render resultsSnippet({ rowOffset: 2 })}
+						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
 				{/if}
 				<FooterRow
 					{inputRowIndex}
+					{showAllResultsRowIndex}
 					{qualifiersRowIndex}
 					{footerRowIndex}
 					{getCellId}
