@@ -8,7 +8,6 @@ export type SearchContext = {
 	showExpandedSearch: (options?: ShowExpandedSearchOptions) => void;
 	hideExpandedSearch: () => void;
 	changeQuery: (params: ChangeQueryParams) => void;
-	addQualifierKey: (qualifierKey: string) => void;
 	submit: (form: HTMLFormElement) => void;
 	initialStateBeforeMount?: {
 		value: string;

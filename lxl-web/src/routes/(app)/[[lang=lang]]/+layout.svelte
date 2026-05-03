@@ -23,7 +23,6 @@
 		showExpandedSearch: () => {},
 		hideExpandedSearch: () => {},
 		changeQuery: () => {},
-		addQualifierKey: () => {},
 		submit: () => {},
 		initialStateBeforeMount: undefined,
 		isMounted: false

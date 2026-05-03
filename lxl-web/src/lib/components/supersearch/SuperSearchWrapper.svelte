@@ -28,7 +28,6 @@
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
-	import addQualifierKey from './addQualifierKey';
 
 	interface Props {
 		placeholder: string;
@@ -201,50 +200,6 @@
 		});
 	}
 
-	/*
-	function addQualifierKey(qualifierKey: string) {
-		superSearch?.resetData();
-		showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
-
-		if (qualifierSuggestionNeedle.word.length > 0) {
-			// TODO don't need this if we can check qualifier editing state?
-			// TODO don't suggest same
-			// TODO handle replacement of qualifier more smoothly
-			const insert = [':', '=', '<', '>'].includes(q.charAt(qualifierSuggestionNeedle.to))
-				? qualifierKey
-				: `${qualifierKey}:`;
-
-			superSearch?.dispatchChange({
-				change: {
-					from: qualifierSuggestionNeedle.from,
-					to: qualifierSuggestionNeedle.to,
-					insert
-				},
-				selection: {
-					anchor: qualifierSuggestionNeedle.from + insert.length,
-					head: qualifierSuggestionNeedle.from + insert.length
-				},
-				userEvent: 'input.complete'
-			});
-		} else {
-			const insert = `${qualifierKey}:`;
-
-			superSearch?.dispatchChange({
-				change: {
-					from: cursor,
-					to: cursor,
-					insert
-				},
-				selection: {
-					anchor: cursor + insert.length,
-					head: cursor + insert.length
-				},
-				userEvent: 'input.complete'
-			});
-		}
-	}
-		*/
-
 	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
 		const propsWithHandler = {
 			...props,
@@ -282,10 +237,6 @@
 
 	function handleOnChange() {
 		fetchOnExpand = false;
-	}
-
-	function addQualifierKeyWithContext(qualifierKey: string) {
-		addQualifierKey(searchContext, qualifierKey);
 	}
 
 	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
@@ -334,7 +285,6 @@
 		searchContext.getSelection = () => selection;
 		searchContext.showExpandedSearch = showExpandedSearch;
 		searchContext.hideExpandedSearch = hideExpandedSearch;
-		searchContext.addQualifierKey = addQualifierKeyWithContext;
 		searchContext.changeQuery = changeQuery;
 		searchContext.isMounted = true;
 	});
