@@ -14,7 +14,7 @@
 		type ViewUpdateSuperSearchEvent,
 		type UserEvent
 	} from 'supersearch';
-	import SuperSearchFooterRow from './SuperSearchFooterRow.svelte';
+	import FooterRow from './rows/FooterRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
@@ -703,7 +703,7 @@
 						{@render resultsSnippet({ rowOffset: showAddQualifiers ? 2 : 1 })}
 					</div>
 				{/if}
-				<SuperSearchFooterRow
+				<FooterRow
 					{inputRowIndex}
 					{qualifiersRowIndex}
 					{footerRowIndex}
