@@ -348,12 +348,13 @@ test('add qualifier key when selection is at start of string', async ({ page }) 
 });
 
 test('add qualifier key when selection is in the middle of string', async ({ page }) => {
-	await page.getByRole('combobox').fill('1234');
+	await page.getByRole('combobox').fill('1234 a');
+	await page.keyboard.press('ArrowLeft');
 	await page.keyboard.press('ArrowLeft');
 	await page.keyboard.press('ArrowLeft');
 	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
-	await page.keyboard.press('5');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('12 Titel:(5) 34 ');
+	await page.keyboard.press('b');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('1234 Titel:(b) a');
 });
 
 test('add selected value as qualifier key if both anchor and head is Qualifier or String', async ({
