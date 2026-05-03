@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { defaultLocale, getSupportedLocale, Locales } from '$lib/i18n/locales';
+import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
 import type { QualifierSuggestion2 } from '$lib/types/search';
 import type { Site } from '$lib/types/site';
@@ -102,7 +102,7 @@ export const handle = async ({ event, resolve }) => {
 	const subsetMapping = await getSubsetMapping(_r, event.locals, lang);
 	event.locals.subsetMapping = subsetMapping;
 
-	event.locals.qualifierSuggestions = qualifierSuggestionsByLocale[getSupportedLocale(lang)];
+	event.locals.qualifierSuggestionsByLocale = qualifierSuggestionsByLocale;
 
 	return resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)

@@ -19,7 +19,10 @@ declare global {
 			userSettings: UserSettings;
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
-			qualifierSuggestions: QualifierSuggestion2[];
+			qualifierSuggestionsByLocale: Record<
+				import('$lib/i18n/locales').LocaleCode,
+				QualifierSuggestion2[]
+			>;
 		}
 		interface LayoutData {
 			locale: import('$lib/i18n/locales').LocaleCode;
