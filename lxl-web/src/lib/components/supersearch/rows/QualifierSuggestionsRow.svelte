@@ -4,6 +4,7 @@
 	import { getSearchContext } from '$lib/contexts/search';
 	import { type QualifierSuggestion2 } from '$lib/types/search';
 	import { getParentNodeByType, type Selection } from 'supersearch';
+	import IconMore from '~icons/bi/chevron-right';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 
@@ -407,9 +408,10 @@
 			</li>
 		{/each}
 		<li class="lxl-qualifier lxl-qualifier-key mr-2">
-			<a href={resolve(page.data.localizeHref('/help/filters'))}
-				>{page.data.t('supersearch.moreQualifiers')}</a
-			>
+			<a href={resolve(page.data.localizeHref('/help/filters'))} class="flex items-center gap-0.5">
+				{page.data.t('supersearch.moreQualifiers')}
+				<IconMore class="text-link" />
+			</a>
 		</li>
 	</ul>
 </div>
