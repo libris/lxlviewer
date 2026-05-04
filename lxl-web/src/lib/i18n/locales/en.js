@@ -197,7 +197,8 @@ export default {
 	},
 	supersearch: {
 		search: 'Search',
-		addQualifiers: 'Add filter',
+		addQualifiers: 'Filter',
+		moreQualifiers: 'More filters',
 		loading: 'Loading...',
 		suggestions: 'Suggestions',
 		showAll: 'Show search results',

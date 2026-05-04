@@ -4,6 +4,7 @@
 		to: number;
 		anchor: number;
 		head: number;
+		empty: boolean;
 	};
 
 	export type ChangeCodeMirrorEvent = {
@@ -78,7 +79,8 @@
 						from: update.state.selection.main.from,
 						to: update.state.selection.main.to,
 						anchor: update.state.selection.main.anchor,
-						head: update.state.selection.main.head
+						head: update.state.selection.main.head,
+						empty: update.state.selection.main.empty
 					}
 				});
 			}
@@ -92,7 +94,8 @@
 				from: update.state.selection.main.from,
 				to: update.state.selection.main.to,
 				anchor: update.state.selection.main.anchor,
-				head: update.state.selection.main.head
+				head: update.state.selection.main.head,
+				empty: update.state.selection.main.empty
 			});
 		}
 
@@ -145,7 +148,8 @@
 				from: selection.main.from,
 				to: selection.main.to,
 				anchor: selection.main.anchor,
-				head: selection.main.head
+				head: selection.main.head,
+				empty: selection.main.empty
 			}
 		});
 	}

@@ -21,7 +21,7 @@ test('type & enter performs search', async ({ page }) => {
 test('expanded content shows persistant items and results', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').click();
 	expect(
-		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
+		await page.getByRole('dialog').getByLabel('Filter').getByRole('button').count(),
 		'persistent items are shown on empty input'
 	).toBeGreaterThan(0);
 	await expect(
@@ -35,7 +35,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		(res) => res.url().includes('supersearch?_q=hej') && res.status() === 200
 	);
 	expect(
-		await page.getByRole('dialog').getByLabel('Lägg till filter').getByRole('button').count(),
+		await page.getByRole('dialog').getByLabel('Filter').getByRole('button').count(),
 		'persistent items are also shown after typing'
 	).toBeGreaterThan(0);
 	await expect(
@@ -77,6 +77,7 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
 	await expect(page.getByTestId('resource-page')).toBeVisible();
 	await expect(
@@ -102,15 +103,11 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.getByTestId('supersearch').getByRole('combobox').click();
 	await page
 		.getByRole('dialog')
-		.getByLabel('Lägg till filter')
+		.getByLabel('Filter')
 		.getByRole('button')
 		.getByText('Författare/upphov')
 		.first()
 		.click();
-	await expect(
-		page.getByRole('dialog').getByLabel('Lägg till filter'),
-		'buttons for adding qualifier keys is hidden after selecting one of them'
-	).toBeHidden();
 	await expect(
 		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier')
 	).toBeVisible();
@@ -158,7 +155,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.getByTestId('supersearch').getByRole('combobox').click();
 	await page
 		.getByRole('dialog')
-		.getByLabel('Lägg till filter')
+		.getByLabel('Filter')
 		.getByRole('button')
 		.getByText(/^språk/i)
 		.click();
@@ -193,7 +190,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.keyboard.press('ArrowLeft');
 	await page
 		.getByRole('dialog')
-		.getByLabel('Lägg till filter')
+		.getByLabel('Filter')
 		.getByRole('button')
 		.getByText(/^ämne/i)
 		.click();
@@ -315,7 +312,68 @@ test('return key label is context-aware', async ({ page }) => {
 	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
-		'supersearch-item-2x0'
+		'supersearch-item-3x0'
 	);
 	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Välj');
+});
+
+test('add qualifier key on empty input', async ({ page, context }) => {
+	await context.grantPermissions(['clipboard-read']);
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:()');
+	await page.keyboard.press('a');
+	await page.keyboard.press('ControlOrMeta+A');
+	await page.keyboard.press('ControlOrMeta+C');
+	await expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('title:(a)');
+});
+
+test('add qualifier key when selection is at end of string', async ({ page }) => {
+	await page.getByRole('combobox').fill('t');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('t');
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await page.keyboard.press('b');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:(b)');
+});
+
+test('add qualifier key when selection is at start of string', async ({ page }) => {
+	await page.getByRole('combobox').fill('s');
+	await page.keyboard.press('ArrowLeft');
+	await page.getByRole('dialog').getByRole('button').getByText('Språk').click();
+	await page.keyboard.press('b');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('language:(b)');
+});
+
+test('add qualifier key when selection is in the middle of string', async ({ page }) => {
+	await page.getByRole('combobox').fill('1234 a');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('ArrowLeft');
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await page.keyboard.press('b');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('1234 Titel:(b) a');
+});
+
+test('add selected value as qualifier key if both anchor and head is Qualifier or String', async ({
+	page
+}) => {
+	await page.getByRole('combobox').fill('hello world');
+	await page.keyboard.press('ControlOrMeta+A');
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:(hello world)');
+});
+
+test('add qualfier key in group', async ({ page }) => {
+	await page.getByRole('combobox').fill('()');
+	await page.keyboard.press('ArrowLeft');
+	await page.getByRole('dialog').getByRole('button').getByText('Titel').click();
+	await page.keyboard.press('a');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('(Titel:(a))');
+});
+
+test('add qualfier key after Qualifier or QualifierOuterGroup', async ({ page }) => {
+	await page.getByRole('combobox').fill('titel:');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:()');
+	await page.getByRole('dialog').getByRole('button').getByText('Ämne').click();
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:() Ämne:()');
 });

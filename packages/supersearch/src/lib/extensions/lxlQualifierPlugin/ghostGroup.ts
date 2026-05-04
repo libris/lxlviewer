@@ -4,6 +4,7 @@ import type { SyntaxNode } from '@lezer/common';
 import { qualifierStateField } from './qualifierValidation.js';
 import { startEditingQualifier, stopEditingQualifier } from './qualifierEffects.js';
 import { env } from '$env/dynamic/public';
+import { getParentNodeByType as getParent } from '$lib/utils/getParentByType.js';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically
@@ -230,7 +231,7 @@ export const jumpPastParens = (tr: Transaction) => {
 };
 
 function debugLog(message: unknown) {
-	if (env.PUBLIC_DEBUG_GHOST_GROUP && env.PUBLIC_DEBUG_GHOST_GROUP.toLowerCase() === 'true') {
+	if (env.PUBLIC_DEBUG_SUPERSEARCH && env.PUBLIC_DEBUG_SUPERSEARCH.toLowerCase() === 'true') {
 		console.log('DEBUG GHOST GROUP:', (message as object).toString());
 	}
 }
@@ -244,7 +245,8 @@ export const handleChangesInGhostGroup = (tr: Transaction) => {
 		!tr.docChanged ||
 		tr.isUserEvent('select') ||
 		tr.isUserEvent('undo') ||
-		tr.isUserEvent('redo')
+		tr.isUserEvent('redo') ||
+		tr.isUserEvent('input.complete')
 	)
 		return tr;
 
@@ -656,21 +658,6 @@ export const balanceInnerParens = (tr: Transaction) => {
 		}
 	];
 };
-
-/**
- * If a node belongs to a named parent, return the parent.
- */
-function getParent(node: SyntaxNode, name: string): SyntaxNode | false {
-	if (!node || !name) return false;
-
-	let current: SyntaxNode | null = node;
-
-	while (current && current.name !== name) {
-		current = current.parent;
-	}
-
-	return current?.name === name ? current : false;
-}
 
 export function isValidQualifier(state: EditorState, node: SyntaxNode | false): boolean {
 	if (!node || node.name !== 'Qualifier') return false;
