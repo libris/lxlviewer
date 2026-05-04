@@ -150,7 +150,7 @@ const FEATURED_COLLECTIONS: FeaturedQueryType[] = [
 		footerTextByLang: { sv: 'Utforska särskilda samlingar', en: 'See all special collections' },
 		findHref: '/collections',
 		previewParams: {
-			_q: 'type:(Bibliography) (000njwvk116zvhz0 OR b3wn529vd2bvdhw1 OR 000n6qq312slvd3k OR bfcc6ldsd1b7vg8t)',
+			_q: 'type:(Bibliography) (000njwvk116zvhz0 OR b3wn529vd2bvdhw1 OR 21vrrs1d40hbfzl3 OR bfcc6ldsd1b7vg8t)',
 			_sort: '_sortKeyByLang.sv',
 			_limit: 4
 		}
