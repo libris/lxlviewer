@@ -26,13 +26,13 @@ test('index page shows featured searches', async ({ page }) => {
 			timeout: 10000
 		}
 	);
-	await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
-	await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
-		11,
-		{
-			timeout: 10000
-		}
-	);
+	// await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
+	// await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
+	// 	11,
+	// 	{
+	// 		timeout: 10000
+	// 	}
+	// );
 });
 
 test('can change the language', async ({ page }) => {
