@@ -85,6 +85,8 @@ export const handle = async ({ event, resolve }) => {
 
 		const host = event.url.hostname === 'localhost' ? event.url.hostname : `.${event.url.hostname}`;
 
+		let anyUpgraded = false;
+
 		for (const name of LEGACY_COOKIES) {
 			const value = event.cookies.get(name);
 
@@ -96,16 +98,20 @@ export const handle = async ({ event, resolve }) => {
 					httpOnly: true,
 					path: '/'
 				});
+
+				anyUpgraded = true;
 			}
 		}
 
-		event.cookies.set('cookiesDomainUpgraded', 'true', {
-			maxAge: 60 * 60 * 24 * 365, // 365 days
-			secure: true,
-			sameSite: 'strict',
-			httpOnly: true,
-			path: '/'
-		});
+		if (anyUpgraded) {
+			event.cookies.set('cookiesDomainUpgraded', 'true', {
+				maxAge: 60 * 60 * 24 * 365, // 365 days
+				secure: true,
+				sameSite: 'strict',
+				httpOnly: true,
+				path: '/'
+			});
+		}
 	}
 
 	// set HTML lang
