@@ -380,13 +380,16 @@
 		id="supersearch-add-qualifier-key-label"
 		class="min-w-14 pr-1.5 pl-2 sm:min-w-auto sm:pr-3.5 sm:pl-4"
 	>
+		<!--
 		<button
 			type="button"
 			tabindex="-1"
 			class="cursor-default"
 			onclick={() => searchContext.showExpandedSearch({ focusRow: rowIndex })}
-			>{page.data.t('supersearch.addQualifiers')}</button
-		>
+			>
+	-->
+		{page.data.t('supersearch.addQualifiers')}
+		<!-- </button> -->
 	</h2>
 	<ul
 		class="scrollbar-hidden flex min-h-12 items-center gap-2 overflow-x-auto p-0.5"
