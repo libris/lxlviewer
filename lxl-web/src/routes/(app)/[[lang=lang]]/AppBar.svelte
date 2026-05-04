@@ -14,12 +14,14 @@
 	import IconSearch from '~icons/bi/search';
 	import IconLanguage from '~icons/bi/globe';
 	import IconAddFilter from '~icons/bi/plus-circle';
-	import BetaBanner from '$lib/components/BetaBanner.svelte';
+	import AppBanner from '$lib/components/AppBanner.svelte';
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
+	import { getUserSettings } from '$lib/contexts/userSettings';
 
 	const searchContext = getSearchContext();
+	const userSettings = getUserSettings();
 
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
@@ -29,8 +31,7 @@
 	let shadowSentinelElement: HTMLElement | undefined = $state();
 	let shadowObserver: IntersectionObserver | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
-	let dismissableBanner: boolean = $state(false);
-	let dismissedBanner: boolean = $state(false);
+	let dismissedBanner: boolean = $derived(userSettings.dismissedNewBanner || false);
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -50,7 +51,7 @@
 	const subset = $derived(page.data.subsetMapping);
 
 	function handleDismissBanner() {
-		dismissedBanner = true;
+		userSettings.setDismissedNewBanner();
 	}
 
 	function showExpandedMenu() {
@@ -184,13 +185,10 @@
 >
 	{page.data.t('header.skipToContent')}
 </a>
-<!--
-<div class="temp"></div>
-<div class="temp3"></div>
--->
 <header
 	class={[
 		'app-bar @container sticky z-40 grid',
+		dismissedBanner && 'dismissed-banner',
 		isHomeRoute && 'home',
 		isHomeRoute && showBackground && 'bg-app-bar',
 		isHomeRoute && showShadow && 'shadow-app-bar',
@@ -199,7 +197,7 @@
 	]}
 >
 	{#if !dismissedBanner}
-		<BetaBanner ondismiss={dismissableBanner ? handleDismissBanner : undefined} />
+		<AppBanner ondismiss={handleDismissBanner} />
 	{/if}
 	<nav
 		class={['grid items-stretch', subset && 'with-subset']}

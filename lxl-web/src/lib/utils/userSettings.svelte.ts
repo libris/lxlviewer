@@ -99,6 +99,10 @@ export class UserSettings {
 		this.update('prefersNearMe', setting);
 	}
 
+	setDismissedNewBanner() {
+		this.update('dismissedNewBanner', true);
+	}
+
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
@@ -124,5 +128,9 @@ export class UserSettings {
 
 	get prefersNearMe() {
 		return this.settings.prefersNearMe;
+	}
+
+	get dismissedNewBanner() {
+		return this.settings.dismissedNewBanner;
 	}
 }

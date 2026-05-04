@@ -18,6 +18,7 @@ export default {
 		help: 'Help',
 		about: 'About Libris',
 		aboutBeta: 'FAQ',
+		oldSite: 'Old Libris site',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
 		accessibilityStatement: 'Accessibility statement',
@@ -38,12 +39,11 @@ export default {
 		closeMenu: 'Close menu'
 	},
 	banner: {
-		messageMobile: 'The catalogue may contain outdated information',
-		messageDesktop:
-			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
+		message: 'Welcome to the new Libris website!',
+		old: 'The old website',
+		message2: 'is still around a while longer',
 		feedback: 'Share feedback',
-		old: 'Go to old Libris',
-		dismiss: 'Hide beta info'
+		dismiss: 'Hide info'
 	},
 	about: {
 		pageTitle: 'About Libris',
