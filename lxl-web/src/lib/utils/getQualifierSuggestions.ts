@@ -70,11 +70,11 @@ const CURATED_QUALIFIERS = [
 	'title',
 	'language',
 	'yearPublished',
+	'workCategory',
 	'subject',
-	'originalLanguage',
-	'workCategory'
+	'originalLanguage'
 ];
-const CURATED_QUALIFIERS_MORE = ['translator', 'publisher', 'library', 'workCategory'];
+const CURATED_QUALIFIERS_MORE = ['translator', 'publisher', 'library'];
 const CURATED_ORDER = new Map(
 	CURATED_QUALIFIERS.concat(CURATED_QUALIFIERS_MORE).map((value, index) => [value, index])
 );
