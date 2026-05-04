@@ -6,10 +6,10 @@
 <section
 	class="bg-primary-100 border-y-primary-200 flex flex-col items-center border-y px-3 py-3 @5xl:px-20"
 >
-	<h3 class="text-subtle px-3 font-serif text-base italic lg:text-lg @3xl:max-w-max @5xl:text-xl">
+	<h2 class="text-subtle px-3 font-serif text-base italic lg:text-lg @3xl:max-w-max @5xl:text-xl">
 		<strong class="font-normal">Libris</strong>
 		{page.data.t('home.pageHeadingDescription')}
-	</h3>
+	</h2>
 	<div class="w-full">
 		<nav class="pt-2 pb-4 @5xl:pt-3 @5xl:pb-5" aria-labelledby="explore-categories">
 			<div class="flex w-full items-center justify-center">
@@ -17,12 +17,12 @@
 					tabindex="-1"
 					class="filters-scroller scrollbar-hidden flex items-center overflow-x-scroll px-3 py-1 @3xl:px-4"
 				>
-					<h4
+					<p
 						id="explore-categories"
 						class="mr-3 hidden font-serif font-medium whitespace-nowrap @xl:block @5xl:text-[1.0625rem]"
 					>
 						{page.data.t('search.exploreCategories')}
-					</h4>
+					</p>
 					<ul class="flex gap-2 pr-3 text-xs @3xl:text-sm @5xl:text-[0.9375rem]">
 						{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
 							<li>
