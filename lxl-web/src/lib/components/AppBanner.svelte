@@ -19,7 +19,7 @@
 >
 	<p class="flex-1">
 		<span>{page.data.t('banner.message')}</span>
-		<a href="https://gamla.libris.kb.se/" class="link-subtle">{page.data.t('banner.old')}</a>
+		<a href="https://libris.kb.se/" class="link-subtle">{page.data.t('banner.old')}</a>
 		<span>{page.data.t('banner.message2')}.</span>
 		<a href={page.data.localizeHref('/about')} class="link-subtle ml-1 inline-flex items-center">
 			<IconFeedback class="mr-1 size-3" />

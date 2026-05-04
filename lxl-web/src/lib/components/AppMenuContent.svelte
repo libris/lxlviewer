@@ -86,7 +86,7 @@
 					label: page.data.t('appMenu.aboutBeta')
 				},
 				{
-					href: 'https://gamla.libris.kb.se/',
+					href: 'https://libris.kb.se/',
 					label: page.data.t('appMenu.oldSite')
 				}
 			]
