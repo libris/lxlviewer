@@ -412,8 +412,12 @@
 		{/each}
 		<li class="mr-2">
 			<a
+				id={getCellId(rowIndex, filteredQualifierSuggestions.length)}
 				href={resolve(page.data.localizeHref('/help/filters'))}
-				class={['text-link flex h-11 items-center gap-0.5 px-1 hover:underline']}
+				class={[
+					'text-link flex h-11 items-center gap-0.5 px-1 hover:underline',
+					isFocusedCell(rowIndex, filteredQualifierSuggestions.length) && 'focused-cell'
+				]}
 			>
 				{page.data.t('supersearch.moreQualifiers')}
 				<IconMore class="text-link" />
