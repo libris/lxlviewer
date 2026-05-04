@@ -71,7 +71,8 @@ const CURATED_QUALIFIERS = [
 	'language',
 	'yearPublished',
 	'subject',
-	'originalLanguage'
+	'originalLanguage',
+	'workCategory'
 ];
 const CURATED_QUALIFIERS_MORE = ['translator', 'publisher', 'library', 'workCategory'];
 const CURATED_ORDER = new Map(
