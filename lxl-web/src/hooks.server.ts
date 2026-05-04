@@ -83,6 +83,43 @@ export const handle = async ({ event, resolve }) => {
 	}
 	event.locals.userSettings = userSettings;
 
+	// set legacy cookies site-wide
+	const upgraded = event.cookies.get('cookiesDomainUpgraded');
+
+	if (!upgraded) {
+		const LEGACY_COOKIES = ['myLibrary', 'myOrg', 'myPosts', 'showrecView'];
+
+		const host = event.url.hostname === 'localhost' ? event.url.hostname : `.${event.url.hostname}`;
+
+		let anyUpgraded = false;
+
+		for (const name of LEGACY_COOKIES) {
+			const value = event.cookies.get(name);
+
+			if (value) {
+				event.cookies.set(name, value, {
+					secure: true,
+					domain: host,
+					sameSite: 'lax',
+					httpOnly: true,
+					path: '/'
+				});
+
+				anyUpgraded = true;
+			}
+		}
+
+		if (anyUpgraded) {
+			event.cookies.set('cookiesDomainUpgraded', 'true', {
+				maxAge: 60 * 60 * 24 * 365, // 365 days
+				secure: true,
+				sameSite: 'strict',
+				httpOnly: true,
+				path: '/'
+			});
+		}
+	}
+
 	// set HTML lang
 	// https://github.com/sveltejs/kit/issues/3091#issuecomment-1112589090
 	const path = event.url.pathname;
