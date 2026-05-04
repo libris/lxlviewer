@@ -29,13 +29,13 @@ const FEATURED_QUERIES: FeaturedQueryType[] = [
 		}
 	},
 	{
-		headingByLang: { sv: 'Tecknade serier for vuxna', en: 'Comics for grown-ups' },
+		headingByLang: { sv: 'Tecknade serier för vuxna', en: 'Comics for grown-ups' },
 		findHref:
-			'/find?_q=category%3A"saogf%3ATecknade%2520serier"+language%3A"lang%3Aswe"+NOT+%28+kategori%3A"barngf%3ABarn-%2520och%2520ungdomslitteratur"+OR+originalLanguage%3A%28%29+%29&_sort=-%40reverse.instanceOf.publication.librissearch%3Ayear',
+			'/find?_q=category%3A"saogf%3ATecknade%2520serier"+language%3A"lang%3Aswe"+NOT+(+kategori%3A"barngf%3ABarn-%2520och%2520ungdomslitteratur"+OR+intendedAudience%3A"marc%3AJuvenile"+)',
 		previewParams: {
-			_q: 'category:"saogf:Tecknade%20serier" language:"lang:swe" NOT ( kategori:"barngf:Barn-%20och%20ungdomslitteratur" OR originalLanguage:() ) existsImage',
+			_q: 'category:"saogf:Tecknade%20serier" language:"lang:swe" NOT ( kategori:"barngf:Barn-%20och%20ungdomslitteratur" OR intendedAudience:"marc:Juvenile" ) existsImage',
 			_limit: 20,
-			_sort: '-@reverse.instanceOf.publication.librissearch:year'
+			_sort: ''
 		}
 	},
 	{
