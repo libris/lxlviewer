@@ -340,11 +340,11 @@ test('add qualifier key when selection is at end of string', async ({ page }) =>
 });
 
 test('add qualifier key when selection is at start of string', async ({ page }) => {
-	await page.getByRole('combobox').fill('t');
+	await page.getByRole('combobox').fill('s');
 	await page.keyboard.press('ArrowLeft');
-	await page.getByRole('dialog').getByRole('button').getByText('Ämne').click();
+	await page.getByRole('dialog').getByRole('button').getByText('Språk').click();
 	await page.keyboard.press('b');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:(b)');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('language:(b)');
 });
 
 test('add qualifier key when selection is in the middle of string', async ({ page }) => {
