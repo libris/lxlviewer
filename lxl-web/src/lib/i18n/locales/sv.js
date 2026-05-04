@@ -1,6 +1,6 @@
 export default {
 	home: {
-		pageHeadingTitle: 'Sök på alla svenska bibliotek',
+		pageHeadingTitle: 'Sök och hitta på svenska bibliotek',
 		pageHeadingDescription:
 			'är de svenska bibliotekens gemensamma katalog med över 9 miljoner titlar.',
 		metaDescription:
@@ -18,6 +18,7 @@ export default {
 		help: 'Hjälp',
 		about: 'Om Libris',
 		aboutBeta: 'Frågor och svar',
+		oldSite: 'Gamla Libris',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
 		accessibilityStatement: 'Tillgänglighetsredogörelse',
@@ -38,12 +39,11 @@ export default {
 		closeMenu: 'Stäng meny'
 	},
 	banner: {
-		messageMobile: 'Katalogen kan innehålla inaktuell information',
-		messageDesktop:
-			'Välkommen till nya Libris! Det här är en testversion, katalogen kan därför innehålla inaktuell information.',
+		message: 'Välkommen till en ny söktjänst för Libris!',
+		old: 'Den gamla tjänsten',
+		message2: 'finns kvar ett tag till',
 		feedback: 'Tyck till',
-		old: 'Gå till gamla Libris',
-		dismiss: 'Dölj information om betan'
+		dismiss: 'Dölj informationen'
 	},
 	about: {
 		pageTitle: 'Om Libris',
@@ -140,6 +140,7 @@ export default {
 		search: 'Sök',
 		searchResults: 'Sökresultat',
 		searchFor: 'Sök efter',
+		exploreCategories: 'Utforska kategorier',
 		loading: 'Laddar...',
 		filter: 'Filter',
 		findFilter: 'Hitta filter',
@@ -196,7 +197,8 @@ export default {
 	},
 	supersearch: {
 		search: 'Sök',
-		addQualifiers: 'Lägg till filter',
+		addQualifiers: 'Filter',
+		moreQualifiers: 'Fler filter',
 		loading: 'Laddar...',
 		suggestions: 'Förslag',
 		showAll: 'Visa sökresultat',

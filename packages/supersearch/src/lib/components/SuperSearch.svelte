@@ -26,7 +26,8 @@
 		ResultItem,
 		ShowExpandedSearchOptions,
 		DebouncedWaitFunction,
-		ExpandEvent
+		ExpandEvent,
+		UserEvent
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
 
@@ -350,23 +351,7 @@
 			anchor: number;
 			head: number;
 		};
-		userEvent?:
-			| 'input'
-			| 'input.type'
-			| 'input.paste'
-			| 'input.drop'
-			| 'input.complete'
-			| 'delete'
-			| 'delete.selection'
-			| 'delete.forward'
-			| 'delete.backward'
-			| 'delete.cut'
-			| 'move'
-			| 'move.drop'
-			| 'select'
-			| 'select.pointer'
-			| 'undo'
-			| 'redo'; // see: https://codemirror.net/docs/ref/#state.Transaction%5EuserEvent
+		userEvent?: UserEvent;
 	}) {
 		collapsedEditorView?.dispatch({
 			changes: change,

@@ -1,9 +1,11 @@
 import { createContext } from 'svelte';
-import type { ShowExpandedSearchOptions } from 'supersearch';
+import type { Selection, ShowExpandedSearchOptions } from 'supersearch';
 import type { ChangeQueryParams } from '$lib/components/supersearch/SuperSearchWrapper.svelte';
 
-export const [getSearchContext, setSearchContext] = createContext<{
-	showExpandedSearch: (options: ShowExpandedSearchOptions) => void;
+export type SearchContext = {
+	getQuery: () => string;
+	getSelection: () => Selection | undefined;
+	showExpandedSearch: (options?: ShowExpandedSearchOptions) => void;
 	hideExpandedSearch: () => void;
 	changeQuery: (params: ChangeQueryParams) => void;
 	submit: (form: HTMLFormElement) => void;
@@ -12,4 +14,6 @@ export const [getSearchContext, setSearchContext] = createContext<{
 		selection?: { anchor: number | null | undefined; head: number | null | undefined };
 	};
 	isMounted: boolean;
-}>();
+};
+
+export const [getSearchContext, setSearchContext] = createContext<SearchContext>();

@@ -5,6 +5,7 @@
 	import { page } from '$app/state';
 	import IconArrowRight from '~icons/bi/arrow-right';
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
+	import FeaturedCategories from './FeaturedCategories.svelte';
 
 	const uid = $props.id();
 	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
@@ -82,7 +83,7 @@
 		{/if}
 	</section>
 {/snippet}
-
+<FeaturedCategories />
 {#each featuredSearches as featured, index (featured.heading)}
 	{@render featuredSearch(featured, index)}
 {/each}

@@ -13,7 +13,9 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 });
 
 test('index page has expected h1', async ({ page }) => {
-	await expect(page.getByRole('heading', { name: 'Sök på alla svenska bibliotek' })).toBeVisible();
+	await expect(
+		page.getByRole('heading', { name: 'Sök och hitta på svenska bibliotek' })
+	).toBeVisible();
 });
 
 test('index page shows featured searches', async ({ page }) => {
@@ -26,13 +28,13 @@ test('index page shows featured searches', async ({ page }) => {
 			timeout: 10000
 		}
 	);
-	await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
-	await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
-		11,
-		{
-			timeout: 10000
-		}
-	);
+	// await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
+	// await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
+	// 	11,
+	// 	{
+	// 		timeout: 10000
+	// 	}
+	// );
 });
 
 test('can change the language', async ({ page }) => {

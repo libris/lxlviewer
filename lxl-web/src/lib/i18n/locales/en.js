@@ -1,7 +1,7 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
 	home: {
-		pageHeadingTitle: 'Search all Swedish libraries',
+		pageHeadingTitle: 'Search Swedish libraries',
 		pageHeadingDescription: "is the Swedish libraries' joint catalogue with over 9 million items.",
 		metaDescription:
 			'Libris is a national search service with information about titles in about 600 Swedish libraries, including the National Library. With Libris you can find what you are looking for at a library near you. The search service contains almost 13 million items: books, journals, pictures, maps, notes, e-books and more. Libris also contains digital material that is free to access from home.',
@@ -18,6 +18,7 @@ export default {
 		help: 'Help',
 		about: 'About Libris',
 		aboutBeta: 'FAQ',
+		oldSite: 'Old Libris site',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
 		accessibilityStatement: 'Accessibility statement',
@@ -38,12 +39,11 @@ export default {
 		closeMenu: 'Close menu'
 	},
 	banner: {
-		messageMobile: 'The catalogue may contain outdated information',
-		messageDesktop:
-			'This is a test version of the new Libris website, the catalogue may contain outdated information.',
+		message: 'Welcome to the new Libris website!',
+		old: 'The old website',
+		message2: 'is still around a while longer',
 		feedback: 'Share feedback',
-		old: 'Go to old Libris',
-		dismiss: 'Hide beta info'
+		dismiss: 'Hide info'
 	},
 	about: {
 		pageTitle: 'About Libris',
@@ -141,6 +141,7 @@ export default {
 		search: 'Search',
 		searchResults: 'Search results',
 		searchFor: 'Search for',
+		exploreCategories: 'Explore categories',
 		loading: 'Loading...',
 		filter: 'Filter',
 		findFilter: 'Find filter',
@@ -197,7 +198,8 @@ export default {
 	},
 	supersearch: {
 		search: 'Search',
-		addQualifiers: 'Add filter',
+		addQualifiers: 'Filter',
+		moreQualifiers: 'More filters',
 		loading: 'Loading...',
 		suggestions: 'Suggestions',
 		showAll: 'Show search results',

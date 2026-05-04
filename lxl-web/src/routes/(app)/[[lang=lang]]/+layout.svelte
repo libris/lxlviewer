@@ -18,6 +18,8 @@
 	setHomepageContext(homepageCache);
 
 	let searchContext = $state({
+		getQuery: () => page.url.searchParams.get('_q') || '',
+		getSelection: () => undefined,
 		showExpandedSearch: () => {},
 		hideExpandedSearch: () => {},
 		changeQuery: () => {},

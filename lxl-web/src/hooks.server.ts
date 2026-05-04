@@ -1,7 +1,7 @@
 import fs from 'fs';
-import type { RequestEvent } from '@sveltejs/kit';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { defaultLocale, getSupportedLocale, Locales } from '$lib/i18n/locales';
+import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
 import type { QualifierSuggestion2 } from '$lib/types/search';
 import type { Site } from '$lib/types/site';
@@ -27,6 +27,12 @@ export const handle = async ({ event, resolve }) => {
 
 	event.locals.vocab = vocabUtil;
 	event.locals.display = displayUtil;
+
+	const legacySetOrg = event.url.searchParams.get('setorg');
+	if (legacySetOrg) {
+		const clean = legacySetOrg.replaceAll(/[^A-Za-z0-9]/g, '');
+		redirect(302, `?_r=itemHeldByOrg:${clean}`);
+	}
 
 	const site = getSite(event);
 
@@ -77,6 +83,43 @@ export const handle = async ({ event, resolve }) => {
 	}
 	event.locals.userSettings = userSettings;
 
+	// set legacy cookies site-wide
+	const upgraded = event.cookies.get('cookiesDomainUpgraded');
+
+	if (!upgraded) {
+		const LEGACY_COOKIES = ['myLibrary', 'myOrg', 'myPosts', 'showrecView'];
+
+		const host = event.url.hostname === 'localhost' ? event.url.hostname : `.${event.url.hostname}`;
+
+		let anyUpgraded = false;
+
+		for (const name of LEGACY_COOKIES) {
+			const value = event.cookies.get(name);
+
+			if (value) {
+				event.cookies.set(name, value, {
+					secure: true,
+					domain: host,
+					sameSite: 'lax',
+					httpOnly: true,
+					path: '/'
+				});
+
+				anyUpgraded = true;
+			}
+		}
+
+		if (anyUpgraded) {
+			event.cookies.set('cookiesDomainUpgraded', 'true', {
+				maxAge: 60 * 60 * 24 * 365, // 365 days
+				secure: true,
+				sameSite: 'strict',
+				httpOnly: true,
+				path: '/'
+			});
+		}
+	}
+
 	// set HTML lang
 	// https://github.com/sveltejs/kit/issues/3091#issuecomment-1112589090
 	const path = event.url.pathname;
@@ -96,7 +139,7 @@ export const handle = async ({ event, resolve }) => {
 	const subsetMapping = await getSubsetMapping(_r, event.locals, lang);
 	event.locals.subsetMapping = subsetMapping;
 
-	event.locals.qualifierSuggestions = qualifierSuggestionsByLocale[getSupportedLocale(lang)];
+	event.locals.qualifierSuggestionsByLocale = qualifierSuggestionsByLocale;
 
 	return resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)
