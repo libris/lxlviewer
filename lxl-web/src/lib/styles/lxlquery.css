@@ -136,7 +136,8 @@
 	border-color: var(--color-severe-200);
 }
 
-.lxl-not-term .lxl-qualifier {
+.lxl-not-term .lxl-qualifier,
+.lxl-not-term .lxl-qualifier-value {
 	border-color: var(--color-severe-200);
 }
 
@@ -155,10 +156,6 @@
 	background-color: var(--color-severe-50);
 	border-color: var(--color-severe-200);
 	color: var(--color-body);
-}
-
-.lxl-not-term .atomic .lxl-qualifier-key {
-	color: var(--color-severe-600);
 }
 
 .lxl-boolean-operator {
