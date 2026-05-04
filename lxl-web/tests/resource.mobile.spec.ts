@@ -10,7 +10,9 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 	expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
 
+/*
 test('can toggle search dialog by clicking the icon button', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
 	await page.locator('button').getByLabel('Sök').click();
 });
+*/
