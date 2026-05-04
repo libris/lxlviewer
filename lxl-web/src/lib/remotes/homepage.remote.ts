@@ -111,8 +111,8 @@ const FEATURED_QUERIES2: FeaturedQueryType[] = [
 	},
 	{
 		headingByLang: {
-			sv: 'Gröna varor – vegetariska kokböcker',
-			en: 'Green goods – vegetarian cookbooks'
+			sv: 'Gröna vanor – vegetariska kokböcker',
+			en: 'Green habits – vegetarian cookbooks'
 		},
 		findHref: '/find?_q=category:"saogf:Kokb%25C3%25B6cker"+subject:"sao:Vegetarisk%2520mat"',
 		previewParams: {
