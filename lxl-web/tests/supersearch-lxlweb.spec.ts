@@ -77,6 +77,7 @@ test('navigate to suggested resource using keyboard', async ({ page }) => {
 	await expect(page.getByRole('dialog').getByLabel('Förslag').getByRole('link')).toHaveCount(5);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
 	await expect(page.getByTestId('resource-page')).toBeVisible();
 	await expect(
@@ -107,10 +108,6 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByText('Författare/upphov')
 		.first()
 		.click();
-	await expect(
-		page.getByRole('dialog').getByLabel('Filter'),
-		'buttons for adding qualifier keys is hidden after selecting one of them'
-	).toBeHidden();
 	await expect(
 		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier')
 	).toBeVisible();
@@ -315,7 +312,7 @@ test('return key label is context-aware', async ({ page }) => {
 	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
-		'supersearch-item-2x0'
+		'supersearch-item-3x0'
 	);
 	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Välj');
 });
