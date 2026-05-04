@@ -140,6 +140,7 @@ export default {
 		search: 'Sök',
 		searchResults: 'Sökresultat',
 		searchFor: 'Sök efter',
+		exploreCategories: 'Utforska kategorier',
 		loading: 'Laddar...',
 		filter: 'Filter',
 		findFilter: 'Hitta filter',
