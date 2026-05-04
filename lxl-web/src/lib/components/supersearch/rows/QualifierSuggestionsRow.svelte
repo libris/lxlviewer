@@ -410,8 +410,11 @@
 				</button>
 			</li>
 		{/each}
-		<li class="lxl-qualifier lxl-qualifier-key mr-2">
-			<a href={resolve(page.data.localizeHref('/help/filters'))} class="flex items-center gap-0.5">
+		<li class="mr-2">
+			<a
+				href={resolve(page.data.localizeHref('/help/filters'))}
+				class={['text-link flex h-11 items-center gap-0.5 px-1 hover:underline']}
+			>
 				{page.data.t('supersearch.moreQualifiers')}
 				<IconMore class="text-link" />
 			</a>
