@@ -1,5 +1,5 @@
 import fs from 'fs';
-import type { RequestEvent } from '@sveltejs/kit';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { defaultLocale, getSupportedLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
@@ -27,6 +27,12 @@ export const handle = async ({ event, resolve }) => {
 
 	event.locals.vocab = vocabUtil;
 	event.locals.display = displayUtil;
+
+	const legacySetOrg = event.url.searchParams.get('setorg');
+	if (legacySetOrg) {
+		const clean = legacySetOrg.replaceAll(/[^A-Za-z0-9]/g, '');
+		redirect(302, `?_r=itemHeldByOrg:${clean}`);
+	}
 
 	const site = getSite(event);
 
