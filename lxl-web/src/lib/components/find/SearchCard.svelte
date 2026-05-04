@@ -440,7 +440,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				{@render holdingsButton()}
 			</div>
 		{/if}
-		{#if bibliographyLink}
+		{#if (bibliographyLink && item?.numberOfItems) || 0 > 10}
 			{@const numItems = formatNumItems(item?.numberOfItems)}
 			<div class="card-explore mt-2">
 				<a
