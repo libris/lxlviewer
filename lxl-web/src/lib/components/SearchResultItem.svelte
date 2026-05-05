@@ -169,18 +169,6 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	.decorated-card-heading-top,
-	.decorated-card-heading,
-	.decorated-card-heading-extra,
-	.decorated-card-body,
-	.decorated-card-footer {
-		margin-left: calc(var(--spacing) * 2);
-
-		@variant sm {
-			margin-left: calc(var(--spacing) * 6);
-		}
-	}
-
 	.decorated-card-heading {
 		& :global(.transliteration) {
 			font-size: var(--text-2xs);
