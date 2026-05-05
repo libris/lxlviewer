@@ -1,4 +1,6 @@
 <script lang="ts" module>
+	import { Transaction } from '@codemirror/state';
+
 	export type Selection = {
 		from: number;
 		to: number;
@@ -10,6 +12,7 @@
 	export type ChangeCodeMirrorEvent = {
 		value: string;
 		selection: Selection;
+		userEvent: UserEvent | undefined;
 	};
 
 	export type SelectCodeMirrorEvent = Selection;
@@ -30,6 +33,7 @@
 		isViewUpdateSyncableEffect,
 		syncedTransaction
 	} from '$lib/utils/isViewUpdateSyncableEffect.js';
+	import type { UserEvent } from '$lib/types/superSearch.js';
 
 	type CodeMirrorProps = {
 		value?: string;
@@ -73,6 +77,9 @@
 			});
 			if (update.docChanged) {
 				value = update.state.doc.toString();
+				const userEvent = update.transactions[0].annotation(Transaction.userEvent) as
+					| UserEvent
+					| undefined;
 				onchange({
 					value,
 					selection: {
@@ -81,7 +88,8 @@
 						anchor: update.state.selection.main.anchor,
 						head: update.state.selection.main.head,
 						empty: update.state.selection.main.empty
-					}
+					},
+					userEvent
 				});
 			}
 		}
@@ -150,7 +158,8 @@
 				anchor: selection.main.anchor,
 				head: selection.main.head,
 				empty: selection.main.empty
-			}
+			},
+			userEvent: 'delete'
 		});
 	}
 
