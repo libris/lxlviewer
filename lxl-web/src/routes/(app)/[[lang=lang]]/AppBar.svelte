@@ -17,6 +17,7 @@
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 	import Cookies from 'js-cookie';
+	import { env } from '$env/dynamic/public';
 
 	const searchContext = getSearchContext();
 
@@ -181,6 +182,36 @@
 >
 	{page.data.t('header.skipToContent')}
 </a>
+{#if !dismissedBanner}
+	<AppBanner ondismiss={handleDismissBanner} />
+{/if}
+{#if isHomeRoute}
+	<div class="relative">
+		<figure class="home-intro-background absolute w-full" bind:this={backgroundSentinelElement}>
+			{#if env.PUBLIC_DEBUG_HOME_HEADER}
+				<div class="pointer-events-none absolute top-0 h-[61.803vh] w-full bg-none">
+					<div class="bg-severe/30 absolute top-0 left-0 z-999 h-px w-full"></div>
+					<div class="bg-severe/30 absolute top-[30.09vh] left-0 z-999 h-px w-full"></div>
+					<div class="bg-severe/30 absolute top-0 left-1/2 z-999 h-[61.803vh] w-px"></div>
+					<div class="bg-severe/30 absolute top-[61.803vh] left-0 z-999 h-px w-full"></div>
+					<div class="bg-warning/30 absolute top-0 left-[61.803vw] z-999 h-[61.803vh] w-px"></div>
+				</div>
+			{/if}
+			<!--
+			<img
+				src={placeholder}
+				width="100"
+				height="100"
+				alt=""
+				class="pointer-events-none h-full w-full  select-none"
+			>
+			<figcaption class="text-3xs absolute right-3 bottom-3 opacity-50">
+				Namn Namnsson, Lorem ipsum dolor (1924). Foto: Namn Namnsson
+			</figcaption>
+			-->
+		</figure>
+	</div>
+{/if}
 <header
 	class={[
 		'app-bar @container sticky z-40 grid',
@@ -192,14 +223,11 @@
 		showSearchInputOnMobile && 'with-search'
 	]}
 >
-	{#if !dismissedBanner}
-		<AppBanner ondismiss={handleDismissBanner} />
-	{/if}
 	<nav
 		class={['grid items-stretch', subset && 'with-subset']}
 		aria-label={`Libris ${page.data.t('appMenu.label')}`}
 	>
-		<ul class="leading-actions z-43 ml-2 flex items-center lg:ml-0 lg:gap-2">
+		<ul class="leading-actions left-2 z-43 ml-2 flex items-center lg:ml-0 lg:gap-2">
 			<li>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -293,11 +321,9 @@
 		>
 			<form id="search-form" action={findActionUrl} class="mx-auto w-full min-w-0">
 				{#if isHomeRoute}
-					<hgroup
-						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
-					>
+					<hgroup class="absolute px-3 leading-snug lg:@xl:px-3 @3xl:leading-normal lg:@3xl:px-4">
 						<h1
-							class="my-1.5 font-serif text-[1.625rem] tracking-[-0.0125rem] lg:my-2 lg:text-[2.1875rem] @md:tracking-[-0.025rem] @lg:text-3xl @xl:my-2 @xl:text-[2.1875rem] @3xl:my-1.5 @3xl:text-[2.5rem] lg:@3xl:my-2 @5xl:my-4 @5xl:text-5xl"
+							class="my-1.5 font-serif text-[1.625rem] tracking-[-0.0125rem] lg:text-[2.1875rem] @md:tracking-[-0.025rem] @lg:text-3xl @xl:my-2 @xl:text-[2.1875rem] @3xl:text-[2.5rem] @5xl:my-4.5 @5xl:text-5xl"
 						>
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -319,7 +345,7 @@
 				<AppSearch />
 			</form>
 		</search>
-		<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">
+		<ul class="trailing-actions right-2 z-42 flex w-full items-center justify-end lg:gap-2">
 			<li class={['lg:hidden', !showSearchIcon && 'hidden']}>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -373,54 +399,35 @@
 			</li>
 		</ul>
 	</nav>
-	{#if isHomeRoute}
-		<div
-			class={['app-bar-background fixed top-0 left-0 z-41 w-full', showBackground && 'bg-app-bar']}
-		></div>
-	{/if}
 </header>
 {#if isHomeRoute}
-	<figure class="home-intro-background absolute -z-20 w-full" bind:this={backgroundSentinelElement}>
-		<!--
-		<img
-			src={placeholder}
-			width="100"
-			height="100"
-			alt=""
-			class="pointer-events-none h-full w-full  select-none"
-		>
-		<figcaption class="text-3xs absolute right-3 bottom-3 opacity-50">
-			Namn Namnsson, Lorem ipsum dolor (1924). Foto: Namn Namnsson
-		</figcaption>
-		-->
-	</figure>
-	<section class="search-shortcuts @container">
-		<nav
-			class="sticky mx-auto grid pt-2 pb-4 @5xl:pt-3 @5xl:pb-5"
-			aria-label={page.data.t('home.searchShortcuts')}
-		>
-			<div class="filters @container mx-auto w-full max-w-7xl px-2 lg:px-4"></div>
-		</nav>
-	</section>
-	{#if isHomeRoute}
-		<div class="app-bar-shadow-trigger" bind:this={shadowSentinelElement}></div>
-	{/if}
+	<div class="app-bar-shadow-trigger" bind:this={shadowSentinelElement}></div>
 {/if}
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
 	.app-bar {
 		--app-bar-shadows: 0 1px 0 0 var(--color-primary-200);
-		margin-top: var(--banner-height, 0);
-		top: var(--banner-height, 0);
+		top: 0;
 
 		&.with-search {
-			height: calc(var(--app-bar-height) * 2);
+			height: var(--app-bar-height);
 
+			:global(.supersearch-dialog) {
+				@variant sm {
+					top: calc(var(--app-bar-height) - var(--spacing) * 0.5);
+				}
+
+				@variant lg {
+					top: 0;
+				}
+			}
 			@variant lg {
 				height: var(--app-bar-height);
 			}
 		}
+
 		@media (scripting: none) {
 			background: var(--color-app-bar);
 			box-shadow: none;
@@ -435,75 +442,52 @@
 				height: var(--app-bar-height);
 			}
 		}
-
-		& .app-bar-background {
-			height: var(--app-bar-height);
-			top: var(--banner-height, 0);
-		}
 	}
-
 	.home.app-bar {
-		height: auto;
-		--header-margin-top: round(
-			calc(((73vh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
-			1px
-		);
-		--header-margin-top: round(
-			calc(((73svh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
-			1px
-		);
-		margin-top: var(--header-margin-top);
+		margin-block: var(--home-header-margin);
 
-		@variant lg {
-			--header-margin-top: round(calc((73svh + var(--banner-height, 0)) / 2), 1px);
+		& > nav {
+			height: var(--app-bar-height);
+		}
+
+		& :global(.supersearch-dialog) {
+			margin-top: max(
+				calc(var(--home-header-margin) - var(--page-y-offset, 0px) + var(--app-banner-offset, 0px)),
+				0px
+			);
 		}
 	}
 	.home-intro-background {
-		top: var(--banner-height, 0);
 		background: var(--color-app-bar);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
-		height: round(calc(73vh + var(--banner-height, 0)), 1px);
-		height: round(calc(73svh + var(--banner-height, 0)), 1px);
+		height: round(var(--home-header-height), 1px);
 	}
 
 	.app-bar-shadow-trigger {
 		position: relative;
-		bottom: calc(var(--app-bar-height) + var(--banner-height, 0));
+		bottom: var(--app-bar-height);
 	}
 
-	.search-shortcuts {
-		height: round(calc((73vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
-		height: round(calc((73svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
+	.leading-actions,
+	.trailing-actions {
+		position: sticky;
+		top: 0;
+		height: var(--app-bar-height);
+	}
 
-		& > nav {
-			grid-template-areas: var(--search-grid-template-areas);
-			grid-template-columns: var(--search-grid-template-columns);
-			top: calc(var(--banner-height, 0) + var(--app-bar-height) * 2);
-			gap: var(--search-gap);
-
-			@variant lg {
-				top: calc(var(--banner-height, 0) + var(--app-bar-height));
-			}
+	.home.app-bar {
+		& .leading-actions,
+		& .trailing-actions {
+			margin-top: calc(var(--home-header-margin) * -1);
 		}
 	}
 
-	.leading-actions {
-		position: fixed;
-		top: var(--banner-height, 0);
-		height: var(--app-bar-height);
-		@apply left-2;
-	}
-
-	.trailing-actions {
-		position: relative;
-		top: var(--banner-height, 0);
-		@apply right-2;
-		position: fixed;
-		height: var(--app-bar-height);
-	}
-
 	hgroup {
-		bottom: var(--app-bar-height);
+		bottom: 0;
+
+		@variant lg {
+			bottom: var(--app-bar-height);
+		}
 	}
 
 	.leading-actions {
@@ -513,31 +497,6 @@
 	search {
 		grid-area: search;
 		min-height: var(--app-bar-height);
-	}
-
-	.filters {
-		grid-area: search;
-	}
-
-	.filters-scroller {
-		position: relative;
-		mask-image: linear-gradient(
-			to right,
-			rgba(0, 0, 0, 0) calc(var(--spacing) * 0),
-			rgba(0, 0, 0, 1) calc(var(--spacing) * 3),
-			rgba(0, 0, 0, 1) calc(100% - var(--spacing) * 8),
-			rgba(0, 0, 0, 0) calc(100% - var(--spacing) * 3)
-		);
-
-		@variant @3xl {
-			mask-image: linear-gradient(
-				to right,
-				rgba(0, 0, 0, 0) calc(var(--spacing) * 0),
-				rgba(0, 0, 0, 1) calc(var(--spacing) * 4),
-				rgba(0, 0, 0, 1) calc(100% - var(--spacing) * 9),
-				rgba(0, 0, 0, 0) calc(100% - var(--spacing) * 3)
-			);
-		}
 	}
 
 	/* has-[dialog:open]:flex does not seem to work for Safari */
@@ -582,8 +541,9 @@
 	}
 
 	.menu-dialog {
-		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
-		max-height: calc(100svh - calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px));
+		top: var(--app-bar-height, 0);
+		max-height: calc(100vh - calc(var(--app-bar-height, 0) + 1px));
+		max-height: calc(100svh - calc(var(--app-bar-height, 0) + 1px));
 		overflow-y: auto;
 
 		&::before {
@@ -597,9 +557,9 @@
 		}
 
 		@variant sm {
-			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 4px);
-			max-height: calc(100vh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
-			max-height: calc(100svh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
+			top: calc(var(--app-bar-height, 0) - 4px);
+			max-height: calc(100vh - (calc(var(--app-bar-height, 0) - 3px)));
+			max-height: calc(100svh - (calc(var(--app-bar-height, 0) - 3px)));
 		}
 	}
 

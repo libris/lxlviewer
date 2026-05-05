@@ -554,7 +554,7 @@
 	}
 
 	.sticky {
-		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
+		top: var(--app-bar-height, 0);
 	}
 
 	.summary-or-toc {

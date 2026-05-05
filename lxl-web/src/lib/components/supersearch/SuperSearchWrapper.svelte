@@ -74,6 +74,7 @@
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
 	let pageYOffset: number | undefined = $state();
+	let appBannerOffset: number | undefined = $state();
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -241,6 +242,7 @@
 
 	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
 		pageYOffset = windowPageYOffset;
+		appBannerOffset = document.getElementById('app-banner')?.offsetHeight;
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
@@ -336,6 +338,7 @@
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
+		--app-banner-offset={appBannerOffset ? `${appBannerOffset}px` : undefined}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -606,20 +609,9 @@
 			background: var(--color-backdrop);
 		}
 
-		@variant sm {
-			top: calc(var(--banner-height, 0) + var(--app-bar-height) - var(--spacing) * 0.5);
-			margin-top: max(
-				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
-				0px
-			);
-		}
-
 		@variant lg {
-			top: var(--banner-height, 0);
-			margin-top: max(
-				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
-				0px
-			);
+			top: 0;
+			margin-top: max(calc(-1 * var(--page-y-offset, 0px) + var(--app-banner-offset, 0px)), 0px);
 		}
 	}
 
