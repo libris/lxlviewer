@@ -34,6 +34,12 @@ export default {
 					},
 					body: [
 						{
+							name: 'userSettings',
+							description:
+								'Används för att lagra dina personliga inställningar, inklusive eventuella bibliotek du sparat ("Favoritbibliotek"), sorteringsordning och layoutinställningar.',
+							duration: '1 år'
+						},
+						{
 							name: 'techaro.lol-anubis-auth',
 							description:
 								'Sparas när din webbläsare klarat en säkerhetskontroll som skyddar mot automatiserade bottar. Den gör att du slipper genomgå kontrollen på nytt vid varje sidbesök.',
