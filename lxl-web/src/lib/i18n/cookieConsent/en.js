@@ -33,6 +33,12 @@ export default {
 					},
 					body: [
 						{
+							name: 'userSettings',
+							description:
+								'Used to store your personal preferences, including any libraries you have saved ("Favourite libraries"), sort order, and layout preferences.',
+							duration: '1 year'
+						},
+						{
 							name: 'techaro.lol-anubis-auth',
 							description:
 								"Saved when your browser has passed a security check against automated bots. It means you don't have to go through the check again on each page visit.",
