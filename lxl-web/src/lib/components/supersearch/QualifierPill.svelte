@@ -78,6 +78,7 @@
 	>
 {/snippet}
 {#snippet valueLabelSnippet()}
+	{@const tilde = operator === '~' && isRedundantKeyLabel}
 	<span
 		class={[keyLabel && operator ? 'lxl-qualifier-value' : 'lxl-qualifier-alias', 'cursor-text']}
 		data-qualifier-value={value}
@@ -85,7 +86,7 @@
 		tabindex="-1"
 		{onclick}
 		onkeypress={onclick}
-		>{#if image || type}{@render imageSnippet()}{/if}{valueLabel}</span
+		>{#if image || type}{@render imageSnippet()}{/if}{#if tilde}{'~ '}{/if}{valueLabel}</span
 	>
 {/snippet}
 {#snippet removeLinkSnippet()}

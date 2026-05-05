@@ -20,6 +20,10 @@ const BRAILLE = 'https://id.kb.se/term/saobf/Braille';
 const _BOOK = 'ls:book';
 const _BOOK_BRAILLE = 'ls:bookBraille';
 
+const SKON = 'https://id.kb.se/term/saogf/Sk%C3%B6nlitteratur';
+const FACK = 'https://id.kb.se/term/saogf/Facklitteratur';
+const BARN_UNGDOM = 'https://id.kb.se/term/barngf/Barn-%20och%20ungdomslitteratur';
+
 const INSTANCE_RULES = [
 	{
 		matchWorkType: 'Monograph',
@@ -64,6 +68,17 @@ const WORK_INSTANCES_RULES = [
 	}
 ];
 
+const FIND_RULES = [
+	{
+		match: [BARN_UNGDOM, SKON],
+		to: [BARN_UNGDOM]
+	},
+	{
+		match: [BARN_UNGDOM, FACK],
+		to: [BARN_UNGDOM]
+	}
+];
+
 const DEFS = {
 	[_BOOK]: {
 		[JsonLd.TYPE]: 'ManifestationForm',
@@ -95,7 +110,14 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	}
 
 	if (thing._categoryByCollection) {
-		const find: FramedData[] = thing._categoryByCollection['find'] || [];
+		//const find: FramedData[] = thing._categoryByCollection['find'] || [];
+		const findMapA = (thing._categoryByCollection['find'] || []).reduce((a, s) => {
+			a[s[JsonLd.ID]] = s;
+			return a;
+		}, {});
+		const findMapB = cleanUpCategories(findMapA, null, FIND_RULES);
+		const find = Object.values(findMapB);
+
 		const identify = thing._categoryByCollection['identify'] || [];
 		const none = thing._categoryByCollection[JsonLd.NONE] || [];
 
@@ -124,7 +146,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 				}, {})
 			)
 			.map((s: Record<string, FramedData>) =>
-				toMultiType(cleanUpSelect(s, workType, INSTANCE_RULES))
+				toMultiType(cleanUpCategories(s, workType, INSTANCE_RULES))
 			)
 			.reduce((acc, s) => {
 				Object.keys(s).forEach((k) => {
@@ -135,7 +157,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 
 		// when we display instance categories for multiple works together
 		// there might be a mix of Book and Print which looks messy -> drop Print etc. etc.
-		selectMap = cleanUpSelect(selectMap, workType, WORK_INSTANCES_RULES);
+		selectMap = cleanUpCategories(selectMap, workType, WORK_INSTANCES_RULES);
 
 		const select = Object.values(selectMap);
 
@@ -166,7 +188,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	return result;
 }
 
-function cleanUpSelect(s: Record<string, FramedData>, workType: string, rules) {
+function cleanUpCategories(s: Record<string, FramedData>, workType: string | null, rules) {
 	for (const rule of rules) {
 		if (rule.matchWorkType && workType !== rule.matchWorkType) {
 			continue;
