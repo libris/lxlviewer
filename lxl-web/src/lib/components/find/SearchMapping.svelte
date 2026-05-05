@@ -46,11 +46,13 @@
 						>
 					{:else}
 						<!-- free text search -->
-						<span class="flex h-full items-center gap-1 pl-1.5">
-							<span>{displayStr}</span>
+						<span class="flex items-center">
+							<span class="border-accent-200 flex h-7.75 items-center rounded-l-md border px-1.5"
+								>{displayStr}</span
+							>
 							<a
 								href={resolve(page.data.localizeHref(up?.['@id']))}
-								class="lxl-qualifier-remove"
+								class="lxl-qualifier-remove flex h-7.75 items-center"
 								aria-label={`${page.data.t('search.removeFilter')} ${displayStr}`}
 							>
 								<IconClose aria-hidden="true" />
