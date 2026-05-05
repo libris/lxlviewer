@@ -154,7 +154,14 @@ export function asSearchResultItem(
 				_workTitle2: workTitle
 			}),
 			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
-			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
+			// FIXME
+			image: toSecure(
+				bestSize(
+					bestImage(i, locale),
+					'Bibliography' === i[JsonLd.TYPE] ? Width.MEDIUM : Width.SMALL
+				),
+				auxdSecret
+			),
 			typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
 			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
