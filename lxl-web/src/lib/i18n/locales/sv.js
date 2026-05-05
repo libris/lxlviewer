@@ -42,7 +42,6 @@ export default {
 		message: 'Välkommen till en ny söktjänst för Libris!',
 		old: 'Den gamla tjänsten',
 		message2: 'finns kvar ett tag till',
-		feedback: 'Tyck till',
 		dismiss: 'Dölj informationen'
 	},
 	about: {
@@ -76,9 +75,7 @@ export default {
 		information: 'Information',
 		faq: 'Frågor och svar',
 		contact: 'Kontakt',
-		feedback: 'Lämna synpunkter',
-		feedbackLink: 'https://survey.kb.se/librisbeta',
-		customerSupport: 'Libris kundtjänst',
+		customerSupport: 'Libris kundservice',
 		cookies: 'Hantera kakor',
 		gdpr: 'Om dataskydd (GDPR)',
 		about: 'Om Libris'
