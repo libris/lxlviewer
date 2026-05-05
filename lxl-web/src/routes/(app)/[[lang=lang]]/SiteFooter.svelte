@@ -47,9 +47,6 @@
 						>{page.data.t('footer.customerSupport')}</a
 					>
 				</li>
-				<li>
-					<a href={page.data.t('footer.feedbackLink')}>{page.data.t('footer.feedback')}</a>
-				</li>
 			</ul>
 		</nav>
 	</div>
