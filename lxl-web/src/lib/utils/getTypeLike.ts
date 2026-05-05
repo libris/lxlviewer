@@ -90,7 +90,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		select: []
 	};
 
-	if (thing[JsonLd.TYPE] != 'Monograph') {
+	if (thing[JsonLd.TYPE] != 'Monograph' && thing[JsonLd.TYPE] != 'Serial') {
 		result.find.push(vocabUtil.getDefinition(thing[JsonLd.TYPE] as string));
 	}
 
