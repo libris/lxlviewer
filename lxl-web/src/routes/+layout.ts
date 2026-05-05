@@ -8,6 +8,7 @@ export async function load({ params, data, url }) {
 
 	const base = locale === baseLocale ? '/' : `/${locale}`;
 	const userSettings = data.userSettings;
+	const dismissedBanner = data.dismissedBanner;
 	const subsetMapping = data.subsetMapping;
 	const siteName = data.siteName;
 	const qualifierSuggestions = data.qualifierSuggestions;
@@ -18,6 +19,7 @@ export async function load({ params, data, url }) {
 		localizeHref,
 		base,
 		userSettings,
+		dismissedBanner,
 		subsetMapping,
 		siteName,
 		qualifierSuggestions

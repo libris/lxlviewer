@@ -83,6 +83,11 @@ export const handle = async ({ event, resolve }) => {
 	}
 	event.locals.userSettings = userSettings;
 
+	const dismissedBannerCookie = event.cookies.get('dismissed-banner');
+	if (dismissedBannerCookie) {
+		event.locals.dismissedBanner = JSON.parse(dismissedBannerCookie);
+	}
+
 	// set legacy cookies site-wide
 	const upgraded = event.cookies.get('cookiesDomainUpgraded');
 

@@ -17,6 +17,7 @@ declare global {
 			vocab: VocabUtil;
 			display: DisplayUtil;
 			userSettings: UserSettings;
+			dismissedBanner: boolean;
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
 			qualifierSuggestionsByLocale: Record<
