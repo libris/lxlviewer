@@ -187,7 +187,9 @@
 					{image}
 					type={typeForIcon}
 					alt={page.data.t('general.instanceCover')}
-					thumbnailTargetWidth={ImageWidth.MEDIUM}
+					thumbnailTargetWidth={'Bibliography' === typeForIcon
+						? ImageWidth.FULL
+						: ImageWidth.MEDIUM}
 					linkToFull
 				/>
 			</div>
