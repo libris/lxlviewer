@@ -39,6 +39,11 @@ export default {
 							duration: '1 year'
 						},
 						{
+							name: 'dismissed-banner',
+							description: 'Used to hide the top banner.',
+							duration: 'Current session'
+						},
+						{
 							name: 'techaro.lol-anubis-auth',
 							description:
 								"Saved when your browser has passed a security check against automated bots. It means you don't have to go through the check again on each page visit.",
