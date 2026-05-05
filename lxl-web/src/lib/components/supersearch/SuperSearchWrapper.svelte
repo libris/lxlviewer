@@ -278,7 +278,8 @@
 				selection: {
 					anchor: searchContext.initialStateBeforeMount.selection?.anchor,
 					head: searchContext.initialStateBeforeMount.selection?.head
-				}
+				},
+				userEvent: 'input.complete'
 			});
 		}
 		searchContext.getQuery = () => q;

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import IconFeedback from '~icons/bi/chat-dots';
 	import IconClose from '~icons/bi/x-lg';
 
 	type Props = {
@@ -21,10 +20,6 @@
 		<span>{page.data.t('banner.message')}</span>
 		<a href="https://libris.kb.se/" class="link-subtle">{page.data.t('banner.old')}</a>
 		<span>{page.data.t('banner.message2')}.</span>
-		<a href={page.data.localizeHref('/about')} class="link-subtle ml-1 inline-flex items-center">
-			<IconFeedback class="mr-1 size-3" />
-			{page.data.t('banner.feedback')}
-		</a>
 	</p>
 	{#if dismissable}
 		<button

@@ -309,7 +309,11 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (!dialog?.open && value.trim() !== event.value.trim()) {
+		if (
+			!dialog?.open &&
+			event.userEvent !== 'input.complete' &&
+			value.trim() !== event.value.trim()
+		) {
 			showExpandedSearch();
 		}
 		value = event.value;

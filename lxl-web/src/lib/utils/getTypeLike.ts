@@ -90,7 +90,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		select: []
 	};
 
-	if (thing[JsonLd.TYPE] != 'Monograph') {
+	if (thing[JsonLd.TYPE] != 'Monograph' && thing[JsonLd.TYPE] != 'Serial') {
 		result.find.push(vocabUtil.getDefinition(thing[JsonLd.TYPE] as string));
 	}
 
@@ -227,6 +227,7 @@ const PRIORITIZED_ICONS = [
 	'Ljudb%C3%B6cker',
 	'Kit',
 	'Databaser',
+	'Seriella%20publikationer',
 	'Periodika',
 	'Kartor',
 	'Kartglober'
@@ -262,6 +263,7 @@ export function bookAspectRatio(iconTypeStr: string) {
 			'Sk%C3%B6nlitteratur',
 			'Barn-%20och%20ungdomslitteratur',
 			'Text',
+			'Seriella%20publikationer',
 			'Periodika',
 			'NotatedMusic'
 		].includes(iconTypeStr)

@@ -42,7 +42,6 @@ export default {
 		message: 'Welcome to the new Libris website!',
 		old: 'The old website',
 		message2: 'is still around a while longer',
-		feedback: 'Share feedback',
 		dismiss: 'Hide info'
 	},
 	about: {
@@ -77,8 +76,6 @@ export default {
 		information: 'Information',
 		faq: 'FAQ',
 		contact: 'Contact',
-		feedback: 'Give feedback',
-		feedbackLink: 'http://survey.kb.se/librisbeta/en',
 		customerSupport: 'Libris customer support',
 		cookies: 'Manage cookies',
 		gdpr: 'Processing of personal data',

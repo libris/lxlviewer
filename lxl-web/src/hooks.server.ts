@@ -98,11 +98,13 @@ export const handle = async ({ event, resolve }) => {
 
 			if (value) {
 				event.cookies.set(name, value, {
+					maxAge: 60 * 60 * 24 * 365, // 365 days
 					secure: true,
 					domain: host,
 					sameSite: 'lax',
 					httpOnly: true,
-					path: '/'
+					path: '/',
+					encode: (val) => val // disable encoding
 				});
 
 				anyUpgraded = true;

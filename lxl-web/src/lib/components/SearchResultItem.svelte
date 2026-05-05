@@ -95,7 +95,7 @@
 			<hgroup>
 				<h2
 					class={[
-						'decorated-card-heading mt-0.5 line-clamp-2 text-sm leading-snug font-medium hover:underline @min-[16rem]:text-[0.9375rem]'
+						'decorated-card-heading mt-0.5 line-clamp-3 text-sm leading-snug font-medium hover:underline @min-[16rem]:text-[0.9375rem]'
 					]}
 				>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
@@ -168,18 +168,6 @@
 
 <style lang="postcss">
 	@reference "tailwindcss";
-
-	.decorated-card-heading-top,
-	.decorated-card-heading,
-	.decorated-card-heading-extra,
-	.decorated-card-body,
-	.decorated-card-footer {
-		margin-left: calc(var(--spacing) * 2);
-
-		@variant sm {
-			margin-left: calc(var(--spacing) * 6);
-		}
-	}
 
 	.decorated-card-heading {
 		& :global(.transliteration) {
