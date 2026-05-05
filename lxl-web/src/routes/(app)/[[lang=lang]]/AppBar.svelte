@@ -16,10 +16,9 @@
 	import AppBanner from '$lib/components/AppBanner.svelte';
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
-	import { getUserSettings } from '$lib/contexts/userSettings';
+	import Cookies from 'js-cookie';
 
 	const searchContext = getSearchContext();
-	const userSettings = getUserSettings();
 
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
@@ -29,7 +28,7 @@
 	let shadowSentinelElement: HTMLElement | undefined = $state();
 	let shadowObserver: IntersectionObserver | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
-	let dismissedBanner: boolean = $derived(userSettings.dismissedNewBanner || false);
+	let dismissedBanner: boolean = $derived(page.data.dismissedBanner);
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -49,7 +48,10 @@
 	const subset = $derived(page.data.subsetMapping);
 
 	function handleDismissBanner() {
-		userSettings.setDismissedNewBanner();
+		Cookies.set('dismissed-banner', 'true', {
+			sameSite: 'strict'
+		});
+		dismissedBanner = true;
 	}
 
 	function showExpandedMenu() {
