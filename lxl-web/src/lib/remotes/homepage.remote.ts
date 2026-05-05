@@ -21,9 +21,9 @@ const FEATURED_QUERIES: FeaturedQueryType[] = [
 	{
 		headingByLang: { sv: 'Ny skönlitteratur på svenska', en: 'New fiction in Swedish' },
 		findHref:
-			'/find?_q=language%3A"lang%3Aswe"+category:"saogf:Sk%25C3%25B6nlitteratur"&_sort=-%40reverse.instanceOf.publication.librissearch:year',
+			'/find?_q=language%3A"lang%3Aswe"+category:"saogf:Sk%25C3%25B6nlitteratur"+excludePreliminary&_sort=-%40reverse.instanceOf.publication.librissearch:year',
 		previewParams: {
-			_q: 'language:"lang:swe" category:"saogf:Sk%C3%B6nlitteratur" instanceType:PhysicalResource existsImage',
+			_q: 'language:"lang:swe" category:"saogf:Sk%C3%B6nlitteratur" instanceType:PhysicalResource excludePreliminary existsImage',
 			_limit: 20,
 			_sort: '-@reverse.instanceOf.publication.librissearch:year'
 		}
