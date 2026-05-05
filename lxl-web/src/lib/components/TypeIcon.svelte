@@ -70,6 +70,7 @@
 		NotatedMusic: BiMusicNoteList,
 		Kit: BiBoxSeam,
 		Databaser: BiDatabase,
+		'Seriella%20publikationer': BiNewsPaper,
 		Periodika: BiNewsPaper,
 		Kartglober: BiGlobeEuropeAfrica,
 

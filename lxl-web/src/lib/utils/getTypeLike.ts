@@ -227,6 +227,7 @@ const PRIORITIZED_ICONS = [
 	'Ljudb%C3%B6cker',
 	'Kit',
 	'Databaser',
+	'Seriella%20publikationer',
 	'Periodika',
 	'Kartor',
 	'Kartglober'
@@ -262,6 +263,7 @@ export function bookAspectRatio(iconTypeStr: string) {
 			'Sk%C3%B6nlitteratur',
 			'Barn-%20och%20ungdomslitteratur',
 			'Text',
+			'Seriella%20publikationer',
 			'Periodika',
 			'NotatedMusic'
 		].includes(iconTypeStr)

@@ -183,11 +183,11 @@ const CATEGORY_SHORTCUTS: {
 		}
 	},
 	{
-		id: 'periodical-category',
-		href: '/find?_q=category:"saogf:Periodika"',
+		id: 'serials-category',
+		href: '/find?_q=category:"saogf:Seriella%20publikationer"',
 		labelByLang: {
-			sv: 'Periodika',
-			en: 'Periodicals'
+			sv: 'Tidningar och periodika',
+			en: 'Newspapers and Periodicals'
 		}
 	},
 	{
