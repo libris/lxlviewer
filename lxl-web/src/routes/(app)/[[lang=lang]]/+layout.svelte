@@ -1,7 +1,7 @@
 <script lang="ts">
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import SiteFooter from './SiteFooter.svelte';
-	import AppBar from './AppBar.svelte';
+	import AppBar from './AppBar2.svelte';
 	import { page } from '$app/state';
 	import { setHomepageContext } from '$lib/contexts/homepage';
 	import { setSearchContext } from '$lib/contexts/search';
