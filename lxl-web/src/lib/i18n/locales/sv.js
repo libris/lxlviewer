@@ -1,6 +1,7 @@
 export default {
 	home: {
-		pageHeadingTitle: 'Sök och hitta på svenska bibliotek',
+		pageHeadingTitle: 'Sök och hitta',
+		pageHeadingTitleNoWrap: 'på svenska bibliotek',
 		pageHeadingDescription:
 			'är de svenska bibliotekens gemensamma katalog med över 9 miljoner titlar.',
 		metaDescription:

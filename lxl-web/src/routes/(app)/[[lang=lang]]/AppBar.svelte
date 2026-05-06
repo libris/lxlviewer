@@ -307,6 +307,11 @@
 								onclick={handleClickPageTitle}
 							>
 								{page.data.t('home.pageHeadingTitle')}
+								{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
+									<span class="whitespace-nowrap">
+										{page.data.t('home.pageHeadingTitleNoWrap')}
+									</span>
+								{/if}
 							</label>
 						</h1>
 					</hgroup>
