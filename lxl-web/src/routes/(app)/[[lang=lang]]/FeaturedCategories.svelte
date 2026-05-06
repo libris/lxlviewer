@@ -3,27 +3,23 @@
 	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
 </script>
 
-<section
-	class="bg-primary-100 border-y-primary-200 flex flex-col items-center border-y px-3 py-3 @5xl:px-20"
->
-	<h2 class="text-subtle px-3 font-serif text-base italic lg:text-lg @3xl:max-w-max @5xl:text-xl">
-		<strong class="font-normal">Libris</strong>
-		{page.data.t('home.pageHeadingDescription')}
-	</h2>
+<section class="mt-3 flex flex-col items-center py-3 @7xl:mt-6">
 	<div class="w-full">
-		<nav class="pt-2 pb-4 @5xl:pt-3 @5xl:pb-5" aria-labelledby="explore-categories">
-			<div class="flex w-full items-center justify-center">
+		<nav class="" aria-labelledby="explore-categories">
+			<div
+				class="flex flex-col gap-2 pl-3 @sm:pl-6 @3xl:gap-3 @5xl:pl-20 lg:@7xl:flex-row lg:@7xl:items-center"
+			>
+				<h2
+					id="explore-categories"
+					class="mr-3 font-serif text-lg whitespace-nowrap @lg:text-xl @3xl:text-2xl lg:@7xl:text-xl"
+				>
+					{page.data.t('search.exploreCategories')}
+				</h2>
 				<div
 					tabindex="-1"
-					class="filters-scroller scrollbar-hidden flex items-center overflow-x-scroll px-3 py-1 @3xl:px-4"
+					class="scrollbar-hidden flex min-h-11 items-center overflow-x-scroll lg:overflow-x-auto lg:px-0"
 				>
-					<p
-						id="explore-categories"
-						class="mr-3 hidden font-serif font-medium whitespace-nowrap @xl:block @5xl:text-[1.0625rem]"
-					>
-						{page.data.t('search.exploreCategories')}
-					</p>
-					<ul class="flex gap-2 pr-3 text-xs @3xl:text-sm @5xl:text-[0.9375rem]">
+					<ul class="flex gap-2 text-sm @5xl:text-base">
 						{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
 							<li>
 								<a
@@ -42,28 +38,8 @@
 		</nav>
 	</div>
 </section>
+<hr class="mx-20 my-6 hidden border-neutral-300 @7xl:block" />
 
 <style lang="postcss">
 	@reference 'tailwindcss';
-
-	.filters-scroller {
-		position: relative;
-		mask-image: linear-gradient(
-			to right,
-			rgba(0, 0, 0, 0) calc(var(--spacing) * 0),
-			rgba(0, 0, 0, 1) calc(var(--spacing) * 3),
-			rgba(0, 0, 0, 1) calc(100% - var(--spacing) * 8),
-			rgba(0, 0, 0, 0) calc(100% - var(--spacing) * 3)
-		);
-
-		@variant @3xl {
-			mask-image: linear-gradient(
-				to right,
-				rgba(0, 0, 0, 0) calc(var(--spacing) * 0),
-				rgba(0, 0, 0, 1) calc(var(--spacing) * 4),
-				rgba(0, 0, 0, 1) calc(100% - var(--spacing) * 9),
-				rgba(0, 0, 0, 0) calc(100% - var(--spacing) * 3)
-			);
-		}
-	}
 </style>
