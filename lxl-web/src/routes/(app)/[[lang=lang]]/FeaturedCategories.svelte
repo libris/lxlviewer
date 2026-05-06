@@ -3,13 +3,15 @@
 	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
 </script>
 
-<section class="flex flex-col items-center py-3 lg:flex-row lg:@5xl:pl-20">
-	<div class="w-full border-neutral-300 lg:border-b lg:pb-6">
-		<nav class="pt-2 @5xl:pt-3" aria-labelledby="explore-categories">
-			<div class="flex flex-col gap-2 lg:@5xl:flex-row lg:@5xl:items-center">
+<section class="mt-3 flex flex-col items-center py-3 @7xl:mt-6">
+	<div class="w-full">
+		<nav class="" aria-labelledby="explore-categories">
+			<div
+				class="flex flex-col gap-2 pl-3 @sm:pl-6 @3xl:gap-3 @5xl:pl-20 lg:@7xl:flex-row lg:@7xl:items-center"
+			>
 				<h2
 					id="explore-categories"
-					class="mr-3 px-6 font-serif text-lg whitespace-nowrap lg:px-0 @lg:text-xl"
+					class="mr-3 font-serif text-lg whitespace-nowrap @lg:text-xl @3xl:text-2xl lg:@7xl:text-xl"
 				>
 					{page.data.t('search.exploreCategories')}
 				</h2>
@@ -17,7 +19,7 @@
 					tabindex="-1"
 					class="scrollbar-hidden flex min-h-11 items-center overflow-x-scroll lg:overflow-x-auto lg:px-0"
 				>
-					<ul class="flex gap-2 pr-3 pl-6 text-sm lg:pl-0 @5xl:text-base">
+					<ul class="flex gap-2 text-sm @5xl:text-base">
 						{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
 							<li>
 								<a
@@ -36,6 +38,7 @@
 		</nav>
 	</div>
 </section>
+<hr class="mx-20 my-6 hidden border-neutral-300 lg:@7xl:block" />
 
 <style lang="postcss">
 	@reference 'tailwindcss';
