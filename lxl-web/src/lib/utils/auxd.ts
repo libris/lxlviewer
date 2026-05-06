@@ -5,7 +5,8 @@ import {
 	type Image,
 	type KbvImageObject,
 	type ImageResolution,
-	IMAGE_OBJECT_TYPE
+	IMAGE_OBJECT_TYPE,
+	Width
 } from '$lib/types/auxd';
 import { Concepts, type FramedData, JsonLd, Owl } from '$lib/types/xl';
 import { first, isObject, asArray } from '$lib/utils/xl';
@@ -43,8 +44,10 @@ export function bestSize(from: Image | undefined, minWidthPx: number): ImageReso
 
 	const fallbackSize = sizes[sizes.length - 1];
 	if (fallbackSize && minWidthPx) {
-		const _hardcodedSize = fallbackSize.url.replace('.full.', `.${minWidthPx}.`);
-		fallbackSize.url = _hardcodedSize;
+		if (minWidthPx === Width.SMALL) {
+			const _hardcodedSize = fallbackSize.url.replace('.full.', `.${minWidthPx}.`);
+			fallbackSize.url = _hardcodedSize;
+		}
 		return fallbackSize;
 	}
 
