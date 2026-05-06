@@ -43,10 +43,10 @@ export function bestSize(from: Image | undefined, minWidthPx: number): ImageReso
 	if (result) return result;
 
 	const fallbackSize = sizes[sizes.length - 1];
-	if (fallbackSize && minWidthPx) {
+	if (fallbackSize) {
 		if (minWidthPx === Width.SMALL) {
-			const _hardcodedSize = fallbackSize.url.replace('.full.', `.${minWidthPx}.`);
-			fallbackSize.url = _hardcodedSize;
+			const _thumbUrl = fallbackSize.url.replace('.full.', `.${minWidthPx}.`);
+			fallbackSize.url = _thumbUrl;
 		}
 		return fallbackSize;
 	}
