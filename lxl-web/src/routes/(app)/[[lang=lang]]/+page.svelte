@@ -28,7 +28,7 @@
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
 		class={[
-			'featured-preview-section my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6',
+			'featured-preview-section my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:my-6 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6',
 			landscape && 'landscape-mode bg-neutral-100 py-6'
 		]}
 	>
