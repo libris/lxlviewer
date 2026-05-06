@@ -28,7 +28,7 @@
 	let shadowSentinelElement: HTMLElement | undefined = $state();
 	let shadowObserver: IntersectionObserver | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
-	let dismissedBanner: boolean = $derived(page.data.dismissedBanner);
+	let dismissedBanner: boolean = $state(page.data.dismissedBanner);
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
