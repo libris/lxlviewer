@@ -38,7 +38,7 @@
 		</nav>
 	</div>
 </section>
-<hr class="mx-20 my-6 hidden border-neutral-300 lg:@7xl:block" />
+<hr class="mx-20 my-6 hidden border-neutral-300 @7xl:block" />
 
 <style lang="postcss">
 	@reference 'tailwindcss';

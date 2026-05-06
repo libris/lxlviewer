@@ -297,7 +297,7 @@
 						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
 					>
 						<h1
-							class="my-1.5 font-serif text-[1.625rem] tracking-[-0.0125rem] lg:my-2 lg:text-[2.1875rem] @md:tracking-[-0.025rem] @lg:text-3xl @xl:my-2 @xl:text-[2.1875rem] @3xl:my-1.5 @3xl:text-[2.5rem] lg:@3xl:my-2 @5xl:my-4 @5xl:text-5xl"
+							class="my-1.5 font-serif text-[1.625rem] tracking-[-0.0125rem] lg:my-2 lg:text-[2.1875rem] @md:tracking-[-0.025rem] @lg:text-3xl @xl:my-2 @xl:text-[2.1875rem] @3xl:my-1.5 @3xl:text-[3rem] lg:@3xl:my-2 @5xl:my-4 @5xl:text-5xl"
 						>
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -394,13 +394,22 @@
 		</figcaption>
 		-->
 	</figure>
-	<section class="search-shortcuts @container">
-		<nav
-			class="sticky mx-auto grid pt-2 pb-4 @5xl:pt-3 @5xl:pb-5"
-			aria-label={page.data.t('home.searchShortcuts')}
-		>
-			<div class="filters @container mx-auto w-full max-w-7xl px-2 lg:px-4"></div>
-		</nav>
+	<section class="page-description-container @container">
+		<div class="sticky mx-auto grid pb-4 @5xl:pb-5 @7xl:pt-3">
+			<div
+				class="page-description mx-auto mt-4.5 w-full max-w-7xl px-4.5 sm:px-7.5 lg:mt-3 lg:px-7.5 @5xl:mt-4.5"
+			>
+				<p class="text-subtle font-serif text-lg italic @7xl:text-xl">
+					<strong class="text-body font-medium not-italic">Libris</strong>
+					{page.data.t('home.pageHeadingDescription')}
+					{#if page.data.t('home.pageHeadingDescriptioneNoWrap') !== 'home.pageHeadingDescriptionNoWrap'}
+						<span class="whitespace-nowrap">
+							{page.data.t('home.pageHeadingDescriptionNoWrap')}
+						</span>
+					{/if}
+				</p>
+			</div>
+		</div>
 	</section>
 	{#if isHomeRoute}
 		<div class="app-bar-shadow-trigger" bind:this={shadowSentinelElement}></div>
@@ -449,13 +458,13 @@
 			1px
 		);
 		--header-margin-top: round(
-			calc(((73svh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
+			calc(((61.08svh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
 			1px
 		);
 		margin-top: var(--header-margin-top);
 
 		@variant lg {
-			--header-margin-top: round(calc((73svh + var(--banner-height, 0)) / 2), 1px);
+			--header-margin-top: round(calc((61.08svh + var(--banner-height, 0)) / 2), 1px);
 		}
 	}
 	.home-intro-background {
@@ -463,7 +472,7 @@
 		background: var(--color-app-bar);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
 		height: round(calc(73vh + var(--banner-height, 0)), 1px);
-		height: round(calc(73svh + var(--banner-height, 0)), 1px);
+		height: round(calc(61.08svh + var(--banner-height, 0)), 1px);
 	}
 
 	.app-bar-shadow-trigger {
@@ -471,11 +480,11 @@
 		bottom: calc(var(--app-bar-height) + var(--banner-height, 0));
 	}
 
-	.search-shortcuts {
+	.page-description-container {
 		height: round(calc((73vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
-		height: round(calc((73svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
+		height: round(calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
 
-		& > nav {
+		& > div {
 			grid-template-areas: var(--search-grid-template-areas);
 			grid-template-columns: var(--search-grid-template-columns);
 			top: calc(var(--banner-height, 0) + var(--app-bar-height) * 2);
@@ -515,29 +524,8 @@
 		min-height: var(--app-bar-height);
 	}
 
-	.filters {
+	.page-description {
 		grid-area: search;
-	}
-
-	.filters-scroller {
-		position: relative;
-		mask-image: linear-gradient(
-			to right,
-			rgba(0, 0, 0, 0) calc(var(--spacing) * 0),
-			rgba(0, 0, 0, 1) calc(var(--spacing) * 3),
-			rgba(0, 0, 0, 1) calc(100% - var(--spacing) * 8),
-			rgba(0, 0, 0, 0) calc(100% - var(--spacing) * 3)
-		);
-
-		@variant @3xl {
-			mask-image: linear-gradient(
-				to right,
-				rgba(0, 0, 0, 0) calc(var(--spacing) * 0),
-				rgba(0, 0, 0, 1) calc(var(--spacing) * 4),
-				rgba(0, 0, 0, 1) calc(100% - var(--spacing) * 9),
-				rgba(0, 0, 0, 0) calc(100% - var(--spacing) * 3)
-			);
-		}
 	}
 
 	/* has-[dialog:open]:flex does not seem to work for Safari */
