@@ -38,7 +38,18 @@ export function bestSize(from: Image | undefined, minWidthPx: number): ImageReso
 	}
 	const sizes = from.sizes;
 	const result = sizes.find((i) => i.widthPx >= minWidthPx);
-	return result || sizes[sizes.length - 1];
+	// REMOVE ME - TEMP SEARCH & REPLACE IN IMG URL
+	if (result) return result;
+
+	const fallbackSize = sizes[sizes.length - 1];
+	if (fallbackSize && minWidthPx) {
+		const _hardcodedSize = fallbackSize.url.replace('.full.', `.${minWidthPx}.`);
+		fallbackSize.url = _hardcodedSize;
+		return fallbackSize;
+	}
+
+	return undefined;
+	// return result || sizes[sizes.length - 1];
 }
 
 export function getImages(thing: FramedData, lang: LocaleCode): Image[] {
