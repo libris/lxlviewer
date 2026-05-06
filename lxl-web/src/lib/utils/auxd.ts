@@ -5,7 +5,8 @@ import {
 	type Image,
 	type KbvImageObject,
 	type ImageResolution,
-	IMAGE_OBJECT_TYPE
+	IMAGE_OBJECT_TYPE,
+	Width
 } from '$lib/types/auxd';
 import { Concepts, type FramedData, JsonLd, Owl } from '$lib/types/xl';
 import { first, isObject, asArray } from '$lib/utils/xl';
@@ -38,7 +39,20 @@ export function bestSize(from: Image | undefined, minWidthPx: number): ImageReso
 	}
 	const sizes = from.sizes;
 	const result = sizes.find((i) => i.widthPx >= minWidthPx);
-	return result || sizes[sizes.length - 1];
+	// REMOVE ME - TEMP SEARCH & REPLACE IN IMG URL
+	if (result) return result;
+
+	const fallbackSize = sizes[sizes.length - 1];
+	if (fallbackSize) {
+		if (minWidthPx === Width.SMALL) {
+			const _thumbUrl = fallbackSize.url.replace('.full.', `.${minWidthPx}.`);
+			fallbackSize.url = _thumbUrl;
+		}
+		return fallbackSize;
+	}
+
+	return undefined;
+	// return result || sizes[sizes.length - 1];
 }
 
 export function getImages(thing: FramedData, lang: LocaleCode): Image[] {
