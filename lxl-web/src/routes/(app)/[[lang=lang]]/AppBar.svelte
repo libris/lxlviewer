@@ -454,7 +454,7 @@
 	.home.app-bar {
 		height: auto;
 		--header-margin-top: round(
-			calc(((73vh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
+			calc(((61.08vh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
 			1px
 		);
 		--header-margin-top: round(
@@ -471,7 +471,7 @@
 		top: var(--banner-height, 0);
 		background: var(--color-app-bar);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
-		height: round(calc(73vh + var(--banner-height, 0)), 1px);
+		height: round(calc(61.08vh + var(--banner-height, 0)), 1px);
 		height: round(calc(61.08svh + var(--banner-height, 0)), 1px);
 	}
 
@@ -481,7 +481,7 @@
 	}
 
 	.page-description-container {
-		height: round(calc((73vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
+		height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
 		height: round(calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
 
 		& > div {
