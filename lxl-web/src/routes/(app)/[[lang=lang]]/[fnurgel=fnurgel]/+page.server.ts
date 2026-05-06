@@ -52,8 +52,18 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const subsetFilter = url.searchParams.get('_r');
 	const _q = url.searchParams.get('_q');
 
-	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true&_findBlank=true`, {
-		headers: { Accept: 'application/ld+json' }
+	const _resourceUrl = `${env.API_URL}/${params.fnurgel}?framed=true&_findBlank=true`;
+	const _resourceHeaders = { Accept: 'application/ld+json' };
+	console.log('[DEBUG fetch resource]', {
+		outerUrl: url.toString(),
+		fetchUrl: _resourceUrl,
+		headers: _resourceHeaders
+	});
+	const resourceRes = await fetch(_resourceUrl, { headers: _resourceHeaders });
+	console.log('[DEBUG fetch resource <-]', {
+		fetchUrl: _resourceUrl,
+		status: resourceRes.status,
+		contentType: resourceRes.headers.get('content-type')
 	});
 
 	if (resourceRes.status === 404) {
@@ -90,8 +100,20 @@ export const load = async ({ params, locals, fetch, url }) => {
 		// instance - fetch work card
 		const workId = (resource.mainEntity.instanceOf[JsonLd.ID] || '').split('/').pop();
 		if (workId) {
-			const workRes = await fetch(`/api/${locale}/${workId}`);
-			workCard = await workRes.json();
+			const _workUrl = `/api/${locale}/${workId}`;
+			console.log('[DEBUG fetch workCard]', { outerUrl: url.toString(), fetchUrl: _workUrl });
+			const workRes = await fetch(_workUrl);
+			console.log('[DEBUG fetch workCard <-]', {
+				fetchUrl: _workUrl,
+				status: workRes.status,
+				contentType: workRes.headers.get('content-type')
+			});
+			if (!workRes.ok) {
+				const _body = await workRes.text();
+				console.warn('[DEBUG fetch workCard !ok body]', _body.slice(0, 300));
+			} else {
+				workCard = await workRes.json();
+			}
 		}
 	}
 
