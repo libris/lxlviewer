@@ -271,7 +271,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 			myLibraries
 		);
 
-		const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+		const _findUrl = `${env.API_URL}/find.jsonld?${searchParams.toString()}`;
+		console.log('[DEBUG fetch find.jsonld page]', { outerUrl: url.toString(), fetchUrl: _findUrl });
+		const res = await fetch(_findUrl);
+		console.log('[DEBUG fetch find.jsonld page <-]', {
+			fetchUrl: _findUrl,
+			status: res.status,
+			contentType: res.headers.get('content-type')
+		});
 
 		if (res.ok) {
 			const data = (await res.json()) as PartialCollectionView;
