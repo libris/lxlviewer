@@ -380,7 +380,10 @@
 	{/if}
 </header>
 {#if isHomeRoute}
-	<figure class="home-intro-background absolute -z-20 w-full" bind:this={backgroundSentinelElement}>
+	<figure
+		class={['home-intro-background absolute -z-20 w-full', dismissedBanner && 'without-banner']}
+		bind:this={backgroundSentinelElement}
+	>
 		<!--
 		<img
 			src={placeholder}
@@ -454,11 +457,11 @@
 	.home.app-bar {
 		height: auto;
 		--header-margin-top: round(
-			calc(((61.08vh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
+			calc(((61.08vh + var(--banner-height, 0px) - var(--app-bar-height)) / 2)),
 			1px
 		);
 		--header-margin-top: round(
-			calc(((61.08svh + var(--banner-height, 0) - var(--app-bar-height)) / 2)),
+			calc(((61.08svh + var(--banner-height, 0px) - var(--app-bar-height)) / 2)),
 			1px
 		);
 		margin-top: var(--header-margin-top);
@@ -467,12 +470,23 @@
 			--header-margin-top: round(calc((61.08svh + var(--banner-height, 0)) / 2), 1px);
 		}
 	}
+
 	.home-intro-background {
 		top: var(--banner-height, 0);
 		background: var(--color-app-bar);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
 		height: round(calc(61.08vh + var(--banner-height, 0)), 1px);
 		height: round(calc(61.08svh + var(--banner-height, 0)), 1px);
+
+		&.without-banner {
+			height: round(calc(61.08vh + 56px), 1px);
+			height: round(calc(61.08svh + 56px), 1px);
+
+			@variant sm {
+				height: round(calc(61.08vh + 36px), 1px);
+				height: round(calc(61.08svh + 36px), 1px);
+			}
+		}
 	}
 
 	.app-bar-shadow-trigger {
