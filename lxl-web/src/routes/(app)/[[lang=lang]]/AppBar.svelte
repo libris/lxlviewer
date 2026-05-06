@@ -397,12 +397,12 @@
 		</figcaption>
 		-->
 	</figure>
-	<section class="page-description-container @container">
+	<section class="page-description-container @container" aria-labelledby="page-description">
 		<div class="sticky mx-auto grid pb-4 @5xl:pb-5 @7xl:pt-3">
 			<div
 				class="page-description mx-auto mt-4.5 w-full max-w-7xl px-4.5 sm:px-7.5 lg:mt-3 lg:px-7.5 @5xl:mt-4.5"
 			>
-				<p class="text-subtle font-serif text-lg italic @7xl:text-xl">
+				<h2 id="page-description" class="text-subtle font-serif text-lg italic @7xl:text-xl">
 					<strong class="text-body font-medium not-italic">Libris</strong>
 					{page.data.t('home.pageHeadingDescription')}
 					{#if page.data.t('home.pageHeadingDescriptioneNoWrap') !== 'home.pageHeadingDescriptionNoWrap'}
@@ -410,7 +410,7 @@
 							{page.data.t('home.pageHeadingDescriptionNoWrap')}
 						</span>
 					{/if}
-				</p>
+				</h2>
 			</div>
 		</div>
 	</section>
