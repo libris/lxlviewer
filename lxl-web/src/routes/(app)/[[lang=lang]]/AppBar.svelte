@@ -405,7 +405,7 @@
 				<h2 id="page-description" class="text-subtle font-serif text-lg italic @7xl:text-xl">
 					<strong class="text-body font-medium not-italic">Libris</strong>
 					{page.data.t('home.pageHeadingDescription')}
-					{#if page.data.t('home.pageHeadingDescriptioneNoWrap') !== 'home.pageHeadingDescriptionNoWrap'}
+					{#if page.data.t('home.pageHeadingDescriptionNoWrap') !== 'home.pageHeadingDescriptionNoWrap'}
 						<span class="whitespace-nowrap">
 							{page.data.t('home.pageHeadingDescriptionNoWrap')}
 						</span>
