@@ -26,7 +26,17 @@ export const getSearchResults = query(SearchResultsSchema, async (params) => {
 
 	searchParams.set('_stats', 'falseThisRequest');
 
-	const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+	const _searchUrl = `${env.API_URL}/find.jsonld?${searchParams.toString()}`;
+	console.log('[DEBUG fetch searchResult getSearchResults]', {
+		outerUrl: url.toString(),
+		fetchUrl: _searchUrl
+	});
+	const res = await fetch(_searchUrl);
+	console.log('[DEBUG fetch searchResult getSearchResults <-]', {
+		fetchUrl: _searchUrl,
+		status: res.status,
+		contentType: res.headers.get('content-type')
+	});
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
@@ -55,7 +65,17 @@ export const getAdjecentSearchResult = query(v.string(), async (viewId) => {
 	const { fetch, url } = getRequestEvent();
 	const searchParams = new URL(url.origin + viewId).searchParams;
 	searchParams.set('_stats', 'falseThisRequest');
-	const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+	const _adjUrl = `${env.API_URL}/find.jsonld?${searchParams.toString()}`;
+	console.log('[DEBUG fetch searchResult getAdjecent]', {
+		outerUrl: url.toString(),
+		fetchUrl: _adjUrl
+	});
+	const res = await fetch(_adjUrl);
+	console.log('[DEBUG fetch searchResult getAdjecent <-]', {
+		fetchUrl: _adjUrl,
+		status: res.status,
+		contentType: res.headers.get('content-type')
+	});
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;

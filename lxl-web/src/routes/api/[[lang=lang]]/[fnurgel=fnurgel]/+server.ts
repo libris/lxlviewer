@@ -6,9 +6,19 @@ import { getSupportedLocale } from '$lib/i18n/locales';
 import { asSearchResultItem } from '$lib/utils/search';
 import { centerOnWork } from '$lib/utils/centerOnWork.js';
 
-export async function GET({ params, locals }) {
-	const recordRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
-		headers: { Accept: 'application/ld+json' }
+export async function GET({ params, locals, url }) {
+	const _recUrl = `${env.API_URL}/${params.fnurgel}?framed=true`;
+	const _recHeaders = { Accept: 'application/ld+json' };
+	console.log('[DEBUG fetch api/fnurgel record]', {
+		outerUrl: url.toString(),
+		fetchUrl: _recUrl,
+		headers: _recHeaders
+	});
+	const recordRes = await fetch(_recUrl, { headers: _recHeaders });
+	console.log('[DEBUG fetch api/fnurgel record <-]', {
+		fetchUrl: _recUrl,
+		status: recordRes.status,
+		contentType: recordRes.headers.get('content-type')
 	});
 	const record = await recordRes.json();
 

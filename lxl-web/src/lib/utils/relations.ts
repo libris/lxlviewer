@@ -30,18 +30,23 @@ export async function getRelations(
 		return [];
 	}
 
-	const res = await fetch(
-		`${env.API_URL}/find.jsonld?${new URLSearchParams({
-			_o: resourceId,
-			_q: '*',
-			_limit: '0',
-			_offset: '0',
-			_sort: '',
-			_spell: 'false',
-			...(subsetFilter && { _r: subsetFilter }),
-			...(searchSite && { _site: searchSite })
-		}).toString()}`
-	);
+	const _relUrl = `${env.API_URL}/find.jsonld?${new URLSearchParams({
+		_o: resourceId,
+		_q: '*',
+		_limit: '0',
+		_offset: '0',
+		_sort: '',
+		_spell: 'false',
+		...(subsetFilter && { _r: subsetFilter }),
+		...(searchSite && { _site: searchSite })
+	}).toString()}`;
+	console.log('[DEBUG fetch relations]', { fetchUrl: _relUrl });
+	const res = await fetch(_relUrl);
+	console.log('[DEBUG fetch relations <-]', {
+		fetchUrl: _relUrl,
+		status: res.status,
+		contentType: res.headers.get('content-type')
+	});
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;

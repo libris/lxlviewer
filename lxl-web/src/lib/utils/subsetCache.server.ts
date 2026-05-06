@@ -16,13 +16,18 @@ function deleteOldest() {
 }
 
 async function fetchMapping(r: string) {
-	const res = await fetch(
-		`${env.API_URL}/find.jsonld?${new URLSearchParams({
-			_r: r,
-			_q: '',
-			_mappingOnly: 'true'
-		}).toString()}`
-	);
+	const _mapUrl = `${env.API_URL}/find.jsonld?${new URLSearchParams({
+		_r: r,
+		_q: '',
+		_mappingOnly: 'true'
+	}).toString()}`;
+	console.log('[DEBUG fetch subsetMapping]', { fetchUrl: _mapUrl });
+	const res = await fetch(_mapUrl);
+	console.log('[DEBUG fetch subsetMapping <-]', {
+		fetchUrl: _mapUrl,
+		status: res.status,
+		contentType: res.headers.get('content-type')
+	});
 
 	if (!res.ok) {
 		console.warn('Failed to get _r mappings');
