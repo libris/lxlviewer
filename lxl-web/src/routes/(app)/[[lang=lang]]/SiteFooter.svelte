@@ -37,6 +37,9 @@
 						>{page.data.t('appMenu.accessibilityStatement')}</a
 					>
 				</li>
+				<li>
+					<a href="https://gamla.libris.kb.se/">{page.data.t('appMenu.oldSite')}</a>
+				</li>
 			</ul>
 		</nav>
 		<nav class="flex flex-col gap-2" aria-labelledby="nav-contact">

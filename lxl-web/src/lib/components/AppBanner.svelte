@@ -18,7 +18,7 @@
 >
 	<p class="flex-1">
 		<span>{page.data.t('banner.message')}</span>
-		<a href="https://libris.kb.se/" class="link-subtle">{page.data.t('banner.old')}</a>
+		<a href="https://gamla.libris.kb.se/" class="link-subtle">{page.data.t('banner.old')}</a>
 		<span>{page.data.t('banner.message2')}.</span>
 	</p>
 	{#if dismissable}

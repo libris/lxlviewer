@@ -402,8 +402,8 @@
 			<div
 				class="page-description mx-auto mt-4.5 w-full max-w-7xl px-4.5 sm:px-7.5 lg:mt-3 lg:px-7.5 @5xl:mt-4.5"
 			>
-				<h2 id="page-description" class="text-subtle font-serif text-lg italic @7xl:text-xl">
-					<strong class="text-body font-medium not-italic">Libris</strong>
+				<h2 id="page-description" class="text-subtle font-serif text-lg @7xl:text-xl">
+					Libris
 					{page.data.t('home.pageHeadingDescription')}
 					{#if page.data.t('home.pageHeadingDescriptionNoWrap') !== 'home.pageHeadingDescriptionNoWrap'}
 						<span class="whitespace-nowrap">
