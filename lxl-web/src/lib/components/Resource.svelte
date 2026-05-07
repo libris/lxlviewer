@@ -504,7 +504,10 @@
 						>{page.data.t('resource.showIn')} {page.data.t('resource.librisCataloging')}</a
 					>
 					{#if instances?.length === 1}
-						· <a href="https://libris.kb.se/bib/{controlNumber}" target="_blank" class="ext-link"
+						· <a
+							href="https://gamla.libris.kb.se/bib/{controlNumber}"
+							target="_blank"
+							class="ext-link"
 							>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
 						>
 					{/if}
