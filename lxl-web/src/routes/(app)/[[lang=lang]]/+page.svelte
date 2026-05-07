@@ -6,6 +6,7 @@
 	import IconArrowRight from '~icons/bi/arrow-right';
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
 	import FeaturedCategories from './FeaturedCategories.svelte';
+	import heroImage from '$lib/assets/img/bg-marbling01.jpg';
 
 	const uid = $props.id();
 	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
@@ -83,6 +84,24 @@
 		{/if}
 	</section>
 {/snippet}
+<section class="hero relative">
+	<enhanced:img src={heroImage} alt="" class="hero-image h-auto w-full min-w-5xl object-cover" />
+	<div class="hero-heading absolute top-0 z-10 grid h-full w-full items-center justify-center">
+		<hgroup class="h-full w-full px-4 font-serif">
+			<h1 class="mb-3 w-full leading-[1.125] tracking-[-0.0125em] italic">
+				{page.data.t('home.pageHeadingTitle')}
+				{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
+					<span class="block whitespace-nowrap">
+						{page.data.t('home.pageHeadingTitleNoWrap')}
+					</span>
+				{/if}
+			</h1>
+			<p class="text-2xl">
+				Libris {page.data.t('home.pageHeadingDescription')}.
+			</p>
+		</hgroup>
+	</div>
+</section>
 <FeaturedCategories />
 {#each featuredSearches as featured, index (featured.heading)}
 	{@render featuredSearch(featured, index)}
@@ -168,5 +187,24 @@
 		& .decorated-card-heading-top {
 			display: none;
 		}
+	}
+
+	.hero {
+		--hero-height: calc(60.8vh - var(--appbar-height));
+		--hero-height: calc(60.8vh - var(--appbar-height));
+		--hero-margin: round(calc(var(--hero-height) / 2 - var(--appbar-height) / 2), 1px);
+
+		height: var(--hero-height);
+		background-color: var(--color-primary-300);
+	}
+
+	.hero-image {
+		width: 100%;
+		height: 100%;
+		opacity: 1;
+	}
+
+	.hero-heading {
+		display: none;
 	}
 </style>

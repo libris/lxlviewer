@@ -513,6 +513,10 @@
 		@variant lg {
 			font-size: 0.9375rem;
 		}
+
+		@variant @3xl {
+			font-size: 1rem;
+		}
 	}
 
 	.supersearch-input:not(.expanded),
@@ -785,6 +789,10 @@
 
 		@variant lg {
 			font-size: 0.9375rem;
+		}
+
+		@variant @3xl {
+			font-size: 1rem;
 		}
 	}
 

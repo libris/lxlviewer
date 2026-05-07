@@ -48,7 +48,7 @@
 
 <search
 	{id}
-	class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center px-2 lg:px-3']}
+	class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center px-4 lg:px-3']}
 >
 	<form id={`${id}-form`} {action} class="mx-auto w-full min-w-0">
 		{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
@@ -76,7 +76,8 @@
 	</form>
 </search>
 
-<style>
+<style lang="postcss">
+	@reference 'tailwindcss';
 	search {
 		--search-input-height: 48px;
 	}
