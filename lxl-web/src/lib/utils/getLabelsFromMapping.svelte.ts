@@ -1,4 +1,4 @@
-import type { DisplayMapping } from '$lib/types/search';
+import type { DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
 import { JsonLd } from '$lib/types/xl';
 
 let prevSuggestMapping: DisplayMapping[] | undefined;
@@ -7,10 +7,19 @@ function getLabelFromMappings(
 	key: string,
 	value?: string,
 	pageMapping?: DisplayMapping[],
-	suggestMapping?: DisplayMapping[]
+	suggestMapping?: DisplayMapping[],
+	qualifierSuggestions?: QualifierSuggestion2[]
 ) {
 	const bestSuggestMapping = suggestMapping?.length ? suggestMapping : prevSuggestMapping;
 
+	// need a key label only - look in the cached list
+	if (qualifierSuggestions && key && (!value || value === '()')) {
+		let keyLabel = getKeyLabelFromList(key, qualifierSuggestions);
+		if (keyLabel) {
+			keyLabel = keyLabel.charAt(0).toUpperCase() + keyLabel.slice(1);
+			return { key, keyLabel, invalid: false, isRedundantKeyLabel: false };
+		}
+	}
 	const pageLabels = iterateMapping(key, value, pageMapping);
 	const suggestLabels = iterateMapping(key, value, bestSuggestMapping);
 
@@ -85,6 +94,11 @@ function iterateMapping(
 		}
 	}
 	return { keyLabel, valueLabel, removeLink, invalid, type, id, isRedundantKeyLabel };
+}
+
+function getKeyLabelFromList(key: string, suggestion: QualifierSuggestion2[]) {
+	const match = suggestion.find((s) => s.key === key || s.queryCodes.includes(key));
+	return match?.label ?? null;
 }
 
 export default getLabelFromMappings;
