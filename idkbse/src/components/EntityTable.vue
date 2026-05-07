@@ -179,6 +179,11 @@ export default {
           'link': p.join('/'),
           'title': 'Libris webbsök'
         });
+      } else {
+        links.push({
+          'link': this.recordId,
+          'title': 'Libris sök'
+        });
       }
 
       return links
