@@ -46,9 +46,7 @@
 			<p id="nav-contact">{page.data.t('footer.contact')}</p>
 			<ul>
 				<li>
-					<a href="https://www.kb.se/om-oss/kontakta-oss/#item-47bef1f3916eca87a61b1eed"
-						>{page.data.t('footer.customerSupport')}</a
-					>
+					<a href="mailto:libris@kb.se">{page.data.t('footer.customerSupport')}</a>
 				</li>
 			</ul>
 		</nav>

@@ -29,7 +29,7 @@ const CSL_KBV_MAPPING: Partial<Record<keyof CSLJSON, string>> = {
 interface Contribution {
 	'@type'?: string;
 	role?: { '@id'?: string }[];
-	agent: Agent | Agent[];
+	agent?: Agent | Agent[];
 }
 
 interface Agent {
@@ -99,6 +99,9 @@ function getRole(contribution: Contribution): Partial<CSLRoles> | false {
 		if (role) {
 			role = role.replace('https://id.kb.se/relator/', '');
 			const name = getName(contribution.agent);
+			if (!name) {
+				return false;
+			}
 			switch (role) {
 				case 'author':
 					return { author: name };
@@ -146,8 +149,11 @@ function getFallbackRole(contribution: Contribution) {
 	return false;
 }
 
-function getName(agent: Agent | Agent[]): CSLName[] {
+function getName(agent: Agent | Agent[] | undefined): CSLName[] | null {
 	const flattenedAgent = Array.isArray(agent) ? agent[0] : agent;
+	if (!flattenedAgent) {
+		return null;
+	}
 	const name: Partial<CSLName> = {};
 	if (flattenedAgent.familyName) {
 		name.family = flattenedAgent.familyName;
