@@ -92,12 +92,12 @@
 		mounted = true;
 	});
 
-	const ID_SEARCH = 'app-bar-search';
-	const ID_MENU = 'app-bar-menu';
-	const ID_MENU_LABEL = 'app-bar-menu-label';
-	const ID_MOBILE_MENU_LABEL = 'app-bar-mobile-menu-label';
-	const ID_SEARCH_LABEL = 'app-bar-search-label';
-	const ID_CHANGE_LANG_LABEL = 'app-bar-change-lang-label';
+	const ID_SEARCH = 'appbar-search';
+	const ID_MENU = 'appbar-menu';
+	const ID_MENU_LABEL = 'appbar-menu-label';
+	const ID_MOBILE_MENU_LABEL = 'appbar-mobile-menu-label';
+	const ID_SEARCH_LABEL = 'appbar-search-label';
+	const ID_CHANGE_LANG_LABEL = 'appbar-change-lang-label';
 
 	$effect(() => {
 		if (page.url.hash === '#menu' && mounted) {
@@ -110,8 +110,8 @@
 {#if !dismissedBanner}
 	<AppBanner ondismiss={handleDismissBanner} />
 {/if}
-<header class={['app-bar @container sticky top-0 z-40', isHomeRoute && 'home', subset && 'subset']}>
-	<nav class={['app-bar-nav bg-app-bar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
+<header class={['appbar @container sticky top-0 z-40', isHomeRoute && 'home', subset && 'subset']}>
+	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
 		<div class="hidden lg:contents">
 			{@render leadingActions()}
 		</div>
@@ -297,45 +297,40 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	.app-bar {
-		--search-grid-template-areas: 'leading-actions leading-actions trailing-actions'
-			'search search search';
-		--search-grid-template-columns: auto 1fr 1fr;
-		--search-gap: 0 calc(var(--spacing) * 3);
-		--search-input-height: 44px;
+	.appbar {
 
 		--home-header-height: 61.803vh;
 		--home-header-height: 61.803svh;
 		--home-header-margin: round(
-			calc(var(--home-header-height) / 2 - var(--app-bar-height) / 2),
+			calc(var(--home-header-height) / 2 - var(--appbar-height) / 2),
 			1px
 		);
 
 		@variant lg {
-			--app-bar-height: 76px;
+			--appbar-height: 76px;
 			--search-input-height: 48px;
-			--search-grid-template-areas: 'leading-actions search trailing-actions';
-			--search-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
-			/* --search-grid-template-rows: var(--app-bar-height); */
+			--appbar-grid-template-areas: 'leading-actions search trailing-actions';
+			--appbar-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
+			/* --appbar-grid-template-rows: var(--appbar-height); */
 		}
 	}
 
 	nav {
 		display: grid;
-		grid-template-rows: var(--app-bar-height) var(--app-bar-height);
-		gap: var(--search-gap);
+		grid-template-rows: var(--appbar-height) var(--appbar-height);
+		gap: var(--appbar-gap);
 
 		@variant lg {
-			grid-template-areas: var(--search-grid-template-areas);
-			grid-template-columns: var(--search-grid-template-columns);
-			grid-template-rows: var(--app-bar-height);
+			grid-template-areas: var(--appbar-grid-template-areas);
+			grid-template-columns: var(--appbar-grid-template-columns);
+			grid-template-rows: var(--appbar-height);
 		}
 	}
 
 	.leading-actions,
 	.trailing-actions,
 	search {
-		min-height: var(--app-bar-height);
+		min-height: var(--appbar-height);
 		justify-items: stretch;
 	}
 
@@ -374,7 +369,7 @@
 		}
 
 		@variant sm {
-			height: var(--app-bar-height);
+			height: var(--appbar-height);
 			border-radius: 0;
 
 			&:hover::after,
@@ -393,9 +388,9 @@
 	}
 
 	.menu-dialog {
-		top: var(--app-bar-height, 0);
-		max-height: calc(100vh - calc(var(--app-bar-height, 0) + 1px));
-		max-height: calc(100svh - calc(var(--app-bar-height, 0) + 1px));
+		top: var(--appbar-height, 0);
+		max-height: calc(100vh - calc(var(--appbar-height, 0) + 1px));
+		max-height: calc(100svh - calc(var(--appbar-height, 0) + 1px));
 		overflow-y: auto;
 
 		&::before {
@@ -409,9 +404,9 @@
 		}
 
 		@variant sm {
-			top: calc(var(--app-bar-height, 0) - 4px);
-			max-height: calc(100vh - (calc(var(--app-bar-height, 0) - 3px)));
-			max-height: calc(100svh - (calc(var(--app-bar-height, 0) - 3px)));
+			top: calc(var(--appbar-height, 0) - 4px);
+			max-height: calc(100vh - (calc(var(--appbar-height, 0) - 3px)));
+			max-height: calc(100svh - (calc(var(--appbar-height, 0) - 3px)));
 		}
 	}
 </style>

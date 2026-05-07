@@ -627,9 +627,9 @@
 
 		@variant lg {
 			display: grid;
-			grid-template-areas: var(--search-grid-template-areas);
-			grid-template-columns: var(--search-grid-template-columns);
-			gap: var(--search-gap);
+			grid-template-areas: var(--appbar-grid-template-areas);
+			grid-template-columns: var(--appbar-grid-template-columns);
+			gap: var(--appbar-gap);
 			padding-inline: calc(var(--spacing) * 1.25);
 
 			@variant @5xl {

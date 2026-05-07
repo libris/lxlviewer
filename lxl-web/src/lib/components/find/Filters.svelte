@@ -124,6 +124,6 @@
 	}
 
 	.skeleton-container {
-		max-height: calc(100vh - var(--app-bar-height) - var(--toolbar-height, 0));
+		max-height: calc(100vh - var(--appbar-height) - var(--toolbar-height, 0));
 	}
 </style>

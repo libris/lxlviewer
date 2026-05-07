@@ -151,11 +151,11 @@
 	});
 
 	const IDs = {
-		search: 'app-bar-search',
-		appBarMenu: 'app-bar-menu',
-		appBarMenuLabel: 'app-bar-menu-label',
-		appBarSearchLabel: 'app-bar-search-label',
-		appBarChangeLangLabel: 'app-bar-change-lang-label'
+		search: 'appbar-search',
+		appBarMenu: 'appbar-menu',
+		appBarMenuLabel: 'appbar-menu-label',
+		appBarSearchLabel: 'appbar-search-label',
+		appBarChangeLangLabel: 'appbar-change-lang-label'
 	};
 
 	$effect(() => {
@@ -214,12 +214,12 @@
 {/if}
 <header
 	class={[
-		'app-bar @container sticky z-40 grid',
+		'appbar @container sticky z-40 grid',
 		dismissedBanner && 'dismissed-banner',
 		isHomeRoute && 'home',
-		isHomeRoute && showBackground && 'bg-app-bar',
-		isHomeRoute && showShadow && 'shadow-app-bar',
-		!isHomeRoute && 'bg-app-bar shadow-app-bar',
+		isHomeRoute && showBackground && 'bg-appbar',
+		isHomeRoute && showShadow && 'shadow-appbar',
+		!isHomeRoute && 'bg-appbar shadow-appbar',
 		showSearchInputOnMobile && 'with-search'
 	]}
 >
@@ -436,23 +436,23 @@
 		</div>
 	</section>
 	{#if isHomeRoute}
-		<div class="app-bar-shadow-trigger" bind:this={shadowSentinelElement}></div>
+		<div class="appbar-shadow-trigger" bind:this={shadowSentinelElement}></div>
 	{/if}
 {/if}
 
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	.app-bar {
-		--app-bar-shadows: 0 1px 0 0 var(--color-primary-200);
+	.appbar {
+		--appbar-shadows: 0 1px 0 0 var(--color-primary-200);
 		top: 0;
 
 		&.with-search {
-			height: var(--app-bar-height);
+			height: var(--appbar-height);
 
 			:global(.supersearch-dialog) {
 				@variant sm {
-					top: calc(var(--app-bar-height) - var(--spacing) * 0.5);
+					top: calc(var(--appbar-height) - var(--spacing) * 0.5);
 				}
 
 				@variant lg {
@@ -460,37 +460,37 @@
 				}
 			}
 			@variant lg {
-				height: var(--app-bar-height);
+				height: var(--appbar-height);
 			}
 		}
 
 		@media (scripting: none) {
-			background: var(--color-app-bar);
+			background: var(--color-appbar);
 			box-shadow: none;
 		}
 
 		& > nav {
-			grid-template-areas: var(--search-grid-template-areas);
-			grid-template-columns: var(--search-grid-template-columns);
-			grid-template-rows: var(--app-bar-height);
-			gap: var(--search-gap);
+			grid-template-areas: var(--appbar-grid-template-areas);
+			grid-template-columns: var(--appbar-grid-template-columns);
+			grid-template-rows: var(--appbar-height);
+			gap: var(--appbar-gap);
 			@variant lg {
-				height: var(--app-bar-height);
+				height: var(--appbar-height);
 			}
 		}
 	}
-	.home.app-bar {
+	.home.appbar {
 		margin-block: var(--home-header-margin);
 
 		& > nav {
-			height: var(--app-bar-height);
+			height: var(--appbar-height);
 		}
 	}
 
-	.home.app-bar {
+	.home.appbar {
 		height: auto;
-		--header-margin-top: round(calc(((61.08vh - var(--app-bar-height)) / 2)), 1px);
-		--header-margin-top: round(calc(((61.08svh - var(--app-bar-height)) / 2)), 1px);
+		--header-margin-top: round(calc(((61.08vh - var(--appbar-height)) / 2)), 1px);
+		--header-margin-top: round(calc(((61.08svh - var(--appbar-height)) / 2)), 1px);
 		margin-top: var(--header-margin-top);
 
 		@variant lg {
@@ -499,29 +499,29 @@
 	}
 
 	.home-intro-background {
-		background: var(--color-app-bar);
+		background: var(--color-appbar);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
 		height: round(61.08vh, 1px);
 		height: round(61.08svh, 1px);
 	}
 
-	.app-bar-shadow-trigger {
+	.appbar-shadow-trigger {
 		position: relative;
-		bottom: var(--app-bar-height);
+		bottom: var(--appbar-height);
 	}
 
 	.page-description-container {
-		height: round(calc(61.08vh / 2 - var(--app-bar-height) / 2), 1px);
-		height: round(calc(61.08svh / 2 - var(--app-bar-height) / 2), 1px);
+		height: round(calc(61.08vh / 2 - var(--appbar-height) / 2), 1px);
+		height: round(calc(61.08svh / 2 - var(--appbar-height) / 2), 1px);
 
 		& > div {
-			grid-template-areas: var(--search-grid-template-areas);
-			grid-template-columns: var(--search-grid-template-columns);
-			top: calc(var(--app-bar-height) * 2);
-			gap: var(--search-gap);
+			grid-template-areas: var(--appbar-grid-template-areas);
+			grid-template-columns: var(--appbar-grid-template-columns);
+			top: calc(var(--appbar-height) * 2);
+			gap: var(--appbar-gap);
 
 			@variant lg {
-				top: var(--app-bar-height);
+				top: var(--appbar-height);
 			}
 		}
 	}
@@ -529,17 +529,17 @@
 	.leading-actions {
 		position: fixed;
 		top: 0;
-		height: var(--app-bar-height);
+		height: var(--appbar-height);
 		@apply left-2;
 	}
 
 	.trailing-actions {
 		position: sticky;
 		top: 0;
-		height: var(--app-bar-height);
+		height: var(--appbar-height);
 	}
 
-	.home.app-bar {
+	.home.appbar {
 		& .trailing-actions {
 			margin-top: calc(var(--home-header-margin) * -1);
 		}
@@ -549,7 +549,7 @@
 		bottom: 0;
 
 		@variant lg {
-			bottom: var(--app-bar-height);
+			bottom: var(--appbar-height);
 		}
 	}
 
@@ -559,7 +559,7 @@
 
 	search {
 		grid-area: search;
-		min-height: var(--app-bar-height);
+		min-height: var(--appbar-height);
 	}
 
 	.page-description {
@@ -589,7 +589,7 @@
 		}
 
 		@variant sm {
-			height: var(--app-bar-height);
+			height: var(--appbar-height);
 			border-radius: 0;
 
 			&:hover::after,
@@ -608,9 +608,9 @@
 	}
 
 	.menu-dialog {
-		top: var(--app-bar-height, 0);
-		max-height: calc(100vh - calc(var(--app-bar-height, 0) + 1px));
-		max-height: calc(100svh - calc(var(--app-bar-height, 0) + 1px));
+		top: var(--appbar-height, 0);
+		max-height: calc(100vh - calc(var(--appbar-height, 0) + 1px));
+		max-height: calc(100svh - calc(var(--appbar-height, 0) + 1px));
 		overflow-y: auto;
 
 		&::before {
@@ -624,19 +624,19 @@
 		}
 
 		@variant sm {
-			top: calc(var(--app-bar-height, 0) - 4px);
-			max-height: calc(100vh - (calc(var(--app-bar-height, 0) - 3px)));
-			max-height: calc(100svh - (calc(var(--app-bar-height, 0) - 3px)));
+			top: calc(var(--appbar-height, 0) - 4px);
+			max-height: calc(100vh - (calc(var(--appbar-height, 0) - 3px)));
+			max-height: calc(100svh - (calc(var(--appbar-height, 0) - 3px)));
 		}
 	}
 
-	.shadow-app-bar {
-		box-shadow: var(--app-bar-shadows);
+	.shadow-appbar {
+		box-shadow: var(--appbar-shadows);
 	}
 
 	/* subset in header */
 	.with-subset {
-		--search-grid-template-columns: minmax(0, auto) minmax(0, auto)
+		--appbar-grid-template-columns: minmax(0, auto) minmax(0, auto)
 			minmax(0, calc(var(--spacing) * 22));
 
 		.leading-actions {
@@ -644,7 +644,7 @@
 		}
 
 		@variant lg {
-			--search-grid-template-columns: minmax(calc(var(--spacing) * 75), 1fr) minmax(0, 3fr)
+			--appbar-grid-template-columns: minmax(calc(var(--spacing) * 75), 1fr) minmax(0, 3fr)
 				minmax(0, calc(var(--spacing) * 40));
 		}
 	}
@@ -652,19 +652,19 @@
 	:global(.home .with-subset .leading-actions) {
 		position: fixed;
 
-		& + #app-bar-search {
-			background-color: var(--color-app-bar);
+		& + #appbar-search {
+			background-color: var(--color-appbar);
 		}
 	}
 
-	.app-bar :global(.search-mapping) {
+	.appbar :global(.search-mapping) {
 		overflow-x: auto;
 		scroll-behavior: smooth;
 		scrollbar-width: none;
 		padding-right: calc(var(--spacing) * 4);
 	}
 
-	.app-bar :global(.search-mapping .group) {
+	.appbar :global(.search-mapping .group) {
 		flex-wrap: nowrap;
 		max-width: none;
 	}

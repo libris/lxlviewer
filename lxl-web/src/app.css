@@ -58,8 +58,14 @@
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-success: #2ab061;
 
-	--app-bar-height: 56px;
+	--appbar-height: 56px;
 	--toolbar-height: 48px;
+
+	--appbar-grid-template-areas: 'leading-actions leading-actions trailing-actions'
+		'search search search';
+	--appbar-grid-template-columns: auto 1fr 1fr;
+	--appbar-gap: 0 calc(var(--spacing) * 3);
+	--search-input-height: 44px;
 
 	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
 	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);
@@ -158,7 +164,7 @@
 	--color-subtle: var(--color-neutral-600);
 	--color-link: var(--color-accent-600);
 	--color-error: var(--color-severe);
-	--color-app-bar: var(--color-primary-100);
+	--color-appbar: var(--color-primary-100);
 	--color-input: var(--color-page);
 	--color-placeholder: var(--color-neutral-500);
 	--color-disabled: var(--color-neutral-400);

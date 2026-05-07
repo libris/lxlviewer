@@ -91,12 +91,12 @@
 
 	.trailing-pane-wrapper {
 		@variant sm {
-			top: var(--app-bar-height);
+			top: var(--appbar-height);
 		}
 	}
 
 	.trailing-pane-content {
-		max-height: calc(100vh - var(--app-bar-height) - var(--toolbar-height));
+		max-height: calc(100vh - var(--appbar-height) - var(--toolbar-height));
 		overflow-y: auto;
 		scrollbar-width: thin;
 	}
