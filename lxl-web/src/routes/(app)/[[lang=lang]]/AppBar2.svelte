@@ -112,11 +112,12 @@
 {/if}
 <header class={['appbar @container sticky top-0 z-40', isHomeRoute && 'home', subset && 'subset']}>
 	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
-		<div class="hidden lg:contents">
-			{@render leadingActions()}
+		{@render leadingActions()}
+		<div class="contents lg:hidden">
+			{@render trailingActions()}
 		</div>
-		<div class="flex items-center justify-between lg:hidden">
-			{@render leadingActions(true)}
+		{@render search()}
+		<div class="contents">
 			{@render trailingActions()}
 		</div>
 		{#if mounted}
@@ -144,10 +145,6 @@
 				</div>
 			</dialog>
 		{/if}
-		{@render search()}
-		<div class="hidden lg:contents">
-			{@render trailingActions()}
-		</div>
 	</nav>
 </header>
 
@@ -298,31 +295,30 @@
 	@reference 'tailwindcss';
 
 	.appbar {
-
-		--home-header-height: 61.803vh;
-		--home-header-height: 61.803svh;
-		--home-header-margin: round(
-			calc(var(--home-header-height) / 2 - var(--appbar-height) / 2),
-			1px
-		);
-
-		@variant lg {
-			--appbar-height: 76px;
-			--search-input-height: 48px;
-			--appbar-grid-template-areas: 'leading-actions search trailing-actions';
-			--appbar-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
-			/* --appbar-grid-template-rows: var(--appbar-height); */
-		}
+		--appbar-grid-template-areas: 'leading-actions trailing-actions';
+		--appbar-grid-template-columns: 1fr 1fr;
+		--search-input-height: 48px;
 	}
 
-	nav {
+	.appbar-nav {
 		display: grid;
-		grid-template-rows: var(--appbar-height) var(--appbar-height);
+		grid-template-areas: var(--appbar-template-areas);
+		grid-template-rows: var(--appbar-height);
 		gap: var(--appbar-gap);
 
+		--appbar-template-areas: 'leading-actions trailing-actions' 'search search';
+		--appbar-template-rows: var(--appbar-height);
+
 		@variant lg {
-			grid-template-areas: var(--appbar-grid-template-areas);
-			grid-template-columns: var(--appbar-grid-template-columns);
+			&:has(search) {
+				--appbar-template-areas: 'leading-actions search trailing-actions';
+				--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
+			}
+		}
+
+		@variant lg {
+			grid-template-areas: var(--appbar-template-areas);
+			grid-template-columns: var(--appbar-template-columns);
 			grid-template-rows: var(--appbar-height);
 		}
 	}
@@ -352,7 +348,7 @@
 	}
 
 	.home search {
-		// display: none;
+		display: none;
 	}
 
 	.action {

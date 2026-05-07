@@ -60,12 +60,11 @@
 
 	--appbar-height: 56px;
 	--toolbar-height: 48px;
-
-	--appbar-grid-template-areas: 'leading-actions leading-actions trailing-actions'
-		'search search search';
-	--appbar-grid-template-columns: auto 1fr 1fr;
-	--appbar-gap: 0 calc(var(--spacing) * 3);
 	--search-input-height: 44px;
+
+	@variant lg {
+		--appbar-height: 76px;
+	}
 
 	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
 	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);

@@ -627,8 +627,8 @@
 
 		@variant lg {
 			display: grid;
-			grid-template-areas: var(--appbar-grid-template-areas);
-			grid-template-columns: var(--appbar-grid-template-columns);
+			grid-template-areas: var(--appbar-template-areas);
+			grid-template-columns: var(--appbar-template-columns);
 			gap: var(--appbar-gap);
 			padding-inline: calc(var(--spacing) * 1.25);
 
