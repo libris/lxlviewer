@@ -114,7 +114,7 @@
 	]}
 >
 	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
-		<ul class="leading-actions z-43 ml-2 flex items-center lg:ml-0 lg:gap-2">
+		<ul class="leading-actions z-43 ml-2 flex items-center lg:ml-0 lg:gap-2 @7xl:gap-4">
 			<li>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -158,7 +158,7 @@
 							width={275}
 							height={75}
 							alt="Libris"
-							class="3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-27.5"
+							class="3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-27.5 @7xl:w-35.75"
 						/>
 					{/if}
 				</a>
@@ -211,7 +211,7 @@
 	{@const searchLabelId = mobile ? `${ID_SEARCH_LABEL}-mobile` : ID_SEARCH_LABEL}
 	{@const changeLangLabelId = mobile ? `${ID_CHANGE_LANG_LABEL}-mobile` : ID_CHANGE_LANG_LABEL}
 	{@const myPagesLabelId = mobile ? `${ID_MY_PAGES_LABEL}-mobile` : ID_MY_PAGES_LABEL}
-	<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">
+	<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2 @7xl:gap-4">
 		<li class={['lg:hidden', withMobileSearchInput && 'hidden']}>
 			<svelte:element
 				this={mounted ? 'button' : 'a'}
@@ -270,9 +270,9 @@
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
 	<div
-		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-[0.84375rem] font-medium @7xl:text-sm"
+		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-[0.84375rem] font-medium @3xl:text-sm @7xl:text-base"
 	>
-		<Icon class="size-5" />
+		<Icon class="size-5 @7xl:size-5.5" />
 		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
 			{label}
 		</p>
