@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { redirect, type RequestEvent } from '@sveltejs/kit';
+import { redirect, type HandleServerError, type RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
@@ -240,3 +240,10 @@ function getSite(event: RequestEvent): Site | null {
 function configuredSubDomains(): string[] {
 	return env.SUBSITES?.split(',').map((s) => s.trim()) || [];
 }
+
+export const handleError: HandleServerError = ({ error, event, status }) => {
+	if (status >= 500) {
+		console.error(`[${status}] ${event.request.method} ${event.url.pathname}${event.url.search}`);
+		console.error(error);
+	}
+};
