@@ -4,8 +4,17 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
+	import { baseLocale } from '$lib/i18n/locales';
+
+	type Props = {
+		id: string;
+	};
+
+	let { id }: Props = $props();
 
 	let cursor: number | null = $state(null);
+
+	const action = $derived(page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`);
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
@@ -37,25 +46,38 @@
 	<SuperSearchFallback {placeholder} {ariaLabelledBy} {ariaLabel} {autofocus} />
 {/snippet}
 
-{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
-	{@render fallbackInput()}
-{:then { default: SuperSearchWrapper }}
-	<div class="contents" data-testid="supersearch">
-		<SuperSearchWrapper
-			{placeholder}
-			collapsedAriaLabelledBy={ariaLabelledBy}
-			collapsedAriaLabel={ariaLabel}
-			expandedAriaLabel={page.data.t('header.search')}
-			onCursorChange={(value) => (cursor = value)}
-			qualifierSuggestions={page.data.qualifierSuggestions || []}
-			{autofocus}
-		/>
-	</div>
-{:catch}
-	{@render fallbackInput()}
-{/await}
-{#each Array.from(pageParams) as [name, value], i (name + i)}
-	{#if name !== '_q'}
-		<input type="hidden" {name} {value} />
-	{/if}
-{/each}
+<search
+	{id}
+	class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center px-2 lg:px-3']}
+>
+	<form id={`${id}-form`} {action} class="mx-auto w-full min-w-0">
+		{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
+			{@render fallbackInput()}
+		{:then { default: SuperSearchWrapper }}
+			<div class="contents" data-testid="supersearch">
+				<SuperSearchWrapper
+					{placeholder}
+					collapsedAriaLabelledBy={ariaLabelledBy}
+					collapsedAriaLabel={ariaLabel}
+					expandedAriaLabel={page.data.t('header.search')}
+					onCursorChange={(value) => (cursor = value)}
+					qualifierSuggestions={page.data.qualifierSuggestions || []}
+					{autofocus}
+				/>
+			</div>
+		{:catch}
+			{@render fallbackInput()}
+		{/await}
+		{#each Array.from(pageParams) as [name, value], i (name + i)}
+			{#if name !== '_q'}
+				<input type="hidden" {name} {value} />
+			{/if}
+		{/each}
+	</form>
+</search>
+
+<style>
+	search {
+		--search-input-height: 48px;
+	}
+</style>

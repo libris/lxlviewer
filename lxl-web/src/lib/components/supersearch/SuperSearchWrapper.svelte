@@ -352,7 +352,7 @@
 			<div
 				class={[
 					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
-					expanded && 'expanded sm:mx-1.5 @5xl:mx-2.25',
+					expanded && 'expanded sm:mx-0.5 lg:mx-1.5',
 					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
 				]}
@@ -560,12 +560,12 @@
 
 		&:has(.expanded) {
 			@variant sm {
-				margin-inline: calc(var(--spacing) * 0.5);
 				margin-top: calc(var(--spacing) * 0.5);
+				margin-inline: calc(var(--spacing) * 0.5);
 			}
 			@variant lg {
 				margin-top: calc(var(--spacing) * 3.5);
-				margin-inline: calc(var(--spacing) * 1.75);
+				margin-inline: calc(var(--spacing) * 1.5);
 			}
 		}
 	}
@@ -578,7 +578,7 @@
 			}
 
 			@media screen and (min-width: 1380px) {
-				margin-inline: calc(var(--spacing) * 1.75);
+				margin-inline: calc(var(--spacing) * 1.5);
 			}
 		}
 	}
@@ -622,7 +622,7 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
-			padding-inline: calc(var(--spacing) * 2);
+			padding-inline: calc(var(--spacing) * 1);
 		}
 
 		@variant lg {
@@ -630,11 +630,7 @@
 			grid-template-areas: var(--appbar-template-areas);
 			grid-template-columns: var(--appbar-template-columns);
 			gap: var(--appbar-gap);
-			padding-inline: calc(var(--spacing) * 1.25);
-
-			@variant @5xl {
-				padding-inline: 0;
-			}
+			padding-inline: 0;
 		}
 	}
 

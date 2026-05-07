@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type Component, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
+	import { type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import { getSearchContext } from '$lib/contexts/search';
@@ -33,11 +33,7 @@
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
-	const showSearchInputOnMobile = $derived(isHomeRoute || isFindRoute);
-
-	const findActionUrl = $derived(
-		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
-	);
+	const withMobileSearchInput = $derived(isFindRoute);
 
 	const subset = $derived(page.data.subsetMapping);
 
@@ -55,7 +51,6 @@
 
 	function closeExpandedMenu() {
 		menuDialogElement?.close();
-
 		expandedMenu = false;
 	}
 
@@ -95,9 +90,9 @@
 	const ID_SEARCH = 'appbar-search';
 	const ID_MENU = 'appbar-menu';
 	const ID_MENU_LABEL = 'appbar-menu-label';
-	const ID_MOBILE_MENU_LABEL = 'appbar-mobile-menu-label';
 	const ID_SEARCH_LABEL = 'appbar-search-label';
-	const ID_CHANGE_LANG_LABEL = 'appbar-change-lang-label';
+	const ID_CHANGE_LANG_LABEL = 'appbar-lang-label';
+	const ID_MY_PAGES_LABEL = 'appbar-mypages-label';
 
 	$effect(() => {
 		if (page.url.hash === '#menu' && mounted) {
@@ -110,15 +105,79 @@
 {#if !dismissedBanner}
 	<AppBanner ondismiss={handleDismissBanner} />
 {/if}
-<header class={['appbar @container sticky top-0 z-40', isHomeRoute && 'home', subset && 'subset']}>
+<header
+	class={[
+		'appbar @container sticky top-0 z-40',
+		isHomeRoute && 'home',
+		subset && 'subset',
+		withMobileSearchInput && 'with-mobile-search-input'
+	]}
+>
 	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
-		{@render leadingActions()}
+		<ul class="leading-actions z-43 ml-2 flex items-center lg:ml-0 lg:gap-2">
+			<li>
+				<svelte:element
+					this={mounted ? 'button' : 'a'}
+					type={mounted ? 'button' : undefined}
+					href={mounted ? undefined : page.data.localizeHref('/browse#menu')}
+					role={mounted ? undefined : 'button'}
+					tabindex={mounted ? undefined : 0}
+					aria-current={mounted
+						? undefined
+						: (page.route.id === '/(app)/[[lang=lang]]/browse' && 'page') || undefined}
+					aria-controls={ID_MENU}
+					aria-haspopup="dialog"
+					aria-expanded={(mounted && expandedMenu) || undefined}
+					class="action max-sm:hover:bg-primary-200 lg:min-w-16"
+					aria-label={page.data.t('header.menu')}
+					aria-labelledby={ID_MENU_LABEL}
+					onclick={handleClickMenuAction}
+					onfocusout={handleMenuDialogFocusOut}
+				>
+					{@render actionItemContents({
+						Icon: expandedMenu ? IconCloseMenu : IconMenu,
+						label: page.data.t('header.menu'),
+						id: ID_MENU
+					})}
+				</svelte:element>
+			</li>
+			<li>
+				<a
+					class="action px-1.5"
+					href={resolve(page.data.localizeHref(page.data.base))}
+					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
+					data-testid="home"
+				>
+					{#if page.data.siteName}
+						<span class="text-2xl font-medium">
+							{page.data.siteName}
+						</span>
+					{:else}
+						<img
+							src={librisLogo}
+							width={275}
+							height={75}
+							alt="Libris"
+							class="3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-27.5"
+						/>
+					{/if}
+				</a>
+			</li>
+			{#if subset}
+				<li class="subset-container relative flex items-center overflow-hidden">
+					<p class="pr-2">/</p>
+					<SearchMapping mapping={subset} />
+				</li>
+			{/if}
+		</ul>
 		<div class="contents lg:hidden">
-			{@render trailingActions()}
+			{@render trailingActions({ mobile: true })}
 		</div>
-		{@render search()}
+		<div class={['search', withMobileSearchInput ? 'block' : 'hidden lg:block']}>
+			<AppSearch id={ID_SEARCH} />
+		</div>
 		<div class="contents">
-			{@render trailingActions()}
+			{@render trailingActions({ mobile: false })}
 		</div>
 		{#if mounted}
 			<dialog
@@ -148,85 +207,12 @@
 	</nav>
 </header>
 
-{#snippet leadingActions(mobile?: true)}
-	<ul class="leading-actions z-43 ml-2 flex items-center lg:ml-0 lg:gap-2">
-		<li>
-			<svelte:element
-				this={mounted ? 'button' : 'a'}
-				type={mounted ? 'button' : undefined}
-				href={mounted ? undefined : page.data.localizeHref('/browse#menu')}
-				role={mounted ? undefined : 'button'}
-				tabindex={mounted ? undefined : 0}
-				aria-current={mounted
-					? undefined
-					: (page.route.id === '/(app)/[[lang=lang]]/browse' && 'page') || undefined}
-				aria-controls={ID_MENU}
-				aria-haspopup="dialog"
-				aria-expanded={(mounted && expandedMenu) || undefined}
-				class="action max-sm:hover:bg-primary-200 lg:min-w-16"
-				aria-label={page.data.t('header.menu')}
-				aria-labelledby={mobile ? ID_MOBILE_MENU_LABEL : ID_MENU_LABEL}
-				onclick={handleClickMenuAction}
-				onfocusout={handleMenuDialogFocusOut}
-			>
-				{@render actionItemContents({
-					Icon: expandedMenu ? IconCloseMenu : IconMenu,
-					label: page.data.t('header.menu'),
-					id: mobile ? ID_MOBILE_MENU_LABEL : ID_MENU
-				})}
-			</svelte:element>
-		</li>
-		<li>
-			<a
-				class="action px-1.5"
-				href={resolve(page.data.localizeHref(page.data.base))}
-				aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
-				data-testid="home"
-			>
-				{#if page.data.siteName}
-					<span class="text-2xl font-medium">
-						{page.data.siteName}
-					</span>
-				{:else}
-					<img
-						src={librisLogo}
-						width={275}
-						height={75}
-						alt="Libris"
-						class="3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-27.5"
-					/>
-				{/if}
-			</a>
-		</li>
-		{#if subset}
-			<li class="subset-container relative flex items-center overflow-hidden">
-				<p class="pr-2">/</p>
-				<SearchMapping mapping={subset} />
-			</li>
-		{/if}
-	</ul>
-{/snippet}
-
-{#snippet search()}
-	<search
-		id={ID_SEARCH}
-		class={[
-			'@container z-41 mx-auto flex w-full max-w-7xl items-center px-2 sm:px-4 lg:z-43',
-			isHomeRoute && 'home grid h-auto w-full',
-			showSearchInputOnMobile && 'flex items-center',
-			!showSearchInputOnMobile &&
-				'hidden target:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit' // enable toggling using target/anchor (so it also works when JavaScript is disabled)
-		]}
-	>
-		<form id="search-form" action={findActionUrl} class="mx-auto w-full min-w-0">
-			<AppSearch />
-		</form>
-	</search>
-{/snippet}
-
-{#snippet trailingActions()}
+{#snippet trailingActions({ mobile }: { mobile: boolean })}
+	{@const searchLabelId = mobile ? `${ID_SEARCH_LABEL}-mobile` : ID_SEARCH_LABEL}
+	{@const changeLangLabelId = mobile ? `${ID_CHANGE_LANG_LABEL}-mobile` : ID_CHANGE_LANG_LABEL}
+	{@const myPagesLabelId = mobile ? `${ID_MY_PAGES_LABEL}-mobile` : ID_MY_PAGES_LABEL}
 	<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">
-		<li class={['lg:hidden', showSearchInputOnMobile && 'hidden']}>
+		<li class={['lg:hidden', withMobileSearchInput && 'hidden']}>
 			<svelte:element
 				this={mounted ? 'button' : 'a'}
 				type={mounted ? 'button' : undefined}
@@ -236,12 +222,12 @@
 				class="action max-sm:hover:bg-primary-200"
 				onclick={handleClickSearchAction}
 				aria-label={page.data.t('header.search')}
-				aria-labelledby={ID_SEARCH_LABEL}
+				aria-labelledby={searchLabelId}
 			>
 				{@render actionItemContents({
 					Icon: IconSearch,
 					label: page.data.t('header.search'),
-					id: ID_SEARCH_LABEL
+					id: searchLabelId
 				})}
 			</svelte:element>
 		</li>
@@ -255,13 +241,13 @@
 				)}
 				hreflang={otherLangCode}
 				aria-label={page.data.t('header.changeLang')}
-				aria-labelledby={ID_CHANGE_LANG_LABEL}
+				aria-labelledby={changeLangLabelId}
 				data-testid="change-lang"
 			>
 				{@render actionItemContents({
 					Icon: IconLanguage,
 					label: page.data.t('header.changeLang'),
-					id: ID_CHANGE_LANG_LABEL
+					id: changeLangLabelId
 				})}
 			</a>
 		</li>
@@ -270,10 +256,12 @@
 				class="action max-sm:hover:bg-primary-200"
 				href={resolve(page.data.localizeHref('/my-pages'))}
 				aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
+				aria-labelledby={myPagesLabelId}
 			>
 				{@render actionItemContents({
 					Icon: IconBookmark,
-					label: page.data.t('header.myPages')
+					label: page.data.t('header.myPages'),
+					id: myPagesLabelId
 				})}
 			</a>
 		</li>
@@ -295,32 +283,31 @@
 	@reference 'tailwindcss';
 
 	.appbar {
-		--appbar-grid-template-areas: 'leading-actions trailing-actions';
-		--appbar-grid-template-columns: 1fr 1fr;
-		--search-input-height: 48px;
+		--appbar-template-areas: 'leading-actions trailing-actions trailing-actions';
+		--appbar-template-rows: var(--appbar-height);
+	}
+
+	.appbar.with-mobile-search-input {
+		--appbar-template-areas: 'leading-actions trailing-actions trailing-actions'
+			'search search search';
+		--appbar-template-rows: var(--appbar-height) var(--appbar-height);
+	}
+
+	.appbar,
+	.appbar.appbar.with-mobile-search-input {
+		@variant lg {
+			--appbar-template-areas: 'leading-actions search trailing-actions';
+			--appbar-template-rows: var(--appbar-height);
+			--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
+		}
 	}
 
 	.appbar-nav {
 		display: grid;
 		grid-template-areas: var(--appbar-template-areas);
-		grid-template-rows: var(--appbar-height);
+		grid-template-columns: var(--appbar-template-columns);
+		grid-template-rows: var(--appbar-template-rows);
 		gap: var(--appbar-gap);
-
-		--appbar-template-areas: 'leading-actions trailing-actions' 'search search';
-		--appbar-template-rows: var(--appbar-height);
-
-		@variant lg {
-			&:has(search) {
-				--appbar-template-areas: 'leading-actions search trailing-actions';
-				--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
-			}
-		}
-
-		@variant lg {
-			grid-template-areas: var(--appbar-template-areas);
-			grid-template-columns: var(--appbar-template-columns);
-			grid-template-rows: var(--appbar-height);
-		}
 	}
 
 	.leading-actions,
@@ -343,11 +330,11 @@
 		@apply pr-2;
 	}
 
-	search {
+	.search {
 		grid-area: search;
 	}
 
-	.home search {
+	.home .search {
 		display: none;
 	}
 
