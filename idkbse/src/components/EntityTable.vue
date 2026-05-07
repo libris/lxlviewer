@@ -166,11 +166,17 @@ export default {
       const catLink = p.join('/');
       links.push({
         'link': catLink,
-        'title': 'Libris katalogisering'
+        'title': this.translateUi('Libris Cataloguing')
       });
 
+      links.push({
+        'link': this.recordId,
+        'title': this.translateUi('Libris Search')
+      });
+
+      // NOTE: Legacy link (no longer reachable; the formal record IRI is now served by lxl-web)
       const baseType = VocabUtil.getRecordType(this.itemData['@type'], this.vocab, this.vocabContext)
-      if(this.controlNumber && baseType === 'Instance') {
+      if (this.controlNumber && baseType === 'Instance') {
         let p = this.recordId.split('/');
         p.pop();
         p.push('bib');
@@ -180,10 +186,6 @@ export default {
           'title': 'Libris webbsök'
         });
       } else {
-        links.push({
-          'link': this.recordId,
-          'title': 'Libris sök'
-        });
       }
 
       return links
