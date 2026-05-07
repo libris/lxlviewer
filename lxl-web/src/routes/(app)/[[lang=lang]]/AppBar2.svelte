@@ -110,14 +110,7 @@
 {#if !dismissedBanner}
 	<AppBanner ondismiss={handleDismissBanner} />
 {/if}
-<header
-	class={[
-		'app-bar @container sticky top-0 z-40',
-		isHomeRoute && 'home',
-		showSearchInputOnMobile && 'with-search',
-		subset && 'with-subset'
-	]}
->
+<header class={['app-bar @container sticky top-0 z-40', isHomeRoute && 'home', subset && 'subset']}>
 	<nav class={['app-bar-nav bg-app-bar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
 		<div class="hidden lg:contents">
 			{@render leadingActions()}
