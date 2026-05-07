@@ -110,54 +110,52 @@
 {#if !dismissedBanner}
 	<AppBanner ondismiss={handleDismissBanner} />
 {/if}
-<header class="sticky top-0 z-40">
-	<div
-		class={[
-			'app-bar @container',
-			isHomeRoute && 'home',
-			showSearchInputOnMobile && 'with-search',
-			subset && 'with-subset'
-		]}
-	>
-		<nav class={['app-bar-nav bg-app-bar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
-			<div class="hidden lg:contents">
-				{@render leadingActions()}
-			</div>
-			<div class="flex items-center justify-between lg:hidden">
-				{@render leadingActions(true)}
-				{@render trailingActions()}
-			</div>
-			{#if mounted}
-				<dialog
-					id={ID_MENU}
-					class="menu-dialog sm:border-neutral fixed z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-md sm:border"
-					closedby="any"
-					tabindex="-1"
-					bind:this={menuDialogElement}
-					onclose={closeExpandedMenu}
-					onfocusout={handleMenuDialogFocusOut}
-				>
-					<div class="px-1 pt-1 sm:pb-1">
-						<AppMenuContent showSkipToContent={false} onclickSearch={handleClickSearchAction} />
-					</div>
-					<div class="flex px-1 pb-1 sm:hidden">
-						<button
-							type="button"
-							onclick={closeExpandedMenu}
-							class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 flex min-h-9 w-full items-center justify-center gap-2 text-xs"
-						>
-							<IconCloseMenu />
-							{page.data.t('header.closeMenu')}
-						</button>
-					</div>
-				</dialog>
-			{/if}
-			{@render search()}
-			<div class="hidden lg:contents">
-				{@render trailingActions()}
-			</div>
-		</nav>
-	</div>
+<header
+	class={[
+		'app-bar @container sticky top-0 z-40',
+		isHomeRoute && 'home',
+		showSearchInputOnMobile && 'with-search',
+		subset && 'with-subset'
+	]}
+>
+	<nav class={['app-bar-nav bg-app-bar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
+		<div class="hidden lg:contents">
+			{@render leadingActions()}
+		</div>
+		<div class="flex items-center justify-between lg:hidden">
+			{@render leadingActions(true)}
+			{@render trailingActions()}
+		</div>
+		{#if mounted}
+			<dialog
+				id={ID_MENU}
+				class="menu-dialog sm:border-neutral fixed z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-md sm:border"
+				closedby="any"
+				tabindex="-1"
+				bind:this={menuDialogElement}
+				onclose={closeExpandedMenu}
+				onfocusout={handleMenuDialogFocusOut}
+			>
+				<div class="px-1 pt-1 sm:pb-1">
+					<AppMenuContent showSkipToContent={false} onclickSearch={handleClickSearchAction} />
+				</div>
+				<div class="flex px-1 pb-1 sm:hidden">
+					<button
+						type="button"
+						onclick={closeExpandedMenu}
+						class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 flex min-h-9 w-full items-center justify-center gap-2 text-xs"
+					>
+						<IconCloseMenu />
+						{page.data.t('header.closeMenu')}
+					</button>
+				</div>
+			</dialog>
+		{/if}
+		{@render search()}
+		<div class="hidden lg:contents">
+			{@render trailingActions()}
+		</div>
+	</nav>
 </header>
 
 {#snippet leadingActions(mobile?: true)}
@@ -306,6 +304,29 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
+	.app-bar {
+		--search-grid-template-areas: 'leading-actions leading-actions trailing-actions'
+			'search search search';
+		--search-grid-template-columns: auto 1fr 1fr;
+		--search-gap: 0 calc(var(--spacing) * 3);
+		--search-input-height: 44px;
+
+		--home-header-height: 61.803vh;
+		--home-header-height: 61.803svh;
+		--home-header-margin: round(
+			calc(var(--home-header-height) / 2 - var(--app-bar-height) / 2),
+			1px
+		);
+
+		@variant lg {
+			--app-bar-height: 76px;
+			--search-input-height: 48px;
+			--search-grid-template-areas: 'leading-actions search trailing-actions';
+			--search-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
+			/* --search-grid-template-rows: var(--app-bar-height); */
+		}
+	}
+
 	nav {
 		display: grid;
 		grid-template-rows: var(--app-bar-height) var(--app-bar-height);
@@ -325,13 +346,25 @@
 		justify-items: stretch;
 	}
 
-	@variant lg {
-		.leading-actions {
+	.leading-actions {
+		grid-area: leading-actions;
+
+		@variant lg {
 			@apply pl-2;
 		}
-		.trailing-actions {
-			@apply pr-2;
-		}
+	}
+
+	.trailing-actions {
+		grid-area: trailing-actions;
+		@apply pr-2;
+	}
+
+	search {
+		grid-area: search;
+	}
+
+	.home search {
+		// display: none;
 	}
 
 	.action {
