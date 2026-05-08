@@ -369,11 +369,9 @@
 			<li class="hidden lg:block">
 				<a
 					class="action"
-					href={resolve(
-						page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
-							locale: otherLangCode
-						})
-					)}
+					href={page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
+						locale: otherLangCode
+					})}
 					hreflang={otherLangCode}
 					aria-label={page.data.t('header.changeLang')}
 					aria-labelledby={IDs.appBarChangeLangLabel}
