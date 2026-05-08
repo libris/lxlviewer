@@ -158,7 +158,7 @@
 							width={275}
 							height={75}
 							alt="Libris"
-							class="2xl:w-38.5 mb-1 h-auto w-22 min-w-20 lg:w-27.5 xl:w-33"
+							class="mb-1 h-auto w-22 min-w-20 lg:w-27.5 xl:w-33 2xl:w-38.5"
 						/>
 					{/if}
 				</a>
@@ -270,9 +270,9 @@
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
 	<div
-		class="3xl:px-2.5 2xl:gap-1.5 2xl:text-base flex min-w-11 flex-col items-center gap-1 px-1 text-sm font-medium"
+		class="3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-sm font-medium 2xl:gap-1.5 2xl:text-base"
 	>
-		<Icon class="2xl:size-6 mt-0.5 size-5 2xl:mt-1" />
+		<Icon class="mt-0.5 size-5 2xl:mt-1 2xl:size-6" />
 		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
 			{label}
 		</p>
@@ -352,8 +352,7 @@
 		@apply text-subtle;
 
 		&:focus-visible,
-		&[aria-expanded],
-		&:hover {
+		&[aria-expanded] {
 			background: var(--color-primary-200);
 			color: var(--color-primary-950);
 		}
