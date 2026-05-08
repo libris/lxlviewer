@@ -230,6 +230,8 @@ export default {
 		somethingWentWrong: 'Något gick fel',
 		notAvailable: 'Information saknas',
 		notFound: 'Sidan hittades inte',
+		gone: 'Posten har tagits bort',
+		goneDescription: 'Den här posten finns inte längre i Libris.',
 		wrongLink: 'Klickade du på en länk i Libris som inte fungerade?',
 		sendEmail: 'Skicka e-post till',
 		customerService: 'Libris kundservice',

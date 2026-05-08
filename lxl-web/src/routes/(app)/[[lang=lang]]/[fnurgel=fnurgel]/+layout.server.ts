@@ -36,5 +36,7 @@ export const load = async ({ url, fetch, params }) => {
 			return { data, error };
 		}
 	}
-	return { citations: getData() };
+	// only stream if there's a cite param, otherwise the non-awaited promise
+	// breaks error status propagation (e.g. 410)
+	return { citations: id ? getData() : undefined };
 };

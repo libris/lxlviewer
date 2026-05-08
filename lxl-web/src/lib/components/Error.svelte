@@ -8,6 +8,9 @@
 		if (page.status === 404) {
 			return getPageTitle(page.data.t('errors.notFound'), page.data.siteName);
 		}
+		if (page.status === 410) {
+			return getPageTitle(page.data.t('errors.gone'), page.data.siteName);
+		}
 		return getPageTitle(page.data.t('errors.somethingWentWrong'), page.data.siteName);
 	}
 </script>
@@ -41,6 +44,14 @@
 			<a class="link-subtle" href={page.data.localizeHref(page.data.base)}
 				>{page.data.t('errors.backToStartPage')}</a
 			>
+		</p>
+	{:else if page.status === 410}
+		<h2 class="pb-4 text-lg font-medium">{page.data.t('errors.gone')}</h2>
+		<p>{page.data.t('errors.goneDescription')}</p>
+		<p class="pt-4">
+			<a class="link-subtle" href={page.data.localizeHref(page.data.base)}
+				>{page.data.t('errors.backToStartPage')}
+			</a>
 		</p>
 	{:else if page.error?.message}
 		<h2 class="pb-4 text-lg font-medium">{page.data.t('errors.somethingWentWrong')}</h2>
