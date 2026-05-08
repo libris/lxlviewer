@@ -222,7 +222,13 @@
 			// Make sure supersearch doesn't use '_r' section of mapping
 			const filteredPageMapping = pageMapping?.filter((m) => m.variable === '_q');
 			const filteredSuggestMapping = suggestMapping?.filter((m) => m.variable === '_q');
-			return getLabelFromMappings(key, value, filteredPageMapping, filteredSuggestMapping);
+			return getLabelFromMappings(
+				key,
+				value,
+				filteredPageMapping,
+				filteredSuggestMapping,
+				page.data.qualifierSuggestions
+			);
 		}
 		return lxlQualifierPlugin(getLabels, renderer);
 	});
