@@ -141,3 +141,8 @@ test('can paginate to next and previous', async ({ page }) => {
 	await page.getByTestId('pagination').getByLabel('Föregående sida').click();
 	await expect(page).not.toHaveURL(/_offset=/);
 });
+
+test('can handle square brackets in query', async ({ page }) => {
+	await page.goto('/find?_q=[test]');
+	await expect(page.getByTestId('supersearch').nth(0)).toBeVisible();
+});
