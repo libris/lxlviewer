@@ -36,27 +36,36 @@
 	<title>{getPageTitle(undefined, page.data.siteName)}</title>
 	<link rel="unapi-server" type="application/xml" href={`/api/${page.data.locale}/cite`} />
 </svelte:head>
-<AppBar />
-{#if isFindRoute}
-	<div class="content flex flex-1 flex-col">
-		{@render children()}
-	</div>
-{:else}
-	<main
-		id="content"
-		class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
-	>
-		{@render children()}
-	</main>
-	<SiteFooter />
-{/if}
-<div id="floating-elements-container"></div>
+<div class="contents app">
+	<AppBar />
+	{#if isFindRoute}
+		<div class="flex flex-1 flex-col">
+			{@render children()}
+		</div>
+	{:else}
+		<main
+			id="content"
+			class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
+		>
+			{@render children()}
+		</main>
+		<SiteFooter />
+	{/if}
+	<div id="floating-elements-container"></div>
+</div>
 
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	.content {
+	.app {
+		--appbar-height: var(--appbar-base);
+
 		@variant lg {
+			--appbar-height: var(--appbar-lg);
+		}
+
+		@variant 2xl {
+			--appbar-height: var(--appbar-2xl);
 		}
 	}
 </style>

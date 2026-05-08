@@ -14,7 +14,7 @@
 	id="app-banner"
 	role="banner"
 	class={[
-		'bg-primary-200 z-50 flex min-h-11 items-center justify-between gap-0 px-3 text-sm font-medium md:pl-6',
+		'bg-primary-200 z-50 flex min-h-11 items-center justify-between gap-0 px-3 text-sm font-medium md:pl-6 2xl:text-base',
 		dismissable && 'pr-0'
 	]}
 >
@@ -26,7 +26,7 @@
 	{#if dismissable}
 		<button
 			type="button"
-			class="focus:*:bg-primary-800/20 hover:*:bg-primary-400 ml-auto flex h-11 min-w-14.5 items-center justify-center self-start -outline-offset-2 sm:self-center lg:min-w-11"
+			class="focus:*:bg-primary-800/20 hover:*:bg-primary-400 ml-auto flex h-11 2xl:min-h-12 min-w-14 2xl:min-w items-center justify-center self-start -outline-offset-2 sm:self-center lg:min-w-11 lg:2xl:min-w-12"
 			aria-label={page.data.t('banner.dismiss')}
 			onclick={ondismiss}
 		>

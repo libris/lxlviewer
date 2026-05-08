@@ -114,7 +114,7 @@
 	]}
 >
 	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
-		<ul class="leading-actions z-43 ml-2 flex items-center lg:ml-0 lg:gap-2 @7xl:gap-4">
+		<ul class="leading-actions z-43 flex items-stretch lg:ml-0">
 			<li>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -128,7 +128,7 @@
 					aria-controls={ID_MENU}
 					aria-haspopup="dialog"
 					aria-expanded={(mounted && expandedMenu) || undefined}
-					class="action max-sm:hover:bg-primary-200 lg:min-w-16"
+					class="action max-sm:hover:bg-primary-200 aspect-square lg:min-w-16"
 					aria-label={page.data.t('header.menu')}
 					aria-labelledby={ID_MENU_LABEL}
 					onclick={handleClickMenuAction}
@@ -158,7 +158,7 @@
 							width={275}
 							height={75}
 							alt="Libris"
-							class="3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-27.5 @7xl:w-35.75"
+							class="2xl:w-38.5 mb-1 h-auto w-22 min-w-20 lg:w-27.5 xl:w-33"
 						/>
 					{/if}
 				</a>
@@ -211,7 +211,7 @@
 	{@const searchLabelId = mobile ? `${ID_SEARCH_LABEL}-mobile` : ID_SEARCH_LABEL}
 	{@const changeLangLabelId = mobile ? `${ID_CHANGE_LANG_LABEL}-mobile` : ID_CHANGE_LANG_LABEL}
 	{@const myPagesLabelId = mobile ? `${ID_MY_PAGES_LABEL}-mobile` : ID_MY_PAGES_LABEL}
-	<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2 @7xl:gap-4">
+	<ul class="trailing-actions z-42 flex w-full items-stretch justify-end">
 		<li class={['lg:hidden', withMobileSearchInput && 'hidden']}>
 			<svelte:element
 				this={mounted ? 'button' : 'a'}
@@ -219,7 +219,7 @@
 				href={mounted ? undefined : '#search'}
 				role={mounted ? undefined : 'button'}
 				tabindex={mounted ? undefined : 0}
-				class="action max-sm:hover:bg-primary-200"
+				class="action max-sm:hover:bg-primary-200 aspect-square lg:aspect-auto"
 				onclick={handleClickSearchAction}
 				aria-label={page.data.t('header.search')}
 				aria-labelledby={searchLabelId}
@@ -253,7 +253,7 @@
 		</li>
 		<li>
 			<a
-				class="action max-sm:hover:bg-primary-200"
+				class="action max-sm:hover:bg-primary-200 aspect-square lg:aspect-auto"
 				href={resolve(page.data.localizeHref('/my-pages'))}
 				aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
 				aria-labelledby={myPagesLabelId}
@@ -270,9 +270,9 @@
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
 	<div
-		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-[0.84375rem] font-medium @3xl:text-sm @7xl:text-base"
+		class="3xl:px-2.5 2xl:gap-1.5 2xl:text-base flex min-w-11 flex-col items-center gap-1 px-1 text-sm font-medium"
 	>
-		<Icon class="size-5 @7xl:size-5.5" />
+		<Icon class="2xl:size-6 mt-0.5 size-5 2xl:mt-1" />
 		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
 			{label}
 		</p>
@@ -280,11 +280,11 @@
 {/snippet}
 
 <style lang="postcss">
-	@reference 'tailwindcss';
-
+	@reference "#app.css";
 	.appbar {
 		--appbar-template-areas: 'leading-actions trailing-actions trailing-actions';
 		--appbar-template-rows: var(--appbar-height);
+		--search-input-height: 44px;
 	}
 
 	.appbar.with-mobile-search-input {
@@ -317,17 +317,23 @@
 		justify-items: stretch;
 	}
 
+	.leading-actions,
+	.trailing-actions {
+		& .action {
+			@apply -outline-offset-2;
+			height: 100%;
+
+			@variant lg {
+				@apply px-2;
+			}
+		}
+	}
 	.leading-actions {
 		grid-area: leading-actions;
-
-		@variant lg {
-			@apply pl-2;
-		}
 	}
 
 	.trailing-actions {
 		grid-area: trailing-actions;
-		@apply pr-2;
 	}
 
 	.search {
@@ -343,24 +349,36 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: calc(var(--spacing) * 11);
-		border-radius: var(--radius-md);
+		@apply text-subtle;
 
 		&:focus-visible,
-		&[aria-expanded] {
+		&[aria-expanded],
+		&:hover {
 			background: var(--color-primary-200);
+			color: var(--color-primary-950);
 		}
 
-		@variant sm {
+		@variant lg {
 			height: var(--appbar-height);
 			border-radius: 0;
+
+			&:hover {
+				&:not(:focus-visible),
+				&:not([aria-expanded]) {
+					background: none;
+				}
+				&:focus-visible,
+				&[aria-expanded] {
+					background: var(--color-primary-300);
+				}
+			}
 
 			&:hover::after,
 			&:focus-visible::after,
 			&[aria-expanded]::after {
 				content: '';
 				position: absolute;
-				height: 3px;
+				height: 4px;
 				bottom: 0;
 				left: 0;
 				background: var(--color-primary);
