@@ -253,33 +253,60 @@
 				{/if}
 			</li>
 			<li>
-				<a
-					class="action px-1.5"
-					href={resolve(page.data.localizeHref(page.data.base))}
-					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
-					data-testid="home"
-				>
-					{#if page.data.siteName}
-						<span class="text-2xl font-medium">
-							{page.data.siteName}
-						</span>
-					{:else}
-						<img
-							src={librisLogo}
-							width={275}
-							height={75}
-							alt="Libris"
-							class="3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-27.5"
-						/>
-					{/if}
-				</a>
+				{#if subset}
+					<div
+						class="flex items-center gap-1 lg:flex-col lg:items-start @min-[110rem]:flex-row @min-[110rem]:items-center @min-[110rem]:gap-1"
+					>
+						<a
+							class={'px-1.5'}
+							href={resolve(page.data.localizeHref(page.data.base))}
+							aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
+							data-testid="home"
+						>
+							{#if page.data.siteName}
+								<span class="text-2xl font-medium">
+									{page.data.siteName}
+								</span>
+							{:else}
+								<img
+									src={librisLogo}
+									width={275}
+									height={75}
+									alt="Libris"
+									class={[
+										'3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-18 lg:min-w-18 @min-[110rem]:w-22 @min-[110rem]:min-w-22'
+									]}
+								/>
+							{/if}
+						</a>
+						<div class="subset-container relative flex items-center overflow-hidden">
+							<p class="text-subtle block pr-2 lg:hidden @min-[110rem]:block">/</p>
+							<SearchMapping mapping={subset} />
+						</div>
+					</div>
+				{:else}
+					<a
+						class={'action px-1.5'}
+						href={resolve(page.data.localizeHref(page.data.base))}
+						aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
+						data-testid="home"
+					>
+						{#if page.data.siteName}
+							<span class="text-2xl font-medium">
+								{page.data.siteName}
+							</span>
+						{:else}
+							<img
+								src={librisLogo}
+								width={275}
+								height={75}
+								alt="Libris"
+								class={['3xl:w-30.25 mb-1 h-auto w-22 min-w-20 lg:w-27.5', subset && 'w-20!']}
+							/>
+						{/if}
+					</a>
+				{/if}
 			</li>
-			{#if subset}
-				<li class="subset-container relative flex items-center overflow-hidden">
-					<p class="pr-2">/</p>
-					<SearchMapping mapping={subset} />
-				</li>
-			{/if}
 		</ul>
 		<search
 			id={IDs.search}
@@ -607,21 +634,6 @@
 
 	.shadow-app-bar {
 		box-shadow: var(--app-bar-shadows);
-	}
-
-	/* subset in header */
-	.with-subset {
-		--search-grid-template-columns: minmax(0, auto) minmax(0, auto)
-			minmax(0, calc(var(--spacing) * 22));
-
-		.leading-actions {
-			position: static;
-		}
-
-		@variant lg {
-			--search-grid-template-columns: minmax(calc(var(--spacing) * 75), 1fr) minmax(0, 3fr)
-				minmax(0, calc(var(--spacing) * 40));
-		}
 	}
 
 	:global(.home .with-subset .leading-actions) {
