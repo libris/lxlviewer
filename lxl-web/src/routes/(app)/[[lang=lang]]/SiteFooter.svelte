@@ -43,9 +43,12 @@
 			<p id="nav-shortcuts">{page.data.t('footer.shortcuts')}</p>
 			<ul>
 				<li>
+					<a href={resolve(page.data.localizeHref('/help/search'))}>{page.data.t('appMenu.help')}</a
+					>
+				</li>
+				<li>
 					<a href="https://gamla.libris.kb.se/">{page.data.t('appMenu.oldSite')}</a>
 				</li>
-
 				<li>
 					<a href="https://iller.libris.kb.se/librisfjarrlan/">{page.data.t('appMenu.illSite')}</a>
 				</li>
