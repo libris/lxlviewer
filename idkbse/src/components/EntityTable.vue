@@ -171,7 +171,7 @@ export default {
 
       links.push({
         'link': this.recordId,
-        'title': this.translateUi('Libris Search')
+        'title': this.translateUi('Libris')
       });
 
       // NOTE: Legacy link (no longer reachable; the formal record IRI is now served by lxl-web)
