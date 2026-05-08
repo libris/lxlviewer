@@ -78,16 +78,16 @@
 			currentPage: page.route.id === '/(app)/[[lang=lang]]/about',
 			children: [
 				{
-					href: 'https://www.kb.se/om-oss/kontakta-oss#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3',
-					label: page.data.t('appMenu.contact')
-				},
-				{
 					href: 'https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html',
 					label: page.data.t('appMenu.aboutBeta')
 				},
 				{
 					href: 'https://gamla.libris.kb.se/',
 					label: page.data.t('appMenu.oldSite')
+				},
+				{
+					href: 'https://www.kb.se/om-oss/kontakta-oss#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3',
+					label: page.data.t('footer.customerSupport')
 				}
 			]
 		},

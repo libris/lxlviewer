@@ -20,6 +20,7 @@ export default {
 		about: 'Om Libris',
 		aboutBeta: 'Frågor och svar',
 		oldSite: 'Gamla Libris',
+		illSite: 'Libris fjärrlån',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
 		accessibilityStatement: 'Tillgänglighetsredogörelse',
@@ -79,7 +80,8 @@ export default {
 		customerSupport: 'Libris kundservice',
 		cookies: 'Hantera kakor',
 		gdpr: 'Om dataskydd (GDPR)',
-		about: 'Om Libris'
+		about: 'Om Libris',
+		shortcuts: 'Genvägar'
 	},
 	facet: {
 		q: 'Fritextsökning',

@@ -37,8 +37,17 @@
 						>{page.data.t('appMenu.accessibilityStatement')}</a
 					>
 				</li>
+			</ul>
+		</nav>
+		<nav class="flex flex-col gap-2" aria-labelledby="nav-shortcuts">
+			<p id="nav-shortcuts">{page.data.t('footer.shortcuts')}</p>
+			<ul>
 				<li>
 					<a href="https://gamla.libris.kb.se/">{page.data.t('appMenu.oldSite')}</a>
+				</li>
+
+				<li>
+					<a href="https://iller.libris.kb.se/librisfjarrlan/">{page.data.t('appMenu.illSite')}</a>
 				</li>
 			</ul>
 		</nav>
@@ -46,7 +55,10 @@
 			<p id="nav-contact">{page.data.t('footer.contact')}</p>
 			<ul>
 				<li>
-					<a href="mailto:libris@kb.se">{page.data.t('footer.customerSupport')}</a>
+					<a
+						href="https://www.kb.se/om-oss/kontakta-oss#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3"
+						>{page.data.t('footer.customerSupport')}</a
+					>
 				</li>
 			</ul>
 		</nav>
