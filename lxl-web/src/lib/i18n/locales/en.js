@@ -232,6 +232,8 @@ export default {
 		somethingWentWrong: 'Something went wrong',
 		notAvailable: 'Information is not available',
 		notFound: 'Page not found',
+		gone: 'Record has been deleted',
+		goneDescription: 'This record no longer exists in Libris.',
 		wrongLink: "Did you click on a link that didn't work?",
 		sendEmail: 'Send an e-mail to',
 		customerService: 'Libris customer service',

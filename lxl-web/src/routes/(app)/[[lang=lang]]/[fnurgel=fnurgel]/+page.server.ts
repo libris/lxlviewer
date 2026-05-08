@@ -61,13 +61,16 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	if (!resourceRes.ok) {
+		let apiError: ApiError | undefined;
 		try {
-			const err = (await resourceRes.json()) as ApiError;
-			throw error(err.status_code, { message: err.message, status: err.status });
+			apiError = (await resourceRes.json()) as ApiError;
 		} catch (e) {
 			console.warn(e);
-			throw error(resourceRes?.status, { message: resourceRes?.statusText });
 		}
+		throw error(apiError?.status_code || resourceRes.status, {
+			message: apiError?.message || resourceRes.statusText,
+			status: apiError?.status
+		});
 	}
 
 	const resource = await resourceRes.json();
