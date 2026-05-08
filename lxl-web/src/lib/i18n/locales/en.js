@@ -21,6 +21,7 @@ export default {
 		about: 'About Libris',
 		aboutBeta: 'FAQ',
 		oldSite: 'Old Libris site',
+		illSite: 'Libris Fjärrlån',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
 		accessibilityStatement: 'Accessibility statement',
@@ -81,7 +82,8 @@ export default {
 		customerSupport: 'Libris customer support',
 		cookies: 'Manage cookies',
 		gdpr: 'Processing of personal data',
-		about: 'About Libris'
+		about: 'About Libris',
+		shortcuts: 'Shortcuts'
 	},
 	facet: {
 		q: 'Free text search',
@@ -232,6 +234,8 @@ export default {
 		somethingWentWrong: 'Something went wrong',
 		notAvailable: 'Information is not available',
 		notFound: 'Page not found',
+		gone: 'Record has been deleted',
+		goneDescription: 'This record no longer exists in Libris.',
 		wrongLink: "Did you click on a link that didn't work?",
 		sendEmail: 'Send an e-mail to',
 		customerService: 'Libris customer service',

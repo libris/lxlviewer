@@ -275,6 +275,7 @@ test('qualifier keys can be added using keyboard only', async ({ page, context }
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
 	await expect(page.getByRole('combobox').first()).toContainText('Författare/upphov');
+	await page.waitForResponse((res) => res.url().includes('/supersearch?') && res.status() === 200);
 	await page.keyboard.press('a');
 	await page.keyboard.press('ArrowRight');
 	await page.keyboard.press('b');
