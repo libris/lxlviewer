@@ -21,6 +21,7 @@ export default {
 		about: 'About Libris',
 		aboutBeta: 'FAQ',
 		oldSite: 'Old Libris site',
+		illSite: 'Libris Fjärrlån',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
 		accessibilityStatement: 'Accessibility statement',
@@ -81,7 +82,8 @@ export default {
 		customerSupport: 'Libris customer support',
 		cookies: 'Manage cookies',
 		gdpr: 'Processing of personal data',
-		about: 'About Libris'
+		about: 'About Libris',
+		shortcuts: 'Shortcuts'
 	},
 	facet: {
 		q: 'Free text search',
