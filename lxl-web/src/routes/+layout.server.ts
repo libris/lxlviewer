@@ -1,6 +1,6 @@
 import { getSupportedLocale } from '$lib/i18n/locales';
 
-export async function load({ locals, url, params }) {
+export async function load({ locals, url, params, cookies }) {
 	const userSettings = locals.userSettings;
 	const dismissedBanner = locals.dismissedBanner;
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param
@@ -17,6 +17,7 @@ export async function load({ locals, url, params }) {
 		dismissedBanner,
 		subsetMapping,
 		siteName,
-		qualifierSuggestions
+		qualifierSuggestions,
+		initialCookieConsentModal: !cookies.get('cc_cookie')
 	};
 }

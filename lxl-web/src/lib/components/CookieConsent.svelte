@@ -7,6 +7,9 @@
 	import enTranslations from '$lib/i18n/cookieConsent/en';
 	import { page } from '$app/state';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
+	import { getCookieConsentContext } from '$lib/contexts/cookieConsent';
+
+	let cookieConsentContext = getCookieConsentContext();
 
 	const matomoTracker = getMatomoTracker();
 
@@ -46,6 +49,12 @@
 			} else {
 				$matomoTracker?.forgetConsentGiven();
 			}
+		},
+		onModalShow: () => {
+			cookieConsentContext.visibleModal = true;
+		},
+		onModalHide: () => {
+			cookieConsentContext.visibleModal = false;
 		},
 		language: {
 			default: page.data.locale,
