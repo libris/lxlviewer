@@ -158,7 +158,7 @@
 							width={275}
 							height={75}
 							alt="Libris"
-							class="mb-1 h-auto w-22 min-w-20 lg:w-27.5 xl:w-33 2xl:w-38.5"
+							class="mb-1 h-auto w-22 min-w-20 lg:w-27.5 2xl:w-35.75"
 						/>
 					{/if}
 				</a>
