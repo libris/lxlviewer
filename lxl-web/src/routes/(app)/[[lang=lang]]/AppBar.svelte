@@ -34,6 +34,17 @@
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
 	);
 
+	const otherLangLink = $derived.by(() => {
+		const search = page.url.searchParams.toString();
+
+		return page.data.localizeHref(
+			page.url.pathname + (search ? `?${search}` : '') + page.url.hash,
+			{
+				locale: otherLangCode
+			}
+		);
+	});
+
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 	const showSearchInputOnMobile = $derived(isHomeRoute || isFindRoute);
@@ -369,11 +380,7 @@
 			<li class="hidden lg:block">
 				<a
 					class="action"
-					href={resolve(
-						page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
-							locale: otherLangCode
-						})
-					)}
+					href={resolve(otherLangLink)}
 					hreflang={otherLangCode}
 					aria-label={page.data.t('header.changeLang')}
 					aria-labelledby={IDs.appBarChangeLangLabel}
