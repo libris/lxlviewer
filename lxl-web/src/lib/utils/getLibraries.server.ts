@@ -11,7 +11,7 @@ import { BibDb, JsonLd, LensType } from '$lib/types/xl';
 import { gunzipSync } from 'node:zlib';
 import { createHolderLinks } from '$lib/utils/holdings.server';
 import { type DisplayUtil } from '$lib/utils/xl.server';
-import { toString } from '$lib/utils/xl';
+import { toString } from '$lib/utils/misc';
 import type { LocaleCode } from '$lib/i18n/locales';
 
 type Data = {

@@ -29,10 +29,6 @@ export function toString(data: DisplayDecorated): string {
 	}
 }
 
-export function first<V>(v: Array<V>): V | undefined {
-	return Array.isArray(v) ? (v.length > 0 ? v[0] : undefined) : undefined;
-}
-
 export function isObject(data: unknown): data is Data {
 	return typeof data === 'object' && !Array.isArray(data) && data !== null;
 }

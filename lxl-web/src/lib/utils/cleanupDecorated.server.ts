@@ -1,5 +1,5 @@
 import { Fmt, JsonLd } from '$lib/types/xl';
-import { isObject } from './xl';
+import { isObject } from '$lib/utils/misc';
 
 const METADATA_KEYS = new Set<string>([
 	JsonLd.ID,

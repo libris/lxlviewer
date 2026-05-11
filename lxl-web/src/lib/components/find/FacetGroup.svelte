@@ -8,7 +8,7 @@
 		DEFAULT_FACET_VALUES_SHOWN,
 		MY_LIBRARIES_FILTER_ALIAS
 	} from '$lib/constants/facets';
-	import { toString } from '$lib/utils/xl';
+	import { toString } from '$lib/utils/misc';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';

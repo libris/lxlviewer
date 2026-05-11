@@ -10,7 +10,7 @@ import {
 	getHoldingsByType,
 	getHoldersByType
 } from '$lib/utils/holdings.server';
-import { centerOnWork } from '$lib/utils/centerOnWork';
+import { centerOnWork } from '$lib/utils/centerOnWork.server';
 
 export async function GET({ params, locals }) {
 	const displayUtil = locals.display;

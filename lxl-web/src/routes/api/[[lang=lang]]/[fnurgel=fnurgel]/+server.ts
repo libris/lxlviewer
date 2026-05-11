@@ -4,7 +4,7 @@ import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
 import { JsonLd, type FramedData } from '$lib/types/xl.js';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { asSearchResultItem } from '$lib/utils/search.server';
-import { centerOnWork } from '$lib/utils/centerOnWork.js';
+import { centerOnWork } from '$lib/utils/centerOnWork.server.js';
 
 export async function GET({ params, locals }) {
 	const recordRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {

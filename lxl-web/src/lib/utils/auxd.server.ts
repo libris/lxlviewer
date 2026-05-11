@@ -8,9 +8,10 @@ import {
 	IMAGE_OBJECT_TYPE
 } from '$lib/types/auxd';
 import { Concepts, type FramedData, JsonLd, Owl } from '$lib/types/xl';
-import { first, isObject, asArray } from '$lib/utils/xl';
+import { isObject, asArray } from '$lib/utils/misc';
+import { first } from '$lib/utils/xl.server';
 import getAtPath from '$lib/utils/getAtPath';
-import { getSortedInstances } from '$lib/utils/getSortedInstances';
+import { getSortedInstances } from '$lib/utils/getSortedInstances.server';
 import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 import type { LocaleCode } from '$lib/i18n/locales';
 

@@ -1,4 +1,4 @@
-import { asArray, isObject, toString } from '$lib/utils/xl';
+import { asArray, isObject, toString } from '$lib/utils/misc';
 import { DisplayUtil, pickProperty, toLite, VocabUtil } from '$lib/utils/xl.server';
 
 import {
@@ -41,7 +41,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { isLibraryOrg } from '$lib/utils/holdings';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
-import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
+import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
 import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
 import { getLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike.server';

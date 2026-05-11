@@ -33,7 +33,8 @@ import {
 	type VocabData
 } from '$lib/types/xl';
 import { markdownToHtml } from '$lib/utils/htmlFromMarkdown.server';
-import { asArray, isObject, toString } from '$lib/utils/xl';
+import { asArray, isObject, toString } from '$lib/utils/misc';
+import { cleanData } from '$lib/utils/cleanupDecorated.server';
 
 // TODO TESTS!
 
@@ -304,7 +305,8 @@ export class DisplayUtil {
 		lensType: LensType | DerivedLensType,
 		locale: LangCode
 	): DisplayDecorated {
-		return this.format(this.applyLensOrdered(thing, lensType), locale);
+		const formatted = this.format(this.applyLensOrdered(thing, lensType), locale);
+		return cleanData(formatted);
 	}
 
 	format(thing: LensedOrdered, locale: LangCode): DisplayDecorated {
@@ -1203,6 +1205,10 @@ function isTypedNode(data: unknown): data is Data {
 
 function unwrapSingle(v: unknown) {
 	return Array.isArray(v) ? (v.length == 1 ? v[0] : v) : v;
+}
+
+export function first<V>(v: Array<V>): V | undefined {
+	return Array.isArray(v) ? (v.length > 0 ? v[0] : undefined) : undefined;
 }
 
 function mapMaybeArray(v, fn) {

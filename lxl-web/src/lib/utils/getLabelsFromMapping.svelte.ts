@@ -1,5 +1,6 @@
 import type { DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
 import { JsonLd } from '$lib/types/xl';
+import capitalize from '$lib/utils/capitalize';
 
 let prevSuggestMapping: DisplayMapping[] | undefined;
 
@@ -16,7 +17,7 @@ function getLabelFromMappings(
 	if (qualifierSuggestions && key && (!value || value === '()')) {
 		let keyLabel = getKeyLabelFromList(key, qualifierSuggestions);
 		if (keyLabel) {
-			keyLabel = keyLabel.charAt(0).toUpperCase() + keyLabel.slice(1);
+			keyLabel = capitalize(keyLabel);
 			return { key, keyLabel, invalid: false, isRedundantKeyLabel: false };
 		}
 	}

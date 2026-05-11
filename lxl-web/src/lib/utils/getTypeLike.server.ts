@@ -1,6 +1,6 @@
 import { Bibframe, type FramedData, JsonLd } from '$lib/types/xl';
-import { asArray, first } from '$lib/utils/xl';
-import { VocabUtil } from '$lib/utils/xl.server';
+import { asArray } from '$lib/utils/misc';
+import { VocabUtil, first } from '$lib/utils/xl.server';
 import getAtPath from '$lib/utils/getAtPath';
 
 export type TypeLike = {

@@ -11,7 +11,7 @@ import type {
 	LibraryWithLinks
 } from '$lib/types/holdings';
 import { Base, BibDb, Bibframe, JsonLd, LensType, type FramedData } from '$lib/types/xl';
-import { toString } from '$lib/utils/xl';
+import { toString } from '$lib/utils/misc';
 import { VocabUtil, type DisplayUtil } from '$lib/utils/xl.server';
 import getAtPath from '$lib/utils/getAtPath';
 import { getLibrary } from '$lib/utils/getLibraries.server';
