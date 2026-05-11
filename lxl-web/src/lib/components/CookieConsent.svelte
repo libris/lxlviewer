@@ -14,6 +14,7 @@
 	const matomoTracker = getMatomoTracker();
 
 	const config: CookieConsent.CookieConsentConfig = {
+		root: '#cookie-consent-container',
 		guiOptions: {
 			consentModal: {
 				layout: 'bar',

@@ -40,9 +40,9 @@
 </script>
 
 <div class="flex min-h-screen flex-col">
+	<div id="cookie-consent-container" class="contents"><CookieConsent /></div>
 	<Matomo>
 		<svelte:boundary>{@render children()}</svelte:boundary>
-		<CookieConsent />
 	</Matomo>
 </div>
 
