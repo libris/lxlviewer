@@ -281,6 +281,15 @@ body:has(.dismissed-banner) {
 		}
 	}
 
+	/* titles */
+	*[data-property='hasTitle'] .subtitle {
+		font-weight: normal;
+	}
+
+	h1 *[data-property='hasTitle'] .subtitle {
+		color: var(--color-subtle);
+	}
+
 	/* buttons / tabs */
 	.btn,
 	.tab {
@@ -490,12 +499,4 @@ body:has(.dismissed-banner) {
 
 @utility skeleton {
 	@apply animate-pulse rounded-lg bg-neutral-100;
-}
-
-/* OLD THEME */
-
-/* layout */
-
-@utility grid-cols-instance-list {
-	grid-template-columns: 16px 1fr 3fr 1fr 2fr;
 }
