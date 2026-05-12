@@ -26,12 +26,12 @@
 	{#if dismissable}
 		<button
 			type="button"
-			class="focus:*:bg-primary-800/20 hover:*:bg-primary-400 2xl:min-w ml-auto flex h-11 min-w-14 items-center justify-center self-start -outline-offset-2 sm:self-center lg:min-w-11 2xl:min-h-12 lg:2xl:min-w-12"
+			class="focus:*:bg-primary-700/50 hover:*:bg-primary-700/50 2xl:min-w ml-auto flex h-11 min-w-14 items-center justify-center self-start -outline-offset-2 sm:self-center lg:min-w-11 2xl:min-h-12 lg:2xl:min-w-12"
 			aria-label={page.data.t('banner.dismiss')}
 			onclick={ondismiss}
 		>
 			<div
-				class="bg-primary-800/20 text-body has-focus:bg-primary-400 flex aspect-square size-6 items-center justify-center rounded-sm 2xl:size-6.5"
+				class="bg-primary-700/25 text-body flex aspect-square size-6 items-center justify-center rounded-sm 2xl:size-6.5"
 			>
 				<IconClose class="size-3.5 2xl:size-4" onclick={ondismiss} />
 			</div>
