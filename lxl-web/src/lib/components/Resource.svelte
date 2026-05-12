@@ -437,7 +437,7 @@
 									>
 										<BiChevronRight />
 									</span>
-									<h3 class="text-md font-medium">
+									<h3 class="text-md font-semibold">
 										{page.data.t('holdings.itemInformation')}
 									</h3>
 								</summary>
@@ -866,7 +866,7 @@
 		}
 
 		& :global(div[data-property='_select']) {
-			font-weight: bold;
+			font-weight: var(--font-weight-semibold);
 		}
 
 		& :global(.property-label) {

@@ -260,7 +260,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					{/each}
 				</p>
 				<hgroup>
-					<h2 class="card-header-title text-base font-medium">
+					<h2 class="card-header-title text-base font-semibold">
 						<a
 							href={resourceLink}
 							class="hover:text-link focus:text-link block hover:underline focus:underline"
