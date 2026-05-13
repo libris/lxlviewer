@@ -210,7 +210,7 @@
 									showLabels={ShowLabelsOptions.Never}
 								/>
 							</p>
-							<h1 class="decorated-heading mt-2 mb-1 text-3xl font-medium @3xl:text-3xl">
+							<h1 class="decorated-heading mt-2 mb-1 text-3xl @3xl:text-3xl">
 								<DecoratedData
 									data={decoratedData.heading}
 									showLabels={ShowLabelsOptions.Never}
@@ -531,10 +531,6 @@
 			display: none;
 		}
 
-		:global(.resource-heading) {
-			margin-right: calc(var(--spacing) * 1);
-		}
-
 		:global(.suggestion-contribution) {
 			display: none;
 		}
@@ -593,20 +589,8 @@
 	}
 
 	.decorated-heading {
-		& :global(.agent-lifespan) {
-			font-weight: var(--font-weight-normal);
-			color: var(--color-subtle);
-		}
-
 		& :global(.transliteration) {
 			font-size: var(--text-2xl);
-			color: var(--color-subtle);
-			display: block;
-		}
-
-		& :global(.transliteration._contentBefore),
-		& :global(.transliteration._contentAfter) {
-			display: none;
 		}
 	}
 

@@ -260,7 +260,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					{/each}
 				</p>
 				<hgroup>
-					<h2 class="card-header-title text-base font-semibold">
+					<h2 class="decorated-heading card-header-title text-base">
 						<a
 							href={resourceLink}
 							class="hover:text-link focus:text-link block hover:underline focus:underline"
@@ -617,14 +617,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 		& :global(.transliteration) {
 			font-size: var(--text-2xs);
-			color: var(--color-subtle);
-			font-weight: var(--font-weight-normal);
-			display: block;
-		}
-
-		& :global(.transliteration._contentBefore),
-		& :global(.transliteration._contentAfter) {
-			display: none;
 		}
 	}
 

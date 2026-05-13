@@ -1214,7 +1214,6 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["subtitle", "titleRemainder"],
-			"fresnel:propertyStyle": ["subtitle"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " : ",
 				"fresnel:contentFirst": ""
@@ -1248,6 +1247,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["mainTitle"],
+			"fresnel:propertyStyle": ["main-title"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
@@ -1780,6 +1780,19 @@
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
+			}
+		},
+		"bibdb:Organization-code-format": {
+			"@id": "bibdb:Organization-code-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["bibdb:Organization"],
+			"fresnel:propertyFormatDomain": ["code"],
+			"fresnel:propertyStyle": ["code"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentFirst": "(",
+				"fresnel:contentAfter": ")",
+				"fresnel:contentLast": ")"
 			}
 		},
 		"bibdb:Organization-hasPart-format": {
