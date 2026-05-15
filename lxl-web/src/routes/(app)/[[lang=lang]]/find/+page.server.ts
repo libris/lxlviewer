@@ -3,7 +3,7 @@ import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
-import { appendMyLibrariesParam, asResult } from '$lib/utils/search';
+import { appendMyLibrariesParam, asResult } from '$lib/utils/search.server';
 import { DebugFlags } from '$lib/types/userSettings';
 import { displayMappingToString } from '$lib/utils/displayMappingToString.js';
 import getPageTitle from '$lib/utils/getPageTitle';

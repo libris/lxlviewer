@@ -32,7 +32,9 @@ import {
 	type ShowProperty,
 	type VocabData
 } from '$lib/types/xl';
-import { cleanData } from './cleanupDecorated';
+import { markdownToHtml } from '$lib/utils/htmlFromMarkdown.server';
+import { asArray, isObject, toString } from '$lib/utils/misc';
+import { cleanData } from '$lib/utils/cleanupDecorated.server';
 
 // TODO TESTS!
 
@@ -733,6 +735,13 @@ class Formatter {
 			}
 
 			return v;
+		},
+		'markdown()': (v) => {
+			if (typeof v === 'string') {
+				const html = markdownToHtml(v);
+				return { [Fmt.HTML]: html };
+			}
+			return v;
 		}
 	};
 
@@ -1059,32 +1068,6 @@ function toLabel(data: DisplayDecorated) {
 	return isTypedNode(data) ? data[Fmt.DISPLAY].map(Object.values).join('') : data;
 }
 
-// TODO
-export function toString(data: DisplayDecorated): string {
-	if (isObject(data)) {
-		const v = [];
-		if (Fmt.CONTENT_BEFORE in data && data[Fmt.CONTENT_BEFORE] !== '') {
-			v.push(data[Fmt.CONTENT_BEFORE]);
-		}
-		if (Fmt.DISPLAY in data) {
-			v.push(...data[Fmt.DISPLAY].map(toString));
-		}
-		v.push(
-			...Object.entries(data)
-				.filter(([k]) => !(FMT_VALUES.includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
-				.map(([, v]) => toString(v))
-		);
-		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
-			v.push(data[Fmt.CONTENT_AFTER]);
-		}
-		return v.join('');
-	} else if (Array.isArray(data)) {
-		return data.map(toString).join('');
-	} else {
-		return data;
-	}
-}
-
 export function toLite(data: DisplayDecorated): DisplayDecoratedLite {
 	const result: DisplayDecoratedLite = [];
 	// TODO is this what we always want?
@@ -1220,10 +1203,6 @@ function isTypedNode(data: unknown): data is Data {
 	return isObject(data) && JsonLd.TYPE in data;
 }
 
-export function asArray<V>(v: V | Array<V>): Array<V> | [] {
-	return Array.isArray(v) ? v : v === null || v === undefined ? [] : [v];
-}
-
 function unwrapSingle(v: unknown) {
 	return Array.isArray(v) ? (v.length == 1 ? v[0] : v) : v;
 }
@@ -1238,10 +1217,6 @@ function mapMaybeArray(v, fn) {
 
 export function isLink(data: unknown): data is Link {
 	return isObject(data) && Object.keys(data).length === 1 && data[JsonLd.ID];
-}
-
-export function isObject(data: unknown): data is Data {
-	return typeof data === 'object' && !Array.isArray(data) && data !== null;
 }
 
 function isLangContainerDefinition(dfn: Record<string, string>) {

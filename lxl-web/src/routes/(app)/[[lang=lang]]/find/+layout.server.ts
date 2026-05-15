@@ -2,7 +2,7 @@ import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import type { HoldingsData } from '$lib/types/holdings.js';
 import { getTranslator } from '$lib/i18n';
-import { appendMyLibrariesParam, displayFacets } from '$lib/utils/search.js';
+import { appendMyLibrariesParam, displayFacets } from '$lib/utils/search.server';
 import type { PartialCollectionView } from '$lib/types/search';
 
 export const load = async ({ url, params, fetch, locals, isDataRequest }) => {

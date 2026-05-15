@@ -3,7 +3,7 @@
 import type { CitationsType } from '$lib/types/citation';
 import type { MatomoTracker } from '$lib/types/matomo';
 import type { UserSettings } from '$lib/types/userSettings';
-import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
+import type { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
 import type { AdjecentSearchResult, DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
 import 'unplugin-icons/types/svelte';
 import type { Site } from '$lib/types/site';

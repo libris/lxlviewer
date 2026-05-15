@@ -108,6 +108,9 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		.getByText('Författare/upphov')
 		.first()
 		.click();
+	await page.waitForResponse(
+		(res) => res.url().includes('/supersearch?_q=contributor') && res.status() === 200
+	);
 	await expect(
 		page.getByRole('dialog').getByRole('combobox').locator('.lxl-qualifier')
 	).toBeVisible();

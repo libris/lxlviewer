@@ -1817,6 +1817,13 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Bibliography-description-format": {
+			"@id": "Bibliography-description-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Bibliography"],
+			"fresnel:propertyFormatDomain": ["description"],
+			"fresnel:valueStyle": ["markdown()"]
+		},
 		"hasReproduction-format": {
 			"@id": "hasReproduction-format",
 			"@type": "fresnel:Format",

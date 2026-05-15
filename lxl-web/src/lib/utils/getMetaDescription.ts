@@ -1,4 +1,4 @@
-import { toString } from '$lib/utils/xl';
+import { toString } from '$lib/utils/misc';
 import type { DisplayDecorated } from '$lib/types/xl';
 
 const META_DESCRIPTION_MAX_LENGTH = 155;

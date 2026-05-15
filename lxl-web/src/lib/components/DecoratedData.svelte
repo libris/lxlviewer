@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DecoratedData from './DecoratedData.svelte';
+	import { Fmt, JsonLd } from '$lib/types/xl';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { page } from '$app/state';
@@ -37,13 +38,13 @@
 	let key = $derived(keyed && data); // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what the root cause is...) – we should try to remove the need for this when updating to Svelte 5.
 
 	const hiddenProperties = [
-		'@context',
-		'@type',
-		'@id',
-		'_label',
-		'_style',
-		'_contentBefore',
-		'_contentAfter'
+		JsonLd.CONTEXT,
+		JsonLd.TYPE,
+		JsonLd.ID,
+		Fmt.LABEL,
+		Fmt.STYLE,
+		Fmt.CONTENT_BEFORE,
+		Fmt.CONTENT_AFTER
 	];
 
 	let delimitedShown = $state(false);
@@ -63,7 +64,7 @@
 				}
 			}
 			if (allowFindLinks && depth > 1 && hasStyle(data, 'find-link')) {
-				const link = getPropertyValue(value, '_findLink');
+				const link = getPropertyValue(value, Fmt.FIND_LINK);
 				if (link) {
 					return page.data.localizeHref(link);
 				}
@@ -114,7 +115,7 @@
 	}
 
 	function shouldShowContentBefore() {
-		if (getPropertyValue(data, '_contentBefore')) {
+		if (getPropertyValue(data, Fmt.CONTENT_BEFORE)) {
 			if (block) {
 				return !isTopLevel();
 			} else {
@@ -125,7 +126,7 @@
 	}
 
 	function shouldShowContentAfter() {
-		if (getPropertyValue(data, '_contentAfter')) {
+		if (getPropertyValue(data, Fmt.CONTENT_AFTER)) {
 			if (block) {
 				return !isTopLevel();
 			} else {
@@ -172,21 +173,21 @@
 			{/each}
 		{:else}
 			{#if shouldShowContentBefore()}
-				<span class={`_contentBefore ${getStyleClasses(data)}`}>
-					{data._contentBefore}
+				<span class={`${Fmt.CONTENT_BEFORE} ${getStyleClasses(data)}`}>
+					{data[Fmt.CONTENT_BEFORE]}
 				</span>
 			{/if}
-			{#if data['@type']}
+			{#if data[JsonLd.TYPE]}
 				<svelte:element
 					this={getElementType(data)}
 					href={getLink(data)}
 					target={getLink(data) && hasStyle(data, 'ext-link') ? '_blank' : null}
-					data-type={data['@type']}
+					data-type={data[JsonLd.TYPE]}
 					class={getStyleClasses(data)}
 					use:conditionalPopover={data}
 				>
 					<DecoratedData
-						data={data['_display']}
+						data={data[Fmt.DISPLAY]}
 						depth={depth + 1}
 						{showLabels}
 						{block}
@@ -198,9 +199,9 @@
 						{suppressProperty}
 					/>
 				</svelte:element>
-			{:else if data['@value']}
+			{:else if data[JsonLd.VALUE]}
 				<DecoratedData
-					data={data['@value']}
+					data={data[JsonLd.VALUE]}
 					depth={depth + 1}
 					{showLabels}
 					{block}
@@ -210,9 +211,9 @@
 					{keyed}
 					{suppressProperty}
 				/>
-			{:else if data['_display']}
+			{:else if data[Fmt.DISPLAY]}
 				<DecoratedData
-					data={data['_display']}
+					data={data[Fmt.DISPLAY]}
 					depth={depth + 1}
 					{showLabels}
 					{block}
@@ -234,27 +235,34 @@
 						data-property={propertyName}
 						class={getStyleClasses(data)}
 					>
-						{#if shouldShowLabels() && typeof data._label === 'string'}
+						{#if shouldShowLabels() && typeof data[Fmt.LABEL] === 'string'}
 							<svelte:element this={block ? 'div' : 'span'}>
 								<!-- Add inner span with inline-block to achieve first letter capitalization while still supporting inline whitespaces -->
 								<span class={['inline-block first-letter:capitalize', block && 'property-label']}>
-									{data._label}
+									{data[Fmt.LABEL]}
 								</span>
 								<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
 								{' '}
 							</svelte:element>
 						{/if}
-						<DecoratedData
-							data={delimited && !delimitedShown ? propertyData.slice(0, limitTo) : propertyData}
-							depth={depth + 1}
-							{showLabels}
-							{block}
-							{allowLinks}
-							{allowFindLinks}
-							{allowPopovers}
-							{keyed}
-							{suppressProperty}
-						/>
+						{#if Fmt.HTML in data}
+							<div class="markdown [&>p]:mb-2 [&>ul]:list-inside [&>ul]:list-disc">
+								<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+								{@html propertyData}
+							</div>
+						{:else}
+							<DecoratedData
+								data={delimited && !delimitedShown ? propertyData.slice(0, limitTo) : propertyData}
+								depth={depth + 1}
+								{showLabels}
+								{block}
+								{allowLinks}
+								{allowFindLinks}
+								{allowPopovers}
+								{keyed}
+								{suppressProperty}
+							/>
+						{/if}
 						{#if delimited}
 							{#if allowLinks}
 								{@const delimitText = delimitedShown
@@ -275,8 +283,8 @@
 				{/if}
 			{/if}
 			{#if shouldShowContentAfter()}
-				<span class={`_contentAfter ${getStyleClasses(data)}`}>
-					{data._contentAfter}
+				<span class={`${Fmt.CONTENT_AFTER} ${getStyleClasses(data)}`}>
+					{data[Fmt.CONTENT_AFTER]}
 				</span>
 			{/if}
 		{/if}

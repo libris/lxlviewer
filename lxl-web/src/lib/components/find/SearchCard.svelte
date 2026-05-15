@@ -22,7 +22,7 @@
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
-	import { bookAspectRatio } from '$lib/utils/getTypeLike';
+	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
 	import BiHouse from '~icons/bi/house';
 	import BiQuote from '~icons/bi/quote';
 	import BiHeartFill from '~icons/bi/heart-fill';

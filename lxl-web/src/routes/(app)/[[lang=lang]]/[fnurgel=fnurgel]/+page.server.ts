@@ -17,10 +17,12 @@ import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 import type { HoldingsData, HoldingItem } from '$lib/types/holdings.js';
+import { type Relation } from '$lib/types/relations';
 
-import { asArray, first, pickProperty, toString } from '$lib/utils/xl.js';
-import { bestImage, toSecure } from '$lib/utils/auxd';
-import { getSortedInstances } from '$lib/utils/getSortedInstances';
+import { asArray, toString } from '$lib/utils/misc';
+import { pickProperty, first } from '$lib/utils/xl.server';
+import { bestImage, toSecure } from '$lib/utils/auxd.server';
+import { getSortedInstances } from '$lib/utils/getSortedInstances.server';
 import {
 	getBibIdsByInstanceId,
 	getHoldersByType,
@@ -28,14 +30,18 @@ import {
 	getHoldingsByInstanceId,
 	getHoldingsByType
 } from '$lib/utils/holdings.server';
-import getTypeLike, { getTypeForIcon, toTypes } from '$lib/utils/getTypeLike';
-import { centerOnWork } from '$lib/utils/centerOnWork';
-import { getRelations, type Relation } from '$lib/utils/relations';
-import { appendMyLibrariesParam, asSearchResultItem, displayMappings } from '$lib/utils/search';
+import getTypeLike, { getTypeForIcon, toTypes } from '$lib/utils/getTypeLike.server';
+import { centerOnWork } from '$lib/utils/centerOnWork.server';
+import { getRelations } from '$lib/utils/relations.server';
+import {
+	appendMyLibrariesParam,
+	asSearchResultItem,
+	displayMappings
+} from '$lib/utils/search.server';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';
-import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
+import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
 import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
 
 export const load = async ({ params, locals, fetch, url }) => {

@@ -3,8 +3,8 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import { getSupportedLocale, type LocaleCode as LangCode } from '$lib/i18n/locales.js';
 import type { LibraryResult, PartialCollectionView } from '$lib/types/search';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
-import { asSearchResultItem } from '$lib/utils/search.js';
+import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
+import { asSearchResultItem } from '$lib/utils/search.server';
 
 export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const displayUtil = locals.display;
