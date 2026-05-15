@@ -363,7 +363,10 @@
 						id={getCellId(0)}
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
-						class={['action text-subtle flex sm:hidden', expanded && 'mr-1 h-14 w-13']}
+						class={[
+							'action text-subtle flex min-h-14 sm:hidden lg:min-h-auto',
+							expanded && 'mr-1 h-14 w-13'
+						]}
 						onclick={onclickClose}
 					>
 						<IconBack aria-hidden="true" class="size-7" />
@@ -380,7 +383,7 @@
 							type="button"
 							tabindex="-1"
 							onclick={() => showExpandedSearch({ cursorAtEnd: true })}
-							class="flex h-full w-full cursor-default items-center justify-center"
+							class="action flex max-w-11 cursor-default"
 							aria-hidden="true"
 						>
 							<IconSearch aria-hidden="true" class="flex size-4 lg:mt-px" />
@@ -399,7 +402,7 @@
 						}}
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
-						class={['action flex', expanded && 'max-sm:h-14 max-sm:w-13']}
+						class={['action flex min-h-14 lg:min-h-auto', expanded && 'max-sm:h-14 max-sm:w-13']}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
 					>
@@ -719,7 +722,7 @@
 	}
 
 	.expanded.supersearch-input :global(.cm-content) {
-		margin-block: calc(var(--spacing) * 1.5);
+		margin-top: calc(var(--spacing) * 0.75);
 
 		@variant sm {
 			margin-block: 0;
@@ -727,8 +730,8 @@
 	}
 
 	.supersearch-input :global(.cm-line) {
-		line-height: 32px;
-		padding-left: calc(var(--spacing) * 11);
+		line-height: 36px;
+		padding-left: calc(var(--spacing) * 12);
 
 		@variant sm {
 			padding-left: calc(var(--spacing) * 3);
@@ -736,6 +739,10 @@
 			@variant 2xl {
 				padding-left: calc(var(--spacing) * 4);
 			}
+		}
+
+		@variant lg {
+			line-height: 32px;
 		}
 
 		@variant 2xl {
@@ -747,7 +754,7 @@
 		padding-left: 0;
 
 		@variant sm {
-			padding-left: calc(var(--spacing) * 3);
+			padding-left: calc(var(--spacing) * 4);
 		}
 
 		@variant 2xl {
