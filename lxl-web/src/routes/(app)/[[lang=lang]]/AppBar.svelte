@@ -145,6 +145,18 @@
 		shadowObserver?.disconnect();
 	}
 
+	// REMOVE ME
+	function toggleSessionCookie() {
+		if (librisSession) {
+			Cookies.remove('LIBRIS_SESSION');
+		} else {
+			Cookies.set('LIBRIS_SESSION', '12345', {
+				sameSite: 'Lax',
+				secure: true
+			});
+		}
+	}
+
 	beforeNavigate(() => {
 		closeExpandedMenu();
 	});
@@ -332,6 +344,11 @@
 					</a>
 				{/if}
 			</li>
+			<!-- REMOVE ME -->
+			<li>
+				<button onclick={toggleSessionCookie} class="btn btn-primary">Toggla kaka</button>
+			</li>
+			<!-- /// -->
 		</ul>
 		<search
 			id={IDs.search}
