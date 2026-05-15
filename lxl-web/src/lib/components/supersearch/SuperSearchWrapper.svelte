@@ -659,6 +659,10 @@
 		@variant lg {
 			border-radius: var(--radius-2xl);
 		}
+
+		@variant 2xl {
+			margin-top: 3px;
+		}
 	}
 
 	:global(.supersearch-suggestions) {
