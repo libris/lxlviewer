@@ -32,6 +32,7 @@ export default {
 		menu: 'Menu',
 		home: 'Home',
 		help: 'Help',
+		remoteLoan: 'Fjärrlån',
 		myPages: 'My pages',
 		changeLang: 'På svenska',
 		search: 'Search',

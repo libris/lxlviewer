@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Cookies from 'js-cookie';
 	import { type Component, onDestroy, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
@@ -8,15 +9,15 @@
 	import { getSearchContext } from '$lib/contexts/search';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
 	import AppSearch from './AppSearch.svelte';
+	import AppBanner from '$lib/components/AppBanner.svelte';
+	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
+	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 	import IconMenu from '~icons/bi/list';
 	import IconCloseMenu from '~icons/bi/x-lg';
 	import IconBookmark from '~icons/bi/bookmark';
 	import IconSearch from '~icons/bi/search';
 	import IconLanguage from '~icons/bi/globe';
-	import AppBanner from '$lib/components/AppBanner.svelte';
-	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
-	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
-	import Cookies from 'js-cookie';
+	import IconRemoteLoan from '$lib/assets/img/fjarrlan.svg';
 
 	const searchContext = getSearchContext();
 
@@ -29,6 +30,7 @@
 	let shadowObserver: IntersectionObserver | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
 	let dismissedBanner: boolean = $state(page.data.dismissedBanner);
+	let librisSession: boolean = $state(page.data.librisSession);
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -175,11 +177,23 @@
 	});
 </script>
 
-{#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
+{#snippet actionItemContents({
+	Icon,
+	label,
+	id
+}: {
+	Icon: Component | string;
+	label: string;
+	id?: string;
+})}
 	<div
 		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-[0.84375rem] font-medium @7xl:text-sm"
 	>
-		<Icon class="size-5" />
+		{#if typeof Icon === 'function'}
+			<Icon class="size-5" />
+		{:else if typeof Icon === 'string' && Icon.startsWith('data:image/svg+xml')}
+			<img src={Icon} alt="" />
+		{/if}
 		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
 			{label}
 		</p>
@@ -393,6 +407,20 @@
 					})}
 				</a>
 			</li>
+			<!-- fjärrlån -->
+			{#if librisSession}
+				<li>
+					<a
+						class="action bg-primary-200 max-sm:hover:bg-primary-200"
+						href="https://iller.libris.kb.se/librisfjarrlan/lf.php"
+					>
+						{@render actionItemContents({
+							Icon: IconRemoteLoan,
+							label: page.data.t('header.remoteLoan')
+						})}
+					</a>
+				</li>
+			{/if}
 			<li>
 				<a
 					class="action max-sm:hover:bg-primary-200"

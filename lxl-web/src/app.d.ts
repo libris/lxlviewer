@@ -18,6 +18,7 @@ declare global {
 			display: DisplayUtil;
 			userSettings: UserSettings;
 			dismissedBanner: boolean;
+			librisSession?: string;
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
 			qualifierSuggestionsByLocale: Record<

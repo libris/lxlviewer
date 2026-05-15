@@ -88,6 +88,12 @@ export const handle = async ({ event, resolve }) => {
 		event.locals.dismissedBanner = JSON.parse(dismissedBannerCookie);
 	}
 
+	// fjärrlån
+	const librisSessionCookie = event.cookies.get('LIBRIS_SESSION');
+	if (librisSessionCookie) {
+		event.locals.librisSession = JSON.parse(librisSessionCookie);
+	}
+
 	// set legacy cookies site-wide
 	const upgraded = event.cookies.get('cookiesDomainUpgraded');
 
