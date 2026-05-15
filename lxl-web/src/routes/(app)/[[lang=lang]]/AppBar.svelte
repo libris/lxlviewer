@@ -6,7 +6,6 @@
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import { getSearchContext } from '$lib/contexts/search';
-	import librisLogo from '$lib/assets/img/libris-logo.svg';
 	import AppSearch from './AppSearch.svelte';
 	import IconMenu from '~icons/bi/list';
 	import IconCloseMenu from '~icons/bi/x-lg';
@@ -280,7 +279,7 @@
 								</span>
 							{:else}
 								<img
-									src={librisLogo}
+									src="/libris-logo.svg"
 									width={275}
 									height={75}
 									alt="Libris"
@@ -308,7 +307,7 @@
 							</span>
 						{:else}
 							<img
-								src={librisLogo}
+								src="/libris-logo.svg"
 								width={275}
 								height={75}
 								alt="Libris"
