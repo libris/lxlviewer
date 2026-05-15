@@ -402,7 +402,7 @@
 						}}
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
-						class={['action flex min-h-14 lg:min-h-auto', expanded && 'max-sm:h-14 max-sm:w-13']}
+						class={['action flex lg:min-h-auto', expanded && 'min-h-14 max-sm:h-14 max-sm:w-13']}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
 					>
