@@ -80,5 +80,11 @@
 	@reference 'tailwindcss';
 	search {
 		--search-input-height: 48px;
+
+		@variant lg {
+			@variant 2xl {
+				--search-input-height: 52px;
+			}
+		}
 	}
 </style>

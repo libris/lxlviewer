@@ -351,7 +351,7 @@
 		})}
 			<div
 				class={[
-					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
+					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative',
 					expanded && 'expanded sm:mx-0.5 lg:mx-1.5',
 					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
@@ -363,10 +363,7 @@
 						id={getCellId(0)}
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
-						class={[
-							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 sm:hidden',
-							expanded && 'mr-1 h-14 w-13'
-						]}
+						class={['action text-subtle flex sm:hidden', expanded && 'mr-1 h-14 w-13']}
 						onclick={onclickClose}
 					>
 						<IconBack aria-hidden="true" class="size-7" />
@@ -375,7 +372,7 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
+							'text-subtle bg-input absolute z-30 flex items-center justify-center rounded-md sm:hidden',
 							expanded && 'hidden'
 						]}
 					>
@@ -402,10 +399,7 @@
 						}}
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
-						class={[
-							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 lg:size-12',
-							expanded && 'max-sm:h-14 max-sm:w-13'
-						]}
+						class={['action flex', expanded && 'max-sm:h-14 max-sm:w-13']}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
 					>
@@ -416,7 +410,7 @@
 						type="button"
 						onclick={() => showExpandedSearch()}
 						tabindex={-1}
-						class="hidden size-11 cursor-text items-center justify-center select-none sm:flex lg:size-12"
+						class="hidden h-full cursor-text items-center justify-center px-3 select-none sm:flex"
 					>
 						<kbd
 							class="key pointer-events-auto h-[1.75em] w-[1.75em] text-sm"
@@ -429,9 +423,7 @@
 					type="submit"
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
-					class={[
-						'action hidden size-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 -outline-offset-2 sm:flex lg:size-12'
-					]}
+					class={['action hidden rounded-r-md border-l border-l-neutral-300 sm:flex']}
 					aria-label={page.data.t('supersearch.search')}
 				>
 					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
@@ -514,8 +506,8 @@
 			font-size: 0.9375rem;
 		}
 
-		@variant @3xl {
-			font-size: 1rem;
+		@variant 2xl {
+			font-size: var(--text-base);
 		}
 	}
 
@@ -588,6 +580,8 @@
 	}
 
 	.action {
+		height: var(--search-input-height);
+		@apply text-subtle aspect-square items-center justify-center -outline-offset-2;
 		&:hover {
 			background: var(--color-accent-50);
 		}
@@ -739,9 +733,13 @@
 		@variant sm {
 			padding-left: calc(var(--spacing) * 3);
 
-			@variant @3xl {
+			@variant 2xl {
 				padding-left: calc(var(--spacing) * 4);
 			}
+		}
+
+		@variant 2xl {
+			line-height: 36px;
 		}
 	}
 
@@ -752,7 +750,7 @@
 			padding-left: calc(var(--spacing) * 3);
 		}
 
-		@variant @3xl {
+		@variant 2xl {
 			padding-left: calc(var(--spacing) * 4);
 		}
 	}
@@ -791,8 +789,9 @@
 			font-size: 0.9375rem;
 		}
 
-		@variant @3xl {
-			font-size: 1rem;
+		@variant 2xl {
+			@apply text-base;
+			line-height: 36px;
 		}
 	}
 
@@ -804,5 +803,9 @@
 		& :global(.focused-cell) {
 			outline: 2px solid var(--color-outline);
 		}
+	}
+
+	button:has(kbd) {
+		min-height: var(--search-input-height);
 	}
 </style>

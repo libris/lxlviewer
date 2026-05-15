@@ -66,22 +66,20 @@
 		aria-label={ariaLabel}
 		{autofocus}
 		bind:this={fallbackInputElement}
-		class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:pl-3 lg:text-[0.9375rem] sm:@3xl:pl-4"
+		class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:pl-3 lg:text-[0.9375rem] 2xl:text-base sm:2xl:pl-4"
 	/>
 	<button
 		type="reset"
 		aria-label={page.data.t('search.clear')}
 		title={page.data.t('search.clear')}
-		class="action text-subtle hidden h-full w-full max-w-11 items-center justify-center -outline-offset-2 lg:max-w-12"
+		class="action text-subtle hidden"
 	>
 		<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
 	</button>
 
 	<button
 		type="submit"
-		class={[
-			'hover:bg-primary-50 hidden h-full w-full max-w-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 sm:flex lg:max-w-12'
-		]}
+		class={['action hidden rounded-r-md border-l border-l-neutral-300 sm:flex']}
 		aria-label={page.data.t('supersearch.search')}
 	>
 		<IconSearch aria-hidden="true" class={['flex size-4.5']} />
@@ -103,6 +101,14 @@
 			font-size: var(--text-sm);
 		}
 
+		@variant lg {
+			font-size: 0.9375rem;
+		}
+
+		@variant 2xl {
+			font-size: var(--text-base);
+		}
+
 		&:not(:has([type='submit']:focus)) {
 			&:has(:focus) {
 				box-shadow: 0 0 0 2px var(--color-accent-500);
@@ -117,6 +123,9 @@
 	}
 
 	.action {
+		height: var(--search-input-height);
+		@apply aspect-square items-center justify-center -outline-offset-2;
+
 		&:hover {
 			background: var(--color-accent-50);
 		}
