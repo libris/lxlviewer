@@ -40,7 +40,7 @@
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="resource-heading flex gap-1 overflow-hidden text-sm font-medium whitespace-nowrap">
+			<h2 class="decorated-heading flex gap-1 overflow-hidden text-sm whitespace-nowrap">
 				<span class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
@@ -194,17 +194,13 @@
 		text-align: right;
 	}
 
-	.resource-heading {
+	.suggestion .decorated-heading {
 		& :global(.transliteration) {
 			display: none;
 		}
 
 		& :global(.contribution-role) {
 			display: none;
-		}
-
-		& :global(.agent-lifespan) {
-			color: var(--color-subtle);
 		}
 
 		& :global(.delimiter) {

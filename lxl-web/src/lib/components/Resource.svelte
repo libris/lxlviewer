@@ -210,7 +210,7 @@
 									showLabels={ShowLabelsOptions.Never}
 								/>
 							</p>
-							<h1 class="decorated-heading mt-2 mb-1 text-3xl font-medium @3xl:text-3xl">
+							<h1 class="decorated-heading mt-2 mb-1 text-3xl @3xl:text-3xl">
 								<DecoratedData
 									data={decoratedData.heading}
 									showLabels={ShowLabelsOptions.Never}
@@ -437,7 +437,7 @@
 									>
 										<BiChevronRight />
 									</span>
-									<h3 class="text-md font-medium">
+									<h3 class="text-md font-semibold">
 										{page.data.t('holdings.itemInformation')}
 									</h3>
 								</summary>
@@ -531,10 +531,6 @@
 			display: none;
 		}
 
-		:global(.resource-heading) {
-			margin-right: calc(var(--spacing) * 1);
-		}
-
 		:global(.suggestion-contribution) {
 			display: none;
 		}
@@ -593,20 +589,8 @@
 	}
 
 	.decorated-heading {
-		& :global(.agent-lifespan) {
-			font-weight: var(--font-weight-normal);
-			color: var(--color-subtle);
-		}
-
 		& :global(.transliteration) {
 			font-size: var(--text-2xl);
-			color: var(--color-subtle);
-			display: block;
-		}
-
-		& :global(.transliteration._contentBefore),
-		& :global(.transliteration._contentAfter) {
-			display: none;
 		}
 	}
 
@@ -866,7 +850,7 @@
 		}
 
 		& :global(div[data-property='_select']) {
-			font-weight: bold;
+			font-weight: var(--font-weight-semibold);
 		}
 
 		& :global(.property-label) {

@@ -304,10 +304,6 @@
 		font-style: italic;
 	}
 
-	.sigel {
-		color: var(--color-subtle);
-	}
-
 	/* decorated data in popover */
 	:global(.popover) {
 		& .property-label {
