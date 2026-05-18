@@ -341,7 +341,10 @@
 							]
 						},
 						"uri",
-						"appliesTo"
+						"marc:publicNote",
+						"appliesTo",
+						"identifiedBy",
+						"describedBy"
 					]
 				},
 				"Item": {
