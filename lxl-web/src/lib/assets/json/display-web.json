@@ -250,7 +250,7 @@
 					"@id": "Document-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Document",
-					"showProperties": ["uri", "marc:publicNote"]
+					"showProperties": ["uri", "marc:publicNote", "appliesTo"]
 				},
 				"MediaObject": {
 					"@id": "MediaObject-chips",
@@ -339,7 +339,9 @@
 								"identifiedBy",
 								"label"
 							]
-						}
+						},
+						"uri",
+						"appliesTo"
 					]
 				},
 				"Item": {
@@ -875,6 +877,9 @@
 					"classLensDomain": "Instance",
 					"showProperties": [
 						"associatedMedia",
+						"electronicLocator",
+						"marc:versionOfResource",
+						"isPrimaryTopicOf",
 						"continues",
 						{ "inverseOf": "continuedBy" },
 						"continuedBy",
@@ -985,6 +990,9 @@
 						"copyrightDate",
 						"projectedProvisionDate",
 						"extent",
+						"associatedMedia",
+						"electronicLocator",
+						"marc:versionOfResource",
 						"isPrimaryTopicOf",
 						"isIssueOf",
 						"relatedTo",
@@ -1566,7 +1574,7 @@
 			"@id": "Instance-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Instance"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["extIfUri()", "uriToId()"]
 		},
 		"Agent-format": {
 			"@id": "Agent-format",
@@ -1644,7 +1652,7 @@
 			"@id": "Document-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Document"],
-			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "block"]
 		},
 		"MediaObject-publicNote-format": {
 			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
@@ -1657,10 +1665,48 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Document-appliesTo-format": {
+			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
+			"@id": "MediaObject-publicNote-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Document"],
+			"fresnel:propertyFormatDomain": ["appliesTo"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"associatedMedia-format": {
 			"@id": "associatedMedia-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["associatedMedia"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"electronicLocator-format": {
+			"@id": "electronicLocator-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["electronicLocator"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"marc:versionOfResource-format": {
+			"@id": "marc:versionOfResource-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["marc:versionOfResource"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"isPrimaryTopicOf-format": {
+			"@id": "isPrimaryTopicOf-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["isPrimaryTopicOf"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""

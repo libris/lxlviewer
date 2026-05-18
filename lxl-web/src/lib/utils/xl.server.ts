@@ -701,6 +701,24 @@ class Formatter {
 			}
 			return v;
 		},
+		'extIfUri()': (v) => {
+			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
+				const display = v[Fmt.DISPLAY] as Array<unknown>;
+				const ix = display.findIndex((d) => isObject(d) && 'uri' in d);
+
+				if (!v[Fmt.STYLE]) {
+					v[Fmt.STYLE] = [];
+				}
+
+				if (ix >= 0 && asArray(display[ix]['uri']).length > 0) {
+					v[Fmt.STYLE].push('ext-link');
+				} else {
+					v[Fmt.STYLE].push('link');
+				}
+			}
+
+			return v;
+		},
 		'uriToId()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				const display = v[Fmt.DISPLAY] as Array<unknown>;
