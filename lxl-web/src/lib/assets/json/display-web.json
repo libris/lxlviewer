@@ -855,7 +855,7 @@
 					"@id": "Bibliography-web-overview",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Bibliography",
-					"showProperties": ["comment"]
+					"showProperties": []
 				}
 			}
 		},

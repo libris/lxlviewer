@@ -608,6 +608,10 @@
 			}
 		}
 
+		& :global(.markdown) {
+			max-width: 60ch;
+		}
+
 		& :global(.contribution) {
 			font-size: var(--text-base);
 			@apply mb-2;
