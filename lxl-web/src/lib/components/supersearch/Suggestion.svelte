@@ -65,9 +65,15 @@
 				{/if}
 			</h2>
 			<div class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
-				<strong class="font-medium">
+				<span class="font-medium">
+					{item.selectTypeStr}
+				</span>
+				{#if item.selectTypeStr}
+					<span class="divider">{' · '}</span>
+				{/if}
+				<span class="font-medium">
 					{item.typeStr}
-				</strong>
+				</span>
 				{#if item.typeStr?.length}
 					<span class="divider">{' · '}</span>
 				{/if}
@@ -80,12 +86,6 @@
 					/>
 				{/each}
 				{#if item.typeStr?.length}
-					<span class="divider">{' · '}</span>
-				{/if}
-				<span class="font-medium">
-					{item.selectTypeStr}
-				</span>
-				{#if item.selectTypeStr?.length}
 					<span class="divider">{' · '}</span>
 				{/if}
 				{#each item?.[LensType.WebCardFooter]?._display as footer, index (`footer-${index}`)}
