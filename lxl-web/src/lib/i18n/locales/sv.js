@@ -31,7 +31,7 @@ export default {
 		menu: 'Meny',
 		home: 'Hem',
 		help: 'Hjälp',
-		remoteLoan: 'Fjärrlån',
+		fjarrlan: 'Fjärrlån',
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
 		search: 'Sök',
@@ -290,7 +290,8 @@ export default {
 		downloadDescription: 'Ladda ner metadata',
 		showIn: 'Visa metadata i',
 		librisCataloging: 'Libris katalogisering',
-		librisOld: 'gamla Libris'
+		librisOld: 'gamla Libris',
+		request: 'Beställ'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

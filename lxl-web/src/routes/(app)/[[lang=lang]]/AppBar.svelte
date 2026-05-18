@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Cookies from 'js-cookie';
+	import { env } from '$env/dynamic/public';
 	import { type Component, onDestroy, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
@@ -17,7 +18,7 @@
 	import IconBookmark from '~icons/bi/bookmark';
 	import IconSearch from '~icons/bi/search';
 	import IconLanguage from '~icons/bi/globe';
-	import IconRemoteLoan from '$lib/assets/img/fjarrlan.svg';
+	import IconFjarrlan from '$lib/assets/img/fjarrlan.svg';
 
 	const searchContext = getSearchContext();
 
@@ -29,8 +30,8 @@
 	let shadowSentinelElement: HTMLElement | undefined = $state();
 	let shadowObserver: IntersectionObserver | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
-	let dismissedBanner: boolean = $state(page.data.dismissedBanner);
-	let librisSession: boolean = $state(page.data.librisSession);
+	let dismissedBanner: boolean | undefined = $state(page.data.dismissedBanner);
+	let librisSession: string | undefined = $state(page.data.librisSession);
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
@@ -428,12 +429,13 @@
 			{#if librisSession}
 				<li>
 					<a
-						class="action bg-primary-200 max-sm:hover:bg-primary-200"
-						href="https://iller.libris.kb.se/librisfjarrlan/lf.php"
+						class="action bg-primary-800 max-sm:hover:bg-primary-800"
+						href={`${env.PUBLIC_FJARRLAN_URL}/lf.php`}
 					>
 						{@render actionItemContents({
-							Icon: IconRemoteLoan,
-							label: page.data.t('header.remoteLoan')
+							Icon: IconFjarrlan,
+							label: page.data.t('header.fjarrlan'),
+							id: 'action-fjarrlan'
 						})}
 					</a>
 				</li>
@@ -660,6 +662,14 @@
 				border-radius: var(--radius-md) var(--radius-md) 0 0;
 			}
 		}
+	}
+
+	.action:has(#action-fjarrlan):focus-visible {
+		background: var(--color-primary-900);
+	}
+
+	#action-fjarrlan {
+		color: var(--color-page);
 	}
 
 	.menu-dialog {

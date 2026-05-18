@@ -29,12 +29,17 @@ declare global {
 		interface LayoutData {
 			locale: import('$lib/i18n/locales').LocaleCode;
 			t: Awaited<ReturnType<typeof import('$lib/i18n').getTranslator>>;
-			localizeHref: ReturnType<typeof import('$lib/i18n').initLocalizeHref>;
+			localizeHref: ReturnType<typeof import('$lib/i18n/locales').initLocalizeHref>;
 		}
-		interface PageData {
-			userSettings: UserSettings;
-			subsetMapping: DisplayMapping[] | undefined;
+		interface PageData extends LayoutData {
+			base: string;
+			dismissedBanner?: boolean;
+			librisSession?: string;
+			locale: string;
+			qualifierSuggestions: QualifierSuggestion2[];
 			siteName?: string;
+			subsetMapping: DisplayMapping[] | undefined;
+			userSettings: UserSettings;
 		}
 		interface PageState {
 			expandedSuperSearch?: boolean;
@@ -48,7 +53,6 @@ declare global {
 		// interface Platform {}
 	}
 	interface Window {
-		// Matomo
 		Matomo?: {
 			getTracker: (trackerUrl: string, siteId: number) => MatomoTracker | undefined;
 		};
