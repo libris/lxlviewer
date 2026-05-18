@@ -256,7 +256,7 @@
 					"@id": "MediaObject-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "MediaObject",
-					"showProperties": ["uri", "marc:publicNote"]
+					"showProperties": ["uri", "marc:publicNote", "appliesTo"]
 				},
 				"Class": {
 					"@id": "Class-chips",
