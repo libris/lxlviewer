@@ -3,15 +3,15 @@
 	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
 </script>
 
-<section class="mt-3 flex flex-col items-center py-3 @7xl:mt-6">
+<section class="flex flex-col items-center">
 	<div class="w-full">
-		<nav class="" aria-labelledby="explore-categories">
+		<nav aria-labelledby="explore-categories">
 			<div
 				class="flex flex-col gap-2 pl-3 @sm:pl-6 @3xl:gap-3 @5xl:pl-20 lg:@7xl:flex-row lg:@7xl:items-center"
 			>
 				<h2
 					id="explore-categories"
-					class="mr-3 font-serif text-lg whitespace-nowrap @lg:text-xl @3xl:text-2xl lg:@7xl:text-xl"
+					class="mr-3 font-serif text-lg whitespace-nowrap italic @lg:text-xl @3xl:text-2xl lg:@7xl:text-xl"
 				>
 					{page.data.t('search.exploreCategories')}
 				</h2>
