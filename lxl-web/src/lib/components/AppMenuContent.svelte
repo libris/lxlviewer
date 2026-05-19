@@ -124,9 +124,9 @@
 				{href}
 				aria-current={currentPage ? 'page' : undefined}
 				class={[
-					'text-body hover:bg-primary-50 focus-visible:bg-primary-50 focus-visible:hover:bg-primary-100 flex min-h-11 items-center px-3 whitespace-nowrap hover:underline focus-visible:underline',
+					'text-body hover:bg-primary-50 focus-visible:bg-primary-50 focus-visible:hover:bg-primary-100 flex min-h-11 items-center px-3 whitespace-nowrap hover:underline focus-visible:underline lg:min-h-13',
 					LeadingIcon && 'pl-0',
-					hasParent && 'pl-10 text-sm'
+					hasParent && 'pl-10 text-sm lg:text-[0.9375rem]'
 				]}
 				{hreflang}
 				{onclick}
@@ -149,7 +149,7 @@
 			{#if children}
 				<details>
 					<summary
-						class="border-neutral hover:bg-primary-50 focus-visible:bg-primary-50 focus-visible:hover:bg-primary-100 ml-auto flex size-11 cursor-pointer items-center justify-center border-l"
+						class="border-neutral hover:bg-primary-50 focus-visible:bg-primary-50 focus-visible:hover:bg-primary-100 ml-auto flex size-11 cursor-pointer items-center justify-center border-l lg:size-13"
 					>
 						<IconGoto />
 					</summary>

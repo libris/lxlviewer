@@ -375,7 +375,7 @@
 				<div class="flex-1 overflow-hidden">
 					<div
 						class={[
-							'text-subtle bg-input absolute z-30 flex items-center justify-center rounded-md sm:hidden',
+							'text-subtle bg-input absolute z-30 flex items-center justify-center rounded-md sm:hidden 2xl:rounded-lg',
 							expanded && 'hidden'
 						]}
 					>
@@ -426,7 +426,9 @@
 					type="submit"
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
-					class={['action hidden rounded-r-md border-l border-l-neutral-300 sm:flex']}
+					class={[
+						'action hidden rounded-r-md border-l border-l-neutral-300 sm:flex 2xl:rounded-r-lg'
+					]}
 					aria-label={page.data.t('supersearch.search')}
 				>
 					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
@@ -511,6 +513,7 @@
 
 		@variant 2xl {
 			font-size: var(--text-base);
+			border-radius: var(--radius-lg);
 		}
 	}
 

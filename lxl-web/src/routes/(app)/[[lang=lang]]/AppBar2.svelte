@@ -1,10 +1,21 @@
+<script module>
+	export const ID_SEARCH = 'appbar-search';
+	export const ID_MENU = 'appbar-menu';
+	export const ID_MENU_LABEL = 'appbar-menu-label';
+	export const ID_SEARCH_LABEL = 'appbar-search-label';
+	export const ID_CHANGE_LANG_LABEL = 'appbar-lang-label';
+	export const ID_MY_PAGES_LABEL = 'appbar-mypages-label';
+</script>
+
 <script lang="ts">
 	import { type Component, onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import { resolve } from '$app/paths';
 	import { type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
-	import { beforeNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import { getSearchContext } from '$lib/contexts/search';
+	import { getHomepageContext } from '$lib/contexts/homepage';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
 	import AppSearch from './AppSearch.svelte';
 	import IconMenu from '~icons/bi/list';
@@ -20,6 +31,7 @@
 	import Cookies from 'js-cookie';
 
 	const searchContext = getSearchContext();
+	const homepageContext = getHomepageContext();
 
 	let mounted: boolean = $state(false);
 	let menuDialogElement: HTMLDialogElement | undefined = $state();
@@ -36,6 +48,20 @@
 	const withMobileSearchInput = $derived(isFindRoute);
 
 	const subset = $derived(page.data.subsetMapping);
+
+	let allowTransition = $state(false);
+
+	afterNavigate(() => {
+		allowTransition = false;
+	});
+
+	$effect(() => {
+		if (isHomeRoute && homepageContext.showSearchInAppBar) {
+			allowTransition = true;
+		}
+	});
+
+	let transitionDuration = $derived(allowTransition ? 100 : 0);
 
 	function handleDismissBanner() {
 		Cookies.set('dismissed-banner', 'true', {
@@ -86,13 +112,6 @@
 	onMount(() => {
 		mounted = true;
 	});
-
-	const ID_SEARCH = 'appbar-search';
-	const ID_MENU = 'appbar-menu';
-	const ID_MENU_LABEL = 'appbar-menu-label';
-	const ID_SEARCH_LABEL = 'appbar-search-label';
-	const ID_CHANGE_LANG_LABEL = 'appbar-lang-label';
-	const ID_MY_PAGES_LABEL = 'appbar-mypages-label';
 
 	$effect(() => {
 		if (page.url.hash === '#menu' && mounted) {
@@ -174,7 +193,11 @@
 			{@render trailingActions({ mobile: true })}
 		</div>
 		<div class={['search', withMobileSearchInput ? 'block' : 'hidden lg:block']}>
-			<AppSearch id={ID_SEARCH} />
+			{#if !isHomeRoute || (isHomeRoute && homepageContext.showSearchInAppBar)}
+				<div class="flex h-full items-center" transition:fade={{ duration: transitionDuration }}>
+					<AppSearch id={ID_SEARCH} />
+				</div>
+			{/if}
 		</div>
 		<div class="contents">
 			{@render trailingActions({ mobile: false })}
@@ -182,7 +205,7 @@
 		{#if mounted}
 			<dialog
 				id={ID_MENU}
-				class="menu-dialog sm:border-neutral fixed z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:-left-1 sm:mx-2 sm:w-fit sm:min-w-64 sm:rounded-md sm:border"
+				class="menu-dialog sm:border-neutral fixed z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:w-fit sm:min-w-64 sm:rounded-md sm:border lg:min-w-72 lg:text-base 2xl:min-w-96"
 				closedby="any"
 				tabindex="-1"
 				bind:this={menuDialogElement}
@@ -281,27 +304,6 @@
 
 <style lang="postcss">
 	@reference "#app.css";
-	.appbar {
-		--appbar-template-areas: 'leading-actions trailing-actions trailing-actions';
-		--appbar-template-rows: var(--appbar-height);
-		--search-input-height: 44px;
-	}
-
-	.appbar.with-mobile-search-input {
-		--appbar-template-areas: 'leading-actions trailing-actions trailing-actions'
-			'search search search';
-		--appbar-template-rows: var(--appbar-height) var(--appbar-height);
-	}
-
-	.appbar,
-	.appbar.appbar.with-mobile-search-input {
-		@variant lg {
-			--appbar-template-areas: 'leading-actions search trailing-actions';
-			--appbar-template-rows: var(--appbar-height);
-			--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
-		}
-	}
-
 	.appbar-nav {
 		display: grid;
 		grid-template-areas: var(--appbar-template-areas);
@@ -338,10 +340,6 @@
 
 	.search {
 		grid-area: search;
-	}
-
-	.home .search {
-		display: none;
 	}
 
 	.action {

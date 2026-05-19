@@ -11,11 +11,12 @@
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
-	let homepageCache = $state({
+	let homepageContextState = $state({
+		showSearchInAppBar: false,
 		previews: undefined
 	});
 
-	setHomepageContext(homepageCache);
+	setHomepageContext(homepageContextState);
 
 	let searchContext = $state({
 		getQuery: () => page.url.searchParams.get('_q') || '',
@@ -36,7 +37,7 @@
 	<title>{getPageTitle(undefined, page.data.siteName)}</title>
 	<link rel="unapi-server" type="application/xml" href={`/api/${page.data.locale}/cite`} />
 </svelte:head>
-<div class="contents app">
+<div class="app contents">
 	<AppBar />
 	{#if isFindRoute}
 		<div class="flex flex-1 flex-col">
@@ -59,9 +60,13 @@
 
 	.app {
 		--appbar-height: var(--appbar-base);
+		--appbar-template-areas: 'leading-actions trailing-actions trailing-actions';
+		--appbar-template-rows: var(--appbar-height);
+		--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
 
 		@variant lg {
 			--appbar-height: var(--appbar-lg);
+			--appbar-template-areas: 'leading-actions search trailing-actions';
 		}
 
 		@variant 2xl {

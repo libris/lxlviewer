@@ -8,7 +8,7 @@
 
 	type Props = {
 		items: SearchResultItemType[];
-		type: 'horizontal';
+		type: 'horizontal' | 'grid';
 		ariaLabelledBy?: string;
 		ariaLive?: 'polite' | 'off' | 'assertive';
 		ariaBusy?: boolean;
@@ -98,7 +98,7 @@
 </script>
 
 {#snippet fallbackPlaceholderSnippet()}
-	<div class="skeleton aspect-square"></div>
+	<div class={['skeleton', aspectRatio === 'square' && 'aspect-square']}></div>
 {/snippet}
 {#snippet horizontalList()}
 	<div class={['horizontal-list relative w-full', withGradient && 'with-gradient']}>
@@ -156,6 +156,38 @@
 
 {#if type === 'horizontal'}
 	{@render horizontalList()}
+{:else if type === 'grid'}
+	<ul
+		aria-labelledby={ariaLabelledBy}
+		class="grid grid-cols-4 gap-x-6 gap-y-12"
+		bind:this={listElement}
+		onscroll={updateDisabledScrollButtons}
+		aria-live={ariaLive}
+		aria-busy={ariaBusy}
+	>
+		{#each items as item, index (item['@id'])}
+			<li class="@container">
+				<SearchResultItem
+					data={item}
+					lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
+					fadeInImage={fadeInImages}
+					highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
+						index <= lazyImagesAfterIndex}
+					{suppressProperty}
+					aspectRatio={type === 'grid' ? 'landscape' : 'square'}
+				/>
+			</li>
+		{/each}
+		{#each { length: placeholderItems }}
+			<li class="@container overflow-x-hidden text-center">
+				{#if placeholderSnippet}
+					{@render placeholderSnippet()}
+				{:else}
+					{@render fallbackPlaceholderSnippet()}
+				{/if}
+			</li>
+		{/each}
+	</ul>
 {/if}
 
 <style lang="postcss">
@@ -266,25 +298,6 @@
 		}
 		&.with-gradient {
 			@variant @5xl {
-				&::before,
-				&::after {
-					content: '';
-					top: 0;
-					width: 5rem;
-					height: 100%;
-					position: absolute;
-					@apply z-20;
-				}
-
-				&::before {
-					left: 0;
-					background: linear-gradient(to right, rgba(255, 255, 255, 0.875), rgba(255, 255, 255, 0));
-				}
-
-				&::after {
-					right: 0;
-					background: linear-gradient(to left, rgba(255, 255, 255, 0.875), rgba(255, 255, 255, 0));
-				}
 			}
 		}
 	}

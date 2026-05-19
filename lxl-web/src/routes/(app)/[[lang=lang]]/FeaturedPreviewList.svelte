@@ -7,24 +7,25 @@
 	import { getFeaturedPreviews } from '$lib/remotes/homepage.remote';
 
 	type Props = {
-		featuredSearch: FeaturedSearch;
+		featured: FeaturedSearch;
 		ariaLabelledBy?: string;
+		type?: 'horizontal' | 'grid';
 		lazyload?: 'intersection' | 'mount';
 	};
 
-	let { featuredSearch, ariaLabelledBy, lazyload = undefined }: Props = $props();
+	let { featured, ariaLabelledBy, type = 'horizontal', lazyload = undefined }: Props = $props();
 
 	let listElement: HTMLUListElement | undefined = $state();
 	let observer: IntersectionObserver | undefined = $state();
 	let shouldGetPreviews = $derived(false);
 
 	const homepageContext = getHomepageContext();
-	const previewParamsString = $derived(JSON.stringify(featuredSearch.previewParams));
+	const previewParamsString = $derived(JSON.stringify(featured.previewParams));
 
 	const previewsQuery = $derived(
 		!homepageContext.previews?.[previewParamsString] &&
 			(!lazyload || (lazyload && shouldGetPreviews))
-			? getFeaturedPreviews(featuredSearch.previewParams)
+			? getFeaturedPreviews(featured.previewParams)
 			: undefined
 	);
 
@@ -90,7 +91,7 @@
 <div class={['featured-previews contents', previews?.totalItems === 0 && 'empty']}>
 	<SearchResultList
 		items={previews?.items || []}
-		type="horizontal"
+		{type}
 		{ariaLabelledBy}
 		ariaLive="polite"
 		ariaBusy={!previews || previewsQuery?.loading ? true : false}

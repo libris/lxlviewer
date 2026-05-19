@@ -1,17 +1,56 @@
 <script lang="ts">
+	import { onDestroy, onMount } from 'svelte';
 	import type { FeaturedSearch } from '$lib/remotes/homepage.remote';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
+	import IconSearch from '~icons/bi/search';
+	import IconArrowDown from '~icons/bi/arrow-down';
 	import IconArrowRight from '~icons/bi/arrow-right';
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
 	import FeaturedCategories from './FeaturedCategories.svelte';
 	import heroImage from '$lib/assets/img/bg-marbling01.jpg';
+	import AppSearch from './AppSearch.svelte';
+	import { getHomepageContext } from '$lib/contexts/homepage';
+	import { resolve } from '$app/paths';
+	import { prefersReducedMotion } from 'svelte/motion';
 
-	const uid = $props.id();
+	const ID_HERO_SEARCH = 'hero-search';
+	const ID_HERO_SEARCH_LABEL = 'hero-search-label';
+	const ID_HERO_EXPLORE_LABEL = 'hero-explore-label';
+	const ID_EXPLORE = 'explore';
+	const ID_ABOUT = 'about';
+
 	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
 	const featuredCollections: FeaturedSearch[] = $derived(page.data.featuredCollections);
+
+	const homepageContext = getHomepageContext();
+	let searchContainerElement: HTMLDivElement | undefined = $state();
+	let searchObserver: IntersectionObserver | undefined = $state();
+
+	function handleClickExplore(event: MouseEvent) {
+		if (!prefersReducedMotion.current) {
+			event.preventDefault();
+			document.getElementById(ID_EXPLORE)?.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
+
+	function handleObserve(entries: IntersectionObserverEntry[]) {
+		homepageContext.showSearchInAppBar = !entries[0].isIntersecting;
+	}
+
+	onMount(() => {
+		searchObserver = new IntersectionObserver(handleObserve, { threshold: 1 });
+		if (searchContainerElement) {
+			searchObserver.observe(searchContainerElement);
+		}
+	});
+
+	onDestroy(() => {
+		searchObserver?.disconnect();
+		homepageContext.showSearchInAppBar = false;
+	});
 </script>
 
 <svelte:head>
@@ -25,15 +64,26 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-{#snippet featuredSearch(featured: FeaturedSearch, index: number, landscape: boolean = false)}
-	{@const id = `${uid}-featured-search-${index + 1}`}
+{#snippet featuredSearchSection({
+	featured,
+	id,
+	type,
+	landscape,
+	lazyload
+}: {
+	featured: FeaturedSearch;
+	id: string;
+	type: 'horizontal' | 'grid';
+	landscape?: boolean;
+	lazyload?: 'intersection' | 'mount';
+})}
 	<section
 		class={[
-			'featured-preview-section my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:my-6 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6',
-			landscape && 'landscape-mode bg-neutral-100 py-6'
+			'featured-preview-section mb-16 flex flex-col gap-3 first-of-type:mt-6 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @min-[110rem]:gap-6',
+			landscape && 'landscape-mode bg-primary-50 py-6'
 		]}
 	>
-		<header class="flex flex-col px-3 @sm:px-6 @5xl:px-20">
+		<header class="flex flex-col px-3 @7xl:px-8">
 			<h2
 				class="font-serif text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[110rem]:text-3xl"
 				{id}
@@ -63,14 +113,10 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			<FeaturedPreviewList
-				featuredSearch={featured}
-				ariaLabelledBy={id}
-				lazyload={index === 0 ? 'mount' : 'intersection'}
-			/>
+			<FeaturedPreviewList {featured} ariaLabelledBy={id} {type} {lazyload} />
 		</div>
 		{#if featured.footerTextByLang}
-			<footer class="mt-2 flex justify-start px-3 sm:justify-end @sm:px-6 @5xl:px-20">
+			<footer class="mt-2 flex justify-start px-3 sm:justify-end @sm:px-6 @5xl:px-8">
 				<a
 					href={page.data.localizeHref(featured.findHref)}
 					class={[
@@ -85,32 +131,137 @@
 	</section>
 {/snippet}
 <section class="hero relative">
-	<enhanced:img src={heroImage} alt="" class="hero-image h-auto w-full min-w-5xl object-cover" />
-	<div class="hero-heading absolute top-0 z-10 grid h-full w-full items-center justify-center">
-		<hgroup class="h-full w-full px-4 font-serif">
-			<h1 class="mb-3 w-full leading-[1.125] tracking-[-0.0125em] italic">
+	<enhanced:img
+		src={heroImage}
+		alt=""
+		class="hero-image absolute top-0 -z-10 h-auto w-full min-w-5xl flex-col object-cover"
+	/>
+	<div class="hero-content mx-auto flex w-full max-w-7xl flex-col justify-center gap-4 lg:mb-6">
+		<h1
+			id={ID_HERO_SEARCH_LABEL}
+			class="text-page px-6 text-center font-serif text-4xl leading-[1.125] tracking-[-0.0125em] md:text-5xl lg:px-3"
+		>
+			<span class="italic">
 				{page.data.t('home.pageHeadingTitle')}
-				{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
-					<span class="block whitespace-nowrap">
-						{page.data.t('home.pageHeadingTitleNoWrap')}
-					</span>
-				{/if}
-			</h1>
-			<p class="text-2xl">
-				Libris {page.data.t('home.pageHeadingDescription')}.
-			</p>
-		</hgroup>
+			</span>
+			{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
+				<span class="whitespace-nowrap">
+					{page.data.t('home.pageHeadingTitleNoWrap')}
+				</span>
+			{/if}
+		</h1>
+		<div id={ID_HERO_SEARCH} class="my-3 lg:my-6" bind:this={searchContainerElement}>
+			<AppSearch id="hero-search" ariaLabelledBy={ID_HERO_SEARCH_LABEL} />
+		</div>
+		<div class="text-page flex justify-center gap-3 px-2">
+			<button type="submit" class="shortcut btn-outlined">
+				<div class="shortcut-icon">
+					<IconSearch />
+				</div>
+				{page.data.t('home.searchLabel')}
+			</button>
+			<a
+				id={ID_HERO_EXPLORE_LABEL}
+				href={'#' + ID_EXPLORE}
+				class="shortcut btn-outlined"
+				onclick={handleClickExplore}
+			>
+				<div class="shortcut-icon">
+					<IconArrowDown />
+				</div>
+				{page.data.t('home.exploreLabel')}
+			</a>
+			<a
+				class="my-2 ml-2 flex items-center justify-center self-stretch border-l border-white/50 pl-6 text-sm font-medium text-shadow-lg 2xl:text-base"
+				href={'#' + ID_ABOUT}
+			>
+				{page.data.t('home.aboutLabel')}
+			</a>
+		</div>
 	</div>
 </section>
-<FeaturedCategories />
+<div class="hidden">
+	<p class="text-subtle mt-6 mb-7.5 text-center font-serif text-base @5xl:text-[1.0625rem]">
+		{page.data.t('home.pageDescriptionTitle1')}
+		{page.data.t('home.pageDescriptionTitle2')} med över 9 miljoner titlar.
+		<a
+			class="text-body whitespace-nowrap underline decoration-dotted hover:decoration-solid"
+			href={page.data.localizeHref(resolve('/(app)/[[lang=lang]]/about', { lang: undefined }))}
+		>
+			{page.data.t('home.readMore')}
+		</a>
+	</p>
+	<hr class="mx-auto w-full max-w-72 border-neutral-400" />
+</div>
+<section id={ID_EXPLORE} class="explore pt-6" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
+	<FeaturedCategories />
+	{#each featuredSearches as featured, index (featured.heading)}
+		{@render featuredSearchSection({
+			featured,
+			id: `featured-search-${index}`,
+			type: 'horizontal',
+			lazyload: index > 0 ? 'mount' : undefined
+		})}
+	{/each}
+</section>
+<section id={ID_ABOUT} class="bg-primary-50 mb-8 scroll-mt-20 py-16 2xl:py-24">
+	<h2
+		class="mb-4.5 px-6 text-center font-serif text-4xl leading-tight tracking-[-0.0125em] lg:px-3"
+	>
+		<span class="block whitespace-nowrap">{page.data.t('home.pageDescriptionTitle1')}</span>
+		<span class="block whitespace-nowrap">{page.data.t('home.pageDescriptionTitle2')}</span>
+	</h2>
+	<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
+		{page.data.t('home.pageDescriptionParagraph1')}
+		{page.data.t('home.pageDescriptionParagraph2')}
+	</p>
+	<div class="my-6 text-center">
+		<a
+			class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium"
+			href={page.data.localizeHref(resolve('/(app)/[[lang=lang]]/about', { lang: undefined }))}
+		>
+			{page.data.t('home.readMoreAbout')}
+		</a>
+	</div>
+	<hr class="border-primary-700/75 mx-auto my-8 max-w-48 2xl:my-16" />
+	<section class="2xl:max-w-10xl mx-auto max-w-7xl px-2 lg:px-3">
+		<h3
+			class="mb-4.5 px-6 text-center font-serif text-3xl leading-tight tracking-[-0.0125em] lg:px-3"
+		>
+			Särskilda samlingar
+		</h3>
+		<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
+			Libris består också av deldatabaser som omfattar nationalbibliografiska, ämnesspecialiserade
+			och lokala/regionala bibliografier.
+		</p>
+		<div class="mx-auto mt-8">
+			{#each featuredCollections as collection (collection.heading)}
+				<FeaturedPreviewList
+					featured={collection}
+					ariaLabelledBy={collection.heading}
+					type="grid"
+				/>
+			{/each}
+			<div class="mt-6 text-center">
+				<a
+					class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium"
+					href={page.data.localizeHref(
+						resolve('/(app)/[[lang=lang]]/collections', { lang: undefined })
+					)}
+				>
+					Utforska särskilda samlingar
+				</a>
+			</div>
+		</div>
+	</section>
+</section>
 {#each featuredSearches as featured, index (featured.heading)}
-	{@render featuredSearch(featured, index)}
-{/each}
-{#each featuredCollections as collections, index (collections.heading)}
-	{@render featuredSearch(collections, featuredSearches.length + index, true)}
-{/each}
-{#each featuredSearches2 as featured, index (featured.heading)}
-	{@render featuredSearch(featured, featuredSearches.length + featuredCollections.length + index)}
+	{@render featuredSearchSection({
+		featured,
+		type: 'horizontal',
+		id: `featured-search-${featuredSearches2.length + index}`,
+		lazyload: 'intersection'
+	})}
 {/each}
 
 <style lang="postcss">
@@ -123,9 +274,12 @@
 				@variant @sm {
 					margin-left: calc(var(--spacing) * 6);
 				}
+				/*
+
 				@variant @5xl {
 					margin-left: calc(var(--spacing) * 20);
 				}
+					*/
 			}
 			&:global(:last-child) {
 				margin-right: calc(var(--spacing) * 3);
@@ -190,12 +344,47 @@
 	}
 
 	.hero {
-		--hero-height: calc(60.8vh - var(--appbar-height));
-		--hero-height: calc(60.8vh - var(--appbar-height));
-		--hero-margin: round(calc(var(--hero-height) / 2 - var(--appbar-height) / 2), 1px);
+		--hero-height: round(39.2vh, 1px);
+		--hero-height: round(39.2svh, 1px);
+		--hero-margin: round(calc(var(--hero-height) / 2), 1px);
 
 		height: var(--hero-height);
-		background-color: var(--color-primary-300);
+		overflow: hidden;
+
+		@variant lg {
+			--hero-height: round(60.8vh, 1px);
+			--hero-height: round(60.8svh, 1px);
+			display: grid;
+
+			grid-template-areas: var(--appbar-template-areas);
+			grid-template-columns: var(--appbar-template-columns);
+		}
+
+		@variant 2xl {
+			--hero-height: round(calc(60.8vh - var(--appbar-height)), 1px);
+			--hero-height: round(calc(60.8svh - var(--appbar-height)), 1px);
+		}
+	}
+
+	.hero-content {
+		@variant lg {
+			grid-area: search;
+		}
+	}
+
+	.shortcut {
+		@apply flex min-h-11 items-center border border-black/15 bg-black/30 pr-6 text-sm font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-sm text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors 2xl:min-h-13 2xl:gap-1 2xl:pr-7 2xl:pl-1 2xl:text-base;
+
+		&:hover {
+			@apply bg-black/15;
+			& .shortcut-icon {
+				@apply text-white;
+			}
+		}
+	}
+
+	.shortcut-icon {
+		@apply flex aspect-square h-full items-center justify-center rounded-full px-2 text-white/75 transition-colors;
 	}
 
 	.hero-image {
@@ -204,7 +393,7 @@
 		opacity: 1;
 	}
 
-	.hero-heading {
-		display: none;
+	.explore {
+		scroll-margin-top: var(--appbar-height);
 	}
 </style>

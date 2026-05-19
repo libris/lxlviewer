@@ -3,11 +3,17 @@ export default {
 	home: {
 		pageHeadingTitle: 'Search Swedish libraries',
 		pageHeadingTitleNoWrap: '',
-		pageHeadingDescription: "is the Swedish libraries' joint catalogue",
-		pageHeadingDescriptionNoWrap: 'with over 9 million items.',
+		pageDescription:
+			'Libris is the shared catalog of Swedish libraries with over nine million items from 600 libraries.',
 		metaDescription:
 			'Libris is a national search service with information about titles in about 600 Swedish libraries, including the National Library. With Libris you can find what you are looking for at a library near you. The search service contains almost 13 million items: books, journals, pictures, maps, notes, e-books and more. Libris also contains digital material that is free to access from home.',
-		searchShortcuts: 'Search shortcuts'
+		readMore: 'Read more about Libris',
+		searchLabel: 'Search Libris',
+		exploreLabel: 'Explore the catalogue',
+		aboutLabel: 'About Libris',
+		categories: 'Categories',
+		all: 'All',
+		readMoreAbout: 'More about Libris'
 	},
 	appMenu: {
 		label: 'main navigation',
@@ -49,7 +55,7 @@ export default {
 	about: {
 		pageTitle: 'About Libris',
 		pageDescription:
-			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog.'
+			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalogue.'
 	},
 	help: {
 		pageTitle: 'Help',

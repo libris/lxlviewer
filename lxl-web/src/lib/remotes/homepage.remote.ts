@@ -29,21 +29,11 @@ const FEATURED_QUERIES: FeaturedQueryType[] = [
 		}
 	},
 	{
-		headingByLang: { sv: 'Tecknade serier för vuxna', en: 'Comics for grown-ups' },
+		headingByLang: { sv: 'Ny facklitteratur', en: 'New non-fiction' },
 		findHref:
-			'/find?_q=category%3A"saogf%3ATecknade%2520serier"+language%3A"lang%3Aswe"+NOT+(+kategori%3A"barngf%3ABarn-%2520och%2520ungdomslitteratur"+OR+intendedAudience%3A"marc%3AJuvenile"+)',
+			'/find?_q=category:"saogf:Facklitteratur"+yearPublished%3A-2026&_sort=-%40reverse.instanceOf.publication.librissearch:year',
 		previewParams: {
-			_q: 'category:"saogf:Tecknade%20serier" language:"lang:swe" NOT ( kategori:"barngf:Barn-%20och%20ungdomslitteratur" OR intendedAudience:"marc:Juvenile" ) existsImage',
-			_limit: 20,
-			_sort: ''
-		}
-	},
-	{
-		headingByLang: { sv: 'Nya avhandlingar', en: 'New dissertations' },
-		findHref:
-			'/find?_q=workCategory%3A"saogf%3AAvhandlingar"&_sort=-%40reverse.instanceOf.publication.librissearch%3Ayear',
-		previewParams: {
-			_q: 'workCategory:"saogf:Avhandlingar" existsImage',
+			_q: 'category:"saogf:Facklitteratur" yearPublished:-2026 existsImage',
 			_limit: 20,
 			_sort: '-@reverse.instanceOf.publication.librissearch:year'
 		}
@@ -63,6 +53,26 @@ const FEATURED_QUERIES: FeaturedQueryType[] = [
 ];
 
 const FEATURED_QUERIES2: FeaturedQueryType[] = [
+	{
+		headingByLang: { sv: 'Tecknade serier för vuxna', en: 'Comics for grown-ups' },
+		findHref:
+			'/find?_q=category%3A"saogf%3ATecknade%2520serier"+language%3A"lang%3Aswe"+NOT+(+kategori%3A"barngf%3ABarn-%2520och%2520ungdomslitteratur"+OR+intendedAudience%3A"marc%3AJuvenile"+)',
+		previewParams: {
+			_q: 'category:"saogf:Tecknade%20serier" language:"lang:swe" NOT ( kategori:"barngf:Barn-%20och%20ungdomslitteratur" OR intendedAudience:"marc:Juvenile" ) existsImage',
+			_limit: 20,
+			_sort: ''
+		}
+	},
+	{
+		headingByLang: { sv: 'Nya avhandlingar', en: 'New dissertations' },
+		findHref:
+			'/find?_q=workCategory%3A"saogf%3AAvhandlingar"&_sort=-%40reverse.instanceOf.publication.librissearch%3Ayear',
+		previewParams: {
+			_q: 'workCategory:"saogf:Avhandlingar" existsImage',
+			_limit: 20,
+			_sort: '-@reverse.instanceOf.publication.librissearch:year'
+		}
+	},
 	{
 		headingByLang: { sv: 'Vidga dina vyer', en: 'Broaden your horizons' },
 		leadingTextByLang: {
@@ -94,17 +104,8 @@ const FEATURED_QUERIES2: FeaturedQueryType[] = [
 			_q: 'subject:"sao:Kvinnor%20i%20litteraturen" existsImage',
 			_limit: 20
 		}
-	},
-	{
-		headingByLang: { sv: 'Ny facklitteratur', en: 'New non-fiction' },
-		findHref:
-			'/find?_q=category:"saogf:Facklitteratur"+yearPublished%3A-2026&_sort=-%40reverse.instanceOf.publication.librissearch:year',
-		previewParams: {
-			_q: 'category:"saogf:Facklitteratur" yearPublished:-2026 existsImage',
-			_limit: 20,
-			_sort: '-@reverse.instanceOf.publication.librissearch:year'
-		}
 	}
+
 	// {
 	// 	headingByLang: { sv: 'Lär dig mer om AI', en: 'Learn more about AI' },
 	// 	findHref: '/find?_q=subject:"sao:Artificiell%2520intelligens"+category:"saogf:Facklitteratur"',

@@ -363,7 +363,7 @@
 
 	.btn-outlined {
 		display: inline-block;
-		@apply rounded-full border border-neutral-400;
+		@apply rounded-full border;
 	}
 	.btn-scroll {
 		display: flex;

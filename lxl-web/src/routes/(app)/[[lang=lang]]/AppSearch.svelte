@@ -8,9 +8,10 @@
 
 	type Props = {
 		id: string;
+		ariaLabelledBy?: string;
 	};
 
-	let { id }: Props = $props();
+	let { id, ariaLabelledBy }: Props = $props();
 
 	let cursor: number | null = $state(null);
 
@@ -18,8 +19,7 @@
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
-	const ariaLabelledBy = $derived(isHomeRoute ? 'page-title' : undefined);
-	const ariaLabel = $derived(!isHomeRoute ? page.data.t('header.search') : undefined);
+	const ariaLabel = $derived(page.data.t('header.search'));
 	const placeholder: string = $derived(
 		page.data.subsetMapping
 			? `${page.data.t('header.searchSubsetPlaceholder')}: ${displayMappingToString(page.data.subsetMapping)}`
