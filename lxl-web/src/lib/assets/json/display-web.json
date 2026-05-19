@@ -1000,6 +1000,7 @@
 						"isPrimaryTopicOf",
 						"isIssueOf",
 						"relatedTo",
+						"hasNumberingOfSerials",
 						"hasNote",
 						"hasDimensions",
 						"hasDuration",
