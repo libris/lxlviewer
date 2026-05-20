@@ -1619,8 +1619,12 @@
 			"@id": "Agent-lifeSpan-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:propertyFormatDomain": ["lifeSpan"],
-			"fresnel:propertyStyle": ["agent-lifespan"]
+			"fresnel:propertyFormatDomain": [
+				"lifeSpan",
+				"marc:titlesAndOtherWordsAssociatedWithAName",
+				"fullerFormOfName"
+			],
+			"fresnel:propertyStyle": ["agent-extra"]
 		},
 		"Role-format": {
 			"@id": "Role-format",
