@@ -133,7 +133,7 @@
 	]}
 >
 	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
-		<ul class="leading-actions z-43 flex items-stretch lg:ml-0">
+		<ul class="leading-actions z-43 flex items-stretch 2xl:pl-3">
 			<li>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -199,13 +199,13 @@
 				</div>
 			{/if}
 		</div>
-		<div class="contents">
+		<div class="hidden lg:contents">
 			{@render trailingActions({ mobile: false })}
 		</div>
 		{#if mounted}
 			<dialog
 				id={ID_MENU}
-				class="menu-dialog sm:border-neutral z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:w-fit sm:min-w-64 sm:rounded-md sm:border lg:min-w-72 lg:text-base 2xl:min-w-96"
+				class="menu-dialog sm:border-neutral z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:w-fit sm:min-w-64 sm:rounded-md sm:border lg:min-w-72 lg:text-base 2xl:left-3 2xl:min-w-96"
 				closedby="any"
 				tabindex="-1"
 				bind:this={menuDialogElement}
@@ -232,7 +232,7 @@
 	{@const searchLabelId = mobile ? `${ID_SEARCH_LABEL}-mobile` : ID_SEARCH_LABEL}
 	{@const changeLangLabelId = mobile ? `${ID_CHANGE_LANG_LABEL}-mobile` : ID_CHANGE_LANG_LABEL}
 	{@const myPagesLabelId = mobile ? `${ID_MY_PAGES_LABEL}-mobile` : ID_MY_PAGES_LABEL}
-	<ul class="trailing-actions z-42 flex w-full items-stretch justify-end">
+	<ul class="trailing-actions z-42 flex w-full items-stretch justify-end 2xl:pr-3">
 		<li class={['lg:hidden', withMobileSearchInput && 'hidden']}>
 			<svelte:element
 				this={mounted ? 'button' : 'a'}
