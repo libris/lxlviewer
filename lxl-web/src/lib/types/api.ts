@@ -4,6 +4,7 @@ export type ApiError = {
 	message: string;
 	status_code: NumericRange<400, 599>;
 	status: string;
+	error_id?: string;
 };
 
 export interface HoldingStatus {

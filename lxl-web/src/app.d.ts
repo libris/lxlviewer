@@ -12,6 +12,7 @@ declare global {
 	namespace App {
 		interface Error {
 			status?: string;
+			errorId?: string;
 		}
 		interface Locals {
 			vocab: VocabUtil;

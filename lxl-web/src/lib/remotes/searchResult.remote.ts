@@ -30,7 +30,11 @@ export const getSearchResults = query(SearchResultsSchema, async (params) => {
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
-		return error(err.status_code, { message: err.message, status: err.status });
+		return error(err.status_code, {
+			message: err.message,
+			status: err.status,
+			...(err.error_id && { errorId: err.error_id })
+		});
 	}
 
 	const displayUtil = locals.display;
@@ -59,7 +63,11 @@ export const getAdjecentSearchResult = query(v.string(), async (viewId) => {
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
-		return error(err.status_code, { message: err.message, status: err.status });
+		return error(err.status_code, {
+			message: err.message,
+			status: err.status,
+			...(err.error_id && { errorId: err.error_id })
+		});
 	}
 
 	const data = (await res.json()) as PartialCollectionView;

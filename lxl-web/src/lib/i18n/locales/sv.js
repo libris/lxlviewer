@@ -241,7 +241,11 @@ export default {
 		followUp: ', så undersöker vi felet.',
 		backToStartPage: 'Tillbaka till startsidan',
 		mailSubject: 'Felaktig länk',
-		mailBody: 'Felaktig referens till sidan'
+		mailBody: 'Felaktig referens till sidan',
+		errorWithErrorId:
+			'Prova att ladda om sidan. Vänligen rapportera felkoden nedan om felet kvarstår.',
+		errorWithoutErrorId: 'Prova att ladda om sidan.',
+		errorIdLabel: 'Felkod'
 	},
 	general: {
 		collapseAll: 'Stäng alla',
