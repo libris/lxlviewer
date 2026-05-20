@@ -147,7 +147,7 @@
 					aria-controls={ID_MENU}
 					aria-haspopup="dialog"
 					aria-expanded={(mounted && expandedMenu) || undefined}
-					class="action hover:bg-primary-200 aspect-square lg:min-w-16"
+					class="action hover:bg-primary-200 aspect-square min-w-13 sm:min-w-16 lg:min-w-19 2xl:min-w-21.5"
 					aria-label={page.data.t('header.menu')}
 					aria-labelledby={ID_MENU_LABEL}
 					onclick={handleClickMenuAction}
@@ -177,7 +177,7 @@
 							width={275}
 							height={75}
 							alt="Libris"
-							class="mb-1 h-auto w-22 min-w-20 sm:w-27.5 2xl:w-35.75"
+							class="mb-0.5 h-auto w-22 min-w-20 sm:mb-1 sm:w-27.5 2xl:w-35.75"
 						/>
 					{/if}
 				</a>
@@ -254,7 +254,7 @@
 		</li>
 		<li class="hover:bg-primary-200 hidden aspect-square sm:block sm:aspect-auto">
 			<a
-				class="action"
+				class="action text-subtle"
 				href={resolve(
 					page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
 						locale: otherLangCode
@@ -274,7 +274,7 @@
 		</li>
 		<li>
 			<a
-				class="action hover:bg-primary-200 aspect-square sm:aspect-auto"
+				class="action hover:bg-primary-200 text-subtle aspect-square sm:aspect-auto"
 				href={resolve(page.data.localizeHref('/my-pages'))}
 				aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
 				aria-labelledby={myPagesLabelId}
@@ -362,10 +362,6 @@
 			border-radius: 0;
 
 			&:hover {
-				&:not(:focus-visible),
-				&:not([aria-expanded]) {
-					// background: none;
-				}
 				&:focus-visible,
 				&[aria-expanded] {
 					background: var(--color-primary-300);

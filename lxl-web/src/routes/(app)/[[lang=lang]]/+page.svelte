@@ -341,6 +341,7 @@
 		--hero-margin: round(calc(var(--hero-height) / 2), 1px);
 
 		height: var(--hero-height);
+		min-height: 320px;
 		overflow: hidden;
 
 		@variant lg {
