@@ -243,7 +243,11 @@ export default {
 		followUp: ', and we will investigate the error.',
 		backToStartPage: 'Back to the home page',
 		mailSubject: 'Incorrect link',
-		mailBody: 'Incorrect reference to the page'
+		mailBody: 'Incorrect reference to the page',
+		errorWithErrorId:
+			'Please try reloading the page. If the problem persists, report the error ID below.',
+		errorWithoutErrorId: 'Please try reloading the page.',
+		errorIdLabel: 'Error ID'
 	},
 	general: {
 		collapseAll: 'Collapse all',

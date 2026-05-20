@@ -36,7 +36,11 @@ export async function getRelations(
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
-		throw error(err.status_code, { message: err.message, status: err.status });
+		throw error(err.status_code, {
+			message: err.message,
+			status: err.status,
+			...(err.error_id && { errorId: err.error_id })
+		});
 	}
 
 	const data = (await res.json()) as PartialCollectionView;

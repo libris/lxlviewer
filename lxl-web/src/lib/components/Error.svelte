@@ -55,8 +55,13 @@
 				>{page.data.t('errors.backToStartPage')}
 			</a>
 		</p>
-	{:else if page.error?.message}
+	{:else if page.error}
 		<h2 class="pb-4 text-lg font-medium">{page.data.t('errors.somethingWentWrong')}</h2>
-		<p>{page.error.message}</p>
+		{#if page.error.errorId}
+			<p>{page.data.t('errors.errorWithErrorId')}</p>
+			<p class="pt-4">{page.data.t('errors.errorIdLabel')}: {page.error.errorId}</p>
+		{:else}
+			<p>{page.data.t('errors.errorWithoutErrorId')}</p>
+		{/if}
 	{/if}
 </div>

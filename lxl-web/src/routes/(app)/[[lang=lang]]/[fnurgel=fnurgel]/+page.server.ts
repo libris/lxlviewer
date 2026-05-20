@@ -75,7 +75,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		}
 		throw error(apiError?.status_code || resourceRes.status, {
 			message: apiError?.message || resourceRes.statusText,
-			status: apiError?.status
+			status: apiError?.status,
+			...(apiError?.error_id && { errorId: apiError.error_id })
 		});
 	}
 
