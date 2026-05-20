@@ -205,7 +205,7 @@
 		{#if mounted}
 			<dialog
 				id={ID_MENU}
-				class="menu-dialog sm:border-neutral fixed z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:w-fit sm:min-w-64 sm:rounded-md sm:border lg:min-w-72 lg:text-base 2xl:min-w-96"
+				class="menu-dialog sm:border-neutral z-50 hidden w-full flex-col text-sm shadow-md open:flex sm:w-fit sm:min-w-64 sm:rounded-md sm:border lg:min-w-72 lg:text-base 2xl:min-w-96"
 				closedby="any"
 				tabindex="-1"
 				bind:this={menuDialogElement}
@@ -384,7 +384,7 @@
 	}
 
 	.menu-dialog {
-		top: var(--appbar-height, 0);
+		top: calc(var(--appbar-height, 0));
 		max-height: calc(100vh - calc(var(--appbar-height, 0) + 1px));
 		max-height: calc(100svh - calc(var(--appbar-height, 0) + 1px));
 		overflow-y: auto;
