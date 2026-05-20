@@ -60,13 +60,18 @@
 
 	.app {
 		--appbar-height: var(--appbar-base);
-		--appbar-template-areas: 'leading-actions trailing-actions trailing-actions';
+		--appbar-template-areas: 'leading-actions trailing-actions';
 		--appbar-template-rows: var(--appbar-height);
-		--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
+		--appbar-template-columns: 1fr 1fr;
+
+		@variant sm {
+			--appbar-height: var(--appbar-sm);
+		}
 
 		@variant lg {
 			--appbar-height: var(--appbar-lg);
 			--appbar-template-areas: 'leading-actions search trailing-actions';
+			--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
 		}
 
 		@variant 2xl {

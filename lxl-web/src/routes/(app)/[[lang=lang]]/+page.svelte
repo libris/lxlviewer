@@ -141,9 +141,7 @@
 			id={ID_HERO_SEARCH_LABEL}
 			class="text-page px-6 text-center font-serif text-4xl leading-[1.125] tracking-[-0.0125em] md:text-5xl lg:px-3"
 		>
-			<span class="italic">
-				{page.data.t('home.pageHeadingTitle')}
-			</span>
+			{page.data.t('home.pageHeadingTitle')}
 			{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
 				<span class="whitespace-nowrap">
 					{page.data.t('home.pageHeadingTitleNoWrap')}
@@ -180,19 +178,11 @@
 		</div>
 	</div>
 </section>
-<div class="hidden">
-	<p class="text-subtle mt-6 mb-7.5 text-center font-serif text-base @5xl:text-[1.0625rem]">
-		{page.data.t('home.pageDescriptionTitle1')}
-		{page.data.t('home.pageDescriptionTitle2')} med över 9 miljoner titlar.
-		<a
-			class="text-body whitespace-nowrap underline decoration-dotted hover:decoration-solid"
-			href={page.data.localizeHref(resolve('/(app)/[[lang=lang]]/about', { lang: undefined }))}
-		>
-			{page.data.t('home.readMore')}
-		</a>
-	</p>
-	<hr class="mx-auto w-full max-w-72 border-neutral-400" />
-</div>
+<p class="text-subtle mt-6 mb-7.5 text-center font-serif text-base @5xl:text-[1.0625rem]">
+	{page.data.t('home.pageDescriptionTitle1')}
+	{page.data.t('home.pageDescriptionTitle2')}
+</p>
+<hr class="mx-auto w-full max-w-72 border-neutral-400" />
 <section id={ID_EXPLORE} class="explore pt-6" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
 	<FeaturedCategories />
 	{#each featuredSearches as featured, index (featured.heading)}
@@ -205,15 +195,16 @@
 	{/each}
 </section>
 <section id={ID_ABOUT} class="bg-primary-50 mb-8 scroll-mt-20 py-16 2xl:py-24">
+	<!--
 	<h2
 		class="mb-4.5 px-6 text-center font-serif text-4xl leading-tight tracking-[-0.0125em] lg:px-3"
 	>
-		<span class="block whitespace-nowrap">{page.data.t('home.pageDescriptionTitle1')}</span>
-		<span class="block whitespace-nowrap">{page.data.t('home.pageDescriptionTitle2')}</span>
+		<span class="whitespace-nowrap"> {page.data.t('home.aboutTitle1')} </span>
+		<span class="block whitespace-nowrap">{page.data.t('home.aboutTitle2')}</span>
 	</h2>
 	<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
-		{page.data.t('home.pageDescriptionParagraph1')}
-		{page.data.t('home.pageDescriptionParagraph2')}
+		{page.data.t('home.aboutParagraph1')}
+		{page.data.t('home.aboutParagraph2')}
 	</p>
 	<div class="my-6 text-center">
 		<a
@@ -224,6 +215,7 @@
 		</a>
 	</div>
 	<hr class="border-primary-700/75 mx-auto my-8 max-w-48 2xl:my-16" />
+	-->
 	<section class="2xl:max-w-10xl mx-auto max-w-7xl px-2 lg:px-3">
 		<h3
 			class="mb-4.5 px-6 text-center font-serif text-3xl leading-tight tracking-[-0.0125em] lg:px-3"

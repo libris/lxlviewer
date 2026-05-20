@@ -45,7 +45,7 @@
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
-	const withMobileSearchInput = $derived(isFindRoute);
+	const withMobileSearchInput = $derived(isHomeRoute || isFindRoute);
 
 	const subset = $derived(page.data.subsetMapping);
 
@@ -147,7 +147,7 @@
 					aria-controls={ID_MENU}
 					aria-haspopup="dialog"
 					aria-expanded={(mounted && expandedMenu) || undefined}
-					class="action max-sm:hover:bg-primary-200 aspect-square lg:min-w-16"
+					class="action hover:bg-primary-200 aspect-square lg:min-w-16"
 					aria-label={page.data.t('header.menu')}
 					aria-labelledby={ID_MENU_LABEL}
 					onclick={handleClickMenuAction}
@@ -177,7 +177,7 @@
 							width={275}
 							height={75}
 							alt="Libris"
-							class="mb-1 h-auto w-22 min-w-20 lg:w-27.5 2xl:w-35.75"
+							class="mb-1 h-auto w-22 min-w-20 sm:w-27.5 2xl:w-35.75"
 						/>
 					{/if}
 				</a>
@@ -212,14 +212,12 @@
 				onclose={closeExpandedMenu}
 				onfocusout={handleMenuDialogFocusOut}
 			>
-				<div class="px-1 pt-1 sm:pb-1">
-					<AppMenuContent showSkipToContent={false} onclickSearch={handleClickSearchAction} />
-				</div>
-				<div class="flex px-1 pb-1 sm:hidden">
+				<AppMenuContent showSkipToContent={false} onclickSearch={handleClickSearchAction} />
+				<div class="flex sm:hidden">
 					<button
 						type="button"
 						onclick={closeExpandedMenu}
-						class="bg-primary-50 focus:bg-primary-100 hover:bg-primary-100 flex min-h-9 w-full items-center justify-center gap-2 text-xs"
+						class="focus:bg-primary-100 hover:bg-primary-100 flex min-h-12 w-full items-center justify-center gap-2 text-sm -outline-offset-2"
 					>
 						<IconCloseMenu />
 						{page.data.t('header.closeMenu')}
@@ -242,7 +240,7 @@
 				href={mounted ? undefined : '#search'}
 				role={mounted ? undefined : 'button'}
 				tabindex={mounted ? undefined : 0}
-				class="action max-sm:hover:bg-primary-200 aspect-square lg:aspect-auto"
+				class="action hover:bg-primary-200 aspect-square sm:aspect-auto"
 				onclick={handleClickSearchAction}
 				aria-label={page.data.t('header.search')}
 				aria-labelledby={searchLabelId}
@@ -254,7 +252,7 @@
 				})}
 			</svelte:element>
 		</li>
-		<li class="hidden lg:block">
+		<li class="hover:bg-primary-200 hidden aspect-square sm:block sm:aspect-auto">
 			<a
 				class="action"
 				href={resolve(
@@ -276,7 +274,7 @@
 		</li>
 		<li>
 			<a
-				class="action max-sm:hover:bg-primary-200 aspect-square lg:aspect-auto"
+				class="action hover:bg-primary-200 aspect-square sm:aspect-auto"
 				href={resolve(page.data.localizeHref('/my-pages'))}
 				aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
 				aria-labelledby={myPagesLabelId}
@@ -293,10 +291,10 @@
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
 	<div
-		class="3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-sm font-medium 2xl:gap-1.5 2xl:text-base"
+		class="3xl:px-2.5 text-subtle flex min-w-11 flex-col items-center gap-1 px-1 text-xs font-medium sm:gap-1.5 lg:gap-1 lg:text-sm 2xl:gap-1.5 2xl:text-base"
 	>
-		<Icon class="mt-0.5 size-5 2xl:mt-1 2xl:size-6" />
-		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
+		<Icon class="mt-0.5 size-5 sm:mt-1 lg:mt-0.5 2xl:mt-1 2xl:size-6" />
+		<p {id} class="sr-only sm:not-sr-only sm:whitespace-nowrap">
 			{label}
 		</p>
 	</div>
@@ -324,6 +322,10 @@
 		& .action {
 			@apply -outline-offset-2;
 			height: 100%;
+
+			@variant sm {
+				@apply px-1;
+			}
 
 			@variant lg {
 				@apply px-2;
@@ -355,14 +357,14 @@
 			color: var(--color-primary-950);
 		}
 
-		@variant lg {
+		@variant sm {
 			height: var(--appbar-height);
 			border-radius: 0;
 
 			&:hover {
 				&:not(:focus-visible),
 				&:not([aria-expanded]) {
-					background: none;
+					// background: none;
 				}
 				&:focus-visible,
 				&[aria-expanded] {
