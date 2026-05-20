@@ -128,7 +128,10 @@
 					LeadingIcon && 'pl-0 lg:pl-0',
 					hasParent && 'min-h-11! pl-10 text-sm lg:min-h-11! lg:pl-12 lg:text-[0.9375rem]',
 					hasParent ? 'font-normal' : 'text-subtle font-medium',
-					currentPage && 'text-body!'
+					currentPage && 'text-body!',
+					currentPage &&
+						href !== page.data.localizeHref(page.data.base) &&
+						'bg-primary-50 text-body!'
 				]}
 				{hreflang}
 				{onclick}
