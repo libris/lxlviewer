@@ -28,6 +28,7 @@
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import { ID_HERO_SEARCH } from '../../../routes/(app)/[[lang=lang]]/+page.svelte';
 
 	interface Props {
 		placeholder: string;
@@ -73,8 +74,7 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
-	let pageYOffset: number | undefined = $state();
-	let appBannerOffset: number | undefined = $state();
+	let searchOffset: number | undefined = $state();
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -241,8 +241,26 @@
 	}
 
 	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
-		pageYOffset = windowPageYOffset;
-		appBannerOffset = document.getElementById('app-banner')?.offsetHeight;
+		if (page.route.id === '/(app)/[[lang=lang]]') {
+			const heroSearch = document.getElementById(ID_HERO_SEARCH);
+			if (heroSearch) {
+				const contentOffsetTop = document.getElementById('content')?.offsetTop || 0;
+				const heroSearchOffsetTop = heroSearch?.offsetTop || 0;
+
+				console.log(
+					'windowPageYOffset',
+					windowPageYOffset,
+					'contentOffsetTop',
+					contentOffsetTop,
+					'heroSearchOffsetTop',
+					heroSearchOffsetTop,
+					'res',
+					Math.max(0, contentOffsetTop + heroSearchOffsetTop - windowPageYOffset)
+				);
+
+				searchOffset = Math.max(0, contentOffsetTop + heroSearchOffsetTop - windowPageYOffset);
+			}
+		}
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
@@ -337,8 +355,7 @@
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
-		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
-		--app-banner-offset={appBannerOffset ? `${appBannerOffset}px` : undefined}
+		--search-offset={searchOffset ? `${searchOffset}px` : undefined}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -615,7 +632,7 @@
 
 		@variant lg {
 			top: 0;
-			margin-top: max(calc(-1 * var(--page-y-offset, 0px) + var(--app-banner-offset, 0px)), 0px);
+			margin-top: var(--search-offset, 0px);
 		}
 	}
 

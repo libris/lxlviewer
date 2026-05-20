@@ -125,6 +125,7 @@
 	<AppBanner ondismiss={handleDismissBanner} />
 {/if}
 <header
+	id="app-bar"
 	class={[
 		'appbar @container sticky top-0 z-40',
 		isHomeRoute && 'home',

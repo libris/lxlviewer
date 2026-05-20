@@ -1,3 +1,7 @@
+<script module>
+	export const ID_HERO_SEARCH = 'hero-search';
+</script>
+
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import type { FeaturedSearch } from '$lib/remotes/homepage.remote';
@@ -15,7 +19,6 @@
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
 
-	const ID_HERO_SEARCH = 'hero-search';
 	const ID_HERO_SEARCH_LABEL = 'hero-search-label';
 	const ID_HERO_EXPLORE_LABEL = 'hero-explore-label';
 	const ID_EXPLORE = 'explore';
@@ -148,7 +151,11 @@
 				</span>
 			{/if}
 		</h1>
-		<div id={ID_HERO_SEARCH} class="my-3 lg:my-6" bind:this={searchContainerElement}>
+		<div
+			id={ID_HERO_SEARCH}
+			class="hero-search-container my-3 lg:my-6"
+			bind:this={searchContainerElement}
+		>
 			<AppSearch id="hero-search" ariaLabelledBy={ID_HERO_SEARCH_LABEL} />
 		</div>
 		<div class="text-page flex justify-center gap-3 px-2">
@@ -178,7 +185,7 @@
 		</div>
 	</div>
 </section>
-<p class="text-subtle mt-6 mb-7.5 text-center font-serif text-base @5xl:text-[1.0625rem]">
+<p class="text-subtle mt-6 mb-7.5 px-2 text-center font-serif text-base lg:px-3 2xl:text-lg">
 	{page.data.t('home.pageDescriptionTitle1')}
 	{page.data.t('home.pageDescriptionTitle2')}
 </p>
@@ -223,8 +230,8 @@
 			Särskilda samlingar
 		</h3>
 		<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
-			Libris består också av deldatabaser som omfattar nationalbibliografiska, ämnesspecialiserade
-			och lokala/regionala bibliografier.
+			I Libris finns även deldatabaser som omfattar nationalbibliografiska, ämnesspecialiserade och
+			lokala/regionala bibliografier.
 		</p>
 		<div class="mx-auto mt-8">
 			{#each featuredCollections as collection (collection.heading)}
@@ -388,5 +395,9 @@
 
 	.explore {
 		scroll-margin-top: var(--appbar-height);
+	}
+
+	.hero-search-container {
+		min-height: var(--appbar-height);
 	}
 </style>
