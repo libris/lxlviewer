@@ -188,7 +188,7 @@
 				}
 			}
 		}
-		& :global(.agent-extra),
+		& :global(.person-extra),
 		& :global(.contribution-role) {
 			display: none;
 		}

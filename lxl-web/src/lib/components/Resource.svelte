@@ -787,7 +787,7 @@
 			}
              */
 
-			& :global(.agent-extra),
+			& :global(.person-extra),
 			& :global(.language) {
 				display: none;
 			}

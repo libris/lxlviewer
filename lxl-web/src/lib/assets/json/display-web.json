@@ -408,9 +408,9 @@
 						"familyName",
 						"name",
 						"marc:numeration",
-						"lifeSpan",
 						"marc:titlesAndOtherWordsAssociatedWithAName",
-						"fullerFormOfName"
+						"fullerFormOfName",
+						"lifeSpan"
 					]
 				},
 				"Title": {
@@ -1615,16 +1615,16 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"Agent-lifeSpan-format": {
-			"@id": "Agent-lifeSpan-format",
+		"Person-format": {
+			"@id": "Person-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Agent"],
+			"fresnel:classFormatDomain": ["Person"],
 			"fresnel:propertyFormatDomain": [
 				"lifeSpan",
 				"marc:titlesAndOtherWordsAssociatedWithAName",
 				"fullerFormOfName"
 			],
-			"fresnel:propertyStyle": ["agent-extra"]
+			"fresnel:propertyStyle": ["person-extra"]
 		},
 		"Role-format": {
 			"@id": "Role-format",

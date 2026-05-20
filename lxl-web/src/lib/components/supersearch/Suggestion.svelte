@@ -209,7 +209,7 @@
 	}
 
 	.suggestion-contribution {
-		& :global(.agent-extra) {
+		& :global(.person-extra) {
 			display: none;
 		}
 

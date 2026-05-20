@@ -330,11 +330,11 @@ body:has(.dismissed-banner) {
 		}
 
 		/* persons */
-		& .agent-extra {
+		& .person-extra {
 			font-weight: var(--font-weight-normal);
 			color: var(--color-subtle);
 		}
-		& a:hover .agent-extra {
+		& a:hover .person-extra {
 			color: inherit;
 		}
 
