@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { JsonLd } from '$lib/types/xl';
@@ -77,4 +78,14 @@
 			</a>
 		</li>
 	{/each}
+	{#if page.data.librisSession && !page.data.isWork}
+		<li>
+			<a
+				class="btn btn-cta bg-primary-800 border-primary-800 hover:bg-primary-900 hover:border-primary-900 @md:max-w-sm"
+				href={`${env.PUBLIC_FJARRLAN_URL}/illrequest.php?bib_id=${page.data.controlNumber}&session_id=${page.data.librisSession}`}
+			>
+				{page.data.t('resource.request')}</a
+			>
+		</li>
+	{/if}
 </ul>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import KbLogo from '$lib/assets/img/kb_logo_text_black.svg';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
@@ -50,7 +51,7 @@
 					<a href="https://gamla.libris.kb.se/">{page.data.t('appMenu.oldSite')}</a>
 				</li>
 				<li>
-					<a href="https://iller.libris.kb.se/librisfjarrlan/">{page.data.t('appMenu.illSite')}</a>
+					<a href={env.PUBLIC_FJARRLAN_URL}>{page.data.t('appMenu.illSite')}</a>
 				</li>
 			</ul>
 		</nav>

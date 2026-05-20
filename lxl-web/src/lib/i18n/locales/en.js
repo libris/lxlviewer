@@ -32,6 +32,7 @@ export default {
 		menu: 'Menu',
 		home: 'Home',
 		help: 'Help',
+		fjarrlan: 'Fjärrlån',
 		myPages: 'My pages',
 		changeLang: 'På svenska',
 		search: 'Search',
@@ -290,7 +291,8 @@ export default {
 		downloadDescription: 'Download metadata',
 		showIn: 'Show metadata in',
 		librisCataloging: 'Libris cataloging',
-		librisOld: 'old Libris'
+		librisOld: 'old Libris',
+		request: 'Request'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',
