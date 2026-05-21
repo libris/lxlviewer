@@ -1,8 +1,8 @@
 import jmespath from 'jmespath';
 import type { CSLJSON, CSLName, CSLRoles, CSLType } from '$lib/types/citation';
 import { JsonLd, type FramedData } from '$lib/types/xl';
-import getTypeLike, { slug, type TypeLike } from './getTypeLike';
-import type { VocabUtil } from './xl';
+import getTypeLike, { slug, type TypeLike } from './getTypeLike.server';
+import type { VocabUtil } from './xl.server';
 
 const CSL_KBV_MAPPING: Partial<Record<keyof CSLJSON, string>> = {
 	id: `"@id"`,
@@ -10,8 +10,14 @@ const CSL_KBV_MAPPING: Partial<Record<keyof CSLJSON, string>> = {
 	title: `hasTitle[0].computedLabel`,
 	shortTitle: `hasTitle[0].mainTitle`,
 	'container-title': `join(', ', isPartOf[].hasTitle[0].computedLabel)`,
-	publisher: `join(', ', publication[].agent.computedLabel)`,
-	'publisher-place': `join(', ', publication[].place[].computedLabel)`,
+	publisher: `join(', ', [
+    publication[].agent.computedLabel[],
+    publication[].hasPart[].agent.computedLabel[]
+  ][])`,
+	'publisher-place': `join(', ', [
+    publication[].place[].computedLabel[],
+    publication[].hasPart[].place[].computedLabel[]
+  ][])`,
 	issued: `{"date-parts": [[ (publication[0].year || '') ]] }`,
 	'number-of-pages': `join(', ', extent[].computedLabel)`,
 	edition: `editionStatement`,

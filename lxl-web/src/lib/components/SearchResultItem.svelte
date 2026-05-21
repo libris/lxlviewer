@@ -6,8 +6,8 @@
 	import placeholderImage from '$lib/assets/img/placeholder.svg';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import TypeIcon from './TypeIcon.svelte';
-	import { bookAspectRatio } from '$lib/utils/getTypeLike';
 	import { LensType } from '$lib/types/xl';
+	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
 
 	type Props = {
 		data: SearchResultItem;
@@ -70,7 +70,7 @@
 	</div>
 {/snippet}
 
-<article class="@container min-w-36">
+<article class="search-result-item @container min-w-36">
 	<header>
 		<a
 			href={page.data.localizeHref(relativizeUrl(data['@id']))}
@@ -95,7 +95,7 @@
 			<hgroup>
 				<h2
 					class={[
-						'decorated-card-heading mt-0.5 line-clamp-3 text-sm leading-snug font-medium hover:underline @min-[16rem]:text-[0.9375rem]'
+						'decorated-heading mt-0.5 line-clamp-3 text-sm leading-snug hover:underline @min-[16rem]:text-[0.9375rem]'
 					]}
 				>
 					<DecoratedData data={data['card-heading']} showLabels="never" />
@@ -169,17 +169,9 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	.decorated-card-heading {
-		& :global(.transliteration) {
+	:global(.search-result-item .decorated-heading) {
+		& .transliteration {
 			font-size: var(--text-2xs);
-			color: var(--color-subtle);
-			font-weight: var(--font-weight-normal);
-			display: block;
-		}
-
-		& :global(.transliteration._contentBefore),
-		& :global(.transliteration._contentAfter) {
-			display: none;
 		}
 	}
 

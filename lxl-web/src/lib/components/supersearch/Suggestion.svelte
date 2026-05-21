@@ -40,7 +40,7 @@
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="resource-heading flex gap-1 overflow-hidden text-sm font-medium whitespace-nowrap">
+			<h2 class="decorated-heading flex gap-1 overflow-hidden text-sm whitespace-nowrap">
 				<span class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
@@ -65,9 +65,15 @@
 				{/if}
 			</h2>
 			<div class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
-				<strong class="font-medium">
+				<span class="font-medium">
+					{item.selectTypeStr}
+				</span>
+				{#if item.selectTypeStr}
+					<span class="divider">{' · '}</span>
+				{/if}
+				<span class="font-medium">
 					{item.typeStr}
-				</strong>
+				</span>
 				{#if item.typeStr?.length}
 					<span class="divider">{' · '}</span>
 				{/if}
@@ -80,12 +86,6 @@
 					/>
 				{/each}
 				{#if item.typeStr?.length}
-					<span class="divider">{' · '}</span>
-				{/if}
-				<span class="font-medium">
-					{item.selectTypeStr}
-				</span>
-				{#if item.selectTypeStr?.length}
 					<span class="divider">{' · '}</span>
 				{/if}
 				{#each item?.[LensType.WebCardFooter]?._display as footer, index (`footer-${index}`)}
@@ -194,17 +194,13 @@
 		text-align: right;
 	}
 
-	.resource-heading {
+	.suggestion .decorated-heading {
 		& :global(.transliteration) {
 			display: none;
 		}
 
 		& :global(.contribution-role) {
 			display: none;
-		}
-
-		& :global(.agent-lifespan) {
-			color: var(--color-subtle);
 		}
 
 		& :global(.delimiter) {

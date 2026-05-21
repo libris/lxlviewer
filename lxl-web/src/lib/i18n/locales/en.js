@@ -32,6 +32,7 @@ export default {
 		menu: 'Menu',
 		home: 'Home',
 		help: 'Help',
+		fjarrlan: 'Fjärrlån',
 		myPages: 'My pages',
 		changeLang: 'På svenska',
 		search: 'Search',
@@ -242,7 +243,11 @@ export default {
 		followUp: ', and we will investigate the error.',
 		backToStartPage: 'Back to the home page',
 		mailSubject: 'Incorrect link',
-		mailBody: 'Incorrect reference to the page'
+		mailBody: 'Incorrect reference to the page',
+		errorWithErrorId:
+			'Please try reloading the page. If the problem persists, report the error ID below.',
+		errorWithoutErrorId: 'Please try reloading the page.',
+		errorIdLabel: 'Error ID'
 	},
 	general: {
 		collapseAll: 'Collapse all',
@@ -290,7 +295,8 @@ export default {
 		downloadDescription: 'Download metadata',
 		showIn: 'Show metadata in',
 		librisCataloging: 'Libris cataloging',
-		librisOld: 'old Libris'
+		librisOld: 'old Libris',
+		request: 'Request'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',

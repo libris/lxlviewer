@@ -1,6 +1,6 @@
 import type { FramedData } from '$lib/types/xl';
 import getAtPath from './getAtPath';
-import { asArray } from './xl';
+import { asArray } from '$lib/utils/misc';
 
 export function copyMediaLinksToWork(mainEntity: FramedData) {
 	const cp = (thing: FramedData, fromPath: (string | number | object)[], toProp: string) => {

@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { error } from '@sveltejs/kit';
-import type { VocabUtil } from '$lib/utils/xl';
+import type { VocabUtil } from '$lib/utils/xl.server';
 import type { PartialCollectionView } from '$lib/types/search';
 import { Base, JsonLd, Platform } from '$lib/types/xl';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
@@ -9,15 +9,6 @@ import capitalize from '$lib/utils/capitalize';
 import { type ApiError } from '$lib/types/api.js';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-
-export type Relation = {
-	qualifierKey: string;
-	label: string;
-	totalItems: number;
-	findUrl: string;
-	previewUrl: string;
-	isLike: boolean;
-};
 
 export async function getRelations(
 	resourceId: string | null,
@@ -45,7 +36,11 @@ export async function getRelations(
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
-		throw error(err.status_code, { message: err.message, status: err.status });
+		throw error(err.status_code, {
+			message: err.message,
+			status: err.status,
+			...(err.error_id && { errorId: err.error_id })
+		});
 	}
 
 	const data = (await res.json()) as PartialCollectionView;

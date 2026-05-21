@@ -4,7 +4,7 @@ import { query, getRequestEvent } from '$app/server';
 import * as v from 'valibot';
 
 import { type ApiError } from '$lib/types/api';
-import { asResult } from '$lib/utils/search';
+import { asResult } from '$lib/utils/search.server';
 import type { PartialCollectionView } from '$lib/types/search';
 import { DebugFlags } from '$lib/types/userSettings';
 import { getSupportedLocale } from '$lib/i18n/locales';
@@ -30,7 +30,11 @@ export const getSearchResults = query(SearchResultsSchema, async (params) => {
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
-		return error(err.status_code, { message: err.message, status: err.status });
+		return error(err.status_code, {
+			message: err.message,
+			status: err.status,
+			...(err.error_id && { errorId: err.error_id })
+		});
 	}
 
 	const displayUtil = locals.display;
@@ -59,7 +63,11 @@ export const getAdjecentSearchResult = query(v.string(), async (viewId) => {
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
-		return error(err.status_code, { message: err.message, status: err.status });
+		return error(err.status_code, {
+			message: err.message,
+			status: err.status,
+			...(err.error_id && { errorId: err.error_id })
+		});
 	}
 
 	const data = (await res.json()) as PartialCollectionView;

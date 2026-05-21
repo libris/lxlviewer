@@ -17,11 +17,3 @@
 		{/if}
 	{/each}
 {/if}
-
-<style lang="postcss">
-	@reference "../../app.css";
-
-	.sigel {
-		color: var(--color-subtle);
-	}
-</style>

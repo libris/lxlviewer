@@ -2,7 +2,7 @@ import { env } from '$env/dynamic/private';
 import type { DisplayMapping, MappingsOnlyPartialCollectionView } from '$lib/types/search';
 import { getTranslator } from '$lib/i18n';
 import { getSupportedLocale } from '$lib/i18n/locales';
-import { displayMappings } from './search';
+import { displayMappings } from './search.server';
 
 const cache = new Map<string, DisplayMapping[]>();
 const pending = new Map<string, Promise<MappingsOnlyPartialCollectionView | null>>();

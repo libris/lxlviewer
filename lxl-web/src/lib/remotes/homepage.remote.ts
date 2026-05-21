@@ -30,10 +30,9 @@ const FEATURED_QUERIES: FeaturedQueryType[] = [
 	},
 	{
 		headingByLang: { sv: 'Tecknade serier för vuxna', en: 'Comics for grown-ups' },
-		findHref:
-			'/find?_q=category%3A"saogf%3ATecknade%2520serier"+language%3A"lang%3Aswe"+NOT+(+kategori%3A"barngf%3ABarn-%2520och%2520ungdomslitteratur"+OR+intendedAudience%3A"marc%3AJuvenile"+)',
+		findHref: '/find?_q=workCategory:"saogf:Serieromaner"',
 		previewParams: {
-			_q: 'category:"saogf:Tecknade%20serier" language:"lang:swe" NOT ( kategori:"barngf:Barn-%20och%20ungdomslitteratur" OR intendedAudience:"marc:Juvenile" ) existsImage',
+			_q: 'workCategory:"saogf:Serieromaner" existsImage',
 			_limit: 20,
 			_sort: ''
 		}

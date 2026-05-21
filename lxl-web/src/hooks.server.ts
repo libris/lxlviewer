@@ -7,10 +7,10 @@ import type { QualifierSuggestion2 } from '$lib/types/search';
 import type { Site } from '$lib/types/site';
 import { DebugFlags, type MyLibrariesType, type UserSettings } from '$lib/types/userSettings';
 import displayWeb from '$lib/assets/json/display-web.json';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
+import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
 import { startRefreshLibraries } from '$lib/utils/getLibraries.server';
 import { getSubsetMapping } from '$lib/utils/subsetCache.server';
-import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions';
+import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions.server';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
@@ -86,6 +86,20 @@ export const handle = async ({ event, resolve }) => {
 	const dismissedBannerCookie = event.cookies.get('dismissed-banner');
 	if (dismissedBannerCookie) {
 		event.locals.dismissedBanner = JSON.parse(dismissedBannerCookie);
+	}
+
+	// fjärrlån
+	const librisSessionCookie = event.cookies.get('LIBRIS_SESSION');
+	if (librisSessionCookie) {
+		try {
+			const parsed = JSON.parse(librisSessionCookie);
+			event.locals.librisSession = parsed;
+		} catch (err) {
+			console.error('Invalid libris session cookie', err);
+			event.cookies.delete('LIBRIS_SESSION', {
+				path: '/'
+			});
+		}
 	}
 
 	// set legacy cookies site-wide

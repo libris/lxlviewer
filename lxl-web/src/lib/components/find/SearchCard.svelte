@@ -22,7 +22,7 @@
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
-	import { bookAspectRatio } from '$lib/utils/getTypeLike';
+	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
 	import BiHouse from '~icons/bi/house';
 	import BiQuote from '~icons/bi/quote';
 	import BiHeartFill from '~icons/bi/heart-fill';
@@ -260,7 +260,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					{/each}
 				</p>
 				<hgroup>
-					<h2 class="card-header-title text-base font-medium">
+					<h2 class="decorated-heading card-header-title text-base">
 						<a
 							href={resourceLink}
 							class="hover:text-link focus:text-link block hover:underline focus:underline"
@@ -617,14 +617,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 		& :global(.transliteration) {
 			font-size: var(--text-2xs);
-			color: var(--color-subtle);
-			font-weight: var(--font-weight-normal);
-			display: block;
-		}
-
-		& :global(.transliteration._contentBefore),
-		& :global(.transliteration._contentAfter) {
-			display: none;
 		}
 	}
 

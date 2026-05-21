@@ -1,12 +1,6 @@
-import {
-	asArray,
-	DisplayUtil,
-	isObject,
-	pickProperty,
-	toLite,
-	toString,
-	VocabUtil
-} from '$lib/utils/xl';
+import { asArray, isObject, toString } from '$lib/utils/misc';
+import { DisplayUtil, pickProperty, toLite, VocabUtil } from '$lib/utils/xl.server';
+
 import {
 	Base,
 	type DisplayDecorated,
@@ -41,15 +35,16 @@ import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import type { MyLibrariesType } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
-import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
+import { bestImage, toSecure } from '$lib/utils/auxd.server';
+import { bestSize } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 import { isLibraryOrg } from '$lib/utils/holdings';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
-import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork';
+import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
 import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
 import { getLibsFromHoldings } from '$lib/utils/holdings';
-import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike';
+import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike.server';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 
@@ -524,7 +519,7 @@ function discriminator(d: FramedData, dimension: string) {
 	return getUriSlug(d?.inScheme?.[JsonLd.ID]);
 }
 
-export function displayPredicates(
+function displayPredicates(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,

@@ -250,13 +250,13 @@
 					"@id": "Document-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Document",
-					"showProperties": ["uri", "marc:publicNote"]
+					"showProperties": ["uri", "marc:publicNote", "appliesTo"]
 				},
 				"MediaObject": {
 					"@id": "MediaObject-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "MediaObject",
-					"showProperties": ["uri", "marc:publicNote"]
+					"showProperties": ["uri", "marc:publicNote", "appliesTo"]
 				},
 				"Class": {
 					"@id": "Class-chips",
@@ -339,7 +339,12 @@
 								"identifiedBy",
 								"label"
 							]
-						}
+						},
+						"uri",
+						"marc:publicNote",
+						"appliesTo",
+						"identifiedBy",
+						"describedBy"
 					]
 				},
 				"Item": {
@@ -855,7 +860,7 @@
 					"@id": "Bibliography-web-overview",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Bibliography",
-					"showProperties": ["comment"]
+					"showProperties": []
 				}
 			}
 		},
@@ -875,6 +880,9 @@
 					"classLensDomain": "Instance",
 					"showProperties": [
 						"associatedMedia",
+						"electronicLocator",
+						"marc:versionOfResource",
+						"isPrimaryTopicOf",
 						"continues",
 						{ "inverseOf": "continuedBy" },
 						"continuedBy",
@@ -882,6 +890,7 @@
 						"continuesInPart",
 						"continuedInPartBy",
 						"relatedTo",
+						"otherPhysicalFormat",
 						"accompaniedBy"
 					]
 				},
@@ -985,9 +994,13 @@
 						"copyrightDate",
 						"projectedProvisionDate",
 						"extent",
+						"associatedMedia",
+						"electronicLocator",
+						"marc:versionOfResource",
 						"isPrimaryTopicOf",
 						"isIssueOf",
 						"relatedTo",
+						"hasNumberingOfSerials",
 						"hasNote",
 						"hasDimensions",
 						"hasDuration",
@@ -1001,6 +1014,7 @@
 						"genreForm",
 						"classification",
 						"accompaniedBy",
+						"otherPhysicalFormat",
 						"seriesMembership",
 						"intendedAudience",
 						"associatedMedia",
@@ -1214,7 +1228,6 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["subtitle", "titleRemainder"],
-			"fresnel:propertyStyle": [],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " : ",
 				"fresnel:contentFirst": ""
@@ -1248,6 +1261,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["mainTitle"],
+			"fresnel:propertyStyle": ["main-title"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
@@ -1566,7 +1580,7 @@
 			"@id": "Instance-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Instance"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["extIfUri()", "uriToId()"]
 		},
 		"Agent-format": {
 			"@id": "Agent-format",
@@ -1644,7 +1658,7 @@
 			"@id": "Document-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Document"],
-			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "block"]
 		},
 		"MediaObject-publicNote-format": {
 			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
@@ -1657,10 +1671,48 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Document-appliesTo-format": {
+			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
+			"@id": "MediaObject-publicNote-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Document"],
+			"fresnel:propertyFormatDomain": ["appliesTo"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"associatedMedia-format": {
 			"@id": "associatedMedia-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["associatedMedia"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"electronicLocator-format": {
+			"@id": "electronicLocator-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["electronicLocator"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"marc:versionOfResource-format": {
+			"@id": "marc:versionOfResource-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["marc:versionOfResource"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"isPrimaryTopicOf-format": {
+			"@id": "isPrimaryTopicOf-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["isPrimaryTopicOf"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
@@ -1782,6 +1834,19 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"bibdb:Organization-code-format": {
+			"@id": "bibdb:Organization-code-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["bibdb:Organization"],
+			"fresnel:propertyFormatDomain": ["code"],
+			"fresnel:propertyStyle": ["code"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentFirst": "(",
+				"fresnel:contentAfter": ")",
+				"fresnel:contentLast": ")"
+			}
+		},
 		"bibdb:Organization-hasPart-format": {
 			"@id": "bibdb:Organization-hasPart-format",
 			"@type": "fresnel:Format",
@@ -1803,6 +1868,13 @@
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"Bibliography-description-format": {
+			"@id": "Bibliography-description-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Bibliography"],
+			"fresnel:propertyFormatDomain": ["description"],
+			"fresnel:valueStyle": ["markdown()"]
 		},
 		"hasReproduction-format": {
 			"@id": "hasReproduction-format",

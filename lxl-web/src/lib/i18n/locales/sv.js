@@ -31,6 +31,7 @@ export default {
 		menu: 'Meny',
 		home: 'Hem',
 		help: 'Hjälp',
+		fjarrlan: 'Fjärrlån',
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
 		search: 'Sök',
@@ -240,7 +241,11 @@ export default {
 		followUp: ', så undersöker vi felet.',
 		backToStartPage: 'Tillbaka till startsidan',
 		mailSubject: 'Felaktig länk',
-		mailBody: 'Felaktig referens till sidan'
+		mailBody: 'Felaktig referens till sidan',
+		errorWithErrorId:
+			'Prova att ladda om sidan. Vänligen rapportera felkoden nedan om felet kvarstår.',
+		errorWithoutErrorId: 'Prova att ladda om sidan.',
+		errorIdLabel: 'Felkod'
 	},
 	general: {
 		collapseAll: 'Stäng alla',
@@ -289,7 +294,8 @@ export default {
 		downloadDescription: 'Ladda ner metadata',
 		showIn: 'Visa metadata i',
 		librisCataloging: 'Libris katalogisering',
-		librisOld: 'gamla Libris'
+		librisOld: 'gamla Libris',
+		request: 'Beställ'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

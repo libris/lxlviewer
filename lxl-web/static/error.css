@@ -1,0 +1,53 @@
+body {
+	font-family: system-ui, sans-serif;
+	color: #000;
+	background: #fff;
+	display: grid;
+	place-items: center;
+	min-height: 100vh;
+	margin: 0;
+}
+
+.container {
+	text-align: center;
+	padding: 2rem;
+	padding-top: 0;
+	padding-bottom: 12rem;
+	max-width: 800px;
+}
+
+.header {
+	margin-top: 1.5rem;
+	margin-bottom: 1.75rem;
+}
+
+.logo {
+	width: 13rem;
+}
+
+.status {
+	font-size: 1.25rem;
+	text-align: center;
+	font-weight: 400;
+	margin: 0;
+	margin-top: 1rem;
+}
+
+.divider {
+	max-width: 25%;
+	min-width: 125px;
+	height: 1rem;
+	border-bottom: 1px solid #d3d3d3;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+@media (max-width: 639px) {
+	.logo {
+		width: 10rem;
+	}
+
+	.status {
+		font-size: 1.25rem;
+	}
+}

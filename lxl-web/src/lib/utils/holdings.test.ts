@@ -4,7 +4,7 @@ import { getLibsFromHoldings } from './holdings';
 import mainEntity from '$lib/assets/json/test-data/main-entity.json';
 import record from '$lib/assets/json/test-data/record.json';
 import { UserSettings } from './userSettings.svelte';
-import { centerOnWork } from './centerOnWork';
+import { centerOnWork } from './centerOnWork.server';
 
 const workCenteredMainEntity = centerOnWork(mainEntity);
 

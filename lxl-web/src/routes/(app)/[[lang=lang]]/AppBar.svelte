@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Cookies from 'js-cookie';
+	import { env } from '$env/dynamic/public';
 	import { type Component, onDestroy, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
@@ -6,17 +8,16 @@
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import { getSearchContext } from '$lib/contexts/search';
-	import librisLogo from '$lib/assets/img/libris-logo.svg';
 	import AppSearch from './AppSearch.svelte';
+	import AppBanner from '$lib/components/AppBanner.svelte';
+	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
+	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 	import IconMenu from '~icons/bi/list';
 	import IconCloseMenu from '~icons/bi/x-lg';
 	import IconBookmark from '~icons/bi/bookmark';
 	import IconSearch from '~icons/bi/search';
 	import IconLanguage from '~icons/bi/globe';
-	import AppBanner from '$lib/components/AppBanner.svelte';
-	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
-	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
-	import Cookies from 'js-cookie';
+	import IconFjarrlan from '$lib/assets/img/fjarrlan.svg';
 
 	const searchContext = getSearchContext();
 
@@ -28,11 +29,23 @@
 	let shadowSentinelElement: HTMLElement | undefined = $state();
 	let shadowObserver: IntersectionObserver | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
-	let dismissedBanner: boolean = $state(page.data.dismissedBanner);
+	let dismissedBanner: boolean | undefined = $state(page.data.dismissedBanner);
+	let librisSession: string | undefined = $state(page.data.librisSession);
 
 	const otherLangCode = $derived(
 		Object.keys(Locales).find((locale) => locale !== page.data.locale) as LocaleCode
 	);
+
+	const otherLangLink = $derived.by(() => {
+		const search = page.url.searchParams.toString();
+
+		return page.data.localizeHref(
+			page.url.pathname + (search ? `?${search}` : '') + page.url.hash,
+			{
+				locale: otherLangCode
+			}
+		);
+	});
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
@@ -164,11 +177,23 @@
 	});
 </script>
 
-{#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
+{#snippet actionItemContents({
+	Icon,
+	label,
+	id
+}: {
+	Icon: Component | string;
+	label: string;
+	id?: string;
+})}
 	<div
 		class="text-subtle 3xl:px-2.5 flex min-w-11 flex-col items-center gap-1 px-1 text-[0.84375rem] font-medium @7xl:text-sm"
 	>
-		<Icon class="size-5" />
+		{#if typeof Icon === 'function'}
+			<Icon class="size-5" />
+		{:else if typeof Icon === 'string' && Icon.startsWith('data:image/svg+xml')}
+			<img src={Icon} alt="" />
+		{/if}
 		<p {id} class="sr-only lg:not-sr-only lg:whitespace-nowrap">
 			{label}
 		</p>
@@ -269,7 +294,7 @@
 								</span>
 							{:else}
 								<img
-									src={librisLogo}
+									src="/libris-logo.svg"
 									width={275}
 									height={75}
 									alt="Libris"
@@ -297,7 +322,7 @@
 							</span>
 						{:else}
 							<img
-								src={librisLogo}
+								src="/libris-logo.svg"
 								width={275}
 								height={75}
 								alt="Libris"
@@ -369,11 +394,7 @@
 			<li class="hidden lg:block">
 				<a
 					class="action"
-					href={resolve(
-						page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
-							locale: otherLangCode
-						})
-					)}
+					href={resolve(otherLangLink)}
 					hreflang={otherLangCode}
 					aria-label={page.data.t('header.changeLang')}
 					aria-labelledby={IDs.appBarChangeLangLabel}
@@ -386,6 +407,21 @@
 					})}
 				</a>
 			</li>
+			<!-- fjärrlån -->
+			{#if librisSession}
+				<li>
+					<a
+						class="action bg-primary-800 max-sm:hover:bg-primary-800"
+						href={`${env.PUBLIC_FJARRLAN_URL}/lf.php`}
+					>
+						{@render actionItemContents({
+							Icon: IconFjarrlan,
+							label: page.data.t('header.fjarrlan'),
+							id: 'action-fjarrlan'
+						})}
+					</a>
+				</li>
+			{/if}
 			<li>
 				<a
 					class="action max-sm:hover:bg-primary-200"
@@ -608,6 +644,14 @@
 				border-radius: var(--radius-md) var(--radius-md) 0 0;
 			}
 		}
+	}
+
+	.action:has(#action-fjarrlan):focus-visible {
+		background: var(--color-primary-900);
+	}
+
+	#action-fjarrlan {
+		color: var(--color-page);
 	}
 
 	.menu-dialog {
