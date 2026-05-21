@@ -253,7 +253,7 @@
 				})}
 			</svelte:element>
 		</li>
-		<li class="hover:bg-primary-200 hidden aspect-square sm:block sm:aspect-auto">
+		<li class="hover:bg-primary-200 hidden lg:block">
 			<a
 				class="action text-subtle"
 				href={resolve(
