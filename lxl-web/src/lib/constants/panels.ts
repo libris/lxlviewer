@@ -1,5 +1,5 @@
 export const LEADING_PANE_DEFAULT_WIDTH = 316;
-export const LEADING_PANE_MAX_WIDTH = 500;
+export const LEADING_PANE_MAX_WIDTH = 640;
 export const LEADING_PANE_MIN_WIDTH = 200;
 export const LEADING_PANE_COLLAPSE_WIDTH = 50;
 
