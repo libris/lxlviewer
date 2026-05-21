@@ -1090,18 +1090,26 @@
 			}
 		},
 		"commaBeforeProperty-format": {
-			"TODO": "fullerFormOfName skrivs alltid med parenteser i libris nu, ska det vara så?",
 			"@id": "commaBeforeProperty-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
 				"lifeSpan",
 				"name",
-				"marc:numeration",
-				"marc:titlesAndOtherWordsAssociatedWithAName",
-				"fullerFormOfName"
+				"marc:titlesAndOtherWordsAssociatedWithAName"
 			],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"noCommaBeforeProperty-format": {
+			"TODO": "fullerFormOfName skrivs alltid med parenteser i libris nu, ska det vara så?",
+			"@id": "noCommaBeforeProperty-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Agent"],
+			"fresnel:propertyFormatDomain": ["fullerFormOfName", "marc:numeration"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
 		},
