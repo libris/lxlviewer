@@ -91,15 +91,7 @@ export const handle = async ({ event, resolve }) => {
 	// fjärrlån
 	const librisSessionCookie = event.cookies.get('LIBRIS_SESSION');
 	if (librisSessionCookie) {
-		try {
-			const parsed = JSON.parse(librisSessionCookie);
-			event.locals.librisSession = parsed;
-		} catch (err) {
-			console.error('Invalid libris session cookie', err);
-			event.cookies.delete('LIBRIS_SESSION', {
-				path: '/'
-			});
-		}
+		event.locals.librisSession = librisSessionCookie;
 	}
 
 	// set legacy cookies site-wide
