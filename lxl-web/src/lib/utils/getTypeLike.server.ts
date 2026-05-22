@@ -1,6 +1,5 @@
 import { Bibframe, type FramedData, JsonLd } from '$lib/types/xl';
-import { asArray } from '$lib/utils/misc';
-import { VocabUtil, first } from '$lib/utils/xl.server';
+import { VocabUtil } from '$lib/utils/xl.server';
 import getAtPath from '$lib/utils/getAtPath';
 
 export type TypeLike = {
@@ -106,20 +105,13 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		select: []
 	};
 
+	const thingType = thing[JsonLd.TYPE];
+
+	if (thingType != 'Monograph' && thingType != 'Serial') {
+		result.find.push(vocabUtil.getDefinition(thingType));
+	}
+
 	if (thing._categoryByCollection) {
-		const thingType = thing[JsonLd.TYPE];
-
-		// FIXME
-		const isSingleInstance = thingType === 'PhysicalResource' || thingType === 'DigitalResource';
-
-		const workType = isSingleInstance
-			? thing[Bibframe.instanceOf][JsonLd.TYPE]
-			: thing[JsonLd.TYPE];
-
-		if (workType != 'Monograph' && workType != 'Serial') {
-			result.find.push(vocabUtil.getDefinition(workType));
-		}
-
 		//const find: FramedData[] = thing._categoryByCollection['find'] || [];
 		const findMapA = (thing._categoryByCollection['find'] || []).reduce((a, s) => {
 			a[s[JsonLd.ID]] = s;
@@ -134,6 +126,11 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		result.find.push(...find);
 		result.identify.push(...identify);
 		result.none.push(...none);
+
+		// FIXME
+		const isSingleInstance = thingType === 'PhysicalResource' || thingType === 'DigitalResource';
+
+		const workType = isSingleInstance ? thing[Bibframe.instanceOf][JsonLd.TYPE] : thingType;
 
 		const instances = isSingleInstance
 			? [thing]
@@ -164,27 +161,6 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		const select = Object.values(selectMap);
 
 		result.select.push(...select);
-	} else {
-		const contentTypes: FramedData[] = [];
-		const categories: FramedData[] = [];
-		const other: FramedData[] = [];
-		(asArray(thing.category) as FramedData[]).forEach((category) => {
-			if (first(asArray(category[JsonLd.TYPE])) === 'Category') {
-				categories.push(category);
-			} else if (first(asArray(category[JsonLd.TYPE])) === 'ContentType') {
-				contentTypes.push(category);
-			} else {
-				other.push(category);
-			}
-		});
-		result.find.push(...categories);
-		result.identify.push(...other);
-		result.identify.push(...contentTypes);
-
-		/*if (result.find.length === 0 && result.identify.length === 0) {
-		    result.find.push(...contentType);
-	    }
-	    */
 	}
 
 	return result;
