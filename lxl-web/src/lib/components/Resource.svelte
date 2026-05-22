@@ -787,7 +787,7 @@
 			}
              */
 
-			& :global(.agent-lifespan),
+			& :global(.person-extra),
 			& :global(.language) {
 				display: none;
 			}

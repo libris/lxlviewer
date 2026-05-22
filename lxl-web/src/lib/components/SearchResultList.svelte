@@ -188,7 +188,7 @@
 				}
 			}
 		}
-		& :global(.agent-lifespan),
+		& :global(.person-extra),
 		& :global(.contribution-role) {
 			display: none;
 		}
