@@ -46,12 +46,7 @@
 	<SuperSearchFallback {placeholder} {ariaLabelledBy} {ariaLabel} {autofocus} />
 {/snippet}
 
-<search
-	{id}
-	class={[
-		'@container z-41 mx-auto grid h-full w-full max-w-7xl items-start px-2 lg:items-center lg:px-3'
-	]}
->
+<search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center lg:px-3']}>
 	<form id={`${id}-form`} {action} class="mx-auto w-full min-w-0">
 		{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
 			{@render fallbackInput()}

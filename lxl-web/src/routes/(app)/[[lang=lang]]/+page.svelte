@@ -133,65 +133,73 @@
 		{/if}
 	</section>
 {/snippet}
-<section class="hero relative">
+<section class="hero relative min-h-60 sm:min-h-80">
 	<enhanced:img
 		src={heroImage}
 		alt=""
 		class="hero-image absolute top-0 -z-10 h-auto w-full min-w-5xl flex-col object-cover"
 	/>
-	<div class="hero-content mx-auto flex w-full max-w-7xl flex-col justify-center gap-4 lg:mb-6">
-		<h1
-			id={ID_HERO_SEARCH_LABEL}
-			class="text-page px-6 text-center font-serif text-4xl leading-[1.125] tracking-[-0.0125em] md:text-5xl lg:px-3"
-		>
-			{page.data.t('home.pageHeadingTitle')}
-			{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
-				<span class="whitespace-nowrap">
-					{page.data.t('home.pageHeadingTitleNoWrap')}
-				</span>
-			{/if}
-		</h1>
+	<div
+		class="hero-content mx-auto h-full w-full max-w-7xl justify-center gap-4.5 pb-4.5 sm:gap-7.5 sm:pb-0 lg:gap-6"
+	>
+		<div class="flex items-end justify-center sm:flex-1">
+			<h1
+				id={ID_HERO_SEARCH_LABEL}
+				class="text-page leading-tighter px-4.5 text-center font-serif text-2xl min-[31.25rem]:text-3xl sm:px-6 sm:text-4xl sm:tracking-[-0.0125em] xl:text-5xl 2xl:text-[3.25rem]"
+			>
+				{page.data.t('home.pageHeadingTitle')}
+				{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
+					<span class="whitespace-nowrap">
+						{page.data.t('home.pageHeadingTitleNoWrap')}
+					</span>
+				{/if}
+			</h1>
+		</div>
 		<div
 			id={ID_HERO_SEARCH}
-			class="hero-search-container my-3 lg:my-6"
+			class="hero-search-container mx-3 lg:mx-0"
 			bind:this={searchContainerElement}
 		>
 			<AppSearch id="hero-search" ariaLabelledBy={ID_HERO_SEARCH_LABEL} />
 		</div>
-		<div class="text-page flex justify-center gap-3 px-2">
-			<button type="submit" class="shortcut btn-outlined">
-				<div class="shortcut-icon">
-					<IconSearch />
-				</div>
-				{page.data.t('home.searchLabel')}
-			</button>
-			<a
-				id={ID_HERO_EXPLORE_LABEL}
-				href={'#' + ID_EXPLORE}
-				class="shortcut btn-outlined"
-				onclick={handleClickExplore}
-			>
-				<div class="shortcut-icon">
-					<IconArrowDown />
-				</div>
-				{page.data.t('home.exploreLabel')}
-			</a>
-			<a
-				class="my-2 ml-2 flex items-center justify-center self-stretch border-l border-white/50 pl-6 text-sm font-medium text-shadow-lg 2xl:text-base"
-				href={'#' + ID_ABOUT}
-			>
-				{page.data.t('home.aboutLabel')}
-			</a>
+		<div class="text-page mx-auto hidden sm:flex sm:flex-1">
+			<div class="flex h-fit gap-4.5">
+				<button type="submit" class="shortcut btn-outlined md:max-w-auto flex justify-center">
+					<div class="shortcut-icon">
+						<IconSearch />
+					</div>
+					{page.data.t('home.searchLabel')}
+				</button>
+				<a
+					id={ID_HERO_EXPLORE_LABEL}
+					href={'#' + ID_EXPLORE}
+					class="shortcut btn-outlined hidden justify-center sm:flex"
+					onclick={handleClickExplore}
+				>
+					<div class="shortcut-icon">
+						<IconArrowDown />
+					</div>
+					{page.data.t('home.exploreLabel')}
+				</a>
+				<a
+					class="my-2 ml-2 hidden items-center justify-center self-stretch border-l border-white/50 pl-6 text-sm font-medium text-shadow-lg md:hidden 2xl:text-base"
+					href={'#' + ID_ABOUT}
+				>
+					{page.data.t('home.aboutLabel')}
+				</a>
+			</div>
 		</div>
 	</div>
 </section>
-<p class="text-subtle mt-6 mb-7.5 px-2 text-center font-serif text-base lg:px-3 2xl:text-lg">
-	{page.data.t('home.pageDescriptionTitle1')}
-	{page.data.t('home.pageDescriptionTitle2')}
-</p>
-<hr class="mx-auto w-full max-w-72 border-neutral-400" />
-<section id={ID_EXPLORE} class="explore pt-6" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
-	<FeaturedCategories />
+
+<section
+	id={ID_EXPLORE}
+	class="explore px-3 py-3 sm:py-4.5"
+	aria-labelledby={ID_HERO_EXPLORE_LABEL}
+>
+	<div class="mx-auto w-fit">
+		<FeaturedCategories />
+	</div>
 	{#each featuredSearches as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,
@@ -343,37 +351,50 @@
 	}
 
 	.hero {
-		--hero-height: round(39.2vh, 1px);
-		--hero-height: round(39.2svh, 1px);
-		--hero-margin: round(calc(var(--hero-height) / 2), 1px);
+		overflow: hidden;
+		--hero-height: round(
+			min(calc(100vw - var(--appbar-height)), calc(60.8vh - var(--appbar-height))),
+			1px
+		);
+		--hero-height: round(
+			min(calc(100vw - var(--appbar-height)), calc(60.8svh - var(--appbar-height))),
+			1px
+		);
 
 		height: var(--hero-height);
-		min-height: 320px;
-		overflow: hidden;
 
-		@variant lg {
-			--hero-height: round(60.8vh, 1px);
-			--hero-height: round(60.8svh, 1px);
-			display: grid;
+		@variant sm {
+			@variant portrait {
+				--hero-height: round(calc(39.2vh - var(--appbar-height)), 1px);
+				--hero-height: round(calc(39.2svh - var(--appbar-height)), 1px);
+				--hero-block-height: calc(var(--hero-height) / 2 - var(--appbar-height) * 2);
+			}
 
-			grid-template-areas: var(--appbar-template-areas);
-			grid-template-columns: var(--appbar-template-columns);
+			@variant landscape {
+				--hero-height: round(calc(60.8vh - var(--appbar-height)), 1px);
+				--hero-height: round(calc(60.8svh - var(--appbar-height)), 1px);
+			}
 		}
 
-		@variant 2xl {
-			--hero-height: round(calc(60.8vh - var(--appbar-height)), 1px);
-			--hero-height: round(calc(60.8svh - var(--appbar-height)), 1px);
+		@variant lg {
+			--hero-block-height: calc(var(--hero-height) / 2 - var(--appbar-height) * 2);
+
+			display: grid;
+			grid-template-areas: var(--appbar-template-areas);
+			grid-template-columns: var(--appbar-template-columns);
 		}
 	}
 
 	.hero-content {
+		display: flex;
+		flex-direction: column;
 		@variant lg {
 			grid-area: search;
 		}
 	}
 
 	.shortcut {
-		@apply flex min-h-11 items-center border border-black/15 bg-black/30 pr-6 text-sm font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-sm text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors 2xl:min-h-13 2xl:gap-1 2xl:pr-7 2xl:pl-1 2xl:text-base;
+		@apply min-h-11 items-center border border-black/15 bg-black/30 pr-6 text-sm font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-sm text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors sm:min-h-11 2xl:min-h-13 2xl:gap-1 2xl:pr-7 2xl:pl-1 2xl:text-base;
 
 		&:hover {
 			@apply bg-black/15;

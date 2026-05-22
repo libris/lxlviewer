@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	import { type Component, onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import { resolve } from '$app/paths';
 	import { type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
@@ -45,7 +45,7 @@
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
-	const withMobileSearchInput = $derived(isHomeRoute || isFindRoute);
+	const withMobileSearchInput = $derived(isFindRoute);
 
 	const subset = $derived(page.data.subsetMapping);
 
@@ -193,9 +193,25 @@
 		<div class="contents lg:hidden">
 			{@render trailingActions({ mobile: true })}
 		</div>
-		<div class={['search', withMobileSearchInput ? 'block' : 'hidden lg:block']}>
-			{#if !isHomeRoute || (isHomeRoute && homepageContext.showSearchInAppBar)}
-				<div class="flex h-full items-center" transition:fade={{ duration: transitionDuration }}>
+
+		<div class={['search hidden lg:block']}>
+			{#if isHomeRoute && homepageContext.showSearchInAppBar}
+				<div
+					class="flex h-full items-center"
+					in:fly={{
+						y: 4,
+						duration: transitionDuration,
+						opacity: 0
+					}}
+					out:fly={{
+						duration: transitionDuration,
+						opacity: 0
+					}}
+				>
+					<AppSearch id={ID_SEARCH} />
+				</div>
+			{:else if !isHomeRoute}
+				<div class="hidden h-full items-center lg:flex">
 					<AppSearch id={ID_SEARCH} />
 				</div>
 			{/if}
@@ -234,25 +250,39 @@
 	{@const changeLangLabelId = mobile ? `${ID_CHANGE_LANG_LABEL}-mobile` : ID_CHANGE_LANG_LABEL}
 	{@const myPagesLabelId = mobile ? `${ID_MY_PAGES_LABEL}-mobile` : ID_MY_PAGES_LABEL}
 	<ul class="trailing-actions z-42 flex w-full items-stretch justify-end 2xl:pr-3">
-		<li class={['lg:hidden', withMobileSearchInput && 'hidden']}>
-			<svelte:element
-				this={mounted ? 'button' : 'a'}
-				type={mounted ? 'button' : undefined}
-				href={mounted ? undefined : '#search'}
-				role={mounted ? undefined : 'button'}
-				tabindex={mounted ? undefined : 0}
-				class="action hover:bg-primary-200 aspect-square sm:aspect-auto"
-				onclick={handleClickSearchAction}
-				aria-label={page.data.t('header.search')}
-				aria-labelledby={searchLabelId}
+		{#if isHomeRoute && homepageContext.showSearchInAppBar}
+			<li
+				in:fly={{
+					y: 4,
+					duration: transitionDuration,
+					opacity: 0
+				}}
+				out:fly={{
+					y: 4,
+					duration: transitionDuration,
+					opacity: 0
+				}}
+				class="lg:hidden"
 			>
-				{@render actionItemContents({
-					Icon: IconSearch,
-					label: page.data.t('header.search'),
-					id: searchLabelId
-				})}
-			</svelte:element>
-		</li>
+				<svelte:element
+					this={mounted ? 'button' : 'a'}
+					type={mounted ? 'button' : undefined}
+					href={mounted ? undefined : '#search'}
+					role={mounted ? undefined : 'button'}
+					tabindex={mounted ? undefined : 0}
+					class="action hover:bg-primary-200 aspect-square sm:aspect-auto"
+					onclick={handleClickSearchAction}
+					aria-label={page.data.t('header.search')}
+					aria-labelledby={searchLabelId}
+				>
+					{@render actionItemContents({
+						Icon: IconSearch,
+						label: page.data.t('header.search'),
+						id: searchLabelId
+					})}
+				</svelte:element>
+			</li>
+		{/if}
 		<li class="hover:bg-primary-200 hidden lg:block">
 			<a
 				class="action text-subtle"
@@ -321,6 +351,7 @@
 	.leading-actions,
 	.trailing-actions {
 		& .action {
+			min-width: var(--appbar-height);
 			@apply -outline-offset-2;
 			height: 100%;
 
