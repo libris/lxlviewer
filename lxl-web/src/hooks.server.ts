@@ -213,7 +213,7 @@ async function loadUtil(): Promise<Util> {
 	});
 
 	const vocabUtil = new VocabUtil(vocab, context);
-	const displayUtil = new DisplayUtil(display, vocabUtil);
+	const displayUtil = new DisplayUtil(display, vocabUtil, Object.keys(Locales));
 
 	DERIVED_LENSES.forEach((l) => displayUtil.registerDerivedLens(l));
 
