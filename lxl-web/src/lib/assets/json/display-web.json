@@ -408,9 +408,9 @@
 						"familyName",
 						"name",
 						"marc:numeration",
-						"lifeSpan",
 						"marc:titlesAndOtherWordsAssociatedWithAName",
-						"fullerFormOfName"
+						"fullerFormOfName",
+						"lifeSpan"
 					]
 				},
 				"Title": {
@@ -1090,18 +1090,26 @@
 			}
 		},
 		"commaBeforeProperty-format": {
-			"TODO": "fullerFormOfName skrivs alltid med parenteser i libris nu, ska det vara så?",
 			"@id": "commaBeforeProperty-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
 				"lifeSpan",
 				"name",
-				"marc:numeration",
-				"marc:titlesAndOtherWordsAssociatedWithAName",
-				"fullerFormOfName"
+				"marc:titlesAndOtherWordsAssociatedWithAName"
 			],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"noCommaBeforeProperty-format": {
+			"TODO": "fullerFormOfName skrivs alltid med parenteser i libris nu, ska det vara så?",
+			"@id": "noCommaBeforeProperty-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Agent"],
+			"fresnel:propertyFormatDomain": ["fullerFormOfName", "marc:numeration"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -1615,12 +1623,16 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"Agent-lifeSpan-format": {
-			"@id": "Agent-lifeSpan-format",
+		"Person-format": {
+			"@id": "Person-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:propertyFormatDomain": ["lifeSpan"],
-			"fresnel:propertyStyle": ["agent-lifespan"]
+			"fresnel:classFormatDomain": ["Person"],
+			"fresnel:propertyFormatDomain": [
+				"lifeSpan",
+				"marc:titlesAndOtherWordsAssociatedWithAName",
+				"fullerFormOfName"
+			],
+			"fresnel:propertyStyle": ["person-extra"]
 		},
 		"Role-format": {
 			"@id": "Role-format",

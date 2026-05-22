@@ -209,7 +209,7 @@
 	}
 
 	.suggestion-contribution {
-		& :global(.agent-lifespan) {
+		& :global(.person-extra) {
 			display: none;
 		}
 
