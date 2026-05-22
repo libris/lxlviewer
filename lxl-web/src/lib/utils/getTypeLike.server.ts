@@ -106,11 +106,20 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		select: []
 	};
 
-	if (thing[JsonLd.TYPE] != 'Monograph' && thing[JsonLd.TYPE] != 'Serial') {
-		result.find.push(vocabUtil.getDefinition(thing[JsonLd.TYPE] as string));
-	}
-
 	if (thing._categoryByCollection) {
+		const thingType = thing[JsonLd.TYPE];
+
+		// FIXME
+		const isSingleInstance = thingType === 'PhysicalResource' || thingType === 'DigitalResource';
+
+		const workType = isSingleInstance
+			? thing[Bibframe.instanceOf][JsonLd.TYPE]
+			: thing[JsonLd.TYPE];
+
+		if (workType != 'Monograph' && workType != 'Serial') {
+			result.find.push(vocabUtil.getDefinition(workType));
+		}
+
 		//const find: FramedData[] = thing._categoryByCollection['find'] || [];
 		const findMapA = (thing._categoryByCollection['find'] || []).reduce((a, s) => {
 			a[s[JsonLd.ID]] = s;
@@ -126,17 +135,9 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		result.identify.push(...identify);
 		result.none.push(...none);
 
-		const thingType = thing[JsonLd.TYPE];
-		// FIXME
-		const isSingleInstance = thingType === 'PhysicalResource' || thingType === 'DigitalResource';
-
 		const instances = isSingleInstance
 			? [thing]
 			: getAtPath(thing, ['@reverse', 'instanceOf', '*'], []);
-
-		const workType = isSingleInstance
-			? thing[Bibframe.instanceOf][JsonLd.TYPE]
-			: thing[JsonLd.TYPE];
 
 		let selectMap = instances
 			.map((i: FramedData) => getAtPath(i, ['_categoryByCollection', JsonLd.NONE], []))
@@ -230,7 +231,8 @@ export function toTypes(typeLike: TypeLike) {
 	const noIdentify = typeLike.identify.length == 0;
 	const noFind = typeLike.find.length == 0;
 	const manyFind = typeLike.find.length > 1;
-	const showFind = manyFind || (!noFind && noIdentify);
+	const typeInFind = !noFind && typeLike.find[0][JsonLd.TYPE] === 'Class';
+	const showFind = manyFind || typeInFind || (!noFind && noIdentify);
 	//const showFind = !noFind && noIdentify;
 	const showNone = noFind && noIdentify && typeLike.none.length > 0;
 
