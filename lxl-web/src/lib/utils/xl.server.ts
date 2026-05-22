@@ -251,15 +251,18 @@ export class DisplayUtil {
 
 	private readonly lensCache: Record<string, Lens> = {};
 
+	readonly locales: LangCode[];
+
 	// x -> xByLang
 	langContainerAlias: Record<PropertyName, PropertyName> = {};
 
 	// xByLang -> x
 	langContainerAliasInverted: Record<PropertyName, PropertyName> = {};
 
-	constructor(display: DisplayJsonLd, vocabUtil: VocabUtil) {
+	constructor(display: DisplayJsonLd, vocabUtil: VocabUtil, locales: LangCode[]) {
 		this.display = display;
 		this.vocabUtil = vocabUtil;
+		this.locales = locales;
 		this.buildLangContainerAliasMap();
 		this.expandInheritedLensProperties();
 
@@ -1076,8 +1079,26 @@ class Formatter {
 	}
 
 	private pickLanguage(container: LangContainer) {
-		// TODO handle missing
-		return container[this.locale] || container[JsonLd.NONE];
+		if (container[this.locale]) {
+			return container[this.locale];
+		}
+
+		if (container[JsonLd.NONE]) {
+			return container[JsonLd.NONE];
+		}
+
+		for (const locale of this.displayUtil.locales) {
+			if (container[locale]) {
+				return container[locale];
+			}
+		}
+
+		const langKeys = Object.keys(container);
+		if (langKeys.length > 0) {
+			return container[langKeys.toSorted()[0]];
+		}
+
+		return '{???}';
 	}
 }
 
