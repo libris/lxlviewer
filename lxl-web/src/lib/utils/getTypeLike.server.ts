@@ -1,6 +1,5 @@
 import { Bibframe, type FramedData, JsonLd } from '$lib/types/xl';
-import { asArray } from '$lib/utils/misc';
-import { VocabUtil, first } from '$lib/utils/xl.server';
+import { VocabUtil } from '$lib/utils/xl.server';
 import getAtPath from '$lib/utils/getAtPath';
 
 export type TypeLike = {
@@ -106,8 +105,10 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		select: []
 	};
 
-	if (thing[JsonLd.TYPE] != 'Monograph' && thing[JsonLd.TYPE] != 'Serial') {
-		result.find.push(vocabUtil.getDefinition(thing[JsonLd.TYPE] as string));
+	const thingType = thing[JsonLd.TYPE];
+
+	if (thingType != 'Monograph' && thingType != 'Serial') {
+		result.find.push(vocabUtil.getDefinition(thingType));
 	}
 
 	if (thing._categoryByCollection) {
@@ -126,17 +127,14 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		result.identify.push(...identify);
 		result.none.push(...none);
 
-		const thingType = thing[JsonLd.TYPE];
 		// FIXME
 		const isSingleInstance = thingType === 'PhysicalResource' || thingType === 'DigitalResource';
+
+		const workType = isSingleInstance ? thing[Bibframe.instanceOf][JsonLd.TYPE] : thingType;
 
 		const instances = isSingleInstance
 			? [thing]
 			: getAtPath(thing, ['@reverse', 'instanceOf', '*'], []);
-
-		const workType = isSingleInstance
-			? thing[Bibframe.instanceOf][JsonLd.TYPE]
-			: thing[JsonLd.TYPE];
 
 		let selectMap = instances
 			.map((i: FramedData) => getAtPath(i, ['_categoryByCollection', JsonLd.NONE], []))
@@ -163,27 +161,6 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		const select = Object.values(selectMap);
 
 		result.select.push(...select);
-	} else {
-		const contentTypes: FramedData[] = [];
-		const categories: FramedData[] = [];
-		const other: FramedData[] = [];
-		(asArray(thing.category) as FramedData[]).forEach((category) => {
-			if (first(asArray(category[JsonLd.TYPE])) === 'Category') {
-				categories.push(category);
-			} else if (first(asArray(category[JsonLd.TYPE])) === 'ContentType') {
-				contentTypes.push(category);
-			} else {
-				other.push(category);
-			}
-		});
-		result.find.push(...categories);
-		result.identify.push(...other);
-		result.identify.push(...contentTypes);
-
-		/*if (result.find.length === 0 && result.identify.length === 0) {
-		    result.find.push(...contentType);
-	    }
-	    */
 	}
 
 	return result;
@@ -230,7 +207,8 @@ export function toTypes(typeLike: TypeLike) {
 	const noIdentify = typeLike.identify.length == 0;
 	const noFind = typeLike.find.length == 0;
 	const manyFind = typeLike.find.length > 1;
-	const showFind = manyFind || (!noFind && noIdentify);
+	const typeInFind = !noFind && typeLike.find[0][JsonLd.TYPE] === 'Class';
+	const showFind = manyFind || typeInFind || (!noFind && noIdentify);
 	//const showFind = !noFind && noIdentify;
 	const showNone = noFind && noIdentify && typeLike.none.length > 0;
 
