@@ -755,7 +755,7 @@
 
 	.supersearch-input :global(.cm-line) {
 		line-height: 36px;
-		padding-left: calc(var(--spacing) * 12);
+		padding-left: calc(var(--spacing) * 11);
 
 		@variant sm {
 			padding-left: calc(var(--spacing) * 3);

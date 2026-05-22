@@ -66,7 +66,7 @@
 		aria-label={ariaLabel}
 		{autofocus}
 		bind:this={fallbackInputElement}
-		class="placeholder:text-placeholder 3xl:placeholder:text-base w-full pl-12 text-base focus:outline-none sm:pl-3 lg:text-[0.9375rem] 2xl:text-base sm:@3xl:pl-4"
+		class="placeholder:text-placeholder 3xl:placeholder:text-base w-full pl-11 text-base focus:outline-none sm:pl-3 lg:text-[0.9375rem] 2xl:text-base sm:@3xl:pl-4"
 	/>
 	<button
 		type="reset"
