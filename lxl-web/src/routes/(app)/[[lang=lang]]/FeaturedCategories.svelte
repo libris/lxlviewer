@@ -4,7 +4,7 @@
 </script>
 
 <nav aria-label={page.data.t('home.categories')} class="scrollbar-hidden flex overflow-x-scroll">
-	<ul class="flex text-sm sm:gap-0.5 xl:gap-1.5 2xl:text-base">
+	<ul class="flex text-sm xl:gap-1.5 2xl:text-base">
 		<li>
 			<a
 				href={page.data.localizeHref('/find')}
