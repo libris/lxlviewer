@@ -489,7 +489,7 @@ function mapSlices(
 							locale,
 							translate,
 							undefined,
-							dimension + '/' + str
+							dimension + '/' + o.object[JsonLd.ID]
 						)
 					}),
 					totalItems: o.totalItems,
