@@ -11,18 +11,18 @@
 	import IconSearch from '~icons/bi/search';
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import IconArrowRight from '~icons/bi/arrow-right';
+	import IconChevronRight from '~icons/bi/chevron-right';
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
-	import FeaturedCategories from './FeaturedCategories.svelte';
 	import heroImage from '$lib/assets/img/bg-marbling01.jpg';
 	import AppSearch from './AppSearch.svelte';
 	import { getHomepageContext } from '$lib/contexts/homepage';
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
+	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
 
 	const ID_HERO_SEARCH_LABEL = 'hero-search-label';
 	const ID_HERO_EXPLORE_LABEL = 'hero-explore-label';
 	const ID_EXPLORE = 'explore';
-	const ID_ABOUT = 'about';
 
 	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
@@ -82,11 +82,11 @@
 })}
 	<section
 		class={[
-			'featured-preview-section mb-16 flex flex-col gap-3 first-of-type:mt-6 last-of-type:pb-6 @lg:gap-4.5 @5xl:gap-4.5 @min-[110rem]:gap-6',
+			'featured-preview-section mb-4 flex flex-col gap-3 first-of-type:mt-0 last-of-type:pb-6 sm:mb-12 2xl:mb-16 @lg:gap-4.5 @5xl:gap-4.5 @min-[110rem]:gap-6',
 			landscape && 'landscape-mode bg-primary-50 py-6'
 		]}
 	>
-		<header class="flex flex-col px-3 @7xl:px-8">
+		<header class="flex flex-col px-3 lg:px-6 2xl:px-8">
 			<h2
 				class="font-serif text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[110rem]:text-3xl"
 				{id}
@@ -139,13 +139,11 @@
 		alt=""
 		class="hero-image absolute top-0 -z-10 h-auto w-full min-w-5xl flex-col object-cover"
 	/>
-	<div
-		class="hero-content mx-auto h-full w-full max-w-7xl justify-center gap-4.5 pb-4.5 sm:gap-7.5 sm:pb-0 lg:gap-6"
-	>
-		<div class="flex items-end justify-center sm:flex-1">
+	<div class="hero-content mx-auto h-full w-full justify-center gap-3 sm:gap-6">
+		<div class="flex flex-1 items-end justify-center">
 			<h1
 				id={ID_HERO_SEARCH_LABEL}
-				class="text-page leading-tighter px-4.5 text-center font-serif text-2xl min-[31.25rem]:text-3xl sm:px-6 sm:text-4xl sm:tracking-[-0.0125em] xl:text-5xl 2xl:text-[3.25rem]"
+				class="text-primary-50 mt-7.5 px-4.5 text-center font-serif text-3xl leading-snug tracking-[-0.0125em] text-shadow-md sm:text-4xl xl:text-5xl 2xl:text-[3.25rem]"
 			>
 				{page.data.t('home.pageHeadingTitle')}
 				{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
@@ -157,14 +155,16 @@
 		</div>
 		<div
 			id={ID_HERO_SEARCH}
-			class="hero-search-container mx-3 lg:mx-0"
+			class="hero-search-container z-0 mx-2 lg:mx-0"
 			bind:this={searchContainerElement}
 		>
 			<AppSearch id="hero-search" ariaLabelledBy={ID_HERO_SEARCH_LABEL} />
 		</div>
-		<div class="text-page mx-auto hidden sm:flex sm:flex-1">
-			<div class="flex h-fit gap-4.5">
-				<button type="submit" class="shortcut btn-outlined md:max-w-auto flex justify-center">
+		<div class="text-page mx-auto flex w-full flex-1 flex-col justify-between gap-6">
+			<div
+				class="mx-auto flex w-full max-w-xl justify-center gap-3 px-14 *:min-h-11.5 *:flex-1 *:bg-black/25 *:px-4 lg:*:min-h-12 2xl:*:min-h-13! 2xl:*:text-base!"
+			>
+				<button type="submit" class="shortcut btn-outlined">
 					<div class="shortcut-icon">
 						<IconSearch />
 					</div>
@@ -173,7 +173,7 @@
 				<a
 					id={ID_HERO_EXPLORE_LABEL}
 					href={'#' + ID_EXPLORE}
-					class="shortcut btn-outlined hidden justify-center sm:flex"
+					class="shortcut btn-outlined pr-4"
 					onclick={handleClickExplore}
 				>
 					<div class="shortcut-icon">
@@ -181,25 +181,62 @@
 					</div>
 					{page.data.t('home.exploreLabel')}
 				</a>
-				<a
-					class="my-2 ml-2 hidden items-center justify-center self-stretch border-l border-white/50 pl-6 text-sm font-medium text-shadow-lg md:hidden 2xl:text-base"
-					href={'#' + ID_ABOUT}
+			</div>
+			<div class="hero-description leading-snug lg:px-15">
+				<p
+					class="text-primary-50/85 lg:border-t-primary-100/50 mx-auto flex w-full max-w-7xl items-center justify-center gap-3 bg-black/15 p-3 text-sm backdrop-blur-sm text-shadow-2xs sm:text-base lg:flex lg:border-t lg:pr-3 2xl:py-3 2xl:text-lg"
 				>
-					{page.data.t('home.aboutLabel')}
-				</a>
+					<span>
+						<span class="text-page font-medium">
+							{page.data.t('home.pageDescription1')}
+						</span>
+						<span>
+							{page.data.t('home.pageDescription2')}
+						</span>
+					</span>
+					<a
+						href="/about"
+						class="btn-outlined shortcut inline min-h-9 items-center justify-center bg-black/10 px-3 pr-2 pl-3 text-sm font-medium tracking-tight whitespace-nowrap sm:tracking-normal"
+					>
+						<span>
+							{page.data.t('home.pageDescriptionReadMore')}
+							<IconChevronRight class="ml-0.5 inline size-2.75 " />
+						</span>
+					</a>
+				</p>
 			</div>
 		</div>
 	</div>
 </section>
-
-<section
-	id={ID_EXPLORE}
-	class="explore px-3 py-3 sm:py-4.5"
-	aria-labelledby={ID_HERO_EXPLORE_LABEL}
->
-	<div class="mx-auto w-fit">
-		<FeaturedCategories />
-	</div>
+<section class="items-center px-3 lg:justify-center"></section>
+<section id={ID_EXPLORE} class="explore" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
+	<nav
+		aria-labelledby={ID_EXPLORE}
+		class="scrollbar-hidden flex overflow-x-scroll py-4.5 lg:justify-center lg:py-6"
+	>
+		<ul class="flex gap-1.5 text-sm 2xl:text-base">
+			<li>
+				<a
+					href={page.data.localizeHref('/find')}
+					class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 ml-3 min-w-14 border-neutral-300 px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
+				>
+					{page.data.t('home.all')}
+				</a>
+			</li>
+			{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
+				<li>
+					<a
+						href={page.data.localizeHref(category.href)}
+						id={category.id}
+						aria-labelledby="search-for {category.id}"
+						class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
+					>
+						{category.label}
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</nav>
 	{#each featuredSearches as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,
@@ -209,34 +246,11 @@
 		})}
 	{/each}
 </section>
-<section id={ID_ABOUT} class="bg-primary-50 mb-8 scroll-mt-20 py-16 2xl:py-24">
-	<!--
-	<h2
-		class="mb-4.5 px-6 text-center font-serif text-4xl leading-tight tracking-[-0.0125em] lg:px-3"
-	>
-		<span class="whitespace-nowrap"> {page.data.t('home.aboutTitle1')} </span>
-		<span class="block whitespace-nowrap">{page.data.t('home.aboutTitle2')}</span>
-	</h2>
-	<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
-		{page.data.t('home.aboutParagraph1')}
-		{page.data.t('home.aboutParagraph2')}
-	</p>
-	<div class="my-6 text-center">
-		<a
-			class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium"
-			href={page.data.localizeHref(resolve('/(app)/[[lang=lang]]/about', { lang: undefined }))}
-		>
-			{page.data.t('home.readMoreAbout')}
-		</a>
-	</div>
-	<hr class="border-primary-700/75 mx-auto my-8 max-w-48 2xl:my-16" />
-	-->
-	<section class="2xl:max-w-10xl mx-auto max-w-7xl px-2 lg:px-3">
-		<h3
-			class="mb-4.5 px-6 text-center font-serif text-3xl leading-tight tracking-[-0.0125em] lg:px-3"
-		>
+<section class="bg-primary-50 mb-8 scroll-mt-20 px-3 py-12 lg:py-16">
+	<div class="2xl:max-w-10xl mx-auto max-w-7xl">
+		<h2 class="mb-4.5 px-6 text-center font-serif text-2xl lg:text-3xl @min-[110rem]:text-4xl">
 			Särskilda samlingar
-		</h3>
+		</h2>
 		<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
 			I Libris finns även deldatabaser som omfattar nationalbibliografiska, ämnesspecialiserade och
 			lokala/regionala bibliografier.
@@ -251,7 +265,7 @@
 			{/each}
 			<div class="mt-6 text-center">
 				<a
-					class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium"
+					class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium focus-within:bg-black hover:bg-black"
 					href={page.data.localizeHref(
 						resolve('/(app)/[[lang=lang]]/collections', { lang: undefined })
 					)}
@@ -260,7 +274,7 @@
 				</a>
 			</div>
 		</div>
-	</section>
+	</div>
 </section>
 {#each featuredSearches as featured, index (featured.heading)}
 	{@render featuredSearchSection({
@@ -277,24 +291,30 @@
 	.featured-list-container {
 		& :global(.horizontal-list > ul > li) {
 			&:global(:first-child) {
-				margin-left: calc(var(--spacing) * 3);
-				@variant @sm {
-					margin-left: calc(var(--spacing) * 6);
+				@apply ml-3;
+				@variant lg {
+					@apply ml-6;
+				}
+
+				@variant 2xl {
+					@apply ml-8;
 				}
 				/*
 
 				@variant @5xl {
 					margin-left: calc(var(--spacing) * 20);
 				}
-					*/
+				*/
 			}
 			&:global(:last-child) {
-				margin-right: calc(var(--spacing) * 3);
-				@variant @sm {
-					margin-right: calc(var(--spacing) * 6);
+				@apply mr-3;
+
+				@variant lg {
+					@apply mr-6;
 				}
-				@variant @5xl {
-					margin-right: calc(var(--spacing) * 20);
+
+				@variant 2xl {
+					@apply mr-6;
 				}
 			}
 		}
@@ -352,49 +372,30 @@
 
 	.hero {
 		overflow: hidden;
-		--hero-height: round(
-			min(calc(100vw - var(--appbar-height)), calc(60.8vh - var(--appbar-height))),
-			1px
-		);
-		--hero-height: round(
-			min(calc(100vw - var(--appbar-height)), calc(60.8svh - var(--appbar-height))),
-			1px
-		);
-
+		--hero-height: round(min(60.8vh), 1px);
+		--hero-height: round(min(calc(100vw)), 1px);
 		height: var(--hero-height);
 
 		@variant sm {
 			@variant portrait {
-				--hero-height: round(calc(39.2vh - var(--appbar-height)), 1px);
-				--hero-height: round(calc(39.2svh - var(--appbar-height)), 1px);
-				--hero-block-height: calc(var(--hero-height) / 2 - var(--appbar-height) * 2);
+				--hero-height: round(39.2vh, 1px);
+				--hero-height: round(39.2svh, 1px);
 			}
 
 			@variant landscape {
-				--hero-height: round(calc(60.8vh - var(--appbar-height)), 1px);
-				--hero-height: round(calc(60.8svh - var(--appbar-height)), 1px);
+				--hero-height: round(60.8vh, 1px);
+				--hero-height: round(60.8svh, 1px);
 			}
-		}
-
-		@variant lg {
-			--hero-block-height: calc(var(--hero-height) / 2 - var(--appbar-height) * 2);
-
-			display: grid;
-			grid-template-areas: var(--appbar-template-areas);
-			grid-template-columns: var(--appbar-template-columns);
 		}
 	}
 
 	.hero-content {
 		display: flex;
 		flex-direction: column;
-		@variant lg {
-			grid-area: search;
-		}
 	}
 
 	.shortcut {
-		@apply min-h-11 items-center border border-black/15 bg-black/30 pr-6 text-sm font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-sm text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors sm:min-h-11 2xl:min-h-13 2xl:gap-1 2xl:pr-7 2xl:pl-1 2xl:text-base;
+		@apply flex items-center justify-center gap-3 border border-transparent text-sm font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-sm text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors;
 
 		&:hover {
 			@apply bg-black/15;
@@ -405,7 +406,7 @@
 	}
 
 	.shortcut-icon {
-		@apply flex aspect-square h-full items-center justify-center rounded-full px-2 text-white/75 transition-colors;
+		@apply flex h-full items-center justify-center rounded-full text-white/75 transition-colors;
 	}
 
 	.hero-image {
@@ -420,5 +421,17 @@
 
 	.hero-search-container {
 		min-height: var(--appbar-height);
+
+		@variant lg {
+			display: grid;
+			grid-template-areas: var(--appbar-template-areas);
+			grid-template-columns: var(--appbar-template-columns);
+		}
+
+		& :global(#hero-search) {
+			@variant lg {
+				grid-area: search;
+			}
+		}
 	}
 </style>
