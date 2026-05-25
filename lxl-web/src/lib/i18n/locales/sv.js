@@ -2,10 +2,9 @@ export default {
 	home: {
 		pageHeadingTitle: 'Sök och hitta på',
 		pageHeadingTitleNoWrap: 'svenska bibliotek',
-		pageDescriptionShort:
-			'Libris är de svenska bibliotekens gemensamma katalog med över 9 miljoner titlar.',
-		pageDescription:
-			'Libris är de svenska bibliotekens gemensamma katalog med över nio miljoner titlar.',
+		pageDescription1: 'Libris',
+		pageDescription2: 'är de svenska bibliotekens gemensamma katalog med över nio miljoner titlar.',
+		pageDescriptionReadMore: 'Läs mer',
 		pageDescriptionTitle1: 'Libris är de svenska bibliotekens',
 		pageDescriptionTitle2: 'gemensamma katalog med över nio miljoner titlar.',
 		aboutTitle1: 'Libris är de svenska bibliotekens',
