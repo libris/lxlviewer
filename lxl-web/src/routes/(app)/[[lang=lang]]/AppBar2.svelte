@@ -1,4 +1,5 @@
 <script module>
+	export const ID_APP_BAR = 'appbar';
 	export const ID_SEARCH = 'appbar-search';
 	export const ID_MENU = 'appbar-menu';
 	export const ID_MENU_LABEL = 'appbar-menu-label';
@@ -125,12 +126,13 @@
 	<AppBanner ondismiss={handleDismissBanner} />
 {/if}
 <header
-	id="app-bar"
+	id={ID_APP_BAR}
 	class={[
 		'appbar @container sticky top-0 z-40',
 		isHomeRoute && 'home',
 		subset && 'subset',
-		withMobileSearchInput && 'with-mobile-search-input'
+		withMobileSearchInput && 'with-mobile-search-input',
+		!isFindRoute && 'border-b-primary-200 border-b'
 	]}
 >
 	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
@@ -148,7 +150,7 @@
 					aria-controls={ID_MENU}
 					aria-haspopup="dialog"
 					aria-expanded={(mounted && expandedMenu) || undefined}
-					class="action hover:bg-primary-200 aspect-square min-w-13 sm:min-w-16 lg:min-w-19 2xl:min-w-21.5"
+					class="action hover:bg-primary-200 min-w-13 sm:min-w-16 lg:min-w-19 2xl:min-w-21.5"
 					aria-label={page.data.t('header.menu')}
 					aria-labelledby={ID_MENU_LABEL}
 					onclick={handleClickMenuAction}
@@ -250,7 +252,7 @@
 	{@const changeLangLabelId = mobile ? `${ID_CHANGE_LANG_LABEL}-mobile` : ID_CHANGE_LANG_LABEL}
 	{@const myPagesLabelId = mobile ? `${ID_MY_PAGES_LABEL}-mobile` : ID_MY_PAGES_LABEL}
 	<ul class="trailing-actions z-42 flex w-full items-stretch justify-end 2xl:pr-3">
-		{#if isHomeRoute && homepageContext.showSearchInAppBar}
+		{#if (isHomeRoute && homepageContext.showSearchInAppBar) || (!isHomeRoute && !isFindRoute)}
 			<li
 				in:fly={{
 					y: 4,
@@ -270,7 +272,7 @@
 					href={mounted ? undefined : '#search'}
 					role={mounted ? undefined : 'button'}
 					tabindex={mounted ? undefined : 0}
-					class="action hover:bg-primary-200 aspect-square sm:aspect-auto"
+					class="action hover:bg-primary-200"
 					onclick={handleClickSearchAction}
 					aria-label={page.data.t('header.search')}
 					aria-labelledby={searchLabelId}
@@ -305,7 +307,7 @@
 		</li>
 		<li>
 			<a
-				class="action hover:bg-primary-200 text-subtle aspect-square sm:aspect-auto"
+				class="action hover:bg-primary-200 text-subtle"
 				href={resolve(page.data.localizeHref('/my-pages'))}
 				aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
 				aria-labelledby={myPagesLabelId}
@@ -351,11 +353,11 @@
 	.leading-actions,
 	.trailing-actions {
 		& .action {
-			min-width: var(--appbar-height);
-			@apply -outline-offset-2;
+			@apply min-w-14 -outline-offset-2;
 			height: 100%;
 
 			@variant sm {
+				min-width: var(--appbar-height);
 				@apply px-1;
 			}
 
