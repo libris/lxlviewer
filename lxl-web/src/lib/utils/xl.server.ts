@@ -201,6 +201,11 @@ export class DisplayUtil {
 			return LensType.Chip;
 		}
 
+		// FIXME - hardcoded workaround for publication hasPart
+		if (lensType === LensType.Chip || propertyName === 'hasPart') {
+			return LensType.Chip;
+		}
+
 		// FIXME - hardcoded workaround - exactMatch is integral
 		if (this.isDerivedLens(lensType) && propertyName === 'exactMatch') {
 			return LensType.Chip;
