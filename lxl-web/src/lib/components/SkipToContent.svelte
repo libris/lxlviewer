@@ -4,7 +4,7 @@
 
 <a
 	href="#content"
-	class="bg-primary-700 text-page fixed -top-full left-0 z-999 flex h-9 w-full items-center justify-center font-medium focus:top-0"
+	class="bg-accent-50 text-link focs:top-0 fixed -top-full left-0 z-999 flex h-11 w-full items-center justify-center font-medium -outline-offset-2 focus:static lg:min-h-14"
 >
 	{page.data.t('header.skipToContent')}
 </a>

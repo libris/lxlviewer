@@ -159,7 +159,7 @@
 {:else if type === 'grid'}
 	<ul
 		aria-labelledby={ariaLabelledBy}
-		class="grid grid-cols-4 gap-x-6 gap-y-12"
+		class="grid grid-cols-2 gap-x-3 gap-y-12 md:grid-cols-4 lg:gap-x-6"
 		bind:this={listElement}
 		onscroll={updateDisabledScrollButtons}
 		aria-live={ariaLive}

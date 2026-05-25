@@ -172,7 +172,7 @@
 		</section>
 	{/if}
 	<div
-		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 px-3 @sm:gap-6 @sm:px-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"
+		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 px-3 @sm:gap-6 @sm:px-4 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"
 	>
 		{#if tableOfContents.length}
 			<div class="order-last hidden @7xl:block">

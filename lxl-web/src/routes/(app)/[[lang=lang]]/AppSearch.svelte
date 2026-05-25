@@ -17,15 +17,13 @@
 
 	const action = $derived(page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`);
 
-	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
-
 	const ariaLabel = $derived(page.data.t('header.search'));
 	const placeholder: string = $derived(
 		page.data.subsetMapping
 			? `${page.data.t('header.searchSubsetPlaceholder')}: ${displayMappingToString(page.data.subsetMapping)}`
 			: page.data.t('header.searchPlaceholder')
 	);
-	const autofocus = $derived(isHomeRoute ? true : undefined);
+	const autofocus = $derived(undefined /* isHomeRoute ? true : undefined */);
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -76,8 +74,11 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 	search {
-		--search-input-height: 48px;
+		--search-input-height: 46px;
 
+		@variant sm {
+			--search-input-height: 48px;
+		}
 		@variant lg {
 			@variant 2xl {
 				--search-input-height: 52px;
