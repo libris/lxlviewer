@@ -471,7 +471,7 @@ function mapSlices(
 	parentDimension?: string
 ): Facet[] {
 	return Object.values(slices).map((slice) => {
-		const dimension = parentDimension ? `${parentDimension}/${slice.dimension}` : slice.dimension;
+		const dimension = parentDimension ? `${parentDimension}|${slice.dimension}` : slice.dimension;
 		return {
 			label: translate(`facet.${slice.alias || slice.dimension}`),
 			dimension: dimension,
@@ -489,7 +489,7 @@ function mapSlices(
 							locale,
 							translate,
 							undefined,
-							dimension + '/' + o.object[JsonLd.ID]
+							dimension + '|' + getUriSlug(o.object[JsonLd.ID] as string)
 						)
 					}),
 					totalItems: o.totalItems,
