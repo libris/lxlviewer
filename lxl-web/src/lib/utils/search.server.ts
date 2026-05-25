@@ -31,7 +31,7 @@ import {
 } from '$lib/types/search';
 
 import { getTranslator, type TranslateFn } from '$lib/i18n';
-import { defaultLocale, type LocaleCode as LangCode } from '$lib/i18n/locales';
+import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import type { MyLibrariesType } from '$lib/types/userSettings';
 import { LxlLens } from '$lib/types/display';
 import { Width } from '$lib/types/auxd';
@@ -480,13 +480,6 @@ function mapSlices(
 			...('search' in slice && { search: slice.search }),
 			values: slice.observation.map((o) => {
 				const str = toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '';
-
-				let label = toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale));
-				if (Array.isArray(label) && label.length === 0) {
-					// fallback to default locale
-					label = toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, defaultLocale));
-				}
-
 				return {
 					...('_selected' in o && { selected: o._selected }),
 					...('sliceByDimension' in o && {
@@ -496,13 +489,13 @@ function mapSlices(
 							locale,
 							translate,
 							undefined,
-							dimension + '/' + o.object[JsonLd.ID]
+							dimension + '/' + str
 						)
 					}),
 					totalItems: o.totalItems,
 					view: replacePath(o.view, usePath),
-					label,
-					str,
+					label: toLite(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)),
+					str: str,
 					discriminator: discriminator(o.object, slice.dimension)
 				};
 			})
