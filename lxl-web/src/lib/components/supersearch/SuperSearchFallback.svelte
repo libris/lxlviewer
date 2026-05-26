@@ -64,7 +64,7 @@
 		aria-label={ariaLabel}
 		{autofocus}
 		bind:this={fallbackInputElement}
-		class="placeholder:text-placeholder 3xl:placeholder:text-base w-full pl-3 text-base focus:outline-none lg:text-[0.9375rem] 2xl:pl-4 2xl:text-base"
+		class="placeholder:text-placeholder 3xl:placeholder:text-base w-full pl-3 text-base focus:outline-none lg:pl-4 lg:text-[0.9375rem] 2xl:pl-4 2xl:text-base"
 	/>
 	<button
 		type="reset"
@@ -77,7 +77,9 @@
 
 	<button
 		type="submit"
-		class={['action hidden rounded-r-md border-l border-l-neutral-300 sm:flex 2xl:rounded-r-lg']}
+		class={[
+			'action text-subtle hidden rounded-r-md border-l border-l-neutral-300 sm:flex 2xl:rounded-r-lg'
+		]}
 		aria-label={page.data.t('supersearch.search')}
 	>
 		<IconSearch aria-hidden="true" class={['flex size-4.5']} />
@@ -100,12 +102,12 @@
 		}
 
 		@variant lg {
+			border-radius: var(--radius-lg);
 			font-size: 0.9375rem;
 		}
 
 		@variant 2xl {
 			font-size: var(--text-base);
-			border-radius: var(--radius-lg);
 		}
 
 		&:not(:has([type='submit']:focus)) {
