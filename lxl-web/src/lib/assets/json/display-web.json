@@ -334,6 +334,7 @@
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
 								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle",
+								"instanceOf",
 								"identifiedBy",
 								"label"
 							]
