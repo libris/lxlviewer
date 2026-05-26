@@ -88,7 +88,7 @@ export const handle = async ({ event, resolve }) => {
 			.map((s) => s.trim())
 			.map((s) => LIBRARY_URI_PREFIX + s)
 			.filter((id) => getLibrary(id) || getOrgMembers(id).length > 0)
-			.forEach((l) => (myLibraries[l] = '')); // label is obsolete
+			.forEach((l) => (myLibraries[l] = ''));
 		userSettings.myLibraries = myLibraries;
 
 		cookieEdit = true;

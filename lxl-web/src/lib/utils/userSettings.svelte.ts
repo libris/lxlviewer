@@ -35,10 +35,10 @@ export class UserSettings {
 		});
 	}
 
-	addLibrary(libraryId: LibraryId, label: string) {
+	addLibrary(libraryId: LibraryId) {
 		const myLibs = { ...this.settings?.myLibraries };
 		if (!myLibs[libraryId]) {
-			myLibs[libraryId] = label;
+			myLibs[libraryId] = '';
 			this.update('myLibraries', myLibs);
 		}
 	}

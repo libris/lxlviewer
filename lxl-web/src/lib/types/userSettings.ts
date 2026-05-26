@@ -1,6 +1,7 @@
 import type { AvailableCitationFormat } from '$lib/types/citation';
 import type { LibraryId } from './holdings';
 
+// label string is obsolete and not used
 export type MyLibrariesType = Record<LibraryId, string>;
 
 export enum ExpandedState {
