@@ -140,7 +140,7 @@
 	}
 
 	function getValueVariant(facet: Facet) {
-		const d = facet.dimension.split('/');
+		const d = facet.dimension.split('|');
 		// FIXME
 		if (
 			d[0] === 'librissearch:findCategory' &&
