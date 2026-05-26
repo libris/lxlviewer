@@ -905,7 +905,8 @@
 						"replacementOf",
 						"relatedTo",
 						"otherPhysicalFormat",
-						"accompaniedBy"
+						"accompaniedBy",
+						"supplement"
 					]
 				},
 				"Item": {
@@ -1049,6 +1050,8 @@
 						"replacementOf",
 						"relatedTo",
 						"otherPhysicalFormat",
+						"replaces",
+						"supplement",
 						"seriesMembership",
 						"intendedAudience",
 						"associatedMedia",
@@ -1970,7 +1973,9 @@
 				"replacedBy",
 				"replacementOf",
 				"relatedTo",
-				"otherPhysicalFormat"
+				"otherPhysicalFormat",
+				"replaces",
+				"supplement"
 			],
 			"fresnel:propertyStyle": ["test_list"],
 			"fresnel:valueFormat": {
