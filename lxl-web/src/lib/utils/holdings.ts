@@ -16,6 +16,8 @@ import { stripAnchor } from '$lib/utils/http';
 import getAtPath from '$lib/utils/getAtPath';
 import { USE_HOLDING_PANE } from '$lib/constants/panels';
 
+export const LIBRARY_URI_PREFIX = 'https://libris.kb.se/library/';
+
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('holdings', value);
@@ -139,10 +141,7 @@ function getLinksToItemFor(
 }
 
 export function isLibraryOrg(id: LibraryId): boolean {
-	if (id && typeof id === 'string' && id.startsWith('https://libris.kb.se/library/org/')) {
-		return true;
-	}
-	return false;
+	return !!(id && typeof id === 'string' && id.startsWith(LIBRARY_URI_PREFIX + 'org/'));
 }
 
 /**

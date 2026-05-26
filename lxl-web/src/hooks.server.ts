@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { redirect, type HandleServerError, type RequestEvent } from '@sveltejs/kit';
+import { type HandleServerError, redirect, type RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
@@ -8,9 +8,10 @@ import type { Site } from '$lib/types/site';
 import { DebugFlags, type MyLibrariesType, type UserSettings } from '$lib/types/userSettings';
 import displayWeb from '$lib/assets/json/display-web.json';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
-import { startRefreshLibraries } from '$lib/utils/getLibraries.server';
+import { getLibrary, getOrgMembers, startRefreshLibraries } from '$lib/utils/getLibraries.server';
 import { getSubsetMapping } from '$lib/utils/subsetCache.server';
 import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions.server';
+import { LIBRARY_URI_PREFIX } from '$lib/utils/holdings';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
@@ -51,6 +52,13 @@ export const handle = async ({ event, resolve }) => {
 		}
 	}
 	let cookieEdit = false;
+	let redirectHome = false;
+
+	if (event.url.searchParams.has('wipeSettings')) {
+		userSettings = {};
+		cookieEdit = true;
+		redirectHome = true;
+	}
 
 	if (event.url.searchParams.has('_debug')) {
 		let flags = event.url.searchParams
@@ -72,6 +80,21 @@ export const handle = async ({ event, resolve }) => {
 		cookieEdit = true;
 	}
 
+	const setMyLibraries = event.url.searchParams.get('favouriteLibraries');
+	if (setMyLibraries) {
+		const myLibraries: MyLibrariesType = {};
+		setMyLibraries
+			.split(',')
+			.map((s) => s.trim())
+			.map((s) => LIBRARY_URI_PREFIX + s)
+			.filter((id) => getLibrary(id) || getOrgMembers(id).length > 0)
+			.forEach((l) => (myLibraries[l] = '')); // label is obsolete
+		userSettings.myLibraries = myLibraries;
+
+		cookieEdit = true;
+		redirectHome = true;
+	}
+
 	if (cookieEdit) {
 		event.cookies.set('userSettings', JSON.stringify(userSettings), {
 			maxAge: 60 * 60 * 24 * 365, // 365 days
@@ -81,6 +104,11 @@ export const handle = async ({ event, resolve }) => {
 			path: '/'
 		});
 	}
+
+	if (redirectHome) {
+		redirect(302, '/');
+	}
+
 	event.locals.userSettings = userSettings;
 
 	const dismissedBannerCookie = event.cookies.get('dismissed-banner');

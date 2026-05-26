@@ -45,7 +45,8 @@ export class UserSettings {
 
 	removeLibrary(libraryId: string) {
 		const myLibs = { ...this.settings?.myLibraries };
-		if (myLibs[libraryId]) {
+
+		if (Object.hasOwn(myLibs, libraryId)) {
 			delete myLibs[libraryId];
 			this.update('myLibraries', myLibs);
 		}
