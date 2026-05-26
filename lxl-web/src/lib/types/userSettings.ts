@@ -33,3 +33,8 @@ export type UserSettings = {
 export enum DebugFlags {
 	ES_SCORE = 'esScore'
 }
+
+export enum SettingsParams {
+	wipeSettings = 'wipeSettings',
+	favouriteLibraries = 'favouriteLibraries'
+}

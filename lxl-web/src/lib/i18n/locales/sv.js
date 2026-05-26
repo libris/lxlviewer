@@ -71,7 +71,15 @@ export default {
 		findLibrary: 'Sök efter bibliotek',
 		findAndAdd: 'Hitta och lägg till favoritbibliotek',
 		noResultsFor: 'Inga sökträffar för',
-		hitsFor: 'träffar för'
+		hitsFor: 'träffar för',
+		settingsLinkHeading: 'Permanent länk för inställningarna',
+		settingsLinkDescription:
+			'Kopiera en länk för att komma till Libris startsida med sparade inställningar.',
+		settingsLink: 'Länk för favoritbiblioteken ovan',
+		wipeAndSettingsLink: 'Länk för att rensa alla inställningar och välja favoritbiblioteken ovan',
+		wipeLink: 'Länk för att rensa alla inställningar',
+		wipeDescription:
+			'Rensar allting. Inklusive senast vald citeringsstil, vald sortering i filterpanelen och så vidare.'
 	},
 	footer: {
 		logo: 'Kungliga bibliotekets logotyp',

@@ -1,7 +1,13 @@
 import Cookies from 'js-cookie';
-import { ExpandedState, type UserSettings as UserSettingsType } from '$lib/types/userSettings';
+import {
+	ExpandedState,
+	SettingsParams,
+	type UserSettings as UserSettingsType
+} from '$lib/types/userSettings';
 import type { AvailableCitationFormat } from '$lib/types/citation';
 import type { LibraryId } from '$lib/types/holdings';
+import { stripPrefix } from '$lib/utils/stripPrefix';
+import { LIBRARY_URI_PREFIX } from '$lib/utils/holdings';
 
 export class UserSettings {
 	private settings: UserSettingsType = $state({});
@@ -133,5 +139,18 @@ export class UserSettings {
 
 	get dismissedNewBanner() {
 		return this.settings.dismissedNewBanner;
+	}
+
+	toURLSearchParams(): URLSearchParams {
+		// eslint-disable-next-line svelte/prefer-svelte-reactivity
+		const p = new URLSearchParams();
+
+		const libs = Object.keys(this.settings.myLibraries || {})
+			.map((id) => stripPrefix(id, LIBRARY_URI_PREFIX))
+			.join(',');
+		p.set(SettingsParams.favouriteLibraries, libs);
+
+		p.sort();
+		return p;
 	}
 }

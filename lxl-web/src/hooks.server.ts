@@ -5,7 +5,12 @@ import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
 import type { QualifierSuggestion2 } from '$lib/types/search';
 import type { Site } from '$lib/types/site';
-import { DebugFlags, type MyLibrariesType, type UserSettings } from '$lib/types/userSettings';
+import {
+	DebugFlags,
+	type MyLibrariesType,
+	SettingsParams,
+	type UserSettings
+} from '$lib/types/userSettings';
 import displayWeb from '$lib/assets/json/display-web.json';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
 import { getLibrary, getOrgMembers, startRefreshLibraries } from '$lib/utils/getLibraries.server';
@@ -54,7 +59,7 @@ export const handle = async ({ event, resolve }) => {
 	let cookieEdit = false;
 	let redirectHome = false;
 
-	if (event.url.searchParams.has('wipeSettings')) {
+	if (event.url.searchParams.has(SettingsParams.wipeSettings)) {
 		userSettings = {};
 		cookieEdit = true;
 		redirectHome = true;
@@ -80,8 +85,8 @@ export const handle = async ({ event, resolve }) => {
 		cookieEdit = true;
 	}
 
-	const setMyLibraries = event.url.searchParams.get('favouriteLibraries');
-	if (setMyLibraries) {
+	const setMyLibraries = event.url.searchParams.get(SettingsParams.favouriteLibraries);
+	if (setMyLibraries !== undefined && setMyLibraries !== null) {
 		const myLibraries: MyLibrariesType = {};
 		setMyLibraries
 			.split(',')
@@ -103,10 +108,6 @@ export const handle = async ({ event, resolve }) => {
 			httpOnly: false, // allow the client to write to this cookie
 			path: '/'
 		});
-	}
-
-	if (redirectHome) {
-		redirect(302, '/');
 	}
 
 	event.locals.userSettings = userSettings;
@@ -181,6 +182,12 @@ export const handle = async ({ event, resolve }) => {
 	event.locals.subsetMapping = subsetMapping;
 
 	event.locals.qualifierSuggestionsByLocale = qualifierSuggestionsByLocale;
+
+	if (redirectHome) {
+		const path = lang === defaultLocale ? '/' : '/' + lang;
+		const query = _r ? '?_r=' + _r : '';
+		redirect(302, path + query);
+	}
 
 	return resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)
