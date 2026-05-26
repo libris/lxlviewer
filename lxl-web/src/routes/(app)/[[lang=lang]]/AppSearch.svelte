@@ -41,7 +41,7 @@
 </script>
 
 {#snippet fallbackInput()}
-	<SuperSearchFallback {placeholder} {ariaLabelledBy} {ariaLabel} {autofocus} />
+	<SuperSearchFallback {id} {placeholder} {ariaLabelledBy} {ariaLabel} {autofocus} />
 {/snippet}
 
 <search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center lg:px-3']}>
@@ -51,6 +51,7 @@
 		{:then { default: SuperSearchWrapper }}
 			<div class="contents" data-testid="supersearch">
 				<SuperSearchWrapper
+					{id}
 					{placeholder}
 					collapsedAriaLabelledBy={ariaLabelledBy}
 					collapsedAriaLabel={ariaLabel}

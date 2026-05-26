@@ -5,13 +5,14 @@
 	import IconClear from '~icons/bi/x-circle';
 
 	interface Props {
+		id: string;
 		placeholder: string;
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		autofocus?: boolean;
 	}
 
-	let { placeholder, ariaLabel, ariaLabelledBy, autofocus }: Props = $props();
+	let { id, placeholder, ariaLabel, ariaLabelledBy, autofocus }: Props = $props();
 
 	const searchContext = getSearchContext();
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
@@ -53,11 +54,8 @@
 </script>
 
 <div class="fallback-search relative">
-	<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
-		<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
-	</span>
 	<input
-		id="search-fallback"
+		id={`${id}-search-fallback`}
 		type="search"
 		name="_q"
 		{placeholder}
@@ -66,7 +64,7 @@
 		aria-label={ariaLabel}
 		{autofocus}
 		bind:this={fallbackInputElement}
-		class="placeholder:text-placeholder 3xl:placeholder:text-base w-full pl-11 text-base focus:outline-none sm:pl-3 lg:text-[0.9375rem] 2xl:text-base sm:@3xl:pl-4"
+		class="placeholder:text-placeholder 3xl:placeholder:text-base w-full pl-3 text-base focus:outline-none lg:text-[0.9375rem] 2xl:pl-4 2xl:text-base"
 	/>
 	<button
 		type="reset"
