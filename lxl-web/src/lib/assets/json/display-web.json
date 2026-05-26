@@ -343,7 +343,8 @@
 						"marc:publicNote",
 						"appliesTo",
 						"identifiedBy",
-						"describedBy"
+						"describedBy",
+						"marc:displayText"
 					]
 				},
 				"Item": {
@@ -1740,6 +1741,16 @@
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
+			}
+		},
+		"Instance-marc:displayText-format": {
+			"@id": "Instance-marc:displayText-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Instance"],
+			"fresnel:propertyFormatDomain": ["marc:displayText"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentAfter": ")"
 			}
 		},
 		"electronicLocator-format": {
