@@ -28,9 +28,11 @@
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import { ID_APP_BAR } from '../../../routes/(app)/[[lang=lang]]/AppBar2.svelte';
 	import { ID_HERO_SEARCH } from '../../../routes/(app)/[[lang=lang]]/+page.svelte';
 
 	interface Props {
+		id: string;
 		placeholder: string;
 		collapsedAriaLabelledBy?: string;
 		collapsedAriaLabel?: string;
@@ -53,6 +55,7 @@
 	};
 
 	let {
+		id,
 		placeholder,
 		collapsedAriaLabelledBy,
 		collapsedAriaLabel,
@@ -138,8 +141,6 @@
 			if (userClearedSearch) {
 				showExpandedSearch();
 				userClearedSearch = false;
-			} else if (isHomeRoute) {
-				superSearch?.focus(); // focus input on start page
 			} else {
 				superSearch?.blur(); // remove focus from input after searching or navigating
 			}
@@ -242,23 +243,23 @@
 
 	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
 		if (page.route.id === '/(app)/[[lang=lang]]') {
-			const heroSearch = document.getElementById(ID_HERO_SEARCH);
-			if (heroSearch) {
+			const searchElement = document.getElementById(ID_HERO_SEARCH);
+			if (searchElement) {
 				const contentOffsetTop = document.getElementById('content')?.offsetTop || 0;
-				const heroSearchOffsetTop = heroSearch?.offsetTop || 0;
-
-				console.log(
-					'windowPageYOffset',
-					windowPageYOffset,
-					'contentOffsetTop',
-					contentOffsetTop,
-					'heroSearchOffsetTop',
-					heroSearchOffsetTop,
-					'res',
-					Math.max(0, contentOffsetTop + heroSearchOffsetTop - windowPageYOffset)
-				);
+				const heroSearchOffsetTop = searchElement.offsetTop;
+				console.log('heroSearchOffsetTop', heroSearchOffsetTop);
 
 				searchOffset = Math.max(0, contentOffsetTop + heroSearchOffsetTop - windowPageYOffset);
+				console.log('searchOffset', searchOffset);
+			}
+		} else {
+			const appBarElement = document.getElementById(ID_APP_BAR);
+			const searchElement = document.getElementById(ID_HERO_SEARCH);
+			if (appBarElement) {
+				const searchOffsetTop = searchElement?.offsetTop || 0;
+				searchOffset = Math.max(0, appBarElement.offsetTop + searchOffsetTop - windowPageYOffset);
+
+				console.log('agaga', searchOffset);
 			}
 		}
 		if (fetchOnExpand && q.trim()) {
@@ -318,6 +319,7 @@
 
 {#key page.data.locale}
 	<SuperSearch
+		{id}
 		name="_q"
 		bind:this={superSearch}
 		bind:value={q}
@@ -381,7 +383,7 @@
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
 						class={[
-							'action text-subtle flex min-h-14 sm:hidden lg:min-h-auto',
+							'action text-subtle flex min-h-11 sm:hidden sm:min-h-14 lg:min-h-auto',
 							expanded && 'mr-1 h-14 w-13'
 						]}
 						onclick={onclickClose}
@@ -390,22 +392,6 @@
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
-					<div
-						class={[
-							'text-subtle bg-input absolute z-30 flex items-center justify-center rounded-md sm:hidden 2xl:rounded-lg',
-							expanded && 'hidden'
-						]}
-					>
-						<button
-							type="button"
-							tabindex="-1"
-							onclick={() => showExpandedSearch({ cursorAtEnd: true })}
-							class="action flex max-w-11 cursor-default"
-							aria-hidden="true"
-						>
-							<IconSearch aria-hidden="true" class="flex size-4 lg:mt-px" />
-						</button>
-					</div>
 					{@render inputField()}
 				</div>
 				{#if q}
@@ -419,7 +405,10 @@
 						}}
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
-						class={['action flex lg:min-h-auto', expanded && 'min-h-14 max-sm:h-14 max-sm:w-13']}
+						class={[
+							'action lg:min-h-auto',
+							expanded ? 'flex h-full max-sm:w-13' : 'hidden sm:flex'
+						]}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
 					>
@@ -444,9 +433,11 @@
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
 					class={[
-						'action hidden rounded-r-md border-l border-l-neutral-300 sm:flex 2xl:rounded-r-lg'
+						'action rounded-r-md border-l-neutral-300 sm:border-l lg:rounded-r-lg',
+						isHomeRoute || expanded ? 'hidden sm:flex' : 'flex'
 					]}
 					aria-label={page.data.t('supersearch.search')}
+					tabindex={isHomeRoute ? -1 : undefined}
 				>
 					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 				</button>
@@ -526,11 +517,11 @@
 
 		@variant lg {
 			font-size: 0.9375rem;
+			border-radius: var(--radius-lg);
 		}
 
 		@variant 2xl {
 			font-size: var(--text-base);
-			border-radius: var(--radius-lg);
 		}
 	}
 
@@ -567,6 +558,7 @@
 		}
 
 		@variant lg {
+			border-radius: var(--radius-lg);
 			margin-top: 0;
 		}
 	}
@@ -578,12 +570,8 @@
 		min-height: var(--search-input-height);
 
 		&:has(.expanded) {
-			@variant sm {
-				margin-top: calc(var(--spacing) * 0.5);
-				margin-inline: calc(var(--spacing) * 0.5);
-			}
 			@variant lg {
-				margin-top: calc(var(--spacing) * 3.5);
+				margin-top: calc(var(--spacing) * 3);
 				margin-inline: calc(var(--spacing) * 1.5);
 			}
 		}
@@ -603,7 +591,7 @@
 	}
 
 	.action {
-		height: var(--search-input-height);
+		min-height: var(--search-input-height);
 		@apply text-subtle aspect-square items-center justify-center -outline-offset-2;
 		&:hover {
 			background: var(--color-accent-50);
@@ -630,7 +618,7 @@
 			background: var(--color-backdrop);
 		}
 
-		@variant lg {
+		@variant sm {
 			top: 0;
 			margin-top: var(--search-offset, 0px);
 		}
@@ -643,15 +631,21 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
-			padding-inline: calc(var(--spacing) * 1);
+			margin-top: calc(var(--spacing) * 0.5);
+			padding-inline: calc(var(--spacing) * 0.5);
 		}
 
 		@variant lg {
+			margin-top: 0;
 			display: grid;
 			grid-template-areas: var(--appbar-template-areas);
 			grid-template-columns: var(--appbar-template-columns);
 			gap: var(--appbar-gap);
 			padding-inline: 0;
+		}
+
+		@variant 2xl {
+			margin-top: calc(var(--spacing) * 0.25);
 		}
 	}
 
@@ -682,6 +676,16 @@
 
 		@variant 2xl {
 			margin-top: 3px;
+		}
+
+		& :global(.supersearch-combobox) {
+			@variant sm {
+				padding-inline: var(--spacing);
+			}
+
+			@variant lg {
+				padding-inline: 0;
+			}
 		}
 	}
 
@@ -735,7 +739,7 @@
 	}
 
 	.expanded.supersearch-input :global(.cm-scroller) {
-		min-height: calc(var(--spacing) * 14);
+		min-height: calc(var(--spacing) * 15);
 		scrollbar-width: thin;
 		max-height: 128px;
 		overflow-x: hidden;
@@ -746,7 +750,7 @@
 	}
 
 	.expanded.supersearch-input :global(.cm-content) {
-		margin-top: calc(var(--spacing) * 0.75);
+		margin-top: calc(var(--spacing) * 1.5);
 
 		@variant sm {
 			margin-block: 0;
@@ -755,32 +759,15 @@
 
 	.supersearch-input :global(.cm-line) {
 		line-height: 36px;
-		padding-left: calc(var(--spacing) * 11);
-
-		@variant sm {
-			padding-left: calc(var(--spacing) * 3);
-
-			@variant 2xl {
-				padding-left: calc(var(--spacing) * 4);
-			}
-		}
+		padding-left: calc(var(--spacing) * 3);
 
 		@variant lg {
-			line-height: 32px;
-		}
-
-		@variant 2xl {
 			line-height: 36px;
+			padding-left: calc(var(--spacing) * 4);
 		}
 	}
 
 	.expanded.supersearch-input :global(.cm-line) {
-		padding-left: 0;
-
-		@variant sm {
-			padding-left: calc(var(--spacing) * 4);
-		}
-
 		@variant 2xl {
 			padding-left: calc(var(--spacing) * 4);
 		}
@@ -788,22 +775,20 @@
 
 	.supersearch-input :global(.cm-content) {
 		margin: 0;
-		padding: calc(var(--spacing) * 1.5) 0;
+		padding: calc(var(--spacing) * 1.25) 0;
 		min-height: var(--search-input-height);
 
+		@variant sm {
+			padding: calc(var(--spacing) * 1.5) 0;
+		}
 		@variant lg {
 			padding: calc(var(--spacing) * 2) 0;
 		}
 	}
 
 	:global(.supersearch-dialog .supersearch-input .cm-line) {
-		padding-left: 0;
-		@variant sm {
-			padding-left: calc(var(--spacing) * 11);
-		}
-
-		@variant lg {
-			padding-left: calc(var(--spacing) * 12);
+		@variant max-sm {
+			padding-left: 0;
 		}
 	}
 

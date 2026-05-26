@@ -5,11 +5,15 @@
 	import { page } from '$app/state';
 	import { setHomepageContext } from '$lib/contexts/homepage';
 	import { setSearchContext } from '$lib/contexts/search';
+	import AppSearch from './AppSearch.svelte';
 
 	const { children } = $props();
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
+
+	let prevScrollTop: number | undefined = $state();
+	let scrollingBackwards = $state(false);
 
 	let homepageContextState = $state({
 		showSearchInAppBar: false,
@@ -31,6 +35,24 @@
 
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
 	setSearchContext(searchContext);
+
+	function handleScroll() {
+		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+		if (scrollTop < (prevScrollTop || 0)) {
+			scrollingBackwards = true;
+		} else {
+			scrollingBackwards = false;
+		}
+		prevScrollTop = scrollTop;
+	}
+
+	$effect(() => {
+		if (isFindRoute) {
+			window.addEventListener('scroll', handleScroll);
+		} else {
+			window.removeEventListener('scroll', handleScroll);
+		}
+	});
 </script>
 
 <svelte:head>
@@ -41,6 +63,14 @@
 	<AppBar />
 	{#if isFindRoute}
 		<div class="flex flex-1 flex-col">
+			<div
+				class={[
+					'search-container bg-appbar border-b-primary-200 sticky top-0 z-50 flex items-center border-b px-2 transition-all sm:transition-none lg:hidden',
+					scrollingBackwards && 'scrolling-backwards'
+				]}
+			>
+				<AppSearch id="find-search" />
+			</div>
 			{@render children()}
 		</div>
 	{:else}
@@ -77,5 +107,17 @@
 		@variant 2xl {
 			--appbar-height: var(--appbar-2xl);
 		}
+	}
+
+	.search-container {
+		min-height: var(--appbar-height);
+
+		@variant sm {
+			top: var(--appbar-height);
+		}
+	}
+
+	.scrolling-backwards {
+		top: var(--appbar-height);
 	}
 </style>

@@ -139,11 +139,11 @@
 		alt=""
 		class="hero-image absolute top-0 -z-10 h-auto w-full min-w-5xl flex-col object-cover"
 	/>
-	<div class="hero-content mx-auto h-full w-full justify-center gap-3 sm:gap-6">
+	<div class="hero-content mx-auto h-full w-full justify-center gap-3 sm:gap-4.5 2xl:gap-5">
 		<div class="flex flex-1 items-end justify-center">
 			<h1
 				id={ID_HERO_SEARCH_LABEL}
-				class="text-primary-50 mt-7.5 px-4.5 text-center font-serif text-3xl leading-snug tracking-[-0.0125em] text-shadow-md sm:text-4xl xl:text-5xl 2xl:text-[3.25rem]"
+				class="mt-7.5 px-4.5 text-center font-serif text-3xl leading-snug tracking-[-0.0125em] text-white text-shadow-md sm:text-4xl lg:leading-none xl:text-5xl 2xl:text-[3.25rem]"
 			>
 				{page.data.t('home.pageHeadingTitle')}
 				{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
@@ -153,18 +153,14 @@
 				{/if}
 			</h1>
 		</div>
-		<div
-			id={ID_HERO_SEARCH}
-			class="hero-search-container z-0 mx-2 lg:mx-0"
-			bind:this={searchContainerElement}
-		>
-			<AppSearch id="hero-search" ariaLabelledBy={ID_HERO_SEARCH_LABEL} />
+		<div class="hero-search-container z-0 mx-2 lg:mx-0" bind:this={searchContainerElement}>
+			<AppSearch id={ID_HERO_SEARCH} ariaLabelledBy={ID_HERO_SEARCH_LABEL} />
 		</div>
 		<div class="text-page mx-auto flex w-full flex-1 flex-col justify-between gap-6">
 			<div
-				class="mx-auto flex w-full max-w-xl justify-center gap-3 px-14 *:min-h-11.5 *:flex-1 *:bg-black/25 *:px-4 lg:*:min-h-12 2xl:*:min-h-13! 2xl:*:text-base!"
+				class="mx-auto flex w-full max-w-xl justify-center gap-2 px-3 *:min-h-11.5 *:flex-1 *:bg-black/25 *:px-4 sm:gap-3 sm:px-14 lg:*:min-h-12 2xl:*:min-h-13 2xl:*:text-base!"
 			>
-				<button type="submit" class="shortcut btn-outlined">
+				<button type="submit" form={`${ID_HERO_SEARCH}-form`} class="shortcut btn-outlined">
 					<div class="shortcut-icon">
 						<IconSearch />
 					</div>
@@ -173,7 +169,7 @@
 				<a
 					id={ID_HERO_EXPLORE_LABEL}
 					href={'#' + ID_EXPLORE}
-					class="shortcut btn-outlined pr-4"
+					class="shortcut btn-outlined"
 					onclick={handleClickExplore}
 				>
 					<div class="shortcut-icon">
@@ -182,25 +178,30 @@
 					{page.data.t('home.exploreLabel')}
 				</a>
 			</div>
-			<div class="hero-description leading-snug lg:px-15">
+			<div class="hero-description leading-snug lg:mx-19 2xl:mx-0">
 				<p
-					class="text-primary-50/85 lg:border-t-primary-100/50 mx-auto flex w-full max-w-7xl items-center justify-center gap-3 bg-black/15 p-3 text-sm backdrop-blur-sm text-shadow-2xs sm:text-base lg:flex lg:border-t lg:pr-3 2xl:py-3 2xl:text-lg"
+					class="text-primary-50/85 lg:border-t-primary-100/35 mx-auto flex w-full max-w-7xl items-center justify-center gap-3 bg-black/15 p-3 text-xs tracking-tight backdrop-blur-sm text-shadow-2xs min-[25rem]:text-sm min-[25rem]:tracking-normal lg:flex lg:border-t lg:pr-3 2xl:py-3 2xl:text-[1.0625rem]"
 				>
 					<span>
-						<span class="text-page font-medium">
+						<span class="max-lg:text-page max-lg:font-medium">
 							{page.data.t('home.pageDescription1')}
 						</span>
 						<span>
 							{page.data.t('home.pageDescription2')}
 						</span>
+						<span class="whitespace-nowrap">
+							{page.data.t('home.pageDescription3')}
+						</span>
 					</span>
 					<a
-						href="/about"
-						class="btn-outlined shortcut inline min-h-9 items-center justify-center bg-black/10 px-3 pr-2 pl-3 text-sm font-medium tracking-tight whitespace-nowrap sm:tracking-normal"
+						href={page.data.localizeHref(
+							resolve('/(app)/[[lang=lang]]/about', { lang: undefined })
+						)}
+						class="btn-outlined shortcut inline min-h-9 items-center justify-center bg-black/10 px-3 pr-2 pl-3 text-xs! font-medium tracking-tight whitespace-nowrap sm:tracking-normal 2xl:text-sm!"
 					>
 						<span>
 							{page.data.t('home.pageDescriptionReadMore')}
-							<IconChevronRight class="ml-0.5 inline size-2.75 " />
+							<IconChevronRight class="ml-0.5 inline size-2.75" />
 						</span>
 					</a>
 				</p>
@@ -208,17 +209,15 @@
 		</div>
 	</div>
 </section>
-<section class="items-center px-3 lg:justify-center"></section>
 <section id={ID_EXPLORE} class="explore" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
-	<nav
-		aria-labelledby={ID_EXPLORE}
-		class="scrollbar-hidden flex overflow-x-scroll py-4.5 lg:justify-center lg:py-6"
-	>
-		<ul class="flex gap-1.5 text-sm 2xl:text-base">
+	<nav aria-labelledby={ID_EXPLORE} class="scrollbar-hidden flex overflow-x-scroll py-4.5 lg:py-4">
+		<ul
+			class="flex gap-1.5 text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1 2xl:text-[0.9375rem]"
+		>
 			<li>
 				<a
 					href={page.data.localizeHref('/find')}
-					class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 ml-3 min-w-14 border-neutral-300 px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
+					class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-14 border-neutral-300 px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 lg:border-transparent @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
 				>
 					{page.data.t('home.all')}
 				</a>
@@ -229,7 +228,7 @@
 						href={page.data.localizeHref(category.href)}
 						id={category.id}
 						aria-labelledby="search-for {category.id}"
-						class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
+						class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 lg:border-transparent @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
 					>
 						{category.label}
 					</a>
@@ -237,6 +236,7 @@
 			{/each}
 		</ul>
 	</nav>
+	<hr class="border-neutral mx-6 mb-6 hidden lg:flex 2xl:mx-8 2xl:mb-8" />
 	{#each featuredSearches as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,
@@ -372,20 +372,13 @@
 
 	.hero {
 		overflow: hidden;
-		--hero-height: round(min(60.8vh), 1px);
-		--hero-height: round(min(calc(100vw)), 1px);
+		--hero-height: round(min(100vw, 60.8vh), 1px);
+		--hero-height: round(min(100vw, 60.8svh), 1px);
 		height: var(--hero-height);
 
 		@variant sm {
-			@variant portrait {
-				--hero-height: round(39.2vh, 1px);
-				--hero-height: round(39.2svh, 1px);
-			}
-
-			@variant landscape {
-				--hero-height: round(60.8vh, 1px);
-				--hero-height: round(60.8svh, 1px);
-			}
+			--hero-height: round(60.8vh, 1px);
+			--hero-height: round(60.8svh, 1px);
 		}
 	}
 
@@ -395,7 +388,7 @@
 	}
 
 	.shortcut {
-		@apply flex items-center justify-center gap-3 border border-transparent text-sm font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-sm text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors;
+		@apply flex items-center justify-center gap-3 border border-transparent text-xs font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-sm text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors min-[25rem]:text-sm;
 
 		&:hover {
 			@apply bg-black/15;
@@ -433,5 +426,9 @@
 				grid-area: search;
 			}
 		}
+	}
+
+	.about-link {
+		@apply min-h-9 items-center justify-center bg-black/10 px-3 pr-2 pl-3 text-sm font-medium tracking-tight whitespace-nowrap sm:tracking-normal;
 	}
 </style>
