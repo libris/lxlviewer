@@ -1704,6 +1704,12 @@
 			"fresnel:classFormatDomain": ["Document"],
 			"fresnel:resourceStyle": ["ext-link", "uriToId()", "block"]
 		},
+		"Record-format": {
+			"@id": "Record-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Record"],
+			"fresnel:resourceStyle": []
+		},
 		"MediaObject-publicNote-format": {
 			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
 			"@id": "MediaObject-publicNote-format",
@@ -1923,8 +1929,38 @@
 		"hasReproduction-format": {
 			"@id": "hasReproduction-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["hasReproduction", "hasTitle"],
+			"fresnel:propertyFormatDomain": ["hasReproduction"],
 			"fresnel:propertyStyle": ["block"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
+		},
+		"precededBy-succeededBy-format": {
+			"@id": "precededBy-succeededBy-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": [
+				"precededBy",
+				"succeededBy",
+				"precededInPartBy",
+				"succeededInPartBy",
+				"continues",
+				"continuedBy",
+				"splitInto",
+				"continuesInPart",
+				"separatedFrom",
+				"continuedInPartBy",
+				"absorbed",
+				"absorbedBy",
+				"absorbedInPart",
+				"absorbedInPartBy",
+				"mergerOf",
+				"mergedToForm",
+				"replacedBy",
+				"replacementOf",
+				"relatedTo",
+				"otherPhysicalFormat"
+			],
+			"fresnel:propertyStyle": ["test_list"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ""
 			}

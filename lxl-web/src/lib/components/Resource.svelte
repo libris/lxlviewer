@@ -663,6 +663,10 @@
 			display: block;
 		}
 
+		& :global(.test_list > *) {
+			display: block;
+		}
+
 		& :global(.hasNote > span)::before {
 			content: ' • ';
 			color: var(--color-subtle);
