@@ -327,7 +327,7 @@
 		class="3xl:px-2.5 text-subtle flex min-w-11 flex-col items-center gap-1 px-1 text-xs font-medium sm:gap-1.5 lg:gap-1 lg:text-sm 2xl:gap-1.5 2xl:text-base"
 	>
 		<Icon class="mt-0.5 size-5 sm:mt-1 lg:mt-0.5 2xl:mt-1 2xl:size-6" />
-		<p {id} class="sr-only sm:not-sr-only sm:whitespace-nowrap">
+		<p {id} class="px-1 whitespace-nowrap">
 			{label}
 		</p>
 	</div>
@@ -353,7 +353,7 @@
 	.leading-actions,
 	.trailing-actions {
 		& .action {
-			@apply min-w-14 -outline-offset-2;
+			@apply min-w-15 -outline-offset-2;
 			height: 100%;
 
 			@variant sm {

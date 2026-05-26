@@ -158,7 +158,7 @@
 		</div>
 		<div class="text-page mx-auto flex w-full flex-1 flex-col justify-between gap-6">
 			<div
-				class="mx-auto flex w-full max-w-xl justify-center gap-2 px-3 *:min-h-11.5 *:flex-1 *:bg-black/25 *:px-4 sm:gap-3 sm:px-14 lg:*:min-h-12 2xl:*:min-h-13 2xl:*:text-base!"
+				class="mx-auto flex w-full max-w-xl justify-center gap-2 px-3 *:min-h-11 *:flex-1 *:bg-black/25 *:px-4 sm:gap-3 sm:px-14 lg:*:min-h-12 2xl:*:min-h-13 2xl:*:text-base!"
 			>
 				<button type="submit" form={`${ID_HERO_SEARCH}-form`} class="shortcut btn-outlined">
 					<div class="shortcut-icon">
