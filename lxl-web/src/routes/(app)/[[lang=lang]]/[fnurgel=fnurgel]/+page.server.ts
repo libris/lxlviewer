@@ -14,7 +14,11 @@ import {
 } from '$lib/types/xl.js';
 import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
-import type { PartialCollectionView, ResourceSearchResult } from '$lib/types/search.js';
+import type {
+	PartialCollectionView,
+	ResourceSearchResult,
+	SearchResultItem
+} from '$lib/types/search.js';
 import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
 import type { HoldingsData, HoldingItem } from '$lib/types/holdings.js';
 import { type Relation } from '$lib/types/relations';
@@ -39,6 +43,7 @@ import {
 	displayMappings
 } from '$lib/utils/search.server';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
+import { getEodAvailable } from '$lib/utils/getEodAvailable.server';
 import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';
 import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
@@ -131,7 +136,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		delete mainEntity['language'];
 	}
 
-	const _instances = mainEntity?.['@reverse']?.instanceOf || [];
+	const _instances = mainEntity?.[JsonLd.REVERSE]?.instanceOf || [];
 
 	if (_instances.length == 1 && typeLike.select.length > 0) {
 		_instances[0]['_select'] = typeLike.select;
@@ -140,7 +145,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const isWorkSingleInstance = _instances.length == 1;
 
 	const headingThing = isWorkSingleInstance
-		? (mainEntity['@reverse']['instanceOf'][0] as FramedData)
+		? (mainEntity[JsonLd.REVERSE]['instanceOf'][0] as FramedData)
 		: mainEntity;
 
 	const workTitle = isWorkSingleInstance
@@ -183,8 +188,12 @@ export const load = async ({ params, locals, fetch, url }) => {
 	];
 
 	let searchResult: ResourceSearchResult | undefined;
-	let instances;
-	let itemInformation: Record<string, DisplayDecorated>[] = [];
+	let instances: SearchResultItem[] = [];
+
+	let itemInformation: {
+		heldBy: DisplayDecorated;
+		items: DisplayDecorated[];
+	}[] = [];
 
 	if (mainEntity?.[JsonLd.REVERSE]?.instanceOf?.length > 0) {
 		const sortedInstances = getSortedInstances(mainEntity?.[JsonLd.REVERSE]?.instanceOf);
@@ -280,7 +289,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	/** TODO: Better error handling while fetching relations previews */
 	const relationsPreviews = await Promise.all(
-		relations.map(async (relation) => {
+		(relations || []).map(async (relation) => {
 			const url = new URL(relation.previewUrl);
 			const params = Object.fromEntries(url.searchParams);
 
@@ -290,11 +299,11 @@ export const load = async ({ params, locals, fetch, url }) => {
 			}
 		})
 	);
-	const relationsPreviewsByQualifierKey = relations.reduce(
+	const relationsPreviewsByQualifierKey = (relations || []).reduce(
 		(acc, currentRelation, relationIndex) => {
 			return {
 				...acc,
-				[currentRelation.qualifierKey]: relationsPreviews[relationIndex].items
+				[currentRelation.qualifierKey]: relationsPreviews?.[relationIndex]?.items
 			};
 		},
 		{}
@@ -317,7 +326,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 					}
 				]
 			: []),
-		...(relations.length
+		...(relations?.length
 			? [
 					{
 						id: 'relations',
@@ -358,8 +367,11 @@ export const load = async ({ params, locals, fetch, url }) => {
 		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil, locale),
 		byType,
 		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
-		holdingLibraries: getHoldingLibraries(byType)
+		holdingLibraries: getHoldingLibraries(byType),
+		eodAvailable: null
 	};
+
+	holdings.eodAvailable = getEodAvailable(_instances, holdings.holdingLibraries);
 
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
@@ -367,7 +379,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		uri: resourceId,
 		recordUri: resource['@id'] as string,
 		controlNumber: resource['controlNumber'] as string,
-		type: mainEntity[JsonLd.TYPE],
+		type: mainEntity[JsonLd.TYPE] as string,
 		typeForIcon: getTypeForIcon(typeLike), // FIXME
 		title: toString(heading),
 		relations,
