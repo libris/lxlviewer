@@ -64,7 +64,7 @@
 		aria-label={ariaLabel}
 		{autofocus}
 		bind:this={fallbackInputElement}
-		class="placeholder:text-placeholder 3xl:placeholder:text-base w-full pl-3 text-base focus:outline-none lg:pl-4 lg:text-[0.9375rem] 2xl:pl-4 2xl:text-base"
+		class="placeholder:text-placeholder w-full pl-3 text-base focus:outline-none sm:placeholder:text-base lg:pl-4 lg:text-[0.9375rem] 2xl:pl-4 2xl:text-base"
 	/>
 	<button
 		type="reset"
@@ -99,10 +99,10 @@
 		font-size: var(--text-xs);
 		@variant sm {
 			font-size: var(--text-sm);
+			border-radius: var(--radius-lg);
 		}
 
 		@variant lg {
-			border-radius: var(--radius-lg);
 			font-size: 0.9375rem;
 		}
 

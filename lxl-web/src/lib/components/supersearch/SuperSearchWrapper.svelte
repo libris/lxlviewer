@@ -371,7 +371,7 @@
 			<div
 				class={[
 					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative',
-					expanded && 'expanded sm:mx-0.5 lg:mx-1.5',
+					expanded && 'expanded sm:mx-0.5 lg:mx-0',
 					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
 				]}
@@ -383,8 +383,8 @@
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
 						class={[
-							'action text-subtle flex min-h-11 sm:hidden sm:min-h-14 lg:min-h-auto',
-							expanded && 'mr-1 h-14 w-13'
+							'action text-subtle flex min-h-11 sm:hidden sm:min-h-13.5 lg:min-h-auto',
+							expanded && 'mr-1 h-16.5 w-14 sm:h-full sm:w-13'
 						]}
 						onclick={onclickClose}
 					>
@@ -406,8 +406,8 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
-							'action lg:min-h-auto',
-							expanded ? 'flex h-full max-sm:w-13' : 'hidden sm:flex'
+							'action sm:min-h-auto',
+							expanded ? 'flex h-16.5 max-sm:w-13 sm:h-full' : 'hidden sm:flex'
 						]}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
@@ -433,7 +433,7 @@
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
 					class={[
-						'action rounded-r-md border-l-neutral-300 sm:border-l lg:rounded-r-lg',
+						'action rounded-r-md border-l-neutral-300 sm:rounded-r-lg sm:border-l',
 						isHomeRoute || expanded ? 'hidden sm:flex' : 'flex'
 					]}
 					aria-label={page.data.t('supersearch.search')}
@@ -515,7 +515,7 @@
 			box-shadow: 0 0 0 1px var(--color-primary-600);
 		}
 
-		@variant lg {
+		@variant sm {
 			font-size: 0.9375rem;
 			border-radius: var(--radius-lg);
 		}
@@ -557,7 +557,7 @@
 			}
 		}
 
-		@variant lg {
+		@variant sm {
 			border-radius: var(--radius-lg);
 			margin-top: 0;
 		}
@@ -570,9 +570,18 @@
 		min-height: var(--search-input-height);
 
 		&:has(.expanded) {
+			@variant sm {
+				margin-top: calc(var(--spacing) * 1.5);
+			}
+
 			@variant lg {
 				margin-top: calc(var(--spacing) * 3);
-				margin-inline: calc(var(--spacing) * 1.5);
+				margin-inline: calc(var(--spacing) * 3);
+			}
+
+			@variant 2xl {
+				margin-top: calc(var(--spacing) * 3.25);
+				margin-inline: calc(var(--spacing) * 3);
 			}
 		}
 	}
@@ -631,7 +640,7 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
-			margin-top: calc(var(--spacing) * 0.5);
+			margin-top: calc(var(--spacing) * 1.5);
 			padding-inline: calc(var(--spacing) * 0.5);
 		}
 
@@ -665,17 +674,13 @@
 		@apply max-w-7xl;
 
 		@variant sm {
-			border-radius: var(--radius-xl);
+			border-radius: 0.9375rem;
 			height: fit-content;
 			@apply drop-shadow-md;
 		}
 
 		@variant lg {
 			border-radius: var(--radius-2xl);
-		}
-
-		@variant 2xl {
-			margin-top: 3px;
 		}
 
 		& :global(.supersearch-combobox) {
@@ -738,8 +743,12 @@
 		min-height: var(--search-input-height);
 	}
 
+	.supersearch-input :global(.cm-content:has(.cm-placeholder)) {
+		padding: calc(var(--spacing) * 1.75) 0;
+	}
+
 	.expanded.supersearch-input :global(.cm-scroller) {
-		min-height: calc(var(--spacing) * 15);
+		min-height: calc(var(--spacing) * 16.5);
 		scrollbar-width: thin;
 		max-height: 128px;
 		overflow-x: hidden;
@@ -750,10 +759,15 @@
 	}
 
 	.expanded.supersearch-input :global(.cm-content) {
-		margin-top: calc(var(--spacing) * 1.5);
+		margin-top: 0;
+		@variant max-sm {
+			padding: calc(var(--spacing) * 3.75) 0;
+		}
+	}
 
-		@variant sm {
-			margin-block: 0;
+	.expanded.supersearch-input :global(.cm-content:has(.cm-placeholder)) {
+		@variant 2xl {
+			padding: calc(var(--spacing) * 2) 0;
 		}
 	}
 
@@ -762,7 +776,6 @@
 		padding-left: calc(var(--spacing) * 3);
 
 		@variant lg {
-			line-height: 36px;
 			padding-left: calc(var(--spacing) * 4);
 		}
 	}
@@ -779,10 +792,11 @@
 		min-height: var(--search-input-height);
 
 		@variant sm {
-			padding: calc(var(--spacing) * 1.5) 0;
-		}
-		@variant lg {
 			padding: calc(var(--spacing) * 2) 0;
+		}
+
+		@variant 2xl {
+			padding: calc(var(--spacing) * 2.5) 0;
 		}
 	}
 
@@ -801,13 +815,15 @@
 		color: var(--color-placeholder);
 		white-space: nowrap;
 
-		@variant lg {
-			font-size: 0.9375rem;
+		line-height: 36px;
+
+		@variant sm {
+			line-height: 38px;
 		}
 
 		@variant 2xl {
 			@apply text-base;
-			line-height: 36px;
+			line-height: 40px;
 		}
 	}
 

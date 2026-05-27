@@ -1,6 +1,7 @@
 <script module>
 	export const ID_APP_BAR = 'appbar';
-	export const ID_SEARCH = 'appbar-search';
+	export const ID_APP_BAR_LG_SEARCH = 'appbar-lg-search';
+	export const ID_APP_BAR_SM_SEARCH = 'appbar-sm-search';
 	export const ID_MENU = 'appbar-menu';
 	export const ID_MENU_LABEL = 'appbar-menu-label';
 	export const ID_SEARCH_LABEL = 'appbar-search-label';
@@ -103,6 +104,7 @@
 
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
+		closeExpandedMenu();
 		searchContext.showExpandedSearch({ cursorAtEnd: true });
 	}
 
@@ -180,7 +182,10 @@
 							width={275}
 							height={75}
 							alt="Libris"
-							class="mb-0.5 h-auto w-22 min-w-20 sm:mb-1 sm:w-27.5 2xl:w-35.75"
+							class={[
+								'h-auto min-w-20',
+								subset ? 'mb-0.5 w-22' : 'mb-0.5 w-22 sm:mb-1 sm:w-27.5 2xl:w-35.75'
+							]}
 						/>
 					{/if}
 				</a>
@@ -196,28 +201,11 @@
 			{@render trailingActions({ mobile: true })}
 		</div>
 
-		<div class={['search hidden lg:block']}>
-			{#if isHomeRoute && homepageContext.showSearchInAppBar}
-				<div
-					class="flex h-full items-center"
-					in:fly={{
-						y: 4,
-						duration: transitionDuration,
-						opacity: 0
-					}}
-					out:fly={{
-						duration: transitionDuration,
-						opacity: 0
-					}}
-				>
-					<AppSearch id={ID_SEARCH} />
-				</div>
-			{:else if !isHomeRoute}
-				<div class="hidden h-full items-center lg:flex">
-					<AppSearch id={ID_SEARCH} />
-				</div>
-			{/if}
-		</div>
+		{#if !isHomeRoute || (isHomeRoute && homepageContext.showSearchInAppBar)}
+			<div class={['search']}>
+				<AppSearch id={ID_APP_BAR_LG_SEARCH} hiddenCollapsedOnMobile={true} />
+			</div>
+		{/if}
 		<div class="hidden lg:contents">
 			{@render trailingActions({ mobile: false })}
 		</div>
@@ -246,7 +234,15 @@
 		{/if}
 	</nav>
 </header>
-
+{#if isFindRoute}
+	<div
+		class={[
+			'search bg-appbar border-b-primary-200 sticky top-0 z-45 flex items-center border-b px-2 target:flex lg:hidden lg:h-0 lg:has-[dialog:open]:flex'
+		]}
+	>
+		<AppSearch id={ID_APP_BAR_SM_SEARCH} />
+	</div>
+{/if}
 {#snippet trailingActions({ mobile }: { mobile: boolean })}
 	{@const searchLabelId = mobile ? `${ID_SEARCH_LABEL}-mobile` : ID_SEARCH_LABEL}
 	{@const changeLangLabelId = mobile ? `${ID_CHANGE_LANG_LABEL}-mobile` : ID_CHANGE_LANG_LABEL}
@@ -324,10 +320,10 @@
 
 {#snippet actionItemContents({ Icon, label, id }: { Icon: Component; label: string; id?: string })}
 	<div
-		class="3xl:px-2.5 text-subtle flex min-w-11 flex-col items-center gap-1 px-1 text-xs font-medium sm:gap-1.5 lg:gap-1 lg:text-sm 2xl:gap-1.5 2xl:text-base"
+		class="3xl:px-2.5 text-subtle flex min-w-11 flex-col items-center gap-1 px-1 text-xs font-medium sm:text-sm 2xl:gap-1.5 2xl:text-base"
 	>
-		<Icon class="mt-0.5 size-5 sm:mt-1 lg:mt-0.5 2xl:mt-1 2xl:size-6" />
-		<p {id} class="px-1 whitespace-nowrap">
+		<Icon class="mt-1 size-5 2xl:size-6" />
+		<p {id} class="px-1 whitespace-nowrap lg:px-0">
 			{label}
 		</p>
 	</div>
@@ -358,10 +354,6 @@
 
 			@variant sm {
 				min-width: var(--appbar-height);
-				@apply px-1;
-			}
-
-			@variant lg {
 				@apply px-2;
 			}
 		}
@@ -376,6 +368,7 @@
 
 	.search {
 		grid-area: search;
+		min-height: var(--appbar-height);
 	}
 
 	.action {

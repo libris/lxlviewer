@@ -375,6 +375,8 @@
 
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		if (!expanded) {
+			console.log(' expandedEditorView', expandedEditorView, 'dialog', dialog);
+
 			expandedEditorView?.dispatch({
 				selection:
 					options?.cursorAtEnd && collapsedEditorView
@@ -468,6 +470,7 @@
 	}
 
 	function handleCollapsedKeyDown(event: KeyboardEvent) {
+		console.log('handleCollapsedKeyDown');
 		if (event.key === 'Enter') {
 			submitClosestForm();
 		}
@@ -930,20 +933,24 @@
 {/snippet}
 
 <svelte:window onpopstate={handlePopState} />
-<div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
-	<div class="supersearch-combobox">
-		{@render inputRow?.({
-			expanded: false,
-			inputField: collapsedInputSnippet,
-			getCellId: () => undefined,
-			isFocusedCell: () => false,
-			isFocusedRow: () => activeRowIndex === -1,
-			onclickSubmit: handleClickSubmit,
-			onclickClear: handleReset,
-			onclickClose: handleClickClose
-		})}
-		<textarea {value} {name} {form} hidden readonly></textarea>
-	</div>
+
+<div
+	class="collapsed supersearch-combobox"
+	onkeydown={handleCollapsedKeyDown}
+	{id}
+	role="presentation"
+>
+	{@render inputRow?.({
+		expanded: false,
+		inputField: collapsedInputSnippet,
+		getCellId: () => undefined,
+		isFocusedCell: () => false,
+		isFocusedRow: () => activeRowIndex === -1,
+		onclickSubmit: handleClickSubmit,
+		onclickClear: handleReset,
+		onclickClose: handleClickClose
+	})}
+	<textarea {value} {name} {form} hidden readonly></textarea>
 </div>
 <dialog
 	class="supersearch-dialog"

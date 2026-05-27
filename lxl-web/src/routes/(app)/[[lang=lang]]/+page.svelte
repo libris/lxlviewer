@@ -158,7 +158,7 @@
 		</div>
 		<div class="text-page mx-auto flex w-full flex-1 flex-col justify-between gap-6">
 			<div
-				class="mx-auto flex w-full max-w-xl justify-center gap-2 px-3 *:min-h-11 *:flex-1 *:bg-black/25 *:px-4 sm:gap-3 sm:px-14 lg:*:min-h-12 2xl:*:min-h-13 2xl:*:text-base!"
+				class="mx-auto flex w-full max-w-xl justify-center gap-2 px-3 *:min-h-11 *:flex-1 *:bg-black/25 *:px-4 sm:gap-3 sm:px-14 sm:*:min-h-13 2xl:*:min-h-14 2xl:*:text-base!"
 			>
 				<button type="submit" form={`${ID_HERO_SEARCH}-form`} class="shortcut btn-outlined">
 					<div class="shortcut-icon">
@@ -180,7 +180,7 @@
 			</div>
 			<div class="hero-description leading-snug lg:mx-19 2xl:mx-0">
 				<p
-					class="text-primary-50/85 lg:border-t-primary-100/35 mx-auto flex w-full max-w-7xl items-center justify-center gap-3 bg-black/15 p-3 text-xs tracking-tight backdrop-blur-sm text-shadow-2xs min-[25rem]:text-sm min-[25rem]:tracking-normal lg:flex lg:border-t lg:pr-3 2xl:py-3 2xl:text-[1.0625rem]"
+					class="text-primary-50/85 lg:border-t-primary-100/35 mx-auto flex w-full max-w-7xl items-center justify-center gap-3 bg-black/15 p-3 text-xs tracking-tight backdrop-blur-sm text-shadow-2xs min-[25rem]:text-sm min-[25rem]:tracking-normal lg:flex lg:border-t lg:pr-3 lg:text-base 2xl:py-3 2xl:text-lg"
 				>
 					<span>
 						<span class="max-lg:text-page max-lg:font-medium">
@@ -212,7 +212,7 @@
 <section id={ID_EXPLORE} class="explore" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
 	<nav aria-labelledby={ID_EXPLORE} class="scrollbar-hidden flex overflow-x-scroll py-4.5 lg:py-4">
 		<ul
-			class="flex gap-1.5 text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1 2xl:text-[0.9375rem]"
+			class="flex gap-1.5 text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1 lg:text-[0.9375rem] 2xl:text-base"
 		>
 			<li>
 				<a
@@ -252,8 +252,8 @@
 			Särskilda samlingar
 		</h2>
 		<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
-			I Libris finns även deldatabaser som omfattar nationalbibliografiska, ämnesspecialiserade och
-			lokala/regionala bibliografier.
+			Särskilda samlingar omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala
+			bibliografier.
 		</p>
 		<div class="mx-auto mt-8">
 			{#each featuredCollections as collection (collection.heading)}
@@ -428,7 +428,8 @@
 		}
 	}
 
-	.about-link {
-		@apply min-h-9 items-center justify-center bg-black/10 px-3 pr-2 pl-3 text-sm font-medium tracking-tight whitespace-nowrap sm:tracking-normal;
+	.hero-description {
+		// mask-image: linear-gradient(black 100%, transparent 100%);
+		//@apply min-h-9 items-center justify-center bg-black/10 px-3 pr-2 pl-3 text-sm font-medium tracking-tight whitespace-nowrap sm:tracking-normal;
 	}
 </style>

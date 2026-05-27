@@ -5,7 +5,6 @@
 	import { page } from '$app/state';
 	import { setHomepageContext } from '$lib/contexts/homepage';
 	import { setSearchContext } from '$lib/contexts/search';
-	import AppSearch from './AppSearch.svelte';
 
 	const { children } = $props();
 
@@ -47,6 +46,9 @@
 	}
 
 	$effect(() => {
+		console.log('scrollingBackwards', scrollingBackwards);
+	});
+	$effect(() => {
 		if (isFindRoute) {
 			window.addEventListener('scroll', handleScroll);
 		} else {
@@ -61,25 +63,13 @@
 </svelte:head>
 <div class="app contents">
 	<AppBar />
-	{#if isFindRoute}
-		<div class="flex flex-1 flex-col">
-			<div
-				class={[
-					'search-container bg-appbar border-b-primary-200 sticky top-0 z-50 flex items-center border-b px-2 transition-all sm:transition-none lg:hidden',
-					scrollingBackwards && 'scrolling-backwards'
-				]}
-			>
-				<AppSearch id="find-search" />
-			</div>
-			{@render children()}
-		</div>
-	{:else}
-		<main
-			id="content"
-			class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
-		>
-			{@render children()}
-		</main>
+	<main
+		id="content"
+		class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
+	>
+		{@render children()}
+	</main>
+	{#if !isFindRoute}
 		<SiteFooter />
 	{/if}
 	<div id="floating-elements-container"></div>
@@ -90,34 +80,20 @@
 
 	.app {
 		--appbar-height: var(--appbar-base);
-		--appbar-template-areas: 'leading-actions trailing-actions';
-		--appbar-template-rows: var(--appbar-height);
-		--appbar-template-columns: 1fr 1fr;
+		--appbar-template-areas: 'leading-actions search trailing-actions';
+		--appbar-template-rows: var(--appbar-height) 0;
+		--appbar-template-columns: 1fr 0 1fr;
 
 		@variant sm {
 			--appbar-height: var(--appbar-sm);
 		}
 
 		@variant lg {
-			--appbar-height: var(--appbar-lg);
-			--appbar-template-areas: 'leading-actions search trailing-actions';
 			--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
 		}
 
 		@variant 2xl {
 			--appbar-height: var(--appbar-2xl);
 		}
-	}
-
-	.search-container {
-		min-height: var(--appbar-height);
-
-		@variant sm {
-			top: var(--appbar-height);
-		}
-	}
-
-	.scrolling-backwards {
-		top: var(--appbar-height);
 	}
 </style>
