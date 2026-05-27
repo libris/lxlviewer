@@ -87,7 +87,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	const resource = await resourceRes.json();
 
-	let workCard;
+	let workCard: SearchResultItem | null = null;
 	let isWork = false;
 
 	if (resource.mainEntity?.['@reverse']?.instanceOf) {

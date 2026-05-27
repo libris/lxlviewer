@@ -97,6 +97,8 @@
 		searchResult={data.searchResult}
 		tableOfContents={data.tableOfContents}
 		adjecentSearchResults={page.state.adjecentSearchResults}
+		workCard={data.workCard}
+		isWork={data.isWork}
 	/>
 	{#if holdingsParam}
 		<Modal close={() => handleCloseModal('holdings')}>
