@@ -906,7 +906,8 @@
 						"relatedTo",
 						"otherPhysicalFormat",
 						"accompaniedBy",
-						"supplement"
+						"supplement",
+						{ "inverseOf": "reproductionOf" }
 					]
 				},
 				"Item": {
@@ -991,6 +992,7 @@
 					"showProperties": [
 						"contribution",
 						"reproductionOf",
+						{ "inverseOf": "reproductionOf" },
 						"identifiedBy",
 						"indirectlyIdentifiedBy",
 						"hasTitle",
