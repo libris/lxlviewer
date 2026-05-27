@@ -59,12 +59,6 @@ export const handle = async ({ event, resolve }) => {
 	let cookieEdit = false;
 	let redirectHome = false;
 
-	if (event.url.searchParams.has(SettingsParams.wipeSettings)) {
-		userSettings = {};
-		cookieEdit = true;
-		redirectHome = true;
-	}
-
 	if (event.url.searchParams.has('_debug')) {
 		let flags = event.url.searchParams
 			.getAll('_debug')

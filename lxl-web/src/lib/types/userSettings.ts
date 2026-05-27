@@ -35,6 +35,5 @@ export enum DebugFlags {
 }
 
 export enum SettingsParams {
-	wipeSettings = 'wipeSettings',
 	favouriteLibraries = 'favouriteLibraries'
 }

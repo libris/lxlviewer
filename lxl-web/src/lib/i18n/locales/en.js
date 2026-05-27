@@ -75,12 +75,10 @@ export default {
 		noResultsFor: 'No results for',
 		hitsFor: 'hits for',
 		settingsLinkHeading: 'Permanent link for settings',
-		settingsLinkDescription: 'Copy a link to access the Libris homepage with your saved settings.',
-		settingsLink: 'Link for the favorite libraries above',
-		wipeAndSettingsLink: 'Link to clear all settings and select the favorite libraries above',
-		wipeLink: 'Link to clear all settings',
-		wipeDescription:
-			'Clears everything, including the most recently selected citation style, filter panel sorting, and so on.'
+		settingsLinkDescription:
+			'Paste the link into a browser to access Libris with your settings saved.',
+		settingsLink:
+			'Copy this link to go to the Libris homepage with your selected favorite libraries'
 	},
 	footer: {
 		logo: 'National Library of Sweden logotype',

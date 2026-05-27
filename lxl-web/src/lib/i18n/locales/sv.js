@@ -74,12 +74,9 @@ export default {
 		hitsFor: 'träffar för',
 		settingsLinkHeading: 'Permanent länk för inställningarna',
 		settingsLinkDescription:
-			'Kopiera en länk för att komma till Libris startsida med sparade inställningar.',
-		settingsLink: 'Länk för favoritbiblioteken ovan',
-		wipeAndSettingsLink: 'Länk för att rensa alla inställningar och välja favoritbiblioteken ovan',
-		wipeLink: 'Länk för att rensa alla inställningar',
-		wipeDescription:
-			'Rensar allting. Inklusive senast vald citeringsstil, vald sortering i filterpanelen och så vidare.'
+			'Klistra in länken i en webbläsare så kommer du till Libris med dina inställningar sparade.',
+		settingsLink:
+			'Kopiera den här länken för att komma till Libris startsida med dina valda favoritbibliotek'
 	},
 	footer: {
 		logo: 'Kungliga bibliotekets logotyp',

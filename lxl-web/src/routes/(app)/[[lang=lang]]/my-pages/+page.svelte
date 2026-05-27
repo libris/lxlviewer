@@ -4,15 +4,12 @@
 	import Libraries from '$lib/components/my-pages/Libraries.svelte';
 	import Meta from '$lib/components/Meta.svelte';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { SettingsParams } from '$lib/types/userSettings';
 
 	const pageTitle = $derived(page.data.t('myPages.pageTitle'));
 	const q = $derived(page.url.searchParams.get('q'));
 
-	const myCookie = $derived(getUserSettings());
-
-	const query = $derived(
-		myCookie.toURLSearchParams().toString().replaceAll('%2F', '/').replaceAll('%2C', ',')
+	const setSettingsQuery = $derived(
+		getUserSettings().toURLSearchParams().toString().replaceAll('%2F', '/').replaceAll('%2C', ',')
 	);
 </script>
 
@@ -34,25 +31,12 @@
 	<h2 class="font-heading mt-6 text-xl font-medium">
 		{page.data.t('myPages.settingsLinkHeading')}
 	</h2>
-	{page.data.t('myPages.settingsLinkDescription')}
-	<p class="my-2">
-		<a href={page.data.localizeHref(`${page.url.origin}?${query}`)} class="link"
-			>{page.data.t('myPages.settingsLink')}</a
-		>
-	</p>
-	<div class="my-2">
-		<p>
-			<a
-				href={page.data.localizeHref(`${page.url.origin}?${SettingsParams.wipeSettings}`)}
-				class="link">{page.data.t('myPages.wipeLink')}</a
+	<div style="max-width: 60ch;">
+		{page.data.t('myPages.settingsLinkDescription')}
+		<p class="my-2">
+			<a href={page.data.localizeHref(`${page.url.origin}?${setSettingsQuery}`)} class="link"
+				>{page.data.t('myPages.settingsLink')}</a
 			>
 		</p>
-		<p>
-			<a
-				href={page.data.localizeHref(`${page.url.origin}?${SettingsParams.wipeSettings}&${query}`)}
-				class="link">{page.data.t('myPages.wipeAndSettingsLink')}</a
-			>
-		</p>
-		{page.data.t('myPages.wipeDescription')}
 	</div>
 </div>
