@@ -516,7 +516,6 @@
 		}
 
 		@variant sm {
-			font-size: 0.9375rem;
 			border-radius: var(--radius-lg);
 		}
 
