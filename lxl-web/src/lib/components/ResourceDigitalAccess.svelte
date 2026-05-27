@@ -73,7 +73,7 @@
 				<div class="my-2 rounded-md border border-neutral-200 p-2">
 					<p class="mb-2 text-sm">{page.data.t('resource.digitizationInfo')}.</p>
 					<ul>
-						{#each eodAvailable as library (library[BibDb.eodUri])}
+						{#each eodAvailable as library (library.displayStr)}
 							<li>
 								<a class="ext-link" href={library[BibDb.eodUri]}>{library.displayStr}</a>
 							</li>
