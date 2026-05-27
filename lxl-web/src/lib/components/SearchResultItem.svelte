@@ -14,7 +14,7 @@
 		lazyImage?: boolean;
 		highPriorityImage?: boolean;
 		fadeInImage?: boolean;
-		suppressProperty?: string;
+		suppressProperty?: string[];
 	};
 
 	let {
