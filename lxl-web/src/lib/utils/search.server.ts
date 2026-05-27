@@ -624,7 +624,12 @@ function getMediaLinks(
 	copyMediaLinksToWork(_item);
 	const formatted = displayUtil.lensAndFormat(_item, LensType.WebOverview2, locale);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [mediaLinks, _] = pickProperty(formatted, ['associatedMedia']);
+	const [mediaLinks, _] = pickProperty(formatted, [
+		'associatedMedia',
+		'isPrimaryTopicOf',
+		'electronicLocator',
+		'marc:versionOfResource'
+	]);
 	if (mediaLinks._display?.length) {
 		return mediaLinks;
 	}
