@@ -60,6 +60,7 @@ export interface LibraryFull extends LibraryChip {
 	isPartOf: { [JsonLd.ID]: OrgId };
 	[BibDb.ils]: Record<string, string>;
 	[BibDb.lopac]: Record<string, string>;
+	[BibDb.eodUri]?: string;
 	[BibDb.address]?: Record<string, string>[];
 	[BibDb.linkResolver]?: LinkResolver;
 	[BibDb.latitude]?: number;
