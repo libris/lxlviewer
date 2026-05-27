@@ -249,11 +249,10 @@
 <section class="bg-primary-50 mb-8 scroll-mt-20 px-3 py-12 lg:py-16">
 	<div class="2xl:max-w-10xl mx-auto max-w-7xl">
 		<h2 class="mb-4.5 px-6 text-center font-serif text-2xl lg:text-3xl @min-[110rem]:text-4xl">
-			Särskilda samlingar
+			{page.data.t('home.collectionsTitle')}
 		</h2>
 		<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
-			Särskilda samlingar omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala
-			bibliografier.
+			{page.data.t('home.collectionsDescription')}
 		</p>
 		<div class="mx-auto mt-8">
 			{#each featuredCollections as collection (collection.heading)}

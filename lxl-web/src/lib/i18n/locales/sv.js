@@ -6,6 +6,9 @@ export default {
 		pageDescription2: 'är de svenska bibliotekens gemensamma katalog med över nio',
 		pageDescription3: 'miljoner titlar.',
 		pageDescriptionReadMore: 'Läs mer',
+		collectionsTitle: 'Särskilda samlingar',
+		collectionsDescription:
+			'Särskilda samlingar omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala bibliografier.',
 		pageDescriptionTitle1: 'Libris är de svenska bibliotekens',
 		pageDescriptionTitle2: 'gemensamma katalog med över nio miljoner titlar.',
 		aboutTitle1: 'Libris är de svenska bibliotekens',
