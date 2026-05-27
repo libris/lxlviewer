@@ -744,7 +744,15 @@
 	}
 
 	.supersearch-input :global(.cm-content:has(.cm-placeholder)) {
-		padding: calc(var(--spacing) * 1.75) 0;
+		padding: calc(var(--spacing) * 1.5) 0;
+
+		@variant sm {
+			padding: calc(var(--spacing) * 1.75) 0;
+		}
+
+		@variant 2xl {
+			padding: calc(var(--spacing) * 2) 0;
+		}
 	}
 
 	.expanded.supersearch-input :global(.cm-scroller) {
