@@ -570,7 +570,7 @@
 
 		&:has(.expanded) {
 			@variant sm {
-				margin-top: calc(var(--spacing) * 1.5);
+				margin-top: calc(var(--spacing) * 2);
 			}
 
 			@variant lg {
@@ -639,8 +639,7 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
-			margin-top: calc(var(--spacing) * 1.5);
-			padding-inline: calc(var(--spacing) * 0.5);
+			margin-top: calc(var(--spacing) * 1);
 		}
 
 		@variant lg {
@@ -673,18 +672,13 @@
 		@apply max-w-7xl;
 
 		@variant sm {
-			border-radius: 0.9375rem;
+			border-radius: var(--radius-2xl);
 			height: fit-content;
 			@apply drop-shadow-md;
 		}
-
-		@variant lg {
-			border-radius: var(--radius-2xl);
-		}
-
 		& :global(.supersearch-combobox) {
 			@variant sm {
-				padding-inline: var(--spacing);
+				padding-inline: calc(var(--spacing) * 1.5);
 			}
 
 			@variant lg {
