@@ -1,7 +1,6 @@
-import type { LibraryWithLinks } from '$lib/types/holdings';
+import type { EodAvailable, LibraryWithLinks } from '$lib/types/holdings';
 import { BibDb, JsonLd, type FramedData } from '$lib/types/xl';
 
-export type EodAvailable = Required<Pick<LibraryWithLinks, 'displayStr' | BibDb.eodUri>>[] | null;
 const YEARS_OLD_ENOUGH = 90;
 
 /**

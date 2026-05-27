@@ -87,7 +87,6 @@
 		uri={data.uri}
 		recordUri={data.recordUri}
 		controlNumber={data.controlNumber}
-		type={data.type}
 		typeForIcon={data.typeForIcon}
 		image={data.image}
 		decoratedData={data.decoratedData}

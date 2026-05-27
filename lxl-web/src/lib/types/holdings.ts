@@ -79,6 +79,8 @@ export interface LibraryWithLinks extends LibraryFull {
 	distance?: number;
 }
 
+export type EodAvailable = Required<Pick<LibraryWithLinks, 'displayStr' | BibDb.eodUri>>[] | null;
+
 export interface LibraryWithLinksAndInstances extends LibraryWithLinks {
 	_instances: BibIdData;
 }
@@ -148,6 +150,7 @@ export type HoldingsData = {
 	byInstanceId: HoldersByInstanceId;
 	byType: HoldersByType;
 	holdingLibraries: Record<LibraryId, LibraryWithLinks | null>;
+	eodAvailable: EodAvailable;
 };
 
 export type LatLng = {
