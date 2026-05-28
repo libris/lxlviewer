@@ -8,10 +8,7 @@ test.describe('Set settings with link', async () => {
 
 		await setFavourites(page);
 
-		const link = (await page
-			.getByRole('link', { name: 'Kopiera den här länken för att komma till Libris startsida' })
-			.getAttribute('href')) as string;
-
+		const link = await page.locator('#settings-url').textContent();
 		await context.close();
 
 		const context2 = await browser.newContext();
@@ -34,9 +31,7 @@ test.describe('Set settings with link', async () => {
 
 		await setFavourites(page);
 
-		const link = (await page
-			.getByRole('link', { name: 'Kopiera den här länken för att komma till Libris startsida' })
-			.getAttribute('href')) as string;
+		const link = await page.locator('#settings-url').textContent();
 
 		await context.close();
 

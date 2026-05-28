@@ -56,7 +56,7 @@
 		<p class="my-2 text-sm">
 			{page.data.t('myPages.settingsLinkDescription')}
 		</p>
-		<p class="my-2 font-mono">
+		<p id="settings-url" class="my-2 font-mono">
 			{settingsUrl}
 		</p>
 		<button class="btn btn-accent" onclick={() => handleCopySettingsUrl()}>
