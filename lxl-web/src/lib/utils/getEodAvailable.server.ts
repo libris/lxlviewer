@@ -1,7 +1,7 @@
 import type { EodAvailable, LibraryWithLinks } from '$lib/types/holdings';
 import { BibDb, JsonLd, type FramedData } from '$lib/types/xl';
 
-const YEARS_OLD_ENOUGH = 90;
+export const YEARS_OLD_ENOUGH = 90;
 
 /**
  * If resource meets criteria, return a list of holding libraries where you can request digitization
@@ -34,18 +34,39 @@ function isPrint(instance: FramedData) {
 	);
 }
 
-function isOldEnough(publicationYear: string | undefined) {
+export function isOldEnough(
+	publicationYear: string | undefined,
+	currentYear: number = new Date().getFullYear()
+) {
 	if (publicationYear && typeof publicationYear === 'string') {
-		const yearParsed = parseInt(publicationYear, 10);
+		const yearParsed = parseYear(publicationYear);
 
 		if (Number.isNaN(yearParsed)) {
 			return false;
 		}
 
-		const currentYear = new Date().getFullYear();
-		return yearParsed < currentYear - YEARS_OLD_ENOUGH;
+		return yearParsed <= currentYear - YEARS_OLD_ENOUGH;
 	}
 	return false;
+}
+
+function parseYear(publicationYear: string) {
+	const yearMatch = publicationYear.match(/\d{4}/);
+	if (yearMatch) {
+		return parseInt(yearMatch[0], 10);
+	}
+
+	const decadeMatch = publicationYear.match(/\d{3}[?unxX]/);
+	if (decadeMatch) {
+		return parseInt(decadeMatch[0], 10) * 10 + 10;
+	}
+
+	const centuryMatch = publicationYear.match(/\d{2}[?unxX]{2}/);
+	if (centuryMatch) {
+		return parseInt(centuryMatch[0], 10) * 100 + 100;
+	}
+
+	return Number.NaN;
 }
 
 function getEodLibs(libs: Record<string, LibraryWithLinks | null>, id: string): EodAvailable {
