@@ -86,9 +86,10 @@
 				case 'ej utlånad':
 				case 'available':
 					return 'available';
-				case 'ej tillgänglig':
 				case 'utlånad':
 				case 'on loan':
+					return 'onLoan';
+				case 'ej tillgänglig':
 				case 'not available':
 					return 'unavailable';
 				default:
