@@ -157,6 +157,12 @@
 					"classLensDomain": "_MultipleTypes",
 					"showProperties": ["_find", "_identify", "_none", "_select", "_category"]
 				},
+				"_Value": {
+					"@type": "fresnel:Lens",
+					"@id": "_Value-chips",
+					"classLensDomain": "_Value",
+					"showProperties": ["label", "_find"]
+				},
 				"Cartographic": {
 					"@id": "Cartographic-chips",
 					"@type": "fresnel:Lens",
@@ -197,11 +203,28 @@
 						}
 					]
 				},
+				"ISSN": {
+					"@id": "ISSN-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "ISSN",
+					"showProperties": [
+						"rdf:type",
+						{
+							"alternateProperties": [
+								"value",
+								"marc:canceledIssn",
+								"marc:incorrectIssn",
+								"marc:issnL"
+							]
+						},
+						"_find"
+					]
+				},
 				"SeriesMembership": {
 					"@id": "SeriesMembership-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "SeriesMembership",
-					"showProperties": ["inSeries", "seriesStatement", "seriesEnumeration"]
+					"showProperties": ["inSeries", "seriesStatement", "seriesEnumeration", "_find"]
 				},
 				"Subdivision": {
 					"@id": "Subdivision-chips",
@@ -353,6 +376,12 @@
 					"classLensDomain": "Item",
 					"showProperties": ["heldBy", "itemOf"]
 				},
+				"Record": {
+					"@id": "Record-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Record",
+					"showProperties": ["controlNumber", "_find"]
+				},
 				"Library": {
 					"@id": "Library-chips",
 					"@type": "fresnel:Lens",
@@ -386,7 +415,8 @@
 						{ "alternateProperties": ["value", "marc:hiddenValue"] },
 						"typeNote",
 						"hasNote",
-						"uri"
+						"uri",
+						"_find"
 					]
 				},
 				"Agent": {
@@ -1373,7 +1403,7 @@
 			"@id": "Identifier-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Identifier"],
-			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
+			"fresnel:resourceStyle": ["findToTop()", "ext-link", "uriToId()"]
 		},
 		"ShelfMark-format": {
 			"TODO": "This is an override for displayType() in Identifier. Identifier should use rdf:type in showProperties instead",
@@ -1383,7 +1413,7 @@
 			"fresnel:resourceStyle": []
 		},
 		"_find-format": {
-			"@id": "contribution-format",
+			"@id": "_find-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["_find"],
 			"fresnel:propertyFormat": {
@@ -1480,6 +1510,18 @@
 				"fresnel:contentBefore": " · ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"SeriesMembership-format": {
+			"@id": "SeriesMembership-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["SeriesMembership"],
+			"fresnel:resourceStyle": ["findToTop()"]
+		},
+		"_Value-format": {
+			"@id": "_Value-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["_Value"],
+			"fresnel:resourceStyle": ["findToTop()"]
 		},
 		"needs-label-format": {
 			"@id": "Subject-format",
@@ -1713,7 +1755,7 @@
 			"@id": "Record-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Record"],
-			"fresnel:resourceStyle": []
+			"fresnel:resourceStyle": ["findToTop()"]
 		},
 		"MediaObject-publicNote-format": {
 			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
