@@ -224,6 +224,10 @@
 		background-color: var(--color-severe-500);
 	}
 
+	.indicator.onLoan {
+		background-color: var(--color-warning);
+	}
+
 	.indicator.available {
 		background-color: var(--color-success);
 	}
