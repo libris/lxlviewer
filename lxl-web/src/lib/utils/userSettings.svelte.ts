@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import {
 	ExpandedState,
+	type MyLibrariesType,
 	SettingsParams,
 	type UserSettings as UserSettingsType
 } from '$lib/types/userSettings';
@@ -142,15 +143,37 @@ export class UserSettings {
 	}
 
 	toURLSearchParams(): URLSearchParams {
-		// eslint-disable-next-line svelte/prefer-svelte-reactivity
-		const p = new URLSearchParams();
+		return toUrlSearchParams(this.settings);
+	}
+}
 
-		const libs = Object.keys(this.settings.myLibraries || {})
-			.map((id) => stripPrefix(id, LIBRARY_URI_PREFIX))
-			.join(',');
-		p.set(SettingsParams.favouriteLibraries, libs);
+function toUrlSearchParams(userSettings: UserSettingsType): URLSearchParams {
+	// eslint-disable-next-line svelte/prefer-svelte-reactivity
+	const p = new URLSearchParams();
 
-		p.sort();
-		return p;
+	const libs = Object.keys(userSettings.myLibraries || {})
+		.map((id) => stripPrefix(id, LIBRARY_URI_PREFIX))
+		.join(',');
+	p.set(SettingsParams.favouriteLibraries, libs);
+
+	p.sort();
+	return p;
+}
+
+export function updateSettings(
+	userSettings: UserSettingsType,
+	params: URLSearchParams,
+	isValidLibrary: (id: string) => boolean
+) {
+	const setMyLibraries = params.get(SettingsParams.favouriteLibraries);
+	if (setMyLibraries !== undefined && setMyLibraries !== null) {
+		const myLibraries: MyLibrariesType = {};
+		setMyLibraries
+			.split(',')
+			.map((s) => s.trim())
+			.map((s) => LIBRARY_URI_PREFIX + s)
+			.filter(isValidLibrary)
+			.forEach((l) => (myLibraries[l] = ''));
+		userSettings.myLibraries = myLibraries;
 	}
 }

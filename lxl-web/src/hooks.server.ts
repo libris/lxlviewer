@@ -16,7 +16,7 @@ import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
 import { getLibrary, getOrgMembers, startRefreshLibraries } from '$lib/utils/getLibraries.server';
 import { getSubsetMapping } from '$lib/utils/subsetCache.server';
 import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions.server';
-import { LIBRARY_URI_PREFIX } from '$lib/utils/holdings';
+import { updateSettings } from '$lib/utils/userSettings.svelte';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
@@ -79,16 +79,12 @@ export const handle = async ({ event, resolve }) => {
 		cookieEdit = true;
 	}
 
-	const setMyLibraries = event.url.searchParams.get(SettingsParams.favouriteLibraries);
-	if (setMyLibraries !== undefined && setMyLibraries !== null) {
-		const myLibraries: MyLibrariesType = {};
-		setMyLibraries
-			.split(',')
-			.map((s) => s.trim())
-			.map((s) => LIBRARY_URI_PREFIX + s)
-			.filter((id) => getLibrary(id) || getOrgMembers(id).length > 0)
-			.forEach((l) => (myLibraries[l] = ''));
-		userSettings.myLibraries = myLibraries;
+	if (Object.values(SettingsParams).some((p) => event.url.searchParams.has(p))) {
+		updateSettings(
+			userSettings,
+			event.url.searchParams,
+			(id) => !!(getLibrary(id) || getOrgMembers(id).length > 0)
+		);
 
 		cookieEdit = true;
 		redirectHome = true;
