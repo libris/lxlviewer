@@ -29,7 +29,7 @@
 		ExpandEvent,
 		UserEvent
 	} from '$lib/types/superSearch.js';
-	import { standardKeymap } from '@codemirror/commands';
+	import { history as historyExtension, standardKeymap, historyKeymap } from '@codemirror/commands';
 
 	export type ExpandedContentParams = {
 		search: ReturnType<typeof useSearchRequest>;
@@ -202,7 +202,9 @@
 	});
 
 	const extensionsWithDefaults = $derived([
+		historyExtension(),
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
+		keymap.of(historyKeymap),
 		preventEnterKeyHandling(),
 		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: true, horizontal: true })),
 		preventNewLine({ replaceWithSpace: true }),
@@ -375,8 +377,6 @@
 
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		if (!expanded) {
-			console.log(' expandedEditorView', expandedEditorView, 'dialog', dialog);
-
 			expandedEditorView?.dispatch({
 				selection:
 					options?.cursorAtEnd && collapsedEditorView
