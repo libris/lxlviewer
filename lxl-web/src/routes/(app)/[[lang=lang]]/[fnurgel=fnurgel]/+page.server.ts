@@ -371,14 +371,15 @@ export const load = async ({ params, locals, fetch, url }) => {
 		eodAvailable: null
 	};
 
-	holdings.eodAvailable = getEodAvailable(_instances, holdings.holdingLibraries);
+	const controlNumber = resource['controlNumber'] as string;
+	holdings.eodAvailable = getEodAvailable(_instances, holdings.holdingLibraries, controlNumber);
 
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return {
 		uri: resourceId,
 		recordUri: resource['@id'] as string,
-		controlNumber: resource['controlNumber'] as string,
+		controlNumber,
 		type: mainEntity[JsonLd.TYPE] as string,
 		typeForIcon: getTypeForIcon(typeLike), // FIXME
 		title: toString(heading),

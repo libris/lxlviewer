@@ -8,7 +8,8 @@ const YEARS_OLD_ENOUGH = 90;
  */
 export function getEodAvailable(
 	instances: FramedData[],
-	holdingLibraries: Record<string, LibraryWithLinks | null>
+	holdingLibraries: Record<string, LibraryWithLinks | null>,
+	controlNumber: string
 ): EodAvailable {
 	if (instances.length === 1 && isPrint(instances[0])) {
 		// single instance, print
@@ -17,7 +18,7 @@ export function getEodAvailable(
 			: instances[0]?.publication;
 		if (isOldEnough(publication?.year)) {
 			// old enough
-			const eodLibs = getEodLibs(holdingLibraries);
+			const eodLibs = getEodLibs(holdingLibraries, controlNumber);
 			if (eodLibs?.length) {
 				// holding libraries supporting eod
 				return eodLibs;
@@ -47,16 +48,20 @@ function isOldEnough(publicationYear: string | undefined) {
 	return false;
 }
 
-function getEodLibs(libs: Record<string, LibraryWithLinks | null>): EodAvailable {
-	if (libs) {
+function getEodLibs(libs: Record<string, LibraryWithLinks | null>, id: string): EodAvailable {
+	if (libs && id) {
 		return Object.values(libs)
 			.filter((l) => l?.[BibDb.eodUri])
 			.map((l) => {
 				return {
-					[BibDb.eodUri]: l?.[BibDb.eodUri] as string,
+					[BibDb.eodUri]: createEodLink(l?.[BibDb.eodUri] as string, id),
 					displayStr: l?.displayStr as string
 				};
 			});
 	}
 	return null;
+}
+
+function createEodLink(linkTemplateEod: string, id: string) {
+	return linkTemplateEod.replace(/%BIB_*ID%/, id);
 }
