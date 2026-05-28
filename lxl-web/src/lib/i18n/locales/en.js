@@ -73,7 +73,10 @@ export default {
 		findLibrary: 'Search library or location',
 		findAndAdd: 'Find and add favourite libraries',
 		noResultsFor: 'No results for',
-		hitsFor: 'hits for'
+		hitsFor: 'hits for',
+		settingsLinkHeading: 'Permanent link for settings',
+		settingsLinkDescription:
+			'Paste the link into a browser to go to the Libris start page with your selected libraries.'
 	},
 	footer: {
 		logo: 'National Library of Sweden logotype',
@@ -266,7 +269,9 @@ export default {
 		add: 'Add',
 		remove: 'Remove',
 		show: 'Show',
-		approx: 'approx.'
+		approx: 'approx.',
+		copyToClipboard: 'Copy to clipboard',
+		copied: 'Copied!'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',
@@ -351,8 +356,6 @@ export default {
 		createCitation: 'Create citation',
 		selectFormat: 'Select format',
 		allFormats: 'All formats',
-		copyToClipboard: 'Copy to clipboard',
-		copied: 'Copied!',
 		saveAsFile: 'Save as file'
 	},
 	horizontalList: {

@@ -47,6 +47,10 @@
 	function onResponse() {
 		const params = new SvelteURLSearchParams();
 		params.set('q', searchPhrase);
+		if (page.url.searchParams.has('_r')) {
+			params.set('_r', page.url.searchParams.get('_r') as string);
+		}
+
 		goto(page.url.pathname + `?${params.toString()}`, { replaceState: true, keepFocus: true });
 	}
 

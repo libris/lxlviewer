@@ -32,15 +32,15 @@ describe('getBibIdsByInstanceId', () => {
 describe('getLibsFromHoldings', () => {
 	it('Returns favourite library present in the holdings list', () => {
 		const userSettings = new UserSettings({});
-		userSettings.addLibrary('https://libris.kb.se/library/S', 'Kungliga biblioteket');
-		userSettings.addLibrary('https://libris.kb.se/library/foo', 'Mitt bibliotek');
+		userSettings.addLibrary('https://libris.kb.se/library/S');
+		userSettings.addLibrary('https://libris.kb.se/library/foo');
 		const byType = getHoldersByType(getHoldingsByType(workCenteredMainEntity));
 
 		expect(getLibsFromHoldings(userSettings.myLibraries, byType)).toStrictEqual([
 			'https://libris.kb.se/library/S'
 		]);
 
-		userSettings.addLibrary('https://libris.kb.se/library/H', 'Frescatibilbioteket');
+		userSettings.addLibrary('https://libris.kb.se/library/H');
 
 		expect(getLibsFromHoldings(userSettings.myLibraries, byType)).toStrictEqual([
 			'https://libris.kb.se/library/S',
