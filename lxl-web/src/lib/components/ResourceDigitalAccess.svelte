@@ -75,7 +75,9 @@
 					<ul>
 						{#each eodAvailable as library (library.displayStr)}
 							<li>
-								<a class="ext-link" href={library[BibDb.eodUri]}>{library.displayStr}</a>
+								<a class="ext-link" target="_blank" href={library[BibDb.eodUri]}
+									>{library.displayStr}</a
+								>
 							</li>
 						{/each}
 					</ul>
