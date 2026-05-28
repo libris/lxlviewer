@@ -74,9 +74,7 @@ export default {
 		hitsFor: 'träffar för',
 		settingsLinkHeading: 'Permanent länk för inställningarna',
 		settingsLinkDescription:
-			'Klistra in länken i en webbläsare så kommer du till Libris med dina inställningar sparade.',
-		settingsLink:
-			'Kopiera den här länken för att komma till Libris startsida med dina valda favoritbibliotek'
+			'Klistra in länken i en webbläsare så kommer du till Libris startsida med dina valda favoritbibliotek.'
 	},
 	footer: {
 		logo: 'Kungliga bibliotekets logotyp',
@@ -269,7 +267,9 @@ export default {
 		add: 'Lägg till',
 		remove: 'Ta bort',
 		show: 'Visa',
-		approx: 'ca'
+		approx: 'ca',
+		copyToClipboard: 'Kopiera till urklipp',
+		copied: 'Kopierad!'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
