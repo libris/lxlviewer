@@ -61,7 +61,7 @@ function parseYear(publicationYear: string) {
 		return parseInt(decadeMatch[0], 10) * 10 + 10;
 	}
 
-	const centuryMatch = publicationYear.match(/\d{2}[?unxX]{2}/);
+	const centuryMatch = publicationYear.match(/\d{2}(\?\?|uu|nn|xx|XX)/);
 	if (centuryMatch) {
 		return parseInt(centuryMatch[0], 10) * 100 + 100;
 	}
