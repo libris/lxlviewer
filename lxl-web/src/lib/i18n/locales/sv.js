@@ -321,6 +321,7 @@ export default {
 		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',
 		unavailable: 'Ej tillgänglig',
+		onLoan: 'Utlånad',
 		map: 'karta',
 		linkToLocal: 'Hitta',
 		linkToCatalog: 'Bibliotekets lokala katalog',

@@ -322,6 +322,7 @@ export default {
 		loanStatusFailed: 'Failed to get loan status',
 		available: 'Available',
 		unavailable: 'Not available',
+		onLoan: 'On loan',
 		map: 'map',
 		linkToLocal: 'Find',
 		linkToCatalog: 'Local library catalog',
