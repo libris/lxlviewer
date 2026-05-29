@@ -1107,6 +1107,7 @@
 					"NOTE": "Avoiding SystemNumber e.g. (BOKR)9789198057300 with the identifiedBy below",
 					"showProperties": [
 						"bibliography",
+						"hasNote",
 						{
 							"alternateProperties": [
 								{ "subPropertyOf": "identifiedBy", "range": "LibrisIIINumber" }
