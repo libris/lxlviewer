@@ -9,10 +9,9 @@
 		placeholder: string;
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
-		autofocus?: boolean;
 	}
 
-	let { id, placeholder, ariaLabel, ariaLabelledBy, autofocus }: Props = $props();
+	let { id, placeholder, ariaLabel, ariaLabelledBy }: Props = $props();
 
 	const searchContext = getSearchContext();
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
@@ -62,7 +61,6 @@
 		{value}
 		aria-labelledby={ariaLabelledBy}
 		aria-label={ariaLabel}
-		{autofocus}
 		bind:this={fallbackInputElement}
 		class="placeholder:text-placeholder w-full pl-3 text-base focus:outline-none sm:placeholder:text-base lg:pl-4 lg:text-[0.9375rem] 2xl:pl-4 2xl:text-base"
 	/>
