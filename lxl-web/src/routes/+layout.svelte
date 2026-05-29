@@ -8,6 +8,7 @@
 	import '$lib/styles/nprogress.css';
 	import Matomo from '$lib/components/Matomo.svelte';
 	import CookieConsent from '$lib/components/CookieConsent.svelte';
+	import { setCookieConsentContext } from '$lib/contexts/cookieConsent';
 
 	const { children } = $props();
 
@@ -17,6 +18,11 @@
 		showSpinner: false
 	});
 
+	let cookieConsentState: { visibleModal: boolean | undefined } = $state({
+		visibleModal: page.data.initialCookieConsentModal
+	});
+
+	setCookieConsentContext(cookieConsentState);
 	setUserSettings(page.data.userSettings);
 
 	let progressBarTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -34,9 +40,9 @@
 </script>
 
 <div class="flex min-h-screen flex-col">
+	<div id="cookie-consent-container" class="contents"><CookieConsent /></div>
 	<Matomo>
 		<svelte:boundary>{@render children()}</svelte:boundary>
-		<CookieConsent />
 	</Matomo>
 </div>
 

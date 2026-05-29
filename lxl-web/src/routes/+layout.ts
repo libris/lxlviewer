@@ -13,6 +13,7 @@ export async function load({ params, data, url }) {
 	const subsetMapping = data.subsetMapping;
 	const siteName = data.siteName;
 	const qualifierSuggestions = data.qualifierSuggestions;
+	const initialCookieConsentModal = data.initialCookieConsentModal;
 
 	return {
 		locale,
@@ -24,6 +25,7 @@ export async function load({ params, data, url }) {
 		librisSession,
 		subsetMapping,
 		siteName,
-		qualifierSuggestions
+		qualifierSuggestions,
+		initialCookieConsentModal
 	};
 }

@@ -1,6 +1,6 @@
 import { getSupportedLocale } from '$lib/i18n/locales';
 
-export async function load({ locals, url, params }) {
+export async function load({ locals, url, params, cookies }) {
 	const userSettings = locals.userSettings;
 	const dismissedBanner = locals.dismissedBanner;
 	const librisSession = locals.librisSession;
@@ -19,6 +19,7 @@ export async function load({ locals, url, params }) {
 		librisSession,
 		subsetMapping,
 		siteName,
-		qualifierSuggestions
+		qualifierSuggestions,
+		initialCookieConsentModal: !cookies.get('cc_cookie')
 	};
 }
