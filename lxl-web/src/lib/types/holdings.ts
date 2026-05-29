@@ -60,6 +60,7 @@ export interface LibraryFull extends LibraryChip {
 	isPartOf: { [JsonLd.ID]: OrgId };
 	[BibDb.ils]: Record<string, string>;
 	[BibDb.lopac]: Record<string, string>;
+	[BibDb.eodUri]?: string;
 	[BibDb.address]?: Record<string, string>[];
 	[BibDb.linkResolver]?: LinkResolver;
 	[BibDb.latitude]?: number;
@@ -77,6 +78,8 @@ export interface LibraryWithLinks extends LibraryFull {
 	_links: HolderLinks;
 	distance?: number;
 }
+
+export type EodAvailable = Required<Pick<LibraryWithLinks, 'displayStr' | BibDb.eodUri>>[] | null;
 
 export interface LibraryWithLinksAndInstances extends LibraryWithLinks {
 	_instances: BibIdData;
@@ -147,6 +150,7 @@ export type HoldingsData = {
 	byInstanceId: HoldersByInstanceId;
 	byType: HoldersByType;
 	holdingLibraries: Record<LibraryId, LibraryWithLinks | null>;
+	eodAvailable: EodAvailable;
 };
 
 export type LatLng = {

@@ -936,7 +936,8 @@
 						"relatedTo",
 						"otherPhysicalFormat",
 						"accompaniedBy",
-						"supplement"
+						"supplement",
+						{ "inverseOf": "reproductionOf" }
 					]
 				},
 				"Item": {
@@ -1021,6 +1022,7 @@
 					"showProperties": [
 						"contribution",
 						"reproductionOf",
+						{ "inverseOf": "reproductionOf" },
 						"identifiedBy",
 						"indirectlyIdentifiedBy",
 						"hasTitle",
@@ -1992,8 +1994,8 @@
 				"fresnel:contentBefore": ""
 			}
 		},
-		"precededBy-succeededBy-format": {
-			"@id": "precededBy-succeededBy-format",
+		"work-instance-list-format": {
+			"@id": "work-instance-list-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
 				"precededBy",
@@ -2017,7 +2019,8 @@
 				"relatedTo",
 				"otherPhysicalFormat",
 				"replaces",
-				"supplement"
+				"supplement",
+				"hasReproduction"
 			],
 			"fresnel:propertyStyle": ["test_list"],
 			"fresnel:valueFormat": {

@@ -300,7 +300,11 @@ export default {
 		showIn: 'Visa metadata i',
 		librisCataloging: 'Libris katalogisering',
 		librisOld: 'gamla Libris',
-		request: 'Beställ'
+		request: 'Beställ',
+		digitizationAvailable: 'Finns digitiserad',
+		requestDigitization: 'Beställ digitisering',
+		digitizationInfo:
+			'Boken kan mot en kostnad digitiseras och skickas via epost till dig som en pdf-fil. Nedan listas de bibliotek som tillhandahåller tjänsten'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',
