@@ -1103,7 +1103,7 @@ class Formatter {
 			return container[langKeys.toSorted()[0]];
 		}
 
-		return '{???}';
+		return undefined;
 	}
 }
 
