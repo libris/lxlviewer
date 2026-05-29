@@ -23,6 +23,7 @@
 	const ID_HERO_SEARCH_LABEL = 'hero-search-label';
 	const ID_HERO_EXPLORE_LABEL = 'hero-explore-label';
 	const ID_EXPLORE = 'explore';
+	const ID_CATEGORIES_LABEL = 'categories-label';
 
 	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
@@ -178,46 +179,55 @@
 					{page.data.t('home.exploreLabel')}
 				</a>
 			</div>
-			<div class="hero-description leading-snug lg:mx-19 2xl:mx-0">
+			<div class="hero-description relative mx-auto w-full">
+				<div
+					class="top absolute top-0 right-0 left-0 -z-10 mx-auto h-full w-2/3 mask-radial-from-30% mask-radial-to-100% mask-radial-at-[50%_75%] backdrop-blur-md 2xl:mask-radial-from-15%"
+				></div>
 				<p
-					class="text-primary-50/85 lg:border-t-primary-100/35 mx-auto flex w-full max-w-7xl items-center justify-center gap-3 bg-black/15 p-3 text-xs tracking-tight backdrop-blur-sm text-shadow-2xs min-[25rem]:text-sm min-[25rem]:tracking-normal lg:flex lg:border-t lg:pr-3 lg:text-base 2xl:py-3 2xl:text-lg"
+					class="text-primary-50/75 mx-auto w-full max-w-xl px-3 py-4.5 pt-12 text-center sm:pb-6 2xl:pt-16 2xl:pb-7.5"
 				>
-					<span>
-						<span class="max-lg:text-page max-lg:font-medium">
-							{page.data.t('home.pageDescription1')}
-						</span>
-						<span>
-							{page.data.t('home.pageDescription2')}
-						</span>
+					<span class="font-serif sm:text-[1.0625rem] sm:leading-normal 2xl:text-xl">
+						{page.data.t('home.pageDescription1')}
+						{page.data.t('home.pageDescription2')}
 						<span class="whitespace-nowrap">
 							{page.data.t('home.pageDescription3')}
+							<span class="mx-0.75">{' · '}</span>
+
+							<a
+								class="hover:text-page focus:text-page font-sans text-sm underline hover:decoration-solid focus:decoration-solid lg:decoration-dotted 2xl:text-[0.9375rem]"
+								href={page.data.localizeHref(
+									resolve('/(app)/[[lang=lang]]/about', { lang: undefined })
+								)}
+							>
+								{page.data.t('home.pageDescriptionReadMore1')}
+								<span class="sr-only">{page.data.t('home.pageDescriptionReadMore2')}</span>
+							</a>
 						</span>
 					</span>
-					<a
-						href={page.data.localizeHref(
-							resolve('/(app)/[[lang=lang]]/about', { lang: undefined })
-						)}
-						class="btn-outlined shortcut inline min-h-9 items-center justify-center bg-black/10 px-3 pr-2 pl-3 text-xs! font-medium tracking-tight whitespace-nowrap sm:tracking-normal 2xl:text-sm!"
-					>
-						<span>
-							{page.data.t('home.pageDescriptionReadMore')}
-							<IconChevronRight class="ml-0.5 inline size-2.75" />
-						</span>
-					</a>
 				</p>
 			</div>
 		</div>
 	</div>
 </section>
+<hr class="border-neutral mx-3 lg:mx-3 2xl:mx-8" />
 <section id={ID_EXPLORE} class="explore" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
-	<nav aria-labelledby={ID_EXPLORE} class="scrollbar-hidden flex overflow-x-scroll py-4.5 lg:py-4">
+	<nav
+		aria-labelledby={ID_HERO_EXPLORE_LABEL}
+		class="categories scrollbar-hidden items-center overflow-x-scroll py-4.5 lg:grid lg:py-6"
+	>
+		<h2
+			id={ID_CATEGORIES_LABEL}
+			class="text-placeholder pl-3 text-xs font-medium tracking-widest uppercase lg:pl-6 lg:text-sm 2xl:pl-8"
+		>
+			{page.data.t('home.categories')}
+		</h2>
 		<ul
-			class="flex gap-1.5 text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1 lg:text-[0.9375rem] 2xl:text-base"
+			class="flex gap-1.5 text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1.5 lg:text-[0.9375rem] 2xl:text-base"
 		>
 			<li>
 				<a
 					href={page.data.localizeHref('/find')}
-					class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-14 border-neutral-300 px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 lg:border-transparent @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
+					class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-14 border-neutral-300 px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 lg:border-neutral-200 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
 				>
 					{page.data.t('home.all')}
 				</a>
@@ -228,15 +238,19 @@
 						href={page.data.localizeHref(category.href)}
 						id={category.id}
 						aria-labelledby="search-for {category.id}"
-						class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 lg:border-transparent @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
+						class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 lg:border-neutral-200 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
 					>
 						{category.label}
 					</a>
 				</li>
 			{/each}
 		</ul>
+		<a href="#" class="text-placeholder ml-auto flex items-center gap-3 pr-8 text-sm font-semibold">
+			A – Ö
+			<IconChevronRight />
+		</a>
 	</nav>
-	<hr class="border-neutral mx-6 mb-6 hidden lg:flex 2xl:mx-8 2xl:mb-8" />
+	<hr class={['border-neutral mx-6 mb-6  2xl:mx-8 2xl:mb-8']} />
 	{#each featuredSearches as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,
@@ -269,7 +283,7 @@
 						resolve('/(app)/[[lang=lang]]/collections', { lang: undefined })
 					)}
 				>
-					Utforska särskilda samlingar
+					{page.data.t('home.collectionsReadMore')}
 				</a>
 			</div>
 		</div>
@@ -387,7 +401,7 @@
 	}
 
 	.shortcut {
-		@apply flex items-center justify-center gap-3 border border-transparent text-xs font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-sm text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors min-[25rem]:text-sm;
+		@apply flex items-center justify-center gap-3 border border-transparent text-xs font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-lg text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors min-[25rem]:text-sm;
 
 		&:hover {
 			@apply bg-black/15;
@@ -427,8 +441,7 @@
 		}
 	}
 
-	.hero-description {
-		// mask-image: linear-gradient(black 100%, transparent 100%);
-		//@apply min-h-9 items-center justify-center bg-black/10 px-3 pr-2 pl-3 text-sm font-medium tracking-tight whitespace-nowrap sm:tracking-normal;
+	.categories {
+		grid-template-columns: 1fr 5fr 1fr;
 	}
 </style>

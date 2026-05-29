@@ -3,12 +3,20 @@ export default {
 		pageHeadingTitle: 'Sök och hitta på',
 		pageHeadingTitleNoWrap: 'svenska bibliotek',
 		pageDescription1: 'Libris',
-		pageDescription2: 'är de svenska bibliotekens gemensamma katalog med över nio',
-		pageDescription3: 'miljoner titlar.',
-		pageDescriptionReadMore: 'Läs mer',
+		pageDescription2: 'är de svenska bibliotekens',
+		pageDescription3: 'gemensamma katalog med över nio miljoner titlar',
+		pageDescriptionReadMore1: 'Läs mer',
+		pageDescriptionReadMore2: 'om Libris',
+		heroDescription:
+			'Libris är de svenska bibliotekens gemensamma katalog med över nio miljoner titlar.',
+		sectionDescription1: 'Libris',
+		sectionDescription2:
+			'är de svenska bibliotekens gemensamma katalog med över nio miljoner titlar',
+
 		collectionsTitle: 'Särskilda samlingar',
 		collectionsDescription:
 			'Särskilda samlingar omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala bibliografier.',
+		collectionsReadMore: 'Utforska särskilda samlingar',
 		pageDescriptionTitle1: 'Libris är de svenska bibliotekens',
 		pageDescriptionTitle2: 'gemensamma katalog med över nio miljoner titlar.',
 		aboutTitle1: 'Libris är de svenska bibliotekens',
