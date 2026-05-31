@@ -3,8 +3,7 @@ export default {
 		pageHeadingTitle: 'Sök och hitta på',
 		pageHeadingTitleNoWrap: 'svenska bibliotek',
 		pageDescription1: 'Libris',
-		pageDescription2: 'är de svenska bibliotekens',
-		pageDescription3: 'gemensamma katalog med över nio miljoner titlar',
+		pageDescription2: 'är de svenska bibliotekens gemensamma katalog',
 		pageDescriptionReadMore1: 'Läs mer',
 		pageDescriptionReadMore2: 'om Libris',
 		heroDescription:

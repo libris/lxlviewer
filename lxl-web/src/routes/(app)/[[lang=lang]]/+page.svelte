@@ -181,28 +181,26 @@
 			</div>
 			<div class="hero-description relative mx-auto w-full">
 				<div
-					class="top absolute top-0 right-0 left-0 -z-10 mx-auto h-full w-2/3 mask-radial-from-30% mask-radial-to-100% mask-radial-at-[50%_75%] backdrop-blur-md 2xl:mask-radial-from-15%"
+					class="top absolute top-0 right-0 left-0 -z-10 mx-auto h-full w-2/3 mask-radial-from-30% mask-radial-to-100% mask-radial-at-[50%_75%] backdrop-blur-sm 2xl:mask-radial-from-15%"
 				></div>
 				<p
-					class="text-primary-50/75 mx-auto w-full max-w-xl px-3 py-4.5 pt-12 text-center sm:pb-6 2xl:pt-16 2xl:pb-7.5"
+					class="text-primary-50/75 mx-auto w-full px-3 py-4.5 pt-12 text-center leading-snug sm:pb-6 2xl:pt-16 2xl:pb-7.5"
 				>
-					<span class="font-serif sm:text-[1.0625rem] sm:leading-normal 2xl:text-xl">
-						{page.data.t('home.pageDescription1')}
+					<span class="text-sm sm:text-[1.0625rem] sm:leading-normal 2xl:text-lg">
+						<span>{page.data.t('home.pageDescription1')}</span>
 						{page.data.t('home.pageDescription2')}
-						<span class="whitespace-nowrap">
-							{page.data.t('home.pageDescription3')}
-							<span class="mx-0.75">{' · '}</span>
+						<span class="whitespace-nowrap"></span>
+						<span class="mx-0.75">{' · '}</span>
 
-							<a
-								class="hover:text-page focus:text-page font-sans text-sm underline hover:decoration-solid focus:decoration-solid lg:decoration-dotted 2xl:text-[0.9375rem]"
-								href={page.data.localizeHref(
-									resolve('/(app)/[[lang=lang]]/about', { lang: undefined })
-								)}
-							>
-								{page.data.t('home.pageDescriptionReadMore1')}
-								<span class="sr-only">{page.data.t('home.pageDescriptionReadMore2')}</span>
-							</a>
-						</span>
+						<a
+							class="text-page text-sm font-medium underline hover:decoration-solid focus:decoration-solid lg:decoration-dotted"
+							href={page.data.localizeHref(
+								resolve('/(app)/[[lang=lang]]/about', { lang: undefined })
+							)}
+						>
+							{page.data.t('home.pageDescriptionReadMore1')}
+							<span class="sr-only">{page.data.t('home.pageDescriptionReadMore2')}</span>
+						</a>
 					</span>
 				</p>
 			</div>
@@ -224,14 +222,6 @@
 		<ul
 			class="flex gap-1.5 text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1.5 lg:text-[0.9375rem] 2xl:text-base"
 		>
-			<li>
-				<a
-					href={page.data.localizeHref('/find')}
-					class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-14 border-neutral-300 px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 lg:border-neutral-200 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
-				>
-					{page.data.t('home.all')}
-				</a>
-			</li>
 			{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
 				<li>
 					<a
