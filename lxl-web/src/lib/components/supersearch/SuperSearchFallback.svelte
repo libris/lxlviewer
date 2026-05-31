@@ -62,7 +62,7 @@
 		aria-labelledby={ariaLabelledBy}
 		aria-label={ariaLabel}
 		bind:this={fallbackInputElement}
-		class="placeholder:text-placeholder w-full pl-3 text-base focus:outline-none sm:placeholder:text-base lg:pl-4 lg:text-[0.9375rem] 2xl:pl-4 2xl:text-base"
+		class="placeholder:text-placeholder w-full pl-3 text-base focus:outline-none lg:pl-4 2xl:pl-4"
 	/>
 	<button
 		type="reset"
