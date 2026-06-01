@@ -40,11 +40,6 @@ export default {
 							duration: '1 år'
 						},
 						{
-							name: 'dismissed-banner',
-							description: 'Används för att dölja bannern i sidhuvudet.',
-							duration: 'Nuvarande session'
-						},
-						{
 							name: 'techaro.lol-anubis-auth',
 							description:
 								'Sparas när din webbläsare klarat en säkerhetskontroll som skyddar mot automatiserade bottar. Den gör att du slipper genomgå kontrollen på nytt vid varje sidbesök.',

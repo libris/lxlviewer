@@ -41,12 +41,6 @@ export default {
 		openMenu: 'Open main menu',
 		closeMenu: 'Close menu'
 	},
-	banner: {
-		message: 'Welcome to the new Libris website!',
-		old: 'The old website',
-		message2: 'is still around a while longer',
-		dismiss: 'Hide info'
-	},
 	about: {
 		pageTitle: 'About Libris',
 		pageDescription:
