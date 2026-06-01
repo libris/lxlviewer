@@ -48,9 +48,6 @@
 					>
 				</li>
 				<li>
-					<a href="https://gamla.libris.kb.se/">{page.data.t('appMenu.oldSite')}</a>
-				</li>
-				<li>
 					<a href={env.PUBLIC_FJARRLAN_URL}>{page.data.t('appMenu.illSite')}</a>
 				</li>
 			</ul>

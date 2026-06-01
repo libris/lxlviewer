@@ -20,7 +20,6 @@ export default {
 		help: 'Help',
 		about: 'About Libris',
 		aboutBeta: 'FAQ',
-		oldSite: 'Old Libris site',
 		illSite: 'Libris Fjärrlån',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',

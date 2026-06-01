@@ -19,7 +19,6 @@ export default {
 		help: 'Hjälp',
 		about: 'Om Libris',
 		aboutBeta: 'Frågor och svar',
-		oldSite: 'Gamla Libris',
 		illSite: 'Libris fjärrlån',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
