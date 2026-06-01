@@ -18,7 +18,6 @@ declare global {
 			vocab: VocabUtil;
 			display: DisplayUtil;
 			userSettings: UserSettings;
-			dismissedBanner: boolean;
 			librisSession?: string;
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
@@ -34,7 +33,6 @@ declare global {
 		}
 		interface PageData extends LayoutData {
 			base: string;
-			dismissedBanner?: boolean;
 			librisSession?: string;
 			locale: string;
 			qualifierSuggestions: QualifierSuggestion2[];

@@ -100,10 +100,6 @@
 	}
 }
 
-body:has(.dismissed-banner) {
-	--banner-height: 0px;
-}
-
 @theme inline {
 	--breakpoint-3xl: 110rem; /* 1760px */
 

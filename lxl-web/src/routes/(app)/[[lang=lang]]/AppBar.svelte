@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Cookies from 'js-cookie';
 	import { env } from '$env/dynamic/public';
 	import { type Component, onDestroy, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
@@ -9,7 +8,6 @@
 	import { beforeNavigate } from '$app/navigation';
 	import { getSearchContext } from '$lib/contexts/search';
 	import AppSearch from './AppSearch.svelte';
-	import AppBanner from '$lib/components/AppBanner.svelte';
 	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 	import IconMenu from '~icons/bi/list';
@@ -29,7 +27,6 @@
 	let shadowSentinelElement: HTMLElement | undefined = $state();
 	let shadowObserver: IntersectionObserver | undefined = $state();
 	let expandedMenu = $state(page.url.hash === '#menu');
-	let dismissedBanner: boolean | undefined = $state(page.data.dismissedBanner);
 	let librisSession: string | undefined = $state(page.data.librisSession);
 
 	const otherLangCode = $derived(
@@ -59,13 +56,6 @@
 	);
 
 	const subset = $derived(page.data.subsetMapping);
-
-	function handleDismissBanner() {
-		Cookies.set('dismissed-banner', 'true', {
-			sameSite: 'strict'
-		});
-		dismissedBanner = true;
-	}
 
 	function showExpandedMenu() {
 		menuDialogElement?.show();
@@ -209,7 +199,6 @@
 <header
 	class={[
 		'app-bar @container sticky z-40 grid',
-		dismissedBanner && 'dismissed-banner',
 		isHomeRoute && 'home',
 		isHomeRoute && showBackground && 'bg-app-bar',
 		isHomeRoute && showShadow && 'shadow-app-bar',
@@ -217,9 +206,6 @@
 		showSearchInputOnMobile && 'with-search'
 	]}
 >
-	{#if !dismissedBanner}
-		<AppBanner ondismiss={handleDismissBanner} />
-	{/if}
 	<nav
 		class={['grid items-stretch', subset && 'with-subset']}
 		aria-label={`Libris ${page.data.t('appMenu.label')}`}
@@ -444,7 +430,7 @@
 </header>
 {#if isHomeRoute}
 	<figure
-		class={['home-intro-background absolute -z-20 w-full', dismissedBanner && 'without-banner']}
+		class={['home-intro-background absolute -z-20 w-full']}
 		bind:this={backgroundSentinelElement}
 	>
 		<!--
@@ -540,16 +526,6 @@
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
 		height: round(calc(61.08vh + var(--banner-height, 0)), 1px);
 		height: round(calc(61.08svh + var(--banner-height, 0)), 1px);
-
-		&.without-banner {
-			height: round(calc(61.08vh + 56px), 1px);
-			height: round(calc(61.08svh + 56px), 1px);
-
-			@variant sm {
-				height: round(calc(61.08vh + 36px), 1px);
-				height: round(calc(61.08svh + 36px), 1px);
-			}
-		}
 	}
 
 	.app-bar-shadow-trigger {
