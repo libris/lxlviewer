@@ -20,6 +20,7 @@
 		limit?: Record<string, number>;
 		keyed?: boolean;
 		suppressProperty?: string[];
+		isInsideLinkElement?: boolean;
 	}
 
 	let {
@@ -32,7 +33,8 @@
 		block = false,
 		limit = undefined,
 		keyed = true,
-		suppressProperty = undefined
+		suppressProperty = undefined,
+		isInsideLinkElement = false
 	}: Props = $props();
 
 	let key = $derived(keyed && data); // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what the root cause is...) – we should try to remove the need for this when updating to Svelte 5.
@@ -50,7 +52,7 @@
 	let delimitedShown = $state(false);
 
 	function getLink(value: ResourceData) {
-		if (allowLinks) {
+		if (!isInsideLinkElement && allowLinks) {
 			if (depth > 1 && hasStyle(data, 'link')) {
 				const id = getResourceId(value);
 				if (id) {
@@ -74,7 +76,7 @@
 	}
 
 	function getElementType(value: ResourceData) {
-		if (allowLinks && getLink(value)) {
+		if (!isInsideLinkElement && allowLinks && getLink(value)) {
 			return 'a';
 		}
 		if (block && isTopLevel()) {
@@ -169,6 +171,7 @@
 					{limit}
 					{keyed}
 					{suppressProperty}
+					{isInsideLinkElement}
 				/>
 			{/each}
 		{:else}
@@ -178,10 +181,11 @@
 				</span>
 			{/if}
 			{#if data[JsonLd.TYPE]}
+				{@const link = getLink(data)}
 				<svelte:element
 					this={getElementType(data)}
-					href={getLink(data)}
-					target={getLink(data) && hasStyle(data, 'ext-link') ? '_blank' : null}
+					href={link}
+					target={link && hasStyle(data, 'ext-link') ? '_blank' : null}
 					data-type={data[JsonLd.TYPE]}
 					class={getStyleClasses(data)}
 					use:conditionalPopover={data}
@@ -197,6 +201,7 @@
 						{limit}
 						{keyed}
 						{suppressProperty}
+						isInsideLinkElement={isInsideLinkElement || !!link}
 					/>
 				</svelte:element>
 			{:else if data[JsonLd.VALUE]}
@@ -210,6 +215,7 @@
 					{allowPopovers}
 					{keyed}
 					{suppressProperty}
+					{isInsideLinkElement}
 				/>
 			{:else if data[Fmt.DISPLAY]}
 				<DecoratedData
@@ -222,6 +228,7 @@
 					{allowPopovers}
 					{keyed}
 					{suppressProperty}
+					{isInsideLinkElement}
 				/>
 			{:else}
 				{@const [propertyName, propertyData] = getProperty(data)}
@@ -261,6 +268,7 @@
 								{allowPopovers}
 								{keyed}
 								{suppressProperty}
+								{isInsideLinkElement}
 							/>
 						{/if}
 						{#if delimited}
