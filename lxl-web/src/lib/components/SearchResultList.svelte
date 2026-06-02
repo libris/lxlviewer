@@ -18,7 +18,7 @@
 		lazyImages?: boolean;
 		fadeInImages?: boolean;
 		listElement?: HTMLUListElement | undefined;
-		suppressProperty?: string;
+		suppressProperty?: string[];
 	};
 
 	let {

@@ -95,7 +95,7 @@
 					<SearchResultToolbar {searchResult} />
 					<SearchResultInfo {searchResult} />
 					<ol aria-labelledby="search-results" class="flex flex-col">
-						{#each searchResult.items as item (item['@id'])}
+						{#each searchResult.items as item, index (item['@id'] + index)}
 							<li>
 								<SearchCard {item} />
 							</li>

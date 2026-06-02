@@ -17,6 +17,7 @@
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
+	import ResourceDigitalAccess from '$lib/components/ResourceDigitalAccess.svelte';
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
@@ -32,12 +33,12 @@
 	import BiChevronRight from '~icons/bi/chevron-right';
 
 	type Props = {
-		fnurgel: string;
-		uri: string;
+		fnurgel: string | undefined;
+		uri: string | null;
 		recordUri: string;
 		controlNumber: string;
 		uid?: string;
-		typeForIcon: string;
+		typeForIcon: string | undefined;
 		image: SecureImage;
 		decoratedData: {
 			headingTop: DisplayDecorated;
@@ -52,19 +53,21 @@
 			details: DisplayDecorated[];
 			token: DisplayDecorated;
 			itemInformation:
+				| []
 				| {
 						heldBy: DisplayDecorated;
 						items: DisplayDecorated[];
-				  }[]
-				| [];
+				  }[];
 		};
-		relations: Relation[];
+		relations: Relation[] | null;
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
 		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
 		searchResult?: ResourceSearchResult;
 		holdings: HoldingsData;
 		tableOfContents: TableOfContentsItem[];
 		adjecentSearchResults?: AdjecentSearchResult[];
+		workCard: SearchResultItem | null;
+		isWork: boolean;
 	};
 
 	const {
@@ -82,7 +85,9 @@
 		searchResult,
 		holdings,
 		tableOfContents,
-		adjecentSearchResults
+		adjecentSearchResults,
+		workCard,
+		isWork
 	}: Props = $props();
 
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
@@ -144,16 +149,16 @@
 	{/each}
 {/snippet}
 
-{#if adjecentSearchResults}
+{#if adjecentSearchResults && fnurgel}
 	<div class="border-b-neutral @container border-b">
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	</div>
 {/if}
-{#if page.data.workCard && !page.data.isWork}
+{#if workCard && !isWork}
 	<div
 		class="back-to-work border-b-neutral border-b hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
 	>
-		<Suggestion item={page.data.workCard}>
+		<Suggestion item={workCard}>
 			{#snippet leadingContent()}
 				<div class="mr-4 flex items-center gap-1 ease-in-out">
 					<IconArrowRight class="arrow rotate-180 transition-transform" />
@@ -256,6 +261,13 @@
 					<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
 					<ResourceHoldings {holdings} {instances} />
 				{/if}
+				<ResourceDigitalAccess
+					eodAvailable={holdings.eodAvailable}
+					overview2={decoratedData.overview2}
+					{instances}
+					{workCard}
+					{isWork}
+				/>
 				<div class="decorated-data-section decorated-spacious">
 					{#if !hasHoldingsBtn && decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
 						<div class="border-b-neutral mb-2 border-b"></div>
@@ -266,6 +278,13 @@
 								data={overview2}
 								showLabels={ShowLabelsOptions.DefaultOn}
 								allowFindLinks={true}
+								suppressProperty={[
+									'associatedMedia',
+									'isPrimaryTopicOf',
+									'hasReproduction',
+									'electronicLocator',
+									'marc:versionOfResource'
+								]}
 								block
 								limit={{ contribution: 5, hasVariant: 5 }}
 							/>
@@ -281,7 +300,7 @@
 						/>
 					</div>
 					<div class="flex items-center gap-2">
-						{#if decoratedData.summary.length || instances?.length > 1 || relations.length || decoratedData.resourceTableOfContents.length}
+						{#if decoratedData.summary.length || instances?.length > 1 || relations?.length || decoratedData.resourceTableOfContents.length}
 							<a
 								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
 								href="#{uidPrefix}details"
@@ -292,7 +311,7 @@
 								{page.data.t('resource.moreDetails')}
 							</a>
 						{/if}
-						{#if instances?.length === 1}
+						{#if instances?.length === 1 && fnurgel}
 							<a
 								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
 								href={getCiteLink(page.url, fnurgel)}
@@ -335,7 +354,7 @@
 					{/if}
 				</section>
 			{/if}
-			{#if relations.length}
+			{#if relations?.length}
 				<section>
 					<h2 id={`${uidPrefix}relations`} class="mb-6 text-xl font-medium">
 						{page.data.t('resource.relations')}
@@ -384,7 +403,7 @@
 									<SearchResultList
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
-										suppressProperty={relationItem.qualifierKey}
+										suppressProperty={[relationItem.qualifierKey]}
 									/>
 								</div>
 							</li>
@@ -660,6 +679,10 @@
 		}
 
 		& :global(.hasNote > *) {
+			display: block;
+		}
+
+		& :global(.test_list > *) {
 			display: block;
 		}
 

@@ -418,7 +418,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						onclick={() =>
 							alreadyAdded
 								? userSettings.removeLibrary(item.libraryId)
-								: userSettings.addLibrary(item.libraryId, item.displayStr)}
+								: userSettings.addLibrary(item.libraryId)}
 					>
 						{#if alreadyAdded}
 							<BiHeartFill aria-hidden="true" class="text-primary-600" />

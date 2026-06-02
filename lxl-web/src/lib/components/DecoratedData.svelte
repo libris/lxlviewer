@@ -19,7 +19,7 @@
 		block?: boolean;
 		limit?: Record<string, number>;
 		keyed?: boolean;
-		suppressProperty?: string;
+		suppressProperty?: string[];
 	}
 
 	let {
@@ -225,7 +225,7 @@
 				/>
 			{:else}
 				{@const [propertyName, propertyData] = getProperty(data)}
-				{#if propertyName && propertyData && (suppressProperty === undefined || suppressProperty !== propertyName)}
+				{#if propertyName && propertyData && (suppressProperty === undefined || !suppressProperty.includes(propertyName))}
 					<!-- don't use 'show more' when exceeding limit by one -->
 					{@const limitTo = limit?.[propertyName]}
 					{@const delimited =

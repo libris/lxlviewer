@@ -73,7 +73,10 @@ export default {
 		findLibrary: 'Search library or location',
 		findAndAdd: 'Find and add favourite libraries',
 		noResultsFor: 'No results for',
-		hitsFor: 'hits for'
+		hitsFor: 'hits for',
+		settingsLinkHeading: 'Permanent link for settings',
+		settingsLinkDescription:
+			'Paste the link into a browser to go to the Libris start page with your selected libraries.'
 	},
 	footer: {
 		logo: 'National Library of Sweden logotype',
@@ -122,8 +125,8 @@ export default {
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
 		'librissearch:itemHeldByOrg': 'Library',
-		bibliography: 'Bibliography',
-		contributor: 'Author/Contributor',
+		'librissearch:bibliography': 'Bibliography',
+		'librissearch:contributor': 'Author/Contributor',
 		language: 'Language',
 		subject: 'Subject',
 		yearPublished: 'Year published',
@@ -266,7 +269,9 @@ export default {
 		add: 'Add',
 		remove: 'Remove',
 		show: 'Show',
-		approx: 'approx.'
+		approx: 'approx.',
+		copyToClipboard: 'Copy to clipboard',
+		copied: 'Copied!'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',
@@ -296,7 +301,11 @@ export default {
 		showIn: 'Show metadata in',
 		librisCataloging: 'Libris cataloging',
 		librisOld: 'old Libris',
-		request: 'Request'
+		request: 'Request',
+		digitizationAvailable: 'Digitization available',
+		requestDigitization: 'Request digitization',
+		digitizationInfo:
+			'The book can, for a fee, be digitized and sent to you by email as a PDF file. The libraries that provide this service are listed below'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',
@@ -322,6 +331,7 @@ export default {
 		loanStatusFailed: 'Failed to get loan status',
 		available: 'Available',
 		unavailable: 'Not available',
+		onLoan: 'On loan',
 		map: 'map',
 		linkToLocal: 'Find',
 		linkToCatalog: 'Local library catalog',
@@ -351,8 +361,6 @@ export default {
 		createCitation: 'Create citation',
 		selectFormat: 'Select format',
 		allFormats: 'All formats',
-		copyToClipboard: 'Copy to clipboard',
-		copied: 'Copied!',
 		saveAsFile: 'Save as file'
 	},
 	horizontalList: {

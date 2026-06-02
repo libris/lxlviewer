@@ -1,7 +1,14 @@
 import Cookies from 'js-cookie';
-import { ExpandedState, type UserSettings as UserSettingsType } from '$lib/types/userSettings';
+import {
+	ExpandedState,
+	type MyLibrariesType,
+	SettingsParams,
+	type UserSettings as UserSettingsType
+} from '$lib/types/userSettings';
 import type { AvailableCitationFormat } from '$lib/types/citation';
 import type { LibraryId } from '$lib/types/holdings';
+import { stripPrefix } from '$lib/utils/stripPrefix';
+import { LIBRARY_URI_PREFIX } from '$lib/utils/holdings';
 
 export class UserSettings {
 	private settings: UserSettingsType = $state({});
@@ -35,17 +42,18 @@ export class UserSettings {
 		});
 	}
 
-	addLibrary(libraryId: LibraryId, label: string) {
+	addLibrary(libraryId: LibraryId) {
 		const myLibs = { ...this.settings?.myLibraries };
 		if (!myLibs[libraryId]) {
-			myLibs[libraryId] = label;
+			myLibs[libraryId] = '';
 			this.update('myLibraries', myLibs);
 		}
 	}
 
 	removeLibrary(libraryId: string) {
 		const myLibs = { ...this.settings?.myLibraries };
-		if (myLibs[libraryId]) {
+
+		if (Object.hasOwn(myLibs, libraryId)) {
 			delete myLibs[libraryId];
 			this.update('myLibraries', myLibs);
 		}
@@ -132,5 +140,40 @@ export class UserSettings {
 
 	get dismissedNewBanner() {
 		return this.settings.dismissedNewBanner;
+	}
+
+	toURLSearchParams(): URLSearchParams {
+		return toUrlSearchParams(this.settings);
+	}
+}
+
+function toUrlSearchParams(userSettings: UserSettingsType): URLSearchParams {
+	// eslint-disable-next-line svelte/prefer-svelte-reactivity
+	const p = new URLSearchParams();
+
+	const libs = Object.keys(userSettings.myLibraries || {})
+		.map((id) => stripPrefix(id, LIBRARY_URI_PREFIX))
+		.join(',');
+	p.set(SettingsParams.favouriteLibraries, libs);
+
+	p.sort();
+	return p;
+}
+
+export function updateSettings(
+	userSettings: UserSettingsType,
+	params: URLSearchParams,
+	isValidLibrary: (id: string) => boolean
+) {
+	const setMyLibraries = params.get(SettingsParams.favouriteLibraries);
+	if (setMyLibraries !== undefined && setMyLibraries !== null) {
+		const myLibraries: MyLibrariesType = {};
+		setMyLibraries
+			.split(',')
+			.map((s) => s.trim())
+			.map((s) => LIBRARY_URI_PREFIX + s)
+			.filter(isValidLibrary)
+			.forEach((l) => (myLibraries[l] = ''));
+		userSettings.myLibraries = myLibraries;
 	}
 }

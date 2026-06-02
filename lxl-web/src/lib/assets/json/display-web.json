@@ -157,6 +157,12 @@
 					"classLensDomain": "_MultipleTypes",
 					"showProperties": ["_find", "_identify", "_none", "_select", "_category"]
 				},
+				"_Value": {
+					"@type": "fresnel:Lens",
+					"@id": "_Value-chips",
+					"classLensDomain": "_Value",
+					"showProperties": ["label", "_find"]
+				},
 				"Cartographic": {
 					"@id": "Cartographic-chips",
 					"@type": "fresnel:Lens",
@@ -197,11 +203,28 @@
 						}
 					]
 				},
+				"ISSN": {
+					"@id": "ISSN-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "ISSN",
+					"showProperties": [
+						"rdf:type",
+						{
+							"alternateProperties": [
+								"value",
+								"marc:canceledIssn",
+								"marc:incorrectIssn",
+								"marc:issnL"
+							]
+						},
+						"_find"
+					]
+				},
 				"SeriesMembership": {
 					"@id": "SeriesMembership-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "SeriesMembership",
-					"showProperties": ["inSeries", "seriesStatement", "seriesEnumeration"]
+					"showProperties": ["inSeries", "seriesStatement", "seriesEnumeration", "_find"]
 				},
 				"Subdivision": {
 					"@id": "Subdivision-chips",
@@ -334,6 +357,7 @@
 								{ "subPropertyOf": "hasTitle", "range": "Title" },
 								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
 								"hasTitle",
+								"instanceOf",
 								"identifiedBy",
 								"label"
 							]
@@ -342,7 +366,8 @@
 						"marc:publicNote",
 						"appliesTo",
 						"identifiedBy",
-						"describedBy"
+						"describedBy",
+						"marc:displayText"
 					]
 				},
 				"Item": {
@@ -350,6 +375,12 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Item",
 					"showProperties": ["heldBy", "itemOf"]
+				},
+				"Record": {
+					"@id": "Record-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Record",
+					"showProperties": ["controlNumber", "_find"]
 				},
 				"Library": {
 					"@id": "Library-chips",
@@ -384,7 +415,8 @@
 						{ "alternateProperties": ["value", "marc:hiddenValue"] },
 						"typeNote",
 						"hasNote",
-						"uri"
+						"uri",
+						"_find"
 					]
 				},
 				"Agent": {
@@ -881,15 +913,31 @@
 						"electronicLocator",
 						"marc:versionOfResource",
 						"isPrimaryTopicOf",
+						"precededBy",
+						"succeededBy",
+						"precededInPartBy",
+						"succeededInPartBy",
 						"continues",
 						{ "inverseOf": "continuedBy" },
 						"continuedBy",
 						{ "inverseOf": "continues" },
+						"splitInto",
 						"continuesInPart",
+						"separatedFrom",
 						"continuedInPartBy",
+						"absorbed",
+						"absorbedBy",
+						"absorbedInPart",
+						"absorbedInPartBy",
+						"mergerOf",
+						"mergedToForm",
+						"replacedBy",
+						"replacementOf",
 						"relatedTo",
 						"otherPhysicalFormat",
-						"accompaniedBy"
+						"accompaniedBy",
+						"supplement",
+						{ "inverseOf": "reproductionOf" }
 					]
 				},
 				"Item": {
@@ -974,6 +1022,7 @@
 					"showProperties": [
 						"contribution",
 						"reproductionOf",
+						{ "inverseOf": "reproductionOf" },
 						"identifiedBy",
 						"indirectlyIdentifiedBy",
 						"hasTitle",
@@ -997,7 +1046,6 @@
 						"marc:versionOfResource",
 						"isPrimaryTopicOf",
 						"isIssueOf",
-						"relatedTo",
 						"hasNumberingOfSerials",
 						"hasNote",
 						"hasDimensions",
@@ -1012,7 +1060,30 @@
 						"genreForm",
 						"classification",
 						"accompaniedBy",
+						"precededBy",
+						"succeededBy",
+						"precededInPartBy",
+						"succeededInPartBy",
+						"continues",
+						{ "inverseOf": "continuedBy" },
+						"continuedBy",
+						{ "inverseOf": "continues" },
+						"splitInto",
+						"continuesInPart",
+						"separatedFrom",
+						"continuedInPartBy",
+						"absorbed",
+						"absorbedBy",
+						"absorbedInPart",
+						"absorbedInPartBy",
+						"mergerOf",
+						"mergedToForm",
+						"replacedBy",
+						"replacementOf",
+						"relatedTo",
 						"otherPhysicalFormat",
+						"replaces",
+						"supplement",
 						"seriesMembership",
 						"intendedAudience",
 						"associatedMedia",
@@ -1036,6 +1107,7 @@
 					"NOTE": "Avoiding SystemNumber e.g. (BOKR)9789198057300 with the identifiedBy below",
 					"showProperties": [
 						"bibliography",
+						"hasNote",
 						{
 							"alternateProperties": [
 								{ "subPropertyOf": "identifiedBy", "range": "LibrisIIINumber" }
@@ -1334,7 +1406,7 @@
 			"@id": "Identifier-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Identifier"],
-			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
+			"fresnel:resourceStyle": ["findToTop()", "ext-link", "uriToId()"]
 		},
 		"ShelfMark-format": {
 			"TODO": "This is an override for displayType() in Identifier. Identifier should use rdf:type in showProperties instead",
@@ -1344,7 +1416,7 @@
 			"fresnel:resourceStyle": []
 		},
 		"_find-format": {
-			"@id": "contribution-format",
+			"@id": "_find-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["_find"],
 			"fresnel:propertyFormat": {
@@ -1441,6 +1513,18 @@
 				"fresnel:contentBefore": " · ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"SeriesMembership-format": {
+			"@id": "SeriesMembership-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["SeriesMembership"],
+			"fresnel:resourceStyle": ["findToTop()"]
+		},
+		"_Value-format": {
+			"@id": "_Value-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["_Value"],
+			"fresnel:resourceStyle": ["findToTop()"]
 		},
 		"needs-label-format": {
 			"@id": "Subject-format",
@@ -1670,6 +1754,12 @@
 			"fresnel:classFormatDomain": ["Document"],
 			"fresnel:resourceStyle": ["ext-link", "uriToId()", "block"]
 		},
+		"Record-format": {
+			"@id": "Record-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Record"],
+			"fresnel:resourceStyle": ["findToTop()"]
+		},
 		"MediaObject-publicNote-format": {
 			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
 			"@id": "MediaObject-publicNote-format",
@@ -1699,6 +1789,16 @@
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
+			}
+		},
+		"Instance-marc:displayText-format": {
+			"@id": "Instance-marc:displayText-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Instance"],
+			"fresnel:propertyFormatDomain": ["marc:displayText"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentAfter": ")"
 			}
 		},
 		"electronicLocator-format": {
@@ -1889,8 +1989,41 @@
 		"hasReproduction-format": {
 			"@id": "hasReproduction-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["hasReproduction", "hasTitle"],
+			"fresnel:propertyFormatDomain": ["hasReproduction"],
 			"fresnel:propertyStyle": ["block"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
+		},
+		"work-instance-list-format": {
+			"@id": "work-instance-list-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": [
+				"precededBy",
+				"succeededBy",
+				"precededInPartBy",
+				"succeededInPartBy",
+				"continues",
+				"continuedBy",
+				"splitInto",
+				"continuesInPart",
+				"separatedFrom",
+				"continuedInPartBy",
+				"absorbed",
+				"absorbedBy",
+				"absorbedInPart",
+				"absorbedInPartBy",
+				"mergerOf",
+				"mergedToForm",
+				"replacedBy",
+				"replacementOf",
+				"relatedTo",
+				"otherPhysicalFormat",
+				"replaces",
+				"supplement",
+				"hasReproduction"
+			],
+			"fresnel:propertyStyle": ["test_list"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ""
 			}

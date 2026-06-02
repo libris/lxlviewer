@@ -112,9 +112,9 @@
 							>
 								<BiCopy />
 								{#if wasCopied[format.key]}
-									{page.data.t('citations.copied')}
+									{page.data.t('general.copied')}
 								{:else}
-									{page.data.t('citations.copyToClipboard')}
+									{page.data.t('general.copyToClipboard')}
 								{/if}
 							</button>
 							{#if isFileFormat && id}

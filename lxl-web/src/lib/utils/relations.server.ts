@@ -50,7 +50,7 @@ export async function getRelations(
 			const params = p.view[JsonLd.ID].split('?')[1];
 			const q = new URLSearchParams(params).get('_q') as string;
 			const predicateIri = p.predicate[JsonLd.ID] as string;
-			const qualifierKey = getUriSlug(predicateIri);
+			const qualifierKey = getUriSlug(predicateIri) as string;
 			const label = capitalize(vocabUtil.getLabelByLang(predicateIri, locale) || qualifierKey);
 			const preferLike: boolean = getAtPath(p.predicate, [Base.category, '*', JsonLd.ID])
 				.map(getUriSlug)

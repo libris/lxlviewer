@@ -1,6 +1,7 @@
 import type { AvailableCitationFormat } from '$lib/types/citation';
 import type { LibraryId } from './holdings';
 
+// label string is obsolete and not used
 export type MyLibrariesType = Record<LibraryId, string>;
 
 export enum ExpandedState {
@@ -31,4 +32,8 @@ export type UserSettings = {
 
 export enum DebugFlags {
 	ES_SCORE = 'esScore'
+}
+
+export enum SettingsParams {
+	favouriteLibraries = 'favouriteLibraries'
 }

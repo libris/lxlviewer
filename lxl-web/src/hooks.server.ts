@@ -1,16 +1,22 @@
 import fs from 'fs';
-import { redirect, type HandleServerError, type RequestEvent } from '@sveltejs/kit';
+import { type HandleServerError, redirect, type RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
 import type { QualifierSuggestion2 } from '$lib/types/search';
 import type { Site } from '$lib/types/site';
-import { DebugFlags, type MyLibrariesType, type UserSettings } from '$lib/types/userSettings';
+import {
+	DebugFlags,
+	type MyLibrariesType,
+	SettingsParams,
+	type UserSettings
+} from '$lib/types/userSettings';
 import displayWeb from '$lib/assets/json/display-web.json';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
-import { startRefreshLibraries } from '$lib/utils/getLibraries.server';
+import { getLibrary, getOrgMembers, startRefreshLibraries } from '$lib/utils/getLibraries.server';
 import { getSubsetMapping } from '$lib/utils/subsetCache.server';
 import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions.server';
+import { updateSettings } from '$lib/utils/userSettings.svelte';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
@@ -51,6 +57,7 @@ export const handle = async ({ event, resolve }) => {
 		}
 	}
 	let cookieEdit = false;
+	let redirectHome = false;
 
 	if (event.url.searchParams.has('_debug')) {
 		let flags = event.url.searchParams
@@ -72,6 +79,17 @@ export const handle = async ({ event, resolve }) => {
 		cookieEdit = true;
 	}
 
+	if (Object.values(SettingsParams).some((p) => event.url.searchParams.has(p))) {
+		updateSettings(
+			userSettings,
+			event.url.searchParams,
+			(id) => !!(getLibrary(id) || getOrgMembers(id).length > 0)
+		);
+
+		cookieEdit = true;
+		redirectHome = true;
+	}
+
 	if (cookieEdit) {
 		event.cookies.set('userSettings', JSON.stringify(userSettings), {
 			maxAge: 60 * 60 * 24 * 365, // 365 days
@@ -81,6 +99,7 @@ export const handle = async ({ event, resolve }) => {
 			path: '/'
 		});
 	}
+
 	event.locals.userSettings = userSettings;
 
 	const dismissedBannerCookie = event.cookies.get('dismissed-banner');
@@ -153,6 +172,12 @@ export const handle = async ({ event, resolve }) => {
 	event.locals.subsetMapping = subsetMapping;
 
 	event.locals.qualifierSuggestionsByLocale = qualifierSuggestionsByLocale;
+
+	if (redirectHome) {
+		const path = lang === defaultLocale ? '/' : '/' + lang;
+		const query = _r ? '?_r=' + _r : '';
+		redirect(302, path + query);
+	}
 
 	return resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)

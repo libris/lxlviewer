@@ -3,8 +3,8 @@ import { UserSettings } from './userSettings.svelte';
 
 const s = {
 	myLibraries: {
-		'https://libris.kb.se/library/Nodi': 'Ale bibliotek',
-		'https://libris.kb.se/library/org/BIN': 'Biblioteken i Norrbotten'
+		'https://libris.kb.se/library/Nodi': '',
+		'https://libris.kb.se/library/org/BIN': ''
 	},
 	facetSort: {
 		'rdf:type': 'hits.asc',
@@ -23,11 +23,11 @@ describe('userSettings util', () => {
 	});
 
 	it('can add a library', () => {
-		userSettings.addLibrary('https://libris.kb.se/library/Bole', 'Bollebygds bibliotek');
+		userSettings.addLibrary('https://libris.kb.se/library/Bole');
 		expect(userSettings.myLibraries).toStrictEqual({
-			'https://libris.kb.se/library/Bole': 'Bollebygds bibliotek',
-			'https://libris.kb.se/library/Nodi': 'Ale bibliotek',
-			'https://libris.kb.se/library/org/BIN': 'Biblioteken i Norrbotten'
+			'https://libris.kb.se/library/Bole': '',
+			'https://libris.kb.se/library/Nodi': '',
+			'https://libris.kb.se/library/org/BIN': ''
 		});
 	});
 
@@ -35,7 +35,7 @@ describe('userSettings util', () => {
 		userSettings.removeLibrary('https://libris.kb.se/library/Bole');
 		userSettings.removeLibrary('https://libris.kb.se/library/Nodi');
 		expect(userSettings.myLibraries).toStrictEqual({
-			'https://libris.kb.se/library/org/BIN': 'Biblioteken i Norrbotten'
+			'https://libris.kb.se/library/org/BIN': ''
 		});
 	});
 

@@ -622,9 +622,26 @@ function getMediaLinks(
 ): DisplayDecorated | null {
 	const _item = { ...item };
 	copyMediaLinksToWork(_item);
+
+	// remove digipic
+	if (_item.isPrimaryTopicOf && Array.isArray(_item.isPrimaryTopicOf)) {
+		_item.isPrimaryTopicOf = _item.isPrimaryTopicOf.filter((i) => {
+			const note = i?.cataloguersNote;
+			if (Array.isArray(note)) {
+				return !note.includes('digipic');
+			}
+			return note !== 'digipic';
+		});
+	}
+
 	const formatted = displayUtil.lensAndFormat(_item, LensType.WebOverview2, locale);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [mediaLinks, _] = pickProperty(formatted, ['associatedMedia']);
+	const [mediaLinks, _] = pickProperty(formatted, [
+		'associatedMedia',
+		'isPrimaryTopicOf',
+		'electronicLocator',
+		'marc:versionOfResource'
+	]);
 	if (mediaLinks._display?.length) {
 		return mediaLinks;
 	}
