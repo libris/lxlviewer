@@ -2,36 +2,30 @@
 	import { env } from '$env/dynamic/public';
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { JsonLd } from '$lib/types/xl';
 	import type { HoldingsData } from '$lib/types/holdings';
-	import type { SearchResultItem } from '$lib/types/search';
-	import type { ResourceData } from '$lib/types/resourceData';
-	import { LxlLens } from '$lib/types/display';
 	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 	import { getHoldingsLink, getLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 
 	interface Props {
-		instances: SearchResultItem[] | ResourceData[];
 		holdings: HoldingsData;
 	}
 
-	let { holdings, instances }: Props = $props();
+	let { holdings }: Props = $props();
 	const { myLibraries } = getUserSettings();
 	const subsetLibraries = $derived(
 		getLibraryIdsFromMapping([page.data.subsetMapping]) || undefined
 	);
 
-	function getLocalizedType(type: string) {
-		const found = instances.find((instanceItem) => type === instanceItem[JsonLd.TYPE]);
-
-		// instance can be a formatted search result
-		return found?._label ?? found?.[LxlLens.CardHeading]?._label ?? type;
-	}
+	const sortedKeys = $derived(
+		Object.keys(holdings.byType).sort(
+			(a, b) => holdings.byType[b].length - holdings.byType[a].length
+		)
+	);
 </script>
 
 <ul class="@container my-4 flex flex-wrap gap-2 print:hidden">
-	{#each Object.keys(holdings.byType) as type (type)}
+	{#each sortedKeys as type (type)}
 		{@const myLibsHoldingByType = getLibsFromHoldings(
 			myLibraries,
 			holdings.byType[type],
@@ -61,7 +55,7 @@
 						<MyLibsHoldingIndicator libraries={myLibsHoldingByType} />
 					</div>
 				{/if}
-				<span class="text-nowrap">{getLocalizedType(type)}</span>
+				<span class="text-nowrap">{type}</span>
 				<span class="truncate font-normal opacity-90">
 					{' · '}
 					{#if subsetLibraries && subsetHoldingByType}

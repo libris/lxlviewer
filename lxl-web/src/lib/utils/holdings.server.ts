@@ -27,10 +27,9 @@ type BibDbObj = {
 
 export function getHoldersByType(holdingsByType: HoldingsByType): HoldersByType {
 	return Object.fromEntries(
-		Object.entries(holdingsByType).map(([type, holdings]) => {
-			const heldBys = holdings.map((h) => h.heldBy[JsonLd.ID]);
-			return [type, Array.from(new Set(heldBys))];
-		})
+		Object.entries(holdingsByType)
+			.filter(([, holdings]) => holdings.length > 0)
+			.map(([type, holdings]) => [type, [...new Set(holdings.map((h) => h.heldBy[JsonLd.ID]))]])
 	);
 }
 

@@ -91,7 +91,7 @@
 	const tabsByType: Tab[] | null = $derived.by(() => {
 		if (getSelectionKind(holdingParam) === 'instance') return null;
 
-		const typeKeys = Object.keys(byType);
+		const typeKeys = Object.keys(byType).sort((a, b) => byType[b].length - byType[a].length);
 		if (typeKeys.length <= 1) return null;
 
 		const tabs: Tab[] = typeKeys.map((type) => {
