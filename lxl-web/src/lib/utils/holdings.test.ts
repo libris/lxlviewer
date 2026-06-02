@@ -11,10 +11,13 @@ const workCenteredMainEntity = centerOnWork(mainEntity);
 describe('getBibIdsByInstanceId', () => {
 	it('Returns a correctly mapped object (bibId, type & holders)', () => {
 		const publicationStr = 'Natur och kultur, 2018';
-		const DisplayUtil = { lensAndFormat: () => publicationStr };
+		const displayUtil = { lensAndFormat: () => publicationStr };
+		const vocabUtil = { getDefinition: () => '' };
 
 		// @ts-expect-error - Display is mocked
-		expect(getBibIdsByInstanceId(workCenteredMainEntity, DisplayUtil, record, 'sv')).toStrictEqual({
+		expect(
+			getBibIdsByInstanceId(workCenteredMainEntity, vocabUtil, displayUtil, record, 'sv')
+		).toStrictEqual({
 			'0h96fs3b0c49qkt': {
 				bibId: '7654300',
 				'@type': 'PhysicalResource',
@@ -22,6 +25,7 @@ describe('getBibIdsByInstanceId', () => {
 				isbn: ['9176423484'],
 				issn: [],
 				publicationStr: publicationStr,
+				selectType: publicationStr.split(',')[0],
 				titleStr: publicationStr,
 				items: []
 			}
@@ -32,9 +36,13 @@ describe('getBibIdsByInstanceId', () => {
 describe('getLibsFromHoldings', () => {
 	it('Returns favourite library present in the holdings list', () => {
 		const userSettings = new UserSettings({});
+		const vocabUtil = { getDefinition: () => '' };
+		const displayUtil = { lensAndFormat: () => '' };
 		userSettings.addLibrary('https://libris.kb.se/library/S');
 		userSettings.addLibrary('https://libris.kb.se/library/foo');
-		const byType = getHoldersByType(getHoldingsByType(workCenteredMainEntity));
+		const byType = getHoldersByType(
+			getHoldingsByType(workCenteredMainEntity, vocabUtil, displayUtil, 'sv')
+		);
 
 		expect(getLibsFromHoldings(userSettings.myLibraries, byType)).toStrictEqual([
 			'https://libris.kb.se/library/S'
