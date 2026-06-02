@@ -107,6 +107,9 @@
 	[role='tablist'] {
 		/* --line-position: 6px; */
 		height: var(--toolbar-height);
+		white-space: nowrap;
+		overflow-y: scroll;
+		scrollbar-width: none;
 
 		& .tab-wrapper {
 			&::after {

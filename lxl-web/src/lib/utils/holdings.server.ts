@@ -17,7 +17,8 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getLibrary } from '$lib/utils/getLibraries.server';
 import type { LocaleCode } from '$lib/i18n/locales';
 import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-import { COMPONENT_PART } from '$lib/utils/getTypeLike.server';
+import getTypeLike, { COMPONENT_PART } from '$lib/utils/getTypeLike.server';
+import { selectTypeStr } from '$lib/utils/search.server';
 
 type BibDbObj = {
 	[JsonLd.TYPE]: string;
@@ -33,7 +34,12 @@ export function getHoldersByType(holdingsByType: HoldingsByType): HoldersByType 
 	);
 }
 
-export function getHoldingsByType(mainEntity: HoldingMainEntity | HoldingInstance): HoldingsByType {
+export function getHoldingsByType(
+	mainEntity: HoldingMainEntity | HoldingInstance,
+	vocabUtil: VocabUtil,
+	displayUtil: DisplayUtil,
+	locale: LocaleCode
+): HoldingsByType {
 	let instances = null;
 	if (!mainEntity[JsonLd.REVERSE]) return {};
 	if ('instanceOf' in mainEntity[JsonLd.REVERSE]) {
@@ -54,13 +60,14 @@ export function getHoldingsByType(mainEntity: HoldingMainEntity | HoldingInstanc
 			continue;
 		}
 
-		const type = instance[JsonLd.TYPE];
+		const typeLike = getTypeLike(instance, vocabUtil);
+		const selectStr = selectTypeStr(typeLike, displayUtil, locale).split(',')[0];
 		const items = instance[JsonLd.REVERSE]?.itemOf ?? [];
 
-		if (!result[type]) {
-			result[type] = [];
+		if (!result[selectStr]) {
+			result[selectStr] = [];
 		}
-		result[type].push(...items);
+		result[selectStr].push(...items);
 	}
 	return result;
 }
@@ -103,6 +110,7 @@ export function getHoldingsByInstanceId(
 
 export function getBibIdsByInstanceId(
 	mainEntity: HoldingMainEntity,
+	vocabUtil: VocabUtil,
 	displayUtil: DisplayUtil,
 	record,
 	locale: LocaleCode
@@ -116,6 +124,8 @@ export function getBibIdsByInstanceId(
 
 		const type = instance[JsonLd.TYPE];
 		// const holders = instance[JsonLd.REVERSE]?.itemOf?.map(item => item?.heldBy?.[JsonLd.ID]) ?? [];
+		const typeLike = getTypeLike(instance, vocabUtil);
+		const selectType = selectTypeStr(typeLike, displayUtil, locale).split(',')[0];
 
 		const publication = instance.publication?.[0];
 		const publicationStr: string = publication
@@ -138,6 +148,7 @@ export function getBibIdsByInstanceId(
 		result[id] = {
 			bibId,
 			[JsonLd.TYPE]: type,
+			selectType,
 			onr,
 			isbn,
 			issn,
@@ -152,7 +163,7 @@ export function getBibIdsByInstanceId(
 /**
  * Get full library data for holders
  */
-export function getHoldingLibraries(byType: HoldersByType | HoldersByInstanceId) {
+export function getHoldingLibraries(byType: HoldersByType) {
 	const holdingLibraries: Record<string, LibraryWithLinks | null> = {};
 	for (const type of Object.values(byType)) {
 		for (const id of type) {

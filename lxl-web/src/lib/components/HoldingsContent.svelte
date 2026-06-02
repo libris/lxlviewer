@@ -44,7 +44,7 @@
 
 			case 'type':
 				return Object.entries(bibIdData)
-					.filter(([, data]) => data[JsonLd.TYPE] === selection)
+					.filter(([, data]) => data?.selectType === selection)
 					.map(([id]) => id);
 
 			case 'work':
@@ -100,7 +100,7 @@
 
 			return {
 				id: `holdings-type-${type}`,
-				label: page.data.t(`holdings.${type}`),
+				label: type,
 				content: holdingPanel,
 				active: type === holdingParam,
 				contentData: holders
@@ -130,7 +130,7 @@
 	{@render card?.()}
 
 	{#if tabsByType}
-		<TabList ariaLabel={page.data.t('resource.editions')} tabs={tabsByType} />
+		<TabList ariaLabel={page.data.t('holdings.formats')} tabs={tabsByType} />
 	{:else}
 		<!-- no tabs view -->
 		{@const instanceIds = getVisibleInstanceIds(holdingParam)}

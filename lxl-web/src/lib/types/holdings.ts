@@ -95,6 +95,7 @@ export type UnknownLibrary = {
 export type BibIdObj = {
 	bibId: string;
 	[JsonLd.TYPE]: string;
+	selectType: string;
 	onr: string | null;
 	isbn: string[];
 	issn: string[];

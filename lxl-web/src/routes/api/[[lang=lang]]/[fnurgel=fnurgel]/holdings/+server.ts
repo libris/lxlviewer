@@ -14,6 +14,7 @@ import { centerOnWork } from '$lib/utils/centerOnWork.server';
 
 export async function GET({ params, locals }) {
 	const displayUtil = locals.display;
+	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params.lang);
 	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
 		headers: { Accept: 'application/ld+json' }
@@ -34,14 +35,15 @@ export async function GET({ params, locals }) {
 	}
 	const resource = await resourceRes.json();
 	const mainEntity = centerOnWork(resource['mainEntity']) as HoldingMainEntity;
-	const holdingsByType = getHoldingsByType(mainEntity);
+	const holdingsByType = getHoldingsByType(mainEntity, vocabUtil, displayUtil, locale);
 	const byType = getHoldersByType(holdingsByType);
 
 	const holdings: HoldingsData = {
 		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil, locale),
 		byType,
-		bibIdData: getBibIdsByInstanceId(mainEntity, displayUtil, resource, locale),
-		holdingLibraries: getHoldingLibraries(byType)
+		bibIdData: getBibIdsByInstanceId(mainEntity, vocabUtil, displayUtil, resource, locale),
+		holdingLibraries: getHoldingLibraries(byType),
+		eodAvailable: null
 	};
 
 	return json(holdings, {
