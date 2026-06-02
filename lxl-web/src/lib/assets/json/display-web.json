@@ -457,7 +457,8 @@
 						"hasPart",
 						"marc:parallelTitle",
 						"coverage",
-						"marc:formSubheading"
+						"marc:formSubheading",
+						"_find"
 					]
 				},
 				"VariantTitle": {
@@ -1721,6 +1722,12 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Role"],
 			"fresnel:resourceStyle": []
+		},
+		"Title-format": {
+			"@id": "Title-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Title"],
+			"fresnel:resourceStyle": ["findToTop()"]
 		},
 		"KeyTitle-format": {
 			"@id": "Role-format",
