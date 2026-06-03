@@ -73,10 +73,6 @@
 			currentPage: page.route.id === '/(app)/[[lang=lang]]/help/search'
 		},
 		{
-			href: 'https://gamla.libris.kb.se/',
-			label: page.data.t('appMenu.oldSite')
-		},
-		{
 			href: 'https://www.kb.se/om-oss/kontakta-oss#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3',
 			label: page.data.t('footer.customerSupport')
 		},

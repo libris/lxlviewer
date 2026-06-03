@@ -102,11 +102,6 @@ export const handle = async ({ event, resolve }) => {
 
 	event.locals.userSettings = userSettings;
 
-	const dismissedBannerCookie = event.cookies.get('dismissed-banner');
-	if (dismissedBannerCookie) {
-		event.locals.dismissedBanner = JSON.parse(dismissedBannerCookie);
-	}
-
 	// fjärrlån
 	const librisSessionCookie = event.cookies.get('LIBRIS_SESSION');
 	if (librisSessionCookie) {
