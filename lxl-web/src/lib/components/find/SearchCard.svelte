@@ -240,8 +240,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		<div class="card-content grid">
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
-					<TypeIcon type={item.typeForIcon} class="text-2xs mb-px inline" />
 					{#if item.typeStr && !hideType}
+						<TypeIcon type={item.typeForIcon} class="text-2xs mb-px inline" />
 						<span class="font-medium">
 							{item.typeStr}
 						</span>
@@ -330,6 +330,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			{#if item.selectTypeStr}
 				<span class="text-body font-medium">{item.selectTypeStr}</span>
 				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
+			{/if}
+			{#if item.selectTypeStr && item[LensType.WebCardFooter]?._display?.length}
 				<span class="hidden whitespace-pre-wrap md:inline">{' · '}</span>
 			{/if}
 			<span>
