@@ -19,7 +19,6 @@ export default {
 		help: 'Hjälp',
 		about: 'Om Libris',
 		aboutBeta: 'Frågor och svar',
-		oldSite: 'Gamla Libris',
 		illSite: 'Libris fjärrlån',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
@@ -40,12 +39,6 @@ export default {
 		searchSubsetPlaceholder: 'Sök inom',
 		openMenu: 'Öppna huvudmeny',
 		closeMenu: 'Stäng meny'
-	},
-	banner: {
-		message: 'Välkommen till en ny söktjänst för Libris!',
-		old: 'Den gamla tjänsten',
-		message2: 'finns kvar ett tag till',
-		dismiss: 'Dölj informationen'
 	},
 	about: {
 		pageTitle: 'Om Libris',

@@ -77,7 +77,7 @@
 	--app-bar-height: 56px;
 	--toolbar-height: 48px;
 	--search-input-height: 44px;
-	--banner-height: 56px;
+	--banner-height: 0px;
 
 	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
 	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);
@@ -87,10 +87,6 @@
 	--search-grid-template-columns: auto 1fr 1fr;
 	--search-gap: 0 calc(var(--spacing) * 3);
 
-	@variant sm {
-		--banner-height: 36px;
-	}
-
 	@variant lg {
 		--app-bar-height: 76px;
 		--search-input-height: 48px;
@@ -98,10 +94,6 @@
 		--search-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
 		/* --search-grid-template-rows: var(--app-bar-height); */
 	}
-}
-
-body:has(.dismissed-banner) {
-	--banner-height: 0px;
 }
 
 @theme inline {
