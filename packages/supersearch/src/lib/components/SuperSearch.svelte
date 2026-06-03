@@ -1,18 +1,17 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
-	import { page } from '$app/state';
-	import { pushState, beforeNavigate } from '$app/navigation';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
 		type ViewUpdateCodeMirrorEvent,
 		type Selection
 	} from '$lib/components/CodeMirror.svelte';
+	import { isEqualState } from '$lib/utils/isEqualState.js';
 	import { sendMessage } from '$lib/utils/sendMessage.js';
 	import type { ChangeSuperSearchEvent, ViewUpdateSuperSearchEvent } from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
-	import { Compartment, type Extension } from '@codemirror/state';
+	import { Compartment, type EditorState, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import preventEnterKeyHandling from '$lib/extensions/preventEnterKeyHandling.js';
 	import arrowKeyCursorHandling from '$lib/extensions/arrowKeyCursorHandling.js';
@@ -27,7 +26,9 @@
 		ShowExpandedSearchOptions,
 		DebouncedWaitFunction,
 		ExpandEvent,
-		UserEvent
+		UserEvent,
+		CollapseEvent,
+		HideExpandedSearchParams
 	} from '$lib/types/superSearch.js';
 	import { history as historyExtension, standardKeymap, historyKeymap } from '@codemirror/commands';
 
@@ -92,7 +93,6 @@
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		wrappingArrowKeyNavigation?: boolean;
-		shallowRouting?: boolean;
 		debouncedWait?: number;
 		getDebouncedWait?: DebouncedWaitFunction;
 		selection?: Selection;
@@ -100,9 +100,11 @@
 		hasData?: boolean;
 		loadMoreLabel?: string;
 		onexpand?: (event: ExpandEvent) => void;
-		oncollapse?: () => void;
+		oncollapse?: (event: CollapseEvent) => void;
 		onchange?: (event: ChangeSuperSearchEvent) => void;
 		onexpandedviewupdate?: (event: ViewUpdateSuperSearchEvent) => void;
+		oninterceptexpandedclick?: (href: string, event: MouseEvent) => void;
+		oninterceptexpandedsubmit?: (href: string) => void;
 	}
 
 	let {
@@ -132,7 +134,6 @@
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		wrappingArrowKeyNavigation = false,
-		shallowRouting = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -145,7 +146,9 @@
 		onexpand,
 		oncollapse,
 		onchange,
-		onexpandedviewupdate
+		onexpandedviewupdate,
+		oninterceptexpandedclick,
+		oninterceptexpandedsubmit
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -155,8 +158,6 @@
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(-1);
-	let interceptedLinkElement: HTMLLinkElement | undefined = $state(undefined);
-	let submitLinkElement: HTMLAnchorElement | undefined = $state(undefined);
 
 	let prevValue: string = value;
 
@@ -192,12 +193,6 @@
 			expandedEditorView?.dispatch(newDataMessage);
 			collapsedEditorView?.dispatch(newDataMessage);
 			prevSearchDataId = search.data?.['@id'];
-		}
-	});
-
-	beforeNavigate((navigation) => {
-		if (navigation.to) {
-			hideExpandedSearch();
 		}
 	});
 
@@ -268,9 +263,7 @@
 		})
 	);
 
-	/* svelte-ignore state_referenced_locally */
 	const initialCollapsedContentAttributes = collapsedContentAttributes; // initial value is needed to prevent unnecessary updates when using compartments
-	// svelte-ignore state_referenced_locally
 	const initialExpandedContentAttributes = expandedContentAttributes;
 
 	let collapsedExtensions = $derived([
@@ -311,11 +304,7 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (
-			!dialog?.open &&
-			event.userEvent !== 'input.complete' &&
-			value.trim() !== event.value.trim()
-		) {
+		if (!dialog?.open && event.userEvent === 'input.type' && value.trim() !== event.value.trim()) {
 			showExpandedSearch();
 		}
 		value = event.value;
@@ -343,6 +332,19 @@
 		onexpandedviewupdate?.(event);
 	}
 
+	export function getValueLength() {
+		return value.length;
+	}
+
+	export function setEditorState(newEditorState: EditorState) {
+		if (!isEqualState(newEditorState, expandedEditorView?.state)) {
+			expandedEditorView?.setState(newEditorState);
+		}
+		if (!isEqualState(newEditorState, collapsedEditorView?.state)) {
+			collapsedEditorView?.setState(newEditorState);
+		}
+	}
+
 	export function dispatchChange({
 		change,
 		selection,
@@ -359,39 +361,37 @@
 		};
 		userEvent?: UserEvent;
 	}) {
-		collapsedEditorView?.dispatch({
-			changes: change,
-			selection,
-			userEvent
-		});
-	}
-
-	async function handlePopState(event: PopStateEvent) {
-		interceptedLinkElement?.click();
-		if (dialog?.open) {
-			hideExpandedSearch();
-		} else if (event.state['sveltekit:states']?.expandedSuperSearch) {
-			showExpandedSearch({ focusRow: 0, preventPushState: true }); // a little bit hacky way to ensure the dialog doesn't flicker when navigating forward
+		if (expanded) {
+			expandedEditorView?.dispatch({
+				changes: change,
+				selection,
+				userEvent
+			});
+			if (expandedEditorView?.state) {
+				setEditorState(expandedEditorView.state);
+			}
+		} else {
+			collapsedEditorView?.dispatch({
+				changes: change,
+				selection,
+				userEvent
+			});
+		}
+		if (collapsedEditorView?.state) {
+			setEditorState(collapsedEditorView.state);
 		}
 	}
 
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
-		if (!expanded) {
-			expandedEditorView?.dispatch({
-				selection:
-					options?.cursorAtEnd && collapsedEditorView
-						? { anchor: collapsedEditorView?.state.doc.length }
-						: collapsedEditorView?.state.selection.main
-			});
-			dialog?.showModal();
-			expanded = true;
-			onexpand?.({ windowPageYOffset: window.pageYOffset });
-			if (shallowRouting) {
-				if (!options?.preventPushState) {
-					pushState('', { ...page.state, expandedSuperSearch: true });
-				}
-			}
+		if (collapsedEditorView?.state) {
+			expandedEditorView?.setState(collapsedEditorView.state);
 		}
+		dialog?.showModal();
+		expanded = true;
+		onexpand?.({
+			windowPageYOffset: window.pageYOffset,
+			editorState: collapsedEditorView?.state
+		});
 		setDefaultRowAndCols({ focusRow: options?.focusRow });
 		if (!options?.focusRow || options.focusRow < 1) {
 			allowArrowKeyCursorHandling = { vertical: false, horizontal: true };
@@ -401,16 +401,17 @@
 		expandedEditorView?.focus();
 	}
 
-	export function hideExpandedSearch() {
-		if (expanded) {
-			dialog?.close();
-			collapsedEditorView?.dispatch({
-				selection: expandedEditorView?.state.selection.main
-			});
-			collapsedEditorView?.focus();
-			expanded = false;
-			oncollapse?.();
+	export function hideExpandedSearch(params?: HideExpandedSearchParams) {
+		if (expandedEditorView?.state) {
+			collapsedEditorView?.setState(expandedEditorView.state);
 		}
+
+		dialog?.close();
+		console.log('krovus', dialog, expanded);
+
+		collapsedEditorView?.focus();
+		expanded = false;
+		oncollapse?.({ trigger: params?.trigger, editorState: collapsedEditorView?.state });
 		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
 	}
 
@@ -438,22 +439,17 @@
 			: collapsedEditorView?.dom?.closest('form');
 
 		if (formElement && formElement instanceof HTMLFormElement) {
-			if (expanded) {
-				if (shallowRouting) {
-					const formAction = formElement.getAttribute('action');
-					const formParams = new URLSearchParams(
-						new FormData(formElement) as unknown as Record<string, string>
+			if (expanded && oninterceptexpandedsubmit) {
+				const formAction = formElement.getAttribute('action');
+				const formParams = new URLSearchParams(
+					new FormData(formElement) as unknown as Record<string, string>
+				);
+				if (formAction && formParams) {
+					oninterceptexpandedsubmit?.(
+						`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}`
 					);
-					if (formAction && formParams) {
-						submitLinkElement?.setAttribute(
-							'href',
-							`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}` // A workaround for fixing back/forward navigation when submitting from expanded dialog (link clicks works together with history.back() but not goto() for some reason...)
-						);
-						submitLinkElement?.click();
-					} else {
-						formElement.requestSubmit();
-					}
-					hideExpandedSearch();
+				} else {
+					formElement.requestSubmit();
 				}
 			} else {
 				formElement.requestSubmit();
@@ -470,8 +466,8 @@
 	}
 
 	function handleCollapsedKeyDown(event: KeyboardEvent) {
-		console.log('handleCollapsedKeyDown');
 		if (event.key === 'Enter') {
+			console.log('aaaa');
 			submitClosestForm();
 		}
 		if (event.key === 'ArrowDown' && event.altKey) {
@@ -482,10 +478,8 @@
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
-			if (shallowRouting) {
-				history.back();
-			} else {
-				hideExpandedSearch();
+			if (expanded) {
+				hideExpandedSearch({ trigger: 'key' });
 			}
 		}
 
@@ -572,7 +566,7 @@
 				case 'ArrowUp':
 					if (event.altKey) {
 						event.preventDefault();
-						hideExpandedSearch();
+						hideExpandedSearch({ trigger: 'key' });
 					} else {
 						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
 							activeRowIndex = arrowKeyRows.length;
@@ -728,13 +722,21 @@
 		}
 	}
 
+	function handleClickClose() {
+		hideExpandedSearch({ trigger: 'click' });
+	}
+
+	/*
+	$effect(() => {
+		if (!page.state.expandedSuperSearch && expanded) {
+			hideExpandedSearch({ trigger: 'navigation' });
+		}
+	});
+	*/
+
 	function handleClickOutsideDialog(event: MouseEvent) {
 		if (event.target === dialog || event.target === event.currentTarget) {
-			if (shallowRouting) {
-				history.back();
-			} else {
-				hideExpandedSearch();
-			}
+			hideExpandedSearch({ trigger: 'click' });
 		}
 	}
 
@@ -759,23 +761,19 @@
 	}
 
 	function interceptExpandedLinks(event: MouseEvent) {
-		if (interceptedLinkElement) {
-			interceptedLinkElement = undefined; // already intercepted so do nothing
-			return;
-		} else {
-			const target = event.target as HTMLElement;
-			const linkElement = target.tagName === 'A' ? target : target.closest('a');
-
-			if (linkElement && linkElement.getAttribute('href')) {
-				event.preventDefault();
-				interceptedLinkElement = linkElement as HTMLLinkElement;
-				history.back(); // go back before triggering click again in popstate
-			}
+		const target = event.target as HTMLElement;
+		const anchorElement = target.tagName === 'A' ? target : target.closest('a');
+		const href = anchorElement?.getAttribute('href');
+		if (href) {
+			event.preventDefault();
+			oninterceptexpandedclick?.(href, event);
 		}
 	}
 
-	function handleReset() {
-		collapsedEditorView?.dispatch({
+	function handleClickClear(event: MouseEvent) {
+		event.preventDefault();
+		const _view = expanded ? expandedEditorView : collapsedEditorView;
+		_view?.dispatch({
 			changes: { from: 0, to: value.length, insert: '' },
 			userEvent: 'delete'
 		});
@@ -861,14 +859,6 @@
 			collapsedEditorView.focus();
 		}
 	});
-
-	const handleClickClose = $derived(() => {
-		if (shallowRouting) {
-			return history.back();
-		} else {
-			hideExpandedSearch();
-		}
-	});
 </script>
 
 {#snippet fallbackExpandedContent({ search }: { search: ReturnType<typeof useSearchRequest> })}
@@ -908,15 +898,15 @@
 {/snippet}
 
 {#snippet collapsedInputSnippet()}
-	<CodeMirror
-		{value}
-		extensions={collapsedExtensions}
-		onclick={handleClickCollapsed}
-		onchange={handleChangeCodeMirror}
-		onselect={handleSelectCodeMirror}
-		bind:editorView={collapsedEditorView}
-		syncedEditorView={expandedEditorView}
-	/>
+	<div class="contents" onclickcapture={handleClickCollapsed}>
+		<CodeMirror
+			{value}
+			extensions={collapsedExtensions}
+			onchange={handleChangeCodeMirror}
+			onselect={handleSelectCodeMirror}
+			bind:editorView={collapsedEditorView}
+		/>
+	</div>
 {/snippet}
 
 {#snippet expandedInputSnippet()}
@@ -928,11 +918,8 @@
 		onselect={handleSelectCodeMirror}
 		onviewupdate={handleExpandedViewUpdate}
 		bind:editorView={expandedEditorView}
-		syncedEditorView={collapsedEditorView}
 	/>
 {/snippet}
-
-<svelte:window onpopstate={handlePopState} />
 
 <div
 	class="collapsed supersearch-combobox"
@@ -947,7 +934,7 @@
 		isFocusedCell: () => false,
 		isFocusedRow: () => activeRowIndex === -1,
 		onclickSubmit: handleClickSubmit,
-		onclickClear: handleReset,
+		onclickClear: handleClickClear,
 		onclickClose: handleClickClose
 	})}
 	<textarea {value} {name} {form} hidden readonly></textarea>
@@ -958,7 +945,6 @@
 	bind:this={dialog}
 	closedby="none"
 	tabindex="-1"
-	onclose={() => hideExpandedSearch()}
 >
 	<div
 		class="supersearch-dialog-wrapper"
@@ -967,20 +953,7 @@
 		onclick={handleClickOutsideDialog}
 	>
 		<div class="supersearch-dialog-content">
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div
-				class="supersearch-combobox"
-				bind:this={comboboxElement}
-				onclick={interceptExpandedLinks}
-			>
-				<!-- The hidden submit link is used as a workaround to achieve correct history navigations when submitting -->
-				<a
-					href="/"
-					class="supersearch-hidden-submit-link"
-					aria-hidden="true"
-					bind:this={submitLinkElement}
-				></a>
+			<div class="supersearch-combobox" bind:this={comboboxElement}>
 				{@render inputRow?.({
 					expanded: true,
 					inputField: expandedInputSnippet,
@@ -988,13 +961,17 @@
 					isFocusedCell: (colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex,
 					isFocusedRow: () => activeRowIndex === 0,
 					onclickSubmit: handleClickSubmit,
-					onclickClear: handleReset,
+					onclickClear: handleClickClear,
 					onclickClose: handleClickClose
 				})}
 			</div>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_interactive_supports_focus -->
-			<div id={`${id}-grid`} role="grid" onclick={interceptExpandedLinks}>
+			<div
+				id={`${id}-grid`}
+				role="grid"
+				onclick={oninterceptexpandedclick ? interceptExpandedLinks : undefined}
+			>
 				{@render expandedContent({
 					search,
 					resultsSnippet,
@@ -1020,9 +997,5 @@
 
 	.supersearch-suggestions {
 		overflow: hidden;
-	}
-
-	.supersearch-hidden-submit-link {
-		display: none;
 	}
 </style>
