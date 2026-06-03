@@ -9,10 +9,9 @@
 	type Props = {
 		id: string;
 		ariaLabelledBy?: string;
-		hiddenCollapsedOnMobile?: boolean;
 	};
 
-	let { id, ariaLabelledBy, hiddenCollapsedOnMobile = false }: Props = $props();
+	let { id, ariaLabelledBy }: Props = $props();
 
 	let cursor: number | null = $state(null);
 
@@ -42,16 +41,10 @@
 </script>
 
 {#snippet fallbackInput()}
-	<SuperSearchFallback {id} {placeholder} {ariaLabelledBy} {ariaLabel} {autofocus} />
+	<SuperSearchFallback {id} {placeholder} {ariaLabelledBy} {ariaLabel} />
 {/snippet}
 
-<search
-	{id}
-	class={[
-		'@container z-41 mx-auto grid h-full w-full max-w-7xl items-center lg:px-3',
-		hiddenCollapsedOnMobile && 'hidden-collapsed'
-	]}
->
+<search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center lg:px-3']}>
 	<form id={`${id}-form`} {action} class="mx-auto w-full min-w-0">
 		{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
 			{@render fallbackInput()}
@@ -90,14 +83,6 @@
 
 		@variant 2xl {
 			--search-input-height: 56px;
-		}
-	}
-
-	search.hidden-collapsed :global(.collapsed.supersearch-combobox) {
-		height: 0;
-		display: none;
-		@variant lg {
-			display: flex;
 		}
 	}
 </style>

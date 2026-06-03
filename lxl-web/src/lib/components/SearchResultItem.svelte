@@ -84,7 +84,7 @@
 <article class="@container min-w-36">
 	<header>
 		<a
-			href={page.data.localizeHref(relativizeUrl(data['@id']))}
+			href={page.data.localizeHref(relativizeUrl(data['@id'].replace('#work-record', '')))}
 			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
 			{@render image()}

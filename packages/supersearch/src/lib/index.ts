@@ -4,7 +4,9 @@ import type {
 	ShowExpandedSearchOptions,
 	DebouncedWaitFunction,
 	ExpandEvent,
-	UserEvent
+	CollapseEvent,
+	UserEvent,
+	HideExpandedSearchParams
 } from './types/superSearch.js';
 import type { Selection } from './components/CodeMirror.svelte';
 import type {
@@ -15,12 +17,16 @@ import lxlQualifierPlugin from './extensions/lxlQualifierPlugin/index.js';
 import SuperSearch from '$lib/components/SuperSearch.svelte';
 import useSearchRequest from './utils/useSearchRequest.svelte';
 import { getParentNodeByType } from './utils/getParentByType.js';
+import { isEqualState } from './utils/isEqualState.js';
+
+import type { EditorState } from '@codemirror/state';
 
 export {
 	SuperSearch,
 	lxlQualifierPlugin,
 	useSearchRequest,
 	getParentNodeByType,
+	isEqualState,
 	type ResultItem,
 	type Selection,
 	type QualifierRendererProps,
@@ -29,5 +35,8 @@ export {
 	type ShowExpandedSearchOptions,
 	type DebouncedWaitFunction,
 	type ExpandEvent,
-	type UserEvent
+	type CollapseEvent,
+	type UserEvent,
+	type EditorState,
+	type HideExpandedSearchParams
 };

@@ -29,10 +29,6 @@
 	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 	import isViewUpdateOfUserEvent from '$lib/utils/isViewUpdateOfUserEvent.js';
-	import {
-		isViewUpdateSyncableEffect,
-		syncedTransaction
-	} from '$lib/utils/isViewUpdateSyncableEffect.js';
 	import type { UserEvent } from '$lib/types/superSearch.js';
 
 	type CodeMirrorProps = {
@@ -43,7 +39,7 @@
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		onviewupdate?: (event: ViewUpdateCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
-		syncedEditorView?: EditorView | undefined;
+		editorState?: EditorState | undefined;
 	};
 
 	let {
@@ -54,27 +50,18 @@
 		onchange = () => {},
 		onviewupdate = () => {},
 		editorView = $bindable(),
-		syncedEditorView
+		editorState
 	}: CodeMirrorProps = $props();
 
 	let prevLineHeight = $state();
 
 	const updateHandler = EditorView.updateListener.of((update) => {
-		if (update.transactions.some((tr) => tr.annotation(syncedTransaction))) {
-			return;
-		}
-
 		// TODO: do better more generic equality check
 		if (prevLineHeight !== update.view.lineBlockAt(0).height) {
 			onviewupdate({ lineHeight: update.view.lineBlockAt(0).height });
 			prevLineHeight = update.view.lineBlockAt(0).height;
 		}
 		if (isViewUpdateFromUserInput(update)) {
-			syncedEditorView?.dispatch({
-				changes: update.changes,
-				selection: update.state.selection,
-				scrollIntoView: update.transactions?.[0].scrollIntoView
-			});
 			if (update.docChanged) {
 				value = update.state.doc.toString();
 				const userEvent = update.transactions[0].annotation(Transaction.userEvent) as
@@ -95,24 +82,12 @@
 		}
 
 		if (isViewUpdateOfUserEvent(update, 'select')) {
-			syncedEditorView?.dispatch({
-				selection: update.state.selection
-			});
 			onselect({
 				from: update.state.selection.main.from,
 				to: update.state.selection.main.to,
 				anchor: update.state.selection.main.anchor,
 				head: update.state.selection.main.head,
 				empty: update.state.selection.main.empty
-			});
-		}
-
-		const effects = isViewUpdateSyncableEffect(update);
-
-		if (effects.length) {
-			syncedEditorView?.dispatch({
-				effects,
-				annotations: syncedTransaction.of(true)
 			});
 		}
 	});
@@ -176,17 +151,24 @@
 
 	onMount(() => {
 		editorView = new EditorView({
-			state: createEditorState({ doc: value }),
+			state: editorState || createEditorState({ doc: value }),
 			parent: codemirrorContainerElement
 		});
 	});
 
+	/*
 	$effect(() => {
-		if (value !== editorView?.state.doc.toString()) {
-			// Reset editor when value changes from outside (= user navigating)
-			reset({ doc: value });
+		if (
+			editorState &&
+			(editorState.doc.toString !== editorView?.state.doc.toString ||
+				editorState.selection.main.anchor !== editorView?.state.selection.main.anchor ||
+				editorState.selection.main.head !== editorView?.state.selection.main.head)
+		) {
+			console.log('editorState was changed', codemirrorContainerElement)
+			editorView?.setState(editorState);
 		}
 	});
+	*/
 
 	$effect(() => {
 		if (extensions !== prevExtensions) {

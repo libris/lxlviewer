@@ -134,7 +134,7 @@
 		isHomeRoute && 'home',
 		subset && 'subset',
 		withMobileSearchInput && 'with-mobile-search-input',
-		!isFindRoute && 'border-b-primary-200 border-b'
+		isFindRoute ? 'lg:border-b-primary-200 lg:border-b' : 'border-b-primary-200 border-b'
 	]}
 >
 	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
@@ -203,7 +203,7 @@
 
 		{#if !isHomeRoute || (isHomeRoute && homepageContext.showSearchInAppBar)}
 			<div class={['search']}>
-				<AppSearch id={ID_APP_BAR_LG_SEARCH} hiddenCollapsedOnMobile={true} />
+				<AppSearch id={ID_APP_BAR_LG_SEARCH} />
 			</div>
 		{/if}
 		<div class="hidden lg:contents">
@@ -237,7 +237,8 @@
 {#if isFindRoute}
 	<div
 		class={[
-			'search bg-appbar border-b-primary-200 sticky top-0 z-45 flex items-center border-b px-2 target:flex lg:hidden lg:h-0 lg:has-[dialog:open]:flex'
+			'search bg-appbar border-b-primary-200 sticky top-0 flex items-center border-b px-2 target:flex lg:hidden lg:h-0 lg:has-[dialog:open]:flex',
+			expandedMenu ? 'z-35' : 'z-45'
 		]}
 	>
 		<AppSearch id={ID_APP_BAR_SM_SEARCH} />
@@ -367,10 +368,29 @@
 	}
 
 	.search {
-		grid-area: search;
 		min-height: var(--appbar-height);
 	}
 
+	header {
+		& .search {
+			/* search in header, hide visiblity but keep in DOM so dialogs can be kept open if expanded */
+			grid-area: search;
+			position: absolute;
+			visibility: hidden;
+
+			@variant lg {
+				position: static;
+				visibility: visible;
+			}
+		}
+		& + .search {
+			/* search beneath header (visible on find-routes) */
+			@variant lg {
+				position: absolute;
+				visibility: hidden; /* Hide visiblity but keep in DOM so dialogs can be kept open if expanded */
+			}
+		}
+	}
 	.action {
 		position: relative;
 		display: flex;

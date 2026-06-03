@@ -14,7 +14,7 @@
 	id="app-banner"
 	role="banner"
 	class={[
-		'bg-primary-200 z-50 flex min-h-11 items-center justify-between gap-0 px-3 text-sm font-medium md:pl-6 2xl:text-base',
+		'bg-primary-200 z-50 flex hidden min-h-11 items-center justify-between gap-0 px-3 text-sm font-medium md:pl-6 2xl:text-base',
 		dismissable && 'pr-0'
 	]}
 >

@@ -161,7 +161,11 @@
 			<div
 				class="mx-auto flex w-full max-w-xl justify-center gap-2 px-3 *:min-h-11 *:flex-1 *:bg-black/25 *:px-4 sm:gap-3 sm:px-14 sm:*:min-h-13 2xl:*:min-h-14 2xl:*:text-base!"
 			>
-				<button type="submit" form={`${ID_HERO_SEARCH}-form`} class="shortcut btn-outlined">
+				<button
+					type="submit"
+					form={`${ID_HERO_SEARCH}-form`}
+					class="shortcut btn-outlined shadow-2xs"
+				>
 					<div class="shortcut-icon">
 						<IconSearch />
 					</div>
@@ -170,7 +174,7 @@
 				<a
 					id={ID_HERO_EXPLORE_LABEL}
 					href={'#' + ID_EXPLORE}
-					class="shortcut btn-outlined"
+					class="shortcut btn-outlined shadow-2xs"
 					onclick={handleClickExplore}
 				>
 					<div class="shortcut-icon">
@@ -186,7 +190,7 @@
 				<p
 					class="text-primary-50/75 mx-auto w-full px-3 py-4.5 pt-12 text-center leading-snug sm:pb-6 2xl:pt-16 2xl:pb-7.5"
 				>
-					<span class="text-sm sm:text-[1.0625rem] sm:leading-normal 2xl:text-lg">
+					<span class="text-sm font-medium lg:text-[1.0625rem] 2xl:text-lg">
 						<span>{page.data.t('home.pageDescription1')}</span>
 						{page.data.t('home.pageDescription2')}
 						<span class="whitespace-nowrap"></span>
@@ -228,7 +232,7 @@
 						href={page.data.localizeHref(category.href)}
 						id={category.id}
 						aria-labelledby="search-for {category.id}"
-						class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 lg:border-neutral-200 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
+						class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
 					>
 						{category.label}
 					</a>
@@ -391,7 +395,7 @@
 	}
 
 	.shortcut {
-		@apply flex items-center justify-center gap-3 border border-transparent text-xs font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-lg text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors min-[25rem]:text-sm;
+		@apply flex items-center justify-center gap-3 border border-black/15 text-xs font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-lg text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors min-[25rem]:text-sm;
 
 		&:hover {
 			@apply bg-black/15;

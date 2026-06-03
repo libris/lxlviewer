@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, goto, pushState } from '$app/navigation';
 	import {
 		type DebouncedWaitFunction,
 		type ExpandEvent,
@@ -11,7 +11,9 @@
 		type ShowExpandedSearchOptions,
 		SuperSearch,
 		type ViewUpdateSuperSearchEvent,
-		type UserEvent
+		type UserEvent,
+		type CollapseEvent,
+		type HideExpandedSearchParams
 	} from 'supersearch';
 	import FooterRow from './rows/FooterRow.svelte';
 	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
@@ -70,6 +72,8 @@
 
 	const searchContext = getSearchContext();
 
+	let interceptedNavigation: boolean = $state(false);
+
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || ''));
 	let selection: Selection | undefined = $state();
 
@@ -78,21 +82,14 @@
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
 	let searchOffset: number | undefined = $state();
+	let hasExpanded: boolean = $state(false);
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
 	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
 
-	let clearUrl = $derived.by(() => {
-		if (page.url.pathname !== '/find') return undefined;
-		const url = new URL(page.url);
-		url.searchParams.set('_q', '');
-		url.searchParams.delete('_offset');
-		return url.toString();
-	});
-
-	let userClearedSearch = $state(false);
+	let interceptedHref: string | undefined = $state();
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
@@ -128,22 +125,24 @@
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
 			if (isHomeRoute) {
-				q = ''; // reset query if navigating to start/index page
+				superSearch?.dispatchChange({
+					change: { from: 0, to: superSearch?.getValueLength(), insert: '' }
+				});
 			} else if (to.url.searchParams.has('_q')) {
-				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '');
+				superSearch?.dispatchChange({
+					change: {
+						from: 0,
+						to: superSearch?.getValueLength(),
+						insert: addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '')
+					}
+				});
 			}
 
 			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
 
-			hideExpandedSearch();
 			fetchOnExpand = true;
 
-			if (userClearedSearch) {
-				showExpandedSearch();
-				userClearedSearch = false;
-			} else {
-				superSearch?.blur(); // remove focus from input after searching or navigating
-			}
+			superSearch?.blur(); // remove focus from input after searching or navigating
 		}
 	});
 
@@ -233,24 +232,25 @@
 		superSearch?.showExpandedSearch(options);
 	}
 
-	function hideExpandedSearch() {
-		superSearch?.hideExpandedSearch();
+	function hideExpandedSearch(params?: HideExpandedSearchParams) {
+		superSearch?.hideExpandedSearch(params);
 	}
 
 	function handleOnChange() {
 		fetchOnExpand = false;
 	}
 
-	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
+	function handleOnExpand({ editorState, windowPageYOffset }: ExpandEvent) {
+		searchContext.editorState = editorState;
+		if (!page.state.expandedSuperSearch) {
+			pushState('', { ...page.state, expandedSuperSearch: true });
+		}
 		if (page.route.id === '/(app)/[[lang=lang]]') {
 			const searchElement = document.getElementById(ID_HERO_SEARCH);
 			if (searchElement) {
 				const contentOffsetTop = document.getElementById('content')?.offsetTop || 0;
 				const heroSearchOffsetTop = searchElement.offsetTop;
-				console.log('heroSearchOffsetTop', heroSearchOffsetTop);
-
 				searchOffset = Math.max(0, contentOffsetTop + heroSearchOffsetTop - windowPageYOffset);
-				console.log('searchOffset', searchOffset);
 			}
 		} else {
 			const appBarElement = document.getElementById(ID_APP_BAR);
@@ -258,13 +258,19 @@
 			if (appBarElement) {
 				const searchOffsetTop = searchElement?.offsetTop || 0;
 				searchOffset = Math.max(0, appBarElement.offsetTop + searchOffsetTop - windowPageYOffset);
-
-				console.log('agaga', searchOffset);
 			}
 		}
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
+		}
+	}
+
+	function handleOnCollapse({ editorState, trigger }: CollapseEvent) {
+		console.log('handleOnCollapse');
+		searchContext.editorState = editorState;
+		if (trigger !== 'popstate') {
+			history.back();
 		}
 	}
 
@@ -295,7 +301,11 @@
 	onMount(() => {
 		if (searchContext.initialStateBeforeMount?.value) {
 			changeQuery({
-				change: { insert: searchContext.initialStateBeforeMount.value, from: 0, to: q.length },
+				change: {
+					insert: addSpaceIfEndingQualifier(searchContext.initialStateBeforeMount.value),
+					from: 0,
+					to: q.length
+				},
 				selection: {
 					anchor: searchContext.initialStateBeforeMount.selection?.anchor,
 					head: searchContext.initialStateBeforeMount.selection?.head
@@ -315,8 +325,44 @@
 		if (timeout) clearTimeout(timeout); // ensure timeout is cleared to prevent memory leaks
 		searchContext.initialStateBeforeMount = undefined;
 	});
+
+	function interceptExpandedNavigation(href: string) {
+		interceptedHref = href;
+		history.back(); // first go back then goto href in popstatehandler (solving issue with duplicate history entries when using shallow routing)
+	}
+
+	$effect(() => {
+		if (
+			hasExpanded &&
+			!interceptedNavigation &&
+			searchContext.isMounted &&
+			!page.state.expandedSuperSearch
+		) {
+			console.log('hideexpaned effect');
+			hideExpandedSearch({ trigger: 'popstate' });
+		}
+	});
+
+	function handlePopState() {
+		hideExpandedSearch({ trigger: 'popstate' });
+
+		if (interceptedHref) {
+			const _href = interceptedHref;
+			interceptedHref = undefined;
+			goto(_href); //  navigate to intercepted href (triggered by submits or link clicks in expanded dialog)
+		}
+
+		console.log('aaappppp hide here+');
+	}
+
+	$effect(() => {
+		if (searchContext.editorState) {
+			superSearch?.setEditorState(searchContext.editorState);
+		}
+	});
 </script>
 
+<svelte:window onpopstate={handlePopState} />
 {#key page.data.locale}
 	<SuperSearch
 		{id}
@@ -349,14 +395,16 @@
 		}}
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
-		shallowRouting
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
+		oncollapse={handleOnCollapse}
 		onchange={handleOnChange}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
+		oninterceptexpandedclick={interceptExpandedNavigation}
+		oninterceptexpandedsubmit={interceptExpandedNavigation}
 		--search-offset={searchOffset ? `${searchOffset}px` : undefined}
 	>
 		{#snippet inputRow({
@@ -395,25 +443,20 @@
 					{@render inputField()}
 				</div>
 				{#if q}
-					<svelte:element
-						this={clearUrl ? 'a' : 'button'}
-						role={clearUrl ? undefined : 'button'}
-						href={clearUrl ? clearUrl : undefined}
-						onclick={(e: MouseEvent) => {
-							userClearedSearch = true;
-							onclickClear(e);
-						}}
+					<button
+						type="button"
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
 							'action sm:min-h-auto',
 							expanded ? 'flex h-16.5 max-sm:w-13 sm:h-full' : 'hidden sm:flex'
 						]}
+						onclick={onclickClear}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
 					>
 						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
-					</svelte:element>
+					</button>
 				{:else if !expanded}
 					<button
 						type="button"

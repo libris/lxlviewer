@@ -162,7 +162,9 @@
 	function addQualifierKey(qualifierKey: string, replaceSelection?: { from: number; to: number }) {
 		const userEvent = 'input.complete';
 
-		searchContext.showExpandedSearch(); // keep dialog open (since 'regular' search is hidden on mobile)
+		if (!page.state.expandedSuperSearch) {
+			searchContext.showExpandedSearch();
+		}
 
 		if (replaceSelection) {
 			const insert = `${qualifierKey}:()`;
