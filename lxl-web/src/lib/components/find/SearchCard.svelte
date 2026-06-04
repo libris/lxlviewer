@@ -241,7 +241,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
 					{#if item.typeStr && !hideType}
-						<TypeIcon type={item.typeForIcon} class="text-2xs mb-px inline" />
+						<TypeIcon
+							type={item.typeForIcon}
+							class="text-2xs mr-px mb-px inline align-text-bottom"
+						/>
 						<span class="font-medium">
 							{item.typeStr}
 						</span>
