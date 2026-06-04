@@ -948,10 +948,10 @@
 					"classLensDomain": "Item",
 					"showProperties": [
 						"hasComponent",
-						"shelfLabel",
 						"physicalLocation",
 						"shelfMark",
 						"shelfControlNumber",
+						"shelfLabel",
 						"availability",
 						"copyNumber"
 					]
