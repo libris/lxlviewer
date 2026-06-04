@@ -10,7 +10,6 @@ const BOOKTYPE = [
 	'Facklitteratur',
 	'Sk%C3%B6nlitteratur',
 	'Barn-%20och%20ungdomslitteratur',
-	'Text',
 	'Seriella%20publikationer',
 	'Periodika',
 	'NotatedMusic'
