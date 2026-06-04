@@ -55,7 +55,7 @@ export interface SearchResultItem {
 	[LensType.WebCardHeaderTop]: DisplayDecorated;
 	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
-	typeForIcon: string; // FIXME
+	typeForIcon: string[]; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
 	mediaLinks: DisplayDecorated | null;

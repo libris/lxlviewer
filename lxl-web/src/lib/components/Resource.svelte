@@ -38,7 +38,7 @@
 		recordUri: string;
 		controlNumber: string;
 		uid?: string;
-		typeForIcon: string | undefined;
+		typeForIcon: string[];
 		image: SecureImage;
 		decoratedData: {
 			headingTop: DisplayDecorated;
@@ -192,7 +192,7 @@
 					{image}
 					type={typeForIcon}
 					alt={page.data.t('general.instanceCover')}
-					thumbnailTargetWidth={'Bibliography' === typeForIcon
+					thumbnailTargetWidth={typeForIcon.includes('Bibliography')
 						? ImageWidth.FULL
 						: ImageWidth.MEDIUM}
 					linkToFull

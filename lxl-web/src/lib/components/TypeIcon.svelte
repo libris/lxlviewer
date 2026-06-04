@@ -29,7 +29,7 @@
 	import type { SVGAttributes } from 'svelte/elements';
 	import type { Component } from 'svelte';
 
-	type Props = { type: string; class?: string };
+	type Props = { type: string[]; class?: string };
 	type IconType = Component<SVGAttributes<SVGSVGElement>>;
 
 	const { type, class: className = '' }: Props = $props();
@@ -49,13 +49,18 @@
 		Work: BiSlashLg,
 		Family: BiPeople,
 
-		// categories / old work types
-		Cartography: BiMap,
-		Kartor: BiMap,
+		// 'book'
+		_book: BiBook,
+		_book_braille: BiBook,
+		Text: BiBook,
 		Literature: BiBook,
 		'Sk%C3%B6nlitteratur': BiBook,
 		Facklitteratur: BiBook,
 		'Barn-%20och%20ungdomslitteratur': BiBook,
+
+		// categories / old work types
+		Cartography: BiMap,
+		Kartor: BiMap,
 		'Kartografiskt%20material': BiMap,
 		MovingImage: BiFilm,
 		Music: BiMusicNoteBeamed,
@@ -64,6 +69,7 @@
 		ThreeDimensionalForm: BiBox,
 		Software: BiLaptop,
 		StillImage: BiCardImage,
+		Bilder: BiCardImage,
 
 		Audiobook: BiSoundWave,
 		'Ljudb%C3%B6cker': BiSoundWave,
@@ -82,16 +88,19 @@
 		MixedMaterial: BiBoxes,
 		Multimedia: BiLaptop,
 
-		Text: BiBook,
-
 		// New work types
 		Collection: BiBoxes,
-		Integrating: BiDatabase
+		Integrating: BiDatabase,
+
+		OnlineResource: BiLaptop
 
 		//Serial: ???,
 	};
 
-	const TypeIcon = $derived(ICONS?.[type]);
+	const TypeIcon = $derived.by(() => {
+		const key = Array.isArray(type) && type.find((key) => key in ICONS);
+		return key ? ICONS[key] : undefined;
+	});
 </script>
 
 {#if TypeIcon}
