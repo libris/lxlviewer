@@ -144,7 +144,7 @@
 		<div class="flex flex-1 items-end justify-center">
 			<h1
 				id={ID_HERO_SEARCH_LABEL}
-				class="mt-7.5 px-4.5 text-center font-serif text-3xl leading-snug tracking-[-0.0125em] text-white text-shadow-md sm:text-4xl lg:leading-none xl:text-5xl 2xl:text-[3.25rem]"
+				class="text-primary-50 mt-7.5 px-4.5 text-center font-serif text-3xl leading-snug tracking-[-0.0125em] text-shadow-md sm:text-4xl lg:leading-none xl:text-5xl 2xl:text-[3.25rem]"
 			>
 				{page.data.t('home.pageHeadingTitle')}
 				{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
@@ -157,7 +157,7 @@
 		<div class="hero-search-container z-0 mx-2 lg:mx-0" bind:this={searchContainerElement}>
 			<AppSearch id={ID_HERO_SEARCH} ariaLabelledBy={ID_HERO_SEARCH_LABEL} />
 		</div>
-		<div class="text-page mx-auto flex w-full flex-1 flex-col justify-between gap-6">
+		<div class="text-primary-50 mx-auto flex w-full flex-1 flex-col justify-between gap-6">
 			<div
 				class="mx-auto flex w-full max-w-xl justify-center gap-2 px-3 *:min-h-11 *:flex-1 *:bg-black/25 *:px-4 sm:gap-3 sm:px-14 sm:*:min-h-13 2xl:*:min-h-14 2xl:*:text-base!"
 			>
@@ -188,12 +188,11 @@
 					class="top absolute top-0 right-0 left-0 -z-10 mx-auto h-full w-2/3 mask-radial-from-30% mask-radial-to-100% mask-radial-at-[50%_75%] backdrop-blur-sm 2xl:mask-radial-from-15%"
 				></div>
 				<p
-					class="text-primary-50/75 mx-auto w-full px-3 py-4.5 pt-12 text-center leading-snug sm:pb-6 2xl:pt-16 2xl:pb-7.5"
+					class="text-primary-100/90 mx-auto w-full px-3 py-4.5 pt-12 text-center leading-snug sm:pb-6 2xl:pt-16 2xl:pb-7.5"
 				>
 					<span class="text-sm font-medium lg:text-[1.0625rem] 2xl:text-lg">
 						<span>{page.data.t('home.pageDescription1')}</span>
 						{page.data.t('home.pageDescription2')}
-						<span class="whitespace-nowrap"></span>
 						<span class="mx-0.75">{' · '}</span>
 
 						<a
@@ -211,7 +210,6 @@
 		</div>
 	</div>
 </section>
-<hr class="border-neutral mx-3 lg:mx-3 2xl:mx-8" />
 <section id={ID_EXPLORE} class="explore" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
 	<nav
 		aria-labelledby={ID_HERO_EXPLORE_LABEL}
@@ -395,10 +393,10 @@
 	}
 
 	.shortcut {
-		@apply flex items-center justify-center gap-3 border border-black/15 text-xs font-medium whitespace-nowrap text-white shadow-2xl backdrop-blur-lg text-shadow-lg hover:border-white/90 active:border-white motion-safe:transition-colors min-[25rem]:text-sm;
+		@apply flex items-center justify-center gap-3 overflow-hidden border border-black/15 text-xs font-medium whitespace-nowrap backdrop-blur-lg backdrop-brightness-90 text-shadow-lg hover:border-white/85 hover:backdrop-brightness-100 focus-visible:border-white/85 focus-visible:backdrop-brightness-100 active:brightness-80 motion-safe:transition-colors min-[25rem]:text-sm;
 
-		&:hover {
-			@apply bg-black/15;
+		&:hover,
+		&:focus-visible {
 			& .shortcut-icon {
 				@apply text-white;
 			}
