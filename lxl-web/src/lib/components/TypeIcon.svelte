@@ -52,11 +52,11 @@
 		// 'book'
 		_book: BiBook,
 		_book_braille: BiBook,
-		Text: BiBook,
 		Literature: BiBook,
 		'Sk%C3%B6nlitteratur': BiBook,
 		Facklitteratur: BiBook,
 		'Barn-%20och%20ungdomslitteratur': BiBook,
+		// Text: BiBook,
 
 		// categories / old work types
 		Cartography: BiMap,
@@ -69,7 +69,6 @@
 		ThreeDimensionalForm: BiBox,
 		Software: BiLaptop,
 		StillImage: BiCardImage,
-		Bilder: BiCardImage,
 
 		Audiobook: BiSoundWave,
 		'Ljudb%C3%B6cker': BiSoundWave,
@@ -90,9 +89,7 @@
 
 		// New work types
 		Collection: BiBoxes,
-		Integrating: BiDatabase,
-
-		OnlineResource: BiLaptop
+		Integrating: BiDatabase
 
 		//Serial: ???,
 	};
