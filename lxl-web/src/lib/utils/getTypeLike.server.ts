@@ -82,6 +82,7 @@ const FIND_RULES = [
 const DEFS = {
 	[_BOOK]: {
 		[JsonLd.TYPE]: 'ManifestationForm',
+		[JsonLd.ID]: '_book',
 		prefLabelByLang: {
 			en: 'Book',
 			sv: 'Bok'
@@ -89,6 +90,7 @@ const DEFS = {
 	},
 	[_BOOK_BRAILLE]: {
 		[JsonLd.TYPE]: 'ManifestationForm',
+		[JsonLd.ID]: '_book_braille',
 		prefLabelByLang: {
 			en: 'Book (braille)',
 			sv: 'Bok (punktskrift)'
@@ -222,34 +224,21 @@ export function toTypes(typeLike: TypeLike) {
 
 export default getTypeLike;
 
-const PRIORITIZED_ICONS = [
-	'Audiobook',
-	'NotatedMusic',
-	'Ljudb%C3%B6cker',
-	'Kit',
-	'Databaser',
-	'Seriella%20publikationer',
-	'Periodika',
-	'Kartor',
-	'Kartglober'
-];
-
 // TODO this is just a temporary implementation for exploring different ways of displaying categories
 export function getTypeForIcon(typeLike: TypeLike) {
-	for (const t of typeLike.identify.concat(typeLike.find)) {
+	const result = [];
+	for (const t of typeLike.identify
+		.concat(typeLike.find)
+		.concat(typeLike.select)
+		.concat(typeLike.none)) {
 		if (t) {
 			const slugStr = slug(((t[JsonLd.ID] as string) || '').replace('/bibdb/', '/bibdb:'));
-			if (slugStr && PRIORITIZED_ICONS.includes(slugStr)) {
-				return slugStr;
-			}
+			result.push(slugStr);
 		}
 	}
-
-	return typeLike.find.length > 0 && typeLike.find[0] !== undefined
-		? slug(((typeLike.find[0][JsonLd.ID] as string) || '').replace('/bibdb/', '/bibdb:'))
-		: '';
+	return result.filter((t) => !!t);
 }
 
 export function slug(s: string) {
-	return s === undefined ? undefined : s.split('/').pop();
+	return s === undefined ? '' : s.split('/').pop() || '';
 }
