@@ -10,8 +10,7 @@
 		type Selection,
 		type ShowExpandedSearchOptions,
 		SuperSearch,
-		type ViewUpdateSuperSearchEvent,
-		type UserEvent
+		type ViewUpdateSuperSearchEvent
 	} from 'supersearch';
 	import FooterRow from './rows/FooterRow.svelte';
 	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
@@ -41,15 +40,6 @@
 		qualifierSuggestions: QualifierSuggestion2[];
 		autofocus?: boolean;
 	}
-
-	export type ChangeQueryParams = {
-		change: { insert: string; from?: number; to?: number };
-		selection?: {
-			anchor?: number | null;
-			head?: number | null;
-		};
-		userEvent?: UserEvent;
-	};
 
 	let {
 		placeholder,
@@ -176,30 +166,6 @@
 		return data;
 	}
 
-	function changeQuery({ change, selection, userEvent }: ChangeQueryParams) {
-		const from = typeof change.from === 'number' ? change.from : q.length;
-		const to = typeof change.to === 'number' ? change.to : q.length;
-
-		superSearch?.dispatchChange({
-			change: {
-				from,
-				to,
-				insert: change.insert
-			},
-			selection: {
-				anchor:
-					selection && typeof selection.anchor === 'number'
-						? selection.anchor
-						: (q.slice(0, from) + change.insert).length,
-				head:
-					selection && typeof selection.head === 'number'
-						? selection.head
-						: (q.slice(0, from) + change.insert).length
-			},
-			userEvent
-		});
-	}
-
 	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
 		const propsWithHandler = {
 			...props,
@@ -278,22 +244,28 @@
 	});
 
 	onMount(() => {
-		if (searchContext.initialStateBeforeMount?.value) {
-			changeQuery({
-				change: { insert: searchContext.initialStateBeforeMount.value, from: 0, to: q.length },
-				selection: {
-					anchor: searchContext.initialStateBeforeMount.selection?.anchor,
-					head: searchContext.initialStateBeforeMount.selection?.head
-				},
-				userEvent: 'input.complete'
-			});
+		const editor = superSearch?.getEditorView();
+
+		if (editor?.dom.checkVisibility?.()) {
+			if (searchContext.initialStateBeforeMount?.value) {
+				superSearch?.dispatchChange({
+					change: { insert: searchContext.initialStateBeforeMount.value, from: 0, to: q.length },
+					selection: searchContext.initialStateBeforeMount.selection
+						? {
+								anchor: searchContext.initialStateBeforeMount.selection.anchor,
+								head: searchContext.initialStateBeforeMount.selection.head
+							}
+						: undefined,
+					userEvent: 'input.complete',
+					addToHistory: false
+				});
+			}
+
+			searchContext.editorState = editor.state;
+			searchContext.showExpandedSearch = showExpandedSearch;
+			searchContext.hideExpandedSearch = hideExpandedSearch;
+			searchContext.changeQuery = (params) => superSearch?.dispatchChange(params);
 		}
-		searchContext.getQuery = () => q;
-		searchContext.getSelection = () => selection;
-		searchContext.showExpandedSearch = showExpandedSearch;
-		searchContext.hideExpandedSearch = hideExpandedSearch;
-		searchContext.changeQuery = changeQuery;
-		searchContext.isMounted = true;
 	});
 
 	onDestroy(() => {

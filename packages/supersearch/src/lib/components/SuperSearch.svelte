@@ -12,7 +12,7 @@
 	import { sendMessage } from '$lib/utils/sendMessage.js';
 	import type { ChangeSuperSearchEvent, ViewUpdateSuperSearchEvent } from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
-	import { Compartment, type Extension } from '@codemirror/state';
+	import { Compartment, Transaction, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import preventEnterKeyHandling from '$lib/extensions/preventEnterKeyHandling.js';
 	import arrowKeyCursorHandling from '$lib/extensions/arrowKeyCursorHandling.js';
@@ -27,7 +27,7 @@
 		ShowExpandedSearchOptions,
 		DebouncedWaitFunction,
 		ExpandEvent,
-		UserEvent
+		ChangeQueryParams
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
 
@@ -341,26 +341,21 @@
 		onexpandedviewupdate?.(event);
 	}
 
+	export function getEditorView() {
+		return expanded ? expandedEditorView : collapsedEditorView;
+	}
+
 	export function dispatchChange({
 		change,
 		selection,
-		userEvent = 'input'
-	}: {
-		change?: {
-			from: number;
-			to: number;
-			insert: string;
-		};
-		selection?: {
-			anchor: number;
-			head: number;
-		};
-		userEvent?: UserEvent;
-	}) {
-		collapsedEditorView?.dispatch({
+		userEvent = 'input',
+		addToHistory = true
+	}: ChangeQueryParams) {
+		(expanded ? expandedEditorView : collapsedEditorView)?.dispatch({
 			changes: change,
 			selection,
-			userEvent
+			userEvent,
+			annotations: [Transaction.addToHistory.of(addToHistory)]
 		});
 	}
 

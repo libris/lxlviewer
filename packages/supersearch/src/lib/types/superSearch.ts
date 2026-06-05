@@ -15,11 +15,23 @@ export interface ResultItem {
 	heading: string;
 }
 
+export type ChangeQueryParams = {
+	change?: { insert: string; from: number; to: number };
+	selection?: {
+		anchor: number;
+		head: number;
+	};
+	userEvent?: UserEvent;
+	addToHistory?: boolean;
+};
+
 export type ShowExpandedSearchOptions = {
 	cursorAtEnd?: boolean;
 	focusRow?: number;
 	preventPushState?: boolean;
 };
+
+export type HideExpandedSearchOptions = undefined;
 
 export type DebouncedWaitFunction = (query: string) => number | null;
 

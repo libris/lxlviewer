@@ -10,6 +10,7 @@
 	};
 
 	export type ChangeCodeMirrorEvent = {
+		editorState: EditorState;
 		value: string;
 		selection: Selection;
 		userEvent: UserEvent | undefined;
@@ -81,6 +82,7 @@
 					| UserEvent
 					| undefined;
 				onchange({
+					editorState: update.state,
 					value,
 					selection: {
 						from: update.state.selection.main.from,
