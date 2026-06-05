@@ -26,7 +26,13 @@
 	import { DEV } from 'esm-env';
 	import { onMount } from 'svelte';
 	import { EditorView } from '@codemirror/view';
-	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
+	import {
+		Compartment,
+		EditorSelection,
+		EditorState,
+		StateEffect,
+		type Extension
+	} from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 	import isViewUpdateOfUserEvent from '$lib/utils/isViewUpdateOfUserEvent.js';
 	import type { UserEvent } from '$lib/types/superSearch.js';
@@ -35,25 +41,35 @@
 		value?: string;
 		extensions?: Extension[];
 		onclick?: (event: MouseEvent) => void;
+		onfocus?: (event: FocusEvent) => void;
+		onblur?: (event: FocusEvent) => void;
 		onselect?: (event: SelectCodeMirrorEvent) => void;
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		onviewupdate?: (event: ViewUpdateCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
 		editorState?: EditorState | undefined;
+		allowUpdateHandling?: boolean;
 	};
 
 	let {
 		value = '', // value isn't bindable as it can easily cause undo/redo history issues when changing the value from outside – it's preferable to dispatch changes instead
 		extensions = [],
 		onclick = () => {},
+		onfocus = () => {},
+		onblur = () => {},
 		onselect = () => {},
 		onchange = () => {},
 		onviewupdate = () => {},
 		editorView = $bindable(),
-		editorState
+		editorState,
+		allowUpdateHandling = true
 	}: CodeMirrorProps = $props();
 
 	let prevLineHeight = $state();
+	// svelte-ignore state_referenced_locally
+	let prevAllowUpdateHandling = $state(allowUpdateHandling);
+
+	let updateHandlerCompartment = new Compartment();
 
 	const updateHandler = EditorView.updateListener.of((update) => {
 		// TODO: do better more generic equality check
@@ -92,8 +108,12 @@
 		}
 	});
 
+	const emptyUpdateHandler = EditorView.updateListener.of(() => {});
+
 	const domEventHandler = EditorView.domEventHandlers({
-		click: (event: MouseEvent) => onclick(event)
+		click: (event: MouseEvent) => onclick(event),
+		focus: (event: FocusEvent) => onfocus(event),
+		blur: (event: FocusEvent) => onblur(event)
 	});
 
 	let codemirrorContainerElement: HTMLDivElement | undefined = $state();
@@ -138,6 +158,10 @@
 		});
 	}
 
+	function reconfigureUpdateHandler() {
+		updateHandlerCompartment.reconfigure(allowUpdateHandling ? updateHandler : emptyUpdateHandler);
+	}
+
 	function reconfigureAllExtensions() {
 		if (DEV) {
 			console.warn(
@@ -169,6 +193,13 @@
 		}
 	});
 	*/
+
+	$effect(() => {
+		if (allowUpdateHandling !== prevAllowUpdateHandling) {
+			reconfigureUpdateHandler();
+			prevAllowUpdateHandling = allowUpdateHandling;
+		}
+	});
 
 	$effect(() => {
 		if (extensions !== prevExtensions) {

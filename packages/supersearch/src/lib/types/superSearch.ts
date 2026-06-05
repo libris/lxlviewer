@@ -1,6 +1,6 @@
 import type { JSONValue } from './json.js';
 import type { Selection } from '$lib/components/CodeMirror.svelte';
-import type { EditorState } from '@codemirror/state';
+import type { EditorState, Extension } from '@codemirror/state';
 
 export type QueryFunction = (value: string, cursor: number) => URLSearchParams;
 export type PaginationQueryFunction = (
@@ -25,11 +25,13 @@ export type ShowExpandedSearchOptions = {
 export type DebouncedWaitFunction = (query: string) => number | null;
 
 export type ExpandEvent = {
+	historyField?: Extension;
 	editorState?: EditorState;
 	windowPageYOffset: number;
 };
 
 export type CollapseEvent = {
+	historyField?: Extension;
 	editorState?: EditorState;
 	trigger?: CollapseTrigger;
 };

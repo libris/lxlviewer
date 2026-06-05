@@ -3,7 +3,8 @@ import type {
 	Selection,
 	ShowExpandedSearchOptions,
 	EditorState,
-	HideExpandedSearchParams
+	HideExpandedSearchParams,
+	Extension
 } from 'supersearch';
 import type { ChangeQueryParams } from '$lib/components/supersearch/SuperSearchWrapper.svelte';
 
@@ -11,6 +12,7 @@ export type SearchContext = {
 	editorState: EditorState | undefined;
 	getQuery: () => string;
 	getSelection: () => Selection | undefined;
+	historyField?: Extension;
 	setEditorState: (editorState: EditorState) => void;
 	showExpandedSearch: (options?: ShowExpandedSearchOptions) => void;
 	hideExpandedSearch: (params?: HideExpandedSearchParams) => void;

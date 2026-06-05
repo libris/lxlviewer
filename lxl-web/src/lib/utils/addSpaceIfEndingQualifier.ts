@@ -12,7 +12,6 @@ function addSpaceIfEndingQualifier(q: string) {
 	}
 
 	if (lastNode.type.name === 'Group') {
-		console.log('BOBO');
 		return q + ' ';
 	}
 

@@ -242,6 +242,7 @@
 
 	function handleOnExpand({ editorState, windowPageYOffset }: ExpandEvent) {
 		searchContext.editorState = editorState;
+
 		if (!page.state.expandedSuperSearch) {
 			pushState('', { ...page.state, expandedSuperSearch: true });
 		}
@@ -267,8 +268,8 @@
 	}
 
 	function handleOnCollapse({ editorState, trigger }: CollapseEvent) {
-		console.log('handleOnCollapse');
 		searchContext.editorState = editorState;
+
 		if (trigger !== 'popstate') {
 			history.back();
 		}
@@ -351,15 +352,7 @@
 			interceptedHref = undefined;
 			goto(_href); //  navigate to intercepted href (triggered by submits or link clicks in expanded dialog)
 		}
-
-		console.log('aaappppp hide here+');
 	}
-
-	$effect(() => {
-		if (searchContext.editorState) {
-			superSearch?.setEditorState(searchContext.editorState);
-		}
-	});
 </script>
 
 <svelte:window onpopstate={handlePopState} />
@@ -405,6 +398,7 @@
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		oninterceptexpandedclick={interceptExpandedNavigation}
 		oninterceptexpandedsubmit={interceptExpandedNavigation}
+		externalEditorState={searchContext.editorState}
 		--search-offset={searchOffset ? `${searchOffset}px` : undefined}
 	>
 		{#snippet inputRow({

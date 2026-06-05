@@ -18,8 +18,8 @@ import SuperSearch from '$lib/components/SuperSearch.svelte';
 import useSearchRequest from './utils/useSearchRequest.svelte';
 import { getParentNodeByType } from './utils/getParentByType.js';
 import { isEqualState } from './utils/isEqualState.js';
-
-import type { EditorState } from '@codemirror/state';
+import type { StateField } from '@codemirror/state';
+import type { EditorState, Extension } from '@codemirror/state';
 
 export {
 	SuperSearch,
@@ -38,5 +38,7 @@ export {
 	type CollapseEvent,
 	type UserEvent,
 	type EditorState,
-	type HideExpandedSearchParams
+	type Extension,
+	type HideExpandedSearchParams,
+	type StateField
 };

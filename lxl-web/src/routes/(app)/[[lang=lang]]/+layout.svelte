@@ -45,9 +45,8 @@
 		prevScrollTop = scrollTop;
 	}
 
-	$effect(() => {
-		console.log('scrollingBackwards', scrollingBackwards);
-	});
+	console.log('scrollingBackwards', scrollingBackwards);
+
 	$effect(() => {
 		if (isFindRoute) {
 			window.addEventListener('scroll', handleScroll);

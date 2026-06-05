@@ -7,7 +7,6 @@
 		type ViewUpdateCodeMirrorEvent,
 		type Selection
 	} from '$lib/components/CodeMirror.svelte';
-	import { isEqualState } from '$lib/utils/isEqualState.js';
 	import { sendMessage } from '$lib/utils/sendMessage.js';
 	import type { ChangeSuperSearchEvent, ViewUpdateSuperSearchEvent } from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
@@ -105,6 +104,7 @@
 		onexpandedviewupdate?: (event: ViewUpdateSuperSearchEvent) => void;
 		oninterceptexpandedclick?: (href: string, event: MouseEvent) => void;
 		oninterceptexpandedsubmit?: (href: string) => void;
+		externalEditorState?: EditorState;
 	}
 
 	let {
@@ -148,7 +148,8 @@
 		onchange,
 		onexpandedviewupdate,
 		oninterceptexpandedclick,
-		oninterceptexpandedsubmit
+		oninterceptexpandedsubmit,
+		externalEditorState
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -158,6 +159,9 @@
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(-1);
+	let allowCollapsedUpdateHandling = $derived(
+		!expanded && !!collapsedEditorView?.dom.checkVisibility()
+	);
 
 	let prevValue: string = value;
 
@@ -173,6 +177,8 @@
 
 	let collapsedContentAttributesCompartment = new Compartment();
 	let expandedContentAttributesCompartment = new Compartment();
+
+	let historyCompartment = new Compartment();
 
 	let search = $derived.by(() =>
 		useSearchRequest({
@@ -197,7 +203,7 @@
 	});
 
 	const extensionsWithDefaults = $derived([
-		historyExtension(),
+		historyCompartment.of(historyExtension()),
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		keymap.of(historyKeymap),
 		preventEnterKeyHandling(),
@@ -336,15 +342,6 @@
 		return value.length;
 	}
 
-	export function setEditorState(newEditorState: EditorState) {
-		if (!isEqualState(newEditorState, expandedEditorView?.state)) {
-			expandedEditorView?.setState(newEditorState);
-		}
-		if (!isEqualState(newEditorState, collapsedEditorView?.state)) {
-			collapsedEditorView?.setState(newEditorState);
-		}
-	}
-
 	export function dispatchChange({
 		change,
 		selection,
@@ -367,9 +364,6 @@
 				selection,
 				userEvent
 			});
-			if (expandedEditorView?.state) {
-				setEditorState(expandedEditorView.state);
-			}
 		} else {
 			collapsedEditorView?.dispatch({
 				changes: change,
@@ -377,15 +371,9 @@
 				userEvent
 			});
 		}
-		if (collapsedEditorView?.state) {
-			setEditorState(collapsedEditorView.state);
-		}
 	}
 
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
-		if (collapsedEditorView?.state) {
-			expandedEditorView?.setState(collapsedEditorView.state);
-		}
 		dialog?.showModal();
 		expanded = true;
 		onexpand?.({
@@ -402,16 +390,13 @@
 	}
 
 	export function hideExpandedSearch(params?: HideExpandedSearchParams) {
-		if (expandedEditorView?.state) {
-			collapsedEditorView?.setState(expandedEditorView.state);
-		}
-
 		dialog?.close();
-		console.log('krovus', dialog, expanded);
-
 		collapsedEditorView?.focus();
 		expanded = false;
-		oncollapse?.({ trigger: params?.trigger, editorState: collapsedEditorView?.state });
+		oncollapse?.({
+			trigger: params?.trigger,
+			editorState: expandedEditorView?.state
+		});
 		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
 	}
 
@@ -444,6 +429,9 @@
 				const formParams = new URLSearchParams(
 					new FormData(formElement) as unknown as Record<string, string>
 				);
+
+				console.log('formAction', formAction, 'formParams', formParams);
+
 				if (formAction && formParams) {
 					oninterceptexpandedsubmit?.(
 						`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}`
@@ -859,6 +847,33 @@
 			collapsedEditorView.focus();
 		}
 	});
+
+	$effect(() => {
+		if (externalEditorState) {
+			collapsedEditorView?.dispatch({
+				changes: {
+					from: 0,
+					to: collapsedEditorView.state.doc.length,
+					insert: externalEditorState.doc
+				},
+				selection: {
+					anchor: externalEditorState.selection.main.anchor,
+					head: externalEditorState.selection.main.head
+				}
+			});
+			expandedEditorView?.dispatch({
+				changes: {
+					from: 0,
+					to: expandedEditorView.state.doc.length,
+					insert: externalEditorState.doc
+				},
+				selection: {
+					anchor: externalEditorState.selection.main.anchor,
+					head: externalEditorState.selection.main.head
+				}
+			});
+		}
+	});
 </script>
 
 {#snippet fallbackExpandedContent({ search }: { search: ReturnType<typeof useSearchRequest> })}
@@ -904,6 +919,7 @@
 			extensions={collapsedExtensions}
 			onchange={handleChangeCodeMirror}
 			onselect={handleSelectCodeMirror}
+			allowUpdateHandling={allowCollapsedUpdateHandling}
 			bind:editorView={collapsedEditorView}
 		/>
 	</div>
@@ -917,6 +933,7 @@
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
 		onviewupdate={handleExpandedViewUpdate}
+		allowUpdateHandling={expanded}
 		bind:editorView={expandedEditorView}
 	/>
 {/snippet}
@@ -945,6 +962,7 @@
 	bind:this={dialog}
 	closedby="none"
 	tabindex="-1"
+	onfocus={() => console.log('aaaaa')}
 >
 	<div
 		class="supersearch-dialog-wrapper"
