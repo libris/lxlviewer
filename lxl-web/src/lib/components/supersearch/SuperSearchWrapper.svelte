@@ -112,7 +112,7 @@
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
-	afterNavigate(({ to }) => {
+	afterNavigate(({ to, type }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
 			const activeEditorView = superSearch?.getActiveEditorView();
@@ -140,7 +140,7 @@
 			if (userClearedSearch) {
 				showExpandedSearch();
 				userClearedSearch = false;
-			} else if (isHomeRoute && activeEditorView?.dom.checkVisibility?.()) {
+			} else if (isHomeRoute && type !== 'popstate' && activeEditorView?.dom.checkVisibility?.()) {
 				superSearch?.focus(); // focus input on start page
 			} else {
 				superSearch?.blur(); // remove focus from input after searching or navigating
