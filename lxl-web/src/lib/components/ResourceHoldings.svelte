@@ -78,7 +78,7 @@
 			</a>
 		</li>
 	{/each}
-	{#if page.data.librisSession && !page.data.isWork}
+	{#if page.data.librisSession && page.data?.instances?.length === 1}
 		<li>
 			<a
 				class="btn btn-cta bg-primary-800 border-primary-800 hover:bg-primary-900 hover:border-primary-900 @md:max-w-sm"
