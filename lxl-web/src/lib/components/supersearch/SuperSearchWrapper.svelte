@@ -115,10 +115,21 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
+			const activeEditorView = superSearch?.getActiveEditorView();
+
+			const currentLength = activeEditorView?.state.doc.length || 0;
 			if (isHomeRoute) {
-				q = ''; // reset query if navigating to start/index page
+				superSearch?.dispatchChange({
+					change: { from: 0, to: currentLength, insert: '' }
+				});
 			} else if (to.url.searchParams.has('_q')) {
-				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '');
+				superSearch?.dispatchChange({
+					change: {
+						from: 0,
+						to: currentLength,
+						insert: addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '')
+					}
+				});
 			}
 
 			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
@@ -129,7 +140,7 @@
 			if (userClearedSearch) {
 				showExpandedSearch();
 				userClearedSearch = false;
-			} else if (isHomeRoute) {
+			} else if (isHomeRoute && activeEditorView?.dom.checkVisibility?.()) {
 				superSearch?.focus(); // focus input on start page
 			} else {
 				superSearch?.blur(); // remove focus from input after searching or navigating
@@ -246,9 +257,9 @@
 	});
 
 	onMount(() => {
-		const editor = superSearch?.getEditorView();
+		const activeEditorView = superSearch?.getActiveEditorView();
 
-		if (editor?.dom.checkVisibility?.()) {
+		if (activeEditorView?.dom.checkVisibility?.()) {
 			if (searchContext.initialStateBeforeMount?.value) {
 				superSearch?.dispatchChange({
 					change: { insert: searchContext.initialStateBeforeMount.value, from: 0, to: q.length },
@@ -263,7 +274,7 @@
 				});
 			}
 
-			searchContext.editorState = editor.state;
+			searchContext.editorState = activeEditorView.state;
 			searchContext.showExpandedSearch = showExpandedSearch;
 			searchContext.hideExpandedSearch = hideExpandedSearch;
 			searchContext.changeQuery = (params) => superSearch?.dispatchChange(params);

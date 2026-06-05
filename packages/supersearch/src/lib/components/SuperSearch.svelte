@@ -173,6 +173,8 @@
 	let collapsedContentAttributesCompartment = new Compartment();
 	let expandedContentAttributesCompartment = new Compartment();
 
+	let activeEditorView = $derived(expanded ? expandedEditorView : collapsedEditorView);
+
 	let search = $derived.by(() =>
 		useSearchRequest({
 			endpoint,
@@ -341,8 +343,8 @@
 		onexpandedviewupdate?.(event);
 	}
 
-	export function getEditorView() {
-		return expanded ? expandedEditorView : collapsedEditorView;
+	export function getActiveEditorView() {
+		return activeEditorView;
 	}
 
 	export function dispatchChange({
@@ -418,11 +420,11 @@
 	}
 
 	export function focus() {
-		collapsedEditorView?.focus();
+		activeEditorView?.focus();
 	}
 
 	export function blur() {
-		collapsedEditorView?.contentDOM.blur();
+		activeEditorView?.contentDOM.blur();
 	}
 
 	function submitClosestForm() {
