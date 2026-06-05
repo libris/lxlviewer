@@ -10,7 +10,7 @@
 		type Selection,
 		type ShowExpandedSearchOptions,
 		SuperSearch,
-		type ViewUpdateSuperSearchEvent
+		type ViewUpdateEvent
 	} from 'supersearch';
 	import FooterRow from './rows/FooterRow.svelte';
 	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
@@ -232,7 +232,7 @@
 		}
 	}
 
-	function handleOnExpandedViewUpdate(event: ViewUpdateSuperSearchEvent) {
+	function handleOnExpandedViewUpdate(event: ViewUpdateEvent) {
 		if (event.lineHeight >= 60) {
 			wrappedLines = true;
 		} else {

@@ -11,8 +11,8 @@ import type {
 import type { EditorState } from '@codemirror/state';
 import type { Selection } from './components/CodeMirror.svelte';
 import type {
-	ChangeCodeMirrorEvent as ChangeSuperSearchEvent,
-	ViewUpdateCodeMirrorEvent as ViewUpdateSuperSearchEvent
+	ChangeCodeMirrorEvent as ChangeEvent,
+	ViewUpdateCodeMirrorEvent as ViewUpdateEvent
 } from './components/CodeMirror.svelte';
 import lxlQualifierPlugin from './extensions/lxlQualifierPlugin/index.js';
 import SuperSearch from '$lib/components/SuperSearch.svelte';
@@ -28,8 +28,8 @@ export {
 	type ResultItem,
 	type Selection,
 	type QualifierRendererProps,
-	type ChangeSuperSearchEvent,
-	type ViewUpdateSuperSearchEvent,
+	type ChangeEvent,
+	type ViewUpdateEvent,
 	type ChangeQueryParams,
 	type ShowExpandedSearchOptions,
 	type HideExpandedSearchOptions,
