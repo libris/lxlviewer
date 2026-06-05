@@ -5,13 +5,14 @@
 	import IconClear from '~icons/bi/x-circle';
 
 	interface Props {
+		id: string;
 		placeholder: string;
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		autofocus?: boolean;
 	}
 
-	let { placeholder, ariaLabel, ariaLabelledBy, autofocus }: Props = $props();
+	let { id, placeholder, ariaLabel, ariaLabelledBy, autofocus }: Props = $props();
 
 	const searchContext = getSearchContext();
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
@@ -24,17 +25,17 @@
 		}
 	});
 
-	function getSelectionOnTeardown(): { anchor: number | null; head: number | null } | undefined {
-		if (fallbackInputElement?.selectionStart || fallbackInputElement?.selectionEnd) {
+	function getSelectionOnTeardown(): { anchor: number; head: number } | undefined {
+		if (typeof fallbackInputElement?.selectionStart === 'number') {
 			if (fallbackInputElement.selectionDirection === 'backward') {
 				return {
-					anchor: fallbackInputElement?.selectionEnd,
-					head: fallbackInputElement?.selectionStart
+					anchor: fallbackInputElement?.selectionEnd || fallbackInputElement.selectionStart,
+					head: fallbackInputElement.selectionStart
 				};
 			}
 			return {
-				anchor: fallbackInputElement?.selectionStart,
-				head: fallbackInputElement?.selectionEnd
+				anchor: fallbackInputElement.selectionStart,
+				head: fallbackInputElement?.selectionEnd || fallbackInputElement.selectionStart
 			};
 		}
 	}
@@ -57,7 +58,7 @@
 		<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
 	</span>
 	<input
-		id="search-fallback"
+		id={`${id}-fallback`}
 		type="search"
 		name="_q"
 		{placeholder}

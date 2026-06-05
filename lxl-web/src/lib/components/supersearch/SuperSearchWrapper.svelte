@@ -29,6 +29,7 @@
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	interface Props {
+		id: string;
 		placeholder: string;
 		collapsedAriaLabelledBy?: string;
 		collapsedAriaLabel?: string;
@@ -42,6 +43,7 @@
 	}
 
 	let {
+		id,
 		placeholder,
 		collapsedAriaLabelledBy,
 		collapsedAriaLabel,
@@ -276,6 +278,7 @@
 
 {#key page.data.locale}
 	<SuperSearch
+		{id}
 		name="_q"
 		bind:this={superSearch}
 		bind:value={q}
