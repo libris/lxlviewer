@@ -449,10 +449,10 @@
 							</div>
 						{/each}
 						{#if decoratedData.itemInformation.length}
-							<details class="mt-4">
+							<details class="mt-4 print:hidden print:break-before-page open:print:block">
 								<summary class="flex cursor-pointer items-center gap-1">
 									<span
-										class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
+										class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform print:hidden"
 									>
 										<BiChevronRight />
 									</span>
