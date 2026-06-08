@@ -3,7 +3,7 @@
 	import { type Component, onDestroy, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
-	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
+	import { type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import { getSearchContext } from '$lib/contexts/search';
@@ -50,10 +50,6 @@
 	let showBackground = $derived(!isHomeRoute);
 	let showShadow = $derived(!isHomeRoute);
 	let showSearchIcon = $derived(!isHomeRoute && !isFindRoute);
-
-	const findActionUrl = $derived(
-		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
-	);
 
 	const subset = $derived(page.data.subsetMapping);
 
@@ -329,7 +325,7 @@
 					'hidden target:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit' // enable toggling using target/anchor (so it also works when JavaScript is disabled)
 			]}
 		>
-			<form id="search-form" action={findActionUrl} class="mx-auto w-full min-w-0">
+			<div class="mx-auto w-full min-w-0">
 				{#if isHomeRoute}
 					<hgroup
 						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
@@ -355,7 +351,7 @@
 					</hgroup>
 				{/if}
 				<AppSearch id="app-search" />
-			</form>
+			</div>
 		</search>
 		<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">
 			<li class={['lg:hidden', !showSearchIcon && 'hidden']}>

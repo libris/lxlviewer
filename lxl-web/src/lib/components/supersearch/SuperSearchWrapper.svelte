@@ -3,10 +3,13 @@
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import {
+		type ChangeEvent,
 		type DebouncedWaitFunction,
+		type Editor,
 		type ExpandEvent,
 		lxlQualifierPlugin,
 		type QualifierRendererProps,
+		type SelectEvent,
 		type Selection,
 		type ShowExpandedSearchOptions,
 		SuperSearch,
@@ -37,9 +40,14 @@
 		expandedAriaLabelledBy?: string;
 		expandedAriaLabel?: string;
 		expandedAriaDescribedBy?: string;
+		editor?: Editor;
+		syncEditorsOnChange?: boolean;
+		syncEditorsOnSelection?: boolean;
 		onCursorChange: (cursor: number | null) => void;
 		qualifierSuggestions: QualifierSuggestion2[];
 		autofocus?: boolean;
+		initialValueBeforeMount?: string;
+		initialSelectionBeforeMount?: { anchor: number; head: number };
 	}
 
 	let {
@@ -51,6 +59,11 @@
 		expandedAriaLabelledBy,
 		expandedAriaLabel,
 		expandedAriaDescribedBy,
+		editor,
+		syncEditorsOnChange = false,
+		syncEditorsOnSelection = false,
+		initialValueBeforeMount,
+		initialSelectionBeforeMount,
 		onCursorChange,
 		qualifierSuggestions,
 		autofocus
@@ -220,8 +233,17 @@
 		superSearch?.hideExpandedSearch();
 	}
 
-	function handleOnChange() {
+	function handleOnChange(event: ChangeEvent) {
+		if (syncEditorsOnChange) {
+			searchContext.lastUpdatedEditor = event.editor;
+		}
 		fetchOnExpand = false;
+	}
+
+	function handleOnSelect(event: SelectEvent) {
+		if (syncEditorsOnSelection) {
+			searchContext.lastUpdatedEditor = event.editor;
+		}
 	}
 
 	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
@@ -258,23 +280,37 @@
 
 	onMount(() => {
 		const activeEditorView = superSearch?.getActiveEditorView();
-
 		if (activeEditorView?.dom.checkVisibility?.()) {
-			if (searchContext.initialStateBeforeMount?.value) {
+			if (
+				initialValueBeforeMount ||
+				(initialSelectionBeforeMount &&
+					initialSelectionBeforeMount.anchor !== 0 &&
+					initialSelectionBeforeMount.head !== 0)
+			) {
 				superSearch?.dispatchChange({
-					change: { insert: searchContext.initialStateBeforeMount.value, from: 0, to: q.length },
-					selection: searchContext.initialStateBeforeMount.selection
+					change: initialValueBeforeMount
+						? { insert: initialValueBeforeMount, from: 0, to: q.length }
+						: undefined,
+					selection: initialSelectionBeforeMount
 						? {
-								anchor: searchContext.initialStateBeforeMount.selection.anchor,
-								head: searchContext.initialStateBeforeMount.selection.head
+								anchor: initialSelectionBeforeMount.anchor,
+								head: initialSelectionBeforeMount.head
 							}
 						: undefined,
 					userEvent: 'input.complete',
 					addToHistory: false
 				});
+
+				if (initialSelectionBeforeMount) {
+					superSearch?.focus();
+				}
+
+				searchContext.lastUpdatedEditor = {
+					id: activeEditorView.contentDOM.id,
+					state: activeEditorView.state
+				};
 			}
 
-			searchContext.editorState = activeEditorView.state;
 			searchContext.showExpandedSearch = showExpandedSearch;
 			searchContext.hideExpandedSearch = hideExpandedSearch;
 			searchContext.changeQuery = (params) => superSearch?.dispatchChange(params);
@@ -283,7 +319,6 @@
 
 	onDestroy(() => {
 		if (timeout) clearTimeout(timeout); // ensure timeout is cleared to prevent memory leaks
-		searchContext.initialStateBeforeMount = undefined;
 	});
 </script>
 
@@ -319,6 +354,9 @@
 		}}
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
+		{editor}
+		{syncEditorsOnChange}
+		{syncEditorsOnSelection}
 		shallowRouting
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
@@ -326,6 +364,7 @@
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
 		onchange={handleOnChange}
+		onselect={handleOnSelect}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
 	>

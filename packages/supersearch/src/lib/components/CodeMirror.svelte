@@ -1,6 +1,11 @@
 <script lang="ts" module>
 	import { Transaction } from '@codemirror/state';
 
+	export type Editor = {
+		id: string;
+		state: EditorState;
+	};
+
 	export type Selection = {
 		from: number;
 		to: number;
@@ -10,13 +15,17 @@
 	};
 
 	export type ChangeCodeMirrorEvent = {
+		editor: Editor;
+		userEvent: UserEvent | undefined;
 		value: string;
 		selection: Selection;
-		editorView: EditorView;
-		userEvent: UserEvent | undefined;
 	};
 
-	export type SelectCodeMirrorEvent = Selection;
+	export type SelectCodeMirrorEvent = {
+		editor: Editor;
+		userEvent: UserEvent | undefined;
+		selection: Selection;
+	};
 
 	export type ViewUpdateCodeMirrorEvent = {
 		lineHeight: number;
@@ -58,30 +67,33 @@
 		if (update.heightChanged) {
 			onviewupdate({ lineHeight: update.view.lineBlockAt(0).height });
 		}
+
 		if (isViewUpdateFromUserInput(update)) {
-			const selection = {
-				from: update.state.selection.main.from,
-				to: update.state.selection.main.to,
-				anchor: update.state.selection.main.anchor,
-				head: update.state.selection.main.head,
-				empty: update.state.selection.main.empty
+			const userEvent = update.transactions[0].annotation(Transaction.userEvent) as
+				| UserEvent
+				| undefined;
+
+			const editor = {
+				id: update.view.contentDOM.id,
+				state: update.state
 			};
 
 			if (update.docChanged) {
 				value = update.state.doc.toString();
-				const userEvent = update.transactions[0].annotation(Transaction.userEvent) as
-					| UserEvent
-					| undefined;
 				onchange({
-					value,
-					selection,
-					editorView: update.view,
-					userEvent
+					editor,
+					userEvent,
+					value: update.state.doc.toString(),
+					selection: update.state.selection.main
 				});
 			}
 
 			if (isViewUpdateOfUserEvent(update, 'select')) {
-				onselect(selection);
+				onselect({
+					editor,
+					userEvent,
+					selection: update.state.selection.main
+				});
 			}
 		}
 	});
@@ -129,7 +141,10 @@
 					head: selection.main.head,
 					empty: selection.main.empty
 				},
-				editorView,
+				editor: {
+					id: editorView.contentDOM.id,
+					state: editorView.state
+				},
 				userEvent: 'delete'
 			});
 		}
@@ -151,13 +166,6 @@
 			state: createEditorState({ doc: value }),
 			parent: codemirrorContainerElement
 		});
-	});
-
-	$effect(() => {
-		if (value !== editorView?.state.doc.toString()) {
-			// Reset editor when value changes from outside (= user navigating)
-			reset({ doc: value });
-		}
 	});
 
 	$effect(() => {

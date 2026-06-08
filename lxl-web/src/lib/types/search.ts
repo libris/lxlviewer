@@ -311,3 +311,8 @@ export interface AdjecentSearchResult {
 	next?: Link;
 	items: Link[];
 }
+
+export type InitiaStateBeforeMount = {
+	value: string;
+	selection?: { anchor: number; head: number };
+};

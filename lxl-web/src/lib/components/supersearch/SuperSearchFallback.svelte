@@ -1,23 +1,29 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { getSearchContext } from '$lib/contexts/search';
 	import IconSearch from '~icons/bi/search';
 	import IconClear from '~icons/bi/x-circle';
 
 	interface Props {
 		id: string;
+		value: string;
+		selection?: { anchor: number; head: number } | undefined;
 		placeholder: string;
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		autofocus?: boolean;
 	}
 
-	let { id, placeholder, ariaLabel, ariaLabelledBy, autofocus }: Props = $props();
+	let {
+		id,
+		value = $bindable(''),
+		selection = $bindable(),
+		placeholder,
+		ariaLabel,
+		ariaLabelledBy,
+		autofocus
+	}: Props = $props();
 
-	const searchContext = getSearchContext();
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
-
-	let value = $derived(page.url.searchParams.get('_q'));
 
 	$effect(() => {
 		if (page.url.hash === `#search`) {
@@ -44,10 +50,7 @@
 		return () => {
 			// Use teardown function to save state before mounting SuperSearchWrapper.svelte (so selection and value is kept...)
 			if (fallbackInputElement) {
-				searchContext.initialStateBeforeMount = {
-					value: fallbackInputElement.value,
-					selection: getSelectionOnTeardown()
-				};
+				selection = getSelectionOnTeardown();
 			}
 		};
 	});
@@ -62,7 +65,7 @@
 		type="search"
 		name="_q"
 		{placeholder}
-		{value}
+		bind:value
 		aria-labelledby={ariaLabelledBy}
 		aria-label={ariaLabel}
 		{autofocus}

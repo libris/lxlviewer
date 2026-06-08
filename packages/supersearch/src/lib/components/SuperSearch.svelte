@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
-	import { page } from '$app/state';
-	import { pushState, beforeNavigate } from '$app/navigation';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
 		type SelectCodeMirrorEvent,
@@ -10,7 +8,12 @@
 		type Selection
 	} from '$lib/components/CodeMirror.svelte';
 	import { sendMessage } from '$lib/utils/sendMessage.js';
-	import type { ChangeSuperSearchEvent, ViewUpdateSuperSearchEvent } from '$lib/index.js';
+	import {
+		type Editor,
+		type ChangeEvent,
+		type ViewUpdateEvent,
+		type SelectEvent
+	} from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, Transaction, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
@@ -27,6 +30,7 @@
 		ShowExpandedSearchOptions,
 		DebouncedWaitFunction,
 		ExpandEvent,
+		CollapseEvent,
 		ChangeQueryParams
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
@@ -41,7 +45,7 @@
 	};
 
 	interface Props {
-		id?: string;
+		id: string;
 		name: string;
 		value?: string;
 		form?: string;
@@ -61,6 +65,9 @@
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
+		editor?: Editor;
+		syncEditorsOnChange?: boolean;
+		syncEditorsOnSelection?: boolean;
 		inputRow?: Snippet<
 			[
 				{
@@ -92,7 +99,6 @@
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		wrappingArrowKeyNavigation?: boolean;
-		shallowRouting?: boolean;
 		debouncedWait?: number;
 		getDebouncedWait?: DebouncedWaitFunction;
 		selection?: Selection;
@@ -100,9 +106,12 @@
 		hasData?: boolean;
 		loadMoreLabel?: string;
 		onexpand?: (event: ExpandEvent) => void;
-		oncollapse?: () => void;
-		onchange?: (event: ChangeSuperSearchEvent) => void;
-		onexpandedviewupdate?: (event: ViewUpdateSuperSearchEvent) => void;
+		oncollapse?: (event: CollapseEvent) => void;
+		onchange?: (event: ChangeEvent) => void;
+		onselect?: (event: SelectEvent) => void;
+		onexpandedviewupdate?: (event: ViewUpdateEvent) => void;
+		oninterceptexpandedclick?: (href: string, event: MouseEvent) => void;
+		oninterceptexpandedsubmit?: (href: string) => void;
 	}
 
 	let {
@@ -126,13 +135,15 @@
 		paginationQueryFn,
 		transformFn,
 		extensions = [],
+		editor,
+		syncEditorsOnChange = false,
+		syncEditorsOnSelection = false,
 		inputRow = fallbackInputRow,
 		expandedContent = fallbackExpandedContent,
 		resultItemRow = fallbackResultItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		wrappingArrowKeyNavigation = false,
-		shallowRouting = false,
 		defaultInputCol = -1,
 		defaultResultRow = 0,
 		defaultResultCol = 0,
@@ -145,18 +156,21 @@
 		onexpand,
 		oncollapse,
 		onchange,
-		onexpandedviewupdate
+		onselect,
+		onexpandedviewupdate,
+		oninterceptexpandedclick,
+		oninterceptexpandedsubmit
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
+
 	let dialog: HTMLDialogElement | undefined = $state();
 	let comboboxElement: HTMLDivElement | undefined = $state();
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(-1);
-	let interceptedLinkElement: HTMLLinkElement | undefined = $state(undefined);
-	let submitLinkElement: HTMLAnchorElement | undefined = $state(undefined);
+	let interceptedAnchorElement: HTMLAnchorElement | undefined = $state(undefined);
 
 	let prevValue: string = value;
 
@@ -173,7 +187,10 @@
 	let collapsedContentAttributesCompartment = new Compartment();
 	let expandedContentAttributesCompartment = new Compartment();
 
-	let activeEditorView = $derived(expanded ? expandedEditorView : collapsedEditorView);
+	const collapsedId = $derived(`${id}-collapsed`);
+	const expandedId = $derived(`${id}-expanded`);
+	const collapsedComboboxId = $derived(`${id}-collapsed-combobox`);
+	const expandedComboboxId = $derived(`${id}-expanded-combobox`);
 
 	let search = $derived.by(() =>
 		useSearchRequest({
@@ -197,12 +214,6 @@
 		}
 	});
 
-	beforeNavigate((navigation) => {
-		if (navigation.to) {
-			hideExpandedSearch();
-		}
-	});
-
 	const extensionsWithDefaults = $derived([
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		preventEnterKeyHandling(),
@@ -215,7 +226,7 @@
 
 	let collapsedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
-			id: `${id}-collapsed-combobox`,
+			id: collapsedId,
 			role: 'combobox',
 			enterkeyhint: 'search',
 			...(collapsedAriaLabelledBy && {
@@ -242,7 +253,7 @@
 	); // ensures aria-activedecendant is only shown if the element exists in the DOM
 	let expandedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
-			id: `${id}-expanded-combobox`,
+			id: expandedComboboxId,
 			role: 'combobox', // identifies the element as a combobox
 			enterkeyhint: 'search',
 			...(expandedAriaLabelledBy && {
@@ -320,23 +331,34 @@
 		}
 		value = event.value;
 		selection = event.selection;
+
 		setDefaultRowAndCols();
 
-		if (value.trim() && value.trim() !== prevValue.trim()) {
-			prevValue = value;
-			search.debouncedFetchData(value, selection.head);
+		if (event.value.trim() && event.value.trim() !== prevValue.trim()) {
+			search.debouncedFetchData(value, event.selection.head);
 		}
 
-		if (!value.trim()) {
-			prevValue = value;
+		if (!event.value.trim()) {
 			if (search.data) search.resetData();
 		}
+
+		if (syncEditorsOnChange) {
+			editor = event.editor;
+		}
+
+		prevValue = event.value;
 
 		onchange?.(event);
 	}
 
 	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
-		selection = event;
+		selection = event.selection;
+
+		if (syncEditorsOnSelection) {
+			editor = event.editor;
+		}
+
+		onselect?.(event);
 	}
 
 	function handleExpandedViewUpdate(event: ViewUpdateCodeMirrorEvent) {
@@ -344,7 +366,7 @@
 	}
 
 	export function getActiveEditorView() {
-		return activeEditorView;
+		return expanded ? expandedEditorView : collapsedEditorView;
 	}
 
 	export function dispatchChange({
@@ -361,31 +383,20 @@
 		});
 	}
 
-	async function handlePopState(event: PopStateEvent) {
-		interceptedLinkElement?.click();
-		if (dialog?.open) {
-			hideExpandedSearch();
-		} else if (event.state['sveltekit:states']?.expandedSuperSearch) {
-			showExpandedSearch({ focusRow: 0, preventPushState: true }); // a little bit hacky way to ensure the dialog doesn't flicker when navigating forward
-		}
-	}
-
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
-		if (!expanded) {
-			expandedEditorView?.dispatch({
-				selection:
-					options?.cursorAtEnd && collapsedEditorView
-						? { anchor: collapsedEditorView?.state.doc.length }
-						: collapsedEditorView?.state.selection.main
-			});
+		if (!expanded && collapsedEditorView) {
+			editor = {
+				id: collapsedEditorView.contentDOM.id,
+				state: collapsedEditorView.state
+			};
+
 			dialog?.showModal();
 			expanded = true;
-			onexpand?.({ windowPageYOffset: window.pageYOffset });
-			if (shallowRouting) {
-				if (!options?.preventPushState) {
-					pushState('', { ...page.state, expandedSuperSearch: true });
-				}
-			}
+
+			onexpand?.({
+				editor,
+				windowPageYOffset: window.pageYOffset
+			});
 		}
 		setDefaultRowAndCols({ focusRow: options?.focusRow });
 		if (!options?.focusRow || options.focusRow < 1) {
@@ -397,16 +408,20 @@
 	}
 
 	export function hideExpandedSearch() {
-		if (expanded) {
+		if (expanded && expandedEditorView) {
+			editor = {
+				id: expandedEditorView.contentDOM.id,
+				state: expandedEditorView.state
+			};
+
 			dialog?.close();
-			collapsedEditorView?.dispatch({
-				selection: expandedEditorView?.state.selection.main
-			});
-			collapsedEditorView?.focus();
 			expanded = false;
-			oncollapse?.();
+			oncollapse?.({
+				editor
+			});
 		}
 		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
+		collapsedEditorView?.focus();
 	}
 
 	export function fetchData() {
@@ -420,11 +435,11 @@
 	}
 
 	export function focus() {
-		activeEditorView?.focus();
+		(expanded ? expandedEditorView : collapsedEditorView)?.focus();
 	}
 
 	export function blur() {
-		activeEditorView?.contentDOM.blur();
+		(expanded ? expandedEditorView : collapsedEditorView)?.contentDOM.blur();
 	}
 
 	function submitClosestForm() {
@@ -433,22 +448,18 @@
 			: collapsedEditorView?.dom?.closest('form');
 
 		if (formElement && formElement instanceof HTMLFormElement) {
-			if (expanded) {
-				if (shallowRouting) {
-					const formAction = formElement.getAttribute('action');
-					const formParams = new URLSearchParams(
-						new FormData(formElement) as unknown as Record<string, string>
+			if (expanded && oninterceptexpandedsubmit) {
+				const formAction = formElement.getAttribute('action');
+				const formParams = new URLSearchParams(
+					new FormData(formElement) as unknown as Record<string, string>
+				);
+
+				if (formAction && formParams) {
+					oninterceptexpandedsubmit?.(
+						`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}`
 					);
-					if (formAction && formParams) {
-						submitLinkElement?.setAttribute(
-							'href',
-							`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}` // A workaround for fixing back/forward navigation when submitting from expanded dialog (link clicks works together with history.back() but not goto() for some reason...)
-						);
-						submitLinkElement?.click();
-					} else {
-						formElement.requestSubmit();
-					}
-					hideExpandedSearch();
+				} else {
+					formElement.requestSubmit();
 				}
 			} else {
 				formElement.requestSubmit();
@@ -476,11 +487,7 @@
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
-			if (shallowRouting) {
-				history.back();
-			} else {
-				hideExpandedSearch();
-			}
+			hideExpandedSearch();
 		}
 
 		if (event.key === 'Enter') {
@@ -724,11 +731,7 @@
 
 	function handleClickOutsideDialog(event: MouseEvent) {
 		if (event.target === dialog || event.target === event.currentTarget) {
-			if (shallowRouting) {
-				history.back();
-			} else {
-				hideExpandedSearch();
-			}
+			hideExpandedSearch();
 		}
 	}
 
@@ -753,24 +756,33 @@
 	}
 
 	function interceptExpandedLinks(event: MouseEvent) {
-		if (interceptedLinkElement) {
-			interceptedLinkElement = undefined; // already intercepted so do nothing
+		if (!oninterceptexpandedclick) {
+			return;
+		}
+		if (interceptedAnchorElement) {
+			interceptedAnchorElement = undefined; // already intercepted so do nothing
 			return;
 		} else {
-			const target = event.target as HTMLElement;
-			const linkElement = target.tagName === 'A' ? target : target.closest('a');
+			const target = event.target as HTMLAnchorElement;
+			const anchorElement = target.tagName === 'A' ? target : target.closest('a');
+			const href = anchorElement?.getAttribute('href');
 
-			if (linkElement && linkElement.getAttribute('href')) {
+			console.log('annfha', anchorElement);
+			if (anchorElement && href) {
 				event.preventDefault();
-				interceptedLinkElement = linkElement as HTMLLinkElement;
-				history.back(); // go back before triggering click again in popstate
+				interceptedAnchorElement = anchorElement;
+				oninterceptexpandedclick(href, event);
 			}
 		}
 	}
 
 	function handleReset() {
 		collapsedEditorView?.dispatch({
-			changes: { from: 0, to: value.length, insert: '' },
+			changes: { from: 0, to: collapsedEditorView?.state.doc.length, insert: '' },
+			userEvent: 'delete'
+		});
+		expandedEditorView?.dispatch({
+			changes: { from: 0, to: expandedEditorView?.state.doc.length, insert: '' },
 			userEvent: 'delete'
 		});
 		search.resetData();
@@ -857,10 +869,32 @@
 	});
 
 	const handleClickClose = $derived(() => {
-		if (shallowRouting) {
-			return history.back();
-		} else {
-			hideExpandedSearch();
+		hideExpandedSearch();
+	});
+
+	$effect(() => {
+		if (editor && editor.id !== collapsedComboboxId) {
+			collapsedEditorView?.dispatch({
+				changes: {
+					from: 0,
+					to: collapsedEditorView.state.doc.length,
+					insert: editor.state.doc
+				},
+				selection: editor.state.selection
+			});
+		}
+	});
+
+	$effect(() => {
+		if (editor && editor.id !== expandedComboboxId) {
+			expandedEditorView?.dispatch({
+				changes: {
+					from: 0,
+					to: expandedEditorView.state.doc.length,
+					insert: editor.state.doc
+				},
+				selection: editor.state.selection
+			});
 		}
 	});
 </script>
@@ -903,18 +937,19 @@
 
 {#snippet collapsedInputSnippet()}
 	<CodeMirror
+		id={collapsedId}
 		{value}
 		extensions={collapsedExtensions}
 		onclick={handleClickCollapsed}
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
 		bind:editorView={collapsedEditorView}
-		syncedEditorView={expandedEditorView}
 	/>
 {/snippet}
 
 {#snippet expandedInputSnippet()}
 	<CodeMirror
+		id={expandedId}
 		{value}
 		extensions={expandedExtensions}
 		onclick={handleClickExpanded}
@@ -922,11 +957,9 @@
 		onselect={handleSelectCodeMirror}
 		onviewupdate={handleExpandedViewUpdate}
 		bind:editorView={expandedEditorView}
-		syncedEditorView={collapsedEditorView}
 	/>
 {/snippet}
 
-<svelte:window onpopstate={handlePopState} />
 <div role="presentation" onkeydown={handleCollapsedKeyDown} {id}>
 	<div class="supersearch-combobox">
 		{@render inputRow?.({
@@ -962,15 +995,8 @@
 			<div
 				class="supersearch-combobox"
 				bind:this={comboboxElement}
-				onclick={interceptExpandedLinks}
+				onclick={oninterceptexpandedclick ? interceptExpandedLinks : undefined}
 			>
-				<!-- The hidden submit link is used as a workaround to achieve correct history navigations when submitting -->
-				<a
-					href="/"
-					class="supersearch-hidden-submit-link"
-					aria-hidden="true"
-					bind:this={submitLinkElement}
-				></a>
 				{@render inputRow?.({
 					expanded: true,
 					inputField: expandedInputSnippet,
@@ -1010,9 +1036,5 @@
 
 	.supersearch-suggestions {
 		overflow: hidden;
-	}
-
-	.supersearch-hidden-submit-link {
-		display: none;
 	}
 </style>

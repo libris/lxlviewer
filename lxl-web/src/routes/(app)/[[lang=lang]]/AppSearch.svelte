@@ -5,6 +5,7 @@
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 	import { baseLocale } from '$lib/i18n/locales';
+	import { getSearchContext } from '$lib/contexts/search';
 
 	type Props = {
 		id: string;
@@ -12,6 +13,11 @@
 	};
 
 	let { id, ariaLabelledBy }: Props = $props();
+
+	const searchContext = getSearchContext();
+
+	let initialValueBeforeMount: string = $state(page.url.searchParams.get('_q') || '');
+	let initialSelectionBeforeMount: { anchor: number; head: number } | undefined = $state();
 
 	let cursor: number | null = $state(null);
 
@@ -41,7 +47,14 @@
 </script>
 
 {#snippet fallbackInput()}
-	<SuperSearchFallback {id} {placeholder} {ariaLabelledBy} {ariaLabel} />
+	<SuperSearchFallback
+		{id}
+		{placeholder}
+		{ariaLabelledBy}
+		{ariaLabel}
+		bind:value={initialValueBeforeMount}
+		bind:selection={initialSelectionBeforeMount}
+	/>
 {/snippet}
 
 <search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center lg:px-3']}>
@@ -59,6 +72,9 @@
 					onCursorChange={(value) => (cursor = value)}
 					qualifierSuggestions={page.data.qualifierSuggestions || []}
 					{autofocus}
+					{initialValueBeforeMount}
+					{initialSelectionBeforeMount}
+					editor={searchContext.lastUpdatedEditor}
 				/>
 			</div>
 		{:catch}

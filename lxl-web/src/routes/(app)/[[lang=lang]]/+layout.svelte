@@ -18,8 +18,7 @@
 	setHomepageContext(homepageCache);
 
 	let searchContext = $state({
-		initialStateBeforeMount: undefined,
-		editorState: undefined,
+		lastUpdatedEditor: undefined,
 		changeQuery: () => {},
 		showExpandedSearch: () => {},
 		hideExpandedSearch: () => {}
