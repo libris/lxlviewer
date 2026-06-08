@@ -41,7 +41,7 @@ test.describe('Set settings with link', async () => {
 		await page2.goto(link);
 		await expect(page2).toHaveURL(/^https?:\/\/[^/]+\/?\?_r=itemHeldByOrg:ARKM$/); // start page
 
-		await page2.locator('a[href^="/my-pages"]').first().click();
+		await page2.getByRole('link', { name: 'Mina sidor' }).first().click();
 
 		await checkFavourites(page2);
 
