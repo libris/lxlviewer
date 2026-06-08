@@ -10,9 +10,9 @@
 	};
 
 	export type ChangeCodeMirrorEvent = {
-		editorState: EditorState;
 		value: string;
 		selection: Selection;
+		editorView: EditorView;
 		userEvent: UserEvent | undefined;
 	};
 
@@ -30,13 +30,10 @@
 	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 	import isViewUpdateOfUserEvent from '$lib/utils/isViewUpdateOfUserEvent.js';
-	import {
-		isViewUpdateSyncableEffect,
-		syncedTransaction
-	} from '$lib/utils/isViewUpdateSyncableEffect.js';
 	import type { UserEvent } from '$lib/types/superSearch.js';
 
 	type CodeMirrorProps = {
+		id: string;
 		value?: string;
 		extensions?: Extension[];
 		onclick?: (event: MouseEvent) => void;
@@ -44,78 +41,48 @@
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		onviewupdate?: (event: ViewUpdateCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
-		syncedEditorView?: EditorView | undefined;
 	};
 
 	let {
+		id,
 		value = '', // value isn't bindable as it can easily cause undo/redo history issues when changing the value from outside – it's preferable to dispatch changes instead
 		extensions = [],
 		onclick = () => {},
 		onselect = () => {},
 		onchange = () => {},
 		onviewupdate = () => {},
-		editorView = $bindable(),
-		syncedEditorView
+		editorView = $bindable()
 	}: CodeMirrorProps = $props();
 
-	let prevLineHeight = $state();
-
 	const updateHandler = EditorView.updateListener.of((update) => {
-		if (update.transactions.some((tr) => tr.annotation(syncedTransaction))) {
-			return;
-		}
-
-		// TODO: do better more generic equality check
-		if (prevLineHeight !== update.view.lineBlockAt(0).height) {
+		if (update.heightChanged) {
 			onviewupdate({ lineHeight: update.view.lineBlockAt(0).height });
-			prevLineHeight = update.view.lineBlockAt(0).height;
 		}
 		if (isViewUpdateFromUserInput(update)) {
-			syncedEditorView?.dispatch({
-				changes: update.changes,
-				selection: update.state.selection,
-				scrollIntoView: update.transactions?.[0].scrollIntoView
-			});
+			const selection = {
+				from: update.state.selection.main.from,
+				to: update.state.selection.main.to,
+				anchor: update.state.selection.main.anchor,
+				head: update.state.selection.main.head,
+				empty: update.state.selection.main.empty
+			};
+
 			if (update.docChanged) {
 				value = update.state.doc.toString();
 				const userEvent = update.transactions[0].annotation(Transaction.userEvent) as
 					| UserEvent
 					| undefined;
 				onchange({
-					editorState: update.state,
 					value,
-					selection: {
-						from: update.state.selection.main.from,
-						to: update.state.selection.main.to,
-						anchor: update.state.selection.main.anchor,
-						head: update.state.selection.main.head,
-						empty: update.state.selection.main.empty
-					},
+					selection,
+					editorView: update.view,
 					userEvent
 				});
 			}
-		}
 
-		if (isViewUpdateOfUserEvent(update, 'select')) {
-			syncedEditorView?.dispatch({
-				selection: update.state.selection
-			});
-			onselect({
-				from: update.state.selection.main.from,
-				to: update.state.selection.main.to,
-				anchor: update.state.selection.main.anchor,
-				head: update.state.selection.main.head,
-				empty: update.state.selection.main.empty
-			});
-		}
-
-		const effects = isViewUpdateSyncableEffect(update);
-
-		if (effects.length) {
-			syncedEditorView?.dispatch({
-				effects,
-				annotations: syncedTransaction.of(true)
-			});
+			if (isViewUpdateOfUserEvent(update, 'select')) {
+				onselect(selection);
+			}
 		}
 	});
 
@@ -140,29 +107,32 @@
 	}
 
 	export function reset(options?: { doc: string; selection?: { anchor: number; head: number } }) {
-		const selection = EditorSelection.create([
-			options?.selection
-				? EditorSelection.range(options.selection.anchor, options.selection.head)
-				: EditorSelection.range(0, 0)
-		]);
-		editorView?.setState(
-			createEditorState({
-				doc: options?.doc,
-				selection
-			})
-		);
-		value = options?.doc || '';
-		onchange({
-			value,
-			selection: {
-				from: selection.main.from,
-				to: selection.main.to,
-				anchor: selection.main.anchor,
-				head: selection.main.head,
-				empty: selection.main.empty
-			},
-			userEvent: 'delete'
-		});
+		if (editorView) {
+			const selection = EditorSelection.create([
+				options?.selection
+					? EditorSelection.range(options.selection.anchor, options.selection.head)
+					: EditorSelection.range(0, 0)
+			]);
+			editorView.setState(
+				createEditorState({
+					doc: options?.doc,
+					selection
+				})
+			);
+			value = options?.doc || '';
+			onchange({
+				value,
+				selection: {
+					from: selection.main.from,
+					to: selection.main.to,
+					anchor: selection.main.anchor,
+					head: selection.main.head,
+					empty: selection.main.empty
+				},
+				editorView,
+				userEvent: 'delete'
+			});
+		}
 	}
 
 	function reconfigureAllExtensions() {
@@ -198,7 +168,7 @@
 	});
 </script>
 
-<div class="codemirror-container" bind:this={codemirrorContainerElement}></div>
+<div {id} class="codemirror-container" bind:this={codemirrorContainerElement}></div>
 
 <style>
 	.codemirror-container {
