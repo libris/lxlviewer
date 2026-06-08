@@ -6,6 +6,7 @@ import type {
 	HideExpandedSearchOptions,
 	DebouncedWaitFunction,
 	ExpandEvent,
+	CollapseEvent,
 	UserEvent
 } from './types/superSearch.js';
 import type { Selection, Editor } from './components/CodeMirror.svelte';
@@ -36,5 +37,6 @@ export {
 	type HideExpandedSearchOptions,
 	type DebouncedWaitFunction,
 	type ExpandEvent,
+	type CollapseEvent,
 	type UserEvent
 };

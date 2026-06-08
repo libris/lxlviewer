@@ -28,6 +28,7 @@
 		TransformFunction,
 		ResultItem,
 		ShowExpandedSearchOptions,
+		HideExpandedSearchOptions,
 		DebouncedWaitFunction,
 		ExpandEvent,
 		CollapseEvent,
@@ -375,8 +376,19 @@
 		userEvent = 'input',
 		addToHistory = true
 	}: ChangeQueryParams) {
-		(expanded ? expandedEditorView : collapsedEditorView)?.dispatch({
-			changes: change,
+		const activeEditor = getActiveEditorView();
+		const from =
+			typeof change?.from === 'number' ? change.from : activeEditor?.state.doc.length || 0;
+		const to = typeof change?.to === 'number' ? change.to : activeEditor?.state.doc.length || 0;
+
+		activeEditor?.dispatch({
+			changes: change
+				? {
+						insert: change.insert,
+						from,
+						to
+					}
+				: undefined,
 			selection,
 			userEvent,
 			annotations: [Transaction.addToHistory.of(addToHistory)]
@@ -407,7 +419,7 @@
 		expandedEditorView?.focus();
 	}
 
-	export function hideExpandedSearch() {
+	export function hideExpandedSearch(options?: HideExpandedSearchOptions) {
 		if (expanded && expandedEditorView) {
 			editor = {
 				id: expandedEditorView.contentDOM.id,
@@ -421,7 +433,9 @@
 			});
 		}
 		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
-		collapsedEditorView?.focus();
+		if (!options?.skipFocus) {
+			collapsedEditorView?.focus();
+		}
 	}
 
 	export function fetchData() {

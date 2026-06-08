@@ -16,7 +16,7 @@ export interface ResultItem {
 }
 
 export type ChangeQueryParams = {
-	change?: { insert: string; from: number; to: number };
+	change?: { insert: string; from?: number; to?: number };
 	selection?: {
 		anchor: number;
 		head: number;
@@ -31,7 +31,9 @@ export type ShowExpandedSearchOptions = {
 	preventPushState?: boolean;
 };
 
-export type HideExpandedSearchOptions = undefined;
+export type HideExpandedSearchOptions = {
+	skipFocus?: boolean;
+};
 
 export type DebouncedWaitFunction = (query: string) => number | null;
 

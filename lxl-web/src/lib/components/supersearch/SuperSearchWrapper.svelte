@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import {
 		type ChangeEvent,
 		type DebouncedWaitFunction,
 		type Editor,
 		type ExpandEvent,
+		type CollapseEvent,
+		type HideExpandedSearchOptions,
 		lxlQualifierPlugin,
 		type QualifierRendererProps,
 		type SelectEvent,
@@ -96,6 +98,7 @@
 	let userClearedSearch = $state(false);
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
+	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
@@ -125,39 +128,48 @@
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
+	beforeNavigate(() => {
+		hideExpandedSearch({ skipFocus: true });
+	});
+
 	afterNavigate(({ to, type }) => {
+		const activeEditorView = superSearch?.getActiveEditorView();
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			const activeEditorView = superSearch?.getActiveEditorView();
-
 			const currentLength = activeEditorView?.state.doc.length || 0;
-			if (isHomeRoute) {
-				superSearch?.dispatchChange({
-					change: { from: 0, to: currentLength, insert: '' }
-				});
-			} else if (to.url.searchParams.has('_q')) {
+			const insert = to.url.searchParams.has('_q')
+				? addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '')
+				: isHomeRoute || isFindRoute
+					? ''
+					: undefined;
+
+			if (typeof insert === 'string' && insert !== activeEditorView?.state.doc.toString()) {
 				superSearch?.dispatchChange({
 					change: {
 						from: 0,
 						to: currentLength,
-						insert: addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '')
-					}
+						insert
+					},
+					selection: {
+						anchor: insert.length,
+						head: insert.length
+					},
+					userEvent: 'input.complete'
 				});
 			}
+		}
 
-			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
+		pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
 
-			hideExpandedSearch();
-			fetchOnExpand = true;
+		fetchOnExpand = true;
 
-			if (userClearedSearch) {
-				showExpandedSearch();
-				userClearedSearch = false;
-			} else if (isHomeRoute && type !== 'popstate' && activeEditorView?.dom.checkVisibility?.()) {
-				superSearch?.focus(); // focus input on start page
-			} else {
-				superSearch?.blur(); // remove focus from input after searching or navigating
-			}
+		if (userClearedSearch) {
+			showExpandedSearch();
+			userClearedSearch = false;
+		} else if (isHomeRoute && type !== 'popstate' && activeEditorView?.dom.checkVisibility?.()) {
+			superSearch?.focus(); // focus input on start page
+		} else {
+			//	superSearch?.blur(); // remove focus from input after searching or navigating
 		}
 	});
 
@@ -229,8 +241,8 @@
 		superSearch?.showExpandedSearch(options);
 	}
 
-	function hideExpandedSearch() {
-		superSearch?.hideExpandedSearch();
+	function hideExpandedSearch(options?: HideExpandedSearchOptions) {
+		superSearch?.hideExpandedSearch(options);
 	}
 
 	function handleOnChange(event: ChangeEvent) {
@@ -246,12 +258,41 @@
 		}
 	}
 
-	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
+	function handleOnExpand({ editor, windowPageYOffset }: ExpandEvent) {
 		pageYOffset = windowPageYOffset;
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
 		}
+		searchContext.getEditorValue = () => editor.state.doc.toString();
+		searchContext.getEditorSelection = () => {
+			const selection = editor?.state.selection?.main;
+			if (selection) {
+				return {
+					from: selection.from,
+					to: selection.to,
+					anchor: selection.anchor,
+					head: selection.head,
+					empty: selection.empty
+				};
+			}
+		};
+	}
+
+	function handleOnCollapse({ editor }: CollapseEvent) {
+		searchContext.getEditorValue = () => editor.state.doc.toString();
+		searchContext.getEditorSelection = () => {
+			const selection = editor?.state.selection?.main;
+			if (selection) {
+				return {
+					from: selection.from,
+					to: selection.to,
+					anchor: selection.anchor,
+					head: selection.head,
+					empty: selection.empty
+				};
+			}
+		};
 	}
 
 	function handleOnExpandedViewUpdate(event: ViewUpdateEvent) {
@@ -314,6 +355,20 @@
 			searchContext.showExpandedSearch = showExpandedSearch;
 			searchContext.hideExpandedSearch = hideExpandedSearch;
 			searchContext.changeQuery = (params) => superSearch?.dispatchChange(params);
+			searchContext.getEditorValue = () =>
+				superSearch?.getActiveEditorView()?.state.doc.toString() || '';
+			searchContext.getEditorSelection = () => {
+				const selection = superSearch?.getActiveEditorView()?.state.selection?.main;
+				if (selection) {
+					return {
+						from: selection.from,
+						to: selection.to,
+						anchor: selection.anchor,
+						head: selection.head,
+						empty: selection.empty
+					};
+				}
+			};
 		}
 	});
 
@@ -357,12 +412,12 @@
 		{editor}
 		{syncEditorsOnChange}
 		{syncEditorsOnSelection}
-		shallowRouting
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
+		oncollapse={handleOnCollapse}
 		onchange={handleOnChange}
 		onselect={handleOnSelect}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
