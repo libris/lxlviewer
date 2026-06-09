@@ -61,7 +61,7 @@
 				/>
 			</div>
 		{:else if eodAvailable}
-			<details>
+			<details class="print:hidden">
 				<summary class="cursor-pointer">
 					<p class="flex items-center gap-1 font-semibold">
 						<span class="chevron text-subtle transition-transform">

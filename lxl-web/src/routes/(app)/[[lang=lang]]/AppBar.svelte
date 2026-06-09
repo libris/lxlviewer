@@ -192,13 +192,13 @@
 
 <a
 	href="#content"
-	class="bg-primary-700 text-page fixed -top-full left-0 z-999 flex h-9 w-full items-center justify-center font-medium focus:top-0"
+	class="bg-primary-700 text-page fixed -top-full left-0 z-999 flex h-9 w-full items-center justify-center font-medium focus:top-0 print:hidden"
 >
 	{page.data.t('header.skipToContent')}
 </a>
 <header
 	class={[
-		'app-bar @container sticky z-40 grid',
+		'app-bar @container sticky z-40 grid print:hidden',
 		isHomeRoute && 'home',
 		isHomeRoute && showBackground && 'bg-app-bar',
 		isHomeRoute && showShadow && 'shadow-app-bar',

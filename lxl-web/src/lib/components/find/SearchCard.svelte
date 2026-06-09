@@ -179,7 +179,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	{/if}
 {/snippet}
 
-<div class="search-card-container @container/card">
+<div class="search-card-container @container/card print:break-inside-avoid">
 	<article
 		{id}
 		class={[
@@ -379,7 +379,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			</span>
 		</footer>
 		{#if allowActions}
-			<div class="card-actions ml-auto flex w-full justify-end gap-1 pt-3">
+			<div class="card-actions ml-auto flex w-full justify-end gap-1 pt-3 print:hidden">
 				{#if firstMediaLink}
 					{#snippet mediaLinksPopover()}
 						<DecoratedData
