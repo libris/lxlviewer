@@ -69,7 +69,10 @@
 					{/if}
 				</span>
 			{/if}
-			<span class="truncate" use:popover={{ title: image?.usageAndAccessPolicy.title }}>
+			<span
+				class="truncate print:hidden"
+				use:popover={{ title: image?.usageAndAccessPolicy.title }}
+			>
 				<InfoIcon class="inline" />
 				{#if image.usageAndAccessPolicy.link}
 					<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
@@ -86,7 +89,7 @@
 		</figcaption>
 	</figure>
 {:else if showPlaceholder}
-	<div class="mb-6 flex items-center justify-center">
+	<div class="mb-6 flex items-center justify-center print:hidden">
 		<img
 			src={placeholder}
 			alt=""

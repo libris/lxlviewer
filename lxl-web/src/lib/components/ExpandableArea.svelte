@@ -49,7 +49,7 @@
 
 {#if canCollapse}
 	<button
-		class="delimiter link-subtle"
+		class="delimiter link-subtle print:hidden"
 		type="button"
 		aria-expanded={expanded}
 		onclick={() => (expanded = !expanded)}
@@ -74,5 +74,16 @@
 		height: 80px;
 		width: 100%;
 		background: linear-gradient(to top, white, transparent);
+	}
+
+	@media print {
+		.content-clip {
+			height: auto;
+			overflow: visible;
+		}
+
+		.fade {
+			display: none;
+		}
 	}
 </style>

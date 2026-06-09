@@ -150,13 +150,13 @@
 {/snippet}
 
 {#if adjecentSearchResults && fnurgel}
-	<div class="border-b-neutral @container border-b">
+	<div class="border-b-neutral @container border-b print:hidden">
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	</div>
 {/if}
 {#if workCard && !isWork}
 	<div
-		class="back-to-work border-b-neutral border-b hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
+		class="back-to-work border-b-neutral border-b print:hidden hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
 	>
 		<Suggestion item={workCard}>
 			{#snippet leadingContent()}
@@ -172,7 +172,7 @@
 {/if}
 <article class="@container @3xl:[&_[id]]:scroll-mt-36">
 	{#if tableOfContents.length}
-		<section data-testid="toc-mobile" class="contents @7xl:hidden">
+		<section data-testid="toc-mobile" class="contents @7xl:hidden print:hidden">
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
 		</section>
 	{/if}
@@ -180,7 +180,7 @@
 		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 px-3 @sm:gap-6 @sm:px-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"
 	>
 		{#if tableOfContents.length}
-			<div class="order-last hidden @7xl:block">
+			<div class="order-last hidden @7xl:block print:hidden">
 				<section data-testid="toc" class="sticky py-3 @sm:py-6">
 					<TableOfContents items={tableOfContents} />
 				</section>
@@ -258,7 +258,7 @@
 					{/each}
 				</div>
 				{#if hasHoldingsBtn}
-					<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
+					<h2 class="sr-only print:hidden">{page.data.t('holdings.availabilityByType')}</h2>
 					<ResourceHoldings {holdings} {instances} />
 				{/if}
 				<ResourceDigitalAccess
@@ -299,7 +299,7 @@
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>
-					<div class="flex items-center gap-2">
+					<div class="flex items-center gap-2 print:hidden">
 						{#if decoratedData.summary.length || instances?.length > 1 || relations?.length || decoratedData.resourceTableOfContents.length}
 							<a
 								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
@@ -325,7 +325,7 @@
 				</div>
 			</section>
 			{#if decoratedData.summary.length}
-				<section>
+				<section class="print:break-before-page">
 					<h2 id={`${uidPrefix}summary`} class="mb-3 text-xl font-medium">
 						{page.data.t('resource.summary')}
 					</h2>
@@ -343,7 +343,7 @@
 				</section>
 			{/if}
 			{#if instances?.length > 1}
-				<section>
+				<section class="print:break-before-page print:break-after-page">
 					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
 						{page.data.t('resource.editions')}
 					</h2>
@@ -355,7 +355,7 @@
 				</section>
 			{/if}
 			{#if relations?.length}
-				<section>
+				<section class="print:hidden">
 					<h2 id={`${uidPrefix}relations`} class="mb-6 text-xl font-medium">
 						{page.data.t('resource.relations')}
 					</h2>
@@ -431,7 +431,7 @@
 			{/if}
 			{#if decoratedData.details.length && decoratedData.details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)}
 				<section
-					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
+					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg print:break-before-page print:px-0"
 				>
 					<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 						{page.data.t('resource.details')}
@@ -449,10 +449,10 @@
 							</div>
 						{/each}
 						{#if decoratedData.itemInformation.length}
-							<details class="mt-4">
+							<details class="mt-4 print:hidden print:break-before-page open:print:block">
 								<summary class="flex cursor-pointer items-center gap-1">
 									<span
-										class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
+										class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform print:hidden"
 									>
 										<BiChevronRight />
 									</span>
@@ -488,7 +488,7 @@
 					</div>
 				</section>
 			{/if}
-			<div class="text-sm">
+			<div class="text-sm print:hidden">
 				<p>
 					{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
 				</p>

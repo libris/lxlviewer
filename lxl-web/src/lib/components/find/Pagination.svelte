@@ -82,7 +82,7 @@
 	<nav
 		aria-label={page.data.t('search.pagination')}
 		data-testid="pagination"
-		class="pagination @container/pagination mt-4 py-4"
+		class="pagination @container/pagination mt-4 py-4 print:hidden"
 	>
 		<ol class="flex items-center justify-center">
 			<!-- prev -->
