@@ -84,13 +84,13 @@
 
 	function handleClickPageTitle() {
 		if (window.getSelection()?.type === 'Caret') {
-			searchContext.showExpandedSearch({ cursorAtEnd: true });
+			searchContext.superSearch?.showExpandedSearch({ cursorAtEnd: true });
 		}
 	}
 
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
-		searchContext.showExpandedSearch({ cursorAtEnd: true });
+		searchContext.superSearch?.showExpandedSearch({ cursorAtEnd: true });
 	}
 
 	function handleBackgroundObserve(entries: IntersectionObserverEntry[]) {

@@ -32,7 +32,7 @@
 		DebouncedWaitFunction,
 		ExpandEvent,
 		CollapseEvent,
-		ChangeQueryParams
+		DispatchChangeParams
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
 
@@ -323,13 +323,6 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (
-			!dialog?.open &&
-			event.userEvent !== 'input.complete' &&
-			value.trim() !== event.value.trim()
-		) {
-			showExpandedSearch();
-		}
 		value = event.value;
 		selection = event.selection;
 
@@ -343,11 +336,13 @@
 			if (search.data) search.resetData();
 		}
 
-		if (syncEditorsOnChange) {
-			editor = event.editor;
-		}
+		editor = syncEditorsOnChange ? event.editor : undefined;
 
 		prevValue = event.value;
+
+		if (!dialog?.open && event.userEvent !== 'input.complete') {
+			showExpandedSearch();
+		}
 
 		onchange?.(event);
 	}
@@ -355,9 +350,7 @@
 	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
 		selection = event.selection;
 
-		if (syncEditorsOnSelection) {
-			editor = event.editor;
-		}
+		editor = syncEditorsOnSelection ? event.editor : undefined;
 
 		onselect?.(event);
 	}
@@ -366,8 +359,20 @@
 		onexpandedviewupdate?.(event);
 	}
 
+	const handleClickClose = $derived(() => {
+		hideExpandedSearch({ trigger: 'key' });
+	});
+
 	export function getActiveEditorView() {
 		return expanded ? expandedEditorView : collapsedEditorView;
+	}
+
+	export function getSelection(): Selection | undefined {
+		return getActiveEditorView()?.state.selection.main;
+	}
+
+	export function getQuery() {
+		return getActiveEditorView()?.state.doc.toString() || '';
 	}
 
 	export function dispatchChange({
@@ -375,8 +380,9 @@
 		selection,
 		userEvent = 'input',
 		addToHistory = true
-	}: ChangeQueryParams) {
+	}: DispatchChangeParams) {
 		const activeEditor = getActiveEditorView();
+
 		const from =
 			typeof change?.from === 'number' ? change.from : activeEditor?.state.doc.length || 0;
 		const to = typeof change?.to === 'number' ? change.to : activeEditor?.state.doc.length || 0;
@@ -429,13 +435,22 @@
 			dialog?.close();
 			expanded = false;
 			oncollapse?.({
-				editor
+				editor,
+				trigger: options?.trigger
 			});
 		}
 		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
 		if (!options?.skipFocus) {
 			collapsedEditorView?.focus();
 		}
+	}
+
+	export function getCollapsedEditorView() {
+		return collapsedEditorView;
+	}
+
+	export function getExpandedEditorView() {
+		return expandedEditorView;
 	}
 
 	export function fetchData() {
@@ -501,7 +516,7 @@
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
-			hideExpandedSearch();
+			hideExpandedSearch({ trigger: 'key' });
 		}
 
 		if (event.key === 'Enter') {
@@ -587,7 +602,7 @@
 				case 'ArrowUp':
 					if (event.altKey) {
 						event.preventDefault();
-						hideExpandedSearch();
+						hideExpandedSearch({ trigger: 'key' });
 					} else {
 						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
 							activeRowIndex = arrowKeyRows.length;
@@ -745,7 +760,7 @@
 
 	function handleClickOutsideDialog(event: MouseEvent) {
 		if (event.target === dialog || event.target === event.currentTarget) {
-			hideExpandedSearch();
+			hideExpandedSearch({ trigger: 'click' });
 		}
 	}
 
@@ -774,16 +789,20 @@
 			return;
 		}
 		if (interceptedAnchorElement) {
+			console.log('interceptedAnchorElement', interceptedAnchorElement);
 			interceptedAnchorElement = undefined; // already intercepted so do nothing
 			return;
 		} else {
+			if (!(event.target instanceof HTMLAnchorElement)) {
+				return;
+			}
 			const target = event.target as HTMLAnchorElement;
 			const anchorElement = target.tagName === 'A' ? target : target.closest('a');
 			const href = anchorElement?.getAttribute('href');
 
-			console.log('annfha', anchorElement);
 			if (anchorElement && href) {
 				event.preventDefault();
+				console.log('interceptedAnchorElement', interceptedAnchorElement);
 				interceptedAnchorElement = anchorElement;
 				oninterceptexpandedclick(href, event);
 			}
@@ -791,12 +810,9 @@
 	}
 
 	function handleReset() {
-		collapsedEditorView?.dispatch({
-			changes: { from: 0, to: collapsedEditorView?.state.doc.length, insert: '' },
-			userEvent: 'delete'
-		});
-		expandedEditorView?.dispatch({
-			changes: { from: 0, to: expandedEditorView?.state.doc.length, insert: '' },
+		const activeEditorView = getActiveEditorView();
+		activeEditorView?.dispatch({
+			changes: { from: 0, to: activeEditorView.state.doc.length, insert: '' },
 			userEvent: 'delete'
 		});
 		search.resetData();
@@ -882,33 +898,24 @@
 		}
 	});
 
-	const handleClickClose = $derived(() => {
-		hideExpandedSearch();
-	});
-
-	$effect(() => {
-		if (editor && editor.id !== collapsedComboboxId) {
-			collapsedEditorView?.dispatch({
+	function syncEditorView() {
+		const activeEditorView = getActiveEditorView();
+		if (editor) {
+			activeEditorView?.dispatch({
 				changes: {
 					from: 0,
-					to: collapsedEditorView.state.doc.length,
+					to: activeEditorView.state.doc.length,
 					insert: editor.state.doc
 				},
-				selection: editor.state.selection
+				selection: editor.state.selection,
+				annotations: [Transaction.addToHistory.of(false)]
 			});
 		}
-	});
+	}
 
 	$effect(() => {
-		if (editor && editor.id !== expandedComboboxId) {
-			expandedEditorView?.dispatch({
-				changes: {
-					from: 0,
-					to: expandedEditorView.state.doc.length,
-					insert: editor.state.doc
-				},
-				selection: editor.state.selection
-			});
+		if (editor && (editor.id !== collapsedComboboxId || editor.id !== expandedComboboxId)) {
+			syncEditorView();
 		}
 	});
 </script>
@@ -995,7 +1002,6 @@
 	bind:this={dialog}
 	closedby="none"
 	tabindex="-1"
-	onclose={() => hideExpandedSearch()}
 >
 	<div
 		class="supersearch-dialog-wrapper"

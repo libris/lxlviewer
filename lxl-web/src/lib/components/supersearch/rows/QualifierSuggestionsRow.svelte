@@ -160,15 +160,24 @@
 	}
 
 	function addQualifierKey(qualifierKey: string, replaceSelection?: { from: number; to: number }) {
-		const userEvent = 'input.complete';
-
-		if (!page.state.expandedSuperSearch) {
-			searchContext.showExpandedSearch();
+		const superSearch = searchContext.superSearch;
+		if (!superSearch) {
+			return;
 		}
 
+		superSearch.getExpandedEditorView()?.focus();
+
+		const query = superSearch.getQuery();
+		const selection = superSearch.getSelection();
+		const userEvent = 'input.complete';
+
 		if (replaceSelection) {
+			if (!page.state.expandedSuperSearch) {
+				superSearch.showExpandedSearch();
+			}
+
 			const insert = `${qualifierKey}:()`;
-			searchContext.changeQuery({
+			superSearch.dispatchChange({
 				change: {
 					from: replaceSelection.from,
 					to: replaceSelection.to,
@@ -181,7 +190,7 @@
 				userEvent
 			});
 			return;
-		} else if (selection) {
+		} else if (query && selection) {
 			const tree = lxlQueryLanguage.parser.parse(query);
 			const nodeBefore = tree.resolveInner(selection.head, -1);
 			const node = tree.resolveInner(selection.head, 0);
@@ -189,11 +198,10 @@
 
 			const hasCharBefore = /\S/.test(query.charAt(selection.from - 1));
 			const hasCharAfter = /\S/.test(query.charAt(selection.to));
-
 			if (node.type.name === 'Qualifier' || node.type.name === 'QualifierOuterGroup') {
 				debugLog('add qualifier key after Qualifier or QualifierOuterGroup');
 				const insert = ` ${qualifierKey}:()`;
-				searchContext.changeQuery({
+				superSearch.dispatchChange({
 					change: {
 						from: node.to,
 						to: node.to,
@@ -214,7 +222,7 @@
 			) {
 				debugLog('insert value after parent QualifierValue or parent QualifierOuterpGroup');
 				const insert = ` ${qualifierKey}:()`;
-				searchContext.changeQuery({
+				superSearch.dispatchChange({
 					change: {
 						from: node.parent.to,
 						to: node.parent.to,
@@ -242,7 +250,7 @@
 					(hasCharBefore ? ' ' : '') +
 					`${qualifierKey}:(${slicedValue})` +
 					(hasCharAfter ? ' ' : '');
-				searchContext.changeQuery({
+				superSearch.dispatchChange({
 					change: {
 						from: selection.from,
 						to: selection.to,
@@ -260,7 +268,7 @@
 			if (!hasCharBefore && !hasCharAfter) {
 				debugLog('add qualifier key on empty input');
 				const insert = `${qualifierKey}:()`;
-				searchContext.changeQuery({
+				superSearch.dispatchChange({
 					change: {
 						from: selection.head,
 						to: selection.head,
@@ -278,7 +286,7 @@
 			if (hasCharBefore && !hasCharAfter) {
 				debugLog('add qualifier key when selection is at end of string');
 				const insert = ` ${qualifierKey}:()`;
-				searchContext.changeQuery({
+				superSearch.dispatchChange({
 					change: {
 						from: selection.head,
 						to: selection.head,
@@ -296,7 +304,7 @@
 			if (!hasCharBefore && hasCharAfter) {
 				debugLog('add qualifier key when selection is at start of string');
 				const insert = `${qualifierKey}:() `;
-				searchContext.changeQuery({
+				superSearch.dispatchChange({
 					change: {
 						from: selection.head,
 						to: selection.head,
@@ -320,7 +328,7 @@
 			) {
 				debugLog('add qualifier key when selection is in the middle of string');
 				const insert = ` ${qualifierKey}:()`;
-				searchContext.changeQuery({
+				superSearch.dispatchChange({
 					change: {
 						from: nodeAfter.to,
 						to: nodeAfter.to,
@@ -339,7 +347,7 @@
 				debugLog('add qualifier key in group');
 
 				const insert = `${qualifierKey}:()`;
-				searchContext.changeQuery({
+				superSearch.dispatchChange({
 					change: {
 						from: selection.head,
 						to: selection.head,
@@ -358,7 +366,7 @@
 		debugLog("Add qualifier key at end as fallback (e.g. if selection isn't available");
 		const hasCharBefore = /\S/.test(query.charAt(Math.max(0, query.length - 1)));
 		const insert = `${hasCharBefore ? ' ' : ''}${qualifierKey}:()`;
-		searchContext.changeQuery({
+		superSearch.dispatchChange({
 			change: {
 				from: query.length,
 				to: query.length,
@@ -382,16 +390,7 @@
 		id="supersearch-add-qualifier-key-label"
 		class="min-w-14 pr-1.5 pl-2 sm:min-w-auto sm:pr-3.5 sm:pl-4"
 	>
-		<!--
-		<button
-			type="button"
-			tabindex="-1"
-			class="cursor-default"
-			onclick={() => searchContext.showExpandedSearch({ focusRow: rowIndex })}
-			>
-	-->
 		{page.data.t('supersearch.addQualifiers')}
-		<!-- </button> -->
 	</h2>
 	<ul
 		class="scrollbar-hidden flex min-h-12 items-center gap-2 overflow-x-auto p-0.5"

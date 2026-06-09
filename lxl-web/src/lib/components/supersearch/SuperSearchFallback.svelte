@@ -24,6 +24,7 @@
 	}: Props = $props();
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
+	let activeElement: Element | null = $state(null);
 
 	$effect(() => {
 		if (page.url.hash === `#search`) {
@@ -47,9 +48,11 @@
 	}
 
 	$effect(() => {
+		activeElement = document.activeElement;
+
 		return () => {
 			// Use teardown function to save state before mounting SuperSearchWrapper.svelte (so selection and value is kept...)
-			if (fallbackInputElement) {
+			if (fallbackInputElement && activeElement === fallbackInputElement) {
 				selection = getSelectionOnTeardown();
 			}
 		};

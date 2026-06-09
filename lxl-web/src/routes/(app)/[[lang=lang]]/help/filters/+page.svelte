@@ -12,12 +12,20 @@
 	const pageTitle = $derived(page.data.t('help.pageTitle'));
 
 	function addQualifierKey(key: string) {
-		const insert = ` ${key}:()`;
-		const selection = {
-			anchor: searchContext.getEditorValue().length + insert.length - 1,
-			head: searchContext.getEditorValue().length + insert.length - 1
-		};
-		searchContext.changeQuery({ change: { insert }, selection });
+		const superSearch = searchContext.superSearch;
+		if (superSearch) {
+			const insert = ` ${key}:()`;
+			const query = superSearch.getQuery();
+			const anchor = query.length + insert.length - 1;
+			const head = anchor;
+			superSearch?.dispatchChange({
+				change: { from: 0, to: query.length, insert },
+				selection: {
+					anchor,
+					head
+				}
+			});
+		}
 	}
 </script>
 

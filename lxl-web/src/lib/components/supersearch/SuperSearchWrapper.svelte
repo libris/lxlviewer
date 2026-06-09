@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
-	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { afterNavigate, goto, pushState } from '$app/navigation';
 	import {
 		type ChangeEvent,
 		type DebouncedWaitFunction,
@@ -87,6 +87,8 @@
 	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
 
+	let interceptedHref: string | undefined = $state();
+
 	let clearUrl = $derived.by(() => {
 		if (page.url.pathname !== '/find') return undefined;
 		const url = new URL(page.url);
@@ -94,8 +96,6 @@
 		url.searchParams.delete('_offset');
 		return url.toString();
 	});
-
-	let userClearedSearch = $state(false);
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
@@ -127,13 +127,26 @@
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
+	let shouldFocusAfterNavigate = $state(false);
 
-	beforeNavigate(() => {
-		hideExpandedSearch({ skipFocus: true });
+	/*
+	beforeNavigate(({ to, type }) => {
+		if (
+			document.activeElement?.getAttribute('id') ===
+				superSearch?.getCollapsedEditorView()?.contentDOM.id ||
+			(to?.route.id === '/(app)/[[lang=lang]]' && type !== 'popstate') ||
+			userClearedSearch
+		) {
+			shouldFocusAfterNavigate = true;
+			userClearedSearch = false;
+		}
 	});
+	*/
 
-	afterNavigate(({ to, type }) => {
+	afterNavigate(({ to }) => {
+		searchContext.superSearch = superSearch;
 		const activeEditorView = superSearch?.getActiveEditorView();
+
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
 			const currentLength = activeEditorView?.state.doc.length || 0;
@@ -154,7 +167,8 @@
 						anchor: insert.length,
 						head: insert.length
 					},
-					userEvent: 'input.complete'
+					userEvent: 'input.complete',
+					addToHistory: false
 				});
 			}
 		}
@@ -163,13 +177,8 @@
 
 		fetchOnExpand = true;
 
-		if (userClearedSearch) {
-			showExpandedSearch();
-			userClearedSearch = false;
-		} else if (isHomeRoute && type !== 'popstate' && activeEditorView?.dom.checkVisibility?.()) {
-			superSearch?.focus(); // focus input on start page
-		} else {
-			//	superSearch?.blur(); // remove focus from input after searching or navigating
+		if (shouldFocusAfterNavigate) {
+			superSearch?.getActiveEditorView()?.focus();
 		}
 	});
 
@@ -246,6 +255,7 @@
 	}
 
 	function handleOnChange(event: ChangeEvent) {
+		searchContext.superSearch = superSearch;
 		if (syncEditorsOnChange) {
 			searchContext.lastUpdatedEditor = event.editor;
 		}
@@ -253,46 +263,33 @@
 	}
 
 	function handleOnSelect(event: SelectEvent) {
+		searchContext.superSearch = superSearch;
 		if (syncEditorsOnSelection) {
 			searchContext.lastUpdatedEditor = event.editor;
 		}
 	}
 
-	function handleOnExpand({ editor, windowPageYOffset }: ExpandEvent) {
-		pageYOffset = windowPageYOffset;
+	function handleOnExpand(event: ExpandEvent) {
+		searchContext.superSearch = superSearch;
+		searchContext.lastUpdatedEditor = event.editor;
+
+		pageYOffset = event.windowPageYOffset;
+
+		if (!page.state.expandedSuperSearch) {
+			pushState('', { ...page.state, expandedSuperSearch: true });
+		}
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
 		}
-		searchContext.getEditorValue = () => editor.state.doc.toString();
-		searchContext.getEditorSelection = () => {
-			const selection = editor?.state.selection?.main;
-			if (selection) {
-				return {
-					from: selection.from,
-					to: selection.to,
-					anchor: selection.anchor,
-					head: selection.head,
-					empty: selection.empty
-				};
-			}
-		};
 	}
 
-	function handleOnCollapse({ editor }: CollapseEvent) {
-		searchContext.getEditorValue = () => editor.state.doc.toString();
-		searchContext.getEditorSelection = () => {
-			const selection = editor?.state.selection?.main;
-			if (selection) {
-				return {
-					from: selection.from,
-					to: selection.to,
-					anchor: selection.anchor,
-					head: selection.head,
-					empty: selection.empty
-				};
-			}
-		};
+	function handleOnCollapse({ trigger }: CollapseEvent) {
+		searchContext.superSearch = superSearch;
+
+		if (trigger !== 'popstate') {
+			history.back();
+		}
 	}
 
 	function handleOnExpandedViewUpdate(event: ViewUpdateEvent) {
@@ -301,6 +298,11 @@
 		} else {
 			wrappedLines = false;
 		}
+	}
+
+	function interceptExpandedNavigation(href: string) {
+		interceptedHref = href;
+		history.back(); // first go back then goto href in popstatehandler (solving issue with duplicate history entries when using shallow routing)
 	}
 
 	$effect(() => {
@@ -320,63 +322,55 @@
 	});
 
 	onMount(() => {
-		const activeEditorView = superSearch?.getActiveEditorView();
-		if (activeEditorView?.dom.checkVisibility?.()) {
-			if (
-				initialValueBeforeMount ||
-				(initialSelectionBeforeMount &&
-					initialSelectionBeforeMount.anchor !== 0 &&
-					initialSelectionBeforeMount.head !== 0)
-			) {
-				superSearch?.dispatchChange({
-					change: initialValueBeforeMount
-						? { insert: initialValueBeforeMount, from: 0, to: q.length }
-						: undefined,
-					selection: initialSelectionBeforeMount
-						? {
-								anchor: initialSelectionBeforeMount.anchor,
-								head: initialSelectionBeforeMount.head
-							}
-						: undefined,
-					userEvent: 'input.complete',
-					addToHistory: false
-				});
+		if (superSearch) {
+			const activeEditorView = superSearch.getActiveEditorView();
+			if (activeEditorView?.dom.checkVisibility?.()) {
+				if (initialValueBeforeMount) {
+					superSearch.dispatchChange({
+						change: initialValueBeforeMount
+							? { insert: initialValueBeforeMount, from: 0, to: q.length }
+							: undefined,
+						selection: initialSelectionBeforeMount
+							? {
+									anchor: initialSelectionBeforeMount.anchor,
+									head: initialSelectionBeforeMount.head
+								}
+							: undefined,
+						userEvent: 'input.complete',
+						addToHistory: false
+					});
 
-				if (initialSelectionBeforeMount) {
-					superSearch?.focus();
-				}
-
-				searchContext.lastUpdatedEditor = {
-					id: activeEditorView.contentDOM.id,
-					state: activeEditorView.state
-				};
-			}
-
-			searchContext.showExpandedSearch = showExpandedSearch;
-			searchContext.hideExpandedSearch = hideExpandedSearch;
-			searchContext.changeQuery = (params) => superSearch?.dispatchChange(params);
-			searchContext.getEditorValue = () =>
-				superSearch?.getActiveEditorView()?.state.doc.toString() || '';
-			searchContext.getEditorSelection = () => {
-				const selection = superSearch?.getActiveEditorView()?.state.selection?.main;
-				if (selection) {
-					return {
-						from: selection.from,
-						to: selection.to,
-						anchor: selection.anchor,
-						head: selection.head,
-						empty: selection.empty
+					searchContext.lastUpdatedEditor = {
+						id: activeEditorView.contentDOM.id,
+						state: activeEditorView.state
 					};
+
+					if (initialSelectionBeforeMount) {
+						superSearch.showExpandedSearch();
+					}
 				}
-			};
+
+				searchContext.superSearch = superSearch;
+			}
 		}
 	});
 
 	onDestroy(() => {
 		if (timeout) clearTimeout(timeout); // ensure timeout is cleared to prevent memory leaks
 	});
+
+	function handlePopState() {
+		hideExpandedSearch({ trigger: 'popstate', skipFocus: true });
+
+		if (interceptedHref) {
+			const _href = interceptedHref;
+			interceptedHref = undefined;
+			goto(_href); //  navigate to intercepted href (triggered by submits or link clicks in expanded dialog)
+		}
+	}
 </script>
 
+<svelte:window onpopstate={handlePopState} />
 {#key page.data.locale}
 	<SuperSearch
 		{id}
@@ -420,6 +414,8 @@
 		oncollapse={handleOnCollapse}
 		onchange={handleOnChange}
 		onselect={handleOnSelect}
+		oninterceptexpandedclick={interceptExpandedNavigation}
+		oninterceptexpandedsubmit={interceptExpandedNavigation}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
 	>
@@ -479,10 +475,7 @@
 						this={clearUrl ? 'a' : 'button'}
 						role={clearUrl ? undefined : 'button'}
 						href={clearUrl ? clearUrl : undefined}
-						onclick={(e: MouseEvent) => {
-							userClearedSearch = true;
-							onclickClear(e);
-						}}
+						onclick={onclickClear}
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[

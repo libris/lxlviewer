@@ -15,7 +15,7 @@ export interface ResultItem {
 	heading: string;
 }
 
-export type ChangeQueryParams = {
+export type DispatchChangeParams = {
 	change?: { insert: string; from?: number; to?: number };
 	selection?: {
 		anchor: number;
@@ -28,11 +28,11 @@ export type ChangeQueryParams = {
 export type ShowExpandedSearchOptions = {
 	cursorAtEnd?: boolean;
 	focusRow?: number;
-	preventPushState?: boolean;
 };
 
 export type HideExpandedSearchOptions = {
 	skipFocus?: boolean;
+	trigger?: CollapseTrigger;
 };
 
 export type DebouncedWaitFunction = (query: string) => number | null;
@@ -44,7 +44,10 @@ export type ExpandEvent = {
 
 export type CollapseEvent = {
 	editor: Editor;
+	trigger?: CollapseTrigger;
 };
+
+export type CollapseTrigger = 'popstate' | 'key' | 'click';
 
 export type UserEvent =
 	| 'input'

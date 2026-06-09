@@ -1,13 +1,14 @@
 import type { QualifierRendererProps } from './types/lxlQualifierPlugin.js';
 import type {
 	ResultItem,
-	ChangeQueryParams,
+	DispatchChangeParams,
 	ShowExpandedSearchOptions,
 	HideExpandedSearchOptions,
 	DebouncedWaitFunction,
 	ExpandEvent,
 	CollapseEvent,
-	UserEvent
+	UserEvent,
+	CollapseTrigger
 } from './types/superSearch.js';
 import type { Selection, Editor } from './components/CodeMirror.svelte';
 import type {
@@ -32,11 +33,12 @@ export {
 	type ChangeEvent,
 	type SelectEvent,
 	type ViewUpdateEvent,
-	type ChangeQueryParams,
+	type DispatchChangeParams,
 	type ShowExpandedSearchOptions,
 	type HideExpandedSearchOptions,
 	type DebouncedWaitFunction,
 	type ExpandEvent,
 	type CollapseEvent,
+	type CollapseTrigger,
 	type UserEvent
 };
