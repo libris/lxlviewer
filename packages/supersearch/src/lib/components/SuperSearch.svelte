@@ -34,7 +34,7 @@
 		CollapseEvent,
 		DispatchChangeParams
 	} from '$lib/types/superSearch.js';
-	import { standardKeymap } from '@codemirror/commands';
+	import { history as historyExtension, historyKeymap, standardKeymap } from '@codemirror/commands';
 
 	export type ExpandedContentParams = {
 		search: ReturnType<typeof useSearchRequest>;
@@ -184,6 +184,7 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = (() => $state.snapshot(placeholder))();
 
+	let historyCompartment = new Compartment();
 	let collapsedContentAttributesCompartment = new Compartment();
 	let expandedContentAttributesCompartment = new Compartment();
 
@@ -215,7 +216,9 @@
 	});
 
 	const extensionsWithDefaults = $derived([
+		historyCompartment.of(historyExtension()),
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
+		keymap.of(historyKeymap),
 		preventEnterKeyHandling(),
 		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: true, horizontal: true })),
 		preventNewLine({ replaceWithSpace: true }),
