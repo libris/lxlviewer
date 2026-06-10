@@ -26,28 +26,29 @@ export type DispatchChangeParams = {
 };
 
 export type ShowExpandedSearchOptions = {
+	trigger?: Trigger;
 	cursorAtEnd?: boolean;
 	focusRow?: number;
 };
 
 export type HideExpandedSearchOptions = {
-	skipFocus?: boolean;
-	trigger?: CollapseTrigger;
+	trigger?: Trigger;
 };
 
 export type DebouncedWaitFunction = (query: string) => number | null;
 
 export type ExpandEvent = {
 	editor: Editor;
+	trigger?: Trigger;
 	windowPageYOffset: number;
 };
 
 export type CollapseEvent = {
 	editor: Editor;
-	trigger?: CollapseTrigger;
+	trigger?: Trigger;
 };
 
-export type CollapseTrigger = 'popstate' | 'key' | 'click';
+export type Trigger = 'close' | 'submit' | 'popstate' | 'navigation';
 
 export type UserEvent =
 	| 'input'

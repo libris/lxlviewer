@@ -111,8 +111,8 @@
 		onchange?: (event: ChangeEvent) => void;
 		onselect?: (event: SelectEvent) => void;
 		onexpandedviewupdate?: (event: ViewUpdateEvent) => void;
-		oninterceptexpandedclick?: (href: string, event: MouseEvent) => void;
-		oninterceptexpandedsubmit?: (href: string) => void;
+		oninterceptexpandedsubmit?: (formElement: HTMLFormElement) => void;
+		oninterceptexpandedclick?: (event: MouseEvent) => void;
 	}
 
 	let {
@@ -171,7 +171,6 @@
 	let expanded = $state(false);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(-1);
-	let interceptedAnchorElement: HTMLAnchorElement | undefined = $state(undefined);
 
 	let prevValue: string = value;
 
@@ -360,7 +359,8 @@
 	}
 
 	const handleClickClose = $derived(() => {
-		hideExpandedSearch({ trigger: 'key' });
+		hideExpandedSearch({ trigger: 'close' });
+		collapsedEditorView?.focus();
 	});
 
 	export function getActiveEditorView() {
@@ -412,6 +412,7 @@
 			expanded = true;
 
 			onexpand?.({
+				...options,
 				editor,
 				windowPageYOffset: window.pageYOffset
 			});
@@ -434,15 +435,9 @@
 
 			dialog?.close();
 			expanded = false;
-			oncollapse?.({
-				editor,
-				trigger: options?.trigger
-			});
+			oncollapse?.({ ...options, editor });
 		}
 		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
-		if (!options?.skipFocus) {
-			collapsedEditorView?.focus();
-		}
 	}
 
 	export function getCollapsedEditorView() {
@@ -477,21 +472,11 @@
 			: collapsedEditorView?.dom?.closest('form');
 
 		if (formElement && formElement instanceof HTMLFormElement) {
-			if (expanded && oninterceptexpandedsubmit) {
-				const formAction = formElement.getAttribute('action');
-				const formParams = new URLSearchParams(
-					new FormData(formElement) as unknown as Record<string, string>
-				);
-
-				if (formAction && formParams) {
-					oninterceptexpandedsubmit?.(
-						`${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}`
-					);
-				} else {
-					formElement.requestSubmit();
-				}
+			if (oninterceptexpandedsubmit && expanded) {
+				oninterceptexpandedsubmit(formElement);
 			} else {
 				formElement.requestSubmit();
+				hideExpandedSearch({ trigger: 'submit' });
 			}
 		}
 	}
@@ -516,7 +501,8 @@
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
-			hideExpandedSearch({ trigger: 'key' });
+			hideExpandedSearch({ trigger: 'close' });
+			collapsedEditorView?.focus();
 		}
 
 		if (event.key === 'Enter') {
@@ -602,7 +588,8 @@
 				case 'ArrowUp':
 					if (event.altKey) {
 						event.preventDefault();
-						hideExpandedSearch({ trigger: 'key' });
+						hideExpandedSearch({ trigger: 'close' });
+						collapsedEditorView?.focus();
 					} else {
 						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
 							activeRowIndex = arrowKeyRows.length;
@@ -760,7 +747,8 @@
 
 	function handleClickOutsideDialog(event: MouseEvent) {
 		if (event.target === dialog || event.target === event.currentTarget) {
-			hideExpandedSearch({ trigger: 'click' });
+			hideExpandedSearch({ trigger: 'close' });
+			collapsedEditorView?.focus();
 		}
 	}
 
@@ -782,31 +770,6 @@
 		// if (!value.length) {
 		// 	event.preventDefault();
 		// }
-	}
-
-	function interceptExpandedLinks(event: MouseEvent) {
-		if (!oninterceptexpandedclick) {
-			return;
-		}
-		if (interceptedAnchorElement) {
-			console.log('interceptedAnchorElement', interceptedAnchorElement);
-			interceptedAnchorElement = undefined; // already intercepted so do nothing
-			return;
-		} else {
-			if (!(event.target instanceof HTMLAnchorElement)) {
-				return;
-			}
-			const target = event.target as HTMLAnchorElement;
-			const anchorElement = target.tagName === 'A' ? target : target.closest('a');
-			const href = anchorElement?.getAttribute('href');
-
-			if (anchorElement && href) {
-				event.preventDefault();
-				console.log('interceptedAnchorElement', interceptedAnchorElement);
-				interceptedAnchorElement = anchorElement;
-				oninterceptexpandedclick(href, event);
-			}
-		}
 	}
 
 	function handleReset() {
@@ -1015,7 +978,7 @@
 			<div
 				class="supersearch-combobox"
 				bind:this={comboboxElement}
-				onclick={oninterceptexpandedclick ? interceptExpandedLinks : undefined}
+				onclick={oninterceptexpandedclick}
 			>
 				{@render inputRow?.({
 					expanded: true,
@@ -1030,7 +993,7 @@
 			</div>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_interactive_supports_focus -->
-			<div id={`${id}-grid`} role="grid" onclick={interceptExpandedLinks}>
+			<div id={`${id}-grid`} role="grid" onclick={oninterceptexpandedclick}>
 				{@render expandedContent({
 					search,
 					resultsSnippet,

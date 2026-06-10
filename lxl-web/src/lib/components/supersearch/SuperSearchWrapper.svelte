@@ -97,9 +97,6 @@
 		return url.toString();
 	});
 
-	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
-	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
-
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
 	const MIN_LENGTH_FOR_SUGGESTIONS = 3;
@@ -127,36 +124,23 @@
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
-	let shouldFocusAfterNavigate = $state(false);
+	afterNavigate((navigation) => {
+		pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
+		fetchOnExpand = true;
 
-	/*
-	beforeNavigate(({ to, type }) => {
-		if (
-			document.activeElement?.getAttribute('id') ===
-				superSearch?.getCollapsedEditorView()?.contentDOM.id ||
-			(to?.route.id === '/(app)/[[lang=lang]]' && type !== 'popstate') ||
-			userClearedSearch
-		) {
-			shouldFocusAfterNavigate = true;
-			userClearedSearch = false;
-		}
-	});
-	*/
-
-	afterNavigate(({ to }) => {
 		searchContext.superSearch = superSearch;
 		const activeEditorView = superSearch?.getActiveEditorView();
 
 		/** Update input value after navigation on /find route */
-		if (to?.url) {
+		if (navigation.to?.url) {
 			const currentLength = activeEditorView?.state.doc.length || 0;
-			const insert = to.url.searchParams.has('_q')
-				? addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '')
-				: isHomeRoute || isFindRoute
-					? ''
-					: undefined;
+			const insert =
+				navigation.to.route.id === '/(app)/[[lang=lang]]/find' &&
+				navigation.to.url.searchParams.has('_q')
+					? addSpaceIfEndingQualifier(navigation.to.url.searchParams.get('_q') || '')
+					: '';
 
-			if (typeof insert === 'string' && insert !== activeEditorView?.state.doc.toString()) {
+			if (insert !== activeEditorView?.state.doc.toString()) {
 				superSearch?.dispatchChange({
 					change: {
 						from: 0,
@@ -173,12 +157,15 @@
 			}
 		}
 
-		pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
-
-		fetchOnExpand = true;
-
-		if (shouldFocusAfterNavigate) {
-			superSearch?.getActiveEditorView()?.focus();
+		if (navigation.type == 'popstate' && navigation.from?.route.id !== navigation.to?.route.id) {
+			//showExpandedSearch({ trigger: 'popstate' });
+			if (page.state.expandedSuperSearch) {
+				console.log('FOCUS');
+			} else {
+				console.log('BLUR');
+			}
+		} else {
+			hideExpandedSearch();
 		}
 	});
 
@@ -275,7 +262,12 @@
 
 		pageYOffset = event.windowPageYOffset;
 
-		if (!page.state.expandedSuperSearch) {
+		if (
+			!page.state.expandedSuperSearch &&
+			event.trigger !== 'close' &&
+			event.trigger !== 'popstate' &&
+			event.trigger !== 'navigation'
+		) {
 			pushState('', { ...page.state, expandedSuperSearch: true });
 		}
 		if (fetchOnExpand && q.trim()) {
@@ -284,10 +276,8 @@
 		}
 	}
 
-	function handleOnCollapse({ trigger }: CollapseEvent) {
-		searchContext.superSearch = superSearch;
-
-		if (trigger !== 'popstate') {
+	function handleOnCollapse(event: CollapseEvent) {
+		if (page.state.expandedSuperSearch && event.trigger === 'close') {
 			history.back();
 		}
 	}
@@ -300,9 +290,31 @@
 		}
 	}
 
-	function interceptExpandedNavigation(href: string) {
-		interceptedHref = href;
-		history.back(); // first go back then goto href in popstatehandler (solving issue with duplicate history entries when using shallow routing)
+	function interceptExpandedClick(event: MouseEvent) {
+		const href = (
+			event.target instanceof HTMLAnchorElement
+				? event.target
+				: (event.target as HTMLElement).closest('a')
+		)?.getAttribute('href');
+
+		if (href) {
+			event.preventDefault();
+			interceptedHref = href;
+			history.back();
+		}
+	}
+
+	function interceptExpandedSubmit(formElement: HTMLFormElement) {
+		const formAction = formElement.getAttribute('action');
+		const formParams = new URLSearchParams(
+			new FormData(formElement) as unknown as Record<string, string>
+		);
+
+		if (formAction) {
+			const href = `${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}`;
+			interceptedHref = href;
+			history.back();
+		}
 	}
 
 	$effect(() => {
@@ -360,17 +372,21 @@
 	});
 
 	function handlePopState() {
-		hideExpandedSearch({ trigger: 'popstate', skipFocus: true });
-
 		if (interceptedHref) {
 			const _href = interceptedHref;
 			interceptedHref = undefined;
-			goto(_href); //  navigate to intercepted href (triggered by submits or link clicks in expanded dialog)
+			goto(_href); // navigate to intercepted href (triggered by link clicks in expanded dialog)
+		} else {
+			if (page.state.expandedSuperSearch) {
+				showExpandedSearch({ trigger: 'popstate' });
+			} else {
+				hideExpandedSearch({ trigger: 'popstate' });
+			}
 		}
 	}
 </script>
 
-<svelte:window onpopstate={handlePopState} />
+<svelte:window onpopstate={() => setTimeout(handlePopState, 0)} />
 {#key page.data.locale}
 	<SuperSearch
 		{id}
@@ -414,8 +430,8 @@
 		oncollapse={handleOnCollapse}
 		onchange={handleOnChange}
 		onselect={handleOnSelect}
-		oninterceptexpandedclick={interceptExpandedNavigation}
-		oninterceptexpandedsubmit={interceptExpandedNavigation}
+		oninterceptexpandedclick={interceptExpandedClick}
+		oninterceptexpandedsubmit={interceptExpandedSubmit}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
 	>
