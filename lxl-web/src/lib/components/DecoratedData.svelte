@@ -144,7 +144,7 @@
 
 	function shouldShowLabels() {
 		return (
-			isTopLevel() &&
+			(isTopLevel() || hasStyle(data, 'force-sublevel-label')) &&
 			(showLabels === ShowLabelsOptions.Always ||
 				(showLabels === ShowLabelsOptions.DefaultOn && !hasStyle(data, 'nolabel')) ||
 				(showLabels === ShowLabelsOptions.DefaultOff && hasStyle(data, 'label')))

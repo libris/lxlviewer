@@ -666,6 +666,11 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		& :global(div[data-property='identifiedBy']) {
 			color: var(--color-subtle);
 		}
+
+		& :global(.contribution > ._contentBefore),
+		:global(.contribution > ._contentAfter) {
+			display: none;
+		}
 	}
 
 	/* card in dialog */

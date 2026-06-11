@@ -810,8 +810,7 @@
 			}
              */
 
-			& :global(.person-extra),
-			& :global(.language) {
+			& :global(.person-extra) {
 				display: none;
 			}
 		}
@@ -819,6 +818,8 @@
 		& :global(div[data-property='hasPart']:has(> :nth-child(3))),
 		& :global(div[data-property='relationship']:has(> :nth-child(3))),
 		& :global(div[data-property='hasVariant']:has(> span[data-type='Work'])) {
+			padding-left: 1em;
+
 			& :global(> span)::before,
 			& :global(> a)::before {
 				content: ' • ';

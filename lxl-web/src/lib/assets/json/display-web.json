@@ -332,19 +332,16 @@
 								"category"
 							]
 						},
-						"translationOf",
 						"legalDate",
 						"version",
 						"musicMedium",
 						"musicKey",
 						"marc:arrangedStatementForMusic",
 						"originDate",
-						"language",
 						{
-							"alternateProperties": [
-								{ "subPropertyOf": "contribution", "range": "PrimaryContribution" }
-							]
-						}
+							"alternateProperties": ["contribution", "language"]
+						},
+						"translationOf"
 					]
 				},
 				"Instance": {
@@ -1431,7 +1428,11 @@
 			"fresnel:propertyFormatDomain": ["contribution"],
 			"fresnel:propertyStyle": ["contribution", "nolabel"],
 			"fresnel:valueFormat": {
-				"fresnel:contentBefore": "",
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			},
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": ". — ",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -1886,9 +1887,9 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["translationOf"],
-			"fresnel:propertyStyle": ["translationOf"],
+			"fresnel:propertyStyle": ["translationOf", "label", "force-sublevel-label"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " = ",
+				"fresnel:contentBefore": ". —  ",
 				"fresnel:contentFirst": ""
 			}
 		},
