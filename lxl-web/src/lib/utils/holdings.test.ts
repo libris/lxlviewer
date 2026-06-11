@@ -24,7 +24,7 @@ describe('getBibIdsByInstanceId', () => {
 				isbn: ['9176423484'],
 				issn: [],
 				publicationStr: publicationStr,
-				selectType: publicationStr.split(',')[0],
+				selectSlug: 'PrintedVolume',
 				titleStr: publicationStr,
 				items: []
 			}
