@@ -100,7 +100,7 @@
 
 			return {
 				id: `holdings-type-${type}`,
-				label: type,
+				label: holdings.labelsByType[type],
 				content: holdingPanel,
 				active: type === holdingParam,
 				contentData: holders

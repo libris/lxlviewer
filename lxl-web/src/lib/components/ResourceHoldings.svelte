@@ -55,7 +55,7 @@
 						<MyLibsHoldingIndicator libraries={myLibsHoldingByType} />
 					</div>
 				{/if}
-				<span class="text-nowrap">{type}</span>
+				<span class="text-nowrap">{holdings.labelsByType[type]}</span>
 				<span class="truncate font-normal opacity-90">
 					{' · '}
 					{#if subsetLibraries && subsetHoldingByType}

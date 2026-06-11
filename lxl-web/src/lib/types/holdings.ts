@@ -150,6 +150,7 @@ export type HoldingsData = {
 	bibIdData: BibIdData;
 	byInstanceId: HoldersByInstanceId;
 	byType: HoldersByType;
+	labelsByType: Record<string, string>;
 	holdingLibraries: Record<LibraryId, LibraryWithLinks | null>;
 	eodAvailable: EodAvailable;
 };

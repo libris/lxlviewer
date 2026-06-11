@@ -14,7 +14,6 @@ describe('getBibIdsByInstanceId', () => {
 		const displayUtil = { lensAndFormat: () => publicationStr };
 		const vocabUtil = { getDefinition: () => '' };
 
-		// @ts-expect-error - Display is mocked
 		expect(
 			getBibIdsByInstanceId(workCenteredMainEntity, vocabUtil, displayUtil, record, 'sv')
 		).toStrictEqual({
@@ -40,9 +39,13 @@ describe('getLibsFromHoldings', () => {
 		const displayUtil = { lensAndFormat: () => '' };
 		userSettings.addLibrary('https://libris.kb.se/library/S');
 		userSettings.addLibrary('https://libris.kb.se/library/foo');
-		const byType = getHoldersByType(
-			getHoldingsByType(workCenteredMainEntity, vocabUtil, displayUtil, 'sv')
+		const { holdingsByType } = getHoldingsByType(
+			workCenteredMainEntity,
+			vocabUtil,
+			displayUtil,
+			'sv'
 		);
+		const byType = getHoldersByType(holdingsByType);
 
 		expect(getLibsFromHoldings(userSettings.myLibraries, byType)).toStrictEqual([
 			'https://libris.kb.se/library/S'

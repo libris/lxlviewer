@@ -360,12 +360,18 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const [_, overviewWithoutHasInstance] = pickProperty(overview[0], ['hasInstance']);
 
 	const image = toSecure(bestImage(mainEntity, locale), env.AUXD_SECRET);
-	const holdingsByType = getHoldingsByType(mainEntity, vocabUtil, displayUtil, locale);
+	const { holdingsByType, labelsByType } = getHoldingsByType(
+		mainEntity,
+		vocabUtil,
+		displayUtil,
+		locale
+	);
 	const byType = getHoldersByType(holdingsByType);
 
 	const holdings: HoldingsData = {
 		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil, locale),
 		byType,
+		labelsByType,
 		bibIdData: getBibIdsByInstanceId(mainEntity, vocabUtil, displayUtil, resource, locale),
 		holdingLibraries: getHoldingLibraries(byType),
 		eodAvailable: null

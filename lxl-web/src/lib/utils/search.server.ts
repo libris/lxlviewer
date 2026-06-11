@@ -418,7 +418,8 @@ function getHeldByLibraries(
 	locale: LangCode
 ) {
 	const orgs = getRefinedOrgs(libraries);
-	const holdersByType = getHoldersByType(getHoldingsByType(item, vocabUtil, displayUtil, locale));
+	const { holdingsByType } = getHoldingsByType(item, vocabUtil, displayUtil, locale);
+	const holdersByType = getHoldersByType(holdingsByType);
 	return getLibsFromHoldings(libraries, holdersByType, orgs);
 }
 

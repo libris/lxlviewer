@@ -35,12 +35,18 @@ export async function GET({ params, locals }) {
 	}
 	const resource = await resourceRes.json();
 	const mainEntity = centerOnWork(resource['mainEntity']) as HoldingMainEntity;
-	const holdingsByType = getHoldingsByType(mainEntity, vocabUtil, displayUtil, locale);
+	const { labelsByType, holdingsByType } = getHoldingsByType(
+		mainEntity,
+		vocabUtil,
+		displayUtil,
+		locale
+	);
 	const byType = getHoldersByType(holdingsByType);
 
 	const holdings: HoldingsData = {
 		byInstanceId: getHoldingsByInstanceId(mainEntity, displayUtil, locale),
 		byType,
+		labelsByType,
 		bibIdData: getBibIdsByInstanceId(mainEntity, vocabUtil, displayUtil, resource, locale),
 		holdingLibraries: getHoldingLibraries(byType),
 		eodAvailable: null
