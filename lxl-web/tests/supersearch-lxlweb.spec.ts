@@ -382,3 +382,16 @@ test('add qualfier key after Qualifier or QualifierOuterGroup', async ({ page })
 	await page.getByRole('dialog').getByRole('button').getByText('Ämne').click();
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('Titel:() Ämne:()');
 });
+
+test('shallow routing enables controlling expanded state using the history API', async ({
+	page
+}) => {
+	const initialUrl = page.url;
+	await page.getByRole('combobox').click();
+	await expect(page.getByRole('dialog')).toBeVisible();
+	await page.goBack();
+	await expect(page.url).toEqual(initialUrl);
+	await expect(page.getByRole('dialog')).not.toBeVisible();
+	await page.goForward();
+	await expect(page.getByRole('dialog')).toBeVisible();
+});
