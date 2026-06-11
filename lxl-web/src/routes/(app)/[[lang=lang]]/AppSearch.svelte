@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { beforeNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import SuperSearchFallback from '$lib/components/supersearch/SuperSearchFallback.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
@@ -16,9 +17,10 @@
 
 	const searchContext = getSearchContext();
 
-	let initialValueBeforeMount: string = $state(page.url.searchParams.get('_q') || '');
-	let initialSelectionBeforeMount: { anchor: number; head: number } | undefined = $state();
+	let initialValueFromFallback: string = $state(page.url.searchParams.get('_q') || '');
+	let initialSelectionFromFallback: { anchor: number; head: number } | undefined = $state();
 
+	let unloadedFallback = $state(false);
 	let cursor: number | null = $state(null);
 
 	const action = $derived(page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`);
@@ -43,6 +45,14 @@
 		}
 		return p;
 	});
+
+	function handleUnloadFallback() {
+		unloadedFallback = true;
+	}
+
+	beforeNavigate(() => {
+		unloadedFallback = false;
+	});
 </script>
 
 {#snippet fallbackInput()}
@@ -51,12 +61,13 @@
 		{placeholder}
 		{ariaLabelledBy}
 		{ariaLabel}
-		bind:value={initialValueBeforeMount}
-		bind:selection={initialSelectionBeforeMount}
+		bind:value={initialValueFromFallback}
+		bind:selection={initialSelectionFromFallback}
+		ondestroy={handleUnloadFallback}
 	/>
 {/snippet}
 
-<search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center']}>
+<search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center lg:px-3']}>
 	<form id={`${id}-form`} {action} class="mx-auto w-full min-w-0">
 		{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
 			{@render fallbackInput()}
@@ -70,8 +81,8 @@
 					expandedAriaLabel={page.data.t('header.search')}
 					onCursorChange={(value) => (cursor = value)}
 					qualifierSuggestions={page.data.qualifierSuggestions || []}
-					{initialValueBeforeMount}
-					{initialSelectionBeforeMount}
+					initialValueFromFallback={unloadedFallback ? initialValueFromFallback : undefined}
+					initialSelectionFromFallback={unloadedFallback ? initialSelectionFromFallback : undefined}
 					editor={searchContext.lastUpdatedEditor}
 				/>
 			</div>
@@ -88,4 +99,16 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	search {
+		--search-input-height: 48px;
+
+		@variant sm {
+			--search-input-height: 52px;
+		}
+
+		@variant 2xl {
+			--search-input-height: 56px;
+		}
+	}
 </style>

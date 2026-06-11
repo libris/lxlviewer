@@ -31,7 +31,10 @@
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
+	import { getHomepageContext } from '$lib/contexts/homepage';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import { ID_HERO_SEARCH } from '../../../routes/(app)/[[lang=lang]]/+page.svelte';
+	import { ID_APP_BAR } from '../../../routes/(app)/[[lang=lang]]/AppBar.svelte';
 
 	interface Props {
 		id: string;
@@ -72,6 +75,7 @@
 	}: Props = $props();
 
 	const searchContext = getSearchContext();
+	const homepageContext = getHomepageContext();
 
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || ''));
 	let selection: Selection | undefined = $state();
@@ -80,7 +84,7 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
-	let pageYOffset: number | undefined = $state();
+	let dialogMarginTop: number | string | undefined = $state();
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -170,11 +174,7 @@
 			}
 		} else {
 			hideExpandedSearch({});
-			if (isHomeRoute) {
-				superSearch?.focus();
-			} else {
-				superSearch?.blur();
-			}
+			superSearch?.blur();
 		}
 	});
 
@@ -271,8 +271,6 @@
 		searchContext.superSearch = superSearch;
 		searchContext.lastUpdatedEditor = event.editor;
 
-		pageYOffset = event.windowPageYOffset;
-
 		if (
 			!page.state.expandedSuperSearch &&
 			event.trigger !== 'close' &&
@@ -284,6 +282,27 @@
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
+		}
+
+		if (page.route.id === '/(app)/[[lang=lang]]') {
+			const searchElement = document.getElementById(ID_HERO_SEARCH);
+			if (searchElement) {
+				const contentOffsetTop = document.getElementById('content')?.offsetTop || 0;
+				const heroSearchOffsetTop = searchElement.offsetTop;
+				dialogMarginTop = homepageContext.showSearchInAppBar
+					? 'var(--appbar-height)'
+					: Math.max(0, contentOffsetTop + heroSearchOffsetTop - event.windowPageYOffset);
+			}
+		} else {
+			const appBarElement = document.getElementById(ID_APP_BAR);
+			const searchElement = document.getElementById(ID_HERO_SEARCH);
+			if (appBarElement) {
+				const searchOffsetTop = searchElement?.offsetTop || 0;
+				dialogMarginTop = Math.max(
+					0,
+					appBarElement.offsetTop + searchOffsetTop - event.windowPageYOffset
+				);
+			}
 		}
 	}
 
@@ -396,6 +415,7 @@
 	}
 </script>
 
+<!-- Use zero-delay timeout to place popstate processing at the end of the browser loop (ensuring the document has changed) -->
 <svelte:window onpopstate={() => setTimeout(handlePopState, 0)} />
 {#key page.data.locale}
 	<SuperSearch
@@ -443,7 +463,12 @@
 		oninterceptexpandedclick={interceptExpandedClick}
 		oninterceptexpandedsubmit={interceptExpandedSubmit}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
-		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
+		--supersearch-dialog-margin-top-sm={homepageContext.showSearchInAppBar
+			? 'var(--appbar-height)'
+			: dialogMarginTop
+				? `${dialogMarginTop}px`
+				: undefined}
+		--supersearch-dialog-margin-top-lg={dialogMarginTop ? `${dialogMarginTop}px` : undefined}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -456,8 +481,8 @@
 		})}
 			<div
 				class={[
-					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
-					expanded && 'expanded sm:mx-1.5 @5xl:mx-2.25',
+					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative',
+					expanded && 'expanded sm:mx-0.5 lg:mx-0',
 					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
 				]}
@@ -469,8 +494,8 @@
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 sm:hidden',
-							expanded && 'mr-1 h-14 w-13'
+							'action text-subtle flex min-h-11 sm:hidden sm:min-h-13.5 lg:min-h-auto',
+							expanded && 'mr-1 h-16.5 w-14 sm:h-full sm:w-13'
 						]}
 						onclick={onclickClose}
 					>
@@ -478,22 +503,6 @@
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
-					<div
-						class={[
-							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
-							expanded && 'hidden'
-						]}
-					>
-						<button
-							type="button"
-							tabindex="-1"
-							onclick={() => showExpandedSearch({ cursorAtEnd: true })}
-							class="flex h-full w-full cursor-default items-center justify-center"
-							aria-hidden="true"
-						>
-							<IconSearch aria-hidden="true" class="flex size-4 lg:mt-px" />
-						</button>
-					</div>
 					{@render inputField()}
 				</div>
 				{#if q}
@@ -505,8 +514,8 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 lg:size-12',
-							expanded && 'max-sm:h-14 max-sm:w-13'
+							'action sm:min-h-auto',
+							expanded ? 'flex h-16.5 max-sm:w-13 sm:h-full' : 'hidden sm:flex'
 						]}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
@@ -518,7 +527,7 @@
 						type="button"
 						onclick={() => showExpandedSearch()}
 						tabindex={-1}
-						class="hidden size-11 cursor-text items-center justify-center select-none sm:flex lg:size-12"
+						class="hidden h-full cursor-text items-center justify-center px-3 select-none sm:flex"
 					>
 						<kbd
 							class="key pointer-events-auto h-[1.75em] w-[1.75em] text-sm"
@@ -532,9 +541,11 @@
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
 					class={[
-						'action hidden size-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 -outline-offset-2 sm:flex lg:size-12'
+						'action rounded-r-md border-l-neutral-300 sm:rounded-r-lg sm:border-l',
+						isHomeRoute || expanded ? 'hidden sm:flex' : 'flex'
 					]}
 					aria-label={page.data.t('supersearch.search')}
+					tabindex={isHomeRoute ? -1 : undefined}
 				>
 					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 				</button>
@@ -612,8 +623,12 @@
 			box-shadow: 0 0 0 1px var(--color-primary-600);
 		}
 
-		@variant lg {
-			font-size: 0.9375rem;
+		@variant sm {
+			border-radius: var(--radius-lg);
+		}
+
+		@variant 2xl {
+			font-size: var(--text-base);
 		}
 	}
 
@@ -649,7 +664,8 @@
 			}
 		}
 
-		@variant lg {
+		@variant sm {
+			border-radius: var(--radius-lg);
 			margin-top: 0;
 		}
 	}
@@ -662,12 +678,17 @@
 
 		&:has(.expanded) {
 			@variant sm {
-				margin-inline: calc(var(--spacing) * 0.5);
-				margin-top: calc(var(--spacing) * 0.5);
+				margin-top: calc(var(--spacing) * 2);
 			}
+
 			@variant lg {
-				margin-top: calc(var(--spacing) * 3.5);
-				margin-inline: calc(var(--spacing) * 1.75);
+				margin-top: calc(var(--spacing) * 3);
+				margin-inline: calc(var(--spacing) * 3);
+			}
+
+			@variant 2xl {
+				margin-top: calc(var(--spacing) * 3.25);
+				margin-inline: calc(var(--spacing) * 3);
 			}
 		}
 	}
@@ -680,12 +701,14 @@
 			}
 
 			@media screen and (min-width: 1380px) {
-				margin-inline: calc(var(--spacing) * 1.75);
+				margin-inline: calc(var(--spacing) * 1.5);
 			}
 		}
 	}
 
 	.action {
+		min-height: var(--search-input-height);
+		@apply text-subtle aspect-square items-center justify-center -outline-offset-2;
 		&:hover {
 			background: var(--color-accent-50);
 		}
@@ -712,19 +735,12 @@
 		}
 
 		@variant sm {
-			top: calc(var(--banner-height, 0) + var(--app-bar-height) - var(--spacing) * 0.5);
-			margin-top: max(
-				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
-				0px
-			);
+			top: 0;
+			margin-top: calc(var(--supersearch-dialog-margin-top-sm, 0px) - var(--spacing));
 		}
 
 		@variant lg {
-			top: var(--banner-height, 0);
-			margin-top: max(
-				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
-				0px
-			);
+			margin-top: var(--supersearch-dialog-margin-top-lg, 0px);
 		}
 	}
 
@@ -735,19 +751,20 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
-			padding-inline: calc(var(--spacing) * 2);
+			margin-top: calc(var(--spacing) * 1);
 		}
 
 		@variant lg {
+			margin-top: 0;
 			display: grid;
-			grid-template-areas: var(--search-grid-template-areas);
-			grid-template-columns: var(--search-grid-template-columns);
-			gap: var(--search-gap);
-			padding-inline: calc(var(--spacing) * 1.25);
+			grid-template-areas: var(--appbar-template-areas);
+			grid-template-columns: var(--appbar-template-columns);
+			gap: var(--appbar-gap);
+			padding-inline: 0;
+		}
 
-			@variant @5xl {
-				padding-inline: 0;
-			}
+		@variant 2xl {
+			margin-top: calc(var(--spacing) * 0.25);
 		}
 	}
 
@@ -767,13 +784,18 @@
 		@apply max-w-7xl;
 
 		@variant sm {
-			border-radius: var(--radius-xl);
+			border-radius: var(--radius-2xl);
 			height: fit-content;
 			@apply drop-shadow-md;
 		}
+		& :global(.supersearch-combobox) {
+			@variant sm {
+				padding-inline: calc(var(--spacing) * 1.5);
+			}
 
-		@variant lg {
-			border-radius: var(--radius-2xl);
+			@variant lg {
+				padding-inline: 0;
+			}
 		}
 	}
 
@@ -827,7 +849,7 @@
 	}
 
 	.expanded.supersearch-input :global(.cm-scroller) {
-		min-height: calc(var(--spacing) * 14);
+		min-height: calc(var(--spacing) * 16.5);
 		scrollbar-width: thin;
 		max-height: 128px;
 		overflow-x: hidden;
@@ -838,56 +860,44 @@
 	}
 
 	.expanded.supersearch-input :global(.cm-content) {
-		margin-block: calc(var(--spacing) * 1.5);
-
-		@variant sm {
-			margin-block: 0;
+		margin-top: 0;
+		@variant max-sm {
+			padding: calc(var(--spacing) * 3.75) 0;
 		}
 	}
 
 	.supersearch-input :global(.cm-line) {
-		line-height: 32px;
-		padding-left: calc(var(--spacing) * 11);
+		line-height: 36px;
+		padding-left: calc(var(--spacing) * 3);
 
-		@variant sm {
-			padding-left: calc(var(--spacing) * 3);
-
-			@variant @3xl {
-				padding-left: calc(var(--spacing) * 4);
-			}
+		@variant lg {
+			padding-left: calc(var(--spacing) * 4);
 		}
 	}
 
 	.expanded.supersearch-input :global(.cm-line) {
-		padding-left: 0;
-
-		@variant sm {
-			padding-left: calc(var(--spacing) * 3);
-		}
-
-		@variant @3xl {
+		@variant 2xl {
 			padding-left: calc(var(--spacing) * 4);
 		}
 	}
 
 	.supersearch-input :global(.cm-content) {
 		margin: 0;
-		padding: calc(var(--spacing) * 1.5) 0;
+		padding: calc(var(--spacing) * 1.25) 0;
 		min-height: var(--search-input-height);
 
-		@variant lg {
+		@variant sm {
 			padding: calc(var(--spacing) * 2) 0;
+		}
+
+		@variant 2xl {
+			padding: calc(var(--spacing) * 2.5) 0;
 		}
 	}
 
 	:global(.supersearch-dialog .supersearch-input .cm-line) {
-		padding-left: 0;
-		@variant sm {
-			padding-left: calc(var(--spacing) * 11);
-		}
-
-		@variant lg {
-			padding-left: calc(var(--spacing) * 12);
+		@variant max-sm {
+			padding-left: 0;
 		}
 	}
 
@@ -900,9 +910,8 @@
 		color: var(--color-placeholder);
 		white-space: nowrap;
 
-		@variant lg {
-			font-size: 0.9375rem;
-		}
+		line-height: 100%;
+		vertical-align: baseline;
 	}
 
 	.expanded-content {
@@ -913,5 +922,9 @@
 		& :global(.focused-cell) {
 			outline: 2px solid var(--color-outline);
 		}
+	}
+
+	button:has(kbd) {
+		min-height: var(--search-input-height);
 	}
 </style>
