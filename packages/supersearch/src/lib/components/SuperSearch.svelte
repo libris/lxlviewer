@@ -378,6 +378,10 @@
 		return getActiveEditorView()?.state.doc.toString() || '';
 	}
 
+	export function isExpanded() {
+		return expanded;
+	}
+
 	export function syncEditors(editorState: EditorState) {
 		collapsedCodeMirror?.replaceEditorState(editorState);
 		expandedCodeMirror?.replaceEditorState(editorState);

@@ -255,7 +255,9 @@
 		if (syncEditorsOnChange) {
 			searchContext.lastUpdatedEditor = event.editor;
 		}
-		fetchOnExpand = false;
+		if (!superSearch?.isExpanded()) {
+			fetchOnExpand = true;
+		}
 	}
 
 	function handleOnSelect(event: SelectEvent) {
