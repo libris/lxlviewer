@@ -74,8 +74,8 @@
 			</Toolbar>
 		</div>
 		<div
-			class="leading-pane-content mr-1.5 overflow-y-auto overscroll-contain [&>*]:h-full"
-			style="--leading-pane-height:calc(100vh - var(--app-bar-height) - var(--banner-height, 0))"
+			class="leading-pane-content mr-1.5 overflow-y-auto overscroll-contain *:h-full"
+			style="--leading-pane-height:calc(100vh - var(--appbar-height) - var(--banner-height, 0))"
 		>
 			{@render children?.()}
 		</div>
@@ -97,8 +97,8 @@
 	@reference 'tailwindcss';
 
 	.leading-pane {
-		height: calc(100vh - var(--app-bar-height) - var(--banner-height, 0));
-		top: calc(var(--app-bar-height) + var(--banner-height, 0));
+		height: calc(100vh - var(--appbar-height) - var(--banner-height, 0));
+		top: calc(var(--appbar-height) + var(--banner-height, 0));
 	}
 
 	.leading-pane,
@@ -109,7 +109,7 @@
 	.leading-pane-content {
 		height: 100%;
 		max-height: calc(
-			100vh - var(--app-bar-height) - var(--banner-height, 0) - var(--toolbar-height, 0)
+			100vh - var(--appbar-height) - var(--banner-height, 0) - var(--toolbar-height, 0)
 		);
 		scrollbar-width: thin;
 	}
