@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { Transaction } from '@codemirror/state';
+	import { Compartment, Transaction } from '@codemirror/state';
 
 	export type Editor = {
 		id: string;
@@ -40,6 +40,7 @@
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 	import isViewUpdateOfUserEvent from '$lib/utils/isViewUpdateOfUserEvent.js';
 	import type { UserEvent } from '$lib/types/superSearch.js';
+	import { history, historyField } from '@codemirror/commands';
 
 	type CodeMirrorProps = {
 		id: string;
@@ -102,8 +103,10 @@
 		click: (event: MouseEvent) => onclick(event)
 	});
 
+	const historyCompartment = new Compartment();
 	let codemirrorContainerElement: HTMLDivElement | undefined = $state();
 	let extensionsWithBaseHandlers: Extension[] = $derived([
+		historyCompartment.of(history()),
 		updateHandler,
 		domEventHandler,
 		...extensions
@@ -115,6 +118,20 @@
 			doc,
 			selection,
 			extensions: extensionsWithBaseHandlers
+		});
+	}
+
+	export function replaceEditorState(editorState: EditorState) {
+		editorView?.setState(
+			createEditorState({
+				doc: editorState.doc.toString(),
+				selection: editorState.selection
+			})
+		);
+		editorView?.dispatch({
+			effects: historyCompartment.reconfigure([
+				historyField.init(() => editorState.field(historyField))
+			])
 		});
 	}
 

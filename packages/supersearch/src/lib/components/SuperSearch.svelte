@@ -34,7 +34,7 @@
 		CollapseEvent,
 		DispatchChangeParams
 	} from '$lib/types/superSearch.js';
-	import { history as historyExtension, historyKeymap, standardKeymap } from '@codemirror/commands';
+	import { historyKeymap, standardKeymap } from '@codemirror/commands';
 
 	export type ExpandedContentParams = {
 		search: ReturnType<typeof useSearchRequest>;
@@ -163,6 +163,8 @@
 		oninterceptexpandedsubmit
 	}: Props = $props();
 
+	let collapsedCodeMirror: CodeMirror | undefined = $state();
+	let expandedCodeMirror: CodeMirror | undefined = $state();
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
 
@@ -184,7 +186,6 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = (() => $state.snapshot(placeholder))();
 
-	let historyCompartment = new Compartment();
 	let collapsedContentAttributesCompartment = new Compartment();
 	let expandedContentAttributesCompartment = new Compartment();
 
@@ -216,7 +217,6 @@
 	});
 
 	const extensionsWithDefaults = $derived([
-		historyCompartment.of(historyExtension()),
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		keymap.of(historyKeymap),
 		preventEnterKeyHandling(),
@@ -229,7 +229,7 @@
 
 	let collapsedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
-			id: collapsedId,
+			id: collapsedComboboxId,
 			role: 'combobox',
 			enterkeyhint: 'search',
 			...(collapsedAriaLabelledBy && {
@@ -864,24 +864,14 @@
 		}
 	});
 
-	function syncEditorView() {
-		const activeEditorView = getActiveEditorView();
-		if (editor) {
-			activeEditorView?.dispatch({
-				changes: {
-					from: 0,
-					to: activeEditorView.state.doc.length,
-					insert: editor.state.doc
-				},
-				selection: editor.state.selection,
-				annotations: [Transaction.addToHistory.of(false)]
-			});
-		}
-	}
-
 	$effect(() => {
-		if (editor && (editor.id !== collapsedComboboxId || editor.id !== expandedComboboxId)) {
-			syncEditorView();
+		if (editor) {
+			if (editor.id !== collapsedComboboxId) {
+				collapsedCodeMirror?.replaceEditorState(editor.state);
+			}
+			if (editor.id !== expandedComboboxId) {
+				expandedCodeMirror?.replaceEditorState(editor.state);
+			}
 		}
 	});
 </script>
@@ -930,6 +920,7 @@
 		onclick={handleClickCollapsed}
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
+		bind:this={collapsedCodeMirror}
 		bind:editorView={collapsedEditorView}
 	/>
 {/snippet}
@@ -943,6 +934,7 @@
 		onchange={handleChangeCodeMirror}
 		onselect={handleSelectCodeMirror}
 		onviewupdate={handleExpandedViewUpdate}
+		bind:this={expandedCodeMirror}
 		bind:editorView={expandedEditorView}
 	/>
 {/snippet}
