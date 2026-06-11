@@ -1,24 +1,31 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import popover from '$lib/actions/popover';
-	import { getUserSettings } from '$lib/contexts/userSettings';
+	import type { LibOrg, LibraryId, LibraryWithLinks, OrgId } from '$lib/types/holdings';
+	import { isLibraryOrg } from '$lib/utils/holdings';
 	import BiHouseHeart from '~icons/bi/house-heart';
 
 	type IndicatorProps = {
 		libraries: string[];
+		holdingLibraries?: Record<LibraryId, LibraryWithLinks | null>;
+		refinedOrgs?: Record<OrgId, LibOrg>;
 	};
-	const { libraries }: IndicatorProps = $props();
-	const { myLibraries } = getUserSettings();
+	const { libraries, holdingLibraries, refinedOrgs }: IndicatorProps = $props();
 
+	// libraries can be an array of labels or ids (libraries and orgs then needed for lookup)
 	const indicatorText = $derived.by(() => {
-		if (myLibraries) {
-			return (
-				page.data.t('holdings.availableAt') +
-				': ' +
-				libraries.map((lib) => myLibraries[lib] || '').join(', ')
-			);
-		}
-		return '';
+		let availableAt = `${page.data.t('holdings.availableAt')}: `;
+		let libNames = libraries.map((l) => {
+			if (holdingLibraries && refinedOrgs) {
+				if (isLibraryOrg(l)) {
+					return refinedOrgs[l]?.name;
+				} else {
+					return holdingLibraries[l]?.name;
+				}
+			} else return l;
+		});
+
+		return availableAt + libNames.join(', ');
 	});
 </script>
 

@@ -8,7 +8,7 @@
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { LxlLens } from '$lib/types/display';
 	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
-	import { getHoldingsLink, getLibsFromHoldings, handleClickHoldings } from '$lib/utils/holdings';
+	import { getHoldingsLink, getHeldBy, handleClickHoldings } from '$lib/utils/holdings';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 
 	interface Props {
@@ -32,12 +32,12 @@
 
 <ul class="@container my-4 flex flex-wrap gap-2 print:hidden">
 	{#each Object.keys(holdings.byType) as type (type)}
-		{@const myLibsHoldingByType = getLibsFromHoldings(
+		{@const myLibsHoldingByType = getHeldBy(
 			myLibraries,
 			holdings.byType[type],
 			page.data.refinedOrgs
 		)}
-		{@const subsetHoldingByType = getLibsFromHoldings(
+		{@const subsetHoldingByType = getHeldBy(
 			subsetLibraries,
 			holdings.byType[type],
 			page.data.refinedOrgs
@@ -58,7 +58,11 @@
 			>
 				{#if myLibsHoldingByType}
 					<div class="mr-1 text-lg">
-						<MyLibsHoldingIndicator libraries={myLibsHoldingByType} />
+						<MyLibsHoldingIndicator
+							libraries={myLibsHoldingByType}
+							holdingLibraries={holdings.holdingLibraries}
+							refinedOrgs={page.data.refinedOrgs}
+						/>
 					</div>
 				{/if}
 				<span class="text-nowrap">{getLocalizedType(type)}</span>
