@@ -259,7 +259,7 @@
 				</div>
 				{#if hasHoldingsBtn}
 					<h2 class="sr-only print:hidden">{page.data.t('holdings.availabilityByType')}</h2>
-					<ResourceHoldings {holdings} {instances} />
+					<ResourceHoldings {holdings} />
 				{/if}
 				<ResourceDigitalAccess
 					eodAvailable={holdings.eodAvailable}

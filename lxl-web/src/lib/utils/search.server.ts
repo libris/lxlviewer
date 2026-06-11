@@ -127,10 +127,10 @@ export function asSearchResultItem(
 
 		return {
 			...(myLibraries && {
-				heldByMyLibraries: getHeldByLibraries(i, myLibraries)
+				heldByMyLibraries: getHeldByLibraries(i, myLibraries, vocabUtil, displayUtil, locale)
 			}),
 			...(subsetLibraries && {
-				heldBySubset: getHeldByLibraries(i, subsetLibraries)
+				heldBySubset: getHeldByLibraries(i, subsetLibraries, vocabUtil, displayUtil, locale)
 			}),
 			...('_debug' in i && {
 				_debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores)
@@ -181,7 +181,11 @@ function typeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode)
 	return toString(displayUtil.lensAndFormat(t, LensType.Card, locale));
 }
 
-function selectTypeStr(typeLike: TypeLike, displayUtil: DisplayUtil, locale: LangCode): string {
+export function selectTypeStr(
+	typeLike: TypeLike,
+	displayUtil: DisplayUtil,
+	locale: LangCode
+): string {
 	const t = {
 		'@type': '_Types',
 		...(typeLike.select.length > 0 && { _select: typeLike.select })
@@ -406,9 +410,16 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 	};
 }
 
-function getHeldByLibraries(item: FramedData, libraries: MyLibrariesType) {
+function getHeldByLibraries(
+	item: FramedData,
+	libraries: MyLibrariesType,
+	vocabUtil: VocabUtil,
+	displayUtil: DisplayUtil,
+	locale: LangCode
+) {
 	const orgs = getRefinedOrgs(libraries);
-	const holdersByType = getHoldersByType(getHoldingsByType(item));
+	const { holdingsByType } = getHoldingsByType(item, vocabUtil, displayUtil, locale);
+	const holdersByType = getHoldersByType(holdingsByType);
 	return getLibsFromHoldings(libraries, holdersByType, orgs);
 }
 

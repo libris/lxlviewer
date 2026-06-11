@@ -132,7 +132,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		// FIXME
 		const isSingleInstance = thingType === 'PhysicalResource' || thingType === 'DigitalResource';
 
-		const workType = isSingleInstance ? thing[Bibframe.instanceOf][JsonLd.TYPE] : thingType;
+		const workType = isSingleInstance ? thing[Bibframe.instanceOf]?.[JsonLd.TYPE] : thingType;
 
 		const instances = isSingleInstance
 			? [thing]
@@ -237,6 +237,11 @@ export function getTypeForIcon(typeLike: TypeLike) {
 		}
 	}
 	return result.filter((t) => !!t);
+}
+
+export function getSelectSlug(thing: FramedData, vocabUtil: VocabUtil): string {
+	const typeLike = getTypeLike(thing, vocabUtil);
+	return slug(typeLike.select?.[0][JsonLd.ID] as string);
 }
 
 export function slug(s: string) {

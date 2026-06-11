@@ -95,6 +95,7 @@ export type UnknownLibrary = {
 export type BibIdObj = {
 	bibId: string;
 	[JsonLd.TYPE]: string;
+	selectSlug: string;
 	onr: string | null;
 	isbn: string[];
 	issn: string[];
@@ -149,6 +150,7 @@ export type HoldingsData = {
 	bibIdData: BibIdData;
 	byInstanceId: HoldersByInstanceId;
 	byType: HoldersByType;
+	labelsByType: Record<string, string>;
 	holdingLibraries: Record<LibraryId, LibraryWithLinks | null>;
 	eodAvailable: EodAvailable;
 };
