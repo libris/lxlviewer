@@ -82,10 +82,6 @@
 			currentPage: page.route.id === '/(app)/[[lang=lang]]/about'
 		},
 		{
-			href: 'https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html',
-			label: page.data.t('appMenu.aboutBeta')
-		},
-		{
 			href: page.data.localizeHref(page.url.pathname + page.url.search + page.url.hash, {
 				locale: otherLangCode
 			}),
@@ -96,7 +92,7 @@
 	]);
 </script>
 
-<ul class="w-full">
+<ul class="mt-0.75 w-full">
 	{#snippet menuItem({
 		href,
 		label,
@@ -118,9 +114,14 @@
 				{href}
 				aria-current={currentPage ? 'page' : undefined}
 				class={[
-					'text-body hover:bg-primary-50 focus-visible:bg-primary-50 focus-visible:hover:bg-primary-100 flex min-h-11 items-center px-3 whitespace-nowrap hover:underline focus-visible:underline',
-					LeadingIcon && 'pl-0',
-					hasParent && 'pl-10 text-sm'
+					'hover:bg-primary-100 focus-visible:bg-primary-100 focus-visible:hover:bg-primary-200 text-subtle hover:text-body flex min-h-12 items-center px-3 whitespace-nowrap -outline-offset-2 hover:underline focus-visible:underline lg:min-h-13 lg:px-4',
+					LeadingIcon && 'pl-0 lg:pl-0',
+					hasParent && 'min-h-11! pl-12 text-sm lg:min-h-11! lg:pl-13 lg:text-[0.9375rem]',
+					hasParent ? 'font-normal' : ' font-medium',
+					currentPage && 'text-body',
+					currentPage &&
+						href !== page.data.localizeHref(page.data.base) &&
+						'bg-primary-50 text-body!'
 				]}
 				{hreflang}
 				{onclick}
@@ -128,11 +129,11 @@
 				{#if LeadingIcon}
 					<span
 						class={[
-							'text-subtle inline-flex w-10 items-center justify-center',
+							'text-subtle inline-flex w-12 items-center justify-center lg:min-w-13',
 							currentPage && 'text-primary-700!'
 						]}
 					>
-						<LeadingIcon />
+						<LeadingIcon class="size-4 2xl:size-4.5" />
 					</span>
 				{/if}
 				{label}
@@ -141,9 +142,9 @@
 				{/if}
 			</a>
 			{#if children}
-				<details>
+				<details class="open:*:text-body text-subtle">
 					<summary
-						class="border-neutral hover:bg-primary-50 focus-visible:bg-primary-50 focus-visible:hover:bg-primary-100 ml-auto flex size-11 cursor-pointer items-center justify-center border-l"
+						class="border-neutral hover:bg-primary-100 focus-visible:bg-primary-100 focus-visible:hover:bg-primary-200 ml-auto flex size-12 cursor-pointer items-center justify-center border-l -outline-offset-2 lg:size-13"
 					>
 						<IconGoto />
 					</summary>
@@ -186,7 +187,11 @@
 			position: absolute;
 			top: 0;
 			width: 100%;
-			max-width: calc(100% - var(--spacing) * 11);
+			max-width: calc(100% - var(--spacing) * 12);
+
+			@variant lg {
+				max-width: calc(100% - var(--spacing) * 13);
+			}
 		}
 
 		/*

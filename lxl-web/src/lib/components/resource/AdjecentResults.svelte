@@ -110,7 +110,7 @@
 {/snippet}
 
 {#if currentSearchResult}
-	<div class="my-1 flex items-center gap-2 px-3 text-xs sm:text-sm">
+	<div class="flex min-h-10 items-center gap-2 px-3 text-sm sm:min-h-11">
 		{#if typeof indexOfTotalSearchResults === 'number'}
 			<a
 				href={page.data.localizeHref(relativizeUrl(currentSearchResult['@id']) + `#${fnurgel}`)}
@@ -137,7 +137,7 @@
 				{#if previousItemFnurgel}
 					<a
 						href={page.data.localizeHref(previousItemFnurgel + page.url.search)}
-						class="link flex min-h-8 items-center @7xl:min-h-9"
+						class="link flex h-full items-center"
 						onclick={passAlongAdjecentSearchResults}
 					>
 						{@render previousResultContent()}
@@ -152,7 +152,7 @@
 				{#if nextItemFnurgel}
 					<a
 						href={page.data.localizeHref(nextItemFnurgel + page.url.search)}
-						class="link flex min-h-8 items-center @7xl:min-h-9"
+						class="link flex h-full items-center"
 						onclick={passAlongAdjecentSearchResults}
 					>
 						{@render nextResultContent()}

@@ -572,7 +572,7 @@
 	}
 
 	.sticky {
-		top: calc(var(--appbar-height, 0) + var(--banner-height, 0));
+		top: calc(var(--appbar-height, 0px) + var(--banner-height, 0px) + 1px);
 	}
 
 	.summary-or-toc {
