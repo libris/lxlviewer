@@ -15,7 +15,7 @@
 		type SelectEvent
 	} from '$lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
-	import { Compartment, Transaction, type Extension } from '@codemirror/state';
+	import { Compartment, EditorState, Transaction, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import preventEnterKeyHandling from '$lib/extensions/preventEnterKeyHandling.js';
 	import arrowKeyCursorHandling from '$lib/extensions/arrowKeyCursorHandling.js';
@@ -376,6 +376,11 @@
 
 	export function getQuery() {
 		return getActiveEditorView()?.state.doc.toString() || '';
+	}
+
+	export function syncEditors(editorState: EditorState) {
+		collapsedCodeMirror?.replaceEditorState(editorState);
+		expandedCodeMirror?.replaceEditorState(editorState);
 	}
 
 	export function dispatchChange({
@@ -793,6 +798,7 @@
 		if (BROWSER && toggleWithKeyboardShortcut) {
 			document.addEventListener('keydown', handleKeyboardShortcut);
 		}
+
 		dialog?.addEventListener('click', handleClickOutsideDialog);
 	});
 
@@ -867,9 +873,12 @@
 	$effect(() => {
 		if (editor) {
 			if (editor.id !== collapsedComboboxId) {
+				console.log('sync collapsed');
 				collapsedCodeMirror?.replaceEditorState(editor.state);
 			}
 			if (editor.id !== expandedComboboxId) {
+				console.log('sync expanded');
+
 				expandedCodeMirror?.replaceEditorState(editor.state);
 			}
 		}

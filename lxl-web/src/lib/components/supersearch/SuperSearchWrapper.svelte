@@ -140,6 +140,10 @@
 					? addSpaceIfEndingQualifier(navigation.to.url.searchParams.get('_q') || '')
 					: '';
 
+			if (activeEditorView) {
+				superSearch?.syncEditors(activeEditorView.state);
+			}
+
 			if (insert !== activeEditorView?.state.doc.toString()) {
 				superSearch?.dispatchChange({
 					change: {
@@ -348,8 +352,7 @@
 									head: initialSelectionBeforeMount.head
 								}
 							: undefined,
-						userEvent: 'input.complete',
-						addToHistory: false
+						userEvent: 'input.complete'
 					});
 
 					searchContext.lastUpdatedEditor = {
