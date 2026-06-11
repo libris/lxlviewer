@@ -29,7 +29,6 @@
 			? `${page.data.t('header.searchSubsetPlaceholder')}: ${displayMappingToString(page.data.subsetMapping)}`
 			: page.data.t('header.searchPlaceholder')
 	);
-	const autofocus = $derived(undefined /* isHomeRoute ? true : undefined */);
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -71,7 +70,6 @@
 					expandedAriaLabel={page.data.t('header.search')}
 					onCursorChange={(value) => (cursor = value)}
 					qualifierSuggestions={page.data.qualifierSuggestions || []}
-					{autofocus}
 					{initialValueBeforeMount}
 					{initialSelectionBeforeMount}
 					editor={searchContext.lastUpdatedEditor}

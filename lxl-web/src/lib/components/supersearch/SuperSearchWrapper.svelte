@@ -120,10 +120,12 @@
 	});
 
 	let cursor = $derived(selection?.head || 0);
+	let isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
+
 	afterNavigate((navigation) => {
 		pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
 		fetchOnExpand = true;
@@ -161,14 +163,18 @@
 		}
 
 		if (navigation.type == 'popstate' && navigation.from?.route.id !== navigation.to?.route.id) {
-			//showExpandedSearch({ trigger: 'popstate' });
 			if (page.state.expandedSuperSearch) {
-				console.log('FOCUS');
+				// console.log('FOCUS');
 			} else {
-				console.log('BLUR');
+				// console.log('BLUR');
 			}
 		} else {
-			hideExpandedSearch();
+			hideExpandedSearch({});
+			if (isHomeRoute) {
+				superSearch?.focus();
+			} else {
+				superSearch?.blur();
+			}
 		}
 	});
 

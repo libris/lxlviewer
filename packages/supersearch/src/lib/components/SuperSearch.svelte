@@ -873,12 +873,9 @@
 	$effect(() => {
 		if (editor) {
 			if (editor.id !== collapsedComboboxId) {
-				console.log('sync collapsed');
 				collapsedCodeMirror?.replaceEditorState(editor.state);
 			}
 			if (editor.id !== expandedComboboxId) {
-				console.log('sync expanded');
-
 				expandedCodeMirror?.replaceEditorState(editor.state);
 			}
 		}
