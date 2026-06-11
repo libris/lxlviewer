@@ -44,7 +44,7 @@
 
 			case 'type':
 				return Object.entries(bibIdData)
-					.filter(([, data]) => data?.selectType === selection)
+					.filter(([, data]) => data?.selectSlug === selection)
 					.map(([id]) => id);
 
 			case 'work':

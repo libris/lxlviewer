@@ -17,7 +17,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import { getLibrary } from '$lib/utils/getLibraries.server';
 import type { LocaleCode } from '$lib/i18n/locales';
 import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-import getTypeLike, { COMPONENT_PART, slug } from '$lib/utils/getTypeLike.server';
+import getTypeLike, { COMPONENT_PART, getSelectSlug } from '$lib/utils/getTypeLike.server';
 import { selectTypeStr } from '$lib/utils/search.server';
 
 type BibDbObj = {
@@ -62,18 +62,18 @@ export function getHoldingsByType(
 			continue;
 		}
 
+		const selectSlug = getSelectSlug(instance, vocabUtil);
 		const typeLike = getTypeLike(instance, vocabUtil);
-		const selectId = slug(typeLike.select?.[0][JsonLd.ID] as string);
 		const selectStr = selectTypeStr(typeLike, displayUtil, locale).split(',')[0];
 		const items = instance[JsonLd.REVERSE]?.itemOf ?? [];
 
-		if (selectId) {
-			if (!holdingsByType[selectId]) {
-				holdingsByType[selectId] = [];
-				labelsByType[selectId] = '';
+		if (selectSlug) {
+			if (!holdingsByType[selectSlug]) {
+				holdingsByType[selectSlug] = [];
+				labelsByType[selectSlug] = '';
 			}
-			holdingsByType[selectId].push(...items);
-			labelsByType[selectId] = selectStr;
+			holdingsByType[selectSlug].push(...items);
+			labelsByType[selectSlug] = selectStr;
 		}
 	}
 	return { holdingsByType, labelsByType };
@@ -130,9 +130,7 @@ export function getBibIdsByInstanceId(
 		if (!id) continue;
 
 		const type = instance[JsonLd.TYPE];
-		// const holders = instance[JsonLd.REVERSE]?.itemOf?.map(item => item?.heldBy?.[JsonLd.ID]) ?? [];
-		const typeLike = getTypeLike(instance, vocabUtil);
-		const selectType = slug(typeLike.select?.[0][JsonLd.ID] as string);
+		const selectSlug = getSelectSlug(instance, vocabUtil);
 
 		const publication = instance.publication?.[0];
 		const publicationStr: string = publication
@@ -155,7 +153,7 @@ export function getBibIdsByInstanceId(
 		result[id] = {
 			bibId,
 			[JsonLd.TYPE]: type,
-			selectType,
+			selectSlug,
 			onr,
 			isbn,
 			issn,

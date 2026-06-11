@@ -239,6 +239,11 @@ export function getTypeForIcon(typeLike: TypeLike) {
 	return result.filter((t) => !!t);
 }
 
+export function getSelectSlug(thing: FramedData, vocabUtil: VocabUtil): string {
+	const typeLike = getTypeLike(thing, vocabUtil);
+	return slug(typeLike.select?.[0][JsonLd.ID] as string);
+}
+
 export function slug(s: string) {
 	return s === undefined ? '' : s.split('/').pop() || '';
 }
