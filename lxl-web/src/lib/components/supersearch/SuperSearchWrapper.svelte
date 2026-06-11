@@ -155,8 +155,7 @@
 						anchor: insert.length,
 						head: insert.length
 					},
-					userEvent: 'input.complete',
-					addToHistory: false
+					userEvent: 'input.complete'
 				});
 			}
 		}
