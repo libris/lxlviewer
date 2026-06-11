@@ -530,9 +530,16 @@
 	}
 
 	.page-description-container {
-		height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
-		height: round(calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
+		height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) * 1.5), 1px);
+		height: round(
+			calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) * 1.5),
+			1px
+		);
 
+		@variant lg {
+			height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--app-bar-height)), 1px);
+			height: round(calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height)), 1px);
+		}
 		& > div {
 			grid-template-areas: var(--search-grid-template-areas);
 			grid-template-columns: var(--search-grid-template-columns);
