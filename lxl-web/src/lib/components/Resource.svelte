@@ -311,7 +311,7 @@
 								{page.data.t('resource.moreDetails')}
 							</a>
 						{/if}
-						{#if instances?.length === 1 && fnurgel}
+						{#if !isWork && instances?.length === 1 && fnurgel}
 							<a
 								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
 								href={getCiteLink(page.url, fnurgel)}
@@ -342,7 +342,7 @@
 					<ExpandableArea content={summary} collapsedHeightPx={instances?.length > 1 ? 200 : 400} />
 				</section>
 			{/if}
-			{#if instances?.length > 1}
+			{#if isWork && instances?.length}
 				<section class="print:break-before-page print:break-after-page">
 					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
 						{page.data.t('resource.editions')}
