@@ -18,9 +18,7 @@ test('Holdings panel has a toggle near me', async ({ page }) => {
 });
 
 test('Holdings panel hightlights refined libraries', async ({ page }) => {
-	await page.goto(
-		'/fxqqg6xr2062ndl?_q=library%3A"libris%3Alibrary%2Forg%2FKB"&holdings=PhysicalResource'
-	);
+	await page.goto('/fxqqg6xr2062ndl?_q=library%3A"sigel%3Aorg%2FKB"&holdings=PhysicalResource');
 	const specialSections = page.locator('dialog .special-section');
 
 	// refined section
@@ -68,9 +66,7 @@ test('Holdings panel highlights favourite libraries', async ({ page }) => {
 
 test('Holdings panel can highlight both favourite and refined libraries', async ({ page }) => {
 	await page.goto('/?favouriteLibraries=org/KB');
-	await page.goto(
-		'/fxqqg6xr2062ndl?_q=library%3A"libris%3Alibrary%2Forg%2FKB"&holdings=PhysicalResource'
-	);
+	await page.goto('/fxqqg6xr2062ndl?_q=library%3A"sigel%3Aorg%2FKB"&holdings=PhysicalResource');
 	const specialSections = page.locator('dialog .special-section');
 
 	//refined section
