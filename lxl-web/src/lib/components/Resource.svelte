@@ -637,6 +637,10 @@
 			@apply mt-1;
 		}
 
+		& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
+			font-weight: var(--font-weight-semibold);
+		}
+
 		& :global(.contribution-role) {
 			font-size: var(--text-sm);
 			color: var(--color-subtle);
@@ -758,7 +762,8 @@
 				font-weight: var(--font-weight-semibold);
 			}
 
-			& :global(.translationOf .main-title) {
+			& :global(.translationOf .main-title),
+			& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
 				font-weight: var(--font-weight-normal);
 			}
 		}
