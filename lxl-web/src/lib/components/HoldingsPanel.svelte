@@ -155,7 +155,7 @@
 				{#each section.data as holder, i (`mylibs-${holder[JsonLd.ID]}-${i}`)}
 					{#if '_members' in holder}
 						<li>
-							<h3 class="mb-3 flex items-center gap-2">
+							<h3 class="mb-3 flex items-center gap-2" data-testid="holdings-org-label">
 								<span aria-hidden="true" class="text-subtle text-base">
 									<BiHouses class="text-subtle size-3" />
 								</span>
