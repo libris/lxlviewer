@@ -1214,7 +1214,7 @@
 				"manufacture",
 				"marc:primaryProvisionActivity"
 			],
-			"fresnel:propertyStyle": ["provisionActivity", "label"]
+			"fresnel:propertyStyle": ["provisionActivity", "label", "ul-when-multiple"]
 		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
@@ -1298,6 +1298,12 @@
 				"fresnel:contentBefore": "; ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"hasTitle-format": {
+			"@id": "hasTitle-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["hasTitle"],
+			"fresnel:propertyStyle": ["ul-when-multiple"]
 		},
 		"subtitle-format": {
 			"@id": "subtitle-format",
@@ -1458,11 +1464,16 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"bibliography-format": {
+			"@id": "sorted-format",
+			"@type": "bibliography-format",
+			"fresnel:propertyFormatDomain": ["bibliography"],
+			"fresnel:propertyStyle": ["sort()", "ul"]
+		},
 		"sorted-format": {
 			"@id": "sorted-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
-				"bibliography",
 				"classification",
 				"closeMatch",
 				"hasDataset",
@@ -1539,18 +1550,25 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["hasPart"],
-			"fresnel:propertyStyle": ["label"],
-			"fresnel:valueFormat": {
-				"fresnel:contentBefore": "",
-				"fresnel:contentFirst": ""
-			}
+			"fresnel:propertyStyle": ["label", "ul"]
 		},
 		"Work-relationship-format": {
 			"@id": "Work-relationship-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["relationship"],
-			"fresnel:propertyStyle": ["label"],
+			"fresnel:propertyStyle": ["label", "ul"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Work-hasVariant-format": {
+			"@id": "Agent-hasVariant-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Work"],
+			"fresnel:propertyFormatDomain": ["hasVariant"],
+			"fresnel:propertyStyle": ["label", "ul"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
@@ -1601,7 +1619,11 @@
 			"@id": "hasNote-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["hasNote"],
-			"fresnel:propertyStyle": ["hasNote"]
+			"fresnel:propertyStyle": ["hasNote", "ul"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
 		},
 		"Classification-format": {
 			"@id": "Classification-format",
@@ -1731,7 +1753,7 @@
 			"fresnel:resourceStyle": ["findToTop()"]
 		},
 		"KeyTitle-format": {
-			"@id": "Role-format",
+			"@id": "KeyTitle-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["KeyTitle"],
 			"fresnel:resourceFormat": {
@@ -2031,7 +2053,7 @@
 				"supplement",
 				"hasReproduction"
 			],
-			"fresnel:propertyStyle": ["test_list"],
+			"fresnel:propertyStyle": ["ul-when-multiple"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ""
 			}
