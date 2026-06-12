@@ -29,7 +29,7 @@ test('Holdings panel hightlights refined libraries', async ({ page }) => {
 
 	// no favourite libraries section
 	const favLibrariesSection = specialSections.getByText('Favoritbibliotek');
-	await expect(favLibrariesSection).not.toBeVisible();
+	await expect(favLibrariesSection).not.toBeAttached();
 
 	// org grouping label
 	const holdingsOrgLabel = specialSections
@@ -53,7 +53,7 @@ test('Holdings panel highlights favourite libraries', async ({ page }) => {
 
 	// no refined section
 	const refinedSection = specialSections.getByText('Avgränsade bibliotek');
-	await expect(refinedSection).not.toBeVisible();
+	await expect(refinedSection).not.toBeAttached();
 
 	// org grouping label
 	const holdingsOrgLabel = specialSections
