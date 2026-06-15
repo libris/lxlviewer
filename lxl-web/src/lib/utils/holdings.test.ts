@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getBibIdsByInstanceId, getHoldersByType, getHoldingsByType } from './holdings.server';
-import { getLibsFromHoldings } from './holdings';
+import { getHeldBy } from './holdings';
 import mainEntity from '$lib/assets/json/test-data/main-entity.json';
 import record from '$lib/assets/json/test-data/record.json';
 import { UserSettings } from './userSettings.svelte';
@@ -29,20 +29,20 @@ describe('getBibIdsByInstanceId', () => {
 	});
 });
 
-describe('getLibsFromHoldings', () => {
+describe('getHeldBy', () => {
 	it('Returns favourite library present in the holdings list', () => {
 		const userSettings = new UserSettings({});
 		userSettings.addLibrary('https://libris.kb.se/library/S');
 		userSettings.addLibrary('https://libris.kb.se/library/foo');
 		const byType = getHoldersByType(getHoldingsByType(workCenteredMainEntity));
 
-		expect(getLibsFromHoldings(userSettings.myLibraries, byType)).toStrictEqual([
+		expect(getHeldBy(userSettings.myLibraries, byType)).toStrictEqual([
 			'https://libris.kb.se/library/S'
 		]);
 
 		userSettings.addLibrary('https://libris.kb.se/library/H');
 
-		expect(getLibsFromHoldings(userSettings.myLibraries, byType)).toStrictEqual([
+		expect(getHeldBy(userSettings.myLibraries, byType)).toStrictEqual([
 			'https://libris.kb.se/library/S',
 			'https://libris.kb.se/library/H'
 		]);

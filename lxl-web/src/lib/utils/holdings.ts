@@ -3,6 +3,7 @@ import type {
 	BibIdObj,
 	HoldersByType,
 	HoldingLinks,
+	LibOrg,
 	LibraryFull,
 	LibraryId,
 	LibraryWithLinks,
@@ -145,13 +146,13 @@ export function isLibraryOrg(id: LibraryId): boolean {
 }
 
 /**
- * Get Library id:s that are holders of a resource -
+ * From a selection of libs, get id:s that are holders of a resource -
  * orgs will be included if passed (with its members) as argument
  */
-export function getLibsFromHoldings(
+export function getHeldBy(
 	myLibraries: MyLibrariesType | undefined,
 	holdings: string[] | HoldersByType | HoldersByType[string],
-	orgs?: Record<string, string[]>
+	orgs?: Record<OrgId, LibOrg>
 ): (LibraryId | OrgId)[] | undefined {
 	if (!myLibraries) return undefined;
 
@@ -162,19 +163,16 @@ export function getLibsFromHoldings(
 	const result = new Set<LibraryId | OrgId>();
 
 	for (const libId of Object.keys(myLibraries)) {
-		if (isLibraryOrg(libId)) {
-			if (orgs) {
-				const orgMembers = orgs[libId];
-
-				if (orgMembers && Array.isArray(orgMembers)) {
-					for (const memberId of orgMembers) {
-						// add the org to result - not the member sigel
-						if (holdingSet.has(memberId)) {
-							result.add(libId);
-						}
+		if (isLibraryOrg(libId) && orgs) {
+			const orgMembers = orgs[libId]._members;
+			if (orgMembers && Array.isArray(orgMembers)) {
+				for (const memberId of orgMembers) {
+					// add the org to result - not the member sigel
+					if (holdingSet.has(memberId)) {
+						result.add(libId);
 					}
-					continue;
 				}
+				continue;
 			}
 		}
 

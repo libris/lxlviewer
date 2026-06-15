@@ -1,7 +1,7 @@
-import type { LibraryId, OrgId } from '$lib/types/holdings';
+import type { LibOrg, OrgId } from '$lib/types/holdings';
 import type { DisplayMapping } from '$lib/types/search';
 import type { MyLibrariesType } from '$lib/types/userSettings';
-import { getOrgMembers } from './getLibraries.server';
+import { getOrg } from './getLibraries.server';
 import { getLibraryIdsFromMapping } from './getLibraryIdsFromMapping';
 import { isLibraryOrg } from './holdings';
 
@@ -11,7 +11,7 @@ import { isLibraryOrg } from './holdings';
 export function getRefinedOrgs(
 	libraries?: MyLibrariesType,
 	mapping: (DisplayMapping[] | undefined)[] = []
-): Record<OrgId, LibraryId[]> {
+): Record<OrgId, LibOrg> {
 	const mappingIds = getLibraryIdsFromMapping(mapping) ?? {};
 
 	const mappingOrgs = Object.keys(mappingIds).filter(isLibraryOrg);
@@ -19,9 +19,12 @@ export function getRefinedOrgs(
 
 	const orgIds = new Set([...mappingOrgs, ...myLibsOrgs]);
 
-	const result: Record<OrgId, LibraryId[]> = {};
+	const result: Record<OrgId, LibOrg> = {};
 	for (const orgId of orgIds) {
-		result[orgId] = getOrgMembers(orgId);
+		const org = getOrg(orgId);
+		if (org) {
+			result[orgId] = org;
+		}
 	}
 
 	return result;
