@@ -141,11 +141,9 @@
 		/** Update input value after navigation on /find route */
 		if (navigation.to?.url) {
 			const currentLength = activeEditorView?.state.doc.length || 0;
-			const insert =
-				navigation.to.route.id === '/(app)/[[lang=lang]]/find' &&
-				navigation.to.url.searchParams.has('_q')
-					? navigation.to.url.searchParams.get('_q') || ''
-					: '';
+			const insert = navigation.to.url.searchParams.has('_q')
+				? navigation.to.url.searchParams.get('_q') || ''
+				: '';
 
 			if (activeEditorView) {
 				superSearch?.syncEditors(activeEditorView.state);
