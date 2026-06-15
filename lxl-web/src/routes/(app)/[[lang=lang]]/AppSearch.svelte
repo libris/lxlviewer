@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { beforeNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import SuperSearchFallback from '$lib/components/supersearch/SuperSearchFallback.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
@@ -20,7 +19,6 @@
 	let initialValueFromFallback: string = $state(page.url.searchParams.get('_q') || '');
 	let initialSelectionFromFallback: { anchor: number; head: number } | undefined = $state();
 
-	let unloadedFallback = $state(false);
 	let cursor: number | null = $state(null);
 
 	const action = $derived(page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`);
@@ -45,14 +43,6 @@
 		}
 		return p;
 	});
-
-	function handleUnloadFallback() {
-		unloadedFallback = true;
-	}
-
-	beforeNavigate(() => {
-		unloadedFallback = false;
-	});
 </script>
 
 {#snippet fallbackInput()}
@@ -63,7 +53,6 @@
 		{ariaLabel}
 		bind:value={initialValueFromFallback}
 		bind:selection={initialSelectionFromFallback}
-		ondestroy={handleUnloadFallback}
 	/>
 {/snippet}
 
@@ -81,8 +70,8 @@
 					expandedAriaLabel={page.data.t('header.search')}
 					onCursorChange={(value) => (cursor = value)}
 					qualifierSuggestions={page.data.qualifierSuggestions || []}
-					initialValueFromFallback={unloadedFallback ? initialValueFromFallback : undefined}
-					initialSelectionFromFallback={unloadedFallback ? initialSelectionFromFallback : undefined}
+					{initialValueFromFallback}
+					{initialSelectionFromFallback}
 					editor={searchContext.lastUpdatedEditor}
 				/>
 			</div>

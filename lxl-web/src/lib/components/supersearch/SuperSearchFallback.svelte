@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
 	import { page } from '$app/state';
 	import IconSearch from '~icons/bi/search';
 	import IconClear from '~icons/bi/x-circle';
@@ -12,7 +11,6 @@
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		autofocus?: boolean;
-		ondestroy?: () => void;
 	}
 
 	let {
@@ -22,8 +20,7 @@
 		placeholder,
 		ariaLabel,
 		ariaLabelledBy,
-		autofocus,
-		ondestroy
+		autofocus
 	}: Props = $props();
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
@@ -60,8 +57,6 @@
 			}
 		};
 	});
-
-	onDestroy(() => ondestroy?.());
 </script>
 
 <div class="fallback-search relative">
