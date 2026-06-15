@@ -366,7 +366,8 @@
 	});
 
 	onMount(() => {
-		if (superSearch) {
+		if (superSearch && !searchContext.finishedLoadingSuperSearch) {
+			searchContext.finishedLoadingSuperSearch = true;
 			const activeEditorView = superSearch.getActiveEditorView();
 			if (activeEditorView?.dom.checkVisibility?.()) {
 				if (initialValueFromFallback) {

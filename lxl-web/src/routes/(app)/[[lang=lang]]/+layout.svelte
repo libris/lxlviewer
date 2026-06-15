@@ -19,6 +19,7 @@
 	setHomepageContext(homepageContextState);
 
 	let searchContext = $state({
+		finishedLoadingSuperSearch: false,
 		superSearch: undefined,
 		lastUpdatedEditor: undefined,
 		showSearchInAppBar: false
