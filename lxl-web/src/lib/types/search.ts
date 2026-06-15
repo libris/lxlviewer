@@ -291,7 +291,8 @@ export interface QualifierSuggestion2 {
 }
 
 export interface QualifierDefinition extends QualifierSuggestion2 {
-	comment?: string;
+	filterDescription?: string;
+	descriptionRemark?: string[];
 	propertyChainAxiom?: PropertyChain[];
 }
 
