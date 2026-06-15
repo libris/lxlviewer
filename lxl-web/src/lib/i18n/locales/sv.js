@@ -1,12 +1,19 @@
 export default {
 	home: {
-		pageHeadingTitle: 'Sök och hitta',
-		pageHeadingTitleNoWrap: 'på svenska bibliotek',
-		pageHeadingDescription: 'är de svenska bibliotekens gemensamma katalog',
-		pageHeadingDescriptionNoWrap: 'med över 9 miljoner titlar.',
+		pageHeadingTitle: 'Sök och hitta på',
+		pageHeadingTitleNoWrap: 'svenska bibliotek',
+		pageDescription: 'Libris är de svenska bibliotekens gemensamma katalog',
+		pageDescriptionReadMore1: 'Läs mer',
+		pageDescriptionReadMore2: 'om Libris',
+		collectionsTitle: 'Särskilda samlingar',
+		collectionsDescription:
+			'Särskilda samlingar omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala bibliografier.',
+		collectionsReadMore: 'Utforska särskilda samlingar',
 		metaDescription:
 			'Libris är en nationell söktjänst med information om titlar på cirka 600 svenska bibliotek, däribland KB. Med hjälp av tjänsten kan du hitta det du söker på ett bibliotek nära dig. Här finns närmare 13 miljoner objekt: böcker, tidskrifter, bilder, kartor, noter, e-böcker med mera. Libris innehåller även digitalt material som är fritt att ta del av hemifrån.',
-		searchShortcuts: 'Sökgenvägar'
+		searchLabel: 'Sök i Libris',
+		exploreLabel: 'Utforska katalogen',
+		categories: 'Kategorier'
 	},
 	appMenu: {
 		label: 'huvudmeny',
@@ -229,19 +236,13 @@ export default {
 		somethingWentWrong: 'Något gick fel',
 		notAvailable: 'Information saknas',
 		notFound: 'Sidan hittades inte',
-		gone: 'Posten har tagits bort',
-		goneDescription: 'Den här posten finns inte längre i Libris.',
 		wrongLink: 'Klickade du på en länk i Libris som inte fungerade?',
 		sendEmail: 'Skicka e-post till',
 		customerService: 'Libris kundservice',
 		followUp: ', så undersöker vi felet.',
 		backToStartPage: 'Tillbaka till startsidan',
 		mailSubject: 'Felaktig länk',
-		mailBody: 'Felaktig referens till sidan',
-		errorWithErrorId:
-			'Prova att ladda om sidan. Vänligen rapportera felkoden nedan om felet kvarstår.',
-		errorWithoutErrorId: 'Prova att ladda om sidan.',
-		errorIdLabel: 'Felkod'
+		mailBody: 'Felaktig referens till sidan'
 	},
 	general: {
 		collapseAll: 'Stäng alla',
@@ -260,9 +261,7 @@ export default {
 		add: 'Lägg till',
 		remove: 'Ta bort',
 		show: 'Visa',
-		approx: 'ca',
-		copyToClipboard: 'Kopiera till urklipp',
-		copied: 'Kopierad!'
+		approx: 'ca'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
@@ -292,12 +291,7 @@ export default {
 		downloadDescription: 'Ladda ner metadata',
 		showIn: 'Visa metadata i',
 		librisCataloging: 'Libris katalogisering',
-		librisOld: 'gamla Libris',
-		request: 'Beställ',
-		digitizationAvailable: 'Finns digitiserad',
-		requestDigitization: 'Beställ digitisering',
-		digitizationInfo:
-			'Boken kan mot en kostnad digitiseras och skickas via epost till dig som en pdf-fil. Nedan listas de bibliotek som tillhandahåller tjänsten'
+		librisOld: 'gamla Libris'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',
@@ -323,7 +317,6 @@ export default {
 		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',
 		unavailable: 'Ej tillgänglig',
-		onLoan: 'Utlånad',
 		map: 'karta',
 		linkToLocal: 'Hitta',
 		linkToCatalog: 'Bibliotekets lokala katalog',
