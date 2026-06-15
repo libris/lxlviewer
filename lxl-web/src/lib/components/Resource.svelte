@@ -815,6 +815,11 @@
 				margin-bottom: 0;
 			}
 		}
+
+		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
+		& :global([data-property='publication'] [data-property='appliesTo']) {
+			display: none;
+		}
 	}
 
 	.decorated-spacious {
@@ -850,6 +855,17 @@
 
 		& :global(ul[data-property='hasTitle'] > li > span[data-type='Title']) {
 			font-weight: var(--font-weight-semibold);
+		}
+
+		& :global(li > span[data-type='PrimaryPublication']) {
+			font-weight: var(--font-weight-semibold);
+		}
+
+		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
+		& :global([data-property='publication'] [data-property='appliesTo']) {
+			font-weight: var(--font-weight-normal);
+			color: var(--color-subtle);
+			font-size: var(--text-2xs);
 		}
 	}
 

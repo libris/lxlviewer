@@ -299,7 +299,9 @@
 						"startYear",
 						"endYear",
 						"date",
-						"marc:publicationStatus"
+						"marc:publicationStatus",
+						"marc:sequenceStatus",
+						"appliesTo"
 					]
 				},
 				"ProvisionActivity": {
@@ -1229,6 +1231,16 @@
 			],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"ProvisionActivity-space-format": {
+			"@id": "ProvisionActivity-space-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["ProvisionActivity"],
+			"fresnel:propertyFormatDomain": ["marc:sequenceStatus", "appliesTo"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
 		},
