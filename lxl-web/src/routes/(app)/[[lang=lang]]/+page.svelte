@@ -280,7 +280,7 @@
 		</div>
 	</div>
 </section>
-{#each featuredSearches as featured, index (featured.heading)}
+{#each featuredSearches2 as featured, index (featured.heading)}
 	{@render featuredSearchSection({
 		featured,
 		type: 'horizontal',
