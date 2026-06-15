@@ -40,7 +40,7 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-<article class="mx-auto mt-8 mb-12 w-7xl p-4 sm:px-6">
+<article class="mx-auto mt-4 mb-12 w-7xl p-4 sm:px-6 lg:mt-8">
 	{#if data.locale === 'en'}
 		<EnContent />
 	{:else}
