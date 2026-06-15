@@ -145,10 +145,6 @@
 				? navigation.to.url.searchParams.get('_q') || ''
 				: '';
 
-			if (activeEditorView) {
-				superSearch?.syncEditors(activeEditorView.state);
-			}
-
 			if (insert !== activeEditorView?.state.doc.toString()) {
 				superSearch?.dispatchChange({
 					change: {
@@ -174,6 +170,10 @@
 		} else {
 			hideExpandedSearch({});
 			superSearch?.blur();
+		}
+
+		if (activeEditorView) {
+			superSearch?.syncEditors(activeEditorView.state);
 		}
 	});
 
