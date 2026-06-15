@@ -138,6 +138,9 @@
 		searchContext.superSearch = superSearch;
 		const activeEditorView = superSearch?.getActiveEditorView();
 
+		if (activeEditorView) {
+			superSearch?.syncEditors(activeEditorView.state);
+		}
 		/** Update input value after navigation on /find route */
 		if (navigation.to?.url) {
 			const currentLength = activeEditorView?.state.doc.length || 0;
@@ -170,10 +173,6 @@
 		} else {
 			hideExpandedSearch({});
 			superSearch?.blur();
-		}
-
-		if (activeEditorView) {
-			superSearch?.syncEditors(activeEditorView.state);
 		}
 	});
 
