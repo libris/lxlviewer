@@ -56,7 +56,7 @@ export const getSearchResults = query(SearchResultsSchema, async (params) => {
 });
 
 export const getAdjecentSearchResult = query(v.string(), async (viewId) => {
-	const { fetch, url } = getRequestEvent();
+	const { fetch, url, locals, params } = getRequestEvent();
 	const searchParams = new URL(url.origin + viewId).searchParams;
 	searchParams.set('_stats', 'falseThisRequest');
 	const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
@@ -71,5 +71,12 @@ export const getAdjecentSearchResult = query(v.string(), async (viewId) => {
 	}
 
 	const data = (await res.json()) as PartialCollectionView;
-	return asAdjecentSearchResult(data);
+	const result = await asResult(
+		data,
+		locals.display,
+		locals.vocab,
+		getSupportedLocale(params.lang),
+		''
+	);
+	return asAdjecentSearchResult(result);
 });
