@@ -637,6 +637,10 @@
 			@apply mt-1;
 		}
 
+		& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
+			font-weight: var(--font-weight-semibold);
+		}
+
 		& :global(.contribution-role) {
 			font-size: var(--text-sm);
 			color: var(--color-subtle);
@@ -678,36 +682,8 @@
 			white-space: nowrap;
 		}
 
-		& :global(.hasNote > *) {
-			display: block;
-		}
-
 		& :global(.test_list > *) {
 			display: block;
-		}
-
-		& :global(.hasNote > span)::before {
-			content: ' • ';
-			color: var(--color-subtle);
-		}
-
-		& :global(.hasNote > ._contentBefore),
-		:global(.hasNote > ._contentAfter) {
-			display: none;
-		}
-
-		& :global(div[data-property='hasTitle'] > span) {
-			display: block;
-		}
-
-		& :global(div[data-property='hasTitle'] > span)::before {
-			content: ' • ';
-			color: var(--color-subtle);
-		}
-
-		& :global(div[data-property='hasTitle'] > ._contentBefore),
-		:global(div[data-property='hasTitle'] > ._contentAfter) {
-			display: none;
 		}
 
 		/* hide double dash - */
@@ -721,43 +697,8 @@
 			white-space: nowrap;
 		}
 
-		& :global(.genre-form) {
-			@apply py-3;
-		}
-
 		& :global(.coverage) {
 			color: var(--color-subtle);
-		}
-
-		& :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
-			display: block;
-			/*font-size: var(--text-2xs);*/
-		}
-
-		& :global(.provisionActivity:has(> span:nth-of-type(2))) {
-			@apply py-1;
-
-			& :global(> ._contentBefore),
-			:global(> ._contentAfter) {
-				display: none;
-			}
-
-			& :global(> span) {
-				display: block;
-			}
-
-			& :global(> span)::before {
-				content: ' • ';
-				color: var(--color-subtle);
-			}
-
-			& :global(span[data-type='PrimaryPublication']) {
-			}
-
-			& :global(span[data-type='Publication']) {
-				/* color: var(--color-subtle); */
-				/* font-weight: var(--font-weight-light); */
-			}
 		}
 
 		& :global(span.Title-type) {
@@ -777,77 +718,54 @@
 			color: var(--color-subtle);
 		}
 
-		& :global(div[data-property='hasPart']),
-		& :global(div[data-property='relationship']),
-		& :global(div[data-property='hasVariant'] > span[data-type='Work']) {
+		& :global(ul[data-property]) {
+			list-style-type: disc;
+			/* list-style-type: "• "; */
+
+			& :global(li) {
+				margin-left: 1em;
+			}
+
+			& :global(li::marker) {
+				color: var(--color-subtle);
+			}
+
+			& :global(.block) {
+				display: inline;
+			}
+
+			& :global(div:has(> .property-label)) {
+				display: inline;
+			}
+
+			& :global(.property-label) {
+				color: var(--color-body);
+				font-style: italic;
+			}
+
+			& :global(.property-label):not(:empty)::after {
+				color: var(--color-body);
+				content: ': ';
+			}
+
 			& :global(.contribution) {
 				font-size: var(--text-md);
 				@apply mb-0;
 				@apply mt-0;
 			}
 
-			& :global(.contribution > span) {
-				display: inline;
-			}
-
-			/* There shouldn't exist multiple PrimaryContribution, but it does */
-			&
-				:global(
-					span[data-type='PrimaryContribution']:has(+ span[data-type='PrimaryContribution'])
-				)::after {
-				content: '; ';
-			}
-
-			/* TODO, what about translationOf in parts? e.g. w8hp61lvtrstrtn0  */
-			/*
-			& :global(span[data-property='translationOf'])::before {
-				content: '{';
-				color: var(--color-subtle);
-			}
-			& :global(span[data-property='translationOf'])::after {
-				content: '}';
-				color: var(--color-subtle);
-			}
-             */
-
-			& :global(.person-extra),
-			& :global(.language) {
+			& :global(.person-extra) {
 				display: none;
 			}
-		}
 
-		& :global(div[data-property='hasPart']:has(> :nth-child(3))),
-		& :global(div[data-property='relationship']:has(> :nth-child(3))),
-		& :global(div[data-property='hasVariant']:has(> span[data-type='Work'])) {
-			& :global(> span)::before,
-			& :global(> a)::before {
-				content: ' • ';
-				color: var(--color-subtle);
+			& :global(.main-title) {
+				font-weight: var(--font-weight-semibold);
 			}
 
-			& :global(> span),
-			& :global(> a) {
-				display: block;
+			& :global(.translationOf .main-title),
+			& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
+				font-weight: var(--font-weight-normal);
 			}
-
-			& :global(> span._contentBefore) {
-				display: none;
-			}
-		}
-
-		& :global(div[data-property='bibliography'] > a) {
-			display: block;
-			width: fit-content;
-		}
-
-		& :global(div[data-property='bibliography'] > a)::before {
-			content: ' • ';
-			color: var(--color-subtle);
-		}
-
-		& :global(div[data-property='bibliography'] > ._contentBefore),
-		:global(div[data-property='bibliography'] > ._contentAfter) {
-			display: none;
 		}
 	}
 
@@ -871,9 +789,9 @@
 			content: ' ; ';
 		}
 
-		& :global(div[data-property='hasPart']:has(> :nth-child(3))),
-		& :global(div[data-property='relationship']:has(> :nth-child(3))) {
+		& :global(div .ul) {
 			@apply py-1;
+			max-width: 80ch;
 		}
 
 		& :global(div[data-property='_select']) {
@@ -896,6 +814,11 @@
 			@variant sm {
 				margin-bottom: 0;
 			}
+		}
+
+		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
+		& :global([data-property='publication'] [data-property='appliesTo']) {
+			display: none;
 		}
 	}
 
@@ -930,9 +853,19 @@
 			@apply mt-1;
 		}
 
-		& :global(div[data-property='hasTitle'] > span[data-type='Title']) {
-			/* color: var(--color-subtle); */
+		& :global(ul[data-property='hasTitle'] > li > span[data-type='Title']) {
 			font-weight: var(--font-weight-semibold);
+		}
+
+		& :global(li > span[data-type='PrimaryPublication']) {
+			font-weight: var(--font-weight-semibold);
+		}
+
+		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
+		& :global([data-property='publication'] [data-property='appliesTo']) {
+			font-weight: var(--font-weight-normal);
+			color: var(--color-subtle);
+			font-size: var(--text-2xs);
 		}
 	}
 
