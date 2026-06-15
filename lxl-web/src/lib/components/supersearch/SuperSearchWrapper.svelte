@@ -1,17 +1,21 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, goto, pushState } from '$app/navigation';
 	import {
+		type ChangeEvent,
 		type DebouncedWaitFunction,
+		type Editor,
 		type ExpandEvent,
+		type CollapseEvent,
+		type HideExpandedSearchOptions,
 		lxlQualifierPlugin,
 		type QualifierRendererProps,
+		type SelectEvent,
 		type Selection,
 		type ShowExpandedSearchOptions,
 		SuperSearch,
-		type ViewUpdateSuperSearchEvent,
-		type UserEvent
+		type ViewUpdateEvent
 	} from 'supersearch';
 	import FooterRow from './rows/FooterRow.svelte';
 	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
@@ -30,6 +34,7 @@
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	interface Props {
+		id: string;
 		placeholder: string;
 		collapsedAriaLabelledBy?: string;
 		collapsedAriaLabel?: string;
@@ -37,21 +42,18 @@
 		expandedAriaLabelledBy?: string;
 		expandedAriaLabel?: string;
 		expandedAriaDescribedBy?: string;
+		editor?: Editor;
+		syncEditorsOnChange?: boolean;
+		syncEditorsOnSelection?: boolean;
 		onCursorChange: (cursor: number | null) => void;
 		qualifierSuggestions: QualifierSuggestion2[];
 		autofocus?: boolean;
+		initialValueFromFallback?: string;
+		initialSelectionFromFallback?: { anchor: number; head: number };
 	}
 
-	export type ChangeQueryParams = {
-		change: { insert: string; from?: number; to?: number };
-		selection?: {
-			anchor?: number | null;
-			head?: number | null;
-		};
-		userEvent?: UserEvent;
-	};
-
 	let {
+		id,
 		placeholder,
 		collapsedAriaLabelledBy,
 		collapsedAriaLabel,
@@ -59,6 +61,11 @@
 		expandedAriaLabelledBy,
 		expandedAriaLabel,
 		expandedAriaDescribedBy,
+		editor,
+		syncEditorsOnChange = false,
+		syncEditorsOnSelection = false,
+		initialValueFromFallback,
+		initialSelectionFromFallback,
 		onCursorChange,
 		qualifierSuggestions,
 		autofocus
@@ -80,6 +87,8 @@
 	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
 
+	let interceptedHref: string | undefined = $state();
+
 	let clearUrl = $derived.by(() => {
 		if (page.url.pathname !== '/find') return undefined;
 		const url = new URL(page.url);
@@ -87,10 +96,6 @@
 		url.searchParams.delete('_offset');
 		return url.toString();
 	});
-
-	let userClearedSearch = $state(false);
-
-	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
 	// We don't want to provide search suggestions when user has entered < 3 chars, because
 	// they are expensive. Use decreasing debounce as query gets longer.
@@ -115,32 +120,60 @@
 	});
 
 	let cursor = $derived(selection?.head || 0);
+	let isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
-	afterNavigate(({ to }) => {
+	afterNavigate((navigation) => {
+		pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
+		fetchOnExpand = true;
+
+		searchContext.superSearch = superSearch;
+		const activeEditorView = superSearch?.getActiveEditorView();
+
 		/** Update input value after navigation on /find route */
-		if (to?.url) {
-			if (isHomeRoute) {
-				q = ''; // reset query if navigating to start/index page
-			} else if (to.url.searchParams.has('_q')) {
-				q = addSpaceIfEndingQualifier(to.url.searchParams.get('_q') || '');
+		if (navigation.to?.url) {
+			const currentLength = activeEditorView?.state.doc.length || 0;
+			const insert =
+				navigation.to.route.id === '/(app)/[[lang=lang]]/find' &&
+				navigation.to.url.searchParams.has('_q')
+					? navigation.to.url.searchParams.get('_q') || ''
+					: '';
+
+			if (activeEditorView) {
+				superSearch?.syncEditors(activeEditorView.state);
 			}
 
-			pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
+			if (insert !== activeEditorView?.state.doc.toString()) {
+				superSearch?.dispatchChange({
+					change: {
+						from: 0,
+						to: currentLength,
+						insert
+					},
+					selection: {
+						anchor: insert.length,
+						head: insert.length
+					},
+					userEvent: 'input.complete'
+				});
+			}
+		}
 
-			hideExpandedSearch();
-			fetchOnExpand = true;
-
-			if (userClearedSearch) {
-				showExpandedSearch();
-				userClearedSearch = false;
-			} else if (isHomeRoute) {
-				superSearch?.focus(); // focus input on start page
+		if (navigation.type == 'popstate' && navigation.from?.route.id !== navigation.to?.route.id) {
+			if (page.state.expandedSuperSearch) {
+				// console.log('FOCUS');
 			} else {
-				superSearch?.blur(); // remove focus from input after searching or navigating
+				// console.log('BLUR');
+			}
+		} else {
+			hideExpandedSearch({});
+			if (isHomeRoute) {
+				superSearch?.focus();
+			} else {
+				superSearch?.blur();
 			}
 		}
 	});
@@ -174,30 +207,6 @@
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
 		return data;
-	}
-
-	function changeQuery({ change, selection, userEvent }: ChangeQueryParams) {
-		const from = typeof change.from === 'number' ? change.from : q.length;
-		const to = typeof change.to === 'number' ? change.to : q.length;
-
-		superSearch?.dispatchChange({
-			change: {
-				from,
-				to,
-				insert: change.insert
-			},
-			selection: {
-				anchor:
-					selection && typeof selection.anchor === 'number'
-						? selection.anchor
-						: (q.slice(0, from) + change.insert).length,
-				head:
-					selection && typeof selection.head === 'number'
-						? selection.head
-						: (q.slice(0, from) + change.insert).length
-			},
-			userEvent
-		});
 	}
 
 	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
@@ -237,27 +246,85 @@
 		superSearch?.showExpandedSearch(options);
 	}
 
-	function hideExpandedSearch() {
-		superSearch?.hideExpandedSearch();
+	function hideExpandedSearch(options?: HideExpandedSearchOptions) {
+		superSearch?.hideExpandedSearch(options);
 	}
 
-	function handleOnChange() {
-		fetchOnExpand = false;
+	function handleOnChange(event: ChangeEvent) {
+		searchContext.superSearch = superSearch;
+		if (syncEditorsOnChange) {
+			searchContext.lastUpdatedEditor = event.editor;
+		}
+		if (!superSearch?.isExpanded()) {
+			fetchOnExpand = true;
+		}
 	}
 
-	function handleOnExpand({ windowPageYOffset }: ExpandEvent) {
-		pageYOffset = windowPageYOffset;
+	function handleOnSelect(event: SelectEvent) {
+		searchContext.superSearch = superSearch;
+		if (syncEditorsOnSelection) {
+			searchContext.lastUpdatedEditor = event.editor;
+		}
+	}
+
+	function handleOnExpand(event: ExpandEvent) {
+		searchContext.superSearch = superSearch;
+		searchContext.lastUpdatedEditor = event.editor;
+
+		pageYOffset = event.windowPageYOffset;
+
+		if (
+			!page.state.expandedSuperSearch &&
+			event.trigger !== 'close' &&
+			event.trigger !== 'popstate' &&
+			event.trigger !== 'navigation'
+		) {
+			pushState('', { ...page.state, expandedSuperSearch: true });
+		}
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
 		}
 	}
 
-	function handleOnExpandedViewUpdate(event: ViewUpdateSuperSearchEvent) {
+	function handleOnCollapse(event: CollapseEvent) {
+		if (page.state.expandedSuperSearch && event.trigger === 'close') {
+			history.back();
+		}
+	}
+
+	function handleOnExpandedViewUpdate(event: ViewUpdateEvent) {
 		if (event.lineHeight >= 60) {
 			wrappedLines = true;
 		} else {
 			wrappedLines = false;
+		}
+	}
+
+	function interceptExpandedClick(event: MouseEvent) {
+		const href = (
+			event.target instanceof HTMLAnchorElement
+				? event.target
+				: (event.target as HTMLElement).closest('a')
+		)?.getAttribute('href');
+
+		if (href) {
+			event.preventDefault();
+			interceptedHref = href;
+			history.back();
+		}
+	}
+
+	function interceptExpandedSubmit(formElement: HTMLFormElement) {
+		const formAction = formElement.getAttribute('action');
+		const formParams = new URLSearchParams(
+			new FormData(formElement) as unknown as Record<string, string>
+		);
+
+		if (formAction) {
+			const href = `${!formAction.startsWith('/') ? '/' : ''}${formAction}?${formParams.toString()}`;
+			interceptedHref = href;
+			history.back();
 		}
 	}
 
@@ -278,32 +345,61 @@
 	});
 
 	onMount(() => {
-		if (searchContext.initialStateBeforeMount?.value) {
-			changeQuery({
-				change: { insert: searchContext.initialStateBeforeMount.value, from: 0, to: q.length },
-				selection: {
-					anchor: searchContext.initialStateBeforeMount.selection?.anchor,
-					head: searchContext.initialStateBeforeMount.selection?.head
-				},
-				userEvent: 'input.complete'
-			});
+		if (superSearch) {
+			const activeEditorView = superSearch.getActiveEditorView();
+			if (activeEditorView?.dom.checkVisibility?.()) {
+				if (initialValueFromFallback) {
+					superSearch.dispatchChange({
+						change: initialValueFromFallback
+							? { insert: initialValueFromFallback, from: 0, to: activeEditorView.state.doc.length }
+							: undefined,
+						selection: initialSelectionFromFallback
+							? {
+									anchor: initialSelectionFromFallback.anchor,
+									head: initialSelectionFromFallback.head
+								}
+							: undefined,
+						userEvent: 'input.complete'
+					});
+
+					searchContext.lastUpdatedEditor = {
+						id: activeEditorView.contentDOM.id,
+						state: activeEditorView.state
+					};
+
+					if (initialSelectionFromFallback) {
+						superSearch.showExpandedSearch();
+					}
+				}
+
+				searchContext.superSearch = superSearch;
+			}
 		}
-		searchContext.getQuery = () => q;
-		searchContext.getSelection = () => selection;
-		searchContext.showExpandedSearch = showExpandedSearch;
-		searchContext.hideExpandedSearch = hideExpandedSearch;
-		searchContext.changeQuery = changeQuery;
-		searchContext.isMounted = true;
 	});
 
 	onDestroy(() => {
 		if (timeout) clearTimeout(timeout); // ensure timeout is cleared to prevent memory leaks
-		searchContext.initialStateBeforeMount = undefined;
 	});
+
+	function handlePopState() {
+		if (interceptedHref) {
+			const _href = interceptedHref;
+			interceptedHref = undefined;
+			goto(_href); // navigate to intercepted href (triggered by link clicks in expanded dialog)
+		} else {
+			if (page.state.expandedSuperSearch) {
+				showExpandedSearch({ trigger: 'popstate' });
+			} else {
+				hideExpandedSearch({ trigger: 'popstate' });
+			}
+		}
+	}
 </script>
 
+<svelte:window onpopstate={() => setTimeout(handlePopState, 0)} />
 {#key page.data.locale}
 	<SuperSearch
+		{id}
 		name="_q"
 		bind:this={superSearch}
 		bind:value={q}
@@ -333,13 +429,19 @@
 		}}
 		transformFn={handleTransform}
 		extensions={[derivedLxlQualifierPlugin]}
-		shallowRouting
+		{editor}
+		{syncEditorsOnChange}
+		{syncEditorsOnSelection}
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		defaultInputCol={undefined}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
+		oncollapse={handleOnCollapse}
 		onchange={handleOnChange}
+		onselect={handleOnSelect}
+		oninterceptexpandedclick={interceptExpandedClick}
+		oninterceptexpandedsubmit={interceptExpandedSubmit}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
 	>
@@ -399,10 +501,7 @@
 						this={clearUrl ? 'a' : 'button'}
 						role={clearUrl ? undefined : 'button'}
 						href={clearUrl ? clearUrl : undefined}
-						onclick={(e: MouseEvent) => {
-							userClearedSearch = true;
-							onclickClear(e);
-						}}
+						onclick={onclickClear}
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
