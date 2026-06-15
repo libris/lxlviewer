@@ -1552,10 +1552,22 @@
 			"fresnel:resourceStyle": ["findToTop()"]
 		},
 		"needs-label-format": {
-			"@id": "Subject-format",
+			"@id": "needs-label-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["category", "subject", "seriesMembership", "isPartOf"],
 			"fresnel:propertyStyle": ["label"]
+		},
+		"seriesMembership-format": {
+			"@id": "seriesMembership-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["seriesMembership"],
+			"fresnel:propertyStyle": ["label", "ul-when-multiple"]
+		},
+		"isPartOf-format": {
+			"@id": "isPartOf-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["isPartOf"],
+			"fresnel:propertyStyle": ["label", "ul-when-multiple"]
 		},
 		"Work-hasPart-format": {
 			"@id": "Work-hasPart-format",
