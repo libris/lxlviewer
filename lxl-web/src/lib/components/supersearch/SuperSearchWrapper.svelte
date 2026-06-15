@@ -48,8 +48,8 @@
 		onCursorChange: (cursor: number | null) => void;
 		qualifierSuggestions: QualifierSuggestion2[];
 		autofocus?: boolean;
-		initialValueBeforeMount?: string;
-		initialSelectionBeforeMount?: { anchor: number; head: number };
+		initialValueFromFallback?: string;
+		initialSelectionFromFallback?: { anchor: number; head: number };
 	}
 
 	let {
@@ -64,8 +64,8 @@
 		editor,
 		syncEditorsOnChange = false,
 		syncEditorsOnSelection = false,
-		initialValueBeforeMount,
-		initialSelectionBeforeMount,
+		initialValueFromFallback,
+		initialSelectionFromFallback,
 		onCursorChange,
 		qualifierSuggestions,
 		autofocus
@@ -348,15 +348,15 @@
 		if (superSearch) {
 			const activeEditorView = superSearch.getActiveEditorView();
 			if (activeEditorView?.dom.checkVisibility?.()) {
-				if (initialValueBeforeMount) {
+				if (initialValueFromFallback) {
 					superSearch.dispatchChange({
-						change: initialValueBeforeMount
-							? { insert: initialValueBeforeMount, from: 0, to: q.length }
+						change: initialValueFromFallback
+							? { insert: initialValueFromFallback, from: 0, to: activeEditorView.state.doc.length }
 							: undefined,
-						selection: initialSelectionBeforeMount
+						selection: initialSelectionFromFallback
 							? {
-									anchor: initialSelectionBeforeMount.anchor,
-									head: initialSelectionBeforeMount.head
+									anchor: initialSelectionFromFallback.anchor,
+									head: initialSelectionFromFallback.head
 								}
 							: undefined,
 						userEvent: 'input.complete'
@@ -367,7 +367,7 @@
 						state: activeEditorView.state
 					};
 
-					if (initialSelectionBeforeMount) {
+					if (initialSelectionFromFallback) {
 						superSearch.showExpandedSearch();
 					}
 				}
