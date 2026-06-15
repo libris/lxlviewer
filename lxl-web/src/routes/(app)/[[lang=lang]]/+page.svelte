@@ -14,10 +14,10 @@
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
 	import heroImage from '$lib/assets/img/bg-marbling01.jpg';
 	import AppSearch from './AppSearch.svelte';
-	import { getHomepageContext } from '$lib/contexts/homepage';
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
 	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
+	import { getSearchContext } from '$lib/contexts/search';
 
 	const ID_HERO_SEARCH_LABEL = 'hero-search-label';
 	const ID_HERO_EXPLORE_LABEL = 'hero-explore-label';
@@ -28,7 +28,7 @@
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
 	const featuredCollections: FeaturedSearch[] = $derived(page.data.featuredCollections);
 
-	const homepageContext = getHomepageContext();
+	const searchContext = getSearchContext();
 	let searchContainerElement: HTMLDivElement | undefined = $state();
 	let searchObserver: IntersectionObserver | undefined = $state();
 
@@ -40,7 +40,7 @@
 	}
 
 	function handleObserve(entries: IntersectionObserverEntry[]) {
-		homepageContext.showSearchInAppBar = !entries[0].isIntersecting;
+		searchContext.showSearchInAppBar = !entries[0].isIntersecting;
 	}
 
 	onMount(() => {
@@ -48,11 +48,14 @@
 		if (searchContainerElement) {
 			searchObserver.observe(searchContainerElement);
 		}
+		if (window.scrollY > (searchContainerElement?.offsetTop || 0)) {
+			searchContext.showSearchInAppBar = true;
+		}
 	});
 
 	onDestroy(() => {
 		searchObserver?.disconnect();
-		homepageContext.showSearchInAppBar = false;
+		searchContext.showSearchInAppBar = false;
 	});
 </script>
 
@@ -143,7 +146,7 @@
 		<div class="flex flex-1 items-end justify-center">
 			<h1
 				id={ID_HERO_SEARCH_LABEL}
-				class="text-primary-50 mt-7.5 px-4.5 text-center font-serif text-3xl leading-snug tracking-[-0.0125em] text-shadow-md sm:text-4xl lg:leading-none xl:text-5xl 2xl:text-[3.25rem]"
+				class="text-primary-50 mt-7.5 mb-1.5 px-4.5 text-center font-serif text-3xl leading-snug tracking-[-0.0125em] text-shadow-md sm:text-4xl lg:leading-none xl:text-5xl 2xl:mb-3 2xl:text-[3.25rem]"
 			>
 				{page.data.t('home.pageHeadingTitle')}
 				{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
@@ -156,7 +159,9 @@
 		<div class="hero-search-container z-0 mx-2 lg:mx-0" bind:this={searchContainerElement}>
 			<AppSearch id={ID_HERO_SEARCH} ariaLabelledBy={ID_HERO_SEARCH_LABEL} />
 		</div>
-		<div class="text-primary-50 mx-auto flex w-full flex-1 flex-col justify-between gap-6">
+		<div
+			class="text-primary-50 mx-auto mt-1.5 mb-7.5 flex w-full flex-1 flex-col justify-between gap-6 2xl:mt-3"
+		>
 			<div
 				class="mx-auto flex w-full max-w-xl justify-center gap-2 px-3 *:min-h-11 *:flex-1 *:bg-black/25 *:px-4 sm:gap-3 sm:px-14 sm:*:min-h-13 2xl:*:min-h-14 2xl:*:text-base!"
 			>
@@ -182,20 +187,19 @@
 					{page.data.t('home.exploreLabel')}
 				</a>
 			</div>
-			<div class="hero-description relative mx-auto w-full">
+			<div class="hero-description absolute bottom-0 mx-auto w-full">
 				<div
-					class="top absolute top-0 right-0 left-0 -z-10 mx-auto h-full w-2/3 mask-radial-from-30% mask-radial-to-100% mask-radial-at-[50%_75%] backdrop-blur-sm 2xl:mask-radial-from-15%"
+					class="top absolute top-0 right-0 left-0 -z-10 mx-auto h-full w-full backdrop-blur-sm max-sm:mask-linear-0 max-sm:mask-linear-from-25% max-sm:mask-linear-to-100% sm:mask-radial-from-30% sm:mask-radial-to-100% sm:mask-radial-at-[50%_75%] 2xl:mask-radial-from-15%"
 				></div>
 				<p
 					class="text-primary-100/90 mx-auto w-full px-3 py-4.5 pt-12 text-center leading-snug sm:pb-6 2xl:pt-16 2xl:pb-7.5"
 				>
-					<span class="text-sm font-medium lg:text-[1.0625rem] 2xl:text-lg">
-						<span>{page.data.t('home.pageDescription1')}</span>
-						{page.data.t('home.pageDescription2')}
-						<span class="mx-0.75">{' · '}</span>
-
+					<span
+						class="flex items-center justify-center gap-3 mask-linear-90 text-left text-sm font-medium lg:text-[1.0625rem] 2xl:text-lg"
+					>
+						{page.data.t('home.pageDescription')}
 						<a
-							class="text-page text-sm font-medium underline hover:decoration-solid focus:decoration-solid lg:decoration-dotted"
+							class="btn-outlined hover:border-page hover:text-page flex min-h-9 items-center px-3 text-xs font-medium whitespace-nowrap transition-colors sm:text-sm lg:min-h-10 lg:text-base"
 							href={page.data.localizeHref(
 								resolve('/(app)/[[lang=lang]]/about', { lang: undefined })
 							)}
@@ -212,16 +216,16 @@
 <section id={ID_EXPLORE} class="explore" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
 	<nav
 		aria-labelledby={ID_HERO_EXPLORE_LABEL}
-		class="categories scrollbar-hidden items-center overflow-x-scroll py-4.5 lg:grid lg:py-6"
+		class="categories lg:scrollbar-hidden items-center py-4 sm:py-4.5 lg:grid lg:overflow-x-scroll lg:py-6"
 	>
 		<h2
 			id={ID_CATEGORIES_LABEL}
-			class="text-placeholder pl-3 text-xs font-medium tracking-widest uppercase lg:pl-6 lg:text-sm 2xl:pl-8"
+			class="text-placeholder mb-3 pl-3 text-xs font-medium tracking-widest uppercase sm:mb-4.5 lg:mb-0 lg:pl-6 lg:text-sm 2xl:pl-8"
 		>
 			{page.data.t('home.categories')}
 		</h2>
 		<ul
-			class="flex gap-1.5 text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1.5 lg:text-[0.9375rem] 2xl:text-base"
+			class="scrollbar-hidden flex gap-1.5 overflow-x-scroll text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1.5 lg:text-[0.9375rem] 2xl:text-base"
 		>
 			{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
 				<li>
@@ -237,7 +241,7 @@
 			{/each}
 		</ul>
 	</nav>
-	<hr class={['border-neutral mx-6 mb-6  2xl:mx-8 2xl:mb-8']} />
+	<hr class={['border-neutral mx-6 mb-6 2xl:mx-8 2xl:mb-8']} />
 	{#each featuredSearches as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,
@@ -403,8 +407,6 @@
 	}
 
 	.hero-search-container {
-		min-height: var(--appbar-height);
-
 		@variant lg {
 			display: grid;
 			grid-template-areas: var(--appbar-template-areas);

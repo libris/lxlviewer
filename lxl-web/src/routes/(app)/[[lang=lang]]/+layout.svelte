@@ -20,7 +20,8 @@
 
 	let searchContext = $state({
 		superSearch: undefined,
-		lastUpdatedEditor: undefined
+		lastUpdatedEditor: undefined,
+		showSearchInAppBar: false
 	});
 
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
@@ -31,7 +32,7 @@
 	<title>{getPageTitle(undefined, page.data.siteName)}</title>
 	<link rel="unapi-server" type="application/xml" href={`/api/${page.data.locale}/cite`} />
 </svelte:head>
-<div class="app contents">
+<div class={['app contents', page.data.subsetMapping && 'subset']}>
 	<AppBar />
 	<main
 		id="content"
@@ -52,7 +53,7 @@
 		--appbar-height: var(--appbar-base);
 		--appbar-template-areas: 'leading-actions search trailing-actions';
 		--appbar-template-rows: var(--appbar-height) 0;
-		--appbar-template-columns: 1fr 0 1fr;
+		--appbar-template-columns: fit-content 0 fit-content;
 
 		@variant sm {
 			--appbar-height: var(--appbar-sm);
@@ -64,6 +65,22 @@
 
 		@variant 2xl {
 			--appbar-height: var(--appbar-2xl);
+		}
+
+		&.subset {
+			--appbar-height: var(--appbar-sm);
+
+			@variant sm {
+				--appbar-height: var(--appbar-2xl);
+			}
+
+			@variant lg {
+				--appbar-template-columns: 1fr minmax(0, 2fr) 1fr;
+			}
+
+			@variant 2xl {
+				--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
+			}
 		}
 	}
 </style>

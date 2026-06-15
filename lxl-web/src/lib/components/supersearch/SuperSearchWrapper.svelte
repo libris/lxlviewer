@@ -31,10 +31,12 @@
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
-	import { getHomepageContext } from '$lib/contexts/homepage';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { ID_HERO_SEARCH } from '../../../routes/(app)/[[lang=lang]]/+page.svelte';
-	import { ID_APP_BAR } from '../../../routes/(app)/[[lang=lang]]/AppBar.svelte';
+	import {
+		ID_APP_BAR_LG_SEARCH,
+		ID_APP_BAR_SM_SEARCH
+	} from '../../../routes/(app)/[[lang=lang]]/AppBar.svelte';
 
 	interface Props {
 		id: string;
@@ -75,7 +77,6 @@
 	}: Props = $props();
 
 	const searchContext = getSearchContext();
-	const homepageContext = getHomepageContext();
 
 	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || ''));
 	let selection: Selection | undefined = $state();
@@ -84,7 +85,7 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
-	let dialogMarginTop: number | string | undefined = $state();
+	let dialogMarginTop: string | undefined = $state();
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -267,6 +268,22 @@
 		}
 	}
 
+	function getSearchElement() {
+		if (searchContext.showSearchInAppBar) {
+			if (window.matchMedia('(width >= 1024px)').matches) {
+				return document.getElementById(ID_APP_BAR_LG_SEARCH);
+			}
+			return undefined;
+		}
+		if (isHomeRoute) {
+			return document.getElementById(ID_HERO_SEARCH);
+		}
+		if (window.matchMedia('(width >= 1024px)').matches) {
+			return document.getElementById(ID_APP_BAR_LG_SEARCH);
+		}
+		return document.getElementById(ID_APP_BAR_SM_SEARCH);
+	}
+
 	function handleOnExpand(event: ExpandEvent) {
 		searchContext.superSearch = superSearch;
 		searchContext.lastUpdatedEditor = event.editor;
@@ -284,25 +301,12 @@
 			fetchOnExpand = false;
 		}
 
-		if (page.route.id === '/(app)/[[lang=lang]]') {
-			const searchElement = document.getElementById(ID_HERO_SEARCH);
-			if (searchElement) {
-				const contentOffsetTop = document.getElementById('content')?.offsetTop || 0;
-				const heroSearchOffsetTop = searchElement.offsetTop;
-				dialogMarginTop = homepageContext.showSearchInAppBar
-					? 'var(--appbar-height)'
-					: Math.max(0, contentOffsetTop + heroSearchOffsetTop - event.windowPageYOffset);
-			}
-		} else {
-			const appBarElement = document.getElementById(ID_APP_BAR);
-			const searchElement = document.getElementById(ID_HERO_SEARCH);
-			if (appBarElement) {
-				const searchOffsetTop = searchElement?.offsetTop || 0;
-				dialogMarginTop = Math.max(
-					0,
-					appBarElement.offsetTop + searchOffsetTop - event.windowPageYOffset
-				);
-			}
+		const searchElement = getSearchElement();
+		const comboboxElement = searchElement?.querySelector(':scope [role="combobox"]');
+
+		if (comboboxElement) {
+			const comboboxOffsetTop = comboboxElement.getBoundingClientRect().top || 0;
+			dialogMarginTop = `${comboboxOffsetTop}px`;
 		}
 	}
 
@@ -463,12 +467,7 @@
 		oninterceptexpandedclick={interceptExpandedClick}
 		oninterceptexpandedsubmit={interceptExpandedSubmit}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
-		--supersearch-dialog-margin-top-sm={homepageContext.showSearchInAppBar
-			? 'var(--appbar-height)'
-			: dialogMarginTop
-				? `${dialogMarginTop}px`
-				: undefined}
-		--supersearch-dialog-margin-top-lg={dialogMarginTop ? `${dialogMarginTop}px` : undefined}
+		--supersearch-dialog-margin-top={dialogMarginTop || undefined}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -736,11 +735,15 @@
 
 		@variant sm {
 			top: 0;
-			margin-top: calc(var(--supersearch-dialog-margin-top-sm, 0px) - var(--spacing));
+			margin-top: max(0px, calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 2));
 		}
 
 		@variant lg {
-			margin-top: var(--supersearch-dialog-margin-top-lg, 0px);
+			margin-top: calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 3);
+		}
+
+		@variant 2xl {
+			margin-top: calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 3.25);
 		}
 	}
 
@@ -751,11 +754,9 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
-			margin-top: calc(var(--spacing) * 1);
 		}
 
 		@variant lg {
-			margin-top: 0;
 			display: grid;
 			grid-template-areas: var(--appbar-template-areas);
 			grid-template-columns: var(--appbar-template-columns);
@@ -764,7 +765,6 @@
 		}
 
 		@variant 2xl {
-			margin-top: calc(var(--spacing) * 0.25);
 		}
 	}
 

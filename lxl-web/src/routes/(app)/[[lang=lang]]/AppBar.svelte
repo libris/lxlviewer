@@ -11,14 +11,13 @@
 
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
-	import { type Component, onMount } from 'svelte';
+	import { type Component, onMount, onDestroy } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { resolve } from '$app/paths';
 	import { type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import { getSearchContext } from '$lib/contexts/search';
-	import { getHomepageContext } from '$lib/contexts/homepage';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
 	import AppSearch from './AppSearch.svelte';
 	import IconMenu from '~icons/bi/list';
@@ -32,7 +31,6 @@
 	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
 
 	const searchContext = getSearchContext();
-	const homepageContext = getHomepageContext();
 
 	let mounted: boolean = $state(false);
 	let menuToggleElement: HTMLButtonElement | HTMLAnchorElement | undefined = $state();
@@ -60,6 +58,9 @@
 
 	const subset = $derived(page.data.subsetMapping);
 
+	let searchContainerElement: HTMLDivElement | undefined = $state();
+	let searchObserver: IntersectionObserver | undefined = $state();
+
 	let allowTransition = $state(false);
 
 	afterNavigate(() => {
@@ -67,7 +68,7 @@
 	});
 
 	$effect(() => {
-		if (isHomeRoute && homepageContext.showSearchInAppBar) {
+		if (isHomeRoute && searchContext.showSearchInAppBar) {
 			allowTransition = true;
 		}
 	});
@@ -115,12 +116,31 @@
 
 	onMount(() => {
 		mounted = true;
+
+		if (isFindRoute) {
+			searchObserver = new IntersectionObserver(handleObserve, { threshold: 1 });
+			if (searchContainerElement) {
+				searchObserver.observe(searchContainerElement);
+			}
+			if (window.scrollY > (searchContainerElement?.offsetTop || 0)) {
+				searchContext.showSearchInAppBar = true;
+			}
+		}
 	});
 
 	$effect(() => {
 		if (page.url.hash === '#menu' && mounted) {
 			showExpandedMenu();
 		}
+	});
+
+	function handleObserve(entries: IntersectionObserverEntry[]) {
+		searchContext.showSearchInAppBar = !entries[0].isIntersecting;
+	}
+
+	onDestroy(() => {
+		searchObserver?.disconnect();
+		searchContext.showSearchInAppBar = false;
 	});
 </script>
 
@@ -136,7 +156,7 @@
 	]}
 >
 	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
-		<ul class="leading-actions z-43 flex items-stretch 2xl:pl-3">
+		<ul class={['leading-actions z-43 flex items-stretch 2xl:pl-3', subset && 'min-w-0']}>
 			<li>
 				<svelte:element
 					this={mounted ? 'button' : 'a'}
@@ -164,9 +184,9 @@
 					})}
 				</svelte:element>
 			</li>
-			<li>
+			<li class={subset && 'flex flex-col items-start justify-center'}>
 				<a
-					class="action px-1.5"
+					class={['action px-1.5', subset && 'h-fit!']}
 					href={resolve(page.data.localizeHref(page.data.base))}
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 					data-testid="home"
@@ -183,24 +203,23 @@
 							alt="Libris"
 							class={[
 								'h-auto min-w-20',
-								subset ? 'mb-0.5 w-22' : 'mb-0.5 w-22 sm:mb-1 sm:w-27.5 2xl:w-35.75'
+								subset ? 'w-20 pb-1.5' : 'mb-0.5 w-22 sm:w-27.5 sm:pb-1 2xl:w-35.75'
 							]}
 						/>
 					{/if}
 				</a>
+				{#if subset}
+					<div class="subset-container relative flex items-center overflow-hidden px-1">
+						<SearchMapping mapping={subset} />
+					</div>
+				{/if}
 			</li>
-			{#if subset}
-				<li class="subset-container relative flex items-center overflow-hidden">
-					<p class="pr-2">/</p>
-					<SearchMapping mapping={subset} />
-				</li>
-			{/if}
 		</ul>
 		<div class="contents lg:hidden">
 			{@render trailingActions({ mobile: true })}
 		</div>
 
-		{#if !isHomeRoute || (isHomeRoute && homepageContext.showSearchInAppBar)}
+		{#if !isHomeRoute || (isHomeRoute && searchContext.showSearchInAppBar)}
 			<div class={['search']}>
 				<AppSearch id={ID_APP_BAR_LG_SEARCH} />
 			</div>
@@ -235,9 +254,9 @@
 </header>
 {#if isFindRoute}
 	<div
+		bind:this={searchContainerElement}
 		class={[
-			'search bg-appbar border-b-primary-200 sticky top-0 flex items-center border-b px-2 target:flex lg:hidden lg:h-0 lg:has-[dialog:open]:flex',
-			expandedMenu ? 'z-35' : 'z-45'
+			'search bg-appbar border-b-primary-200 z-35 flex items-center border-b px-2 target:flex lg:hidden lg:h-0 lg:has-[dialog:open]:flex'
 		]}
 	>
 		<AppSearch id={ID_APP_BAR_SM_SEARCH} />
@@ -248,7 +267,7 @@
 	{@const changeLangLabelId = mobile ? `${ID_CHANGE_LANG_LABEL}-mobile` : ID_CHANGE_LANG_LABEL}
 	{@const myPagesLabelId = mobile ? `${ID_MY_PAGES_LABEL}-mobile` : ID_MY_PAGES_LABEL}
 	<ul class="trailing-actions z-42 flex w-full items-stretch justify-end 2xl:pr-3">
-		{#if (isHomeRoute && homepageContext.showSearchInAppBar) || (!isHomeRoute && !isFindRoute)}
+		{#if ((isHomeRoute || isFindRoute) && searchContext.showSearchInAppBar) || (!isHomeRoute && !isFindRoute)}
 			<li
 				in:fly={{
 					y: 4,
@@ -460,6 +479,27 @@
 			top: calc(var(--appbar-height, 0) - 4px);
 			max-height: calc(100vh - (calc(var(--appbar-height, 0) - 3px)));
 			max-height: calc(100svh - (calc(var(--appbar-height, 0) - 3px)));
+		}
+	}
+
+	.subset-container :global(.lxl-qualifier) {
+		max-width: calc(100vw / 2) !important;
+
+		& :global(.lxl-qualifier-value) {
+			@apply inline-flex h-full items-center truncate py-0;
+			max-width: calc(100% - 32px) !important;
+		}
+		@variant lg {
+			max-width: calc(100vw / 6) !important;
+			@apply flex items-center justify-stretch;
+
+			@variant 2xl {
+				max-width: calc(100vw / 8) !important;
+			}
+
+			& :global(.lxl-qualifier-remove) {
+				@apply inline-block h-full py-0;
+			}
 		}
 	}
 </style>
