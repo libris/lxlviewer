@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, onNavigate } from '$app/navigation';
 	import { type FeaturedSearch } from '$lib/remotes/homepage.remote';
 	import SearchResultList from '$lib/components/SearchResultList.svelte';
 	import { getHomepageContext } from '$lib/contexts/homepage';
@@ -57,6 +57,17 @@
 			}
 		}
 	}
+
+	onNavigate((navigation) => {
+		if (
+			navigation.from &&
+			navigation.to &&
+			navigation.from.url.searchParams.get('_r') !== navigation.to.url.searchParams.get('_r')
+		) {
+			homepageContext.previews = undefined;
+			shouldGetPreviews = true;
+		}
+	});
 
 	afterNavigate(() => {
 		initObserver();
