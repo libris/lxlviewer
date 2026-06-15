@@ -139,7 +139,7 @@
 			const insert =
 				navigation.to.route.id === '/(app)/[[lang=lang]]/find' &&
 				navigation.to.url.searchParams.has('_q')
-					? addSpaceIfEndingQualifier(navigation.to.url.searchParams.get('_q') || '')
+					? navigation.to.url.searchParams.get('_q') || ''
 					: '';
 
 			if (activeEditorView) {
