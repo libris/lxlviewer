@@ -199,7 +199,7 @@
 					>
 						{page.data.t('home.pageDescription')}
 						<a
-							class="btn-outlined hover:border-page hover:text-page flex min-h-9 items-center px-3 text-xs font-medium whitespace-nowrap transition-colors sm:text-sm lg:min-h-10 lg:text-base"
+							class="btn-outlined hover:border-page hover:text-page flex min-h-9 items-center px-3 text-xs font-medium whitespace-nowrap transition-colors sm:text-sm lg:min-h-10 lg:text-[0.9375rem] 2xl:text-base"
 							href={page.data.localizeHref(
 								resolve('/(app)/[[lang=lang]]/about', { lang: undefined })
 							)}
@@ -241,7 +241,7 @@
 			{/each}
 		</ul>
 	</nav>
-	<hr class={['border-neutral mx-6 mb-6 2xl:mx-8 2xl:mb-8']} />
+	<hr class={['border-neutral mb-6 2xl:mx-8 2xl:mb-8']} />
 	{#each featuredSearches as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,
