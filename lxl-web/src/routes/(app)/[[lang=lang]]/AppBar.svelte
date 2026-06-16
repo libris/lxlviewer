@@ -3,7 +3,7 @@
 	import { type Component, onDestroy, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
-	import { type LocaleCode, Locales } from '$lib/i18n/locales';
+	import { baseLocale, type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
 	import { getSearchContext } from '$lib/contexts/search';
@@ -51,6 +51,10 @@
 	let showShadow = $derived(!isHomeRoute);
 	let showSearchIcon = $derived(!isHomeRoute && !isFindRoute);
 
+	const findActionUrl = $derived(
+		page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`
+	);
+
 	const subset = $derived(page.data.subsetMapping);
 
 	function showExpandedMenu() {
@@ -84,13 +88,13 @@
 
 	function handleClickPageTitle() {
 		if (window.getSelection()?.type === 'Caret') {
-			searchContext.superSearch?.showExpandedSearch({ cursorAtEnd: true });
+			searchContext.showExpandedSearch({ cursorAtEnd: true });
 		}
 	}
 
 	function handleClickSearchAction(event: MouseEvent) {
 		event.preventDefault();
-		searchContext.superSearch?.showExpandedSearch({ cursorAtEnd: true });
+		searchContext.showExpandedSearch({ cursorAtEnd: true });
 	}
 
 	function handleBackgroundObserve(entries: IntersectionObserverEntry[]) {
@@ -325,7 +329,7 @@
 					'hidden target:flex has-[dialog:open]:h-0 lg:flex lg:has-[dialog:open]:h-fit' // enable toggling using target/anchor (so it also works when JavaScript is disabled)
 			]}
 		>
-			<div class="mx-auto w-full min-w-0">
+			<form id="search-form" action={findActionUrl} class="mx-auto w-full min-w-0">
 				{#if isHomeRoute}
 					<hgroup
 						class="absolute my-3 px-3 leading-snug @xl:mt-6 lg:@xl:my-3 lg:@xl:px-3 @3xl:leading-normal lg:@3xl:my-3 lg:@3xl:px-4 @5xl:my-4"
@@ -350,8 +354,8 @@
 						</h1>
 					</hgroup>
 				{/if}
-				<AppSearch id="app-search" />
-			</div>
+				<AppSearch />
+			</form>
 		</search>
 		<ul class="trailing-actions z-42 flex w-full items-center justify-end lg:gap-2">
 			<li class={['lg:hidden', !showSearchIcon && 'hidden']}>
@@ -530,16 +534,9 @@
 	}
 
 	.page-description-container {
-		height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) * 1.5), 1px);
-		height: round(
-			calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) * 1.5),
-			1px
-		);
+		height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
+		height: round(calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) / 2), 1px);
 
-		@variant lg {
-			height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--app-bar-height)), 1px);
-			height: round(calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height)), 1px);
-		}
 		& > div {
 			grid-template-areas: var(--search-grid-template-areas);
 			grid-template-columns: var(--search-grid-template-columns);

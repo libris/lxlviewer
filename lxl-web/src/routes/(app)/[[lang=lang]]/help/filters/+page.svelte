@@ -10,23 +10,6 @@
 
 	const searchContext = getSearchContext();
 	const pageTitle = $derived(page.data.t('help.pageTitle'));
-
-	function addQualifierKey(key: string) {
-		const superSearch = searchContext.superSearch;
-		if (superSearch) {
-			const insert = ` ${key}:()`;
-			const query = superSearch.getQuery();
-			const anchor = query.length + insert.length - 1;
-			const head = anchor;
-			superSearch?.dispatchChange({
-				change: { from: 0, to: query.length, insert },
-				selection: {
-					anchor,
-					head
-				}
-			});
-		}
-	}
 </script>
 
 <svelte:head>
@@ -59,7 +42,7 @@
 					<td>
 						<button
 							class="qualifier text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize"
-							onclick={() => addQualifierKey(f.key)}
+							onclick={() => searchContext.changeQuery({ change: { insert: ` ${f.key}:` } })}
 						>
 							{f.label}
 						</button>

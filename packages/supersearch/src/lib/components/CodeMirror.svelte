@@ -1,10 +1,5 @@
 <script lang="ts" module>
-	import { Compartment, Transaction } from '@codemirror/state';
-
-	export type Editor = {
-		id: string;
-		state: EditorState;
-	};
+	import { Transaction } from '@codemirror/state';
 
 	export type Selection = {
 		from: number;
@@ -15,17 +10,12 @@
 	};
 
 	export type ChangeCodeMirrorEvent = {
-		editor: Editor;
-		userEvent: UserEvent | undefined;
 		value: string;
 		selection: Selection;
+		userEvent: UserEvent | undefined;
 	};
 
-	export type SelectCodeMirrorEvent = {
-		editor: Editor;
-		userEvent: UserEvent | undefined;
-		selection: Selection;
-	};
+	export type SelectCodeMirrorEvent = Selection;
 
 	export type ViewUpdateCodeMirrorEvent = {
 		lineHeight: number;
@@ -39,11 +29,13 @@
 	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 	import isViewUpdateOfUserEvent from '$lib/utils/isViewUpdateOfUserEvent.js';
+	import {
+		isViewUpdateSyncableEffect,
+		syncedTransaction
+	} from '$lib/utils/isViewUpdateSyncableEffect.js';
 	import type { UserEvent } from '$lib/types/superSearch.js';
-	import { history, historyField } from '@codemirror/commands';
 
 	type CodeMirrorProps = {
-		id: string;
 		value?: string;
 		extensions?: Extension[];
 		onclick?: (event: MouseEvent) => void;
@@ -51,51 +43,77 @@
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		onviewupdate?: (event: ViewUpdateCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
+		syncedEditorView?: EditorView | undefined;
 	};
 
 	let {
-		id,
 		value = '', // value isn't bindable as it can easily cause undo/redo history issues when changing the value from outside – it's preferable to dispatch changes instead
 		extensions = [],
 		onclick = () => {},
 		onselect = () => {},
 		onchange = () => {},
 		onviewupdate = () => {},
-		editorView = $bindable()
+		editorView = $bindable(),
+		syncedEditorView
 	}: CodeMirrorProps = $props();
 
+	let prevLineHeight = $state();
+
 	const updateHandler = EditorView.updateListener.of((update) => {
-		if (update.heightChanged) {
-			onviewupdate({ lineHeight: update.view.lineBlockAt(0).height });
+		if (update.transactions.some((tr) => tr.annotation(syncedTransaction))) {
+			return;
 		}
 
+		// TODO: do better more generic equality check
+		if (prevLineHeight !== update.view.lineBlockAt(0).height) {
+			onviewupdate({ lineHeight: update.view.lineBlockAt(0).height });
+			prevLineHeight = update.view.lineBlockAt(0).height;
+		}
 		if (isViewUpdateFromUserInput(update)) {
-			const userEvent = update.transactions[0].annotation(Transaction.userEvent) as
-				| UserEvent
-				| undefined;
-
-			const editor = {
-				id: update.view.contentDOM.id,
-				state: update.state
-			};
-
+			syncedEditorView?.dispatch({
+				changes: update.changes,
+				selection: update.state.selection,
+				scrollIntoView: update.transactions?.[0].scrollIntoView
+			});
 			if (update.docChanged) {
 				value = update.state.doc.toString();
+				const userEvent = update.transactions[0].annotation(Transaction.userEvent) as
+					| UserEvent
+					| undefined;
 				onchange({
-					editor,
-					userEvent,
-					value: update.state.doc.toString(),
-					selection: update.state.selection.main
+					value,
+					selection: {
+						from: update.state.selection.main.from,
+						to: update.state.selection.main.to,
+						anchor: update.state.selection.main.anchor,
+						head: update.state.selection.main.head,
+						empty: update.state.selection.main.empty
+					},
+					userEvent
 				});
 			}
+		}
 
-			if (isViewUpdateOfUserEvent(update, 'select')) {
-				onselect({
-					editor,
-					userEvent,
-					selection: update.state.selection.main
-				});
-			}
+		if (isViewUpdateOfUserEvent(update, 'select')) {
+			syncedEditorView?.dispatch({
+				selection: update.state.selection
+			});
+			onselect({
+				from: update.state.selection.main.from,
+				to: update.state.selection.main.to,
+				anchor: update.state.selection.main.anchor,
+				head: update.state.selection.main.head,
+				empty: update.state.selection.main.empty
+			});
+		}
+
+		const effects = isViewUpdateSyncableEffect(update);
+
+		if (effects.length) {
+			syncedEditorView?.dispatch({
+				effects,
+				annotations: syncedTransaction.of(true)
+			});
 		}
 	});
 
@@ -103,10 +121,8 @@
 		click: (event: MouseEvent) => onclick(event)
 	});
 
-	const historyCompartment = new Compartment();
 	let codemirrorContainerElement: HTMLDivElement | undefined = $state();
 	let extensionsWithBaseHandlers: Extension[] = $derived([
-		historyCompartment.of(history()),
 		updateHandler,
 		domEventHandler,
 		...extensions
@@ -121,50 +137,30 @@
 		});
 	}
 
-	export function replaceEditorState(editorState: EditorState) {
+	export function reset(options?: { doc: string; selection?: { anchor: number; head: number } }) {
+		const selection = EditorSelection.create([
+			options?.selection
+				? EditorSelection.range(options.selection.anchor, options.selection.head)
+				: EditorSelection.range(0, 0)
+		]);
 		editorView?.setState(
 			createEditorState({
-				doc: editorState.doc.toString(),
-				selection: editorState.selection
+				doc: options?.doc,
+				selection
 			})
 		);
-		editorView?.dispatch({
-			effects: historyCompartment.reconfigure([
-				historyField.init(() => editorState.field(historyField))
-			])
+		value = options?.doc || '';
+		onchange({
+			value,
+			selection: {
+				from: selection.main.from,
+				to: selection.main.to,
+				anchor: selection.main.anchor,
+				head: selection.main.head,
+				empty: selection.main.empty
+			},
+			userEvent: 'delete'
 		});
-	}
-
-	export function reset(options?: { doc: string; selection?: { anchor: number; head: number } }) {
-		if (editorView) {
-			const selection = EditorSelection.create([
-				options?.selection
-					? EditorSelection.range(options.selection.anchor, options.selection.head)
-					: EditorSelection.range(0, 0)
-			]);
-			editorView.setState(
-				createEditorState({
-					doc: options?.doc,
-					selection
-				})
-			);
-			value = options?.doc || '';
-			onchange({
-				value,
-				selection: {
-					from: selection.main.from,
-					to: selection.main.to,
-					anchor: selection.main.anchor,
-					head: selection.main.head,
-					empty: selection.main.empty
-				},
-				editor: {
-					id: editorView.contentDOM.id,
-					state: editorView.state
-				},
-				userEvent: 'delete'
-			});
-		}
 	}
 
 	function reconfigureAllExtensions() {
@@ -186,6 +182,13 @@
 	});
 
 	$effect(() => {
+		if (value !== editorView?.state.doc.toString()) {
+			// Reset editor when value changes from outside (= user navigating)
+			reset({ doc: value });
+		}
+	});
+
+	$effect(() => {
 		if (extensions !== prevExtensions) {
 			reconfigureAllExtensions();
 			prevExtensions = extensions;
@@ -193,7 +196,7 @@
 	});
 </script>
 
-<div {id} class="codemirror-container" bind:this={codemirrorContainerElement}></div>
+<div class="codemirror-container" bind:this={codemirrorContainerElement}></div>
 
 <style>
 	.codemirror-container {
