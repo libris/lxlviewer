@@ -498,7 +498,8 @@
 						{page.data.t('resource.recordLink')}: <a href={recordUri} class="link">{recordUri}</a>
 					</p>
 					<p>
-						{page.data.t('resource.extUriLink')}: <a href={uri} class="ext-link">{uri}</a>
+						{page.data.t('resource.extUriLink')}:
+						<a href={uri} target="_blank" class="ext-link">{uri}</a>
 					</p>
 				{/if}
 				<p>
