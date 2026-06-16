@@ -5,6 +5,25 @@ import { getTranslator } from '$lib/i18n';
 import { appendMyLibrariesParam, displayFacets } from '$lib/utils/search.server';
 import type { PartialCollectionView } from '$lib/types/search';
 
+async function fetchJson(url, options = {}) {
+	const response = await fetch(url, options);
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		throw new Error(`Server error ${response.status} from ${url}: ${errorText}`);
+	}
+
+	const responseClone = response.clone();
+
+	try {
+		return await response.json();
+	} catch (error) {
+		const fallbackText = await responseClone.text();
+		console.error(`Failed to parse JSON from ${url}. Response body:`, fallbackText);
+		throw error;
+	}
+}
+
 export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 	const locale = getSupportedLocale(params?.lang);
 	const displayUtil = locals.display;
@@ -30,11 +49,8 @@ export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 		searchParams.set('_stats', 'true');
 		searchParams.set('_limit', '0');
 
-		const recordsRes = await fetch(
-			`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}`
-		);
-		const view = (await recordsRes.json()) as PartialCollectionView;
-
+		const url = `${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}`;
+		const view = (await fetchJson(url)) as PartialCollectionView;
 		const translate = await getTranslator(locale);
 		return displayFacets(view, displayUtil, locale, translate, '');
 	}
