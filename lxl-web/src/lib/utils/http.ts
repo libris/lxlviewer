@@ -12,36 +12,6 @@ export function relativizeUrl(url: string | undefined) {
 	return '/' + url.split('/').slice(3).join('');
 }
 
-/**
- * returns everything before the path of the url
- * https://example.com/xyz/... -> https://example.com
- * @param url url with scheme and authority
- */
-export function getBaseUrl(url: string | undefined | null): string | undefined {
-	if (!url) {
-		return undefined;
-	}
-
-	const ix1 = url.indexOf('://');
-
-	if (ix1 === -1) {
-		return undefined;
-	}
-
-	const afterProtocol = ix1 + 3;
-	if (afterProtocol === url.length) {
-		return undefined;
-	}
-
-	const ix2 = url.indexOf('/', afterProtocol);
-
-	if (ix2 === -1) {
-		return url;
-	}
-
-	return url.slice(0, ix2);
-}
-
 export function stripAnchor(url: string | undefined) {
 	if (!url) {
 		return url;

@@ -1,7 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { error } from '@sveltejs/kit';
 import type {
-	LibOrg,
 	LibraryFull,
 	LibraryId,
 	LibraryRecord,
@@ -21,33 +20,19 @@ type Data = {
 }[];
 
 type LibrariesCache = Map<LibraryId, LibraryWithLinks>;
-type OrgCache = Map<OrgId, LibOrg>;
+type OrgIndex = Map<OrgId, string[]>;
 
 let librariesCache: LibrariesCache = new Map();
-let orgCache: OrgCache = new Map();
+let orgIndex: OrgIndex = new Map();
 
 const REFRESH_INTERVAL = 12 * 60 * 60 * 1000; // 12 hrs?
 let intervalStarted = false;
 
-async function fetchLibOrgs() {
-	const orgsArr = (await doFetch('bibdb:Organization')) as LibOrg[];
-	const libraryMap = new Map(orgsArr.map((org) => [org[JsonLd.ID], org]));
-	return libraryMap;
-}
-
 async function fetchLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
-	const libraryArr = (await doFetch('Library')) as LibraryFull[];
-	const libraryMap = new Map(
-		libraryArr.map((lib) => [lib[JsonLd.ID], withLinks(lib, displayUtil, locale)])
-	);
-	return libraryMap;
-}
-
-async function doFetch(type: string) {
 	const start = Date.now();
 
 	const res = await fetch(
-		`${env.API_URL}/api/emm/full?selection=type:${type}&download=.ndjsonld.gz`
+		`${env.API_URL}/api/emm/full?selection=type:Library&download=.ndjsonld.gz`
 	);
 	if (!res.ok) {
 		return error(res.status);
@@ -59,11 +44,14 @@ async function doFetch(type: string) {
 		.split('\n')
 		.map((line) => JSON.parse(line));
 
-	const builtData = buildData(data);
+	const libraryArr = buildData(data);
+	const libraryMap = new Map(
+		libraryArr.map((lib) => [lib[JsonLd.ID], withLinks(lib, displayUtil, locale)])
+	);
 
 	const end = Date.now();
-	console.log(`Fetching all of type ${type} took ${(end - start).toFixed(1)} ms`);
-	return builtData;
+	console.log(`Fetching all libraries took ${(end - start).toFixed(1)} ms`);
+	return libraryMap;
 }
 
 function withLinks(
@@ -80,7 +68,7 @@ function withLinks(
 }
 
 function buildData(data: Data) {
-	const libraries: LibraryFull[] | LibOrg[] = [];
+	const libraries: LibraryFull[] = [];
 
 	for (const lib of data) {
 		const graph = lib?.[JsonLd.GRAPH];
@@ -88,7 +76,6 @@ function buildData(data: Data) {
 
 		let record: LibraryRecord | null = null;
 		let library: LibraryFull | null = null;
-		let org: LibOrg | null = null;
 
 		for (const item of graph) {
 			const type = item[JsonLd.TYPE];
@@ -96,8 +83,6 @@ function buildData(data: Data) {
 				record = item as LibraryRecord;
 			} else if (type === 'Library') {
 				library = item as LibraryFull;
-			} else if (type === 'bibdb:Organization') {
-				org = item as LibOrg;
 			}
 		}
 
@@ -106,27 +91,22 @@ function buildData(data: Data) {
 				...library,
 				meta: record
 			});
-		} else if (org) {
-			libraries.push(org);
 		}
 	}
 	return libraries;
 }
 
-function buildOrgIndex(libraries: LibrariesCache, orgs: OrgCache): Map<OrgId, LibOrg> {
-	const index: Map<OrgId, LibOrg> = new Map();
+function buildOrgIndex(libraryMap: LibrariesCache): OrgIndex {
+	const index: Map<OrgId, string[]> = new Map();
 
-	for (const [libId, data] of libraries) {
+	for (const [libId, data] of libraryMap) {
 		const orgId = data?.isPartOf?.[JsonLd.ID];
 		if (!orgId) continue;
 
 		if (!index.has(orgId)) {
-			const org = orgs.get(orgId);
-			if (org) {
-				index.set(orgId, { ...org, _members: [] });
-			}
+			index.set(orgId, []);
 		}
-		index.get(orgId)!._members?.push(libId);
+		index.get(orgId)!.push(libId);
 	}
 	return index;
 }
@@ -139,20 +119,18 @@ export function getLibrary(id: string) {
 	return librariesCache.get(id) ?? null;
 }
 
-export function getOrg(id: string) {
-	return orgCache.get(id) ?? null;
+export function getOrgs() {
+	return orgIndex ?? [];
 }
 
 export function getOrgMembers(id: OrgId): LibraryId[] | [] {
-	return getOrg(id)?._members || [];
+	return orgIndex.get(id) ?? [];
 }
 
 export async function refreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	const libraries = await fetchLibraries(displayUtil, locale);
-	const orgs = await fetchLibOrgs();
-
 	librariesCache = libraries;
-	orgCache = buildOrgIndex(libraries, orgs);
+	orgIndex = buildOrgIndex(libraries);
 }
 
 export async function startRefreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {

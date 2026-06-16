@@ -179,7 +179,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	{/if}
 {/snippet}
 
-<div class="search-card-container @container/card print:break-inside-avoid">
+<div class="search-card-container @container/card">
 	<article
 		{id}
 		class={[
@@ -240,11 +240,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		<div class="card-content grid">
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
+					<TypeIcon type={item.typeForIcon} class="text-2xs mb-px inline" />
 					{#if item.typeStr && !hideType}
-						<TypeIcon
-							type={item.typeForIcon}
-							class="text-2xs mr-px mb-px inline align-text-bottom"
-						/>
 						<span class="font-medium">
 							{item.typeStr}
 						</span>
@@ -333,8 +330,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			{#if item.selectTypeStr}
 				<span class="text-body font-medium">{item.selectTypeStr}</span>
 				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-			{/if}
-			{#if item.selectTypeStr && item[LensType.WebCardFooter]?._display?.length}
 				<span class="hidden whitespace-pre-wrap md:inline">{' · '}</span>
 			{/if}
 			<span>
@@ -379,7 +374,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			</span>
 		</footer>
 		{#if allowActions}
-			<div class="card-actions ml-auto flex w-full justify-end gap-1 pt-3 print:hidden">
+			<div class="card-actions ml-auto flex w-full justify-end gap-1 pt-3">
 				{#if firstMediaLink}
 					{#snippet mediaLinksPopover()}
 						<DecoratedData
@@ -665,11 +660,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 		& :global(div[data-property='identifiedBy']) {
 			color: var(--color-subtle);
-		}
-
-		& :global(.contribution > ._contentBefore),
-		:global(.contribution > ._contentAfter) {
-			display: none;
 		}
 	}
 

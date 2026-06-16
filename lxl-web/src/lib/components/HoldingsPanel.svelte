@@ -1,14 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import type {
-		LibOrg,
-		LibraryWithLinksAndInstances,
-		OrgId,
-		UnknownLibrary
-	} from '$lib/types/holdings';
+	import type { LibraryWithLinksAndInstances, OrgId, UnknownLibrary } from '$lib/types/holdings';
 	import { JsonLd } from '$lib/types/xl';
-	import { getHeldBy, isLibraryOrg } from '$lib/utils/holdings';
+	import { getLibsFromHoldings, isLibraryOrg } from '$lib/utils/holdings';
 	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 	import { sortByDistance, userLocation } from '$lib/utils/geolocation.svelte';
 	import HoldingsNearMeBtn from './HoldingsNearMeBtn.svelte';
@@ -25,13 +20,15 @@
 
 	let { holders, searchPhrase = $bindable() }: Props = $props();
 
-	type OrgWithMembers = Omit<LibOrg, '_members'> & {
+	type OrgWithMembers = {
+		[JsonLd.ID]: string;
+		_orgLabel: string;
 		_members: LibraryWithLinksAndInstances[];
 	};
 
 	type NestedLibraries = LibraryWithLinksAndInstances | OrgWithMembers | UnknownLibrary;
 
-	const refinedOrgs: Record<OrgId, LibOrg> = page.data.refinedOrgs;
+	const libOrgs: Record<OrgId, string[]> = page.data.refinedOrgs;
 	const { myLibraries } = getUserSettings();
 	const numHolders = $derived(holders?.length);
 	let location = $derived(userLocation.coords);
@@ -56,7 +53,7 @@
 	const myLibsHolders = $derived.by(() => {
 		if (!myLibraries) return [];
 		const holderIds = holders.map((holder) => holder[JsonLd.ID]);
-		const ids = getHeldBy(myLibraries, holderIds, refinedOrgs);
+		const ids = getLibsFromHoldings(myLibraries, holderIds, libOrgs);
 		return buildNestedLibraries(ids, myLibraries, holders);
 	});
 
@@ -78,23 +75,25 @@
 		if (!ids || !labelMap) return [];
 
 		const result: NestedLibraries[] = [];
+
 		for (const id of ids) {
 			if (isLibraryOrg(id)) {
-				const org = refinedOrgs?.[id];
+				const memberIds = libOrgs?.[id];
 
-				if (!org) {
+				if (!memberIds) {
 					console.warn('Failed to lookup holding org', id);
 					continue;
 				}
 
-				const _members = org._members
-					?.map((memberId) => holders.find((h) => h[JsonLd.ID] === memberId))
+				const members = memberIds
+					.map((memberId) => holders.find((h) => h[JsonLd.ID] === memberId))
 					.filter(Boolean) as NestedLibraries[];
 
-				if (_members.length) {
+				if (members.length) {
 					result.push({
-						...org,
-						_members
+						[JsonLd.ID]: id,
+						_orgLabel: labelMap[id],
+						_members: members
 					} as OrgWithMembers);
 				}
 				continue;
@@ -155,11 +154,11 @@
 				{#each section.data as holder, i (`mylibs-${holder[JsonLd.ID]}-${i}`)}
 					{#if '_members' in holder}
 						<li>
-							<h3 class="mb-3 flex items-center gap-2" data-testid="holdings-org-label">
+							<h3 class="mb-3 flex items-center gap-2">
 								<span aria-hidden="true" class="text-subtle text-base">
 									<BiHouses class="text-subtle size-3" />
 								</span>
-								<span>{holder.name}</span>
+								<span>{holder._orgLabel}</span>
 							</h3>
 							<ul class="mb-2 ml-3 flex flex-col gap-2">
 								{#each holder._members as member (`mylibs-member${member[JsonLd.ID]}`)}

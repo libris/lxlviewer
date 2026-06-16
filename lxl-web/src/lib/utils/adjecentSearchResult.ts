@@ -1,9 +1,10 @@
-import { JsonLd } from '$lib/types/xl';
-import type { SearchResult } from '$lib/types/search';
+import type { SearchResult, PartialCollectionView } from '$lib/types/search';
 import type { AdjecentSearchResult } from '$lib/types/search';
 import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 
-export function asAdjecentSearchResult(data: SearchResult): AdjecentSearchResult {
+export function asAdjecentSearchResult(
+	data: SearchResult | PartialCollectionView
+): AdjecentSearchResult {
 	const {
 		'@id': id,
 		itemOffset,
@@ -16,7 +17,7 @@ export function asAdjecentSearchResult(data: SearchResult): AdjecentSearchResult
 		items
 	} = data;
 	return {
-		[JsonLd.ID]: id,
+		'@id': id,
 		itemOffset,
 		itemsPerPage,
 		totalItems,
@@ -24,8 +25,8 @@ export function asAdjecentSearchResult(data: SearchResult): AdjecentSearchResult
 		last,
 		next,
 		previous,
-		items: items.map(({ [JsonLd.ID]: itemId }) => ({
-			[JsonLd.ID]: itemId as string
+		items: items.map(({ '@id': itemId }) => ({
+			'@id': itemId as string
 		}))
 	};
 }

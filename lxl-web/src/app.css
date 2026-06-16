@@ -235,11 +235,6 @@
 	summary::-webkit-details-marker {
 		display: none;
 	}
-
-	option {
-		color: var(--color-body);
-		background: var(--color-page);
-	}
 }
 
 @layer components {

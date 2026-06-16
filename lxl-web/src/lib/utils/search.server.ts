@@ -43,8 +43,7 @@ import { isLibraryOrg } from '$lib/utils/holdings';
 import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
 import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
 import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
-import { getHeldBy } from '$lib/utils/holdings';
-import { getLibrary, getOrg } from '$lib/utils/getLibraries.server';
+import { getLibsFromHoldings } from '$lib/utils/holdings';
 import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike.server';
 import capitalize from '$lib/utils/capitalize';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
@@ -159,7 +158,7 @@ export function asSearchResultItem(
 				auxdSecret
 			),
 			typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
-			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)), // FIXME
+			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)) || '', // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
 			numberOfHolders: getHoldersCount(i, vocabUtil),
 			mediaLinks: getMediaLinks(i, displayUtil, locale),
@@ -410,8 +409,7 @@ function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>)
 function getHeldByLibraries(item: FramedData, libraries: MyLibrariesType) {
 	const orgs = getRefinedOrgs(libraries);
 	const holdersByType = getHoldersByType(getHoldingsByType(item));
-	const h = getHeldBy(libraries, holdersByType, orgs);
-	return h?.map((i) => (isLibraryOrg(i) ? getOrg(i)?.name : getLibrary(i)?.name));
+	return getLibsFromHoldings(libraries, holdersByType, orgs);
 }
 
 function isFreeTextQuery(property: unknown): boolean {
