@@ -12,7 +12,7 @@
 		image: Image;
 		alt?: string;
 		linkToFull?: boolean;
-		type?: string;
+		type?: string[];
 		thumbnailTargetWidth?: number;
 		showPlaceholder?: boolean;
 		loading?: 'eager' | 'lazy';
@@ -22,7 +22,7 @@
 		image,
 		alt,
 		linkToFull = false,
-		type = '',
+		type = [],
 		thumbnailTargetWidth = Width.SMALL,
 		showPlaceholder = true,
 		loading = 'eager'
@@ -30,7 +30,7 @@
 
 	let thumb = $derived(image ? bestSize(image, thumbnailTargetWidth) : undefined);
 	let full = $derived(image ? bestSize(image, Width.FULL) : undefined);
-	let geometry = $derived(type === 'Person' ? 'circle' : 'rectangle');
+	let geometry = $derived(type.includes('Person') ? 'circle' : 'rectangle');
 </script>
 
 {#snippet img(res: ImageResolution, imgClass?: string | string[])}
@@ -69,7 +69,10 @@
 					{/if}
 				</span>
 			{/if}
-			<span class="truncate" use:popover={{ title: image?.usageAndAccessPolicy.title }}>
+			<span
+				class="truncate print:hidden"
+				use:popover={{ title: image?.usageAndAccessPolicy.title }}
+			>
 				<InfoIcon class="inline" />
 				{#if image.usageAndAccessPolicy.link}
 					<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
@@ -86,7 +89,7 @@
 		</figcaption>
 	</figure>
 {:else if showPlaceholder}
-	<div class="mb-6 flex items-center justify-center">
+	<div class="mb-6 flex items-center justify-center print:hidden">
 		<img
 			src={placeholder}
 			alt=""

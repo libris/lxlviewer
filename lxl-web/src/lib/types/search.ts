@@ -55,7 +55,7 @@ export interface SearchResultItem {
 	[LensType.WebCardHeaderTop]: DisplayDecorated;
 	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
-	typeForIcon: string; // FIXME
+	typeForIcon: string[]; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
 	mediaLinks: DisplayDecorated | null;
@@ -291,7 +291,8 @@ export interface QualifierSuggestion2 {
 }
 
 export interface QualifierDefinition extends QualifierSuggestion2 {
-	comment?: string;
+	filterDescription?: string;
+	descriptionRemark?: string[];
 	propertyChainAxiom?: PropertyChain[];
 }
 
