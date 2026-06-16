@@ -14,7 +14,7 @@
 	import capitalize from '$lib/utils/capitalize';
 	import type { Relation } from '$lib/types/relations';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
-	import { getBaseUrl, relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
+	import { getBaseUrl } from '$lib/utils/http';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
@@ -34,6 +34,7 @@
 	import BiChevronRight from '~icons/bi/chevron-right';
 
 	type Props = {
+		fnurgel: string | undefined;
 		uri: string | null;
 		recordUri: string;
 		controlNumber: string;
@@ -71,6 +72,7 @@
 	};
 
 	const {
+		fnurgel,
 		uri,
 		recordUri,
 		controlNumber,
@@ -89,7 +91,6 @@
 		isWork
 	}: Props = $props();
 
-	const fnurgel = $derived(stripAnchor(trimSlashes(relativizeUrl(recordUri))));
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
 	let searchMapping = $derived(searchResult?.mapping.filter((m) => m.variable === '_q'));

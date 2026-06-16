@@ -83,6 +83,7 @@
 		{/each}
 	{/if}
 	<Resource
+		fnurgel={page.params.fnurgel}
 		uri={data.uri}
 		recordUri={data.recordUri}
 		controlNumber={data.controlNumber}
