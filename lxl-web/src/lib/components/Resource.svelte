@@ -14,6 +14,7 @@
 	import capitalize from '$lib/utils/capitalize';
 	import type { Relation } from '$lib/types/relations';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
+	import { getBaseUrl, relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
@@ -33,7 +34,6 @@
 	import BiChevronRight from '~icons/bi/chevron-right';
 
 	type Props = {
-		fnurgel: string | undefined;
 		uri: string | null;
 		recordUri: string;
 		controlNumber: string;
@@ -71,7 +71,6 @@
 	};
 
 	const {
-		fnurgel,
 		uri,
 		recordUri,
 		controlNumber,
@@ -90,6 +89,7 @@
 		isWork
 	}: Props = $props();
 
+	const fnurgel = $derived(stripAnchor(trimSlashes(relativizeUrl(recordUri))));
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 
 	let searchMapping = $derived(searchResult?.mapping.filter((m) => m.variable === '_q'));
@@ -489,9 +489,19 @@
 				</section>
 			{/if}
 			<div class="text-sm print:hidden">
-				<p>
-					{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
-				</p>
+				{#if getBaseUrl(uri) === getBaseUrl(recordUri)}
+					<p>
+						{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
+					</p>
+				{:else}
+					<p>
+						{page.data.t('resource.recordLink')}: <a href={recordUri} class="link">{recordUri}</a>
+					</p>
+					<p>
+						{page.data.t('resource.extUriLink')}:
+						<a href={uri} target="_blank" class="ext-link">{uri}</a>
+					</p>
+				{/if}
 				<p>
 					{page.data.t('resource.downloadDescription')}:
 					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>

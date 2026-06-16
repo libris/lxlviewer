@@ -2027,7 +2027,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Bibliography"],
 			"fresnel:propertyFormatDomain": ["hasPart"],
-			"fresnel:propertyStyle": ["sort()"],
+			"fresnel:propertyStyle": ["sort()", "ul"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
