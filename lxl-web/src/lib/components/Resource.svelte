@@ -14,7 +14,6 @@
 	import capitalize from '$lib/utils/capitalize';
 	import type { Relation } from '$lib/types/relations';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
-	import { getBaseUrl } from '$lib/utils/http';
 	import DecoratedData from './DecoratedData.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
@@ -490,18 +489,9 @@
 				</section>
 			{/if}
 			<div class="text-sm print:hidden">
-				{#if getBaseUrl(uri) === getBaseUrl(recordUri)}
-					<p>
-						{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
-					</p>
-				{:else}
-					<p>
-						{page.data.t('resource.recordLink')}: <a href={recordUri} class="link">{recordUri}</a>
-					</p>
-					<p>
-						{page.data.t('resource.extUriLink')}: <a href={uri} class="ext-link">{uri}</a>
-					</p>
-				{/if}
+				<p>
+					{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
+				</p>
 				<p>
 					{page.data.t('resource.downloadDescription')}:
 					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
