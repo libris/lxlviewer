@@ -79,14 +79,14 @@
 	</div>
 	{#each page.data.searchResult.mapping as m (m)}
 		{#if m.toEquals}
-			<p class="print:hidden">
+			<p>
 				<a href={page.data.localizeHref(m.toEquals['@id'])} class="link-subtle"
 					>{page.data.t('search.showEquals')} <i>{m.displayStr}</i></a
 				>
 			</p>
 		{/if}
 		{#if m.toLike}
-			<p class="print:hidden">
+			<p>
 				<a href={page.data.localizeHref(m.toLike['@id'])} class="link-subtle"
 					>{page.data.t('search.showLike')} <i>{m.displayStr}</i></a
 				>

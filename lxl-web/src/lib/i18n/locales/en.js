@@ -282,7 +282,6 @@ export default {
 		editions: 'Editions',
 		editionOf: 'Edition of',
 		summary: 'Summary',
-		tableOfContents: 'Table of Contents',
 		details: 'Details',
 		moreDetails: 'More details',
 		previous: 'Previous',

@@ -299,9 +299,7 @@
 						"startYear",
 						"endYear",
 						"date",
-						"marc:publicationStatus",
-						"marc:sequenceStatus",
-						"appliesTo"
+						"marc:publicationStatus"
 					]
 				},
 				"ProvisionActivity": {
@@ -334,16 +332,19 @@
 								"category"
 							]
 						},
+						"translationOf",
 						"legalDate",
 						"version",
 						"musicMedium",
 						"musicKey",
 						"marc:arrangedStatementForMusic",
 						"originDate",
+						"language",
 						{
-							"alternateProperties": ["contribution", "language"]
-						},
-						"translationOf"
+							"alternateProperties": [
+								{ "subPropertyOf": "contribution", "range": "PrimaryContribution" }
+							]
+						}
 					]
 				},
 				"Instance": {
@@ -1216,7 +1217,7 @@
 				"manufacture",
 				"marc:primaryProvisionActivity"
 			],
-			"fresnel:propertyStyle": ["provisionActivity", "label", "ul-when-multiple"]
+			"fresnel:propertyStyle": ["provisionActivity", "label"]
 		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
@@ -1231,16 +1232,6 @@
 			],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": ", ",
-				"fresnel:contentFirst": ""
-			}
-		},
-		"ProvisionActivity-space-format": {
-			"@id": "ProvisionActivity-space-format",
-			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["ProvisionActivity"],
-			"fresnel:propertyFormatDomain": ["marc:sequenceStatus", "appliesTo"],
-			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -1310,12 +1301,6 @@
 				"fresnel:contentBefore": "; ",
 				"fresnel:contentFirst": ""
 			}
-		},
-		"hasTitle-format": {
-			"@id": "hasTitle-format",
-			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["hasTitle"],
-			"fresnel:propertyStyle": ["ul-when-multiple"]
 		},
 		"subtitle-format": {
 			"@id": "subtitle-format",
@@ -1446,11 +1431,7 @@
 			"fresnel:propertyFormatDomain": ["contribution"],
 			"fresnel:propertyStyle": ["contribution", "nolabel"],
 			"fresnel:valueFormat": {
-				"fresnel:contentBefore": ", ",
-				"fresnel:contentFirst": ""
-			},
-			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": ". — ",
+				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -1476,16 +1457,11 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"bibliography-format": {
-			"@id": "sorted-format",
-			"@type": "bibliography-format",
-			"fresnel:propertyFormatDomain": ["bibliography"],
-			"fresnel:propertyStyle": ["sort()", "ul"]
-		},
 		"sorted-format": {
 			"@id": "sorted-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
+				"bibliography",
 				"classification",
 				"closeMatch",
 				"hasDataset",
@@ -1552,47 +1528,28 @@
 			"fresnel:resourceStyle": ["findToTop()"]
 		},
 		"needs-label-format": {
-			"@id": "needs-label-format",
+			"@id": "Subject-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["category", "subject", "seriesMembership", "isPartOf"],
 			"fresnel:propertyStyle": ["label"]
-		},
-		"seriesMembership-format": {
-			"@id": "seriesMembership-format",
-			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["seriesMembership"],
-			"fresnel:propertyStyle": ["label", "ul-when-multiple"]
-		},
-		"isPartOf-format": {
-			"@id": "isPartOf-format",
-			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["isPartOf"],
-			"fresnel:propertyStyle": ["label", "ul-when-multiple"]
 		},
 		"Work-hasPart-format": {
 			"@id": "Work-hasPart-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["hasPart"],
-			"fresnel:propertyStyle": ["label", "ul"]
+			"fresnel:propertyStyle": ["label"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
 		},
 		"Work-relationship-format": {
 			"@id": "Work-relationship-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["relationship"],
-			"fresnel:propertyStyle": ["label", "ul"],
-			"fresnel:valueFormat": {
-				"fresnel:contentBefore": "",
-				"fresnel:contentFirst": ""
-			}
-		},
-		"Work-hasVariant-format": {
-			"@id": "Agent-hasVariant-format",
-			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Work"],
-			"fresnel:propertyFormatDomain": ["hasVariant"],
-			"fresnel:propertyStyle": ["label", "ul"],
+			"fresnel:propertyStyle": ["label"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
@@ -1643,11 +1600,7 @@
 			"@id": "hasNote-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["hasNote"],
-			"fresnel:propertyStyle": ["hasNote", "ul"],
-			"fresnel:valueFormat": {
-				"fresnel:contentBefore": "",
-				"fresnel:contentFirst": ""
-			}
+			"fresnel:propertyStyle": ["hasNote"]
 		},
 		"Classification-format": {
 			"@id": "Classification-format",
@@ -1777,7 +1730,7 @@
 			"fresnel:resourceStyle": ["findToTop()"]
 		},
 		"KeyTitle-format": {
-			"@id": "KeyTitle-format",
+			"@id": "Role-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["KeyTitle"],
 			"fresnel:resourceFormat": {
@@ -1933,9 +1886,9 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["translationOf"],
-			"fresnel:propertyStyle": ["translationOf", "label", "force-sublevel-label"],
+			"fresnel:propertyStyle": ["translationOf"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": ". —  ",
+				"fresnel:contentBefore": " = ",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -2077,7 +2030,7 @@
 				"supplement",
 				"hasReproduction"
 			],
-			"fresnel:propertyStyle": ["ul-when-multiple"],
+			"fresnel:propertyStyle": ["test_list"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ""
 			}

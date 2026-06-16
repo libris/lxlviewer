@@ -192,13 +192,13 @@
 
 <a
 	href="#content"
-	class="bg-primary-700 text-page fixed -top-full left-0 z-999 flex h-9 w-full items-center justify-center font-medium focus:top-0 print:hidden"
+	class="bg-primary-700 text-page fixed -top-full left-0 z-999 flex h-9 w-full items-center justify-center font-medium focus:top-0"
 >
 	{page.data.t('header.skipToContent')}
 </a>
 <header
 	class={[
-		'app-bar @container sticky z-40 grid print:hidden',
+		'app-bar @container sticky z-40 grid',
 		isHomeRoute && 'home',
 		isHomeRoute && showBackground && 'bg-app-bar',
 		isHomeRoute && showShadow && 'shadow-app-bar',
@@ -524,8 +524,8 @@
 		top: var(--banner-height, 0);
 		background: var(--color-app-bar);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
-		height: round(calc(61.08vh + 56px), 1px);
-		height: round(calc(61.08svh + 56px), 1px);
+		height: round(calc(61.08vh + var(--banner-height, 0)), 1px);
+		height: round(calc(61.08svh + var(--banner-height, 0)), 1px);
 	}
 
 	.app-bar-shadow-trigger {

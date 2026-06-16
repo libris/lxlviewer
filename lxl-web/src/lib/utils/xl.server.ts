@@ -881,14 +881,11 @@ class Formatter {
 
 		if (Array.isArray(value) && asArray(result[Fmt.STYLE]).includes('sort()')) {
 			value.filter(isObject).forEach((v) => {
-				const _str = toString(this.formatValues(v, className, propertyName)).toLowerCase();
-				if (_str) {
-					v._str = _str;
-				}
+				v._str = toString(this.formatValues(v, className, propertyName)).toLowerCase();
 			});
 			value.sort((a, b) => {
-				const cmp = (x) => (isObject(x) ? x?._str : typeof x === 'string' ? x : `${x}`);
-				return cmp(a)?.localeCompare(cmp(b), this.locale);
+				const cmp = (x) => (isObject(x) ? x._str : typeof x === 'string' ? x : `${x}`);
+				return cmp(a).localeCompare(cmp(b), this.locale);
 			});
 		}
 

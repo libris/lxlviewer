@@ -38,7 +38,7 @@
 		recordUri: string;
 		controlNumber: string;
 		uid?: string;
-		typeForIcon: string[];
+		typeForIcon: string | undefined;
 		image: SecureImage;
 		decoratedData: {
 			headingTop: DisplayDecorated;
@@ -150,13 +150,13 @@
 {/snippet}
 
 {#if adjecentSearchResults && fnurgel}
-	<div class="border-b-neutral @container border-b print:hidden">
+	<div class="border-b-neutral @container border-b">
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	</div>
 {/if}
 {#if workCard && !isWork}
 	<div
-		class="back-to-work border-b-neutral border-b print:hidden hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
+		class="back-to-work border-b-neutral border-b hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
 	>
 		<Suggestion item={workCard}>
 			{#snippet leadingContent()}
@@ -172,7 +172,7 @@
 {/if}
 <article class="@container @3xl:[&_[id]]:scroll-mt-36">
 	{#if tableOfContents.length}
-		<section data-testid="toc-mobile" class="contents @7xl:hidden print:hidden">
+		<section data-testid="toc-mobile" class="contents @7xl:hidden">
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
 		</section>
 	{/if}
@@ -180,7 +180,7 @@
 		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 px-3 @sm:gap-6 @sm:px-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"
 	>
 		{#if tableOfContents.length}
-			<div class="order-last hidden @7xl:block print:hidden">
+			<div class="order-last hidden @7xl:block">
 				<section data-testid="toc" class="sticky py-3 @sm:py-6">
 					<TableOfContents items={tableOfContents} />
 				</section>
@@ -192,7 +192,7 @@
 					{image}
 					type={typeForIcon}
 					alt={page.data.t('general.instanceCover')}
-					thumbnailTargetWidth={typeForIcon.includes('Bibliography')
+					thumbnailTargetWidth={'Bibliography' === typeForIcon
 						? ImageWidth.FULL
 						: ImageWidth.MEDIUM}
 					linkToFull
@@ -258,7 +258,7 @@
 					{/each}
 				</div>
 				{#if hasHoldingsBtn}
-					<h2 class="sr-only print:hidden">{page.data.t('holdings.availabilityByType')}</h2>
+					<h2 class="sr-only">{page.data.t('holdings.availabilityByType')}</h2>
 					<ResourceHoldings {holdings} {instances} />
 				{/if}
 				<ResourceDigitalAccess
@@ -299,7 +299,7 @@
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>
-					<div class="flex items-center gap-2 print:hidden">
+					<div class="flex items-center gap-2">
 						{#if decoratedData.summary.length || instances?.length > 1 || relations?.length || decoratedData.resourceTableOfContents.length}
 							<a
 								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
@@ -311,7 +311,7 @@
 								{page.data.t('resource.moreDetails')}
 							</a>
 						{/if}
-						{#if !isWork && instances?.length === 1 && fnurgel}
+						{#if instances?.length === 1 && fnurgel}
 							<a
 								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
 								href={getCiteLink(page.url, fnurgel)}
@@ -325,7 +325,7 @@
 				</div>
 			</section>
 			{#if decoratedData.summary.length}
-				<section class="print:break-before-page">
+				<section>
 					<h2 id={`${uidPrefix}summary`} class="mb-3 text-xl font-medium">
 						{page.data.t('resource.summary')}
 					</h2>
@@ -342,8 +342,8 @@
 					<ExpandableArea content={summary} collapsedHeightPx={instances?.length > 1 ? 200 : 400} />
 				</section>
 			{/if}
-			{#if isWork && instances?.length}
-				<section class="print:break-before-page print:break-after-page">
+			{#if instances?.length > 1}
+				<section>
 					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
 						{page.data.t('resource.editions')}
 					</h2>
@@ -355,7 +355,7 @@
 				</section>
 			{/if}
 			{#if relations?.length}
-				<section class="print:hidden">
+				<section>
 					<h2 id={`${uidPrefix}relations`} class="mb-6 text-xl font-medium">
 						{page.data.t('resource.relations')}
 					</h2>
@@ -431,7 +431,7 @@
 			{/if}
 			{#if decoratedData.details.length && decoratedData.details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)}
 				<section
-					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg print:break-before-page print:px-0"
+					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg"
 				>
 					<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 						{page.data.t('resource.details')}
@@ -449,10 +449,10 @@
 							</div>
 						{/each}
 						{#if decoratedData.itemInformation.length}
-							<details class="mt-4 print:hidden print:break-before-page open:print:block">
+							<details class="mt-4">
 								<summary class="flex cursor-pointer items-center gap-1">
 									<span
-										class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform print:hidden"
+										class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
 									>
 										<BiChevronRight />
 									</span>
@@ -637,10 +637,6 @@
 			@apply mt-1;
 		}
 
-		& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
-			font-weight: var(--font-weight-semibold);
-		}
-
 		& :global(.contribution-role) {
 			font-size: var(--text-sm);
 			color: var(--color-subtle);
@@ -682,8 +678,36 @@
 			white-space: nowrap;
 		}
 
+		& :global(.hasNote > *) {
+			display: block;
+		}
+
 		& :global(.test_list > *) {
 			display: block;
+		}
+
+		& :global(.hasNote > span)::before {
+			content: ' • ';
+			color: var(--color-subtle);
+		}
+
+		& :global(.hasNote > ._contentBefore),
+		:global(.hasNote > ._contentAfter) {
+			display: none;
+		}
+
+		& :global(div[data-property='hasTitle'] > span) {
+			display: block;
+		}
+
+		& :global(div[data-property='hasTitle'] > span)::before {
+			content: ' • ';
+			color: var(--color-subtle);
+		}
+
+		& :global(div[data-property='hasTitle'] > ._contentBefore),
+		:global(div[data-property='hasTitle'] > ._contentAfter) {
+			display: none;
 		}
 
 		/* hide double dash - */
@@ -697,8 +721,43 @@
 			white-space: nowrap;
 		}
 
+		& :global(.genre-form) {
+			@apply py-3;
+		}
+
 		& :global(.coverage) {
 			color: var(--color-subtle);
+		}
+
+		& :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
+			display: block;
+			/*font-size: var(--text-2xs);*/
+		}
+
+		& :global(.provisionActivity:has(> span:nth-of-type(2))) {
+			@apply py-1;
+
+			& :global(> ._contentBefore),
+			:global(> ._contentAfter) {
+				display: none;
+			}
+
+			& :global(> span) {
+				display: block;
+			}
+
+			& :global(> span)::before {
+				content: ' • ';
+				color: var(--color-subtle);
+			}
+
+			& :global(span[data-type='PrimaryPublication']) {
+			}
+
+			& :global(span[data-type='Publication']) {
+				/* color: var(--color-subtle); */
+				/* font-weight: var(--font-weight-light); */
+			}
 		}
 
 		& :global(span.Title-type) {
@@ -718,54 +777,77 @@
 			color: var(--color-subtle);
 		}
 
-		& :global(ul[data-property]) {
-			list-style-type: disc;
-			/* list-style-type: "• "; */
-
-			& :global(li) {
-				margin-left: 1em;
-			}
-
-			& :global(li::marker) {
-				color: var(--color-subtle);
-			}
-
-			& :global(.block) {
-				display: inline;
-			}
-
-			& :global(div:has(> .property-label)) {
-				display: inline;
-			}
-
-			& :global(.property-label) {
-				color: var(--color-body);
-				font-style: italic;
-			}
-
-			& :global(.property-label):not(:empty)::after {
-				color: var(--color-body);
-				content: ': ';
-			}
-
+		& :global(div[data-property='hasPart']),
+		& :global(div[data-property='relationship']),
+		& :global(div[data-property='hasVariant'] > span[data-type='Work']) {
 			& :global(.contribution) {
 				font-size: var(--text-md);
 				@apply mb-0;
 				@apply mt-0;
 			}
 
-			& :global(.person-extra) {
+			& :global(.contribution > span) {
+				display: inline;
+			}
+
+			/* There shouldn't exist multiple PrimaryContribution, but it does */
+			&
+				:global(
+					span[data-type='PrimaryContribution']:has(+ span[data-type='PrimaryContribution'])
+				)::after {
+				content: '; ';
+			}
+
+			/* TODO, what about translationOf in parts? e.g. w8hp61lvtrstrtn0  */
+			/*
+			& :global(span[data-property='translationOf'])::before {
+				content: '{';
+				color: var(--color-subtle);
+			}
+			& :global(span[data-property='translationOf'])::after {
+				content: '}';
+				color: var(--color-subtle);
+			}
+             */
+
+			& :global(.person-extra),
+			& :global(.language) {
 				display: none;
 			}
+		}
 
-			& :global(.main-title) {
-				font-weight: var(--font-weight-semibold);
+		& :global(div[data-property='hasPart']:has(> :nth-child(3))),
+		& :global(div[data-property='relationship']:has(> :nth-child(3))),
+		& :global(div[data-property='hasVariant']:has(> span[data-type='Work'])) {
+			& :global(> span)::before,
+			& :global(> a)::before {
+				content: ' • ';
+				color: var(--color-subtle);
 			}
 
-			& :global(.translationOf .main-title),
-			& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
-				font-weight: var(--font-weight-normal);
+			& :global(> span),
+			& :global(> a) {
+				display: block;
 			}
+
+			& :global(> span._contentBefore) {
+				display: none;
+			}
+		}
+
+		& :global(div[data-property='bibliography'] > a) {
+			display: block;
+			width: fit-content;
+		}
+
+		& :global(div[data-property='bibliography'] > a)::before {
+			content: ' • ';
+			color: var(--color-subtle);
+		}
+
+		& :global(div[data-property='bibliography'] > ._contentBefore),
+		:global(div[data-property='bibliography'] > ._contentAfter) {
+			display: none;
 		}
 	}
 
@@ -789,9 +871,9 @@
 			content: ' ; ';
 		}
 
-		& :global(div .ul) {
+		& :global(div[data-property='hasPart']:has(> :nth-child(3))),
+		& :global(div[data-property='relationship']:has(> :nth-child(3))) {
 			@apply py-1;
-			max-width: 80ch;
 		}
 
 		& :global(div[data-property='_select']) {
@@ -814,11 +896,6 @@
 			@variant sm {
 				margin-bottom: 0;
 			}
-		}
-
-		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
-		& :global([data-property='publication'] [data-property='appliesTo']) {
-			display: none;
 		}
 	}
 
@@ -853,19 +930,9 @@
 			@apply mt-1;
 		}
 
-		& :global(ul[data-property='hasTitle'] > li > span[data-type='Title']) {
+		& :global(div[data-property='hasTitle'] > span[data-type='Title']) {
+			/* color: var(--color-subtle); */
 			font-weight: var(--font-weight-semibold);
-		}
-
-		& :global(li > span[data-type='PrimaryPublication']) {
-			font-weight: var(--font-weight-semibold);
-		}
-
-		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
-		& :global([data-property='publication'] [data-property='appliesTo']) {
-			font-weight: var(--font-weight-normal);
-			color: var(--color-subtle);
-			font-size: var(--text-2xs);
 		}
 	}
 

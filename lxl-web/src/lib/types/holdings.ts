@@ -40,14 +40,6 @@ type RecordId = string;
 export type LibraryId = string;
 export type OrgId = string;
 
-export type LibOrg = {
-	[JsonLd.ID]: OrgId;
-	[JsonLd.TYPE]: 'bibdb:Organization';
-	name: string;
-	code: string;
-	_members?: LibraryId[];
-};
-
 export type LibraryRecord = {
 	[JsonLd.ID]: RecordId;
 	[JsonLd.TYPE]: 'Record';

@@ -54,18 +54,7 @@
 						</ul>
 					</td>
 					<td class={['grid grid-cols-1 gap-3 sm:grid-cols-2']}>
-						<div>
-							<span class="whitespace-pre-line">{f.filterDescription}</span>
-							{#if f.descriptionRemark}
-								<div class="mt-4">
-									{#each f.descriptionRemark as remark, i (i)}
-										<div>
-											<span>ⓘ {remark}</span>
-										</div>
-									{/each}
-								</div>
-							{/if}
-						</div>
+						<span>{f.comment}</span>
 						{#if f.propertyChainAxiom}
 							<div>
 								<span class="text-2s text-subtle">{page.data.t('help.searchIn')}</span>
