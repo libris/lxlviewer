@@ -51,8 +51,9 @@ function mapSearchFilterDefinition(
 			label: toString(display.lensAndFormat(def, LensType.Chip, locale)),
 			queryCodes: (asArray(def['librisQueryCode']) || []) as string[],
 			altLabels: otherLangLabels,
-			...(def['commentByLang']?.[locale] && { comment: def['commentByLang'][locale] }),
-			...(propertyChain && { propertyChainAxiom: propertyChain })
+			filterDescription: def['ls:filterDescription'] as string,
+			...(propertyChain && { propertyChainAxiom: propertyChain }),
+			descriptionRemark: (asArray(def['ls:descriptionRemark']) || []) as string[]
 		};
 	} catch (error) {
 		console.warn('Error mapping filter definition', error);
