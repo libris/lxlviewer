@@ -488,7 +488,7 @@
 					</div>
 				</section>
 			{/if}
-			<div class="text-sm">
+			<div class="text-sm print:hidden">
 				<p>
 					{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
 				</p>
