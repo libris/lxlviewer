@@ -63,7 +63,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const subsetFilter = url.searchParams.get('_r');
 	const _q = url.searchParams.get('_q');
 
-	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true&_findBlank=true`, {
+	const resourceRes = await fetch(`${env.API_URL}/${params.resource}?framed=true&_findBlank=true`, {
 		headers: { Accept: 'application/ld+json' }
 	});
 
@@ -115,7 +115,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		copyMediaLinksToWork(mainEntity);
 	}
 
-	resourceId = resource.mainEntity['@id'];
+	resourceId = resource.mainEntity[JsonLd.ID];
 
 	const typeLike = getTypeLike(mainEntity, vocabUtil);
 	const t = toTypes(typeLike);
@@ -378,7 +378,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	return {
 		uri: resourceId,
-		recordUri: resource['@id'] as string,
+		recordUri: resource[JsonLd.ID] as string,
 		controlNumber,
 		type: mainEntity[JsonLd.TYPE] as string,
 		typeForIcon: getTypeForIcon(typeLike), // FIXME
