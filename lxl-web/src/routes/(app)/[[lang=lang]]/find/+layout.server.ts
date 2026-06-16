@@ -5,7 +5,7 @@ import { getTranslator } from '$lib/i18n';
 import { appendMyLibrariesParam, displayFacets } from '$lib/utils/search.server';
 import type { PartialCollectionView } from '$lib/types/search';
 
-async function fetchJson(url, options = {}) {
+async function fetchJson(url: string, options = {}) {
 	const response = await fetch(url, options);
 
 	if (!response.ok) {
