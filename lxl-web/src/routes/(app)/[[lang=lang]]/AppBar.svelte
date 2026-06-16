@@ -524,8 +524,8 @@
 		top: var(--banner-height, 0);
 		background: var(--color-app-bar);
 		box-shadow: 0 1px 0 0 var(--color-primary-200);
-		height: round(calc(61.08vh + var(--banner-height, 0)), 1px);
-		height: round(calc(61.08svh + var(--banner-height, 0)), 1px);
+		height: round(calc(61.08vh + 56px), 1px);
+		height: round(calc(61.08svh + 56px), 1px);
 	}
 
 	.app-bar-shadow-trigger {
