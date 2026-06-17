@@ -92,8 +92,9 @@ export const removeGhostGroup = (tr: Transaction) => {
 		!tr.docChanged ||
 		(!tr.isUserEvent('input') && !tr.isUserEvent('delete')) ||
 		tr.isUserEvent('input.complete')
-	)
+	) {
 		return tr;
+	}
 
 	const start = tr.startState;
 	const after = tr.state;
