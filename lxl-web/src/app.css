@@ -74,29 +74,18 @@
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
 	--color-success: #2ab061;
 
-	--app-bar-height: 56px;
+	--appbar-base: 66px;
+	--appbar-sm: 76px;
+	--appbar-2xl: 84px;
+
 	--toolbar-height: 48px;
-	--search-input-height: 44px;
 	--banner-height: 0px;
 
 	--two-grid-cols: minmax(0, 1fr) minmax(0, 3fr);
 	--three-grid-cols: minmax(0, 5fr) minmax(0, 14fr) minmax(0, 5fr);
-
-	--search-grid-template-areas: 'leading-actions leading-actions trailing-actions'
-		'search search search';
-	--search-grid-template-columns: auto 1fr 1fr;
-	--search-gap: 0 calc(var(--spacing) * 3);
-
-	@variant lg {
-		--app-bar-height: 76px;
-		--search-input-height: 48px;
-		--search-grid-template-areas: 'leading-actions search trailing-actions';
-		--search-grid-template-columns: 1fr minmax(0, 3fr) 1fr;
-		/* --search-grid-template-rows: var(--app-bar-height); */
-	}
 }
 
-@theme inline {
+@theme {
 	--breakpoint-3xl: 110rem; /* 1760px */
 
 	--container-8xl: 90rem; /* 1440px */
@@ -113,7 +102,9 @@
 	--text-2xs: 0.75rem; /* 12px */
 	--text-xs: 0.8125rem; /* 13px */
 	--text-3xl: 1.75rem; /* 28px */
+}
 
+@theme inline {
 	--color-*: initial;
 
 	--color-primary-50: var(--theme-primary-50);
@@ -189,12 +180,12 @@
 	--color-subtle: var(--color-neutral-600);
 	--color-link: var(--color-accent-600);
 	--color-error: var(--color-severe);
-	--color-app-bar: var(--color-primary-100);
+	--color-appbar: var(--color-primary-100);
 	--color-input: var(--color-page);
 	--color-placeholder: var(--color-neutral-500);
 	--color-disabled: var(--color-neutral-400);
 	--color-outline: var(--color-accent-500);
-	--color-backdrop: --alpha(var(--color-black) / 15%);
+	--color-backdrop: --alpha(var(--color-black) / 25%);
 	--color-aside: oklch(0.994 0 0);
 }
 
