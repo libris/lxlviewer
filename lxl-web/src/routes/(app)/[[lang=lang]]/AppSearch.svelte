@@ -72,7 +72,7 @@
 					qualifierSuggestions={page.data.qualifierSuggestions || []}
 					{initialValueFromFallback}
 					{initialSelectionFromFallback}
-					editor={searchContext.lastUpdatedEditor}
+					editor={searchContext.lastTouchedEditor}
 				/>
 			</div>
 		{:catch}

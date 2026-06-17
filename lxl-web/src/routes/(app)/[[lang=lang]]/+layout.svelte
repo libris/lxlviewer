@@ -18,15 +18,15 @@
 
 	setHomepageContext(homepageContextState);
 
-	let searchContext = $state({
+	let searchContextState = $state({
 		finishedLoadingSuperSearch: false,
 		superSearch: undefined,
-		lastUpdatedEditor: undefined,
+		lastTouchedEditor: undefined,
 		showSearchInAppBar: false
 	});
 
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
-	setSearchContext(searchContext);
+	setSearchContext(searchContextState);
 </script>
 
 <svelte:head>

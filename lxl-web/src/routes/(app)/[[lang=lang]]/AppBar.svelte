@@ -16,7 +16,7 @@
 	import { resolve } from '$app/paths';
 	import { type LocaleCode, Locales } from '$lib/i18n/locales';
 	import { page } from '$app/state';
-	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 	import { getSearchContext } from '$lib/contexts/search';
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
 	import AppSearch from './AppSearch.svelte';
@@ -110,6 +110,16 @@
 		searchContext.superSearch?.showExpandedSearch({ cursorAtEnd: true });
 	}
 
+	function initObserver() {
+		searchObserver = new IntersectionObserver(handleObserve, { threshold: 1 });
+		if (searchContainerElement) {
+			searchObserver.observe(searchContainerElement);
+		}
+		if (window.scrollY > (searchContainerElement?.offsetTop || 0)) {
+			searchContext.showSearchInAppBar = true;
+		}
+	}
+
 	beforeNavigate(() => {
 		closeExpandedMenu();
 	});
@@ -118,14 +128,15 @@
 		mounted = true;
 
 		if (isFindRoute) {
-			searchObserver = new IntersectionObserver(handleObserve, { threshold: 1 });
-			if (searchContainerElement) {
-				searchObserver.observe(searchContainerElement);
-			}
-			if (window.scrollY > (searchContainerElement?.offsetTop || 0)) {
-				searchContext.showSearchInAppBar = true;
-			}
+			initObserver();
 		}
+	});
+
+	onNavigate(() => {
+		searchObserver?.disconnect();
+		return () => {
+			initObserver();
+		};
 	});
 
 	$effect(() => {

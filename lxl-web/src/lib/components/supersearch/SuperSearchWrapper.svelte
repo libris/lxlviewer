@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
-	import { afterNavigate, goto, pushState } from '$app/navigation';
+	import { goto, onNavigate, afterNavigate, pushState } from '$app/navigation';
 	import {
 		type ChangeEvent,
 		type DebouncedWaitFunction,
@@ -89,7 +89,7 @@
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
-	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
+	let pageMapping: DisplayMapping[] | undefined = $derived(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
 
 	let interceptedHref: string | undefined = $state();
@@ -131,49 +131,40 @@
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
-	afterNavigate((navigation) => {
-		pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
-		fetchOnExpand = true;
-
-		searchContext.superSearch = superSearch;
-		const activeEditorView = superSearch?.getActiveEditorView();
-
-		if (activeEditorView) {
-			superSearch?.syncEditors(activeEditorView.state);
-		}
-		/** Update input value after navigation on /find route */
-		if (navigation.to?.url) {
-			const currentLength = activeEditorView?.state.doc.length || 0;
-			const insert = navigation.to.url.searchParams.has('_q')
-				? navigation.to.url.searchParams.get('_q') || ''
-				: '';
-
-			if (insert !== activeEditorView?.state.doc.toString()) {
-				superSearch?.dispatchChange({
-					change: {
-						from: 0,
-						to: currentLength,
-						insert
-					},
-					selection: {
-						anchor: insert.length,
-						head: insert.length
-					},
-					userEvent: 'input.complete'
-				});
-			}
-		}
-
-		if (navigation.type == 'popstate' && navigation.from?.route.id !== navigation.to?.route.id) {
-			if (page.state.expandedSuperSearch) {
-				// console.log('FOCUS');
-			} else {
-				// console.log('BLUR');
-			}
-		} else {
-			hideExpandedSearch({});
+	onNavigate((navigation) => {
+		if (navigation.type !== 'popstate' && superSearch?.isExpanded()) {
+			superSearch?.hideExpandedSearch();
 			superSearch?.blur();
 		}
+	});
+
+	afterNavigate((navigation) => {
+		searchContext.lastTouchedEditor = undefined;
+
+		const activeEditorView = superSearch?.getCollapsedEditorView();
+		const insert =
+			navigation.to?.route.id === '/(app)/[[lang=lang]]/find'
+				? addSpaceIfEndingQualifier(navigation.to?.url.searchParams.get('_q') || '')
+				: '';
+
+		if (activeEditorView && insert !== activeEditorView.state.doc.toString()) {
+			superSearch?.dispatchChange({
+				change: {
+					from: 0,
+					to: superSearch?.getActiveEditorView()?.state.doc.length || 0,
+					insert
+				},
+				selection: {
+					anchor: insert.length,
+					head: insert.length
+				},
+				userEvent: 'input.complete',
+				addToHistory:
+					navigation.to?.route.id === '/(app)/[[lang=lang]]/find' && navigation.type !== 'popstate'
+			});
+		}
+
+		fetchOnExpand = true;
 	});
 
 	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
@@ -207,14 +198,10 @@
 		return data;
 	}
 
-	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
-		const propsWithHandler = {
-			...props,
-			onclick: () => showExpandedSearch({ cursorAtEnd: true })
-		};
+	const qualifierRenderer = (container: HTMLElement, props: QualifierRendererProps) => {
 		const component = mount(QualifierPill, {
 			target: container,
-			props: propsWithHandler
+			props
 		});
 
 		return {
@@ -237,7 +224,7 @@
 				page.data.qualifierSuggestions
 			);
 		}
-		return lxlQualifierPlugin(getLabels, renderer);
+		return lxlQualifierPlugin(getLabels, qualifierRenderer);
 	});
 
 	function showExpandedSearch(options?: ShowExpandedSearchOptions) {
@@ -251,7 +238,7 @@
 	function handleOnChange(event: ChangeEvent) {
 		searchContext.superSearch = superSearch;
 		if (syncEditorsOnChange) {
-			searchContext.lastUpdatedEditor = event.editor;
+			searchContext.lastTouchedEditor = event.editor;
 		}
 		if (!superSearch?.isExpanded()) {
 			fetchOnExpand = true;
@@ -261,7 +248,7 @@
 	function handleOnSelect(event: SelectEvent) {
 		searchContext.superSearch = superSearch;
 		if (syncEditorsOnSelection) {
-			searchContext.lastUpdatedEditor = event.editor;
+			searchContext.lastTouchedEditor = event.editor;
 		}
 	}
 
@@ -283,7 +270,7 @@
 
 	function handleOnExpand(event: ExpandEvent) {
 		searchContext.superSearch = superSearch;
-		searchContext.lastUpdatedEditor = event.editor;
+		searchContext.lastTouchedEditor = event.editor;
 
 		if (
 			!page.state.expandedSuperSearch &&
@@ -308,6 +295,8 @@
 	}
 
 	function handleOnCollapse(event: CollapseEvent) {
+		searchContext.lastTouchedEditor = event.editor;
+
 		if (page.state.expandedSuperSearch && event.trigger === 'close') {
 			history.back();
 		}
@@ -365,36 +354,47 @@
 	});
 
 	onMount(() => {
-		if (superSearch && !searchContext.finishedLoadingSuperSearch) {
-			searchContext.finishedLoadingSuperSearch = true;
-			const activeEditorView = superSearch.getActiveEditorView();
-			if (activeEditorView?.dom.checkVisibility?.()) {
-				if (initialValueFromFallback) {
-					superSearch.dispatchChange({
-						change: initialValueFromFallback
-							? { insert: initialValueFromFallback, from: 0, to: activeEditorView.state.doc.length }
-							: undefined,
-						selection: initialSelectionFromFallback
-							? {
-									anchor: initialSelectionFromFallback.anchor,
-									head: initialSelectionFromFallback.head
-								}
-							: undefined,
-						userEvent: 'input.complete'
-					});
+		const collapsedEditorView = superSearch?.getCollapsedEditorView();
 
-					searchContext.lastUpdatedEditor = {
-						id: activeEditorView.contentDOM.id,
-						state: activeEditorView.state
-					};
-
-					if (initialSelectionFromFallback) {
-						superSearch.showExpandedSearch();
-					}
-				}
-
-				searchContext.superSearch = superSearch;
+		if (searchContext.finishedLoadingSuperSearch) {
+			if (page.route.id === '/(app)/[[lang=lang]]') {
+				superSearch?.dispatchChange({
+					change: {
+						from: 0,
+						to: superSearch.getActiveEditorView()?.state.doc.length || 0,
+						insert: searchContext.lastTouchedEditor?.state.doc.toString() || ''
+					},
+					userEvent: 'input.complete',
+					addToHistory: true
+				});
 			}
+		}
+
+		if (!searchContext.finishedLoadingSuperSearch) {
+			searchContext.finishedLoadingSuperSearch = true;
+
+			if (initialValueFromFallback) {
+				superSearch?.dispatchChange({
+					change: initialValueFromFallback
+						? {
+								insert: initialValueFromFallback,
+								from: 0,
+								to: collapsedEditorView?.state.doc.length || 0
+							}
+						: undefined,
+					selection: initialSelectionFromFallback
+						? {
+								anchor: initialSelectionFromFallback.anchor,
+								head: initialSelectionFromFallback.head
+							}
+						: undefined,
+					userEvent: 'input.complete'
+				});
+			}
+		}
+
+		if (!searchContext.superSearch) {
+			searchContext.superSearch = superSearch;
 		}
 	});
 

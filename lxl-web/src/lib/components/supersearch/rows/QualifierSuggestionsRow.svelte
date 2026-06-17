@@ -165,10 +165,11 @@
 			return;
 		}
 
-		superSearch.getExpandedEditorView()?.focus();
+		const activeEditorView = superSearch.getExpandedEditorView();
+		activeEditorView?.focus();
 
-		const query = superSearch.getQuery();
-		const selection = superSearch.getSelection();
+		const query = activeEditorView?.state.doc.toString();
+		const selection = activeEditorView?.state.selection.main;
 		const userEvent = 'input.complete';
 
 		if (replaceSelection) {
