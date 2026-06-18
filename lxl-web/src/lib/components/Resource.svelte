@@ -399,7 +399,7 @@
 										</span>
 									</a>
 								</div>
-								<div class="relation-list -mx-3 @sm:-mx-6 @3xl:mx-0">
+								<div class="relation-list -mx-3 @sm:-mx-4 @3xl:mx-0">
 									<SearchResultList
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
@@ -431,7 +431,7 @@
 			{/if}
 			{#if decoratedData.details.length && decoratedData.details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)}
 				<section
-					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg print:break-before-page print:px-0"
+					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-4 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg print:break-before-page print:px-0"
 				>
 					<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
 						{page.data.t('resource.details')}
