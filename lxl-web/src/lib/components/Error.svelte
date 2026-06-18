@@ -1,6 +1,7 @@
 <script>
 	import { page } from '$app/state';
 	import getPageTitle from '$lib/utils/getPageTitle';
+	import librisLogo from '$lib/assets/img/libris-logo.svg';
 
 	let { showHeader = false } = $props();
 
@@ -22,7 +23,7 @@
 	<header class="flex justify-center pt-8 lg:pt-16">
 		<a href={page.data.localizeHref(page.data.base)} class="inline-block no-underline">
 			<h1 class="text-3xl font-bold">
-				<img src="/libris-logo.svg" alt="Libris" class="w-40 lg:w-52" />
+				<img src={librisLogo} alt="Libris" class="w-40 lg:w-52" />
 			</h1>
 		</a>
 	</header>
