@@ -4,9 +4,10 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
-
+	import { getCookieConsentContext } from '$lib/contexts/cookieConsent';
 	let cursor: number | null = $state(null);
 
+	const cookieConsentContext = getCookieConsentContext();
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 
 	const ariaLabelledBy = $derived(isHomeRoute ? 'page-title' : undefined);
@@ -16,7 +17,7 @@
 			? `${page.data.t('header.searchSubsetPlaceholder')}: ${displayMappingToString(page.data.subsetMapping)}`
 			: page.data.t('header.searchPlaceholder')
 	);
-	const autofocus = $derived(isHomeRoute ? true : undefined);
+	const autofocus = $derived(isHomeRoute && !cookieConsentContext.visibleModal ? true : undefined);
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
