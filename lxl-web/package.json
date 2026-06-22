@@ -68,5 +68,8 @@
 	},
 	"dependencies": {
 		"dotenv": "^17.2.1"
+	},
+	"imports": {
+		"#app.css": "./src/app.css"
 	}
 }
