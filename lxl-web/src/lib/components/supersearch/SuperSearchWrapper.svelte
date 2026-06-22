@@ -713,7 +713,7 @@
 		}
 
 		@variant sm {
-			top: calc(var(--banner-height, 0) + var(--app-bar-height) - var(--spacing) * 0.5);
+			top: calc(var(--banner-height, 0) + var(--appbar-height) - var(--spacing) * 0.5);
 			margin-top: max(
 				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
 				0px

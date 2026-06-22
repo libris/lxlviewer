@@ -392,6 +392,7 @@
 			<!-- fjärrlån -->
 			{#if librisSession}
 				<li>
+					<!-- eslint-disable svelte/no-navigation-without-resolve -->
 					<a
 						class="action bg-primary-800 max-sm:hover:bg-primary-800"
 						href={`${env.PUBLIC_FJARRLAN_URL}/lf.php`}
@@ -472,10 +473,10 @@
 		top: var(--banner-height, 0);
 
 		&.with-search {
-			height: calc(var(--app-bar-height) * 2);
+			height: calc(var(--appbar-height) * 2);
 
 			@variant lg {
-				height: var(--app-bar-height);
+				height: var(--appbar-height);
 			}
 		}
 		@media (scripting: none) {
@@ -486,15 +487,15 @@
 		& > nav {
 			grid-template-areas: var(--search-grid-template-areas);
 			grid-template-columns: var(--search-grid-template-columns);
-			grid-template-rows: var(--app-bar-height);
+			grid-template-rows: var(--appbar-height);
 			gap: var(--search-gap);
 			@variant lg {
-				height: var(--app-bar-height);
+				height: var(--appbar-height);
 			}
 		}
 
 		& .app-bar-background {
-			height: var(--app-bar-height);
+			height: var(--appbar-height);
 			top: var(--banner-height, 0);
 		}
 	}
@@ -502,11 +503,11 @@
 	.home.app-bar {
 		height: auto;
 		--header-margin-top: round(
-			calc(((61.08vh + var(--banner-height, 0px) - var(--app-bar-height)) / 2)),
+			calc(((61.08vh + var(--banner-height, 0px) - var(--appbar-height)) / 2)),
 			1px
 		);
 		--header-margin-top: round(
-			calc(((61.08svh + var(--banner-height, 0px) - var(--app-bar-height)) / 2)),
+			calc(((61.08svh + var(--banner-height, 0px) - var(--appbar-height)) / 2)),
 			1px
 		);
 		margin-top: var(--header-margin-top);
@@ -526,28 +527,25 @@
 
 	.app-bar-shadow-trigger {
 		position: relative;
-		bottom: calc(var(--app-bar-height) + var(--banner-height, 0));
+		bottom: calc(var(--appbar-height) + var(--banner-height, 0));
 	}
 
 	.page-description-container {
-		height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--app-bar-height) * 1.5), 1px);
-		height: round(
-			calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height) * 1.5),
-			1px
-		);
+		height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--appbar-height) * 1.5), 1px);
+		height: round(calc((61.08svh + var(--banner-height, 0)) / 2 - var(--appbar-height) * 1.5), 1px);
 
 		@variant lg {
-			height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--app-bar-height)), 1px);
-			height: round(calc((61.08svh + var(--banner-height, 0)) / 2 - var(--app-bar-height)), 1px);
+			height: round(calc((61.08vh + var(--banner-height, 0)) / 2 - var(--appbar-height)), 1px);
+			height: round(calc((61.08svh + var(--banner-height, 0)) / 2 - var(--appbar-height)), 1px);
 		}
 		& > div {
 			grid-template-areas: var(--search-grid-template-areas);
 			grid-template-columns: var(--search-grid-template-columns);
-			top: calc(var(--banner-height, 0) + var(--app-bar-height) * 2);
+			top: calc(var(--banner-height, 0) + var(--appbar-height) * 2);
 			gap: var(--search-gap);
 
 			@variant lg {
-				top: calc(var(--banner-height, 0) + var(--app-bar-height));
+				top: calc(var(--banner-height, 0) + var(--appbar-height));
 			}
 		}
 	}
@@ -555,7 +553,7 @@
 	.leading-actions {
 		position: fixed;
 		top: var(--banner-height, 0);
-		height: var(--app-bar-height);
+		height: var(--appbar-height);
 		@apply left-2;
 	}
 
@@ -564,11 +562,11 @@
 		top: var(--banner-height, 0);
 		@apply right-2;
 		position: fixed;
-		height: var(--app-bar-height);
+		height: var(--appbar-height);
 	}
 
 	hgroup {
-		bottom: var(--app-bar-height);
+		bottom: var(--appbar-height);
 	}
 
 	.leading-actions {
@@ -577,7 +575,7 @@
 
 	search {
 		grid-area: search;
-		min-height: var(--app-bar-height);
+		min-height: var(--appbar-height);
 	}
 
 	.page-description {
@@ -607,7 +605,7 @@
 		}
 
 		@variant sm {
-			height: var(--app-bar-height);
+			height: var(--appbar-height);
 			border-radius: 0;
 
 			&:hover::after,
@@ -634,8 +632,8 @@
 	}
 
 	.menu-dialog {
-		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
-		max-height: calc(100svh - calc(var(--app-bar-height, 0) + var(--banner-height, 0) + 1px));
+		top: calc(var(--appbar-height, 0) + var(--banner-height, 0));
+		max-height: calc(100svh - calc(var(--appbar-height, 0) + var(--banner-height, 0) + 1px));
 		overflow-y: auto;
 
 		&::before {
@@ -649,9 +647,9 @@
 		}
 
 		@variant sm {
-			top: calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 4px);
-			max-height: calc(100vh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
-			max-height: calc(100svh - (calc(var(--app-bar-height, 0) + var(--banner-height, 0) - 3px)));
+			top: calc(var(--appbar-height, 0) + var(--banner-height, 0) - 4px);
+			max-height: calc(100vh - (calc(var(--appbar-height, 0) + var(--banner-height, 0) - 3px)));
+			max-height: calc(100svh - (calc(var(--appbar-height, 0) + var(--banner-height, 0) - 3px)));
 		}
 	}
 

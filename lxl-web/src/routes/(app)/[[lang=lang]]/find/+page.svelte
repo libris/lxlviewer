@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { Facet, SearchResult } from '$lib/types/search';
@@ -65,7 +66,7 @@
 				...Array.from(page.url.searchParams.entries())
 			]);
 			newSearchParams.delete('holdings');
-			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
+			goto(resolve(page.url.pathname + `?${newSearchParams.toString()}`), { replaceState: true });
 		}
 	}
 </script>
@@ -141,12 +142,12 @@
 
 <style>
 	.aside-content {
-		top: calc(var(--app-bar-height) + (var(--spacing) * 4));
+		top: calc(var(--appbar-height) + (var(--spacing) * 4));
 	}
 
 	.search-result {
 		&.has-trailing-pane {
-			max-height: calc(100vh - (var(--app-bar-height) + var(--banner-height, 0)));
+			max-height: calc(100vh - (var(--appbar-height) + var(--banner-height, 0)));
 			overflow: hidden;
 
 			& .search-result-content {

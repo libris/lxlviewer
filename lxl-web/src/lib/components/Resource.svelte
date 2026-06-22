@@ -301,6 +301,7 @@
 					</div>
 					<div class="flex items-center gap-2 print:hidden">
 						{#if decoratedData.summary.length || instances?.length > 1 || relations?.length || decoratedData.resourceTableOfContents.length}
+							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
 								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
 								href="#{uidPrefix}details"
@@ -312,6 +313,7 @@
 							</a>
 						{/if}
 						{#if !isWork && instances?.length === 1 && fnurgel}
+							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
 								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
 								href={getCiteLink(page.url, fnurgel)}
@@ -366,6 +368,7 @@
 									class="border-b-neutral mb-6 flex place-content-between items-end border-b pb-3"
 								>
 									<h3 class="font-medium">
+										<!-- eslint-disable svelte/no-navigation-without-resolve -->
 										<a
 											href={page.data.localizeHref(relationItem.findUrl)}
 											class="hover:underline focus:underline"
@@ -380,6 +383,7 @@
 											/>
 										</a>
 									</h3>
+									<!-- eslint-disable svelte/no-navigation-without-resolve -->
 									<a
 										href={page.data.localizeHref(relationItem.findUrl)}
 										class="flex items-center text-sm font-medium hover:underline focus:underline"
@@ -491,10 +495,12 @@
 			<div class="text-sm print:hidden">
 				{#if getBaseUrl(uri) === getBaseUrl(recordUri)}
 					<p>
+						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						{page.data.t('resource.uriLink')}: <a href={uri} class="link">{uri}</a>
 					</p>
 				{:else}
 					<p>
+						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						{page.data.t('resource.recordLink')}: <a href={recordUri} class="link">{recordUri}</a>
 					</p>
 					<p>
@@ -504,6 +510,7 @@
 				{/if}
 				<p>
 					{page.data.t('resource.downloadDescription')}:
+					<!-- eslint-disable svelte/no-navigation-without-resolve -->
 					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
 					· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
 					· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
@@ -514,10 +521,12 @@
                         -->
 						{@const base = recordUri.split('/').toSpliced(-1, 1).join('/')}
 						·
+						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a href="{base}/_compilemarc?library=Foo&id={recordUri}" target="_blank" class="link"
 							>MARC21 (ISO 2709) <BiDownload class="inline" /></a
 						>
 						·
+						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a
 							href="{base}/_compilemarc?library=Foo&id={recordUri}&format=marcxml"
 							target="_blank"
@@ -526,6 +535,7 @@
 					{/if}
 				</p>
 				<p>
+					<!-- eslint-disable svelte/no-navigation-without-resolve -->
 					<a
 						href={recordUri.split('/').toSpliced(-1, 0, 'katalogisering').join('/')}
 						target="_blank"
@@ -582,7 +592,7 @@
 	}
 
 	.sticky {
-		top: calc(var(--app-bar-height, 0) + var(--banner-height, 0));
+		top: calc(var(--appbar-height, 0) + var(--banner-height, 0));
 	}
 
 	.summary-or-toc {
