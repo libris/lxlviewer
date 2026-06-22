@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 	import type { SearchResultItem } from '$lib/types/search';
 	import { relativizeUrl } from '$lib/utils/http';
 	import DecoratedData from './DecoratedData.svelte';
@@ -15,6 +16,7 @@
 		highPriorityImage?: boolean;
 		fadeInImage?: boolean;
 		suppressProperty?: string[];
+		aspectRatio?: 'square' | 'video';
 	};
 
 	let {
@@ -22,7 +24,8 @@
 		lazyImage = false,
 		highPriorityImage = false,
 		fadeInImage = false,
-		suppressProperty = undefined
+		suppressProperty = undefined,
+		aspectRatio = 'square'
 	}: Props = $props();
 
 	let loadedImage = $state(false);
@@ -34,7 +37,10 @@
 
 {#snippet image()}
 	<div
-		class="resource-image mx-auto mb-2 flex aspect-square w-full items-end justify-center rounded-lg bg-neutral-100 p-3"
+		class={[
+			'resource-image mx-auto mb-2 flex w-full items-end justify-center',
+			aspectRatio === 'square' && 'aspect-square rounded-lg bg-neutral-100 p-3'
+		]}
 	>
 		{#if data.image}
 			<img
@@ -47,14 +53,20 @@
 					? 'high'
 					: undefined}
 				class={[
-					'aspect-square w-full object-bottom transition-opacity',
+					'w-full object-bottom transition-opacity',
+					aspectRatio === 'square' && 'aspect-square',
 					fadeInImage && !loadedImage && 'opacity-0 motion-reduce:opacity-100 noscript:opacity-100',
 					data['@type'] === 'Person' ? 'rounded-full object-cover' : 'object-contain'
 				]}
 				onload={fadeInImage ? handleLoadImage : undefined}
 			/>
 		{:else}
-			<div class="relative flex aspect-square w-full items-center justify-center">
+			<div
+				class={[
+					'relative flex w-full items-center justify-center',
+					aspectRatio === 'square' && 'aspect-square'
+				]}
+			>
 				<img
 					src={placeholderImage}
 					alt=""
@@ -73,7 +85,7 @@
 <article class="search-result-item @container min-w-36">
 	<header>
 		<a
-			href={page.data.localizeHref(relativizeUrl(data['@id']))}
+			href={resolve(page.data.localizeHref(relativizeUrl(data['@id'])))}
 			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
 			{@render image()}
@@ -136,7 +148,7 @@
 			{/each}
 		</div>
 	{/if}
-	<footer class="decorated-card-footer @4xs:text-[0.8125rem] text-xs">
+	<footer class="decorated-card-footer @4xs:text-[0.8125rem] truncate text-xs">
 		{#each data['web-card-footer']?._display as obj, index (index)}
 			{#if 'hasInstance' in obj}
 				{@const instances = getInstanceData(obj.hasInstance)}
