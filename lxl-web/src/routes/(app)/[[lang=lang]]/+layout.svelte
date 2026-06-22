@@ -55,11 +55,8 @@
 		--appbar-template-rows: var(--appbar-height) 0;
 		--appbar-template-columns: fit-content 0 fit-content;
 
-		@variant sm {
-			--appbar-height: var(--appbar-sm);
-		}
-
 		@variant lg {
+			--appbar-height: var(--appbar-lg);
 			--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
 		}
 
@@ -68,18 +65,8 @@
 		}
 
 		&.subset {
-			--appbar-height: var(--appbar-sm);
-
-			@variant sm {
-				--appbar-height: var(--appbar-2xl);
-			}
-
 			@variant lg {
 				--appbar-template-columns: 1fr minmax(0, 2fr) 1fr;
-			}
-
-			@variant 2xl {
-				--appbar-template-columns: 1fr minmax(0, 3fr) 1fr;
 			}
 		}
 	}
