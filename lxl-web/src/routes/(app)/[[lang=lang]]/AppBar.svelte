@@ -256,7 +256,7 @@
 				hreflang={otherLangCode}
 				aria-label={page.data.t('header.changeLang')}
 				aria-labelledby={changeLangLabelId}
-				data-testid="change-lang"
+				data-testid={mobile ? 'change-lang-mobile' : 'change-lang'}
 			>
 				{@render actionItemContents({
 					Icon: IconLanguage,

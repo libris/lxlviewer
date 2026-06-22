@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('click input expands dialog', async ({ page }) => {
-	const dialog = await page.locator('#app-search-dialog');
+	const dialog = await page.locator('#hero-search-dialog');
 	await expect(dialog).not.toHaveAttribute('open');
 	await page.getByTestId('supersearch').click();
 	await expect(dialog).toHaveAttribute('open');
@@ -54,15 +54,14 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL(/\/[a-z0-9]{15,}$/); // fnurgel route
 	await page.waitForLoadState('networkidle');
-	await expect(
-		page.getByRole('combobox').first(),
-		'...except when navigating to start/index (which should be seen as a reset)'
-	).toContainText('Sök titel, upphovsperson, ämnen...');
+	await expect(page.getByRole('combobox').first(), 'resource routes shows no query').toContainText(
+		'Sök titel, upphovsperson, ämnen...'
+	);
 	await page.getByTestId('home').click(); // click on home link
-	await page.waitForURL('/'); // fnurgel route
+	await page.waitForURL('/');
 	await expect(
 		page.getByRole('combobox').first(),
-		'...except when navigating to start/index (which should be seen as a reset)'
+		'the same with the start page (which is seen as a reset)'
 	).toContainText('Sök titel, upphovsperson, ämnen...');
 });
 
