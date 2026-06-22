@@ -2,6 +2,7 @@
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate, goto, pushState } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import {
 		type ChangeEvent,
 		type DebouncedWaitFunction,
@@ -253,7 +254,7 @@
 	function handleOnChange(event: ChangeEvent) {
 		searchContext.superSearch = superSearch;
 		if (syncEditorsOnChange) {
-			searchContext.lastUpdatedEditor = event.editor;
+			searchContext.lastTouchedEditor = event.editor;
 		}
 		if (!superSearch?.isExpanded()) {
 			fetchOnExpand = true;
@@ -263,13 +264,13 @@
 	function handleOnSelect(event: SelectEvent) {
 		searchContext.superSearch = superSearch;
 		if (syncEditorsOnSelection) {
-			searchContext.lastUpdatedEditor = event.editor;
+			searchContext.lastTouchedEditor = event.editor;
 		}
 	}
 
 	function handleOnExpand(event: ExpandEvent) {
 		searchContext.superSearch = superSearch;
-		searchContext.lastUpdatedEditor = event.editor;
+		searchContext.lastTouchedEditor = event.editor;
 
 		pageYOffset = event.windowPageYOffset;
 
@@ -362,7 +363,7 @@
 						userEvent: 'input.complete'
 					});
 
-					searchContext.lastUpdatedEditor = {
+					searchContext.lastTouchedEditor = {
 						id: activeEditorView.contentDOM.id,
 						state: activeEditorView.state
 					};
@@ -385,7 +386,7 @@
 		if (interceptedHref) {
 			const _href = interceptedHref;
 			interceptedHref = undefined;
-			goto(_href); // navigate to intercepted href (triggered by link clicks in expanded dialog)
+			goto(resolve(_href)); // navigate to intercepted href (triggered by link clicks in expanded dialog)
 		} else {
 			if (page.state.expandedSuperSearch) {
 				showExpandedSearch({ trigger: 'popstate' });
