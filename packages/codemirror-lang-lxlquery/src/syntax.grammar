@@ -7,7 +7,7 @@ andcomb { term ( AndOperator term | term )* }
 term { String | Group | UTerm | Qualifier }
 Group { "(" orcomb? ")" }
 UTerm { UOperator term }
-String { strliteral | str }
+String { strliteral | StrliteralIncomplete | str }
 Qualifier { 
   ( QualifierKey { String } QualifierOperator { bOperator } QualifierValue { String } ) | 
   ( QualifierKey { String } QualifierOperator { bOperatorEq } QualifierValue { qualifierTerm } ) |
@@ -31,12 +31,13 @@ QualifierInnerGroup { "(" qualifierOrcomb? ")" }
   UOperator { "NOT" | "INTE" }
   bOperator {"<" | ">" | "<=" | ">=" }
   bOperatorEq { ":" | "=" | "~" }
-  strliteral { '"' (!["\\] | "\\" _)* '"' }
+  strliteral { '"' (!["\\\n()] | "\\" ![\n])* '"' }
+  StrliteralIncomplete { '"' (!["\\\n \t\r():=~<>] | "\\" ![\n \t\r():=~<>])* }
   str { ![:~><=()"\ ]+ }
   filterAlias { "excludeEplikt" | "includeEplikt" | "excludePreliminary" | "includePreliminary" | "existsImage" | "alias-myLibraries" | "freeOnline" | "_suecia" | "_collections" }
   space { @whitespace+ }
 
-  @precedence { OrOperator, AndOperator, UOperator, bOperator, bOperatorEq, filterAlias, str, space}
+  @precedence { OrOperator, AndOperator, UOperator, bOperator, bOperatorEq, filterAlias, strliteral, StrliteralIncomplete, str, space }
 }
 
 @detectDelim
