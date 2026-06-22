@@ -247,54 +247,38 @@
 					)
 				);
 
-				@variant @xl {
+				@variant @3xl {
 					--cards: 3.5;
 					--gap-count: 4;
 				}
-				@variant @3xl {
-					--cards: 4.5;
-					--gap-count: 5;
-				}
 				@variant @5xl {
-					--cards: 5.5;
-					--gap-count: 5;
-					--edge-offset: 80px;
-				}
-				@variant @7xl {
 					--cards: 4.5;
-					--gap-count: 4;
-					--edge-offset: 80px;
+					--gap-count: 5;
 				}
 
 				@container (width >= 80rem) {
 					--cards: 5.5;
 					--gap-count: 5;
-					--edge-offset: 80px;
 				}
 				@container (width >= 100rem) {
 					--cards: 6.5;
 					--gap-count: 6;
-					--edge-offset: 80px;
 				}
 				@container (width >= 120rem) {
 					--cards: 7.5;
 					--gap-count: 7;
-					--edge-offset: 80px;
 				}
 				@container (width >= 140rem) {
 					--cards: 8.5;
 					--gap-count: 8;
-					--edge-offset: 80px;
 				}
 				@container (width >= 160rem) {
 					--cards: 9.5;
 					--gap-count: 9;
-					--edge-offset: 80px;
 				}
 				@container (width >= 180rem) {
 					--cards: 10;
 					--gap-count: 9;
-					--edge-offset: 160px;
 				}
 			}
 		}

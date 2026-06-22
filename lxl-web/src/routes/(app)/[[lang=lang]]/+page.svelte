@@ -3,6 +3,7 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 	import IconArrowRight from '~icons/bi/arrow-right';
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
 	import FeaturedCategories from './FeaturedCategories.svelte';
@@ -24,21 +25,20 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-{#snippet featuredSearch(featured: FeaturedSearch, index: number, landscape: boolean = false)}
+{#snippet featuredSearch(featured: FeaturedSearch, index: number)}
 	{@const id = `${uid}-featured-search-${index + 1}`}
 	<section
 		class={[
-			'featured-preview-section my-3 flex flex-col gap-3 last-of-type:pb-6 @lg:gap-4.5 @5xl:my-6 @5xl:gap-4.5 @5xl:first-of-type:mt-8 @5xl:last-of-type:pb-10 @min-[110rem]:gap-6',
-			landscape && 'landscape-mode bg-neutral-100 py-6'
+			'featured-preview-section mb-4 flex flex-col gap-3 first-of-type:mt-0 last-of-type:pb-6 sm:mb-12 2xl:mb-16 @lg:gap-4.5 @5xl:gap-4.5 @min-[110rem]:gap-6'
 		]}
 	>
-		<header class="flex flex-col px-3 @sm:px-6 @5xl:px-20">
+		<header class="flex flex-col px-3 lg:px-6 2xl:px-8">
 			<h2
 				class="font-serif text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[110rem]:text-3xl"
 				{id}
 			>
 				<a
-					href={page.data.localizeHref(featured.findHref)}
+					href={resolve(page.data.localizeHref(featured.findHref))}
 					class={[
 						'ease-in-out hover:underline [&>svg]:mb-0.5 [&>svg]:transition-transform hover:[&>svg]:translate-x-1'
 					]}
@@ -49,7 +49,7 @@
 			</h2>
 			{#if featured.showAllLabel}
 				<a
-					href={page.data.localizeHref(featured.findHref)}
+					href={resolve(page.data.localizeHref(featured.findHref))}
 					class="btn btn-ghost text-sm hover:underline"
 				>
 					{featured.showAllLabel}
@@ -63,15 +63,15 @@
 		</header>
 		<div class="featured-list-container">
 			<FeaturedPreviewList
-				featuredSearch={featured}
+				{featured}
 				ariaLabelledBy={id}
 				lazyload={index === 0 ? 'mount' : 'intersection'}
 			/>
 		</div>
 		{#if featured.footerTextByLang}
-			<footer class="mt-2 flex justify-start px-3 sm:justify-end @sm:px-6 @5xl:px-20">
+			<footer class="mt-2 flex justify-start px-3 sm:justify-end @sm:px-6 @5xl:px-8">
 				<a
-					href={page.data.localizeHref(featured.findHref)}
+					href={resolve(page.data.localizeHref(featured.findHref))}
 					class={[
 						'ease-in-out hover:underline [&>svg]:mb-0.5 [&>svg]:transition-transform hover:[&>svg]:translate-x-1'
 					]}
@@ -87,8 +87,8 @@
 {#each featuredSearches as featured, index (featured.heading)}
 	{@render featuredSearch(featured, index)}
 {/each}
-{#each featuredCollections as collections, index (collections.heading)}
-	{@render featuredSearch(collections, featuredSearches.length + index, true)}
+{#each featuredCollections as collection (collection.heading)}
+	{@render featuredSearch(collection, 0, true)}
 {/each}
 {#each featuredSearches2 as featured, index (featured.heading)}
 	{@render featuredSearch(featured, featuredSearches.length + featuredCollections.length + index)}
@@ -100,21 +100,24 @@
 	.featured-list-container {
 		& :global(.horizontal-list > ul > li) {
 			&:global(:first-child) {
-				margin-left: calc(var(--spacing) * 3);
-				@variant @sm {
-					margin-left: calc(var(--spacing) * 6);
+				@apply ml-3;
+				@variant lg {
+					@apply ml-6;
 				}
-				@variant @5xl {
-					margin-left: calc(var(--spacing) * 20);
+
+				@variant 2xl {
+					@apply ml-8;
 				}
 			}
 			&:global(:last-child) {
-				margin-right: calc(var(--spacing) * 3);
-				@variant @sm {
-					margin-right: calc(var(--spacing) * 6);
+				@apply mr-3;
+
+				@variant lg {
+					@apply mr-6;
 				}
-				@variant @5xl {
-					margin-right: calc(var(--spacing) * 20);
+
+				@variant 2xl {
+					@apply mr-6;
 				}
 			}
 		}
@@ -142,31 +145,5 @@
 	/* hide empty sections */
 	.featured-preview-section:global(:has(.featured-previews.empty)) {
 		display: none;
-	}
-
-	/* 'landscape mode' */
-	:global(.featured-preview-section.landscape-mode .horizontal-list) {
-		--card-scale: 1.4;
-
-		&.with-gradient::before,
-		&.with-gradient::after {
-			background: none;
-		}
-
-		& .resource-image {
-			aspect-ratio: 16 / 9;
-		}
-
-		& .resource-image > * {
-			aspect-ratio: 16 / 9;
-		}
-
-		& img {
-			width: 100%;
-		}
-
-		& .decorated-card-heading-top {
-			display: none;
-		}
 	}
 </style>
