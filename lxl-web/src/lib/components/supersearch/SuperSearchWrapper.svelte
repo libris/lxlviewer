@@ -146,6 +146,7 @@
 		searchContext.lastTouchedEditor = undefined;
 
 		const activeEditorView = superSearch?.getCollapsedEditorView();
+
 		const insert =
 			navigation.to?.route.id === '/(app)/[[lang=lang]]/find'
 				? addSpaceIfEndingQualifier(navigation.to?.url.searchParams.get('_q') || '')
