@@ -4,19 +4,31 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
+	import { baseLocale } from '$lib/i18n/locales';
+	import { getSearchContext } from '$lib/contexts/search';
+
+	type Props = {
+		id: string;
+		ariaLabelledBy?: string;
+	};
+
+	let { id, ariaLabelledBy }: Props = $props();
+
+	const searchContext = getSearchContext();
+
+	let initialValueBeforeMount: string = $state(page.url.searchParams.get('_q') || '');
+	let initialSelectionBeforeMount: { anchor: number; head: number } | undefined = $state();
 
 	let cursor: number | null = $state(null);
 
-	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
+	const action = $derived(page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`);
 
-	const ariaLabelledBy = $derived(isHomeRoute ? 'page-title' : undefined);
-	const ariaLabel = $derived(!isHomeRoute ? page.data.t('header.search') : undefined);
+	const ariaLabel = $derived(page.data.t('header.search'));
 	const placeholder: string = $derived(
 		page.data.subsetMapping
 			? `${page.data.t('header.searchSubsetPlaceholder')}: ${displayMappingToString(page.data.subsetMapping)}`
 			: page.data.t('header.searchPlaceholder')
 	);
-	const autofocus = $derived(isHomeRoute ? true : undefined);
 
 	const pageParams = $derived.by(() => {
 		let p = getSortedSearchParams(addDefaultSearchParams(page.url.searchParams));
@@ -34,28 +46,46 @@
 </script>
 
 {#snippet fallbackInput()}
-	<SuperSearchFallback {placeholder} {ariaLabelledBy} {ariaLabel} {autofocus} />
+	<SuperSearchFallback
+		{id}
+		{placeholder}
+		{ariaLabelledBy}
+		{ariaLabel}
+		bind:value={initialValueBeforeMount}
+		bind:selection={initialSelectionBeforeMount}
+	/>
 {/snippet}
 
-{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
-	{@render fallbackInput()}
-{:then { default: SuperSearchWrapper }}
-	<div class="contents" data-testid="supersearch">
-		<SuperSearchWrapper
-			{placeholder}
-			collapsedAriaLabelledBy={ariaLabelledBy}
-			collapsedAriaLabel={ariaLabel}
-			expandedAriaLabel={page.data.t('header.search')}
-			onCursorChange={(value) => (cursor = value)}
-			qualifierSuggestions={page.data.qualifierSuggestions || []}
-			{autofocus}
-		/>
-	</div>
-{:catch}
-	{@render fallbackInput()}
-{/await}
-{#each Array.from(pageParams) as [name, value], i (name + i)}
-	{#if name !== '_q'}
-		<input type="hidden" {name} {value} />
-	{/if}
-{/each}
+<search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center']}>
+	<form id={`${id}-form`} {action} class="mx-auto w-full min-w-0">
+		{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
+			{@render fallbackInput()}
+		{:then { default: SuperSearchWrapper }}
+			<div class="contents" data-testid="supersearch">
+				<SuperSearchWrapper
+					{id}
+					{placeholder}
+					collapsedAriaLabelledBy={ariaLabelledBy}
+					collapsedAriaLabel={ariaLabel}
+					expandedAriaLabel={page.data.t('header.search')}
+					onCursorChange={(value) => (cursor = value)}
+					qualifierSuggestions={page.data.qualifierSuggestions || []}
+					{initialValueBeforeMount}
+					{initialSelectionBeforeMount}
+					editor={searchContext.lastUpdatedEditor}
+				/>
+			</div>
+		{:catch}
+			{@render fallbackInput()}
+		{/await}
+		{#each Array.from(pageParams) as [name, value], i (name + i)}
+			{#if name !== '_q'}
+				<input type="hidden" {name} {value} />
+			{/if}
+		{/each}
+	</form>
+</search>
+
+<style lang="postcss">
+	@reference 'tailwindcss';
+</style>

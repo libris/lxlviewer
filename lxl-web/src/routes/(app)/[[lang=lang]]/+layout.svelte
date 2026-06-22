@@ -18,14 +18,8 @@
 	setHomepageContext(homepageCache);
 
 	let searchContext = $state({
-		getQuery: () => page.url.searchParams.get('_q') || '',
-		getSelection: () => undefined,
-		showExpandedSearch: () => {},
-		hideExpandedSearch: () => {},
-		changeQuery: () => {},
-		submit: () => {},
-		initialStateBeforeMount: undefined,
-		isMounted: false
+		superSearch: undefined,
+		lastUpdatedEditor: undefined
 	});
 
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)

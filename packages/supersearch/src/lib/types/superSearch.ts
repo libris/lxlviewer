@@ -1,5 +1,5 @@
 import type { JSONValue } from './json.js';
-import type { Selection } from '$lib/components/CodeMirror.svelte';
+import type { Editor, Selection } from '$lib/components/CodeMirror.svelte';
 
 export type QueryFunction = (value: string, cursor: number) => URLSearchParams;
 export type PaginationQueryFunction = (
@@ -15,17 +15,40 @@ export interface ResultItem {
 	heading: string;
 }
 
+export type DispatchChangeParams = {
+	change?: { insert: string; from?: number; to?: number };
+	selection?: {
+		anchor: number;
+		head: number;
+	};
+	userEvent?: UserEvent;
+	addToHistory?: boolean;
+};
+
 export type ShowExpandedSearchOptions = {
+	trigger?: Trigger;
 	cursorAtEnd?: boolean;
 	focusRow?: number;
-	preventPushState?: boolean;
+};
+
+export type HideExpandedSearchOptions = {
+	trigger?: Trigger;
 };
 
 export type DebouncedWaitFunction = (query: string) => number | null;
 
 export type ExpandEvent = {
+	editor: Editor;
+	trigger?: Trigger;
 	windowPageYOffset: number;
 };
+
+export type CollapseEvent = {
+	editor: Editor;
+	trigger?: Trigger;
+};
+
+export type Trigger = 'close' | 'submit' | 'popstate' | 'navigation';
 
 export type UserEvent =
 	| 'input'
