@@ -91,7 +91,7 @@
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">
 			<div class="flex flex-1 flex-col @5xl/content:flex-row">
-				<main id="content" class="flex-1">
+				<div class="flex-1">
 					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar {searchResult} />
 					<SearchResultInfo {searchResult} />
@@ -103,7 +103,7 @@
 						{/each}
 					</ol>
 					<Pagination data={searchResult} />
-				</main>
+				</div>
 				<aside class="search-result-aside min-w-75">
 					<div class="hidden @5xl/content:block">
 						<Toolbar />
