@@ -415,6 +415,20 @@
 
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		if (!expanded && collapsedEditorView) {
+			if (options?.cursorAtEnd) {
+				if (
+					!collapsedEditorView.state.selection.main.anchor ||
+					!collapsedEditorView.state.selection.main.head
+				) {
+					dispatchChange({
+						selection: {
+							anchor: collapsedEditorView.state.doc.length,
+							head: collapsedEditorView.state.doc.length
+						},
+						addToHistory: false
+					});
+				}
+			}
 			editor = {
 				id: collapsedEditorView.contentDOM.id,
 				state: collapsedEditorView.state
