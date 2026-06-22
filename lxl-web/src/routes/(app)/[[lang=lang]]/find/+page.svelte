@@ -141,12 +141,12 @@
 
 <style>
 	.aside-content {
-		top: calc(var(--app-bar-height) + (var(--spacing) * 4));
+		top: calc(var(--appbar-height) + (var(--spacing) * 4));
 	}
 
 	.search-result {
 		&.has-trailing-pane {
-			max-height: calc(100vh - (var(--app-bar-height) + var(--banner-height, 0)));
+			max-height: calc(100vh - (var(--appbar-height) + var(--banner-height, 0)));
 			overflow: hidden;
 
 			& .search-result-content {
