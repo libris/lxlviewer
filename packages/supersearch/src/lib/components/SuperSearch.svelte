@@ -802,7 +802,7 @@
 		const activeEditorView = getActiveEditorView();
 		activeEditorView?.dispatch({
 			changes: { from: 0, to: activeEditorView.state.doc.length, insert: '' },
-			userEvent: 'delete'
+			userEvent: 'input.complete'
 		});
 		search.resetData();
 		if (dialog?.open) {
