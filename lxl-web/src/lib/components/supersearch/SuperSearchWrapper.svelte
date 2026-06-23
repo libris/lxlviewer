@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
-	import { resolve } from '$app/paths';
 	import { goto, onNavigate, afterNavigate, pushState } from '$app/navigation';
 	import {
 		type ChangeEvent,
@@ -145,18 +144,15 @@
 	afterNavigate((navigation) => {
 		searchContext.lastTouchedEditor = undefined;
 
-		const activeEditorView = superSearch?.getCollapsedEditorView();
+		const fromQ = navigation.from?.url.searchParams.get('_q');
+		const toQ = navigation.to?.url.searchParams.get('_q');
 
-		const insert =
-			navigation.to?.route.id === '/(app)/[[lang=lang]]/find'
-				? addSpaceIfEndingQualifier(navigation.to?.url.searchParams.get('_q') || '')
-				: '';
-
-		if (activeEditorView && insert !== activeEditorView.state.doc.toString()) {
+		if ((toQ && fromQ !== toQ) || navigation.to?.route.id === '/(app)/[[lang=lang]]') {
+			const insert = addSpaceIfEndingQualifier(toQ || '');
 			superSearch?.dispatchChange({
 				change: {
 					from: 0,
-					to: superSearch?.getActiveEditorView()?.state.doc.length || 0,
+					to: superSearch.getActiveEditorView()?.state.doc.length || 0,
 					insert
 				},
 				selection: {
@@ -403,7 +399,7 @@
 		}
 	});
 
-	/** Set "active" supersearch instance depending on media query and route */
+	/** Set "active" supersearch instance depending on media query and route (this could probably be simplified in some way...) */
 	$effect(() => {
 		if (
 			(isFindRoute && lgMediaQuery.current && id === ID_APP_BAR_LG_SEARCH) ||
@@ -425,7 +421,8 @@
 		if (interceptedHref) {
 			const _href = interceptedHref;
 			interceptedHref = undefined;
-			goto(resolve(_href)); // navigate to intercepted href (triggered by link clicks in expanded dialog)
+			// eslint-disable-next-line svelte/no-navigation-without-resolve
+			goto(_href); // navigate to intercepted href (triggered by link clicks in expanded dialog)
 		} else {
 			if (page.state.expandedSuperSearch) {
 				showExpandedSearch({ trigger: 'popstate' });
