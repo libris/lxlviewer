@@ -52,7 +52,8 @@ export default {
 		description: 'Beskrivning',
 		reference: 'Referens',
 		searchIn: 'Söker i',
-		keyword: 'Filter / nyckelord'
+		keyword: 'Filter / nyckelord',
+		code: 'Kod'
 	},
 	myPages: {
 		pageTitle: 'Mina sidor',

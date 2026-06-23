@@ -51,51 +51,75 @@
 			<tr class="[&>th]:p-3 [&>th]:text-left [&>th]:align-top">
 				<th>{page.data.t('help.keyword')}</th>
 				<th>{page.data.t('help.description')}</th>
+				<th>{page.data.t('help.searchIn')}</th>
+				<th>{page.data.t('help.code')}</th>
 			</tr>
 		</thead>
 		<tbody class="divide-y divide-gray-300 [&>tr>td]:p-3 [&>tr>td]:text-left [&>tr>td]:align-top">
-			{#each data.filterDefs as f (f.key)}
-				<tr id={f.key}>
-					<td>
-						<button
-							class="qualifier text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize"
-							onclick={() => addQualifierKey(f.key)}
-						>
-							{f.label}
-						</button>
-						<ul class="mt-2 font-mono">
-							<li class="text-xs">{f.key}</li>
-							{#each f.queryCodes as q (q)}
-								<li class="text-subtle text-xs">{q}</li>
-							{/each}
-						</ul>
-					</td>
-					<td class={['grid grid-cols-1 gap-3 sm:grid-cols-2']}>
-						<div>
-							<span class="whitespace-pre-line">{f.filterDescription}</span>
-							{#if f.descriptionRemark}
-								<div class="mt-4">
-									{#each f.descriptionRemark as remark, i (i)}
-										<div>
-											<span>ⓘ {remark}</span>
-										</div>
-									{/each}
+			{#each data.filterGroups as g, i (i)}
+				{#if g.label || g.filterGroupDescription}
+					<tr>
+						<td colspan="4" class="bg-neutral-100 px-4 py-2">
+							{#if g.label}
+								<div class="font-semibold">
+									{g.label}
 								</div>
 							{/if}
-						</div>
-						{#if f.propertyChainAxiom}
+
+							{#if g.filterGroupDescription}
+								<div class="text-2s text-subtle pt-2 whitespace-pre-line">
+									{g.filterGroupDescription}
+								</div>
+							{/if}
+						</td>
+					</tr>
+				{/if}
+				{#each g.filters as f (f.key)}
+					<tr id={f.key}>
+						<td>
+							<button
+								class="qualifier text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize"
+								onclick={() => addQualifierKey(f.key)}
+							>
+								{f.label}
+							</button>
+						</td>
+						<td>
 							<div>
-								<span class="text-2s text-subtle">{page.data.t('help.searchIn')}</span>
-								<ul>
-									{#each f.propertyChainAxiom as p (p)}
-										<li class="text-s">{p.label}</li>
-										<li class="text-2xs text-subtle mb-2 font-mono">{p.path}</li>
-									{/each}
-								</ul>
+								<span class="whitespace-pre-line">{f.filterDescription}</span>
+								{#if f.descriptionRemark}
+									<div class="mt-4">
+										{#each f.descriptionRemark as remark, i (i)}
+											<div>
+												<span>ⓘ {remark}</span>
+											</div>
+										{/each}
+									</div>
+								{/if}
 							</div>
-						{/if}
-					</td>
-				</tr>
+						</td>
+						<td>
+							{#if f.propertyChainAxiom}
+								<div>
+									<ul>
+										{#each f.propertyChainAxiom as p (p)}
+											<li class="text-s">{p.label}</li>
+											<li class="text-2xs text-subtle mb-2 font-mono">{p.path}</li>
+										{/each}
+									</ul>
+								</div>
+							{/if}
+						</td>
+						<td>
+							<ul class=" font-mono">
+								<li class="text-xs">{f.key}</li>
+								{#each f.queryCodes as q (q)}
+									<li class="text-subtle text-xs">{q}</li>
+								{/each}
+							</ul>
+						</td>
+					</tr>
+				{/each}
 			{/each}
 		</tbody>
 	</table>
