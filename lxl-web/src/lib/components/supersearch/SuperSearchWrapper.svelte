@@ -396,6 +396,10 @@
 					userEvent: 'input.complete'
 				});
 			}
+
+			if (initialSelectionFromFallback) {
+				superSearch?.focus();
+			}
 		}
 	});
 
