@@ -27,7 +27,7 @@
 	import IconBookmark from '~icons/bi/bookmark';
 	import IconSearch from '~icons/bi/search';
 	import IconLanguage from '~icons/bi/globe';
-	import IconFjarrlan from '$lib/assets/img/fjarrlan.svg';
+	import IconFjarrlan from '~icons/custom/fjarrlan';
 
 	const searchContext = getSearchContext();
 
@@ -270,7 +270,7 @@
 			<li>
 				<!-- eslint-disable svelte/no-navigation-without-resolve -->
 				<a
-					class="action bg-primary-800 max-sm:hover:bg-primary-800"
+					class="action bg-primary hover:bg-primary-600"
 					href={`${env.PUBLIC_FJARRLAN_URL}/lf.php`}
 				>
 					{@render actionItemContents({
