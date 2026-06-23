@@ -270,7 +270,7 @@
 			<li>
 				<!-- eslint-disable svelte/no-navigation-without-resolve -->
 				<a
-					class="action bg-primary hover:bg-primary-600"
+					class="action bg-primary-800 hover:bg-primary-900 *:text-page!"
 					href={`${env.PUBLIC_FJARRLAN_URL}/lf.php`}
 				>
 					{@render actionItemContents({
