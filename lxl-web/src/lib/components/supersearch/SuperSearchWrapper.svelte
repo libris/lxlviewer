@@ -147,10 +147,7 @@
 		const fromQ = navigation.from?.url.searchParams.get('_q');
 		const toQ = navigation.to?.url.searchParams.get('_q');
 
-		if (
-			(navigation.to?.route.id === '/(app)/[[lang=lang]]/find' && toQ && fromQ !== toQ) ||
-			(navigation.to?.route.id !== '/(app)/[[lang=lang]]/find' && fromQ !== toQ)
-		) {
+		if (fromQ !== toQ) {
 			const insert = addSpaceIfEndingQualifier(toQ || '');
 			superSearch?.dispatchChange({
 				change: {
