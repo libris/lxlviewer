@@ -54,9 +54,10 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
 	await page.waitForURL(/\/[a-z0-9]{15,}$/); // fnurgel route
 	await page.waitForLoadState('networkidle');
-	await expect(page.getByRole('combobox').first(), 'resource routes shows no query').toContainText(
-		'Sök titel, upphovsperson, ämnen...'
-	);
+	await expect(
+		page.getByRole('combobox').first(),
+		'query is kept when navigating to a resource page'
+	).toContainText('hello');
 	await page.getByTestId('home').click(); // click on home link
 	await page.waitForURL('/');
 	await expect(
