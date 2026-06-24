@@ -242,8 +242,10 @@ test('access filters can be added/removed', async ({ page }) => {
 	await page.getByRole('combobox').fill('hej');
 	await page.keyboard.press('Enter');
 	await page.getByText('Fritt online').click();
-	await expect(page, 'user can add access filters').toHaveURL('/find?_q=hej+freeOnline');
-	await page.getByLabel('ta bort filter Fritt Online').first().click();
+	await page.waitForURL('/find?_q=hej+freeOnline');
+	await page.waitForLoadState('networkidle');
+	await page.getByRole('combobox').first().click();
+	await page.getByRole('dialog').getByRole('combobox').getByRole('link').first().click();
 	await expect(page, 'user can remove access filters by pressing clear icon').toHaveURL(
 		'/find?_q=hej'
 	);

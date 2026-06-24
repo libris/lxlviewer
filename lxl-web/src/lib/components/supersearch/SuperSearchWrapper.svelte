@@ -135,7 +135,8 @@
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
 	onMount(() => {
-		const insert = searchContext.q || '';
+		const insert =
+			searchContext.q || addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || '');
 		superSearch?.dispatchChange({
 			change: {
 				from: 0,
@@ -160,10 +161,10 @@
 		return () => {
 			searchContext.lastTouchedEditor = undefined;
 
-			const fromQ = navigation.from?.url.searchParams.get('_q');
-			const toQ = navigation.to?.url.searchParams.get('_q');
+			const fromQ = addSpaceIfEndingQualifier(navigation.from?.url.searchParams.get('_q') || '');
+			const toQ = addSpaceIfEndingQualifier(navigation.to?.url.searchParams.get('_q') || '');
 
-			if (fromQ !== toQ && q !== searchContext.q) {
+			if (fromQ !== toQ) {
 				const insert = addSpaceIfEndingQualifier(toQ || '');
 				superSearch?.dispatchChange({
 					change: {
