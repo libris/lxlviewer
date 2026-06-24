@@ -28,7 +28,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag'),
 		'search results are not visible on empty input'
 	).toBeHidden();
-	await page.getByRole('dialog').getByRole('combobox').fill('hej '); // add space for now until showAddQualifiers is even smarter
+	await page.getByRole('dialog').getByRole('combobox').fill('hej');
 
 	// wait for /supersearch api response before expecting any results
 	await page.waitForResponse(
@@ -42,8 +42,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'search results are shown after typing'
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByRole('combobox').fill('hello'); // add space for now until showAddQualifiers is even smarter
-	await page.getByTestId('supersearch').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('hello');
 	await page.waitForResponse(
 		(res) => res.url().includes('supersearch?_q=hello') && res.status() === 200
 	);
@@ -51,19 +50,21 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'results are shown if there is an initial query'
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('Enter');
 	await page.waitForURL(/\/[a-z0-9]{15,}$/); // fnurgel route
 	await page.waitForLoadState('networkidle');
-	await expect(
-		page.getByRole('combobox').first(),
-		'query is kept when navigating to a resource page'
-	).toContainText('hello');
+	await expect(page.getByRole('combobox').first()).toContainText(
+		'Sök titel, upphovsperson, ämnen...'
+	);
 	await page.getByTestId('home').click(); // click on home link
 	await page.waitForURL('/');
-	await expect(
-		page.getByRole('combobox').first(),
-		'...except when navigating to start/index (which should be seen as a reset)'
-	).toContainText('Sök titel, upphovsperson, ämnen...');
+	await page.waitForLoadState('networkidle');
+	await expect(page.getByRole('combobox').first()).toContainText(
+		'Sök titel, upphovsperson, ämnen...'
+	);
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {

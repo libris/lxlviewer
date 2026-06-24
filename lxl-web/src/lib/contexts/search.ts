@@ -6,6 +6,7 @@ export type SearchContext = {
 	lastTouchedEditor: Editor | undefined;
 	finishedLoadingSuperSearch: boolean;
 	showSearchInAppBar: boolean;
+	q: string | null;
 };
 
 export const [getSearchContext, setSearchContext] = createContext<SearchContext>();

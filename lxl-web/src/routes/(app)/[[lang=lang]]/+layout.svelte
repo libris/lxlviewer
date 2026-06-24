@@ -21,7 +21,8 @@
 		superSearch: undefined,
 		lastTouchedEditor: undefined,
 		finishedLoadingSuperSearch: false,
-		showSearchInAppBar: false
+		showSearchInAppBar: false,
+		q: page.url.searchParams.get('_q')
 	});
 
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)

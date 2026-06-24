@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount } from 'svelte';
 	import { page } from '$app/state';
-	import { goto, onNavigate, afterNavigate, pushState } from '$app/navigation';
+	import { goto, onNavigate, pushState } from '$app/navigation';
 	import {
 		type ChangeEvent,
 		type DebouncedWaitFunction,
@@ -78,7 +78,7 @@
 
 	const searchContext = getSearchContext();
 
-	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || ''));
+	let q = $state('');
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
@@ -134,38 +134,58 @@
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
+	onMount(() => {
+		const insert = searchContext.q || '';
+		superSearch?.dispatchChange({
+			change: {
+				from: 0,
+				to: superSearch.getActiveEditorView()?.state.doc.length || 0,
+				insert
+			},
+			selection: {
+				anchor: insert.length,
+				head: insert.length
+			},
+			userEvent: 'input.complete',
+			addToHistory: true
+		});
+	});
+
 	onNavigate((navigation) => {
 		if (navigation.type !== 'popstate' && superSearch?.isExpanded()) {
 			superSearch?.hideExpandedSearch();
 			superSearch?.blur();
 		}
-	});
 
-	afterNavigate((navigation) => {
-		searchContext.lastTouchedEditor = undefined;
+		return () => {
+			searchContext.lastTouchedEditor = undefined;
 
-		const fromQ = navigation.from?.url.searchParams.get('_q');
-		const toQ = navigation.to?.url.searchParams.get('_q');
+			const fromQ = navigation.from?.url.searchParams.get('_q');
+			const toQ = navigation.to?.url.searchParams.get('_q');
 
-		if (fromQ !== toQ) {
-			const insert = addSpaceIfEndingQualifier(toQ || '');
-			superSearch?.dispatchChange({
-				change: {
-					from: 0,
-					to: superSearch.getActiveEditorView()?.state.doc.length || 0,
-					insert
-				},
-				selection: {
-					anchor: insert.length,
-					head: insert.length
-				},
-				userEvent: 'input.complete',
-				addToHistory:
-					navigation.to?.route.id === '/(app)/[[lang=lang]]/find' && navigation.type !== 'popstate'
-			});
-		}
+			if (fromQ !== toQ && q !== searchContext.q) {
+				const insert = addSpaceIfEndingQualifier(toQ || '');
+				superSearch?.dispatchChange({
+					change: {
+						from: 0,
+						to: superSearch.getActiveEditorView()?.state.doc.length || 0,
+						insert
+					},
+					selection: {
+						anchor: insert.length,
+						head: insert.length
+					},
+					userEvent: 'input.complete',
+					addToHistory:
+						(navigation.to?.route.id === '/(app)/[[lang=lang]]/find' ||
+							navigation.to?.route.id === '/(app)/[[lang=lang]]') &&
+						navigation.type !== 'popstate'
+				});
+			}
+			searchContext.q = toQ ? addSpaceIfEndingQualifier(toQ) : '';
 
-		fetchOnExpand = true;
+			fetchOnExpand = true;
+		};
 	});
 
 	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
