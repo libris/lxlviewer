@@ -131,14 +131,7 @@
 	.horizontal-type.featured-previews {
 		& .placeholder-container,
 		:global(article) {
-			height: calc(100cqw + (var(--spacing) * 3) + 9rem);
-		}
-	}
-
-	.grid-type.featured-previews {
-		& .placeholder-container,
-		:global(article) {
-			height: calc(56.25cqw + (var(--spacing) * 3) + 9rem);
+			height: calc(100cqw + (var(--spacing) * 3) + 10rem);  // TODO: Something smarter than this but we need a height value to prevent layout-shifting
 		}
 	}
 </style>
