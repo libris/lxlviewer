@@ -411,6 +411,8 @@
 			userEvent,
 			annotations: [Transaction.addToHistory.of(addToHistory)]
 		});
+
+		allowArrowKeyCursorHandling = { vertical: false, horizontal: true };
 	}
 
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
@@ -618,9 +620,15 @@
 						collapsedEditorView?.focus();
 					} else {
 						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
+							event.preventDefault();
 							activeRowIndex = arrowKeyRows.length;
 							activeColIndex = 0;
+							allowArrowKeyCursorHandling = {
+								vertical: false,
+								horizontal: getColsInRow(arrowKeyRows.length - 1).length <= 1
+							};
 						} else if (activeRowIndex >= 1) {
+							event.preventDefault();
 							activeRowIndex--;
 							if (activeRowIndex < 1) {
 								activeColIndex = defaultInputCol;
