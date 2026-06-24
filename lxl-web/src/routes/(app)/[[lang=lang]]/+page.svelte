@@ -278,7 +278,7 @@
 							lazyload="intersection"
 						/>
 					{/each}
-					<div class="mt-6 text-center">
+					<div class="mt-8 text-center">
 						<a
 							class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium focus-within:bg-black hover:bg-black"
 							href={page.data.localizeHref(
