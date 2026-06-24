@@ -14,15 +14,13 @@
 	function addQualifierKey(key: string) {
 		const superSearch = searchContext.superSearch;
 		if (superSearch) {
-			const insert = ` ${key}:()`;
 			const query = superSearch.getQuery();
-			const anchor = query.length + insert.length - 1;
-			const head = anchor;
+			const insert = query + ` ${key}:()`;
 			superSearch?.dispatchChange({
 				change: { from: 0, to: query.length, insert },
 				selection: {
-					anchor,
-					head
+					anchor: insert.length - 1,
+					head: insert.length - 1
 				}
 			});
 		}
