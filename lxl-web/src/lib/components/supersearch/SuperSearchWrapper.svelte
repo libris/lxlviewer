@@ -186,13 +186,9 @@
 						head: insert.length
 					},
 					userEvent: 'input.complete',
-					addToHistory:
-						(navigation.to?.route.id === '/(app)/[[lang=lang]]/find' ||
-							navigation.to?.route.id === '/(app)/[[lang=lang]]') &&
-						navigation.type !== 'popstate'
+					addToHistory: navigation.type !== 'popstate'
 				});
 			}
-			searchContext.q = toQ ? addSpaceIfEndingQualifier(toQ) : '';
 
 			fetchOnExpand = true;
 		};
