@@ -136,14 +136,14 @@
 
 	onMount(async () => {
 		/*
-			The following tick shouldn't be needed but page.route.id can otherwise sometimes have the old value when navigating to start...
+			The following tick shouldn't be needed – but page.route.id can otherwise sometimes have the old value when navigating to start...
 			Could we use an effect instead? (we then need to be sure not to break the undo history by triggering too many effects!)
 		 */
 		await tick();
 		const insert =
 			page.route.id === '/(app)/[[lang=lang]]'
 				? ''
-				: searchContext.q || addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || '');
+				: addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || '');
 
 		superSearch?.dispatchChange({
 			change: {
@@ -156,8 +156,9 @@
 				head: insert.length
 			},
 			userEvent: 'input.complete',
-			addToHistory: true
+			addToHistory: insert !== searchContext.q // ensure initial dispatch is only added once to history
 		});
+		searchContext.q = insert;
 	});
 
 	onNavigate((navigation) => {
