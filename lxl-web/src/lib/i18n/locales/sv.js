@@ -52,7 +52,7 @@ export default {
 		description: 'Beskrivning',
 		reference: 'Referens',
 		searchIn: 'Söker i',
-		keyword: 'Filter / nyckelord',
+		filter: 'Filter',
 		code: 'Kod'
 	},
 	myPages: {

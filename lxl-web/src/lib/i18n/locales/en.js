@@ -54,7 +54,6 @@ export default {
 		filter: 'Filter',
 		reference: 'Reference',
 		searchIn: 'Searches in',
-		keyword: 'Filter / keyword',
 		code: 'Code'
 	},
 	myPages: {

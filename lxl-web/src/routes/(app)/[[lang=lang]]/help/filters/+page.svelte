@@ -50,9 +50,10 @@
 		<!-- Header row -->
 		<div
 			class="hidden border-b border-gray-300 @3xl:grid
-		       @3xl:grid-cols-[1fr_2fr_1.5fr_1fr]"
+		       @3xl:grid-cols-[1fr_2fr_1.5fr_1fr]
+					 @3xl:gap-x-4"
 		>
-			<div class="p-3 font-medium">{page.data.t('help.keyword')}</div>
+			<div class="p-3 font-medium">{page.data.t('help.filter')}</div>
 			<div class="p-3 font-medium">{page.data.t('help.description')}</div>
 			<div class="p-3 font-medium">{page.data.t('help.searchIn')}</div>
 			<div class="p-3 font-medium">{page.data.t('help.code')}</div>
@@ -60,7 +61,7 @@
 
 		{#each data.filterGroups as g, i (i)}
 			{#if g.label || g.filterGroupDescription}
-				<div class="border-b border-gray-300 bg-neutral-100 px-4 py-2">
+				<div class="border-b border-gray-300 bg-neutral-100 px-4 py-3">
 					{#if g.label}
 						<div class="font-semibold">
 							{g.label}
@@ -84,10 +85,10 @@
 				       @3xl:gap-x-4
 				       @3xl:py-0"
 				>
-					<!-- Keyword -->
+					<!-- Filter -->
 					<div class="min-w-0 p-3">
 						<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
-							{page.data.t('help.keyword')}
+							{page.data.t('help.filter')}
 						</div>
 
 						<button
