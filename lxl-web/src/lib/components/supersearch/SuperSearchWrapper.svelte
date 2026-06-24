@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mount, onMount, onDestroy, unmount } from 'svelte';
+	import { mount, onMount, onDestroy, unmount, tick } from 'svelte';
 	import { page } from '$app/state';
 	import { goto, onNavigate, pushState } from '$app/navigation';
 	import {
@@ -134,9 +134,17 @@
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
-	onMount(() => {
+	onMount(async () => {
+		/*
+			The following tick shouldn't be needed but page.route.id can otherwise sometimes have the old value when navigating to start...
+			Could we use an effect instead? (we then need to be sure not to break the undo history by triggering too many effects!)
+		 */
+		await tick();
 		const insert =
-			searchContext.q || addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || '');
+			page.route.id === '/(app)/[[lang=lang]]'
+				? ''
+				: searchContext.q || addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || '');
+
 		superSearch?.dispatchChange({
 			change: {
 				from: 0,
