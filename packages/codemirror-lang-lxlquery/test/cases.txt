@@ -423,13 +423,13 @@ NOT
 Query(UTerm(UOperator ⚠))
 
 
-# fail unclosed quote
+# fail unclosed quote (does not fail since token strliteralIncomplete)
 
 "Astrid Lind
 
 ==>
 
-Query(⚠ String String)
+Query(String String)
 
 
 # allow empty paren
