@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { mount, onMount, onDestroy, unmount } from 'svelte';
+	import { mount, onMount, onDestroy, unmount, tick } from 'svelte';
 	import { page } from '$app/state';
-	import { afterNavigate, goto, pushState } from '$app/navigation';
+	import { goto, onNavigate, pushState } from '$app/navigation';
 	import {
 		type ChangeEvent,
 		type DebouncedWaitFunction,
@@ -31,7 +31,12 @@
 	import IconSearch from '~icons/bi/search';
 	import '$lib/styles/lxlquery.css';
 	import { getSearchContext } from '$lib/contexts/search';
-	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import { SvelteURLSearchParams, MediaQuery } from 'svelte/reactivity';
+	import { ID_HERO_SEARCH } from '../../../routes/(app)/[[lang=lang]]/+page.svelte';
+	import {
+		ID_APP_BAR_LG_SEARCH,
+		ID_APP_BAR_SM_SEARCH
+	} from '../../../routes/(app)/[[lang=lang]]/AppBar.svelte';
 
 	interface Props {
 		id: string;
@@ -73,19 +78,21 @@
 
 	const searchContext = getSearchContext();
 
-	let q = $state(addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || ''));
+	let q = $state('');
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
-	let pageYOffset: number | undefined = $state();
+	let dialogMarginTop: string | undefined = $state();
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
-	let pageMapping: DisplayMapping[] | undefined = $state(page.data.searchResult?.mapping);
+	let pageMapping: DisplayMapping[] | undefined = $derived(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
+
+	const lgMediaQuery = new MediaQuery('min-width: 1024px');
 
 	let interceptedHref: string | undefined = $state();
 
@@ -121,61 +128,70 @@
 
 	let cursor = $derived(selection?.head || 0);
 	let isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
+	let isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
-	afterNavigate((navigation) => {
-		pageMapping = page.data.searchResult?.mapping || pageMapping; // use previous page mapping if there is no new page mapping
-		fetchOnExpand = true;
+	onMount(async () => {
+		/*
+			The following tick shouldn't be needed – but page.route.id can otherwise sometimes have the old value when navigating to start...
+			Could we use an effect instead? (we then need to be sure not to break the undo history by triggering too many effects!)
+		 */
+		await tick();
+		const insert =
+			page.route.id === '/(app)/[[lang=lang]]'
+				? ''
+				: addSpaceIfEndingQualifier(page.url.searchParams.get('_q') || '');
 
-		searchContext.superSearch = superSearch;
-		const activeEditorView = superSearch?.getActiveEditorView();
+		superSearch?.dispatchChange({
+			change: {
+				from: 0,
+				to: superSearch.getActiveEditorView()?.state.doc.length || 0,
+				insert
+			},
+			selection: {
+				anchor: insert.length,
+				head: insert.length
+			},
+			userEvent: 'input.complete',
+			addToHistory: insert !== searchContext.q // ensure initial dispatch is only added once to history
+		});
+		searchContext.q = insert;
+	});
 
-		/** Update input value after navigation on /find route */
-		if (navigation.to?.url) {
-			const currentLength = activeEditorView?.state.doc.length || 0;
-			const insert =
-				navigation.to.route.id === '/(app)/[[lang=lang]]/find' &&
-				navigation.to.url.searchParams.has('_q')
-					? navigation.to.url.searchParams.get('_q') || ''
-					: '';
+	onNavigate((navigation) => {
+		if (navigation.type !== 'popstate' && superSearch?.isExpanded()) {
+			superSearch?.hideExpandedSearch();
+			superSearch?.blur();
+		}
 
-			if (activeEditorView) {
-				superSearch?.syncEditors(activeEditorView.state);
-			}
+		return () => {
+			searchContext.lastTouchedEditor = undefined;
 
-			if (insert !== activeEditorView?.state.doc.toString()) {
+			const fromQ = addSpaceIfEndingQualifier(navigation.from?.url.searchParams.get('_q') || '');
+			const toQ = addSpaceIfEndingQualifier(navigation.to?.url.searchParams.get('_q') || '');
+
+			if (fromQ !== toQ) {
+				const insert = addSpaceIfEndingQualifier(toQ || '');
 				superSearch?.dispatchChange({
 					change: {
 						from: 0,
-						to: currentLength,
+						to: superSearch.getActiveEditorView()?.state.doc.length || 0,
 						insert
 					},
 					selection: {
 						anchor: insert.length,
 						head: insert.length
 					},
-					userEvent: 'input.complete'
+					userEvent: 'input.complete',
+					addToHistory: navigation.type !== 'popstate'
 				});
 			}
-		}
 
-		if (navigation.type == 'popstate' && navigation.from?.route.id !== navigation.to?.route.id) {
-			if (page.state.expandedSuperSearch) {
-				// console.log('FOCUS');
-			} else {
-				// console.log('BLUR');
-			}
-		} else {
-			hideExpandedSearch({});
-			if (isHomeRoute) {
-				superSearch?.focus();
-			} else {
-				superSearch?.blur();
-			}
-		}
+			fetchOnExpand = true;
+		};
 	});
 
 	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
@@ -209,14 +225,10 @@
 		return data;
 	}
 
-	const renderer = (container: HTMLElement, props: QualifierRendererProps) => {
-		const propsWithHandler = {
-			...props,
-			onclick: () => showExpandedSearch({ cursorAtEnd: true })
-		};
+	const qualifierRenderer = (container: HTMLElement, props: QualifierRendererProps) => {
 		const component = mount(QualifierPill, {
 			target: container,
-			props: propsWithHandler
+			props
 		});
 
 		return {
@@ -239,7 +251,7 @@
 				page.data.qualifierSuggestions
 			);
 		}
-		return lxlQualifierPlugin(getLabels, renderer);
+		return lxlQualifierPlugin(getLabels, qualifierRenderer);
 	});
 
 	function showExpandedSearch(options?: ShowExpandedSearchOptions) {
@@ -253,7 +265,7 @@
 	function handleOnChange(event: ChangeEvent) {
 		searchContext.superSearch = superSearch;
 		if (syncEditorsOnChange) {
-			searchContext.lastUpdatedEditor = event.editor;
+			searchContext.lastTouchedEditor = event.editor;
 		}
 		if (!superSearch?.isExpanded()) {
 			fetchOnExpand = true;
@@ -263,15 +275,29 @@
 	function handleOnSelect(event: SelectEvent) {
 		searchContext.superSearch = superSearch;
 		if (syncEditorsOnSelection) {
-			searchContext.lastUpdatedEditor = event.editor;
+			searchContext.lastTouchedEditor = event.editor;
 		}
+	}
+
+	function getSearchElement() {
+		if (searchContext.showSearchInAppBar) {
+			if (window.matchMedia('(width >= 1024px)').matches) {
+				return document.getElementById(ID_APP_BAR_LG_SEARCH);
+			}
+			return undefined;
+		}
+		if (isHomeRoute) {
+			return document.getElementById(ID_HERO_SEARCH);
+		}
+		if (window.matchMedia('(width >= 1024px)').matches) {
+			return document.getElementById(ID_APP_BAR_LG_SEARCH);
+		}
+		return document.getElementById(ID_APP_BAR_SM_SEARCH);
 	}
 
 	function handleOnExpand(event: ExpandEvent) {
 		searchContext.superSearch = superSearch;
-		searchContext.lastUpdatedEditor = event.editor;
-
-		pageYOffset = event.windowPageYOffset;
+		searchContext.lastTouchedEditor = event.editor;
 
 		if (
 			!page.state.expandedSuperSearch &&
@@ -285,9 +311,19 @@
 			superSearch?.fetchData();
 			fetchOnExpand = false;
 		}
+
+		const searchElement = getSearchElement();
+		const comboboxElement = searchElement?.querySelector(':scope [role="combobox"]');
+
+		if (comboboxElement) {
+			const comboboxOffsetTop = comboboxElement.getBoundingClientRect().top || 0;
+			dialogMarginTop = `${comboboxOffsetTop}px`;
+		}
 	}
 
 	function handleOnCollapse(event: CollapseEvent) {
+		searchContext.lastTouchedEditor = event.editor;
+
 		if (page.state.expandedSuperSearch && event.trigger === 'close') {
 			history.back();
 		}
@@ -345,35 +381,61 @@
 	});
 
 	onMount(() => {
-		if (superSearch) {
-			const activeEditorView = superSearch.getActiveEditorView();
-			if (activeEditorView?.dom.checkVisibility?.()) {
-				if (initialValueFromFallback) {
-					superSearch.dispatchChange({
-						change: initialValueFromFallback
-							? { insert: initialValueFromFallback, from: 0, to: activeEditorView.state.doc.length }
-							: undefined,
-						selection: initialSelectionFromFallback
-							? {
-									anchor: initialSelectionFromFallback.anchor,
-									head: initialSelectionFromFallback.head
-								}
-							: undefined,
-						userEvent: 'input.complete'
-					});
+		const collapsedEditorView = superSearch?.getCollapsedEditorView();
 
-					searchContext.lastUpdatedEditor = {
-						id: activeEditorView.contentDOM.id,
-						state: activeEditorView.state
-					};
-
-					if (initialSelectionFromFallback) {
-						superSearch.showExpandedSearch();
-					}
-				}
-
-				searchContext.superSearch = superSearch;
+		if (searchContext.finishedLoadingSuperSearch) {
+			if (page.route.id === '/(app)/[[lang=lang]]') {
+				superSearch?.dispatchChange({
+					change: {
+						from: 0,
+						to: superSearch.getActiveEditorView()?.state.doc.length || 0,
+						insert: searchContext.lastTouchedEditor?.state.doc.toString() || ''
+					},
+					userEvent: 'input.complete',
+					addToHistory: true
+				});
 			}
+		}
+
+		if (!searchContext.finishedLoadingSuperSearch) {
+			searchContext.finishedLoadingSuperSearch = true;
+
+			if (initialValueFromFallback) {
+				superSearch?.dispatchChange({
+					change: initialValueFromFallback
+						? {
+								insert: initialValueFromFallback,
+								from: 0,
+								to: collapsedEditorView?.state.doc.length || 0
+							}
+						: undefined,
+					selection: initialSelectionFromFallback
+						? {
+								anchor: initialSelectionFromFallback.anchor,
+								head: initialSelectionFromFallback.head
+							}
+						: undefined,
+					userEvent: 'input.complete'
+				});
+			}
+
+			if (initialSelectionFromFallback) {
+				superSearch?.focus();
+			}
+		}
+	});
+
+	/** Set "active" supersearch instance depending on media query and route (this could probably be simplified in some way...) */
+	$effect(() => {
+		if (
+			(isFindRoute && lgMediaQuery.current && id === ID_APP_BAR_LG_SEARCH) ||
+			(isFindRoute && !lgMediaQuery.current && id === ID_APP_BAR_SM_SEARCH)
+		) {
+			searchContext.superSearch = superSearch;
+		} else if (isHomeRoute && !searchContext.showSearchInAppBar && id === ID_HERO_SEARCH) {
+			searchContext.superSearch = superSearch;
+		} else if (id === ID_APP_BAR_LG_SEARCH) {
+			searchContext.superSearch = superSearch;
 		}
 	});
 
@@ -385,6 +447,7 @@
 		if (interceptedHref) {
 			const _href = interceptedHref;
 			interceptedHref = undefined;
+			// eslint-disable-next-line svelte/no-navigation-without-resolve
 			goto(_href); // navigate to intercepted href (triggered by link clicks in expanded dialog)
 		} else {
 			if (page.state.expandedSuperSearch) {
@@ -396,6 +459,7 @@
 	}
 </script>
 
+<!-- Use zero-delay timeout to place popstate processing at the end of the browser loop (ensuring the document has changed) -->
 <svelte:window onpopstate={() => setTimeout(handlePopState, 0)} />
 {#key page.data.locale}
 	<SuperSearch
@@ -443,7 +507,7 @@
 		oninterceptexpandedclick={interceptExpandedClick}
 		oninterceptexpandedsubmit={interceptExpandedSubmit}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
-		--page-y-offset={pageYOffset ? `${pageYOffset}px` : undefined}
+		--supersearch-dialog-margin-top={dialogMarginTop || undefined}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -456,8 +520,8 @@
 		})}
 			<div
 				class={[
-					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative lg:h-12',
-					expanded && 'expanded sm:mx-1.5 @5xl:mx-2.25',
+					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative',
+					expanded && 'expanded sm:mx-0.5 lg:mx-0',
 					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
 				]}
@@ -469,8 +533,8 @@
 						class:focused-cell={isFocusedCell(0)}
 						aria-label={page.data.t('general.close')}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 sm:hidden',
-							expanded && 'mr-1 h-14 w-13'
+							'action text-subtle flex min-h-11 sm:hidden sm:min-h-13.5 lg:min-h-auto',
+							expanded && 'mr-1 h-16.5 w-14 sm:h-full sm:w-13'
 						]}
 						onclick={onclickClose}
 					>
@@ -478,22 +542,6 @@
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
-					<div
-						class={[
-							'text-subtle bg-input absolute z-30 flex size-11 items-center justify-center rounded-md sm:hidden',
-							expanded && 'hidden'
-						]}
-					>
-						<button
-							type="button"
-							tabindex="-1"
-							onclick={() => showExpandedSearch({ cursorAtEnd: true })}
-							class="flex h-full w-full cursor-default items-center justify-center"
-							aria-hidden="true"
-						>
-							<IconSearch aria-hidden="true" class="flex size-4 lg:mt-px" />
-						</button>
-					</div>
 					{@render inputField()}
 				</div>
 				{#if q}
@@ -505,8 +553,8 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
-							'action text-subtle flex size-11 items-center justify-center -outline-offset-2 lg:size-12',
-							expanded && 'max-sm:h-14 max-sm:w-13'
+							'action sm:min-h-auto',
+							expanded ? 'flex h-16.5 max-sm:w-13 sm:h-full' : 'hidden sm:flex'
 						]}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
@@ -518,7 +566,7 @@
 						type="button"
 						onclick={() => showExpandedSearch()}
 						tabindex={-1}
-						class="hidden size-11 cursor-text items-center justify-center select-none sm:flex lg:size-12"
+						class="hidden h-full cursor-text items-center justify-center px-3 select-none sm:flex"
 					>
 						<kbd
 							class="key pointer-events-auto h-[1.75em] w-[1.75em] text-sm"
@@ -532,9 +580,11 @@
 					id={getCellId(2)}
 					class:focused-cell={isFocusedCell(2)}
 					class={[
-						'action hidden size-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 -outline-offset-2 sm:flex lg:size-12'
+						'action rounded-r-md border-l-neutral-300 sm:rounded-r-lg sm:border-l',
+						isHomeRoute || expanded ? 'hidden sm:flex' : 'flex'
 					]}
 					aria-label={page.data.t('supersearch.search')}
+					tabindex={isHomeRoute ? -1 : undefined}
 				>
 					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 				</button>
@@ -612,8 +662,12 @@
 			box-shadow: 0 0 0 1px var(--color-primary-600);
 		}
 
-		@variant lg {
-			font-size: 0.9375rem;
+		@variant sm {
+			border-radius: var(--radius-lg);
+		}
+
+		@variant 2xl {
+			font-size: var(--text-base);
 		}
 	}
 
@@ -649,7 +703,8 @@
 			}
 		}
 
-		@variant lg {
+		@variant sm {
+			border-radius: var(--radius-lg);
 			margin-top: 0;
 		}
 	}
@@ -662,12 +717,17 @@
 
 		&:has(.expanded) {
 			@variant sm {
-				margin-inline: calc(var(--spacing) * 0.5);
-				margin-top: calc(var(--spacing) * 0.5);
+				margin-top: calc(var(--spacing) * 2);
 			}
+
 			@variant lg {
-				margin-top: calc(var(--spacing) * 3.5);
-				margin-inline: calc(var(--spacing) * 1.75);
+				margin-top: calc(var(--spacing) * 3);
+				margin-inline: calc(var(--spacing) * 3);
+			}
+
+			@variant 2xl {
+				margin-top: calc(var(--spacing) * 3.25);
+				margin-inline: calc(var(--spacing) * 3);
 			}
 		}
 	}
@@ -680,12 +740,14 @@
 			}
 
 			@media screen and (min-width: 1380px) {
-				margin-inline: calc(var(--spacing) * 1.75);
+				margin-inline: calc(var(--spacing) * 1.5);
 			}
 		}
 	}
 
 	.action {
+		min-height: var(--search-input-height);
+		@apply text-subtle aspect-square items-center justify-center -outline-offset-2;
 		&:hover {
 			background: var(--color-accent-50);
 		}
@@ -712,19 +774,16 @@
 		}
 
 		@variant sm {
-			top: calc(var(--banner-height, 0) + var(--app-bar-height) - var(--spacing) * 0.5);
-			margin-top: max(
-				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
-				0px
-			);
+			top: 0;
+			margin-top: max(0px, calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 2));
 		}
 
 		@variant lg {
-			top: var(--banner-height, 0);
-			margin-top: max(
-				calc(var(--header-margin-top) - var(--page-y-offset, 0px) - var(--banner-height, 0)),
-				0px
-			);
+			margin-top: calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 3);
+		}
+
+		@variant 2xl {
+			margin-top: calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 3.25);
 		}
 	}
 
@@ -735,19 +794,17 @@
 		@variant sm {
 			position: fixed;
 			height: auto;
-			padding-inline: calc(var(--spacing) * 2);
 		}
 
 		@variant lg {
 			display: grid;
-			grid-template-areas: var(--search-grid-template-areas);
-			grid-template-columns: var(--search-grid-template-columns);
-			gap: var(--search-gap);
-			padding-inline: calc(var(--spacing) * 1.25);
+			grid-template-areas: var(--appbar-template-areas);
+			grid-template-columns: var(--appbar-template-columns);
+			gap: var(--appbar-gap);
+			padding-inline: 0;
+		}
 
-			@variant @5xl {
-				padding-inline: 0;
-			}
+		@variant 2xl {
 		}
 	}
 
@@ -767,13 +824,18 @@
 		@apply max-w-7xl;
 
 		@variant sm {
-			border-radius: var(--radius-xl);
+			border-radius: var(--radius-2xl);
 			height: fit-content;
 			@apply drop-shadow-md;
 		}
+		& :global(.supersearch-combobox) {
+			@variant sm {
+				padding-inline: calc(var(--spacing) * 1.5);
+			}
 
-		@variant lg {
-			border-radius: var(--radius-2xl);
+			@variant lg {
+				padding-inline: 0;
+			}
 		}
 	}
 
@@ -827,7 +889,7 @@
 	}
 
 	.expanded.supersearch-input :global(.cm-scroller) {
-		min-height: calc(var(--spacing) * 14);
+		min-height: calc(var(--spacing) * 16.5);
 		scrollbar-width: thin;
 		max-height: 128px;
 		overflow-x: hidden;
@@ -838,56 +900,44 @@
 	}
 
 	.expanded.supersearch-input :global(.cm-content) {
-		margin-block: calc(var(--spacing) * 1.5);
-
-		@variant sm {
-			margin-block: 0;
+		margin-top: 0;
+		@variant max-sm {
+			padding: calc(var(--spacing) * 3.75) 0;
 		}
 	}
 
 	.supersearch-input :global(.cm-line) {
-		line-height: 32px;
-		padding-left: calc(var(--spacing) * 11);
+		line-height: 36px;
+		padding-left: calc(var(--spacing) * 3);
 
-		@variant sm {
-			padding-left: calc(var(--spacing) * 3);
-
-			@variant @3xl {
-				padding-left: calc(var(--spacing) * 4);
-			}
+		@variant lg {
+			padding-left: calc(var(--spacing) * 4);
 		}
 	}
 
 	.expanded.supersearch-input :global(.cm-line) {
-		padding-left: 0;
-
-		@variant sm {
-			padding-left: calc(var(--spacing) * 3);
-		}
-
-		@variant @3xl {
+		@variant 2xl {
 			padding-left: calc(var(--spacing) * 4);
 		}
 	}
 
 	.supersearch-input :global(.cm-content) {
 		margin: 0;
-		padding: calc(var(--spacing) * 1.5) 0;
+		padding: calc(var(--spacing) * 1.25) 0;
 		min-height: var(--search-input-height);
 
-		@variant lg {
+		@variant sm {
 			padding: calc(var(--spacing) * 2) 0;
+		}
+
+		@variant 2xl {
+			padding: calc(var(--spacing) * 2.5) 0;
 		}
 	}
 
 	:global(.supersearch-dialog .supersearch-input .cm-line) {
-		padding-left: 0;
-		@variant sm {
-			padding-left: calc(var(--spacing) * 11);
-		}
-
-		@variant lg {
-			padding-left: calc(var(--spacing) * 12);
+		@variant max-sm {
+			padding-left: 0;
 		}
 	}
 
@@ -900,9 +950,8 @@
 		color: var(--color-placeholder);
 		white-space: nowrap;
 
-		@variant lg {
-			font-size: 0.9375rem;
-		}
+		line-height: 100%;
+		vertical-align: baseline;
 	}
 
 	.expanded-content {
@@ -913,5 +962,9 @@
 		& :global(.focused-cell) {
 			outline: 2px solid var(--color-outline);
 		}
+	}
+
+	button:has(kbd) {
+		min-height: var(--search-input-height);
 	}
 </style>

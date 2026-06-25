@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('click input expands dialog', async ({ page }) => {
-	const dialog = await page.locator('#app-search-dialog');
+	const dialog = await page.locator('#hero-search-dialog');
 	await expect(dialog).not.toHaveAttribute('open');
 	await page.getByTestId('supersearch').click();
 	await expect(dialog).toHaveAttribute('open');
@@ -28,7 +28,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag'),
 		'search results are not visible on empty input'
 	).toBeHidden();
-	await page.getByRole('dialog').getByRole('combobox').fill('hej '); // add space for now until showAddQualifiers is even smarter
+	await page.getByRole('dialog').getByRole('combobox').fill('hej');
 
 	// wait for /supersearch api response before expecting any results
 	await page.waitForResponse(
@@ -42,8 +42,7 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'search results are shown after typing'
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByRole('combobox').fill('hello'); // add space for now until showAddQualifiers is even smarter
-	await page.getByTestId('supersearch').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('hello');
 	await page.waitForResponse(
 		(res) => res.url().includes('supersearch?_q=hello') && res.status() === 200
 	);
@@ -51,19 +50,21 @@ test('expanded content shows persistant items and results', async ({ page }) => 
 		page.getByRole('dialog').getByLabel('Förslag').getByRole('link'),
 		'results are shown if there is an initial query'
 	).toHaveCount(5);
-	await page.getByRole('dialog').getByLabel('Förslag').getByRole('link').first().click();
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('Enter');
 	await page.waitForURL(/\/[a-z0-9]{15,}$/); // fnurgel route
 	await page.waitForLoadState('networkidle');
-	await expect(
-		page.getByRole('combobox').first(),
-		'...except when navigating to start/index (which should be seen as a reset)'
-	).toContainText('Sök titel, upphovsperson, ämnen...');
+	await expect(page.getByRole('combobox').first()).toContainText(
+		'Sök titel, upphovsperson, ämnen...'
+	);
 	await page.getByTestId('home').click(); // click on home link
-	await page.waitForURL('/'); // fnurgel route
-	await expect(
-		page.getByRole('combobox').first(),
-		'...except when navigating to start/index (which should be seen as a reset)'
-	).toContainText('Sök titel, upphovsperson, ämnen...');
+	await page.waitForURL('/');
+	await page.waitForLoadState('networkidle');
+	await expect(page.getByRole('combobox').first()).toContainText(
+		'Sök titel, upphovsperson, ämnen...'
+	);
 });
 
 test('navigate to suggested resource using keyboard', async ({ page }) => {
@@ -241,8 +242,10 @@ test('access filters can be added/removed', async ({ page }) => {
 	await page.getByRole('combobox').fill('hej');
 	await page.keyboard.press('Enter');
 	await page.getByText('Fritt online').click();
-	await expect(page, 'user can add access filters').toHaveURL('/find?_q=hej+freeOnline');
-	await page.getByLabel('ta bort filter Fritt Online').first().click();
+	await page.waitForURL('/find?_q=hej+freeOnline');
+	await page.waitForLoadState('networkidle');
+	await page.getByRole('combobox').first().click();
+	await page.getByRole('dialog').getByRole('combobox').getByRole('link').first().click();
 	await expect(page, 'user can remove access filters by pressing clear icon').toHaveURL(
 		'/find?_q=hej'
 	);
@@ -250,7 +253,7 @@ test('access filters can be added/removed', async ({ page }) => {
 	await expect(page).toHaveURL('/find?_q=hej+freeOnline');
 	await expect(page.getByRole('combobox').nth(0)).toContainText('hej Fritt online');
 
-	await page.getByTestId('supersearch').click();
+	await page.getByTestId('supersearch').getByRole('combobox').click();
 	await page.keyboard.press('Backspace');
 	await page.keyboard.press('Backspace');
 	await page.waitForLoadState('networkidle');
@@ -305,7 +308,7 @@ test('return key label is context-aware', async ({ page }) => {
 	await page.keyboard.press('Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
-		'app-search-item-0x1'
+		'hero-search-item-0x1'
 	);
 	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Rensa');
 	await page.keyboard.press('Backspace');
@@ -317,7 +320,7 @@ test('return key label is context-aware', async ({ page }) => {
 	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
-		'app-search-item-3x0'
+		'hero-search-item-3x0'
 	);
 	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Välj');
 });

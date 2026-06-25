@@ -411,10 +411,26 @@
 			userEvent,
 			annotations: [Transaction.addToHistory.of(addToHistory)]
 		});
+
+		allowArrowKeyCursorHandling = { vertical: false, horizontal: true };
 	}
 
 	export function showExpandedSearch(options?: ShowExpandedSearchOptions) {
 		if (!expanded && collapsedEditorView) {
+			if (options?.cursorAtEnd) {
+				if (
+					!collapsedEditorView.state.selection.main.anchor ||
+					!collapsedEditorView.state.selection.main.head
+				) {
+					dispatchChange({
+						selection: {
+							anchor: collapsedEditorView.state.doc.length,
+							head: collapsedEditorView.state.doc.length
+						},
+						addToHistory: false
+					});
+				}
+			}
 			editor = {
 				id: collapsedEditorView.contentDOM.id,
 				state: collapsedEditorView.state
@@ -604,9 +620,15 @@
 						collapsedEditorView?.focus();
 					} else {
 						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
+							event.preventDefault();
 							activeRowIndex = arrowKeyRows.length;
 							activeColIndex = 0;
+							allowArrowKeyCursorHandling = {
+								vertical: false,
+								horizontal: getColsInRow(arrowKeyRows.length - 1).length <= 1
+							};
 						} else if (activeRowIndex >= 1) {
+							event.preventDefault();
 							activeRowIndex--;
 							if (activeRowIndex < 1) {
 								activeColIndex = defaultInputCol;
@@ -788,7 +810,7 @@
 		const activeEditorView = getActiveEditorView();
 		activeEditorView?.dispatch({
 			changes: { from: 0, to: activeEditorView.state.doc.length, insert: '' },
-			userEvent: 'delete'
+			userEvent: 'input.complete'
 		});
 		search.resetData();
 		if (dialog?.open) {

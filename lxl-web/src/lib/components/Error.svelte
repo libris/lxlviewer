@@ -1,6 +1,7 @@
 <script>
 	import { page } from '$app/state';
 	import getPageTitle from '$lib/utils/getPageTitle';
+	import librisLogo from '$lib/assets/img/libris-logo.svg';
 
 	let { showHeader = false } = $props();
 
@@ -20,9 +21,10 @@
 </svelte:head>
 {#if showHeader}
 	<header class="flex justify-center pt-8 lg:pt-16">
+		<!-- eslint-disable svelte/no-navigation-without-resolve -->
 		<a href={page.data.localizeHref(page.data.base)} class="inline-block no-underline">
 			<h1 class="text-3xl font-bold">
-				<img src="/libris-logo.svg" alt="Libris" class="w-40 lg:w-52" />
+				<img src={librisLogo} alt="Libris" class="w-40 lg:w-52" />
 			</h1>
 		</a>
 	</header>
@@ -34,6 +36,7 @@
 		<p>{page.data.t('errors.wrongLink')}</p>
 		<p>
 			{page.data.t('errors.sendEmail')}
+			<!-- eslint-disable svelte/no-navigation-without-resolve -->
 			<a
 				class="link-subtle"
 				href="mailto:libris@kb.se?subject={encodeURIComponent(
@@ -43,6 +46,7 @@
 			>{page.data.t('errors.followUp')}
 		</p>
 		<p class="pt-4">
+			<!-- eslint-disable svelte/no-navigation-without-resolve -->
 			<a class="link-subtle" href={page.data.localizeHref(page.data.base)}
 				>{page.data.t('errors.backToStartPage')}</a
 			>

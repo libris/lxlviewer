@@ -60,11 +60,8 @@
 </script>
 
 <div class="fallback-search relative">
-	<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
-		<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
-	</span>
 	<input
-		id={`${id}-fallback`}
+		id={`${id}-search-fallback`}
 		type="search"
 		name="_q"
 		{placeholder}
@@ -73,13 +70,13 @@
 		aria-label={ariaLabel}
 		{autofocus}
 		bind:this={fallbackInputElement}
-		class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:pl-3 lg:text-[0.9375rem] sm:@3xl:pl-4"
+		class="placeholder:text-placeholder w-full pl-3 text-base focus:outline-none lg:pl-4 2xl:pl-4"
 	/>
 	<button
 		type="reset"
 		aria-label={page.data.t('search.clear')}
 		title={page.data.t('search.clear')}
-		class="action text-subtle hidden h-full w-full max-w-11 items-center justify-center -outline-offset-2 lg:max-w-12"
+		class="action text-subtle hidden"
 	>
 		<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
 	</button>
@@ -87,7 +84,7 @@
 	<button
 		type="submit"
 		class={[
-			'hover:bg-primary-50 hidden h-full w-full max-w-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 sm:flex lg:max-w-12'
+			'action text-subtle hidden rounded-r-md border-l border-l-neutral-300 sm:flex 2xl:rounded-r-lg'
 		]}
 		aria-label={page.data.t('supersearch.search')}
 	>
@@ -105,9 +102,9 @@
 		background: var(--color-input);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 		border-radius: var(--radius-md);
-		font-size: var(--text-xs);
+
 		@variant sm {
-			font-size: var(--text-sm);
+			border-radius: var(--radius-lg);
 		}
 
 		&:not(:has([type='submit']:focus)) {
@@ -124,6 +121,9 @@
 	}
 
 	.action {
+		height: var(--search-input-height);
+		@apply aspect-square items-center justify-center -outline-offset-2;
+
 		&:hover {
 			background: var(--color-accent-50);
 		}

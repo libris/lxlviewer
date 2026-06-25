@@ -16,8 +16,8 @@
 
 	const searchContext = getSearchContext();
 
-	let initialValueBeforeMount: string = $state(page.url.searchParams.get('_q') || '');
-	let initialSelectionBeforeMount: { anchor: number; head: number } | undefined = $state();
+	let initialValueFromFallback: string = $state(page.url.searchParams.get('_q') || '');
+	let initialSelectionFromFallback: { anchor: number; head: number } | undefined = $state();
 
 	let cursor: number | null = $state(null);
 
@@ -51,12 +51,12 @@
 		{placeholder}
 		{ariaLabelledBy}
 		{ariaLabel}
-		bind:value={initialValueBeforeMount}
-		bind:selection={initialSelectionBeforeMount}
+		bind:value={initialValueFromFallback}
+		bind:selection={initialSelectionFromFallback}
 	/>
 {/snippet}
 
-<search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center']}>
+<search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center lg:px-3']}>
 	<form id={`${id}-form`} {action} class="mx-auto w-full min-w-0">
 		{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
 			{@render fallbackInput()}
@@ -70,9 +70,9 @@
 					expandedAriaLabel={page.data.t('header.search')}
 					onCursorChange={(value) => (cursor = value)}
 					qualifierSuggestions={page.data.qualifierSuggestions || []}
-					{initialValueBeforeMount}
-					{initialSelectionBeforeMount}
-					editor={searchContext.lastUpdatedEditor}
+					{initialValueFromFallback}
+					{initialSelectionFromFallback}
+					editor={searchContext.lastTouchedEditor}
 				/>
 			</div>
 		{:catch}
@@ -88,4 +88,16 @@
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	search {
+		--search-input-height: 48px;
+
+		@variant sm {
+			--search-input-height: 52px;
+		}
+
+		@variant 2xl {
+			--search-input-height: 56px;
+		}
+	}
 </style>
