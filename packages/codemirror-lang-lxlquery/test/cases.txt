@@ -423,7 +423,7 @@ NOT
 Query(UTerm(UOperator ⚠))
 
 
-# fail unclosed quote (does not fail since token strliteralIncomplete)
+# NO fail unclosed quote (does not fail since token strliteralIncomplete)
 
 "Astrid Lind
 
@@ -431,6 +431,69 @@ Query(UTerm(UOperator ⚠))
 
 Query(String String)
 
+
+# handle unclosed quote + qualifier
+
+" förf:("Astid Lindgren")
+
+==>
+
+Query(
+  String,
+  Qualifier(
+    QualifierKey(String),
+    QualifierOperator,
+    QualifierValue(
+      QualifierOuterGroup(
+        String
+      )
+    )
+  )
+)
+
+# handle unclosed quote in qualifier + qualifier
+
+item:("akka) item:("packa")
+
+==>
+
+Query(
+  Qualifier(
+    QualifierKey(
+      String),
+    QualifierOperator,
+    QualifierValue(
+      QualifierOuterGroup(
+        String
+      )
+    )
+  ),
+  Qualifier(
+    QualifierKey(
+      String
+    ),
+    QualifierOperator,
+    QualifierValue(
+      QualifierOuterGroup(
+        String
+      )
+    )
+  )
+)
+
+
+# expectedly mishandle unclosed quote + qualifier without group
+
+" förf:"Astid Lindgren"
+
+==>
+
+Query(
+  String,
+  String,
+  String,
+  String
+)
 
 # allow empty paren
 
