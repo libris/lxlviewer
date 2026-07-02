@@ -28,8 +28,8 @@ export async function load({ locals, params }) {
 			.map((p) => locals.vocab.getDefinition(p[JsonLd.ID]))
 			.map((p) => mapSearchFilterDefinition(p, locale, locals.vocab, locals.display))
 			.filter((p): p is QualifierDefinition => p !== null),
-		label: group.label,
-		filterGroupDescription: group['ls:filterGroupDescription'] as string
+		label: locals.display.getTranslated(group, 'label', locale),
+		filterGroupDescription: locals.display.getTranslated(group, 'ls:filterGroupDescription', locale)
 	}));
 	return {
 		filterGroups: filterGroups
@@ -49,15 +49,15 @@ function mapSearchFilterDefinition(
 		const key = getUriSlug(def[JsonLd.ID]) as string;
 
 		const propertyChain = mapPropertyChain(def, locale, vocab, display);
-
 		return {
 			key: key,
 			label: toString(display.lensAndFormat(def, LensType.Chip, locale)),
 			queryCodes: (asArray(def['librisQueryCode']) || []) as string[],
 			altLabels: otherLangLabels,
-			filterDescription: def['ls:filterDescription'] as string,
+			filterDescription: display.getTranslated(def, 'ls:filterDescription', locale),
 			...(propertyChain && { propertyChainAxiom: propertyChain }),
-			descriptionRemark: (asArray(def['ls:descriptionRemark']) || []) as string[]
+			descriptionRemark: (asArray(display.getTranslated(def, 'ls:descriptionRemark', locale)) ||
+				[]) as string[]
 		};
 	} catch (error) {
 		console.warn('Error mapping filter definition', error);
