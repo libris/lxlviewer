@@ -44,22 +44,30 @@
 	{:else}
 		<SvContent />
 	{/if}
-	<div class="@container mt-2">
+	<div role="table" class="@container mt-2">
 		<!-- Header row -->
 		<div
-			class="hidden border-b border-gray-300 @3xl:grid
-		       @3xl:grid-cols-[1fr_2fr_1.5fr_1fr]
-					 @3xl:gap-x-4"
+			role="row"
+			class="sr-only border-b border-gray-300 @3xl:not-sr-only @3xl:grid
+					 @3xl:grid-cols-[1fr_2fr_1.5fr_1fr] @3xl:gap-x-4"
 		>
-			<div class="p-3 font-medium">{page.data.t('help.filter')}</div>
-			<div class="p-3 font-medium">{page.data.t('help.description')}</div>
-			<div class="p-3 font-medium">{page.data.t('help.searchIn')}</div>
-			<div class="p-3 font-medium">{page.data.t('help.code')}</div>
+			<div id="filter-header" role="columnheader" class="p-3 font-medium">
+				{page.data.t('help.filter')}
+			</div>
+			<div id="description-header" role="columnheader" class="p-3 font-medium">
+				{page.data.t('help.description')}
+			</div>
+			<div id="searchin-header" role="columnheader" class="p-3 font-medium">
+				{page.data.t('help.searchIn')}
+			</div>
+			<div id="code-header" role="columnheader" class="p-3 font-medium">
+				{page.data.t('help.code')}
+			</div>
 		</div>
 
 		{#each data.filterGroups as g, i (i)}
 			{#if g.label || g.filterGroupDescription}
-				<div class="border-b border-gray-300 bg-neutral-100 px-4 py-3">
+				<div role="row" class="border-b border-gray-300 bg-neutral-100 px-4 py-3">
 					{#if g.label}
 						<div class="font-semibold">
 							{g.label}
@@ -76,6 +84,7 @@
 
 			{#each g.filters as f (f.key)}
 				<div
+					role="row"
 					id={f.key}
 					class="border-b border-gray-300 py-4
 				       @3xl:grid
@@ -84,7 +93,12 @@
 				       @3xl:py-0"
 				>
 					<!-- Filter -->
-					<div class="min-w-0 p-3">
+					<div
+						role="rowheader"
+						id={`row-${f.key}`}
+						aria-labelledby="filter-header row-{f.key}"
+						class="min-w-0 p-3"
+					>
 						<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
 							{page.data.t('help.filter')}
 						</div>
@@ -98,7 +112,7 @@
 					</div>
 
 					<!-- Description -->
-					<div class="min-w-0 p-3">
+					<div role="cell" aria-labelledby={`description-header row-${f.key}`} class="min-w-0 p-3">
 						<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
 							{page.data.t('help.description')}
 						</div>
@@ -119,7 +133,7 @@
 					</div>
 
 					<!-- Search in -->
-					<div class="min-w-0 p-3">
+					<div role="cell" aria-labelledby={`searchin-header row-${f.key}`} class="min-w-0 p-3">
 						<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
 							{page.data.t('help.searchIn')}
 						</div>
@@ -137,7 +151,7 @@
 					</div>
 
 					<!-- Code -->
-					<div class="min-w-0 p-3">
+					<div role="cell" aria-labelledby={`code-header row-${f.key}`} class="min-w-0 p-3">
 						<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
 							{page.data.t('help.code')}
 						</div>
