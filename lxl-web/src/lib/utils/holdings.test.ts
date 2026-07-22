@@ -47,4 +47,15 @@ describe('getHeldBy', () => {
 			'https://libris.kb.se/library/H'
 		]);
 	});
+
+	it('Ignores orgs missing from the org index', () => {
+		const userSettings = new UserSettings({});
+		userSettings.addLibrary('https://libris.kb.se/library/S');
+		userSettings.addLibrary('https://libris.kb.se/library/org/GOMU');
+		const byType = getHoldersByType(getHoldingsByType(workCenteredMainEntity));
+
+		expect(getHeldBy(userSettings.myLibraries, byType, {})).toStrictEqual([
+			'https://libris.kb.se/library/S'
+		]);
+	});
 });
