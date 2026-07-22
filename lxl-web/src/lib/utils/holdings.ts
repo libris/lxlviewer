@@ -164,7 +164,7 @@ export function getHeldBy(
 
 	for (const libId of Object.keys(myLibraries)) {
 		if (isLibraryOrg(libId) && orgs) {
-			const orgMembers = orgs[libId]._members;
+			const orgMembers = orgs[libId]?._members;
 			if (orgMembers && Array.isArray(orgMembers)) {
 				for (const memberId of orgMembers) {
 					// add the org to result - not the member sigel
