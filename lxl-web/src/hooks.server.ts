@@ -20,16 +20,18 @@ import { updateSettings } from '$lib/utils/userSettings.svelte';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
-let utilCache: Util | undefined;
-let initLibraries: boolean = false;
+let utilCache: Promise<Util> | undefined;
+
+// Warm up caches immediately on startup instead of waiting for a request
+loadUtilCached()
+	.then(([, displayUtil]) => startRefreshLibraries(displayUtil, defaultLocale))
+	.catch((err) => console.error('Startup initialization failed:', err));
 
 export const handle = async ({ event, resolve }) => {
 	const [vocabUtil, displayUtil, qualifierSuggestionsByLocale] = await loadUtilCached();
 
-	if (!initLibraries) {
-		initLibraries = true;
-		await startRefreshLibraries(displayUtil, defaultLocale);
-	}
+	// Fallback in case startup init failed. No-op if refresh aleady started.
+	startRefreshLibraries(displayUtil, defaultLocale);
 
 	event.locals.vocab = vocabUtil;
 	event.locals.display = displayUtil;
@@ -192,9 +194,12 @@ function isValidMyLibraries(value: unknown): value is MyLibrariesType {
 	return true;
 }
 
-async function loadUtilCached() {
+function loadUtilCached() {
 	if (!utilCache) {
-		utilCache = await loadUtil();
+		utilCache = loadUtil().catch((err) => {
+			utilCache = undefined;
+			throw err;
+		});
 	}
 	return utilCache;
 }

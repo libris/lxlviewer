@@ -27,7 +27,10 @@ let librariesCache: LibrariesCache = new Map();
 let orgCache: OrgCache = new Map();
 
 const REFRESH_INTERVAL = 12 * 60 * 60 * 1000; // 12 hrs?
+const RETRY_INTERVAL = 30 * 1000; // retry every 30s until the first successful load
 let intervalStarted = false;
+let firstAttemptStarted = false;
+let retryScheduled = false;
 
 async function fetchLibOrgs() {
 	const orgsArr = (await doFetch('bibdb:Organization')) as LibOrg[];
@@ -155,17 +158,43 @@ export async function refreshLibraries(displayUtil: DisplayUtil, locale: LocaleC
 	orgCache = buildOrgIndex(libraries, orgs);
 }
 
-export async function startRefreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
+export function startRefreshLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
+	if (firstAttemptStarted) return;
+	firstAttemptStarted = true;
+
+	// If first refresh on startup fails, keep trying every 30s and don't
+	// schedule the regular refresh interval until this has succeeded
+	refreshLibraries(displayUtil, locale)
+		.then(() => scheduleRefreshInterval(displayUtil, locale))
+		.catch((err) => {
+			console.error('Initial library fetch failed:', err);
+			scheduleRetryUntilInitialized(displayUtil, locale);
+		});
+}
+
+function scheduleRefreshInterval(displayUtil: DisplayUtil, locale: LocaleCode) {
 	if (intervalStarted) return; // avoid multiple intervals
 	intervalStarted = true;
-
-	refreshLibraries(displayUtil, locale).catch((err) =>
-		console.error('Initial library fetch failed:', err)
-	);
 
 	setInterval(() => {
 		refreshLibraries(displayUtil, locale).catch((err) =>
 			console.error('Scheduled library refresh failed:', err)
 		);
 	}, REFRESH_INTERVAL).unref();
+}
+
+function scheduleRetryUntilInitialized(displayUtil: DisplayUtil, locale: LocaleCode) {
+	if (retryScheduled) return;
+	retryScheduled = true;
+
+	const timer: NodeJS.Timeout = setInterval(() => {
+		refreshLibraries(displayUtil, locale)
+			.then(() => {
+				clearInterval(timer);
+				retryScheduled = false;
+				scheduleRefreshInterval(displayUtil, locale);
+			})
+			.catch((err) => console.error('Library fetch retry failed:', err));
+	}, RETRY_INTERVAL);
+	timer.unref();
 }
