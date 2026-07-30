@@ -206,6 +206,7 @@ export default {
 		addQualifiers: 'Filter',
 		moreQualifiers: 'More filters',
 		loading: 'Loading...',
+		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',
 		showAll: 'Show search results',
 		arrowUpKey: 'Arrow Up key',

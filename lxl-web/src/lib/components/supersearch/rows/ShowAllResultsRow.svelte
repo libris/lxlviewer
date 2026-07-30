@@ -22,13 +22,17 @@
 >
 	<h2 id="supersearch-results-label" aria-live="polite" class="sr-only font-medium">
 		<span class="sr-only">{resultsCount}</span>
-		{page.data.t('supersearch.suggestions')}
+		{#if resultsCount === 1}
+			{page.data.t('supersearch.suggestion')}
+		{:else}
+			{page.data.t('supersearch.suggestions')}
+		{/if}
 	</h2>
 	<button
 		type="submit"
 		id={getCellId(rowIndex, 0)}
 		class={[
-			'flex min-h-12 w-full items-center px-2 hover:underline sm:px-4',
+			'flex min-h-11 w-full btn-ghost sm:w-fit items-center px-2 sm:px-4',
 			isFocusedCell(rowIndex, 0) && 'focused-cell'
 		]}
 	>
