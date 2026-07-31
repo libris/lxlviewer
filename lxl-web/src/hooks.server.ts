@@ -1,5 +1,10 @@
 import fs from 'fs';
-import { type HandleServerError, redirect, type RequestEvent } from '@sveltejs/kit';
+import {
+	type HandleServerError,
+	redirect,
+	type RequestEvent,
+	type ServerInit
+} from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
@@ -23,14 +28,20 @@ type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
 let utilCache: Promise<Util> | undefined;
 
 // Warm up caches immediately on startup instead of waiting for a request
-loadUtilCached()
-	.then(([, displayUtil]) => startRefreshLibraries(displayUtil, defaultLocale))
-	.catch((err) => console.error('Startup initialization failed:', err));
+export const init: ServerInit = async () => {
+	try {
+		const [, displayUtil] = await loadUtilCached();
+		startRefreshLibraries(displayUtil, defaultLocale);
+	} catch (err) {
+		// This is OK, handle() will retry
+		console.error('Startup initialization failed:', err);
+	}
+};
 
 export const handle = async ({ event, resolve }) => {
 	const [vocabUtil, displayUtil, qualifierSuggestionsByLocale] = await loadUtilCached();
 
-	// Fallback in case startup init failed. No-op if refresh aleady started.
+	// Fallback in case startup init failed. No-op if refresh already started.
 	startRefreshLibraries(displayUtil, defaultLocale);
 
 	event.locals.vocab = vocabUtil;
