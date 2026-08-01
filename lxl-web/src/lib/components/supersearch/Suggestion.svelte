@@ -9,8 +9,6 @@
 	import { LensType } from '$lib/types/xl';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import SuggestionImage from './SuggestionImage.svelte';
-	import MoreIcon from '~icons/bi/three-dots';
-	import dropdownMenu from '$lib/actions/dropDownMenu/index.svelte.js';
 	import type { Snippet } from 'svelte';
 
 	type Props = {
@@ -26,21 +24,10 @@
 </script>
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
-	{#if item.qualifiers?.length}
-		<span
-			class="text-subtle order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline"
-		>
-			{page.data.t('general.add')}
-
-			<span class="hidden lowercase lg:inline">
-				{item.qualifiers[0].label}
-			</span>
-		</span>
-	{/if}
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="decorated-heading flex gap-1 overflow-hidden text-sm whitespace-nowrap">
+			<h2 class="decorated-heading flex gap-1 overflow-hidden text-base whitespace-nowrap">
 				<span class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
@@ -119,39 +106,12 @@
 <div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers?.length}>
 	{#if item.qualifiers?.length}
 		<a
-			href={page.data.localizeHref(primaryAddQualifierLink)}
+			href={resolve(page.data.localizeHref(primaryAddQualifierLink))}
 			id={getCellId?.(0)}
 			class:focused-cell={isFocusedCell?.(0)}
 		>
 			{@render resourceSnippet(item)}
 		</a>
-		<button
-			type="button"
-			class="more w-14 items-center justify-center p-0"
-			id={getCellId?.(1)}
-			class:focused-cell={isFocusedCell?.(1)}
-		>
-			{#key item.qualifiers}
-				<span
-					class="more-icon-container text-subtle flex size-10 items-center justify-center rounded-full"
-					use:dropdownMenu={{
-						menuItems: [
-							...item.qualifiers.map((qualifier) => ({
-								label: `${page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
-								href: qualifier._q
-							})),
-							{
-								label: `${page.data.t('search.goToResource')}`,
-								href: resourceId || ''
-							}
-						],
-						placeAsSibling: true
-					}}
-				>
-					<MoreIcon />
-				</span>
-			{/key}
-		</button>
 	{:else}
 		<a
 			href={resolve(page.data.localizeHref(resourceId))}
@@ -170,26 +130,22 @@
 	.suggestion:has(:global(*:hover)) {
 		background-color: var(--color-accent-50);
 	}
-	.suggestion button,
 	.suggestion a {
 		display: flex;
 		align-items: center;
 		text-decoration: none;
 	}
 
-	.suggestion button:first-child,
 	.suggestion a:first-child {
 		flex: 1;
 		padding: 0 calc(var(--spacing) * 4);
 		text-align: left;
 	}
 
-	.qualifier.suggestion button:first-child,
 	.qualifier.suggestion a:first-child {
 		padding-right: 0;
 	}
 
-	.suggestion button:not(:first-child):last-child,
 	.suggestion a:not(:first-child):last-child {
 		text-align: right;
 	}
@@ -233,10 +189,5 @@
 		& :global(.divider:not(:has(+ span:not(.divider)))) {
 			display: none;
 		}
-	}
-
-	.more.focused-cell .more-icon-container,
-	.more:hover .more-icon-container {
-		background-color: var(--color-accent-100);
 	}
 </style>
