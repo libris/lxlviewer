@@ -17,7 +17,7 @@
 		SuperSearch,
 		type ViewUpdateEvent
 	} from 'supersearch';
-	// import FooterRow from './rows/FooterRow.svelte';
+	import FooterRow from './rows/FooterRow.svelte';
 	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
 	import ShowAllResultsRow from './rows/ShowAllResultsRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
@@ -602,8 +602,11 @@
 			{@const showAllResultsRowIndex = 1}
 			{@const qualifiersRowIndex = showAllResultsRowIndex + 1}
 			{@const suggestionsRowOffset = qualifiersRowIndex + 1}
+			{@const footerRowIndex = suggestionsRowOffset + (resultsCount || 0)}
 
-			<nav class="expanded-content mt-1 sm:my-3">
+			{@const ID_RESULTS_LABEL = 'supersearch-results-label'}
+
+			<nav class="expanded-content mt-1 sm:mt-3">
 				<ShowAllResultsRow
 					rowIndex={showAllResultsRowIndex}
 					{isLoading}
@@ -622,21 +625,21 @@
 					{selection}
 				/>
 				{#if resultsCount && q.trim().length}
-					<div role="rowgroup" aria-labelledby="supersearch-results-label">
+					<div
+						role="rowgroup"
+						aria-labelledby={ID_RESULTS_LABEL}
+						class="border-t border-neutral mt-px"
+					>
+						<h2
+							id={ID_RESULTS_LABEL}
+							class="text-placeholder pt-4 pb-3 pl-4 text-xs font-medium tracking-widest uppercase"
+						>
+							{page.data.t('supersearch.suggestions')}
+						</h2>
 						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
 				{/if}
-				<!--
-				<FooterRow
-					{inputRowIndex}
-					{showAllResultsRowIndex}
-					{qualifiersRowIndex}
-					{footerRowIndex}
-					{getCellId}
-					{isFocusedRow}
-					{isFocusedCell}
-				/>
-				-->
+				<FooterRow {footerRowIndex} {getCellId} {isFocusedRow} {isFocusedCell} />
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
