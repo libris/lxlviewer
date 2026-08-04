@@ -203,8 +203,7 @@ export default {
 	},
 	supersearch: {
 		search: 'Search',
-		addQualifiers: 'Filter',
-		moreQualifiers: 'More filters',
+		addQualifiers: 'Add filter',
 		loading: 'Loading...',
 		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',

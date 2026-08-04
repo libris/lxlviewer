@@ -201,8 +201,7 @@ export default {
 	},
 	supersearch: {
 		search: 'Sök',
-		addQualifiers: 'Filter',
-		moreQualifiers: 'Fler filter',
+		addQualifiers: 'Lägg till filter',
 		loading: 'Laddar...',
 		suggestion: 'förslag',
 		suggestions: 'förslag',

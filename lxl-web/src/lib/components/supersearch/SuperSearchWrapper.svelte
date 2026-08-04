@@ -86,6 +86,7 @@
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
 	let dialogMarginTop: string | undefined = $state();
+	let skipShowAllResultsRowOnArrowKey = $state(true);
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -263,6 +264,7 @@
 	}
 
 	function handleOnChange(event: ChangeEvent) {
+		skipShowAllResultsRowOnArrowKey = true;
 		searchContext.superSearch = superSearch;
 		if (syncEditorsOnChange) {
 			searchContext.lastTouchedEditor = event.editor;
@@ -343,6 +345,9 @@
 				? event.target
 				: (event.target as HTMLElement).closest('a')
 		)?.getAttribute('href');
+
+		skipShowAllResultsRowOnArrowKey = false;
+		superSearch?.setActiveCell(0, -1);
 
 		if (href) {
 			event.preventDefault();
@@ -457,6 +462,12 @@
 			}
 		}
 	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab') {
+			skipShowAllResultsRowOnArrowKey = false;
+		}
+	}
 </script>
 
 <!-- Use zero-delay timeout to place popstate processing at the end of the browser loop (ensuring the document has changed) -->
@@ -499,6 +510,7 @@
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
 		defaultInputCol={undefined}
+		defaultResultRow={1}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
 		oncollapse={handleOnCollapse}
@@ -507,6 +519,7 @@
 		oninterceptexpandedclick={interceptExpandedClick}
 		oninterceptexpandedsubmit={interceptExpandedSubmit}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
+		onkeydown={handleKeyDown}
 		--supersearch-dialog-margin-top={dialogMarginTop || undefined}
 	>
 		{#snippet inputRow({
@@ -553,7 +566,7 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
-							'action sm:min-h-auto',
+							'action sm:min-h-auto sm:rounded-r-lg',
 							expanded ? 'flex h-16.5 max-sm:w-13 sm:h-full' : 'hidden sm:flex'
 						]}
 						aria-label={page.data.t('search.clear')}
@@ -561,33 +574,22 @@
 					>
 						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
 					</svelte:element>
-				{:else if !expanded}
+				{/if}
+				{#if !expanded}
 					<button
-						type="button"
-						onclick={() => showExpandedSearch()}
-						tabindex={-1}
-						class="hidden h-full cursor-text items-center justify-center px-3 select-none sm:flex"
+						type="submit"
+						id={getCellId(2)}
+						class:focused-cell={isFocusedCell(2)}
+						class={[
+							'action rounded-r-md border-l-neutral-300 sm:rounded-r-lg sm:border-l',
+							isHomeRoute || expanded ? 'hidden sm:flex' : 'flex'
+						]}
+						aria-label={page.data.t('supersearch.search')}
+						tabindex={isHomeRoute ? -1 : undefined}
 					>
-						<kbd
-							class="key pointer-events-auto h-[1.75em] w-[1.75em] text-sm"
-							title={`${page.data.t('supersearch.expandSearch')} (Shift+7 ${page.data.t('supersearch.or')} ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'})`}
-							>/</kbd
-						>
+						<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 					</button>
 				{/if}
-				<button
-					type="submit"
-					id={getCellId(2)}
-					class:focused-cell={isFocusedCell(2)}
-					class={[
-						'action rounded-r-md border-l-neutral-300 sm:rounded-r-lg sm:border-l',
-						isHomeRoute || expanded ? 'hidden sm:flex' : 'flex'
-					]}
-					aria-label={page.data.t('supersearch.search')}
-					tabindex={isHomeRoute ? -1 : undefined}
-				>
-					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
-				</button>
 			</div>
 		{/snippet}
 		{#snippet expandedContent({
@@ -598,11 +600,20 @@
 			isFocusedCell
 		})}
 			{@const inputRowIndex = 0}
-			{@const qualifiersRowIndex = 1}
-			{@const showAllResultsRowIndex = 2}
-			{@const suggestionsRowOffset = 3}
+			{@const showAllResultsRowIndex = 1}
+			{@const qualifiersRowIndex = showAllResultsRowIndex + 1}
+			{@const suggestionsRowOffset = qualifiersRowIndex + 1}
 			{@const footerRowIndex = suggestionsRowOffset + (resultsCount || 0)}
-			<nav class="expanded-content mt-2 sm:mt-3">
+
+			<nav class="expanded-content mt-1 sm:mt-3">
+				<ShowAllResultsRow
+					rowIndex={1}
+					{isLoading}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+					{skipShowAllResultsRowOnArrowKey}
+				/>
 				<QualifierSuggestionsRow
 					{qualifierSuggestions}
 					rowIndex={qualifiersRowIndex}
@@ -612,20 +623,8 @@
 					query={q}
 					{selection}
 				/>
-				<ShowAllResultsRow
-					{resultsCount}
-					{isLoading}
-					rowIndex={showAllResultsRowIndex}
-					{getCellId}
-					{isFocusedRow}
-					{isFocusedCell}
-				/>
 				{#if resultsCount && q.trim().length}
-					<div
-						role="rowgroup"
-						aria-labelledby="supersearch-results-label"
-						class="border-neutral border-t"
-					>
+					<div role="rowgroup" aria-labelledby="supersearch-results-label">
 						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
 				{/if}
@@ -675,9 +674,16 @@
 	.expanded.supersearch-input.focused-row:not(:has(.focused-cell)) {
 		@variant sm {
 			&:focus-within:not(:has(button:focus)) {
-				box-shadow: 0 0 0 6px var(--color-accent-100);
 				outline: 2px solid var(--color-outline);
 				outline-offset: 0;
+			}
+		}
+	}
+
+	.supersearch-input:not(.expanded) {
+		@variant sm {
+			&:focus-within:not(:has(button:focus)) {
+				box-shadow: 0 0 0 6px var(--color-accent-100);
 			}
 		}
 	}
@@ -697,10 +703,6 @@
 			border-radius: var(--radius-md);
 			margin-top: calc(var(--spacing) * 1.5);
 			box-shadow: 0 0 0 1px var(--color-neutral-400);
-
-			&:hover {
-				box-shadow: 0 0 0 1px var(--color-neutral-600);
-			}
 		}
 
 		@variant sm {
@@ -961,6 +963,14 @@
 
 		& :global(.focused-cell) {
 			outline: 2px solid var(--color-outline);
+			background: var(--color-accent-100);
+		}
+
+		& :global([role='row']:hover) {
+			& :global(.decorated-heading) {
+				text-decoration: underline;
+				color: var(--color-link);
+			}
 		}
 	}
 
