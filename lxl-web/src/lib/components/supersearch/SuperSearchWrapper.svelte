@@ -961,6 +961,10 @@
 			@apply bg-accent-50/75;
 		}
 
+		& :global([role='row'] *:active) {
+			@apply bg-accent-200/50;
+		}
+
 		& :global(.focused-cell) {
 			outline: 2px solid var(--color-outline);
 			background: var(--color-accent-100);
