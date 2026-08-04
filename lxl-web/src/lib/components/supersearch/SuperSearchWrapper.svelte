@@ -17,7 +17,7 @@
 		SuperSearch,
 		type ViewUpdateEvent
 	} from 'supersearch';
-	import FooterRow from './rows/FooterRow.svelte';
+	// import FooterRow from './rows/FooterRow.svelte';
 	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
 	import ShowAllResultsRow from './rows/ShowAllResultsRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
@@ -599,15 +599,13 @@
 			isFocusedRow,
 			isFocusedCell
 		})}
-			{@const inputRowIndex = 0}
 			{@const showAllResultsRowIndex = 1}
 			{@const qualifiersRowIndex = showAllResultsRowIndex + 1}
 			{@const suggestionsRowOffset = qualifiersRowIndex + 1}
-			{@const footerRowIndex = suggestionsRowOffset + (resultsCount || 0)}
 
-			<nav class="expanded-content mt-1 sm:mt-3">
+			<nav class="expanded-content mt-1 sm:my-3">
 				<ShowAllResultsRow
-					rowIndex={1}
+					rowIndex={showAllResultsRowIndex}
 					{isLoading}
 					{getCellId}
 					{isFocusedRow}
@@ -628,6 +626,7 @@
 						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
 				{/if}
+				<!--
 				<FooterRow
 					{inputRowIndex}
 					{showAllResultsRowIndex}
@@ -637,6 +636,7 @@
 					{isFocusedRow}
 					{isFocusedCell}
 				/>
+				-->
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
