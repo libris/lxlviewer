@@ -201,8 +201,9 @@ export default {
 		showEquals: 'Visa bara exakta träffar för'
 	},
 	supersearch: {
-		addQualifiers: 'Filter',
 		moreQualifiers: 'Fler filter',
+		search: 'Sök',
+		addQualifiers: 'Lägg till filter',
 		loading: 'Laddar...',
 		suggestion: 'förslag',
 		suggestions: 'förslag',

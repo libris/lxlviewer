@@ -202,8 +202,9 @@ export default {
 		showEquals: 'Only show exact matches for'
 	},
 	supersearch: {
-		addQualifiers: 'Filter',
 		moreQualifiers: 'More filters',
+		search: 'Search',
+		addQualifiers: 'Add filter',
 		loading: 'Loading...',
 		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',

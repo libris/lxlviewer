@@ -120,8 +120,11 @@
 	</div>
 {/snippet}
 
-<div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers?.length}>
-	{#if primaryAddQualifierLink && item.qualifiers?.length}
+<div
+	class="suggestion flex h-14 items-stretch hover:bg-accent-50/75"
+	class:qualifier={item.qualifiers?.length}
+>
+	{#if item.qualifiers?.length}
 		<a
 			href={resolve(page.data.localizeHref(primaryAddQualifierLink))}
 			id={getCellId?.(0)}
@@ -144,9 +147,6 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	.suggestion:has(:global(*:hover)) {
-		background-color: var(--color-accent-50);
-	}
 	.suggestion a {
 		display: flex;
 		align-items: center;

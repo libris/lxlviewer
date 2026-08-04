@@ -114,6 +114,7 @@
 		onexpandedviewupdate?: (event: ViewUpdateEvent) => void;
 		oninterceptexpandedsubmit?: (formElement: HTMLFormElement) => void;
 		oninterceptexpandedclick?: (event: MouseEvent) => void;
+		onkeydown?: (event: KeyboardEvent) => void;
 	}
 
 	let {
@@ -161,7 +162,8 @@
 		onselect,
 		onexpandedviewupdate,
 		oninterceptexpandedclick,
-		oninterceptexpandedsubmit
+		oninterceptexpandedsubmit,
+		onkeydown
 	}: Props = $props();
 
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
@@ -370,6 +372,11 @@
 		collapsedEditorView?.focus();
 	});
 
+	export function setActiveCell(rowIndex: number, colIndex: number) {
+		activeRowIndex = rowIndex;
+		activeColIndex = colIndex;
+	}
+
 	export function getActiveEditorView() {
 		return expanded ? expandedEditorView : collapsedEditorView;
 	}
@@ -529,6 +536,7 @@
 			event.preventDefault();
 			showExpandedSearch();
 		}
+		onkeydown?.(event);
 	}
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
@@ -781,6 +789,7 @@
 			 * }
 			 */
 		}
+		onkeydown?.(event);
 	}
 
 	function handleClickOutsideDialog(event: MouseEvent) {
