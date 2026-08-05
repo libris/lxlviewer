@@ -17,6 +17,6 @@ test('qualifier keys can be added from filter list', async ({ page }) => {
 	await expect(page.getByRole('combobox').first()).toContainText('Ingår i bibliografi');
 	await expect(page.getByRole('combobox').last()).toContainText('Ingår i bibliografi');
 	await page.keyboard.press('Escape');
-	await page.getByRole('main').getByRole('button').getByText('Bibliotek').click();
-	await expect(page.getByRole('combobox').first()).toContainText('Ingår i bibliografi');
+	await page.getByRole('main').getByRole('button').getByText('Bibliotek').first().click();
+	await expect(page.getByRole('combobox').first()).toContainText('Bibliotek');
 });
