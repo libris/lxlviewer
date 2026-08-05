@@ -326,6 +326,45 @@ export class DisplayUtil {
 		this.registeredDerivedLensTypes[def.name] = def;
 	}
 
+	getTranslated(data: FramedData | undefined, property: string, locale: LangCode): string {
+		if (!data) {
+			return undefined;
+		}
+
+		if (property in this.langContainerAlias) {
+			if (!data[this.langContainerAlias[property]]) {
+				return undefined;
+			}
+			return this.pickLang(data[this.langContainerAlias[property]], locale);
+		}
+
+		return undefined;
+	}
+
+	//TODO: Duplicated from Formatter class in this file
+	pickLang(container: LangContainer, locale) {
+		if (container[locale]) {
+			return container[locale];
+		}
+
+		if (container[JsonLd.NONE]) {
+			return container[JsonLd.NONE];
+		}
+
+		for (const locale of this.locales) {
+			if (container[locale]) {
+				return container[locale];
+			}
+		}
+
+		const langKeys = Object.keys(container);
+		if (langKeys.length > 0) {
+			return container[langKeys.toSorted()[0]];
+		}
+
+		return undefined;
+	}
+
 	private deriveLens(type: ClassName, def: DerivedLensTypeDefinition): Lens {
 		const empty = {
 			[JsonLd.TYPE]: Fresnel.Lens,

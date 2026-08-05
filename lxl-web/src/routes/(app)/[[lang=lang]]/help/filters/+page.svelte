@@ -38,39 +38,94 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-<article class="mx-auto mt-8 mb-12 w-7xl p-4 sm:px-6">
+<article class="@container mx-auto mt-8 mb-12 w-full max-w-7xl p-4 sm:px-6">
 	{#if data.locale === 'en'}
 		<EnContent />
 	{:else}
 		<SvContent />
 	{/if}
-	<table class="mt-2 w-full">
-		<thead class="border-b border-gray-300">
-			<tr class="[&>th]:p-3 [&>th]:text-left [&>th]:align-top">
-				<th>{page.data.t('help.keyword')}</th>
-				<th>{page.data.t('help.description')}</th>
-			</tr>
-		</thead>
-		<tbody class="divide-y divide-gray-300 [&>tr>td]:p-3 [&>tr>td]:text-left [&>tr>td]:align-top">
-			{#each data.filterDefs as f (f.key)}
-				<tr id={f.key}>
-					<td>
-						<button
-							class="qualifier text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize"
-							onclick={() => addQualifierKey(f.key)}
+	<div role="table" class="@container mt-2">
+		<!-- Header row -->
+		<div
+			role="row"
+			class="sr-only border-b border-gray-300 @3xl:not-sr-only @3xl:grid
+					 @3xl:grid-cols-[1fr_2fr_1.5fr_1fr] @3xl:gap-x-4"
+		>
+			<div id="filter-header" role="columnheader" class="p-3 font-medium">
+				{page.data.t('help.filter')}
+			</div>
+			<div id="description-header" role="columnheader" class="p-3 font-medium">
+				{page.data.t('help.description')}
+			</div>
+			<div id="searchin-header" role="columnheader" class="p-3 font-medium">
+				{page.data.t('help.searchIn')}
+			</div>
+			<div id="code-header" role="columnheader" class="p-3 font-medium">
+				{page.data.t('help.code')}
+			</div>
+		</div>
+
+		{#each data.filterGroups as g, i (i)}
+			<div role="rowgroup" aria-label={g.label}>
+				{#if g.label || g.filterGroupDescription}
+					<div role="row" class="border-b border-gray-300 bg-neutral-100 px-4 py-3">
+						{#if g.label}
+							<div role="columnheader" aria-colspan="4" class="font-semibold">
+								{g.label}
+							</div>
+						{/if}
+
+						{#if g.filterGroupDescription}
+							<div class="text-2s text-subtle pt-2 whitespace-pre-line">
+								{g.filterGroupDescription}
+							</div>
+						{/if}
+					</div>
+				{/if}
+
+				{#each g.filters as f (f.key)}
+					<div
+						role="row"
+						id={f.key}
+						class="border-b border-gray-300 py-4
+				       @3xl:grid
+				       @3xl:grid-cols-[1fr_2fr_1.5fr_1fr]
+				       @3xl:gap-x-4
+				       @3xl:py-0"
+					>
+						<!-- Filter -->
+						<div
+							role="rowheader"
+							id={`row-${f.key}`}
+							aria-labelledby="filter-header row-{f.key}"
+							class="min-w-0 p-3"
 						>
-							{f.label}
-						</button>
-						<ul class="mt-2 font-mono">
-							<li class="text-xs">{f.key}</li>
-							{#each f.queryCodes as q (q)}
-								<li class="text-subtle text-xs">{q}</li>
-							{/each}
-						</ul>
-					</td>
-					<td class={['grid grid-cols-1 gap-3 sm:grid-cols-2']}>
-						<div>
-							<span class="whitespace-pre-line">{f.filterDescription}</span>
+							<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
+								{page.data.t('help.filter')}
+							</div>
+
+							<button
+								class="qualifier text-body bg-accent-50 text-2xs hover:bg-accent-100 inline-block min-h-8 min-w-9 shrink-0 rounded-md px-1.5 font-medium whitespace-nowrap first-letter:capitalize"
+								onclick={() => addQualifierKey(f.key)}
+							>
+								{f.label}
+							</button>
+						</div>
+
+						<!-- Description -->
+						<div
+							role="cell"
+							aria-labelledby={`description-header row-${f.key}`}
+							class="min-w-0 p-3"
+						>
+							<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
+								{page.data.t('help.description')}
+							</div>
+
+							<span class="whitespace-pre-line">
+								{f.filterDescription}
+							</span>
+
 							{#if f.descriptionRemark}
 								<div class="mt-4">
 									{#each f.descriptionRemark as remark, i (i)}
@@ -81,30 +136,44 @@
 								</div>
 							{/if}
 						</div>
-						{#if f.propertyChainAxiom}
-							<div>
-								<span class="text-2s text-subtle">{page.data.t('help.searchIn')}</span>
+
+						<!-- Search in -->
+						<div role="cell" aria-labelledby={`searchin-header row-${f.key}`} class="min-w-0 p-3">
+							<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
+								{page.data.t('help.searchIn')}
+							</div>
+
+							{#if f.propertyChainAxiom}
 								<ul>
 									{#each f.propertyChainAxiom as p (p)}
 										<li class="text-s">{p.label}</li>
-										<li class="text-2xs text-subtle mb-2 font-mono">{p.path}</li>
+										<li class="text-2xs text-subtle mb-2 font-mono [overflow-wrap:anywhere]">
+											{p.path}
+										</li>
 									{/each}
 								</ul>
+							{/if}
+						</div>
+
+						<!-- Code -->
+						<div role="cell" aria-labelledby={`code-header row-${f.key}`} class="min-w-0 p-3">
+							<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
+								{page.data.t('help.code')}
 							</div>
-						{/if}
-					</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-	<!--
-	{#each data.filters as f (f['@id'])}
-		<pre>{JSON.stringify(f, null, 2)}</pre>
-	{/each}
-    {#each data.filterDefs as f (f.key)}
-        <pre>{JSON.stringify(f, null, 2)}</pre>
-    {/each}
-    -->
+
+							<ul class="font-mono">
+								<li class="text-xs [overflow-wrap:anywhere]">{f.key}</li>
+
+								{#each f.queryCodes as q (q)}
+									<li class="text-subtle text-xs">{q}</li>
+								{/each}
+							</ul>
+						</div>
+					</div>
+				{/each}
+			</div>
+		{/each}
+	</div>
 </article>
 
 <style lang="postcss">
