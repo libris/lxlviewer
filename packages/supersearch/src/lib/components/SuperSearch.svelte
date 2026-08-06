@@ -963,16 +963,13 @@
 
 	$effect(() => {
 		if (defaultResultRow) {
-			moveToActiveRowIfDefaultHasMoved();
+			moveToActiveRowAfterDefaultHasMoved();
 		}
 	});
 
-	async function moveToActiveRowIfDefaultHasMoved() {
+	async function moveToActiveRowAfterDefaultHasMoved() {
 		await tick();
-		if (defaultResultRow > activeRowIndex) {
-			activeRowIndex = defaultResultRow;
-			activeColIndex = defaultResultCol;
-		}
+		setDefaultRowAndCols();
 	}
 </script>
 
