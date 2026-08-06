@@ -96,6 +96,7 @@
 			]
 		>;
 		loadingIndicator?: Snippet;
+		skipInputRowOnArrowKey?: boolean;
 		defaultInputCol?: number;
 		defaultResultRow?: number;
 		defaultResultCol?: number;
@@ -106,6 +107,7 @@
 		selection?: Selection;
 		isLoading?: boolean;
 		hasData?: boolean;
+		resultsCount?: number;
 		loadMoreLabel?: string;
 		onexpand?: (event: ExpandEvent) => void;
 		oncollapse?: (event: CollapseEvent) => void;
@@ -145,6 +147,7 @@
 		expandedContent = fallbackExpandedContent,
 		resultItemRow = fallbackResultItemRow,
 		loadingIndicator,
+		skipInputRowOnArrowKey = false,
 		toggleWithKeyboardShortcut = false,
 		wrappingArrowKeyNavigation = false,
 		defaultInputCol = -1,
@@ -155,6 +158,7 @@
 		selection = $bindable(),
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable(), // should be treated as readonly
+		resultsCount = $bindable(), // should be treated as readonly
 		loadMoreLabel = 'Load more',
 		onexpand,
 		oncollapse,
@@ -179,11 +183,11 @@
 
 	let prevValue: string = value;
 
-	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
-		vertical: true,
+	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $derived({
+		vertical: !skipInputRowOnArrowKey,
 		horizontal: true
 	});
-	let prevArrowKeyCursorHandling = { vertical: true, horizontal: true };
+	let prevArrowKeyCursorHandling = { vertical: false, horizontal: true };
 	let cursorHandlingCompartment = new Compartment();
 
 	let placeholderCompartment = new Compartment();
@@ -223,7 +227,6 @@
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		keymap.of(historyKeymap),
 		preventEnterKeyHandling(),
-		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: true, horizontal: true })),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
@@ -300,6 +303,7 @@
 	let expandedExtensions = $derived([
 		...extensionsWithDefaults,
 		EditorView.lineWrapping,
+		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: false, horizontal: true })),
 		expandedContentAttributesCompartment.of(initialExpandedContentAttributes)
 	]);
 
@@ -568,14 +572,18 @@
 			event.key === 'ArrowRight' ||
 			event.key === 'Tab'
 		) {
-			const arrowKeyRows = Array.from(
-				dialog?.querySelectorAll(':scope [role=row]:not([data-skip-row-on-arrow-key])') || []
+			const rows = Array.from(dialog?.querySelectorAll(':scope [role=row]') || []).filter(
+				(rowItem) => {
+					if (typeof rowItem?.checkVisibility === 'function') {
+						return rowItem.checkVisibility();
+					}
+					return true; // always return true as a fallback if checkVisiblity isn't available
+				}
 			);
 
-			const rows =
-				event.key === 'Tab'
-					? Array.from(dialog?.querySelectorAll(':scope [role=row]') || [])
-					: arrowKeyRows;
+			const arrowKeyRows = rows.filter(
+				(rowItem) => !rowItem.hasAttribute('data-skip-row-on-arrow-key')
+			);
 
 			const getColsInInputRow = () => {
 				return comboboxElement
@@ -608,6 +616,16 @@
 				return Number(itemId.match(colRegex)?.[1]);
 			};
 
+			const getRowIndex = (item: Element) => {
+				const id = Array.from(item.querySelectorAll(':scope button, :scope a') || [])
+					.find((item) => item.hasAttribute('id'))
+					?.getAttribute('id');
+				if (id) {
+					return Number(id.match(/(\d+)x\d+$/)?.[1]);
+				}
+				return -1;
+			};
+
 			const getColIndexBefore = (rowIndex: number, colIndex: number) => {
 				if (rowIndex <= rows.length) {
 					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
@@ -624,6 +642,13 @@
 				return -1;
 			};
 
+			const getLastRowCol = () => {
+				const lastRowColIndeces = getColsInRow(Math.max(0, rows.length - 1)).map((item) =>
+					getColIndexFromId(item.id)
+				);
+				return lastRowColIndeces[lastRowColIndeces.length] || 0;
+			};
+
 			switch (event.key) {
 				case 'ArrowUp':
 					if (event.altKey) {
@@ -631,7 +656,7 @@
 						hideExpandedSearch({ trigger: 'close' });
 						collapsedEditorView?.focus();
 					} else {
-						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
+						if (wrappingArrowKeyNavigation && activeRowIndex === (skipInputRowOnArrowKey ? 1 : 0)) {
 							event.preventDefault();
 							activeRowIndex = arrowKeyRows.length;
 							activeColIndex = 0;
@@ -659,12 +684,14 @@
 						}
 					}
 					break;
-				case 'ArrowDown':
-					if (wrappingArrowKeyNavigation && activeRowIndex >= arrowKeyRows.length) {
-						activeRowIndex = 0;
-						activeColIndex = defaultInputCol;
-					} else if (activeRowIndex < arrowKeyRows.length) {
-						activeRowIndex++;
+				case 'ArrowDown': {
+					const arrowKeyRowIndeces = arrowKeyRows.map((rowItem) => getRowIndex(rowItem));
+					const nextRowIndex = arrowKeyRowIndeces.find((rowIndex) => rowIndex > activeRowIndex);
+					if (wrappingArrowKeyNavigation && !nextRowIndex) {
+						activeRowIndex = skipInputRowOnArrowKey ? arrowKeyRowIndeces[0] : 0;
+						activeColIndex = skipInputRowOnArrowKey ? 0 : defaultInputCol;
+					} else if (nextRowIndex) {
+						activeRowIndex = nextRowIndex;
 						const cols = getColsInRow(activeRowIndex - 1);
 						if (activeRowIndex === 1) {
 							activeColIndex = 0;
@@ -677,6 +704,7 @@
 						};
 					}
 					break;
+				}
 				case 'ArrowLeft':
 					if (wrappingArrowKeyNavigation && activeRowIndex >= 1 && activeColIndex === 0) {
 						activeColIndex = Math.max(0, getColsInRow(activeRowIndex - 1).length - 1);
@@ -713,9 +741,15 @@
 									getColIndexFromId(item.id)
 								);
 								activeColIndex = lastRowColIndeces[lastRowColIndeces.length - 1] || 0;
+							} else if (defaultResultRow) {
+								activeRowIndex = rows.length;
+								activeColIndex = getLastRowCol();
 							} else {
 								activeColIndex = -1;
 							}
+						} else if (defaultResultRow && activeRowIndex === 1 && !getColsInInputRow().length) {
+							activeRowIndex = rows.length;
+							activeColIndex = getLastRowCol();
 						} else {
 							const closestBefore = getColIndexBefore(activeRowIndex - 1, activeColIndex);
 							if (typeof closestBefore !== 'number') {
@@ -752,8 +786,15 @@
 							activeRowIndex++;
 							activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1)[0].id) || 0;
 						} else if (typeof closestAfter !== 'number' && activeRowIndex === rows.length) {
-							activeRowIndex = 0;
-							activeColIndex = -1;
+							const colIndeces = getColsInInputRow().map((item) => getColIndexFromId(item.id));
+							if (defaultResultRow && !colIndeces.length) {
+								// Jump to default result row if no there are no items in the input row
+								activeRowIndex = defaultResultRow;
+								activeColIndex = defaultResultCol;
+							} else {
+								activeRowIndex = 0;
+								activeColIndex = colIndeces[0];
+							}
 						} else if (typeof closestAfter === 'number') {
 							if (activeRowIndex === 0) {
 								const firstCol = getColsInInputRow()[0].id;
@@ -854,6 +895,10 @@
 
 	$effect(() => {
 		hasData = !!search?.data;
+	});
+
+	$effect(() => {
+		resultsCount = resultItemRows?.length || 0;
 	});
 
 	$effect(() => {

@@ -82,6 +82,7 @@
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
+	let resultsCount: number = $state(0);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
@@ -93,7 +94,15 @@
 	let pageMapping: DisplayMapping[] | undefined = $derived(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
 
+	const smMediaQuery = new MediaQuery('min-width: 640px');
 	const lgMediaQuery = new MediaQuery('min-width: 1024px');
+
+	const qualifiersRowIndex = $derived(smMediaQuery.current ? 2 : 1);
+	const suggestionsRowOffset = $derived(qualifiersRowIndex + 1);
+	const footerRowIndex = $derived(suggestionsRowOffset + resultsCount);
+	const showAllResultsRowIndex = $derived(
+		smMediaQuery.current ? 1 : suggestionsRowOffset + resultsCount
+	);
 
 	let interceptedHref: string | undefined = $state();
 
@@ -355,9 +364,6 @@
 				: (event.target as HTMLElement).closest('a')
 		)?.getAttribute('href');
 
-		skipShowAllResultsRowOnArrowKey = false;
-		superSearch?.setActiveCell(0, -1);
-
 		if (href) {
 			event.preventDefault();
 			interceptedHref = href;
@@ -489,6 +495,7 @@
 		bind:value={q}
 		bind:selection
 		bind:isLoading
+		bind:resultsCount
 		language={lxlQuery}
 		{placeholder}
 		{collapsedAriaLabelledBy}
@@ -519,8 +526,8 @@
 		{syncEditorsOnSelection}
 		toggleWithKeyboardShortcut
 		wrappingArrowKeyNavigation
-		defaultInputCol={undefined}
-		defaultResultRow={1}
+		defaultInputCol={-1}
+		defaultResultRow={showAllResultsRowIndex}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
 		oncollapse={handleOnCollapse}
@@ -531,6 +538,7 @@
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		onkeydown={handleKeyDown}
 		--supersearch-dialog-margin-top={dialogMarginTop || undefined}
+		skipInputRowOnArrowKey
 	>
 		{#snippet inputRow({
 			expanded,
@@ -545,7 +553,7 @@
 				class={[
 					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative',
 					expanded && 'expanded sm:mx-0.5 lg:mx-0',
-					isFocusedRow() && ['focused-row'],
+					isFocusedRow() && ['focused-row outline-transparent!'],
 					wrappedLines && 'wrapped'
 				]}
 			>
@@ -561,7 +569,7 @@
 						]}
 						onclick={onclickClose}
 					>
-						<IconBack aria-hidden="true" class="size-7" />
+						<IconBack aria-hidden="true" class="size-7 text-link" />
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
@@ -582,7 +590,7 @@
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
 					>
-						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
+						<IconClear aria-hidden="true" class="size-4.5 sm:size-4 text-subtle" />
 					</svelte:element>
 				{/if}
 				{#if !expanded}
@@ -609,22 +617,19 @@
 			isFocusedRow,
 			isFocusedCell
 		})}
-			{@const showAllResultsRowIndex = 1}
-			{@const qualifiersRowIndex = showAllResultsRowIndex + 1}
-			{@const suggestionsRowOffset = qualifiersRowIndex + 1}
-			{@const footerRowIndex = suggestionsRowOffset + (resultsCount || 0)}
-
 			{@const ID_RESULTS_LABEL = 'supersearch-results-label'}
 
 			<nav class="expanded-content mt-1 sm:mt-3">
-				<ShowAllResultsRow
-					rowIndex={showAllResultsRowIndex}
-					{isLoading}
-					{getCellId}
-					{isFocusedRow}
-					{isFocusedCell}
-					{skipShowAllResultsRowOnArrowKey}
-				/>
+				{#if smMediaQuery.current}
+					<ShowAllResultsRow
+						rowIndex={showAllResultsRowIndex}
+						{isLoading}
+						{getCellId}
+						{isFocusedRow}
+						{isFocusedCell}
+						{skipShowAllResultsRowOnArrowKey}
+					/>
+				{/if}
 				<QualifierSuggestionsRow
 					{qualifierSuggestions}
 					rowIndex={qualifiersRowIndex}
@@ -638,7 +643,7 @@
 					<div
 						role="rowgroup"
 						aria-labelledby={ID_RESULTS_LABEL}
-						class="border-t border-neutral mt-px"
+						class="sm:border-t border-neutral mt-px"
 					>
 						<h2
 							id={ID_RESULTS_LABEL}
@@ -649,7 +654,18 @@
 						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
 				{/if}
-				<FooterRow {footerRowIndex} {getCellId} {isFocusedRow} {isFocusedCell} />
+				{#if smMediaQuery.current}
+					<FooterRow {footerRowIndex} {getCellId} {isFocusedCell} />
+				{:else}
+					<ShowAllResultsRow
+						rowIndex={showAllResultsRowIndex}
+						{isLoading}
+						{getCellId}
+						{isFocusedRow}
+						{isFocusedCell}
+						{skipShowAllResultsRowOnArrowKey}
+					/>
+				{/if}
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
@@ -712,15 +728,10 @@
 		}
 
 		@variant sm {
-			border-bottom: none;
-			border-radius: var(--radius-md);
-			margin-top: calc(var(--spacing) * 1.5);
-			box-shadow: 0 0 0 1px var(--color-neutral-400);
-		}
-
-		@variant sm {
-			border-radius: var(--radius-lg);
 			margin-top: 0;
+			border-bottom: none;
+			border-radius: var(--radius-lg);
+			box-shadow: 0 0 0 1px var(--color-link);
 		}
 	}
 
