@@ -125,7 +125,7 @@
 								id={f.key}
 								class="border-t border-gray-300
 				       @3xl:grid
-				       @3xl:grid-cols-[1fr_2fr_1.5fr_1fr]
+				       @3xl:grid-cols-[minmax(min-content,1fr)_2fr_1.5fr_1fr]
 				       @3xl:gap-x-4
 				       @3xl:py-0"
 							>
