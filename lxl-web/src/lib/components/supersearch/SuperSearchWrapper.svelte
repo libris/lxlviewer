@@ -618,8 +618,8 @@
 			isFocusedCell
 		})}
 			{@const ID_RESULTS_LABEL = 'supersearch-results-label'}
-
-			<nav class="expanded-content mt-1 sm:mt-3">
+			<hr class="border-neutral mb-px sm:hidden" />
+			<nav class="expanded-content sm:mt-3">
 				{#if smMediaQuery.current}
 					<ShowAllResultsRow
 						rowIndex={showAllResultsRowIndex}
@@ -639,12 +639,9 @@
 					query={q}
 					{selection}
 				/>
+				<hr class="hidden sm:border-neutral sm:block mt-3" />
 				{#if resultsCount && q.trim().length}
-					<div
-						role="rowgroup"
-						aria-labelledby={ID_RESULTS_LABEL}
-						class="sm:border-t border-neutral mt-px"
-					>
+					<div role="rowgroup" aria-labelledby={ID_RESULTS_LABEL}>
 						<h2
 							id={ID_RESULTS_LABEL}
 							class="text-placeholder pt-4 pb-3 pl-4 text-xs font-medium tracking-widest uppercase"
@@ -653,6 +650,7 @@
 						</h2>
 						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
+					<hr class="hidden sm:border-neutral sm:block" />
 				{/if}
 				{#if smMediaQuery.current}
 					<FooterRow {footerRowIndex} {getCellId} {isFocusedCell} />
@@ -709,18 +707,18 @@
 		}
 	}
 
-	.supersearch-input:not(.expanded) {
+	.supersearch-input {
 		@variant sm {
 			&:focus-within:not(:has(button:focus)) {
-				box-shadow: 0 0 0 6px var(--color-accent-100);
+				box-shadow:
+					0 0 0 1px var(--color-link),
+					0 0 0 6px var(--color-accent-50);
 			}
 		}
 	}
 
 	.expanded.supersearch-input {
 		min-height: var(--search-input-height);
-		border-bottom: 1px solid var(--color-neutral);
-		border-radius: 0;
 		box-shadow: none;
 
 		&:focus-within {
@@ -729,7 +727,6 @@
 
 		@variant sm {
 			margin-top: 0;
-			border-bottom: none;
 			border-radius: var(--radius-lg);
 			box-shadow: 0 0 0 1px var(--color-link);
 		}
