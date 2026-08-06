@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy, type Snippet } from 'svelte';
+	import { onMount, onDestroy, type Snippet, tick } from 'svelte';
 	import { BROWSER } from 'esm-env';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
@@ -960,6 +960,20 @@
 			}
 		}
 	});
+
+	$effect(() => {
+		if (defaultResultRow) {
+			moveToActiveRowIfDefaultHasMoved();
+		}
+	});
+
+	async function moveToActiveRowIfDefaultHasMoved() {
+		await tick();
+		if (defaultResultRow > activeRowIndex) {
+			activeRowIndex = defaultResultRow;
+			activeColIndex = defaultResultCol;
+		}
+	}
 </script>
 
 {#snippet fallbackExpandedContent({ search }: { search: ReturnType<typeof useSearchRequest> })}
