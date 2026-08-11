@@ -2,6 +2,7 @@
 	import { mount, onMount, onDestroy, unmount, tick } from 'svelte';
 	import { page } from '$app/state';
 	import { goto, onNavigate, pushState } from '$app/navigation';
+	import { innerHeight } from 'svelte/reactivity/window';
 	import {
 		type ChangeEvent,
 		type DebouncedWaitFunction,
@@ -86,7 +87,6 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
-	let dialogMarginTop: string | undefined = $state();
 	let skipShowAllResultsRowOnArrowKey = $state(true);
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
@@ -139,8 +139,13 @@
 	let cursor = $derived(selection?.head || 0);
 	let isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	let isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
-
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
+	let comboboxOffsetTop: number = $derived.by(() => {
+		if (smMediaQuery.current && innerHeight.current) {
+			return calculateComboboxOffsetTop();
+		}
+		return 0;
+	});
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
@@ -323,13 +328,7 @@
 			fetchOnExpand = false;
 		}
 
-		const searchElement = getSearchElement();
-		const comboboxElement = searchElement?.querySelector(':scope [role="combobox"]');
-
-		if (comboboxElement) {
-			const comboboxOffsetTop = comboboxElement.getBoundingClientRect().top || 0;
-			dialogMarginTop = `${comboboxOffsetTop}px`;
-		}
+		comboboxOffsetTop = calculateComboboxOffsetTop();
 	}
 
 	function handleOnCollapse(event: CollapseEvent) {
@@ -474,6 +473,28 @@
 			skipShowAllResultsRowOnArrowKey = false;
 		}
 	}
+
+	function calculateComboboxOffsetTop() {
+		const searchElement = getSearchElement();
+		const comboboxElement = searchElement?.querySelector(':scope [role="combobox"]');
+		if (comboboxElement) {
+			return comboboxElement.getBoundingClientRect().top || 0;
+		}
+		return 0;
+	}
+
+	const resultsHeight = $derived.by(() => {
+		if (smMediaQuery.current && superSearch?.isExpanded) {
+			return getResultsHeight(innerHeight.current, comboboxOffsetTop);
+		}
+	});
+
+	function getResultsHeight(innerHeight?: number, comboboxOffsetTop?: number) {
+		// TODO: should probably be deboucned...
+		if (innerHeight && comboboxOffsetTop) {
+			return innerHeight - comboboxOffsetTop - 222 + 'px';
+		}
+	}
 </script>
 
 <!-- Use zero-delay timeout to place popstate processing at the end of the browser loop (ensuring the document has changed) -->
@@ -527,7 +548,7 @@
 		oninterceptexpandedsubmit={interceptExpandedSubmit}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		onkeydown={handleKeyDown}
-		--supersearch-dialog-margin-top={dialogMarginTop || undefined}
+		--supersearch-dialog-margin-top={comboboxOffsetTop ? `${comboboxOffsetTop}px` : undefined}
 		skipInputRowOnArrowKey
 	>
 		{#snippet inputRow({
@@ -631,7 +652,12 @@
 				/>
 				<hr class="hidden sm:border-neutral sm:block mt-3" />
 				{#if resultsCount && q.trim().length}
-					<div role="rowgroup" aria-labelledby={ID_RESULTS_LABEL}>
+					<div
+						role="rowgroup"
+						aria-labelledby={ID_RESULTS_LABEL}
+						class="max-results-height overflow-y-auto"
+						style:--results-height={resultsHeight}
+					>
 						<h2
 							id={ID_RESULTS_LABEL}
 							class="text-placeholder pt-4 pb-3 pl-4 text-xs font-medium tracking-widest uppercase"
@@ -986,6 +1012,12 @@
 				text-decoration: underline;
 				color: var(--color-link);
 			}
+		}
+	}
+
+	.max-results-height {
+		@variant sm {
+			max-height: var(--results-height);
 		}
 	}
 
