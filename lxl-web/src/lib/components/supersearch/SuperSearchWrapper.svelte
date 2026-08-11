@@ -16,7 +16,8 @@
 		type Selection,
 		type ShowExpandedSearchOptions,
 		SuperSearch,
-		type ViewUpdateEvent
+		type ViewUpdateEvent,
+		type ChangeActiveCell
 	} from 'supersearch';
 	import FooterRow from './rows/FooterRow.svelte';
 	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
@@ -38,6 +39,7 @@
 		ID_APP_BAR_LG_SEARCH,
 		ID_APP_BAR_SM_SEARCH
 	} from '../../../routes/(app)/[[lang=lang]]/AppBar.svelte';
+	import { prefersReducedMotion } from 'svelte/motion';
 
 	interface Props {
 		id: string;
@@ -495,6 +497,16 @@
 			return innerHeight - comboboxOffsetTop - 222 + 'px';
 		}
 	}
+
+	function handleChangeActiveCell({ id }: ChangeActiveCell) {
+		const activeCellElement = document.getElementById(id);
+		if (activeCellElement) {
+			activeCellElement?.scrollIntoView({
+				behavior: prefersReducedMotion.current ? 'instant' : 'smooth',
+				block: 'end'
+			});
+		}
+	}
 </script>
 
 <!-- Use zero-delay timeout to place popstate processing at the end of the browser loop (ensuring the document has changed) -->
@@ -548,6 +560,7 @@
 		oninterceptexpandedsubmit={interceptExpandedSubmit}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		onkeydown={handleKeyDown}
+		onchangeactivecell={handleChangeActiveCell}
 		--supersearch-dialog-margin-top={comboboxOffsetTop ? `${comboboxOffsetTop}px` : undefined}
 		skipInputRowOnArrowKey
 	>
