@@ -32,7 +32,8 @@
 		DebouncedWaitFunction,
 		ExpandEvent,
 		CollapseEvent,
-		DispatchChangeParams
+		DispatchChangeParams,
+		ChangeActiveCell
 	} from '$lib/types/superSearch.js';
 	import { historyKeymap, standardKeymap } from '@codemirror/commands';
 	import { draw, theme } from '$lib/extensions/theme';
@@ -117,6 +118,7 @@
 		oninterceptexpandedsubmit?: (formElement: HTMLFormElement) => void;
 		oninterceptexpandedclick?: (event: MouseEvent) => void;
 		onkeydown?: (event: KeyboardEvent) => void;
+		onchangeactivecell?: (event: ChangeActiveCell) => void;
 	}
 
 	let {
@@ -167,7 +169,8 @@
 		onexpandedviewupdate,
 		oninterceptexpandedclick,
 		oninterceptexpandedsubmit,
-		onkeydown
+		onkeydown,
+		onchangeactivecell
 	}: Props = $props();
 
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
@@ -820,15 +823,6 @@
 					}
 					break;
 			}
-
-			/**
-			 * TODO: Ensure the input is in view
-			 * const activeCellElement = document.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`);
-			 *
-			 * if (!isElementInView(activeCellElement)) {
-			 *		activeCellElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-			 * }
-			 */
 		}
 		onkeydown?.(event);
 	}
@@ -965,6 +959,15 @@
 		}
 	});
 
+	$effect(() => {
+		if (expanded && (activeRowIndex || activeColIndex)) {
+			onchangeactivecell?.({
+				activeRowIndex,
+				activeColIndex,
+				id: `${id}-item-${activeRowIndex}x${activeColIndex}`
+			});
+		}
+	});
 	$effect(() => {
 		if (defaultResultRow) {
 			moveToActiveRowAfterDefaultHasMoved();
