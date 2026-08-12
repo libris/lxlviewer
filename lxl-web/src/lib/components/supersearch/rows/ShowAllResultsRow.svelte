@@ -2,6 +2,7 @@
 	import IconSearch from '~icons/bi/search';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import { page } from '$app/state';
+	import IconReturnKey from '~icons/bi/arrow-return-left';
 
 	type Props = {
 		rowIndex: number;
@@ -25,7 +26,7 @@
 <div
 	role="row"
 	class={[
-		' flex items-center sm:mx-3 sm:rounded-lg fixed bottom-0 max-sm:w-full sm:static z-999 bg-page pb-3 px-3 sm:pb-0 sm:px-0',
+		'flex items-center sm:mx-2 rounded-lg lg:mx-3 fixed bottom-0 max-sm:w-full sm:relative z-999 sm:z-0 bg-page pb-3 px-3 sm:pb-0 sm:px-0',
 		isFocusedRow(rowIndex) && 'focused-row'
 	]}
 >
@@ -33,7 +34,7 @@
 		type="submit"
 		id={getCellId(rowIndex, 0)}
 		class={[
-			'flex min-h-12 w-full items-center 2xl:min-h-13 hover:underline rounded-full sm:rounded-lg justify-center sm:justify-start text-link! max-sm:bg-accent-50 max-sm:hover:bg-link max-sm:hover:text-page!',
+			'flex min-h-11 2xl:min-h-12 w-full items-center hover:underline rounded-full sm:rounded-lg justify-center sm:justify-start text-link! max-sm:bg-accent-50 max-sm:hover:bg-link max-sm:hover:text-page!',
 			(isFocusedCell(rowIndex, 0) || skipShowAllResultsRowOnArrowKey) &&
 				'focused-cell max-sm:bg-link! max-sm:text-page!',
 			skipShowAllResultsRowOnArrowKey && 'outline-transparent!'
@@ -51,4 +52,10 @@
 			</div>
 		{/if}
 	</button>
+	{#if isFocusedCell(rowIndex, 0)}
+		<IconReturnKey
+			class="hidden sm:block absolute right-4.5 text-link pointer-events-none"
+			aria-hidden="true"
+		/>
+	{/if}
 </div>

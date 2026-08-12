@@ -219,7 +219,8 @@ export default {
 		add: 'Add',
 		searchHelp: 'Search help',
 		expandSearch: 'Go to search',
-		or: 'or'
+		or: 'or',
+		addAsQualifier: 'Add as filter'
 	},
 	sort: {
 		sort: 'Sort',

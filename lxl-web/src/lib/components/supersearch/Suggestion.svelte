@@ -10,15 +10,18 @@
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import SuggestionImage from './SuggestionImage.svelte';
 	import type { Snippet } from 'svelte';
+	import IconReturnKey from '~icons/bi/arrow-return-left';
+	import IconAddQualifier from '~icons/bi/arrow-up-left';
 
 	type Props = {
 		item: SuperSearchResultItem;
 		getCellId?: (cellIndex: number) => string;
+		isFocusedRow?: () => boolean;
 		isFocusedCell?: (cellIndex: number) => boolean;
 		leadingContent?: Snippet;
 	};
 
-	const { item, getCellId, isFocusedCell, leadingContent }: Props = $props();
+	const { item, getCellId, isFocusedRow, isFocusedCell, leadingContent }: Props = $props();
 	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(item?.['@id']))));
 	const primaryAddQualifierLink = $derived(item?.qualifiers?.[0]?._q || resourceId);
 </script>
@@ -104,13 +107,14 @@
 {/snippet}
 
 <div
-	class="suggestion flex h-14 items-stretch hover:bg-accent-50/75"
+	class="suggestion flex h-13 sm:h-14 items-stretch mx-2 lg:mx-3 rounded-md relative"
 	class:qualifier={item.qualifiers?.length}
 >
 	{#if item.qualifiers?.length}
 		<a
 			href={resolve(page.data.localizeHref(primaryAddQualifierLink))}
 			id={getCellId?.(0)}
+			class="px-1 rounded-md"
 			class:focused-cell={isFocusedCell?.(0)}
 		>
 			{@render resourceSnippet(item)}
@@ -119,11 +123,26 @@
 		<a
 			href={resolve(page.data.localizeHref(resourceId))}
 			id={getCellId ? getCellId(0) : ''}
+			class="px-1 rounded-md"
 			class:focused-cell={isFocusedCell?.(0)}
 		>
 			{@render leadingContent?.()}
 			{@render resourceSnippet(item)}
 		</a>
+	{/if}
+	{#if isFocusedRow?.()}
+		<div
+			class="absolute right-0 hidden sm:flex pointer-events-none h-full items-center bg-accent-100 justify-center w-12 rounded-r-md"
+		>
+			{#if item.qualifiers?.length}
+				<IconAddQualifier class="text-link" aria-hidden="true" />
+			{:else}
+				<IconReturnKey
+					class="text-link"
+					aria-hidden={item.qualifiers?.length ? undefined : 'true'}
+				/>
+			{/if}
+		</div>
 	{/if}
 </div>
 
@@ -138,7 +157,6 @@
 
 	.suggestion a:first-child {
 		flex: 1;
-		padding: 0 calc(var(--spacing) * 4);
 		text-align: left;
 	}
 

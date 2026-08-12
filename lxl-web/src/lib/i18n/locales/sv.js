@@ -217,7 +217,8 @@ export default {
 		add: 'Lägg till',
 		searchHelp: 'Sökhjälp',
 		expandSearch: 'Gå till sökruta',
-		or: 'eller'
+		or: 'eller',
+		addAsQualifier: 'Lägg till som filter'
 	},
 	sort: {
 		sort: 'Sortera',

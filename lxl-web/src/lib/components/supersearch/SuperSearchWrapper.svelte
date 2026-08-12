@@ -629,8 +629,9 @@
 			isFocusedCell
 		})}
 			{@const ID_RESULTS_LABEL = 'supersearch-results-label'}
-			<hr class="border-neutral mb-px sm:hidden" />
-			<nav class="expanded-content sm:mt-3 flex w-full flex-col">
+			<nav
+				class="expanded-content py-1 sm:mt-2 2xl:mt-3 flex w-full flex-col gap-1 border-t border-neutral sm:border-none"
+			>
 				{#if smMediaQuery.current}
 					<ShowAllResultsRow
 						rowIndex={showAllResultsRowIndex}
@@ -650,16 +651,16 @@
 					query={q}
 					{selection}
 				/>
-				<hr class="hidden sm:border-neutral sm:block mt-3" />
+				<hr class="hidden sm:border-neutral sm:block sm:mt-2" />
 				{#if resultsCount && q.trim().length}
 					<div
 						role="rowgroup"
 						aria-labelledby={ID_RESULTS_LABEL}
-						class="min-h-0 overflow-y-auto grow"
+						class="min-h-0 overflow-y-auto grow pb-1"
 					>
 						<h2
 							id={ID_RESULTS_LABEL}
-							class="text-placeholder pt-4 pb-3 pl-4 text-xs font-medium tracking-widest uppercase"
+							class="text-placeholder pt-2 sm:pt-4 pb-3 pl-4 text-xs font-medium tracking-widest uppercase"
 						>
 							{page.data.t('supersearch.suggestions')}
 						</h2>
@@ -681,9 +682,9 @@
 				{/if}
 			</nav>
 		{/snippet}
-		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
+		{#snippet resultItemRow({ resultItem, getCellId, isFocusedRow, isFocusedCell })}
 			{#if resultItem}
-				<Suggestion item={resultItem} {getCellId} {isFocusedCell} />
+				<Suggestion item={resultItem} {getCellId} {isFocusedRow} {isFocusedCell} />
 			{/if}
 		{/snippet}
 	</SuperSearch>

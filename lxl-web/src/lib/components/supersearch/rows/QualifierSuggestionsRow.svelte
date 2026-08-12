@@ -6,6 +6,7 @@
 	import { getParentNodeByType, type Selection } from 'supersearch';
 	import IconFilter from '~icons/bi/filter';
 	import { page } from '$app/state';
+	import IconReturnKey from '~icons/bi/arrow-return-left';
 
 	function debugLog(message: unknown) {
 		if (env.PUBLIC_DEBUG_SUPERSEARCH && env.PUBLIC_DEBUG_SUPERSEARCH.toLowerCase() === 'true') {
@@ -386,13 +387,16 @@
 
 <div
 	role="row"
-	class={['flex items-center sm:mx-3 sm:rounded-lg', isFocusedRow(rowIndex) && 'bg-accent-50/75']}
+	class={[
+		'flex items-center mx-2 rounded-lg relative lg:mx-3',
+		isFocusedRow(rowIndex) && 'bg-accent-50/75'
+	]}
 >
 	<button
 		type="button"
 		id={getCellId(rowIndex, 0)}
 		class={[
-			'min-h-12 w-full flex items-center gap-2 font-medium text-link 2xl:min-h-13 hover:underline sm:rounded-lg',
+			'min-h-11 2xl:min-h-12 w-full flex items-center gap-2 font-medium text-link hover:underline rounded-lg',
 			isFocusedCell(rowIndex, 0) && 'focused-cell'
 		]}
 	>
@@ -425,6 +429,12 @@
 			</li>
 		{/each}
 	</ul>
+	{#if isFocusedCell(rowIndex, 0)}
+		<IconReturnKey
+			class="hidden sm:block absolute right-4.5 text-link pointer-events-none"
+			aria-hidden="true"
+		/>
+	{/if}
 </div>
 
 <style lang="postcss">
