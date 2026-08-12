@@ -91,6 +91,7 @@
 				{
 					resultItem: ResultItem;
 					getCellId: (cellIndex: number) => string;
+					isFocusedRow: () => boolean;
 					isFocusedCell: (cellIndex: number) => boolean;
 					rowIndex: number;
 				}
@@ -1008,6 +1009,7 @@
 			{@render resultItemRow?.({
 				resultItem,
 				getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+				isFocusedRow: () => activeRowIndex === rowIndex,
 				isFocusedCell: (colIndex: number) =>
 					activeRowIndex === rowIndex && colIndex === activeColIndex,
 				rowIndex
