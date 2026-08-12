@@ -485,19 +485,6 @@
 		return 0;
 	}
 
-	const resultsHeight = $derived.by(() => {
-		if (smMediaQuery.current && superSearch?.isExpanded) {
-			return getResultsHeight(innerHeight.current, comboboxOffsetTop);
-		}
-	});
-
-	function getResultsHeight(innerHeight?: number, comboboxOffsetTop?: number) {
-		// TODO: should probably be deboucned...
-		if (innerHeight && comboboxOffsetTop) {
-			return innerHeight - comboboxOffsetTop - 222 + 'px';
-		}
-	}
-
 	function handleChangeActiveCell({ id }: ChangeActiveCell) {
 		const activeCellElement = document.getElementById(id);
 		if (activeCellElement) {
@@ -561,7 +548,7 @@
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
 		onkeydown={handleKeyDown}
 		onchangeactivecell={handleChangeActiveCell}
-		--supersearch-dialog-margin-top={comboboxOffsetTop ? `${comboboxOffsetTop}px` : undefined}
+		--supersearch-dialog-padding-top={comboboxOffsetTop ? `${comboboxOffsetTop}px` : undefined}
 		skipInputRowOnArrowKey
 	>
 		{#snippet inputRow({
@@ -643,7 +630,7 @@
 		})}
 			{@const ID_RESULTS_LABEL = 'supersearch-results-label'}
 			<hr class="border-neutral mb-px sm:hidden" />
-			<nav class="expanded-content sm:mt-3">
+			<nav class="expanded-content sm:mt-3 flex w-full flex-col">
 				{#if smMediaQuery.current}
 					<ShowAllResultsRow
 						rowIndex={showAllResultsRowIndex}
@@ -668,8 +655,7 @@
 					<div
 						role="rowgroup"
 						aria-labelledby={ID_RESULTS_LABEL}
-						class="max-results-height overflow-y-auto"
-						style:--results-height={resultsHeight}
+						class="min-h-0 overflow-y-auto grow"
 					>
 						<h2
 							id={ID_RESULTS_LABEL}
@@ -810,32 +796,18 @@
 	}
 
 	:global(.supersearch-dialog) {
-		position: fixed;
 		height: 100%;
-		max-height: 100vh;
-		max-height: 100lvh;
+		height: 100vh;
+		height: 100lvh;
 		width: 100%;
 		max-width: 100%;
 		background-color: transparent;
 		margin: 0;
 		padding: 0;
-		top: 0;
+		max-height: none;
 
 		&::backdrop {
 			background: var(--color-backdrop);
-		}
-
-		@variant sm {
-			top: 0;
-			margin-top: max(0px, calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 2));
-		}
-
-		@variant lg {
-			margin-top: calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 3);
-		}
-
-		@variant 2xl {
-			margin-top: calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 3.25);
 		}
 	}
 
@@ -844,8 +816,7 @@
 		width: 100%;
 
 		@variant sm {
-			position: fixed;
-			height: auto;
+			padding-top: max(0px, calc(var(--supersearch-dialog-padding-top, 0px) - var(--spacing) * 2));
 		}
 
 		@variant lg {
@@ -853,20 +824,25 @@
 			grid-template-areas: var(--appbar-template-areas);
 			grid-template-columns: var(--appbar-template-columns);
 			gap: var(--appbar-gap);
+			padding-top: calc(var(--supersearch-dialog-padding-top, 0px) - var(--spacing) * 3);
+			padding-bottom: calc(var(--spacing) * 3);
 			padding-inline: 0;
 		}
 
 		@variant 2xl {
+			padding-top: calc(var(--supersearch-dialog-padding-top, 0px) - var(--spacing) * 3.25);
 		}
 	}
 
 	:global(.supersearch-dialog-content) {
+		display: flex;
+		flex-direction: column;
 		grid-area: search;
 		background: var(--color-page);
 		pointer-events: auto;
 		max-height: 100vh;
 		max-height: 100lvh;
-		overflow-y: scroll;
+		overflow-y: hidden;
 		overflow-x: hidden;
 		overscroll-behavior: contain;
 		scrollbar-width: none;
@@ -878,8 +854,15 @@
 		@variant sm {
 			border-radius: var(--radius-2xl);
 			height: fit-content;
+			max-height: 100%;
 			@apply drop-shadow-md;
 		}
+
+		& :global([role='grid']) {
+			display: flex;
+			overflow: hidden;
+		}
+
 		& :global(.supersearch-combobox) {
 			@variant sm {
 				padding-inline: calc(var(--spacing) * 1.5);
@@ -1026,15 +1009,5 @@
 				color: var(--color-link);
 			}
 		}
-	}
-
-	.max-results-height {
-		@variant sm {
-			max-height: var(--results-height);
-		}
-	}
-
-	button:has(kbd) {
-		min-height: var(--search-input-height);
 	}
 </style>
