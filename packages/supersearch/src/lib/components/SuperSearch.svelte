@@ -321,6 +321,7 @@
 			activeColIndex = defaultResultCol;
 		} else {
 			activeColIndex = defaultInputCol;
+			allowArrowKeyCursorHandling = { vertical: false, horizontal: true };
 		}
 	}
 
