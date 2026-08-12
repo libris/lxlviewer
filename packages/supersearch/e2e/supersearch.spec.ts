@@ -189,6 +189,23 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
 });
 
+// Ensure https://github.com/libris/lxlviewer/pull/1652 does not regress
+test('ensure arrow key handling is reset when clicking expanded input', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('abde');
+	await page.waitForResponse(
+		(res) => res.url().includes('/api/find?_q=abde') && res.status() === 200
+	);
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.getByRole('dialog').getByRole('combobox').click();
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('c');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('abcde');
+});
+
 test('user can toggle expanded search using alt key + arrow up or down (without moving cursor) ', async ({
 	page
 }) => {
