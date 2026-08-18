@@ -223,83 +223,81 @@
 	</div>
 </section>
 <section id={ID_EXPLORE} class="explore" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
-	{#if !page.data.subsetMapping}
-		<nav
-			aria-labelledby={ID_CATEGORIES_LABEL}
-			class="categories lg:scrollbar-hidden items-center py-4 sm:py-4.5 lg:grid lg:overflow-x-scroll lg:py-6"
+	<nav
+		aria-labelledby={ID_CATEGORIES_LABEL}
+		class="categories lg:scrollbar-hidden items-center py-4 sm:py-4.5 lg:grid lg:overflow-x-scroll lg:py-6"
+	>
+		<h2
+			id={ID_CATEGORIES_LABEL}
+			class="text-placeholder mb-3 pl-3 text-xs font-medium tracking-widest uppercase sm:mb-4.5 lg:mb-0 lg:pl-6 lg:text-sm 2xl:pl-8"
 		>
-			<h2
-				id={ID_CATEGORIES_LABEL}
-				class="text-placeholder mb-3 pl-3 text-xs font-medium tracking-widest uppercase sm:mb-4.5 lg:mb-0 lg:pl-6 lg:text-sm 2xl:pl-8"
-			>
-				{page.data.t('home.categories')}
+			{page.data.t('home.categories')}
+		</h2>
+		<ul
+			class="scrollbar-hidden flex gap-1.5 overflow-x-scroll text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1.5 lg:text-[0.9375rem] 2xl:text-base"
+		>
+			{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
+				<li>
+					<a
+						href={resolve(page.data.localizeHref(category.href))}
+						id={category.id}
+						aria-labelledby="search-for {category.id}"
+						class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
+					>
+						{category.label}
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</nav>
+	<hr class={['border-neutral mb-6 2xl:mx-8 2xl:mb-8']} />
+	{#each featuredSearches as featured, index (featured.heading)}
+		{@render featuredSearchSection({
+			featured,
+			id: `featured-search-${index}`,
+			type: 'horizontal',
+			lazyload: index === 0 ? 'mount' : 'intersection'
+		})}
+	{/each}
+	<section class="bg-primary-50 mb-8 scroll-mt-20 px-3 py-12 lg:py-16">
+		<div class="2xl:max-w-10xl mx-auto max-w-7xl">
+			<h2 class="mb-4.5 px-6 text-center font-serif text-2xl lg:text-3xl @min-[110rem]:text-4xl">
+				{page.data.t('home.collectionsTitle')}
 			</h2>
-			<ul
-				class="scrollbar-hidden flex gap-1.5 overflow-x-scroll text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1.5 lg:text-[0.9375rem] 2xl:text-base"
-			>
-				{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
-					<li>
-						<a
-							href={resolve(page.data.localizeHref(category.href))}
-							id={category.id}
-							aria-labelledby="search-for {category.id}"
-							class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
-						>
-							{category.label}
-						</a>
-					</li>
+			<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
+				{page.data.t('home.collectionsDescription')}
+			</p>
+			<div class="mx-auto mt-8">
+				{#each featuredCollections as collection (collection.heading)}
+					<FeaturedPreviewList
+						featured={collection}
+						ariaLabelledBy={collection.heading}
+						type="grid"
+						placeholderCount={4}
+						lazyload="intersection"
+					/>
 				{/each}
-			</ul>
-		</nav>
-		<hr class={['border-neutral mb-6 2xl:mx-8 2xl:mb-8']} />
-		{#each featuredSearches as featured, index (featured.heading)}
-			{@render featuredSearchSection({
-				featured,
-				id: `featured-search-${index}`,
-				type: 'horizontal',
-				lazyload: index === 0 ? 'mount' : 'intersection'
-			})}
-		{/each}
-		<section class="bg-primary-50 mb-8 scroll-mt-20 px-3 py-12 lg:py-16">
-			<div class="2xl:max-w-10xl mx-auto max-w-7xl">
-				<h2 class="mb-4.5 px-6 text-center font-serif text-2xl lg:text-3xl @min-[110rem]:text-4xl">
-					{page.data.t('home.collectionsTitle')}
-				</h2>
-				<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
-					{page.data.t('home.collectionsDescription')}
-				</p>
-				<div class="mx-auto mt-8">
-					{#each featuredCollections as collection (collection.heading)}
-						<FeaturedPreviewList
-							featured={collection}
-							ariaLabelledBy={collection.heading}
-							type="grid"
-							placeholderCount={4}
-							lazyload="intersection"
-						/>
-					{/each}
-					<div class="mt-8 text-center">
-						<a
-							class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium focus-within:bg-black hover:bg-black"
-							href={page.data.localizeHref(
-								resolve('/(app)/[[lang=lang]]/collections', { lang: undefined })
-							)}
-						>
-							{page.data.t('home.collectionsReadMore')}
-						</a>
-					</div>
+				<div class="mt-8 text-center">
+					<a
+						class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium focus-within:bg-black hover:bg-black"
+						href={page.data.localizeHref(
+							resolve('/(app)/[[lang=lang]]/collections', { lang: undefined })
+						)}
+					>
+						{page.data.t('home.collectionsReadMore')}
+					</a>
 				</div>
 			</div>
-		</section>
-		{#each featuredSearches2 as featured, index (featured.heading)}
-			{@render featuredSearchSection({
-				featured,
-				type: 'horizontal',
-				id: `featured-search-${featuredSearches2.length + index}`,
-				lazyload: 'intersection'
-			})}
-		{/each}
-	{/if}
+		</div>
+	</section>
+	{#each featuredSearches2 as featured, index (featured.heading)}
+		{@render featuredSearchSection({
+			featured,
+			type: 'horizontal',
+			id: `featured-search-${featuredSearches2.length + index}`,
+			lazyload: 'intersection'
+		})}
+	{/each}
 </section>
 
 <style lang="postcss">
