@@ -22,16 +22,26 @@ import { getLibrary, getOrgMembers, startRefreshLibraries } from '$lib/utils/get
 import { getSubsetMapping } from '$lib/utils/subsetCache.server';
 import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions.server';
 import { updateSettings } from '$lib/utils/userSettings.svelte';
+import { JsonLd } from '$lib/types/xl';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
 let utilCache: Promise<Util> | undefined;
+const subsiteCache: Record<string, Promise<Site>> = {};
 
 // Warm up caches immediately on startup instead of waiting for a request
 export const init: ServerInit = async () => {
 	try {
 		const [, displayUtil] = await loadUtilCached();
 		startRefreshLibraries(displayUtil, defaultLocale);
+
+		(env['SUBSITES'] || '')
+			.split(',')
+			.map((s) => s.trim())
+			.filter((s) => s.length > 0)
+			.map((site) => env[`SUBSITE.${site}.SEARCH_SITE`])
+			.filter((s) => typeof s === 'string')
+			.forEach((s) => getSiteConfCached(s));
 	} catch (err) {
 		// This is OK, handle() will retry
 		console.error('Startup initialization failed:', err);
@@ -53,7 +63,7 @@ export const handle = async ({ event, resolve }) => {
 		redirect(302, `?_r=itemHeldByOrg:${clean}`);
 	}
 
-	const site = getSite(event);
+	const site = await getSite(event);
 
 	if (site) {
 		event.locals.site = site;
@@ -172,7 +182,7 @@ export const handle = async ({ event, resolve }) => {
 	});
 
 	// set data-theme defined in themes.css
-	const dataTheme = site?.themeName || 'libris';
+	const dataTheme = site?.configuration?.themeName || 'libris';
 
 	// get subset mapping
 	const _r = event.url.searchParams.get('_r');
@@ -262,21 +272,54 @@ async function loadUtil(): Promise<Util> {
 	return [vocabUtil, displayUtil, qualifierSuggestionsByLocale];
 }
 
-function getSite(event: RequestEvent): Site | null {
+function getSite(event: RequestEvent): Promise<Site> | null {
 	// TODO replace this with proper domain matching
 	const deepestSubDomain = event.url.hostname.split('.')[0];
 
 	if (configuredSubDomains().includes(deepestSubDomain)) {
 		// TODO fetch from backend?
 		const site = deepestSubDomain;
-		return {
-			name: env[`SUBSITE.${site}.NAME`] || site,
-			themeName: env[`SUBSITE.${site}.APP_THEME`],
-			searchSite: env[`SUBSITE.${site}.SEARCH_SITE`]
-		};
+		const siteUrl = env[`SUBSITE.${site}.SEARCH_SITE`];
+		if (!siteUrl) {
+			return null;
+		}
+		return getSiteConfCached(siteUrl);
 	}
 
 	return null;
+}
+
+async function getSiteConfCached(siteUrl: string) {
+	if (!subsiteCache[siteUrl]) {
+		subsiteCache[siteUrl] = loadSiteConf(siteUrl).catch((err) => {
+			delete subsiteCache[siteUrl];
+			throw err;
+		});
+	}
+	return subsiteCache[siteUrl];
+}
+
+async function loadSiteConf(siteUrl: string): Promise<Site> {
+	const fetchUrl = `${env.API_URL}/${siteUrl}?nocache=1`;
+	console.log(`Fetching ${fetchUrl}`);
+	const response = await fetch(fetchUrl, {
+		headers: { Accept: 'application/ld+json' },
+		signal: AbortSignal.timeout(10_000)
+	});
+	if (!response.ok) {
+		throw new Error(
+			`Failed to load site conf: ${fetchUrl} ${response.status} ${response.statusText}`
+		);
+	}
+	const conf = (await response.json())[JsonLd.GRAPH][1];
+
+	const site = {
+		name: conf['title'],
+		searchSite: siteUrl,
+		configuration: conf['lxlwebConfiguration']
+	};
+	console.log(`Loaded site conf: ${JSON.stringify(site, null, 2)}`);
+	return site;
 }
 
 function configuredSubDomains(): string[] {

@@ -10,6 +10,7 @@ export async function load({ locals, url, params }) {
 	const subsetMapping = locals.subsetMapping;
 
 	const siteName = locals.site?.name;
+	const siteTranslations = locals.site?.configuration?.locales;
 	const qualifierSuggestions = locals.qualifierSuggestionsByLocale[locale];
 
 	return {
@@ -17,6 +18,7 @@ export async function load({ locals, url, params }) {
 		librisSession,
 		subsetMapping,
 		siteName,
+		siteTranslations,
 		qualifierSuggestions
 	};
 }
