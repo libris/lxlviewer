@@ -9,7 +9,8 @@ export const theme = EditorView.theme({
 		marginLeft: '0px'
 	},
 	'&.cm-editor .cm-selectionLayer': {
-		zIndex: '1!important'
+		zIndex: '1!important',
+		pointerEvents: 'none'
 	},
 	'&.cm-focused .cm-selectionBackground': {
 		background: '#3b82f640!important'
