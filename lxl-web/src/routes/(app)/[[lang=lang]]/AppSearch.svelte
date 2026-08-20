@@ -23,7 +23,7 @@
 
 	const action = $derived(page.data.locale === baseLocale ? '/find' : `/${page.data.locale}/find`);
 
-	const ariaLabel = $derived(page.data.t('header.search'));
+	const ariaLabel = $derived(page.data.t('search.search'));
 	const placeholder: string = $derived(
 		page.data.subsetMapping
 			? `${page.data.t('header.searchSubsetPlaceholder')}: ${displayMappingToString(page.data.subsetMapping)}`
@@ -67,7 +67,7 @@
 					{placeholder}
 					collapsedAriaLabelledBy={ariaLabelledBy}
 					collapsedAriaLabel={ariaLabel}
-					expandedAriaLabel={page.data.t('header.search')}
+					expandedAriaLabel={page.data.t('search.search')}
 					onCursorChange={(value) => (cursor = value)}
 					qualifierSuggestions={page.data.qualifierSuggestions || []}
 					{initialValueFromFallback}

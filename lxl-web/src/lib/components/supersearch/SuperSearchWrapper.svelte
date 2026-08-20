@@ -583,7 +583,7 @@
 						'action rounded-r-md border-l-neutral-300 sm:rounded-r-lg sm:border-l',
 						isHomeRoute || expanded ? 'hidden sm:flex' : 'flex'
 					]}
-					aria-label={page.data.t('supersearch.search')}
+					aria-label={page.data.t('search.search')}
 					tabindex={isHomeRoute ? -1 : undefined}
 				>
 					<IconSearch aria-hidden="true" class={['flex size-4.5']} />

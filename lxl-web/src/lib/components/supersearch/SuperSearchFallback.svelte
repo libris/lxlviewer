@@ -86,7 +86,7 @@
 		class={[
 			'action text-subtle hidden rounded-r-md border-l border-l-neutral-300 sm:flex 2xl:rounded-r-lg'
 		]}
-		aria-label={page.data.t('supersearch.search')}
+		aria-label={page.data.t('search.search')}
 	>
 		<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 	</button>
