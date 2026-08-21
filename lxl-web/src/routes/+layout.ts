@@ -13,6 +13,7 @@ export async function load({ params, data, url }) {
 	const siteName = data.siteName;
 	const heroImage = data.heroImage;
 	const features = data.features;
+	const footer = data.footer;
 	const qualifierSuggestions = data.qualifierSuggestions;
 
 	return {
@@ -26,6 +27,7 @@ export async function load({ params, data, url }) {
 		siteName,
 		heroImage,
 		features,
+		footer,
 		qualifierSuggestions
 	};
 }

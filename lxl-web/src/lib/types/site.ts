@@ -18,6 +18,19 @@ export function resolveFeatures(overrides?: Partial<Features>): Features {
 	return { ...defaultFeatures, ...overrides };
 }
 
+export const FOOTER_COOKIES_HREF = '[cookies]';
+
+export interface FooterLink {
+	titleKey: string;
+	href: string;
+}
+
+export interface FooterSection {
+	id: string;
+	titleKey: string;
+	items: FooterLink[];
+}
+
 export interface Site {
 	name: string;
 	searchSite?: string;
@@ -26,5 +39,6 @@ export interface Site {
 		heroImage?: string;
 		locales?: Translations;
 		features?: Partial<Features>;
+		footer?: FooterSection[];
 	};
 }

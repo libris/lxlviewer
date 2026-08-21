@@ -1,5 +1,6 @@
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { resolveFeatures } from '$lib/types/site';
+import { defaultFooter } from '$lib/constants/footer';
 
 export async function load({ locals, url, params }) {
 	const userSettings = locals.userSettings;
@@ -14,6 +15,7 @@ export async function load({ locals, url, params }) {
 	const siteTranslations = locals.site?.configuration?.locales;
 	const heroImage = locals.site?.configuration?.heroImage;
 	const features = resolveFeatures(locals.site?.configuration?.features);
+	const footer = locals.site ? (locals.site.configuration?.footer ?? []) : defaultFooter;
 	const qualifierSuggestions = locals.qualifierSuggestionsByLocale[locale];
 
 	return {
@@ -24,6 +26,7 @@ export async function load({ locals, url, params }) {
 		siteTranslations,
 		heroImage,
 		features,
+		footer,
 		qualifierSuggestions
 	};
 }
