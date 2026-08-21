@@ -9,7 +9,9 @@
 <footer
 	class="mt-auto flex flex-col justify-between gap-8 bg-neutral-100 px-4 py-8 sm:flex-row sm:px-8 print:hidden"
 >
-	<div class="flex flex-col gap-4 sm:flex-row sm:gap-16 [&_li>*]:text-sm [&_p]:font-medium">
+	<div
+		class="flex flex-col flex-wrap gap-4 sm:flex-row sm:gap-16 [&_li>*]:text-sm [&_p]:font-medium"
+	>
 		<nav class="flex flex-col gap-2" aria-labelledby="nav-info">
 			<p id="nav-info">
 				{page.data.t('footer.information')}
