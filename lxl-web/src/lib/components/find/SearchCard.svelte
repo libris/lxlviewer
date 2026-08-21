@@ -150,7 +150,7 @@
 see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c23e223cdda91b17a -->
 
 {#snippet holdingsButton()}
-	{#if id && item.numberOfHolders >= 0}
+	{#if id && item.numberOfHolders >= 0 && page.data.features.holdings}
 		<a
 			class="btn btn-primary h-7 min-w-28 rounded-full md:h-8"
 			href={page.data.localizeHref(getHoldingsLink(page.url, id))}

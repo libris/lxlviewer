@@ -271,6 +271,7 @@
 			lazyload: index === 0 ? 'mount' : 'intersection'
 		})}
 	{/each}
+    {#if page.data.features.specialCollections}
 	<section class="bg-primary-50 mb-8 scroll-mt-20 px-3 py-12 lg:py-16">
 		<div class="2xl:max-w-10xl mx-auto max-w-7xl">
 			<h2 class="mb-4.5 px-6 text-center font-serif text-2xl lg:text-3xl @min-[110rem]:text-4xl">
@@ -302,6 +303,7 @@
 			</div>
 		</div>
 	</section>
+    {/if}
 	{#each featuredSearches2 as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,

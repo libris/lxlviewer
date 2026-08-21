@@ -1,4 +1,5 @@
 import { getSupportedLocale } from '$lib/i18n/locales';
+import { resolveFeatures } from '$lib/types/site';
 
 export async function load({ locals, url, params }) {
 	const userSettings = locals.userSettings;
@@ -12,6 +13,7 @@ export async function load({ locals, url, params }) {
 	const siteName = locals.site?.name;
 	const siteTranslations = locals.site?.configuration?.locales;
 	const heroImage = locals.site?.configuration?.heroImage;
+	const features = resolveFeatures(locals.site?.configuration?.features);
 	const qualifierSuggestions = locals.qualifierSuggestionsByLocale[locale];
 
 	return {
@@ -21,6 +23,7 @@ export async function load({ locals, url, params }) {
 		siteName,
 		siteTranslations,
 		heroImage,
+		features,
 		qualifierSuggestions
 	};
 }

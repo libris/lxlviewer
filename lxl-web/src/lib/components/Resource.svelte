@@ -128,7 +128,10 @@
 	);
 
 	const hasHoldingsBtn = $derived(
-		holdings.byType && Object.keys(holdings.byType).length && instances
+		holdings.byType &&
+			Object.keys(holdings.byType).length &&
+			instances &&
+			page.data.features.holdings
 	);
 </script>
 

@@ -48,18 +48,26 @@
 			LeadingIcon: IconSearch,
 			onclick: onclickSearch
 		},
-		{
-			href: page.data.localizeHref('/my-pages'),
-			label: page.data.t('appMenu.myPages'),
-			currentPage: page.route.id === '/(app)/[[lang=lang]]/my-pages',
-			LeadingIcon: IconSaved
-		},
-		{
-			href: page.data.localizeHref('/collections'),
-			label: page.data.t('appMenu.specialCollections'),
-			currentPage: page.route.id === '/(app)/[[lang=lang]]/collections',
-			LeadingIcon: BiListColumnsReversed
-		},
+		...(page.data.features.myPages
+			? [
+					{
+						href: page.data.localizeHref('/my-pages'),
+						label: page.data.t('appMenu.myPages'),
+						currentPage: page.route.id === '/(app)/[[lang=lang]]/my-pages',
+						LeadingIcon: IconSaved
+					}
+				]
+			: []),
+		...(page.data.features.specialCollections
+			? [
+					{
+						href: page.data.localizeHref('/collections'),
+						label: page.data.t('appMenu.specialCollections'),
+						currentPage: page.route.id === '/(app)/[[lang=lang]]/collections',
+						LeadingIcon: BiListColumnsReversed
+					}
+				]
+			: []),
 		/*
 		{
 			href: page.data.localizeHref('/subsets'),

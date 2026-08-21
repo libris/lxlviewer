@@ -12,6 +12,7 @@ export async function load({ params, data, url }) {
 	const subsetMapping = data.subsetMapping;
 	const siteName = data.siteName;
 	const heroImage = data.heroImage;
+	const features = data.features;
 	const qualifierSuggestions = data.qualifierSuggestions;
 
 	return {
@@ -24,6 +25,7 @@ export async function load({ params, data, url }) {
 		subsetMapping,
 		siteName,
 		heroImage,
+		features,
 		qualifierSuggestions
 	};
 }
