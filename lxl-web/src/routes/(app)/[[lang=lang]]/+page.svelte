@@ -12,7 +12,7 @@
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import IconArrowRight from '~icons/bi/arrow-right';
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
-	import heroImage from '$lib/assets/img/bg-marbling01.jpg';
+	import heroFallback from '$lib/assets/img/hero/bg-marbling01.jpg';
 	import AppSearch from './AppSearch.svelte';
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
@@ -28,6 +28,18 @@
 	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
 	const featuredCollections: FeaturedSearch[] = $derived(page.data.featuredCollections);
+
+	const heroImageModules = import.meta.glob<string>('$lib/assets/img/hero/*.{jpg,jpeg,png,webp}', {
+		eager: true,
+		query: '?url',
+		import: 'default'
+	});
+
+	const heroImageByName: Record<string, string> = Object.fromEntries(
+		Object.entries(heroImageModules).map(([path, url]) => [path.split('/').pop()!, url])
+	);
+
+	const heroImage = $derived(heroImageByName[page.data.heroImage ?? ''] ?? heroFallback);
 
 	const searchContext = getSearchContext();
 	let searchContainerElement: HTMLDivElement | undefined = $state();

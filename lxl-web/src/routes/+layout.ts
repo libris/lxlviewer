@@ -11,6 +11,7 @@ export async function load({ params, data, url }) {
 	const librisSession = data.librisSession;
 	const subsetMapping = data.subsetMapping;
 	const siteName = data.siteName;
+	const heroImage = data.heroImage;
 	const qualifierSuggestions = data.qualifierSuggestions;
 
 	return {
@@ -22,6 +23,7 @@ export async function load({ params, data, url }) {
 		librisSession,
 		subsetMapping,
 		siteName,
+		heroImage,
 		qualifierSuggestions
 	};
 }

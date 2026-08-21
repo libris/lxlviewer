@@ -5,6 +5,7 @@ export interface Site {
 	searchSite?: string;
 	configuration?: {
 		themeName?: string;
+		heroImage?: string;
 		locales?: Translations;
 	};
 }
