@@ -357,7 +357,7 @@ export default {
 		show: 'Show pane',
 		hide: 'Hide pane',
 		trailingPane: 'Trailing pane',
-		resizeMe: 'Drag to resize pane'
+		resizablePane: 'Resizable pane'
 	},
 	citations: {
 		cite: 'Cite',
