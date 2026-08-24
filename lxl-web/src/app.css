@@ -415,6 +415,11 @@
 		&:hover {
 			background-color: var(--color-accent-700);
 		}
+
+		&:focus {
+			outline: 2px solid var(--color-page);
+			outline-offset: -4px;
+		}
 	}
 
 	.btn-icon {
