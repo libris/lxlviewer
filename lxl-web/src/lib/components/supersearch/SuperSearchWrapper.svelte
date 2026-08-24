@@ -671,13 +671,23 @@
 		}
 	}
 
-	.supersearch-input:not(.expanded),
+	.supersearch-input:not(.expanded) {
+		&:focus-within:not(:has(button:focus)) {
+			outline: 2px solid var(--color-outline);
+			outline-offset: 0;
+			box-shadow: 0 0 0 6px var(--color-accent-100);
+		}
+	}
+
 	.expanded.supersearch-input.focused-row:not(:has(.focused-cell)) {
-		@variant sm {
-			&:focus-within:not(:has(button:focus)) {
-				box-shadow: 0 0 0 6px var(--color-accent-100);
-				outline: 2px solid var(--color-outline);
+		&:focus-within:not(:has(button:focus)) {
+			outline: 2px solid var(--color-outline);
+			outline-offset: -2px;
+			box-shadow: none;
+
+			@variant sm {
 				outline-offset: 0;
+				box-shadow: 0 0 0 6px var(--color-accent-100);
 			}
 		}
 	}
