@@ -62,5 +62,10 @@ export interface Site {
 		appMenu?: AppMenuItem[];
 		featuredSearches?: FeaturedSearchConfig[];
 		featuredSearches2?: FeaturedSearchConfig[];
+		articles?: {
+			about?: {
+				articleBodyByLang?: Record<LocaleCode, string>;
+			};
+		};
 	};
 }

@@ -40,7 +40,7 @@
 
 <Meta
 	title={pageTitle}
-	description={page.data.t('myPages.pageDescription')}
+	description={page.data.t('myPages.metaDescription')}
 	url={page.url.origin + page.url.pathname}
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
