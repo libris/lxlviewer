@@ -1,4 +1,16 @@
 import type { Translations } from '$lib/i18n';
+import type { LocaleCode } from '$lib/i18n/locales';
+import type { InferInput } from 'valibot';
+import type { SearchResultsSchema } from '$lib/schemas/searchResult';
+
+export interface FeaturedSearchConfig {
+	headingByLang: Record<LocaleCode, string>;
+	leadingTextByLang?: Record<LocaleCode, string>;
+	footerTextByLang?: Record<LocaleCode, string>;
+	findHref: string;
+	previewParams: InferInput<typeof SearchResultsSchema>;
+	showAllLabelByLang?: Record<LocaleCode, string>;
+}
 
 export interface Features {
 	specialCollections: boolean;
@@ -42,5 +54,7 @@ export interface Site {
 		locales?: Translations;
 		features?: Partial<Features>;
 		footer?: FooterSection[];
+		featuredSearches?: FeaturedSearchConfig[];
+		featuredSearches2?: FeaturedSearchConfig[];
 	};
 }
