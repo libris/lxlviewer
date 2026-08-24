@@ -93,6 +93,12 @@ It’s easy to copy searches (including filters) by selecting the contents of th
 
 - Example: [A search for computer games held by Bergslagsbibblan](/find?_q=category:"saogf:Datorspel"+library:"sigel:org/BER"), which has been created by clicking suggested search filters, can be transformed to its text representation (`category:"saogf:Datorspel" library:"sigel:org/BER"`) by marking and copying it.
 
+### Use the keyboard for faster filtering
+
+For some filters, it's faster to enter the value using the keyboard instead of selecting one of the listed search suggestions.
+
+- Example: To quickly filter for resources translated from Spanish, type `originalLanguage:spa` and press Enter.
+
 ### Empty filters -- required a specific property to be present
 
 An empty filter can be used to require that the search results contain the property described by the filter (regardless of its value).
