@@ -88,7 +88,9 @@
 			href={resolve(page.data.localizeHref(relativizeUrl(data['@id'])))}
 			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
-			{@render image()}
+			{#if page.data.features.resourceImages}
+				{@render image()}
+			{/if}
 			<p class="decorated-card-heading-top text-subtle line-clamp-1 text-xs break-all">
 				<TypeIcon
 					type={data.typeForIcon}

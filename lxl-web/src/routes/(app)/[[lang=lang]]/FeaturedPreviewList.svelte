@@ -12,6 +12,7 @@
 		type?: 'horizontal' | 'grid';
 		lazyload?: 'intersection' | 'mount';
 		placeholderCount?: number;
+		showResourceImages?: boolean;
 	};
 
 	let {
@@ -19,7 +20,8 @@
 		ariaLabelledBy,
 		type = 'horizontal',
 		lazyload = undefined,
-		placeholderCount = 11
+		placeholderCount = 11,
+		showResourceImages = true
 	}: Props = $props();
 
 	let listElement: HTMLUListElement | undefined = $state();
@@ -92,7 +94,11 @@
 {#snippet previewPlaceholder()}
 	<div class="placeholder-container @container">
 		<div class="placeholder flex flex-col items-center"></div>
-		<div class={['skeleton mb-2 w-full', type === 'grid' ? 'aspect-video' : 'aspect-square']}></div>
+		{#if showResourceImages}
+			<div
+				class={['skeleton mb-2 w-full', type === 'grid' ? 'aspect-video' : 'aspect-square']}
+			></div>
+		{/if}
 		<div class="skeleton bg-neutral my-0.5 h-3 w-1/3"></div>
 		<div
 			class="skeleton bg-neutral mt-1.25 mb-2.5 h-3.5 w-3/4 @min-[16rem]:mb-2.25 @min-[16rem]:h-3.75"
@@ -106,7 +112,8 @@
 	class={[
 		'featured-previews contents',
 		previews?.totalItems === 0 && 'empty',
-		type === 'grid' ? 'grid-type' : 'horizontal-type'
+		type === 'grid' ? 'grid-type' : 'horizontal-type',
+		!showResourceImages && 'no-images'
 	]}
 >
 	<SearchResultList
@@ -134,4 +141,11 @@
 			height: calc(100cqw + (var(--spacing) * 3) + 10rem);  // TODO: Something smarter than this but we need a height value to prevent layout-shifting
 		}
 	}
+
+    .no-images.horizontal-type.featured-previews {
+        & .placeholder-container,
+        :global(article) {
+            height: unset;
+        }
+    }
 </style>

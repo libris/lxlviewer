@@ -5,13 +5,15 @@ export interface Features {
 	myPages: boolean;
 	favouriteLibraries: boolean;
 	holdings: boolean;
+	resourceImages: boolean;
 }
 
 export const defaultFeatures: Features = {
 	specialCollections: true,
 	myPages: true,
 	favouriteLibraries: true,
-	holdings: true
+	holdings: true,
+	resourceImages: true
 };
 
 export function resolveFeatures(overrides?: Partial<Features>): Features {

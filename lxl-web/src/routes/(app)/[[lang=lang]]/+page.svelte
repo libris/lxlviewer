@@ -139,7 +139,13 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			<FeaturedPreviewList {featured} ariaLabelledBy={id} {type} {lazyload} />
+			<FeaturedPreviewList
+				{featured}
+				ariaLabelledBy={id}
+				{type}
+				{lazyload}
+				showResourceImages={page.data.features.resourceImages}
+			/>
 		</div>
 		{#if featured.footerTextByLang}
 			<footer class="mt-2 flex justify-start px-3 sm:justify-end @sm:px-6 @5xl:px-8">
