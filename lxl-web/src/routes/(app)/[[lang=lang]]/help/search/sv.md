@@ -95,6 +95,12 @@ Det går enkelt att kopiera sökningar (inklusive filter) genom att markera inne
 
 - Exempel: [En sökning på datorspel som finns på Bergslagsbibblan](/find?_q=category:"saogf:Datorspel"+library:"sigel:org/BER"), som klickats fram från föreslagna filter, kan omvandlas till dess textrepresentation (`category:"saogf:Datorspel" library:"sigel:org/BER"`) genom att markera och kopiera den.
 
+### Använd tangentbordet för snabbare filtrering
+
+För vissa filter går det snabbare att mata in värdet med tangentbordet istället för att välja bland alternativen i listan.
+
+- Exempel: För att snabbt filtrera på resurser översätta från spanska, skriv in `originalspråk:spa` och trycker på Enter.
+
 ### Tomma filter – kräv att en egenskap ska finnas
 
 Ett tomt filter kan användas för att kräva att sökträffarna ska innehålla egenskapen som filtret beskriver (oavsett värde).
