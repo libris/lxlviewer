@@ -206,7 +206,7 @@
 						<hgroup>
 							<p class="text-subtle flex items-center gap-1 text-sm font-medium">
 								{#if typeForIcon}
-									<span class="mr-0.5 self-stretch pt-1">
+									<span class="mr-0.5">
 										<TypeIcon type={typeForIcon} class="size-3" />
 									</span>
 								{/if}
