@@ -14,6 +14,7 @@ export async function load({ params, data, url }) {
 	const heroImage = data.heroImage;
 	const features = data.features;
 	const footer = data.footer;
+	const appMenuItems = data.appMenuItems;
 	const qualifierSuggestions = data.qualifierSuggestions;
 
 	return {
@@ -28,6 +29,7 @@ export async function load({ params, data, url }) {
 		heroImage,
 		features,
 		footer,
+		appMenuItems,
 		qualifierSuggestions
 	};
 }

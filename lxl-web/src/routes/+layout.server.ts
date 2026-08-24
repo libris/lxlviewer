@@ -1,5 +1,6 @@
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { resolveFeatures } from '$lib/types/site';
+import { defaultAppMenuItems } from '$lib/constants/appMenu';
 import { defaultFooter } from '$lib/constants/footer';
 
 export async function load({ locals, url, params }) {
@@ -16,6 +17,9 @@ export async function load({ locals, url, params }) {
 	const heroImage = locals.site?.configuration?.heroImage;
 	const features = resolveFeatures(locals.site?.configuration?.features);
 	const footer = locals.site ? (locals.site.configuration?.footer ?? []) : defaultFooter;
+	const appMenuItems = locals.site?.configuration
+		? (locals.site.configuration?.appMenu ?? [])
+		: defaultAppMenuItems;
 	const qualifierSuggestions = locals.qualifierSuggestionsByLocale[locale];
 
 	return {
@@ -27,6 +31,7 @@ export async function load({ locals, url, params }) {
 		heroImage,
 		features,
 		footer,
+		appMenuItems,
 		qualifierSuggestions
 	};
 }

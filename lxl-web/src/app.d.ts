@@ -6,7 +6,7 @@ import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
 import type { AdjecentSearchResult, DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
 import 'unplugin-icons/types/svelte';
-import type { Features, FooterSection, Site } from '$lib/types/site';
+import type { AppMenuItem, Features, FooterSection, Site } from '$lib/types/site';
 
 declare global {
 	namespace App {
@@ -35,6 +35,7 @@ declare global {
 			base: string;
 			features: Features;
 			footer: FooterSection[];
+			appMenuItems: AppMenuItem[];
 			librisSession?: string;
 			locale: string;
 			qualifierSuggestions: QualifierSuggestion2[];

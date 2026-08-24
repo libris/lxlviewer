@@ -24,8 +24,6 @@ export default {
 		specialCollections: 'Särskilda samlingar',
 		myPages: 'Mina sidor',
 		help: 'Hjälp',
-		about: 'Om Libris',
-		aboutBeta: 'Frågor och svar',
 		illSite: 'Libris fjärrlån',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',

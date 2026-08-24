@@ -25,8 +25,6 @@ export default {
 		specialCollections: 'Special collections',
 		myPages: 'My pages',
 		help: 'Help',
-		about: 'About Libris',
-		aboutBeta: 'FAQ',
 		illSite: 'Libris Fjärrlån',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',

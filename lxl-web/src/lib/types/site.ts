@@ -45,6 +45,11 @@ export interface FooterSection {
 	items: FooterLink[];
 }
 
+export interface AppMenuItem {
+	titleKey: string;
+	href: string;
+}
+
 export interface Site {
 	name: string;
 	searchSite?: string;
@@ -54,6 +59,7 @@ export interface Site {
 		locales?: Translations;
 		features?: Partial<Features>;
 		footer?: FooterSection[];
+		appMenu?: AppMenuItem[];
 		featuredSearches?: FeaturedSearchConfig[];
 		featuredSearches2?: FeaturedSearchConfig[];
 	};
