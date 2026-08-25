@@ -126,7 +126,7 @@
 			width: 1px;
 			height: auto;
 			z-index: 2;
-			background-color: var(--color-neutral-200);
+			background-color: var(--color-neutral-300);
 		}
 
 		&::after {

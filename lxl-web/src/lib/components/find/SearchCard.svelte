@@ -163,7 +163,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				{#if item.heldByMyLibraries}
 					<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
 				{:else}
-					<BiHouse class="text-neutral-400" />
+					<BiHouse class="text-neutral-500" />
 				{/if}
 			</span>
 			{#if item.heldBySubset}
@@ -398,7 +398,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							snippet: mediaLinksPopover
 						}}
 					>
-						<BiBoxArrowUpRight class="text-neutral-400" />
+						<BiBoxArrowUpRight class="text-neutral-500" />
 						<span>{page.data.t('search.existsOnline')}</span>
 					</a>
 				{/if}
@@ -409,7 +409,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						href={getCiteLink(page.url, id)}
 						onclick={(event) => handleClickCite(event, page.state, id)}
 					>
-						<BiQuote aria-hidden="true" class="size-4 text-neutral-400" />
+						<BiQuote aria-hidden="true" class="size-4 text-neutral-500" />
 						<span id={`cite-${id}`}> {page.data.t('citations.cite')}</span>
 					</a>
 				{:else if isLibraryCard(item)}

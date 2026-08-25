@@ -319,7 +319,7 @@
 								href={getCiteLink(page.url, fnurgel)}
 								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
 							>
-								<BiQuote class="text-neutral-400" />
+								<BiQuote class="text-neutral-500" />
 								<span>{page.data.t('citations.cite')}</span>
 							</a>
 						{/if}
