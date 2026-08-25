@@ -107,15 +107,14 @@
 {/snippet}
 
 <div
-	class="suggestion flex h-13 sm:h-14 items-stretch mx-2 lg:mx-3 rounded-md relative"
+	class="suggestion flex h-13 sm:h-14 items-stretch rounded-md relative"
 	class:qualifier={item.qualifiers?.length}
 >
 	{#if item.qualifiers?.length}
 		<a
 			href={resolve(page.data.localizeHref(primaryAddQualifierLink))}
 			id={getCellId?.(0)}
-			class="px-1 rounded-md"
-			class:focused-cell={isFocusedCell?.(0)}
+			class={['mx-1 lg:mx-3 h-full rounded-md', isFocusedCell?.(0) && 'focused-cell']}
 		>
 			{@render resourceSnippet(item)}
 		</a>
@@ -123,7 +122,7 @@
 		<a
 			href={resolve(page.data.localizeHref(resourceId))}
 			id={getCellId ? getCellId(0) : ''}
-			class="px-1 rounded-md"
+			class={['mx-1 lg:mx-3 rounded-md', isFocusedCell?.(0) && 'focused-cell']}
 			class:focused-cell={isFocusedCell?.(0)}
 		>
 			{@render leadingContent?.()}
@@ -132,7 +131,7 @@
 	{/if}
 	{#if isFocusedRow?.()}
 		<div
-			class="absolute right-0 hidden sm:flex pointer-events-none h-full items-center bg-accent-100 justify-center w-12 rounded-r-md"
+			class="absolute right-4.5 hidden sm:flex pointer-events-none h-full items-center bg-accent-100 justify-center w-12 rounded-r-md"
 		>
 			{#if item.qualifiers?.length}
 				<IconAddQualifier class="text-link" aria-hidden="true" />

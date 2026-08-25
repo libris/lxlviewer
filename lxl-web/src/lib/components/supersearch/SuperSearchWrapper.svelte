@@ -630,7 +630,7 @@
 		})}
 			{@const ID_RESULTS_LABEL = 'supersearch-results-label'}
 			<nav
-				class="expanded-content py-1 sm:mt-2 2xl:mt-3 flex w-full flex-col gap-1 border-t border-neutral sm:border-none"
+				class="expanded-content py-1 sm:mt-2 2xl:mt-3 flex w-full flex-col border-t border-neutral sm:border-none"
 			>
 				{#if smMediaQuery.current}
 					<ShowAllResultsRow
@@ -656,7 +656,7 @@
 					<div
 						role="rowgroup"
 						aria-labelledby={ID_RESULTS_LABEL}
-						class="min-h-0 overflow-y-auto grow pb-1"
+						class="min-h-0 overflow-y-auto grow pb-0.75"
 					>
 						<h2
 							id={ID_RESULTS_LABEL}
