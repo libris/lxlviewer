@@ -205,6 +205,7 @@ export default {
 		moreQualifiers: 'More filters',
 		search: 'Search',
 		addQualifiers: 'Add filter',
+		moreQualifiers: 'More filters',
 		loading: 'Loading...',
 		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',

@@ -6,7 +6,9 @@
 	import { getParentNodeByType, type Selection } from 'supersearch';
 	import IconFilter from '~icons/bi/filter';
 	import { page } from '$app/state';
-	import IconReturnKey from '~icons/bi/arrow-return-left';
+	import IconArrowUpLeft from '~icons/bi/arrow-up-left';
+	import IconChevronRight from '~icons/bi/chevron-right';
+	import { resolve } from '$app/paths';
 
 	function debugLog(message: unknown) {
 		if (env.PUBLIC_DEBUG_SUPERSEARCH && env.PUBLIC_DEBUG_SUPERSEARCH.toLowerCase() === 'true') {
@@ -388,29 +390,26 @@
 <div
 	role="row"
 	class={[
-		'flex items-center mx-2 rounded-lg relative lg:mx-3',
+		'flex items-center mx-2 rounded-lg relative lg:mx-3 mt-0.75',
 		isFocusedRow(rowIndex) && 'bg-accent-50/75'
 	]}
 >
-	<button
-		type="button"
-		id={getCellId(rowIndex, 0)}
+	<div
 		class={[
-			'min-h-11 2xl:min-h-12 w-full flex items-center gap-2 font-medium text-link hover:underline rounded-lg',
-			isFocusedCell(rowIndex, 0) && 'focused-cell'
+			'min-h-11 2xl:min-h-12 flex items-center gap-2 font-medium text-subtle rounded-lg cursor-default pointer-events-none'
 		]}
 	>
-		<span class={['flex items-center gap-2.5 whitespace-nowrap']}>
-			<span class="size-6 items-center justify-center ml-4 mr-3 sm:ml-3 sm:mr-1.5 flex">
+		<span class={['flex items-center gap-2.5 whitespace-nowrap mr-4']}>
+			<span class="size-6 items-center justify-center ml-2.5 mr-2 sm:ml-3 sm:mr-1.5 flex">
 				<IconFilter aria-hidden="true" class="text-link size-5.5" />
 			</span>
 			<span id="supersearch-add-qualifier-key-label">
 				{page.data.t('supersearch.addQualifiers')}
 			</span>
 		</span>
-	</button>
+	</div>
 	<ul
-		class="scrollbar-hidden flex min-h-12 items-center gap-2 overflow-x-auto p-0.5 opacity-10 hidden!"
+		class="scrollbar-hidden flex min-h-12 items-center gap-2 overflow-x-auto p-0.5"
 		aria-labelledby="supersearch-add-qualifier-key-label"
 	>
 		{#each filteredQualifierSuggestions as { qualifier, replaceSelection }, cellIndex (qualifier.key)}
@@ -428,12 +427,24 @@
 				</button>
 			</li>
 		{/each}
+		<li>
+			<a
+				id={getCellId(rowIndex, filteredQualifierSuggestions.length)}
+				href={resolve(page.data.localizeHref('/help/filters'))}
+				class={[
+					'text-link text-sm h-full py-1.5 px-1 flex items-center justify-center rounded-md whitespace-nowrap',
+					isFocusedCell(rowIndex, filteredQualifierSuggestions.length) && 'focused-cell'
+				]}
+			>
+				{page.data.t('supersearch.moreQualifiers')}
+				<IconChevronRight class="text-link ml-2" aria-hidden="true" />
+			</a>
+		</li>
 	</ul>
-	{#if isFocusedCell(rowIndex, 0)}
-		<IconReturnKey
-			class="hidden sm:block absolute right-4.5 text-link pointer-events-none"
-			aria-hidden="true"
-		/>
+	{#if isFocusedRow(rowIndex) && !isFocusedCell(rowIndex, filteredQualifierSuggestions.length)}
+		<span class="hidden sm:block px-4 items-center justify-center ml-auto">
+			<IconArrowUpLeft class="text-link size-4.25" aria-hidden="true" />
+		</span>
 	{/if}
 </div>
 

@@ -204,6 +204,7 @@ export default {
 		moreQualifiers: 'Fler filter',
 		search: 'Sök',
 		addQualifiers: 'Lägg till filter',
+		moreQualifiers: 'Fler filter',
 		loading: 'Laddar...',
 		suggestion: 'förslag',
 		suggestions: 'förslag',
