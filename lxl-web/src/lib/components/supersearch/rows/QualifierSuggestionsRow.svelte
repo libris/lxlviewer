@@ -7,7 +7,6 @@
 	import IconFilter from '~icons/bi/filter';
 	import { page } from '$app/state';
 	import IconArrowUpLeft from '~icons/bi/arrow-up-left';
-	import IconChevronRight from '~icons/bi/chevron-right';
 	import { resolve } from '$app/paths';
 
 	function debugLog(message: unknown) {
@@ -437,7 +436,6 @@
 				]}
 			>
 				{page.data.t('supersearch.moreQualifiers')}
-				<IconChevronRight class="text-link ml-2" aria-hidden="true" />
 			</a>
 		</li>
 	</ul>
