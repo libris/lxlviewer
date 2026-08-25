@@ -26,7 +26,7 @@
 <div
 	role="row"
 	class={[
-		'flex items-center sm:mx-2 rounded-lg lg:mx-3 fixed bottom-0 max-sm:w-full sm:relative z-999 sm:z-0 bg-page pb-3 px-3 sm:pb-0 sm:px-0',
+		'flex items-center sm:mx-2 rounded-lg lg:mx-3 mt-1 lg:mt-0 max-sm:w-full sm:relative z-999 sm:z-0 bg-page px-1 pb-1 sm:px-0',
 		isFocusedRow(rowIndex) && 'focused-row'
 	]}
 >
@@ -34,14 +34,13 @@
 		type="submit"
 		id={getCellId(rowIndex, 0)}
 		class={[
-			'flex min-h-11 2xl:min-h-12 w-full items-center hover:underline rounded-full sm:rounded-lg justify-center sm:justify-start text-link! max-sm:bg-accent-50 max-sm:hover:bg-link max-sm:hover:text-page!',
-			(isFocusedCell(rowIndex, 0) || skipShowAllResultsRowOnArrowKey) &&
-				'focused-cell max-sm:bg-link! max-sm:text-page!',
-			skipShowAllResultsRowOnArrowKey && 'outline-transparent!'
+			'flex min-h-11 2xl:min-h-12 w-full items-center hover:underline rounded-lg justify-start text-link',
+			(isFocusedCell(rowIndex, 0) || skipShowAllResultsRowOnArrowKey) && 'focused-cell',
+			skipShowAllResultsRowOnArrowKey && 'outline-transparent! max-sm:bg-transparent!'
 		]}
 	>
 		<span class={['flex items-center gap-2 lg:gap-2.5 font-medium']}>
-			<span class="size-6 items-center justify-center flex mr-1.5 sm:ml-3">
+			<span class="size-6 items-center justify-center flex mr-1.5 ml-3">
 				<IconSearch aria-hidden="true" class="inline-flex size-4.5" />
 			</span>
 			{page.data.t('supersearch.showAll')}

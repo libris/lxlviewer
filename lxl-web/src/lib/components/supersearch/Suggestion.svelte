@@ -27,7 +27,7 @@
 </script>
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
-	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
+	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2 px-1 lg:px-0">
 		<SuggestionImage {item} />
 		<div class="resource-content">
 			<h2 class="decorated-heading flex gap-1 overflow-hidden text-base whitespace-nowrap">

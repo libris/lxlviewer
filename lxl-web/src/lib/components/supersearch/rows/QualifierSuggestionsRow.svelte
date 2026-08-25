@@ -390,7 +390,7 @@
 <div
 	role="row"
 	class={[
-		'flex items-center mx-2 rounded-lg relative lg:mx-3 mt-0.75',
+		'flex items-center mx-1 rounded-lg relative lg:mx-3',
 		isFocusedRow(rowIndex) && 'bg-accent-50/75'
 	]}
 >

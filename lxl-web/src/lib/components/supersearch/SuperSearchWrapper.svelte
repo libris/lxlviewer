@@ -99,12 +99,10 @@
 	const smMediaQuery = new MediaQuery('min-width: 640px');
 	const lgMediaQuery = new MediaQuery('min-width: 1024px');
 
-	const qualifiersRowIndex = $derived(smMediaQuery.current ? 2 : 1);
+	const showAllResultsRowIndex = $derived(1);
+	const qualifiersRowIndex = $derived(2);
 	const suggestionsRowOffset = $derived(qualifiersRowIndex + 1);
 	const footerRowIndex = $derived(suggestionsRowOffset + resultsCount);
-	const showAllResultsRowIndex = $derived(
-		smMediaQuery.current ? 1 : suggestionsRowOffset + resultsCount
-	);
 
 	let interceptedHref: string | undefined = $state();
 
@@ -576,7 +574,7 @@
 						aria-label={page.data.t('general.close')}
 						class={[
 							'action text-subtle flex min-h-11 sm:hidden sm:min-h-13.5 lg:min-h-auto',
-							expanded && 'mr-1 h-16.5 w-14 sm:h-full sm:w-13'
+							expanded && 'mr-1 h-16.5 w-13 sm:h-full'
 						]}
 						onclick={onclickClose}
 					>
@@ -595,8 +593,8 @@
 						id={getCellId(1)}
 						class:focused-cell={isFocusedCell(1)}
 						class={[
-							'action sm:min-h-auto sm:rounded-r-lg',
-							expanded ? 'flex h-16.5 max-sm:w-13 sm:h-full' : 'hidden sm:flex'
+							'action sm:min-h-auto',
+							expanded ? 'flex h-16.5 max-sm:w-13 sm:h-full sm:rounded-r-lg' : 'hidden sm:flex'
 						]}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
@@ -630,18 +628,16 @@
 		})}
 			{@const ID_RESULTS_LABEL = 'supersearch-results-label'}
 			<nav
-				class="expanded-content py-1 sm:mt-2 2xl:mt-3 flex w-full flex-col border-t border-neutral sm:border-none"
+				class="expanded-content py-1 sm:mt-2 flex w-full flex-col border-t border-neutral sm:border-none"
 			>
-				{#if smMediaQuery.current}
-					<ShowAllResultsRow
-						rowIndex={showAllResultsRowIndex}
-						{isLoading}
-						{getCellId}
-						{isFocusedRow}
-						{isFocusedCell}
-						{skipShowAllResultsRowOnArrowKey}
-					/>
-				{/if}
+				<ShowAllResultsRow
+					rowIndex={showAllResultsRowIndex}
+					{isLoading}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+					{skipShowAllResultsRowOnArrowKey}
+				/>
 				<QualifierSuggestionsRow
 					{qualifierSuggestions}
 					rowIndex={qualifiersRowIndex}
@@ -670,15 +666,6 @@
 				{/if}
 				{#if smMediaQuery.current}
 					<FooterRow {footerRowIndex} {getCellId} {isFocusedCell} />
-				{:else}
-					<ShowAllResultsRow
-						rowIndex={showAllResultsRowIndex}
-						{isLoading}
-						{getCellId}
-						{isFocusedRow}
-						{isFocusedCell}
-						{skipShowAllResultsRowOnArrowKey}
-					/>
 				{/if}
 			</nav>
 		{/snippet}
