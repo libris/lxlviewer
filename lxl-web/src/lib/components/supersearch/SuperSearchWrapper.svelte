@@ -647,8 +647,8 @@
 					query={q}
 					{selection}
 				/>
-				<hr class="hidden sm:border-neutral sm:block sm:mt-2" />
 				{#if resultsCount && q.trim().length}
+					<hr class="hidden sm:border-neutral sm:block sm:mt-2" />
 					<div
 						role="rowgroup"
 						aria-labelledby={ID_RESULTS_LABEL}
