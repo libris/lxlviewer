@@ -52,11 +52,11 @@
 					bind:value={searchPhrase}
 					placeholder={page.data.t('search.findFilter')}
 					aria-label={page.data.t('search.findFilter')}
-					class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-base sm:text-sm"
+					class="bg-input h-9 w-full rounded-sm border border-neutral-500 pr-2 pl-8 text-base sm:text-sm"
 					type="search"
 					name={page.data.t('search.findFilter')}
 				/>
-				<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm" />
+				<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm pointer-events-none" />
 			</div>
 			<ul
 				aria-labelledby={'tab-filters'}
