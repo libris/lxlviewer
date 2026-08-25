@@ -320,6 +320,7 @@
 
 	function handleClickExpanded() {
 		setDefaultRowAndCols();
+		allowArrowKeyCursorHandling = { vertical: false, horizontal: true };
 		if (!expandedEditorView?.hasFocus) {
 			expandedEditorView?.focus();
 		}
