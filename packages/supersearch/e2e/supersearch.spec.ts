@@ -57,12 +57,17 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		'items on input row are focusable using tab'
 	).toHaveAttribute('aria-activedescendant', 'supersearch-item-0x1');
 	await page.keyboard.press('Tab');
-
+	await page.keyboard.press('Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
-		'supersearch-item-0x2'
+		'supersearch-item-1x0'
 	);
 	await page.keyboard.press('Tab');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-item-2x0'
+	);
+	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
 		'supersearch-item-1x0'
@@ -73,10 +78,6 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		'supersearch-item-0x2'
 	);
 	await page.keyboard.press('Shift+Tab');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-item-0x1'
-	);
 	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).not.toHaveAttribute(
 		'aria-activedescendant'
@@ -87,10 +88,6 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		'supersearch-item-10x2'
 	);
 	await page.keyboard.press('Tab');
-	await expect(page.getByRole('dialog').getByRole('combobox')).not.toHaveAttribute(
-		'aria-activedescendant'
-	);
-
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
@@ -187,6 +184,23 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		comboboxElement,
 		'user can jump from last col to first by pressing arrow right if wrappingArrowKeyNavigation is enabled'
 	).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
+});
+
+// Ensure https://github.com/libris/lxlviewer/pull/1652 does not regress
+test('ensure arrow key handling is reset when clicking expanded input', async ({ page }) => {
+	await page.getByRole('combobox').click();
+	await page.getByRole('dialog').getByRole('combobox').fill('abde');
+	await page.waitForResponse(
+		(res) => res.url().includes('/api/find?_q=abde') && res.status() === 200
+	);
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.getByRole('dialog').getByRole('combobox').click();
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('ArrowLeft');
+	await page.keyboard.press('c');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveText('abcde');
 });
 
 test('user can toggle expanded search using alt key + arrow up or down (without moving cursor) ', async ({
