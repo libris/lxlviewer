@@ -639,6 +639,7 @@
 			{@const ID_RESULTS_LABEL = 'supersearch-results-label'}
 			<nav
 				class="expanded-content py-1 sm:mt-2 flex w-full flex-col border-t border-neutral sm:border-none"
+				aria-label={page.data.t('supersearch.expandedSearch')}
 			>
 				<ShowAllResultsRow
 					rowIndex={showAllResultsRowIndex}
