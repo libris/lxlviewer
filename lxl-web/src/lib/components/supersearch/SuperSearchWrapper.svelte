@@ -662,11 +662,8 @@
 						</h2>
 						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
-					<hr class="hidden sm:border-neutral sm:block" />
 				{/if}
-				{#if smMediaQuery.current}
-					<FooterRow {footerRowIndex} {getCellId} {isFocusedCell} />
-				{/if}
+				<FooterRow {footerRowIndex} {getCellId} {isFocusedCell} />
 			</nav>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedRow, isFocusedCell })}

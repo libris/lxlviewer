@@ -14,7 +14,7 @@
 <div
 	role="row"
 	data-skip-row-on-arrow-key
-	class="border-neutral sm:flex min-h-12 items-center justify-end gap-4 pl-2 text-sm sm:pl-4 bg-transparent! hidden"
+	class="border-neutral flex min-h-12 border-t items-center justify-start mt-2 sm:justify-end gap-4 pl-2 text-sm sm:pl-4 bg-transparent!"
 >
 	<a
 		href={resolve(page.data.localizeHref('/help'))}
