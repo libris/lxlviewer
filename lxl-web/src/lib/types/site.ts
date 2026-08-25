@@ -55,6 +55,7 @@ export interface Site {
 	searchSite?: string;
 	configuration?: {
 		themeName?: string;
+		favicon?: string;
 		heroImage?: string;
 		locales?: Translations;
 		features?: Partial<Features>;

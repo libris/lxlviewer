@@ -183,6 +183,7 @@ export const handle = async ({ event, resolve }) => {
 
 	// set data-theme defined in themes.css
 	const dataTheme = site?.configuration?.themeName || 'libris';
+	const favicon = site?.configuration?.favicon || 'libris';
 
 	// get subset mapping
 	const _r = event.url.searchParams.get('_r');
@@ -198,7 +199,8 @@ export const handle = async ({ event, resolve }) => {
 	}
 
 	return resolve(event, {
-		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)
+		transformPageChunk: ({ html }) =>
+			html.replace('%lang%', lang).replace('%theme%', dataTheme).replace('%favicon%', favicon)
 	});
 };
 
