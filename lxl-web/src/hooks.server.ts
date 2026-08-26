@@ -202,7 +202,7 @@ export const handle = async ({ event, resolve }) => {
 
 	return resolve(event, {
 		transformPageChunk: ({ html }) =>
-			html.replace('%lang%', lang).replace('%theme%', dataTheme).replace('%favicon%', favicon)
+			html.replace('%lang%', lang).replace('%theme%', dataTheme).replaceAll('%favicon%', favicon)
 	});
 };
 
