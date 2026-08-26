@@ -97,7 +97,7 @@ It’s easy to copy searches (including filters) by selecting the contents of th
 
 For some filters, it's faster to enter the value using the keyboard instead of selecting one of the listed search suggestions.
 
-- Example: To quickly filter for resources translated from Spanish, type `originalLanguage:spa` and press Enter.
+- Example: To quickly filter for resources in Spanish, type `language:spa` and press Enter.
 
 ### Empty filters -- required a specific property to be present
 

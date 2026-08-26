@@ -99,7 +99,7 @@ Det går enkelt att kopiera sökningar (inklusive filter) genom att markera inne
 
 För vissa filter går det snabbare att mata in värdet med tangentbordet istället för att välja ett av de listade sökförslagen.
 
-- Exempel: För att snabbt filtrera på resurser översätta från spanska, skriv in `originalspråk:spa` och tryck på Enter.
+- Exempel: För att snabbt filtrera på resurser på spanska, skriv in `språk:spa` och tryck på Enter.
 
 ### Tomma filter – kräv att en egenskap ska finnas
 
