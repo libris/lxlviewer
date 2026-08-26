@@ -686,7 +686,7 @@
 {/key}
 
 <style lang="postcss">
-	@reference "../../../app.css";
+	@reference "#app.css";
 
 	.supersearch-input {
 		height: 100%;
