@@ -35,13 +35,15 @@ export const init: ServerInit = async () => {
 		const [, displayUtil] = await loadUtilCached();
 		startRefreshLibraries(displayUtil, defaultLocale);
 
-		(env['SUBSITES'] || '')
+		const sites = (env['SUBSITES'] || '')
 			.split(',')
 			.map((s) => s.trim())
 			.filter((s) => s.length > 0)
 			.map((site) => env[`SUBSITE.${site}.SEARCH_SITE`])
-			.filter((s) => typeof s === 'string')
-			.forEach((s) => getSiteConfCached(s));
+			.filter((s) => typeof s === 'string');
+		for (const s of sites) {
+			await getSiteConfCached(s);
+		}
 	} catch (err) {
 		// This is OK, handle() will retry
 		console.error('Startup initialization failed:', err);
