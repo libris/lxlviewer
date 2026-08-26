@@ -431,7 +431,7 @@
 				id={getCellId(rowIndex, filteredQualifierSuggestions.length)}
 				href={resolve(page.data.localizeHref('/help/filters'))}
 				class={[
-					'text-link text-sm h-full py-1.5 px-1 flex items-center justify-center rounded-md whitespace-nowrap',
+					'link text-sm h-full py-1.5 px-1 flex items-center justify-center rounded-md whitespace-nowrap',
 					isFocusedCell(rowIndex, filteredQualifierSuggestions.length) && 'focused-cell'
 				]}
 			>
