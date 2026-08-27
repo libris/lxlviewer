@@ -33,7 +33,7 @@
 			return page.data.t('supersearch.clear');
 		}
 		if (isFocusedRow(inputRowIndex) || isFocusedRow(showAllResultsRowIndex)) {
-			return page.data.t('supersearch.search');
+			return page.data.t('search.search');
 		}
 		if (isFocusedRow(qualifiersRowIndex)) {
 			return page.data.t('supersearch.add');
