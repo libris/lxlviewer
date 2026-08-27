@@ -51,7 +51,8 @@ export default {
 			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog.'
 	},
 	help: {
-		pageTitle: 'Help',
+		pageTitle: 'Help and tips',
+		filtersPageTitle: 'Search filters',
 		metaDescription:
 			'Help and documentation for using Libris, the Swedish national union catalogue.',
 		description: 'Description',
