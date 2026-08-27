@@ -354,7 +354,7 @@ export default {
 		show: 'Visa sidopanel',
 		hide: 'Dölj sidopanel',
 		trailingPane: 'Högerpanel',
-		resizeMe: 'Dra för att ändra panelens storlek'
+		resizablePane: 'Ändra storlek på panel'
 	},
 	citations: {
 		cite: 'Referera',
