@@ -83,52 +83,54 @@
 					<li
 						class="bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs"
 					>
-						<h2 class="mb-2 text-sm font-medium" id={format.key}>
-							{format.fullName || format.name}
-						</h2>
-						<svelte:element
-							this={isFileFormat ? 'pre' : 'p'}
-							class={[
-								'mb-2 block',
-								isFileFormat && 'text-2xs overflow-x-scroll [scrollbar-width:thin]'
-							]}
-						>
-							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-							{@html format.citation}
-						</svelte:element>
-						<div class="flex gap-2">
-							<!-- copy button -->
-							<button
-								class="btn btn-accent"
-								onclick={() =>
-									handleCopyCitation(
-										format.citation,
-										isFileFormat ? 'text/plain' : 'text/html',
-										() => {
-											wasCopied = {};
-											wasCopied[format.key] = true;
-										}
-									)}
+						<article aria-labelledby={format.key}>
+							<h2 class="mb-2 text-sm font-medium" id={format.key}>
+								{format.fullName || format.name}
+							</h2>
+							<svelte:element
+								this={isFileFormat ? 'pre' : 'p'}
+								class={[
+									'mb-2 block',
+									isFileFormat && 'text-2xs overflow-x-scroll [scrollbar-width:thin]'
+								]}
 							>
-								<BiCopy />
-								{#if wasCopied[format.key]}
-									{page.data.t('general.copied')}
-								{:else}
-									{page.data.t('general.copyToClipboard')}
-								{/if}
-							</button>
-							{#if isFileFormat && id}
-								<!-- download button -->
-								<a
+								<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+								{@html format.citation}
+							</svelte:element>
+							<div class="flex gap-2">
+								<!-- copy button -->
+								<button
 									class="btn btn-accent"
-									download={`${id}.${format.fileFormat}`}
-									href={`/api/${page.data.locale}/cite?id=${id}&format=${format.key}`}
+									onclick={() =>
+										handleCopyCitation(
+											format.citation,
+											isFileFormat ? 'text/plain' : 'text/html',
+											() => {
+												wasCopied = {};
+												wasCopied[format.key] = true;
+											}
+										)}
 								>
-									<BiDownload />
-									{page.data.t('citations.saveAsFile')}</a
-								>
-							{/if}
-						</div>
+									<BiCopy />
+									{#if wasCopied[format.key]}
+										{page.data.t('general.copied')}
+									{:else}
+										{page.data.t('general.copyToClipboard')}
+									{/if}
+								</button>
+								{#if isFileFormat && id}
+									<!-- download button -->
+									<a
+										class="btn btn-accent"
+										download={`${id}.${format.fileFormat}`}
+										href={`/api/${page.data.locale}/cite?id=${id}&format=${format.key}`}
+									>
+										<BiDownload />
+										{page.data.t('citations.saveAsFile')}</a
+									>
+								{/if}
+							</div>
+						</article>
 					</li>
 				{/each}
 			</ul>
