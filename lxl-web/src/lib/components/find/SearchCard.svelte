@@ -169,11 +169,16 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			{#if item.heldBySubset}
 				<span>{page.data.t('holdings.findTitle')}</span>
 			{:else}
-				<span class="sr-only">{`${page.data.t('holdings.availableAt')}`}</span>
 				<span>
 					{item.numberOfHolders}
 					{page.data.t('search.libraries')}
 				</span>
+			{/if}
+			{#if item.heldByMyLibraries}
+				<span class="sr-only"
+					>{`. ${page.data.t('holdings.availableAt')}`}
+					{`${page.data.t('myPages.favouriteLibrary')}`}</span
+				>
 			{/if}
 		</a>
 	{/if}
@@ -404,7 +409,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				{/if}
 				{#if isInstanceCard}
 					<a
-						aria-labelledby={`cite-${id} ${titleId}`}
 						class="btn btn-primary h-7 min-w-22.5 rounded-full md:h-8"
 						href={getCiteLink(page.url, id)}
 						onclick={(event) => handleClickCite(event, page.state, id)}

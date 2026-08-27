@@ -27,6 +27,7 @@ class QualifierWidget extends WidgetType {
 	toDOM(view: EditorView): HTMLElement {
 		const container = document.createElement('span');
 		container.className = 'atomic';
+		container.setAttribute('style', 'margin-inline: 2px');
 
 		container.ondblclick = () => {
 			if (this.props.atomicFrom != null && this.props.atomicTo != null) {
@@ -78,7 +79,7 @@ export function addDecorations(view: EditorView) {
 			if (!qualifier.valueLabel && valueNode) {
 				decorations.push(
 					Decoration.mark({
-						class: 'lxl-qualifier-value',
+						class: 'lxl-qualifier-value editable',
 						inclusive: false
 					}).range(valueNode.from, valueNode.node.to)
 				);

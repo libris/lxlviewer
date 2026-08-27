@@ -1,5 +1,10 @@
 import fs from 'fs';
-import { type HandleServerError, redirect, type RequestEvent } from '@sveltejs/kit';
+import {
+	type HandleServerError,
+	redirect,
+	type RequestEvent,
+	type ServerInit
+} from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
@@ -20,16 +25,24 @@ import { updateSettings } from '$lib/utils/userSettings.svelte';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
-let utilCache: Util | undefined;
-let initLibraries: boolean = false;
+let utilCache: Promise<Util> | undefined;
+
+// Warm up caches immediately on startup instead of waiting for a request
+export const init: ServerInit = async () => {
+	try {
+		const [, displayUtil] = await loadUtilCached();
+		startRefreshLibraries(displayUtil, defaultLocale);
+	} catch (err) {
+		// This is OK, handle() will retry
+		console.error('Startup initialization failed:', err);
+	}
+};
 
 export const handle = async ({ event, resolve }) => {
 	const [vocabUtil, displayUtil, qualifierSuggestionsByLocale] = await loadUtilCached();
 
-	if (!initLibraries) {
-		initLibraries = true;
-		await startRefreshLibraries(displayUtil, defaultLocale);
-	}
+	// Fallback in case startup init failed. No-op if refresh already started.
+	startRefreshLibraries(displayUtil, defaultLocale);
 
 	event.locals.vocab = vocabUtil;
 	event.locals.display = displayUtil;
@@ -192,9 +205,12 @@ function isValidMyLibraries(value: unknown): value is MyLibrariesType {
 	return true;
 }
 
-async function loadUtilCached() {
+function loadUtilCached() {
 	if (!utilCache) {
-		utilCache = await loadUtil();
+		utilCache = loadUtil().catch((err) => {
+			utilCache = undefined;
+			throw err;
+		});
 	}
 	return utilCache;
 }

@@ -36,6 +36,7 @@
 		ChangeActiveCell
 	} from '$lib/types/superSearch.js';
 	import { historyKeymap, standardKeymap } from '@codemirror/commands';
+	import { draw, theme } from '$lib/extensions/theme';
 
 	export type ExpandedContentParams = {
 		search: ReturnType<typeof useSearchRequest>;
@@ -233,6 +234,8 @@
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
+		draw,
+		theme,
 		...extensions
 	]);
 
@@ -334,6 +337,7 @@
 			activeColIndex = defaultResultCol;
 		} else {
 			activeColIndex = defaultInputCol;
+			allowArrowKeyCursorHandling = { vertical: false, horizontal: true };
 		}
 	}
 

@@ -41,7 +41,6 @@ export default {
 		fjarrlan: 'Fjärrlån',
 		myPages: 'My pages',
 		changeLang: 'På svenska',
-		search: 'Search',
 		login: 'Log in',
 		searchPlaceholder: 'Search for title, author, subject...',
 		searchSubsetPlaceholder: 'Search within',
@@ -60,8 +59,8 @@ export default {
 		description: 'Description',
 		filter: 'Filter',
 		reference: 'Reference',
-		searchIn: 'Search in',
-		keyword: 'Filter / keyword'
+		searchIn: 'Searches in',
+		code: 'Code'
 	},
 	myPages: {
 		pageTitle: 'My pages',
@@ -70,8 +69,9 @@ export default {
 		libraries: 'Libraries',
 		favouriteLibraries: 'Favourite libraries',
 		favouriteLibrary: 'favourite library',
+		myFavouriteLibraries: 'My favourite libraries',
 		findLibrary: 'Search library or location',
-		findAndAdd: 'Find and add favourite libraries',
+		findAndAdd: 'Add favourite libraries',
 		noResultsFor: 'No results for',
 		hitsFor: 'hits for',
 		settingsLinkHeading: 'Permanent link for settings',
@@ -149,7 +149,7 @@ export default {
 		exploreCategories: 'Explore categories',
 		loading: 'Loading...',
 		filter: 'Filter',
-		findFilter: 'Find filter',
+		findFilter: 'Search for filter',
 		filters: 'Filters',
 		activeFilter: 'Active filter',
 		selectedFilters: 'Selected filters',
@@ -260,7 +260,6 @@ export default {
 		latestInstanceCover: 'Cover of latest edition',
 		instanceCover: 'Cover of edition',
 		close: 'Close',
-		apply: 'Apply',
 		from: 'From',
 		to: 'To',
 		year: 'year',
@@ -359,7 +358,7 @@ export default {
 		show: 'Show pane',
 		hide: 'Hide pane',
 		trailingPane: 'Trailing pane',
-		resizeMe: 'Drag to resize pane'
+		resizablePane: 'Resizable pane'
 	},
 	citations: {
 		cite: 'Cite',
