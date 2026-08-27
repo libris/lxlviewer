@@ -547,7 +547,6 @@
 		onkeydown={handleKeyDown}
 		onchangeactivecell={handleChangeActiveCell}
 		--supersearch-dialog-padding-top={comboboxOffsetTop ? `${comboboxOffsetTop}px` : undefined}
-		skipInputRowOnArrowKey
 	>
 		{#snippet inputRow({
 			expanded,
@@ -562,7 +561,7 @@
 				class={[
 					'supersearch-input bg-input flex w-full max-w-7xl cursor-text overflow-hidden focus-within:relative',
 					expanded && 'expanded sm:mx-0.5 lg:mx-0',
-					isFocusedRow() && ['focused-row outline-transparent!'],
+					isFocusedRow() && ['focused-row'],
 					wrappedLines && 'wrapped'
 				]}
 			>
