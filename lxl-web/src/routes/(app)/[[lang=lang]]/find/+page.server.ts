@@ -1,6 +1,8 @@
 import { redirect, error } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
+import { getTranslator } from '$lib/i18n';
+import { TITLE_SEPARATOR } from '$lib/constants/pageTitle.js';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
 import { appendMyLibrariesParam, asResult } from '$lib/utils/search.server';
@@ -14,6 +16,7 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
+	const translate = await getTranslator(locale);
 
 	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
 	const subsetMapping = locals?.subsetMapping;
@@ -108,7 +111,11 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 		subsetLibraries
 	);
 
-	const pageTitle = getPageTitle(displayMappingToString(searchResult.mapping), locals.site?.name);
+	const mappingToString = displayMappingToString(searchResult.mapping);
+	const pageTitle = getPageTitle(
+		`${mappingToString ? mappingToString + TITLE_SEPARATOR : ''}${translate('search.searchResults')}`,
+		locals.site?.name
+	);
 	const refinedOrgs = getRefinedOrgs(myLibraries, [subsetMapping, searchResult?.mapping]);
 
 	return {
