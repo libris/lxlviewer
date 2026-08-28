@@ -4,7 +4,7 @@
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiChevronDown from '~icons/bi/chevron-down';
 
-	const sortOrder = $derived(page.url.searchParams.get('_sort'));
+	const sortOrder = $derived(page.url.searchParams.get('_sort') || '');
 	const sortOptions = [
 		{ value: '', label: page.data.t('sort.relevancy') },
 		{ value: `_sortKeyByLang.${page.data.locale}`, label: page.data.t('sort.alphaAsc') },
