@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiChevronDown from '~icons/bi/chevron-down';
 
 	let sortOrder = $derived(page.url.searchParams.get('_sort') || '');
-	const sortOptions = [
+
+	const sortOptions = $derived([
 		{ value: '', label: page.data.t('sort.relevancy') },
 		{ value: `_sortKeyByLang.${page.data.locale}`, label: page.data.t('sort.alphaAsc') },
 		{ value: `-_sortKeyByLang.${page.data.locale}`, label: page.data.t('sort.alphaDesc') },
@@ -22,7 +24,7 @@
 			value: '-reverseLinks.totalItemsByRelation.itemOf.instanceOf',
 			label: page.data.t('sort.holdingsDesc')
 		}
-	];
+	]);
 
 	function handleSortChange(e: Event) {
 		const value = (e.target as HTMLSelectElement).value;
@@ -31,7 +33,9 @@
 		if (searchParams.has('_offset')) {
 			searchParams.set('_offset', '0');
 		}
-		goto(`${page.url.pathname}?${searchParams.toString()}`, { invalidate: ['app:search'] });
+		goto(resolve(`${page.url.pathname}?${searchParams.toString()}`), {
+			invalidate: ['app:search']
+		});
 	}
 </script>
 
