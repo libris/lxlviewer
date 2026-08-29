@@ -649,17 +649,17 @@
 {/key}
 
 <style lang="postcss">
-	@reference "../../../app.css";
+	@reference "#app.css";
 
 	.supersearch-input {
 		height: 100%;
 		min-height: var(--search-input-height);
 		font-size: var(--text-base);
 		border-radius: var(--radius-md);
-		box-shadow: 0 0 0 1px var(--color-primary-400);
+		box-shadow: 0 0 0 1px var(--color-primary-700);
 
 		&:hover {
-			box-shadow: 0 0 0 1px var(--color-primary-600);
+			box-shadow: 0 0 0 1px var(--color-primary-900);
 		}
 
 		@variant sm {

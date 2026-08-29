@@ -197,7 +197,7 @@
 					class="btn btn-primary mr-2 size-8 border-0"
 					aria-label={page.data.t('search.changeLibraries')}
 				>
-					<BiPencil aria-hidden="true" />
+					<BiPencil class="text-neutral-500" aria-hidden="true" />
 				</a>
 			</li>
 		{:else}

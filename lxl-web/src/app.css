@@ -359,6 +359,12 @@
 		color: var(--color-body);
 		border: 1px solid var(--color-neutral-300);
 
+		&:disabled {
+			background-color: var(--color-neutral-100);
+			border: 1px solid var(--color-neutral-100);
+			color: var(--color-neutral-400);
+		}
+
 		&:not(:disabled) {
 			&:hover {
 				background-color: var(--color-primary-100);
@@ -373,7 +379,7 @@
 	.btn-accent {
 		background-color: var(--color-accent-50);
 		color: var(--color-body);
-		border: 1px solid var(--color-accent-200);
+		border: 1px solid var(--color-accent-300);
 
 		&:not(:disabled) {
 			&:hover {
@@ -489,7 +495,7 @@
 	.tab-active {
 		background-color: var(--color-accent-50);
 		color: var(--color-body);
-		border-color: var(--color-accent-200);
+		border-color: var(--color-accent-300);
 		color: var(--color-body);
 
 		&:hover {
