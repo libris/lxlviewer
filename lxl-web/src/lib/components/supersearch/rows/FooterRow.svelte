@@ -79,7 +79,7 @@
 		href={resolve(page.data.localizeHref('/help'))}
 		id={getCellId(footerRowIndex, 0)}
 		class={[
-			'text-link mr-4 justify-end hover:underline',
+			'link mr-4 justify-end',
 			isFocusedCell(footerRowIndex, 0) && 'underline outline-2 -outline-offset-2'
 		]}
 	>

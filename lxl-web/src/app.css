@@ -239,10 +239,13 @@
 	a.ext-link,
 	a.find-link {
 		color: var(--color-link);
+		text-decoration: underline;
+		text-decoration-style: dotted;
+		text-decoration-thickness: from-font;
 
 		&:hover,
 		&:focus {
-			text-decoration: underline;
+			color: var(--color-accent-800);
 			text-decoration-style: solid;
 		}
 	}
