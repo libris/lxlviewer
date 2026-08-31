@@ -296,6 +296,12 @@ export interface QualifierDefinition extends QualifierSuggestion2 {
 	propertyChainAxiom?: PropertyChain[];
 }
 
+export interface QualifierDefinitionGroup {
+	filters: QualifierDefinition[];
+	filterGroupDescription?: string;
+	label: string;
+}
+
 export interface PropertyChain {
 	label: string;
 	path: string;
@@ -312,3 +318,8 @@ export interface AdjecentSearchResult {
 	next?: Link;
 	items: Link[];
 }
+
+export type InitiaStateBeforeMount = {
+	value: string;
+	selection?: { anchor: number; head: number };
+};

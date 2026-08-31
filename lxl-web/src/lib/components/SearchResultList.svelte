@@ -8,13 +8,14 @@
 
 	type Props = {
 		items: SearchResultItemType[];
-		type: 'horizontal';
+		type: 'horizontal' | 'grid';
 		ariaLabelledBy?: string;
 		ariaLive?: 'polite' | 'off' | 'assertive';
 		ariaBusy?: boolean;
 		withGradient?: boolean;
 		placeholderItems?: number;
 		placeholderSnippet?: Snippet;
+		aspectRatio?: 'square' | 'landscape';
 		lazyImages?: boolean;
 		fadeInImages?: boolean;
 		listElement?: HTMLUListElement | undefined;
@@ -30,6 +31,7 @@
 		withGradient,
 		placeholderItems = 0,
 		placeholderSnippet,
+		aspectRatio = 'square',
 		lazyImages = false,
 		fadeInImages = false,
 		listElement = $bindable(),
@@ -98,7 +100,7 @@
 </script>
 
 {#snippet fallbackPlaceholderSnippet()}
-	<div class="skeleton aspect-square"></div>
+	<div class={['skeleton', aspectRatio === 'square' && 'aspect-square']}></div>
 {/snippet}
 {#snippet horizontalList()}
 	<div class={['horizontal-list relative w-full', withGradient && 'with-gradient']}>
@@ -156,6 +158,38 @@
 
 {#if type === 'horizontal'}
 	{@render horizontalList()}
+{:else if type === 'grid'}
+	<ul
+		aria-labelledby={ariaLabelledBy}
+		class="grid grid-cols-2 gap-x-3 gap-y-12 md:grid-cols-4 lg:gap-x-6"
+		bind:this={listElement}
+		onscroll={updateDisabledScrollButtons}
+		aria-live={ariaLive}
+		aria-busy={ariaBusy}
+	>
+		{#each items as item, index (item['@id'])}
+			<li class="@container">
+				<SearchResultItem
+					data={item}
+					lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
+					fadeInImage={fadeInImages}
+					highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
+						index <= lazyImagesAfterIndex}
+					{suppressProperty}
+					aspectRatio={aspectRatio === 'landscape' ? 'video' : 'square'}
+				/>
+			</li>
+		{/each}
+		{#each { length: placeholderItems }}
+			<li class="@container overflow-x-hidden text-center">
+				{#if placeholderSnippet}
+					{@render placeholderSnippet()}
+				{:else}
+					{@render fallbackPlaceholderSnippet()}
+				{/if}
+			</li>
+		{/each}
+	</ul>
 {/if}
 
 <style lang="postcss">
@@ -213,54 +247,38 @@
 					)
 				);
 
-				@variant @xl {
+				@variant @3xl {
 					--cards: 3.5;
 					--gap-count: 4;
 				}
-				@variant @3xl {
-					--cards: 4.5;
-					--gap-count: 5;
-				}
 				@variant @5xl {
-					--cards: 5.5;
-					--gap-count: 5;
-					--edge-offset: 80px;
-				}
-				@variant @7xl {
 					--cards: 4.5;
-					--gap-count: 4;
-					--edge-offset: 80px;
+					--gap-count: 5;
 				}
 
 				@container (width >= 80rem) {
 					--cards: 5.5;
 					--gap-count: 5;
-					--edge-offset: 80px;
 				}
 				@container (width >= 100rem) {
 					--cards: 6.5;
 					--gap-count: 6;
-					--edge-offset: 80px;
 				}
 				@container (width >= 120rem) {
 					--cards: 7.5;
 					--gap-count: 7;
-					--edge-offset: 80px;
 				}
 				@container (width >= 140rem) {
 					--cards: 8.5;
 					--gap-count: 8;
-					--edge-offset: 80px;
 				}
 				@container (width >= 160rem) {
 					--cards: 9.5;
 					--gap-count: 9;
-					--edge-offset: 80px;
 				}
 				@container (width >= 180rem) {
 					--cards: 10;
 					--gap-count: 9;
-					--edge-offset: 160px;
 				}
 			}
 		}

@@ -32,6 +32,9 @@ const CSL_KBV_MAPPING: Partial<Record<keyof CSLJSON, string>> = {
 	volume: `join(', ', [?"@type"=='Serial'].part[?"@type"=='Monograph'].mainEntity.hasTitle[].hasPart[].partNumber)`
 };
 
+// same as in @citation-js/plugin-ris/lib/converters.js
+const DOI_REGEX = /10(?:\.[0-9]{4,})?\/[^\s]*[^\s.,]/;
+
 interface Contribution {
 	'@type'?: string;
 	role?: { '@id'?: string }[];
@@ -67,7 +70,23 @@ export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil):
 	result = { ...result, ...contributors };
 	result.type = getCslType(mainEntity, vocabUtil);
 
+	if (result.DOI) {
+		const doi = validDois(result.DOI);
+		if (doi) {
+			result.DOI = doi;
+		} else {
+			delete result.DOI;
+		}
+	}
+
 	return [result as CSLJSON];
+}
+
+function validDois(value: string): string {
+	return value
+		.split(', ')
+		.filter((doi) => DOI_REGEX.test(doi))
+		.join(', ');
 }
 
 function mapContribution(contribution: Contribution[]): Partial<CSLJSON> {

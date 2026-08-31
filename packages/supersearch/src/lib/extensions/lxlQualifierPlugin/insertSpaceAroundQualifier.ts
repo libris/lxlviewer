@@ -15,6 +15,10 @@ const insertSpaceAroundQualifier = (tr: Transaction) => {
 		return tr;
 	}
 
+	if (tr.isUserEvent('input.complete')) {
+		return tr;
+	}
+
 	let insert: TransactionSpec | TransactionSpec[] = [tr];
 	const inputLength = tr.changes.desc.newLength - tr.changes.desc.length;
 	const oldCursorPos = Math.max(

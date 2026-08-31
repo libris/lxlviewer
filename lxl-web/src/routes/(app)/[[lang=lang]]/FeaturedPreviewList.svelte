@@ -1,30 +1,39 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, onNavigate } from '$app/navigation';
 	import { type FeaturedSearch } from '$lib/remotes/homepage.remote';
 	import SearchResultList from '$lib/components/SearchResultList.svelte';
 	import { getHomepageContext } from '$lib/contexts/homepage';
 	import { getFeaturedPreviews } from '$lib/remotes/homepage.remote';
 
 	type Props = {
-		featuredSearch: FeaturedSearch;
+		featured: FeaturedSearch;
 		ariaLabelledBy?: string;
+		type?: 'horizontal' | 'grid';
 		lazyload?: 'intersection' | 'mount';
+		placeholderCount?: number;
 	};
 
-	let { featuredSearch, ariaLabelledBy, lazyload = undefined }: Props = $props();
+	let {
+		featured,
+		ariaLabelledBy,
+		type = 'horizontal',
+		lazyload = undefined,
+		placeholderCount = 11
+	}: Props = $props();
 
 	let listElement: HTMLUListElement | undefined = $state();
 	let observer: IntersectionObserver | undefined = $state();
-	let shouldGetPreviews = $derived(false);
+	let fadeInImages: boolean | undefined = $state(true);
+	let shouldGetPreviews = $derived(lazyload === 'mount');
 
 	const homepageContext = getHomepageContext();
-	const previewParamsString = $derived(JSON.stringify(featuredSearch.previewParams));
+	const previewParamsString = $derived(JSON.stringify(featured.previewParams));
 
 	const previewsQuery = $derived(
 		!homepageContext.previews?.[previewParamsString] &&
 			(!lazyload || (lazyload && shouldGetPreviews))
-			? getFeaturedPreviews(featuredSearch.previewParams)
+			? getFeaturedPreviews(featured.previewParams)
 			: undefined
 	);
 
@@ -57,14 +66,19 @@
 		}
 	}
 
+	onNavigate((navigation) => {
+		if (navigation?.from) {
+			fadeInImages = false;
+		}
+	});
+
 	afterNavigate(() => {
-		initObserver();
+		if (lazyload === 'intersection') {
+			initObserver();
+		}
 	});
 
 	onMount(() => {
-		if (lazyload === 'mount') {
-			shouldGetPreviews = true;
-		}
 		if (lazyload === 'intersection') {
 			initObserver();
 		}
@@ -76,8 +90,9 @@
 </script>
 
 {#snippet previewPlaceholder()}
-	<div class="placeholder flex flex-col items-center">
-		<div class="skeleton mb-2 aspect-square w-full"></div>
+	<div class="placeholder-container @container">
+		<div class="placeholder flex flex-col items-center"></div>
+		<div class={['skeleton mb-2 w-full', type === 'grid' ? 'aspect-video' : 'aspect-square']}></div>
 		<div class="skeleton bg-neutral my-0.5 h-3 w-1/3"></div>
 		<div
 			class="skeleton bg-neutral mt-1.25 mb-2.5 h-3.5 w-3/4 @min-[16rem]:mb-2.25 @min-[16rem]:h-3.75"
@@ -87,18 +102,24 @@
 	</div>
 {/snippet}
 
-<div class={['featured-previews contents', previews?.totalItems === 0 && 'empty']}>
+<div
+	class={[
+		'featured-previews contents',
+		previews?.totalItems === 0 && 'empty',
+		type === 'grid' ? 'grid-type' : 'horizontal-type'
+	]}
+>
 	<SearchResultList
 		items={previews?.items || []}
-		type="horizontal"
+		{type}
 		{ariaLabelledBy}
 		ariaLive="polite"
 		ariaBusy={!previews || previewsQuery?.loading ? true : false}
-		placeholderItems={!previews && !previewsQuery?.current ? 11 : 0}
+		placeholderItems={!previews && !previewsQuery?.current ? placeholderCount : 0}
 		placeholderSnippet={previewPlaceholder}
-		withGradient
+		aspectRatio={type === 'grid' ? 'landscape' : 'square'}
 		lazyImages
-		fadeInImages={!previews && shouldGetPreviews}
+		{fadeInImages}
 		bind:listElement
 	/>
 </div>
@@ -107,10 +128,10 @@
 	@reference "tailwindcss";
 
 	/* prevent vertical scroll on individual items? */
-	/* .featured-previews {
-		& .placeholder,
+	.horizontal-type.featured-previews {
+		& .placeholder-container,
 		:global(article) {
-			height: calc(100cqw + (var(--spacing) * 3) + 9rem);
+			height: calc(100cqw + (var(--spacing) * 3) + 10rem);  // TODO: Something smarter than this but we need a height value to prevent layout-shifting
 		}
-	} */
+	}
 </style>

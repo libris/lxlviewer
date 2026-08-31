@@ -1,12 +1,19 @@
 export default {
 	home: {
-		pageHeadingTitle: 'Sök och hitta',
-		pageHeadingTitleNoWrap: 'på svenska bibliotek',
-		pageHeadingDescription: 'är de svenska bibliotekens gemensamma katalog',
-		pageHeadingDescriptionNoWrap: 'med över 9 miljoner titlar.',
 		metaDescription:
 			'Libris är en nationell söktjänst med information om titlar på cirka 600 svenska bibliotek, däribland KB. Med hjälp av tjänsten kan du hitta det du söker på ett bibliotek nära dig. Här finns närmare 13 miljoner objekt: böcker, tidskrifter, bilder, kartor, noter, e-böcker med mera. Libris innehåller även digitalt material som är fritt att ta del av hemifrån.',
-		searchShortcuts: 'Sökgenvägar'
+		pageHeadingTitle: 'Sök och hitta på',
+		pageHeadingTitleNoWrap: 'svenska bibliotek',
+		pageDescription: 'Libris är de svenska bibliotekens gemensamma katalog',
+		pageDescriptionReadMore1: 'Läs mer',
+		pageDescriptionReadMore2: 'om Libris',
+		collectionsTitle: 'Särskilda samlingar',
+		collectionsDescription:
+			'Särskilda samlingar omfattar nationalbibliografiska, ämnesspecialiserade och lokala/regionala bibliografier.',
+		collectionsReadMore: 'Utforska särskilda samlingar',
+		searchLabel: 'Sök i Libris',
+		exploreLabel: 'Utforska katalogen',
+		categories: 'Kategorier'
 	},
 	appMenu: {
 		label: 'huvudmeny',
@@ -33,7 +40,6 @@ export default {
 		fjarrlan: 'Fjärrlån',
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
-		search: 'Sök',
 		login: 'Logga in',
 		searchPlaceholder: 'Sök titel, upphovsperson, ämnen...',
 		searchSubsetPlaceholder: 'Sök inom',
@@ -52,7 +58,8 @@ export default {
 		description: 'Beskrivning',
 		reference: 'Referens',
 		searchIn: 'Söker i',
-		keyword: 'Filter / nyckelord'
+		filter: 'Filter',
+		code: 'Kod'
 	},
 	myPages: {
 		pageTitle: 'Mina sidor',
@@ -61,8 +68,9 @@ export default {
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Favoritbibliotek',
 		favouriteLibrary: 'favoritbibliotek',
+		myFavouriteLibraries: 'Mina favoritbibliotek',
 		findLibrary: 'Sök efter bibliotek',
-		findAndAdd: 'Hitta och lägg till favoritbibliotek',
+		findAndAdd: 'Lägg till favoritbibliotek',
 		noResultsFor: 'Inga sökträffar för',
 		hitsFor: 'träffar för',
 		settingsLinkHeading: 'Permanent länk för inställningarna',
@@ -140,7 +148,7 @@ export default {
 		exploreCategories: 'Utforska kategorier',
 		loading: 'Laddar...',
 		filter: 'Filter',
-		findFilter: 'Hitta filter',
+		findFilter: 'Sök efter filter',
 		filters: 'Sökfilter',
 		activeFilter: 'Aktivt filter',
 		selectedFilters: 'Valda filter',
@@ -193,7 +201,6 @@ export default {
 		showEquals: 'Visa bara exakta träffar för'
 	},
 	supersearch: {
-		search: 'Sök',
 		addQualifiers: 'Filter',
 		moreQualifiers: 'Fler filter',
 		loading: 'Laddar...',
@@ -249,7 +256,6 @@ export default {
 		latestInstanceCover: 'Senaste utgåvans omslag',
 		instanceCover: 'Utgåvans omslag',
 		close: 'Stäng',
-		apply: 'Tillämpa',
 		from: 'Från',
 		to: 'Till',
 		year: 'år',
@@ -348,7 +354,7 @@ export default {
 		show: 'Visa sidopanel',
 		hide: 'Dölj sidopanel',
 		trailingPane: 'Högerpanel',
-		resizeMe: 'Dra för att ändra panelens storlek'
+		resizablePane: 'Ändra storlek på panel'
 	},
 	citations: {
 		cite: 'Referera',

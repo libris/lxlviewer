@@ -67,6 +67,7 @@ export enum Platform {
 	impliedByObject = 'impliedByObject',
 	preferLike = 'preferLike',
 	composite = 'https://id.kb.se/ns/librissearch/composite',
+	filters = 'https://id.kb.se/ns/librissearch/filters',
 	meta = 'meta'
 }
 

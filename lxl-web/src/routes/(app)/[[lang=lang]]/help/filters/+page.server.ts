@@ -11,23 +11,28 @@ import {
 } from '$lib/types/xl';
 import { asArray, toString, isObject } from '$lib/utils/misc';
 import { type DisplayUtil, isLink, VocabUtil } from '$lib/utils/xl.server';
-import type { PropertyChain, QualifierDefinition } from '$lib/types/search';
+import type {
+	PropertyChain,
+	QualifierDefinition,
+	QualifierDefinitionGroup
+} from '$lib/types/search';
 import { getUriSlug } from '$lib/utils/http';
 
 export async function load({ locals, params }) {
 	const locale = getSupportedLocale(params?.lang);
+	const groupedFilters = locals.vocab.getDefinition(Platform.filters);
+	const all = groupedFilters.items[JsonLd.LIST];
 
-	const collator = new Intl.Collator(locale).compare;
-
-	const filters = locals.vocab.getPropertiesByCategory(Platform.searchfilter);
-	const filterDefs = filters
-		.map((p) => mapSearchFilterDefinition(p, locale, locals.vocab, locals.display))
-		.filter((p) => p !== null)
-		.sort((a, b) => collator(a?.label, b?.label));
-
+	const filterGroups: QualifierDefinitionGroup[] = all.map((group) => ({
+		filters: group.items[JsonLd.LIST]
+			.map((p) => locals.vocab.getDefinition(p[JsonLd.ID]))
+			.map((p) => mapSearchFilterDefinition(p, locale, locals.vocab, locals.display))
+			.filter((p): p is QualifierDefinition => p !== null),
+		label: locals.display.getTranslated(group, 'label', locale),
+		filterGroupDescription: locals.display.getTranslated(group, 'ls:filterGroupDescription', locale)
+	}));
 	return {
-		filters: filters,
-		filterDefs: filterDefs
+		filterGroups: filterGroups
 	};
 }
 
@@ -44,16 +49,15 @@ function mapSearchFilterDefinition(
 		const key = getUriSlug(def[JsonLd.ID]) as string;
 
 		const propertyChain = mapPropertyChain(def, locale, vocab, display);
-
 		return {
-			// FIXME???,
 			key: key,
 			label: toString(display.lensAndFormat(def, LensType.Chip, locale)),
 			queryCodes: (asArray(def['librisQueryCode']) || []) as string[],
 			altLabels: otherLangLabels,
-			filterDescription: def['ls:filterDescription'] as string,
+			filterDescription: display.getTranslated(def, 'ls:filterDescription', locale),
 			...(propertyChain && { propertyChainAxiom: propertyChain }),
-			descriptionRemark: (asArray(def['ls:descriptionRemark']) || []) as string[]
+			descriptionRemark: (asArray(display.getTranslated(def, 'ls:descriptionRemark', locale)) ||
+				[]) as string[]
 		};
 	} catch (error) {
 		console.warn('Error mapping filter definition', error);

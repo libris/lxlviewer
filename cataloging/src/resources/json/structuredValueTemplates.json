@@ -514,7 +514,7 @@
   "Family": {
     "@type": "Family",
     "name": "",
-    "lifeSpan": ""
+    "marc:titlesAndOtherWordsAssociatedWithAName": ""
   },
   "Meeting": {
     "@type": "Meeting",

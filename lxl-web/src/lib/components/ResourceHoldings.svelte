@@ -67,7 +67,7 @@
 				{/if}
 				<span class="text-nowrap">{getLocalizedType(type)}</span>
 				<span class="truncate font-normal opacity-90">
-					{' · '}
+					<span aria-hidden="true">{' · '}</span>
 					{#if subsetLibraries && subsetHoldingByType}
 						<span>{page.data.t('holdings.findTitle')}</span>
 					{:else}

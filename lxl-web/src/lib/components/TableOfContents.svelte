@@ -16,7 +16,7 @@
 		intersectionRoot?: HTMLElement;
 	};
 
-	let { items, uidPrefix, mobile = false, intersectionRoot }: Props = $props();
+	let { items, uidPrefix = '', mobile = false, intersectionRoot }: Props = $props();
 	let tocElement: HTMLDivElement;
 	let observer: IntersectionObserver | undefined = $state();
 	let visibleSections: Set<string> = new SvelteSet();
@@ -118,7 +118,7 @@
 </script>
 
 {#snippet tocList(items: TableOfContentsItem[])}
-	<ul>
+	<ul aria-labelledby="toc-heading">
 		{#each items as { id, label, children } (id)}
 			<li class={children && '[&>ul_a]:pl-7'}>
 				<div class={['border-l-2 border-l-neutral-200']}>
@@ -143,7 +143,7 @@
 
 <div bind:this={tocElement} class="contents">
 	{#if mobile}
-		<h2 class="sr-only">{page.data.t('tableOfContents.onThisPage')}</h2>
+		<h2 id="toc-heading" class="sr-only">{page.data.t('tableOfContents.onThisPage')}</h2>
 		<div class="border-b-neutral border-b p-1 text-xs sm:text-sm">
 			<label
 				id={`${uidPrefix}toc-label`}
@@ -155,9 +155,6 @@
 					type="checkbox"
 					role="switch"
 					bind:checked={openOnMobile}
-					aria-label={openOnMobile
-						? page.data.t('tableOfContents.hide')
-						: page.data.t('tableOfContents.show')}
 					aria-expanded={openOnMobile}
 					aria-controls={`${uidPrefix}toc-items`}
 					class="h-0 appearance-none focus:outline-0"
@@ -170,7 +167,7 @@
 		</div>
 	{:else}
 		<header class="text-subtle mb-2 text-xs font-medium sm:text-sm">
-			<h2>{page.data.t('tableOfContents.onThisPage')}</h2>
+			<h2 id="toc-heading">{page.data.t('tableOfContents.onThisPage')}</h2>
 		</header>
 		<nav class="text-placeholder text-xs sm:text-sm">{@render tocList(itemsWithTop)}</nav>
 	{/if}

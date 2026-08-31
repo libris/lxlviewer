@@ -1,22 +1,30 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { getSearchContext } from '$lib/contexts/search';
 	import IconSearch from '~icons/bi/search';
 	import IconClear from '~icons/bi/x-circle';
 
 	interface Props {
+		id: string;
+		value: string;
+		selection?: { anchor: number; head: number } | undefined;
 		placeholder: string;
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
 		autofocus?: boolean;
 	}
 
-	let { placeholder, ariaLabel, ariaLabelledBy, autofocus }: Props = $props();
+	let {
+		id,
+		value = $bindable(''),
+		selection = $bindable(),
+		placeholder,
+		ariaLabel,
+		ariaLabelledBy,
+		autofocus
+	}: Props = $props();
 
-	const searchContext = getSearchContext();
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
-
-	let value = $derived(page.url.searchParams.get('_q'));
+	let activeElement: Element | null = $state(null);
 
 	$effect(() => {
 		if (page.url.hash === `#search`) {
@@ -24,55 +32,51 @@
 		}
 	});
 
-	function getSelectionOnTeardown(): { anchor: number | null; head: number | null } | undefined {
-		if (fallbackInputElement?.selectionStart || fallbackInputElement?.selectionEnd) {
+	function getSelectionOnTeardown(): { anchor: number; head: number } | undefined {
+		if (typeof fallbackInputElement?.selectionStart === 'number') {
 			if (fallbackInputElement.selectionDirection === 'backward') {
 				return {
-					anchor: fallbackInputElement?.selectionEnd,
-					head: fallbackInputElement?.selectionStart
+					anchor: fallbackInputElement?.selectionEnd || fallbackInputElement.selectionStart,
+					head: fallbackInputElement.selectionStart
 				};
 			}
 			return {
-				anchor: fallbackInputElement?.selectionStart,
-				head: fallbackInputElement?.selectionEnd
+				anchor: fallbackInputElement.selectionStart,
+				head: fallbackInputElement?.selectionEnd || fallbackInputElement.selectionStart
 			};
 		}
 	}
 
 	$effect(() => {
+		activeElement = document.activeElement;
+
 		return () => {
 			// Use teardown function to save state before mounting SuperSearchWrapper.svelte (so selection and value is kept...)
-			if (fallbackInputElement) {
-				searchContext.initialStateBeforeMount = {
-					value: fallbackInputElement.value,
-					selection: getSelectionOnTeardown()
-				};
+			if (fallbackInputElement && activeElement === fallbackInputElement) {
+				selection = getSelectionOnTeardown();
 			}
 		};
 	});
 </script>
 
 <div class="fallback-search relative">
-	<span class="text-subtle absolute flex h-full w-11 items-center justify-center sm:hidden">
-		<IconSearch class="size-4 lg:mt-px" aria-hidden="true" />
-	</span>
 	<input
-		id="search-fallback"
+		id={`${id}-search-fallback`}
 		type="search"
 		name="_q"
 		{placeholder}
-		{value}
+		bind:value
 		aria-labelledby={ariaLabelledBy}
 		aria-label={ariaLabel}
 		{autofocus}
 		bind:this={fallbackInputElement}
-		class="placeholder:text-placeholder w-full pl-11 text-base focus:outline-none sm:pl-3 lg:text-[0.9375rem] sm:@3xl:pl-4"
+		class="placeholder:text-placeholder w-full pl-3 text-base focus:outline-none lg:pl-4 2xl:pl-4"
 	/>
 	<button
 		type="reset"
 		aria-label={page.data.t('search.clear')}
 		title={page.data.t('search.clear')}
-		class="action text-subtle hidden h-full w-full max-w-11 items-center justify-center -outline-offset-2 lg:max-w-12"
+		class="action text-subtle hidden"
 	>
 		<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
 	</button>
@@ -80,9 +84,9 @@
 	<button
 		type="submit"
 		class={[
-			'hover:bg-primary-50 hidden h-full w-full max-w-11 items-center justify-center rounded-r-md border-l border-l-neutral-300 sm:flex lg:max-w-12'
+			'action text-subtle hidden rounded-r-md border-l border-l-neutral-300 sm:flex 2xl:rounded-r-lg'
 		]}
-		aria-label={page.data.t('supersearch.search')}
+		aria-label={page.data.t('search.search')}
 	>
 		<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 	</button>
@@ -98,9 +102,9 @@
 		background: var(--color-input);
 		box-shadow: 0 0 0 1px var(--color-primary-400);
 		border-radius: var(--radius-md);
-		font-size: var(--text-xs);
+
 		@variant sm {
-			font-size: var(--text-sm);
+			border-radius: var(--radius-lg);
 		}
 
 		&:not(:has([type='submit']:focus)) {
@@ -117,6 +121,9 @@
 	}
 
 	.action {
+		height: var(--search-input-height);
+		@apply aspect-square items-center justify-center -outline-offset-2;
+
 		&:hover {
 			background: var(--color-accent-50);
 		}

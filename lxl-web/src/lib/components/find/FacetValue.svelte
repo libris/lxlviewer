@@ -25,7 +25,7 @@
 
 <a
 	class={[
-		`focusable flex min-h-8 items-center text-sm no-underline`,
+		`focusable truncate flex min-h-8 items-center text-sm no-underline`,
 		data.selected && 'selected',
 		variant === 'checkbox' && 'with-checkbox',
 		variant === 'radio' && 'with-radio',
