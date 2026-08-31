@@ -139,13 +139,13 @@
 		</div>
 	{/if}
 	{#each derivedFilteredInstances as instance (instance?.[JsonLd.ID])}
-		<SearchCard item={instance as SearchResultItem} />
+		<SearchCard item={instance as SearchResultItem} headingElement="h3" />
 	{/each}
 {/snippet}
 
 {#snippet panelAllInstances()}
 	{#each instances as instance (instance?.[JsonLd.ID])}
-		<SearchCard item={instance as SearchResultItem} hideType={true} />
+		<SearchCard item={instance as SearchResultItem} hideType={true} headingElement="h3" />
 	{/each}
 {/snippet}
 
@@ -408,6 +408,7 @@
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
 										suppressProperty={[relationItem.qualifierKey]}
+										headingElement="h4"
 									/>
 								</div>
 							</li>

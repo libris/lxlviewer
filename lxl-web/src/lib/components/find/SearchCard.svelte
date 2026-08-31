@@ -37,6 +37,7 @@
 		allowLinks?: boolean;
 		allowActions?: boolean;
 		hideType?: boolean;
+		headingElement?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 	}
 
 	let articleElement: HTMLElement;
@@ -46,7 +47,8 @@
 		allowPopovers = true,
 		allowLinks = true,
 		allowActions = true,
-		hideType = false
+		hideType = false,
+		headingElement = 'h2'
 	}: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
@@ -268,7 +270,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					{/each}
 				</p>
 				<hgroup>
-					<h2 class="decorated-heading card-header-title text-base">
+					<svelte:element
+						this={headingElement}
+						class="decorated-heading card-header-title text-base"
+					>
 						<a
 							href={resourceLink}
 							class="hover:text-link focus:text-link block hover:underline focus:underline"
@@ -282,7 +287,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								{allowPopovers}
 							/>
 						</a>
-					</h2>
+					</svelte:element>
 				</hgroup>
 				{#if item[LensType.WebCardHeaderExtra]?._display}
 					<p class="card-header-extra">
