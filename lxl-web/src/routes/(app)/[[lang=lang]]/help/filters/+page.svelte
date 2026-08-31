@@ -81,7 +81,7 @@
 				<div
 					role="row"
 					class="sr-only @3xl:not-sr-only @3xl:grid
-					 @3xl:grid-cols-[1fr_2fr_1.5fr_1fr] @3xl:gap-x-4"
+					@3xl:grid-cols-[1fr_2fr_1.5fr_1fr] @3xl:gap-x-4"
 				>
 					<div id="filter-header" role="columnheader" class="py-3 font-medium">
 						{page.data.t('help.filter')}
@@ -124,17 +124,17 @@
 								role="row"
 								id={f.key}
 								class="border-t border-gray-300
-				       @3xl:grid
-				       @3xl:grid-cols-[minmax(min-content,1fr)_2fr_1.5fr_1fr]
-				       @3xl:gap-x-4
-				       @3xl:py-0"
+								@3xl:grid
+								@3xl:grid-cols-[minmax(min-content,1fr)_2fr_1.5fr_1fr]
+								@3xl:gap-x-4
+								@3xl:py-0"
 							>
 								<!-- Filter -->
 								<div
 									role="rowheader"
 									id={`row-${f.key}`}
 									aria-labelledby="filter-header row-{f.key}"
-									class="min-w-0 py-4"
+									class="min-w-0 my-4"
 								>
 									<div class="mb-2 text-xs font-medium text-neutral-500 @3xl:hidden">
 										{page.data.t('help.filter')}
@@ -152,7 +152,7 @@
 								<div
 									role="cell"
 									aria-labelledby={`description-header row-${f.key}`}
-									class="min-w-0 py-3"
+									class={[f.filterDescription ? '' : 'hidden md:block', 'min-w-0 my-3']}
 								>
 									<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
 										{page.data.t('help.description')}
@@ -176,7 +176,7 @@
 								<div
 									role="cell"
 									aria-labelledby={`searchin-header row-${f.key}`}
-									class="min-w-0 py-3"
+									class={[f.propertyChainAxiom ? '' : 'hidden md:block', 'min-w-0 my-3']}
 								>
 									<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
 										{page.data.t('help.searchIn')}
@@ -186,7 +186,7 @@
 										<ul>
 											{#each f.propertyChainAxiom as p (p)}
 												<li class="text-s">{p.label}</li>
-												<li class="text-2xs text-subtle mb-2 font-mono [overflow-wrap:anywhere]">
+												<li class="text-2xs text-subtle mb-2 font-mono wrap-anywhere">
 													{p.path}
 												</li>
 											{/each}
@@ -195,13 +195,17 @@
 								</div>
 
 								<!-- Code -->
-								<div role="cell" aria-labelledby={`code-header row-${f.key}`} class="min-w-0 py-3">
+								<div
+									role="cell"
+									aria-labelledby={`code-header row-${f.key}`}
+									class={[f.queryCodes ? '' : 'hidden md:block', 'min-w-0 my-3']}
+								>
 									<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
 										{page.data.t('help.code')}
 									</div>
 
 									<ul class="font-mono">
-										<li class="text-xs [overflow-wrap:anywhere]">{f.key}</li>
+										<li class="text-xs wrap-anywhere">{f.key}</li>
 
 										{#each f.queryCodes as q (q)}
 											<li class="text-subtle text-xs">{q}</li>

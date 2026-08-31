@@ -68,7 +68,7 @@
 		class="btn btn-primary size-8"
 		disabled={!rangeFrom && !rangeTo}
 		type="submit"
-		aria-label={page.data.t('general.apply')}
+		aria-label={page.data.t('search.search')}
 	>
 		<BiSearch class="text-base" />
 	</button>

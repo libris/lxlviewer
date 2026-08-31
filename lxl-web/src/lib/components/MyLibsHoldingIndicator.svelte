@@ -30,7 +30,6 @@
 </script>
 
 <span
-	aria-label={indicatorText}
 	use:popover={{
 		title: indicatorText
 	}}

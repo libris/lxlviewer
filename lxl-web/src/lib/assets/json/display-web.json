@@ -1041,6 +1041,7 @@
 						"copyrightDate",
 						"projectedProvisionDate",
 						"extent",
+						"systemRequirement",
 						"associatedMedia",
 						"electronicLocator",
 						"marc:versionOfResource",

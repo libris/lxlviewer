@@ -238,12 +238,12 @@
 					tabindex={mounted ? undefined : 0}
 					class="action hover:bg-primary-200"
 					onclick={handleClickSearchAction}
-					aria-label={page.data.t('header.search')}
+					aria-label={page.data.t('search.search')}
 					aria-labelledby={searchLabelId}
 				>
 					{@render actionItemContents({
 						Icon: IconSearch,
-						label: page.data.t('header.search'),
+						label: page.data.t('search.search'),
 						id: searchLabelId
 					})}
 				</svelte:element>

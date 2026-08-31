@@ -131,10 +131,10 @@ function getLinksToItemFor(
 				linksToItem = [linkTemplate.replace(/%BIB_*ID%/g, bibIdObj.bibId), ...linksToItem];
 			}
 			if (path.includes(BibDb.isbnSearchUri) && bibIdObj.isbn.length) {
-				linksToItem = [linkTemplate.replace(/%ISBN%/g, bibIdObj.isbn), ...linksToItem];
+				linksToItem = [linkTemplate.replace(/%ISBN%/g, bibIdObj.isbn[0]), ...linksToItem];
 			}
 			if (path.includes(BibDb.issnSearchUri) && bibIdObj.issn.length) {
-				linksToItem = [linkTemplate.replace(/%ISSN%/g, bibIdObj.issn), ...linksToItem];
+				linksToItem = [linkTemplate.replace(/%ISSN%/g, bibIdObj.issn[0]), ...linksToItem];
 			}
 		}
 	}

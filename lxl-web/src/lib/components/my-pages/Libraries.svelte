@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { getUserSettings } from '$lib/contexts/userSettings';
@@ -51,7 +52,10 @@
 			params.set('_r', page.url.searchParams.get('_r') as string);
 		}
 
-		goto(page.url.pathname + `?${params.toString()}`, { replaceState: true, keepFocus: true });
+		goto(resolve(page.url.pathname + `?${params.toString()}`), {
+			replaceState: true,
+			keepFocus: true
+		});
 	}
 
 	let search = useSearchRequest({
@@ -89,7 +93,7 @@
 <div class="flex flex-col-reverse justify-between gap-6 py-2 md:flex-row">
 	<div class="w-full max-w-xl lg:w-6/12">
 		<h2 class="mt-4 font-medium">
-			<label for="my-libraries-search">{page.data.t('myPages.findAndAdd')}</label>
+			{page.data.t('myPages.findAndAdd')}
 		</h2>
 		<div class="relative mt-2">
 			<input
@@ -98,6 +102,7 @@
 				placeholder={page.data.t('myPages.findLibrary')}
 				class="bg-input h-9 w-full max-w-xl rounded-sm border border-neutral-300 pr-2 pl-8 text-base sm:text-sm"
 				oninput={handleInputChange}
+				aria-label={page.data.t('myPages.findLibrary')}
 				type="search"
 			/>
 			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm" />
@@ -136,7 +141,7 @@
 	<div class="w-full lg:w-6/12">
 		<h2 id="my-libraries" class="mt-4 flex items-center gap-2 font-medium">
 			<BiHouseHeart class="libraries-indicator" aria-hidden="true" />
-			<span>{page.data.t('myPages.favouriteLibraries')}</span>
+			<span>{page.data.t('myPages.myFavouriteLibraries')}</span>
 		</h2>
 		{#if mergedLibraries.length}
 			<ol

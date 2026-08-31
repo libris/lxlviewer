@@ -38,7 +38,6 @@ export default {
 		fjarrlan: 'Fjärrlån',
 		myPages: 'Mina sidor',
 		changeLang: 'In English',
-		search: 'Sök',
 		login: 'Logga in',
 		searchPlaceholder: 'Sök titel, upphovsperson, ämnen...',
 		searchSubsetPlaceholder: 'Sök inom',
@@ -67,8 +66,9 @@ export default {
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Favoritbibliotek',
 		favouriteLibrary: 'favoritbibliotek',
+		myFavouriteLibraries: 'Mina favoritbibliotek',
 		findLibrary: 'Sök efter bibliotek',
-		findAndAdd: 'Hitta och lägg till favoritbibliotek',
+		findAndAdd: 'Lägg till favoritbibliotek',
 		noResultsFor: 'Inga sökträffar för',
 		hitsFor: 'träffar för',
 		settingsLinkHeading: 'Permanent länk för inställningarna',
@@ -146,7 +146,7 @@ export default {
 		exploreCategories: 'Utforska kategorier',
 		loading: 'Laddar...',
 		filter: 'Filter',
-		findFilter: 'Hitta filter',
+		findFilter: 'Sök efter filter',
 		filters: 'Sökfilter',
 		activeFilter: 'Aktivt filter',
 		selectedFilters: 'Valda filter',
@@ -199,7 +199,6 @@ export default {
 		showEquals: 'Visa bara exakta träffar för'
 	},
 	supersearch: {
-		search: 'Sök',
 		addQualifiers: 'Filter',
 		moreQualifiers: 'Fler filter',
 		loading: 'Laddar...',
@@ -255,7 +254,6 @@ export default {
 		latestInstanceCover: 'Senaste utgåvans omslag',
 		instanceCover: 'Utgåvans omslag',
 		close: 'Stäng',
-		apply: 'Tillämpa',
 		from: 'Från',
 		to: 'Till',
 		year: 'år',
@@ -354,7 +352,7 @@ export default {
 		show: 'Visa sidopanel',
 		hide: 'Dölj sidopanel',
 		trailingPane: 'Högerpanel',
-		resizeMe: 'Dra för att ändra panelens storlek'
+		resizablePane: 'Ändra storlek på panel'
 	},
 	citations: {
 		cite: 'Referera',

@@ -115,7 +115,7 @@
 					<DecoratedData data={data['card-heading']} showLabels="never" />
 				</h2>
 				{#if data[LensType.WebCardHeaderExtra]?._display && data[LensType.WebCardHeaderExtra]?._display.length}
-					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
+					<p class="decorated-card-heading-extra text-subtle mt-0.5 line-clamp-2 text-xs">
 						{#each data[LensType.WebCardHeaderExtra]?._display as displayObj, index (index)}
 							<span>
 								<DecoratedData data={displayObj} showLabels="defaultOn" />

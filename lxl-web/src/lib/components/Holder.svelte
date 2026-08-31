@@ -91,7 +91,6 @@
 					target="_blank"
 					class="ext-link"
 					aria-label={page.data.t('holdings.findAtLibrary')}
-					aria-describedby={`holder-${holder[JsonLd.ID]}`}
 				>
 					{page.data.t('holdings.linkToLocal')}
 				</a>
@@ -143,7 +142,10 @@
 {/snippet}
 
 <li class={['holder', hidden && 'hidden']}>
-	<article class="border-neutral bg-page flex flex-col rounded-sm border-b p-3">
+	<article
+		class="border-neutral bg-page flex flex-col rounded-sm border-b p-3"
+		aria-labelledby={`holder-${holder[JsonLd.ID]}`}
+	>
 		<div class="holder-heading flex items-baseline justify-between">
 			<h3 class="text-base font-medium sm:text-sm" id={`holder-${holder[JsonLd.ID]}`}>
 				{holder.displayStr || holder.name || holder[JsonLd.ID]}
@@ -154,7 +156,6 @@
 					href={getBestLink(instances[0])}
 					target="_blank"
 					aria-label={page.data.t('holdings.findAtLibrary')}
-					aria-describedby={`holder-${holder[JsonLd.ID]}`}
 				>
 					<BiBoxArrowUpRight aria-hidden="true" class="text-link ml-2 size-4" />
 				</a>

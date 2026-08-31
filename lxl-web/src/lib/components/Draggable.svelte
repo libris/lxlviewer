@@ -12,6 +12,7 @@
 		side: 'left' | 'right';
 		minWidth?: number;
 		maxWidth?: number;
+		step?: number;
 		isDragging?: boolean;
 		disabled?: boolean;
 		collapseWidth?: number;
@@ -25,6 +26,7 @@
 		isDragging = $bindable(false),
 		minWidth = 200,
 		maxWidth = 400,
+		step = 20,
 		collapseWidth,
 		side = 'right',
 		disabled = false,
@@ -80,6 +82,51 @@
 		document.addEventListener('pointerup', onPointerUp, { once: true });
 	}
 
+	// https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/slider_role#keyboard_interactions
+	function handleKeyDown(e: KeyboardEvent) {
+		e.preventDefault();
+		isDragging = true;
+
+		switch (e.key) {
+			case 'ArrowRight':
+			case 'ArrowUp':
+				stepUp(step);
+				break;
+			case 'ArrowLeft':
+			case 'ArrowDown':
+				stepDown(step);
+				break;
+			case 'PageUp':
+				stepUp(step * 2);
+				break;
+			case 'PageDown':
+				stepDown(step * 2);
+				break;
+			case 'Home':
+				width = minWidth;
+				break;
+			case 'End':
+				width = maxWidth;
+				break;
+		}
+
+		function stepUp(s: number) {
+			if (width + s < maxWidth) {
+				width = width + s;
+			} else {
+				width = maxWidth;
+			}
+		}
+
+		function stepDown(s: number) {
+			if (width - s > minWidth) {
+				width = width - s;
+			} else {
+				width = minWidth;
+			}
+		}
+	}
+
 	function onPointerUp() {
 		document.removeEventListener('pointermove', throttledOnPointerMove);
 		isDragging = false;
@@ -97,6 +144,7 @@
 	});
 </script>
 
+<!-- role 'slider' vs 'separator' discussion -->
 <!-- https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/ -->
 <!-- https://github.com/w3c/aria-practices/issues/130#issuecomment-2301520761 -->
 <div
@@ -108,7 +156,7 @@
 	]}
 	aria-disabled={disabled}
 	tabindex="0"
-	aria-label={page.data.t('panes.resizeMe')}
+	aria-label={page.data.t('panes.resizablePane')}
 	role="slider"
 	aria-valuenow={width}
 	aria-valuemin={minWidth}
@@ -116,6 +164,8 @@
 	aria-orientation="vertical"
 	aria-controls={parentId}
 	onpointerdown={handlePointerDown}
+	onkeydown={handleKeyDown}
+	onkeyup={() => (isDragging = false)}
 ></div>
 
 <style lang="postcss">
