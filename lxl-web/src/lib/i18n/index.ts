@@ -5,8 +5,12 @@ export type TranslateFn = {
 	(key: string, values?: { [key: string]: string }): string;
 };
 
-export async function getTranslator(locale: LocaleCode) {
-	const loadedTranslations: Record<string, string> = {};
+// locale -> section -> item
+export type Translations = Record<string, Record<string, Record<string, string>>>;
+
+export async function getTranslator(locale: LocaleCode, siteOverrides?: Translations) {
+	const loadedTranslations: Translations = {};
+	let siteTranslations: Translations | undefined = undefined;
 	try {
 		loadedTranslations[locale] = (await import(`./locales/${locale}.js`)).default;
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,6 +18,8 @@ export async function getTranslator(locale: LocaleCode) {
 		console.error('failed to load locale file for ', locale);
 		loadedTranslations[defaultLocale] = (await import(`./locales/${defaultLocale}.js`)).default;
 	}
+
+	siteTranslations = siteOverrides;
 
 	return (key: string, values?: { [key: string]: string }): string => {
 		if (!key.includes('.')) {
@@ -25,8 +31,13 @@ export async function getTranslator(locale: LocaleCode) {
 		const [section, ...rest] = key.split('.') as [string, string[]];
 		const item = rest.join('.');
 
-		// @ts-expect-error - how to typecheck??
-		const localeResult = loadedTranslations?.[locale]?.[section]?.[item];
+		let localeResult;
+		if (siteTranslations) {
+			localeResult = siteTranslations?.[locale]?.[section]?.[item];
+		}
+		if (!localeResult) {
+			localeResult = loadedTranslations?.[locale]?.[section]?.[item];
+		}
 
 		if (localeResult) {
 			return interpolate(localeResult, values);

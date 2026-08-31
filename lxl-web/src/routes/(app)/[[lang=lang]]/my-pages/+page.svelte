@@ -40,14 +40,16 @@
 
 <Meta
 	title={pageTitle}
-	description={page.data.t('myPages.pageDescription')}
+	description={page.data.t('myPages.metaDescription')}
 	url={page.url.origin + page.url.pathname}
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
 <div class="mx-auto mt-2 w-full max-w-screen p-4 sm:px-6 md:mt-6 lg:max-w-6xl">
 	<h1 class="font-heading text-2xl font-medium">{page.data.t('myPages.myPages')}</h1>
-	<Libraries {q} />
+	{#if page.data.features.favouriteLibraries}
+		<Libraries {q} />
+	{/if}
 
 	<div style="max-width: 60ch;" class:collapse={!hasFavourites}>
 		<h2 class="mt-4 font-medium">

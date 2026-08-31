@@ -24,8 +24,6 @@ export default {
 		specialCollections: 'Särskilda samlingar',
 		myPages: 'Mina sidor',
 		help: 'Hjälp',
-		about: 'Om Libris',
-		aboutBeta: 'Frågor och svar',
 		illSite: 'Libris fjärrlån',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
@@ -48,12 +46,12 @@ export default {
 	},
 	about: {
 		pageTitle: 'Om Libris',
-		pageDescription:
+		metaDescription:
 			'Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog.'
 	},
 	help: {
 		pageTitle: 'Hjälp',
-		pageDescription:
+		metaDescription:
 			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.',
 		description: 'Beskrivning',
 		reference: 'Referens',
@@ -63,7 +61,7 @@ export default {
 	},
 	myPages: {
 		pageTitle: 'Mina sidor',
-		pageDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
+		metaDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Favoritbibliotek',

@@ -150,7 +150,7 @@
 see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c23e223cdda91b17a -->
 
 {#snippet holdingsButton()}
-	{#if id && item.numberOfHolders >= 0}
+	{#if id && item.numberOfHolders >= 0 && page.data.features.holdings}
 		<a
 			class="btn btn-primary h-7 min-w-28 rounded-full md:h-8"
 			href={page.data.localizeHref(getHoldingsLink(page.url, id))}
@@ -189,33 +189,35 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		{id}
 		class={[
 			'search-card border-neutral relative grid w-full gap-x-4 border-t px-3 py-3 font-normal transition-colors',
-			showHighlight && 'bg-accent-50/75'
+			showHighlight && 'bg-accent-50/75',
+			!page.data.features.resourceImages && 'no-image'
 		]}
 		aria-current={showHighlight || undefined}
 		data-testid="search-card"
 		bind:this={articleElement}
 	>
-		<div class="card-image">
-			<a
-				href={resourceLink}
-				aria-labelledby={titleId}
-				aria-describedby={`${bodyId} ${footerId}`}
-				tabindex="-1"
-				onclick={passAlongAdjecentSearchResults}
-			>
-				<div class="pointer-events-none relative flex">
-					{#if item.image}
-						<img
-							src={item.image.url}
-							width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
-							height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
-							alt={page.data.t('general.instanceCover')}
-							class:rounded-full={item['@type'] === 'Person'}
-							class="object-contain object-top {item['@type'] !== 'Person'
-								? 'aspect-2/3'
-								: 'aspect-square'}"
-						/>
-						<!--
+		{#if page.data.features.resourceImages}
+			<div class="card-image">
+				<a
+					href={resourceLink}
+					aria-labelledby={titleId}
+					aria-describedby={`${bodyId} ${footerId}`}
+					tabindex="-1"
+					onclick={passAlongAdjecentSearchResults}
+				>
+					<div class="pointer-events-none relative flex">
+						{#if item.image}
+							<img
+								src={item.image.url}
+								width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
+								height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
+								alt={page.data.t('general.instanceCover')}
+								class:rounded-full={item['@type'] === 'Person'}
+								class="object-contain object-top {item['@type'] !== 'Person'
+									? 'aspect-2/3'
+									: 'aspect-square'}"
+							/>
+							<!--
 						{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 							<div class="absolute -top-4 -left-4">
 								<div class="bg-page rounded-md p-1.5">
@@ -224,24 +226,25 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							</div>
 						{/if}
 						-->
-					{:else}
-						<div class="flex items-center justify-center">
-							<img
-								src={placeholder}
-								alt=""
-								class:rounded-full={item['@type'] === 'Person'}
-								class:rounded-sm={item['@type'] !== 'Person'}
-								class={[
-									'placeholder object-cover object-top',
-									bookAspectRatio(item.typeForIcon) && 'aspect-3/4'
-								]}
-							/>
-							<TypeIcon type={item.typeForIcon} class="absolute text-2xl text-neutral-400" />
-						</div>
-					{/if}
-				</div>
-			</a>
-		</div>
+						{:else}
+							<div class="flex items-center justify-center">
+								<img
+									src={placeholder}
+									alt=""
+									class:rounded-full={item['@type'] === 'Person'}
+									class:rounded-sm={item['@type'] !== 'Person'}
+									class={[
+										'placeholder object-cover object-top',
+										bookAspectRatio(item.typeForIcon) && 'aspect-3/4'
+									]}
+								/>
+								<TypeIcon type={item.typeForIcon} class="absolute text-2xl text-neutral-400" />
+							</div>
+						{/if}
+					</div>
+				</a>
+			</div>
+		{/if}
 		<div class="card-content grid">
 			<header class="card-header" id={titleId}>
 				<p class="card-header-top">
@@ -544,6 +547,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			color: var(--color-subtle);
 			font-size: var(--text-xs);
 		}
+	}
+
+	.no-image {
+		grid-template-columns: 0 1fr auto;
 	}
 
 	.card-image {

@@ -1,70 +1,46 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
 	import KbLogo from '$lib/assets/img/kb_logo_text_black.svg';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import * as CookieConsent from 'vanilla-cookieconsent';
+	import { FOOTER_COOKIES_HREF } from '$lib/types/site';
+
+	const sections = $derived(page.data.footer);
 </script>
 
 <footer
-	class="mt-auto flex flex-col justify-between gap-8 bg-neutral-100 px-4 py-8 sm:flex-row sm:px-8 print:hidden"
+	class="mt-auto flex flex-col flex-wrap justify-between gap-8 bg-neutral-100 px-4 py-8 sm:flex-row sm:px-8 print:hidden"
 >
-	<div
-		class="flex flex-col flex-wrap gap-4 sm:flex-row sm:gap-16 [&_li>*]:text-sm [&_p]:font-medium"
-	>
-		<nav class="flex flex-col gap-2" aria-labelledby="nav-info">
-			<p id="nav-info">
-				{page.data.t('footer.information')}
-			</p>
-			<ul>
-				<li>
-					<a href={resolve(page.data.localizeHref('/about'))}>{page.data.t('footer.about')}</a>
-				</li>
-				<li>
-					<a
-						href="https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html"
-						>{page.data.t('footer.faq')}</a
-					>
-				</li>
-				<li>
-					<button onclick={CookieConsent.showPreferences}>{page.data.t('footer.cookies')}</button>
-				</li>
-				<li>
-					<a href="https://www.kb.se/om-oss/hantering-av-personuppgifter#Librissok"
-						>{page.data.t('footer.gdpr')}</a
-					>
-				</li>
-				<li>
-					<a
-						href="https://www.kb.se/om-oss/tillganglighet-pa-kbs-webbplatser-och-digitala-tjanster.html#item_125b5507eb18cedffd1a436125_45b5507eb18cedffd1a4317ec"
-						>{page.data.t('appMenu.accessibilityStatement')}</a
-					>
-				</li>
-			</ul>
-		</nav>
-		<nav class="flex flex-col gap-2" aria-labelledby="nav-shortcuts">
-			<p id="nav-shortcuts">{page.data.t('footer.shortcuts')}</p>
-			<ul>
-				<li>
-					<a href={resolve(page.data.localizeHref('/help/search'))}>{page.data.t('appMenu.help')}</a
-					>
-				</li>
-				<li>
-					<a href={env.PUBLIC_FJARRLAN_URL}>{page.data.t('appMenu.illSite')}</a>
-				</li>
-			</ul>
-		</nav>
-		<nav class="flex flex-col gap-2" aria-labelledby="nav-contact">
-			<p id="nav-contact">{page.data.t('footer.contact')}</p>
-			<ul>
-				<li>
-					<a
-						href="https://www.kb.se/om-oss/kontakta-oss#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3"
-						>{page.data.t('footer.customerSupport')}</a
-					>
-				</li>
-			</ul>
-		</nav>
+	<div class="flex flex-col gap-4 sm:flex-row sm:gap-16 [&_li>*]:text-sm [&_p]:font-medium">
+		{#each sections as section (section.id)}
+			<nav class="flex flex-col gap-2" aria-labelledby={section.id}>
+				<p id={section.id}>
+					{#if section.titleKey}
+						{page.data.t(section.titleKey)}
+					{/if}
+				</p>
+				<ul>
+					{#each section.items as item, index (index)}
+						<li>
+							{#if item.href && item.titleKey}
+								{#if item.href === FOOTER_COOKIES_HREF}
+									<button onclick={CookieConsent.showPreferences}>
+										{page.data.t(item.titleKey)}
+									</button>
+								{:else if item.href?.startsWith('/')}
+									<a href={resolve(page.data.localizeHref(item.href))}>
+										{page.data.t(item.titleKey)}
+									</a>
+								{:else if item.href}
+									<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+									<a href={item.href}>{page.data.t(item.titleKey)}</a>
+								{/if}
+							{/if}
+						</li>
+					{/each}
+				</ul>
+			</nav>
+		{/each}
 	</div>
 	<div class="flex items-end">
 		<img class="h-20 w-auto" alt={page.data.t('footer.logo')} src={KbLogo} />

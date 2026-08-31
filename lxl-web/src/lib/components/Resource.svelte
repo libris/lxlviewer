@@ -128,7 +128,10 @@
 	);
 
 	const hasHoldingsBtn = $derived(
-		holdings.byType && Object.keys(holdings.byType).length && instances
+		holdings.byType &&
+			Object.keys(holdings.byType).length &&
+			instances &&
+			page.data.features.holdings
 	);
 </script>
 
@@ -177,7 +180,11 @@
 		</section>
 	{/if}
 	<div
-		class="max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 px-3 @sm:gap-6 @sm:px-6 @3xl:grid @3xl:grid-cols-(--two-grid-cols) @3xl:gap-9 @7xl:grid-cols-(--three-grid-cols) @7xl:px-12"
+		class={[
+			'max-w-10xl wide:max-w-screen mx-auto flex flex-col gap-3 px-3 @sm:gap-6 @sm:px-6 @3xl:gap-9 @7xl:px-12',
+			page.data.features.resourceImages &&
+				'@3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)'
+		]}
 	>
 		{#if tableOfContents.length}
 			<div class="order-last hidden @7xl:block print:hidden">
@@ -187,17 +194,19 @@
 			</div>
 		{/if}
 		<div>
-			<div class="sticky mx-auto pt-3 @sm:pt-6 @3xl:max-w-xs @3xl:pb-6">
-				<ResourceImage
-					{image}
-					type={typeForIcon}
-					alt={page.data.t('general.instanceCover')}
-					thumbnailTargetWidth={typeForIcon.includes('Bibliography')
-						? ImageWidth.FULL
-						: ImageWidth.MEDIUM}
-					linkToFull
-				/>
-			</div>
+			{#if page.data.features.resourceImages}
+				<div class="sticky mx-auto pt-3 @sm:pt-6 @3xl:max-w-xs @3xl:pb-6">
+					<ResourceImage
+						{image}
+						type={typeForIcon}
+						alt={page.data.t('general.instanceCover')}
+						thumbnailTargetWidth={typeForIcon.includes('Bibliography')
+							? ImageWidth.FULL
+							: ImageWidth.MEDIUM}
+						linkToFull
+					/>
+				</div>
+			{/if}
 		</div>
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 py-6 @sm:gap-6">
 			<section id="{uidPrefix}top">

@@ -12,7 +12,7 @@
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import IconArrowRight from '~icons/bi/arrow-right';
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
-	import heroImage from '$lib/assets/img/bg-marbling01.jpg';
+	import heroFallback from '$lib/assets/img/hero/bg-marbling01.jpg';
 	import AppSearch from './AppSearch.svelte';
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
@@ -28,6 +28,18 @@
 	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
 	const featuredCollections: FeaturedSearch[] = $derived(page.data.featuredCollections);
+
+	const heroImageModules = import.meta.glob<string>('$lib/assets/img/hero/*.{jpg,jpeg,png,webp}', {
+		eager: true,
+		query: '?url',
+		import: 'default'
+	});
+
+	const heroImageByName: Record<string, string> = Object.fromEntries(
+		Object.entries(heroImageModules).map(([path, url]) => [path.split('/').pop()!, url])
+	);
+
+	const heroImage = $derived(heroImageByName[page.data.heroImage ?? ''] ?? heroFallback);
 
 	const searchContext = getSearchContext();
 	let searchContainerElement: HTMLDivElement | undefined = $state();
@@ -127,7 +139,13 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			<FeaturedPreviewList {featured} ariaLabelledBy={id} {type} {lazyload} />
+			<FeaturedPreviewList
+				{featured}
+				ariaLabelledBy={id}
+				{type}
+				{lazyload}
+				showResourceImages={page.data.features.resourceImages}
+			/>
 		</div>
 		{#if featured.footerTextByLang}
 			<footer class="mt-2 flex justify-start px-3 sm:justify-end @sm:px-6 @5xl:px-8">
@@ -259,6 +277,7 @@
 			lazyload: index === 0 ? 'mount' : 'intersection'
 		})}
 	{/each}
+    {#if page.data.features.specialCollections}
 	<section class="bg-primary-50 mb-8 scroll-mt-20 px-3 py-12 lg:py-16">
 		<div class="2xl:max-w-10xl mx-auto max-w-7xl">
 			<h2 class="mb-4.5 px-6 text-center font-serif text-2xl lg:text-3xl @min-[110rem]:text-4xl">
@@ -290,6 +309,7 @@
 			</div>
 		</div>
 	</section>
+    {/if}
 	{#each featuredSearches2 as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,

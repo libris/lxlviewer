@@ -25,8 +25,6 @@ export default {
 		specialCollections: 'Special collections',
 		myPages: 'My pages',
 		help: 'Help',
-		about: 'About Libris',
-		aboutBeta: 'FAQ',
 		illSite: 'Libris Fjärrlån',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
@@ -49,12 +47,12 @@ export default {
 	},
 	about: {
 		pageTitle: 'About Libris',
-		pageDescription:
+		metaDescription:
 			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog.'
 	},
 	help: {
 		pageTitle: 'Help',
-		pageDescription:
+		metaDescription:
 			'Help and documentation for using Libris, the Swedish national union catalogue.',
 		description: 'Description',
 		filter: 'Filter',
@@ -64,7 +62,7 @@ export default {
 	},
 	myPages: {
 		pageTitle: 'My pages',
-		pageDescription: 'Here you can manage your favourite libraries, among other things.',
+		metaDescription: 'Here you can manage your favourite libraries, among other things.',
 		myPages: 'My pages',
 		libraries: 'Libraries',
 		favouriteLibraries: 'Favourite libraries',
