@@ -13,12 +13,14 @@ export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 	const searchParams = new URLSearchParams();
 
 	// reruns on change in these params:
-	const _q = url.searchParams.get('_q');
-	const _r = url.searchParams.get('_r');
-	const holdingsParam = url.searchParams.get('holdings');
+	const reactiveParams = ['_q', '_r', '_sort'];
+	reactiveParams.forEach((param) => {
+		if (url.searchParams.has(param) || param === '_q') {
+			searchParams.set(param, url.searchParams.get(param) || '');
+		}
+	});
 
-	searchParams.set('_q', _q || '');
-	if (_r) searchParams.set('_r', _r);
+	const holdingsParam = url.searchParams.get('holdings');
 
 	async function getHoldings(fnurgel: string): Promise<HoldingsData> {
 		const res = await fetch(`/api/${locale}/${fnurgel}/holdings`);

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount, tick } from 'svelte';
 	import { page } from '$app/state';
-	import { goto, onNavigate, pushState } from '$app/navigation';
+	import { afterNavigate, goto, onNavigate, pushState } from '$app/navigation';
 	import {
 		type ChangeEvent,
 		type DebouncedWaitFunction,
@@ -129,6 +129,7 @@
 	let cursor = $derived(selection?.head || 0);
 	let isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	let isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
+	let currentSort = $derived(page.url.searchParams.get('_sort') || '');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
@@ -192,6 +193,14 @@
 
 			fetchOnExpand = true;
 		};
+	});
+
+	// manually fetch data again after sort change to update up-links
+	afterNavigate(({ from, to }) => {
+		const sortChanged = from?.url.searchParams.get('_sort') !== to?.url.searchParams.get('_sort');
+		if (sortChanged) {
+			superSearch?.fetchData();
+		}
 	});
 
 	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
@@ -484,6 +493,7 @@
 			const searchParams = new SvelteURLSearchParams({
 				_q: query,
 				_limit: '5',
+				_sort: currentSort,
 				cursor: cursor.toString()
 			});
 			if (page.url.searchParams.get('_r')) {

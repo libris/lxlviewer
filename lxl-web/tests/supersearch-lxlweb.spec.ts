@@ -398,3 +398,16 @@ test('shallow routing enables controlling expanded state using the history API',
 	await page.goForward();
 	await expect(page.getByRole('dialog')).toBeVisible();
 });
+
+test('qualifier remove buttons are updated when sorting change', async ({ page }) => {
+	await page.goto(
+		'/find?_q=workCategory%3A"saogf%3AFacklitteratur"+&_limit=20&_offset=0&_sort=&_spell=true'
+	);
+	const qualifierRemove = await page
+		.getByTestId('supersearch')
+		.getByRole('link', { name: 'ta bort filter Kategori' });
+	await expect(qualifierRemove).not.toHaveAttribute('href', /_sort=_sortKeyByLang\.sv/);
+	await page.getByTestId('sort-select').locator('select').selectOption('_sortKeyByLang.sv');
+	await page.waitForLoadState('networkidle');
+	await expect(qualifierRemove).toHaveAttribute('href', /_sort=_sortKeyByLang\.sv/);
+});
