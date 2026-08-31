@@ -20,6 +20,11 @@
 	import { getSearchContext } from '$lib/contexts/search';
 	import { onNavigate } from '$app/navigation';
 
+	const pageTitle = getPageTitle(
+		`${page.data.t('home.pageHeadingTitle')} ${page.data.t('home.pageHeadingTitleNoWrap')}`,
+		page.data.siteName
+	);
+
 	const ID_HERO_SEARCH_LABEL = 'hero-search-label';
 	const ID_HERO_EXPLORE_LABEL = 'hero-explore-label';
 	const ID_EXPLORE = 'explore';
@@ -71,11 +76,11 @@
 </script>
 
 <svelte:head>
-	<title>{getPageTitle(undefined, page.data.siteName)}</title>
+	<title>{pageTitle}</title>
 </svelte:head>
 
 <Meta
-	title={page.data.siteName}
+	title={pageTitle}
 	description={page.data.t('home.metaDescription')}
 	url={page.url.href}
 	siteName={getPageTitle(undefined, page.data.siteName)}
