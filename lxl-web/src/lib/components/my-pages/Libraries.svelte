@@ -130,7 +130,7 @@
 				<ol class="my-libraries-result flex flex-col rounded-sm p-1">
 					{#each searchResult.items as resultItem (resultItem[JsonLd.ID])}
 						<li>
-							<SearchCard item={resultItem} />
+							<SearchCard item={resultItem} headingElement="h3" />
 						</li>
 					{/each}
 				</ol>
@@ -150,7 +150,7 @@
 			>
 				{#each mergedLibraries as myLib (myLib[JsonLd.ID])}
 					<li>
-						<SearchCard item={myLib} />
+						<SearchCard item={myLib} headingElement="h3" />
 					</li>
 				{/each}
 			</ol>
