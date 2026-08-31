@@ -18,6 +18,14 @@ describe('displayMappingToString', () => {
 	it('does not output anything for a wildcard query', () => {
 		expect(displayMappingToString(wildCardMapping)).toBe('');
 	});
+
+	it('places OR operator between terms', () => {
+		expect(displayMappingToString(orMapping)).toBe('(Meänkieli OR Finska) Poesi');
+	});
+
+	it('prints the tilde operator', () => {
+		expect(displayMappingToString([likeOpMapping])).toBe('NOT ~ Astrid Trotzig OR ~ Astra gruppen');
+	});
 });
 
 const mapping: DisplayMapping[] = [
@@ -246,3 +254,175 @@ const wildCardMapping: DisplayMapping[] = [
 		variable: 'defaultSiteFilters'
 	}
 ];
+
+const orMapping: DisplayMapping[] = [
+	{
+		children: [
+			{
+				children: [
+					{
+						'@id': 'https://id.kb.se/vocab/language',
+						display: {
+							'@id': 'https://id.kb.se/language/9mk',
+							'@type': 'Language',
+							_display: [
+								{
+									prefLabel: 'Meänkieli',
+									_label: 'föredragen benämning'
+								}
+							],
+							_label: 'Språk'
+						},
+						displayStr: 'Meänkieli',
+						label: 'Språk',
+						operator: 'equals',
+						up: {
+							'@id':
+								'/find?_q=Spr%C3%A5k:%22lang:fin%22+Kategori:%22saogf:Poesi%22&_sort=_sortKeyByLang.sv'
+						},
+						_key: 'Språk',
+						_value: '"lang:9mk"',
+						isRedundantKeyLabel: true
+					},
+					{
+						'@id': 'https://id.kb.se/vocab/language',
+						display: {
+							'@id': 'https://id.kb.se/language/fin',
+							'@type': 'Language',
+							_display: [
+								{
+									prefLabel: 'Finska',
+									_label: 'föredragen benämning'
+								}
+							],
+							_label: 'Språk'
+						},
+						displayStr: 'Finska',
+						label: 'Språk',
+						operator: 'equals',
+						up: {
+							'@id':
+								'/find?_q=Spr%C3%A5k:%22lang:9mk%22+Kategori:%22saogf:Poesi%22&_sort=_sortKeyByLang.sv'
+						},
+						_key: 'Språk',
+						_value: '"lang:fin"',
+						isRedundantKeyLabel: true
+					}
+				],
+				operator: 'or',
+				up: {
+					'@id': '/find?_q=Kategori:%22saogf:Poesi%22&_sort=_sortKeyByLang.sv'
+				}
+			},
+			{
+				'@id': 'https://id.kb.se/ns/librissearch/workCategory',
+				display: {
+					'@id': 'https://id.kb.se/term/saogf/Poesi',
+					'@type': 'GenreForm',
+					_display: [
+						{
+							prefLabel: 'Poesi',
+							_label: 'föredragen benämning'
+						}
+					],
+					_style: ['link'],
+					_label: 'Genre/form'
+				},
+				displayStr: 'Poesi',
+				label: 'Kategori',
+				operator: 'equals',
+				up: {
+					'@id':
+						'/find?_q=Spr%C3%A5k:%22lang:9mk%22+OR+Spr%C3%A5k:%22lang:fin%22&_sort=_sortKeyByLang.sv'
+				},
+				_key: 'Kategori',
+				_value: '"saogf:Poesi"',
+				isRedundantKeyLabel: true
+			}
+		],
+		operator: 'and',
+		up: {
+			'@id': '/find?_q=&_sort=_sortKeyByLang.sv'
+		},
+		variable: '_q'
+	}
+];
+
+const likeOpMapping: DisplayMapping = {
+	children: [
+		{
+			children: [
+				{
+					'@id': 'https://id.kb.se/ns/librissearch/contributor',
+					display: {
+						'@id': 'https://libris-qa.kb.se/tr578v1c4dfn9rv#it',
+						'@type': 'Person',
+						_display: [
+							{
+								givenName: 'Astrid',
+								_label: 'förnamn'
+							},
+							{
+								_contentBefore: ' ',
+								familyName: 'Trotzig',
+								_label: 'efternamn'
+							}
+						],
+						_style: ['link'],
+						_label: 'Person'
+					},
+					displayStr: 'Astrid Trotzig',
+					label: 'Författare/upphov',
+					operator: 'like',
+					up: {
+						'@id': '/find?_q=contributor~%22libris:vs69kk2d546bt9r%23it%22'
+					},
+					_key: 'contributor',
+					_value: '"libris:tr578v1c4dfn9rv#it"',
+					toEquals: {
+						'@id':
+							'/find?_q=contributor~%22libris:vs69kk2d546bt9r%23it%22+contributor:%22libris:tr578v1c4dfn9rv%23it%22'
+					},
+					isRedundantKeyLabel: true
+				}
+			],
+			operator: 'not',
+			up: {
+				'@id': '/find?_q=contributor~%22libris:vs69kk2d546bt9r%23it%22'
+			}
+		},
+		{
+			'@id': 'https://id.kb.se/ns/librissearch/contributor',
+			display: {
+				'@id': 'https://libris-qa.kb.se/vs69kk2d546bt9r#it',
+				'@type': 'Organization',
+				_display: [
+					{
+						name: 'Astra gruppen',
+						_label: 'namn'
+					}
+				],
+				_style: ['link'],
+				_label: 'Organisation'
+			},
+			displayStr: 'Astra gruppen',
+			label: 'Författare/upphov',
+			operator: 'like',
+			up: {
+				'@id': '/find?_q=NOT+contributor~%22libris:tr578v1c4dfn9rv%23it%22'
+			},
+			_key: 'contributor',
+			_value: '"libris:vs69kk2d546bt9r#it"',
+			toEquals: {
+				'@id':
+					'/find?_q=NOT+contributor~%22libris:tr578v1c4dfn9rv%23it%22+contributor:%22libris:vs69kk2d546bt9r%23it%22'
+			},
+			isRedundantKeyLabel: true
+		}
+	],
+	operator: 'or',
+	up: {
+		'@id': '/find?_q='
+	},
+	variable: '_q'
+};
