@@ -57,12 +57,17 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		'items on input row are focusable using tab'
 	).toHaveAttribute('aria-activedescendant', 'supersearch-item-0x1');
 	await page.keyboard.press('Tab');
-
+	await page.keyboard.press('Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
-		'supersearch-item-0x2'
+		'supersearch-item-1x0'
 	);
 	await page.keyboard.press('Tab');
+	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-item-2x0'
+	);
+	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
 		'aria-activedescendant',
 		'supersearch-item-1x0'
@@ -73,10 +78,6 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		'supersearch-item-0x2'
 	);
 	await page.keyboard.press('Shift+Tab');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-item-0x1'
-	);
 	await page.keyboard.press('Shift+Tab');
 	await expect(page.getByRole('dialog').getByRole('combobox')).not.toHaveAttribute(
 		'aria-activedescendant'
@@ -87,10 +88,6 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		'supersearch-item-10x2'
 	);
 	await page.keyboard.press('Tab');
-	await expect(page.getByRole('dialog').getByRole('combobox')).not.toHaveAttribute(
-		'aria-activedescendant'
-	);
-
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');

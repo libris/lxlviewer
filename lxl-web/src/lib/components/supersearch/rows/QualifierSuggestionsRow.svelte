@@ -4,8 +4,9 @@
 	import { getSearchContext } from '$lib/contexts/search';
 	import { type QualifierSuggestion2 } from '$lib/types/search';
 	import { getParentNodeByType, type Selection } from 'supersearch';
-	import IconMore from '~icons/bi/chevron-right';
+	import IconFilter from '~icons/bi/filter';
 	import { page } from '$app/state';
+	import IconArrowUpLeft from '~icons/bi/arrow-up-left';
 	import { resolve } from '$app/paths';
 
 	function debugLog(message: unknown) {
@@ -385,13 +386,27 @@
 	);
 </script>
 
-<div role="row" class={['flex items-center text-sm', isFocusedRow(rowIndex) && 'bg-accent-50/75']}>
-	<h2
-		id="supersearch-add-qualifier-key-label"
-		class="min-w-14 pr-1.5 pl-2 sm:min-w-auto sm:pr-3.5 sm:pl-4"
+<div
+	role="row"
+	class={[
+		'flex items-center mx-1 rounded-lg relative lg:mx-3',
+		isFocusedRow(rowIndex) && 'bg-accent-50/75'
+	]}
+>
+	<div
+		class={[
+			'min-h-11 2xl:min-h-12 flex items-center gap-2 font-medium text-subtle rounded-lg cursor-default pointer-events-none'
+		]}
 	>
-		{page.data.t('supersearch.addQualifiers')}
-	</h2>
+		<span class={['flex items-center gap-2.5 whitespace-nowrap mr-4']}>
+			<span class="size-6 items-center justify-center ml-2.5 mr-2 sm:ml-3 sm:mr-1.5 flex">
+				<IconFilter aria-hidden="true" class="text-link size-5.5" />
+			</span>
+			<span id="supersearch-add-qualifier-key-label">
+				{page.data.t('supersearch.addQualifiers')}
+			</span>
+		</span>
+	</div>
 	<ul
 		class="scrollbar-hidden flex min-h-12 items-center gap-2 overflow-x-auto p-0.5"
 		aria-labelledby="supersearch-add-qualifier-key-label"
@@ -411,20 +426,24 @@
 				</button>
 			</li>
 		{/each}
-		<li class="mr-2">
+		<li>
 			<a
 				id={getCellId(rowIndex, filteredQualifierSuggestions.length)}
 				href={resolve(page.data.localizeHref('/help/filters'))}
 				class={[
-					'text-link flex h-11 items-center gap-0.5 px-1 whitespace-nowrap hover:underline',
+					'text-link text-sm h-full py-1.5 px-1 flex items-center justify-center rounded-md whitespace-nowrap',
 					isFocusedCell(rowIndex, filteredQualifierSuggestions.length) && 'focused-cell'
 				]}
 			>
 				{page.data.t('supersearch.moreQualifiers')}
-				<IconMore class="text-link" />
 			</a>
 		</li>
 	</ul>
+	{#if isFocusedRow(rowIndex) && !isFocusedCell(rowIndex, filteredQualifierSuggestions.length)}
+		<span class="hidden sm:block px-4 items-center justify-center ml-auto">
+			<IconArrowUpLeft class="text-link size-4.25" aria-hidden="true" />
+		</span>
+	{/if}
 </div>
 
 <style lang="postcss">

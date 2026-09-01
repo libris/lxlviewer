@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy, type Snippet } from 'svelte';
+	import { onMount, onDestroy, type Snippet, tick } from 'svelte';
 	import { BROWSER } from 'esm-env';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
@@ -32,7 +32,8 @@
 		DebouncedWaitFunction,
 		ExpandEvent,
 		CollapseEvent,
-		DispatchChangeParams
+		DispatchChangeParams,
+		ChangeActiveCell
 	} from '$lib/types/superSearch.js';
 	import { historyKeymap, standardKeymap } from '@codemirror/commands';
 	import { draw, theme } from '$lib/extensions/theme';
@@ -90,12 +91,14 @@
 				{
 					resultItem: ResultItem;
 					getCellId: (cellIndex: number) => string;
+					isFocusedRow: () => boolean;
 					isFocusedCell: (cellIndex: number) => boolean;
 					rowIndex: number;
 				}
 			]
 		>;
 		loadingIndicator?: Snippet;
+		skipInputRowOnArrowKey?: boolean;
 		defaultInputCol?: number;
 		defaultResultRow?: number;
 		defaultResultCol?: number;
@@ -106,6 +109,7 @@
 		selection?: Selection;
 		isLoading?: boolean;
 		hasData?: boolean;
+		resultsCount?: number;
 		loadMoreLabel?: string;
 		onexpand?: (event: ExpandEvent) => void;
 		oncollapse?: (event: CollapseEvent) => void;
@@ -114,6 +118,8 @@
 		onexpandedviewupdate?: (event: ViewUpdateEvent) => void;
 		oninterceptexpandedsubmit?: (formElement: HTMLFormElement) => void;
 		oninterceptexpandedclick?: (event: MouseEvent) => void;
+		onkeydown?: (event: KeyboardEvent) => void;
+		onchangeactivecell?: (event: ChangeActiveCell) => void;
 	}
 
 	let {
@@ -144,6 +150,7 @@
 		expandedContent = fallbackExpandedContent,
 		resultItemRow = fallbackResultItemRow,
 		loadingIndicator,
+		skipInputRowOnArrowKey = false,
 		toggleWithKeyboardShortcut = false,
 		wrappingArrowKeyNavigation = false,
 		defaultInputCol = -1,
@@ -154,6 +161,7 @@
 		selection = $bindable(),
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable(), // should be treated as readonly
+		resultsCount = $bindable(), // should be treated as readonly
 		loadMoreLabel = 'Load more',
 		onexpand,
 		oncollapse,
@@ -161,7 +169,9 @@
 		onselect,
 		onexpandedviewupdate,
 		oninterceptexpandedclick,
-		oninterceptexpandedsubmit
+		oninterceptexpandedsubmit,
+		onkeydown,
+		onchangeactivecell
 	}: Props = $props();
 
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
@@ -177,11 +187,11 @@
 
 	let prevValue: string = value;
 
-	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
-		vertical: true,
+	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $derived({
+		vertical: !skipInputRowOnArrowKey,
 		horizontal: true
 	});
-	let prevArrowKeyCursorHandling = { vertical: true, horizontal: true };
+	let prevArrowKeyCursorHandling = { vertical: false, horizontal: true };
 	let cursorHandlingCompartment = new Compartment();
 
 	let placeholderCompartment = new Compartment();
@@ -221,7 +231,6 @@
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		keymap.of(historyKeymap),
 		preventEnterKeyHandling(),
-		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: true, horizontal: true })),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
@@ -298,6 +307,7 @@
 	let expandedExtensions = $derived([
 		...extensionsWithDefaults,
 		EditorView.lineWrapping,
+		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: false, horizontal: true })),
 		expandedContentAttributesCompartment.of(initialExpandedContentAttributes)
 	]);
 
@@ -313,6 +323,9 @@
 
 	function handleClickExpanded() {
 		setDefaultRowAndCols();
+		if (activeRowIndex === 0) {
+			allowArrowKeyCursorHandling = { vertical: false, horizontal: true };
+		}
 		if (!expandedEditorView?.hasFocus) {
 			expandedEditorView?.focus();
 		}
@@ -369,6 +382,11 @@
 		hideExpandedSearch({ trigger: 'close' });
 		collapsedEditorView?.focus();
 	});
+
+	export function setActiveCell(rowIndex: number, colIndex: number) {
+		activeRowIndex = rowIndex;
+		activeColIndex = colIndex;
+	}
 
 	export function getActiveEditorView() {
 		return expanded ? expandedEditorView : collapsedEditorView;
@@ -529,6 +547,7 @@
 			event.preventDefault();
 			showExpandedSearch();
 		}
+		onkeydown?.(event);
 	}
 
 	function handleExpandedKeyDown(event: KeyboardEvent) {
@@ -560,14 +579,18 @@
 			event.key === 'ArrowRight' ||
 			event.key === 'Tab'
 		) {
-			const arrowKeyRows = Array.from(
-				dialog?.querySelectorAll(':scope [role=row]:not([data-skip-row-on-arrow-key])') || []
+			const rows = Array.from(dialog?.querySelectorAll(':scope [role=row]') || []).filter(
+				(rowItem) => {
+					if (typeof rowItem?.checkVisibility === 'function') {
+						return rowItem.checkVisibility();
+					}
+					return true; // always return true as a fallback if checkVisiblity isn't available
+				}
 			);
 
-			const rows =
-				event.key === 'Tab'
-					? Array.from(dialog?.querySelectorAll(':scope [role=row]') || [])
-					: arrowKeyRows;
+			const arrowKeyRows = rows.filter(
+				(rowItem) => !rowItem.hasAttribute('data-skip-row-on-arrow-key')
+			);
 
 			const getColsInInputRow = () => {
 				return comboboxElement
@@ -600,6 +623,16 @@
 				return Number(itemId.match(colRegex)?.[1]);
 			};
 
+			const getRowIndex = (item: Element) => {
+				const id = Array.from(item.querySelectorAll(':scope button, :scope a') || [])
+					.find((item) => item.hasAttribute('id'))
+					?.getAttribute('id');
+				if (id) {
+					return Number(id.match(/(\d+)x\d+$/)?.[1]);
+				}
+				return -1;
+			};
+
 			const getColIndexBefore = (rowIndex: number, colIndex: number) => {
 				if (rowIndex <= rows.length) {
 					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
@@ -616,6 +649,13 @@
 				return -1;
 			};
 
+			const getLastRowCol = () => {
+				const lastRowColIndeces = getColsInRow(Math.max(0, rows.length - 1)).map((item) =>
+					getColIndexFromId(item.id)
+				);
+				return lastRowColIndeces[lastRowColIndeces.length] || 0;
+			};
+
 			switch (event.key) {
 				case 'ArrowUp':
 					if (event.altKey) {
@@ -623,7 +663,7 @@
 						hideExpandedSearch({ trigger: 'close' });
 						collapsedEditorView?.focus();
 					} else {
-						if (wrappingArrowKeyNavigation && activeRowIndex === 0) {
+						if (wrappingArrowKeyNavigation && activeRowIndex === (skipInputRowOnArrowKey ? 1 : 0)) {
 							event.preventDefault();
 							activeRowIndex = arrowKeyRows.length;
 							activeColIndex = 0;
@@ -651,12 +691,14 @@
 						}
 					}
 					break;
-				case 'ArrowDown':
-					if (wrappingArrowKeyNavigation && activeRowIndex >= arrowKeyRows.length) {
-						activeRowIndex = 0;
-						activeColIndex = defaultInputCol;
-					} else if (activeRowIndex < arrowKeyRows.length) {
-						activeRowIndex++;
+				case 'ArrowDown': {
+					const arrowKeyRowIndeces = arrowKeyRows.map((rowItem) => getRowIndex(rowItem));
+					const nextRowIndex = arrowKeyRowIndeces.find((rowIndex) => rowIndex > activeRowIndex);
+					if (wrappingArrowKeyNavigation && !nextRowIndex) {
+						activeRowIndex = skipInputRowOnArrowKey ? arrowKeyRowIndeces[0] : 0;
+						activeColIndex = skipInputRowOnArrowKey ? 0 : defaultInputCol;
+					} else if (nextRowIndex) {
+						activeRowIndex = nextRowIndex;
 						const cols = getColsInRow(activeRowIndex - 1);
 						if (activeRowIndex === 1) {
 							activeColIndex = 0;
@@ -669,6 +711,7 @@
 						};
 					}
 					break;
+				}
 				case 'ArrowLeft':
 					if (wrappingArrowKeyNavigation && activeRowIndex >= 1 && activeColIndex === 0) {
 						activeColIndex = Math.max(0, getColsInRow(activeRowIndex - 1).length - 1);
@@ -705,9 +748,15 @@
 									getColIndexFromId(item.id)
 								);
 								activeColIndex = lastRowColIndeces[lastRowColIndeces.length - 1] || 0;
+							} else if (defaultResultRow) {
+								activeRowIndex = rows.length;
+								activeColIndex = getLastRowCol();
 							} else {
 								activeColIndex = -1;
 							}
+						} else if (defaultResultRow && activeRowIndex === 1 && !getColsInInputRow().length) {
+							activeRowIndex = rows.length;
+							activeColIndex = getLastRowCol();
 						} else {
 							const closestBefore = getColIndexBefore(activeRowIndex - 1, activeColIndex);
 							if (typeof closestBefore !== 'number') {
@@ -744,8 +793,15 @@
 							activeRowIndex++;
 							activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex - 1)[0].id) || 0;
 						} else if (typeof closestAfter !== 'number' && activeRowIndex === rows.length) {
-							activeRowIndex = 0;
-							activeColIndex = -1;
+							const colIndeces = getColsInInputRow().map((item) => getColIndexFromId(item.id));
+							if (defaultResultRow && !colIndeces.length) {
+								// Jump to default result row if no there are no items in the input row
+								activeRowIndex = defaultResultRow;
+								activeColIndex = defaultResultCol;
+							} else {
+								activeRowIndex = 0;
+								activeColIndex = colIndeces[0];
+							}
 						} else if (typeof closestAfter === 'number') {
 							if (activeRowIndex === 0) {
 								const firstCol = getColsInInputRow()[0].id;
@@ -771,16 +827,8 @@
 					}
 					break;
 			}
-
-			/**
-			 * TODO: Ensure the input is in view
-			 * const activeCellElement = document.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`);
-			 *
-			 * if (!isElementInView(activeCellElement)) {
-			 *		activeCellElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-			 * }
-			 */
 		}
+		onkeydown?.(event);
 	}
 
 	function handleClickOutsideDialog(event: MouseEvent) {
@@ -848,6 +896,10 @@
 	});
 
 	$effect(() => {
+		resultsCount = resultItemRows?.length || 0;
+	});
+
+	$effect(() => {
 		if (placeholder !== prevPlaceholder) {
 			collapsedEditorView?.dispatch({
 				effects: placeholderCompartment.reconfigure(placeholderExtension(placeholder))
@@ -910,6 +962,26 @@
 			}
 		}
 	});
+
+	$effect(() => {
+		if (expanded && (activeRowIndex || activeColIndex)) {
+			onchangeactivecell?.({
+				activeRowIndex,
+				activeColIndex,
+				id: `${id}-item-${activeRowIndex}x${activeColIndex}`
+			});
+		}
+	});
+	$effect(() => {
+		if (defaultResultRow) {
+			moveToActiveRowAfterDefaultHasMoved();
+		}
+	});
+
+	async function moveToActiveRowAfterDefaultHasMoved() {
+		await tick();
+		setDefaultRowAndCols();
+	}
 </script>
 
 {#snippet fallbackExpandedContent({ search }: { search: ReturnType<typeof useSearchRequest> })}
@@ -940,6 +1012,7 @@
 			{@render resultItemRow?.({
 				resultItem,
 				getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+				isFocusedRow: () => activeRowIndex === rowIndex,
 				isFocusedCell: (colIndex: number) =>
 					activeRowIndex === rowIndex && colIndex === activeColIndex,
 				rowIndex
