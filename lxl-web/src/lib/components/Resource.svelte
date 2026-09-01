@@ -196,7 +196,7 @@
 						thumbnailTargetWidth={typeForIcon.includes('Bibliography')
 							? ImageWidth.FULL
 							: ImageWidth.MEDIUM}
-						linkToFull
+						linkToFull={false}
 					/>
 				</div>
 			{/if}
