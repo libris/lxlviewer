@@ -290,6 +290,7 @@ export default {
 		result: 'result',
 		editions: 'Editions',
 		editionOf: 'Edition of',
+		navToWork: 'To resource main page',
 		summary: 'Summary',
 		tableOfContents: 'Table of Contents',
 		details: 'Details',
