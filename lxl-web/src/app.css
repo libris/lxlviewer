@@ -239,6 +239,7 @@
 	a.ext-link,
 	a.find-link {
 		color: var(--color-link);
+		line-height: 1.5rem;
 
 		&:hover,
 		&:focus {
@@ -278,6 +279,7 @@
 		color: var(--color-body);
 		text-decoration: underline;
 		text-decoration-style: dotted;
+		line-height: 1.5rem;
 
 		&:hover,
 		&:focus {
