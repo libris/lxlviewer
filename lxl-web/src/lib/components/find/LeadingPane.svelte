@@ -38,8 +38,7 @@
 	];
 </script>
 
-<nav
-	aria-label={page.data.t('panes.leadingPane')}
+<div
 	id="leading-pane"
 	class={[
 		'leading-pane sticky top-0 z-10 hidden w-0 sm:block print:hidden',
@@ -91,7 +90,7 @@
 		onexpand={() => userSettings.openLeadingPane()}
 		onresized={handleOnResized}
 	/>
-</nav>
+</div>
 
 <style lang="postcss">
 	@reference 'tailwindcss';

@@ -602,7 +602,10 @@
 			{@const showAllResultsRowIndex = 2}
 			{@const suggestionsRowOffset = 3}
 			{@const footerRowIndex = suggestionsRowOffset + (resultsCount || 0)}
-			<nav class="expanded-content mt-2 sm:mt-3">
+			<nav
+				class="expanded-content mt-2 sm:mt-3"
+				aria-label={page.data.t('supersearch.expandedSearch')}
+			>
 				<QualifierSuggestionsRow
 					{qualifierSuggestions}
 					rowIndex={qualifiersRowIndex}
