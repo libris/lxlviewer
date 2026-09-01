@@ -61,13 +61,6 @@
 	<div
 		class="wide:max-w-screen mx-auto grid grid-cols-1 items-start gap-3 px-3 xl:grid-cols-[1fr_auto] @md:gap-6 @md:px-6 @7xl:gap-12 @7xl:px-12"
 	>
-		{#if tableOfContents.length}
-			<div class="sticky top-22 order-last hidden h-fit xl:block print:hidden">
-				<section data-testid="toc" class="py-3 @sm:py-6">
-					<TableOfContents items={tableOfContents} />
-				</section>
-			</div>
-		{/if}
 		<div class="max-w-8xl mx-auto w-full py-3 @sm:py-6">
 			<div class="max-ch-text">
 				{#if data.locale === 'en'}
@@ -218,6 +211,13 @@
 				{/each}
 			</div>
 		</div>
+		{#if tableOfContents.length}
+			<div class="sticky top-22 hidden h-fit xl:block print:hidden">
+				<section data-testid="toc" class="py-3 @sm:py-6">
+					<TableOfContents items={tableOfContents} />
+				</section>
+			</div>
+		{/if}
 	</div>
 </article>
 

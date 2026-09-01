@@ -186,13 +186,6 @@
 				'@3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)'
 		]}
 	>
-		{#if tableOfContents.length}
-			<div class="order-last hidden @7xl:block print:hidden">
-				<section data-testid="toc" class="sticky py-3 @sm:py-6">
-					<TableOfContents items={tableOfContents} />
-				</section>
-			</div>
-		{/if}
 		<div>
 			{#if page.data.features.resourceImages}
 				<div class="sticky mx-auto pt-3 @sm:pt-6 @3xl:max-w-xs @3xl:pb-6">
@@ -562,6 +555,13 @@
 				</p>
 			</div>
 		</div>
+		{#if tableOfContents.length}
+			<div class="hidden @7xl:block print:hidden">
+				<section data-testid="toc" class="sticky py-3 @sm:py-6">
+					<TableOfContents items={tableOfContents} />
+				</section>
+			</div>
+		{/if}
 	</div>
 </article>
 
