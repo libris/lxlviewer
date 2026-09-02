@@ -509,6 +509,12 @@
 					"@id": "ToCEntry-chips",
 					"classLensDomain": "ToCEntry",
 					"showProperties": ["label", "responsibilityStatement"]
+				},
+				"marc:SourceOfDescriptionNote": {
+					"NOTE": "Only visible in cataloging",
+					"@id": "marc:SourceOfDescriptionNote-chips",
+					"classLensDomain": "marc:SourceOfDescriptionNote",
+					"showProperties": []
 				}
 			}
 		},
