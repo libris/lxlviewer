@@ -32,6 +32,7 @@
 	import BiDownload from '~icons/bi/download';
 	import BiQuote from '~icons/bi/quote';
 	import BiChevronRight from '~icons/bi/chevron-right';
+	import DecoratedData2 from './DecoratedData2.svelte';
 
 	type Props = {
 		uri: string | null;
@@ -217,13 +218,13 @@
 								{#if typeForIcon}
 									<TypeIcon type={typeForIcon} class="size-4.5 self-stretch pt-1" />
 								{/if}
-								<DecoratedData
+								<DecoratedData2
 									data={decoratedData.headingTop}
 									showLabels={ShowLabelsOptions.Never}
 								/>
 							</p>
 							<h1 class="decorated-heading mt-2 mb-1 text-3xl @3xl:text-3xl">
-								<DecoratedData
+								<DecoratedData2
 									data={decoratedData.heading}
 									showLabels={ShowLabelsOptions.Never}
 									allowLinks={false}
@@ -233,7 +234,7 @@
 							<p
 								class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
 							>
-								<DecoratedData
+								<DecoratedData2
 									data={decoratedData.headingExtra}
 									showLabels={ShowLabelsOptions.DefaultOn}
 								/>
@@ -242,7 +243,7 @@
 								<p
 									class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
 								>
-									<DecoratedData
+									<DecoratedData2
 										data={decoratedData._workTitle2}
 										showLabels={ShowLabelsOptions.DefaultOff}
 									/>
@@ -254,7 +255,7 @@
 				<div class="decorated-data-section decorated-compact">
 					{#each decoratedData.overview as overview (overview)}
 						<div class="compact mb-2">
-							<DecoratedData
+							<DecoratedData2
 								data={overview}
 								showLabels={ShowLabelsOptions.DefaultOff}
 								allowFindLinks={true}
@@ -281,7 +282,7 @@
 					{/if}
 					{#each decoratedData.overview2 as overview2 (overview2)}
 						<div class="compact mb-2">
-							<DecoratedData
+							<DecoratedData2
 								data={overview2}
 								showLabels={ShowLabelsOptions.DefaultOn}
 								allowFindLinks={true}
@@ -298,7 +299,7 @@
 						</div>
 					{/each}
 					<div class="mb-2">
-						<DecoratedData
+						<DecoratedData2
 							data={decoratedData.overviewFooter}
 							block
 							showLabels={ShowLabelsOptions.DefaultOn}
@@ -342,7 +343,7 @@
 						<div class="flex flex-col gap-4">
 							{#each decoratedData.summary as s (s)}
 								<div class="summary-or-toc w-full">
-									<DecoratedData data={s} showLabels={ShowLabelsOptions.Never} block />
+									<DecoratedData2 data={s} showLabels={ShowLabelsOptions.Never} block />
 								</div>
 							{/each}
 						</div>
@@ -431,7 +432,7 @@
 						<div class="flex flex-col gap-4">
 							{#each decoratedData.resourceTableOfContents as r (r)}
 								<div class="summary-or-toc w-full">
-									<DecoratedData data={r} showLabels={ShowLabelsOptions.Never} block />
+									<DecoratedData2 data={r} showLabels={ShowLabelsOptions.Never} block />
 								</div>
 							{/each}
 						</div>
@@ -450,7 +451,7 @@
 					<div class="decorated-data-section decorated-spacious decorated-details">
 						{#each decoratedData.details as details (details)}
 							<div class="mb-2">
-								<DecoratedData
+								<DecoratedData2
 									data={details}
 									showLabels={ShowLabelsOptions.Always}
 									allowFindLinks={true}
@@ -476,13 +477,13 @@
 										{#if holder.items.some((i) => i[Fmt.DISPLAY].length)}
 											<li class="block rounded-sm border border-neutral-200 p-2">
 												<p class="mb-1 font-medium">
-													<DecoratedData
+													<DecoratedData2
 														data={holder.heldBy}
 														showLabels={ShowLabelsOptions.Never}
 													/>
 												</p>
 												{#each holder.items as item, index (index)}
-													<DecoratedData
+													<DecoratedData2
 														data={item}
 														showLabels={ShowLabelsOptions.Always}
 														allowFindLinks={false}
@@ -862,7 +863,8 @@
 			}
 		}
 
-		& :global(div[data-property]:not(:last-child)) {
+		& :global(p[data-property]:not(:last-child)),
+		:global(dl[data-property]:not(:last-child)) {
 			margin-bottom: calc(var(--spacing) * 1.5);
 
 			@variant sm {

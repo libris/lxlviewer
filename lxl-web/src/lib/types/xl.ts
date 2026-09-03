@@ -44,7 +44,9 @@ export enum Fmt {
 	STYLE = '_style',
 	LABEL = '_label',
 	FIND_LINK = '_findLink',
-	HTML = '_html'
+	HTML = '_html',
+	KEY = '_key',
+	VALUE = '_value'
 }
 
 // https://github.com/libris/definitions/blob/develop/source/vocab/base.ttl
