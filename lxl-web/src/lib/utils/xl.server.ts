@@ -846,14 +846,21 @@ class Formatter {
 			thing[Fmt.LABEL] = mapMaybeArray(thing[JsonLd.TYPE], (v) => this.getVocabLabel(v));
 			asArray(thing[Fmt.DISPLAY]).forEach((v) => this.addLabels(v));
 		} else if (isObject(thing)) {
-			const key = unwrapSingle(
-				Object.keys(thing).filter((k) => !k.startsWith('_') && k !== JsonLd.ID)
-			);
+			// console.log('is object')
+			// const key = unwrapSingle(
+			// 	Object.keys(thing).filter((k) => !k.startsWith('_') && k !== JsonLd.ID)
+			// );
+			const key = thing[Fmt.KEY] as string;
+			if (!key) {
+				console.log('no key found!');
+			}
 			thing[Fmt.LABEL] = this.getVocabLabel(key);
 			if (this.vocabUtil.isKeyword(key)) {
-				thing[key] = mapMaybeArray(thing[key], (v) => this.getVocabLabel(v));
+				// thing[key] = mapMaybeArray(thing[key], (v) => this.getVocabLabel(v));
+				thing[Fmt.VALUE] = mapMaybeArray(thing[Fmt.VALUE], (v) => this.getVocabLabel(v));
 			} else {
-				asArray(thing[key]).forEach((v) => this.addLabels(v));
+				// asArray(thing[key]).forEach((v) => this.addLabels(v));
+				asArray(thing[Fmt.VALUE]).forEach((v) => this.addLabels(v));
 			}
 		}
 
@@ -907,7 +914,9 @@ class Formatter {
 		// FIXME reaching inside
 		if (this.displayUtil.langContainerAliasInverted[propertyName]) {
 			return {
-				[this.displayUtil.langContainerAliasInverted[propertyName]]: this.formatValues(
+				[Fmt.KEY]: this.displayUtil.langContainerAliasInverted[propertyName],
+				[Fmt.VALUE]: this.formatValues(
+					// [this.displayUtil.langContainerAliasInverted[propertyName]]: this.formatValues(
 					this.pickLanguage(value),
 					className,
 					propertyName
@@ -933,7 +942,9 @@ class Formatter {
 
 		this.addFormatDetail(result, this.findPropertyFormat(className, propertyName), isFirst, isLast);
 
-		result[propertyName] = this.formatValues(value, className, propertyName);
+		result[Fmt.KEY] = propertyName;
+		result[Fmt.VALUE] = this.formatValues(value, className, propertyName);
+		// result[propertyName] = this.formatValues(value, className, propertyName);
 
 		return result;
 	}
@@ -1151,7 +1162,7 @@ class Formatter {
 
 // TODO
 function toLabel(data: DisplayDecorated) {
-	return isTypedNode(data) ? data[Fmt.DISPLAY].map(Object.values).join('') : data;
+	return isTypedNode(data) ? data[Fmt.DISPLAY].map((d) => d[Fmt.VALUE]).join('') : data;
 }
 
 export function toLite(data: DisplayDecorated): DisplayDecoratedLite {

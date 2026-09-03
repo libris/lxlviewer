@@ -1,4 +1,5 @@
 import type { ResourceData } from '$lib/types/resourceData';
+import { JsonLd } from '$lib/types/xl';
 
 export function getPropertyValue(data: ResourceData, name: string) {
 	if (data && typeof data === 'object' && !Array.isArray(data) && name in data) {
@@ -21,7 +22,7 @@ export function hasStyle(data: ResourceData, styleName: string) {
 }
 
 export function getResourceId(data: ResourceData) {
-	const id = getPropertyValue(data, '@id');
+	const id = getPropertyValue(data, JsonLd.ID);
 	if (typeof id === 'string' && id.length) {
 		return id;
 	}
