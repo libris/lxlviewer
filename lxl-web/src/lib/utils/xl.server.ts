@@ -624,7 +624,7 @@ export class DisplayUtil {
 		})) {
 			// TODO why null check?
 			if (v && isLangContainerDefinition(v as Record<string, string>)) {
-				this.langContainerAlias[(v as Record<string, string>)[JsonLd.ID]] = k;
+				this.langContainerAlias[(v as Record<string, string>)[JsonLd.ID] || k] = k;
 			}
 		}
 
