@@ -199,7 +199,7 @@ const CATEGORY_SHORTCUTS: {
 	},
 	{
 		id: 'movingimage-category',
-		href: '/find?_q=category:"https://id.kb.se/term/ktg/MovingImage"',
+		href: '/find?_q=category:"ktg:MovingImage"',
 		labelByLang: {
 			sv: 'Rörlig bild',
 			en: 'Moving image'
@@ -207,7 +207,7 @@ const CATEGORY_SHORTCUTS: {
 	},
 	{
 		id: 'software-category',
-		href: '/find?_q=category:"https://id.kb.se/term/ktg/Software"',
+		href: '/find?_q=category:"ktg:Software"',
 		labelByLang: {
 			sv: 'Mjukvara',
 			en: 'Software'
