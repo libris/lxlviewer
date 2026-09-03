@@ -44,7 +44,7 @@
 		// isLiChild = false
 	}: Props = $props();
 
-	type Parent = 'dl' | 'a' | 'dd' | 'p' | 'h' | undefined;
+	type Parent = 'dl' | 'a' | 'dd' | 'p' | 'h' | 'div' | undefined;
 	type Link = string | undefined;
 	type Label = string | undefined;
 
@@ -58,7 +58,7 @@
 		}
 	}
 
-	function getLabel(data): Label | undefined {
+	function getLabel(data): Label {
 		if (
 			// (isTopLevel() || hasStyle(data, 'force-sublevel-label')) &&
 			showLabels === ShowLabelsOptions.Always ||
@@ -68,7 +68,22 @@
 			return data[Fmt.LABEL] ?? undefined;
 		}
 	}
+
+	function isBlockParent(parent: Parent): boolean {
+		if (!parent) return true;
+		switch (parent) {
+			case 'div':
+				return true;
+			default:
+				return false;
+		}
+	}
 </script>
+
+<!--
+  @component
+	Pass in parent to not render bad html, e.g `<p>` in `<p>`
+-->
 
 {#snippet traverse(data, parent: Parent = undefined)}
 	{#if typeof data === 'object'}
@@ -89,7 +104,7 @@
 {/snippet}
 
 {#snippet content(data, parent: Parent)}
-	{@render before(data)}
+	{@render before(data, parent)}
 	{#if data[Fmt.DISPLAY]}
 		{const link = getLink(data)}
 		{@render maybeLink(data[Fmt.DISPLAY], parent, link)}
@@ -97,17 +112,17 @@
 		{@const label = getLabel(data)}
 		{@render wrapper(data[Fmt.VALUE], parent, label)}
 	{/if}
-	{@render after(data)}
+	{@render after(data, parent)}
 {/snippet}
 
-{#snippet before(data)}
-	{#if data[Fmt.CONTENT_BEFORE]}
+{#snippet before(data, parent: Parent)}
+	{#if data[Fmt.CONTENT_BEFORE] && !isBlockParent(parent)}
 		{data[Fmt.CONTENT_BEFORE]}
 	{/if}
 {/snippet}
 
 {#snippet after(data)}
-	{#if data[Fmt.CONTENT_AFTER]}
+	{#if data[Fmt.CONTENT_AFTER] && !isBlockParent(parent)}
 		{data[Fmt.CONTENT_AFTER]}
 	{/if}
 {/snippet}
@@ -118,7 +133,7 @@
 			<dt class="first-letter:capitalize text-xs text-subtle">{label}</dt>
 			<dd>{@render traverse(data, 'dd')}</dd>
 		</dl>
-	{:else if !parent}
+	{:else if isBlockParent(parent)}
 		<p data-parent={parent}>
 			{@render traverse(data, 'p')}
 		</p>
