@@ -14,6 +14,7 @@
 		data: ResourceData;
 		showLabels?: 'always' | 'never' | 'defaultOn' | 'defaultOff';
 		allowLinks?: boolean;
+		parent?: Parent;
 		// depth?: number;
 		// allowPopovers?: boolean; // used for preventing nested popovers
 		// allowFindLinks?: boolean;
@@ -29,7 +30,8 @@
 	let {
 		data,
 		showLabels = 'defaultOn',
-		allowLinks = true
+		allowLinks = true,
+		parent = undefined
 		// depth = 0,
 		// allowPopovers = true,
 		// allowFindLinks = false,
@@ -42,7 +44,7 @@
 		// isLiChild = false
 	}: Props = $props();
 
-	type Parent = 'dl' | 'a' | 'dd' | 'p' | undefined;
+	type Parent = 'dl' | 'a' | 'dd' | 'p' | 'h' | undefined;
 	type Link = string | undefined;
 	type Label = string | undefined;
 
@@ -87,13 +89,13 @@
 {/snippet}
 
 {#snippet content(data, parent: Parent)}
-	{const link = getLink(data)}
 	{@render before(data)}
 	{#if data[Fmt.DISPLAY]}
-		{@render wrapper(data[Fmt.DISPLAY], parent, link)}
+		{const link = getLink(data)}
+		{@render maybeLink(data[Fmt.DISPLAY], parent, link)}
 	{:else if data[Fmt.VALUE]}
 		{@const label = getLabel(data)}
-		{@render wrapper(data[Fmt.VALUE], parent, link, label)}
+		{@render wrapper(data[Fmt.VALUE], parent, label)}
 	{/if}
 	{@render after(data)}
 {/snippet}
@@ -110,20 +112,30 @@
 	{/if}
 {/snippet}
 
-{#snippet wrapper(data, parent: Parent, link: Link, label: Label = undefined)}
-	{#if link && parent !== 'a'}
-		<!-- eslint-disable svelte/no-navigation-without-resolve -->
-		<a href={link} data-parent={parent} class="link">{@render traverse(data, 'a')}</a>
-	{:else if label && !parent}
+{#snippet wrapper(data, parent: Parent, label: Label = undefined)}
+	{#if label && !parent}
 		<dl data-parent={parent}>
 			<dt class="first-letter:capitalize text-xs text-subtle">{label}</dt>
-			<dd>{@render traverse(data, 'dl')}</dd>
+			<dd>{@render traverse(data, 'dd')}</dd>
 		</dl>
-		<!-- {:else if !parent}
-    <p>{@render traverse(data, 'p')}</p> -->
+	{:else if !parent}
+		<p data-parent={parent}>
+			{@render traverse(data, 'p')}
+		</p>
 	{:else}
 		{@render traverse(data, parent)}
 	{/if}
 {/snippet}
 
-{@render traverse(data)}
+{#snippet maybeLink(data, parent: Parent, link: Link)}
+	{#if link && parent !== 'a'}
+		<!-- eslint-disable svelte/no-navigation-without-resolve -->
+		<a href={link} data-parent={parent} class="link">
+			{@render traverse(data, 'a')}
+		</a>
+	{:else}
+		{@render traverse(data, parent)}
+	{/if}
+{/snippet}
+
+{@render traverse(data, parent)}

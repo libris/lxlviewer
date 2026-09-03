@@ -223,6 +223,7 @@
 								<DecoratedData2
 									data={decoratedData.headingTop}
 									showLabels={ShowLabelsOptions.Never}
+									parent="p"
 								/>
 							</p>
 							<h1 class="decorated-heading mt-2 mb-1 text-3xl @3xl:text-3xl">
@@ -231,6 +232,7 @@
 									showLabels={ShowLabelsOptions.Never}
 									allowLinks={false}
 									allowPopovers={false}
+									parent="h"
 								/>
 							</h1>
 							<p
@@ -239,6 +241,7 @@
 								<DecoratedData2
 									data={decoratedData.headingExtra}
 									showLabels={ShowLabelsOptions.DefaultOn}
+									parent="p"
 								/>
 							</p>
 							{#if decoratedData['_workTitle2']?._display}
@@ -248,6 +251,7 @@
 									<DecoratedData2
 										data={decoratedData._workTitle2}
 										showLabels={ShowLabelsOptions.DefaultOff}
+										parent="p"
 									/>
 								</p>
 							{/if}
@@ -256,7 +260,7 @@
 				</div>
 				<div class="decorated-data-section decorated-compact">
 					{#each decoratedData.overview as overview (overview)}
-						<div class="compact mb-2">
+						<div class="mb-2">
 							<DecoratedData2
 								data={overview}
 								showLabels={ShowLabelsOptions.DefaultOff}
@@ -283,7 +287,7 @@
 						<div class="border-b-neutral mb-2 border-b"></div>
 					{/if}
 					{#each decoratedData.overview2 as overview2 (overview2)}
-						<div class="compact mb-2">
+						<div class="mb-2">
 							<DecoratedData2
 								data={overview2}
 								showLabels={ShowLabelsOptions.DefaultOn}
