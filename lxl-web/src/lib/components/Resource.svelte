@@ -265,6 +265,7 @@
 								allowFindLinks={true}
 								block
 								limit={{ contribution: 5, hasVariant: 10 }}
+								parent="div"
 							/>
 						</div>
 					{/each}
