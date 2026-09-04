@@ -850,7 +850,7 @@ class Formatter {
 			// const key = unwrapSingle(
 			// 	Object.keys(thing).filter((k) => !k.startsWith('_') && k !== JsonLd.ID)
 			// );
-			const key = thing[Fmt.KEY] as string;
+			const key = thing[Fmt.PROP] as string;
 			if (!key) {
 				console.log('no key found!');
 			}
@@ -914,7 +914,7 @@ class Formatter {
 		// FIXME reaching inside
 		if (this.displayUtil.langContainerAliasInverted[propertyName]) {
 			return {
-				[Fmt.KEY]: this.displayUtil.langContainerAliasInverted[propertyName],
+				[Fmt.PROP]: this.displayUtil.langContainerAliasInverted[propertyName],
 				[Fmt.VALUE]: this.formatValues(
 					// [this.displayUtil.langContainerAliasInverted[propertyName]]: this.formatValues(
 					this.pickLanguage(value),
@@ -942,7 +942,7 @@ class Formatter {
 
 		this.addFormatDetail(result, this.findPropertyFormat(className, propertyName), isFirst, isLast);
 
-		result[Fmt.KEY] = propertyName;
+		result[Fmt.PROP] = propertyName;
 		result[Fmt.VALUE] = this.formatValues(value, className, propertyName);
 		// result[propertyName] = this.formatValues(value, className, propertyName);
 
