@@ -118,7 +118,7 @@
 </script>
 
 {#snippet tocList(items: TableOfContentsItem[])}
-	<ul aria-labelledby="toc-heading">
+	<ul>
 		{#each items as { id, label, children } (id)}
 			<li class={children && '[&>ul_a]:pl-7'}>
 				<div class={['border-l-2 border-l-neutral-200']}>
@@ -143,7 +143,6 @@
 
 <div bind:this={tocElement} class="contents">
 	{#if mobile}
-		<h2 id="toc-heading" class="sr-only">{page.data.t('tableOfContents.onThisPage')}</h2>
 		<div class="border-b-neutral border-b p-1 text-xs sm:text-sm">
 			<label
 				id={`${uidPrefix}toc-label`}
@@ -161,15 +160,22 @@
 					onkeydown={handleCheckboxKeydown}
 				/>
 			</label>
-			<nav id={`${uidPrefix}toc-items`} class="bg-page text-subtle mb-3 hidden px-3 sm:px-6">
+			<nav
+				id={`${uidPrefix}toc-items`}
+				class="bg-page text-subtle mb-3 hidden px-3 sm:px-6"
+				aria-labelledby="toc-heading"
+			>
+				<p id="toc-heading" class="sr-only">{page.data.t('tableOfContents.onThisPage')}</p>
 				{@render tocList(itemsWithTop)}
 			</nav>
 		</div>
 	{:else}
-		<header class="text-subtle mb-2 text-xs font-medium sm:text-sm">
-			<h2 id="toc-heading">{page.data.t('tableOfContents.onThisPage')}</h2>
-		</header>
-		<nav class="text-placeholder text-xs sm:text-sm">{@render tocList(itemsWithTop)}</nav>
+		<nav class="text-placeholder text-xs sm:text-sm" aria-labelledby="toc-heading">
+			<header class="text-subtle mb-2 text-xs font-medium sm:text-sm">
+				<h2 id="toc-heading">{page.data.t('tableOfContents.onThisPage')}</h2>
+			</header>
+			{@render tocList(itemsWithTop)}
+		</nav>
 	{/if}
 </div>
 

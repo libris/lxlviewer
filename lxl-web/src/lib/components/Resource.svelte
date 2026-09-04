@@ -186,28 +186,6 @@
 				'@3xl:grid @3xl:grid-cols-(--two-grid-cols) @7xl:grid-cols-(--three-grid-cols)'
 		]}
 	>
-		{#if tableOfContents.length}
-			<div class="order-last hidden @7xl:block print:hidden">
-				<section data-testid="toc" class="sticky py-3 @sm:py-6">
-					<TableOfContents items={tableOfContents} />
-				</section>
-			</div>
-		{/if}
-		<div>
-			{#if page.data.features.resourceImages}
-				<div class="sticky mx-auto pt-3 @sm:pt-6 @3xl:max-w-xs @3xl:pb-6">
-					<ResourceImage
-						{image}
-						type={typeForIcon}
-						alt={page.data.t('general.instanceCover')}
-						thumbnailTargetWidth={typeForIcon.includes('Bibliography')
-							? ImageWidth.FULL
-							: ImageWidth.MEDIUM}
-						linkToFull
-					/>
-				</div>
-			{/if}
-		</div>
 		<div class="wide:max-w-screen mx-auto flex w-full max-w-4xl flex-col gap-3 py-6 @sm:gap-6">
 			<section id="{uidPrefix}top">
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
@@ -562,6 +540,28 @@
 				</p>
 			</div>
 		</div>
+		<div class="order-first">
+			{#if page.data.features.resourceImages}
+				<div class="sticky mx-auto pt-3 @sm:pt-6 @3xl:max-w-xs @3xl:pb-6">
+					<ResourceImage
+						{image}
+						type={typeForIcon}
+						alt={page.data.t('general.instanceCover')}
+						thumbnailTargetWidth={typeForIcon.includes('Bibliography')
+							? ImageWidth.FULL
+							: ImageWidth.MEDIUM}
+						linkToFull={true}
+					/>
+				</div>
+			{/if}
+		</div>
+		{#if tableOfContents.length}
+			<div class="hidden @7xl:block print:hidden">
+				<section data-testid="toc" class="sticky py-3 @sm:py-6">
+					<TableOfContents items={tableOfContents} />
+				</section>
+			</div>
+		{/if}
 	</div>
 </article>
 
