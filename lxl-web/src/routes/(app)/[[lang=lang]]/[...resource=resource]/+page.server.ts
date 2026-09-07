@@ -222,7 +222,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 					heldBy: displayUtil.lensAndFormat(item?.heldBy, LensType.Chip, locale),
 					items: allItems
 						.map((i) => displayUtil.lensAndFormat(i, LensType.WebDetails, locale))
-						.filter((i) => i[Fmt.DISPLAY].length)
+						.filter((i) => i[Fmt.DISPLAY]?.length)
 				});
 			});
 		}
