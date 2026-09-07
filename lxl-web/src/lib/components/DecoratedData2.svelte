@@ -6,16 +6,22 @@
 		type PropertyNode,
 		JsonLd
 	} from '$lib/types/xl';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { page } from '$app/state';
 	// import popover from '$lib/actions/popover';
 	import { hasStyle, getResourceId, getStyle } from '$lib/utils/resourceData';
 	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	// import { getSupportedLocale } from '$lib/i18n/locales';
 
+	type Parent = Elem | undefined;
+	type Node = ResourceNode | PropertyNode;
+	type Link = string | undefined;
+	type Label = string | undefined;
+	type Styles = string[] | undefined;
+
 	interface Props {
 		data: DisplayDecorated | DisplayDecorated[];
-		showLabels?: 'always' | 'never' | 'defaultOn' | 'defaultOff';
+		showLabels?: ShowLabelsOptions;
 		allowLinks?: boolean;
 		parent?: Parent; // Pass in parent to not render bad html, e.g `<p>` in `<p>`
 		block?: boolean;
@@ -33,7 +39,7 @@
 
 	let {
 		data,
-		showLabels = 'defaultOn',
+		showLabels = ShowLabelsOptions.DefaultOn,
 		allowLinks = true,
 		parent = undefined,
 		block = false,
@@ -50,12 +56,6 @@
 	}: Props = $props();
 
 	const skip = $derived(skipOuter);
-
-	type Parent = 'dl' | 'a' | 'dd' | 'p' | 'h' | 'div' | 'span' | undefined;
-	type Node = ResourceNode | PropertyNode;
-	type Link = string | undefined;
-	type Label = string | undefined;
-	type Styles = string[] | undefined;
 
 	function getLink(data: DisplayDecorated): Link {
 		if (allowLinks && hasStyle(data, 'link')) {
@@ -81,8 +81,8 @@
 	function isBlockParent(parent: Parent): boolean {
 		if (!parent) return true;
 		switch (parent) {
-			case 'div':
-			case 'dl':
+			case Elem.Div:
+			case Elem.Dl:
 				return true;
 			default:
 				return false;
@@ -130,35 +130,32 @@
 			<dt class="first-letter:capitalize text-xs text-subtle">
 				{label}
 			</dt>
-			{@render node(data, 'dl', true)}
+			{@render node(data, Elem.Dl, true)}
 		</dl>
-	{:else if parent === 'dl'}
-		<dd
-			class={[link ? '' : styles, !isBlock(data, parent) && 'inline']}
-			data-prop={prop}
-			data-type={type}
-		>
+	{:else if parent === Elem.Dl}
+		{const inline = !isBlock(data, parent)}
+		<dd class={[link ? '' : styles, inline && 'inline']} data-prop={prop} data-type={type}>
 			{#if link}
 				<!-- eslint-disable svelte/no-navigation-without-resolve -->
 				<a href={link} data-parent={parent} class={styles}>
-					{@render node(data, 'a', isBlock(data, parent))}
+					{@render node(data, Elem.A, !inline)}
 				</a>
 			{:else}
-				{@render node(data, 'dd', isBlock(data, parent))}
+				{@render node(data, Elem.Dd, !inline)}
 			{/if}
 		</dd>
-	{:else if link && parent !== 'a'}
+	{:else if link && parent !== Elem.A}
 		<a href={link} data-parent={parent} class={styles} data-prop={prop} data-type={type}>
-			{@render node(data, 'a')}
+			{@render node(data, Elem.A)}
 		</a>
 	{:else if !label && isBlockParent(parent)}
 		<p class={styles} data-prop={prop} data-type={type}>
-			{@render node(data, 'p', true)}
+			{@render node(data, Elem.P, true)}
 		</p>
 	{:else if styles?.length}
 		{#if isBlock(data, parent)}
 			<div class={styles} data-prop={prop} data-type={type}>
-				{@render node(data, 'div')}
+				{@render node(data, Elem.Div)}
 			</div>
 		{:else}
 			<span class={styles} data-prop={prop} data-type={type}>
