@@ -1,20 +1,25 @@
 <script lang="ts">
-	// import DecoratedData2 from './DecoratedData2.svelte';
-	import { Fmt, type DisplayDecorated, type ResourceNode, type PropertyNode } from '$lib/types/xl';
+	import {
+		Fmt,
+		type DisplayDecorated,
+		type ResourceNode,
+		type PropertyNode,
+		JsonLd
+	} from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { page } from '$app/state';
 	// import popover from '$lib/actions/popover';
 	import { hasStyle, getResourceId, getStyle } from '$lib/utils/resourceData';
 	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	// import { getSupportedLocale } from '$lib/i18n/locales';
-	// import Wrapper from './Wrapper.svelte';
 
 	interface Props {
-		data: DisplayDecorated;
+		data: DisplayDecorated | DisplayDecorated[];
 		showLabels?: 'always' | 'never' | 'defaultOn' | 'defaultOff';
 		allowLinks?: boolean;
-		parent?: Parent;
+		parent?: Parent; // Pass in parent to not render bad html, e.g `<p>` in `<p>`
 		block?: boolean;
+		skipOuter?: boolean; // Do not render an element from the outermost node, i.e. in the case of a complete linked work
 		// depth?: number;
 		// allowPopovers?: boolean; // used for preventing nested popovers
 		// allowFindLinks?: boolean;
@@ -31,7 +36,8 @@
 		showLabels = 'defaultOn',
 		allowLinks = true,
 		parent = undefined,
-		block = false
+		block = false,
+		skipOuter = false
 		// depth = 0,
 		// allowPopovers = true,
 		// allowFindLinks = false,
@@ -42,6 +48,8 @@
 		// isLi = false,
 		// isLiChild = false
 	}: Props = $props();
+
+	const skip = $derived(skipOuter);
 
 	type Parent = 'dl' | 'a' | 'dd' | 'p' | 'h' | 'div' | 'span' | undefined;
 	type Node = ResourceNode | PropertyNode;
@@ -74,6 +82,7 @@
 		if (!parent) return true;
 		switch (parent) {
 			case 'div':
+			case 'dl':
 				return true;
 			default:
 				return false;
@@ -81,7 +90,7 @@
 	}
 
 	function isPropertyNode(data: Node): data is PropertyNode {
-		return Fmt.PROP in data; // todo replace with PROP
+		return Fmt.PROP in data;
 	}
 
 	function isBlock(data: Node, parent: Parent) {
@@ -89,21 +98,16 @@
 	}
 </script>
 
-<!--
-  @component
-	Pass in parent to not render bad html, e.g `<p>` in `<p>`
--->
-
-{#snippet traverse(data: DisplayDecorated, parent: Parent = undefined)}
+{#snippet traverse(data: DisplayDecorated | DisplayDecorated[], parent: Parent, skip: boolean)}
 	{#if typeof data === 'object'}
 		{#if Array.isArray(data)}
 			<!-- array -->
 			{#each data as i, index (index)}
-				{@render traverse(i, parent)}
+				{@render traverse(i, parent, skip)}
 			{/each}
 		{:else}
 			<!-- object -->
-			{@render wrapper(data, parent)}
+			{@render wrapper(data, parent, skip)}
 		{/if}
 	{/if}
 	{#if typeof data === 'string'}
@@ -112,41 +116,52 @@
 	{/if}
 {/snippet}
 
-{#snippet wrapper(data: Node, parent: Parent)}
+{#snippet wrapper(data: Node, parent: Parent, skip?: boolean)}
 	{const styles: Styles = getStyle(data)}
 	{const link: Link = getLink(data)}
 	{const label = getLabel(data)}
-	{#if label && isPropertyNode(data) && isBlockParent(parent)}
-		<dl class={styles}>
-			<dt class="first-letter:capitalize text-xs text-subtle">{label}</dt>
-			{@render node(data, 'dl')}
+	{const prop = Fmt.PROP in data ? data[Fmt.PROP] : null}
+	{const type = JsonLd.TYPE in data ? data[JsonLd.TYPE] : null}
+
+	{#if skip}
+		{@render node(data, parent)}
+	{:else if label && isPropertyNode(data) && isBlockParent(parent)}
+		<dl class={[styles, 'mb-2']} data-prop={prop} data-type={type}>
+			<dt class="first-letter:capitalize text-xs text-subtle">
+				{label}
+			</dt>
+			{@render node(data, 'dl', true)}
 		</dl>
 	{:else if parent === 'dl'}
-		<dd class={link ? '' : styles}>
+		<dd
+			class={[link ? '' : styles, !isBlock(data, parent) && 'inline']}
+			data-prop={prop}
+			data-type={type}
+		>
 			{#if link}
-				<!-- todo link snippet -->
+				<!-- eslint-disable svelte/no-navigation-without-resolve -->
 				<a href={link} data-parent={parent} class={styles}>
-					{@render node(data, 'a')}
+					{@render node(data, 'a', isBlock(data, parent))}
 				</a>
 			{:else}
-				{@render node(data, 'dd')}
+				{@render node(data, 'dd', isBlock(data, parent))}
 			{/if}
 		</dd>
 	{:else if link && parent !== 'a'}
-		<a href={link} data-parent={parent} class={styles}>
+		<a href={link} data-parent={parent} class={styles} data-prop={prop} data-type={type}>
 			{@render node(data, 'a')}
 		</a>
 	{:else if !label && isBlockParent(parent)}
-		<p class={styles}>
-			{@render node(data, 'p')}
+		<p class={styles} data-prop={prop} data-type={type}>
+			{@render node(data, 'p', true)}
 		</p>
 	{:else if styles?.length}
 		{#if isBlock(data, parent)}
-			<div class={styles}>
+			<div class={styles} data-prop={prop} data-type={type}>
 				{@render node(data, 'div')}
 			</div>
 		{:else}
-			<span class={styles}>
+			<span class={styles} data-prop={prop} data-type={type}>
 				{@render node(data, parent)}
 			</span>
 		{/if}
@@ -155,72 +170,54 @@
 	{/if}
 {/snippet}
 
-{#snippet node(data: Node, parent: Parent)}
+{#snippet node(data: Node, parent: Parent, skipContent: boolean = false)}
 	{#if typeof data === 'object' && !Array.isArray(data)}
-		{@render before(data, parent)}
+		{@render content(Fmt.CONTENT_BEFORE, data, parent, skipContent)}
 		{#if Fmt.DISPLAY in data}
-			{@render traverse(data[Fmt.DISPLAY], parent)}
+			{@render traverse(data[Fmt.DISPLAY], parent, false)}
 		{:else if Fmt.VALUE in data}
-			{@render traverse(data[Fmt.VALUE], parent)}
+			{@render traverse(data[Fmt.VALUE], parent, false)}
 		{/if}
-		{@render after(data, parent)}
+		{@render content(Fmt.CONTENT_AFTER, data, parent, skipContent)}
 	{/if}
 {/snippet}
 
-<!-- {#snippet content(data, parent: Parent)}
-	{const styles: Styles = getStyle(data)}
-	{@render before(data, parent)}
-	{#if data[Fmt.DISPLAY]}
-		{const link = getLink(data)}
-		{@render maybeLink(data[Fmt.DISPLAY], parent, link, styles)}
-	{:else if data[Fmt.VALUE]}
-		{const label = getLabel(data)}
-		{@render wrapper(data[Fmt.VALUE], parent, label, styles)}
-	{/if}
-	{@render after(data, parent)}
-{/snippet} -->
-
-{#snippet before(data: Node, parent: Parent)}
-	{#if data[Fmt.CONTENT_BEFORE] && !isBlockParent(parent) && !hasStyle(data, 'block')}
-		{data[Fmt.CONTENT_BEFORE]}
+{#snippet content(
+	placement: Fmt.CONTENT_BEFORE | Fmt.CONTENT_AFTER,
+	data: Node,
+	parent: Parent,
+	skipContent: boolean
+)}
+	{#if placement in data && !hasStyle(data, 'block')}
+		{#if !skipContent}
+			{#if isPropertyNode(data)}
+				<span class="bg-[green] text-[white]" data-parent={parent}>
+					{data[placement]}
+				</span>
+			{:else}
+				<span class="bg-[yellow]" data-parent={parent}>
+					{data[placement]}
+				</span>
+			{/if}
+		{:else}
+			<span class="bg-[red] text-[white]" data-parent={parent}>
+				{data[placement]}
+			</span>
+		{/if}
 	{/if}
 {/snippet}
 
-{#snippet after(data: Node, parent: Parent)}
-	{#if data[Fmt.CONTENT_AFTER] && !isBlockParent(parent) && !hasStyle(data, 'block')}
-		{data[Fmt.CONTENT_AFTER]}
-	{/if}
-{/snippet}
+{@render traverse(data, parent, skip)}
 
-<!-- {#snippet wrapper(data, parent: Parent, label: Label = undefined, styles: Styles)}
-	{#if label && !parent}
-		<dl data-parent={parent} class={styles}>
-			<dt class="first-letter:capitalize text-xs text-subtle">{label}</dt>
-			<dd>{@render traverse(data, 'dd')}</dd>
-		</dl>
-	{:else if isBlockParent(parent)}
-		<p data-parent={parent} class={styles}>
-			{@render traverse(data, 'p')}
-		</p>
-	{:else if styles}
-		{console.log('wrapper maybe lost style', styles)}
-		{@render traverse(data, parent)}
-	{:else}
-		{@render traverse(data, parent)}
-	{/if}
-{/snippet} -->
+<style lang="postcss">
+	dl.ul dd,
+	dl.ul-when-multiple:has(+ dd + dd) dd {
+		display: list-item;
+		list-style-type: disc;
+		margin-left: 1rem;
 
-<!-- {#snippet maybeLink(data, parent: Parent, link: Link, styles: Styles)}
-	{#if link && parent !== 'a'}
-		<a href={link} data-parent={parent} class={styles}>
-			{@render traverse(data, 'a')}
-		</a>
-	{:else if styles}
-		{console.log('maybeLink maybe lost style', styles)}
-		{@render traverse(data, parent)}
-	{:else}
-		{@render traverse(data, parent)}
-	{/if}
-{/snippet} -->
-
-{@render traverse(data, parent)}
+		&::marker {
+			color: var(--color-subtle);
+		}
+	}
+</style>

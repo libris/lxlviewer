@@ -222,6 +222,7 @@
 									data={decoratedData.headingTop}
 									showLabels={ShowLabelsOptions.Never}
 									parent="p"
+									skipOuter={true}
 								/>
 							</p>
 							<h1 class="decorated-heading mt-2 mb-1 text-3xl @3xl:text-3xl">
@@ -231,6 +232,7 @@
 									allowLinks={false}
 									allowPopovers={false}
 									parent="h"
+									skipOuter={true}
 								/>
 							</h1>
 							<p
@@ -240,6 +242,7 @@
 									data={decoratedData.headingExtra}
 									showLabels={ShowLabelsOptions.DefaultOn}
 									parent="p"
+									skipOuter={true}
 								/>
 							</p>
 							{#if decoratedData['_workTitle2']?._display}
@@ -250,6 +253,7 @@
 										data={decoratedData._workTitle2}
 										showLabels={ShowLabelsOptions.DefaultOff}
 										parent="p"
+										skipOuter={true}
 									/>
 								</p>
 							{/if}
@@ -257,18 +261,19 @@
 					</header>
 				</div>
 				<div class="decorated-data-section decorated-compact">
-					{#each decoratedData.overview as overview (overview)}
-						<div class="mb-2">
-							<DecoratedData2
-								data={overview}
-								showLabels={ShowLabelsOptions.DefaultOff}
-								allowFindLinks={true}
-								block
-								limit={{ contribution: 5, hasVariant: 10 }}
-								parent="div"
-							/>
-						</div>
-					{/each}
+					<!-- {#each decoratedData.overview as overview (overview)} -->
+					<div class="mb-2" data-section="overview">
+						<DecoratedData2
+							data={decoratedData.overview}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							allowFindLinks={true}
+							block
+							limit={{ contribution: 5, hasVariant: 10 }}
+							parent="div"
+							skipOuter={true}
+						/>
+					</div>
+					<!-- {/each} -->
 				</div>
 				{#if hasHoldingsBtn}
 					<h2 class="sr-only print:hidden">{page.data.t('holdings.availabilityByType')}</h2>
@@ -285,25 +290,26 @@
 					{#if !hasHoldingsBtn && decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
 						<div class="border-b-neutral mb-2 border-b"></div>
 					{/if}
-					{#each decoratedData.overview2 as overview2 (overview2)}
-						<div class="mb-2">
-							<DecoratedData2
-								data={overview2}
-								showLabels={ShowLabelsOptions.DefaultOn}
-								allowFindLinks={true}
-								suppressProperty={[
-									'associatedMedia',
-									'isPrimaryTopicOf',
-									'hasReproduction',
-									'electronicLocator',
-									'marc:versionOfResource'
-								]}
-								block
-								limit={{ contribution: 5, hasVariant: 5 }}
-							/>
-						</div>
-					{/each}
-					<div class="mb-2">
+					<!-- {#each decoratedData.overview2 as overview2 (overview2)} -->
+					<div class="mb-2" data-section="overview2">
+						<DecoratedData2
+							data={decoratedData.overview2}
+							showLabels={ShowLabelsOptions.DefaultOn}
+							allowFindLinks={true}
+							suppressProperty={[
+								'associatedMedia',
+								'isPrimaryTopicOf',
+								'hasReproduction',
+								'electronicLocator',
+								'marc:versionOfResource'
+							]}
+							limit={{ contribution: 5, hasVariant: 5 }}
+							parent="div"
+							skipOuter={true}
+						/>
+					</div>
+					<!-- {/each} -->
+					<div class="mb-2" data-section="overviewFooter">
 						<DecoratedData2
 							data={decoratedData.overviewFooter}
 							block
@@ -454,17 +460,19 @@
 						{page.data.t('resource.details')}
 					</h2>
 					<div class="decorated-data-section decorated-spacious decorated-details">
-						{#each decoratedData.details as details (details)}
-							<div class="mb-2">
-								<DecoratedData2
-									data={details}
-									showLabels={ShowLabelsOptions.Always}
-									allowFindLinks={true}
-									block
-									limit={{ contribution: 5, hasVariant: 10 }}
-								/>
-							</div>
-						{/each}
+						<!-- {#each decoratedData.details as details (details)} -->
+						<div class="mb-2" data-section="details">
+							<DecoratedData2
+								data={decoratedData.details}
+								showLabels={ShowLabelsOptions.Always}
+								block
+								allowFindLinks={true}
+								limit={{ contribution: 5, hasVariant: 10 }}
+								parent="div"
+								skipOuter={true}
+							/>
+						</div>
+						<!-- {/each} -->
 						{#if decoratedData.itemInformation.length}
 							<details class="mt-4 print:hidden print:break-before-page open:print:block">
 								<summary class="flex cursor-pointer items-center gap-1">
@@ -485,6 +493,7 @@
 													<DecoratedData2
 														data={holder.heldBy}
 														showLabels={ShowLabelsOptions.Never}
+														parent="p"
 													/>
 												</p>
 												{#each holder.items as item, index (index)}
@@ -494,6 +503,7 @@
 														allowFindLinks={false}
 														block
 														limit={{ contribution: 5, hasVariant: 10 }}
+														parent="li"
 													/>
 												{/each}
 											</li>
@@ -664,11 +674,11 @@
 			max-width: 60ch;
 		}
 
-		& :global(.contribution) {
+		/* & :global(.contribution) {
 			font-size: var(--text-base);
 			@apply mb-2;
 			@apply mt-1;
-		}
+		} */
 
 		& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
 			font-weight: var(--font-weight-semibold);
@@ -684,14 +694,14 @@
 			color: var(--color-subtle);
 		} */
 
-		& :global(.contribution > ._contentBefore),
+		/* & :global(.contribution > ._contentBefore),
 		:global(.contribution > ._contentAfter) {
 			display: none;
-		}
+		} */
 
-		& :global(.contribution > *) {
+		/* & :global(.contribution > *) {
 			display: block;
-		}
+		} */
 
 		& :global(div[data-property='identifiedBy'] > ._contentBefore) {
 			display: none;
@@ -781,11 +791,11 @@
 				content: ': ';
 			}
 
-			& :global(.contribution) {
+			/* & :global(.contribution) {
 				font-size: var(--text-md);
 				@apply mb-0;
 				@apply mt-0;
-			}
+			} */
 
 			& :global(.person-extra) {
 				display: none;
@@ -881,11 +891,11 @@
 	.decorated-details {
 		font-size: var(--text-sm);
 
-		& :global(.contribution) {
+		/* & :global(.contribution) {
 			font-size: var(--text-sm);
 			@apply mb-2;
 			@apply mt-1;
-		}
+		} */
 
 		& :global(ul[data-property='hasTitle'] > li > span[data-type='Title']) {
 			font-weight: var(--font-weight-semibold);
