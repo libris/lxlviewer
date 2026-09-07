@@ -32,7 +32,8 @@ QualifierInnerGroup { "(" qualifierOrcomb? ")" }
   bOperator {"<" | ">" | "<=" | ">=" }
   bOperatorEq { ":" | "=" | "~" }
   strliteral { '"' (!["\\] | "\\" _)* '"' }
-  str { ![:~><=()"\ ]+ }
+  // unicode escapes here are the same whitespace chars as in @whitespace and nbsp variants
+  str { ![:~><=()"\ \t\n\r\u{00A0}\u{1680}\u{2000}-\u{200A}\u{2028}\u{2029}\u{202F}\u{205F}\u{3000}]+ }
   filterAlias { "excludeEplikt" | "includeEplikt" | "excludePreliminary" | "includePreliminary" | "existsImage" | "alias-myLibraries" | "freeOnline" | "_suecia" | "_collections" }
   space { @whitespace+ }
 
