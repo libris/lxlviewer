@@ -1,7 +1,6 @@
 <script lang="ts">
 	import DecoratedData from './DecoratedData.svelte';
-	import { Fmt, JsonLd } from '$lib/types/xl';
-	import type { ResourceData } from '$lib/types/resourceData';
+	import { Fmt, JsonLd, type DisplayDecorated } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { page } from '$app/state';
 	import popover from '$lib/actions/popover';
@@ -11,7 +10,7 @@
 	import Wrapper from './Wrapper.svelte';
 
 	interface Props {
-		data: ResourceData;
+		data: DisplayDecorated;
 		depth?: number;
 		showLabels?: 'always' | 'never' | 'defaultOn' | 'defaultOff';
 		allowPopovers?: boolean; // used for preventing nested popovers
@@ -23,7 +22,7 @@
 		suppressProperty?: string[];
 		isInsideLinkElement?: boolean;
 		isLi?: boolean;
-		isLiChild: boolean;
+		isLiChild?: boolean;
 	}
 
 	let {
@@ -44,24 +43,27 @@
 
 	let key = $derived(keyed && data); // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what the root cause is...) – we should try to remove the need for this when updating to Svelte 5.
 
-	const hiddenProperties = [
-		JsonLd.CONTEXT,
-		JsonLd.TYPE,
-		JsonLd.ID,
-		Fmt.LABEL,
-		Fmt.STYLE,
-		Fmt.CONTENT_BEFORE,
-		Fmt.CONTENT_AFTER
-	];
+	// const hiddenProperties = [
+	// 	JsonLd.CONTEXT,
+	// 	JsonLd.TYPE,
+	// 	JsonLd.ID,
+	// 	Fmt.LABEL,
+	// 	Fmt.STYLE,
+	// 	Fmt.CONTENT_BEFORE,
+	// 	Fmt.CONTENT_AFTER
+	// ];
 
 	let delimitedShown = $state(false);
 
-	function getLink(value: ResourceData) {
+	function getLink(value: DisplayDecorated) {
 		if (!isInsideLinkElement && allowLinks) {
 			if (depth > 1 && hasStyle(data, 'link')) {
 				const id = getResourceId(value);
 				if (id) {
-					return page.data.localizeHref(trimSlashes(relativizeUrl(id)));
+					const trimmed = trimSlashes(relativizeUrl(id));
+					if (trimmed) {
+						return page.data.localizeHref(trimmed);
+					}
 				}
 			}
 			if (depth > 1 && hasStyle(data, 'ext-link')) {
@@ -80,7 +82,7 @@
 		return undefined;
 	}
 
-	function getElementType(value: ResourceData) {
+	function getElementType(value: DisplayDecorated) {
 		if (!isInsideLinkElement && allowLinks && getLink(value)) {
 			return 'a';
 		}
@@ -90,7 +92,7 @@
 		return 'span';
 	}
 
-	function isUl(data: ResourceData, propertyData: ResourceData): boolean {
+	function isUl(data: DisplayDecorated, propertyData: DisplayDecorated): boolean {
 		return (
 			!!getStyle(data)?.includes('ul') ||
 			(!!getStyle(data)?.includes('ul-when-multiple') &&
@@ -100,7 +102,7 @@
 	}
 
 	/* Conditionally add popover action so it's only added when needed */
-	function conditionalPopover(node: HTMLElement, data: ResourceData) {
+	function conditionalPopover(node: HTMLElement, data: DisplayDecorated) {
 		if (
 			allowPopovers &&
 			!isInsideLinkElement &&
@@ -118,15 +120,15 @@
 		}
 	}
 
-	function getProperty(data: { [key: string]: ResourceData }) {
-		return (
-			Object.entries(data).find(
-				([key, value]) => key && value && !hiddenProperties.includes(key)
-			) || []
-		);
-	}
+	// function getProperty(data: { [key: string]: ResourceData }) {
+	// 	return (
+	// 		Object.entries(data).find(
+	// 			([key, value]) => key && value && !hiddenProperties.includes(key)
+	// 		) || []
+	// 	);
+	// }
 
-	function getStyleClasses(data: ResourceData) {
+	function getStyleClasses(data: DisplayDecorated) {
 		const style = getStyle(data);
 		if (style && depth > 1) {
 			return style.join(' ');
@@ -207,7 +209,7 @@
 						{data[Fmt.CONTENT_BEFORE]}
 					</span>
 				{/if}
-				{#if data[JsonLd.TYPE]}
+				{#if JsonLd.TYPE in data}
 					{@const link = getLink(data)}
 					<svelte:element
 						this={getElementType(data)}
@@ -231,7 +233,7 @@
 							isInsideLinkElement={isInsideLinkElement || !!link}
 						/>
 					</svelte:element>
-				{:else if data[JsonLd.VALUE]}
+				{:else if JsonLd.VALUE in data}
 					<DecoratedData
 						data={data[JsonLd.VALUE]}
 						depth={depth + 1}
@@ -244,7 +246,7 @@
 						{suppressProperty}
 						{isInsideLinkElement}
 					/>
-				{:else if data[Fmt.DISPLAY]}
+				{:else if Fmt.DISPLAY in data}
 					<DecoratedData
 						data={data[Fmt.DISPLAY]}
 						depth={depth + 1}
@@ -258,7 +260,9 @@
 						{isInsideLinkElement}
 					/>
 				{:else}
-					{@const [propertyName, propertyData] = getProperty(data)}
+					<!-- {@const [propertyName, propertyData] = getProperty(data)} -->
+					{const propertyName = data[Fmt.PROP]}
+					{const propertyData = data[Fmt.VALUE]}
 					{#if propertyName && propertyData && (suppressProperty === undefined || !suppressProperty.includes(propertyName))}
 						<!-- don't use 'show more' when exceeding limit by one -->
 						{@const limitTo = limit?.[propertyName]}
