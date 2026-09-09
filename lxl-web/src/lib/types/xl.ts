@@ -252,6 +252,7 @@ export type DisplayDecorated =
 	| ResourceNode[]
 	| PropertyNode
 	| PropertyNode[]
+	| HtmlNode
 	| string;
 
 export type ResourceNode = {
@@ -266,14 +267,16 @@ export type ResourceNode = {
 
 export type PropertyNode = {
 	[Fmt.PROP]: string;
-	[Fmt.VALUE]: ResourceNode | ResourceNode[] | ValueNode;
+	[Fmt.VALUE]: ResourceNode | ResourceNode[] | HtmlNode | string;
 	[Fmt.STYLE]?: string[];
 	[Fmt.LABEL]?: string;
 	[Fmt.CONTENT_BEFORE]?: string;
 	[Fmt.CONTENT_AFTER]?: string;
 };
 
-type ValueNode = string; // todo extend
+export type HtmlNode = {
+	[Fmt.HTML]: string;
+};
 
 export type StyleList = string[];
 export type DisplayDecoratedLite = (string | [string, StyleList])[];

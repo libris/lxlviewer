@@ -7,16 +7,23 @@
 		type DisplayDecorated,
 		type ResourceNode,
 		type PropertyNode,
-		JsonLd
+		JsonLd,
+		type HtmlNode
 	} from '$lib/types/xl';
 	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import popover from '$lib/actions/popover';
-	import { hasStyle, getResourceId, getStyle, isPropertyNode } from '$lib/utils/resourceData'; // todo rename
+	import {
+		hasStyle,
+		getResourceId,
+		getStyle,
+		isPropertyNode,
+		isHtmlNode
+	} from '$lib/utils/resourceData'; // todo rename
 	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 
 	type Parent = Elem | undefined;
-	type Node = ResourceNode | PropertyNode;
+	type Node = ResourceNode | PropertyNode | HtmlNode;
 	type Link = string | undefined;
 	type Label = string | undefined;
 	type Styles = string[] | undefined;
@@ -79,6 +86,7 @@
 	}
 
 	function getLabel(data: Node): Label {
+		if (isHtmlNode(data)) return undefined;
 		if (
 			showLabels === ShowLabelsOptions.Always ||
 			(showLabels === ShowLabelsOptions.DefaultOn && !hasStyle(data, 'nolabel')) ||
@@ -89,6 +97,7 @@
 	}
 
 	function forceLabel(data: Node) {
+		if (isHtmlNode(data)) return undefined;
 		return hasStyle(data, 'force-sublevel-label') ? data[Fmt.LABEL] : undefined;
 	}
 
@@ -161,8 +170,14 @@
 
 	{#if skip}
 		{@render node(data, parent)}
-		<!-- dl -->
+	{:else if isPropertyNode(data) && isHtmlNode(data[Fmt.VALUE])}
+		<!-- html -->
+		<div class="markdown [&>p]:mb-2 [&>ul]:list-inside [&>ul]:list-disc">
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html data[Fmt.VALUE][Fmt.HTML]}
+		</div>
 	{:else if label && isPropertyNode(data) && isBlockParent(parent)}
+		<!-- dl -->
 		<dl class={styles} data-property={prop} data-type={type}>
 			<dt>
 				{label}
@@ -179,8 +194,8 @@
 				{@render node(data, Elem.Dd, !inline)}
 			{/if}
 		</dd>
-		<!-- ul -->
 	{:else if !label && isPropertyNode(data) && Array.isArray(data._value) && data._value.length > 1 && isBlockParent(parent)}
+		<!-- ul -->
 		<ul class={styles} data-property={prop} data-type={type} aria-label={data._label}>
 			{@render node(data, Elem.Ul, !inline)}
 		</ul>
@@ -195,8 +210,8 @@
 				{@render node(data, Elem.Li, !inline)}
 			{/if}
 		</li>
-		<!-- a -->
 	{:else if link && parent !== Elem.A}
+		<!-- a -->
 		<a
 			href={resolve(link)}
 			data-parent={parent}
@@ -255,7 +270,7 @@
 	skipContent: boolean
 )}
 	{#if placement in data && !hasStyle(data, 'block')}
-		{#if !skipContent}
+		{#if !isHtmlNode(data) && !skipContent}
 			{data[placement]}
 			<!-- {#if isPropertyNode(data)}
 				<span class="bg-[green] text-[white]" data-parent={parent}>
