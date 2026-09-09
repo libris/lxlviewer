@@ -9,10 +9,10 @@
 		JsonLd
 	} from '$lib/types/xl';
 	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
-	// import popover from '$lib/actions/popover';
+	import popover from '$lib/actions/popover';
 	import { hasStyle, getResourceId, getStyle } from '$lib/utils/resourceData';
 	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
-	// import { getSupportedLocale } from '$lib/i18n/locales';
+	import { getSupportedLocale } from '$lib/i18n/locales';
 
 	type Parent = Elem | undefined;
 	type Node = ResourceNode | PropertyNode;
@@ -27,8 +27,8 @@
 		parent?: Parent; // Pass in parent to not render bad html, e.g `<p>` in `<p>`
 		block?: boolean;
 		skipOuter?: boolean; // Do not render an element from the outermost node, i.e. in the case of a complete linked work
+		allowPopovers?: boolean; // used for preventing nested popovers
 		// depth?: number;
-		// allowPopovers?: boolean; // used for preventing nested popovers
 		// allowFindLinks?: boolean;
 		// limit?: Record<string, number>;
 		// keyed?: boolean;
@@ -44,9 +44,9 @@
 		allowLinks = true,
 		parent = undefined,
 		block = false,
-		skipOuter = false
+		skipOuter = false,
+		allowPopovers = true
 		// depth = 0,
-		// allowPopovers = true,
 		// allowFindLinks = false,
 		// limit = undefined,
 		// keyed = true,
@@ -80,6 +80,20 @@
 
 	function forceLabel(data: Node) {
 		return hasStyle(data, 'force-sublevel-label') ? data[Fmt.LABEL] : undefined;
+	}
+
+	function conditionalPopover(node: HTMLElement, data: DisplayDecorated) {
+		if (allowPopovers) {
+			const id = getResourceId(data);
+			if (id) {
+				return popover(node, {
+					resource: {
+						id,
+						lang: getSupportedLocale(page.params.lang)
+					}
+				});
+			}
+		}
 	}
 
 	function isBlockParent(parent: Parent): boolean {
@@ -132,16 +146,16 @@
 		{@render node(data, parent)}
 		<!-- dl -->
 	{:else if label && isPropertyNode(data) && isBlockParent(parent)}
-		<dl class={styles} data-prop={prop} data-type={type}>
+		<dl class={styles} data-property={prop} data-type={type}>
 			<dt>
 				{label}
 			</dt>
 			{@render node(data, Elem.Dl, true)}
 		</dl>
 	{:else if parent === Elem.Dl}
-		<dd class={[inline && 'inline', link ? '' : styles]} data-prop={prop} data-type={type}>
+		<dd class={[inline && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
 			{#if link}
-				<a href={resolve(link)} data-parent={parent} class={styles}>
+				<a href={resolve(link)} data-parent={parent} class={styles} use:conditionalPopover={data}>
 					{@render node(data, Elem.A, !inline)}
 				</a>
 			{:else}
@@ -150,14 +164,14 @@
 		</dd>
 		<!-- ul -->
 	{:else if !label && isPropertyNode(data) && Array.isArray(data._value) && data._value.length > 1 && isBlockParent(parent)}
-		<ul class={styles} data-prop={prop} data-type={type} aria-label={data._label}>
+		<ul class={styles} data-property={prop} data-type={type} aria-label={data._label}>
 			{@render node(data, Elem.Ul, !inline)}
 		</ul>
 	{:else if parent === Elem.Ul}
-		<li class={[link ? '' : styles]} data-prop={prop} data-type={type}>
+		<li class={[link ? '' : styles]} data-property={prop} data-type={type}>
 			{#if link}
 				<!-- eslint-disable svelte/no-navigation-without-resolve -->
-				<a href={resolve(link)} data-parent={parent} class={styles}>
+				<a href={resolve(link)} data-parent={parent} class={styles} use:conditionalPopover={data}>
 					{@render node(data, Elem.A, !inline)}
 				</a>
 			{:else}
@@ -166,16 +180,23 @@
 		</li>
 		<!-- a -->
 	{:else if link && parent !== Elem.A}
-		<a href={resolve(link)} data-parent={parent} class={styles} data-prop={prop} data-type={type}>
+		<a
+			href={resolve(link)}
+			data-parent={parent}
+			class={styles}
+			data-property={prop}
+			data-type={type}
+			use:conditionalPopover={data}
+		>
 			{@render node(data, Elem.A)}
 		</a>
 	{:else if !label && isBlockParent(parent)}
-		<p class={styles} data-prop={prop} data-type={type}>
+		<p class={styles} data-property={prop} data-type={type}>
 			{@render node(data, Elem.P, true)}
 		</p>
 	{:else if styles?.length}
 		{const forcedLabel = forceLabel(data)}
-		<span class={styles} data-prop={prop} data-type={type}>
+		<span class={styles} data-property={prop} data-type={type}>
 			{#if forcedLabel}{forcedLabel}{/if}{@render node(data, parent)}
 		</span>
 	{:else}
