@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 	import {
 		Fmt,
 		type DisplayDecorated,
@@ -7,7 +9,6 @@
 		JsonLd
 	} from '$lib/types/xl';
 	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
-	import { page } from '$app/state';
 	// import popover from '$lib/actions/popover';
 	import { hasStyle, getResourceId, getStyle } from '$lib/utils/resourceData';
 	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
@@ -69,13 +70,16 @@
 
 	function getLabel(data: Node): Label {
 		if (
-			hasStyle(data, 'force-sublevel-label') ||
 			showLabels === ShowLabelsOptions.Always ||
 			(showLabels === ShowLabelsOptions.DefaultOn && !hasStyle(data, 'nolabel')) ||
 			(showLabels === ShowLabelsOptions.DefaultOff && hasStyle(data, 'label'))
 		) {
 			return data[Fmt.LABEL] ?? undefined;
 		}
+	}
+
+	function forceLabel(data: Node) {
+		return hasStyle(data, 'force-sublevel-label') ? data[Fmt.LABEL] : undefined;
 	}
 
 	function isBlockParent(parent: Parent): boolean {
@@ -118,34 +122,51 @@
 
 {#snippet wrapper(data: Node, parent: Parent, skip?: boolean)}
 	{const styles: Styles = getStyle(data)}
-	{const link: Link = getLink(data)}
-	{const label = getLabel(data)}
+	{const link: Link = $derived(getLink(data))}
+	{const label = $derived(getLabel(data))}
 	{const prop = Fmt.PROP in data ? data[Fmt.PROP] : null}
 	{const type = JsonLd.TYPE in data ? data[JsonLd.TYPE] : null}
+	{const inline = !isBlock(data, parent)}
 
 	{#if skip}
 		{@render node(data, parent)}
+		<!-- dl -->
 	{:else if label && isPropertyNode(data) && isBlockParent(parent)}
-		<dl class={[styles, 'mb-2']} data-prop={prop} data-type={type}>
+		<dl class={styles} data-prop={prop} data-type={type}>
 			<dt class="first-letter:capitalize text-xs text-subtle">
 				{label}
 			</dt>
 			{@render node(data, Elem.Dl, true)}
 		</dl>
 	{:else if parent === Elem.Dl}
-		{const inline = !isBlock(data, parent)}
-		<dd class={[link ? '' : styles, inline && 'inline']} data-prop={prop} data-type={type}>
+		<dd class={[inline && 'inline', link ? '' : styles]} data-prop={prop} data-type={type}>
 			{#if link}
-				<!-- eslint-disable svelte/no-navigation-without-resolve -->
-				<a href={link} data-parent={parent} class={styles}>
+				<a href={resolve(link)} data-parent={parent} class={styles}>
 					{@render node(data, Elem.A, !inline)}
 				</a>
 			{:else}
 				{@render node(data, Elem.Dd, !inline)}
 			{/if}
 		</dd>
+		<!-- ul -->
+	{:else if !label && isPropertyNode(data) && Array.isArray(data._value) && data._value.length > 1 && isBlockParent(parent)}
+		<ul class={styles} data-prop={prop} data-type={type} aria-label={data._label}>
+			{@render node(data, Elem.Ul, !inline)}
+		</ul>
+	{:else if parent === Elem.Ul}
+		<li class={[link ? '' : styles]} data-prop={prop} data-type={type}>
+			{#if link}
+				<!-- eslint-disable svelte/no-navigation-without-resolve -->
+				<a href={resolve(link)} data-parent={parent} class={styles}>
+					{@render node(data, Elem.A, !inline)}
+				</a>
+			{:else}
+				{@render node(data, Elem.Li, !inline)}
+			{/if}
+		</li>
+		<!-- a -->
 	{:else if link && parent !== Elem.A}
-		<a href={link} data-parent={parent} class={styles} data-prop={prop} data-type={type}>
+		<a href={resolve(link)} data-parent={parent} class={styles} data-prop={prop} data-type={type}>
 			{@render node(data, Elem.A)}
 		</a>
 	{:else if !label && isBlockParent(parent)}
@@ -153,15 +174,10 @@
 			{@render node(data, Elem.P, true)}
 		</p>
 	{:else if styles?.length}
-		{#if isBlock(data, parent)}
-			<div class={styles} data-prop={prop} data-type={type}>
-				{@render node(data, Elem.Div)}
-			</div>
-		{:else}
-			<span class={styles} data-prop={prop} data-type={type}>
-				{@render node(data, parent)}
-			</span>
-		{/if}
+		{const forcedLabel = forceLabel(data)}
+		<span class={styles} data-prop={prop} data-type={type}>
+			{#if forcedLabel}{forcedLabel}{/if}{@render node(data, parent)}
+		</span>
 	{:else}
 		{@render node(data, parent)}
 	{/if}
@@ -182,12 +198,12 @@
 {#snippet content(
 	placement: Fmt.CONTENT_BEFORE | Fmt.CONTENT_AFTER,
 	data: Node,
-	parent: Parent,
 	skipContent: boolean
 )}
 	{#if placement in data && !hasStyle(data, 'block')}
 		{#if !skipContent}
-			{#if isPropertyNode(data)}
+			{data[placement]}
+			<!-- {#if isPropertyNode(data)}
 				<span class="bg-[green] text-[white]" data-parent={parent}>
 					{data[placement]}
 				</span>
@@ -195,11 +211,11 @@
 				<span class="bg-[yellow]" data-parent={parent}>
 					{data[placement]}
 				</span>
-			{/if}
+			{/if} -->
 		{:else}
-			<span class="bg-[red] text-[white]" data-parent={parent}>
+			<!-- <span class="bg-[red] text-[white]" data-parent={parent}>
 				{data[placement]}
-			</span>
+			</span> -->
 		{/if}
 	{/if}
 {/snippet}
@@ -216,5 +232,9 @@
 		&::marker {
 			color: var(--color-subtle);
 		}
+	}
+
+	.force-sublevel-label::first-letter {
+		text-transform: uppercase;
 	}
 </style>
