@@ -133,7 +133,7 @@
 		<!-- dl -->
 	{:else if label && isPropertyNode(data) && isBlockParent(parent)}
 		<dl class={styles} data-prop={prop} data-type={type}>
-			<dt class="first-letter:capitalize text-xs text-subtle">
+			<dt>
 				{label}
 			</dt>
 			{@render node(data, Elem.Dl, true)}
@@ -195,9 +195,11 @@
 	{/if}
 {/snippet}
 
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 {#snippet content(
 	placement: Fmt.CONTENT_BEFORE | Fmt.CONTENT_AFTER,
 	data: Node,
+	parent: Parent,
 	skipContent: boolean
 )}
 	{#if placement in data && !hasStyle(data, 'block')}
@@ -234,6 +236,7 @@
 		}
 	}
 
+	dl::first-letter,
 	.force-sublevel-label::first-letter {
 		text-transform: uppercase;
 	}
