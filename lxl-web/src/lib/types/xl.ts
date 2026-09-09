@@ -258,6 +258,7 @@ export type DisplayDecorated =
 export type ResourceNode = {
 	[JsonLd.ID]?: string;
 	[JsonLd.TYPE]?: string;
+	[JsonLd.VALUE]?: string;
 	[Fmt.DISPLAY]: PropertyNode[];
 	[Fmt.STYLE]?: string[];
 	[Fmt.LABEL]?: string;

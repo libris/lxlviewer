@@ -239,7 +239,9 @@
 {#snippet node(data: Node, parent: Parent, skipContent: boolean = false)}
 	{#if typeof data === 'object' && !Array.isArray(data)}
 		{@render content(Fmt.CONTENT_BEFORE, data, parent, skipContent)}
-		{#if Fmt.DISPLAY in data}
+		{#if JsonLd.VALUE in data && typeof data[JsonLd.VALUE] === 'string'}
+			{data[JsonLd.VALUE]}
+		{:else if Fmt.DISPLAY in data}
 			{@render traverse(data[Fmt.DISPLAY], parent, false)}
 		{:else if Fmt.VALUE in data}
 			{const hasLimit = limit && limit?.[data[Fmt.PROP]]}
