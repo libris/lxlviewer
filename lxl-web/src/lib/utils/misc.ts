@@ -1,7 +1,6 @@
-import { Fmt, JsonLd, type DisplayDecorated } from '$lib/types/xl';
+import { Fmt, type DisplayDecorated } from '$lib/types/xl';
 
 type Data = Record<string, unknown>;
-const FMT_VALUES = Object.values(Fmt);
 
 // TODO
 export function toString(data: DisplayDecorated): string {
@@ -13,11 +12,13 @@ export function toString(data: DisplayDecorated): string {
 		if (Fmt.DISPLAY in data) {
 			v.push(...data[Fmt.DISPLAY].map(toString));
 		}
-		v.push(
-			...Object.entries(data)
-				.filter(([k]) => !(FMT_VALUES.includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
-				.map(([, v]) => toString(v))
-		);
+		if (Fmt.VALUE in data) {
+			if (Array.isArray(data[Fmt.VALUE])) {
+				v.push(...data[Fmt.VALUE].map(toString));
+			} else {
+				v.push(toString(data[Fmt.VALUE]));
+			}
+		}
 		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
 			v.push(data[Fmt.CONTENT_AFTER]);
 		}
