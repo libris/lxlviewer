@@ -40,7 +40,6 @@ import { cleanData } from '$lib/utils/cleanupDecorated.server';
 
 // PERF: only build these arrays once, not in hot path
 const LENS_TYPE_VALUES = Object.values(LensType);
-const FMT_VALUES = Object.values(Fmt);
 
 export class VocabUtil {
 	//vocabId: string
@@ -1168,11 +1167,11 @@ function toLabel(data: DisplayDecorated) {
 export function toLite(data: DisplayDecorated): DisplayDecoratedLite {
 	const result: DisplayDecoratedLite = [];
 	// TODO is this what we always want?
-	if (data._display) {
-		_toLite(data._display, result);
-	} else if (typeof data === 'string') {
+	if (typeof data === 'string') {
 		_toLite(data, result);
-	} else if (data[JsonLd.ID]) {
+	} else if (!Array.isArray(data) && Fmt.DISPLAY in data) {
+		_toLite(data[Fmt.DISPLAY], result);
+	} else if (!Array.isArray(data) && JsonLd.ID in data && typeof data[JsonLd.ID] === 'string') {
 		result.push(data[JsonLd.ID]);
 	}
 
@@ -1188,18 +1187,18 @@ function _toLite(data: DisplayDecorated, result: DisplayDecoratedLite) {
 		if (Fmt.DISPLAY in data) {
 			v.push(...data[Fmt.DISPLAY].map(toString));
 		}
-		v.push(
-			...Object.entries(data)
-				.filter(
-					([k]) => !(Object.values(FMT_VALUES).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k))
-				)
-				.map(([, v]) => toString(v))
-		);
+		if (Fmt.VALUE in data) {
+			if (Array.isArray(data[Fmt.VALUE])) {
+				v.push(...data[Fmt.VALUE].map(toString));
+			} else {
+				v.push(toString(data[Fmt.VALUE]));
+			}
+		}
 		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
 			v.push(data[Fmt.CONTENT_AFTER]);
 		}
 		const str = v.join('');
-		if (Fmt.STYLE in data && data[Fmt.STYLE].length > 0) {
+		if (Fmt.STYLE in data && Array.isArray(data[Fmt.STYLE]) && data[Fmt.STYLE].length > 0) {
 			result.push([str, data[Fmt.STYLE]]);
 		} else {
 			result.push(str);
