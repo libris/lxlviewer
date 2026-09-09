@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import {
@@ -10,7 +11,7 @@
 	} from '$lib/types/xl';
 	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import popover from '$lib/actions/popover';
-	import { hasStyle, getResourceId, getStyle } from '$lib/utils/resourceData';
+	import { hasStyle, getResourceId, getStyle, isPropertyNode } from '$lib/utils/resourceData'; // todo rename
 	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 
@@ -28,9 +29,9 @@
 		block?: boolean;
 		skipOuter?: boolean; // Do not render an element from the outermost node, i.e. in the case of a complete linked work
 		allowPopovers?: boolean; // used for preventing nested popovers
+		limit?: Record<string, number>;
 		// depth?: number;
 		// allowFindLinks?: boolean;
-		// limit?: Record<string, number>;
 		// keyed?: boolean;
 		// suppressProperty?: string[];
 		// isInsideLinkElement?: boolean;
@@ -45,10 +46,10 @@
 		parent = undefined,
 		block = false,
 		skipOuter = false,
-		allowPopovers = true
+		allowPopovers = true,
+		limit = undefined
 		// depth = 0,
 		// allowFindLinks = false,
-		// limit = undefined,
 		// keyed = true,
 		// suppressProperty = undefined,
 		// isInsideLinkElement = false,
@@ -56,7 +57,16 @@
 		// isLiChild = false
 	}: Props = $props();
 
-	const skip = $derived(skipOuter);
+	let skip = $derived(skipOuter);
+	let limitState = $state(
+		untrack(
+			() =>
+				limit &&
+				Object.fromEntries(
+					Object.entries(limit).map(([key, value]) => [key, { limit: value, expanded: false }])
+				)
+		)
+	);
 
 	function getLink(data: DisplayDecorated): Link {
 		if (allowLinks && hasStyle(data, 'link')) {
@@ -107,12 +117,19 @@
 		}
 	}
 
-	function isPropertyNode(data: Node): data is PropertyNode {
-		return Fmt.PROP in data;
-	}
-
 	function isBlock(data: Node, parent: Parent) {
 		return (hasStyle(data, 'block') || block) && isBlockParent(parent);
+	}
+
+	function delimiterWrapper(parent: Parent) {
+		switch (parent) {
+			case Elem.Ul:
+				return Elem.Li;
+			case Elem.Dl:
+				return Elem.Dd;
+			default:
+				return Elem.Span;
+		}
 	}
 </script>
 
@@ -210,7 +227,21 @@
 		{#if Fmt.DISPLAY in data}
 			{@render traverse(data[Fmt.DISPLAY], parent, false)}
 		{:else if Fmt.VALUE in data}
-			{@render traverse(data[Fmt.VALUE], parent, false)}
+			{const hasLimit = limit && limit?.[data[Fmt.PROP]]}
+			{const showDelimiter =
+				!!hasLimit && Array.isArray(data[Fmt.VALUE]) && data[Fmt.VALUE].length > hasLimit}
+			{#if showDelimiter && Array.isArray(data[Fmt.VALUE])}
+				<!-- show delimiter  -->
+				{const expanded = $derived(limitState && limitState[data[Fmt.PROP]].expanded)}
+				{@render traverse(
+					expanded ? data[Fmt.VALUE] : data[Fmt.VALUE].slice(0, hasLimit),
+					parent,
+					false
+				)}
+				{@render delimiter(data, parent, hasLimit)}
+			{:else}
+				{@render traverse(data[Fmt.VALUE], parent, false)}
+			{/if}
 		{/if}
 		{@render content(Fmt.CONTENT_AFTER, data, parent, skipContent)}
 	{/if}
@@ -240,6 +271,28 @@
 				{data[placement]}
 			</span> -->
 		{/if}
+	{/if}
+{/snippet}
+
+{#snippet delimiter(data: PropertyNode, parent: Parent, limit: number)}
+	{#if limitState}
+		{const remainder = Array.isArray(data[Fmt.VALUE]) ? data[Fmt.VALUE].length - limit : 0}
+		{const prop = data[Fmt.PROP]}
+		<svelte:element this={delimiterWrapper(parent)}>
+			{#if allowLinks}
+				{@const delimitText = limitState[prop].expanded
+					? page.data.t('search.showFewer')
+					: `${page.data.t('search.showMore')} (+${remainder})`}
+				<button
+					class="delimiter link-subtle"
+					type="button"
+					onclick={() => (limitState[prop].expanded = !limitState[prop].expanded)}
+					>{delimitText}</button
+				>
+			{:else}
+				<span class="delimiter">{` +${remainder} ${page.data.t('general.more')}`}</span>
+			{/if}
+		</svelte:element>
 	{/if}
 {/snippet}
 
