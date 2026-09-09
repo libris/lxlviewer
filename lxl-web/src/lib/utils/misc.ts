@@ -1,4 +1,4 @@
-import { Fmt, type DisplayDecorated } from '$lib/types/xl';
+import { Fmt, JsonLd, type DisplayDecorated } from '$lib/types/xl';
 
 type Data = Record<string, unknown>;
 
@@ -18,6 +18,9 @@ export function toString(data: DisplayDecorated): string {
 			} else {
 				v.push(toString(data[Fmt.VALUE]));
 			}
+		}
+		if (JsonLd.VALUE in data && typeof data[JsonLd.VALUE] === 'string') {
+			v.push(data[JsonLd.VALUE]);
 		}
 		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
 			v.push(data[Fmt.CONTENT_AFTER]);
