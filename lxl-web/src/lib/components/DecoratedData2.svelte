@@ -36,9 +36,9 @@
 		block?: boolean;
 		skipOuter?: boolean; // Do not render an element from the outermost node, i.e. in the case of a complete linked work
 		allowPopovers?: boolean; // used for preventing nested popovers
+		allowFindLinks?: boolean;
 		limit?: Record<string, number>;
 		// depth?: number;
-		// allowFindLinks?: boolean;
 		// keyed?: boolean;
 		// suppressProperty?: string[];
 		// isInsideLinkElement?: boolean;
@@ -54,9 +54,9 @@
 		block = false,
 		skipOuter = false,
 		allowPopovers = true,
+		allowFindLinks = false,
 		limit = undefined
 		// depth = 0,
-		// allowFindLinks = false,
 		// keyed = true,
 		// suppressProperty = undefined,
 		// isInsideLinkElement = false,
@@ -90,7 +90,7 @@
 				return id;
 			}
 		}
-		if (hasStyle(data, 'find-link') && Fmt.FIND_LINK in data) {
+		if (allowFindLinks && hasStyle(data, 'find-link') && Fmt.FIND_LINK in data) {
 			return data[Fmt.FIND_LINK];
 		}
 	}
