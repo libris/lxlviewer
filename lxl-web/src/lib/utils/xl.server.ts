@@ -785,11 +785,11 @@ class Formatter {
 		'findToTop()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				const display = v[Fmt.DISPLAY] as Array<unknown>;
-				const ix = display.findIndex((d) => isObject(d) && '_find' in d);
+				const ix = display.findIndex((d) => isObject(d) && d[Fmt.PROP] === '_find');
 
-				if (ix >= 0 && asArray(display[ix]['_find']).length > 0) {
-					const find = asArray(display[ix]['_find'])[0];
-					v['_findLink'] = find[JsonLd.ID];
+				if (ix >= 0 && asArray(display[ix][Fmt.VALUE]).length > 0) {
+					const find = asArray(display[ix][Fmt.VALUE])[0];
+					v[Fmt.FIND_LINK] = find[JsonLd.ID];
 					if (!v[Fmt.STYLE]) {
 						v[Fmt.STYLE] = [];
 					}
