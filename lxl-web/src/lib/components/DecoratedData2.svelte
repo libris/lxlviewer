@@ -84,6 +84,12 @@
 				return page.data.localizeHref(id);
 			}
 		}
+		if (hasStyle(data, 'ext-link')) {
+			const id = getResourceId(data);
+			if (id) {
+				return id;
+			}
+		}
 		if (hasStyle(data, 'find-link') && Fmt.FIND_LINK in data) {
 			return data[Fmt.FIND_LINK];
 		}
@@ -106,7 +112,7 @@
 	}
 
 	function conditionalPopover(node: HTMLElement, data: DisplayDecorated) {
-		if (allowPopovers) {
+		if (allowPopovers && !hasStyle(data, 'ext-link')) {
 			const id = getResourceId(data);
 			if (id) {
 				return popover(node, {
@@ -167,6 +173,7 @@
 {#snippet wrapper(data: Node, parent: Parent, skip?: boolean)}
 	{const styles: Styles = getStyle(data)}
 	{const link: Link = $derived(getLink(data))}
+	{const target = $derived(link && hasStyle(data, 'ext-link') ? '_blank' : null)}
 	{const label = $derived(getLabel(data))}
 	{const prop = Fmt.PROP in data ? data[Fmt.PROP] : null}
 	{const type = JsonLd.TYPE in data ? data[JsonLd.TYPE] : null}
@@ -174,14 +181,14 @@
 
 	{#if skip}
 		{@render node(data, parent)}
-	{:else if isPropertyNode(data) && isHtmlNode(data[Fmt.VALUE])}
 		<!-- html -->
+	{:else if isPropertyNode(data) && isHtmlNode(data[Fmt.VALUE])}
 		<div class="markdown [&>p]:mb-2 [&>ul]:list-inside [&>ul]:list-disc">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html data[Fmt.VALUE][Fmt.HTML]}
 		</div>
-	{:else if label && isPropertyNode(data) && isBlockParent(parent)}
 		<!-- dl -->
+	{:else if label && isPropertyNode(data) && isBlockParent(parent)}
 		<dl class={styles} data-property={prop} data-type={type}>
 			<dt>
 				{label}
@@ -191,15 +198,21 @@
 	{:else if parent === Elem.Dl}
 		<dd class={[inline && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
 			{#if link}
-				<a href={resolve(link)} data-parent={parent} class={styles} use:conditionalPopover={data}>
+				<a
+					href={target ? link : resolve(link)}
+					data-parent={parent}
+					{target}
+					class={styles}
+					use:conditionalPopover={data}
+				>
 					{@render node(data, Elem.A, !inline)}
 				</a>
 			{:else}
 				{@render node(data, Elem.Dd, !inline)}
 			{/if}
 		</dd>
-	{:else if !label && isPropertyNode(data) && Array.isArray(data._value) && data._value.length > 1 && isBlockParent(parent)}
 		<!-- ul -->
+	{:else if !label && isPropertyNode(data) && Array.isArray(data._value) && data._value.length > 1 && isBlockParent(parent)}
 		<ul class={styles} data-property={prop} data-type={type} aria-label={data._label}>
 			{@render node(data, Elem.Ul, !inline)}
 		</ul>
@@ -207,25 +220,33 @@
 		<li class={[link ? '' : styles]} data-property={prop} data-type={type}>
 			{#if link}
 				<!-- eslint-disable svelte/no-navigation-without-resolve -->
-				<a href={resolve(link)} data-parent={parent} class={styles} use:conditionalPopover={data}>
+				<a
+					href={target ? link : resolve(link)}
+					data-parent={parent}
+					{target}
+					class={styles}
+					use:conditionalPopover={data}
+				>
 					{@render node(data, Elem.A, !inline)}
 				</a>
 			{:else}
 				{@render node(data, Elem.Li, !inline)}
 			{/if}
 		</li>
-	{:else if link && parent !== Elem.A}
 		<!-- a -->
+	{:else if link && parent !== Elem.A}
 		<a
-			href={resolve(link)}
+			href={target ? link : resolve(link)}
 			data-parent={parent}
 			class={styles}
 			data-property={prop}
+			{target}
 			data-type={type}
 			use:conditionalPopover={data}
 		>
 			{@render node(data, Elem.A)}
 		</a>
+		<!-- a -->
 	{:else if !label && isBlockParent(parent)}
 		<p class={styles} data-property={prop} data-type={type}>
 			{@render node(data, Elem.P, true)}
