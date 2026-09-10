@@ -750,13 +750,13 @@ class Formatter {
 		'extIfUri()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				const display = v[Fmt.DISPLAY] as Array<unknown>;
-				const ix = display.findIndex((d) => isObject(d) && 'uri' in d);
+				const ix = display.findIndex((d) => isObject(d) && d[Fmt.PROP] === 'uri');
 
 				if (!v[Fmt.STYLE]) {
 					v[Fmt.STYLE] = [];
 				}
 
-				if (ix >= 0 && asArray(display[ix]['uri']).length > 0) {
+				if (ix >= 0 && asArray(display[ix][Fmt.VALUE]).length > 0) {
 					v[Fmt.STYLE].push('ext-link');
 				} else {
 					v[Fmt.STYLE].push('link');
@@ -768,10 +768,10 @@ class Formatter {
 		'uriToId()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				const display = v[Fmt.DISPLAY] as Array<unknown>;
-				const ix = display.findIndex((d) => isObject(d) && 'uri' in d);
+				const ix = display.findIndex((d) => isObject(d) && d[Fmt.PROP] === 'uri');
 
-				if (ix >= 0 && asArray(display[ix]['uri']).length > 0) {
-					const uri = asArray(display[ix]['uri'])[0];
+				if (ix >= 0 && asArray(display[ix][Fmt.VALUE]).length > 0) {
+					const uri = asArray(display[ix][Fmt.VALUE])[0];
 					v[JsonLd.ID] = uri;
 					if (display.length > 1) {
 						// Is there anything else to display as link label?
