@@ -264,6 +264,7 @@ export type ResourceNode = {
 	[Fmt.LABEL]?: string;
 	[Fmt.CONTENT_BEFORE]?: string;
 	[Fmt.CONTENT_AFTER]?: string;
+	[Fmt.FIND_LINK]?: string;
 };
 
 export type PropertyNode = {

@@ -75,13 +75,17 @@
 		)
 	);
 
-	function getLink(data: DisplayDecorated): Link {
-		if (allowLinks && hasStyle(data, 'link')) {
+	function getLink(data: Node): Link {
+		if (!allowLinks) return undefined;
+		if (hasStyle(data, 'link')) {
 			const id = trimSlashes(relativizeUrl(getResourceId(data)));
 			const linkToSelf = `/${id}` === page.url.pathname;
 			if (id && !linkToSelf) {
 				return page.data.localizeHref(id);
 			}
+		}
+		if (hasStyle(data, 'find-link') && Fmt.FIND_LINK in data) {
+			return data[Fmt.FIND_LINK];
 		}
 	}
 
