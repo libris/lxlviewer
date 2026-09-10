@@ -38,9 +38,9 @@
 		allowPopovers?: boolean; // used for preventing nested popovers
 		allowFindLinks?: boolean;
 		limit?: Record<string, number>;
+		suppressProperty?: string[];
 		// depth?: number;
 		// keyed?: boolean;
-		// suppressProperty?: string[];
 		// isInsideLinkElement?: boolean;
 		// isLi?: boolean;
 		// isLiChild: boolean;
@@ -55,10 +55,10 @@
 		skipOuter = false,
 		allowPopovers = true,
 		allowFindLinks = false,
-		limit = undefined
+		limit = undefined,
+		suppressProperty = undefined
 		// depth = 0,
 		// keyed = true,
-		// suppressProperty = undefined,
 		// isInsideLinkElement = false,
 		// isLi = false,
 		// isLiChild = false
@@ -181,6 +181,8 @@
 
 	{#if skip}
 		{@render node(data, parent)}
+		<!-- exit -->
+	{:else if prop && suppressProperty && suppressProperty.includes(prop)}
 		<!-- html -->
 	{:else if isPropertyNode(data) && isHtmlNode(data[Fmt.VALUE])}
 		<div class="markdown [&>p]:mb-2 [&>ul]:list-inside [&>ul]:list-disc">
