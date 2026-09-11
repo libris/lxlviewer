@@ -354,6 +354,11 @@
 		}
 	}
 
+	.force-sublevel-label {
+		/* to make text-transform work */
+		display: inline-block;
+	}
+
 	dl::first-letter,
 	.force-sublevel-label::first-letter {
 		text-transform: uppercase;
