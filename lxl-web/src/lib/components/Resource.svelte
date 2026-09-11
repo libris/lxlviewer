@@ -3,7 +3,7 @@
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import { type DisplayDecorated, Fmt, JsonLd } from '$lib/types/xl';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import type { ResourceData } from '$lib/types/resourceData';
 	import type {
@@ -493,7 +493,8 @@
 													<DecoratedData2
 														data={holder.heldBy}
 														showLabels={ShowLabelsOptions.Never}
-														parent="p"
+														parent={Elem.P}
+														skipOuter={true}
 													/>
 												</p>
 												{#each holder.items as item, index (index)}
@@ -503,7 +504,9 @@
 														allowFindLinks={false}
 														block
 														limit={{ contribution: 5, hasVariant: 10 }}
-														parent="li"
+														parent={Elem.Div}
+														// to create a dl inside this li
+														skipOuter={true}
 													/>
 												{/each}
 											</li>
@@ -539,9 +542,9 @@
 					· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
 					{#if instances?.length === 1}
 						<!--
-                            TODO - agents? - _compilemarc can only handle bib
-                            TODO? select export profile (library)?
-                        -->
+							TODO - agents? - _compilemarc can only handle bib
+							TODO? select export profile (library)?
+            -->
 						{@const base = recordUri.split('/').toSpliced(-1, 1).join('/')}
 						·
 						<!-- eslint-disable svelte/no-navigation-without-resolve -->
@@ -745,13 +748,13 @@
 		}
 
 		& :global(span.Title-type) {
-			font-size: var(--text-2xs);
+			/* font-size: var(--text-2xs); */
 			color: var(--color-subtle);
 		}
 
-		& :global(span.Title-type)::before {
+		/* & :global(span.Title-type)::before {
 			content: ' ';
-		}
+		} */
 
 		& :global(.coverage + span.Title-type) {
 			display: none;
@@ -762,34 +765,30 @@
 		}
 
 		& :global(ul[data-property]) {
-			list-style-type: disc;
+			/* list-style-type: disc; */
 			/* list-style-type: "• "; */
 
-			& :global(li) {
+			/* & :global(li) {
 				margin-left: 1em;
-			}
+			} */
 
-			& :global(li::marker) {
+			/* & :global(li::marker) {
 				color: var(--color-subtle);
-			}
+			} */
 
-			& :global(.block) {
+			/* & :global(div:has(> .property-label)) {
 				display: inline;
-			}
+			} */
 
-			& :global(div:has(> .property-label)) {
-				display: inline;
-			}
-
-			& :global(.property-label) {
+			/* & :global(.property-label) {
 				color: var(--color-body);
 				font-style: italic;
-			}
+			} */
 
-			& :global(.property-label):not(:empty)::after {
+			/* & :global(.property-label):not(:empty)::after {
 				color: var(--color-body);
 				content: ': ';
-			}
+			} */
 
 			/* & :global(.contribution) {
 				font-size: var(--text-md);
@@ -797,26 +796,26 @@
 				@apply mt-0;
 			} */
 
-			& :global(.person-extra) {
+			/* & :global(.person-extra) {
 				display: none;
-			}
+			} */
 
-			& :global(.main-title) {
+			/* & :global(.main-title) {
 				font-weight: var(--font-weight-semibold);
-			}
+			} */
 
-			& :global(.translationOf .main-title),
+			/* & :global(.translationOf .main-title),
 			& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
 				font-weight: var(--font-weight-normal);
-			}
+			} */
 		}
 	}
 
 	.decorated-compact {
-		& :global(div:has(> .property-label)) {
-			/* override e.g isPartOf > hasTitle block */
+		/* override e.g isPartOf > hasTitle block */
+		/* & :global(div:has(> .property-label)) {
 			display: inline;
-		}
+		} */
 
 		& :global(span[data-property]) {
 			display: inline;
