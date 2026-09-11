@@ -353,9 +353,9 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						{/if}
 						{#if instances?.count === 1}
 							<span class="divider">{' · '}</span>
-							{#each obj.hasInstance?._display as obj2, index (index)}
+							{#each obj[Fmt.VALUE]?._display as obj2, index (index)}
 								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
-								{#if !obj2.publication}
+								{#if obj2[Fmt.PROP] === 'publication' && !obj2[Fmt.VALUE]}
 									<DecoratedData2
 										data={obj2}
 										showLabels={ShowLabelsOptions.Never}

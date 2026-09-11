@@ -15,7 +15,7 @@
 	import type { Relation } from '$lib/types/relations';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { getBaseUrl, relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-	import DecoratedData from './DecoratedData.svelte';
+	import DecoratedData2 from './DecoratedData2.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
 	import ResourceDigitalAccess from '$lib/components/ResourceDigitalAccess.svelte';
@@ -32,7 +32,6 @@
 	import BiDownload from '~icons/bi/download';
 	import BiQuote from '~icons/bi/quote';
 	import BiChevronRight from '~icons/bi/chevron-right';
-	import DecoratedData2 from './DecoratedData2.svelte';
 
 	type Props = {
 		uri: string | null;
