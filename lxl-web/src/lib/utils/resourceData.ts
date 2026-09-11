@@ -49,7 +49,9 @@ export function isPropertyNode(data: DisplayDecorated): data is PropertyNode {
 }
 
 export function isResourceNode(data: DisplayDecorated): data is ResourceNode {
-	return typeof data === 'object' && !Array.isArray(data) && !isPropertyNode(data);
+	return (
+		typeof data === 'object' && !Array.isArray(data) && !isPropertyNode(data) && !isHtmlNode(data)
+	);
 }
 
 export function isHtmlNode(data: DisplayDecorated): data is HtmlNode {
