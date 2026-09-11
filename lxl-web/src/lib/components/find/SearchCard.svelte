@@ -5,14 +5,14 @@
 	import popover from '$lib/actions/popover';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { LibraryResultItem, SearchResultItem } from '$lib/types/search';
-	import { JsonLd, LensType } from '$lib/types/xl';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import { type ResourceData } from '$lib/types/resourceData';
+	import { Fmt, JsonLd, LensType, type DisplayDecorated } from '$lib/types/xl';
+	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
 	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	// import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import DecoratedData2 from '../DecoratedData2.svelte';
 	import { page } from '$app/state';
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
@@ -88,8 +88,8 @@
 
 	const firstMediaLink = $derived(
 		item.mediaLinks &&
-			(item.mediaLinks?._display?.[0]?.associatedMedia?.[0]?.[JsonLd.ID] ||
-				item.mediaLinks?._display?.[0]?.associatedMedia?.[JsonLd.ID])
+			(item.mediaLinks?._display?.[0]?.[Fmt.VALUE]?.[0]?.[JsonLd.ID] ||
+				item.mediaLinks?._display?.[0]?.[Fmt.VALUE]?.[JsonLd.ID])
 	);
 
 	let showDebugExplain = $state(false);
@@ -259,16 +259,14 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
 						<span class="divider">{' · '}</span>
 					{/if}
-					{#each item[LensType.WebCardHeaderTop]?._display as obj, index (index)}
-						<span>
-							<DecoratedData
-								data={obj}
-								showLabels={ShowLabelsOptions.Never}
-								{allowLinks}
-								{allowPopovers}
-							/>
-						</span>
-					{/each}
+					<DecoratedData2
+						data={item[LensType.WebCardHeaderTop]}
+						showLabels={ShowLabelsOptions.Never}
+						{allowLinks}
+						{allowPopovers}
+						parent={Elem.Span}
+						skipOuter={true}
+					/>
 				</p>
 				<hgroup>
 					<h2 class="decorated-heading card-header-title text-base">
@@ -278,59 +276,54 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							aria-describedby={`${bodyId} ${footerId}`}
 							onclick={passAlongAdjecentSearchResults}
 						>
-							<DecoratedData
+							<DecoratedData2
 								data={item['card-heading']}
 								showLabels={ShowLabelsOptions.Never}
 								{allowLinks}
 								{allowPopovers}
+								parent={Elem.A}
+								skipOuter={true}
 							/>
 						</a>
 					</h2>
 				</hgroup>
 				{#if item[LensType.WebCardHeaderExtra]?._display}
-					<p class="card-header-extra">
-						{#each item[LensType.WebCardHeaderExtra]?._display as obj, index (index)}
-							<span>
-								<DecoratedData
-									data={obj}
-									showLabels={ShowLabelsOptions.DefaultOn}
-									{allowLinks}
-									{allowPopovers}
-								/>
-							</span>
-						{/each}
-					</p>
+					<div class="card-header-extra">
+						<DecoratedData2
+							data={item[LensType.WebCardHeaderExtra]}
+							showLabels={ShowLabelsOptions.DefaultOn}
+							{allowLinks}
+							{allowPopovers}
+							parent={Elem.Div}
+							skipOuter={true}
+						/>
+					</div>
 				{/if}
 				{#if item['_workTitle2']?._display}
 					<p class="card-header-extra">
-						{#each item['_workTitle2']?._display as obj, index (index)}
-							<span>
-								<DecoratedData
-									data={obj}
-									showLabels={ShowLabelsOptions.DefaultOff}
-									{allowLinks}
-									{allowPopovers}
-								/>
-							</span>
-						{/each}
+						<DecoratedData2
+							data={item['_workTitle2']}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							{allowLinks}
+							{allowPopovers}
+							parent={Elem.P}
+							skipOuter={true}
+						/>
 					</p>
 				{/if}
 			</header>
 			{#if item[LxlLens.CardBody]?._display}
 				<div class="card-body mt-1 text-sm" id={bodyId}>
-					{#each item[LxlLens.CardBody]?._display as obj, index (index)}
-						<div>
-							<DecoratedData
-								data={obj}
-								showLabels={ShowLabelsOptions.DefaultOff}
-								depth={2}
-								block
-								limit={{ contribution: 3, hasPart: 5, related: 5 }}
-								allowLinks={true}
-								{allowPopovers}
-							/>
-						</div>
-					{/each}
+					<DecoratedData2
+						data={item[LxlLens.CardBody]}
+						showLabels={ShowLabelsOptions.DefaultOff}
+						block
+						limit={{ contribution: 3, hasPart: 5, related: 5 }}
+						allowLinks={true}
+						{allowPopovers}
+						parent={Elem.Div}
+						skipOuter={true}
+					/>
 				</div>
 			{/if}
 		</div>
@@ -347,8 +340,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			{/if}
 			<span>
 				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
-					{#if 'hasInstance' in obj}
-						{@const instances = getInstanceData(obj.hasInstance)}
+					{#if obj[Fmt.PROP] === 'hasInstance'}
+						{@const instances = getInstanceData(obj[Fmt.VALUE])}
 						{#if instances?.years}
 							{#if instances.count > 1}
 								{instances?.count}
@@ -359,27 +352,30 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							{/if}
 						{/if}
 						{#if instances?.count === 1}
-							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
 							<span class="divider">{' · '}</span>
-							{#each obj.hasInstance._display as obj2, index (index)}
+							{#each obj.hasInstance?._display as obj2, index (index)}
 								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
 								{#if !obj2.publication}
-									<DecoratedData
+									<DecoratedData2
 										data={obj2}
 										showLabels={ShowLabelsOptions.Never}
-										{allowLinks}
+										allowLinks={false}
 										{allowPopovers}
+										parent={Elem.Span}
+										skipOuter={true}
 									/>
 								{/if}
 							{/each}
 						{/if}
 					{:else}
 						<span>
-							<DecoratedData
+							<DecoratedData2
 								data={obj}
 								showLabels={ShowLabelsOptions.Never}
-								{allowLinks}
+								allowLinks={false}
 								{allowPopovers}
+								parent={Elem.Span}
+								skipOuter={true}
 							/>
 						</span>
 					{/if}
@@ -390,11 +386,13 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			<div class="card-actions ml-auto flex w-full justify-end gap-1 pt-3 print:hidden">
 				{#if firstMediaLink}
 					{#snippet mediaLinksPopover()}
-						<DecoratedData
-							data={item.mediaLinks as ResourceData}
+						<DecoratedData2
+							data={item.mediaLinks as DisplayDecorated}
 							showLabels={ShowLabelsOptions.Never}
 							allowPopovers={false}
 							block
+							parent={Elem.Div}
+							skipOuter={true}
 						/>
 					{/snippet}
 					<a
@@ -604,11 +602,11 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		font-weight: var(--font-weight-normal);
 	}
 
-	.card-header-title {
+	/* .card-header-title {
 		& :global(span[data-property='hasTitle'] > span) {
 			display: block;
 		}
-	}
+	} */
 
 	.card-header-top {
 		/* hide dangling divider · */
