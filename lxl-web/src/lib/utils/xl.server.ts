@@ -28,6 +28,7 @@ import {
 	type PropertyName,
 	type RangeRestriction,
 	Rdfs,
+	type ResourceNode,
 	type ShowProperties,
 	type ShowProperty,
 	type VocabData
@@ -35,6 +36,7 @@ import {
 import { markdownToHtml } from '$lib/utils/htmlFromMarkdown.server';
 import { asArray, isObject, toString } from '$lib/utils/misc';
 import { cleanData } from '$lib/utils/cleanupDecorated.server';
+import { isResourceNode } from '$lib/utils/resourceData';
 
 // TODO TESTS!
 
@@ -1323,24 +1325,27 @@ export function pickProperty(
 	data: DisplayDecorated,
 	pickProperties: PropertyName[]
 ): [DisplayDecorated | undefined, DisplayDecorated] {
-	if (!isTypedNode(data)) {
+	if (!isResourceNode(data)) {
 		return [undefined, data];
 	}
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { [Fmt.DISPLAY]: _1, ...picked } = data;
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { [Fmt.DISPLAY]: _2, ...rest } = data;
 
-	picked[Fmt.DISPLAY] = [];
-	rest[Fmt.DISPLAY] = [];
+	const picked: ResourceNode = {
+		...data,
+		[Fmt.DISPLAY]: []
+	};
 
-	data[Fmt.DISPLAY].forEach((p) => {
-		if (isObject(p) && pickProperties.some((name) => name in p)) {
-			picked[Fmt.DISPLAY].push(p);
+	const rest: ResourceNode = {
+		...data,
+		[Fmt.DISPLAY]: []
+	};
+
+	for (const property of data[Fmt.DISPLAY]) {
+		if (pickProperties.includes(property[Fmt.PROP])) {
+			picked[Fmt.DISPLAY].push(property);
 		} else {
-			rest[Fmt.DISPLAY].push(p);
+			rest[Fmt.DISPLAY].push(property);
 		}
-	});
+	}
 
 	return [picked, rest];
 }
