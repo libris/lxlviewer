@@ -1340,7 +1340,7 @@ export function pickProperty(
 	};
 
 	for (const property of data[Fmt.DISPLAY]) {
-		if (pickProperties.includes(property[Fmt.PROP])) {
+		if (pickProperties.includes(property[Fmt.PROP]) && Fmt.VALUE in property) {
 			picked[Fmt.DISPLAY].push(property);
 		} else {
 			rest[Fmt.DISPLAY].push(property);

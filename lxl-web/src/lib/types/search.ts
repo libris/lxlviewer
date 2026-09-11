@@ -58,7 +58,7 @@ export interface SearchResultItem {
 	typeForIcon: string[]; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
-	mediaLinks: DisplayDecorated | null;
+	mediaLinks: DisplayDecorated | undefined;
 	heldByMyLibraries?: (LibraryId | OrgId)[];
 	heldBySubset?: (LibraryId | OrgId)[];
 	numberOfHolders: number;
