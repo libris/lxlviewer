@@ -273,7 +273,7 @@
 		{:else if Fmt.VALUE in data}
 			{const hasLimit = limit && limit?.[data[Fmt.PROP]]}
 			{const showDelimiter =
-				!!hasLimit && Array.isArray(data[Fmt.VALUE]) && data[Fmt.VALUE].length > hasLimit}
+				!!hasLimit && Array.isArray(data[Fmt.VALUE]) && data[Fmt.VALUE].length > hasLimit + 1}
 			{#if showDelimiter && Array.isArray(data[Fmt.VALUE])}
 				<!-- show delimiter  -->
 				{const expanded = $derived(limitState && limitState[data[Fmt.PROP]].expanded)}

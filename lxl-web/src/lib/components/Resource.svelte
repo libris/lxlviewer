@@ -924,7 +924,7 @@
 		border-top: none;
 	}
 
-	.relation-list {
+	/* .relation-list {
 		@variant @max-3xl {
 			:global(ul > li:first-of-type) {
 				@apply ml-3;
@@ -942,7 +942,7 @@
 				}
 			}
 		}
-	}
+	} */
 
 	details[open] {
 		& .chevron {
