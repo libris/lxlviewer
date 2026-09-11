@@ -222,7 +222,7 @@
 								<DecoratedData2
 									data={decoratedData.headingTop}
 									showLabels={ShowLabelsOptions.Never}
-									parent="p"
+									parent={Elem.P}
 									skipOuter={true}
 								/>
 							</p>
@@ -232,7 +232,7 @@
 									showLabels={ShowLabelsOptions.Never}
 									allowLinks={false}
 									allowPopovers={false}
-									parent="h"
+									parent={Elem.H}
 									skipOuter={true}
 								/>
 							</h1>
@@ -242,7 +242,7 @@
 								<DecoratedData2
 									data={decoratedData.headingExtra}
 									showLabels={ShowLabelsOptions.DefaultOn}
-									parent="p"
+									parent={Elem.P}
 									skipOuter={true}
 								/>
 							</p>
@@ -253,7 +253,7 @@
 									<DecoratedData2
 										data={decoratedData._workTitle2}
 										showLabels={ShowLabelsOptions.DefaultOff}
-										parent="p"
+										parent={Elem.P}
 										skipOuter={true}
 									/>
 								</p>
@@ -270,7 +270,7 @@
 							allowFindLinks={true}
 							block
 							limit={{ contribution: 5, hasVariant: 10 }}
-							parent="div"
+							parent={Elem.Div}
 							skipOuter={true}
 						/>
 					</div>
@@ -305,7 +305,7 @@
 								'marc:versionOfResource'
 							]}
 							limit={{ contribution: 5, hasVariant: 5 }}
-							parent="div"
+							parent={Elem.Div}
 							skipOuter={true}
 						/>
 					</div>
@@ -316,6 +316,7 @@
 							block
 							showLabels={ShowLabelsOptions.DefaultOn}
 							allowFindLinks={true}
+							parent={Elem.Div}
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>
@@ -355,7 +356,12 @@
 						<div class="flex flex-col gap-4">
 							{#each decoratedData.summary as s (s)}
 								<div class="summary-or-toc w-full">
-									<DecoratedData2 data={s} showLabels={ShowLabelsOptions.Never} block />
+									<DecoratedData2
+										data={s}
+										showLabels={ShowLabelsOptions.Never}
+										block
+										parent={Elem.Div}
+									/>
 								</div>
 							{/each}
 						</div>
@@ -395,11 +401,12 @@
 											tabindex={-1}
 										>
 											{relationItem.label}:
-											<DecoratedData
+											<DecoratedData2
 												data={decoratedData.token}
 												showLabels={ShowLabelsOptions.Never}
 												allowLinks={false}
 												allowPopovers={false}
+												parent={Elem.A}
 											/>
 										</a>
 									</h3>
@@ -469,7 +476,7 @@
 								block
 								allowFindLinks={true}
 								limit={{ contribution: 5, hasVariant: 10 }}
-								parent="div"
+								parent={Elem.Div}
 								skipOuter={true}
 							/>
 						</div>
