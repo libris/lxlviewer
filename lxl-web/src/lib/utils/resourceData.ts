@@ -7,6 +7,7 @@ import {
 	type ResourceNode
 } from '$lib/types/xl';
 
+// todo remove - not used?
 export function getPropertyValue(data: DisplayDecorated, name: string) {
 	if (data && typeof data === 'object' && !Array.isArray(data) && name in data) {
 		return data[name];
@@ -41,8 +42,6 @@ export function getFilteredEntries(
 ) {
 	return Object.entries(data).filter(([key]) => !hiddenProperties.includes(key));
 }
-
-// --- additions
 
 export function isPropertyNode(data: DisplayDecorated): data is PropertyNode {
 	return typeof data === 'object' && !Array.isArray(data) && Fmt.PROP in data;
