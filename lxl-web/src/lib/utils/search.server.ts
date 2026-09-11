@@ -623,7 +623,7 @@ function getMediaLinks(
 	item: FramedData,
 	displayUtil: DisplayUtil,
 	locale: LangCode
-): DisplayDecorated | null {
+): DisplayDecorated | undefined {
 	const _item = { ...item };
 	copyMediaLinksToWork(_item);
 
@@ -649,7 +649,6 @@ function getMediaLinks(
 	if (mediaLinks && isResourceNode(mediaLinks) && mediaLinks[Fmt.DISPLAY]?.length) {
 		return mediaLinks;
 	}
-	return null;
 }
 
 /**
