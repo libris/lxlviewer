@@ -76,14 +76,14 @@ export function getProperties(data: DisplayDecorated, prop: string): PropertyNod
 		return [...properties, ...getProperties(data[Fmt.VALUE], prop)];
 	}
 
-	return data[Fmt.DISPLAY].flatMap((item) => getProperties(item, prop));
+	return data?.[Fmt.DISPLAY].flatMap((item) => getProperties(item, prop));
 }
 
 /**
  * Get the immediate values of all properties with the given name.
  */
 export function getPropertyValues(data: DisplayDecorated, prop: string): DisplayDecorated[] {
-	return getProperties(data, prop).flatMap((property) => {
+	return getProperties(data, prop)?.flatMap((property) => {
 		const value = property[Fmt.VALUE];
 
 		return Array.isArray(value) ? value : [value];
