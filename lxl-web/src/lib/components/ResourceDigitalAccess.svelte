@@ -5,9 +5,9 @@
 	import type { SearchResultItem } from '$lib/types/search';
 	import { BibDb, type DisplayDecorated } from '$lib/types/xl';
 	import { getResourceDigitalAccess } from '$lib/utils/getResourceDigitalAccess';
+	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
 	import BiLaptop from '~icons/bi/laptop';
 	import BiChevronRight from '~icons/bi/chevron-right';
-	import DecoratedData2 from './DecoratedData2.svelte';
 
 	type Props = {
 		overview2: DisplayDecorated[];

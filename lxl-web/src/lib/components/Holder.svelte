@@ -11,7 +11,7 @@
 	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { createHoldingLinks } from '$lib/utils/holdings';
 	import LoanStatus from './LoanStatus.svelte';
-	import DecoratedData2 from './DecoratedData2.svelte';
+	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 

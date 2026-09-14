@@ -11,8 +11,7 @@
 	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
-	// import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import DecoratedData2 from '../DecoratedData2.svelte';
+	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
 	import { page } from '$app/state';
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';

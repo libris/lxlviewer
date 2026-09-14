@@ -15,7 +15,7 @@
 	import type { Relation } from '$lib/types/relations';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { getBaseUrl, relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-	import DecoratedData2 from './DecoratedData2.svelte';
+	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
 	import ResourceDigitalAccess from '$lib/components/ResourceDigitalAccess.svelte';
