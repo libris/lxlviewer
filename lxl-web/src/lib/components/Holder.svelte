@@ -8,10 +8,10 @@
 		UnknownLibrary
 	} from '$lib/types/holdings';
 	import { Fmt, JsonLd } from '$lib/types/xl';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { createHoldingLinks } from '$lib/utils/holdings';
 	import LoanStatus from './LoanStatus.svelte';
-	import DecoratedData from './DecoratedData.svelte';
+	import DecoratedData2 from './DecoratedData2.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 
@@ -114,21 +114,36 @@
 					<!-- item media -->
 					<p>
 						<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
-						<DecoratedData data={item.itemMedia} showLabels={ShowLabelsOptions.DefaultOff} />
+						<DecoratedData2
+							data={item.itemMedia}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							parent={Elem.P}
+							skipOuter={true}
+						/>
 					</p>
 				{/if}
 				{#if hasItemShelf}
 					<!-- item shelf -->
 					<p>
 						<span class="text-subtle">{page.data.t('holdings.itemShelf')}: </span>
-						<DecoratedData data={item.itemShelf} showLabels={ShowLabelsOptions.DefaultOff} />
+						<DecoratedData2
+							data={item.itemShelf}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							parent={Elem.P}
+							skipOuter={true}
+						/>
 					</p>
 				{/if}
 				{#if hasItemNote}
 					<!-- Item note -->
 					<p>
 						<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
-						<DecoratedData data={item.itemNote} showLabels={ShowLabelsOptions.DefaultOff} />
+						<DecoratedData2
+							data={item.itemNote}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							parent={Elem.P}
+							skipOuter={true}
+						/>
 					</p>
 				{/if}
 			</li>
