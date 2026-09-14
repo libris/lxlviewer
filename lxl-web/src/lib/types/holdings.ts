@@ -1,4 +1,4 @@
-import type { BibDb, Bibframe, DisplayDecorated, FramedData, JsonLd } from './xl';
+import type { BibDb, Bibframe, FramedData, JsonLd, ResourceNode } from './xl';
 
 export type HoldingMainEntity = {
 	[JsonLd.REVERSE]?: {
@@ -109,9 +109,9 @@ export type BibIdObj = {
 	publicationStr: string;
 	titleStr: string;
 	items: {
-		itemShelf: DisplayDecorated;
-		itemNote: DisplayDecorated;
-		itemMedia: DisplayDecorated;
+		itemShelf: ResourceNode;
+		itemNote: ResourceNode;
+		itemMedia: ResourceNode;
 	}[];
 };
 
@@ -121,9 +121,9 @@ export type HoldersByInstanceId = {
 	[id: LibraryId]: {
 		[JsonLd.ID]: string;
 		items: {
-			itemShelf: DisplayDecorated;
-			itemNote: DisplayDecorated;
-			itemMedia: DisplayDecorated;
+			itemShelf: ResourceNode;
+			itemNote: ResourceNode;
+			itemMedia: ResourceNode;
 		}[];
 	}[];
 };
