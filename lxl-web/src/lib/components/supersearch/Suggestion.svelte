@@ -3,10 +3,10 @@
 	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
 	import { resolve } from '$app/paths';
 	import type { SuperSearchResultItem } from '$lib/types/search';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
+	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
-	import { LensType } from '$lib/types/xl';
+	import { Fmt, LensType } from '$lib/types/xl';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import SuggestionImage from './SuggestionImage.svelte';
 	import MoreIcon from '~icons/bi/three-dots';
@@ -23,6 +23,16 @@
 	const { item, getCellId, isFocusedCell, leadingContent }: Props = $props();
 	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(item?.['@id']))));
 	const primaryAddQualifierLink = $derived(item?.qualifiers?.[0]?._q || resourceId);
+
+	const contribution = $derived.by(() => {
+		if (typeof item[LxlLens.CardBody] === 'object' && Fmt.DISPLAY in item[LxlLens.CardBody]) {
+			for (const i of item[LxlLens.CardBody][Fmt.DISPLAY]) {
+				if (i[Fmt.PROP] === 'contribution') {
+					return i;
+				}
+			}
+		}
+	});
 </script>
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
@@ -42,29 +52,32 @@
 		<div class="resource-content">
 			<h2 class="decorated-heading flex gap-1 overflow-hidden text-sm whitespace-nowrap">
 				<span class="truncate">
-					<DecoratedData
+					<DecoratedData2
 						data={item[LxlLens.CardHeading]}
 						showLabels={ShowLabelsOptions.Never}
 						allowPopovers={false}
 						allowLinks={false}
+						parent={Elem.Span}
+						skipOuter={true}
 					/>
 				</span>
-				<!-- only show body > contribution next to header header -->
-				{#if item[LxlLens.CardBody]?._display?.[0]?.contribution}
+				<!-- only show body > contribution next to header -->
+				{#if contribution}
 					<span class="divider">{' · '}</span>
 					<span class="suggestion-contribution truncate font-normal">
-						<DecoratedData
-							data={item[LxlLens.CardBody]?._display[0]}
+						<DecoratedData2
+							data={contribution}
 							showLabels={ShowLabelsOptions.Never}
 							allowLinks={false}
 							allowPopovers={false}
-							depth={-1}
 							limit={{ contribution: 1 }}
+							parent={Elem.Span}
+							skipOuter={true}
 						/>
 					</span>
 				{/if}
 			</h2>
-			<div class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
+			<footer class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
 				<span class="font-medium">
 					{item.selectTypeStr}
 				</span>
@@ -74,50 +87,53 @@
 				<span class="font-medium">
 					{item.typeStr}
 				</span>
-				{#if item.typeStr?.length}
+				{#if typeof item?.[LensType.WebCardHeaderTop] === 'object' && Fmt.DISPLAY in item[LensType.WebCardHeaderTop] && item[LensType.WebCardHeaderTop][Fmt.DISPLAY].length}
 					<span class="divider">{' · '}</span>
-				{/if}
-				{#each item?.[LensType.WebCardHeaderTop]?._display as header, index (`header-${index}`)}
-					<DecoratedData
-						data={header}
-						showLabels={ShowLabelsOptions.Never}
-						allowLinks={false}
-						allowPopovers={false}
-					/>
-				{/each}
-				{#if item.typeStr?.length}
-					<span class="divider">{' · '}</span>
-				{/if}
-				{#each item?.[LensType.WebCardFooter]?._display as footer, index (`footer-${index}`)}
-					{#if 'hasInstance' in footer}
-						{@const instances = getInstanceData(footer.hasInstance)}
-						{#if instances?.years}
-							<span class="editions">
-								{#if instances.count > 1}
-									{instances?.count}
-									{page.data.t('search.editions')}
-									{`(${instances.years})`}
-								{:else}
-									{instances.years}
-								{/if}
-							</span>
-						{/if}
-					{:else}
-						<DecoratedData
-							data={footer}
+					{#each item?.[LensType.WebCardHeaderTop][Fmt.DISPLAY] as header, index (`header-${index}`)}
+						<DecoratedData2
+							data={header}
 							showLabels={ShowLabelsOptions.Never}
 							allowLinks={false}
 							allowPopovers={false}
+							parent={Elem.Footer}
 						/>
-					{/if}
-				{/each}
-			</div>
+					{/each}
+				{/if}
+				{#if typeof item?.[LensType.WebCardFooter] === 'object' && Fmt.DISPLAY in item[LensType.WebCardFooter] && item[LensType.WebCardFooter][Fmt.DISPLAY].length}
+					<span class="divider">{' · '}</span>
+					{#each item?.[LensType.WebCardFooter][Fmt.DISPLAY] as footer, index (`footer-${index}`)}
+						{#if footer[Fmt.PROP] === 'hasInstance'}
+							{@const instances = getInstanceData(footer[Fmt.VALUE])}
+							{#if instances?.years}
+								<span class="editions">
+									{#if instances.count > 1}
+										{instances?.count}
+										{page.data.t('search.editions')}
+										{`(${instances.years})`}
+									{:else}
+										{instances.years}
+									{/if}
+								</span>
+							{/if}
+						{:else}
+							<DecoratedData2
+								data={footer}
+								showLabels={ShowLabelsOptions.Never}
+								allowLinks={false}
+								allowPopovers={false}
+								parent={Elem.Footer}
+								limit={{ editionStatement: 1, publication: 1, identifier: 1 }}
+							/>
+						{/if}
+					{/each}
+				{/if}
+			</footer>
 		</div>
 	</div>
 {/snippet}
 
 <div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers?.length}>
-	{#if item.qualifiers?.length}
+	{#if primaryAddQualifierLink && item.qualifiers?.length}
 		<a
 			href={page.data.localizeHref(primaryAddQualifierLink)}
 			id={getCellId?.(0)}
@@ -152,7 +168,7 @@
 				</span>
 			{/key}
 		</button>
-	{:else}
+	{:else if resourceId}
 		<a
 			href={resolve(page.data.localizeHref(resourceId))}
 			id={getCellId ? getCellId(0) : ''}
@@ -212,27 +228,28 @@
 		& :global(.person-extra) {
 			display: none;
 		}
-
-		& :global([data-property='contribution'] > *::after) {
-			content: ', ';
-		}
-
-		/* hide last comma */
-		& :global([data-property='contribution'] > *:last-child::after) {
-			content: '';
-		}
-
-		/* hide comma before delimiter */
-		& :global([data-property='contribution'] > *:has(+ .delimiter)::after) {
-			content: '';
-		}
 	}
+
+	/* & :global([data-property='contribution'] > *::after) {
+			content: ', ';
+		} */
+
+	/* hide last comma */
+	/* & :global([data-property='contribution'] > *:last-child::after) {
+			content: '';
+		} */
+
+	/* hide comma before delimiter */
+	/* & :global([data-property='contribution'] > *:has(+ .delimiter)::after) {
+			content: '';
+		}
+	} */
 
 	.resource-footer {
 		/* hide dangling divider · */
-		& :global(.divider:not(:has(+ span:not(.divider)))) {
+		/* & :global(.divider:not(:has(+ span:not(.divider)))) {
 			display: none;
-		}
+		} */
 	}
 
 	.more.focused-cell .more-icon-container,
