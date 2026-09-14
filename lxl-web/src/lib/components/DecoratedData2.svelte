@@ -95,6 +95,14 @@
 		}
 	}
 
+	function getComputedStyles(data: Node, isBlock: boolean): Styles {
+		const styles = getStyle(data);
+		return styles?.filter((s) => {
+			if (s === 'block' && !isBlock) return false; // don't just blindly apply 'block'
+			return true;
+		});
+	}
+
 	function getLabel(data: Node): Label {
 		if (isHtmlNode(data)) return undefined;
 		if (
@@ -125,20 +133,30 @@
 		}
 	}
 
-	function isBlockParent(parent: Parent): boolean {
-		if (!parent) return true;
-		switch (parent) {
-			case Elem.Div:
-			case Elem.Dl:
-				return true;
-			default:
-				return false;
+	// function isBlockParent(parent: Parent): boolean {
+	// 	if (!parent) return true;
+	// 	switch (parent) {
+	// 		case Elem.Div:
+	// 		case Elem.Dl:
+	// 			return true;
+	// 		default:
+	// 			return false;
+	// 	}
+	// }
+
+	function amIBlock(data: Node, parent: Parent): boolean {
+		if (!parent || parent === Elem.Div || parent === Elem.Dl) {
+			return true;
 		}
+		if (parent === Elem.Ul && (block || hasStyle(data, 'block'))) {
+			return true;
+		}
+		return false;
 	}
 
-	function isBlock(data: Node, parent: Parent) {
-		return (hasStyle(data, 'block') || block) && isBlockParent(parent);
-	}
+	// function isBlock(data: Node, parent: Parent) {
+	// 	return (hasStyle(data, 'block') || block) && isBlockParent(parent);
+	// }
 
 	function delimiterWrapper(parent: Parent) {
 		switch (parent) {
@@ -171,13 +189,13 @@
 {/snippet}
 
 {#snippet wrapper(data: Node, parent: Parent, skip?: boolean)}
-	{const styles: Styles = getStyle(data)}
+	{const isBlock = amIBlock(data, parent)}
+	{const styles: Styles = getComputedStyles(data, isBlock)}
 	{const link: Link = $derived(getLink(data))}
 	{const target = $derived(link && hasStyle(data, 'ext-link') ? '_blank' : null)}
 	{const label = $derived(getLabel(data))}
 	{const prop = Fmt.PROP in data ? data[Fmt.PROP] : null}
 	{const type = JsonLd.TYPE in data ? data[JsonLd.TYPE] : null}
-	{const inline = !isBlock(data, parent)}
 
 	{#if skip}
 		{@render node(data, parent)}
@@ -190,56 +208,53 @@
 			{@html data[Fmt.VALUE][Fmt.HTML]}
 		</div>
 		<!-- dl -->
-	{:else if label && isPropertyNode(data) && isBlockParent(parent)}
+	{:else if label && isBlock && isPropertyNode(data)}
 		<dl class={styles} data-property={prop} data-type={type}>
 			<dt>
 				{label}
 			</dt>
-			{@render node(data, Elem.Dl, true)}
+			{@render node(data, Elem.Dl, !isBlock)}
 		</dl>
 	{:else if parent === Elem.Dl}
-		<dd class={[inline && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
+		<dd class={[!isBlock && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
 			{#if link}
 				<a
 					href={target ? link : resolve(link)}
-					data-parent={parent}
 					{target}
 					class={styles}
 					use:conditionalPopover={data}
 				>
-					{@render node(data, Elem.A, !inline)}
+					{@render node(data, Elem.A, !isBlock)}
 				</a>
 			{:else}
-				{@render node(data, Elem.Dd, !inline)}
+				{@render node(data, Elem.Dd, !isBlock)}
 			{/if}
 		</dd>
 		<!-- ul -->
-	{:else if !label && isPropertyNode(data) && Array.isArray(data._value) && data._value.length > 1 && isBlockParent(parent)}
+	{:else if !label && isBlock && isPropertyNode(data) && Array.isArray(data._value) && data._value.length > 1}
 		<ul class={styles} data-property={prop} data-type={type} aria-label={data._label}>
-			{@render node(data, Elem.Ul, !inline)}
+			{@render node(data, Elem.Ul, !isBlock)}
 		</ul>
 	{:else if parent === Elem.Ul}
-		<li class={[link ? '' : styles]} data-property={prop} data-type={type}>
+		<li class={[!isBlock && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
 			{#if link}
 				<!-- eslint-disable svelte/no-navigation-without-resolve -->
 				<a
 					href={target ? link : resolve(link)}
-					data-parent={parent}
 					{target}
 					class={styles}
 					use:conditionalPopover={data}
 				>
-					{@render node(data, Elem.A, !inline)}
+					{@render node(data, Elem.A, !isBlock)}
 				</a>
 			{:else}
-				{@render node(data, Elem.Li, !inline)}
+				{@render node(data, Elem.Li, !isBlock)}
 			{/if}
 		</li>
 		<!-- a -->
 	{:else if link && parent !== Elem.A}
 		<a
 			href={target ? link : resolve(link)}
-			data-parent={parent}
 			class={styles}
 			data-property={prop}
 			{target}
@@ -249,9 +264,9 @@
 			{@render node(data, Elem.A)}
 		</a>
 		<!-- a -->
-	{:else if !label && isBlockParent(parent)}
+	{:else if !label && isBlock}
 		<p class={styles} data-property={prop} data-type={type}>
-			{@render node(data, Elem.P, true)}
+			{@render node(data, Elem.P, false)}
 		</p>
 	{:else if styles?.length}
 		{const forcedLabel = forceLabel(data)}
@@ -263,9 +278,9 @@
 	{/if}
 {/snippet}
 
-{#snippet node(data: Node, parent: Parent, skipContent: boolean = false)}
+{#snippet node(data: Node, parent: Parent, renderContent: boolean = true)}
 	{#if typeof data === 'object' && !Array.isArray(data)}
-		{@render content(Fmt.CONTENT_BEFORE, data, parent, skipContent)}
+		{@render content(Fmt.CONTENT_BEFORE, data, parent, renderContent)}
 		{#if JsonLd.VALUE in data && typeof data[JsonLd.VALUE] === 'string'}
 			{data[JsonLd.VALUE]}
 		{:else if Fmt.DISPLAY in data}
@@ -287,7 +302,7 @@
 				{@render traverse(data[Fmt.VALUE], parent, false)}
 			{/if}
 		{/if}
-		{@render content(Fmt.CONTENT_AFTER, data, parent, skipContent)}
+		{@render content(Fmt.CONTENT_AFTER, data, parent, renderContent)}
 	{/if}
 {/snippet}
 
@@ -296,10 +311,10 @@
 	placement: Fmt.CONTENT_BEFORE | Fmt.CONTENT_AFTER,
 	data: Node,
 	parent: Parent,
-	skipContent: boolean
+	renderContent: boolean
 )}
-	{#if placement in data && !hasStyle(data, 'block')}
-		{#if !isHtmlNode(data) && !skipContent}
+	{#if placement in data}
+		{#if !isHtmlNode(data) && renderContent}
 			{data[placement]}
 			<!-- {#if isPropertyNode(data)}
 				<span class="bg-[green] text-[white]" data-parent={parent}>

@@ -15,5 +15,6 @@ export enum Elem {
 	H = 'h',
 	A = 'a',
 	Span = 'span',
-	Div = 'div'
+	Div = 'div',
+	Footer = 'footer'
 }
