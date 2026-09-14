@@ -278,7 +278,8 @@ async function loadUtil(): Promise<Util> {
 
 function getSite(event: RequestEvent): Promise<Site> | null {
 	// TODO replace this with proper domain matching
-	const deepestSubDomain = event.url.hostname.split('.')[0];
+	const host = event.request.headers.get('x-forwarded-host') ?? event.url.hostname;
+	const deepestSubDomain = host.split('.')[0];
 
 	if (configuredSubDomains().includes(deepestSubDomain)) {
 		// TODO fetch from backend?
