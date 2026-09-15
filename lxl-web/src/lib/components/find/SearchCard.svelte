@@ -375,6 +375,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								{allowPopovers}
 								parent={Elem.Span}
 								skipOuter={true}
+								limit={{ editionStatement: 1, publication: 1, identifier: 1 }}
 							/>
 						</span>
 					{/if}

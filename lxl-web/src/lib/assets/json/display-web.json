@@ -1369,7 +1369,8 @@
 			"fresnel:propertyFormatDomain": ["rdf:type"],
 			"fresnel:propertyStyle": ["Title-type lowercase"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": "",
+				"fresnel:contentBefore": "(",
+				"fresnel:contentAfter": ")",
 				"fresnel:contentFirst": ""
 			}
 		},
