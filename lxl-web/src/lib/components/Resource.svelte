@@ -654,15 +654,6 @@
 			display: block;
 		} */
 
-		/* & :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents'])::before {
-			content: ' • ';
-			color: var(--color-subtle);
-		} */
-
-		/* & :global(div[data-property='tableOfContents'] > span._contentBefore) {
-			display: none;
-		} */
-
 		/* & :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
 			display: block;
 			font-size: var(--text-2xs);
@@ -710,22 +701,9 @@
 			}
 		}
 
-		/* & :global(small) {
-			display: block;
-			&::first-letter {
-				text-transform: capitalize;
-			}
-		} */
-
 		& :global(.markdown) {
 			max-width: 60ch;
 		}
-
-		/* & :global(.contribution) {
-			font-size: var(--text-base);
-			@apply mb-2;
-			@apply mt-1;
-		} */
 
 		& :global(.contribution-role) {
 			font-size: var(--text-sm);
@@ -735,15 +713,6 @@
 		/* & :global(.inScheme) {
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
-		} */
-
-		/* & :global(.contribution > ._contentBefore),
-		:global(.contribution > ._contentAfter) {
-			display: none;
-		} */
-
-		/* & :global(.contribution > *) {
-			display: block;
 		} */
 
 		/* & :global(div[data-property='identifiedBy'] > ._contentBefore) {
@@ -768,10 +737,6 @@
 			white-space: nowrap;
 		}
 
-		/* & :global(.test_list > *) {
-			display: block;
-		} */
-
 		/* hide double dash - */
 		/* & :global(._contentAfter.startYear + ._contentBefore.endYear) {
 			display: none;
@@ -788,7 +753,6 @@
 		}
 
 		& :global(span.Title-type) {
-			/* font-size: var(--text-2xs); */
 			color: var(--color-subtle);
 		}
 
@@ -805,39 +769,14 @@
 		}
 
 		& :global(ul[data-property]) {
-			/* list-style-type: disc; */
-			/* list-style-type: "• "; */
-
-			/* & :global(li) {
-				margin-left: 1em;
-			} */
-
-			/* & :global(li::marker) {
-				color: var(--color-subtle);
-			} */
-
 			/* & :global(div:has(> .property-label)) {
 				display: inline;
-			} */
-
-			/* & :global(.property-label) {
-				color: var(--color-body);
-				font-style: italic;
-			} */
-
-			/* & :global(.property-label):not(:empty)::after {
-				color: var(--color-body);
-				content: ': ';
 			} */
 
 			/* & :global(.contribution) {
 				font-size: var(--text-md);
 				@apply mb-0;
 				@apply mt-0;
-			} */
-
-			/* & :global(.person-extra) {
-				display: none;
 			} */
 
 			/* & :global(.main-title) {
@@ -887,16 +826,6 @@
 			font-weight: var(--font-weight-semibold);
 		}
 
-		/* & :global(.property-label) {
-			color: var(--color-body);
-			font-style: italic;
-		} */
-
-		/* & :global(.property-label):not(:empty)::after {
-			color: var(--color-body);
-			content: ': ';
-		} */
-
 		& :global(div[data-property]:not(:last-child)) {
 			margin-bottom: 0;
 
@@ -916,17 +845,6 @@
 			font-size: var(--text-2xs);
 			color: var(--color-subtle);
 		}
-		/* & :global(.property-label) {
-			font-size: var(--text-2xs);
-		} */
-
-		/* & :global(small) {
-			display: block;
-
-			&::first-letter {
-				text-transform: capitalize;
-			}
-		} */
 
 		& :global(p[data-property]:not(:last-child)),
 		:global(dl[data-property]:not(:last-child)) {
