@@ -280,7 +280,6 @@
 	{/if}
 {/snippet}
 
-<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 {#snippet content(
 	placement: Fmt.CONTENT_BEFORE | Fmt.CONTENT_AFTER,
 	data: Node,
