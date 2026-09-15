@@ -1,47 +1,9 @@
+import { JsonLd, type DisplayDecorated, type ResourceNode } from '$lib/types/xl';
 import {
-	Fmt,
-	JsonLd,
-	type DisplayDecorated,
-	type PropertyNode,
-	type ResourceNode
-} from '$lib/types/xl';
-import { isHtmlNode, isPropertyNode, isResourceNode } from '$lib/utils/resourceData';
-
-/**
- * Find all properties with the given name anywhere in the data.
- */
-function getProperties(data: DisplayDecorated, prop: string): PropertyNode[] {
-	if (typeof data === 'string' || isHtmlNode(data)) {
-		return [];
-	}
-
-	if (Array.isArray(data)) {
-		return data.flatMap((item) => getProperties(item, prop));
-	}
-
-	if (isPropertyNode(data)) {
-		return data[Fmt.PROP] === prop ? [data] : [];
-	}
-
-	return data[Fmt.DISPLAY].filter((property) => property[Fmt.PROP] === prop);
-}
-
-/**
- * Get the immediate values of all properties with the given name.
- */
-function getPropertyValues(data: DisplayDecorated, prop: string): DisplayDecorated[] {
-	return getProperties(data, prop).flatMap((property) => {
-		const value = property[Fmt.VALUE];
-
-		return Array.isArray(value) ? value : [value];
-	});
-}
-
-function getStringPropertyValues(data: DisplayDecorated, prop: string): string[] {
-	return getPropertyValues(data, prop).filter(
-		(value): value is string => typeof value === 'string'
-	);
-}
+	getPropertyValues,
+	getStringPropertyValues,
+	isResourceNode
+} from '$lib/utils/resourceData';
 
 function getPublications(data: DisplayDecorated): ResourceNode[] {
 	return getPropertyValues(data, 'publication')?.filter(isResourceNode);
