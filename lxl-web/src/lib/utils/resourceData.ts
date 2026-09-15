@@ -62,18 +62,18 @@ export function getProperties(data: DisplayDecorated, prop: string): PropertyNod
 	}
 
 	if (Array.isArray(data)) {
-		return data.flatMap((item) => getProperties(item, prop));
+		return data?.flatMap((item) => getProperties(item, prop));
 	}
 
 	if (isPropertyNode(data)) {
 		return data[Fmt.PROP] === prop ? [data] : [];
 	}
 
-	return data[Fmt.DISPLAY].filter((property) => property[Fmt.PROP] === prop);
+	return data[Fmt.DISPLAY]?.filter((property) => property[Fmt.PROP] === prop);
 }
 
 export function getPropertyValues(data: DisplayDecorated, prop: string): DisplayDecorated[] {
-	return getProperties(data, prop).flatMap((property) => {
+	return getProperties(data, prop)?.flatMap((property) => {
 		const value = property[Fmt.VALUE];
 
 		return Array.isArray(value) ? value : [value];
