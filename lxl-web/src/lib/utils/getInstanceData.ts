@@ -23,11 +23,11 @@ function formatYears(years: string[]): string {
 
 	const sortedYears = years
 		.filter((year) => !isNaN(parseInt(year)))
-		.filter((year) => year.length === 4)
+		.filter((year) => year?.length === 4)
 		.filter((year, index, array) => array.indexOf(year) === index)
 		.sort();
 
-	if (sortedYears.length <= NUM_NEW + NUM_OLD) {
+	if (sortedYears?.length <= NUM_NEW + NUM_OLD) {
 		return sortedYears.join(', ');
 	}
 
@@ -46,15 +46,15 @@ function getInstanceData(instances: DisplayDecorated) {
 	if (!Array.isArray(instances)) {
 		const primaryPublications = getPrimaryPublications(instances);
 
-		const startYear = primaryPublications.flatMap((publication) =>
+		const startYear = primaryPublications?.flatMap((publication) =>
 			getStringPropertyValues(publication, 'startYear')
 		);
 
-		const endYear = primaryPublications.flatMap((publication) =>
+		const endYear = primaryPublications?.flatMap((publication) =>
 			getStringPropertyValues(publication, 'endYear')
 		);
 
-		if (startYear.length || endYear.length) {
+		if (startYear?.length || endYear?.length) {
 			return {
 				count: 1,
 				years: `${startYear.join(', ')}-${endYear.join(', ')}`
@@ -62,13 +62,13 @@ function getInstanceData(instances: DisplayDecorated) {
 		}
 	}
 
-	const years = getPublications(instances).flatMap((publication) =>
+	const years = getPublications(instances)?.flatMap((publication) =>
 		getStringPropertyValues(publication, 'year')
 	);
 
 	return {
 		count,
-		years: formatYears(years)
+		years: Array.isArray(years) ? formatYears(years) : ''
 	};
 }
 
