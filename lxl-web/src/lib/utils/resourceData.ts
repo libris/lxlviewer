@@ -7,8 +7,7 @@ import {
 	type ResourceNode
 } from '$lib/types/xl';
 
-// todo remove - not used?
-export function getPropertyValue(data: DisplayDecorated, name: string) {
+function _getPropertyValue(data: DisplayDecorated, name: string) {
 	if (data && typeof data === 'object' && !Array.isArray(data) && name in data) {
 		return data[name];
 	}
@@ -16,7 +15,7 @@ export function getPropertyValue(data: DisplayDecorated, name: string) {
 }
 
 export function getStyle(data: DisplayDecorated): string[] | undefined {
-	const style = getPropertyValue(data, '_style');
+	const style = _getPropertyValue(data, Fmt.STYLE);
 	if (style) {
 		return style as string[];
 	}
@@ -29,7 +28,7 @@ export function hasStyle(data: DisplayDecorated, styleName: string) {
 }
 
 export function getResourceId(data: DisplayDecorated) {
-	const id = getPropertyValue(data, JsonLd.ID);
+	const id = _getPropertyValue(data, JsonLd.ID);
 	if (typeof id === 'string' && id.length) {
 		return id;
 	}
