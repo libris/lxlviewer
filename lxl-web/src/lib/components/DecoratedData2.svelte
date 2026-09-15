@@ -145,10 +145,10 @@
 	// }
 
 	function amIBlock(data: Node, parent: Parent): boolean {
-		if (!parent || parent === Elem.Div || parent === Elem.Dl) {
+		if (!parent || parent === Elem.Div) {
 			return true;
 		}
-		if (parent === Elem.Ul && (block || hasStyle(data, 'block'))) {
+		if ((parent === Elem.Ul || parent === Elem.Dl) && (block || hasStyle(data, 'block'))) {
 			return true;
 		}
 		return false;
