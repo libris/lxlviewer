@@ -57,9 +57,6 @@ export function isHtmlNode(data: DisplayDecorated): data is HtmlNode {
 	return typeof data === 'object' && !Array.isArray(data) && Fmt.HTML in data;
 }
 
-/**
- * Find all properties with the given name anywhere in the data.
- */
 export function getProperties(data: DisplayDecorated, prop: string): PropertyNode[] {
 	if (typeof data === 'string' || isHtmlNode(data)) {
 		return [];
@@ -70,21 +67,22 @@ export function getProperties(data: DisplayDecorated, prop: string): PropertyNod
 	}
 
 	if (isPropertyNode(data)) {
-		const properties = data[Fmt.PROP] === prop ? [data] : [];
-
-		return [...properties, ...getProperties(data[Fmt.VALUE], prop)];
+		return data[Fmt.PROP] === prop ? [data] : [];
 	}
 
-	return data?.[Fmt.DISPLAY].flatMap((item) => getProperties(item, prop));
+	return data[Fmt.DISPLAY].filter((property) => property[Fmt.PROP] === prop);
 }
 
-/**
- * Get the immediate values of all properties with the given name.
- */
 export function getPropertyValues(data: DisplayDecorated, prop: string): DisplayDecorated[] {
-	return getProperties(data, prop)?.flatMap((property) => {
+	return getProperties(data, prop).flatMap((property) => {
 		const value = property[Fmt.VALUE];
 
 		return Array.isArray(value) ? value : [value];
 	});
+}
+
+export function getStringPropertyValues(data: DisplayDecorated, prop: string): string[] {
+	return getPropertyValues(data, prop).filter(
+		(value): value is string => typeof value === 'string'
+	);
 }
