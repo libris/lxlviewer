@@ -359,6 +359,7 @@
 										showLabels={ShowLabelsOptions.Never}
 										block
 										parent={Elem.Div}
+										skipOuter={true}
 									/>
 								</div>
 							{/each}
@@ -449,7 +450,13 @@
 						<div class="flex flex-col gap-4">
 							{#each decoratedData.resourceTableOfContents as r (r)}
 								<div class="summary-or-toc w-full">
-									<DecoratedData2 data={r} showLabels={ShowLabelsOptions.Never} block />
+									<DecoratedData2
+										data={r}
+										showLabels={ShowLabelsOptions.Never}
+										block
+										parent={Elem.Div}
+										skipOuter={true}
+									/>
 								</div>
 							{/each}
 						</div>
@@ -636,22 +643,25 @@
 			max-width: 60ch;
 		}
 
-		& :global(div[data-property='tableOfContents']) {
+		& :global(*[data-property='tableOfContents']) {
 			max-width: 60ch;
+			display: list-item;
+			list-style-type: disc;
+			margin-left: 1rem;
 		}
 
-		& :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents']) {
+		/* & :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents']) {
 			display: block;
-		}
+		} */
 
-		& :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents'])::before {
+		/* & :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents'])::before {
 			content: ' • ';
 			color: var(--color-subtle);
-		}
+		} */
 
-		& :global(div[data-property='tableOfContents'] > span._contentBefore) {
+		/* & :global(div[data-property='tableOfContents'] > span._contentBefore) {
 			display: none;
-		}
+		} */
 
 		/* & :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
 			display: block;
