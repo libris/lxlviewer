@@ -847,20 +847,11 @@ class Formatter {
 			thing[Fmt.LABEL] = mapMaybeArray(thing[JsonLd.TYPE], (v) => this.getVocabLabel(v));
 			asArray(thing[Fmt.DISPLAY]).forEach((v) => this.addLabels(v));
 		} else if (isObject(thing)) {
-			// console.log('is object')
-			// const key = unwrapSingle(
-			// 	Object.keys(thing).filter((k) => !k.startsWith('_') && k !== JsonLd.ID)
-			// );
 			const key = thing[Fmt.PROP] as string;
-			// if (!key) {
-			// 	console.log('no key found!');
-			// }
 			thing[Fmt.LABEL] = this.getVocabLabel(key);
 			if (this.vocabUtil.isKeyword(key)) {
-				// thing[key] = mapMaybeArray(thing[key], (v) => this.getVocabLabel(v));
 				thing[Fmt.VALUE] = mapMaybeArray(thing[Fmt.VALUE], (v) => this.getVocabLabel(v));
 			} else {
-				// asArray(thing[key]).forEach((v) => this.addLabels(v));
 				asArray(thing[Fmt.VALUE]).forEach((v) => this.addLabels(v));
 			}
 		}
@@ -916,12 +907,7 @@ class Formatter {
 		if (this.displayUtil.langContainerAliasInverted[propertyName]) {
 			return {
 				[Fmt.PROP]: this.displayUtil.langContainerAliasInverted[propertyName],
-				[Fmt.VALUE]: this.formatValues(
-					// [this.displayUtil.langContainerAliasInverted[propertyName]]: this.formatValues(
-					this.pickLanguage(value),
-					className,
-					propertyName
-				)
+				[Fmt.VALUE]: this.formatValues(this.pickLanguage(value), className, propertyName)
 			};
 		}
 
@@ -945,7 +931,6 @@ class Formatter {
 
 		result[Fmt.PROP] = propertyName;
 		result[Fmt.VALUE] = this.formatValues(value, className, propertyName);
-		// result[propertyName] = this.formatValues(value, className, propertyName);
 
 		return result;
 	}
