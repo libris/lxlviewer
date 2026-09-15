@@ -11,6 +11,9 @@ export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 	const myLibraries = locals.userSettings?.myLibraries;
 
 	const searchParams = new URLSearchParams();
+	if (locals.site?.searchSite) {
+		searchParams.set('_site', locals.site.searchSite);
+	}
 
 	// reruns on change in these params:
 	const _q = url.searchParams.get('_q');
