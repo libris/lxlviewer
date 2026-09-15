@@ -63,7 +63,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const subsetFilter = url.searchParams.get('_r');
 	const _q = url.searchParams.get('_q');
 
-	const resourceRes = await fetch(`${env.API_URL}/${params.resource}?framed=true&_findBlank=true`, {
+	const resourcePath = params.resource.split('/').map(encodeURIComponent).join('/');
+	const resourceRes = await fetch(`${env.API_URL}/${resourcePath}?framed=true&_findBlank=true`, {
 		headers: { Accept: 'application/ld+json' }
 	});
 
@@ -86,6 +87,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}
 
 	const resource = await resourceRes.json();
+
+	if (!resource?.mainEntity) {
+		throw error(404, { message: 'Not found' });
+	}
 
 	let workCard: SearchResultItem | null = null;
 	let isWork = false;
@@ -222,7 +227,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 					heldBy: displayUtil.lensAndFormat(item?.heldBy, LensType.Chip, locale),
 					items: allItems
 						.map((i) => displayUtil.lensAndFormat(i, LensType.WebDetails, locale))
-						.filter((i) => i[Fmt.DISPLAY].length)
+						.filter((i) => i[Fmt.DISPLAY]?.length)
 				});
 			});
 		}
