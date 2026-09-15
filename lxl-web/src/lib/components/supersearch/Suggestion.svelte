@@ -72,7 +72,7 @@
 							allowPopovers={false}
 							limit={{ contribution: 1 }}
 							parent={Elem.Span}
-							skipOuter={true}
+							skipOuter={false}
 						/>
 					</span>
 				{/if}
@@ -100,11 +100,11 @@
 					{/each}
 				{/if}
 				{#if typeof item?.[LensType.WebCardFooter] === 'object' && Fmt.DISPLAY in item[LensType.WebCardFooter] && item[LensType.WebCardFooter][Fmt.DISPLAY].length}
-					<span class="divider">{' · '}</span>
 					{#each item?.[LensType.WebCardFooter][Fmt.DISPLAY] as footer, index (`footer-${index}`)}
 						{#if footer[Fmt.PROP] === 'hasInstance'}
 							{@const instances = getInstanceData(footer[Fmt.VALUE])}
 							{#if instances?.years}
+								<span class="divider">{' · '}</span>
 								<span class="editions">
 									{#if instances.count > 1}
 										{instances?.count}
@@ -116,6 +116,7 @@
 								</span>
 							{/if}
 						{:else}
+							<span class="divider">{' · '}</span>
 							<DecoratedData2
 								data={footer}
 								showLabels={ShowLabelsOptions.Never}
