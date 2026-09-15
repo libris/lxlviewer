@@ -11,6 +11,7 @@
 		ResourceSearchResult
 	} from '$lib/types/search';
 	import capitalize from '$lib/utils/capitalize';
+	import { isResourceNode } from '$lib/utils/resourceData';
 	import type { Relation } from '$lib/types/relations';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { getBaseUrl, relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
@@ -245,7 +246,7 @@
 									skipOuter={true}
 								/>
 							</p>
-							{#if decoratedData['_workTitle2']?._display}
+							{#if decoratedData['_workTitle2'] && isResourceNode(decoratedData['_workTitle2']) && decoratedData['_workTitle2']?.[Fmt.DISPLAY]}
 								<p
 									class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
 								>
@@ -287,7 +288,7 @@
 					{isWork}
 				/>
 				<div class="decorated-data-section decorated-spacious">
-					{#if !hasHoldingsBtn && decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
+					{#if !hasHoldingsBtn && decoratedData.overview.some((o) => isResourceNode(o) && o?.[Fmt.DISPLAY]?.length > 0) && decoratedData.overview2.some((o) => isResourceNode(o) && o?.[Fmt.DISPLAY]?.length > 0)}
 						<div class="border-b-neutral mb-2 border-b"></div>
 					{/if}
 					<!-- {#each decoratedData.overview2 as overview2 (overview2)} -->
@@ -459,7 +460,7 @@
 					<ExpandableArea content={resourceTableOfContents} collapsedHeightPx={300} />
 				</section>
 			{/if}
-			{#if decoratedData.details.length && decoratedData.details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)}
+			{#if decoratedData.details.length && decoratedData.details.some((d) => isResourceNode(d) && d[Fmt.DISPLAY] && isResourceNode(d) && d[Fmt.DISPLAY].length > 0)}
 				<section
 					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg print:break-before-page print:px-0"
 				>
@@ -494,7 +495,7 @@
 								</summary>
 								<ul class="mt-2 flex flex-col gap-1">
 									{#each decoratedData.itemInformation as holder, index (index)}
-										{#if holder.items.some((i) => i[Fmt.DISPLAY].length)}
+										{#if holder.items.some((i) => isResourceNode(i) && i[Fmt.DISPLAY].length)}
 											<li class="block rounded-sm border border-neutral-200 p-2">
 												<p class="mb-1 font-medium">
 													<DecoratedData2
