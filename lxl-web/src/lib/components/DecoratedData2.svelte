@@ -358,6 +358,10 @@
 {@render traverse(data, parent, skip)}
 
 <style lang="postcss">
+	.transliteration {
+		font-style: italic;
+	}
+
 	dl.ul dd,
 	dl.ul-when-multiple:has(+ dd + dd) dd {
 		display: list-item;
