@@ -230,28 +230,6 @@
 		}
 	}
 
-	/* & :global([data-property='contribution'] > *::after) {
-			content: ', ';
-		} */
-
-	/* hide last comma */
-	/* & :global([data-property='contribution'] > *:last-child::after) {
-			content: '';
-		} */
-
-	/* hide comma before delimiter */
-	/* & :global([data-property='contribution'] > *:has(+ .delimiter)::after) {
-			content: '';
-		}
-	} */
-
-	.resource-footer {
-		/* hide dangling divider · */
-		/* & :global(.divider:not(:has(+ span:not(.divider)))) {
-			display: none;
-		} */
-	}
-
 	.more.focused-cell .more-icon-container,
 	.more:hover .more-icon-container {
 		background-color: var(--color-accent-100);

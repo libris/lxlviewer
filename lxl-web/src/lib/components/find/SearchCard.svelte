@@ -585,12 +585,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.card-footer {
 		grid-area: footer;
-		/* & .divider {
-			display: none;
-		}
-		& :global(.divider:has(+ span:not(.divider))) {
-			display: inline;
-		} */
 	}
 
 	.card-header-top,
@@ -604,16 +598,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	/* .card-header-title {
 		& :global(span[data-property='hasTitle'] > span) {
 			display: block;
-		}
-	} */
-
-	/* .card-header-top {
-		& .divider {
-			display: none;
-		}
-
-		& :global(.divider:has(+ span:not(.divider))) {
-			display: inline;
 		}
 	} */
 
@@ -659,23 +643,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			content: ' ; ';
 		}
 
-		/* & :global(.property-label) {
-			color: var(--color-body);
-			font-style: italic;
-		} */
-
-		/* & :global(.property-label):not(:empty)::after {
-			color: var(--color-body);
-			content: ': ';
-		} */
-
 		/* & :global(div[data-property='identifiedBy']) {
 			color: var(--color-subtle);
-		} */
-
-		/* & :global(.contribution > ._contentBefore),
-		:global(.contribution > ._contentAfter) {
-			display: none;
 		} */
 	}
 
