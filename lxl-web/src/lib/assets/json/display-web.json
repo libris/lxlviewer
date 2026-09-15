@@ -1389,6 +1389,13 @@
 				"fresnel:contentLast": ")"
 			}
 		},
+		"PrimaryContribution-format": {
+			"@id": "PrimaryContribution-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["PrimaryContribution"],
+			"fresnel:propertyFormatDomain": ["agent"],
+			"fresnel:propertyStyle": ["PrimaryContribution"]
+		},
 		"Meeting-format": {
 			"NOTE": "This ia a workaround for old MARC formatting inside the fields",
 			"@id": "Meeting-format",

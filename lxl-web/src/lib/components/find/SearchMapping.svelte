@@ -40,7 +40,7 @@
 								valueLabel={displayStr || m._value}
 								removeLink={up?.['@id']}
 								type={m.display?.[JsonLd.TYPE]}
-								id={m.display[JsonLd.ID]}
+								id={m.display?.[JsonLd.ID]}
 								{isRedundantKeyLabel}
 							/>{' '}</span
 						>
