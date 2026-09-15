@@ -1241,10 +1241,11 @@
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
 			"fresnel:propertyFormatDomain": ["marc:sequenceStatus", "appliesTo"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " ",
+				"fresnel:contentBefore": "(",
+				"fresnel:contentAfter": ")",
 				"fresnel:contentFirst": ""
 			},
-			"fresnel:propertyStyle": ["hide"]
+			"fresnel:propertyStyle": ["ProvisionActivity"]
 		},
 		"ProvisionActivity-endYear-format": {
 			"TODO": "endYear without startYear? fresnel:contentNoValue on startYear? but we only want it when endYear is present",
