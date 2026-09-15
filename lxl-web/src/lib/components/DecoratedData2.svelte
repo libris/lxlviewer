@@ -363,7 +363,7 @@
 	}
 
 	dl.ul dd,
-	dl.ul-when-multiple:has(+ dd + dd) dd {
+	dl.ul-when-multiple:has(dd + dd) dd {
 		display: list-item;
 		list-style-type: disc;
 		margin-left: 1rem;

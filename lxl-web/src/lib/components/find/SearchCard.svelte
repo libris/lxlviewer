@@ -632,13 +632,12 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		}
 	}
 
-	/* TODO inline label style in DecoratedData */
 	.card-header-extra,
 	.card-body {
-		& :global(div:has(> .property-label)) {
-			/* override e.g isPartOf > hasTitle block */
-			/* display: inline; */
-		}
+		/* & :global(div:has(> .property-label)) {
+			override e.g isPartOf > hasTitle block
+			display: inline;
+		} */
 
 		/* & :global(span[data-property]) {
 			display: inline;
@@ -660,19 +659,19 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			content: ' ; ';
 		}
 
-		& :global(.property-label) {
+		/* & :global(.property-label) {
 			color: var(--color-body);
 			font-style: italic;
-		}
+		} */
 
-		& :global(.property-label):not(:empty)::after {
+		/* & :global(.property-label):not(:empty)::after {
 			color: var(--color-body);
 			content: ': ';
-		}
+		} */
 
-		& :global(div[data-property='identifiedBy']) {
+		/* & :global(div[data-property='identifiedBy']) {
 			color: var(--color-subtle);
-		}
+		} */
 
 		/* & :global(.contribution > ._contentBefore),
 		:global(.contribution > ._contentAfter) {

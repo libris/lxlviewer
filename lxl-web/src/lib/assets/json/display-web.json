@@ -1243,7 +1243,8 @@
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
-			}
+			},
+			"fresnel:propertyStyle": ["hide"]
 		},
 		"ProvisionActivity-endYear-format": {
 			"TODO": "endYear without startYear? fresnel:contentNoValue on startYear? but we only want it when endYear is present",
