@@ -277,14 +277,11 @@ async function loadUtil(): Promise<Util> {
 }
 
 function getSite(event: RequestEvent): Promise<Site> | null {
-	// TODO replace this with proper domain matching
 	const host = event.request.headers.get('x-forwarded-host') ?? event.url.hostname;
 	const deepestSubDomain = host.split('.')[0];
 
 	if (configuredSubDomains().includes(deepestSubDomain)) {
-		// TODO fetch from backend?
-		const site = deepestSubDomain;
-		const siteUrl = env[`SUBSITE.${site}.SEARCH_SITE`];
+		const siteUrl = env[`SUBSITE.${deepestSubDomain}.SEARCH_SITE`];
 		if (!siteUrl) {
 			return null;
 		}
