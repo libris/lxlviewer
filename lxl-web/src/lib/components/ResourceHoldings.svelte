@@ -2,17 +2,16 @@
 	import { env } from '$env/dynamic/public';
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { JsonLd } from '$lib/types/xl';
+	import { JsonLd, type DisplayDecorated } from '$lib/types/xl';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import type { SearchResultItem } from '$lib/types/search';
-	import type { ResourceData } from '$lib/types/resourceData';
 	import { LxlLens } from '$lib/types/display';
 	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
 	import { getHoldingsLink, getHeldBy, handleClickHoldings } from '$lib/utils/holdings';
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 
 	interface Props {
-		instances: SearchResultItem[] | ResourceData[];
+		instances: SearchResultItem[] | DisplayDecorated[];
 		holdings: HoldingsData;
 	}
 
