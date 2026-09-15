@@ -852,9 +852,9 @@ class Formatter {
 			// 	Object.keys(thing).filter((k) => !k.startsWith('_') && k !== JsonLd.ID)
 			// );
 			const key = thing[Fmt.PROP] as string;
-			if (!key) {
-				console.log('no key found!');
-			}
+			// if (!key) {
+			// 	console.log('no key found!');
+			// }
 			thing[Fmt.LABEL] = this.getVocabLabel(key);
 			if (this.vocabUtil.isKeyword(key)) {
 				// thing[key] = mapMaybeArray(thing[key], (v) => this.getVocabLabel(v));
