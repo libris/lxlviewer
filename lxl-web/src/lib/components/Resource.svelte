@@ -268,7 +268,6 @@
 							data={decoratedData.overview}
 							showLabels={ShowLabelsOptions.DefaultOff}
 							allowFindLinks={true}
-							block
 							limit={{ contribution: 5, hasVariant: 10 }}
 							parent={Elem.Div}
 							skipOuter={true}
