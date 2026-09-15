@@ -5,7 +5,6 @@
 	import { type DisplayDecorated, Fmt, JsonLd } from '$lib/types/xl';
 	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldingsData } from '$lib/types/holdings';
-	import type { ResourceData } from '$lib/types/resourceData';
 	import type {
 		SearchResultItem,
 		AdjecentSearchResult,
@@ -61,7 +60,7 @@
 		};
 		relations: Relation[] | null;
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
-		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
+		instances: SearchResultItem[] | DisplayDecorated[];
 		searchResult?: ResourceSearchResult;
 		holdings: HoldingsData;
 		tableOfContents: TableOfContentsItem[];
