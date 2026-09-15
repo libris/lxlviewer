@@ -34,16 +34,11 @@
 		allowLinks?: boolean;
 		parent?: Parent; // Pass in parent to not render bad html, e.g `<p>` in `<p>`
 		block?: boolean;
-		skipOuter?: boolean; // Do not render an element from the outermost node, i.e. in the case of a complete linked work
+		skipOuter?: boolean; // Do not render an element from the outermost node, i.e. in the case of a work 'wrapper'
 		allowPopovers?: boolean; // used for preventing nested popovers
 		allowFindLinks?: boolean;
 		limit?: Record<string, number>;
 		suppressProperty?: string[];
-		// depth?: number;
-		// keyed?: boolean;
-		// isInsideLinkElement?: boolean;
-		// isLi?: boolean;
-		// isLiChild: boolean;
 	}
 
 	let {
@@ -57,11 +52,6 @@
 		allowFindLinks = false,
 		limit = undefined,
 		suppressProperty = undefined
-		// depth = 0,
-		// keyed = true,
-		// isInsideLinkElement = false,
-		// isLi = false,
-		// isLiChild = false
 	}: Props = $props();
 
 	let skip = $derived(skipOuter);
@@ -133,17 +123,6 @@
 		}
 	}
 
-	// function isBlockParent(parent: Parent): boolean {
-	// 	if (!parent) return true;
-	// 	switch (parent) {
-	// 		case Elem.Div:
-	// 		case Elem.Dl:
-	// 			return true;
-	// 		default:
-	// 			return false;
-	// 	}
-	// }
-
 	function amIBlock(data: Node, parent: Parent): boolean {
 		if (!parent || parent === Elem.Div) {
 			return true;
@@ -153,10 +132,6 @@
 		}
 		return false;
 	}
-
-	// function isBlock(data: Node, parent: Parent) {
-	// 	return (hasStyle(data, 'block') || block) && isBlockParent(parent);
-	// }
 
 	function delimiterWrapper(parent: Parent) {
 		switch (parent) {
@@ -238,7 +213,6 @@
 	{:else if parent === Elem.Ul}
 		<li class={[!isBlock && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
 			{#if link}
-				<!-- eslint-disable svelte/no-navigation-without-resolve -->
 				<a
 					href={target ? link : resolve(link)}
 					{target}
@@ -280,7 +254,7 @@
 
 {#snippet node(data: Node, parent: Parent, renderContent: boolean = true)}
 	{#if typeof data === 'object' && !Array.isArray(data)}
-		{@render content(Fmt.CONTENT_BEFORE, data, parent, renderContent)}
+		{@render content(Fmt.CONTENT_BEFORE, data, renderContent)}
 		{#if JsonLd.VALUE in data && typeof data[JsonLd.VALUE] === 'string'}
 			{data[JsonLd.VALUE]}
 		{:else if Fmt.DISPLAY in data}
@@ -302,7 +276,7 @@
 				{@render traverse(data[Fmt.VALUE], parent, false)}
 			{/if}
 		{/if}
-		{@render content(Fmt.CONTENT_AFTER, data, parent, renderContent)}
+		{@render content(Fmt.CONTENT_AFTER, data, renderContent)}
 	{/if}
 {/snippet}
 
@@ -310,25 +284,11 @@
 {#snippet content(
 	placement: Fmt.CONTENT_BEFORE | Fmt.CONTENT_AFTER,
 	data: Node,
-	parent: Parent,
 	renderContent: boolean
 )}
 	{#if placement in data}
 		{#if !isHtmlNode(data) && renderContent}
 			{data[placement]}
-			<!-- {#if isPropertyNode(data)}
-				<span class="bg-[green] text-[white]" data-parent={parent}>
-					{data[placement]}
-				</span>
-			{:else}
-				<span class="bg-[yellow]" data-parent={parent}>
-					{data[placement]}
-				</span>
-			{/if} -->
-		{:else}
-			<!-- <span class="bg-[red] text-[white]" data-parent={parent}>
-				{data[placement]}
-			</span> -->
 		{/if}
 	{/if}
 {/snippet}
@@ -374,7 +334,7 @@
 	}
 
 	.force-sublevel-label {
-		/* to make text-transform work */
+		/* make text-transform work */
 		display: inline-block;
 	}
 
