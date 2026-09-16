@@ -283,6 +283,7 @@ export default {
 		result: 'träff',
 		editions: 'Utgåvor',
 		editionOf: 'Utgåva av',
+		navToWork: 'Till resursens huvudsida',
 		summary: 'Sammanfattning',
 		tableOfContents: 'Innehållsförteckning',
 		details: 'Detaljer',

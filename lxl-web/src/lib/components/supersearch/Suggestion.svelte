@@ -40,7 +40,7 @@
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="decorated-heading flex gap-1 overflow-hidden text-sm whitespace-nowrap">
+			<p class="decorated-heading flex gap-1 overflow-hidden text-sm whitespace-nowrap">
 				<span class="truncate">
 					<DecoratedData
 						data={item[LxlLens.CardHeading]}
@@ -63,8 +63,8 @@
 						/>
 					</span>
 				{/if}
-			</h2>
-			<div class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
+			</p>
+			<p class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
 				<span class="font-medium">
 					{item.selectTypeStr}
 				</span>
@@ -111,7 +111,7 @@
 						/>
 					{/if}
 				{/each}
-			</div>
+			</p>
 		</div>
 	</div>
 {/snippet}
@@ -211,10 +211,6 @@
 	.suggestion-contribution {
 		& :global(.person-extra) {
 			display: none;
-		}
-
-		& :global([data-property='contribution'] > *::after) {
-			content: ', ';
 		}
 
 		/* hide last comma */

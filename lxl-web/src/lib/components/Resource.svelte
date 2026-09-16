@@ -158,8 +158,9 @@
 	</div>
 {/if}
 {#if workCard && !isWork}
-	<div
-		class="back-to-work border-b-neutral border-b print:hidden hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
+	<nav
+		class="nav-to-work border-b-neutral border-b print:hidden hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
+		aria-label={page.data.t('resource.navToWork')}
 	>
 		<Suggestion item={workCard}>
 			{#snippet leadingContent()}
@@ -171,7 +172,7 @@
 				</div>
 			{/snippet}
 		</Suggestion>
-	</div>
+	</nav>
 {/if}
 <article class="@container @3xl:[&_[id]]:scroll-mt-36">
 	{#if tableOfContents.length}
@@ -568,11 +569,15 @@
 <style lang="postcss">
 	@reference 'tailwindcss';
 
-	.back-to-work {
+	.nav-to-work {
 		:global(.resource-content) {
 			display: flex;
 			flex-wrap: wrap;
 			align-items: center;
+		}
+
+		:global(.resource-footer) {
+			margin-left: calc(var(--spacing) * 1);
 		}
 
 		:global(.resource-footer > *:not(.editions)) {
