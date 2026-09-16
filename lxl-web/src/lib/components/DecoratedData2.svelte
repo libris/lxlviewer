@@ -18,7 +18,7 @@
 		getStyle,
 		isPropertyNode,
 		isHtmlNode
-	} from '$lib/utils/resourceData'; // todo rename
+	} from '$lib/utils/resourceData';
 	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 
@@ -54,7 +54,6 @@
 		suppressProperty = undefined
 	}: Props = $props();
 
-	let skip = $derived(skipOuter);
 	let limitState = $state(
 		untrack(
 			() =>
@@ -163,35 +162,39 @@
 	{/if}
 {/snippet}
 
-{#snippet wrapper(data: Node, parent: Parent, skip?: boolean)}
+{#snippet wrapper(data: Node, parent: Parent, skip = false)}
 	{const isBlock = amIBlock(data, parent)}
-	{const styles: Styles = getComputedStyles(data, isBlock)}
-	{const link: Link = $derived(getLink(data))}
+	{const styles = getComputedStyles(data, isBlock)}
+	{const link = $derived(getLink(data))}
 	{const target = $derived(link && hasStyle(data, 'ext-link') ? '_blank' : null)}
 	{const label = $derived(getLabel(data))}
-	{const prop = Fmt.PROP in data ? data[Fmt.PROP] : null}
+	{const prop = isPropertyNode(data) ? data[Fmt.PROP] : null}
 	{const type = JsonLd.TYPE in data ? data[JsonLd.TYPE] : null}
+	{const hasContent =
+		!isHtmlNode(data) && (Fmt.CONTENT_BEFORE in data || Fmt.CONTENT_AFTER in data)}
 
 	{#if skip}
 		{@render node(data, parent)}
 		<!-- exit -->
-	{:else if prop && suppressProperty && suppressProperty.includes(prop)}
+	{:else if prop && suppressProperty?.includes(prop)}
 		<!-- html -->
 	{:else if isPropertyNode(data) && isHtmlNode(data[Fmt.VALUE])}
 		<div class="markdown [&>p]:mb-2 [&>ul]:list-inside [&>ul]:list-disc">
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html data[Fmt.VALUE][Fmt.HTML]}
+			{@render html(data[Fmt.VALUE])}
 		</div>
 		<!-- dl -->
 	{:else if label && isBlock && isPropertyNode(data)}
+		{@render before(data, !isBlock)}
 		<dl class={styles} data-property={prop} data-type={type}>
 			<dt>
 				{label}
 			</dt>
-			{@render node(data, Elem.Dl, !isBlock)}
+			{@render node(data, Elem.Dl)}
 		</dl>
+		{@render before(data, !isBlock)}
 	{:else if parent === Elem.Dl}
 		<dd class={[!isBlock && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
+			{@render before(data, !isBlock)}
 			{#if link}
 				<a
 					href={target ? link : resolve(link)}
@@ -199,19 +202,23 @@
 					class={styles}
 					use:conditionalPopover={data}
 				>
-					{@render node(data, Elem.A, !isBlock)}
+					{@render node(data, Elem.A)}
 				</a>
 			{:else}
-				{@render node(data, Elem.Dd, !isBlock)}
+				{@render node(data, Elem.Dd)}
 			{/if}
+			{@render after(data, !isBlock)}
 		</dd>
 		<!-- ul -->
-	{:else if !label && isBlock && isPropertyNode(data) && Array.isArray(data._value) && data._value.length > 1}
-		<ul class={styles} data-property={prop} data-type={type} aria-label={data._label}>
-			{@render node(data, Elem.Ul, !isBlock)}
+	{:else if !label && isBlock && isPropertyNode(data) && Array.isArray(data[Fmt.VALUE]) && data[Fmt.VALUE].length > 1}
+		{@render before(data, !isBlock)}
+		<ul class={styles} data-property={prop} data-type={type} aria-label={data[Fmt.LABEL]}>
+			{@render node(data, Elem.Ul)}
 		</ul>
+		{@render after(data, !isBlock)}
 	{:else if parent === Elem.Ul}
 		<li class={[!isBlock && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
+			{@render before(data, !isBlock)}
 			{#if link}
 				<a
 					href={target ? link : resolve(link)}
@@ -219,14 +226,16 @@
 					class={styles}
 					use:conditionalPopover={data}
 				>
-					{@render node(data, Elem.A, !isBlock)}
+					{@render node(data, Elem.A)}
 				</a>
 			{:else}
-				{@render node(data, Elem.Li, !isBlock)}
+				{@render node(data, Elem.Li)}
 			{/if}
+			{@render after(data, !isBlock)}
 		</li>
 		<!-- a -->
 	{:else if link && parent !== Elem.A}
+		{@render before(data, !isBlock)}
 		<a
 			href={target ? link : resolve(link)}
 			class={styles}
@@ -237,24 +246,31 @@
 		>
 			{@render node(data, Elem.A)}
 		</a>
-		<!-- a -->
+		{@render after(data, !isBlock)}
+		<!-- p -->
 	{:else if !label && isBlock}
 		<p class={styles} data-property={prop} data-type={type}>
-			{@render node(data, Elem.P, false)}
+			{@render before(data, !isBlock)}
+			{@render node(data, Elem.P)}
+			{@render after(data, !isBlock)}
 		</p>
-	{:else if styles?.length}
+	{:else if styles?.length || hasContent}
 		{const forcedLabel = forceLabel(data)}
 		<span class={styles} data-property={prop} data-type={type}>
-			{#if forcedLabel}{forcedLabel}{/if}{@render node(data, parent)}
+			{#if forcedLabel}
+				{forcedLabel}
+			{/if}
+			{@render before(data, !isBlock)}
+			{@render node(data, parent)}
+			{@render after(data, !isBlock)}
 		</span>
 	{:else}
 		{@render node(data, parent)}
 	{/if}
 {/snippet}
 
-{#snippet node(data: Node, parent: Parent, renderContent: boolean = true)}
+{#snippet node(data: Node, parent: Parent)}
 	{#if typeof data === 'object' && !Array.isArray(data)}
-		{@render content(Fmt.CONTENT_BEFORE, data, renderContent)}
 		{#if JsonLd.VALUE in data && typeof data[JsonLd.VALUE] === 'string'}
 			{data[JsonLd.VALUE]}
 		{:else if Fmt.DISPLAY in data}
@@ -276,20 +292,24 @@
 				{@render traverse(data[Fmt.VALUE], parent, false)}
 			{/if}
 		{/if}
-		{@render content(Fmt.CONTENT_AFTER, data, renderContent)}
 	{/if}
 {/snippet}
 
-{#snippet content(
-	placement: Fmt.CONTENT_BEFORE | Fmt.CONTENT_AFTER,
-	data: Node,
-	renderContent: boolean
-)}
-	{#if placement in data}
-		{#if !isHtmlNode(data) && renderContent}
-			{data[placement]}
-		{/if}
+{#snippet before(data: Node, renderContent: boolean)}
+	{#if renderContent && !isHtmlNode(data) && Fmt.CONTENT_BEFORE in data}
+		{data[Fmt.CONTENT_BEFORE]}
 	{/if}
+{/snippet}
+
+{#snippet after(data: Node, renderContent: boolean)}
+	{#if renderContent && !isHtmlNode(data) && Fmt.CONTENT_AFTER in data}
+		{data[Fmt.CONTENT_AFTER]}
+	{/if}
+{/snippet}
+
+{#snippet html(data: HtmlNode)}
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	{@html data[Fmt.HTML]}
 {/snippet}
 
 {#snippet delimiter(data: PropertyNode, parent: Parent, limit: number)}
@@ -314,7 +334,7 @@
 	{/if}
 {/snippet}
 
-{@render traverse(data, parent, skip)}
+{@render traverse(data, parent, skipOuter)}
 
 <style lang="postcss">
 	.transliteration {
