@@ -104,12 +104,13 @@
 					</ol>
 					<Pagination data={searchResult} />
 				</div>
-				<aside class="search-result-aside min-w-75">
+				<!-- placeholder for aside trailing pane -->
+				<div class="search-result-aside min-w-75">
 					<div class="hidden @5xl/content:block">
 						<Toolbar />
 					</div>
 					<div class="aside-content sticky h-px"></div>
-				</aside>
+				</div>
 			</div>
 			<SiteFooter />
 		</div>
