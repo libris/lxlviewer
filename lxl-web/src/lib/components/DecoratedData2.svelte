@@ -155,8 +155,8 @@
 			<!-- object -->
 			{@render wrapper(data, parent, skip)}
 		{/if}
-	{/if}
-	{#if typeof data === 'string'}
+	{/if}<!--
+	-->{#if typeof data === 'string'}
 		<!-- string -->
 		{#if parent === Elem.Dl}
 			<dd>{data}</dd>
@@ -189,62 +189,74 @@
 		{@render html(data[Fmt.VALUE])}
 		<!-- dl -->
 	{:else if label && isBlock && isPropertyNode(data)}
-		{@render before(data, !isBlock)}
+		{@render before(data, !isBlock)}<!--
+		-->
 		<dl class={styles} data-property={prop} data-type={type}>
 			<dt class="first-letter:capitalize">
 				{label}
 			</dt>
 			{@render node(data, Elem.Dl)}
 		</dl>
-		{@render after(data, !isBlock)}
+		<!--
+		-->{@render after(data, !isBlock)}
 	{:else if parent === Elem.Dl}
 		<dd class={[!isBlock && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
-			{@render before(data, !isBlock)}
-			{#if link}
+			{@render before(data, !isBlock)}<!--
+			-->{#if link}
 				{@render linkSnippet(data, link, target, styles)}
 			{:else}
 				{@render node(data, Elem.Dd)}
-			{/if}
-			{@render after(data, !isBlock)}
+			{/if}<!--
+			-->{@render after(data, !isBlock)}
 		</dd>
 		<!-- ul -->
 	{:else if !label && isBlock && isPropertyNode(data) && Array.isArray(data[Fmt.VALUE]) && data[Fmt.VALUE].length > 1}
-		{@render before(data, !isBlock)}
+		{@render before(data, !isBlock)}<!--
+		-->
 		<ul class={styles} data-property={prop} data-type={type} aria-label={data[Fmt.LABEL]}>
 			{@render node(data, Elem.Ul)}
 		</ul>
-		{@render after(data, !isBlock)}
+		<!--
+		-->{@render after(data, !isBlock)}
 	{:else if parent === Elem.Ul}
 		<li class={[!isBlock && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
-			{@render before(data, !isBlock)}
-			{#if link}
+			{@render before(data, !isBlock)}<!--
+			-->{#if link}
 				{@render linkSnippet(data, link, target, styles)}
 			{:else}
 				{@render node(data, Elem.Li)}
-			{/if}
-			{@render after(data, !isBlock)}
+			{/if}<!--
+			-->{@render after(data, !isBlock)}
 		</li>
 		<!-- a -->
 	{:else if link && parent !== Elem.A}
-		{@render before(data, !isBlock)}
-		{@render linkSnippet(data, link, target, styles)}
-		{@render after(data, !isBlock)}
+		{@render before(data, !isBlock)}<!--
+		-->{@render linkSnippet(
+			data,
+			link,
+			target,
+			styles
+		)}<!--
+		-->{@render after(data, !isBlock)}
 		<!-- p -->
 	{:else if !label && isBlock}
 		<p class={styles} data-property={prop} data-type={type}>
-			{@render before(data, !isBlock)}
-			{@render node(data, Elem.P)}
-			{@render after(data, !isBlock)}
+			{@render before(data, !isBlock)}<!--
+			-->{@render node(data, Elem.P)}<!--
+			-->{@render after(
+				data,
+				!isBlock
+			)}
 		</p>
 	{:else if styles?.length || hasContent}
 		{const forcedLabel = forceLabel(data)}
 		<span class={styles} data-property={prop} data-type={type}>
-			{@render before(data, !isBlock)}
-			{#if forcedLabel}
+			{@render before(data, !isBlock)}<!--
+			-->{#if forcedLabel}
 				<span class="sublevel-label inline-block first-letter:capitalize">{forcedLabel}</span>
-			{/if}
-			{@render node(data, parent)}
-			{@render after(data, !isBlock)}
+			{/if}<!--
+			-->{@render node(data, parent)}<!--
+			-->{@render after(data, !isBlock)}
 		</span>
 	{:else}
 		{@render node(data, parent)}

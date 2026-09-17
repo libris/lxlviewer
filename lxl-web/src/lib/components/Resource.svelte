@@ -674,10 +674,6 @@
 	}
 
 	.decorated-data-section {
-		& :global(p) {
-			margin-bottom: calc(var(--spacing) * 1);
-		}
-
 		& :global(ul),
 		:global(dl) {
 			margin-top: calc(var(--spacing) * 0);
