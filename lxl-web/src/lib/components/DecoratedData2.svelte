@@ -158,7 +158,13 @@
 	{/if}
 	{#if typeof data === 'string'}
 		<!-- string -->
-		{data}
+		{#if parent === Elem.Dl}
+			<dd>{data}</dd>
+		{:else if parent === Elem.Ul}
+			<li>{data}</li>
+		{:else}
+			{data}
+		{/if}
 	{/if}
 {/snippet}
 
