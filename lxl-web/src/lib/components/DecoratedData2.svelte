@@ -253,7 +253,7 @@
 		<span class={styles} data-property={prop} data-type={type}>
 			{@render before(data, !isBlock)}<!--
 			-->{#if forcedLabel}
-				<span class="sublevel-label inline-block first-letter:capitalize">{forcedLabel}</span>
+				<span class="sublevel-label inline-block first-letter:capitalize">{forcedLabel}</span>{' '}
 			{/if}<!--
 			-->{@render node(data, parent)}<!--
 			-->{@render after(data, !isBlock)}
