@@ -215,9 +215,7 @@
 						<hgroup>
 							<p class="text-subtle flex items-center gap-1 text-sm font-medium">
 								{#if typeForIcon}
-									<span class="mr-0.5 self-stretch pt-1">
-										<TypeIcon type={typeForIcon} class="size-3" />
-									</span>
+									<TypeIcon type={typeForIcon} class="size-4.5 self-stretch pt-1" />
 								{/if}
 								<DecoratedData
 									data={decoratedData.headingTop}
