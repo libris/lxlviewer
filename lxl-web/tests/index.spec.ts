@@ -22,12 +22,9 @@ test('index page shows featured searches', async ({ page }) => {
 	await expect(page).toHaveURL('/');
 	await page.waitForLoadState('networkidle');
 
-	await expect(page.getByLabel('Ny skönlitteratur på svenska').getByRole('listitem')).toHaveCount(
-		20,
-		{
-			timeout: 10000
-		}
-	);
+	await expect(page.getByLabel('Ny skönlitteratur på svenska').locator('article')).toHaveCount(20, {
+		timeout: 10000
+	});
 	// await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
 	// await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
 	// 	11,

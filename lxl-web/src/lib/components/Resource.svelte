@@ -3,19 +3,19 @@
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import { type DisplayDecorated, Fmt, JsonLd } from '$lib/types/xl';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldingsData } from '$lib/types/holdings';
-	import type { ResourceData } from '$lib/types/resourceData';
 	import type {
 		SearchResultItem,
 		AdjecentSearchResult,
 		ResourceSearchResult
 	} from '$lib/types/search';
 	import capitalize from '$lib/utils/capitalize';
+	import { isResourceNode } from '$lib/utils/resourceData';
 	import type { Relation } from '$lib/types/relations';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { getBaseUrl, relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-	import DecoratedData from './DecoratedData.svelte';
+	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
 	import ResourceDigitalAccess from '$lib/components/ResourceDigitalAccess.svelte';
@@ -61,7 +61,7 @@
 		};
 		relations: Relation[] | null;
 		relationsPreviewsByQualifierKey: Record<string, SearchResultItem[]>;
-		instances: SearchResultItem[] | ResourceData[]; // TODO: fix better types
+		instances: SearchResultItem[] | DisplayDecorated[];
 		searchResult?: ResourceSearchResult;
 		holdings: HoldingsData;
 		tableOfContents: TableOfContentsItem[];
@@ -217,34 +217,42 @@
 								{#if typeForIcon}
 									<TypeIcon type={typeForIcon} class="size-4.5 self-stretch pt-1" />
 								{/if}
-								<DecoratedData
+								<DecoratedData2
 									data={decoratedData.headingTop}
 									showLabels={ShowLabelsOptions.Never}
+									parent={Elem.P}
+									skipOuter={true}
 								/>
 							</p>
 							<h1 class="decorated-heading mt-2 mb-1 text-3xl @3xl:text-3xl">
-								<DecoratedData
+								<DecoratedData2
 									data={decoratedData.heading}
 									showLabels={ShowLabelsOptions.Never}
 									allowLinks={false}
 									allowPopovers={false}
+									parent={Elem.H}
+									skipOuter={true}
 								/>
 							</h1>
 							<p
 								class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
 							>
-								<DecoratedData
+								<DecoratedData2
 									data={decoratedData.headingExtra}
 									showLabels={ShowLabelsOptions.DefaultOn}
+									parent={Elem.P}
+									skipOuter={true}
 								/>
 							</p>
-							{#if decoratedData['_workTitle2']?._display}
+							{#if decoratedData['_workTitle2'] && isResourceNode(decoratedData['_workTitle2']) && decoratedData['_workTitle2']?.[Fmt.DISPLAY]}
 								<p
 									class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
 								>
-									<DecoratedData
+									<DecoratedData2
 										data={decoratedData._workTitle2}
 										showLabels={ShowLabelsOptions.DefaultOff}
+										parent={Elem.P}
+										skipOuter={true}
 									/>
 								</p>
 							{/if}
@@ -252,17 +260,18 @@
 					</header>
 				</div>
 				<div class="decorated-data-section decorated-compact">
-					{#each decoratedData.overview as overview (overview)}
-						<div class="compact mb-2">
-							<DecoratedData
-								data={overview}
-								showLabels={ShowLabelsOptions.DefaultOff}
-								allowFindLinks={true}
-								block
-								limit={{ contribution: 5, hasVariant: 10 }}
-							/>
-						</div>
-					{/each}
+					<!-- {#each decoratedData.overview as overview (overview)} -->
+					<div class="mb-2" data-section="overview">
+						<DecoratedData2
+							data={decoratedData.overview}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							allowFindLinks={true}
+							limit={{ contribution: 5, hasVariant: 10 }}
+							parent={Elem.Div}
+							skipOuter={true}
+						/>
+					</div>
+					<!-- {/each} -->
 				</div>
 				{#if hasHoldingsBtn}
 					<h2 class="sr-only print:hidden">{page.data.t('holdings.availabilityByType')}</h2>
@@ -276,33 +285,35 @@
 					{isWork}
 				/>
 				<div class="decorated-data-section decorated-spacious">
-					{#if !hasHoldingsBtn && decoratedData.overview.some((o) => o._display?.length > 0) && decoratedData.overview2.some((o) => o._display?.length > 0)}
+					{#if !hasHoldingsBtn && decoratedData.overview.some((o) => isResourceNode(o) && o?.[Fmt.DISPLAY]?.length > 0) && decoratedData.overview2.some((o) => isResourceNode(o) && o?.[Fmt.DISPLAY]?.length > 0)}
 						<div class="border-b-neutral mb-2 border-b"></div>
 					{/if}
-					{#each decoratedData.overview2 as overview2 (overview2)}
-						<div class="compact mb-2">
-							<DecoratedData
-								data={overview2}
-								showLabels={ShowLabelsOptions.DefaultOn}
-								allowFindLinks={true}
-								suppressProperty={[
-									'associatedMedia',
-									'isPrimaryTopicOf',
-									'hasReproduction',
-									'electronicLocator',
-									'marc:versionOfResource'
-								]}
-								block
-								limit={{ contribution: 5, hasVariant: 5 }}
-							/>
-						</div>
-					{/each}
-					<div class="mb-2">
-						<DecoratedData
+					<!-- {#each decoratedData.overview2 as overview2 (overview2)} -->
+					<div class="mb-2" data-section="overview2">
+						<DecoratedData2
+							data={decoratedData.overview2}
+							showLabels={ShowLabelsOptions.DefaultOn}
+							allowFindLinks={true}
+							suppressProperty={[
+								'associatedMedia',
+								'isPrimaryTopicOf',
+								'hasReproduction',
+								'electronicLocator',
+								'marc:versionOfResource'
+							]}
+							limit={{ contribution: 5, hasVariant: 5 }}
+							parent={Elem.Div}
+							skipOuter={true}
+						/>
+					</div>
+					<!-- {/each} -->
+					<div class="mb-2" data-section="overviewFooter">
+						<DecoratedData2
 							data={decoratedData.overviewFooter}
 							block
 							showLabels={ShowLabelsOptions.DefaultOn}
 							allowFindLinks={true}
+							parent={Elem.Div}
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>
@@ -342,7 +353,13 @@
 						<div class="flex flex-col gap-4">
 							{#each decoratedData.summary as s (s)}
 								<div class="summary-or-toc w-full">
-									<DecoratedData data={s} showLabels={ShowLabelsOptions.Never} block />
+									<DecoratedData2
+										data={s}
+										showLabels={ShowLabelsOptions.Never}
+										block
+										parent={Elem.Div}
+										skipOuter={true}
+									/>
 								</div>
 							{/each}
 						</div>
@@ -382,11 +399,12 @@
 											tabindex={-1}
 										>
 											{relationItem.label}:
-											<DecoratedData
+											<DecoratedData2
 												data={decoratedData.token}
 												showLabels={ShowLabelsOptions.Never}
 												allowLinks={false}
 												allowPopovers={false}
+												parent={Elem.A}
 											/>
 										</a>
 									</h3>
@@ -431,7 +449,13 @@
 						<div class="flex flex-col gap-4">
 							{#each decoratedData.resourceTableOfContents as r (r)}
 								<div class="summary-or-toc w-full">
-									<DecoratedData data={r} showLabels={ShowLabelsOptions.Never} block />
+									<DecoratedData2
+										data={r}
+										showLabels={ShowLabelsOptions.Never}
+										block
+										parent={Elem.Div}
+										skipOuter={true}
+									/>
 								</div>
 							{/each}
 						</div>
@@ -440,7 +464,7 @@
 					<ExpandableArea content={resourceTableOfContents} collapsedHeightPx={300} />
 				</section>
 			{/if}
-			{#if decoratedData.details.length && decoratedData.details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)}
+			{#if decoratedData.details.length && decoratedData.details.some((d) => isResourceNode(d) && d[Fmt.DISPLAY] && isResourceNode(d) && d[Fmt.DISPLAY].length > 0)}
 				<section
 					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg print:break-before-page print:px-0"
 				>
@@ -448,17 +472,19 @@
 						{page.data.t('resource.details')}
 					</h2>
 					<div class="decorated-data-section decorated-spacious decorated-details">
-						{#each decoratedData.details as details (details)}
-							<div class="mb-2">
-								<DecoratedData
-									data={details}
-									showLabels={ShowLabelsOptions.Always}
-									allowFindLinks={true}
-									block
-									limit={{ contribution: 5, hasVariant: 10 }}
-								/>
-							</div>
-						{/each}
+						<!-- {#each decoratedData.details as details (details)} -->
+						<div class="mb-2" data-section="details">
+							<DecoratedData2
+								data={decoratedData.details}
+								showLabels={ShowLabelsOptions.Always}
+								block
+								allowFindLinks={true}
+								limit={{ contribution: 5, hasVariant: 10 }}
+								parent={Elem.Div}
+								skipOuter={true}
+							/>
+						</div>
+						<!-- {/each} -->
 						{#if decoratedData.itemInformation.length}
 							<details class="mt-4 print:hidden print:break-before-page open:print:block">
 								<summary class="flex cursor-pointer items-center gap-1">
@@ -473,21 +499,26 @@
 								</summary>
 								<ul class="mt-2 flex flex-col gap-1">
 									{#each decoratedData.itemInformation as holder, index (index)}
-										{#if holder.items.some((i) => i[Fmt.DISPLAY].length)}
+										{#if holder.items.some((i) => isResourceNode(i) && i[Fmt.DISPLAY].length)}
 											<li class="block rounded-sm border border-neutral-200 p-2">
 												<p class="mb-1 font-medium">
-													<DecoratedData
+													<DecoratedData2
 														data={holder.heldBy}
 														showLabels={ShowLabelsOptions.Never}
+														parent={Elem.P}
+														skipOuter={true}
 													/>
 												</p>
 												{#each holder.items as item, index (index)}
-													<DecoratedData
+													<DecoratedData2
 														data={item}
 														showLabels={ShowLabelsOptions.Always}
 														allowFindLinks={false}
 														block
 														limit={{ contribution: 5, hasVariant: 10 }}
+														parent={Elem.Div}
+														// to create a dl inside this li
+														skipOuter={true}
 													/>
 												{/each}
 											</li>
@@ -523,9 +554,9 @@
 					· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
 					{#if instances?.length === 1}
 						<!--
-                            TODO - agents? - _compilemarc can only handle bib
-                            TODO? select export profile (library)?
-                        -->
+							TODO - agents? - _compilemarc can only handle bib
+							TODO? select export profile (library)?
+            -->
 						{@const base = recordUri.split('/').toSpliced(-1, 1).join('/')}
 						·
 						<!-- eslint-disable svelte/no-navigation-without-resolve -->
@@ -611,27 +642,21 @@
 			max-width: 60ch;
 		}
 
-		& :global(div[data-property='tableOfContents']) {
+		& :global(*[data-property='tableOfContents']) {
 			max-width: 60ch;
+			display: list-item;
+			list-style-type: disc;
+			margin-left: 1rem;
 		}
 
-		& :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents']) {
+		/* & :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents']) {
 			display: block;
-		}
+		} */
 
-		& :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents'])::before {
-			content: ' • ';
-			color: var(--color-subtle);
-		}
-
-		& :global(div[data-property='tableOfContents'] > span._contentBefore) {
-			display: none;
-		}
-
-		& :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
+		/* & :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
 			display: block;
-			/*font-size: var(--text-2xs);*/
-		}
+			font-size: var(--text-2xs);
+		} */
 	}
 
 	.decorated-heading {
@@ -641,31 +666,46 @@
 	}
 
 	.decorated-heading-extra {
-		& :global(span[data-type='KeyTitle'] > span[data-property='rdf:type']) {
+		& :global(.Title-type) {
 			display: none;
 		}
 	}
 
 	.decorated-data-section {
-		& :global(small) {
-			display: block;
-			&::first-letter {
-				text-transform: capitalize;
+		& :global(ul),
+		:global(dl) {
+			margin-top: calc(var(--spacing) * 0);
+			margin-bottom: calc(var(--spacing) * 2.5);
+		}
+
+		/* semibold styles - only if list of many */
+
+		& :global(ul[data-property]:has(> li:nth-of-type(2))),
+		& :global(dl[data-property]:has(> dd:nth-of-type(2))) {
+			& :global([data-property='mainTitle']) {
+				font-weight: var(--font-weight-semibold);
+			}
+		}
+
+		& :global(.translationOf [data-property='mainTitle']) {
+			font-weight: var(--font-weight-normal) !important;
+		}
+
+		& :global(ul.contribution:has(> li:nth-of-type(2))),
+		& :global(dl.contribution:has(> dd:nth-of-type(2))) {
+			& :global(.PrimaryContribution) {
+				font-weight: var(--font-weight-semibold);
+			}
+		}
+
+		& :global(dl[data-property='publication']:has(> dd:nth-of-type(2))) {
+			& :global(dd[data-type='PrimaryPublication']) {
+				font-weight: var(--font-weight-semibold);
 			}
 		}
 
 		& :global(.markdown) {
 			max-width: 60ch;
-		}
-
-		& :global(.contribution) {
-			font-size: var(--text-base);
-			@apply mb-2;
-			@apply mt-1;
-		}
-
-		& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
-			font-weight: var(--font-weight-semibold);
 		}
 
 		& :global(.contribution-role) {
@@ -678,30 +718,21 @@
 			color: var(--color-subtle);
 		} */
 
-		& :global(.contribution > ._contentBefore),
-		:global(.contribution > ._contentAfter) {
+		/* & :global(div[data-property='identifiedBy'] > ._contentBefore) {
 			display: none;
-		}
+		} */
 
-		& :global(.contribution > *) {
+		/* & :global(div[data-property='identifiedBy'] > span) {
 			display: block;
-		}
+		} */
 
-		& :global(div[data-property='identifiedBy'] > ._contentBefore) {
+		/* & :global(div[data-property='indirectlyIdentifiedBy'] > ._contentBefore) {
 			display: none;
-		}
+		} */
 
-		& :global(div[data-property='identifiedBy'] > span) {
+		/* & :global(div[data-property='indirectlyIdentifiedBy'] > span) {
 			display: block;
-		}
-
-		& :global(div[data-property='indirectlyIdentifiedBy'] > ._contentBefore) {
-			display: none;
-		}
-
-		& :global(div[data-property='indirectlyIdentifiedBy'] > span) {
-			display: block;
-		}
+		} */
 
 		& :global(.see-also > *) {
 			display: block;
@@ -709,14 +740,10 @@
 			white-space: nowrap;
 		}
 
-		& :global(.test_list > *) {
-			display: block;
-		}
-
 		/* hide double dash - */
-		& :global(._contentAfter.startYear + ._contentBefore.endYear) {
+		/* & :global(._contentAfter.startYear + ._contentBefore.endYear) {
 			display: none;
-		}
+		} */
 
 		& :global(.see-also > *) {
 			display: block;
@@ -729,13 +756,12 @@
 		}
 
 		& :global(span.Title-type) {
-			font-size: var(--text-2xs);
 			color: var(--color-subtle);
 		}
 
-		& :global(span.Title-type)::before {
+		/* & :global(span.Title-type)::before {
 			content: ' ';
-		}
+		} */
 
 		& :global(.coverage + span.Title-type) {
 			display: none;
@@ -746,67 +772,54 @@
 		}
 
 		& :global(ul[data-property]) {
-			list-style-type: disc;
-			/* list-style-type: "• "; */
-
-			& :global(li) {
-				margin-left: 1em;
-			}
-
-			& :global(li::marker) {
-				color: var(--color-subtle);
-			}
-
-			& :global(.block) {
+			/* & :global(div:has(> .property-label)) {
 				display: inline;
-			}
+			} */
 
-			& :global(div:has(> .property-label)) {
-				display: inline;
-			}
-
-			& :global(.property-label) {
-				color: var(--color-body);
-				font-style: italic;
-			}
-
-			& :global(.property-label):not(:empty)::after {
-				color: var(--color-body);
-				content: ': ';
-			}
-
-			& :global(.contribution) {
+			/* & :global(.contribution) {
 				font-size: var(--text-md);
 				@apply mb-0;
 				@apply mt-0;
-			}
+			} */
 
-			& :global(.person-extra) {
-				display: none;
-			}
-
-			& :global(.main-title) {
+			/* & :global(.main-title) {
 				font-weight: var(--font-weight-semibold);
-			}
+			} */
 
-			& :global(.translationOf .main-title),
+			/* & :global(.translationOf .main-title),
 			& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
 				font-weight: var(--font-weight-normal);
-			}
+			} */
 		}
 	}
 
 	.decorated-compact {
-		& :global(div:has(> .property-label)) {
-			/* override e.g isPartOf > hasTitle block */
-			display: inline;
+		& :global(dl[data-property] .person-extra) {
+			display: none;
 		}
 
-		& :global(span[data-property]) {
+		/* override e.g isPartOf > hasTitle block */
+		/* & :global(div:has(> .property-label)) {
 			display: inline;
+		} */
+
+		/* & :global(span[data-property]) {
+			display: inline;
+		} */
+
+		& :global(dt),
+		:global(.sublevel-label) {
+			font-style: italic;
+			&:after {
+				content: ': ';
+			}
 		}
 
-		& :global(div[data-property='isPartOf']:has(+ div[data-property='part'])) {
+		& :global(dl.ul-when-multiple:not(:has(> dd:nth-of-type(2))) > dt) {
+			display: inline-block;
+		}
+
+		/* & :global(div[data-property='isPartOf']:has(+ div[data-property='part'])) {
 			display: inline;
 		}
 		& :global(div[data-property='isPartOf'] + div[data-property='part']) {
@@ -814,25 +827,15 @@
 		}
 		& :global(div[data-property='isPartOf'] + div[data-property='part'])::before {
 			content: ' ; ';
-		}
+		} */
 
-		& :global(div .ul) {
+		/* & :global(div .ul) {
 			@apply py-1;
 			max-width: 80ch;
-		}
+		} */
 
-		& :global(div[data-property='_select']) {
+		& :global([data-property='_select']) {
 			font-weight: var(--font-weight-semibold);
-		}
-
-		& :global(.property-label) {
-			color: var(--color-body);
-			font-style: italic;
-		}
-
-		& :global(.property-label):not(:empty)::after {
-			color: var(--color-body);
-			content: ': ';
 		}
 
 		& :global(div[data-property]:not(:last-child)) {
@@ -850,19 +853,13 @@
 	}
 
 	.decorated-spacious {
-		& :global(.property-label) {
+		& :global(dt) {
 			font-size: var(--text-2xs);
+			color: var(--color-subtle);
 		}
 
-		& :global(small) {
-			display: block;
-
-			&::first-letter {
-				text-transform: capitalize;
-			}
-		}
-
-		& :global(div[data-property]:not(:last-child)) {
+		& :global(p[data-property]:not(:last-child)),
+		:global(dl[data-property]:not(:last-child)) {
 			margin-bottom: calc(var(--spacing) * 1.5);
 
 			@variant sm {
@@ -874,25 +871,17 @@
 	.decorated-details {
 		font-size: var(--text-sm);
 
-		& :global(.contribution) {
+		/* & :global(.contribution) {
 			font-size: var(--text-sm);
 			@apply mb-2;
 			@apply mt-1;
-		}
-
-		& :global(ul[data-property='hasTitle'] > li > span[data-type='Title']) {
-			font-weight: var(--font-weight-semibold);
-		}
-
-		& :global(li > span[data-type='PrimaryPublication']) {
-			font-weight: var(--font-weight-semibold);
-		}
+		} */
 
 		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
 		& :global([data-property='publication'] [data-property='appliesTo']) {
 			font-weight: var(--font-weight-normal);
 			color: var(--color-subtle);
-			font-size: var(--text-2xs);
+			text-transform: lowercase;
 		}
 	}
 
@@ -900,7 +889,7 @@
 		border-top: none;
 	}
 
-	.relation-list {
+	/* .relation-list {
 		@variant @max-3xl {
 			:global(ul > li:first-of-type) {
 				@apply ml-3;
@@ -918,7 +907,7 @@
 				}
 			}
 		}
-	}
+	} */
 
 	details[open] {
 		& .chevron {

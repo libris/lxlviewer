@@ -5,14 +5,13 @@
 	import popover from '$lib/actions/popover';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { LibraryResultItem, SearchResultItem } from '$lib/types/search';
-	import { JsonLd, LensType } from '$lib/types/xl';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import { type ResourceData } from '$lib/types/resourceData';
+	import { Fmt, JsonLd, LensType, type DisplayDecorated } from '$lib/types/xl';
+	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
 	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
 	import { page } from '$app/state';
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
@@ -20,6 +19,7 @@
 	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 	import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
+	import { isResourceNode } from '$lib/utils/resourceData';
 	import TypeIcon from '$lib/components/TypeIcon.svelte';
 	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
 	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
@@ -86,11 +86,19 @@
 		return url.toString();
 	});
 
-	const firstMediaLink = $derived(
-		item.mediaLinks &&
-			(item.mediaLinks?._display?.[0]?.associatedMedia?.[0]?.[JsonLd.ID] ||
-				item.mediaLinks?._display?.[0]?.associatedMedia?.[JsonLd.ID])
-	);
+	const firstMediaLink = $derived.by(() => {
+		if (!item.mediaLinks || !isResourceNode(item.mediaLinks)) {
+			return undefined;
+		}
+
+		const value = item.mediaLinks[Fmt.DISPLAY][0]?.[Fmt.VALUE];
+
+		if (Array.isArray(value)) {
+			return value[0]?.[JsonLd.ID];
+		}
+
+		return isResourceNode(value) ? value[JsonLd.ID] : undefined;
+	});
 
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
@@ -217,15 +225,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 									? 'aspect-2/3'
 									: 'aspect-square'}"
 							/>
-							<!--
-						{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
-							<div class="absolute -top-4 -left-4">
-								<div class="bg-page rounded-md p-1.5">
-									<svelte:component this={getTypeIcon(item['@type'])} class="h-6 w-6" />
-								</div>
-							</div>
-						{/if}
-						-->
 						{:else}
 							<div class="flex items-center justify-center">
 								<img
@@ -256,19 +255,18 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						<span class="font-medium">
 							{item.typeStr}
 						</span>
-						<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-						<span class="divider">{' · '}</span>
+						{#if isResourceNode(item[LensType.WebCardHeaderTop]) && item[LensType.WebCardHeaderTop]?.[Fmt.DISPLAY].length}
+							<span class="divider">{' · '}</span>
+						{/if}
 					{/if}
-					{#each item[LensType.WebCardHeaderTop]?._display as obj, index (index)}
-						<span>
-							<DecoratedData
-								data={obj}
-								showLabels={ShowLabelsOptions.Never}
-								{allowLinks}
-								{allowPopovers}
-							/>
-						</span>
-					{/each}
+					<DecoratedData2
+						data={item[LensType.WebCardHeaderTop]}
+						showLabels={ShowLabelsOptions.Never}
+						{allowLinks}
+						{allowPopovers}
+						parent={Elem.Span}
+						skipOuter={true}
+					/>
 				</p>
 				<hgroup>
 					<h2 class="decorated-heading card-header-title text-base">
@@ -278,123 +276,122 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							aria-describedby={`${bodyId} ${footerId}`}
 							onclick={passAlongAdjecentSearchResults}
 						>
-							<DecoratedData
+							<DecoratedData2
 								data={item['card-heading']}
 								showLabels={ShowLabelsOptions.Never}
 								{allowLinks}
 								{allowPopovers}
+								parent={Elem.A}
+								skipOuter={true}
 							/>
 						</a>
 					</h2>
 				</hgroup>
-				{#if item[LensType.WebCardHeaderExtra]?._display}
+				{#if isResourceNode(item[LensType.WebCardHeaderExtra]) && item[LensType.WebCardHeaderExtra]?.[Fmt.DISPLAY].length}
 					<p class="card-header-extra">
-						{#each item[LensType.WebCardHeaderExtra]?._display as obj, index (index)}
-							<span>
-								<DecoratedData
-									data={obj}
-									showLabels={ShowLabelsOptions.DefaultOn}
-									{allowLinks}
-									{allowPopovers}
-								/>
-							</span>
-						{/each}
+						<DecoratedData2
+							data={item[LensType.WebCardHeaderExtra]}
+							showLabels={ShowLabelsOptions.DefaultOn}
+							{allowLinks}
+							{allowPopovers}
+							parent={Elem.P}
+							skipOuter={true}
+						/>
 					</p>
 				{/if}
-				{#if item['_workTitle2']?._display}
+				{#if item['_workTitle2'] && isResourceNode(item['_workTitle2'])}
 					<p class="card-header-extra">
-						{#each item['_workTitle2']?._display as obj, index (index)}
-							<span>
-								<DecoratedData
-									data={obj}
-									showLabels={ShowLabelsOptions.DefaultOff}
-									{allowLinks}
-									{allowPopovers}
-								/>
-							</span>
-						{/each}
+						<DecoratedData2
+							data={item['_workTitle2']}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							{allowLinks}
+							{allowPopovers}
+							parent={Elem.P}
+							skipOuter={true}
+						/>
 					</p>
 				{/if}
 			</header>
-			{#if item[LxlLens.CardBody]?._display}
+			{#if isResourceNode(item[LxlLens.CardBody])}
 				<div class="card-body mt-1 text-sm" id={bodyId}>
-					{#each item[LxlLens.CardBody]?._display as obj, index (index)}
-						<div>
-							<DecoratedData
-								data={obj}
-								showLabels={ShowLabelsOptions.DefaultOff}
-								depth={2}
-								block
-								limit={{ contribution: 3, hasPart: 5, related: 5 }}
-								allowLinks={true}
-								{allowPopovers}
-							/>
-						</div>
-					{/each}
+					<DecoratedData2
+						data={item[LxlLens.CardBody]}
+						showLabels={ShowLabelsOptions.DefaultOff}
+						block
+						limit={{ contribution: 3, hasPart: 5, related: 5 }}
+						allowLinks={true}
+						{allowPopovers}
+						parent={Elem.Div}
+						skipOuter={true}
+					/>
 				</div>
 			{/if}
 		</div>
-		<footer
-			class="card-footer @container mt-1 flex flex-col-reverse flex-wrap md:flex-row"
-			id={footerId}
-		>
+		<footer class="card-footer @container mt-1" id={footerId}>
 			{#if item.selectTypeStr}
 				<span class="text-body font-medium">{item.selectTypeStr}</span>
 				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
 			{/if}
-			{#if item.selectTypeStr && item[LensType.WebCardFooter]?._display?.length}
-				<span class="hidden whitespace-pre-wrap md:inline">{' · '}</span>
+			{#if item.selectTypeStr && isResourceNode(item[LensType.WebCardFooter]) && item[LensType.WebCardFooter][Fmt.DISPLAY]?.length}
+				<span class="hidden whitespace-pre-wrap md:inline">{'·'}</span>
 			{/if}
-			<span>
-				{#each item[LensType.WebCardFooter]?._display as obj, index (index)}
-					{#if 'hasInstance' in obj}
-						{@const instances = getInstanceData(obj.hasInstance)}
-						{#if instances?.years}
-							{#if instances.count > 1}
-								{instances?.count}
-								{page.data.t('search.editions')}
-								{`(${instances.years})`}
-							{:else}
-								{instances.years}
-							{/if}
-						{/if}
-						{#if instances?.count === 1}
-							<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
-							<span class="divider">{' · '}</span>
-							{#each obj.hasInstance._display as obj2, index (index)}
-								<!-- FIXME we need publication for year, but don't want to show it again with the year -->
-								{#if !obj2.publication}
-									<DecoratedData
-										data={obj2}
-										showLabels={ShowLabelsOptions.Never}
-										{allowLinks}
-										{allowPopovers}
-									/>
+			{#if isResourceNode(item[LensType.WebCardFooter])}
+				<span>
+					{#each item[LensType.WebCardFooter]?.[Fmt.DISPLAY] as obj, index (index)}
+						{#if obj[Fmt.PROP] === 'hasInstance'}
+							{@const instances = getInstanceData(obj[Fmt.VALUE])}
+							{#if instances?.years}
+								{#if instances.count > 1}
+									{instances?.count}
+									{page.data.t('search.editions')}
+									{`(${instances.years})`}
+								{:else}
+									{instances.years}
 								{/if}
-							{/each}
+							{/if}
+							{#if instances?.count === 1 && isResourceNode(obj[Fmt.VALUE])}
+								{#each obj[Fmt.VALUE]?.[Fmt.DISPLAY] as obj2, index (index)}
+									<!-- FIXME we need publication for year, but don't want to show it again with the year -->
+									{#if obj2[Fmt.PROP] === 'publication' && !obj2[Fmt.VALUE]}
+										<span class="divider">{'·'}</span>
+										<DecoratedData2
+											data={obj2}
+											showLabels={ShowLabelsOptions.Never}
+											allowLinks={false}
+											{allowPopovers}
+											parent={Elem.Span}
+											skipOuter={true}
+										/>
+									{/if}
+								{/each}
+							{/if}
+						{:else}
+							<span>
+								<DecoratedData2
+									data={obj}
+									showLabels={ShowLabelsOptions.Never}
+									allowLinks={false}
+									{allowPopovers}
+									parent={Elem.Span}
+									limit={{ editionStatement: 1, publication: 1, identifier: 1 }}
+								/>
+							</span>
 						{/if}
-					{:else}
-						<span>
-							<DecoratedData
-								data={obj}
-								showLabels={ShowLabelsOptions.Never}
-								{allowLinks}
-								{allowPopovers}
-							/>
-						</span>
-					{/if}
-				{/each}
-			</span>
+					{/each}
+				</span>
+			{/if}
 		</footer>
 		{#if allowActions}
 			<div class="card-actions ml-auto flex w-full justify-end gap-1 pt-3 print:hidden">
 				{#if firstMediaLink}
 					{#snippet mediaLinksPopover()}
-						<DecoratedData
-							data={item.mediaLinks as ResourceData}
+						<DecoratedData2
+							data={item.mediaLinks as DisplayDecorated}
 							showLabels={ShowLabelsOptions.Never}
 							allowPopovers={false}
 							block
+							parent={Elem.Div}
+							skipOuter={true}
 						/>
 					{/snippet}
 					<a
@@ -510,7 +507,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	@reference 'tailwindcss';
 
 	.card-header-extra {
-		& :global(span[data-type='KeyTitle'] > span[data-property='rdf:type']) {
+		& :global(.Title-type) {
 			display: none;
 		}
 	}
@@ -587,13 +584,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.card-footer {
 		grid-area: footer;
-		/* hide dangling divider · */
-		& .divider {
-			display: none;
-		}
-		& :global(.divider:has(+ span:not(.divider))) {
-			display: inline;
-		}
 	}
 
 	.card-header-top,
@@ -604,22 +594,11 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		font-weight: var(--font-weight-normal);
 	}
 
-	.card-header-title {
+	/* .card-header-title {
 		& :global(span[data-property='hasTitle'] > span) {
 			display: block;
 		}
-	}
-
-	.card-header-top {
-		/* hide dangling divider · */
-		& .divider {
-			display: none;
-		}
-
-		& :global(.divider:has(+ span:not(.divider))) {
-			display: inline;
-		}
-	}
+	} */
 
 	.card-header {
 		& :global(span.Title-type) {
@@ -636,52 +615,41 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		}
 	}
 
-	/* TODO inline label style in DecoratedData */
 	.card-header-extra,
 	.card-body {
-		& :global(div:has(> .property-label)) {
-			/* override e.g isPartOf > hasTitle block */
+		/* & :global(div:has(> .property-label)) {
+			override e.g isPartOf > hasTitle block
 			display: inline;
+		} */
+
+		/* inline label in cards */
+
+		& :global(dl) {
+			margin-top: calc(var(--spacing) * 1);
 		}
 
-		& :global(span[data-property]) {
-			display: inline;
-		}
-
-		& :global(div[data-property] > div) {
-			display: inline;
-		}
-
-		/* FIXME */
-		& :global(div:has(> div[data-property='isPartOf'])),
-		& :global(div[data-property='isPartOf']),
-		& :global(div:has(> div[data-property='isPartOf']) + div:has(> div[data-property='part'])),
-		& :global(div[data-property='part']) {
-			display: inline;
-		}
-
-		& :global(div > div[data-property='part'])::before {
-			content: ' ; ';
-		}
-
-		& :global(.property-label) {
-			color: var(--color-body);
+		& :global(dt) {
+			display: inline-block;
 			font-style: italic;
+			&::after {
+				content: ': ';
+			}
 		}
 
-		& :global(.property-label):not(:empty)::after {
-			color: var(--color-body);
-			content: ': ';
+		& :global(dd) {
+			display: inline;
 		}
 
-		& :global(div[data-property='identifiedBy']) {
+		& :global([data-property='isPartOf']) {
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+
+		/* & :global(div[data-property='identifiedBy']) {
 			color: var(--color-subtle);
-		}
-
-		& :global(.contribution > ._contentBefore),
-		:global(.contribution > ._contentAfter) {
-			display: none;
-		}
+		} */
 	}
 
 	/* card in dialog */

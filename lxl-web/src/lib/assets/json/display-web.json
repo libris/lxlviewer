@@ -1230,7 +1230,10 @@
 				"manufacture",
 				"marc:primaryProvisionActivity"
 			],
-			"fresnel:propertyStyle": ["provisionActivity", "label", "ul-when-multiple"]
+			"fresnel:propertyStyle": ["provisionActivity", "label", "ul-when-multiple"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
@@ -1254,9 +1257,11 @@
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
 			"fresnel:propertyFormatDomain": ["marc:sequenceStatus", "appliesTo"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " ",
+				"fresnel:contentBefore": "(",
+				"fresnel:contentAfter": ")",
 				"fresnel:contentFirst": ""
-			}
+			},
+			"fresnel:propertyStyle": ["ProvisionActivity"]
 		},
 		"ProvisionActivity-endYear-format": {
 			"TODO": "endYear without startYear? fresnel:contentNoValue on startYear? but we only want it when endYear is present",
@@ -1380,9 +1385,10 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["rdf:type"],
-			"fresnel:propertyStyle": ["Title-type"],
+			"fresnel:propertyStyle": ["Title-type lowercase"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": "",
+				"fresnel:contentBefore": "(",
+				"fresnel:contentAfter": ")",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -1391,13 +1397,20 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Contribution"],
 			"fresnel:propertyFormatDomain": ["role"],
-			"fresnel:propertyStyle": ["contribution-role"],
+			"fresnel:propertyStyle": ["contribution-role lowercase"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
 				"fresnel:contentAfter": ")",
 				"fresnel:contentLast": ")"
 			}
+		},
+		"PrimaryContribution-format": {
+			"@id": "PrimaryContribution-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["PrimaryContribution"],
+			"fresnel:propertyFormatDomain": ["agent"],
+			"fresnel:propertyStyle": ["PrimaryContribution"]
 		},
 		"Meeting-format": {
 			"NOTE": "This ia a workaround for old MARC formatting inside the fields",
@@ -1581,7 +1594,10 @@
 			"@id": "seriesMembership-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["seriesMembership"],
-			"fresnel:propertyStyle": ["label", "ul-when-multiple"]
+			"fresnel:propertyStyle": ["label", "ul-when-multiple"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"isPartOf-format": {
 			"@id": "isPartOf-format",
@@ -1594,7 +1610,10 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["hasPart"],
-			"fresnel:propertyStyle": ["label", "ul"]
+			"fresnel:propertyStyle": ["label", "ul"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"Work-relationship-format": {
 			"@id": "Work-relationship-format",
@@ -2141,7 +2160,7 @@
 				"fresnel:contentBefore": " (",
 				"fresnel:contentAfter": ")"
 			},
-			"fresnel:propertyStyle": ["label"]
+			"fresnel:propertyStyle": ["label", "force-sublevel-label"]
 		},
 		"_Types-identify": {
 			"@id": "_Types-identify",

@@ -8,10 +8,10 @@
 		UnknownLibrary
 	} from '$lib/types/holdings';
 	import { Fmt, JsonLd } from '$lib/types/xl';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { createHoldingLinks } from '$lib/utils/holdings';
 	import LoanStatus from './LoanStatus.svelte';
-	import DecoratedData from './DecoratedData.svelte';
+	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 
@@ -83,25 +83,23 @@
 
 {#snippet ItemSnippet(instance: InstanceWithLinks, bestLink?: string)}
 	{#if bestLink || instance.linkResolver}
-		<li class="flex gap-2">
-			<!-- instance best link -->
-			{#if bestLink}
-				<a
-					href={getBestLink(instance)}
-					target="_blank"
-					class="ext-link"
-					aria-label={page.data.t('holdings.findAtLibrary')}
-				>
-					{page.data.t('holdings.linkToLocal')}
-				</a>
-			{/if}
-			<!-- instance linkserver link -->
-			{#if instance.linkResolver}
-				<a href={instance.linkResolver.uri} target="_blank" class="ext-link">
-					{instance.linkResolver.label}
-				</a>
-			{/if}
-		</li>
+		<!-- instance best link -->
+		{#if bestLink}
+			<a
+				href={getBestLink(instance)}
+				target="_blank"
+				class="ext-link"
+				aria-label={page.data.t('holdings.findAtLibrary')}
+			>
+				{page.data.t('holdings.linkToLocal')}
+			</a>
+		{/if}
+		<!-- instance linkserver link -->
+		{#if instance.linkResolver}
+			<a href={instance.linkResolver.uri} target="_blank" class="ext-link">
+				{instance.linkResolver.label}
+			</a>
+		{/if}
 	{/if}
 	{#each instance?.items as item, index (`items-${index}`)}
 		{@const hasItemMedia = item.itemMedia?.[Fmt.DISPLAY]?.length}
@@ -109,35 +107,52 @@
 		{@const hasItemNote = item.itemNote?.[Fmt.DISPLAY]?.length}
 
 		{#if hasItemMedia || hasItemShelf || hasItemNote}
-			<li>
-				{#if hasItemMedia}
-					<!-- item media -->
-					<p>
-						<span class="text-subtle">{page.data.t('holdings.itemMedia')}: </span>
-						<DecoratedData data={item.itemMedia} showLabels={ShowLabelsOptions.DefaultOff} />
-					</p>
-				{/if}
-				{#if hasItemShelf}
-					<!-- item shelf -->
-					<p>
-						<span class="text-subtle">{page.data.t('holdings.itemShelf')}: </span>
-						<DecoratedData data={item.itemShelf} showLabels={ShowLabelsOptions.DefaultOff} />
-					</p>
-				{/if}
-				{#if hasItemNote}
-					<!-- Item note -->
-					<p>
-						<span class="text-subtle">{page.data.t('holdings.itemNote')}: </span>
-						<DecoratedData data={item.itemNote} showLabels={ShowLabelsOptions.DefaultOff} />
-					</p>
-				{/if}
-			</li>
+			{#if hasItemMedia}
+				<!-- item media -->
+				<dl>
+					<dt class="text-subtle">{page.data.t('holdings.itemMedia')}:</dt>
+					<dd>
+						<DecoratedData2
+							data={item.itemMedia}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							parent={Elem.Dd}
+							skipOuter={true}
+						/>
+					</dd>
+				</dl>
+			{/if}
+			{#if hasItemShelf}
+				<!-- item shelf -->
+				<dl>
+					<dt class="text-subtle">{page.data.t('holdings.itemShelf')}:</dt>
+					<dd>
+						<DecoratedData2
+							data={item.itemShelf}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							parent={Elem.Dd}
+							skipOuter={true}
+						/>
+					</dd>
+				</dl>
+			{/if}
+			{#if hasItemNote}
+				<!-- Item note -->
+				<dl>
+					<dt class="text-subtle">{page.data.t('holdings.itemNote')}:</dt>
+					<dd>
+						<DecoratedData2
+							data={item.itemNote}
+							showLabels={ShowLabelsOptions.DefaultOff}
+							parent={Elem.Dd}
+							skipOuter={true}
+						/>
+					</dd>
+				</dl>
+			{/if}
 		{/if}
 	{/each}
 	{#if instance.itemStatus?.[0]}
-		<li>
-			<LoanStatus sigel={holder.sigel} bibIdObj={instance} />
-		</li>
+		<LoanStatus sigel={holder.sigel} bibIdObj={instance} />
 	{/if}
 {/snippet}
 
@@ -146,7 +161,7 @@
 		class="border-neutral bg-page flex flex-col rounded-sm border-b p-3"
 		aria-labelledby={`holder-${holder[JsonLd.ID]}`}
 	>
-		<div class="holder-heading flex items-baseline justify-between">
+		<header class="holder-heading flex items-baseline justify-between">
 			<h3 class="text-base font-medium sm:text-sm" id={`holder-${holder[JsonLd.ID]}`}>
 				{holder.displayStr || holder.name || holder[JsonLd.ID]}
 			</h3>
@@ -169,41 +184,39 @@
 					({numInstances})</button
 				>
 			{/if}
-		</div>
+		</header>
 		{#if !isLibraryWithLinks(holder)}
 			<div class="text-severe-600 bg-severe-50 mt-2 rounded-sm p-2">
 				<p>{page.data.t('errors.notAvailable')}</p>
 			</div>
 		{:else}
-			<ul class="mt-1 flex flex-col gap-1 text-sm sm:text-xs">
+			<div class="mt-1 flex flex-col gap-1 text-sm sm:text-xs">
 				{#if numInstances > 1 && expanded}
 					<!-- multiple instances list -->
-					{#each shownInstances as instance (instance.bibId)}
-						{@const bestLink = getBestLink(instance)}
-						<li class="instance-one-of-many gap-1">
-							<h4 class="mb-1 font-medium">{instance.publicationStr || '-'}</h4>
-							<!-- instance item data -->
-							<ul class="flex flex-col gap-0.5">
-								{@render ItemSnippet(instance, bestLink)}
-							</ul>
-						</li>
-					{/each}
+					<ul>
+						{#each shownInstances as instance (instance.bibId)}
+							{@const bestLink = getBestLink(instance)}
+							<li class="instance-one-of-many gap-1">
+								<h4 class="mb-1 font-medium">{instance.publicationStr || '-'}</h4>
+								<!-- instance item data -->
+								<div class="flex flex-col gap-0.5">
+									{@render ItemSnippet(instance, bestLink)}
+								</div>
+							</li>
+						{/each}
+					</ul>
 					<!-- show more/less button -->
 					{#if instancesCanExpand}
-						<li class="mb-2">
-							<button class="link-subtle text-xs" onclick={() => (instanceLimit = numInstances)}>
-								{page.data.t('holdings.showAll')} ({numInstances})
-							</button>
-						</li>
+						<button class="link-subtle text-xs mb-2" onclick={() => (instanceLimit = numInstances)}>
+							{page.data.t('holdings.showAll')} ({numInstances})
+						</button>
 					{:else if instancesCanCollapse}
-						<li class="mb-2">
-							<button
-								class="link-subtle text-xs"
-								onclick={() => (instanceLimit = DEFAULT_INSTANCE_LIMIT)}
-							>
-								{page.data.t('holdings.showFewer')}
-							</button>
-						</li>
+						<button
+							class="link-subtle text-xs mb-2"
+							onclick={() => (instanceLimit = DEFAULT_INSTANCE_LIMIT)}
+						>
+							{page.data.t('holdings.showFewer')}
+						</button>
 					{/if}
 				{/if}
 				<!-- single instance item data & loan status -->
@@ -213,47 +226,43 @@
 				{/if}
 				<!-- Lopac general links / single instance linkserver link -->
 				{#if holder._links.myLoansLink || holder._links.registrationLink}
-					<li>
-						<div class="ml-4 flex flex-row gap-2">
-							{#if holder._links.myLoansLink}
-								<a target="_blank" class="ext-link" href={holder._links.myLoansLink}>
-									{page.data.t('holdings.myLoans')}
-								</a>
-							{/if}
-							{#if holder._links.registrationLink}
-								<a target="_blank" class="ext-link" href={holder._links.registrationLink}>
-									{page.data.t('holdings.applyForCard')}
-								</a>
-							{/if}
-						</div>
-					</li>
+					<div class="ml-4 flex flex-row gap-2">
+						{#if holder._links.myLoansLink}
+							<a target="_blank" class="ext-link" href={holder._links.myLoansLink}>
+								{page.data.t('holdings.myLoans')}
+							</a>
+						{/if}
+						{#if holder._links.registrationLink}
+							<a target="_blank" class="ext-link" href={holder._links.registrationLink}>
+								{page.data.t('holdings.applyForCard')}
+							</a>
+						{/if}
+					</div>
 				{/if}
 				<!-- opening hours / adress -->
 				{#if hasOpeningHoursEtc}
-					<li>
-						<details class="w-full">
-							<summary class="link-subtle flex cursor-pointer items-center gap-1">
-								<span
-									class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
-								>
-									<BiChevronRight />
-								</span>
-								<span>{page.data.t('holdings.openingHoursEtc')}</span>
-							</summary>
-							<div class="border-neutral bg-page mt-2 max-w-md rounded-sm border p-2">
-								<ul class="whitespace-pre-line">
-									{#each holder._links.openingHours as openingHours, i (i)}
-										<li>{openingHours}</li>
-									{/each}
-									{#each holder._links.address as address, i (i)}
-										<li>{address}</li>
-									{/each}
-								</ul>
-							</div>
-						</details>
-					</li>
+					<details class="w-full">
+						<summary class="link-subtle flex cursor-pointer items-center gap-1">
+							<span
+								class="chevron text-subtle flex h-3 origin-center rotate-0 items-center transition-transform"
+							>
+								<BiChevronRight />
+							</span>
+							<span>{page.data.t('holdings.openingHoursEtc')}</span>
+						</summary>
+						<div class="border-neutral bg-page mt-2 max-w-md rounded-sm border p-2">
+							<ul class="whitespace-pre-line">
+								{#each holder._links.openingHours as openingHours, i (i)}
+									<li>{openingHours}</li>
+								{/each}
+								{#each holder._links.address as address, i (i)}
+									<li>{address}</li>
+								{/each}
+							</ul>
+						</div>
+					</details>
 				{/if}
-			</ul>
+			</div>
 			{#if holder?.distance}
 				<footer>
 					<p class="text-subtle text-right">
@@ -266,6 +275,14 @@
 </li>
 
 <style>
+	.holder dl {
+		margin-bottom: calc(var(--spacing) * 1);
+	}
+
+	.instance-one-of-many dl {
+		margin-bottom: calc(var(--spacing) * 2);
+	}
+
 	details[open] {
 		& .chevron {
 			rotate: 90deg;

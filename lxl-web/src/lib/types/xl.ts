@@ -44,7 +44,9 @@ export enum Fmt {
 	STYLE = '_style',
 	LABEL = '_label',
 	FIND_LINK = '_findLink',
-	HTML = '_html'
+	HTML = '_html',
+	PROP = '_prop',
+	VALUE = '_value'
 }
 
 // https://github.com/libris/definitions/blob/develop/source/vocab/base.ttl
@@ -244,7 +246,39 @@ export interface LensedOrdered {
 	[JsonLd.TYPE]: ClassName;
 	[Fmt.PROPS]: LensedOrdered[];
 }
-export type DisplayDecorated = unknown;
+// export type DisplayDecorated = unknown;
+export type DisplayDecorated =
+	| ResourceNode
+	| ResourceNode[]
+	| PropertyNode
+	| PropertyNode[]
+	| HtmlNode
+	| string;
+
+export type ResourceNode = {
+	[JsonLd.ID]?: string;
+	[JsonLd.TYPE]?: string;
+	[JsonLd.VALUE]?: string;
+	[Fmt.DISPLAY]: PropertyNode[];
+	[Fmt.STYLE]?: string[];
+	[Fmt.LABEL]?: string;
+	[Fmt.CONTENT_BEFORE]?: string;
+	[Fmt.CONTENT_AFTER]?: string;
+	[Fmt.FIND_LINK]?: string;
+};
+
+export type PropertyNode = {
+	[Fmt.PROP]: string;
+	[Fmt.VALUE]: ResourceNode | ResourceNode[] | HtmlNode | string;
+	[Fmt.STYLE]?: string[];
+	[Fmt.LABEL]?: string;
+	[Fmt.CONTENT_BEFORE]?: string;
+	[Fmt.CONTENT_AFTER]?: string;
+};
+
+export type HtmlNode = {
+	[Fmt.HTML]: string;
+};
 
 export type StyleList = string[];
 export type DisplayDecoratedLite = (string | [string, StyleList])[];

@@ -1,6 +1,5 @@
-import type { ResourceData } from '$lib/types/resourceData';
 import type { SearchResultItem } from '$lib/types/search';
-import { type DisplayDecorated } from '$lib/types/xl';
+import { Fmt, type DisplayDecorated, type PropertyNode } from '$lib/types/xl';
 
 type DigitalAccess = {
 	online?: DisplayDecorated;
@@ -9,13 +8,13 @@ type DigitalAccess = {
 
 export function getResourceDigitalAccess(
 	overview2: DisplayDecorated[],
-	instances: SearchResultItem[] | ResourceData[],
-	workCard: SearchResultItem | null,
+	instances: SearchResultItem[],
+	workCard: SearchResultItem,
 	isWork: boolean
 ): DigitalAccess {
 	const result: DigitalAccess = {};
 	const hasReproduction = overview2?.[1]?._display?.filter(
-		(p: DisplayDecorated) => p?.hasReproduction
+		(p: PropertyNode) => p[Fmt.PROP] === 'hasReproduction'
 	);
 
 	if (isWork) {
