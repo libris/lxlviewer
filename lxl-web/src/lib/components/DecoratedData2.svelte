@@ -191,7 +191,7 @@
 	{:else if label && isBlock && isPropertyNode(data)}
 		{@render before(data, !isBlock)}
 		<dl class={styles} data-property={prop} data-type={type}>
-			<dt>
+			<dt class="first-letter:capitalize">
 				{label}
 			</dt>
 			{@render node(data, Elem.Dl)}
@@ -240,7 +240,7 @@
 		{const forcedLabel = forceLabel(data)}
 		<span class={styles} data-property={prop} data-type={type}>
 			{#if forcedLabel}
-				{forcedLabel}
+				<span class="sublevel-label">{forcedLabel}</span>
 			{/if}
 			{@render before(data, !isBlock)}
 			{@render node(data, parent)}

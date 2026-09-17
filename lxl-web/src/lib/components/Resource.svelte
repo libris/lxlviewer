@@ -682,9 +682,11 @@
 			margin-bottom: calc(var(--spacing) * 2.5);
 		}
 
-		& :global(.ul[data-property='hasTitle']),
-		& :global(.dl[data-property='hasTitle']) {
-			& :global(.main-title) {
+		/* semibold styles - only if list of many */
+
+		& :global(ul[data-property]:has(> li:nth-of-type(2))),
+		& :global(dl[data-property]:has(> dd:nth-of-type(2))) {
+			& :global([data-property='mainTitle']) {
 				font-weight: var(--font-weight-semibold);
 			}
 
@@ -693,9 +695,15 @@
 			}
 		}
 
-		& :global(ul.contribution),
-		& :global(dl.contribution) {
+		& :global(ul.contribution:has(> li:nth-of-type(2))),
+		& :global(dl.contribution:has(> dd:nth-of-type(2))) {
 			& :global(.PrimaryContribution) {
+				font-weight: var(--font-weight-semibold);
+			}
+		}
+
+		& :global(dl[data-property='publication']:has(> dd:nth-of-type(2))) {
+			& :global(dd[data-type='PrimaryPublication']) {
 				font-weight: var(--font-weight-semibold);
 			}
 		}
@@ -799,14 +807,19 @@
 			display: inline;
 		} */
 
-		& :global(dt) {
+		& :global(dt),
+		:global(.sublevel-label) {
 			font-style: italic;
 			&:after {
 				content: ': ';
 			}
 		}
 
-		& :global(div[data-property='isPartOf']:has(+ div[data-property='part'])) {
+		& :global(dl.ul-when-multiple:not(:has(> dd:nth-of-type(2))) > dt) {
+			display: inline;
+		}
+
+		/* & :global(div[data-property='isPartOf']:has(+ div[data-property='part'])) {
 			display: inline;
 		}
 		& :global(div[data-property='isPartOf'] + div[data-property='part']) {
@@ -814,7 +827,7 @@
 		}
 		& :global(div[data-property='isPartOf'] + div[data-property='part'])::before {
 			content: ' ; ';
-		}
+		} */
 
 		/* & :global(div .ul) {
 			@apply py-1;
@@ -863,14 +876,6 @@
 			@apply mb-2;
 			@apply mt-1;
 		} */
-
-		& :global(dl[data-property='hasTitle'] dd[data-type='Title']) {
-			font-weight: var(--font-weight-semibold);
-		}
-
-		& :global(dl[data-property='publication'] dd[data-type='PrimaryPublication']) {
-			font-weight: var(--font-weight-semibold);
-		}
 
 		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
 		& :global([data-property='publication'] [data-property='appliesTo']) {
