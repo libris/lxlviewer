@@ -695,6 +695,10 @@
 			}
 		}
 
+		& :global(.translationOf [data-property='mainTitle']) {
+			font-weight: var(--font-weight-normal) !important;
+		}
+
 		& :global(ul.contribution:has(> li:nth-of-type(2))),
 		& :global(dl.contribution:has(> dd:nth-of-type(2))) {
 			& :global(.PrimaryContribution) {
