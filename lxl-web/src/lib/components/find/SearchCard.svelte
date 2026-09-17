@@ -623,24 +623,29 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			display: inline;
 		} */
 
-		/* & :global(span[data-property]) {
-			display: inline;
-		} */
+		/* inline label in cards */
 
-		/* & :global(div[data-property] > div) {
-			display: inline;
-		} */
+		& :global(dl) {
+			margin-top: calc(var(--spacing) * 1);
+		}
 
-		/* FIXME */
-		& :global(div:has(> div[data-property='isPartOf'])),
-		& :global(div[data-property='isPartOf']),
-		& :global(div:has(> div[data-property='isPartOf']) + div:has(> div[data-property='part'])),
-		& :global(div[data-property='part']) {
+		& :global(dt) {
+			display: inline-block;
+			font-style: italic;
+			&::after {
+				content: ': ';
+			}
+		}
+
+		& :global(dd) {
 			display: inline;
 		}
 
-		& :global(div > div[data-property='part'])::before {
-			content: ' ; ';
+		& :global([data-property='isPartOf']) {
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
 		}
 
 		/* & :global(div[data-property='identifiedBy']) {
