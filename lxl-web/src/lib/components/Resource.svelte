@@ -689,10 +689,6 @@
 			& :global([data-property='mainTitle']) {
 				font-weight: var(--font-weight-semibold);
 			}
-
-			& :global(.person-extra) {
-				display: none;
-			}
 		}
 
 		& :global(.translationOf [data-property='mainTitle']) {
@@ -802,6 +798,10 @@
 	}
 
 	.decorated-compact {
+		& :global(dl[data-property] .person-extra) {
+			display: none;
+		}
+
 		/* override e.g isPartOf > hasTitle block */
 		/* & :global(div:has(> .property-label)) {
 			display: inline;
@@ -820,7 +820,7 @@
 		}
 
 		& :global(dl.ul-when-multiple:not(:has(> dd:nth-of-type(2))) > dt) {
-			display: inline;
+			display: inline-block;
 		}
 
 		/* & :global(div[data-property='isPartOf']:has(+ div[data-property='part'])) {

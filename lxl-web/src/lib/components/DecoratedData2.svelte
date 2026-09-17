@@ -239,10 +239,10 @@
 	{:else if styles?.length || hasContent}
 		{const forcedLabel = forceLabel(data)}
 		<span class={styles} data-property={prop} data-type={type}>
-			{#if forcedLabel}
-				<span class="sublevel-label">{forcedLabel}</span>
-			{/if}
 			{@render before(data, !isBlock)}
+			{#if forcedLabel}
+				<span class="sublevel-label inline-block first-letter:capitalize">{forcedLabel}</span>
+			{/if}
 			{@render node(data, parent)}
 			{@render after(data, !isBlock)}
 		</span>
@@ -340,15 +340,5 @@
 		&::marker {
 			color: var(--color-subtle);
 		}
-	}
-
-	.force-sublevel-label {
-		/* make text-transform work */
-		display: inline-block;
-	}
-
-	dl::first-letter,
-	.force-sublevel-label::first-letter {
-		text-transform: uppercase;
 	}
 </style>
