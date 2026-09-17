@@ -183,7 +183,8 @@
 								"termComponentList",
 								"code"
 							]
-						}
+						},
+						"_find"
 					]
 				},
 				"Category": {
@@ -239,7 +240,13 @@
 					"@id": "Classification-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Classification",
-					"showProperties": ["code", "prefLabel", "inScheme", "_find"]
+					"showProperties": [
+						{
+							"alternateProperties": ["prefLabel", "code"]
+						},
+						"inScheme",
+						"_find"
+					]
 				},
 				"ClassificationDdc": {
 					"@id": "ClassificationDdc-chips",
@@ -1514,6 +1521,12 @@
 			"fresnel:classFormatDomain": ["GenreForm"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"WorkCategory-format": {
+			"@id": "WorkCategory-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["WorkCategory"],
+			"fresnel:resourceStyle": ["link"]
+		},
 		"GenreForm-relations-format": {
 			"@id": "GenreForm-relations-format",
 			"@type": "fresnel:Format",
@@ -1534,7 +1547,7 @@
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Subject"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["findToTop()", "link"]
 		},
 		"SeriesMembership-seriesStatement-format": {
 			"@id": "Subject-format",
@@ -1660,7 +1673,7 @@
 			"@id": "Classification-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Classification"],
-			"fresnel:resourceStyle": ["findToTop()"]
+			"fresnel:resourceStyle": ["findToTop()", "link"]
 		},
 		"Classification-inScheme-format": {
 			"@id": "Classification-inScheme-format",
