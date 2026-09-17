@@ -1230,7 +1230,10 @@
 				"manufacture",
 				"marc:primaryProvisionActivity"
 			],
-			"fresnel:propertyStyle": ["provisionActivity", "label", "ul-when-multiple"]
+			"fresnel:propertyStyle": ["provisionActivity", "label", "ul-when-multiple"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
@@ -1591,7 +1594,10 @@
 			"@id": "seriesMembership-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["seriesMembership"],
-			"fresnel:propertyStyle": ["label", "ul-when-multiple"]
+			"fresnel:propertyStyle": ["label", "ul-when-multiple"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"isPartOf-format": {
 			"@id": "isPartOf-format",
@@ -1604,7 +1610,10 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["hasPart"],
-			"fresnel:propertyStyle": ["label", "ul"]
+			"fresnel:propertyStyle": ["label", "ul"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"Work-relationship-format": {
 			"@id": "Work-relationship-format",

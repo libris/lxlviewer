@@ -173,15 +173,14 @@
 	{const hasContent =
 		!isHtmlNode(data) && (Fmt.CONTENT_BEFORE in data || Fmt.CONTENT_AFTER in data)}
 
+	<!-- skip -->
 	{#if skip}
 		{@render node(data, parent)}
-		<!-- exit -->
+		<!-- suppress -->
 	{:else if prop && suppressProperty?.includes(prop)}
 		<!-- html -->
 	{:else if isPropertyNode(data) && isHtmlNode(data[Fmt.VALUE])}
-		<div class="markdown [&>p]:mb-2 [&>ul]:list-inside [&>ul]:list-disc">
-			{@render html(data[Fmt.VALUE])}
-		</div>
+		{@render html(data[Fmt.VALUE])}
 		<!-- dl -->
 	{:else if label && isBlock && isPropertyNode(data)}
 		{@render before(data, !isBlock)}
@@ -191,19 +190,12 @@
 			</dt>
 			{@render node(data, Elem.Dl)}
 		</dl>
-		{@render before(data, !isBlock)}
+		{@render after(data, !isBlock)}
 	{:else if parent === Elem.Dl}
 		<dd class={[!isBlock && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
 			{@render before(data, !isBlock)}
 			{#if link}
-				<a
-					href={target ? link : resolve(link)}
-					{target}
-					class={styles}
-					use:conditionalPopover={data}
-				>
-					{@render node(data, Elem.A)}
-				</a>
+				{@render linkSnippet(data, link, target, styles)}
 			{:else}
 				{@render node(data, Elem.Dd)}
 			{/if}
@@ -220,14 +212,7 @@
 		<li class={[!isBlock && 'inline', link ? '' : styles]} data-property={prop} data-type={type}>
 			{@render before(data, !isBlock)}
 			{#if link}
-				<a
-					href={target ? link : resolve(link)}
-					{target}
-					class={styles}
-					use:conditionalPopover={data}
-				>
-					{@render node(data, Elem.A)}
-				</a>
+				{@render linkSnippet(data, link, target, styles)}
 			{:else}
 				{@render node(data, Elem.Li)}
 			{/if}
@@ -236,16 +221,7 @@
 		<!-- a -->
 	{:else if link && parent !== Elem.A}
 		{@render before(data, !isBlock)}
-		<a
-			href={target ? link : resolve(link)}
-			class={styles}
-			data-property={prop}
-			{target}
-			data-type={type}
-			use:conditionalPopover={data}
-		>
-			{@render node(data, Elem.A)}
-		</a>
+		{@render linkSnippet(data, link, target, styles)}
 		{@render after(data, !isBlock)}
 		<!-- p -->
 	{:else if !label && isBlock}
@@ -267,6 +243,12 @@
 	{:else}
 		{@render node(data, parent)}
 	{/if}
+{/snippet}
+
+{#snippet linkSnippet(data: Node, link: string, target: string | null, styles: Styles)}
+	<a href={target ? link : resolve(link)} {target} class={styles} use:conditionalPopover={data}>
+		{@render node(data, Elem.A)}
+	</a>
 {/snippet}
 
 {#snippet node(data: Node, parent: Parent)}
@@ -308,8 +290,10 @@
 {/snippet}
 
 {#snippet html(data: HtmlNode)}
-	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-	{@html data[Fmt.HTML]}
+	<div class="markdown [&>p]:mb-2 [&>ul]:list-inside [&>ul]:list-disc">
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+		{@html data[Fmt.HTML]}
+	</div>
 {/snippet}
 
 {#snippet delimiter(data: PropertyNode, parent: Parent, limit: number)}
