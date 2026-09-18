@@ -49,14 +49,6 @@
 }
 
 @font-face {
-	font-family: 'InterDisplay';
-	font-style: normal;
-	font-weight: 500;
-	font-display: swap;
-	src: url('/fonts/InterDisplay-Medium.woff2') format('woff2');
-}
-
-@font-face {
 	font-family: 'KB Serif';
 	font-style: normal;
 	font-weight: 400;
@@ -96,7 +88,7 @@
 	--theme-primary-950: oklch(33.73% 0.064 125.83);
 
 	--font-fallback: ui-sans-serif, system-ui, sans-serif;
-	--font-serif-fallback: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+	--font-heading-fallback: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
 
 	--color-success: #2ab061;
 
@@ -120,9 +112,8 @@
 
 	--font-sans: 'Inter', var(--font-fallback);
 	--font-body: var(--font-sans);
-	--font-serif: 'KB Serif', var(--font-serif-fallback);
 
-	--font-heading: 'InterDisplay', var(--font-fallback);
+	--font-heading: 'KB Serif', var(--font-heading-fallback);
 
 	--text-5xs: 0.5625rem; /* 9px */
 	--text-4xs: 0.625rem; /* 10px */

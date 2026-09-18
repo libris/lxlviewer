@@ -30,9 +30,9 @@
 	</header>
 {/if}
 <div class="m-auto flex flex-col p-8 text-center">
-	<h1 class="font-serif pb-1 text-4xl font-medium">{page.status}</h1>
+	<h1 class="font-heading pb-1 text-4xl font-medium">{page.status}</h1>
 	{#if page.status === 404}
-		<h2 class="font-heading pb-4 text-lg font-medium">{page.data.t('errors.notFound')}</h2>
+		<h2 class="pb-4 text-lg font-medium">{page.data.t('errors.notFound')}</h2>
 		<p>{page.data.t('errors.wrongLink')}</p>
 		<p>
 			{page.data.t('errors.sendEmail')}
