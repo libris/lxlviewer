@@ -11,7 +11,7 @@
 			>
 				<h2
 					id="explore-categories"
-					class="mr-3 font-serif text-lg whitespace-nowrap @lg:text-xl @3xl:text-2xl lg:@7xl:text-xl"
+					class="font-heading mr-3 text-lg whitespace-nowrap @lg:text-xl @3xl:text-2xl lg:@7xl:text-xl"
 				>
 					{page.data.t('search.exploreCategories')}
 				</h2>

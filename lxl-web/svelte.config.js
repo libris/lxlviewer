@@ -29,7 +29,8 @@ const config = {
 				'base-uri': ['self'],
 				'form-action': ['self'],
 				'frame-ancestors': ['self', 'http://*.kb.se', 'http://*.localhost:*'],
-				'img-src': ['self', 'kb.se', '*.kb.se', 'data:']
+				'img-src': ['self', 'kb.se', '*.kb.se', 'data:'],
+				'font-src': ['self', 'https://cdn.kb.se/']
 			}
 		},
 		experimental: {
