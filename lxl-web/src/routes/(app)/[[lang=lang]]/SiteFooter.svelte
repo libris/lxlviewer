@@ -14,7 +14,7 @@
 	<div class="flex flex-col gap-4 sm:flex-row sm:gap-16 [&_li>*]:text-sm">
 		{#each sections as section (section.id)}
 			<nav class="flex flex-col gap-2" aria-labelledby={section.id}>
-				<p class="font-serif font-medium text-lg" id={section.id}>
+				<p class="font-heading font-medium text-lg" id={section.id}>
 					{#if section.titleKey}
 						{page.data.t(section.titleKey)}
 					{/if}
