@@ -17,14 +17,14 @@
 
 	div {
 		& :global(h1) {
-			font-family: var(--font-heading);
+			font-family: var(--font-serif);
 			font-size: var(--text-3xl);
 			font-weight: var(--font-weight-medium);
 		}
 
 		& :global(h2) {
 			margin-top: calc(var(--spacing) * 6);
-			font-family: var(--font-heading);
+			font-family: var(--font-serif);
 			font-size: var(--text-2xl);
 			font-weight: var(--font-weight-medium);
 		}

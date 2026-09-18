@@ -1,9 +1,9 @@
 /* heading */
 #cc-main .cm__title,
 #cc-main .pm__title {
-	font-family: var(--font-heading);
+	font-family: var(--font-serif);
 	font-size: var(--text-2xl);
-	font-weight: var(--font-normal);
+	font-weight: var(--font-weight-medium);
 }
 
 /* subheading */
