@@ -342,7 +342,7 @@
 			</section>
 			{#if decoratedData.summary.length}
 				<section class="print:break-before-page">
-					<h2 id={`${uidPrefix}summary`} class="font-heading mb-3 text-xl font-medium">
+					<h2 id={`${uidPrefix}summary`} class="font-heading mb-4 text-xl font-medium">
 						{page.data.t('resource.summary')}
 					</h2>
 					{#snippet summary()}
@@ -378,7 +378,7 @@
 			{/if}
 			{#if relations?.length}
 				<section class="print:hidden">
-					<h2 id={`${uidPrefix}relations`} class="font-heading mb-6 text-xl font-medium">
+					<h2 id={`${uidPrefix}relations`} class="font-heading mb-4 text-xl font-medium">
 						{page.data.t('resource.relations')}
 					</h2>
 					<ul>
@@ -440,7 +440,7 @@
 				<section>
 					<h2
 						id={`${uidPrefix}resourceTableOfContents`}
-						class="font-heading mb-3 text-xl font-medium"
+						class="font-heading mb-4 text-xl font-medium"
 					>
 						{page.data.t('resource.tableOfContents')}
 					</h2>
