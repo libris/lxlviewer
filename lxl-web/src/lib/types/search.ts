@@ -18,8 +18,8 @@ export interface SearchResult {
 	totalItems: number;
 	maxItems: number;
 	mapping: DisplayMapping[];
-	first: Link;
-	last: Link;
+	first?: Link;
+	last?: Link;
 	next?: Link;
 	previous?: Link;
 	items: SearchResultItem[];
@@ -136,8 +136,8 @@ export interface PartialCollectionView {
 	search: {
 		mapping: SearchMapping[];
 	};
-	first: Link;
-	last: Link;
+	first?: Link;
+	last?: Link;
 	previous?: Link;
 	next?: Link;
 	items: FramedData[];
