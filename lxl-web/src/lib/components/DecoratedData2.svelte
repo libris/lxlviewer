@@ -170,11 +170,11 @@
 
 {#snippet wrapper(data: Node, parent: Parent, skip = false)}
 	{const isBlock = amIBlock(data, parent)}
-	{const styles = getComputedStyles(data, isBlock)}
+	{const styles = $derived(getComputedStyles(data, isBlock))}
 	{const link = $derived(getLink(data))}
 	{const target = $derived(link && hasStyle(data, 'ext-link') ? '_blank' : null)}
 	{const label = $derived(getLabel(data))}
-	{const prop = isPropertyNode(data) ? data[Fmt.PROP] : null}
+	{const prop = $derived(isPropertyNode(data) ? data[Fmt.PROP] : null)}
 	{const type = JsonLd.TYPE in data ? data[JsonLd.TYPE] : null}
 	{const hasContent =
 		!isHtmlNode(data) && (Fmt.CONTENT_BEFORE in data || Fmt.CONTENT_AFTER in data)}
@@ -249,7 +249,7 @@
 			)}
 		</p>
 	{:else if styles?.length || hasContent}
-		{const forcedLabel = forceLabel(data)}
+		{const forcedLabel = $derived(forceLabel(data))}
 		<span class={styles} data-property={prop} data-type={type}>
 			{@render before(data, !isBlock)}<!--
 			-->{#if forcedLabel}
