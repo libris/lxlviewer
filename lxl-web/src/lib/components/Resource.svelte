@@ -213,9 +213,11 @@
 				<div class="flex flex-col-reverse gap-2 md:flex-row md:items-start">
 					<header class="mb-3 flex-1">
 						<hgroup>
-							<p class="text-subtle flex items-center gap-1 text-sm font-medium">
+							<p class="text-subtle text-sm font-medium">
 								{#if typeForIcon}
-									<TypeIcon type={typeForIcon} class="size-4.5 self-stretch pt-1" />
+									<span class="inline-block mr-0.5 self-stretch">
+										<TypeIcon type={typeForIcon} class="size-3" />
+									</span>
 								{/if}
 								<DecoratedData2
 									data={decoratedData.headingTop}
@@ -671,7 +673,8 @@
 
 	.decorated-data-section {
 		& :global(ul),
-		:global(dl) {
+		:global(dl),
+		:global(p.contribution) {
 			margin-top: calc(var(--spacing) * 0);
 			margin-bottom: calc(var(--spacing) * 2.5);
 		}
@@ -681,7 +684,7 @@
 			margin: 0;
 		}
 
-		/* semibold styles - only if list of many */
+		/* semibold styles */
 
 		& :global(ul[data-property]:has(> li:nth-of-type(2))),
 		& :global(dl[data-property]:has(> dd:nth-of-type(2))) {
@@ -694,8 +697,9 @@
 			font-weight: var(--font-weight-normal) !important;
 		}
 
-		& :global(ul.contribution:has(> li:nth-of-type(2))),
-		& :global(dl.contribution:has(> dd:nth-of-type(2))) {
+		& :global(ul.contribution),
+		& :global(dl.contribution),
+		& :global(p.contribution) {
 			& :global(.PrimaryContribution) {
 				font-weight: var(--font-weight-semibold);
 			}
