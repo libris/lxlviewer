@@ -353,4 +353,12 @@
 			color: var(--color-subtle);
 		}
 	}
+
+	.sublevel-label::after {
+		content: ': ';
+	}
+
+	.translationOf .sublevel-label::after {
+		content: '';
+	}
 </style>

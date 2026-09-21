@@ -1978,6 +1978,13 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Person-fieldOfActivity-format": {
+			"@id": "Person-fieldOfActivity-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Person"],
+			"fresnel:propertyFormatDomain": ["fieldOfActivity"],
+			"fresnel:propertyStyle": ["label", "force-sublevel-label"]
+		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",
 			"@type": "fresnel:Format",
