@@ -234,9 +234,7 @@
 									skipOuter={true}
 								/>
 							</h1>
-							<p
-								class="decorated-heading-extra text-subtle flex items-center gap-1 text-sm font-medium"
-							>
+							<p class="decorated-heading-extra text-subtle text-sm font-medium">
 								<DecoratedData2
 									data={decoratedData.headingExtra}
 									showLabels={ShowLabelsOptions.DefaultOn}
@@ -676,6 +674,11 @@
 		:global(dl) {
 			margin-top: calc(var(--spacing) * 0);
 			margin-bottom: calc(var(--spacing) * 2.5);
+		}
+
+		:global(dl:has(dd.inline)),
+		:global(ul:has(li.inline)) {
+			margin: 0;
 		}
 
 		/* semibold styles - only if list of many */
