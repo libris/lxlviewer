@@ -572,11 +572,11 @@ function displayBoolFilters(
 /**
  * prevent links on resource page from pointing to /find
  */
-function replacePath(view: Link, usePath: string | undefined) {
-	if (usePath) {
+function replacePath<T extends Link | undefined>(view: T, usePath: string | undefined): T {
+	if (view && usePath) {
 		return {
 			'@id': view['@id'].replace('/find', usePath)
-		};
+		} as T;
 	}
 	return view;
 }

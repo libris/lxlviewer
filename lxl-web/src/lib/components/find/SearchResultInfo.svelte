@@ -39,7 +39,7 @@
 	<div class="flex gap-1">
 		{#if numHits && numHits > 0}
 			<p class="hits-count">
-				{#if numHits > searchResult.itemsPerPage}
+				{#if numHits > searchResult.itemsPerPage && searchResult.itemsPerPage > 0}
 					<span class="font-medium">
 						{(searchResult.itemOffset + 1).toLocaleString(page.data.locale)}
 						-
