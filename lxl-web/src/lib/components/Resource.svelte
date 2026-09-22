@@ -215,7 +215,7 @@
 						<hgroup>
 							<p class="text-subtle text-sm font-medium">
 								{#if typeForIcon}
-									<span class="inline-block mr-0.5 self-stretch">
+									<span class="inline-block mr-0.5 self-stretch align-middle" aria-hidden="true">
 										<TypeIcon type={typeForIcon} class="size-3" />
 									</span>
 								{/if}
