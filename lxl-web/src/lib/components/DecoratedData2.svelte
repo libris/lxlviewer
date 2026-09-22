@@ -174,10 +174,9 @@
 	{const link = $derived(getLink(data))}
 	{const target = $derived(link && hasStyle(data, 'ext-link') ? '_blank' : null)}
 	{const label = $derived(getLabel(data))}
+	{const forcedLabel = $derived(forceLabel(data))}
 	{const prop = $derived(isPropertyNode(data) ? data[Fmt.PROP] : null)}
 	{const type = JsonLd.TYPE in data ? data[JsonLd.TYPE] : null}
-	{const hasContent =
-		!isHtmlNode(data) && (Fmt.CONTENT_BEFORE in data || Fmt.CONTENT_AFTER in data)}
 
 	<!-- skip -->
 	{#if skip}
@@ -248,18 +247,22 @@
 				!isBlock
 			)}
 		</p>
-	{:else if styles?.length || hasContent}
-		{const forcedLabel = $derived(forceLabel(data))}
+	{:else if styles?.length || forcedLabel}
 		<span class={styles} data-property={prop} data-type={type}>
 			{@render before(data, !isBlock)}<!--
 			-->{#if forcedLabel}
 				<span class="sublevel-label inline-block first-letter:capitalize">{forcedLabel}</span>{' '}
 			{/if}<!--
-			-->{@render node(data, parent)}<!--
+			-->{@render node(data, Elem.Span)}<!--
 			-->{@render after(data, !isBlock)}
 		</span>
 	{:else}
-		{@render node(data, parent)}
+		{@render before(data, !isBlock)}<!--
+		-->{@render node(data, parent)}<!--
+		-->{@render after(
+			data,
+			!isBlock
+		)}
 	{/if}
 {/snippet}
 
