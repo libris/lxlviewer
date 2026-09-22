@@ -339,6 +339,11 @@
 {@render traverse(data, parent, skipOuter)}
 
 <style lang="postcss">
+	.block {
+		width: fit-content;
+		display: block;
+	}
+
 	.transliteration {
 		font-style: italic;
 	}

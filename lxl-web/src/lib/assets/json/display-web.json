@@ -1587,7 +1587,15 @@
 		"needs-label-format": {
 			"@id": "needs-label-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["category", "subject", "seriesMembership", "isPartOf"],
+			"fresnel:propertyFormatDomain": [
+				"category",
+				"subject",
+				"seriesMembership",
+				"isPartOf",
+				"broader",
+				"related",
+				"narrower"
+			],
 			"fresnel:propertyStyle": ["label"]
 		},
 		"seriesMembership-format": {

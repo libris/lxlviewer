@@ -317,8 +317,14 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<DecoratedData2
 						data={item[LxlLens.CardBody]}
 						showLabels={ShowLabelsOptions.DefaultOff}
-						block
-						limit={{ contribution: 3, hasPart: 5, related: 5 }}
+						limit={{
+							contribution: 3,
+							hasPart: 5,
+							related: 3,
+							broader: 3,
+							narrower: 3,
+							identifiedBy: 3
+						}}
 						allowLinks={true}
 						{allowPopovers}
 						parent={Elem.Div}
