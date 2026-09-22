@@ -110,7 +110,7 @@
 			{#if hasItemMedia}
 				<!-- item media -->
 				<dl>
-					<dt class="text-subtle">{page.data.t('holdings.itemMedia')}</dt>
+					<dt>{page.data.t('holdings.itemMedia')}</dt>
 					<dd>
 						<DecoratedData2
 							data={item.itemMedia}
@@ -124,7 +124,7 @@
 			{#if hasItemShelf}
 				<!-- item shelf -->
 				<dl>
-					<dt class="text-subtle">{page.data.t('holdings.itemShelf')}</dt>
+					<dt>{page.data.t('holdings.itemShelf')}</dt>
 					<dd>
 						<DecoratedData2
 							data={item.itemShelf}
@@ -138,7 +138,7 @@
 			{#if hasItemNote}
 				<!-- Item note -->
 				<dl>
-					<dt class="text-subtle">{page.data.t('holdings.itemNote')}</dt>
+					<dt>{page.data.t('holdings.itemNote')}</dt>
 					<dd>
 						<DecoratedData2
 							data={item.itemNote}
@@ -277,6 +277,11 @@
 <style>
 	.holder dl {
 		margin-bottom: calc(var(--spacing) * 1);
+	}
+
+	.holder dt {
+		color: var(--color-subtle);
+		font-size: var(--text-2xs);
 	}
 
 	.instance-one-of-many dl {
