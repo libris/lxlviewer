@@ -1381,13 +1381,13 @@
 			}
 		},
 		"Title-rdf:type-format": {
-			"@id": "KeyTitle-rdf:type-format",
+			"@id": "Title-rdf:type-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["rdf:type"],
 			"fresnel:propertyStyle": ["Title-type lowercase"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": "(",
+				"fresnel:contentBefore": " (",
 				"fresnel:contentAfter": ")",
 				"fresnel:contentFirst": ""
 			}
