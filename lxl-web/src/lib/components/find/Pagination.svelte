@@ -15,7 +15,9 @@
 	const MAX_PAGES_SM = 3;
 	const MAX_PAGES_MD = 7;
 
-	const showPagination = $derived(data.items.length > 0 && totalItems > itemsPerPage);
+	const showPagination = $derived(
+		first !== undefined && last !== undefined && data.items.length > 0 && totalItems > itemsPerPage
+	);
 	const currentPage = $derived(Math.floor(itemOffset / itemsPerPage) + 1);
 	const lastItem = $derived(totalItems > maxItems ? maxItems : totalItems);
 	const lastPage = $derived(Math.ceil(lastItem / itemsPerPage));
@@ -50,7 +52,7 @@
 
 	function getOffsetLink(offset: number) {
 		let o = offset < 0 ? 0 : offset;
-		return `${first['@id']}&_offset=${o}`;
+		return `${first!['@id']}&_offset=${o}`;
 	}
 </script>
 
@@ -102,7 +104,7 @@
 					aria-label="{page.data.t('search.page')} 1"
 					aria-current={currentPage === 1 ? 'page' : null}
 					class={['btn btn-primary', currentPage === 1 ? 'bg-accent-50' : 'border-0']}
-					href={page.data.localizeHref(first['@id'])}>1</a
+					href={page.data.localizeHref(first!['@id'])}>1</a
 				>
 			</li>
 			<!-- sm sequence -->
@@ -123,7 +125,7 @@
 					aria-label="{page.data.t('search.page')} {lastPage}"
 					aria-current={currentPage === lastPage ? 'page' : null}
 					class={['btn btn-primary', currentPage === lastPage ? 'bg-accent-50' : 'border-0']}
-					href={page.data.localizeHref(last['@id'])}>{lastPage.toLocaleString(page.data.locale)}</a
+					href={page.data.localizeHref(last!['@id'])}>{lastPage.toLocaleString(page.data.locale)}</a
 				>
 			</li>
 			<!-- next -->
