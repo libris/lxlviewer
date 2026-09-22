@@ -880,9 +880,9 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
 					"showProperties": [
+						"contribution",
 						"identifiedBy",
 						"editionStatement",
-						"contribution",
 						{ "alternateProperties": ["publication", "manufacture"] },
 						"extent",
 						"seriesMembership",
