@@ -376,7 +376,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								<DecoratedData2
 									data={obj}
 									showLabels={ShowLabelsOptions.Never}
-									allowLinks={false}
+									allowLinks={true}
 									{allowPopovers}
 									parent={Elem.Span}
 									limit={{ editionStatement: 1, publication: 1, identifier: 1 }}

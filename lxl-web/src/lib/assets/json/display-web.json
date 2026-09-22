@@ -795,7 +795,7 @@
 					"@id": "Person-web-card-header-extra",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Person",
-					"showProperties": ["fieldOfActivity"]
+					"showProperties": []
 				},
 				"Concept": {
 					"@id": "Concept-web-card-header-extra",
@@ -843,7 +843,7 @@
 					"@id": "Person-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Person",
-					"showProperties": []
+					"showProperties": ["fieldOfActivity"]
 				},
 				"Concept": {
 					"@id": "Concept-web-card-footer",
