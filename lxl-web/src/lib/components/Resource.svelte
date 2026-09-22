@@ -260,7 +260,6 @@
 					</header>
 				</div>
 				<div class="decorated-data-section decorated-compact">
-					<!-- {#each decoratedData.overview as overview (overview)} -->
 					<div class="mb-2" data-section="overview">
 						<DecoratedData2
 							data={decoratedData.overview}
@@ -271,7 +270,6 @@
 							skipOuter={true}
 						/>
 					</div>
-					<!-- {/each} -->
 				</div>
 				{#if hasHoldingsBtn}
 					<h2 class="sr-only print:hidden">{page.data.t('holdings.availabilityByType')}</h2>
@@ -288,7 +286,6 @@
 					{#if !hasHoldingsBtn && decoratedData.overview.some((o) => isResourceNode(o) && o?.[Fmt.DISPLAY]?.length > 0) && decoratedData.overview2.some((o) => isResourceNode(o) && o?.[Fmt.DISPLAY]?.length > 0)}
 						<div class="border-b-neutral mb-2 border-b"></div>
 					{/if}
-					<!-- {#each decoratedData.overview2 as overview2 (overview2)} -->
 					<div class="mb-2" data-section="overview2">
 						<DecoratedData2
 							data={decoratedData.overview2}
@@ -306,7 +303,6 @@
 							skipOuter={true}
 						/>
 					</div>
-					<!-- {/each} -->
 					<div class="mb-2" data-section="overviewFooter">
 						<DecoratedData2
 							data={decoratedData.overviewFooter}
@@ -472,7 +468,6 @@
 						{page.data.t('resource.details')}
 					</h2>
 					<div class="decorated-data-section decorated-spacious decorated-details">
-						<!-- {#each decoratedData.details as details (details)} -->
 						<div class="mb-2" data-section="details">
 							<DecoratedData2
 								data={decoratedData.details}
@@ -484,7 +479,6 @@
 								skipOuter={true}
 							/>
 						</div>
-						<!-- {/each} -->
 						{#if decoratedData.itemInformation.length}
 							<details class="mt-4 print:hidden print:break-before-page open:print:block">
 								<summary class="flex cursor-pointer items-center gap-1">
