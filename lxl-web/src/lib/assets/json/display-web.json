@@ -1257,7 +1257,7 @@
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
 			"fresnel:propertyFormatDomain": ["marc:sequenceStatus", "appliesTo"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": "(",
+				"fresnel:contentBefore": " (",
 				"fresnel:contentAfter": ")",
 				"fresnel:contentFirst": ""
 			},
