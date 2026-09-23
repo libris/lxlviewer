@@ -141,7 +141,7 @@
 								<DecoratedData2
 									data={displayObj}
 									showLabels={ShowLabelsOptions.DefaultOff}
-									parent={Elem.P}
+									parent={Elem.Span}
 								/>
 							</span>
 						{/each}
