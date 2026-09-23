@@ -104,7 +104,7 @@
 		}
 	}
 
-	function forceLabel(data: Node) {
+	function hasForcedLabel(data: Node) {
 		if (isHtmlNode(data)) return undefined;
 		return hasStyle(data, 'force-sublevel-label') ? data[Fmt.LABEL] : undefined;
 	}
@@ -170,7 +170,7 @@
 	{const link = $derived(getLink(data))}
 	{const target = $derived(link && hasStyle(data, 'ext-link') ? '_blank' : null)}
 	{const label = $derived(getLabel(data))}
-	{const forcedLabel = $derived(forceLabel(data))}
+	{const forcedLabel = $derived(hasForcedLabel(data))}
 	{const prop = $derived(isPropertyNode(data) ? data[Fmt.PROP] : null)}
 	{const type = JsonLd.TYPE in data ? data[JsonLd.TYPE] : null}
 
