@@ -4,7 +4,7 @@
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import type { FeaturedSearch } from '$lib/remotes/homepage.remote';
+	import type { CategoryShortcut, FeaturedSearch } from '$lib/remotes/homepage.remote';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
 	import { page } from '$app/state';
@@ -16,7 +16,6 @@
 	import AppSearch from './AppSearch.svelte';
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
-	import { getCategoryShortcuts } from '$lib/remotes/homepage.remote';
 	import { getSearchContext } from '$lib/contexts/search';
 	import { onNavigate } from '$app/navigation';
 
@@ -28,6 +27,7 @@
 	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
 	const featuredCollections: FeaturedSearch[] = $derived(page.data.featuredCollections);
+	const featuredCategories: CategoryShortcut[] = $derived(page.data.featuredCategories);
 
 	const heroImageModules = import.meta.glob<string>('$lib/assets/img/hero/*.{jpg,jpeg,png,webp}', {
 		eager: true,
@@ -245,34 +245,38 @@
 	</div>
 </section>
 <section id={ID_EXPLORE} class="explore" aria-labelledby={ID_HERO_EXPLORE_LABEL}>
-	<nav
-		aria-labelledby={ID_CATEGORIES_LABEL}
-		class="categories lg:scrollbar-hidden items-center py-4 sm:py-4.5 lg:grid lg:overflow-x-scroll lg:py-6"
-	>
-		<h2
-			id={ID_CATEGORIES_LABEL}
-			class="text-placeholder mb-3 pl-3 text-xs font-medium tracking-widest uppercase sm:mb-4.5 lg:mb-0 lg:pl-6 lg:text-sm 2xl:pl-8"
+	{#if featuredCategories.length > 0}
+		<nav
+			aria-labelledby={ID_CATEGORIES_LABEL}
+			class="categories lg:scrollbar-hidden items-center py-4 sm:py-4.5 lg:grid lg:overflow-x-scroll lg:py-6"
 		>
-			{page.data.t('home.categories')}
-		</h2>
-		<ul
-			class="scrollbar-hidden flex gap-1.5 overflow-x-scroll text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1.5 lg:text-[0.9375rem] 2xl:text-base"
-		>
-			{#each await getCategoryShortcuts(page.data.locale) as category (category.id)}
-				<li>
-					<a
-						href={resolve(page.data.localizeHref(category.href))}
-						id={category.id}
-						aria-labelledby="search-for {category.id}"
-						class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
-					>
-						{category.label}
-					</a>
-				</li>
-			{/each}
-		</ul>
-	</nav>
-	<hr class={['border-neutral mb-6 2xl:mx-8 2xl:mb-8']} />
+			<h2
+				id={ID_CATEGORIES_LABEL}
+				class="text-placeholder mb-3 pl-3 text-xs font-medium tracking-widest uppercase sm:mb-4.5 lg:mb-0 lg:pl-6 lg:text-sm 2xl:pl-8"
+			>
+				{page.data.t('home.categories')}
+			</h2>
+			<ul
+				class="scrollbar-hidden flex gap-1.5 overflow-x-scroll text-sm *:first:ml-3 *:last:mr-3 lg:mx-auto lg:gap-1.5 lg:text-[0.9375rem] 2xl:text-base"
+			>
+				{#each featuredCategories as category (category.id)}
+					<li>
+						<a
+							href={resolve(page.data.localizeHref(category.href))}
+							id={category.id}
+							aria-labelledby="search-for {category.id}"
+							class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
+						>
+							{category.label}
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</nav>
+		<hr class={['border-neutral mb-6 2xl:mx-8 2xl:mb-8']} />
+	{:else}
+		<hr class={['border-none mb-6 2xl:mx-8 2xl:mb-8']} />
+	{/if}
 	{#each featuredSearches as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,
