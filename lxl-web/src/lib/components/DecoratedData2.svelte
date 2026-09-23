@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
+	import { fromAction, type Attachment } from 'svelte/attachments';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import {
@@ -108,18 +109,13 @@
 		return hasStyle(data, 'force-sublevel-label') ? data[Fmt.LABEL] : undefined;
 	}
 
-	function conditionalPopover(node: HTMLElement, data: DisplayDecorated) {
-		if (allowPopovers && !hasStyle(data, 'ext-link')) {
-			const id = getResourceId(data);
-			if (id) {
-				return popover(node, {
-					resource: {
-						id,
-						lang: getSupportedLocale(page.params.lang)
-					}
-				});
+	function resourcePopover(id: string): Attachment<HTMLElement> {
+		return fromAction(popover, () => ({
+			resource: {
+				id,
+				lang: getSupportedLocale(page.params.lang)
 			}
-		}
+		}));
 	}
 
 	function amIBlock(data: Node, parent: Parent): boolean {
@@ -267,7 +263,15 @@
 {/snippet}
 
 {#snippet linkSnippet(data: Node, link: string, target: string | null, styles: Styles)}
-	<a href={target ? link : resolve(link)} {target} class={styles} use:conditionalPopover={data}>
+	{@const resourceId = getResourceId(data)}
+	<a
+		href={target ? link : resolve(link)}
+		{target}
+		class={styles}
+		{@attach allowPopovers && !hasStyle(data, 'ext-link') && resourceId
+			? resourcePopover(resourceId)
+			: undefined}
+	>
 		{@render node(data, Elem.A)}
 	</a>
 {/snippet}

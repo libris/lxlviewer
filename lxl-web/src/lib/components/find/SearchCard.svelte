@@ -320,9 +320,9 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						limit={{
 							contribution: 3,
 							hasPart: 5,
-							related: 3,
-							broader: 3,
-							narrower: 3,
+							related: 5,
+							broader: 5,
+							narrower: 5,
 							identifiedBy: 3
 						}}
 						allowLinks={true}
