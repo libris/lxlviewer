@@ -12,6 +12,12 @@ export interface FeaturedSearchConfig {
 	showAllLabelByLang?: Record<LocaleCode, string>;
 }
 
+export interface FeaturedCategoryConfig {
+	id: string;
+	href: string;
+	labelByLang: Record<LocaleCode, string>;
+}
+
 export interface Features {
 	specialCollections: boolean;
 	myPages: boolean;
@@ -64,6 +70,7 @@ export interface Site {
 		appMenu?: AppMenuItem[];
 		featuredSearches?: FeaturedSearchConfig[];
 		featuredSearches2?: FeaturedSearchConfig[];
+		featuredCategories?: FeaturedCategoryConfig[];
 		articles?: {
 			about?: {
 				articleBodyByLang?: Record<LocaleCode, string>;
