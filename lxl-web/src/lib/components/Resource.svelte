@@ -673,7 +673,7 @@
 			margin-bottom: calc(var(--spacing) * 2.5);
 		}
 
-		:global(dl:has(dd.inline)),
+		:global(dl:not(.ul):has(dd.inline)),
 		:global(ul:has(li.inline)) {
 			margin: 0;
 		}
