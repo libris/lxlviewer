@@ -56,6 +56,7 @@ export interface Site {
 	configuration?: {
 		themeName?: string;
 		favicon?: string;
+		// file name of an image in `$lib/assets/img/hero/` or an absolute URL.
 		heroImage?: string;
 		locales?: Translations;
 		features?: Partial<Features>;

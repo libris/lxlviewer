@@ -39,7 +39,11 @@
 		Object.entries(heroImageModules).map(([path, url]) => [path.split('/').pop()!, url])
 	);
 
-	const heroImage = $derived(heroImageByName[page.data.heroImage ?? ''] ?? heroFallback);
+	const heroImage = $derived(
+		/^https?:\/\//.test(page.data.heroImage ?? '')
+			? page.data.heroImage
+			: (heroImageByName[page.data.heroImage ?? ''] ?? heroFallback)
+	);
 
 	const searchContext = getSearchContext();
 	let searchContainerElement: HTMLDivElement | undefined = $state();
