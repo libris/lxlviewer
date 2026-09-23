@@ -110,7 +110,10 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	const thingType = thing[JsonLd.TYPE];
 
 	if (thingType != 'Monograph' && thingType != 'Serial') {
-		result.find.push(vocabUtil.getDefinition(thingType));
+		const thingTypeDefinition = vocabUtil.getDefinition(thingType);
+		if (thingTypeDefinition) {
+			result.find.push(thingTypeDefinition);
+		}
 	}
 
 	if (thing._categoryByCollection) {
@@ -209,7 +212,7 @@ export function toTypes(typeLike: TypeLike) {
 	const noIdentify = typeLike.identify.length == 0;
 	const noFind = typeLike.find.length == 0;
 	const manyFind = typeLike.find.length > 1;
-	const typeInFind = !noFind && typeLike.find[0][JsonLd.TYPE] === 'Class';
+	const typeInFind = !noFind && typeLike.find[0]?.[JsonLd.TYPE] === 'Class';
 	const showFind = manyFind || typeInFind || (!noFind && noIdentify);
 	//const showFind = !noFind && noIdentify;
 	const showNone = noFind && noIdentify && typeLike.none.length > 0;
