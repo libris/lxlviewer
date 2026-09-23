@@ -694,7 +694,7 @@
 		& :global(ul.contribution),
 		& :global(dl.contribution),
 		& :global(p.contribution) {
-			& :global(.PrimaryContribution) {
+			& :global(.PrimaryContribution-agent) {
 				font-weight: var(--font-weight-semibold);
 			}
 		}
@@ -847,8 +847,7 @@
 			}
 		}
 
-		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
-		& :global([data-property='publication'] [data-property='appliesTo']) {
+		& :global([data-property='publication'] .sequenceStatus-appliesTo) {
 			display: none;
 		}
 	}
@@ -878,8 +877,7 @@
 			@apply mt-1;
 		} */
 
-		& :global([data-property='publication'] [data-property='marc:sequenceStatus']),
-		& :global([data-property='publication'] [data-property='appliesTo']) {
+		& :global([data-property='publication'] .sequenceStatus-appliesTo) {
 			font-weight: var(--font-weight-normal);
 			color: var(--color-subtle);
 			text-transform: lowercase;
