@@ -673,11 +673,6 @@
 			margin-bottom: calc(var(--spacing) * 2.5);
 		}
 
-		:global(dl:not(.ul):has(dd.inline)),
-		:global(ul:has(li.inline)) {
-			margin: 0;
-		}
-
 		/* semibold styles */
 
 		& :global(ul[data-property]:has(> li:nth-of-type(2))),
@@ -818,6 +813,11 @@
 
 		& :global(dl.ul-when-multiple:not(:has(> dd:nth-of-type(2))) > dt) {
 			display: inline-block;
+		}
+
+		:global(dl:not(.ul):has(dd.inline)),
+		:global(ul:has(li.inline)) {
+			margin: 0;
 		}
 
 		/* & :global(div[data-property='isPartOf']:has(+ div[data-property='part'])) {
