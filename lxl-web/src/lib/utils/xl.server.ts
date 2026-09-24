@@ -28,6 +28,7 @@ import {
 	type PropertyName,
 	type RangeRestriction,
 	Rdfs,
+	type ResourceNode,
 	type ShowProperties,
 	type ShowProperty,
 	type VocabData
@@ -35,12 +36,12 @@ import {
 import { markdownToHtml } from '$lib/utils/htmlFromMarkdown.server';
 import { asArray, isObject, toString } from '$lib/utils/misc';
 import { cleanData } from '$lib/utils/cleanupDecorated.server';
+import { isResourceNode } from '$lib/utils/resourceData';
 
 // TODO TESTS!
 
 // PERF: only build these arrays once, not in hot path
 const LENS_TYPE_VALUES = Object.values(LensType);
-const FMT_VALUES = Object.values(Fmt);
 
 export class VocabUtil {
 	//vocabId: string
@@ -751,13 +752,13 @@ class Formatter {
 		'extIfUri()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				const display = v[Fmt.DISPLAY] as Array<unknown>;
-				const ix = display.findIndex((d) => isObject(d) && 'uri' in d);
+				const ix = display.findIndex((d) => isObject(d) && d[Fmt.PROP] === 'uri');
 
 				if (!v[Fmt.STYLE]) {
 					v[Fmt.STYLE] = [];
 				}
 
-				if (ix >= 0 && asArray(display[ix]['uri']).length > 0) {
+				if (ix >= 0 && asArray(display[ix][Fmt.VALUE]).length > 0) {
 					v[Fmt.STYLE].push('ext-link');
 				} else {
 					v[Fmt.STYLE].push('link');
@@ -769,10 +770,10 @@ class Formatter {
 		'uriToId()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				const display = v[Fmt.DISPLAY] as Array<unknown>;
-				const ix = display.findIndex((d) => isObject(d) && 'uri' in d);
+				const ix = display.findIndex((d) => isObject(d) && d[Fmt.PROP] === 'uri');
 
-				if (ix >= 0 && asArray(display[ix]['uri']).length > 0) {
-					const uri = asArray(display[ix]['uri'])[0];
+				if (ix >= 0 && asArray(display[ix][Fmt.VALUE]).length > 0) {
+					const uri = asArray(display[ix][Fmt.VALUE])[0];
 					v[JsonLd.ID] = uri;
 					if (display.length > 1) {
 						// Is there anything else to display as link label?
@@ -786,11 +787,11 @@ class Formatter {
 		'findToTop()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				const display = v[Fmt.DISPLAY] as Array<unknown>;
-				const ix = display.findIndex((d) => isObject(d) && '_find' in d);
+				const ix = display.findIndex((d) => isObject(d) && d[Fmt.PROP] === '_find');
 
-				if (ix >= 0 && asArray(display[ix]['_find']).length > 0) {
-					const find = asArray(display[ix]['_find'])[0];
-					v['_findLink'] = find[JsonLd.ID];
+				if (ix >= 0 && asArray(display[ix][Fmt.VALUE]).length > 0) {
+					const find = asArray(display[ix][Fmt.VALUE])[0];
+					v[Fmt.FIND_LINK] = find[JsonLd.ID];
 					if (!v[Fmt.STYLE]) {
 						v[Fmt.STYLE] = [];
 					}
@@ -846,14 +847,12 @@ class Formatter {
 			thing[Fmt.LABEL] = mapMaybeArray(thing[JsonLd.TYPE], (v) => this.getVocabLabel(v));
 			asArray(thing[Fmt.DISPLAY]).forEach((v) => this.addLabels(v));
 		} else if (isObject(thing)) {
-			const key = unwrapSingle(
-				Object.keys(thing).filter((k) => !k.startsWith('_') && k !== JsonLd.ID)
-			);
+			const key = thing[Fmt.PROP] as string;
 			thing[Fmt.LABEL] = this.getVocabLabel(key);
 			if (this.vocabUtil.isKeyword(key)) {
-				thing[key] = mapMaybeArray(thing[key], (v) => this.getVocabLabel(v));
+				thing[Fmt.VALUE] = mapMaybeArray(thing[Fmt.VALUE], (v) => this.getVocabLabel(v));
 			} else {
-				asArray(thing[key]).forEach((v) => this.addLabels(v));
+				asArray(thing[Fmt.VALUE]).forEach((v) => this.addLabels(v));
 			}
 		}
 
@@ -907,11 +906,8 @@ class Formatter {
 		// FIXME reaching inside
 		if (this.displayUtil.langContainerAliasInverted[propertyName]) {
 			return {
-				[this.displayUtil.langContainerAliasInverted[propertyName]]: this.formatValues(
-					this.pickLanguage(value),
-					className,
-					propertyName
-				)
+				[Fmt.PROP]: this.displayUtil.langContainerAliasInverted[propertyName],
+				[Fmt.VALUE]: this.formatValues(this.pickLanguage(value), className, propertyName)
 			};
 		}
 
@@ -933,7 +929,8 @@ class Formatter {
 
 		this.addFormatDetail(result, this.findPropertyFormat(className, propertyName), isFirst, isLast);
 
-		result[propertyName] = this.formatValues(value, className, propertyName);
+		result[Fmt.PROP] = propertyName;
+		result[Fmt.VALUE] = this.formatValues(value, className, propertyName);
 
 		return result;
 	}
@@ -1151,17 +1148,17 @@ class Formatter {
 
 // TODO
 function toLabel(data: DisplayDecorated) {
-	return isTypedNode(data) ? data[Fmt.DISPLAY].map(Object.values).join('') : data;
+	return isTypedNode(data) ? data[Fmt.DISPLAY].map((d) => d[Fmt.VALUE]).join('') : data;
 }
 
 export function toLite(data: DisplayDecorated): DisplayDecoratedLite {
 	const result: DisplayDecoratedLite = [];
 	// TODO is this what we always want?
-	if (data._display) {
-		_toLite(data._display, result);
-	} else if (typeof data === 'string') {
+	if (typeof data === 'string') {
 		_toLite(data, result);
-	} else if (data[JsonLd.ID]) {
+	} else if (!Array.isArray(data) && Fmt.DISPLAY in data) {
+		_toLite(data[Fmt.DISPLAY], result);
+	} else if (!Array.isArray(data) && JsonLd.ID in data && typeof data[JsonLd.ID] === 'string') {
 		result.push(data[JsonLd.ID]);
 	}
 
@@ -1177,18 +1174,18 @@ function _toLite(data: DisplayDecorated, result: DisplayDecoratedLite) {
 		if (Fmt.DISPLAY in data) {
 			v.push(...data[Fmt.DISPLAY].map(toString));
 		}
-		v.push(
-			...Object.entries(data)
-				.filter(
-					([k]) => !(Object.values(FMT_VALUES).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k))
-				)
-				.map(([, v]) => toString(v))
-		);
+		if (Fmt.VALUE in data) {
+			if (Array.isArray(data[Fmt.VALUE])) {
+				v.push(...data[Fmt.VALUE].map(toString));
+			} else {
+				v.push(toString(data[Fmt.VALUE]));
+			}
+		}
 		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
 			v.push(data[Fmt.CONTENT_AFTER]);
 		}
 		const str = v.join('');
-		if (Fmt.STYLE in data && data[Fmt.STYLE].length > 0) {
+		if (Fmt.STYLE in data && Array.isArray(data[Fmt.STYLE]) && data[Fmt.STYLE].length > 0) {
 			result.push([str, data[Fmt.STYLE]]);
 		} else {
 			result.push(str);
@@ -1313,24 +1310,27 @@ export function pickProperty(
 	data: DisplayDecorated,
 	pickProperties: PropertyName[]
 ): [DisplayDecorated | undefined, DisplayDecorated] {
-	if (!isTypedNode(data)) {
+	if (!isResourceNode(data)) {
 		return [undefined, data];
 	}
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { [Fmt.DISPLAY]: _1, ...picked } = data;
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { [Fmt.DISPLAY]: _2, ...rest } = data;
 
-	picked[Fmt.DISPLAY] = [];
-	rest[Fmt.DISPLAY] = [];
+	const picked: ResourceNode = {
+		...data,
+		[Fmt.DISPLAY]: []
+	};
 
-	data[Fmt.DISPLAY].forEach((p) => {
-		if (isObject(p) && pickProperties.some((name) => name in p)) {
-			picked[Fmt.DISPLAY].push(p);
+	const rest: ResourceNode = {
+		...data,
+		[Fmt.DISPLAY]: []
+	};
+
+	for (const property of data[Fmt.DISPLAY]) {
+		if (pickProperties.includes(property[Fmt.PROP]) && Fmt.VALUE in property) {
+			picked[Fmt.DISPLAY].push(property);
 		} else {
-			rest[Fmt.DISPLAY].push(p);
+			rest[Fmt.DISPLAY].push(property);
 		}
-	});
+	}
 
 	return [picked, rest];
 }
