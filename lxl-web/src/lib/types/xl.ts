@@ -246,7 +246,7 @@ export interface LensedOrdered {
 	[JsonLd.TYPE]: ClassName;
 	[Fmt.PROPS]: LensedOrdered[];
 }
-// export type DisplayDecorated = unknown;
+
 export type DisplayDecorated =
 	| ResourceNode
 	| ResourceNode[]

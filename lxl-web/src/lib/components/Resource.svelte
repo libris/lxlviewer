@@ -642,15 +642,6 @@
 			list-style-type: disc;
 			margin-left: 1rem;
 		}
-
-		/* & :global(div[data-property='tableOfContents'] > span[data-type='TableOfContents']) {
-			display: block;
-		} */
-
-		/* & :global(.provisionActivity:has(> span:nth-of-type(2)) .property-label) {
-			display: block;
-			font-size: var(--text-2xs);
-		} */
 	}
 
 	.decorated-heading {
@@ -709,37 +700,11 @@
 			color: var(--color-subtle);
 		}
 
-		/* & :global(.inScheme) {
-			font-size: var(--text-2xs);
-			color: var(--color-subtle);
-		} */
-
-		/* & :global(div[data-property='identifiedBy'] > ._contentBefore) {
-			display: none;
-		} */
-
-		/* & :global(div[data-property='identifiedBy'] > span) {
-			display: block;
-		} */
-
-		/* & :global(div[data-property='indirectlyIdentifiedBy'] > ._contentBefore) {
-			display: none;
-		} */
-
-		/* & :global(div[data-property='indirectlyIdentifiedBy'] > span) {
-			display: block;
-		} */
-
 		& :global(.see-also > *) {
 			display: block;
 			width: fit-content;
 			white-space: nowrap;
 		}
-
-		/* hide double dash - */
-		/* & :global(._contentAfter.startYear + ._contentBefore.endYear) {
-			display: none;
-		} */
 
 		& :global(.see-also > *) {
 			display: block;
@@ -755,10 +720,6 @@
 			color: var(--color-subtle);
 		}
 
-		/* & :global(span.Title-type)::before {
-			content: ' ';
-		} */
-
 		& :global(.coverage + span.Title-type) {
 			display: none;
 		}
@@ -766,42 +727,12 @@
 		& :global(span[data-property='typeNote']) {
 			color: var(--color-subtle);
 		}
-
-		& :global(ul[data-property]) {
-			/* & :global(div:has(> .property-label)) {
-				display: inline;
-			} */
-
-			/* & :global(.contribution) {
-				font-size: var(--text-md);
-				@apply mb-0;
-				@apply mt-0;
-			} */
-
-			/* & :global(.main-title) {
-				font-weight: var(--font-weight-semibold);
-			} */
-
-			/* & :global(.translationOf .main-title),
-			& :global([data-type='PrimaryContribution'] > [data-property='agent']) {
-				font-weight: var(--font-weight-normal);
-			} */
-		}
 	}
 
 	.decorated-compact {
 		& :global(dl[data-property] .person-extra) {
 			display: none;
 		}
-
-		/* override e.g isPartOf > hasTitle block */
-		/* & :global(div:has(> .property-label)) {
-			display: inline;
-		} */
-
-		/* & :global(span[data-property]) {
-			display: inline;
-		} */
 
 		& :global(dt),
 		:global(.sublevel-label) {
@@ -819,21 +750,6 @@
 		:global(ul:has(li.inline)) {
 			margin: 0;
 		}
-
-		/* & :global(div[data-property='isPartOf']:has(+ div[data-property='part'])) {
-			display: inline;
-		}
-		& :global(div[data-property='isPartOf'] + div[data-property='part']) {
-			display: inline;
-		}
-		& :global(div[data-property='isPartOf'] + div[data-property='part'])::before {
-			content: ' ; ';
-		} */
-
-		/* & :global(div .ul) {
-			@apply py-1;
-			max-width: 80ch;
-		} */
 
 		& :global([data-property='_select']) {
 			font-weight: var(--font-weight-semibold);
@@ -871,12 +787,6 @@
 	.decorated-details {
 		font-size: var(--text-sm);
 
-		/* & :global(.contribution) {
-			font-size: var(--text-sm);
-			@apply mb-2;
-			@apply mt-1;
-		} */
-
 		& :global([data-property='publication'] .sequenceStatus-appliesTo) {
 			font-weight: var(--font-weight-normal);
 			color: var(--color-subtle);
@@ -887,26 +797,6 @@
 	:global([role='tabpanel'] .\@container\/card:first-of-type .search-card) {
 		border-top: none;
 	}
-
-	/* .relation-list {
-		@variant @max-3xl {
-			:global(ul > li:first-of-type) {
-				@apply ml-3;
-
-				@variant @sm {
-					@apply ml-6;
-				}
-			}
-
-			:global(ul > li:last-of-type) {
-				@apply mr-3;
-
-				@variant @sm {
-					@apply mr-6;
-				}
-			}
-		}
-	} */
 
 	details[open] {
 		& .chevron {

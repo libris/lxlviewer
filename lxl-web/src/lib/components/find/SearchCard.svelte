@@ -600,12 +600,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		font-weight: var(--font-weight-normal);
 	}
 
-	/* .card-header-title {
-		& :global(span[data-property='hasTitle'] > span) {
-			display: block;
-		}
-	} */
-
 	.card-header {
 		& :global(span.Title-type) {
 			font-size: var(--text-2xs);
@@ -623,11 +617,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.card-header-extra,
 	.card-body {
-		/* & :global(div:has(> .property-label)) {
-			override e.g isPartOf > hasTitle block
-			display: inline;
-		} */
-
 		/* inline label in cards */
 
 		& :global(dl) {
@@ -652,10 +641,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			-webkit-box-orient: vertical;
 			overflow: hidden;
 		}
-
-		/* & :global(div[data-property='identifiedBy']) {
-			color: var(--color-subtle);
-		} */
 	}
 
 	/* card in dialog */
