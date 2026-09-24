@@ -40,17 +40,15 @@
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2 px-1 lg:px-0">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="decorated-heading flex gap-1 overflow-hidden text-base whitespace-nowrap">
-				<span class="truncate">
-					<DecoratedData2
-						data={item[LxlLens.CardHeading]}
-						showLabels={ShowLabelsOptions.Never}
-						allowPopovers={false}
-						allowLinks={false}
-						parent={Elem.Span}
-						skipOuter={true}
-					/>
-				</span>
+			<h2 class="decorated-heading truncate overflow-hidden text-base whitespace-nowrap">
+				<DecoratedData2
+					data={item[LxlLens.CardHeading]}
+					showLabels={ShowLabelsOptions.Never}
+					allowPopovers={false}
+					allowLinks={false}
+					parent={Elem.Span}
+					skipOuter={true}
+				/>
 				<!-- only show body > contribution next to header -->
 				{#if contribution}
 					<span class="divider">{' · '}</span>
@@ -127,7 +125,7 @@
 	class="suggestion flex h-13 sm:h-14 items-stretch rounded-md relative"
 	class:qualifier={item.qualifiers?.length}
 >
-	{#if item.qualifiers?.length}
+	{#if primaryAddQualifierLink && item.qualifiers?.length}
 		<a
 			href={resolve(page.data.localizeHref(primaryAddQualifierLink))}
 			id={getCellId?.(0)}
@@ -135,7 +133,7 @@
 		>
 			{@render resourceSnippet(item)}
 		</a>
-	{:else}
+	{:else if resourceId}
 		<a
 			href={resolve(page.data.localizeHref(resourceId))}
 			id={getCellId ? getCellId(0) : ''}

@@ -398,7 +398,7 @@
 			'min-h-11 2xl:min-h-12 flex items-center gap-2 font-medium text-subtle rounded-lg cursor-default pointer-events-none'
 		]}
 	>
-		<span class={['flex items-center gap-2.5 whitespace-nowrap mr-4']}>
+		<span class="flex items-center gap-2.5 whitespace-nowrap text-sm mr-4">
 			<span class="size-6 items-center justify-center ml-2.5 mr-2 sm:ml-3 sm:mr-1.5 flex">
 				<IconFilter aria-hidden="true" class="text-link size-5.5" />
 			</span>

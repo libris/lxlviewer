@@ -999,8 +999,12 @@
 		}
 
 		& :global([role='row']:hover) {
-			& :global(.decorated-heading) {
+			& :global(.decorated-heading),
+			& :global(.person-extra) {
 				text-decoration: underline;
+				color: var(--color-link);
+			}
+			& :global(.delimiter) {
 				color: var(--color-link);
 			}
 		}
