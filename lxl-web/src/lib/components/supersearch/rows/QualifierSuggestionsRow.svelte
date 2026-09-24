@@ -440,7 +440,7 @@
 		</li>
 	</ul>
 	{#if isFocusedRow(rowIndex) && !isFocusedCell(rowIndex, filteredQualifierSuggestions.length)}
-		<span class="hidden sm:block px-4 items-center justify-center ml-auto">
+		<span class="hidden xl:block px-4 items-center justify-center ml-auto">
 			<IconArrowUpLeft class="text-link size-4.25" aria-hidden="true" />
 		</span>
 	{/if}

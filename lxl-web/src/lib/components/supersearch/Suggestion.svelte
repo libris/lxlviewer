@@ -119,6 +119,20 @@
 			</footer>
 		</div>
 	</div>
+	{#if item.qualifiers?.length}
+		<span class="text-subtle ml-auto px-1.5 py-0.5 text-xs whitespace-nowrap">
+			<span class="hidden sm:inline">
+				{page.data.t('general.add')}
+				<span class="lowercase">
+					{item.qualifiers[0].label}
+				</span>
+			</span>
+			<IconAddQualifier
+				class="inline sm:hidden align-baseline text-link size-4"
+				aria-hidden="true"
+			/>
+		</span>
+	{/if}
 {/snippet}
 
 <div
@@ -144,18 +158,11 @@
 			{@render resourceSnippet(item)}
 		</a>
 	{/if}
-	{#if isFocusedRow?.()}
+	{#if isFocusedRow?.() && !item.qualifiers?.length}
 		<div
 			class="absolute right-4.5 hidden sm:flex pointer-events-none h-full items-center bg-accent-100 justify-center w-12 rounded-r-md"
 		>
-			{#if item.qualifiers?.length}
-				<IconAddQualifier class="text-link" aria-hidden="true" />
-			{:else}
-				<IconReturnKey
-					class="text-link"
-					aria-hidden={item.qualifiers?.length ? undefined : 'true'}
-				/>
-			{/if}
+			<IconReturnKey class="text-link" aria-hidden={item.qualifiers?.length ? undefined : 'true'} />
 		</div>
 	{/if}
 </div>
