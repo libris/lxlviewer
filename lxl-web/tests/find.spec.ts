@@ -130,6 +130,15 @@ test('sorting changes the sort param', async ({ page }) => {
 	await expect(page).toHaveURL(/_sort=_sortKeyByLang.sv/);
 });
 
+test('change sort -> facets are updated with new sorting', async ({ page }) => {
+	await page.getByTestId('facets').getByText('Facklitteratur', { exact: true }).click();
+	const link = page.getByTestId('facets').getByRole('link', { name: 'Allt inom facklitteratur' });
+	await expect(link).not.toHaveAttribute('href', /_sortKeyByLang\.sv/);
+	await page.getByTestId('sort-select').locator('select').selectOption('_sortKeyByLang.sv');
+	await page.waitForLoadState('networkidle');
+	await expect(link).toHaveAttribute('href', /_sortKeyByLang\.sv/);
+});
+
 test('has pagination', async ({ page }) => {
 	await expect(page.getByTestId('pagination')).toBeVisible();
 });
