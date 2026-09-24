@@ -249,7 +249,7 @@
 			-->{#if forcedLabel}
 				<span class="sublevel-label inline-block first-letter:capitalize">{forcedLabel}</span>{' '}
 			{/if}<!--
-			-->{@render node(data, Elem.Span)}<!--
+			-->{@render node(data, parent)}<!--
 			-->{@render after(data, !isBlock)}
 		</span>
 	{:else}
@@ -372,16 +372,5 @@
 
 	.translationOf .sublevel-label::after {
 		content: '';
-	}
-
-	/* hasPart + part hack, should be combined into a virtual property */
-	:global(dl[data-property='isPartOf']:has(+ *[data-property='part'])) {
-		display: inline !important;
-	}
-	:global(dl[data-property='isPartOf'] + *[data-property='part']) {
-		display: inline;
-	}
-	:global(dl[data-property='isPartOf'] + *[data-property='part'])::before {
-		content: ' ; ';
 	}
 </style>

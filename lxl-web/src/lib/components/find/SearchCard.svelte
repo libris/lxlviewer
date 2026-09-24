@@ -641,6 +641,17 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			-webkit-box-orient: vertical;
 			overflow: hidden;
 		}
+
+		/* hasPart + part hack, should be combined into a virtual property */
+		:global(dl[data-property='isPartOf']:has(+ *[data-property='part'])) {
+			display: inline !important;
+		}
+		:global(dl[data-property='isPartOf'] + *[data-property='part']) {
+			display: inline;
+		}
+		:global(dl[data-property='isPartOf'] + *[data-property='part'])::before {
+			content: ' ; ';
+		}
 	}
 
 	/* card in dialog */

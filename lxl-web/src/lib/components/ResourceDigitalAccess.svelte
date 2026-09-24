@@ -91,6 +91,10 @@
 {/if}
 
 <style lang="postcss">
+	:global(.resource-access ul) {
+		margin-bottom: calc(var(--spacing) * 2);
+	}
+
 	details[open] {
 		& .chevron {
 			transform: rotate(90deg);
