@@ -46,7 +46,7 @@
 />
 
 <div class="mx-auto mt-2 w-full max-w-screen p-4 sm:px-6 md:mt-6 lg:max-w-6xl">
-	<h1 class="font-heading text-2xl font-medium">{page.data.t('myPages.myPages')}</h1>
+	<h1 class="font-heading text-3xl font-medium">{page.data.t('myPages.myPages')}</h1>
 	{#if page.data.features.favouriteLibraries}
 		<Libraries {q} />
 	{/if}

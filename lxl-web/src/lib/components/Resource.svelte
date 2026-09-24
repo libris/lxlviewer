@@ -226,7 +226,7 @@
 									skipOuter={true}
 								/>
 							</p>
-							<h1 class="decorated-heading mt-2 mb-1 text-3xl @3xl:text-3xl">
+							<h1 class="font-heading decorated-heading mt-2 mb-1 text-3xl @3xl:text-3xl">
 								<DecoratedData2
 									data={decoratedData.heading}
 									showLabels={ShowLabelsOptions.Never}
@@ -342,7 +342,7 @@
 			</section>
 			{#if decoratedData.summary.length}
 				<section class="print:break-before-page">
-					<h2 id={`${uidPrefix}summary`} class="mb-3 text-xl font-medium">
+					<h2 id={`${uidPrefix}summary`} class="font-heading mb-4 text-2xl font-medium">
 						{page.data.t('resource.summary')}
 					</h2>
 					{#snippet summary()}
@@ -366,7 +366,7 @@
 			{/if}
 			{#if isWork && instances?.length}
 				<section class="print:break-before-page print:break-after-page">
-					<h2 id="{uidPrefix}editions" class="mb-4 text-xl font-medium">
+					<h2 id="{uidPrefix}editions" class="font-heading mb-4 text-2xl font-medium">
 						{page.data.t('resource.editions')}
 					</h2>
 					{#if showTabs}
@@ -378,7 +378,7 @@
 			{/if}
 			{#if relations?.length}
 				<section class="print:hidden">
-					<h2 id={`${uidPrefix}relations`} class="mb-6 text-xl font-medium">
+					<h2 id={`${uidPrefix}relations`} class="font-heading mb-4 text-2xl font-medium">
 						{page.data.t('resource.relations')}
 					</h2>
 					<ul>
@@ -438,7 +438,10 @@
 			{/if}
 			{#if decoratedData.resourceTableOfContents.length}
 				<section>
-					<h2 id={`${uidPrefix}resourceTableOfContents`} class="mb-3 text-xl font-medium">
+					<h2
+						id={`${uidPrefix}resourceTableOfContents`}
+						class="font-heading mb-4 text-2xl font-medium"
+					>
 						{page.data.t('resource.tableOfContents')}
 					</h2>
 					{#snippet resourceTableOfContents()}
@@ -464,7 +467,7 @@
 				<section
 					class="-mx-3 bg-neutral-100 px-3 pb-6 @sm:-mx-6 @sm:px-6 @2xl:mx-0 @2xl:rounded-lg print:break-before-page print:px-0"
 				>
-					<h2 id="{uidPrefix}details" class="my-4 text-xl font-medium">
+					<h2 id="{uidPrefix}details" class="font-heading my-4 text-2xl font-medium">
 						{page.data.t('resource.details')}
 					</h2>
 					<div class="decorated-data-section decorated-spacious decorated-details">
