@@ -18,6 +18,11 @@ test('first heading on page should be h1', async ({ page }) => {
 	await expect(firstHeading).toHaveJSProperty('tagName', 'H1');
 });
 
+test('page displays the correct title', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	await expect(page).toHaveTitle('Pappaklausulen. — Jonas Hassen Khemiri, 1978- | Libris');
+});
+
 test('Open holdings panel should not have any detectable a11y issues', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf?holdings=Electronic');
 	const accessibilityScanResults = await new AxeBuilder({ page })
