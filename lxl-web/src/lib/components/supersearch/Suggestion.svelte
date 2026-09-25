@@ -4,7 +4,7 @@
 	import { resolve } from '$app/paths';
 	import type { SuperSearchResultItem } from '$lib/types/search';
 	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
-	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Elem, HeadingElem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
 	import { Fmt, LensType } from '$lib/types/xl';
 	import getInstanceData from '$lib/utils/getInstanceData';
@@ -19,9 +19,18 @@
 		isFocusedRow?: () => boolean;
 		isFocusedCell?: (cellIndex: number) => boolean;
 		leadingContent?: Snippet;
+		headingElement?: HeadingElem;
 	};
 
-	const { item, getCellId, isFocusedRow, isFocusedCell, leadingContent }: Props = $props();
+	const {
+		item,
+		getCellId,
+		isFocusedRow,
+		isFocusedCell,
+		leadingContent,
+		headingElement = HeadingElem.H2
+	}: Props = $props();
+
 	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(item?.['@id']))));
 	const primaryAddQualifierLink = $derived(item?.qualifiers?.[0]?._q || resourceId);
 
@@ -40,7 +49,10 @@
 	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2 px-1 lg:px-0">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="decorated-heading truncate overflow-hidden text-base whitespace-nowrap">
+			<svelte:element
+				this={headingElement}
+				class="decorated-heading truncate overflow-hidden text-base whitespace-nowrap"
+			>
 				<DecoratedData2
 					data={item[LxlLens.CardHeading]}
 					showLabels={ShowLabelsOptions.Never}
@@ -64,7 +76,7 @@
 						/>
 					</span>
 				{/if}
-			</h2>
+			</svelte:element>
 			<footer class="resource-footer text-3xs text-subtle sm:text-2xs truncate">
 				<span class="font-medium">
 					{item.selectTypeStr}

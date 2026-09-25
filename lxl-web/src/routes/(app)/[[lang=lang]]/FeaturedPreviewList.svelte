@@ -5,6 +5,7 @@
 	import SearchResultList from '$lib/components/SearchResultList.svelte';
 	import { getHomepageContext } from '$lib/contexts/homepage';
 	import { getFeaturedPreviews } from '$lib/remotes/homepage.remote';
+	import { HeadingElem } from '$lib/types/decoratedData';
 
 	type Props = {
 		featured: FeaturedSearch;
@@ -128,7 +129,7 @@
 		lazyImages
 		{fadeInImages}
 		bind:listElement
-		headingElement="h3"
+		headingElement={HeadingElem.H3}
 	/>
 </div>
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import SearchResultItem from '$lib/components/SearchResultItem.svelte';
+	import { HeadingElem } from '$lib/types/decoratedData';
 	import type { SearchResultItem as SearchResultItemType } from '$lib/types/search';
 	import { onMount, type Snippet } from 'svelte';
 	import IconChevronLeft from '~icons/bi/chevron-left';
@@ -20,7 +21,7 @@
 		fadeInImages?: boolean;
 		listElement?: HTMLUListElement | undefined;
 		suppressProperty?: string[];
-		headingElement?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+		headingElement?: HeadingElem;
 	};
 
 	let {
@@ -37,7 +38,7 @@
 		fadeInImages = false,
 		listElement = $bindable(),
 		suppressProperty = undefined,
-		headingElement = 'h2'
+		headingElement = HeadingElem.H2
 	}: Props = $props();
 
 	const SCROLL_AMOUNT = 0.85;

@@ -11,6 +11,7 @@
 	import SearchCard from '$lib/components/find/SearchCard.svelte';
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
+	import { HeadingElem } from '$lib/types/decoratedData';
 
 	type Props = {
 		q: string | null;
@@ -130,7 +131,7 @@
 				<ol class="my-libraries-result flex flex-col rounded-sm p-1">
 					{#each searchResult.items as resultItem (resultItem[JsonLd.ID])}
 						<li>
-							<SearchCard item={resultItem} headingElement="h3" />
+							<SearchCard item={resultItem} headingElement={HeadingElem.H3} />
 						</li>
 					{/each}
 				</ol>
@@ -150,7 +151,7 @@
 			>
 				{#each mergedLibraries as myLib (myLib[JsonLd.ID])}
 					<li>
-						<SearchCard item={myLib} headingElement="h3" />
+						<SearchCard item={myLib} headingElement={HeadingElem.H3} />
 					</li>
 				{/each}
 			</ol>
