@@ -113,3 +113,10 @@ test('table of contents', async ({ page }) => {
 		'enter keypress toggles table of contents while focused on toggle'
 	).toBeVisible();
 });
+
+test('the line height (click area) of links are at least 24px', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	const firstLink = page.locator('a.link').first();
+	const lineHeight = await firstLink.evaluate((el) => parseFloat(getComputedStyle(el).lineHeight));
+	expect(lineHeight).toBeGreaterThanOrEqual(24);
+});

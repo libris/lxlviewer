@@ -338,7 +338,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				</div>
 			{/if}
 		</div>
-		<footer class="card-footer @container mt-1" id={footerId}>
+		<footer class="card-footer @container mt-1.5" id={footerId}>
 			{#if item.selectTypeStr}
 				<span class="text-body font-medium">{item.selectTypeStr}</span>
 				<!-- eslint-disable-next-line svelte/no-useless-mustaches -->
