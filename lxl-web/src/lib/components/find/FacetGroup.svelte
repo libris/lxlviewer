@@ -42,7 +42,7 @@
 	const totalItems = $derived(data.values.length);
 	let defaultItemsShown = $state(DEFAULT_FACET_VALUES_SHOWN);
 
-	const showSort = $derived((level === 1 && data.dimension !== 'boolFilters') || level === 3);
+	const showSort = $derived((level === 1 && data.dimension !== 'otherFilters') || level === 3);
 
 	let currentSort = $derived(
 		userSettings.facetSort?.[data.dimension] ||
