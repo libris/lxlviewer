@@ -258,6 +258,10 @@
 		color: var(--color-body);
 		background: var(--color-page);
 	}
+
+	input::placeholder {
+		color: var(--color-placeholder);
+	}
 }
 
 @layer components {
