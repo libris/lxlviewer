@@ -12,6 +12,12 @@ export interface FeaturedSearchConfig {
 	showAllLabelByLang?: Record<LocaleCode, string>;
 }
 
+export interface FeaturedCategoryConfig {
+	id: string;
+	href: string;
+	labelByLang: Record<LocaleCode, string>;
+}
+
 export interface Features {
 	specialCollections: boolean;
 	myPages: boolean;
@@ -56,6 +62,7 @@ export interface Site {
 	configuration?: {
 		themeName?: string;
 		favicon?: string;
+		// file name of an image in `$lib/assets/img/hero/` or an absolute URL.
 		heroImage?: string;
 		locales?: Translations;
 		features?: Partial<Features>;
@@ -63,6 +70,7 @@ export interface Site {
 		appMenu?: AppMenuItem[];
 		featuredSearches?: FeaturedSearchConfig[];
 		featuredSearches2?: FeaturedSearchConfig[];
+		featuredCategories?: FeaturedCategoryConfig[];
 		articles?: {
 			about?: {
 				articleBodyByLang?: Record<LocaleCode, string>;
