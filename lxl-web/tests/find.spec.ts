@@ -155,3 +155,9 @@ test('can handle square brackets in query', async ({ page }) => {
 	await page.goto('/find?_q=[test]');
 	await expect(page.getByTestId('supersearch').nth(0)).toBeVisible();
 });
+
+test('the line height (click area) of links are at least 24px', async ({ page }) => {
+	const firstLink = page.locator('a.link').first();
+	const lineHeight = await firstLink.evaluate((el) => parseFloat(getComputedStyle(el).lineHeight));
+	expect(lineHeight).toBeGreaterThanOrEqual(24);
+});
