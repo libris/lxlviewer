@@ -128,6 +128,7 @@
 		lazyImages
 		{fadeInImages}
 		bind:listElement
+		headingElement="h3"
 	/>
 </div>
 

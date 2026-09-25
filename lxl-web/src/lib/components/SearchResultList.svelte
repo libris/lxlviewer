@@ -20,6 +20,7 @@
 		fadeInImages?: boolean;
 		listElement?: HTMLUListElement | undefined;
 		suppressProperty?: string[];
+		headingElement?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 	};
 
 	let {
@@ -35,7 +36,8 @@
 		lazyImages = false,
 		fadeInImages = false,
 		listElement = $bindable(),
-		suppressProperty = undefined
+		suppressProperty = undefined,
+		headingElement = 'h2'
 	}: Props = $props();
 
 	const SCROLL_AMOUNT = 0.85;
@@ -121,6 +123,7 @@
 						highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
 							index <= lazyImagesAfterIndex}
 						{suppressProperty}
+						{headingElement}
 					/>
 				</li>
 			{/each}
@@ -177,6 +180,7 @@
 						index <= lazyImagesAfterIndex}
 					{suppressProperty}
 					aspectRatio={aspectRatio === 'landscape' ? 'video' : 'square'}
+					{headingElement}
 				/>
 			</li>
 		{/each}

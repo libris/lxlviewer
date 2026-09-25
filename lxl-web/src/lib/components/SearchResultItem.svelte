@@ -18,6 +18,7 @@
 		fadeInImage?: boolean;
 		suppressProperty?: string[];
 		aspectRatio?: 'square' | 'video';
+		headingElement?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 	};
 
 	let {
@@ -26,7 +27,8 @@
 		highPriorityImage = false,
 		fadeInImage = false,
 		suppressProperty = undefined,
-		aspectRatio = 'square'
+		aspectRatio = 'square',
+		headingElement = 'h2'
 	}: Props = $props();
 
 	let loadedImage = $state(false);
@@ -108,7 +110,8 @@
 				{/each}
 			</p>
 			<hgroup>
-				<h2
+				<svelte:element
+					this={headingElement}
 					class={[
 						'decorated-heading mt-0.5 line-clamp-3 text-sm leading-snug hover:underline @min-[16rem]:text-[0.9375rem]'
 					]}
@@ -119,7 +122,7 @@
 						parent={Elem.H}
 						skipOuter={true}
 					/>
-				</h2>
+				</svelte:element>
 				{#if data[LensType.WebCardHeaderExtra]?._display && data[LensType.WebCardHeaderExtra]?._display.length}
 					<p class="decorated-card-heading-extra text-subtle mt-0.5 line-clamp-2 text-xs">
 						{#each data[LensType.WebCardHeaderExtra]?._display as displayObj, index (index)}
