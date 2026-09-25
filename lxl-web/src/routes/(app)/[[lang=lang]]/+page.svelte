@@ -12,7 +12,6 @@
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import IconArrowRight from '~icons/bi/arrow-right';
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
-	import heroFallback from '$lib/assets/img/hero/bg-marbling01.jpg';
 	import AppSearch from './AppSearch.svelte';
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
@@ -40,9 +39,9 @@
 	);
 
 	const heroImage = $derived(
-		/^https?:\/\//.test(page.data.heroImage ?? '')
+		/^https?:\/\//.test(page.data.heroImage)
 			? page.data.heroImage
-			: (heroImageByName[page.data.heroImage ?? ''] ?? heroFallback)
+			: heroImageByName[page.data.heroImage]
 	);
 
 	const searchContext = getSearchContext();

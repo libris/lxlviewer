@@ -1,0 +1,189 @@
+{
+	"lxlwebConfiguration": {
+		"themeName": "libris",
+		"favicon": "libris",
+		"heroImage": "bg-marbling01.jpg",
+		"features": {
+			"specialCollections": true,
+			"myPages": true,
+			"favouriteLibraries": true,
+			"holdings": true,
+			"resourceImages": true
+		},
+		"footer": [
+			{
+				"id": "nav-info",
+				"titleKey": "footer.information",
+				"items": [
+					{
+						"titleKey": "footer.about",
+						"href": "/about"
+					},
+					{
+						"titleKey": "footer.faq",
+						"href": "https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html"
+					},
+					{
+						"titleKey": "footer.cookies",
+						"href": "[cookies]"
+					},
+					{
+						"titleKey": "footer.gdpr",
+						"href": "https://www.kb.se/om-oss/hantering-av-personuppgifter#Librissok"
+					},
+					{
+						"titleKey": "appMenu.accessibilityStatement",
+						"href": "https://www.kb.se/om-oss/tillganglighet-pa-kbs-webbplatser-och-digitala-tjanster.html#item_125b5507eb18cedffd1a436125_45b5507eb18cedffd1a4317ec"
+					}
+				]
+			},
+			{
+				"id": "nav-shortcuts",
+				"titleKey": "footer.shortcuts",
+				"items": [
+					{
+						"titleKey": "appMenu.help",
+						"href": "/help/search"
+					},
+					{
+						"titleKey": "appMenu.illSite",
+						"href": "${PUBLIC_FJARRLAN_URL}"
+					}
+				]
+			},
+			{
+				"id": "nav-contact",
+				"titleKey": "footer.contact",
+				"items": [
+					{
+						"titleKey": "footer.customerSupport",
+						"href": "https://www.kb.se/om-oss/kontakta-oss#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3"
+					}
+				]
+			}
+		],
+		"appMenu": [
+			{
+				"titleKey": "footer.customerSupport",
+				"href": "https://www.kb.se/om-oss/kontakta-oss#item_125b5507eb18cedffd1a43f869_45b5507eb18cedffd1a4321f3"
+			},
+			{
+				"titleKey": "footer.faq",
+				"href": "https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html"
+			}
+		],
+		"featuredSearches": [
+			{
+				"headingByLang": { "sv": "Ny skönlitteratur på svenska", "en": "New fiction in Swedish" },
+				"findHref": "/find?_q=language%3A\"lang%3Aswe\"+category:\"saogf:Sk%25C3%25B6nlitteratur\"+excludePreliminary&_sort=-%40reverse.instanceOf.publication.librissearch:year",
+				"previewParams": {
+					"_q": "language:\"lang:swe\" category:\"saogf:Sk%C3%B6nlitteratur\" instanceType:PhysicalResource excludePreliminary existsImage NOT (instanceCategory:\"https://id.kb.se/term/saobf/Braille\" meta.@type:(VirtualRecord))",
+					"_limit": 20,
+					"_sort": "-@reverse.instanceOf.publication.librissearch:year"
+				}
+			},
+			{
+				"headingByLang": { "sv": "Tecknade serier för vuxna", "en": "Comics for grown-ups" },
+				"findHref": "/find?_q=workCategory:\"saogf:Serieromaner\"",
+				"previewParams": {
+					"_q": "workCategory:\"saogf:Serieromaner\" existsImage",
+					"_limit": 20,
+					"_sort": ""
+				}
+			},
+			{
+				"headingByLang": { "sv": "Nya avhandlingar", "en": "New dissertations" },
+				"findHref": "/find?_q=workCategory%3A\"saogf%3AAvhandlingar\"&_sort=-%40reverse.instanceOf.publication.librissearch%3Ayear",
+				"previewParams": {
+					"_q": "workCategory:\"saogf:Avhandlingar\" existsImage",
+					"_limit": 20,
+					"_sort": "-@reverse.instanceOf.publication.librissearch:year"
+				}
+			}
+		],
+		"featuredSearches2": [
+			{
+				"headingByLang": { "sv": "Vidga dina vyer", "en": "Broaden your horizons" },
+				"leadingTextByLang": {
+					"sv": "Skönlitteratur översatt från andra språk än engelska",
+					"en": "Fiction translated from languages other than English"
+				},
+				"findHref": "/find?_q=kategori%3A\"saogf%3ASk%25C3%25B6nlitteratur\"+originalLanguage%3A*+language%3A\"lang%3Aswe\"+NOT+originalLanguage%3A\"lang%3Aeng\"+yearPublished%3A%282026%29",
+				"previewParams": {
+					"_q": "kategori:\"saogf:Sk%C3%B6nlitteratur\" originalLanguage:* language:\"lang:swe\" NOT originalLanguage:\"lang:eng\" yearPublished:(2026) existsImage",
+					"_limit": 20
+				}
+			},
+			{
+				"headingByLang": {
+					"sv": "Gröna vanor – vegetariska kokböcker",
+					"en": "Green habits – vegetarian cookbooks"
+				},
+				"findHref": "/find?_q=category:\"saogf:Kokb%25C3%25B6cker\"+subject:\"sao:Vegetarisk%2520mat\"",
+				"previewParams": {
+					"_q": "category:\"saogf:Kokb%C3%B6cker\" subject:\"sao:Vegetarisk%20mat\" existsImage",
+					"_limit": 20
+				}
+			},
+			{
+				"headingByLang": { "sv": "Kvinnor i litteraturen", "en": "Women in literature" },
+				"findHref": "/find?_q=subject:\"sao:Kvinnor%2520i%2520litteraturen\"",
+				"previewParams": {
+					"_q": "subject:\"sao:Kvinnor%20i%20litteraturen\" existsImage",
+					"_limit": 20
+				}
+			},
+			{
+				"headingByLang": { "sv": "Ny facklitteratur", "en": "New non-fiction" },
+				"findHref": "/find?_q=category:\"saogf:Facklitteratur\"+yearPublished%3A-2026&_sort=-%40reverse.instanceOf.publication.librissearch%3Ayear",
+				"previewParams": {
+					"_q": "category:\"saogf:Facklitteratur\" yearPublished:-2026 existsImage NOT (instanceCategory:\"https://id.kb.se/term/saobf/Braille\" meta.@type:(VirtualRecord))",
+					"_limit": 20,
+					"_sort": "-@reverse.instanceOf.publication.librissearch:year"
+				}
+			}
+		],
+		"featuredCategories": [
+			{
+				"id": "fiction-category",
+				"href": "/find?_q=category:\"saogf:Sk%25C3%25B6nlitteratur\"",
+				"labelByLang": { "sv": "Skönlitteratur", "en": "Literature" }
+			},
+			{
+				"id": "nonfiction-category",
+				"href": "/find?_q=category:\"saogf:Facklitteratur\"",
+				"labelByLang": { "sv": "Facklitteratur", "en": "Non-fiction literature" }
+			},
+			{
+				"id": "serials-category",
+				"href": "/find?_q=category:\"saogf:Seriella%20publikationer\"",
+				"labelByLang": { "sv": "Tidningar och periodika", "en": "Newspapers and Periodicals" }
+			},
+			{
+				"id": "music-category",
+				"href": "/find?_q=category:\"saogf:Musik\"",
+				"labelByLang": { "sv": "Musik", "en": "Music" }
+			},
+			{
+				"id": "movingimage-category",
+				"href": "/find?_q=category:\"ktg:MovingImage\"",
+				"labelByLang": { "sv": "Rörlig bild", "en": "Moving image" }
+			},
+			{
+				"id": "software-category",
+				"href": "/find?_q=category:\"ktg:Software\"",
+				"labelByLang": { "sv": "Mjukvara", "en": "Software" }
+			},
+			{
+				"id": "picture-category",
+				"href": "/find?_q=category:\"saogf:Bilder\"",
+				"labelByLang": { "sv": "Bilder", "en": "Pictures" }
+			},
+			{
+				"id": "cartographic-category",
+				"href": "/find?_q=category:\"saogf:Kartografiskt%2520material\"",
+				"labelByLang": { "sv": "Kartografiskt material", "en": "Cartographic material" }
+			}
+		]
+	}
+}
