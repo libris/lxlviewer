@@ -368,6 +368,9 @@
 								"label"
 							]
 						},
+						{
+							"alternateProperties": ["publication", "production", "manufacture"]
+						},
 						"uri",
 						"marc:publicNote",
 						"appliesTo",

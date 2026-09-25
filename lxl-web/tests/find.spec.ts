@@ -18,9 +18,9 @@ test('page displays the site header', async ({ page }) => {
 });
 
 test('page displays the correct title', async ({ page }) => {
-	await expect(page).toHaveTitle('f | Libris');
+	await expect(page).toHaveTitle('f | Sökresultat | Libris');
 	await page.goto('/find?_q=*&_limit=20&_offset=0');
-	await expect(page).toHaveTitle('Libris');
+	await expect(page).toHaveTitle('Sökresultat | Libris');
 });
 
 test('page has a search input', async ({ page }) => {
