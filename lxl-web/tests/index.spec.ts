@@ -43,6 +43,17 @@ test('index page has a search input', async ({ page }) => {
 	await expect(page.getByTestId('supersearch').getByRole('combobox')).toBeVisible();
 });
 
+test('search input has visible outline on focus', async ({ page }) => {
+	const supersearch = page.getByTestId('supersearch');
+	const input = supersearch.getByRole('combobox');
+	await input.focus();
+	await expect(input).toBeFocused();
+
+	const focusElement = supersearch.locator('.supersearch-input').first();
+	await expect(focusElement).toHaveCSS('outline-style', 'solid');
+	await expect(focusElement).toHaveCSS('outline-width', '2px');
+});
+
 test('can perform a search', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').fill('*');
 	await page.keyboard.press('Enter');
