@@ -41,7 +41,7 @@
 	<div class="flex flex-col gap-1">
 		<label class="sr-only" for="facet-range-from">{page.data.t('general.from')}</label>
 		<input
-			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1 text-base sm:text-sm"
+			class="bg-input h-8 rounded-sm border border-neutral-500 px-2 py-1 text-base sm:text-sm"
 			id="facet-range-from"
 			type="number"
 			min="1000"
@@ -54,7 +54,7 @@
 	<div class="flex flex-col gap-1">
 		<label class="sr-only" for="facet-range-to">{page.data.t('general.to')}</label>
 		<input
-			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1 text-base sm:text-sm"
+			class="bg-input h-8 rounded-sm border border-neutral-500 px-2 py-1 text-base sm:text-sm"
 			id="facet-range-to"
 			type="number"
 			min="1000"

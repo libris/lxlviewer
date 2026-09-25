@@ -102,7 +102,7 @@
 		content: '';
 		mask-size: cover;
 		mask-repeat: no-repeat;
-		background: var(--color-neutral-400);
+		background: var(--color-neutral-500);
 		width: 14px;
 		height: 14px;
 		flex-shrink: 0;
@@ -111,7 +111,7 @@
 
 	.with-checkbox:hover::before,
 	.with-radio:hover::before {
-		background: var(--color-neutral-500);
+		background: var(--color-neutral-700);
 	}
 
 	.with-checkbox::before {
