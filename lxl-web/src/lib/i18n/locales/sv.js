@@ -201,10 +201,13 @@ export default {
 		showEquals: 'Visa bara exakta träffar för'
 	},
 	supersearch: {
-		addQualifiers: 'Filter',
+		moreQualifiers: 'Fler filter',
+		search: 'Sök',
+		addQualifiers: 'Lägg till filter',
 		moreQualifiers: 'Fler filter',
 		loading: 'Laddar...',
-		suggestions: 'Förslag',
+		suggestion: 'förslag',
+		suggestions: 'förslag',
 		showAll: 'Visa sökresultat',
 		arrowUpKey: 'Piltangent uppåt',
 		arrowRightKey: 'Piltangent höger',
@@ -217,7 +220,8 @@ export default {
 		add: 'Lägg till',
 		searchHelp: 'Sökhjälp',
 		expandSearch: 'Gå till sökruta',
-		or: 'eller'
+		or: 'eller',
+		addAsQualifier: 'Lägg till som filter'
 	},
 	sort: {
 		sort: 'Sortera',

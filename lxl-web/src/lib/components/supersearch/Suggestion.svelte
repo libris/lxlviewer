@@ -9,18 +9,19 @@
 	import { Fmt, LensType } from '$lib/types/xl';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import SuggestionImage from './SuggestionImage.svelte';
-	import MoreIcon from '~icons/bi/three-dots';
-	import dropdownMenu from '$lib/actions/dropDownMenu/index.svelte.js';
 	import type { Snippet } from 'svelte';
+	import IconReturnKey from '~icons/bi/arrow-return-left';
+	import IconAddQualifier from '~icons/bi/arrow-up-left';
 
 	type Props = {
 		item: SuperSearchResultItem;
 		getCellId?: (cellIndex: number) => string;
+		isFocusedRow?: () => boolean;
 		isFocusedCell?: (cellIndex: number) => boolean;
 		leadingContent?: Snippet;
 	};
 
-	const { item, getCellId, isFocusedCell, leadingContent }: Props = $props();
+	const { item, getCellId, isFocusedRow, isFocusedCell, leadingContent }: Props = $props();
 	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(item?.['@id']))));
 	const primaryAddQualifierLink = $derived(item?.qualifiers?.[0]?._q || resourceId);
 
@@ -36,31 +37,18 @@
 </script>
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
-	{#if item.qualifiers?.length}
-		<span
-			class="text-subtle order-1 ml-auto hidden rounded-sm px-1.5 py-0.5 text-xs whitespace-nowrap sm:inline"
-		>
-			{page.data.t('general.add')}
-
-			<span class="hidden lowercase lg:inline">
-				{item.qualifiers[0].label}
-			</span>
-		</span>
-	{/if}
-	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2">
+	<div class="resource grid grid-cols-[40px_minmax(0,1fr)] items-center gap-2 px-1 lg:px-0">
 		<SuggestionImage {item} />
 		<div class="resource-content">
-			<h2 class="decorated-heading flex gap-1 overflow-hidden text-sm whitespace-nowrap">
-				<span class="truncate">
-					<DecoratedData2
-						data={item[LxlLens.CardHeading]}
-						showLabels={ShowLabelsOptions.Never}
-						allowPopovers={false}
-						allowLinks={false}
-						parent={Elem.Span}
-						skipOuter={true}
-					/>
-				</span>
+			<h2 class="decorated-heading truncate overflow-hidden text-base whitespace-nowrap">
+				<DecoratedData2
+					data={item[LxlLens.CardHeading]}
+					showLabels={ShowLabelsOptions.Never}
+					allowPopovers={false}
+					allowLinks={false}
+					parent={Elem.Span}
+					skipOuter={true}
+				/>
 				<!-- only show body > contribution next to header -->
 				{#if contribution}
 					<span class="divider">{' · '}</span>
@@ -131,82 +119,72 @@
 			</footer>
 		</div>
 	</div>
+	{#if item.qualifiers?.length}
+		<span class="text-subtle ml-auto px-1.5 py-0.5 text-xs whitespace-nowrap">
+			<span class="hidden sm:inline">
+				{page.data.t('general.add')}
+				<span class="lowercase">
+					{item.qualifiers[0].label}
+				</span>
+			</span>
+			<IconAddQualifier
+				class="inline sm:hidden align-baseline text-link size-4"
+				aria-hidden="true"
+			/>
+		</span>
+	{/if}
 {/snippet}
 
-<div class="suggestion flex h-14 items-stretch" class:qualifier={item.qualifiers?.length}>
+<div
+	class="suggestion flex h-13 sm:h-14 items-stretch rounded-md relative"
+	class:qualifier={item.qualifiers?.length}
+>
 	{#if primaryAddQualifierLink && item.qualifiers?.length}
 		<a
-			href={page.data.localizeHref(primaryAddQualifierLink)}
+			href={resolve(page.data.localizeHref(primaryAddQualifierLink))}
 			id={getCellId?.(0)}
-			class:focused-cell={isFocusedCell?.(0)}
+			class={['mx-1 lg:mx-3 h-full rounded-md', isFocusedCell?.(0) && 'focused-cell']}
 		>
 			{@render resourceSnippet(item)}
 		</a>
-		<button
-			type="button"
-			class="more w-14 items-center justify-center p-0"
-			id={getCellId?.(1)}
-			class:focused-cell={isFocusedCell?.(1)}
-		>
-			{#key item.qualifiers}
-				<span
-					class="more-icon-container text-subtle flex size-10 items-center justify-center rounded-full"
-					use:dropdownMenu={{
-						menuItems: [
-							...item.qualifiers.map((qualifier) => ({
-								label: `${page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
-								href: qualifier._q
-							})),
-							{
-								label: `${page.data.t('search.goToResource')}`,
-								href: resourceId || ''
-							}
-						],
-						placeAsSibling: true
-					}}
-				>
-					<MoreIcon />
-				</span>
-			{/key}
-		</button>
 	{:else if resourceId}
 		<a
 			href={resolve(page.data.localizeHref(resourceId))}
 			id={getCellId ? getCellId(0) : ''}
+			class={['mx-1 lg:mx-3 rounded-md', isFocusedCell?.(0) && 'focused-cell']}
 			class:focused-cell={isFocusedCell?.(0)}
 		>
 			{@render leadingContent?.()}
 			{@render resourceSnippet(item)}
 		</a>
 	{/if}
+	{#if isFocusedRow?.() && !item.qualifiers?.length}
+		<div
+			class="absolute right-4.5 hidden sm:flex pointer-events-none h-full items-center bg-accent-100 justify-center w-12 rounded-r-md"
+		>
+			<IconReturnKey class="text-link" aria-hidden={item.qualifiers?.length ? undefined : 'true'} />
+		</div>
+	{/if}
 </div>
 
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	.suggestion:has(:global(*:hover)) {
-		background-color: var(--color-accent-50);
-	}
-	.suggestion button,
 	.suggestion a {
 		display: flex;
 		align-items: center;
 		text-decoration: none;
 	}
 
-	.suggestion button:first-child,
 	.suggestion a:first-child {
 		flex: 1;
-		padding: 0 calc(var(--spacing) * 4);
 		text-align: left;
 	}
 
-	.qualifier.suggestion button:first-child,
 	.qualifier.suggestion a:first-child {
 		padding-right: 0;
 	}
 
-	.suggestion button:not(:first-child):last-child,
 	.suggestion a:not(:first-child):last-child {
 		text-align: right;
 	}
@@ -229,10 +207,5 @@
 		& :global(.person-extra) {
 			display: none;
 		}
-	}
-
-	.more.focused-cell .more-icon-container,
-	.more:hover .more-icon-container {
-		background-color: var(--color-accent-100);
 	}
 </style>

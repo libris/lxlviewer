@@ -202,9 +202,12 @@ export default {
 		showEquals: 'Only show exact matches for'
 	},
 	supersearch: {
-		addQualifiers: 'Filter',
+		moreQualifiers: 'More filters',
+		search: 'Search',
+		addQualifiers: 'Add filter',
 		moreQualifiers: 'More filters',
 		loading: 'Loading...',
+		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',
 		showAll: 'Show search results',
 		arrowUpKey: 'Arrow Up key',
@@ -218,7 +221,8 @@ export default {
 		add: 'Add',
 		searchHelp: 'Search help',
 		expandSearch: 'Go to search',
-		or: 'or'
+		or: 'or',
+		addAsQualifier: 'Add as filter'
 	},
 	sort: {
 		sort: 'Sort',

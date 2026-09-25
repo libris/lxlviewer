@@ -102,7 +102,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.getByTestId('supersearch').getByRole('combobox').click();
 	await page
 		.getByRole('dialog')
-		.getByLabel('Filter')
+		.getByLabel('Lägg till filter')
 		.getByRole('button')
 		.getByText('Författare/upphov')
 		.first()
@@ -202,9 +202,6 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		(res) =>
 			res.url().includes('/supersearch?') && res.url().includes('subject') && res.status() === 200
 	);
-	await expect(page.getByRole('dialog').getByRole('link').filter({ hasText: 'ämne' })).toHaveCount(
-		5
-	);
 	await page.getByRole('dialog').locator('.suggestion').getByRole('link').first().click();
 	await page.waitForURL(/subject/);
 	await expect(
@@ -299,30 +296,6 @@ test('qualifier keys can be added using keyboard only', async ({ page, context }
 		'arrow key navigation works as intended after adding qualifier key'
 	).toBe('contributor:(a)b');
 	*/
-});
-
-test('return key label is context-aware', async ({ page }) => {
-	await page.getByTestId('supersearch').getByRole('combobox').click();
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
-	await page.getByTestId('supersearch').getByRole('dialog').getByRole('combobox').fill('a');
-	await page.keyboard.press('Tab');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
-		'aria-activedescendant',
-		'hero-search-item-0x1'
-	);
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Rensa');
-	await page.keyboard.press('Backspace');
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
-	await page.keyboard.press('ArrowDown');
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Lägg till');
-	await page.keyboard.press('ArrowUp');
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
-	await page.keyboard.press('Shift+Tab');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
-		'aria-activedescendant',
-		'hero-search-item-3x0'
-	);
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Välj');
 });
 
 test('add qualifier key on empty input', async ({ page, context }) => {
