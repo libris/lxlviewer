@@ -6,7 +6,7 @@
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { LibraryResultItem, SearchResultItem } from '$lib/types/search';
 	import { Fmt, JsonLd, LensType, type DisplayDecorated } from '$lib/types/xl';
-	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Elem, HeadingElem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
 	import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
 	import getInstanceData from '$lib/utils/getInstanceData';
@@ -37,7 +37,7 @@
 		allowLinks?: boolean;
 		allowActions?: boolean;
 		hideType?: boolean;
-		headingElement?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+		headingElement?: HeadingElem;
 	}
 
 	let articleElement: HTMLElement;
@@ -48,7 +48,7 @@
 		allowLinks = true,
 		allowActions = true,
 		hideType = false,
-		headingElement = 'h2'
+		headingElement = HeadingElem.H2
 	}: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);

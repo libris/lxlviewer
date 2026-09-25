@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { Fmt, LensType } from '$lib/types/xl';
-	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Elem, HeadingElem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { SearchResultItem } from '$lib/types/search';
 	import { relativizeUrl } from '$lib/utils/http';
 	import DecoratedData2 from './DecoratedData2.svelte';
@@ -18,7 +18,7 @@
 		fadeInImage?: boolean;
 		suppressProperty?: string[];
 		aspectRatio?: 'square' | 'video';
-		headingElement?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+		headingElement?: HeadingElem;
 	};
 
 	let {
@@ -28,7 +28,7 @@
 		fadeInImage = false,
 		suppressProperty = undefined,
 		aspectRatio = 'square',
-		headingElement = 'h2'
+		headingElement = HeadingElem.H2
 	}: Props = $props();
 
 	let loadedImage = $state(false);

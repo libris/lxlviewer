@@ -3,7 +3,7 @@
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
 	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
 	import { type DisplayDecorated, Fmt, JsonLd } from '$lib/types/xl';
-	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Elem, HeadingElem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { HoldingsData } from '$lib/types/holdings';
 	import type {
 		SearchResultItem,
@@ -142,13 +142,17 @@
 		</div>
 	{/if}
 	{#each derivedFilteredInstances as instance (instance?.[JsonLd.ID])}
-		<SearchCard item={instance as SearchResultItem} headingElement="h3" />
+		<SearchCard item={instance as SearchResultItem} headingElement={HeadingElem.H3} />
 	{/each}
 {/snippet}
 
 {#snippet panelAllInstances()}
 	{#each instances as instance (instance?.[JsonLd.ID])}
-		<SearchCard item={instance as SearchResultItem} hideType={true} headingElement="h3" />
+		<SearchCard
+			item={instance as SearchResultItem}
+			hideType={true}
+			headingElement={HeadingElem.H3}
+		/>
 	{/each}
 {/snippet}
 
@@ -159,10 +163,10 @@
 {/if}
 {#if workCard && !isWork}
 	<nav
-		class="nav-to-work border-b-neutral border-b print:hidden hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
+		class="nav-to-work hover:bg-accent-50/75 border-b-neutral border-b print:hidden hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
 		aria-label={page.data.t('resource.navToWork')}
 	>
-		<Suggestion item={workCard}>
+		<Suggestion item={workCard} headingElement="p">
 			{#snippet leadingContent()}
 				<div class="mr-4 flex items-center gap-1 ease-in-out">
 					<IconArrowRight class="arrow rotate-180 transition-transform" />
@@ -408,7 +412,7 @@
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
 										suppressProperty={[relationItem.qualifierKey]}
-										headingElement="h4"
+										headingElement={HeadingElem.H4}
 									/>
 								</div>
 							</li>
@@ -601,6 +605,11 @@
 			display: flex;
 			flex-wrap: wrap;
 			align-items: center;
+			padding-block: calc(var(--spacing) * 1);
+		}
+
+		:global(.decorated-heading) {
+			font-size: var(--text-sm);
 		}
 
 		:global(.resource-footer) {

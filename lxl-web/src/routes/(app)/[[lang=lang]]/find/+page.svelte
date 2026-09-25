@@ -21,6 +21,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import Meta from '$lib/components/Meta.svelte';
 	import getPageTitle from '$lib/utils/getPageTitle';
+	import { HeadingElem } from '$lib/types/decoratedData';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
@@ -98,7 +99,7 @@
 					<ol aria-labelledby="search-results" class="flex flex-col">
 						{#each searchResult.items as item, index (item['@id'] + index)}
 							<li>
-								<SearchCard {item} headingElement="h2" />
+								<SearchCard {item} headingElement={HeadingElem.H2} />
 							</li>
 						{/each}
 					</ol>
