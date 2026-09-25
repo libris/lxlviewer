@@ -27,6 +27,18 @@ export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 
 	async function getHoldings(fnurgel: string): Promise<HoldingsData> {
 		const res = await fetch(`/api/${locale}/${fnurgel}/holdings`);
+
+		if (!res.ok) {
+			console.warn(`Failed to fetch holdings for ${fnurgel}: ${res.status}`);
+			return {
+				byInstanceId: {},
+				byType: {},
+				bibIdData: {},
+				holdingLibraries: {},
+				eodAvailable: null
+			};
+		}
+
 		const holdings = await res.json();
 		return holdings;
 	}

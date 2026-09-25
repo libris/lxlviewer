@@ -76,6 +76,9 @@ export class VocabUtil {
 	}
 
 	_getBaseClasses(className: ClassName): ClassName[] {
+		if (!className) {
+			return [];
+		}
 		if (!this.baseClassCache[className]) {
 			this.baseClassCache[className] = lxljsVocab.getBaseClasses(
 				className,
