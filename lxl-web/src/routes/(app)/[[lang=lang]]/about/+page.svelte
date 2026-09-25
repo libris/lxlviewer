@@ -1,6 +1,7 @@
 <script lang="ts">
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Meta from '$lib/components/Meta.svelte';
+	import MarkdownContent from '$lib/components/MarkdownContent.svelte';
 	import { page } from '$app/state';
 	import SvContent from './sv.md';
 	import EnContent from './en.md';
@@ -16,13 +17,18 @@
 
 <Meta
 	title={pageTitle}
-	description={page.data.t('about.pageDescription')}
+	description={page.data.t('about.metaDescription')}
 	url={page.url.origin + page.url.pathname}
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
 <article class="mx-auto mt-8 mb-12 max-w-3xl p-4 sm:px-6">
-	{#if data.locale === 'en'}
+	{#if data.overrideAboutHtml}
+		<MarkdownContent>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html data.overrideAboutHtml}
+		</MarkdownContent>
+	{:else if data.locale === 'en'}
 		<EnContent />
 	{:else}
 		<SvContent />

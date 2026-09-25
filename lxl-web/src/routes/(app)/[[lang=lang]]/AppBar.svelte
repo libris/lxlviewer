@@ -281,20 +281,22 @@
 				</a>
 			</li>
 		{/if}
-		<li>
-			<a
-				class="action hover:bg-primary-200 text-subtle"
-				href={resolve(page.data.localizeHref('/my-pages'))}
-				aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
-				aria-labelledby={myPagesLabelId}
-			>
-				{@render actionItemContents({
-					Icon: IconBookmark,
-					label: page.data.t('header.myPages'),
-					id: myPagesLabelId
-				})}
-			</a>
-		</li>
+		{#if page.data.features.myPages}
+			<li>
+				<a
+					class="action hover:bg-primary-200 text-subtle"
+					href={resolve(page.data.localizeHref('/my-pages'))}
+					aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
+					aria-labelledby={myPagesLabelId}
+				>
+					{@render actionItemContents({
+						Icon: IconBookmark,
+						label: page.data.t('header.myPages'),
+						id: myPagesLabelId
+					})}
+				</a>
+			</li>
+		{/if}
 	</ul>
 {/snippet}
 

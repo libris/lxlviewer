@@ -4,6 +4,7 @@ import { DisplayUtil, pickProperty, toLite, VocabUtil } from '$lib/utils/xl.serv
 import {
 	Base,
 	type DisplayDecorated,
+	Fmt,
 	type FramedData,
 	JsonLd,
 	LensType,
@@ -47,6 +48,7 @@ import { getHeldBy } from '$lib/utils/holdings';
 import { getLibrary, getOrg } from '$lib/utils/getLibraries.server';
 import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike.server';
 import capitalize from '$lib/utils/capitalize';
+import { isResourceNode } from '$lib/utils/resourceData';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 
 export async function asResult(
@@ -572,11 +574,11 @@ function displayBoolFilters(
 /**
  * prevent links on resource page from pointing to /find
  */
-function replacePath(view: Link, usePath: string | undefined) {
-	if (usePath) {
+function replacePath<T extends Link | undefined>(view: T, usePath: string | undefined): T {
+	if (view && usePath) {
 		return {
 			'@id': view['@id'].replace('/find', usePath)
-		};
+		} as T;
 	}
 	return view;
 }
@@ -621,7 +623,7 @@ function getMediaLinks(
 	item: FramedData,
 	displayUtil: DisplayUtil,
 	locale: LangCode
-): DisplayDecorated | null {
+): DisplayDecorated | undefined {
 	const _item = { ...item };
 	copyMediaLinksToWork(_item);
 
@@ -644,10 +646,9 @@ function getMediaLinks(
 		'electronicLocator',
 		'marc:versionOfResource'
 	]);
-	if (mediaLinks._display?.length) {
+	if (mediaLinks && isResourceNode(mediaLinks) && mediaLinks[Fmt.DISPLAY]?.length) {
 		return mediaLinks;
 	}
-	return null;
 }
 
 /**

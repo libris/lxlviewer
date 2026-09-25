@@ -84,7 +84,7 @@
 			<header
 				class="border-neutral sticky top-0 z-10 flex min-h-14 items-center justify-between gap-2 border-b bg-neutral-50 px-4"
 			>
-				<h1 class="font-heading truncate">
+				<h1 class="text-md font-medium truncate">
 					{@render title?.()}
 				</h1>
 				<!-- svelte-ignore a11y_autofocus -->

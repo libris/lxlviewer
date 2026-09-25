@@ -24,8 +24,6 @@ export default {
 		specialCollections: 'Särskilda samlingar',
 		myPages: 'Mina sidor',
 		help: 'Hjälp',
-		about: 'Om Libris',
-		aboutBeta: 'Frågor och svar',
 		illSite: 'Libris fjärrlån',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
@@ -48,12 +46,12 @@ export default {
 	},
 	about: {
 		pageTitle: 'Om Libris',
-		pageDescription:
+		metaDescription:
 			'Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog.'
 	},
 	help: {
 		pageTitle: 'Hjälp',
-		pageDescription:
+		metaDescription:
 			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.',
 		description: 'Beskrivning',
 		reference: 'Referens',
@@ -63,7 +61,7 @@ export default {
 	},
 	myPages: {
 		pageTitle: 'Mina sidor',
-		pageDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
+		metaDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Favoritbibliotek',
@@ -94,6 +92,7 @@ export default {
 		'librissearch:identifyCategory': 'Kategori',
 		'librissearch:noneCategory': 'Underkategori',
 		'librissearch:instanceCategory': 'Format',
+		'librissearch:workCategory': 'Kategori',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'instanceOf.@type': 'Verkstyp',
 		issuanceType: 'Utgivningssätt',
@@ -131,6 +130,7 @@ export default {
 		yearPublished: 'Utgivningsår',
 		'librissearch:yearPublished': 'Utgivningsår',
 		intendedAudience: 'Målgrupp',
+		classification: 'Klassifikation',
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
 		fieldOfActivity: 'Verksamhetsområde',
@@ -201,10 +201,13 @@ export default {
 		showEquals: 'Visa bara exakta träffar för'
 	},
 	supersearch: {
-		addQualifiers: 'Filter',
+		moreQualifiers: 'Fler filter',
+		search: 'Sök',
+		addQualifiers: 'Lägg till filter',
 		moreQualifiers: 'Fler filter',
 		loading: 'Laddar...',
-		suggestions: 'Förslag',
+		suggestion: 'förslag',
+		suggestions: 'förslag',
 		showAll: 'Visa sökresultat',
 		arrowUpKey: 'Piltangent uppåt',
 		arrowRightKey: 'Piltangent höger',
@@ -217,7 +220,8 @@ export default {
 		add: 'Lägg till',
 		searchHelp: 'Sökhjälp',
 		expandSearch: 'Gå till sökruta',
-		or: 'eller'
+		or: 'eller',
+		addAsQualifier: 'Lägg till som filter'
 	},
 	sort: {
 		sort: 'Sortera',

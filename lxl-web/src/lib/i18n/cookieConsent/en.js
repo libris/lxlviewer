@@ -2,7 +2,7 @@ export default {
 	consentModal: {
 		title: 'We use cookies',
 		description:
-			'The Libris service uses various types of cookies. These are intended to enhance the user experience and ensure that the service and its functions work as they should. Below, you can choose your preferences for which cookies you consent to. You can always change your choices later by clicking on "Manage cookies" at the bottom of the page.',
+			'The {siteName} service uses various types of cookies. These are intended to enhance the user experience and ensure that the service and its functions work as they should. Below, you can choose your preferences for which cookies you consent to. You can always change your choices later by clicking on "Manage cookies" at the bottom of the page.',
 		acceptAllBtn: 'Accept all cookies',
 		acceptNecessaryBtn: 'Accept only necessary',
 		showPreferencesBtn: 'Cookie settings'
@@ -17,7 +17,7 @@ export default {
 			{
 				title: 'About the use of cookies',
 				description:
-					"The Libris website uses cookies. A cookie is a small text file that is stored on the visitor's computer. The National Library's services are designed to reduce the risk of your information being disseminated. The information stored via cookies can never be used by third parties for marketing purposes."
+					"The {siteName} website uses cookies. A cookie is a small text file that is stored on the visitor's computer. The National Library's services are designed to reduce the risk of your information being disseminated. The information stored via cookies can never be used by third parties for marketing purposes."
 			},
 			{
 				title: 'Necessary cookies',

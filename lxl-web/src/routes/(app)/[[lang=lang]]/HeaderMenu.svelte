@@ -34,17 +34,19 @@
 				</span>
 			</a>
 		</li>
-		<li>
-			<a
-				class="flex flex-col items-center gap-1 whitespace-nowrap"
-				href={page.data.localizeHref('/my-pages')}
-			>
-				<BiPerson />
-				<div class="text-nowrap">
-					{page.data.t('header.myPages')}
-				</div>
-			</a>
-		</li>
+		{#if page.data.features.myPages}
+			<li>
+				<a
+					class="flex flex-col items-center gap-1 whitespace-nowrap"
+					href={page.data.localizeHref('/my-pages')}
+				>
+					<BiPerson />
+					<div class="text-nowrap">
+						{page.data.t('header.myPages')}
+					</div>
+				</a>
+			</li>
+		{/if}
 		<li>
 			<a
 				class="flex flex-col items-center gap-1 whitespace-nowrap"

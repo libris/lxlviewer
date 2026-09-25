@@ -188,18 +188,23 @@
 				/>
 			</li>
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
-			<li
-				class={['flex', permanentlyExpanded && '[&>a:first-child]:w-full [&>a:first-child]:pl-4!']}
-			>
-				<FacetValue data={value} />
-				<a
-					href={page.data.localizeHref('/my-pages')}
-					class="btn btn-primary mr-2 size-8 border-0"
-					aria-label={page.data.t('search.changeLibraries')}
+			{#if page.data.features.favouriteLibraries}
+				<li
+					class={[
+						'flex',
+						permanentlyExpanded && '[&>a:first-child]:w-full [&>a:first-child]:pl-4!'
+					]}
 				>
-					<BiPencil aria-hidden="true" />
-				</a>
-			</li>
+					<FacetValue data={value} />
+					<a
+						href={page.data.localizeHref('/my-pages')}
+						class="btn btn-primary mr-2 size-8 border-0"
+						aria-label={page.data.t('search.changeLibraries')}
+					>
+						<BiPencil aria-hidden="true" />
+					</a>
+				</li>
+			{/if}
 		{:else}
 			<li class={[permanentlyExpanded && '[&>a]:pl-4!']}>
 				<FacetValue data={value} variant={getValueVariant(data)} />

@@ -12,7 +12,7 @@
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import IconArrowRight from '~icons/bi/arrow-right';
 	import FeaturedPreviewList from './FeaturedPreviewList.svelte';
-	import heroImage from '$lib/assets/img/bg-marbling01.jpg';
+	import heroFallback from '$lib/assets/img/hero/bg-marbling01.jpg';
 	import AppSearch from './AppSearch.svelte';
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
@@ -28,6 +28,18 @@
 	const featuredSearches: FeaturedSearch[] = $derived(page.data.featuredSearches);
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
 	const featuredCollections: FeaturedSearch[] = $derived(page.data.featuredCollections);
+
+	const heroImageModules = import.meta.glob<string>('$lib/assets/img/hero/*.{jpg,jpeg,png,webp}', {
+		eager: true,
+		query: '?url',
+		import: 'default'
+	});
+
+	const heroImageByName: Record<string, string> = Object.fromEntries(
+		Object.entries(heroImageModules).map(([path, url]) => [path.split('/').pop()!, url])
+	);
+
+	const heroImage = $derived(heroImageByName[page.data.heroImage ?? ''] ?? heroFallback);
 
 	const searchContext = getSearchContext();
 	let searchContainerElement: HTMLDivElement | undefined = $state();
@@ -99,7 +111,7 @@
 	>
 		<header class="flex flex-col px-3 lg:px-6 2xl:px-8">
 			<h2
-				class="font-serif text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[110rem]:text-3xl"
+				class="font-heading text-lg @lg:text-xl @3xl:text-2xl @7xl:text-[1.625rem] @min-[110rem]:text-3xl"
 				{id}
 			>
 				<a
@@ -127,7 +139,13 @@
 			{/if}
 		</header>
 		<div class="featured-list-container">
-			<FeaturedPreviewList {featured} ariaLabelledBy={id} {type} {lazyload} />
+			<FeaturedPreviewList
+				{featured}
+				ariaLabelledBy={id}
+				{type}
+				{lazyload}
+				showResourceImages={page.data.features.resourceImages}
+			/>
 		</div>
 		{#if featured.footerTextByLang}
 			<footer class="mt-2 flex justify-start px-3 sm:justify-end @sm:px-6 @5xl:px-8">
@@ -154,7 +172,7 @@
 		<div class="flex flex-1 items-end justify-center">
 			<h1
 				id={ID_HERO_SEARCH_LABEL}
-				class="text-primary-50 mt-7.5 mb-1.5 px-4.5 text-center font-serif text-3xl leading-snug tracking-[-0.0125em] text-shadow-md sm:text-4xl lg:leading-none xl:text-5xl 2xl:mb-3 2xl:text-[3.25rem]"
+				class="font-heading text-primary-50 mt-7.5 mb-1.5 px-4.5 text-center text-3xl leading-snug tracking-[-0.0125em] text-shadow-md sm:text-4xl lg:leading-none xl:text-5xl 2xl:mb-3 2xl:text-[3.25rem]"
 			>
 				{page.data.t('home.pageHeadingTitle')}
 				{#if page.data.t('home.pageHeadingTitleNoWrap') !== 'home.pageHeadingTitleNoWrap'}
@@ -259,37 +277,41 @@
 			lazyload: index === 0 ? 'mount' : 'intersection'
 		})}
 	{/each}
-	<section class="bg-primary-50 mb-8 scroll-mt-20 px-3 py-12 lg:py-16">
-		<div class="2xl:max-w-10xl mx-auto max-w-7xl">
-			<h2 class="mb-4.5 px-6 text-center font-serif text-2xl lg:text-3xl @min-[110rem]:text-4xl">
-				{page.data.t('home.collectionsTitle')}
-			</h2>
-			<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
-				{page.data.t('home.collectionsDescription')}
-			</p>
-			<div class="mx-auto mt-8">
-				{#each featuredCollections as collection (collection.heading)}
-					<FeaturedPreviewList
-						featured={collection}
-						ariaLabelledBy={collection.heading}
-						type="grid"
-						placeholderCount={4}
-						lazyload="intersection"
-					/>
-				{/each}
-				<div class="mt-8 text-center">
-					<a
-						class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium focus-within:bg-black hover:bg-black"
-						href={page.data.localizeHref(
-							resolve('/(app)/[[lang=lang]]/collections', { lang: undefined })
-						)}
-					>
-						{page.data.t('home.collectionsReadMore')}
-					</a>
+	{#if page.data.features.specialCollections}
+		<section class="bg-primary-50 mb-8 scroll-mt-20 px-3 py-12 lg:py-16">
+			<div class="2xl:max-w-10xl mx-auto max-w-7xl">
+				<h2
+					class="font-heading mb-4.5 px-6 text-center text-2xl lg:text-3xl @min-[110rem]:text-4xl"
+				>
+					{page.data.t('home.collectionsTitle')}
+				</h2>
+				<p class="text-primary-950/90 mx-auto max-w-2xl text-center 2xl:text-lg">
+					{page.data.t('home.collectionsDescription')}
+				</p>
+				<div class="mx-auto mt-8">
+					{#each featuredCollections as collection (collection.heading)}
+						<FeaturedPreviewList
+							featured={collection}
+							ariaLabelledBy={collection.heading}
+							type="grid"
+							placeholderCount={4}
+							lazyload="intersection"
+						/>
+					{/each}
+					<div class="mt-8 text-center">
+						<a
+							class="btn-outline text-page inline-flex min-h-11 items-center rounded-full bg-black/75 px-6 text-sm font-medium focus-within:bg-black hover:bg-black"
+							href={page.data.localizeHref(
+								resolve('/(app)/[[lang=lang]]/collections', { lang: undefined })
+							)}
+						>
+							{page.data.t('home.collectionsReadMore')}
+						</a>
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	{/if}
 	{#each featuredSearches2 as featured, index (featured.heading)}
 		{@render featuredSearchSection({
 			featured,

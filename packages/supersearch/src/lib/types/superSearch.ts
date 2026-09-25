@@ -67,3 +67,9 @@ export type UserEvent =
 	| 'select.pointer'
 	| 'undo'
 	| 'redo'; // see: https://codemirror.net/docs/ref/#state.Transaction%5EuserEvent
+
+export type ChangeActiveCell = {
+	activeRowIndex: number;
+	activeColIndex: number;
+	id: string;
+};

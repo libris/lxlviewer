@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import { Fmt, LensType } from '$lib/types/xl';
+	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
 	import type { SearchResultItem } from '$lib/types/search';
 	import { relativizeUrl } from '$lib/utils/http';
-	import DecoratedData from './DecoratedData.svelte';
+	import DecoratedData2 from './DecoratedData2.svelte';
 	import placeholderImage from '$lib/assets/img/placeholder.svg';
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import TypeIcon from './TypeIcon.svelte';
-	import { LensType } from '$lib/types/xl';
 	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
 
 	type Props = {
@@ -90,7 +91,9 @@
 			href={resolve(page.data.localizeHref(relativizeUrl(data['@id'])))}
 			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
-			{@render image()}
+			{#if page.data.features.resourceImages}
+				{@render image()}
+			{/if}
 			<p class="decorated-card-heading-top text-subtle line-clamp-1 text-xs break-all">
 				<TypeIcon
 					type={data.typeForIcon}
@@ -103,7 +106,7 @@
 					<span class="hidden has-[+*]:inline"> · </span>
 				{/if}
 				{#each data['web-card-header-top']?._display as displayObj, index (index)}
-					<DecoratedData data={displayObj} showLabels="never" />
+					<DecoratedData2 data={displayObj} showLabels={ShowLabelsOptions.Never} parent={Elem.P} />
 				{/each}
 			</p>
 			<hgroup>
@@ -113,13 +116,23 @@
 						'decorated-heading mt-0.5 line-clamp-3 text-sm leading-snug hover:underline @min-[16rem]:text-[0.9375rem]'
 					]}
 				>
-					<DecoratedData data={data['card-heading']} showLabels="never" />
+					<DecoratedData2
+						data={data['card-heading']}
+						showLabels={ShowLabelsOptions.Never}
+						parent={Elem.H}
+						skipOuter={true}
+					/>
 				</svelte:element>
 				{#if data[LensType.WebCardHeaderExtra]?._display && data[LensType.WebCardHeaderExtra]?._display.length}
 					<p class="decorated-card-heading-extra text-subtle mt-0.5 line-clamp-2 text-xs">
 						{#each data[LensType.WebCardHeaderExtra]?._display as displayObj, index (index)}
 							<span>
-								<DecoratedData data={displayObj} showLabels="defaultOn" />
+								<DecoratedData2
+									data={displayObj}
+									showLabels={ShowLabelsOptions.DefaultOn}
+									parent={Elem.Span}
+									skipOuter={false}
+								/>
 							</span>
 						{/each}
 					</p>
@@ -128,7 +141,11 @@
 					<p class="decorated-card-heading-extra text-subtle mt-0.5 truncate text-xs">
 						{#each data['_workTitle2']?._display as displayObj, index (index)}
 							<span>
-								<DecoratedData data={displayObj} showLabels="defaultOff" />
+								<DecoratedData2
+									data={displayObj}
+									showLabels={ShowLabelsOptions.DefaultOff}
+									parent={Elem.Span}
+								/>
 							</span>
 						{/each}
 					</p>
@@ -140,12 +157,13 @@
 		<div class="decorated-card-body mt-1 mb-1 text-sm">
 			{#each data['card-body']?._display as obj, index (index)}
 				<div class="@4xs:text-sm flex flex-col">
-					<DecoratedData
+					<DecoratedData2
 						data={obj}
-						showLabels="never"
+						showLabels={ShowLabelsOptions.Never}
 						block
 						limit={{ contribution: 1 }}
 						{suppressProperty}
+						parent={Elem.Div}
 					/>
 				</div>
 			{/each}
@@ -153,8 +171,8 @@
 	{/if}
 	<footer class="decorated-card-footer @4xs:text-[0.8125rem] truncate text-xs">
 		{#each data['web-card-footer']?._display as obj, index (index)}
-			{#if 'hasInstance' in obj}
-				{@const instances = getInstanceData(obj.hasInstance)}
+			{#if obj[Fmt.PROP] === 'hasInstance'}
+				{@const instances = getInstanceData(obj[Fmt.VALUE])}
 				{#if instances?.years}
 					{#if instances.count > 1}
 						{instances?.count}
@@ -165,17 +183,15 @@
 					{/if}
 				{/if}
 				{#if instances?.count === 1}
-					{#each obj.hasInstance._display as obj2, index (index)}
+					{#each obj[Fmt.VALUE]._display as obj2, index (index)}
 						<!-- FIXME we need publication for year, but don't want to show it again with the year -->
-						{#if !obj2.publication}
-							<DecoratedData data={obj2} showLabels="never" />
+						{#if obj2[Fmt.PROP] === 'publication' && !obj2[Fmt.VALUE]}
+							<DecoratedData2 data={obj2} showLabels={ShowLabelsOptions.Never} parent={Elem.Div} />
 						{/if}
 					{/each}
 				{/if}
 			{:else}
-				<span>
-					<DecoratedData data={obj} showLabels="never" />
-				</span>
+				<DecoratedData2 data={obj} showLabels={ShowLabelsOptions.Never} parent={Elem.Div} />
 			{/if}
 		{/each}
 	</footer>
@@ -205,6 +221,13 @@
 			&::global(> *) {
 				@apply truncate;
 			}
+		}
+
+		& :global([data-property='isPartOf']) {
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
 		}
 	}
 </style>

@@ -7,7 +7,8 @@ import type {
 	DebouncedWaitFunction,
 	ExpandEvent,
 	CollapseEvent,
-	UserEvent
+	UserEvent,
+	ChangeActiveCell
 } from './types/superSearch.js';
 import type { Selection, Editor } from './components/CodeMirror.svelte';
 import type {
@@ -38,5 +39,6 @@ export {
 	type DebouncedWaitFunction,
 	type ExpandEvent,
 	type CollapseEvent,
-	type UserEvent
+	type UserEvent,
+	type ChangeActiveCell
 };

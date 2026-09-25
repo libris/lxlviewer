@@ -10,6 +10,12 @@
 
 	const matomoTracker = getMatomoTracker();
 
+	const siteName = page.data.siteName ?? 'Libris';
+
+	function withSiteName(translations: typeof svTranslations): typeof svTranslations {
+		return JSON.parse(JSON.stringify(translations).replaceAll('{siteName}', siteName));
+	}
+
 	const config: CookieConsent.CookieConsentConfig = {
 		guiOptions: {
 			consentModal: {
@@ -50,8 +56,8 @@
 		language: {
 			default: page.data.locale,
 			translations: {
-				sv: svTranslations,
-				en: enTranslations
+				sv: withSiteName(svTranslations),
+				en: withSiteName(enTranslations)
 			}
 		}
 	};

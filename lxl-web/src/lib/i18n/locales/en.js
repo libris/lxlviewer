@@ -25,8 +25,6 @@ export default {
 		specialCollections: 'Special collections',
 		myPages: 'My pages',
 		help: 'Help',
-		about: 'About Libris',
-		aboutBeta: 'FAQ',
 		illSite: 'Libris Fjärrlån',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
@@ -49,12 +47,12 @@ export default {
 	},
 	about: {
 		pageTitle: 'About Libris',
-		pageDescription:
+		metaDescription:
 			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog.'
 	},
 	help: {
 		pageTitle: 'Help',
-		pageDescription:
+		metaDescription:
 			'Help and documentation for using Libris, the Swedish national union catalogue.',
 		description: 'Description',
 		filter: 'Filter',
@@ -64,7 +62,7 @@ export default {
 	},
 	myPages: {
 		pageTitle: 'My pages',
-		pageDescription: 'Here you can manage your favourite libraries, among other things.',
+		metaDescription: 'Here you can manage your favourite libraries, among other things.',
 		myPages: 'My pages',
 		libraries: 'Libraries',
 		favouriteLibraries: 'Favourite libraries',
@@ -95,6 +93,7 @@ export default {
 		'librissearch:identifyCategory': 'Category',
 		'librissearch:noneCategory': 'Subcategory',
 		'librissearch:instanceCategory': 'Format',
+		'librissearch:workCategory': 'Category',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
 		issuanceType: 'Issuance type',
@@ -132,6 +131,7 @@ export default {
 		yearPublished: 'Year published',
 		'librissearch:yearPublished': 'Year published',
 		intendedAudience: 'Intended audience',
+		classification: 'Classification',
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
 		fieldOfActivity: 'Field of Activity',
@@ -202,9 +202,12 @@ export default {
 		showEquals: 'Only show exact matches for'
 	},
 	supersearch: {
-		addQualifiers: 'Filter',
+		moreQualifiers: 'More filters',
+		search: 'Search',
+		addQualifiers: 'Add filter',
 		moreQualifiers: 'More filters',
 		loading: 'Loading...',
+		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',
 		showAll: 'Show search results',
 		arrowUpKey: 'Arrow Up key',
@@ -218,7 +221,8 @@ export default {
 		add: 'Add',
 		searchHelp: 'Search help',
 		expandSearch: 'Go to search',
-		or: 'or'
+		or: 'or',
+		addAsQualifier: 'Add as filter'
 	},
 	sort: {
 		sort: 'Sort',

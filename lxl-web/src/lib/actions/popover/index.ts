@@ -1,7 +1,7 @@
 import type { Action } from 'svelte/action';
 import Popover from './Popover.svelte';
 import type { LocaleCode } from '$lib/i18n/locales';
-import type { ResourceData } from '$lib/types/resourceData';
+import type { DisplayDecorated } from '$lib/types/xl';
 import { mount, unmount, type Snippet } from 'svelte';
 
 /**
@@ -21,7 +21,7 @@ import { mount, unmount, type Snippet } from 'svelte';
 
 type Parameter = {
 	title?: string;
-	resource?: { id: string; lang: LocaleCode } | { data: ResourceData[] };
+	resource?: { id: string; lang: LocaleCode } | { data: DisplayDecorated[] };
 	snippet?: Snippet;
 	placeAsSibling?: boolean; // place popover next to node in the DOM (to force it on top of modal, for example)
 	onFocus?: boolean;

@@ -183,7 +183,8 @@
 								"termComponentList",
 								"code"
 							]
-						}
+						},
+						"_find"
 					]
 				},
 				"Category": {
@@ -239,7 +240,13 @@
 					"@id": "Classification-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Classification",
-					"showProperties": ["code", "prefLabel", "inScheme", "_find"]
+					"showProperties": [
+						{
+							"alternateProperties": ["prefLabel", "code"]
+						},
+						"inScheme",
+						"_find"
+					]
 				},
 				"ClassificationDdc": {
 					"@id": "ClassificationDdc-chips",
@@ -509,6 +516,12 @@
 					"@id": "ToCEntry-chips",
 					"classLensDomain": "ToCEntry",
 					"showProperties": ["label", "responsibilityStatement"]
+				},
+				"marc:SourceOfDescriptionNote": {
+					"NOTE": "Only visible in cataloging",
+					"@id": "marc:SourceOfDescriptionNote-chips",
+					"classLensDomain": "marc:SourceOfDescriptionNote",
+					"showProperties": []
 				}
 			}
 		},
@@ -782,7 +795,7 @@
 					"@id": "Person-web-card-header-extra",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Person",
-					"showProperties": ["fieldOfActivity"]
+					"showProperties": []
 				},
 				"Concept": {
 					"@id": "Concept-web-card-header-extra",
@@ -830,7 +843,7 @@
 					"@id": "Person-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Person",
-					"showProperties": []
+					"showProperties": ["fieldOfActivity"]
 				},
 				"Concept": {
 					"@id": "Concept-web-card-footer",
@@ -867,9 +880,9 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
 					"showProperties": [
+						"contribution",
 						"identifiedBy",
 						"editionStatement",
-						"contribution",
 						{ "alternateProperties": ["publication", "manufacture"] },
 						"extent",
 						"seriesMembership",
@@ -1217,7 +1230,10 @@
 				"manufacture",
 				"marc:primaryProvisionActivity"
 			],
-			"fresnel:propertyStyle": ["provisionActivity", "label", "ul-when-multiple"]
+			"fresnel:propertyStyle": ["provisionActivity", "label", "ul-when-multiple"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
@@ -1235,15 +1251,17 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"ProvisionActivity-space-format": {
-			"@id": "ProvisionActivity-space-format",
+		"ProvisionActivity-sequenceStatus-appliesTo-format": {
+			"@id": "ProvisionActivity-sequenceStatus-appliesTo-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
 			"fresnel:propertyFormatDomain": ["marc:sequenceStatus", "appliesTo"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " ",
+				"fresnel:contentBefore": " (",
+				"fresnel:contentAfter": ")",
 				"fresnel:contentFirst": ""
-			}
+			},
+			"fresnel:propertyStyle": ["sequenceStatus-appliesTo"]
 		},
 		"ProvisionActivity-endYear-format": {
 			"TODO": "endYear without startYear? fresnel:contentNoValue on startYear? but we only want it when endYear is present",
@@ -1363,13 +1381,14 @@
 			}
 		},
 		"Title-rdf:type-format": {
-			"@id": "KeyTitle-rdf:type-format",
+			"@id": "Title-rdf:type-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["rdf:type"],
-			"fresnel:propertyStyle": ["Title-type"],
+			"fresnel:propertyStyle": ["Title-type lowercase"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": "",
+				"fresnel:contentBefore": " (",
+				"fresnel:contentAfter": ")",
 				"fresnel:contentFirst": ""
 			}
 		},
@@ -1378,13 +1397,20 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Contribution"],
 			"fresnel:propertyFormatDomain": ["role"],
-			"fresnel:propertyStyle": ["contribution-role"],
+			"fresnel:propertyStyle": ["contribution-role lowercase"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
 				"fresnel:contentAfter": ")",
 				"fresnel:contentLast": ")"
 			}
+		},
+		"PrimaryContribution-agent-format": {
+			"@id": "PrimaryContribution-agent-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["PrimaryContribution"],
+			"fresnel:propertyFormatDomain": ["agent"],
+			"fresnel:propertyStyle": ["PrimaryContribution-agent"]
 		},
 		"Meeting-format": {
 			"NOTE": "This ia a workaround for old MARC formatting inside the fields",
@@ -1423,7 +1449,7 @@
 			"@id": "Identifier-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Identifier"],
-			"fresnel:resourceStyle": ["findToTop()", "ext-link", "uriToId()"]
+			"fresnel:resourceStyle": ["findToTop()", "ext-link", "block", "uriToId()"]
 		},
 		"ShelfMark-format": {
 			"TODO": "This is an override for displayType() in Identifier. Identifier should use rdf:type in showProperties instead",
@@ -1508,6 +1534,12 @@
 			"fresnel:classFormatDomain": ["GenreForm"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"WorkCategory-format": {
+			"@id": "WorkCategory-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["WorkCategory"],
+			"fresnel:resourceStyle": ["link"]
+		},
 		"GenreForm-relations-format": {
 			"@id": "GenreForm-relations-format",
 			"@type": "fresnel:Format",
@@ -1528,7 +1560,7 @@
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Subject"],
-			"fresnel:resourceStyle": ["link"]
+			"fresnel:resourceStyle": ["findToTop()", "link"]
 		},
 		"SeriesMembership-seriesStatement-format": {
 			"@id": "Subject-format",
@@ -1555,14 +1587,25 @@
 		"needs-label-format": {
 			"@id": "needs-label-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["category", "subject", "seriesMembership", "isPartOf"],
+			"fresnel:propertyFormatDomain": [
+				"category",
+				"subject",
+				"seriesMembership",
+				"isPartOf",
+				"broader",
+				"related",
+				"narrower"
+			],
 			"fresnel:propertyStyle": ["label"]
 		},
 		"seriesMembership-format": {
 			"@id": "seriesMembership-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["seriesMembership"],
-			"fresnel:propertyStyle": ["label", "ul-when-multiple"]
+			"fresnel:propertyStyle": ["label", "ul-when-multiple"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"isPartOf-format": {
 			"@id": "isPartOf-format",
@@ -1575,7 +1618,10 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["hasPart"],
-			"fresnel:propertyStyle": ["label", "ul"]
+			"fresnel:propertyStyle": ["label", "ul"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"Work-relationship-format": {
 			"@id": "Work-relationship-format",
@@ -1654,7 +1700,7 @@
 			"@id": "Classification-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Classification"],
-			"fresnel:resourceStyle": ["findToTop()"]
+			"fresnel:resourceStyle": ["findToTop()", "link"]
 		},
 		"Classification-inScheme-format": {
 			"@id": "Classification-inScheme-format",
@@ -1940,6 +1986,13 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Person-fieldOfActivity-format": {
+			"@id": "Person-fieldOfActivity-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Person"],
+			"fresnel:propertyFormatDomain": ["fieldOfActivity"],
+			"fresnel:propertyStyle": ["label", "force-sublevel-label"]
+		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",
 			"@type": "fresnel:Format",
@@ -2122,7 +2175,7 @@
 				"fresnel:contentBefore": " (",
 				"fresnel:contentAfter": ")"
 			},
-			"fresnel:propertyStyle": ["label"]
+			"fresnel:propertyStyle": ["label", "force-sublevel-label"]
 		},
 		"_Types-identify": {
 			"@id": "_Types-identify",

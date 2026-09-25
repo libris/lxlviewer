@@ -3,7 +3,7 @@ import { baseLocale, getSupportedLocale, initLocalizeHref } from '$lib/i18n/loca
 
 export async function load({ params, data, url }) {
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param
-	const t = await getTranslator(locale);
+	const t = await getTranslator(locale, data.siteTranslations);
 	const localizeHref = initLocalizeHref(locale, url);
 
 	const base = locale === baseLocale ? '/' : `/${locale}`;
@@ -11,6 +11,10 @@ export async function load({ params, data, url }) {
 	const librisSession = data.librisSession;
 	const subsetMapping = data.subsetMapping;
 	const siteName = data.siteName;
+	const heroImage = data.heroImage;
+	const features = data.features;
+	const footer = data.footer;
+	const appMenuItems = data.appMenuItems;
 	const qualifierSuggestions = data.qualifierSuggestions;
 
 	return {
@@ -22,6 +26,10 @@ export async function load({ params, data, url }) {
 		librisSession,
 		subsetMapping,
 		siteName,
+		heroImage,
+		features,
+		footer,
+		appMenuItems,
 		qualifierSuggestions
 	};
 }

@@ -2,6 +2,7 @@
 	import IconSearch from '~icons/bi/search';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import { page } from '$app/state';
+	import IconReturnKey from '~icons/bi/arrow-return-left';
 
 	type Props = {
 		rowIndex: number;
@@ -9,37 +10,51 @@
 		isFocusedRow: (rowIndex: number) => boolean | undefined;
 		isFocusedCell: (rowIndex: number, cellIndex: number) => boolean | undefined;
 		isLoading: boolean | undefined;
-		resultsCount: number | undefined;
+		skipShowAllResultsRowOnArrowKey: boolean;
 	};
 
-	let { rowIndex, getCellId, isFocusedRow, isFocusedCell, isLoading, resultsCount }: Props =
-		$props();
+	let {
+		rowIndex,
+		getCellId,
+		isFocusedRow,
+		isFocusedCell,
+		isLoading,
+		skipShowAllResultsRowOnArrowKey
+	}: Props = $props();
 </script>
 
 <div
 	role="row"
-	class={['text-subtle flex items-center text-sm', isFocusedRow(rowIndex) && 'focused-row']}
+	class={[
+		'flex items-center sm:mx-2 rounded-lg lg:mx-3 mt-1 lg:mt-0 max-sm:w-full sm:relative z-999 sm:z-0 bg-page px-1 pb-1 sm:px-0',
+		isFocusedRow(rowIndex) && 'focused-row'
+	]}
 >
-	<h2 id="supersearch-results-label" aria-live="polite" class="sr-only font-medium">
-		<span class="sr-only">{resultsCount}</span>
-		{page.data.t('supersearch.suggestions')}
-	</h2>
 	<button
 		type="submit"
 		id={getCellId(rowIndex, 0)}
 		class={[
-			'flex min-h-12 w-full items-center px-2 hover:underline sm:px-4',
-			isFocusedCell(rowIndex, 0) && 'focused-cell'
+			'flex min-h-11 2xl:min-h-12 w-full items-center hover:underline rounded-lg justify-start text-link',
+			(isFocusedCell(rowIndex, 0) || skipShowAllResultsRowOnArrowKey) && 'focused-cell',
+			skipShowAllResultsRowOnArrowKey && 'outline-transparent! max-sm:bg-transparent!'
 		]}
 	>
-		<span class={['text-link flex items-center gap-2 lg:flex-row-reverse lg:gap-2.5']}>
+		<span class={['flex items-center gap-2 lg:gap-2.5 font-medium']}>
+			<span class="size-6 items-center justify-center flex mr-1.5 ml-3">
+				<IconSearch aria-hidden="true" class="inline-flex size-4.5" />
+			</span>
 			{page.data.t('supersearch.showAll')}
-			<IconSearch aria-hidden="true" class="text-link size-4" />
 		</span>
 		{#if isLoading}
-			<div class="ml-3 h-5 w-5">
+			<div class="hidden sm:inline ml-3 h-5 w-5">
 				<Spinner />
 			</div>
 		{/if}
 	</button>
+	{#if isFocusedCell(rowIndex, 0)}
+		<IconReturnKey
+			class="hidden sm:block absolute right-4.5 text-link pointer-events-none"
+			aria-hidden="true"
+		/>
+	{/if}
 </div>

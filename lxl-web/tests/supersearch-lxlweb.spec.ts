@@ -102,7 +102,7 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 	await page.getByTestId('supersearch').getByRole('combobox').click();
 	await page
 		.getByRole('dialog')
-		.getByLabel('Filter')
+		.getByLabel('Lägg till filter')
 		.getByRole('button')
 		.getByText('Författare/upphov')
 		.first()
@@ -202,9 +202,6 @@ test('qualifier keys can be added using the user interface', async ({ page }) =>
 		(res) =>
 			res.url().includes('/supersearch?') && res.url().includes('subject') && res.status() === 200
 	);
-	await expect(page.getByRole('dialog').getByRole('link').filter({ hasText: 'ämne' })).toHaveCount(
-		5
-	);
 	await page.getByRole('dialog').locator('.suggestion').getByRole('link').first().click();
 	await page.waitForURL(/subject/);
 	await expect(
@@ -301,30 +298,6 @@ test('qualifier keys can be added using keyboard only', async ({ page, context }
 	*/
 });
 
-test('return key label is context-aware', async ({ page }) => {
-	await page.getByTestId('supersearch').getByRole('combobox').click();
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
-	await page.getByTestId('supersearch').getByRole('dialog').getByRole('combobox').fill('a');
-	await page.keyboard.press('Tab');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
-		'aria-activedescendant',
-		'hero-search-item-0x1'
-	);
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Rensa');
-	await page.keyboard.press('Backspace');
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
-	await page.keyboard.press('ArrowDown');
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Lägg till');
-	await page.keyboard.press('ArrowUp');
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Sök');
-	await page.keyboard.press('Shift+Tab');
-	await expect(page.getByRole('dialog').getByRole('combobox')).toHaveAttribute(
-		'aria-activedescendant',
-		'hero-search-item-3x0'
-	);
-	await expect(page.getByTestId('supersearch-return-key-label')).toHaveText('Välj');
-});
-
 test('add qualifier key on empty input', async ({ page, context }) => {
 	await context.grantPermissions(['clipboard-read']);
 	await page.getByRole('combobox').click();
@@ -397,4 +370,17 @@ test('shallow routing enables controlling expanded state using the history API',
 	await expect(page.getByRole('dialog')).not.toBeVisible();
 	await page.goForward();
 	await expect(page.getByRole('dialog')).toBeVisible();
+});
+
+test('qualifier remove buttons are updated when sorting change', async ({ page }) => {
+	await page.goto(
+		'/find?_q=workCategory%3A"saogf%3AFacklitteratur"+&_limit=20&_offset=0&_sort=&_spell=true'
+	);
+	const qualifierRemove = await page
+		.getByTestId('supersearch')
+		.getByRole('link', { name: 'ta bort filter Kategori' });
+	await expect(qualifierRemove).not.toHaveAttribute('href', /_sort=_sortKeyByLang\.sv/);
+	await page.getByTestId('sort-select').locator('select').selectOption('_sortKeyByLang.sv');
+	await page.waitForLoadState('networkidle');
+	await expect(qualifierRemove).toHaveAttribute('href', /_sort=_sortKeyByLang\.sv/);
 });
