@@ -2,6 +2,7 @@
 	"lxlwebConfiguration": {
 		"themeName": "libris",
 		"favicon": "libris",
+		"heroImage": "bg-marbling01.jpg",
 		"features": {
 			"specialCollections": true,
 			"myPages": true,

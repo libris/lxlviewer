@@ -12,6 +12,7 @@ import type {
 interface DefaultSiteConfiguration extends NonNullable<Site['configuration']> {
 	themeName: string;
 	favicon: string;
+	heroImage: string;
 	features: Features;
 	footer: FooterSection[];
 	appMenu: AppMenuItem[];

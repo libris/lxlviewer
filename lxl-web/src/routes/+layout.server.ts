@@ -12,7 +12,7 @@ export async function load({ locals, url, params }) {
 
 	const siteName = locals.site?.name;
 	const siteTranslations = locals.site?.configuration?.locales;
-	const heroImage = locals.site?.configuration?.heroImage;
+	const heroImage = locals.site?.configuration?.heroImage ?? defaultSiteConfiguration.heroImage;
 	const features = resolveFeatures(locals.site?.configuration?.features);
 	const footer = locals.site
 		? (locals.site.configuration?.footer ?? [])
