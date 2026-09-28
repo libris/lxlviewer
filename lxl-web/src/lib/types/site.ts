@@ -26,18 +26,6 @@ export interface Features {
 	resourceImages: boolean;
 }
 
-export const defaultFeatures: Features = {
-	specialCollections: true,
-	myPages: true,
-	favouriteLibraries: true,
-	holdings: true,
-	resourceImages: true
-};
-
-export function resolveFeatures(overrides?: Partial<Features>): Features {
-	return { ...defaultFeatures, ...overrides };
-}
-
 export const FOOTER_COOKIES_HREF = '[cookies]';
 
 export interface FooterLink {

@@ -17,6 +17,7 @@ import {
 	type UserSettings
 } from '$lib/types/userSettings';
 import displayWeb from '$lib/assets/json/display-web.json';
+import { defaultSiteConfiguration } from '$lib/constants/defaultSiteConfig';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
 import { getLibrary, getOrgMembers, startRefreshLibraries } from '$lib/utils/getLibraries.server';
 import { getSubsetMapping } from '$lib/utils/subsetCache.server';
@@ -184,8 +185,8 @@ export const handle = async ({ event, resolve }) => {
 	});
 
 	// set data-theme defined in themes.css
-	const dataTheme = site?.configuration?.themeName || 'libris';
-	const favicon = site?.configuration?.favicon || 'libris';
+	const dataTheme = site?.configuration?.themeName || defaultSiteConfiguration.themeName;
+	const favicon = site?.configuration?.favicon || defaultSiteConfiguration.favicon;
 
 	// get subset mapping
 	const _r = event.url.searchParams.get('_r');
