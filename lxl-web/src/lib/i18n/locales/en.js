@@ -136,8 +136,7 @@ export default {
 		hasOccupation: 'Has Occupation',
 		fieldOfActivity: 'Field of Activity',
 		accessFilters: 'Access',
-		boolFilters: 'Other',
-		'alias-myLibraries': 'Limit to favourite libraries',
+		otherFilters: 'Other',
 		limitInfo: 'Some options are not displayed',
 		limitText:
 			'The list shows a limited number of options, the most common ones related to your search. Try narrowing your search to get other, more relevant options.'

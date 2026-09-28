@@ -135,8 +135,7 @@ export default {
 		hasOccupation: 'Har yrke eller sysselsättning',
 		fieldOfActivity: 'Verksamhetsområde',
 		accessFilters: 'Åtkomst',
-		boolFilters: 'Övrigt',
-		'alias-myLibraries': 'Avgränsa till favoritbibliotek',
+		otherFilters: 'Övrigt',
 		limitInfo: 'Alla val kan ej visas',
 		limitText:
 			'Listan visar ett begränsat antal alternativ, de mest förekommande kopplade till din sökning. Prova att avgränsa din sökning för att få andra, mer relevanta alternativ.'
