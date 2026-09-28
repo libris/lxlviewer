@@ -1,6 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { defaultFeaturedSearches, defaultFeaturedSearches2 } from '$lib/constants/featuredSearches';
-import { getFeaturedSearches } from '$lib/remotes/homepage.remote';
+import { defaultFeaturedCategories } from '$lib/constants/featuredCategories';
+import { getFeaturedCategories, getFeaturedSearches } from '$lib/remotes/homepage.remote';
 
 export const load = (async ({ params: { lang }, locals }) => {
 	const { featuredSearches, featuredSearches2, featuredCollections } = await getFeaturedSearches({
@@ -9,5 +10,10 @@ export const load = (async ({ params: { lang }, locals }) => {
 		featuredSearches2: locals.site?.configuration?.featuredSearches2 ?? defaultFeaturedSearches2
 	});
 
-	return { featuredSearches, featuredSearches2, featuredCollections };
+	const featuredCategories = await getFeaturedCategories({
+		lang,
+		featuredCategories: locals.site?.configuration?.featuredCategories ?? defaultFeaturedCategories
+	});
+
+	return { featuredSearches, featuredSearches2, featuredCollections, featuredCategories };
 }) satisfies PageServerLoad;
