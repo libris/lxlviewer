@@ -90,6 +90,7 @@
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
 	let skipShowAllResultsRowOnArrowKey = $state(true);
+	let toggleWithKeyboardShortcut = false;
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
@@ -523,7 +524,9 @@
 		{expandedAriaLabelledBy}
 		{expandedAriaLabel}
 		{expandedAriaDescribedBy}
-		collapsedAriaKeyshortcuts={`Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`}
+		collapsedAriaKeyshortcuts={toggleWithKeyboardShortcut
+			? `Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`
+			: undefined}
 		{autofocus}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
@@ -543,7 +546,7 @@
 		{editor}
 		{syncEditorsOnChange}
 		{syncEditorsOnSelection}
-		toggleWithKeyboardShortcut
+		{toggleWithKeyboardShortcut}
 		wrappingArrowKeyNavigation
 		defaultInputCol={-1}
 		defaultResultRow={showAllResultsRowIndex}
