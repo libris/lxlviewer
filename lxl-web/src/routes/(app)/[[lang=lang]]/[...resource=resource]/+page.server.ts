@@ -115,6 +115,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		}
 	}
 
+	const chipStr = displayUtil.lensAndFormat(resource['mainEntity'], LensType.Chip, locale);
+
 	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	if (isWork) {
 		copyMediaLinksToWork(mainEntity);
@@ -387,7 +389,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		controlNumber,
 		type: mainEntity[JsonLd.TYPE] as string,
 		typeForIcon: getTypeForIcon(typeLike), // FIXME
-		title: toString(heading),
+		title: toString(chipStr),
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,

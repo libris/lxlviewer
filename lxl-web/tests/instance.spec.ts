@@ -19,3 +19,9 @@ test('first heading on page should be h1', async ({ page }) => {
 	const firstHeading = page.locator('h1, h2, h3, h4, h5, h6').first();
 	await expect(firstHeading).toHaveJSProperty('tagName', 'H1');
 });
+
+test('page displays the correct title', async ({ page }) => {
+	await expect(page).toHaveTitle(
+		'Pappaklausulen : roman · [Stockholm] : Bonnier pocket,… | Libris'
+	);
+});

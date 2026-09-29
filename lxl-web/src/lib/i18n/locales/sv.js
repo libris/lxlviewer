@@ -50,7 +50,8 @@ export default {
 			'Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog.'
 	},
 	help: {
-		pageTitle: 'Hjälp',
+		pageTitle: 'Hjälp och tips',
+		filtersPageTitle: 'Sökfilter',
 		metaDescription:
 			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.',
 		description: 'Beskrivning',
