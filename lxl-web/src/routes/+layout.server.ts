@@ -1,7 +1,7 @@
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { defaultSiteConfiguration, resolveFeatures } from '$lib/constants/defaultSiteConfig';
 
-export async function load({ locals, url, params }) {
+export async function load({ locals, url, params, cookies }) {
 	const userSettings = locals.userSettings;
 	const librisSession = locals.librisSession;
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param
@@ -32,6 +32,7 @@ export async function load({ locals, url, params }) {
 		features,
 		footer,
 		appMenuItems,
-		qualifierSuggestions
+		qualifierSuggestions,
+		initialCookieConsentModal: !cookies.get('cc_cookie')
 	};
 }

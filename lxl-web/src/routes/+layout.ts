@@ -16,6 +16,7 @@ export async function load({ params, data, url }) {
 	const footer = data.footer;
 	const appMenuItems = data.appMenuItems;
 	const qualifierSuggestions = data.qualifierSuggestions;
+	const initialCookieConsentModal = data.initialCookieConsentModal;
 
 	return {
 		locale,
@@ -30,6 +31,7 @@ export async function load({ params, data, url }) {
 		features,
 		footer,
 		appMenuItems,
-		qualifierSuggestions
+		qualifierSuggestions,
+		initialCookieConsentModal
 	};
 }
