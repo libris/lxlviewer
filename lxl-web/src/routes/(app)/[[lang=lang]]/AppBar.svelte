@@ -153,7 +153,7 @@
 					data-testid="home"
 				>
 					{#if page.data.siteName}
-						<span class="text-2xl font-medium">
+						<span class="font-heading text-3xl font-medium">
 							{page.data.siteName}
 						</span>
 					{:else}
