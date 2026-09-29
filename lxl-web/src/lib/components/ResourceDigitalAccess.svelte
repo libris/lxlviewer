@@ -78,9 +78,11 @@
 					<ul>
 						{#each eodAvailable as library (library.displayStr)}
 							<li>
-								<a class="ext-link" target="_blank" href={library[BibDb.eodUri]}
-									>{library.displayStr}</a
-								>
+								<!-- eslint-disable svelte/no-navigation-without-resolve -->
+								<a class="ext-link" target="_blank" href={library[BibDb.eodUri]}>
+									{library.displayStr}
+									<span class="sr-only">({page.data.t('general.externalLink')})</span>
+								</a>
 							</li>
 						{/each}
 					</ul>

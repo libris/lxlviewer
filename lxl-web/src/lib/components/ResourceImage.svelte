@@ -61,8 +61,10 @@
 				<span class="mr-1">
 					{'© '}
 					{#if image.attribution.link}
+						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a href={image.attribution.link} target="_blank" class="ext-link">
 							{image.attribution.name}
+							<span class="sr-only">({page.data.t('general.externalLink')})</span>
 						</a>
 					{:else}
 						{image.attribution.name}
@@ -78,8 +80,10 @@
 					<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
 						{#if image.usageAndAccessPolicy.identifier}
 							{image.usageAndAccessPolicy.identifier}
+							<span class="sr-only">({page.data.t('general.externalLink')})</span>
 						{:else}
 							{page.data.t('general.usagePolicy')}
+							<span class="sr-only">({page.data.t('general.externalLink')})</span>
 						{/if}
 					</a>
 				{:else}

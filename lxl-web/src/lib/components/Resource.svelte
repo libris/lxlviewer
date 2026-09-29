@@ -518,9 +518,17 @@
 				<p>
 					{page.data.t('resource.downloadDescription')}:
 					<!-- eslint-disable svelte/no-navigation-without-resolve -->
-					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
-					· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
-					· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
+					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link"
+						>JSON-LD <span class="sr-only">({page.data.t('general.externalLink')})</span></a
+					>
+					·
+					<a href="{recordUri}/data.ttl" target="_blank" class="ext-link"
+						>Turtle <span class="sr-only">({page.data.t('general.externalLink')})</span></a
+					>
+					·
+					<a href="{recordUri}/data.rdf" target="_blank" class="ext-link"
+						>RDF/XML <span class="sr-only">({page.data.t('general.externalLink')})</span></a
+					>
 					{#if instances?.length === 1}
 						<!--
 							TODO - agents? - _compilemarc can only handle bib
@@ -530,14 +538,18 @@
 						·
 						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a href="{base}/_compilemarc?library=Foo&id={recordUri}" target="_blank" class="link"
-							>MARC21 (ISO 2709) <BiDownload class="inline" /></a
+							>MARC21 (ISO 2709) <span class="sr-only">({page.data.t('general.downloadLink')})</span
+							>
+							<BiDownload class="inline" /></a
 						>
 						·
 						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a
 							href="{base}/_compilemarc?library=Foo&id={recordUri}&format=marcxml"
 							target="_blank"
-							class="link">MARC21 (XML) <BiDownload class="inline" /></a
+							class="link"
+							>MARC21 (XML) <span class="sr-only">({page.data.t('general.downloadLink')})</span>
+							<BiDownload class="inline" /></a
 						>
 					{/if}
 				</p>
@@ -547,15 +559,21 @@
 						href={recordUri.split('/').toSpliced(-1, 0, 'katalogisering').join('/')}
 						target="_blank"
 						class="ext-link"
-						>{page.data.t('resource.showIn')} {page.data.t('resource.librisCataloging')}</a
 					>
+						{page.data.t('resource.showIn')}
+						{page.data.t('resource.librisCataloging')}
+						<span class="sr-only">({page.data.t('general.externalLink')})</span>
+					</a>
 					{#if instances?.length === 1 && process.env.NODE_ENV === 'development'}
 						· <a
 							href="https://gamla.libris.kb.se/bib/{controlNumber}"
 							target="_blank"
 							class="ext-link"
-							>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
 						>
+							{page.data.t('resource.showIn')}
+							{page.data.t('resource.librisOld')}
+							<span class="sr-only">({page.data.t('general.externalLink')})</span>
+						</a>
 					{/if}
 				</p>
 			</div>
