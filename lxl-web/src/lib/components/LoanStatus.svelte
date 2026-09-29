@@ -153,9 +153,11 @@
 											{item.Call_No}
 											<!-- show map link only if absolute url -->
 											{#if item.Map && (item.Map.startsWith('http://') || item.Map.startsWith('https://'))}
+												<!-- eslint-disable svelte/no-navigation-without-resolve -->
 												(<a href={item.Map} target="_blank" class="ext-link">
-													{page.data.t('holdings.map')}</a
-												>)
+													{page.data.t('holdings.map')}
+													<span class="sr-only">({page.data.t('general.externalLink')})</span>
+												</a>)
 											{/if}
 										</td>
 									</tr>

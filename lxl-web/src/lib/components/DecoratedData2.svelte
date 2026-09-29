@@ -264,6 +264,7 @@
 
 {#snippet linkSnippet(data: Node, link: string, target: string | null, styles: Styles)}
 	{@const resourceId = getResourceId(data)}
+	<!-- eslint-disable svelte/no-navigation-without-resolve -->
 	<a
 		href={target ? link : resolve(link)}
 		{target}
@@ -272,8 +273,13 @@
 			? resourcePopover(resourceId)
 			: undefined}
 	>
-		{@render node(data, Elem.A)}
-	</a>
+		{@render node(data, Elem.A)}<!--
+	-->{#if hasStyle(data, 'ext-link')}
+			<span class="sr-only">({page.data.t('general.externalLink')})</span>
+		{:else if hasStyle(data, 'find-link')}
+			<span class="sr-only">({page.data.t('general.linkToSearchQuery')})</span>
+		{/if}</a
+	>
 {/snippet}
 
 {#snippet node(data: Node, parent: Parent)}
