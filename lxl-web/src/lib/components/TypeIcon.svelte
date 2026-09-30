@@ -101,5 +101,5 @@
 </script>
 
 {#if TypeIcon}
-	<TypeIcon class={className} />
+	<TypeIcon class={className} aria-hidden="true" />
 {/if}
