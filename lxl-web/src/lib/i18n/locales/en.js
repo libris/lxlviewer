@@ -128,7 +128,7 @@ export default {
 		'librissearch:bibliography': 'Bibliography',
 		'librissearch:contributor': 'Author/Contributor',
 		language: 'Language',
-		subject: 'Subject',
+		'librissearch:subject': 'Subject',
 		yearPublished: 'Year published',
 		'librissearch:yearPublished': 'Year published',
 		intendedAudience: 'Intended audience',
@@ -202,7 +202,6 @@ export default {
 		showEquals: 'Only show exact matches for'
 	},
 	supersearch: {
-		moreQualifiers: 'More filters',
 		search: 'Search',
 		addQualifiers: 'Add filter',
 		moreQualifiers: 'More filters',

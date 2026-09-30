@@ -127,7 +127,7 @@ export default {
 		'librissearch:bibliography': 'Bibliografi',
 		'librissearch:contributor': 'Författare/upphov',
 		language: 'Språk',
-		subject: 'Ämne',
+		'librissearch:subject': 'Ämne',
 		yearPublished: 'Utgivningsår',
 		'librissearch:yearPublished': 'Utgivningsår',
 		intendedAudience: 'Målgrupp',
