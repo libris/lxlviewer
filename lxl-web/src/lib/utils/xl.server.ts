@@ -1170,6 +1170,10 @@ export function toLite(data: DisplayDecorated): DisplayDecoratedLite {
 
 function _toLite(data: DisplayDecorated, result: DisplayDecoratedLite) {
 	if (isObject(data)) {
+		if (!(Fmt.DISPLAY in data || Fmt.VALUE in data)) {
+			return;
+		}
+
 		const v = [];
 		if (Fmt.CONTENT_BEFORE in data && data[Fmt.CONTENT_BEFORE] !== '') {
 			v.push(data[Fmt.CONTENT_BEFORE]);
