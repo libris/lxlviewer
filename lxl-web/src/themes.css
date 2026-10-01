@@ -11,3 +11,31 @@
 	--theme-primary-900: oklch(30.64% 0.084 248.52);
 	--theme-primary-950: oklch(20.98% 0.052 244.04);
 }
+
+[data-theme='uppsok'] {
+	--theme-primary-50: oklch(98% 0.01 82);
+	--theme-primary-100: oklch(96% 0.02 82);
+	--theme-primary-200: oklch(91.5% 0.04 82);
+	--theme-primary-300: oklch(86% 0.06 82);
+	--theme-primary-400: oklch(80% 0.085 80);
+	--theme-primary-500: oklch(73% 0.105 78);
+	--theme-primary-600: oklch(67% 0.1 77);
+	--theme-primary-700: oklch(61% 0.09 76);
+	--theme-primary-800: oklch(54% 0.078 75);
+	--theme-primary-900: oklch(43% 0.062 73);
+	--theme-primary-950: oklch(34% 0.048 72);
+}
+
+[data-theme='swepub'] {
+	--theme-primary-50: oklch(97.9% 0.012 245);
+	--theme-primary-100: oklch(95.9% 0.025 245);
+	--theme-primary-200: oklch(91.5% 0.045 245);
+	--theme-primary-300: oklch(86% 0.065 245);
+	--theme-primary-400: oklch(80% 0.09 245);
+	--theme-primary-500: oklch(73% 0.105 245);
+	--theme-primary-600: oklch(67% 0.1 245);
+	--theme-primary-700: oklch(61% 0.092 245);
+	--theme-primary-800: oklch(54% 0.08 245);
+	--theme-primary-900: oklch(43% 0.065 245);
+	--theme-primary-950: oklch(34% 0.05 245);
+}
