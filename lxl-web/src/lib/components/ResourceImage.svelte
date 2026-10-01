@@ -51,7 +51,12 @@
 {#if image && thumb}
 	<figure class="flex w-full flex-col items-center gap-2">
 		{#if linkToFull && full}
-			<a href={full.url} target="_blank" class="hidden @3xl:block">
+			<a
+				href={full.url}
+				target="_blank"
+				class="hidden @3xl:block"
+				aria-label={page.data.t('resource.imageLink')}
+			>
 				{@render img(thumb)}
 			</a>
 		{/if}

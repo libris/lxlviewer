@@ -310,7 +310,8 @@ export default {
 		digitizationAvailable: 'Digitization available',
 		requestDigitization: 'Request digitization',
 		digitizationInfo:
-			'The book can, for a fee, be digitized and sent to you by email as a PDF file. The libraries that provide this service are listed below'
+			'The book can, for a fee, be digitized and sent to you by email as a PDF file. The libraries that provide this service are listed below',
+		imageLink: 'Link to resource image in fullsize'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',
