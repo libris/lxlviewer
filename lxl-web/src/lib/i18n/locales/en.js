@@ -205,7 +205,6 @@ export default {
 		moreQualifiers: 'More filters',
 		search: 'Search',
 		addQualifiers: 'Add filter',
-		moreQualifiers: 'More filters',
 		loading: 'Loading...',
 		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',
@@ -259,13 +258,12 @@ export default {
 	general: {
 		collapseAll: 'Collapse all',
 		copyPermalinkToInstance: 'Copy link to edition',
-		latestInstanceCover: 'Cover of latest edition',
-		instanceCover: 'Cover of edition',
 		close: 'Close',
 		from: 'From',
 		to: 'To',
 		year: 'year',
 		usagePolicy: 'License terms',
+		usagePolicyLibris: 'About images in Libris',
 		cropped: 'Cropped',
 		more: 'more',
 		readMore: 'Read more',
@@ -312,7 +310,8 @@ export default {
 		digitizationAvailable: 'Digitization available',
 		requestDigitization: 'Request digitization',
 		digitizationInfo:
-			'The book can, for a fee, be digitized and sent to you by email as a PDF file. The libraries that provide this service are listed below'
+			'The book can, for a fee, be digitized and sent to you by email as a PDF file. The libraries that provide this service are listed below',
+		imageLink: 'Link to resource image in fullsize'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',

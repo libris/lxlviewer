@@ -257,13 +257,12 @@ export default {
 	general: {
 		collapseAll: 'Stäng alla',
 		copyPermalinkToInstance: 'Kopiera länk till utgåva',
-		latestInstanceCover: 'Senaste utgåvans omslag',
-		instanceCover: 'Utgåvans omslag',
 		close: 'Stäng',
 		from: 'Från',
 		to: 'Till',
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
+		usagePolicyLibris: 'Om bilder i Libris',
 		cropped: 'Beskuren',
 		more: 'till',
 		readMore: 'Läs mer',
@@ -310,7 +309,8 @@ export default {
 		digitizationAvailable: 'Finns digitiserad',
 		requestDigitization: 'Beställ digitisering',
 		digitizationInfo:
-			'Boken kan mot en kostnad digitiseras och skickas via epost till dig som en pdf-fil. Nedan listas de bibliotek som tillhandahåller tjänsten'
+			'Boken kan mot en kostnad digitiseras och skickas via epost till dig som en pdf-fil. Nedan listas de bibliotek som tillhandahåller tjänsten',
+		imageLink: 'Länk till resursens bild i fullstorlek'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',

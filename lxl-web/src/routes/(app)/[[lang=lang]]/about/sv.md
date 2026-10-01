@@ -26,7 +26,7 @@ Allt material i Libris innehåller ännu inte länkade data, men förekomsten ä
 
 ### Särskilda samlingar
 
-Libris innehåller den svenska nationalbibliografin, ett urval bibliografier inom olika ämnesområden och lokala/regionala samlingar. Alla bibliografier produceras av Libris-bibliotek och kan avgränsas som särskilda samlingar. 
+Libris innehåller den svenska nationalbibliografin, ett urval bibliografier inom olika ämnesområden och lokala/regionala samlingar. Alla bibliografier produceras av Libris-bibliotek och kan avgränsas som särskilda samlingar.
 
 ### Innehållets variation
 
@@ -34,7 +34,7 @@ Katalogen har byggts upp under mer än 50 år, vilket innebär att det finns var
 
 ### Historiskt språkbruk
 
-Som användare kan det också vara bra att vara medveten om att bibliotekens samlingar och söktjänsten innehåller äldre begrepp och annat innehåll som kan uppfattas som stötande såväl som kränkande eller föråldrat. 
+Som användare kan det också vara bra att vara medveten om att bibliotekens samlingar och söktjänsten innehåller äldre begrepp och annat innehåll som kan uppfattas som stötande såväl som kränkande eller föråldrat.
 
 Uttryck som återspeglar skaparnas attityder i sin tid kan väcka starka känslor idag, men är nödvändiga för vår förståelse av det förflutna och vår samtid.
 
@@ -51,7 +51,7 @@ Vi avser att alla ska kunna bli inspirerade att utforska Sveriges biblioteks sam
 
 Söktjänsten använder valfria kakor för funktionalitet och analys. I vissa fall kan JavaScript krävas, till exempel vid aktiverat överbelastningsskydd.
 
-## Upphovsrätt
+<h2 id="copyright">Upphovsrätt</h2>
 
 Bilder i Libris, till exempel bokomslag, kan vara upphovsrättsskyddade och får då inte användas utan tillstånd. Vissa bilder är dock fria att använda, som användare ansvarar du själv för att kontrollera vad som gäller.
 

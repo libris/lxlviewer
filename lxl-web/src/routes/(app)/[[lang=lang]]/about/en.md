@@ -51,7 +51,7 @@ Our goal is that everyone should be able to be inspired to explore Sweden’s li
 
 The search service uses optional cookies for functionality and analytics. In some cases, JavaScript may be required, for example when overload protection is enabled.
 
-## Copyright
+<h2 id="copyright">Copyright</h2>
 
 Images in Libris, such as book covers, may be protected by copyright and may not be used without permission. However, some images are free to use; as a user, you are responsible for verifying what applies.
 

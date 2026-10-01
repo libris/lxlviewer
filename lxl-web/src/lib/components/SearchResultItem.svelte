@@ -50,7 +50,7 @@
 				src={data.image.url}
 				width={data.image.widthPx > 0 ? data.image?.widthPx : undefined}
 				height={data.image.heightPx > 0 ? data.image?.heightPx : undefined}
-				alt={page.data.t('general.latestInstanceCover')}
+				alt=""
 				loading={lazyImage ? 'lazy' : undefined}
 				fetchpriority={typeof highPriorityImage === 'boolean' && highPriorityImage
 					? 'high'

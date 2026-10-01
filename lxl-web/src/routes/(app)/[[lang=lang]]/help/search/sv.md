@@ -55,7 +55,7 @@ Med `NOT` kan du utesluta sökord, filter eller fraser från träffmängden.
 
 - Exempel: [Sök på Astrid Lindgren men uteslut träffar om Pippi Långstrump.](/find?_q=contributor:"libris:fcrtpljz1qp2bdv%23it"+NOT+"Pippi+långstrump")
 
-![NOT](/docs/img/NOT.png)
+![Venndiagram som illustrerar den booleska operatorn NOT, där den vänstra cirkeln är skuggad.](/docs/img/NOT.png)
 
 ### OR – bredda sökningen
 
@@ -63,13 +63,13 @@ Lägg till `OR` mellan söktermer eller filter för att få fler sökträffar. T
 
 - Exempel: [Sök efter poesi på meänkieli eller finska.](</find?_q=(Språk:"lang:9mk"+OR+Språk:"lang:fin")+Kategori:"saogf:Poesi">)
 
-![OR](/docs/img/OR.png)
+![Venndiagram som illustrerar den booleska operatorn OR, där tre cirklar och deras överlappning är skuggade.](/docs/img/OR.png)
 
 ### AND – alla sökord eller filter måste finnas med
 
 `AND` behöver sällan anges direkt utan tillämpas automatiskt om ingen annan operator anges.
 
-![AND](/docs/img/AND.png)
+![Venndiagram som illustrerar den booleska operatorn AND, där endast cirklarnas överlappning är skuggad.](/docs/img/AND.png)
 
 ## Gruppering
 
