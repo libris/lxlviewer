@@ -19,6 +19,10 @@ export const getSearchResults = query(SearchResultsSchema, async (params) => {
 		searchParams.set('_debug', 'true');
 	}
 
+	if (locals.site?.searchSite) {
+		searchParams.set('_site', locals.site.searchSite);
+	}
+
 	const _r = url.searchParams.get('_r');
 	if (_r) {
 		searchParams.set('_r', _r);
