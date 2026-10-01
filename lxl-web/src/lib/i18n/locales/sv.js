@@ -257,8 +257,6 @@ export default {
 	general: {
 		collapseAll: 'Stäng alla',
 		copyPermalinkToInstance: 'Kopiera länk till utgåva',
-		latestInstanceCover: 'Senaste utgåvans omslag',
-		instanceCover: 'Utgåvans omslag',
 		close: 'Stäng',
 		from: 'Från',
 		to: 'Till',

@@ -205,7 +205,6 @@ export default {
 		moreQualifiers: 'More filters',
 		search: 'Search',
 		addQualifiers: 'Add filter',
-		moreQualifiers: 'More filters',
 		loading: 'Loading...',
 		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',
@@ -259,8 +258,6 @@ export default {
 	general: {
 		collapseAll: 'Collapse all',
 		copyPermalinkToInstance: 'Copy link to edition',
-		latestInstanceCover: 'Cover of latest edition',
-		instanceCover: 'Cover of edition',
 		close: 'Close',
 		from: 'From',
 		to: 'To',
