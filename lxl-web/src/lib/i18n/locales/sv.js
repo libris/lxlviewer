@@ -262,6 +262,7 @@ export default {
 		to: 'Till',
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
+		usagePolicyLibris: 'Om bilder i Libris',
 		cropped: 'Beskuren',
 		more: 'till',
 		readMore: 'Läs mer',

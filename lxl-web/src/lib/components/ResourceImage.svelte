@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { type Image, type ImageResolution, Width } from '$lib/types/auxd';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import { bestSize } from '$lib/utils/auxd';
 	import { page } from '$app/state';
 	import { popover } from '$lib/actions/popover';
-	import InfoIcon from '~icons/bi/info-circle';
 	import TypeIcon from './TypeIcon.svelte';
 	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
 
@@ -56,37 +56,49 @@
 			</a>
 		{/if}
 		{@render img(thumb, linkToFull ? '@3xl:hidden' : undefined)}
-		<figcaption class="text-5xs @3xl:text-4xs text-subtle">
+		<ul class="image-license text-center">
 			{#if image.attribution}
-				<span class="mr-1">
-					{'© '}
-					{#if image.attribution.link}
-						<a href={image.attribution.link} target="_blank" class="ext-link">
+				<li class="inline">
+					<small class="text-3xs text-subtle">
+						{'© '}
+						{#if image.attribution.link}
+							<a href={image.attribution.link} target="_blank" class="ext-link">
+								{image.attribution.name}
+							</a>
+						{:else}
 							{image.attribution.name}
+						{/if}
+					</small>
+				</li>
+			{/if}
+			<li class="truncate print:hidden inline">
+				<small class="text-3xs text-subtle">
+					{'ⓘ '}
+					{#if image?.usageAndAccessPolicy?.link}
+						<a
+							href={image.usageAndAccessPolicy.link}
+							target="_blank"
+							class="ext-link"
+							use:popover={{ title: image?.usageAndAccessPolicy.title }}
+						>
+							{#if image.usageAndAccessPolicy.identifier}
+								{image.usageAndAccessPolicy.identifier}
+							{:else}
+								{page.data.t('general.usagePolicy')}
+							{/if}
 						</a>
 					{:else}
-						{image.attribution.name}
+						<a
+							class="link"
+							href={resolve(page.data.localizeHref('/about#copyright'))}
+							use:popover={{ title: image?.usageAndAccessPolicy.title }}
+						>
+							{page.data.t('general.usagePolicyLibris')}
+						</a>
 					{/if}
-				</span>
-			{/if}
-			<span
-				class="truncate print:hidden"
-				use:popover={{ title: image?.usageAndAccessPolicy.title }}
-			>
-				<InfoIcon class="inline" />
-				{#if image.usageAndAccessPolicy.link}
-					<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
-						{#if image.usageAndAccessPolicy.identifier}
-							{image.usageAndAccessPolicy.identifier}
-						{:else}
-							{page.data.t('general.usagePolicy')}
-						{/if}
-					</a>
-				{:else}
-					{page.data.t('general.usagePolicy')}
-				{/if}
-			</span>
-		</figcaption>
+				</small>
+			</li>
+		</ul>
 	</figure>
 {:else if showPlaceholder}
 	<div class="mb-6 flex items-center justify-center print:hidden">
@@ -104,3 +116,9 @@
 		{/if}
 	</div>
 {/if}
+
+<style>
+	ul.image-license li:not(:last-child) small::after {
+		content: ', ';
+	}
+</style>

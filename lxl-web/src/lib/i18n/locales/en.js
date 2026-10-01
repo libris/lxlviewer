@@ -263,6 +263,7 @@ export default {
 		to: 'To',
 		year: 'year',
 		usagePolicy: 'License terms',
+		usagePolicyLibris: 'About images in Libris',
 		cropped: 'Cropped',
 		more: 'more',
 		readMore: 'Read more',
