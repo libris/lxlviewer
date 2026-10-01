@@ -235,7 +235,12 @@ export function getTypeForIcon(typeLike: TypeLike) {
 		.concat(typeLike.select)
 		.concat(typeLike.none)) {
 		if (t) {
-			const slugStr = slug(((t[JsonLd.ID] as string) || '').replace('/bibdb/', '/bibdb:'));
+			const slugStr = slug(
+				((t[JsonLd.ID] as string) || '')
+					.replace('/bibdb/', '/bibdb:')
+					.replace('/uppsok/', '/uppsok:')
+					.replace(/uppsok:.*/, 'uppsok')
+			);
 			result.push(slugStr);
 		}
 	}

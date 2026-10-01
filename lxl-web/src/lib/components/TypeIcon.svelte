@@ -26,6 +26,7 @@
 	import BiGeoAlt from '~icons/bi/geo-alt';
 	import BiClockHistory from '~icons/bi/clock-history';
 	import BiBank from '~icons/bi/bank';
+	import BiJournalText from '~icons/bi/journal-text';
 	import type { SVGAttributes } from 'svelte/elements';
 	import type { Component } from 'svelte';
 
@@ -89,9 +90,12 @@
 
 		// New work types
 		Collection: BiBoxes,
-		Integrating: BiDatabase
+		Integrating: BiDatabase,
 
 		//Serial: ???,
+
+		// Uppsök
+		uppsok: BiJournalText
 	};
 
 	const TypeIcon = $derived.by(() => {
