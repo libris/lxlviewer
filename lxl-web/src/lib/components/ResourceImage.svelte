@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { fromAction, type Attachment } from 'svelte/attachments';
 	import { type Image, type ImageResolution, Width } from '$lib/types/auxd';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import { bestSize } from '$lib/utils/auxd';
@@ -31,6 +32,12 @@
 	let thumb = $derived(image ? bestSize(image, thumbnailTargetWidth) : undefined);
 	let full = $derived(image ? bestSize(image, Width.FULL) : undefined);
 	let geometry = $derived(type.includes('Person') ? 'circle' : 'rectangle');
+
+	function imagePopover(title: string): Attachment<HTMLElement> {
+		return fromAction(popover, () => ({
+			title
+		}));
+	}
 </script>
 
 {#snippet img(res: ImageResolution, imgClass?: string | string[])}
@@ -84,7 +91,9 @@
 							href={image.usageAndAccessPolicy.link}
 							target="_blank"
 							class="ext-link"
-							use:popover={{ title: image?.usageAndAccessPolicy.title }}
+							{@attach image?.usageAndAccessPolicy?.title
+								? imagePopover(image?.usageAndAccessPolicy?.title)
+								: undefined}
 						>
 							{#if image.usageAndAccessPolicy.identifier}
 								{image.usageAndAccessPolicy.identifier}
@@ -96,7 +105,9 @@
 						<a
 							class="link"
 							href={resolve(page.data.localizeHref('/about#copyright'))}
-							use:popover={{ title: image?.usageAndAccessPolicy.title }}
+							{@attach image?.usageAndAccessPolicy?.title
+								? imagePopover(image?.usageAndAccessPolicy?.title)
+								: undefined}
 						>
 							{page.data.t('general.usagePolicyLibris')}
 						</a>
