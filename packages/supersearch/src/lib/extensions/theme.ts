@@ -14,5 +14,8 @@ export const theme = EditorView.theme({
 	},
 	'&.cm-focused .cm-selectionBackground': {
 		background: '#3b82f640!important'
+	},
+	'.cm-selectionBackground': {
+		background: '#3b82f640!important'
 	}
 });

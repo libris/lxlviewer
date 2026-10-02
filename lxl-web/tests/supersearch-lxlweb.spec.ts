@@ -12,6 +12,16 @@ test('click input expands dialog', async ({ page }) => {
 	await expect(dialog).toHaveAttribute('open');
 });
 
+test('clicking a qualifier pill expands dialog', async ({ page }) => {
+	await page.goto(
+		'/find?_q=workCategory%3A"saogf%3AFacklitteratur"+&_limit=20&_offset=0&_sort=&_spell=true'
+	);
+	const dialog = await page.locator('#appbar-lg-search-dialog');
+	await expect(dialog).not.toHaveAttribute('open');
+	await page.getByTestId('supersearch').locator('.atomic').first().click({ force: true });
+	await expect(dialog).toHaveAttribute('open');
+});
+
 test('type & enter performs search', async ({ page }) => {
 	await page.getByTestId('supersearch').getByRole('combobox').fill('hej');
 	await page.keyboard.press('Enter');
