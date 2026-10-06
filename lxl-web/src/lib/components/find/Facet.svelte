@@ -105,7 +105,6 @@
 	const maxItemsReached = $derived(totalItems === data.maxItems);
 	const selectedCount = $derived(getNestedSelectedCount(data.values));
 
-	// todo remove?
 	function getNestedSelectedCount(values: FacetValueType[]) {
 		let count = 0;
 		for (const value of values) {
@@ -249,14 +248,6 @@
 	<div class="border-b border-neutral-200 py-2">
 		{@render values(data.values)}
 	</div>
-	<!-- {:else if parent && parent.selected === true && level > 2} -->
-	<!-- what's this for, do we have more than 2 levels of nesting? -->
-	<!-- <div class="relative">
-		<FacetLink data={parent} />
-		<div style={`--level:${level}`}>
-			{@render controls()}
-		</div>
-	</div> -->
 {:else}
 	<details
 		class={[
