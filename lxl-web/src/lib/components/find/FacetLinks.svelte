@@ -2,7 +2,6 @@
 	import { page } from '$app/state';
 	import { MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
 	import type { FacetValue as FacetValueType } from '$lib/types/search';
-	import { toString } from '$lib/utils/misc';
 	import Facet from './Facet.svelte';
 	import FacetLink from './FacetLink.svelte';
 	import BiPencil from '~icons/bi/pencil';
@@ -21,7 +20,7 @@
 
 <ul data-testid={level === 1 ? 'facet-list' : undefined}>
 	{#each items as value, index (parentLabel + value.label + index)}
-		{const label = toString(value.label)}
+		{const label = value?.str}
 		{#if value.facets}
 			{@const childLabel = `${page.data.t('search.allInFacet')} ` + label.toLowerCase()}
 			<li>
