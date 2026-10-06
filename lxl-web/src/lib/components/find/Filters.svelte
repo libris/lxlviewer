@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { browser } from '$app/environment';
 	import Facet from '$lib/components/find/Facet.svelte';
 	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 	import { getModalContext } from '$lib/contexts/modal';
@@ -16,9 +17,18 @@
 	const { facets, mapping }: Props = $props();
 
 	let facetData = $state<FacetType[] | null>(null);
+	const initialFacets: FacetType[] | null = $derived(Array.isArray(facets) ? facets : null);
 	let error: string | null = $state(null);
 	let loading = $state(false);
 	let requestId = 0;
+	let enhanced = $state(false);
+
+	$effect(() => {
+		if (browser) {
+			// used to enable facet link-fallbacks
+			enhanced = true;
+		}
+	});
 
 	$effect(() => {
 		const id = ++requestId;
@@ -92,6 +102,7 @@
 							level={1}
 							{searchPhrase}
 							isDefaultExpanded={index < DEFAULT_FACETS_EXPANDED}
+							{enhanced}
 						/>
 					</li>
 				{/each}
@@ -116,8 +127,8 @@
 			<SearchMapping {mapping} />
 		</nav>
 	{/if}
-	{#if facetData}
-		{@render facetSnippet(facetData, loading)}
+	{#if facetData ?? initialFacets}
+		{@render facetSnippet(facetData ?? initialFacets!, loading)}
 	{:else if error}
 		<p class="text-severe-700">{error}</p>
 	{:else}

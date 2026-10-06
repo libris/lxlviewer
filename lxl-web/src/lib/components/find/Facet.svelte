@@ -24,12 +24,10 @@
 		searchPhrase: string;
 		isDefaultExpanded: boolean;
 		parent?: FacetValueType;
-		// parentUid?: string;
+		enhanced: boolean;
 	};
 
-	let { data, level, searchPhrase, isDefaultExpanded, parent }: Props = $props();
-
-	// const uid = $props.id();
+	let { data, level, searchPhrase, isDefaultExpanded, parent, enhanced }: Props = $props();
 
 	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters', 'librissearch:instanceType'];
 	const permanentlyExpanded = $derived(PERMANENTLY_EXPANDED_FACETS.includes(data.dimension));
@@ -154,9 +152,9 @@
 
 {#snippet values(items: FacetValueType[])}
 	{#if variant === 'radio'}
-		<FacetRadio {items} parentLabel={parent?.label || data.label} />
+		<FacetRadio {items} parentLabel={parent?.label || data.label} {enhanced} />
 	{:else if variant === 'checkbox'}
-		<FacetCheckbox {items} parentLabel={parent?.label || data.label} />
+		<FacetCheckbox {items} parentLabel={parent?.label || data.label} {enhanced} />
 	{:else}
 		<FacetLinks
 			{items}
@@ -164,6 +162,7 @@
 			{searchPhrase}
 			{permanentlyExpanded}
 			parentLabel={parent?.label || data.label}
+			{enhanced}
 		/>
 	{/if}
 {/snippet}

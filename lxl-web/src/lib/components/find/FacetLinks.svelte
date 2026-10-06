@@ -13,8 +13,10 @@
 		searchPhrase: string;
 		permanentlyExpanded: boolean;
 		parentLabel: string;
+		enhanced: boolean;
 	};
-	const { items, level, searchPhrase, permanentlyExpanded, parentLabel }: Props = $props();
+	const { items, level, searchPhrase, permanentlyExpanded, parentLabel, enhanced }: Props =
+		$props();
 </script>
 
 <ul data-testid={level === 1 ? 'facet-list' : undefined}>
@@ -48,6 +50,7 @@
 					{searchPhrase}
 					parent={value}
 					isDefaultExpanded={false}
+					{enhanced}
 				/>
 			</li>
 		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
