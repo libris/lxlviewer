@@ -10,14 +10,20 @@
 	};
 	const { items, parentLabel }: Props = $props();
 
+	let navigationTimeout: ReturnType<typeof setTimeout> | undefined;
+
 	function handleChange(e: Event) {
-		// TODO: debounce
-		const target = e.currentTarget as HTMLInputElement;
-		goto(page.data.localizeHref(target.value), {
-			replaceState: true,
-			keepFocus: true,
-			noScroll: true
-		});
+		const value = (e.currentTarget as HTMLInputElement).value;
+
+		clearTimeout(navigationTimeout);
+
+		navigationTimeout = setTimeout(() => {
+			goto(page.data.localizeHref(value), {
+				replaceState: true,
+				keepFocus: true,
+				noScroll: true
+			});
+		}, 200);
 	}
 </script>
 
