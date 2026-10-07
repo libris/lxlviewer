@@ -41,6 +41,10 @@ class QualifierWidget extends WidgetType {
 			}
 		};
 
+		this.ignoreEvent = () => {
+			return false;
+		};
+
 		const render = view.state.facet(qualifierRenderFacet);
 		if (render) {
 			const result = render(container, this.props);
