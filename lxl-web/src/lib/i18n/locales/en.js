@@ -264,6 +264,7 @@ export default {
 		year: 'year',
 		usagePolicy: 'License terms',
 		usagePolicyLibris: 'About images in Libris',
+		usagePolicyNielsen: 'About images from Nielsen',
 		cropped: 'Cropped',
 		more: 'more',
 		readMore: 'Read more',

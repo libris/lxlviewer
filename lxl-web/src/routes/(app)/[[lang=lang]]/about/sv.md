@@ -55,6 +55,10 @@ Söktjänsten använder valfria kakor för funktionalitet och analys. I vissa fa
 
 Bilder i Libris, till exempel bokomslag, kan vara upphovsrättsskyddade och får då inte användas utan tillstånd. Vissa bilder är dock fria att använda, som användare ansvarar du själv för att kontrollera vad som gäller.
 
+<h3 id="nielsen">Omslagsbilder från Nielsen</h3>
+
+Upphovsrätten till alla omslagsbilder som tillhandahålls av Nielsen Book Services Limited innehas av Nielsen Book Services Limited, utgivarna eller deras respektive licensgivare. Med ensamrätt.
+
 ## Vidare information och kontakt
 
 För mer information, se [frågor och svar](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html),

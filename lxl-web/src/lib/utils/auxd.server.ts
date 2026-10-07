@@ -89,8 +89,7 @@ function getUsageAndAccessPolicy(imageObject: KbvImageObject, lang: LocaleCode) 
 		asArray(imageObject.publisher).find((publisherItem) => publisherItem?.[JsonLd.ID] === 'nielsen')
 	) {
 		return {
-			title:
-				'Copyright in any data cover images supplied by Nielsen Book Services Limited is held by Nielsen Book Services Limited or by the publishers or by their respective licensors: all rights reserved'
+			identifier: 'Nielsen'
 		};
 	}
 

@@ -55,6 +55,10 @@ The search service uses optional cookies for functionality and analytics. In som
 
 Images in Libris, such as book covers, may be protected by copyright and may not be used without permission. However, some images are free to use; as a user, you are responsible for verifying what applies.
 
+<h3 id="nielsen">Cover images from Nielsen</h3>
+
+Copyright in any data cover images supplied by Nielsen Book Services Limited is held by Nielsen Book Services Limited or by the publishers or by their respective licensors: all rights reserved
+
 ## Further information and contact
 
 For more information, see [questions and answers](https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-libris/fragor-och-svar-om-libris-nya-soktjanst.html),

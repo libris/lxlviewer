@@ -263,6 +263,7 @@ export default {
 		year: 'år',
 		usagePolicy: 'Licensvillkor',
 		usagePolicyLibris: 'Om bilder i Libris',
+		usagePolicyNielsen: 'Om bilder från Nielsen',
 		cropped: 'Beskuren',
 		more: 'till',
 		readMore: 'Läs mer',
