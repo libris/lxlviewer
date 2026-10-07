@@ -18,7 +18,7 @@
 		$props();
 </script>
 
-<ul data-testid={level === 1 ? 'facet-list' : undefined}>
+<ul data-testid={level === 1 && !permanentlyExpanded ? 'facet-list' : undefined}>
 	{#each items as value, index (parentLabel + value.label + index)}
 		{const label = value?.str}
 		{#if value.facets}

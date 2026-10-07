@@ -7,10 +7,11 @@
 
 	type Props = {
 		items: FacetValueType[];
+		level: number;
 		parentLabel: string;
 		enhanced: boolean;
 	};
-	const { items, parentLabel, enhanced }: Props = $props();
+	const { items, level, parentLabel, enhanced }: Props = $props();
 
 	function handleChange(e: Event) {
 		const target = e.currentTarget as HTMLInputElement;
@@ -24,7 +25,7 @@
 </script>
 
 {#if enhanced}
-	<form>
+	<form data-testid={level === 1 ? 'facet-list' : undefined}>
 		<fieldset>
 			<legend class="sr-only">{parentLabel}</legend>
 			{#each items as item, index (parentLabel + item.str + index)}

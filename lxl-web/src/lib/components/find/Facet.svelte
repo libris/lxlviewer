@@ -151,9 +151,9 @@
 
 {#snippet values(items: FacetValueType[])}
 	{#if variant === 'radio'}
-		<FacetRadio {items} parentLabel={parent?.str || data.label} {enhanced} />
+		<FacetRadio {items} parentLabel={parent?.str || data.label} {level} {enhanced} />
 	{:else if variant === 'checkbox'}
-		<FacetCheckbox {items} parentLabel={parent?.str || data.label} {enhanced} />
+		<FacetCheckbox {items} parentLabel={parent?.str || data.label} {level} {enhanced} />
 	{:else}
 		<FacetLinks
 			{items}
