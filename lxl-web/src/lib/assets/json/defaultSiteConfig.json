@@ -74,6 +74,18 @@
 		],
 		"featuredSearches": [
 			{
+				"headingByLang": {
+					"sv": "Nobelpriset i litteratur 2026: Anne Carson",
+					"en": "2026 Nobel Prize in Literature: Anne Carson"
+				},
+				"findHref": "/find?_q=contributor=\"libris:jgvz4wz23dsdll2%23it\"",
+				"previewParams": {
+					"_q": "contributor=\"libris:jgvz4wz23dsdll2%23it\"",
+					"_limit": 20,
+					"_sort": ""
+				}
+			},
+			{
 				"headingByLang": { "sv": "Ny skönlitteratur på svenska", "en": "New fiction in Swedish" },
 				"findHref": "/find?_q=language%3A\"lang%3Aswe\"+category:\"saogf:Sk%25C3%25B6nlitteratur\"+excludePreliminary&_sort=-%40reverse.instanceOf.publication.librissearch:year",
 				"previewParams": {
