@@ -23,7 +23,7 @@ const FEATURED_QUERIES: FeaturedQueryType[] = [
 			sv: 'Nobelpriset i litteratur 2026: Anne Carson',
 			en: '2026 Nobel Prize in Literature: Anne Carson'
 		},
-		findHref: '/find?_q=contributor~"libris:jgvz4wz23dsdll2%23it"',
+		findHref: '/find?_q=contributor="libris:jgvz4wz23dsdll2%23it"',
 		previewParams: {
 			_q: 'contributor="libris:jgvz4wz23dsdll2%23it"',
 			_limit: 20,
