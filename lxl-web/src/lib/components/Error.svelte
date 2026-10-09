@@ -4,6 +4,7 @@
 	import librisLogo from '$lib/assets/img/libris-logo.svg';
 
 	let { showHeader = false } = $props();
+	const siteName = $derived(page.data.siteName || 'Libris');
 
 	function getErrorPageTitle() {
 		if (page.status === 404) {
@@ -22,10 +23,19 @@
 {#if showHeader}
 	<header class="flex justify-center pt-8 lg:pt-16">
 		<!-- eslint-disable svelte/no-navigation-without-resolve -->
-		<a href={page.data.localizeHref(page.data.base)} class="inline-block no-underline">
-			<h1 class="text-3xl font-bold">
-				<img src={librisLogo} alt="Libris" class="w-40 lg:w-52" />
-			</h1>
+		<a href={page.data.localizeHref(page.data.base)} class="flex flex-row gap-2 no-underline">
+			{#if siteName === 'Libris'}
+				<img
+					src={librisLogo}
+					width={66}
+					height={75}
+					alt=""
+					class={['w-auto mb-0.5 h-6 sm:h-8.5 sm:pb-1 2xl:h-10.75']}
+				/>
+			{/if}
+			<p class="font-display text-body text-2xl sm:text-3xl 2xl:text-4xl whitespace-nowrap">
+				{siteName}
+			</p>
 		</a>
 	</header>
 {/if}
