@@ -148,7 +148,7 @@
 			</li>
 			<li class={subset && 'flex items-center gap-1 overflow-hidden'}>
 				<a
-					class={['action flex flex-row gap-2 px-1.5', subset ? 'min-w-24!' : '']}
+					class={['action flex flex-row gap-1.5 px-1.5 sm:gap-2', subset ? 'min-w-24!' : '']}
 					href={resolve(page.data.localizeHref(page.data.base))}
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 					data-testid="home"
@@ -161,7 +161,7 @@
 							alt=""
 							class={[
 								'w-auto',
-								subset ? 'h-5.5 2xl:h-9' : 'mb-0.5 h-6 sm:h-8.5 sm:pb-1 2xl:h-10.75'
+								subset ? 'h-5.5 2xl:h-9' : 'mb-1.5 h-6.5 sm:h-8.5 sm:mb-0.5 sm:pb-1 2xl:h-10.75'
 							]}
 						/>
 					{/if}
