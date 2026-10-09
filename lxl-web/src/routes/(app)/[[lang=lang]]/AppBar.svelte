@@ -51,6 +51,7 @@
 			}
 		);
 	});
+	const siteName = $derived(page.data.siteName || 'Libris');
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
@@ -116,7 +117,7 @@
 		withMobileSearchInput && 'with-mobile-search-input'
 	]}
 >
-	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
+	<nav class={['appbar-nav bg-appbar']} aria-label={`${siteName} ${page.data.t('appMenu.label')}`}>
 		<ul class={['leading-actions z-43 flex items-stretch 2xl:pl-3', subset && 'min-w-0']}>
 			<li>
 				<svelte:element
@@ -145,32 +146,39 @@
 					})}
 				</svelte:element>
 			</li>
-			<li class={subset && 'flex items-center gap-4 overflow-hidden'}>
+			<li class={subset && 'flex items-center gap-1 overflow-hidden'}>
 				<a
-					class={['action px-1.5']}
+					class={['action flex flex-row gap-1.5 px-1.5 sm:gap-2', subset ? 'min-w-24!' : '']}
 					href={resolve(page.data.localizeHref(page.data.base))}
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 					data-testid="home"
 				>
-					{#if page.data.siteName}
-						<span class="font-heading text-3xl font-medium">
-							{page.data.siteName}
-						</span>
-					{:else}
+					{#if siteName === 'Libris'}
 						<img
 							src={librisLogo}
-							width={275}
+							width={66}
 							height={75}
-							alt="Libris"
+							alt=""
 							class={[
-								'h-auto min-w-20',
-								subset ? 'w-20 2xl:w-27.5' : 'mb-0.5 w-22 sm:w-27.5 sm:pb-1 2xl:w-35.75'
+								'w-auto',
+								subset ? 'h-5.5 2xl:h-9' : 'mb-1.5 h-6.5 sm:h-8.5 sm:mb-0.5 sm:pb-1 2xl:h-10.75'
 							]}
 						/>
 					{/if}
+					<p
+						class={[
+							'font-display text-body whitespace-nowrap',
+							subset ? 'text-2xl' : 'text-2xl sm:text-3xl 2xl:text-4xl'
+						]}
+					>
+						{siteName}
+					</p>
 				</a>
 				{#if subset}
-					<div class="subset-container relative items-center overflow-hidden">
+					<span>/</span>
+					<div
+						class="subset-container relative flex items-center overflow-y-scroll scrollbar-hidden"
+					>
 						<SearchMapping mapping={subset} />
 					</div>
 				{/if}
@@ -423,22 +431,34 @@
 		}
 	}
 
-	.subset-container :global(.lxl-qualifier) {
-		width: 100%;
-		& :global(.lxl-qualifier-value) {
-			@apply inline-flex h-full items-center truncate py-0;
-			max-width: calc(100% - 32px) !important;
+	/* subset in header */
+	.appbar.subset {
+		& :global(.search-mapping) {
+			overflow-x: auto;
+			scroll-behavior: smooth;
+			scrollbar-width: none;
+			padding-right: calc(var(--spacing) * 4);
 		}
 
-		& :global(.lxl-qualifier-remove) {
-			@apply inline-block h-full items-center py-0;
-		}
-		@variant lg {
-			@apply flex items-center justify-stretch;
+		& :global(.search-mapping .group) {
+			flex-wrap: nowrap;
+			max-width: none;
 		}
 
-		@variant 2xl {
-			@apply flex items-center justify-stretch;
+		& :global(.search-mapping .pill),
+		.subset-container :global(ul) {
+			max-width: none;
+		}
+
+		& .subset-container::after {
+			content: '';
+			position: absolute;
+			top: -1px;
+			right: 0;
+			width: calc(var(--spacing) * 4);
+			height: 100%;
+			pointer-events: none;
+			background: linear-gradient(to right, transparent, var(--color-primary-100));
 		}
 	}
 </style>

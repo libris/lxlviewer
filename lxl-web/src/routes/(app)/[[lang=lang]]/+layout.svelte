@@ -67,7 +67,7 @@
 
 		&.subset {
 			@variant lg {
-				--appbar-template-columns: 1fr minmax(0, 2fr) 1fr;
+				--appbar-template-columns: minmax(360px, 400px) minmax(0, 2fr) 1fr;
 			}
 		}
 	}

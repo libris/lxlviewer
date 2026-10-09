@@ -73,6 +73,14 @@
 }
 
 @font-face {
+	font-family: 'KB Display';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('https://cdn.kb.se/fonts/kb/KBDisplay-Regular.woff2') format('woff2');
+}
+
+@font-face {
 	font-family: 'KB Serif';
 	font-style: italic;
 	font-weight: 400;
@@ -122,6 +130,7 @@
 	--font-body: var(--font-sans);
 
 	--font-heading: 'KB Serif', var(--font-heading-fallback);
+	--font-display: 'KB Display', var(--font-heading-fallback);
 
 	--text-5xs: 0.5625rem; /* 9px */
 	--text-4xs: 0.625rem; /* 10px */
