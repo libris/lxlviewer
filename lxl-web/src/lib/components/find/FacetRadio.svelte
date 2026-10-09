@@ -37,18 +37,18 @@
 			{#each items as item, index (parentLabel + item.str + index)}
 				{const id = (index + '-' + parentLabel + ':' + item.str).toLowerCase().replaceAll(' ', '_')}
 				<div
-					class="checkbox-wrapper block px-4 py-1.5 text-sm hover:bg-primary-100 focus-within:bg-accent-50"
+					class="radio-wrapper flex px-4 py-1.5 text-sm hover:bg-primary-100 focus-within:bg-accent-50"
 				>
 					<input
 						{id}
 						type="radio"
 						name={parentLabel}
-						class="mr-0.5"
+						class="mr-1.5"
 						value={item.view[JsonLd.ID]}
 						checked={item.selected}
 						onchange={handleChange}
 					/>
-					<label for={id}>
+					<label for={id} class="w-full">
 						<span>{item.str}</span>
 						{#if item.discriminator}
 							<span class="text-subtle text-2xs">({item.discriminator})</span>
@@ -72,7 +72,7 @@
 {/if}
 
 <style>
-	.checkbox-wrapper {
+	.radio-wrapper {
 		padding-left: calc(((var(--level, 0) - 1) * var(--spacing) * 5.5) + var(--spacing) * 4);
 		padding-right: calc(var(--spacing) * 3);
 	}
