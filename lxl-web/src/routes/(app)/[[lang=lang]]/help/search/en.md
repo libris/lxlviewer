@@ -54,7 +54,7 @@ With `NOT` you can exclude search terms, filters, or phrases from the result set
 
 - Exempel: [Search for Astrid Lindgren but exclude results about Pippi Longstocking.](/find?_q=contributor:"libris:fcrtpljz1qp2bdv%23it"+NOT+"Pippi+långstrump")
 
-![NOT](/docs/img/NOT.png)
+![Venn diagram illustrating the Boolean NOT operator, with the left circle shaded](/docs/img/NOT.png)
 
 ### OR -- broaden the search
 
@@ -62,13 +62,13 @@ Add `OR` between search terms or filters to get more results. The results will t
 
 - Example: [Search for poetry in Meänkieli or Finnish.](</find?_q=(Språk:"lang:9mk"+OR+Språk:"lang:fin")+Kategori:"saogf:Poesi">)
 
-![OR](/docs/img/OR.png)
+![Venn diagram illustrating the Boolean OR operator, with all three circles and their intersection shaded.](/docs/img/OR.png)
 
 ### AND -- all search terms or filters must be included
 
 `AND` rarely needs to be written explicitly; it is applied automatically if no other operator is specified.
 
-![AND](/docs/img/AND.png)
+![Venn diagram illustrating the Boolean AND operator, with only the intersection of the two circles shaded.](/docs/img/AND.png)
 
 ## Grouping
 

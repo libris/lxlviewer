@@ -221,7 +221,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								src={item.image.url}
 								width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
 								height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
-								alt={page.data.t('general.instanceCover')}
+								alt=""
 								class:rounded-full={item['@type'] === 'Person'}
 								class="object-contain object-top {item['@type'] !== 'Person'
 									? 'aspect-2/3'
