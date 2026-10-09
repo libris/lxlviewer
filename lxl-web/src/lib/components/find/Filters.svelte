@@ -1,33 +1,66 @@
 <script lang="ts">
-	import { navigating, page } from '$app/state';
-	import FacetGroup from '$lib/components/find/FacetGroup.svelte';
+	import { page } from '$app/state';
+	import { browser } from '$app/environment';
+	import Facet from '$lib/components/find/Facet.svelte';
 	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 	import { getModalContext } from '$lib/contexts/modal';
-	import type { DisplayMapping, Facet } from '$lib/types/search';
+	import type { DisplayMapping, Facet as FacetType } from '$lib/types/search';
 	import { displayMappingToString } from '$lib/utils/displayMappingToString';
 	import BiSearch from '~icons/bi/search';
 	import SearchMapping from './SearchMapping.svelte';
 
 	type Props = {
-		facets: Promise<Facet[]>;
+		facets: Promise<FacetType[]>;
 		mapping?: DisplayMapping[];
 	};
 
 	const { facets, mapping }: Props = $props();
 
-	let prevData: Facet[] | null = $state(null);
-	let current = 0;
+	let facetData = $state<FacetType[] | null>(null);
+	const initialFacets: FacetType[] | null = $derived(Array.isArray(facets) ? facets : null);
+	let error: string | null = $state(null);
+	let loading = $state(false);
+	let requestId = 0;
+	let enhanced = $state(false);
 
 	$effect(() => {
-		if (!facets) return;
-		const id = ++current;
+		if (browser) {
+			// used to enable facet link-fallbacks
+			enhanced = true;
+		}
+	});
 
-		Promise.resolve(facets).then((resolved) => {
-			if (id === current) {
-				// cache data to display (disabled) when loading next time
-				prevData = resolved;
-			}
-		});
+	$effect(() => {
+		const id = ++requestId;
+
+		if (!facets) return;
+
+		if (Array.isArray(facets)) {
+			facetData = facets;
+			loading = false;
+			return;
+		}
+
+		const timeout = setTimeout(() => {
+			loading = true;
+		}, 50);
+
+		facets
+			.then((data) => {
+				if (id !== requestId) return;
+
+				clearTimeout(timeout);
+				facetData = data;
+				loading = false;
+			})
+			.catch((e) => {
+				error = e.message;
+				loading = false;
+			});
+
+		return () => {
+			clearTimeout(timeout);
+		};
 	});
 
 	function shouldShowMapping(m: DisplayMapping[]) {
@@ -39,7 +72,7 @@
 	let searchPhrase = $state('');
 </script>
 
-{#snippet facetSnippet(data: Facet[], loading: boolean = false)}
+{#snippet facetSnippet(data: FacetType[], loading: boolean = false)}
 	{#if data?.length}
 		<nav
 			class="facet-nav"
@@ -59,21 +92,17 @@
 				<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm pointer-events-none" />
 			</div>
 			<ul
-				aria-labelledby={'tab-filters'}
-				class={[
-					'text-sm',
-					((navigating.to && navigating.from?.url.pathname === navigating.to?.url.pathname) ||
-						loading) &&
-						'pointer-events-none opacity-50'
-				]}
+				aria-labelledby="tab-filters"
+				class={['text-sm', loading && 'pointer-events-none opacity-50']}
 			>
 				{#each data as facet, index (facet.dimension)}
-					<li>
-						<FacetGroup
+					<li aria-label={facet.dimension}>
+						<Facet
 							data={facet}
 							level={1}
 							{searchPhrase}
 							isDefaultExpanded={index < DEFAULT_FACETS_EXPANDED}
+							{enhanced}
 						/>
 					</li>
 				{/each}
@@ -98,23 +127,13 @@
 			<SearchMapping {mapping} />
 		</nav>
 	{/if}
-	{#await facets}
-		{#if prevData}
-			{@render facetSnippet(prevData, true)}
-		{:else}
-			{@render skeleton()}
-		{/if}
-	{:then resolvedFacets}
-		{#if resolvedFacets}
-			{@render facetSnippet(resolvedFacets)}
-		{:else if page.url.searchParams.has('holdings') && prevData}
-			{@render facetSnippet(prevData)}
-		{:else if page.url.searchParams.has('holdings') && !prevData}
-			{@render skeleton()}
-		{/if}
-	{:catch error}
-		<p class="text-severe-700">{error.message}</p>
-	{/await}
+	{#if facetData ?? initialFacets}
+		{@render facetSnippet(facetData ?? initialFacets!, loading)}
+	{:else if error}
+		<p class="text-severe-700">{error}</p>
+	{:else}
+		{@render skeleton()}
+	{/if}
 </div>
 
 <style lang="postcss">
