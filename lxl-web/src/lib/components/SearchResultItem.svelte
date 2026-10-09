@@ -94,7 +94,7 @@
 			{#if page.data.features.resourceImages}
 				{@render image()}
 			{/if}
-			<p class="decorated-card-heading-top text-subtle line-clamp-1 text-xs break-all">
+			<p class="decorated-card-heading-top text-subtle line-clamp-2 text-xs break-normal">
 				<TypeIcon
 					type={data.typeForIcon}
 					class="text-3xs @4xs:text-2xs inline -translate-y-px leading-none"
