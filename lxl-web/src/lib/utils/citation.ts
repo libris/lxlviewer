@@ -25,6 +25,10 @@ export const availableFormats = {
 		name: 'Harvard',
 		fullName: 'Harvard (Södertörns högskola — author-date/Harvard)'
 	},
+	elsevier_vancouver: {
+		name: 'Vancouver',
+		fullName: 'Elsevier - NLM/Vancouver (name-year)'
+	},
 	ris: {
 		name: 'RIS',
 		fileFormat: 'ris'
@@ -73,6 +77,12 @@ export async function initCite(locale: LocaleCode) {
 				return cite.format('bibliography', { template: 'oxford_umu', format: 'html', lang });
 			case 'harvard_sh':
 				return cite.format('bibliography', { template: 'harvard_sh', format: 'html', lang });
+			case 'elsevier_vancouver':
+				return cite.format('bibliography', {
+					template: 'elsevier_vancouver',
+					format: 'html',
+					lang
+				});
 			default:
 				console.warn('asked for unavailable format', name);
 				return '-';
@@ -97,7 +107,10 @@ async function loadCiteResources() {
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fumea-university-oxford
 		oxford_umu: (await import('$lib/assets/csl/umea-university-oxford.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fsodertorns-hogskola-harvard
-		harvard_sh: (await import('$lib/assets/csl/sodertorns-hogskola-harvard.csl?raw')).default
+		harvard_sh: (await import('$lib/assets/csl/sodertorns-hogskola-harvard.csl?raw')).default,
+		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Felsevier-vancouver-author-date
+		elsevier_vancouver: (await import('$lib/assets/csl/elsevier-vancouver-author-date.csl?raw'))
+			.default
 	};
 
 	// https://github.com/citation-js/citation-js/tree/main/packages/plugin-csl
