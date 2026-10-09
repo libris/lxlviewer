@@ -166,7 +166,7 @@
 		class="nav-to-work hover:bg-accent-50/75 border-b-neutral border-b print:hidden hover:[&_.arrow]:-translate-x-1 [&.arrow]:transition-transform"
 		aria-label={page.data.t('resource.navToWork')}
 	>
-		<Suggestion item={workCard} headingElement="p">
+		<Suggestion item={workCard} headingElement={HeadingElem.P}>
 			{#snippet leadingContent()}
 				<div class="mr-4 flex items-center gap-1 ease-in-out">
 					<IconArrowRight class="arrow rotate-180 transition-transform" />
@@ -365,15 +365,12 @@
 					<ul>
 						{#each relations as relationItem (relationItem.qualifierKey)}
 							<li id="{uidPrefix}relations-{relationItem.qualifierKey}" class="mb-12">
-								<div
-									class="border-b-neutral mb-6 flex place-content-between items-end border-b pb-3"
-								>
+								<div class="border-b-neutral mb-6 border-b pb-3">
 									<h3 class="font-medium">
 										<!-- eslint-disable svelte/no-navigation-without-resolve -->
 										<a
 											href={page.data.localizeHref(relationItem.findUrl)}
-											class="hover:underline focus:underline"
-											tabindex={-1}
+											class="hover:underline focus:underline [&>svg]:transition-transform hover:[&>svg]:translate-x-1"
 										>
 											{relationItem.label}:
 											<DecoratedData2
@@ -383,29 +380,20 @@
 												allowPopovers={false}
 												parent={Elem.A}
 											/>
+											<span class="whitespace-nowrap">
+												{'('}{relationItem.totalItems.toLocaleString() +
+													(relationItem.isLike ? '+' : '')}
+												{#if relationItem.totalItems === 1 && !relationItem.isLike}
+													{page.data.t('resource.result')}
+												{:else}
+													{page.data.t('resource.results')}
+												{/if}{')'}
+											</span>
+											<IconArrowRight class="inline size-5 text-neutral-500" />
 										</a>
 									</h3>
-									<!-- eslint-disable svelte/no-navigation-without-resolve -->
-									<a
-										href={page.data.localizeHref(relationItem.findUrl)}
-										class="flex items-center text-sm font-medium hover:underline focus:underline"
-									>
-										<IconArrowRight class="inline size-5 text-neutral-500" />
-										<span class="whitespace-nowrap">
-											{page.data.t('general.show')}
-											{#if relationItem.totalItems > 10}
-												{page.data.t('resource.all')}
-											{/if}
-											{relationItem.totalItems.toLocaleString() + (relationItem.isLike ? '+' : '')}
-											{#if relationItem.totalItems === 1 && !relationItem.isLike}
-												{page.data.t('resource.result')}
-											{:else}
-												{page.data.t('resource.results')}
-											{/if}
-										</span>
-									</a>
 								</div>
-								<div class="relation-list -mx-3 @sm:-mx-6 @3xl:mx-0">
+								<div class="relation-list">
 									<SearchResultList
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
@@ -528,9 +516,17 @@
 				<p>
 					{page.data.t('resource.downloadDescription')}:
 					<!-- eslint-disable svelte/no-navigation-without-resolve -->
-					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link">JSON-LD</a>
-					· <a href="{recordUri}/data.ttl" target="_blank" class="ext-link">Turtle</a>
-					· <a href="{recordUri}/data.rdf" target="_blank" class="ext-link">RDF/XML</a>
+					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link"
+						>JSON-LD <span class="sr-only">({page.data.t('general.externalLink')})</span></a
+					>
+					·
+					<a href="{recordUri}/data.ttl" target="_blank" class="ext-link"
+						>Turtle <span class="sr-only">({page.data.t('general.externalLink')})</span></a
+					>
+					·
+					<a href="{recordUri}/data.rdf" target="_blank" class="ext-link"
+						>RDF/XML <span class="sr-only">({page.data.t('general.externalLink')})</span></a
+					>
 					{#if instances?.length === 1}
 						<!--
 							TODO - agents? - _compilemarc can only handle bib
@@ -540,14 +536,18 @@
 						·
 						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a href="{base}/_compilemarc?library=Foo&id={recordUri}" target="_blank" class="link"
-							>MARC21 (ISO 2709) <BiDownload class="inline" /></a
+							>MARC21 (ISO 2709) <span class="sr-only">({page.data.t('general.downloadLink')})</span
+							>
+							<BiDownload class="inline" /></a
 						>
 						·
 						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a
 							href="{base}/_compilemarc?library=Foo&id={recordUri}&format=marcxml"
 							target="_blank"
-							class="link">MARC21 (XML) <BiDownload class="inline" /></a
+							class="link"
+							>MARC21 (XML) <span class="sr-only">({page.data.t('general.downloadLink')})</span>
+							<BiDownload class="inline" /></a
 						>
 					{/if}
 				</p>
@@ -557,15 +557,21 @@
 						href={recordUri.split('/').toSpliced(-1, 0, 'katalogisering').join('/')}
 						target="_blank"
 						class="ext-link"
-						>{page.data.t('resource.showIn')} {page.data.t('resource.librisCataloging')}</a
 					>
+						{page.data.t('resource.showIn')}
+						{page.data.t('resource.librisCataloging')}
+						<span class="sr-only">({page.data.t('general.externalLink')})</span>
+					</a>
 					{#if instances?.length === 1 && process.env.NODE_ENV === 'development'}
 						· <a
 							href="https://gamla.libris.kb.se/bib/{controlNumber}"
 							target="_blank"
 							class="ext-link"
-							>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
 						>
+							{page.data.t('resource.showIn')}
+							{page.data.t('resource.librisOld')}
+							<span class="sr-only">({page.data.t('general.externalLink')})</span>
+						</a>
 					{/if}
 				</p>
 			</div>

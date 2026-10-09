@@ -204,7 +204,6 @@ export default {
 	supersearch: {
 		search: 'Search',
 		addQualifiers: 'Add filter',
-		moreQualifiers: 'More filters',
 		loading: 'Loading...',
 		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',
@@ -273,7 +272,10 @@ export default {
 		show: 'Show',
 		approx: 'approx.',
 		copyToClipboard: 'Copy to clipboard',
-		copied: 'Copied!'
+		copied: 'Copied!',
+		externalLink: 'external link',
+		linkToSearchQuery: 'link to search query',
+		downloadLink: 'download link'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',
