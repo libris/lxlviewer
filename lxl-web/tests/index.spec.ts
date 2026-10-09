@@ -22,16 +22,11 @@ test('index page shows featured searches', async ({ page }) => {
 	await expect(page).toHaveURL('/');
 	await page.waitForLoadState('networkidle');
 
-	await expect(page.getByLabel('Ny skönlitteratur på svenska').locator('article')).toHaveCount(20, {
+	const section = page.getByLabel('Ny skönlitteratur på svenska');
+	await section.scrollIntoViewIfNeeded();
+	await expect(section.locator('article')).toHaveCount(20, {
 		timeout: 10000
 	});
-	// await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
-	// await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
-	// 	11,
-	// 	{
-	// 		timeout: 10000
-	// 	}
-	// );
 });
 
 test('can change the language', async ({ page }) => {
