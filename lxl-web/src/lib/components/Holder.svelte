@@ -85,11 +85,13 @@
 	{#if bestLink || instance.linkResolver}
 		<!-- instance best link -->
 		{#if bestLink}
+			<!-- eslint-disable svelte/no-navigation-without-resolve -->
 			<a
 				href={getBestLink(instance)}
 				target="_blank"
 				class="ext-link"
-				aria-label={page.data.t('holdings.findAtLibrary')}
+				aria-label={`${page.data.t('holdings.findAtLibrary')} (${page.data.t('general.externalLink')})`}
+				aria-describedby={`holder-${holder[JsonLd.ID]}`}
 			>
 				{page.data.t('holdings.linkToLocal')}
 			</a>
@@ -98,6 +100,7 @@
 		{#if instance.linkResolver}
 			<a href={instance.linkResolver.uri} target="_blank" class="ext-link">
 				{instance.linkResolver.label}
+				<span class="sr-only">({page.data.t('general.externalLink')})</span>
 			</a>
 		{/if}
 	{/if}
@@ -170,7 +173,8 @@
 				<a
 					href={getBestLink(instances[0])}
 					target="_blank"
-					aria-label={page.data.t('holdings.findAtLibrary')}
+					aria-label={`${page.data.t('holdings.findAtLibrary')} (${page.data.t('general.externalLink')})`}
+					aria-describedby={`holder-${holder[JsonLd.ID]}`}
 				>
 					<BiBoxArrowUpRight aria-hidden="true" class="text-link ml-2 size-4" />
 				</a>
@@ -179,6 +183,7 @@
 					class="text-link ml-2 text-sm whitespace-nowrap"
 					type="button"
 					onclick={() => (expanded = !expanded)}
+					aria-describedby={`holder-${holder[JsonLd.ID]}`}
 				>
 					{page.data.t('holdings.chooseEdition')}
 					({numInstances})</button
@@ -228,13 +233,25 @@
 				{#if holder._links.myLoansLink || holder._links.registrationLink}
 					<div class="ml-4 flex flex-row gap-2">
 						{#if holder._links.myLoansLink}
-							<a target="_blank" class="ext-link" href={holder._links.myLoansLink}>
+							<a
+								target="_blank"
+								class="ext-link"
+								href={holder._links.myLoansLink}
+								aria-describedby={`holder-${holder[JsonLd.ID]}`}
+							>
 								{page.data.t('holdings.myLoans')}
+								<span class="sr-only">({page.data.t('general.externalLink')})</span>
 							</a>
 						{/if}
 						{#if holder._links.registrationLink}
-							<a target="_blank" class="ext-link" href={holder._links.registrationLink}>
+							<a
+								target="_blank"
+								class="ext-link"
+								href={holder._links.registrationLink}
+								aria-describedby={`holder-${holder[JsonLd.ID]}`}
+							>
 								{page.data.t('holdings.applyForCard')}
+								<span class="sr-only">({page.data.t('general.externalLink')})</span>
 							</a>
 						{/if}
 					</div>
