@@ -224,7 +224,7 @@ export default {
 		addAsQualifier: 'Add as filter'
 	},
 	sort: {
-		sort: 'Sort',
+		sort: 'Sort by',
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',
 		alphaDesc: 'Z-A',

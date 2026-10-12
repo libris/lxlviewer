@@ -41,7 +41,9 @@
 	onsubmit={handleSubmit}
 >
 	<div class="flex flex-col gap-1">
-		<label class="sr-only" for="facet-range-from">{page.data.t('general.from')}</label>
+		<label class="text-xs" for="facet-range-from"
+			>{`${page.data.t('general.from')} (${page.data.t('general.year')})`}:</label
+		>
 		<input
 			class="bg-input h-8 rounded-sm border border-neutral-500 px-2 py-1 text-base sm:text-sm"
 			id="facet-range-from"
@@ -49,12 +51,13 @@
 			min="1000"
 			max="2099"
 			step="1"
-			placeholder={`${page.data.t('general.from')} (${page.data.t('general.year')})`}
 			bind:value={rangeFrom}
 		/>
 	</div>
 	<div class="flex flex-col gap-1">
-		<label class="sr-only" for="facet-range-to">{page.data.t('general.to')}</label>
+		<label class="text-xs" for="facet-range-to"
+			>{`${page.data.t('general.to')} (${page.data.t('general.year')})`}:</label
+		>
 		<input
 			class="bg-input h-8 rounded-sm border border-neutral-500 px-2 py-1 text-base sm:text-sm"
 			id="facet-range-to"
@@ -62,7 +65,6 @@
 			min="1000"
 			max="2099"
 			step="1"
-			placeholder={`${page.data.t('general.to')} (${page.data.t('general.year')})`}
 			bind:value={rangeTo}
 		/>
 	</div>
