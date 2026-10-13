@@ -120,7 +120,13 @@ export function asSearchResultItem(
 
 		const headerThing = isWorkSingleInstance ? (i['@reverse']['instanceOf'][0] as FramedData) : i;
 
-		const heading = displayUtil.lensAndFormat(headerThing, LxlLens.CardHeading, locale);
+		let heading = displayUtil.lensAndFormat(headerThing, LxlLens.CardHeading, locale);
+
+		// TODO: this is a fallback for swepub where there is only titles on works, not instances
+		// TODO: add support for property paths in lenses
+		if (isResourceNode(heading) && heading[Fmt.DISPLAY].length === 0) {
+			heading = displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale);
+		}
 
 		const workTitle = isWorkSingleInstance
 			? displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale)

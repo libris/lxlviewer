@@ -48,6 +48,7 @@ import { getSearchResults } from '$lib/remotes/searchResult.remote';
 import { SearchResultsSchema } from '$lib/schemas/searchResult';
 import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
 import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
+import { isResourceNode } from '$lib/utils/resourceData';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
@@ -159,7 +160,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 		? displayUtil.lensAndFormat(mainEntity, LxlLens.CardHeading, locale)
 		: undefined;
 
-	const heading = displayUtil.lensAndFormat(headingThing, LxlLens.PageHeading, locale);
+	let heading = displayUtil.lensAndFormat(headingThing, LxlLens.PageHeading, locale);
+
+	// TODO: this is a fallback for swepub where there is only titles on works, not instances
+	// TODO: add support for property paths in lenses
+	if (isResourceNode(heading) && heading[Fmt.DISPLAY].length === 0) {
+		heading = displayUtil.lensAndFormat(mainEntity, LxlLens.CardHeading, locale);
+	}
+
 	const hasWorkTitle = isWorkSingleInstance && toString(heading) !== toString(workTitle);
 
 	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
