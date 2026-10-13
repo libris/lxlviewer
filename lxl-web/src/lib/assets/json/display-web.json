@@ -1614,7 +1614,10 @@
 			"@id": "isPartOf-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["isPartOf"],
-			"fresnel:propertyStyle": ["label", "ul-when-multiple"]
+			"fresnel:propertyStyle": ["label", "ul-when-multiple"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
 		},
 		"Work-hasPart-format": {
 			"@id": "Work-hasPart-format",
