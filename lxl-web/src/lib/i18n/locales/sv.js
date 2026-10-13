@@ -261,6 +261,7 @@ export default {
 		from: 'Från',
 		to: 'Till',
 		year: 'år',
+		yearRange: 'Årsintervall',
 		usagePolicy: 'Licensvillkor',
 		usagePolicyLibris: 'Om bilder i Libris',
 		usagePolicyNielsen: 'Om bilder från Nielsen',
