@@ -266,7 +266,7 @@
 				{#each featuredCategories as category (category.id)}
 					<li>
 						<a
-							href={resolve(page.data.localizeHref(category.href))}
+							href={page.data.localizeHref(category.href)}
 							id={category.id}
 							aria-labelledby="search-for {category.id}"
 							class="btn-outlined text-subtle focus-visible:bg-primary-200 hover:bg-primary-200/50 min-w-12 border-neutral-300 bg-transparent px-2 py-2 text-center font-medium whitespace-nowrap -outline-offset-2 md:py-1.5 @xl:px-3 @xl:py-2 @3xl:min-w-14 @5xl:min-h-10 @5xl:min-w-16"
