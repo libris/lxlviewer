@@ -57,7 +57,7 @@ Bilder i Libris, till exempel bokomslag, kan vara upphovsrättsskyddade och får
 
 <h3 id="nielsen">Omslagsbilder från Nielsen</h3>
 
-Upphovsrätten till alla omslagsbilder som tillhandahålls av Nielsen Book Services Limited innehas av Nielsen Book Services Limited, utgivarna eller deras respektive licensgivare. Med ensamrätt.
+Copyright in any data cover images supplied by Nielsen Book Services Limited is held by Nielsen Book Services Limited or by the publishers or by their respective licensors: all rights reserved.
 
 ## Vidare information och kontakt
 

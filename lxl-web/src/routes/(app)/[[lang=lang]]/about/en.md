@@ -57,7 +57,7 @@ Images in Libris, such as book covers, may be protected by copyright and may not
 
 <h3 id="nielsen">Cover images from Nielsen</h3>
 
-Copyright in any data cover images supplied by Nielsen Book Services Limited is held by Nielsen Book Services Limited or by the publishers or by their respective licensors: all rights reserved
+Copyright in any data cover images supplied by Nielsen Book Services Limited is held by Nielsen Book Services Limited or by the publishers or by their respective licensors: all rights reserved.
 
 ## Further information and contact
 
