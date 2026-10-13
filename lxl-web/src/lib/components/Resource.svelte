@@ -576,7 +576,7 @@
 					<ResourceImage
 						{image}
 						type={typeForIcon}
-						alt={page.data.t('general.instanceCover')}
+						alt={typeForIcon.includes('Person') ? page.data.title : ''}
 						thumbnailTargetWidth={typeForIcon.includes('Bibliography')
 							? ImageWidth.FULL
 							: ImageWidth.MEDIUM}

@@ -89,8 +89,7 @@ function getUsageAndAccessPolicy(imageObject: KbvImageObject, lang: LocaleCode) 
 		asArray(imageObject.publisher).find((publisherItem) => publisherItem?.[JsonLd.ID] === 'nielsen')
 	) {
 		return {
-			title:
-				'Copyright in any data cover images supplied by Nielsen Book Services Limited is held by Nielsen Book Services Limited or by the publishers or by their respective licensors: all rights reserved'
+			identifier: 'Nielsen'
 		};
 	}
 
@@ -106,12 +105,12 @@ function getUsageAndAccessPolicy(imageObject: KbvImageObject, lang: LocaleCode) 
 		};
 	}
 
-	return {
-		title:
-			lang === 'en'
-				? 'The cover pictures and other pictures that are shown in LIBRIS are protected according to the Swedish Act on Copyright for Literary and Artistic Works (1960:729). There are also pictures that are not copyrighted. Anyone using LIBRIS is therefore not permitted to download or in any other way have the pictures at their disposal. It is the users responsibility to check if the material is copyrighted.'
-				: 'Omslagsbilder och andra bilder som visas i LIBRIS är i regel skyddade enligt lag (1960:729) om upphovsrätt till litterära och konstnärliga verk. Den som nyttjar LIBRIS får inte ladda ner eller på något annat sätt förfoga över bilder som är skyddade av upphovsrätt. Det finns också bilder som inte är skyddade av upphovsrätt. Det är du som användare som ansvarar för att ta reda på om materialet är upphovsrättsligt skyddat eller inte.'
-	};
+	// return {
+	// 	title:
+	// 		lang === 'en'
+	// 			? 'The cover pictures and other pictures that are shown in LIBRIS are protected according to the Swedish Act on Copyright for Literary and Artistic Works (1960:729). There are also pictures that are not copyrighted. Anyone using LIBRIS is therefore not permitted to download or in any other way have the pictures at their disposal. It is the users responsibility to check if the material is copyrighted.'
+	// 			: 'Omslagsbilder och andra bilder som visas i LIBRIS är i regel skyddade enligt lag (1960:729) om upphovsrätt till litterära och konstnärliga verk. Den som nyttjar LIBRIS får inte ladda ner eller på något annat sätt förfoga över bilder som är skyddade av upphovsrätt. Det finns också bilder som inte är skyddade av upphovsrätt. Det är du som användare som ansvarar för att ta reda på om materialet är upphovsrättsligt skyddat eller inte.'
+	// };
 }
 export function calculateExpirationTime() {
 	const startOfDay = new Date();
