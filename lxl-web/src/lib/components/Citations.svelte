@@ -117,6 +117,7 @@
 									{:else}
 										{page.data.t('general.copyToClipboard')}
 									{/if}
+									<span class="sr-only">({format.name})</span>
 								</button>
 								{#if isFileFormat && id}
 									<!-- download button -->
@@ -126,8 +127,9 @@
 										href={`/api/${page.data.locale}/cite?id=${id}&format=${format.key}`}
 									>
 										<BiDownload />
-										{page.data.t('citations.saveAsFile')}</a
-									>
+										{page.data.t('citations.saveAsFile')}
+										<span class="sr-only">({format.name})</span>
+									</a>
 								{/if}
 							</div>
 						</article>
