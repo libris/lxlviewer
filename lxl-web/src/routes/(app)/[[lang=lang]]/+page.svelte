@@ -265,6 +265,7 @@
 			>
 				{#each featuredCategories as category (category.id)}
 					<li>
+						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a
 							href={page.data.localizeHref(category.href)}
 							id={category.id}
