@@ -264,6 +264,7 @@ export default {
 		from: 'From',
 		to: 'To',
 		year: 'year',
+		yearRange: 'Year range',
 		usagePolicy: 'License terms',
 		cropped: 'Cropped',
 		more: 'more',

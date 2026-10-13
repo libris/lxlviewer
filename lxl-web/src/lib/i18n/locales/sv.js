@@ -263,6 +263,7 @@ export default {
 		from: 'Från',
 		to: 'Till',
 		year: 'år',
+		yearRange: 'Årsintervall',
 		usagePolicy: 'Licensvillkor',
 		cropped: 'Beskuren',
 		more: 'till',
