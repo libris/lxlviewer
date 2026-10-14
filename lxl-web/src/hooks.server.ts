@@ -1,10 +1,6 @@
+import type { HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
 import fs from 'fs';
-import {
-	type HandleServerError,
-	redirect,
-	type RequestEvent,
-	type ServerInit
-} from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { DERIVED_LENSES } from '$lib/types/display';
