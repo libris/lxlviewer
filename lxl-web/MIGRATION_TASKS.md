@@ -115,11 +115,11 @@ replace the `noScroll` and `keepFocus` options of `goto` with a single `reset` o
 
 #### Files to review
 
-- [ ] `src/lib/components/find/FacetCheckbox.svelte`
-- [ ] `src/lib/components/find/FacetLink.svelte`
-- [ ] `src/lib/components/find/FacetRadio.svelte`
-- [ ] `src/lib/components/find/SearchCard.svelte`
-- [ ] `src/lib/components/my-pages/Libraries.svelte`
+- [x] `src/lib/components/find/FacetCheckbox.svelte`
+- [x] `src/lib/components/find/FacetLink.svelte`
+- [x] `src/lib/components/find/FacetRadio.svelte`
+- [x] `src/lib/components/find/SearchCard.svelte`
+- [x] `src/lib/components/my-pages/Libraries.svelte`
 
 ### Adjust error(...) usage
 

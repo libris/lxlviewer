@@ -55,7 +55,7 @@
 
 		goto(resolve(page.url.pathname + `?${params.toString()}`), {
 			replaceState: true,
-			keepFocus: true
+			reset: false
 		});
 	}
 

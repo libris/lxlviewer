@@ -23,8 +23,7 @@
 		navigationTimeout = setTimeout(() => {
 			goto(page.data.localizeHref(value), {
 				replaceState: true,
-				keepFocus: true,
-				noScroll: true
+				reset: false
 			});
 		}, 200);
 	}

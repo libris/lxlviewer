@@ -18,8 +18,7 @@
 
 		goto(page.data.localizeHref(target.value), {
 			replaceState: true,
-			keepFocus: true,
-			noScroll: true
+			reset: false
 		});
 	}
 </script>

@@ -169,7 +169,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			class="btn btn-primary h-7 min-w-28 rounded-full md:h-8"
 			href={page.data.localizeHref(getHoldingsLink(page.url, id))}
 			data-sveltekit-preload-data={isInstanceCard ? 'false' : ''}
-			data-sveltekit-noscroll
+			data-sveltekit-reset="false"
 			data-testid="holding-link"
 			onclick={(event) => isInstanceCard && handleClickHoldings(event, page.state, id)}
 		>
