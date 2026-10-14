@@ -1,5 +1,4 @@
 import { API_URL, AUXD_SECRET } from '$app/env/private';
-import { json } from '@sveltejs/kit';
 import { DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
 import { JsonLd, type FramedData } from '#lib/types/xl.js';
 import type { ApiError } from '#lib/types/api.js';
@@ -21,7 +20,7 @@ export async function GET({ params, locals }) {
 				console.warn(e);
 			}
 		}
-		return json(
+		return Response.json(
 			{
 				message:
 					apiError?.message || (recordRes.status === 404 ? 'Not found' : recordRes.statusText),
@@ -35,7 +34,7 @@ export async function GET({ params, locals }) {
 	const record = await recordRes.json();
 
 	if (!record?.mainEntity) {
-		return json({ message: 'Not found' }, { status: 404 });
+		return Response.json({ message: 'Not found' }, { status: 404 });
 	}
 
 	const mainEntity = centerOnWork(record['mainEntity'] as FramedData);
@@ -51,7 +50,7 @@ export async function GET({ params, locals }) {
 		AUXD_SECRET
 	)[0];
 
-	return json(searchCard, {
+	return Response.json(searchCard, {
 		headers: {
 			'cache-control': 'public, max-age=300' // Probably best with an short max-age?
 		}

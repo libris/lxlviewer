@@ -1,5 +1,4 @@
 import { API_URL, AUXD_SECRET } from '$app/env/private';
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import { getSupportedLocale, type LocaleCode as LangCode } from '#lib/i18n/locales.js';
 import type { LibraryResult, PartialCollectionView } from '#lib/types/search.js';
@@ -32,7 +31,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 			apiError = null;
 		}
 
-		return json(
+		return Response.json(
 			{
 				error: true,
 				statusText: apiError?.message || findRes.statusText,
@@ -47,7 +46,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const data = await findRes.json();
 	const result = await asLibraryResult(data, displayUtil, vocabUtil, locale);
 
-	return json(result, {
+	return Response.json(result, {
 		headers: {
 			'cache-control': 'public, max-age=1800' // 30 mins
 		}

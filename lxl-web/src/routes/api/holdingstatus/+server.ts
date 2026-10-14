@@ -1,4 +1,3 @@
-import { json } from '@sveltejs/kit';
 import { HOLDING_STATUS_URL } from '$app/env/private';
 
 export async function GET({ url }) {
@@ -6,7 +5,7 @@ export async function GET({ url }) {
 	if (res.ok) {
 		const data = await res.json();
 		const cleanData = replaceChars(data);
-		return json(cleanData);
+		return Response.json(cleanData);
 	}
 	return res;
 }

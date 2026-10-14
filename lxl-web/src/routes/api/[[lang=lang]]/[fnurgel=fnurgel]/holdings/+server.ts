@@ -1,5 +1,5 @@
 import { API_URL } from '$app/env/private';
-import { error, json } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import { getSupportedLocale } from '#lib/i18n/locales.js';
 import type { ApiError } from '#lib/types/api.js';
 import type { HoldingMainEntity, HoldingsData } from '#lib/types/holdings.js';
@@ -44,7 +44,7 @@ export async function GET({ params, locals }) {
 		holdingLibraries: getHoldingLibraries(byType)
 	};
 
-	return json(holdings, {
+	return Response.json(holdings, {
 		headers: {
 			'cache-control': 'public, max-age=1800' // 30 mins
 		}

@@ -1,5 +1,4 @@
 import { API_URL, AUXD_SECRET } from '$app/env/private';
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import type { SuperSearchResult } from '#lib/types/search.js';
 import { getSupportedLocale } from '#lib/i18n/locales.js';
@@ -57,5 +56,5 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		})
 	};
 
-	return json(superSearchResult);
+	return Response.json(superSearchResult);
 };

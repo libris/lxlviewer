@@ -153,18 +153,18 @@ Replace `invalidateAll()` with `refreshAll()`. Note that `refreshAll()` will kee
 
 #### Files to review
 
-- [ ] `src/lib/components/find/FacetCheckbox.svelte`
-- [ ] `src/lib/components/find/FacetRadio.svelte`
-- [ ] `src/lib/components/find/SearchCard.svelte`
-- [ ] `src/lib/components/find/SearchResultSort.svelte`
-- [ ] `src/lib/components/my-pages/Libraries.svelte`
-- [ ] `src/lib/components/resource/AdjecentResults.svelte`
-- [ ] `src/lib/components/supersearch/SuperSearchWrapper.svelte`
-- [ ] `src/lib/utils/citation.ts`
-- [ ] `src/lib/utils/holdings.ts`
-- [ ] `src/routes/(app)/[[lang=lang]]/HeaderMenu.svelte`
-- [ ] `src/routes/(app)/[[lang=lang]]/[...resource=resource]/+page.svelte`
-- [ ] `src/routes/(app)/[[lang=lang]]/find/+page.svelte`
+- [x] `src/lib/components/find/FacetCheckbox.svelte`
+- [x] `src/lib/components/find/FacetRadio.svelte`
+- [x] `src/lib/components/find/SearchCard.svelte`
+- [x] `src/lib/components/find/SearchResultSort.svelte`
+- [x] `src/lib/components/my-pages/Libraries.svelte`
+- [x] `src/lib/components/resource/AdjecentResults.svelte`
+- [x] `src/lib/components/supersearch/SuperSearchWrapper.svelte`
+- [x] `src/lib/utils/citation.ts`
+- [x] `src/lib/utils/holdings.ts`
+- [x] `src/routes/(app)/[[lang=lang]]/HeaderMenu.svelte`
+- [x] `src/routes/(app)/[[lang=lang]]/[...resource=resource]/+page.svelte`
+- [x] `src/routes/(app)/[[lang=lang]]/find/+page.svelte`
 
 ### Handle `preloadData` errors
 
@@ -180,7 +180,7 @@ Inspect the complete result flow and add handling for `{ type: "error", status, 
 
 #### Files to review
 
-- [ ] `src/lib/utils/citation.ts`
+- [x] `src/lib/utils/citation.ts`
 
 ### Review `handleError` behavior
 
@@ -196,7 +196,7 @@ Review filtering, logging, reporting, returned error properties, and status hand
 
 #### Files to review
 
-- [ ] `src/hooks.server.ts`
+- [x] `src/hooks.server.ts`
 
 ### CORS for static assets in development is handled by Vite
 
@@ -224,17 +224,17 @@ Use `Response.json(...)` and `new Response(text)` instead.
 
 #### Files to review
 
-- [ ] `src/hooks.server.ts`
-- [ ] `src/lib/remotes/searchResult.remote.ts`
-- [ ] `src/lib/utils/relations.server.ts`
-- [ ] `src/routes/(app)/[[lang=lang]]/[...resource=resource]/+page.server.ts`
-- [ ] `src/routes/(app)/[[lang=lang]]/find/+page.server.ts`
-- [ ] `src/routes/api/[[lang=lang]]/[fnurgel=fnurgel]/+server.ts`
-- [ ] `src/routes/api/[[lang=lang]]/[fnurgel=fnurgel]/holdings/+server.ts`
-- [ ] `src/routes/api/[[lang=lang]]/cite/+server.ts`
-- [ ] `src/routes/api/[[lang=lang]]/my-pages/+server.ts`
-- [ ] `src/routes/api/[[lang=lang]]/supersearch/+server.ts`
-- [ ] `src/routes/api/holdingstatus/+server.ts`
+- [x] `src/hooks.server.ts`
+- [x] `src/lib/remotes/searchResult.remote.ts`
+- [x] `src/lib/utils/relations.server.ts`
+- [x] `src/routes/(app)/[[lang=lang]]/[...resource=resource]/+page.server.ts`
+- [x] `src/routes/(app)/[[lang=lang]]/find/+page.server.ts`
+- [x] `src/routes/api/[[lang=lang]]/[fnurgel=fnurgel]/+server.ts`
+- [x] `src/routes/api/[[lang=lang]]/[fnurgel=fnurgel]/holdings/+server.ts`
+- [x] `src/routes/api/[[lang=lang]]/cite/+server.ts`
+- [x] `src/routes/api/[[lang=lang]]/my-pages/+server.ts`
+- [x] `src/routes/api/[[lang=lang]]/supersearch/+server.ts`
+- [x] `src/routes/api/holdingstatus/+server.ts`
 
 ### Move adapter-node `ORIGIN` to `paths.origin`
 
