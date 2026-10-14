@@ -88,18 +88,18 @@ Confirm each destination is an internal route. Use `window.location.href` for ex
 
 #### Files to review
 
-- [ ] `src/lib/components/find/FacetCheckbox.svelte`
-- [ ] `src/lib/components/find/FacetRadio.svelte`
-- [ ] `src/lib/components/find/SearchCard.svelte`
-- [ ] `src/lib/components/find/SearchResultSort.svelte`
-- [ ] `src/lib/components/my-pages/Libraries.svelte`
-- [ ] `src/lib/components/resource/AdjecentResults.svelte`
-- [ ] `src/lib/components/supersearch/SuperSearchWrapper.svelte`
-- [ ] `src/lib/utils/citation.ts`
-- [ ] `src/lib/utils/holdings.ts`
-- [ ] `src/routes/(app)/[[lang=lang]]/HeaderMenu.svelte`
-- [ ] `src/routes/(app)/[[lang=lang]]/[...resource=resource]/+page.svelte`
-- [ ] `src/routes/(app)/[[lang=lang]]/find/+page.svelte`
+- [x] `src/lib/components/find/FacetCheckbox.svelte`
+- [x] `src/lib/components/find/FacetRadio.svelte`
+- [x] `src/lib/components/find/SearchCard.svelte`
+- [x] `src/lib/components/find/SearchResultSort.svelte`
+- [x] `src/lib/components/my-pages/Libraries.svelte`
+- [x] `src/lib/components/resource/AdjecentResults.svelte`
+- [x] `src/lib/components/supersearch/SuperSearchWrapper.svelte`
+- [x] `src/lib/utils/citation.ts`
+- [x] `src/lib/utils/holdings.ts`
+- [x] `src/routes/(app)/[[lang=lang]]/HeaderMenu.svelte`
+- [x] `src/routes/(app)/[[lang=lang]]/[...resource=resource]/+page.svelte`
+- [x] `src/routes/(app)/[[lang=lang]]/find/+page.svelte`
 
 ### Adjust noScroll/keepFocus usage
 
