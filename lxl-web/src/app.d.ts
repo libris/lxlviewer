@@ -15,7 +15,6 @@ import type { AppMenuItem, Features, FooterSection, Site } from '#lib/types/site
 declare global {
 	namespace App {
 		interface Error {
-			status?: string;
 			errorId?: string;
 		}
 		interface Locals {

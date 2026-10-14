@@ -63,9 +63,7 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 			}
 		} else {
 			const err = (await recordsRes.json()) as ApiError;
-			throw error(err.status_code, {
-				message: err.message,
-				status: err.status,
+			throw error(err.status_code, err.message, {
 				...(err.error_id && { errorId: err.error_id })
 			});
 		}

@@ -135,9 +135,9 @@ Replace `error(status, { message, ... })` with `error(status, message, { ... })`
 
 #### Files to review
 
-- [ ] `src/lib/components/find/FacetLink.svelte`
-- [ ] `src/lib/components/find/SearchCard.svelte`
-- [ ] `src/routes/(app)/[[lang=lang]]/[...resource=resource]/+page.server.ts`
+- [x] `src/lib/components/find/FacetLink.svelte`
+- [x] `src/lib/components/find/SearchCard.svelte`
+- [x] `src/routes/(app)/[[lang=lang]]/[...resource=resource]/+page.server.ts`
 
 ### Replace `invalidateAll` with `refreshAll`
 

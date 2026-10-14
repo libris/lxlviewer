@@ -36,9 +36,7 @@ export async function getRelations(
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
-		throw error(err.status_code, {
-			message: err.message,
-			status: err.status,
+		throw error(err.status_code, err.message, {
 			...(err.error_id && { errorId: err.error_id })
 		});
 	}

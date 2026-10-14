@@ -70,7 +70,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	});
 
 	if (resourceRes.status === 404) {
-		throw error(resourceRes.status, { message: 'Not found' });
+		throw error(resourceRes.status, 'Not found');
 	}
 
 	if (!resourceRes.ok) {
@@ -80,17 +80,19 @@ export const load = async ({ params, locals, fetch, url }) => {
 		} catch (e) {
 			console.warn(e);
 		}
-		throw error(apiError?.status_code || resourceRes.status, {
-			message: apiError?.message || resourceRes.statusText,
-			status: apiError?.status,
-			...(apiError?.error_id && { errorId: apiError.error_id })
-		});
+		throw error(
+			apiError?.status_code || resourceRes.status,
+			apiError?.message || resourceRes.statusText,
+			{
+				...(apiError?.error_id && { errorId: apiError.error_id })
+			}
+		);
 	}
 
 	const resource = await resourceRes.json();
 
 	if (!resource?.mainEntity) {
-		throw error(404, { message: 'Not found' });
+		throw error(404, 'Not found');
 	}
 
 	let workCard: SearchResultItem | null = null;

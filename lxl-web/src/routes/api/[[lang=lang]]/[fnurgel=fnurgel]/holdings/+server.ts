@@ -20,16 +20,16 @@ export async function GET({ params, locals }) {
 	});
 
 	if (resourceRes.status === 404) {
-		throw error(resourceRes.status, { message: 'Not found' });
+		throw error(resourceRes.status, 'Not found');
 	}
 
 	if (!resourceRes.ok) {
 		try {
 			const err = (await resourceRes.json()) as ApiError;
-			throw error(err.status_code, { message: err.message, status: err.status });
+			throw error(err.status_code, err.message);
 		} catch (e) {
 			console.warn(e);
-			throw error(resourceRes?.status, { message: resourceRes?.statusText });
+			throw error(resourceRes?.status, resourceRes?.statusText);
 		}
 	}
 	const resource = await resourceRes.json();
