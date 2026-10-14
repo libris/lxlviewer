@@ -431,7 +431,7 @@
 				"Agent": {
 					"@id": "Agent-chips",
 					"@type": "fresnel:Lens",
-					"classLensDomain": "Resource",
+					"classLensDomain": "Agent",
 					"showProperties": [
 						{ "alternateProperties": ["prefLabel", "label", "name"] },
 						"isPartOf",
