@@ -102,13 +102,13 @@
 							{/if}
 						</a>
 					{:else if image?.usageAndAccessPolicy?.identifier === 'Nielsen'}
-						<a class="link" href={resolve(page.data.localizeHref('/about#nielsen'))}>
+						<a class="link" href={resolve(page.data.localizeHref('about#nielsen'))}>
 							{page.data.t('general.usagePolicyNielsen')}
 						</a>
 					{:else}
 						<a
 							class="link"
-							href={resolve(page.data.localizeHref('/about#copyright'))}
+							href={resolve(page.data.localizeHref('about#copyright'))}
 							{@attach image?.usageAndAccessPolicy?.title
 								? imagePopover(image?.usageAndAccessPolicy?.title)
 								: undefined}

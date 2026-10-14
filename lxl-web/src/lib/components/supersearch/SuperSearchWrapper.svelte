@@ -109,7 +109,7 @@
 
 	let clearUrl = $derived.by(() => {
 		if (page.url.pathname !== '/find') return undefined;
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('_q', '');
 		url.searchParams.delete('_offset');
 		return url.toString();

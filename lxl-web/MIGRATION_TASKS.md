@@ -25,7 +25,11 @@ The automatic migration can leave `base`, `assets`, and `resolveRoute` usages fr
 
 #### What to do
 
-The deprecated base, assets, and resolveRoute exports have been removed from $app/paths. Use asset and resolve instead:```diff// instead of this...
+The deprecated base, assets, and resolveRoute exports have been removed from $app/paths. Use asset and resolve instead:
+
+```
+diff
+// instead of this...
 const pathname = base + resolveRoute('/blog/[slug]', { slug });
 const file = assets + '/foo.png';
 
@@ -34,6 +38,7 @@ const pathname = resolve('/blog/[slug]', { slug });
 const file = asset('foo.png');
 
 ```
+
 The `Pathname` and `Asset` types have also been renamed to `Path` and `AssetPath`, and the leading `/` has been removed from those types — so `asset('/foo.png')` should now be `asset('foo.png')`, and pathnames passed to `resolve` no longer start with `/` (e.g. `resolve('blog/hello-world')`). Only route IDs start with `/` now.
 
 #### References
@@ -42,13 +47,13 @@ The `Pathname` and `Asset` types have also been renamed to `Path` and `AssetPath
 
 #### Files to review
 
-- [ ] `src/lib/components/ResourceImage.svelte`
-- [ ] `src/lib/components/SearchResultItem.svelte`
-- [ ] `src/lib/components/my-pages/Libraries.svelte`
-- [ ] `src/lib/components/supersearch/Suggestion.svelte`
-- [ ] `src/routes/(app)/[[lang=lang]]/+page.svelte`
-- [ ] `src/routes/(app)/[[lang=lang]]/AppBar.svelte`
-- [ ] `src/routes/(app)/[[lang=lang]]/SiteFooter.svelte`
+- [x] `src/lib/components/ResourceImage.svelte`
+- [x] `src/lib/components/SearchResultItem.svelte`
+- [x] `src/lib/components/my-pages/Libraries.svelte`
+- [x] `src/lib/components/supersearch/Suggestion.svelte`
+- [x] `src/routes/(app)/[[lang=lang]]/+page.svelte`
+- [x] `src/routes/(app)/[[lang=lang]]/AppBar.svelte`
+- [x] `src/routes/(app)/[[lang=lang]]/SiteFooter.svelte`
 
 ### Copy `page.url` before mutating it
 
@@ -64,10 +69,10 @@ Create a mutable copy with `new URL(page.url.href)`, mutate that copy, and use i
 
 #### Files to review
 
-- [ ] `src/lib/components/find/SearchCard.svelte`
-- [ ] `src/lib/components/supersearch/SuperSearchFallback.svelte`
-- [ ] `src/lib/components/supersearch/SuperSearchWrapper.svelte`
-- [ ] `src/routes/(app)/[[lang=lang]]/AppBar.svelte`
+- [x] `src/lib/components/find/SearchCard.svelte`
+- [x] `src/lib/components/supersearch/SuperSearchFallback.svelte`
+- [x] `src/lib/components/supersearch/SuperSearchWrapper.svelte`
+- [x] `src/routes/(app)/[[lang=lang]]/AppBar.svelte`
 
 ### Review `goto` destinations
 
@@ -126,7 +131,7 @@ Replace `error(status, { message, ... })` with `error(status, message, { ... })`
 
 #### References
 
-- [Migrating to SvelteKit v3](https://svelte.dev/docs/kit/migrating-to-sveltekit-3#Error-handling-error()-arguments-changed)
+- [Migrating to SvelteKit v3](<https://svelte.dev/docs/kit/migrating-to-sveltekit-3#Error-handling-error()-arguments-changed>)
 
 #### Files to review
 
@@ -199,7 +204,7 @@ SvelteKit no longer sets `access-control-allow-origin: *` on every static asset 
 
 #### What to do
 
-If you rely on cross-origin access to static assets in dev, configure it in your Vite config by adding server.cors.origin = "*" to your config.
+If you rely on cross-origin access to static assets in dev, configure it in your Vite config by adding server.cors.origin = "\*" to your config.
 
 #### References
 
@@ -250,4 +255,7 @@ Find where `ORIGIN` is set (`.env` files, scripts, hosting dashboard, ...) and m
 - [ ] Run the project's type checker and tests.
 - [ ] Build the project successfully.
 - [ ] Delete this file when all migration work is complete.
+
+```
+
 ```

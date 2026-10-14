@@ -3,6 +3,7 @@ import { goto, preloadData } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import type { CSLJSON, AvailableCitationFormat } from '#lib/types/citation.js';
 import type { LocaleCode } from '#lib/i18n/locales.js';
+import type { ReadonlyURL } from '$app/state';
 
 export const availableFormats = {
 	chicago: {
@@ -140,7 +141,7 @@ export function getAvailableFormats() {
 	});
 }
 
-export function getCiteLink(url: URL, value: string) {
+export function getCiteLink(url: ReadonlyURL, value: string) {
 	const newSearchParams = new SvelteURLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('cite', value);
 	return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
