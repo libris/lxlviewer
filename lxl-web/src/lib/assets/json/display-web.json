@@ -1515,15 +1515,20 @@
 		"sorted-format": {
 			"@id": "sorted-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": [
-				"classification",
-				"closeMatch",
-				"hasDataset",
-				"narrower",
-				"related",
-				"seeAlso"
-			],
+			"fresnel:propertyFormatDomain": ["classification", "closeMatch", "hasDataset"],
 			"fresnel:propertyStyle": ["sort()"]
+		},
+		"needs-label-format": {
+			"@id": "needs-label-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["category", "subject", "seriesMembership", "isPartOf"],
+			"fresnel:propertyStyle": ["label"]
+		},
+		"needs-label-sorted-format": {
+			"@id": "needs-label-sorted-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["related", "broader", "narrower", "related", "seeAlso"],
+			"fresnel:propertyStyle": ["sort()", "label"]
 		},
 		"ContentType-format": {
 			"@id": "ContentType-format",
@@ -1586,20 +1591,6 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["_Value"],
 			"fresnel:resourceStyle": ["findToTop()"]
-		},
-		"needs-label-format": {
-			"@id": "needs-label-format",
-			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": [
-				"category",
-				"subject",
-				"seriesMembership",
-				"isPartOf",
-				"broader",
-				"related",
-				"narrower"
-			],
-			"fresnel:propertyStyle": ["label"]
 		},
 		"seriesMembership-format": {
 			"@id": "seriesMembership-format",
