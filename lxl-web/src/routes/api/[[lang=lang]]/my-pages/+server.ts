@@ -1,10 +1,10 @@
 import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
-import { getSupportedLocale, type LocaleCode as LangCode } from '$lib/i18n/locales.js';
-import type { LibraryResult, PartialCollectionView } from '$lib/types/search';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
-import { asSearchResultItem } from '$lib/utils/search.server';
+import { getSupportedLocale, type LocaleCode as LangCode } from '#lib/i18n/locales.js';
+import type { LibraryResult, PartialCollectionView } from '#lib/types/search.js';
+import { DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
+import { asSearchResultItem } from '#lib/utils/search.server.js';
 
 export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const displayUtil = locals.display;

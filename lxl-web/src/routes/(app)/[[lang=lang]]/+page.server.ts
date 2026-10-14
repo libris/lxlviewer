@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
-import { defaultSiteConfiguration } from '$lib/constants/defaultSiteConfig';
-import { getFeaturedCategories, getFeaturedSearches } from '$lib/remotes/homepage.remote';
+import { defaultSiteConfiguration } from '#lib/constants/defaultSiteConfig.js';
+import { getFeaturedCategories, getFeaturedSearches } from '#lib/remotes/homepage.remote.js';
 
 export const load = (async ({ params: { lang }, locals }) => {
 	const { featuredSearches, featuredSearches2, featuredCollections } = await getFeaturedSearches({

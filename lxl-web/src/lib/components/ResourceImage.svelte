@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { fromAction, type Attachment } from 'svelte/attachments';
-	import { type Image, type ImageResolution, Width } from '$lib/types/auxd';
-	import placeholder from '$lib/assets/img/placeholder.svg';
-	import { bestSize } from '$lib/utils/auxd';
+	import { type Image, type ImageResolution, Width } from '#lib/types/auxd.js';
+	import placeholder from '#lib/assets/img/placeholder.svg';
+	import { bestSize } from '#lib/utils/auxd.js';
 	import { page } from '$app/state';
-	import { popover } from '$lib/actions/popover';
+	import { popover } from '#lib/actions/popover/index.js';
 	import TypeIcon from './TypeIcon.svelte';
-	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
+	import { bookAspectRatio } from '#lib/utils/bookAspectRatio.js';
 
 	interface Props {
 		image: Image;

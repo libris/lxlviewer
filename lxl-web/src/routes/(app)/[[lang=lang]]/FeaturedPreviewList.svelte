@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { afterNavigate, onNavigate } from '$app/navigation';
-	import { type FeaturedSearch } from '$lib/remotes/homepage.remote';
-	import SearchResultList from '$lib/components/SearchResultList.svelte';
-	import { getHomepageContext } from '$lib/contexts/homepage';
-	import { getFeaturedPreviews } from '$lib/remotes/homepage.remote';
-	import { HeadingElem } from '$lib/types/decoratedData';
+	import { type FeaturedSearch } from '#lib/remotes/homepage.remote.js';
+	import SearchResultList from '#lib/components/SearchResultList.svelte';
+	import { getHomepageContext } from '#lib/contexts/homepage.js';
+	import { getFeaturedPreviews } from '#lib/remotes/homepage.remote.js';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
 
 	type Props = {
 		featured: FeaturedSearch;

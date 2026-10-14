@@ -1,4 +1,4 @@
-import { type DerivedLensTypeDefinition, LensType } from '$lib/types/xl';
+import { type DerivedLensTypeDefinition, LensType } from '#lib/types/xl.js';
 
 export enum LxlLens {
 	PageHeading = 'page-heading',

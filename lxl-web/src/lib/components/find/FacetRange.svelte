@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
-	import type { FacetSearch } from '$lib/types/search';
+	import type { FacetSearch } from '#lib/types/search.js';
 	import BiSearch from '~icons/bi/search';
 
 	interface Props {

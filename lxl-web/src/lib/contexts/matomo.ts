@@ -2,7 +2,7 @@ import { PUBLIC_MATOMO_ID, PUBLIC_MATOMO_URL } from '$app/env/public';
 import { browser } from '$app/env';
 import { writable } from 'svelte/store';
 import { type Writable } from 'svelte/store';
-import { type MatomoTracker } from '$lib/types/matomo';
+import { type MatomoTracker } from '#lib/types/matomo.js';
 import { setContext, getContext } from 'svelte';
 
 const MATOMO_ID = PUBLIC_MATOMO_ID && +PUBLIC_MATOMO_ID;

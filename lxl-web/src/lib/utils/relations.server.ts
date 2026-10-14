@@ -1,14 +1,14 @@
 import { API_URL } from '$app/env/private';
 import { error } from '@sveltejs/kit';
-import type { VocabUtil } from '$lib/utils/xl.server';
-import type { PartialCollectionView } from '$lib/types/search';
-import { Base, JsonLd, Platform } from '$lib/types/xl';
-import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
-import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
-import capitalize from '$lib/utils/capitalize';
-import { type ApiError } from '$lib/types/api.js';
-import getAtPath from '$lib/utils/getAtPath';
-import { getUriSlug } from '$lib/utils/http';
+import type { VocabUtil } from '#lib/utils/xl.server.js';
+import type { PartialCollectionView } from '#lib/types/search.js';
+import { Base, JsonLd, Platform } from '#lib/types/xl.js';
+import addDefaultSearchParams from '#lib/utils/addDefaultSearchParams.js';
+import getSortedSearchParams from '#lib/utils/getSortedSearchParams.js';
+import capitalize from '#lib/utils/capitalize.js';
+import { type ApiError } from '#lib/types/api.js';
+import getAtPath from '#lib/utils/getAtPath.js';
+import { getUriSlug } from '#lib/utils/http.js';
 
 export async function getRelations(
 	resourceId: string | null,

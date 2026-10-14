@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_MATOMO_URL } from '$app/env/public';
 	import { afterNavigate } from '$app/navigation';
-	import { setMatomoTracker, getMatomoTracker, setMatomoContext } from '$lib/contexts/matomo';
+	import { setMatomoTracker, getMatomoTracker, setMatomoContext } from '#lib/contexts/matomo.js';
 	import { onMount, type Snippet } from 'svelte';
 	import { browser } from '$app/env';
 

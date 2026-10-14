@@ -1,5 +1,5 @@
-import type { LatLng, LibraryWithLinksAndInstances, UnknownLibrary } from '$lib/types/holdings';
-import { BibDb } from '$lib/types/xl';
+import type { LatLng, LibraryWithLinksAndInstances, UnknownLibrary } from '#lib/types/holdings.js';
+import { BibDb } from '#lib/types/xl.js';
 
 export const userLocation: { coords: LatLng | null } = $state({ coords: null });
 

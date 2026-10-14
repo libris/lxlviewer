@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { DisplayDecoratedLite } from '$lib/types/xl';
+	import type { DisplayDecoratedLite } from '#lib/types/xl.js';
 
 	interface Props {
 		data: DisplayDecoratedLite;

@@ -1,7 +1,7 @@
 import { API_URL } from '$app/env/private';
-import type { DisplayMapping, MappingsOnlyPartialCollectionView } from '$lib/types/search';
-import { getTranslator } from '$lib/i18n';
-import { getSupportedLocale } from '$lib/i18n/locales';
+import type { DisplayMapping, MappingsOnlyPartialCollectionView } from '#lib/types/search.js';
+import { getTranslator } from '#lib/i18n/index.js';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
 import { displayMappings } from './search.server';
 
 const cache = new Map<string, DisplayMapping[]>();

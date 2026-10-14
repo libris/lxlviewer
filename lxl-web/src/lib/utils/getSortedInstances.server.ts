@@ -1,4 +1,4 @@
-import type { FramedData } from '$lib/types/xl';
+import type { FramedData } from '#lib/types/xl.js';
 import jmespath from 'jmespath';
 
 export function getSortedInstances(instances: FramedData[]) {

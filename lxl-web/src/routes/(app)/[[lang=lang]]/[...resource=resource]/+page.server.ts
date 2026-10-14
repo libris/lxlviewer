@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { API_URL, AUXD_SECRET } from '$app/env/private';
-import { getSupportedLocale } from '$lib/i18n/locales.js';
-import { getTranslator } from '$lib/i18n';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import { getTranslator } from '#lib/i18n/index.js';
 import * as v from 'valibot';
 
 import {
@@ -11,44 +11,44 @@ import {
 	type FramedData,
 	JsonLd,
 	LensType
-} from '$lib/types/xl.js';
-import { LxlLens } from '$lib/types/display';
-import { type ApiError } from '$lib/types/api.js';
+} from '#lib/types/xl.js';
+import { LxlLens } from '#lib/types/display.js';
+import { type ApiError } from '#lib/types/api.js';
 import type {
 	PartialCollectionView,
 	ResourceSearchResult,
 	SearchResultItem
-} from '$lib/types/search.js';
-import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
-import type { HoldingsData, HoldingItem } from '$lib/types/holdings.js';
-import { type Relation } from '$lib/types/relations';
+} from '#lib/types/search.js';
+import type { TableOfContentsItem } from '#lib/components/TableOfContents.svelte';
+import type { HoldingsData, HoldingItem } from '#lib/types/holdings.js';
+import { type Relation } from '#lib/types/relations.js';
 
-import { asArray, toString } from '$lib/utils/misc';
-import { pickProperty, first } from '$lib/utils/xl.server';
-import { bestImage, toSecure } from '$lib/utils/auxd.server';
-import { getSortedInstances } from '$lib/utils/getSortedInstances.server';
+import { asArray, toString } from '#lib/utils/misc.js';
+import { pickProperty, first } from '#lib/utils/xl.server.js';
+import { bestImage, toSecure } from '#lib/utils/auxd.server.js';
+import { getSortedInstances } from '#lib/utils/getSortedInstances.server.js';
 import {
 	getBibIdsByInstanceId,
 	getHoldersByType,
 	getHoldingLibraries,
 	getHoldingsByInstanceId,
 	getHoldingsByType
-} from '$lib/utils/holdings.server';
-import getTypeLike, { getTypeForIcon, toTypes } from '$lib/utils/getTypeLike.server';
-import { centerOnWork } from '$lib/utils/centerOnWork.server';
-import { getRelations } from '$lib/utils/relations.server';
+} from '#lib/utils/holdings.server.js';
+import getTypeLike, { getTypeForIcon, toTypes } from '#lib/utils/getTypeLike.server.js';
+import { centerOnWork } from '#lib/utils/centerOnWork.server.js';
+import { getRelations } from '#lib/utils/relations.server.js';
 import {
 	appendMyLibrariesParam,
 	asSearchResultItem,
 	displayMappings
-} from '$lib/utils/search.server';
-import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
-import { getEodAvailable } from '$lib/utils/getEodAvailable.server';
-import { getSearchResults } from '$lib/remotes/searchResult.remote';
-import { SearchResultsSchema } from '$lib/schemas/searchResult';
-import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
-import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
-import { isResourceNode } from '$lib/utils/resourceData';
+} from '#lib/utils/search.server.js';
+import { getRefinedOrgs } from '#lib/utils/getRefinedOrgs.server.js';
+import { getEodAvailable } from '#lib/utils/getEodAvailable.server.js';
+import { getSearchResults } from '#lib/remotes/searchResult.remote.js';
+import { SearchResultsSchema } from '#lib/schemas/searchResult.js';
+import { copyMediaLinksToWork } from '#lib/utils/copyMediaLinksToWork.server.js';
+import { getLibraryIdsFromMapping } from '#lib/utils/getLibraryIdsFromMapping.js';
+import { isResourceNode } from '#lib/utils/resourceData.js';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;

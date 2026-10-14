@@ -9,13 +9,13 @@ import type {
 	LibraryWithLinks,
 	LinkResolver,
 	OrgId
-} from '$lib/types/holdings';
-import { BibDb } from '$lib/types/xl';
-import type { MyLibrariesType } from '$lib/types/userSettings';
-import type { LocaleCode } from '$lib/i18n/locales';
-import { stripAnchor } from '$lib/utils/http';
-import getAtPath from '$lib/utils/getAtPath';
-import { USE_HOLDING_PANE } from '$lib/constants/panels';
+} from '#lib/types/holdings.js';
+import { BibDb } from '#lib/types/xl.js';
+import type { MyLibrariesType } from '#lib/types/userSettings.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
+import { stripAnchor } from '#lib/utils/http.js';
+import getAtPath from '#lib/utils/getAtPath.js';
+import { USE_HOLDING_PANE } from '#lib/constants/panels.js';
 
 export const LIBRARY_URI_PREFIX = 'https://libris.kb.se/library/';
 

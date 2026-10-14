@@ -1,9 +1,9 @@
 <script lang="ts">
-	import getPageTitle from '$lib/utils/getPageTitle';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import { page } from '$app/state';
-	import Libraries from '$lib/components/my-pages/Libraries.svelte';
-	import Meta from '$lib/components/Meta.svelte';
-	import { getUserSettings } from '$lib/contexts/userSettings';
+	import Libraries from '#lib/components/my-pages/Libraries.svelte';
+	import Meta from '#lib/components/Meta.svelte';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import BiCopy from '~icons/bi/copy';
 
 	const pageTitle = $derived(page.data.t('myPages.pageTitle'));

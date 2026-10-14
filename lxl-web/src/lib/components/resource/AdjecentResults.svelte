@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
-	import type { AdjecentSearchResult } from '$lib/types/search';
-	import { relativizeUrl } from '$lib/utils/http';
+	import type { AdjecentSearchResult } from '#lib/types/search.js';
+	import { relativizeUrl } from '#lib/utils/http.js';
 	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';
-	import capitalize from '$lib/utils/capitalize';
-	import { getPreviousItemFnurgel, getNextItemFnurgel } from '$lib/utils/adjecentSearchResult';
-	import { getAdjecentSearchResult } from '$lib/remotes/searchResult.remote';
+	import capitalize from '#lib/utils/capitalize.js';
+	import { getPreviousItemFnurgel, getNextItemFnurgel } from '#lib/utils/adjecentSearchResult.js';
+	import { getAdjecentSearchResult } from '#lib/remotes/searchResult.remote.js';
 
 	type Props = {
 		fnurgel: string;

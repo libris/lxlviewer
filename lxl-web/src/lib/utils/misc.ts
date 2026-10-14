@@ -1,4 +1,4 @@
-import { Fmt, JsonLd, type DisplayDecorated } from '$lib/types/xl';
+import { Fmt, JsonLd, type DisplayDecorated } from '#lib/types/xl.js';
 
 type Data = Record<string, unknown>;
 

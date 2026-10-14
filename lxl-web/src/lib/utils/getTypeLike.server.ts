@@ -1,6 +1,6 @@
-import { Bibframe, type FramedData, JsonLd } from '$lib/types/xl';
-import { VocabUtil } from '$lib/utils/xl.server';
-import getAtPath from '$lib/utils/getAtPath';
+import { Bibframe, type FramedData, JsonLd } from '#lib/types/xl.js';
+import { VocabUtil } from '#lib/utils/xl.server.js';
+import getAtPath from '#lib/utils/getAtPath.js';
 
 export type TypeLike = {
 	find: FramedData[];

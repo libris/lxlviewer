@@ -24,15 +24,15 @@
 	import ShowAllResultsRow from './rows/ShowAllResultsRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
-	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
-	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import { type DisplayMapping, type QualifierSuggestion2 } from '$lib/types/search';
+	import getLabelFromMappings from '#lib/utils/getLabelsFromMapping.svelte.js';
+	import addSpaceIfEndingQualifier from '#lib/utils/addSpaceIfEndingQualifier.js';
+	import { type DisplayMapping, type QualifierSuggestion2 } from '#lib/types/search.js';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
 	import IconSearch from '~icons/bi/search';
-	import '$lib/styles/lxlquery.css';
-	import { getSearchContext } from '$lib/contexts/search';
+	import '#lib/styles/lxlquery.css';
+	import { getSearchContext } from '#lib/contexts/search.js';
 	import { SvelteURLSearchParams, MediaQuery } from 'svelte/reactivity';
 	import { ID_HERO_SEARCH } from '../../../routes/(app)/[[lang=lang]]/+page.svelte';
 	import {

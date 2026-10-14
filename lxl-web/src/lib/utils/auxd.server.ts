@@ -6,14 +6,14 @@ import {
 	type KbvImageObject,
 	type ImageResolution,
 	IMAGE_OBJECT_TYPE
-} from '$lib/types/auxd';
-import { Concepts, type FramedData, JsonLd, Owl } from '$lib/types/xl';
-import { isObject, asArray } from '$lib/utils/misc';
-import { first } from '$lib/utils/xl.server';
-import getAtPath from '$lib/utils/getAtPath';
-import { getSortedInstances } from '$lib/utils/getSortedInstances.server';
-import { relativizeUrl, trimSlashes, stripAnchor } from '$lib/utils/http';
-import type { LocaleCode } from '$lib/i18n/locales';
+} from '#lib/types/auxd.js';
+import { Concepts, type FramedData, JsonLd, Owl } from '#lib/types/xl.js';
+import { isObject, asArray } from '#lib/utils/misc.js';
+import { first } from '#lib/utils/xl.server.js';
+import getAtPath from '#lib/utils/getAtPath.js';
+import { getSortedInstances } from '#lib/utils/getSortedInstances.server.js';
+import { relativizeUrl, trimSlashes, stripAnchor } from '#lib/utils/http.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
 
 function toImage(imageObject: KbvImageObject, recordId: string, lang: LocaleCode): Image {
 	const mapOne = (i: KbvImageObject) =>

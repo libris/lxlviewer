@@ -69,7 +69,7 @@
 <!-- 
   @component
 	Renders a drop down menu.
-	Note that `DropDownMenu.svelte` isn't intended to be used directly in page templates – use the `use:dropDownMenu` instead (see `$lib/actions/dropDownMenu`).
+	Note that `DropDownMenu.svelte` isn't intended to be used directly in page templates – use the `use:dropDownMenu` instead (see `#lib/actions/dropDownMenu`).
 -->
 <div
 	class="drop-down-menu w-max-content border-neutral bg-page absolute top-0 left-0 z-100 max-w-sm rounded-sm border text-sm shadow-xl"

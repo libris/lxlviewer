@@ -1,11 +1,11 @@
 import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
-import type { SuperSearchResult } from '$lib/types/search.js';
-import { getSupportedLocale } from '$lib/i18n/locales.js';
+import type { SuperSearchResult } from '#lib/types/search.js';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
 import addSuggestParams from './addSuggestParams.js';
-import { asResult } from '$lib/utils/search.server';
-import { DebugFlags } from '$lib/types/userSettings.js';
+import { asResult } from '#lib/utils/search.server.js';
+import { DebugFlags } from '#lib/types/userSettings.js';
 import itemAsQualifiers from './itemAsQualifiers.js';
 
 /**

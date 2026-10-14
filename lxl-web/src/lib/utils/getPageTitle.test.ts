@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import getPageTitle from './getPageTitle';
-import { TITLE_SEPARATOR, TITLE_SUFFIX, TITLE_MAX_LENGTH } from '$lib/constants/pageTitle';
+import { TITLE_SEPARATOR, TITLE_SUFFIX, TITLE_MAX_LENGTH } from '#lib/constants/pageTitle.js';
 
 describe('getPageTitle', () => {
 	it('adds separator and suffix if page title is given', () => {

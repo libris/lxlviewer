@@ -1,5 +1,5 @@
-import { asArray, isObject, toString } from '$lib/utils/misc';
-import { DisplayUtil, pickProperty, toLite, VocabUtil } from '$lib/utils/xl.server';
+import { asArray, isObject, toString } from '#lib/utils/misc.js';
+import { DisplayUtil, pickProperty, toLite, VocabUtil } from '#lib/utils/xl.server.js';
 
 import {
 	Base,
@@ -11,7 +11,7 @@ import {
 	type Link,
 	Owl,
 	Platform
-} from '$lib/types/xl';
+} from '#lib/types/xl.js';
 
 import {
 	type ApiItemDebugInfo,
@@ -29,27 +29,35 @@ import {
 	type SearchResult,
 	type SearchResultItem,
 	type Slice
-} from '$lib/types/search';
+} from '#lib/types/search.js';
 
-import { getTranslator, type TranslateFn } from '$lib/i18n';
-import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { MyLibrariesType } from '$lib/types/userSettings';
-import { LxlLens } from '$lib/types/display';
-import { Width } from '$lib/types/auxd';
-import { bestImage, toSecure } from '$lib/utils/auxd.server';
-import { bestSize } from '$lib/utils/auxd';
-import getAtPath from '$lib/utils/getAtPath';
-import { getUriSlug } from '$lib/utils/http';
-import { isLibraryOrg } from '$lib/utils/holdings';
-import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
-import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
-import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
-import { getHeldBy } from '$lib/utils/holdings';
-import { getLibrary, getOrg } from '$lib/utils/getLibraries.server';
-import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike.server';
-import capitalize from '$lib/utils/capitalize';
-import { isResourceNode } from '$lib/utils/resourceData';
-import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
+import { getTranslator, type TranslateFn } from '#lib/i18n/index.js';
+import { type LocaleCode as LangCode } from '#lib/i18n/locales.js';
+import type { MyLibrariesType } from '#lib/types/userSettings.js';
+import { LxlLens } from '#lib/types/display.js';
+import { Width } from '#lib/types/auxd.js';
+import { bestImage, toSecure } from '#lib/utils/auxd.server.js';
+import { bestSize } from '#lib/utils/auxd.js';
+import getAtPath from '#lib/utils/getAtPath.js';
+import { getUriSlug } from '#lib/utils/http.js';
+import { isLibraryOrg } from '#lib/utils/holdings.js';
+import { getRefinedOrgs } from '#lib/utils/getRefinedOrgs.server.js';
+import { copyMediaLinksToWork } from '#lib/utils/copyMediaLinksToWork.server.js';
+import {
+	getHoldersByType,
+	getHoldersCount,
+	getHoldingsByType
+} from '#lib/utils/holdings.server.js';
+import { getHeldBy } from '#lib/utils/holdings.js';
+import { getLibrary, getOrg } from '#lib/utils/getLibraries.server.js';
+import getTypeLike, {
+	getTypeForIcon,
+	toTypes,
+	type TypeLike
+} from '#lib/utils/getTypeLike.server.js';
+import capitalize from '#lib/utils/capitalize.js';
+import { isResourceNode } from '#lib/utils/resourceData.js';
+import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '#lib/constants/facets.js';
 
 export async function asResult(
 	view: PartialCollectionView,

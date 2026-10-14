@@ -2,19 +2,19 @@
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { afterNavigate, goto } from '$app/navigation';
-	import getPageTitle from '$lib/utils/getPageTitle';
-	import getMetaDescription from '$lib/utils/getMetaDescription';
-	import { JsonLd } from '$lib/types/xl.js';
-	import { type CitationsType } from '$lib/types/citation.js';
-	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http.js';
-	import Resource from '$lib/components/Resource.svelte';
-	import Modal from '$lib/components/Modal.svelte';
-	import Meta from '$lib/components/Meta.svelte';
-	import Citations from '$lib/components/Citations.svelte';
-	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
-	import { bestSize } from '$lib/utils/auxd';
-	import { Width } from '$lib/types/auxd';
-	import SearchCard from '$lib/components/find/SearchCard.svelte';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
+	import getMetaDescription from '#lib/utils/getMetaDescription.js';
+	import { JsonLd } from '#lib/types/xl.js';
+	import { type CitationsType } from '#lib/types/citation.js';
+	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import Resource from '#lib/components/Resource.svelte';
+	import Modal from '#lib/components/Modal.svelte';
+	import Meta from '#lib/components/Meta.svelte';
+	import Citations from '#lib/components/Citations.svelte';
+	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
+	import { bestSize } from '#lib/utils/auxd.js';
+	import { Width } from '#lib/types/auxd.js';
+	import SearchCard from '#lib/components/find/SearchCard.svelte';
 
 	const { data } = $props();
 

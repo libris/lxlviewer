@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { Fmt, LensType } from '$lib/types/xl';
-	import { Elem, HeadingElem, ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { SearchResultItem } from '$lib/types/search';
-	import { relativizeUrl } from '$lib/utils/http';
+	import { Fmt, LensType } from '#lib/types/xl.js';
+	import { Elem, HeadingElem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
+	import type { SearchResultItem } from '#lib/types/search.js';
+	import { relativizeUrl } from '#lib/utils/http.js';
 	import DecoratedData2 from './DecoratedData2.svelte';
-	import placeholderImage from '$lib/assets/img/placeholder.svg';
-	import getInstanceData from '$lib/utils/getInstanceData';
+	import placeholderImage from '#lib/assets/img/placeholder.svg';
+	import getInstanceData from '#lib/utils/getInstanceData.js';
 	import TypeIcon from './TypeIcon.svelte';
-	import { bookAspectRatio } from '$lib/utils/bookAspectRatio';
+	import { bookAspectRatio } from '#lib/utils/bookAspectRatio.js';
 
 	type Props = {
 		data: SearchResultItem;

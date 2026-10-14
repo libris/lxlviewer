@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import popover from '$lib/actions/popover';
-	import type { LibOrg, LibraryId, LibraryWithLinks, OrgId } from '$lib/types/holdings';
-	import { isLibraryOrg } from '$lib/utils/holdings';
+	import popover from '#lib/actions/popover/index.js';
+	import type { LibOrg, LibraryId, LibraryWithLinks, OrgId } from '#lib/types/holdings.js';
+	import { isLibraryOrg } from '#lib/utils/holdings.js';
 	import BiHouseHeart from '~icons/bi/house-heart';
 
 	type IndicatorProps = {

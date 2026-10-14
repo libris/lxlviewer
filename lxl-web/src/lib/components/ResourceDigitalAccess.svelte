@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { EodAvailable } from '$lib/types/holdings';
-	import type { SearchResultItem } from '$lib/types/search';
-	import { BibDb, type DisplayDecorated } from '$lib/types/xl';
-	import { getResourceDigitalAccess } from '$lib/utils/getResourceDigitalAccess';
-	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
+	import { Elem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
+	import type { EodAvailable } from '#lib/types/holdings.js';
+	import type { SearchResultItem } from '#lib/types/search.js';
+	import { BibDb, type DisplayDecorated } from '#lib/types/xl.js';
+	import { getResourceDigitalAccess } from '#lib/utils/getResourceDigitalAccess.js';
+	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
 	import BiLaptop from '~icons/bi/laptop';
 	import BiChevronRight from '~icons/bi/chevron-right';
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isOldEnough, YEARS_OLD_ENOUGH } from '$lib/utils/getEodAvailable.server';
+import { isOldEnough, YEARS_OLD_ENOUGH } from '#lib/utils/getEodAvailable.server.js';
 
 describe('eodAvailable', () => {
 	it('handles publication year', () => {

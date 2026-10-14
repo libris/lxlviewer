@@ -2,24 +2,28 @@ import type { HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import fs from 'fs';
 import { env } from '$env/dynamic/private';
-import { defaultLocale, Locales } from '$lib/i18n/locales';
-import { DERIVED_LENSES } from '$lib/types/display';
-import type { QualifierSuggestion2 } from '$lib/types/search';
-import type { Site } from '$lib/types/site';
+import { defaultLocale, Locales } from '#lib/i18n/locales.js';
+import { DERIVED_LENSES } from '#lib/types/display.js';
+import type { QualifierSuggestion2 } from '#lib/types/search.js';
+import type { Site } from '#lib/types/site.js';
 import {
 	DebugFlags,
 	type MyLibrariesType,
 	SettingsParams,
 	type UserSettings
-} from '$lib/types/userSettings';
-import displayWeb from '$lib/assets/json/display-web.json';
-import { defaultSiteConfiguration } from '$lib/constants/defaultSiteConfig';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
-import { getLibrary, getOrgMembers, startRefreshLibraries } from '$lib/utils/getLibraries.server';
-import { getSubsetMapping } from '$lib/utils/subsetCache.server';
-import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions.server';
-import { updateSettings } from '$lib/utils/userSettings.svelte';
-import { JsonLd } from '$lib/types/xl';
+} from '#lib/types/userSettings.js';
+import displayWeb from '#lib/assets/json/display-web.json';
+import { defaultSiteConfiguration } from '#lib/constants/defaultSiteConfig.js';
+import { DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
+import {
+	getLibrary,
+	getOrgMembers,
+	startRefreshLibraries
+} from '#lib/utils/getLibraries.server.js';
+import { getSubsetMapping } from '#lib/utils/subsetCache.server.js';
+import { getQualifierSuggestions } from '#lib/utils/getQualifierSuggestions.server.js';
+import { updateSettings } from '#lib/utils/userSettings.svelte.js';
+import { JsonLd } from '#lib/types/xl.js';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];

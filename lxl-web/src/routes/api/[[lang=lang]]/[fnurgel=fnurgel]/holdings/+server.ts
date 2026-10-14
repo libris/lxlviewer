@@ -1,16 +1,16 @@
 import { API_URL } from '$app/env/private';
 import { error, json } from '@sveltejs/kit';
-import { getSupportedLocale } from '$lib/i18n/locales';
-import type { ApiError } from '$lib/types/api';
-import type { HoldingMainEntity, HoldingsData } from '$lib/types/holdings.js';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import type { ApiError } from '#lib/types/api.js';
+import type { HoldingMainEntity, HoldingsData } from '#lib/types/holdings.js';
 import {
 	getHoldingLibraries,
 	getHoldingsByInstanceId,
 	getBibIdsByInstanceId,
 	getHoldingsByType,
 	getHoldersByType
-} from '$lib/utils/holdings.server';
-import { centerOnWork } from '$lib/utils/centerOnWork.server';
+} from '#lib/utils/holdings.server.js';
+import { centerOnWork } from '#lib/utils/centerOnWork.server.js';
 
 export async function GET({ params, locals }) {
 	const displayUtil = locals.display;

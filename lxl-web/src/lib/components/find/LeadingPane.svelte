@@ -5,8 +5,8 @@
 		LEADING_PANE_MAX_WIDTH,
 		LEADING_PANE_MIN_WIDTH,
 		LEADING_PANE_COLLAPSE_WIDTH
-	} from '$lib/constants/panels';
-	import { getUserSettings } from '$lib/contexts/userSettings';
+	} from '#lib/constants/panels.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import type { Snippet } from 'svelte';
 	import Draggable from '../Draggable.svelte';
 	import TabList, { type Tab } from '../TabList.svelte';

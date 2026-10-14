@@ -3,12 +3,12 @@
 	import '../themes.css';
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import { page } from '$app/state';
-	import { setUserSettings } from '$lib/contexts/userSettings';
+	import { setUserSettings } from '#lib/contexts/userSettings.js';
 	import NProgress from 'nprogress';
-	import '$lib/styles/nprogress.css';
-	import Matomo from '$lib/components/Matomo.svelte';
-	import CookieConsent from '$lib/components/CookieConsent.svelte';
-	import { setCookieConsentContext } from '$lib/contexts/cookieConsent';
+	import '#lib/styles/nprogress.css';
+	import Matomo from '#lib/components/Matomo.svelte';
+	import CookieConsent from '#lib/components/CookieConsent.svelte';
+	import { setCookieConsentContext } from '#lib/contexts/cookieConsent.js';
 
 	const { children } = $props();
 

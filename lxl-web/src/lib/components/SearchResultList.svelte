@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import SearchResultItem from '$lib/components/SearchResultItem.svelte';
-	import { HeadingElem } from '$lib/types/decoratedData';
-	import type { SearchResultItem as SearchResultItemType } from '$lib/types/search';
+	import SearchResultItem from '#lib/components/SearchResultItem.svelte';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
+	import type { SearchResultItem as SearchResultItemType } from '#lib/types/search.js';
 	import { onMount, type Snippet } from 'svelte';
 	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';

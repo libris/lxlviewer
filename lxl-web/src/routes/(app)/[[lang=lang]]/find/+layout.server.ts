@@ -1,9 +1,9 @@
 import { API_URL } from '$app/env/private';
-import { getSupportedLocale } from '$lib/i18n/locales';
-import type { HoldingsData } from '$lib/types/holdings.js';
-import { getTranslator } from '$lib/i18n';
-import { appendMyLibrariesParam, displayFacets } from '$lib/utils/search.server';
-import type { PartialCollectionView } from '$lib/types/search';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import type { HoldingsData } from '#lib/types/holdings.js';
+import { getTranslator } from '#lib/i18n/index.js';
+import { appendMyLibrariesParam, displayFacets } from '#lib/utils/search.server.js';
+import type { PartialCollectionView } from '#lib/types/search.js';
 
 export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 	const locale = getSupportedLocale(params?.lang);

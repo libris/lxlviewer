@@ -1,5 +1,5 @@
 import { PUBLIC_FJARRLAN_URL } from '$app/env/public';
-import defaultSiteConfigJson from '$lib/assets/json/defaultSiteConfig.json';
+import defaultSiteConfigJson from '#lib/assets/json/defaultSiteConfig.json';
 import type {
 	AppMenuItem,
 	FeaturedCategoryConfig,
@@ -7,7 +7,7 @@ import type {
 	Features,
 	FooterSection,
 	Site
-} from '$lib/types/site';
+} from '#lib/types/site.js';
 
 interface DefaultSiteConfiguration extends NonNullable<Site['configuration']> {
 	themeName: string;

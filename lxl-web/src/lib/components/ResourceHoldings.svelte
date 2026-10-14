@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { PUBLIC_FJARRLAN_URL } from '$app/env/public';
 	import { page } from '$app/state';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { JsonLd, type DisplayDecorated } from '$lib/types/xl';
-	import type { HoldingsData } from '$lib/types/holdings';
-	import type { SearchResultItem } from '$lib/types/search';
-	import { LxlLens } from '$lib/types/display';
-	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
-	import { getHoldingsLink, getHeldBy, handleClickHoldings } from '$lib/utils/holdings';
-	import MyLibsHoldingIndicator from '$lib/components/MyLibsHoldingIndicator.svelte';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { JsonLd, type DisplayDecorated } from '#lib/types/xl.js';
+	import type { HoldingsData } from '#lib/types/holdings.js';
+	import type { SearchResultItem } from '#lib/types/search.js';
+	import { LxlLens } from '#lib/types/display.js';
+	import { getLibraryIdsFromMapping } from '#lib/utils/getLibraryIdsFromMapping.js';
+	import { getHoldingsLink, getHeldBy, handleClickHoldings } from '#lib/utils/holdings.js';
+	import MyLibsHoldingIndicator from '#lib/components/MyLibsHoldingIndicator.svelte';
 
 	interface Props {
 		instances: SearchResultItem[] | DisplayDecorated[];

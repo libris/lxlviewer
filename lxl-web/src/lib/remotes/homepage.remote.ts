@@ -1,8 +1,8 @@
 import { query } from '$app/server';
-import { getSupportedLocale } from '$lib/i18n/locales';
-import { getSearchResults } from '$lib/remotes/searchResult.remote';
-import { SearchResultsSchema } from '$lib/schemas/searchResult';
-import type { FeaturedCategoryConfig, FeaturedSearchConfig } from '$lib/types/site';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import { getSearchResults } from '#lib/remotes/searchResult.remote.js';
+import { SearchResultsSchema } from '#lib/schemas/searchResult.js';
+import type { FeaturedCategoryConfig, FeaturedSearchConfig } from '#lib/types/site.js';
 import * as v from 'valibot';
 
 const FEATURED_COLLECTIONS: FeaturedSearchConfig[] = [

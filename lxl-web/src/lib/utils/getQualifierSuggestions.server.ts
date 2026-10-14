@@ -1,9 +1,9 @@
-import { type LocaleCode, otherLocales } from '$lib/i18n/locales';
-import { type DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
-import { asArray, toString } from '$lib/utils/misc';
-import { type FramedData, JsonLd, LensType, Platform } from '$lib/types/xl';
-import { type QualifierSuggestion2, QualifierSuggestionShowIn } from '$lib/types/search';
-import { getUriSlug } from '$lib/utils/http';
+import { type LocaleCode, otherLocales } from '#lib/i18n/locales.js';
+import { type DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
+import { asArray, toString } from '#lib/utils/misc.js';
+import { type FramedData, JsonLd, LensType, Platform } from '#lib/types/xl.js';
+import { type QualifierSuggestion2, QualifierSuggestionShowIn } from '#lib/types/search.js';
+import { getUriSlug } from '#lib/utils/http.js';
 
 export function getQualifierSuggestions(
 	locale: LocaleCode,

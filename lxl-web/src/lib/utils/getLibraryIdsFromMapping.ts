@@ -1,6 +1,6 @@
-import type { LibraryId, OrgId } from '$lib/types/holdings';
-import type { DisplayMapping } from '$lib/types/search';
-import { JsonLd } from '$lib/types/xl';
+import type { LibraryId, OrgId } from '#lib/types/holdings.js';
+import type { DisplayMapping } from '#lib/types/search.js';
+import { JsonLd } from '#lib/types/xl.js';
 
 /**
  * accepts an array of DisplayMappings (search and subset)

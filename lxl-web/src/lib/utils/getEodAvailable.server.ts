@@ -1,5 +1,5 @@
-import type { EodAvailable, LibraryWithLinks } from '$lib/types/holdings';
-import { BibDb, JsonLd, type FramedData } from '$lib/types/xl';
+import type { EodAvailable, LibraryWithLinks } from '#lib/types/holdings.js';
+import { BibDb, JsonLd, type FramedData } from '#lib/types/xl.js';
 
 export const YEARS_OLD_ENOUGH = 90;
 

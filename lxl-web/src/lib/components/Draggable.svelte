@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { throttleRAF } from '$lib/utils/throttle';
+	import { throttleRAF } from '#lib/utils/throttle.js';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	/**

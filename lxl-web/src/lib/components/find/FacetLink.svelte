@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { JsonLd } from '$lib/types/xl';
-	import DecoratedDataLite from '$lib/components/DecoratedDataLite.svelte';
-	import type { FacetValue } from '$lib/types/search';
+	import { JsonLd } from '#lib/types/xl.js';
+	import DecoratedDataLite from '#lib/components/DecoratedDataLite.svelte';
+	import type { FacetValue } from '#lib/types/search.js';
 	import IconClose from '~icons/bi/x-lg';
 
 	interface Props {
@@ -94,18 +94,18 @@
 	}
 
 	.with-checkbox::before {
-		mask-image: url('$lib/assets/img/checkbox-unchecked.svg');
+		mask-image: url('../../assets/img/checkbox-unchecked.svg');
 	}
 	.with-radio::before {
-		mask-image: url('$lib/assets/img/radio-unchecked.svg');
+		mask-image: url('../../assets/img/radio-unchecked.svg');
 	}
 
 	.with-checkbox.selected::before {
-		mask-image: url('$lib/assets/img/checkbox-checked.svg');
+		mask-image: url('../../assets/img/checkbox-checked.svg');
 	}
 
 	.with-radio.selected::before {
-		mask-image: url('$lib/assets/img/radio-checked.svg');
+		mask-image: url('../../assets/img/radio-checked.svg');
 	}
 
 	.with-checkbox.selected::before,

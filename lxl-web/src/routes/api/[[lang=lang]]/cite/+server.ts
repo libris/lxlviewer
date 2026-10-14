@@ -1,7 +1,7 @@
 import { API_URL } from '$app/env/private';
-import { getSupportedLocale } from '$lib/i18n/locales';
-import { initCite } from '$lib/utils/citation';
-import { cslFromMainEntity } from '$lib/utils/cslFromMainEntity.js';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import { initCite } from '#lib/utils/citation.js';
+import { cslFromMainEntity } from '#lib/utils/cslFromMainEntity.js';
 import { error } from '@sveltejs/kit';
 
 const supportedFormats = ['ris', 'bibtex', 'csl'];

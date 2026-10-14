@@ -3,13 +3,13 @@ import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { query, getRequestEvent } from '$app/server';
 import * as v from 'valibot';
 
-import { type ApiError } from '$lib/types/api';
-import { asResult } from '$lib/utils/search.server';
-import type { PartialCollectionView } from '$lib/types/search';
-import { DebugFlags } from '$lib/types/userSettings';
-import { getSupportedLocale } from '$lib/i18n/locales';
-import { SearchResultsSchema } from '$lib/schemas/searchResult';
-import { asAdjecentSearchResult } from '$lib/utils/adjecentSearchResult';
+import { type ApiError } from '#lib/types/api.js';
+import { asResult } from '#lib/utils/search.server.js';
+import type { PartialCollectionView } from '#lib/types/search.js';
+import { DebugFlags } from '#lib/types/userSettings.js';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import { SearchResultsSchema } from '#lib/schemas/searchResult.js';
+import { asAdjecentSearchResult } from '#lib/utils/adjecentSearchResult.js';
 
 export const getSearchResults = query(SearchResultsSchema, async (params) => {
 	const { fetch, locals, params: routeParams, url } = getRequestEvent();

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { PUBLIC_DEBUG_SUPERSEARCH } from '$app/env/public';
 	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
-	import { getSearchContext } from '$lib/contexts/search';
-	import { type QualifierSuggestion2 } from '$lib/types/search';
+	import { getSearchContext } from '#lib/contexts/search.js';
+	import { type QualifierSuggestion2 } from '#lib/types/search.js';
 	import { getParentNodeByType, type Selection } from 'supersearch';
 	import IconFilter from '~icons/bi/filter';
 	import { page } from '$app/state';

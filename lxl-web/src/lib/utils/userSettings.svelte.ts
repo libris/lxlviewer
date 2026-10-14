@@ -4,11 +4,11 @@ import {
 	type MyLibrariesType,
 	SettingsParams,
 	type UserSettings as UserSettingsType
-} from '$lib/types/userSettings';
-import type { AvailableCitationFormat } from '$lib/types/citation';
-import type { LibraryId } from '$lib/types/holdings';
-import { stripPrefix } from '$lib/utils/stripPrefix';
-import { LIBRARY_URI_PREFIX } from '$lib/utils/holdings';
+} from '#lib/types/userSettings.js';
+import type { AvailableCitationFormat } from '#lib/types/citation.js';
+import type { LibraryId } from '#lib/types/holdings.js';
+import { stripPrefix } from '#lib/utils/stripPrefix.js';
+import { LIBRARY_URI_PREFIX } from '#lib/utils/holdings.js';
 
 export class UserSettings {
 	private settings: UserSettingsType = $state({});

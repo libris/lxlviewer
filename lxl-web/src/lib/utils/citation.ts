@@ -1,8 +1,8 @@
 import { Cite, plugins } from '@citation-js/core';
 import { goto, preloadData } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
-import type { CSLJSON, AvailableCitationFormat } from '$lib/types/citation';
-import type { LocaleCode } from '$lib/i18n/locales';
+import type { CSLJSON, AvailableCitationFormat } from '#lib/types/citation.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
 
 export const availableFormats = {
 	chicago: {
@@ -101,22 +101,22 @@ async function loadCiteResources() {
 
 	const externalStyleTemplates: Partial<Record<AvailableCitationFormat, string>> = {
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
-		chicago: (await import('$lib/assets/csl/chicago-author-date.csl?raw')).default,
+		chicago: (await import('#lib/assets/csl/chicago-author-date.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fmodern-language-association
-		mla: (await import('$lib/assets/csl/modern-language-association.csl?raw')).default,
+		mla: (await import('#lib/assets/csl/modern-language-association.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fumea-university-oxford
-		oxford_umu: (await import('$lib/assets/csl/umea-university-oxford.csl?raw')).default,
+		oxford_umu: (await import('#lib/assets/csl/umea-university-oxford.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fsodertorns-hogskola-harvard
-		harvard_sh: (await import('$lib/assets/csl/sodertorns-hogskola-harvard.csl?raw')).default,
+		harvard_sh: (await import('#lib/assets/csl/sodertorns-hogskola-harvard.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Felsevier-vancouver-author-date
-		elsevier_vancouver: (await import('$lib/assets/csl/elsevier-vancouver-author-date.csl?raw'))
+		elsevier_vancouver: (await import('#lib/assets/csl/elsevier-vancouver-author-date.csl?raw'))
 			.default
 	};
 
 	// https://github.com/citation-js/citation-js/tree/main/packages/plugin-csl
 	const config = plugins.config.get('@csl');
 
-	const sv = (await import('$lib/assets/csl/locales-sv-SE.xml?raw')).default;
+	const sv = (await import('#lib/assets/csl/locales-sv-SE.xml?raw')).default;
 	config.locales.add('sv-SE', sv);
 
 	const formatKeys = Object.keys(availableFormats) as (keyof typeof availableFormats)[];

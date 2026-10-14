@@ -7,13 +7,13 @@ import type {
 	LibraryRecord,
 	LibraryWithLinks,
 	OrgId
-} from '$lib/types/holdings';
-import { BibDb, JsonLd, LensType } from '$lib/types/xl';
+} from '#lib/types/holdings.js';
+import { BibDb, JsonLd, LensType } from '#lib/types/xl.js';
 import { gunzipSync } from 'node:zlib';
-import { createHolderLinks } from '$lib/utils/holdings.server';
-import { type DisplayUtil } from '$lib/utils/xl.server';
-import { toString } from '$lib/utils/misc';
-import type { LocaleCode } from '$lib/i18n/locales';
+import { createHolderLinks } from '#lib/utils/holdings.server.js';
+import { type DisplayUtil } from '#lib/utils/xl.server.js';
+import { toString } from '#lib/utils/misc.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
 
 type Data = {
 	[JsonLd.CONTEXT]: string[];

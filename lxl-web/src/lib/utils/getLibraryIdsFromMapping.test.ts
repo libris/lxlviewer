@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { DisplayMapping } from '$lib/types/search';
+import type { DisplayMapping } from '#lib/types/search.js';
 import { getLibraryIdsFromMapping } from './getLibraryIdsFromMapping';
 
 describe('getLibraryIdsFromMapping', () => {

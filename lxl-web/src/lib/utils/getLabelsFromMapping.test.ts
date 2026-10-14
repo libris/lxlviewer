@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import getLabelsFromMapping from './getLabelsFromMapping.svelte';
-import type { DisplayMapping } from '$lib/types/search';
+import type { DisplayMapping } from '#lib/types/search.js';
 
 describe('getLabelsFromMapping', () => {
 	it('it returns labels when supplied with page mappings', () => {
