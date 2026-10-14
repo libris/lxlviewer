@@ -138,6 +138,14 @@
 				return Elem.Span;
 		}
 	}
+
+	function hasValue(data: Node): boolean {
+		return (
+			data[Fmt.VALUE] !== undefined ||
+			data[JsonLd.VALUE] !== undefined ||
+			data[Fmt.DISPLAY] !== undefined
+		);
+	}
 </script>
 
 {#snippet traverse(data: DisplayDecorated | DisplayDecorated[], parent: Parent, skip: boolean)}
@@ -304,13 +312,13 @@
 {/snippet}
 
 {#snippet before(data: Node, renderContent: boolean)}
-	{#if renderContent && !isHtmlNode(data) && Fmt.CONTENT_BEFORE in data}
+	{#if renderContent && !isHtmlNode(data) && Fmt.CONTENT_BEFORE in data && hasValue(data)}
 		{data[Fmt.CONTENT_BEFORE]}
 	{/if}
 {/snippet}
 
 {#snippet after(data: Node, renderContent: boolean)}
-	{#if renderContent && !isHtmlNode(data) && Fmt.CONTENT_AFTER in data}
+	{#if renderContent && !isHtmlNode(data) && Fmt.CONTENT_AFTER in data && hasValue(data)}
 		{data[Fmt.CONTENT_AFTER]}
 	{/if}
 {/snippet}
