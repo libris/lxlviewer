@@ -92,7 +92,10 @@
 		closeExpandedMenu();
 		searchContext.superSearch?.showExpandedSearch({ cursorAtEnd: true });
 	}
-	beforeNavigate(() => {
+
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		closeExpandedMenu();
 	});
 

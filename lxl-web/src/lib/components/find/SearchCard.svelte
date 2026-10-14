@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { onDestroy } from 'svelte';
-	import { goto, onNavigate, replaceState } from '$app/navigation';
+	import { goto, onNavigate } from '$app/navigation';
 	import popover from '$lib/actions/popover';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import type { LibraryResultItem, SearchResultItem } from '$lib/types/search';
@@ -120,9 +120,11 @@
 	function handleRemoveHighlighting(event: MouseEvent) {
 		if (event.target && !articleElement.contains(event.target as Node)) {
 			document?.removeEventListener('click', handleRemoveHighlighting);
-			replaceState(page.url.pathname + page.url.search + page.url.hash, {
-				...page.state,
-				dimissedHighlighting: true
+
+			goto(page.url.pathname + page.url.search + page.url.hash, {
+				shallow: true,
+				replace: true,
+				state: { ...page.state, dimissedHighlighting: true }
 			});
 		}
 	}
@@ -151,7 +153,9 @@
 		if (browser) document?.removeEventListener('click', handleRemoveHighlighting);
 	});
 
-	onNavigate(() => {
+	onNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		document?.removeEventListener('click', handleRemoveHighlighting);
 	});
 </script>

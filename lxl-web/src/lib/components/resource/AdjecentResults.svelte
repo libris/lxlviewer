@@ -20,19 +20,16 @@
 	let nextQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
 
 	let adjecentSearchResults = $derived(adjecentSearchResultsFromPageState);
-
 	const currentSearchResult = $derived(
 		adjecentSearchResults?.find((searchResult) =>
 			searchResult.items.find((item) => item['@id']?.includes(fnurgel))
 		)
 	);
-
 	const currentSearchResultIndex = $derived(
 		adjecentSearchResults?.findIndex(
 			(searchResult) => searchResult['@id'] === currentSearchResult?.['@id']
 		)
 	);
-
 	const itemIndex = $derived(
 		currentSearchResult?.items.findIndex((item) => item['@id']?.includes(fnurgel))
 	);
@@ -46,7 +43,6 @@
 	const previousItemFnurgel = $derived(
 		getPreviousItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
 	);
-
 	const nextItemFnurgel = $derived(
 		getNextItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
 	);
@@ -61,7 +57,9 @@
 		});
 	}
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if (
 			!previousItemFnurgel &&
 			currentSearchResult?.previous?.['@id'] &&

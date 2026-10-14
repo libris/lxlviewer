@@ -13,7 +13,9 @@
 	let rangeFrom = $derived(search.mapping.greaterThanOrEquals);
 	let rangeTo = $derived(search.mapping.lessThanOrEquals);
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		rangeFrom = search.mapping.greaterThanOrEquals;
 		rangeTo = search.mapping.lessThanOrEquals;
 	});

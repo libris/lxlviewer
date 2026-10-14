@@ -23,7 +23,9 @@
 		}
 	}
 
-	afterNavigate(async ({ to, from, type }) => {
+	afterNavigate(async ({ to, from, type, shallow }) => {
+		if (shallow && type === 'goto') return;
+
 		if ($tracker) {
 			if (from?.url.href) {
 				$tracker.setReferrerUrl(from.url.href);

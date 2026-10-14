@@ -70,12 +70,16 @@
 	}
 
 	onNavigate((navigation) => {
+		if (navigation.shallow && navigation.type === 'goto') return;
+
 		if (navigation?.from) {
 			fadeInImages = false;
 		}
 	});
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if (lazyload === 'intersection') {
 			initObserver();
 		}

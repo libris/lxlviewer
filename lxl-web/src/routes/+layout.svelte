@@ -28,12 +28,16 @@
 	let progressBarTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 	const progressDelay = 300;
 
-	beforeNavigate(() => {
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		clearTimeout(progressBarTimeout);
 		progressBarTimeout = setTimeout(NProgress.start, progressDelay);
 	});
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		clearTimeout(progressBarTimeout);
 		NProgress.done();
 	});

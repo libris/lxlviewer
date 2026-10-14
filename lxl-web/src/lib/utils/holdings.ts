@@ -1,4 +1,4 @@
-import { pushState } from '$app/navigation';
+import { goto } from '$app/navigation';
 import type {
 	BibIdObj,
 	HoldersByType,
@@ -32,7 +32,11 @@ export function handleClickHoldings(
 	id: string
 ) {
 	event.preventDefault();
-	pushState(event.currentTarget.href, { ...state, holdings: stripAnchor(id) });
+
+	goto(event.currentTarget.href, {
+		shallow: true,
+		state: { ...state, holdings: stripAnchor(id) }
+	});
 }
 
 /**

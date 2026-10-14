@@ -1,5 +1,5 @@
 import { Cite, plugins } from '@citation-js/core';
-import { goto, preloadData, pushState } from '$app/navigation';
+import { goto, preloadData } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 import type { CSLJSON, AvailableCitationFormat } from '$lib/types/citation';
 import type { LocaleCode } from '$lib/i18n/locales';
@@ -157,7 +157,14 @@ export async function handleClickCite(
 	const result = await preloadData(href);
 
 	if (result.type === 'loaded' && result.status === 200) {
-		pushState(href, { ...state, citations: await result.data.citations, citationId: id });
+		goto(href, {
+			shallow: true,
+			state: {
+				...state,
+				citations: await result.data.citations,
+				citationId: id
+			}
+		});
 	} else {
 		goto(href);
 	}

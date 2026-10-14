@@ -32,13 +32,11 @@
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
 	const featuredCollections: FeaturedSearch[] = $derived(page.data.featuredCollections);
 	const featuredCategories: CategoryShortcut[] = $derived(page.data.featuredCategories);
-
 	const heroImageModules = import.meta.glob<string>('$lib/assets/img/hero/*.{jpg,jpeg,png,webp}', {
 		eager: true,
 		query: '?url',
 		import: 'default'
 	});
-
 	const heroImageByName: Record<string, string> = Object.fromEntries(
 		Object.entries(heroImageModules).map(([path, url]) => [path.split('/').pop()!, url])
 	);
@@ -81,6 +79,8 @@
 	});
 
 	onNavigate((navigation) => {
+		if (navigation.shallow && navigation.type === 'goto') return;
+
 		if ((navigation.to?.scroll?.y || 0) > (searchContainerElement?.offsetTop || 0)) {
 			searchContext.showSearchInAppBar = true;
 		}

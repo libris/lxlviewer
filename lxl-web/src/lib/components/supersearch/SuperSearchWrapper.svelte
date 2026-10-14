@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount, tick } from 'svelte';
 	import { page } from '$app/state';
-	import { afterNavigate, goto, onNavigate, pushState } from '$app/navigation';
+	import { afterNavigate, goto, onNavigate } from '$app/navigation';
 	import { innerHeight } from 'svelte/reactivity/window';
 	import {
 		type ChangeEvent,
@@ -180,6 +180,8 @@
 	});
 
 	onNavigate((navigation) => {
+		if (navigation.shallow && navigation.type === 'goto') return;
+
 		if (navigation.type !== 'popstate' && superSearch?.isExpanded()) {
 			superSearch?.hideExpandedSearch();
 			superSearch?.blur();
@@ -213,7 +215,9 @@
 	});
 
 	// manually fetch data again after sort change to update up-links
-	afterNavigate(({ from, to }) => {
+	afterNavigate(({ from, to, shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		const sortChanged = from?.url.searchParams.get('_sort') !== to?.url.searchParams.get('_sort');
 		if (sortChanged) {
 			superSearch?.fetchData();
@@ -332,7 +336,10 @@
 			event.trigger !== 'popstate' &&
 			event.trigger !== 'navigation'
 		) {
-			pushState('', { ...page.state, expandedSuperSearch: true });
+			goto('', {
+				shallow: true,
+				state: { ...page.state, expandedSuperSearch: true }
+			});
 		}
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
@@ -677,6 +684,7 @@
 						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
 				{/if}
+
 				<FooterRow {footerRowIndex} {getCellId} {isFocusedCell} />
 			</nav>
 		{/snippet}

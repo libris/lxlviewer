@@ -40,7 +40,9 @@
 		return matchingInstance ?? (data.isWork ? data.workCard : instances[0]);
 	});
 
-	afterNavigate(({ to }) => {
+	afterNavigate(({ to, shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if (to) {
 			previousURL = to.url;
 		}

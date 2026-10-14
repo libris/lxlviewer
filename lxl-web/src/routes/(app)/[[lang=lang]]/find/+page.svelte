@@ -35,7 +35,6 @@
 	);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
-
 	const HoldingsComponent = $derived(
 		USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
 	);
@@ -49,7 +48,9 @@
 
 	let previousURL: URL;
 
-	afterNavigate(({ from }) => {
+	afterNavigate(({ from, shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if (from) {
 			previousURL = from.url;
 		}
@@ -96,11 +97,10 @@
 					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar {searchResult} />
 					<SearchResultInfo {searchResult} />
+
 					<ol aria-labelledby="search-results" class="flex flex-col">
 						{#each searchResult.items as item, index (item['@id'] + index)}
-							<li>
-								<SearchCard {item} headingElement={HeadingElem.H2} />
-							</li>
+							<li><SearchCard {item} headingElement={HeadingElem.H2} /></li>
 						{/each}
 					</ol>
 					<Pagination data={searchResult} />
