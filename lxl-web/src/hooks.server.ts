@@ -36,12 +36,14 @@ export const init: ServerInit = async () => {
 		const [, displayUtil] = await loadUtilCached();
 		startRefreshLibraries(displayUtil, defaultLocale);
 
+		// @migration-task Rewrite dynamic env lookup manually.
 		const sites = (env['SUBSITES'] || '')
 			.split(',')
 			.map((s) => s.trim())
 			.filter((s) => s.length > 0)
 			.map((site) => env[`SUBSITE.${site}.SEARCH_SITE`])
 			.filter((s) => typeof s === 'string');
+
 		for (const s of sites) {
 			await getSiteConfCached(s);
 		}
@@ -294,6 +296,7 @@ function getSite(event: RequestEvent): Promise<Site> | null {
 	const deepestSubDomain = host.split('.')[0];
 
 	if (configuredSubDomains().includes(deepestSubDomain)) {
+		// @migration-task Rewrite dynamic env lookup manually.
 		const siteUrl = env[`SUBSITE.${deepestSubDomain}.SEARCH_SITE`];
 		if (!siteUrl) {
 			return null;

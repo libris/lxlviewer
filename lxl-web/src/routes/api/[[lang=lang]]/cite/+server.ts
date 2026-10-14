@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL } from '$app/env/private';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { initCite } from '$lib/utils/citation';
 import { cslFromMainEntity } from '$lib/utils/cslFromMainEntity.js';
@@ -16,11 +16,11 @@ export async function GET({ params, url, fetch, locals }) {
 	if (id && format) {
 		if (supportedFormats.some((f) => format.toLowerCase() === f)) {
 			let url;
-			if (id.startsWith(env.API_URL)) {
+			if (id.startsWith(API_URL)) {
 				// support both full URI:s and fnurgels
 				url = id;
 			} else {
-				url = `${env.API_URL}/${id}`;
+				url = `${API_URL}/${id}`;
 			}
 			const res = await fetch(`${url}/data.jsonld?framed=true&computedLabel=${lang}`);
 			if (res.ok) {

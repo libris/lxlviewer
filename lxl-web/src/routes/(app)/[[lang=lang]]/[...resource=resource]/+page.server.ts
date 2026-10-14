@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
 import * as v from 'valibot';
@@ -65,7 +65,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const _q = url.searchParams.get('_q');
 
 	const resourcePath = params.resource.split('/').map(encodeURIComponent).join('/');
-	const resourceRes = await fetch(`${env.API_URL}/${resourcePath}?framed=true&_findBlank=true`, {
+	const resourceRes = await fetch(`${API_URL}/${resourcePath}?framed=true&_findBlank=true`, {
 		headers: { Accept: 'application/ld+json' }
 	});
 
@@ -104,7 +104,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			displayUtil,
 			vocabUtil,
 			locale,
-			env.AUXD_SECRET,
+			AUXD_SECRET,
 			myLibraries
 		)[0];
 	} else if (resource.mainEntity.instanceOf) {
@@ -212,6 +212,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	if (mainEntity?.[JsonLd.REVERSE]?.instanceOf?.length > 0) {
 		const sortedInstances = getSortedInstances(mainEntity?.[JsonLd.REVERSE]?.instanceOf);
+
 		sortedInstances.forEach(
 			(i) => (i[Bibframe.instanceOf] = { [JsonLd.TYPE]: mainEntity[JsonLd.TYPE] })
 		);
@@ -220,7 +221,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			displayUtil,
 			vocabUtil,
 			locale,
-			env.AUXD_SECRET,
+			AUXD_SECRET,
 			myLibraries,
 			subsetLibraries
 		);
@@ -252,8 +253,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			[JsonLd.TYPE]: c[JsonLd.TYPE],
 			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
 			[Bibframe.summary]: c[Bibframe.summary]
-		}))
-		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		})) // FIXME Don't use SearchCard lens - support ad-hoc lenses?
 		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
 
 	const resourceTableOfContents = creations
@@ -263,8 +263,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			[JsonLd.TYPE]: c[JsonLd.TYPE],
 			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
 			[Bibframe.tableOfContents]: c[Bibframe.tableOfContents]
-		}))
-		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		})) // FIXME Don't use SearchCard lens - support ad-hoc lenses?
 		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
 
 	// Search for instances that matches query
@@ -283,7 +282,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			myLibraries
 		);
 
-		const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+		const res = await fetch(`${API_URL}/find.jsonld?${searchParams.toString()}`);
 
 		if (res.ok) {
 			const data = (await res.json()) as PartialCollectionView;
@@ -325,22 +324,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 	);
 
 	const tableOfContents: TableOfContentsItem[] = [
-		...(summary.length
-			? [
-					{
-						id: 'summary',
-						label: translate('resource.summary')
-					}
-				]
-			: []),
-		...(instances?.length > 1
-			? [
-					{
-						id: 'editions',
-						label: translate('resource.editions')
-					}
-				]
-			: []),
+		...(summary.length ? [{ id: 'summary', label: translate('resource.summary') }] : []),
+
+		...(instances?.length > 1 ? [{ id: 'editions', label: translate('resource.editions') }] : []),
+
 		...(relations?.length
 			? [
 					{
@@ -361,20 +348,16 @@ export const load = async ({ params, locals, fetch, url }) => {
 					}
 				]
 			: []),
+
 		...(details.length && details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)
-			? [
-					{
-						id: 'details',
-						label: translate('resource.details')
-					}
-				]
+			? [{ id: 'details', label: translate('resource.details') }]
 			: [])
 	];
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [_, overviewWithoutHasInstance] = pickProperty(overview[0], ['hasInstance']);
 
-	const image = toSecure(bestImage(mainEntity, locale), env.AUXD_SECRET);
+	const image = toSecure(bestImage(mainEntity, locale), AUXD_SECRET);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const byType = getHoldersByType(holdingsByType);
 
@@ -403,16 +386,16 @@ export const load = async ({ params, locals, fetch, url }) => {
 		instances,
 		decoratedData: {
 			headingTop: types,
-			heading: heading,
-			headingExtra: headingExtra,
+			heading,
+			headingExtra,
 			...(hasWorkTitle && { _workTitle2: workTitle }),
-			overview: overview,
-			overview2: overview2,
-			overviewFooter: overviewFooter,
-			summary: summary,
-			resourceTableOfContents: resourceTableOfContents,
-			details: details,
-			token: token,
+			overview,
+			overview2,
+			overviewFooter,
+			summary,
+			resourceTableOfContents,
+			details,
+			token,
 			itemInformation
 		},
 		searchResult,

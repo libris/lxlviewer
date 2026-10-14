@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { json } from '@sveltejs/kit';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
 import { JsonLd, type FramedData } from '$lib/types/xl.js';
@@ -8,7 +8,7 @@ import { asSearchResultItem } from '$lib/utils/search.server';
 import { centerOnWork } from '$lib/utils/centerOnWork.server.js';
 
 export async function GET({ params, locals }) {
-	const recordRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
+	const recordRes = await fetch(`${API_URL}/${params.fnurgel}?framed=true`, {
 		headers: { Accept: 'application/ld+json' }
 	});
 
@@ -43,13 +43,12 @@ export async function GET({ params, locals }) {
 
 	const displayUtil: DisplayUtil = locals.display;
 	const vocabUtil: VocabUtil = locals.vocab;
-
 	const searchCard = asSearchResultItem(
 		[mainEntity],
 		displayUtil,
 		vocabUtil,
 		getSupportedLocale(params?.lang),
-		env.AUXD_SECRET
+		AUXD_SECRET
 	)[0];
 
 	return json(searchCard, {

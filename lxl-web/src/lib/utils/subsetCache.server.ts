@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL } from '$app/env/private';
 import type { DisplayMapping, MappingsOnlyPartialCollectionView } from '$lib/types/search';
 import { getTranslator } from '$lib/i18n';
 import { getSupportedLocale } from '$lib/i18n/locales';
@@ -17,11 +17,7 @@ function deleteOldest() {
 
 async function fetchMapping(r: string) {
 	const res = await fetch(
-		`${env.API_URL}/find.jsonld?${new URLSearchParams({
-			_r: r,
-			_q: '',
-			_mappingOnly: 'true'
-		}).toString()}`
+		`${API_URL}/find.jsonld?${new URLSearchParams({ _r: r, _q: '', _mappingOnly: 'true' }).toString()}`
 	);
 
 	if (!res.ok) {

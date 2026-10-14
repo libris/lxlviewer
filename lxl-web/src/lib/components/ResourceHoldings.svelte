@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
+	import { PUBLIC_FJARRLAN_URL } from '$app/env/public';
 	import { page } from '$app/state';
 	import { getUserSettings } from '$lib/contexts/userSettings';
 	import { JsonLd, type DisplayDecorated } from '$lib/types/xl';
@@ -85,9 +85,8 @@
 		<li>
 			<a
 				class="btn btn-cta bg-primary-800 border-primary-800 hover:bg-primary-900 hover:border-primary-900 @md:max-w-sm"
-				href={`${env.PUBLIC_FJARRLAN_URL}/illrequest.php?bib_id=${page.data.controlNumber}&session_id=${page.data.librisSession}`}
-			>
-				{page.data.t('resource.request')}</a
+				href={`${PUBLIC_FJARRLAN_URL}/illrequest.php?bib_id=${page.data.controlNumber}&session_id=${page.data.librisSession}`}
+				>{page.data.t('resource.request')}</a
 			>
 		</li>
 	{/if}

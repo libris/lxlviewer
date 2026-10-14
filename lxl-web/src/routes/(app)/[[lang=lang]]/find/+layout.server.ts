@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL } from '$app/env/private';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import type { HoldingsData } from '$lib/types/holdings.js';
 import { getTranslator } from '$lib/i18n';
@@ -48,10 +48,9 @@ export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 		searchParams.set('_limit', '0');
 
 		const recordsRes = await fetch(
-			`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}`
+			`${API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}`
 		);
 		const view = (await recordsRes.json()) as PartialCollectionView;
-
 		const translate = await getTranslator(locale);
 		return displayFacets(view, displayUtil, locale, translate, '');
 	}

@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import type { SuperSearchResult } from '$lib/types/search.js';
@@ -41,11 +41,10 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		newSearchParams.set('_site', locals.site?.searchSite);
 	}
 
-	const data = await fetch(`${env.API_URL}/find.jsonld?${newSearchParams.toString()}`).then((res) =>
+	const data = await fetch(`${API_URL}/find.jsonld?${newSearchParams.toString()}`).then((res) =>
 		res.json()
 	);
-
-	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
+	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, AUXD_SECRET);
 
 	const superSearchResult: SuperSearchResult = {
 		...searchResult,

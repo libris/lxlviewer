@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { onDestroy } from 'svelte';
 	import { goto, onNavigate, replaceState } from '$app/navigation';
 	import popover from '$lib/actions/popover';

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
+	import { PUBLIC_MATOMO_URL } from '$app/env/public';
 	import { afterNavigate } from '$app/navigation';
 	import { setMatomoTracker, getMatomoTracker, setMatomoContext } from '$lib/contexts/matomo';
 	import { onMount, type Snippet } from 'svelte';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 
 	interface Props {
 		children?: Snippet;
@@ -11,7 +11,7 @@
 
 	let { children }: Props = $props();
 
-	const URL: string = env.PUBLIC_MATOMO_URL;
+	const URL: string = PUBLIC_MATOMO_URL;
 	let scriptTag: HTMLScriptElement | undefined = $state();
 
 	setMatomoContext();

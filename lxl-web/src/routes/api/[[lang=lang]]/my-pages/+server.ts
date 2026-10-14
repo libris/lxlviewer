@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import { getSupportedLocale, type LocaleCode as LangCode } from '$lib/i18n/locales.js';
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('_stats', 'falseThisRequest');
-	const findRes = await fetch(`${env.API_URL}/find.jsonld?${newSearchParams.toString()}`);
+	const findRes = await fetch(`${API_URL}/find.jsonld?${newSearchParams.toString()}`);
 
 	if (!findRes.ok) {
 		let apiError;
@@ -60,16 +60,7 @@ async function asLibraryResult(
 	vocabUtil: VocabUtil,
 	locale: LangCode
 ): Promise<LibraryResult> {
-	const items = await asSearchResultItem(
-		view.items,
-		displayUtil,
-		vocabUtil,
-		locale,
-		env.AUXD_SECRET
-	);
-	return {
-		totalItems: view.totalItems,
-		maxItems: view.maxItems,
-		items
-	} as LibraryResult;
+	const items = await asSearchResultItem(view.items, displayUtil, vocabUtil, locale, AUXD_SECRET);
+
+	return { totalItems: view.totalItems, maxItems: view.maxItems, items } as LibraryResult;
 }

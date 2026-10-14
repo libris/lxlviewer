@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { query, getRequestEvent } from '$app/server';
 import * as v from 'valibot';
 
@@ -30,7 +30,7 @@ export const getSearchResults = query(SearchResultsSchema, async (params) => {
 
 	searchParams.set('_stats', 'falseThisRequest');
 
-	const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+	const res = await fetch(`${API_URL}/find.jsonld?${searchParams.toString()}`);
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
@@ -45,25 +45,16 @@ export const getSearchResults = query(SearchResultsSchema, async (params) => {
 	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(routeParams.lang);
 	const myLibraries = locals.userSettings?.myLibraries;
-
 	const data = (await res.json()) as PartialCollectionView;
 
-	return asResult(
-		data,
-		displayUtil,
-		vocabUtil,
-		locale,
-		env.AUXD_SECRET || '',
-		undefined,
-		myLibraries
-	);
+	return asResult(data, displayUtil, vocabUtil, locale, AUXD_SECRET || '', undefined, myLibraries);
 });
 
 export const getAdjecentSearchResult = query(v.string(), async (viewId) => {
 	const { fetch, url, locals, params } = getRequestEvent();
 	const searchParams = new URL(url.origin + viewId).searchParams;
 	searchParams.set('_stats', 'falseThisRequest');
-	const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+	const res = await fetch(`${API_URL}/find.jsonld?${searchParams.toString()}`);
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
@@ -82,5 +73,6 @@ export const getAdjecentSearchResult = query(v.string(), async (viewId) => {
 		getSupportedLocale(params.lang),
 		''
 	);
+
 	return asAdjecentSearchResult(result);
 });

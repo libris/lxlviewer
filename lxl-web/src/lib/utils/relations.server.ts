@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL } from '$app/env/private';
 import { error } from '@sveltejs/kit';
 import type { VocabUtil } from '$lib/utils/xl.server';
 import type { PartialCollectionView } from '$lib/types/search';
@@ -22,7 +22,7 @@ export async function getRelations(
 	}
 
 	const res = await fetch(
-		`${env.API_URL}/find.jsonld?${new URLSearchParams({
+		`${API_URL}/find.jsonld?${new URLSearchParams({
 			_o: resourceId,
 			_q: '*',
 			_limit: '0',
@@ -55,15 +55,9 @@ export async function getRelations(
 			const preferLike: boolean = getAtPath(p.predicate, [Base.category, '*', JsonLd.ID])
 				.map(getUriSlug)
 				.some((c) => c === Platform.preferLike);
-			const findUrl = `/find?${getSortedSearchParams(
-				addDefaultSearchParams(
-					new URLSearchParams({
-						_q: q,
-						_spell: 'false'
-					})
-				)
-			).toString()}`;
-			const previewUrl = `${env.API_URL}/find.jsonld?${getSortedSearchParams(
+			const findUrl = `/find?${getSortedSearchParams(addDefaultSearchParams(new URLSearchParams({ _q: q, _spell: 'false' }))).toString()}`;
+
+			const previewUrl = `${API_URL}/find.jsonld?${getSortedSearchParams(
 				addDefaultSearchParams(
 					new URLSearchParams({
 						_q: q,

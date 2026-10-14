@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL } from '$app/env/private';
 import { error } from '@sveltejs/kit';
 import type {
 	LibOrg,
@@ -43,15 +43,14 @@ async function fetchLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	const libraryMap = new Map(
 		libraryArr.map((lib) => [lib[JsonLd.ID], withLinks(lib, displayUtil, locale)])
 	);
+
 	return libraryMap;
 }
 
 async function doFetch(type: string) {
 	const start = Date.now();
+	const res = await fetch(`${API_URL}/api/emm/full?selection=type:${type}&download=.ndjsonld.gz`);
 
-	const res = await fetch(
-		`${env.API_URL}/api/emm/full?selection=type:${type}&download=.ndjsonld.gz`
-	);
 	if (!res.ok) {
 		return error(res.status);
 	}

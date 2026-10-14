@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import Facet from '$lib/components/find/Facet.svelte';
 	import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
 	import { getModalContext } from '$lib/contexts/modal';
@@ -123,9 +123,7 @@
 
 <div class="flex flex-col gap-4">
 	{#if mapping && inModal && shouldShowMapping(mapping)}
-		<nav aria-label={page.data.t('search.selectedFilters')}>
-			<SearchMapping {mapping} />
-		</nav>
+		<nav aria-label={page.data.t('search.selectedFilters')}><SearchMapping {mapping} /></nav>
 	{/if}
 	{#if facetData ?? initialFacets}
 		{@render facetSnippet(facetData ?? initialFacets!, loading)}

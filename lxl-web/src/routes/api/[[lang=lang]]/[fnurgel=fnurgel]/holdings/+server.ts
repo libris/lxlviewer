@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL } from '$app/env/private';
 import { error, json } from '@sveltejs/kit';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import type { ApiError } from '$lib/types/api';
@@ -15,7 +15,7 @@ import { centerOnWork } from '$lib/utils/centerOnWork.server';
 export async function GET({ params, locals }) {
 	const displayUtil = locals.display;
 	const locale = getSupportedLocale(params.lang);
-	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
+	const resourceRes = await fetch(`${API_URL}/${params.fnurgel}?framed=true`, {
 		headers: { Accept: 'application/ld+json' }
 	});
 

@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+import { HOLDING_STATUS_URL } from '$app/env/private';
 
 export async function GET({ url }) {
-	const res = await fetch(`${env.HOLDING_STATUS_URL}?${url.searchParams.toString()}&output=json`);
+	const res = await fetch(`${HOLDING_STATUS_URL}?${url.searchParams.toString()}&output=json`);
 	if (res.ok) {
 		const data = await res.json();
 		const cleanData = replaceChars(data);

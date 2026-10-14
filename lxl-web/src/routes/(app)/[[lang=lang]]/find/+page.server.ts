@@ -1,5 +1,5 @@
 import { redirect, error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n';
 import { TITLE_SEPARATOR } from '$lib/constants/pageTitle.js';
@@ -44,7 +44,7 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 	}
 
 	const recordsRes = await fetch(
-		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}${debug}`,
+		`${API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}${debug}`,
 		{
 			// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
 			redirect: 'manual'
@@ -105,7 +105,7 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 		displayUtil,
 		vocabUtil,
 		locale,
-		env.AUXD_SECRET,
+		AUXD_SECRET,
 		`${params?.lang ? `/${params.lang}` : ''}/find`, // avoid creating a dependency to url.pathName!
 		myLibraries,
 		subsetLibraries
