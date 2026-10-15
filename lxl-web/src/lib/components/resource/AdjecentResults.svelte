@@ -65,14 +65,22 @@
 			currentSearchResult?.previous?.['@id'] &&
 			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.previous?.['@id'])
 		) {
-			previousQuery = getAdjecentSearchResult(currentSearchResult.previous['@id']);
+			previousQuery = getAdjecentSearchResult({
+				url: page.url.href,
+				lang: page.params.lang || '',
+				viewId: currentSearchResult.previous['@id']
+			});
 		}
 		if (
 			!nextItemFnurgel &&
 			currentSearchResult?.next?.['@id'] &&
 			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.next?.['@id'])
 		) {
-			nextQuery = getAdjecentSearchResult(currentSearchResult.next['@id']);
+			nextQuery = getAdjecentSearchResult({
+				url: page.url.href,
+				lang: page.params.lang || '',
+				viewId: currentSearchResult.next['@id']
+			});
 		}
 	});
 

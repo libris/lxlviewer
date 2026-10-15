@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { page } from '$app/state';
 	import { afterNavigate, onNavigate } from '$app/navigation';
 	import { type FeaturedSearch } from '#lib/remotes/homepage.remote.js';
 	import SearchResultList from '#lib/components/SearchResultList.svelte';
@@ -36,7 +37,11 @@
 	const previewsQuery = $derived(
 		!homepageContext.previews?.[previewParamsString] &&
 			(!lazyload || (lazyload && shouldGetPreviews))
-			? getFeaturedPreviews(featured.previewParams)
+			? getFeaturedPreviews({
+					...featured.previewParams,
+					lang: page.data.locale,
+					url: page.url.href
+				})
 			: undefined
 	);
 

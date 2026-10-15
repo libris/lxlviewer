@@ -308,6 +308,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		(relations || []).map(async (relation) => {
 			const url = new URL(relation.previewUrl);
 			const params = Object.fromEntries(url.searchParams);
+			params.lang = locale;
+			params.url = url.href;
 
 			if (v.is(SearchResultsSchema, params)) {
 				const preview = await getSearchResults(params);
