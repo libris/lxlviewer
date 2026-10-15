@@ -1,7 +1,7 @@
 import type { HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import fs from 'fs';
-import { env } from '$env/dynamic/private';
+import { ID_URL, API_URL, USE_LOCAL_DISPLAY_JSONLD, SUBSITES } from '$app/env/private';
 import { defaultLocale, Locales } from '#lib/i18n/locales.js';
 import { DERIVED_LENSES } from '#lib/types/display.js';
 import type { QualifierSuggestion2 } from '#lib/types/search.js';
@@ -37,11 +37,11 @@ export const init: ServerInit = async () => {
 		startRefreshLibraries(displayUtil, defaultLocale);
 
 		// @migration-task Rewrite dynamic env lookup manually.
-		const sites = (env['SUBSITES'] || '')
+		const sites = (SUBSITES || '')
 			.split(',')
 			.map((s) => s.trim())
 			.filter((s) => s.length > 0)
-			.map((site) => env[`SUBSITE.${site}.SEARCH_SITE`])
+			.map((site) => process.env[`SUBSITE.${site}.SEARCH_SITE`])
 			.filter((s) => typeof s === 'string');
 
 		for (const s of sites) {
@@ -248,16 +248,16 @@ function loadUtilCached() {
 // TODO error handling
 async function loadUtil(): Promise<Util> {
 	const [contextRes, vocabRes, displayRes] = await Promise.all([
-		fetch(`${env.ID_URL}/context.jsonld`),
-		fetch(`${env.ID_URL}/vocab/data.jsonld`),
-		fetch(`${env.ID_URL}/vocab/display/data.jsonld`)
+		fetch(`${ID_URL}/context.jsonld`),
+		fetch(`${ID_URL}/vocab/data.jsonld`),
+		fetch(`${ID_URL}/vocab/display/data.jsonld`)
 	]);
 
 	const context = await contextRes.json();
 	const vocab = await vocabRes.json();
 	let display = await displayRes.json();
 
-	if (env.USE_LOCAL_DISPLAY_JSONLD === 'true') {
+	if (USE_LOCAL_DISPLAY_JSONLD === 'true') {
 		const path = '../../definitions/source/vocab/display.jsonld';
 		const displayJson = fs.readFileSync(path, { encoding: 'utf8' });
 		display = JSON.parse(displayJson);
@@ -297,7 +297,7 @@ function getSite(event: RequestEvent): Promise<Site> | null {
 
 	if (configuredSubDomains().includes(deepestSubDomain)) {
 		// @migration-task Rewrite dynamic env lookup manually.
-		const siteUrl = env[`SUBSITE.${deepestSubDomain}.SEARCH_SITE`];
+		const siteUrl = process.env[`SUBSITE.${deepestSubDomain}.SEARCH_SITE`];
 		if (!siteUrl) {
 			return null;
 		}
@@ -318,7 +318,7 @@ async function getSiteConfCached(siteUrl: string) {
 }
 
 async function loadSiteConf(siteUrl: string): Promise<Site> {
-	const fetchUrl = `${env.API_URL}/${siteUrl}?nocache=1`;
+	const fetchUrl = `${API_URL}/${siteUrl}?nocache=1`;
 	console.log(`Fetching ${fetchUrl}`);
 	const response = await fetch(fetchUrl, {
 		headers: { Accept: 'application/ld+json' },
@@ -341,7 +341,7 @@ async function loadSiteConf(siteUrl: string): Promise<Site> {
 }
 
 function configuredSubDomains(): string[] {
-	return env.SUBSITES?.split(',').map((s) => s.trim()) || [];
+	return SUBSITES?.split(',').map((s) => s.trim()) || [];
 }
 
 export const handleError: HandleServerError = ({ error, event, status }) => {
