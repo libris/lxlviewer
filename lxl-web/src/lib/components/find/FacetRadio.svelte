@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import type { FacetValue as FacetValueType } from '$lib/types/search';
 	import { JsonLd } from '$lib/types/xl';
-	import FacetLink from './FacetLink.svelte';
+	import FacetLink from '$lib/components/find/FacetLink.svelte';
 
 	type Props = {
 		items: FacetValueType[];
@@ -37,7 +37,7 @@
 			{#each items as item, index (parentLabel + item.str + index)}
 				{const id = (index + '-' + parentLabel + ':' + item.str).toLowerCase().replaceAll(' ', '_')}
 				<div
-					class="radio-wrapper flex px-4 py-1.5 text-sm hover:bg-primary-100 focus-within:bg-accent-50"
+					class="radio-wrapper flex items-baseline px-4 py-1.5 text-sm hover:bg-primary-100 focus-within:bg-accent-50"
 				>
 					<input
 						{id}

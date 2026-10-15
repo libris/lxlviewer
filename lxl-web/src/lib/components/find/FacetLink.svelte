@@ -47,7 +47,7 @@
 	{/if}
 	{#if data.selected && !className}
 		<span class="text-subtle ml-auto" aria-hidden="true">
-			<IconClose class="inline" />
+			<IconClose class="inline mb-0.5" />
 		</span>
 	{/if}
 </a>
