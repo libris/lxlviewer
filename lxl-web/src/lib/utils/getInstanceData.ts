@@ -22,6 +22,7 @@ function formatYears(years: string[]): string {
 	const NUM_OLD = 1;
 
 	const sortedYears = years
+		.map((year) => yearPart(year))
 		.filter((year) => !isNaN(parseInt(year)))
 		.filter((year) => year?.length === 4)
 		.filter((year, index, array) => array.indexOf(year) === index)
@@ -32,6 +33,18 @@ function formatYears(years: string[]): string {
 	}
 
 	return sortedYears.slice(0, NUM_OLD).join(', ') + ' … ' + sortedYears.slice(-NUM_NEW).join(', ');
+}
+
+function yearPart(yearOrDate: string): string {
+	// for now, only handle ISO 8601 extended dates as seen in Swepub
+	const datePattern = /^(\d{4})-\d{2}-\d{2}/;
+	const match = yearOrDate.match(datePattern);
+
+	if (match) {
+		return match[1];
+	}
+
+	return yearOrDate;
 }
 
 // TODO: doesn't handle PrimaryPublication correctly?
@@ -62,9 +75,15 @@ function getInstanceData(instances: DisplayDecorated) {
 		}
 	}
 
-	const years = getPublications(instances)?.flatMap((publication) =>
+	let years = getPublications(instances)?.flatMap((publication) =>
 		getStringPropertyValues(publication, 'year')
 	);
+
+	if (years?.length === 0) {
+		years = getPublications(instances)?.flatMap((publication) =>
+			getStringPropertyValues(publication, 'date')
+		);
+	}
 
 	return {
 		count,
