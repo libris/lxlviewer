@@ -344,9 +344,16 @@ function configuredSubDomains(): string[] {
 	return SUBSITES?.split(',').map((s) => s.trim()) || [];
 }
 
-export const handleError: HandleServerError = ({ error, event, status }) => {
-	if (status >= 500) {
-		console.error(`[${status}] ${event.request.method} ${event.url.pathname}${event.url.search}`);
+export const handleError: HandleServerError = ({ error, event, kind }) => {
+	if (kind === 'app' || kind === 'framework') {
+		if (error.status >= 500) {
+			console.error(
+				`[${error.status}] ${event.request.method} ${event.url.pathname}${event.url.search}`
+			);
+			console.error(error);
+		}
+	} else {
+		console.error(`[500] ${event.request.method} ${event.url.pathname}${event.url.search}`);
 		console.error(error);
 	}
 };
