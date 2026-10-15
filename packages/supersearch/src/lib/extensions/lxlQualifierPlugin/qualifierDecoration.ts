@@ -1,5 +1,5 @@
 import { Decoration, EditorView, WidgetType } from '@codemirror/view';
-import type { QualifierRendererProps } from '$lib/types/lxlQualifierPlugin.js';
+import type { QualifierRendererProps } from '#lib/types/lxlQualifierPlugin.js';
 import type { Range } from '@codemirror/state';
 import { qualifierStateField } from './qualifierValidation.js';
 import { qualifierRenderFacet } from './qualifierFacet.js';

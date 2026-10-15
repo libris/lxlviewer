@@ -4,7 +4,7 @@ import type { SyntaxNode } from '@lezer/common';
 import { qualifierStateField } from './qualifierValidation.js';
 import { startEditingQualifier, stopEditingQualifier } from './qualifierEffects.js';
 import { PUBLIC_DEBUG_SUPERSEARCH } from '$app/env/public';
-import { getParentNodeByType as getParent } from '$lib/utils/getParentByType.js';
+import { getParentNodeByType as getParent } from '#lib/utils/getParentByType.js';
 
 // ghostGroup refers to an outer enclosing group of the qualifier value (exported from grammar as QualifierOuterGroup)
 // It will hidden to the user and have to appear, be maintained and disappear automatically

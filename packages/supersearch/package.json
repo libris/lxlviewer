@@ -66,5 +66,9 @@
 		"typescript-eslint": "^8.41.0",
 		"vite": "8.0.16",
 		"vitest": "^4.1.12"
+	},
+	"imports": {
+		"#lib": "./src/lib/index.js",
+		"#lib/*": "./src/lib/*"
 	}
 }

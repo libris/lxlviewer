@@ -17,7 +17,7 @@ import type {
 	ViewUpdateCodeMirrorEvent as ViewUpdateEvent
 } from './components/CodeMirror.svelte';
 import lxlQualifierPlugin from './extensions/lxlQualifierPlugin/index.js';
-import SuperSearch from '$lib/components/SuperSearch.svelte';
+import SuperSearch from '#lib/components/SuperSearch.svelte';
 import useSearchRequest from './utils/useSearchRequest.svelte';
 import { getParentNodeByType } from './utils/getParentByType.js';
 
