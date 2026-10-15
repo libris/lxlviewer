@@ -6,6 +6,7 @@ const METADATA_KEYS = new Set<string>([
 	JsonLd.TYPE,
 	Fmt.LABEL,
 	Fmt.STYLE,
+	Fmt.PROP,
 	Fmt.CONTENT_BEFORE,
 	Fmt.CONTENT_AFTER
 ]);
