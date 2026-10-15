@@ -141,7 +141,11 @@
 						{/if}
 						{#each items.items as item, index (index)}
 							{@const indicator = getIndicator(item.Status)}
-							<table>
+							<table class="text-left">
+								<caption class="text-left mb-1 font-medium text-subtle"
+									>{page.data.t('holdings.loanStatus')}
+									{item?.Item_No ? `${page.data.t('holdings.item')} ${item.Item_No}` : ''}</caption
+								>
 								<tbody class="text-xs leading-relaxed">
 									<tr>
 										<th>{page.data.t('holdings.location')}</th>
