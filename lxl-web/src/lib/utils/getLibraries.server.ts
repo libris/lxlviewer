@@ -125,9 +125,11 @@ function buildOrgIndex(libraries: LibrariesCache, orgs: OrgCache): Map<OrgId, Li
 
 		if (!index.has(orgId)) {
 			const org = orgs.get(orgId);
-			if (org) {
-				index.set(orgId, { ...org, _members: [] });
+			if (!org) {
+				console.warn(`Library ${libId} isPartOf unknown org ${orgId}`);
+				continue;
 			}
+			index.set(orgId, { ...org, _members: [] });
 		}
 		index.get(orgId)!._members?.push(libId);
 	}
