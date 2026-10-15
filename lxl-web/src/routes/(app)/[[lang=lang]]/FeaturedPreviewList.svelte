@@ -146,17 +146,18 @@
 	@reference "tailwindcss";
 
 	/* prevent vertical scroll on individual items? */
+	/* TODO: Something smarter than this but we need a height value to prevent layout-shifting */
 	.horizontal-type.featured-previews {
 		& .placeholder-container,
 		:global(article) {
-			height: calc(100cqw + (var(--spacing) * 3) + 10rem);  // TODO: Something smarter than this but we need a height value to prevent layout-shifting
+			height: calc(100cqw + (var(--spacing) * 3) + 10rem);
 		}
 	}
 
-    .no-images.horizontal-type.featured-previews {
-        & .placeholder-container,
-        :global(article) {
-            height: unset;
-        }
-    }
+	.no-images.horizontal-type.featured-previews {
+		& .placeholder-container,
+		:global(article) {
+			height: unset;
+		}
+	}
 </style>

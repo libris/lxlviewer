@@ -156,10 +156,6 @@
 				overflow-y: auto;
 				scrollbar-width: thin;
 			}
-
-			& aside {
-				display: none;
-			}
 		}
 	}
 </style>

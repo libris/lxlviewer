@@ -218,7 +218,7 @@
 			flex-direction: column;
 			align-items: baseline;
 
-			&::global(> *) {
+			& :global(> *) {
 				@apply truncate;
 			}
 		}

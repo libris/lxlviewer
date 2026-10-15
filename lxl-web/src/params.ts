@@ -1,5 +1,5 @@
 import { defineParams } from '@sveltejs/kit/params';
-import isFnurgel from '#lib/utils/isFnurgel.js';
+import isFnurgel from './lib/utils/isFnurgel.ts';
 
 const matchFnurgel = (param: string) => {
 	return isFnurgel(param);
