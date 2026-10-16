@@ -19,6 +19,7 @@ declare global {
 			display: DisplayUtil;
 			userSettings: UserSettings;
 			librisSession?: string;
+			dismissedBanner: boolean;
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
 			qualifierSuggestionsByLocale: Record<
@@ -37,6 +38,7 @@ declare global {
 			footer: FooterSection[];
 			appMenuItems: AppMenuItem[];
 			librisSession?: string;
+			dismissedBanner?: boolean;
 			locale: string;
 			qualifierSuggestions: QualifierSuggestion2[];
 			siteName?: string;

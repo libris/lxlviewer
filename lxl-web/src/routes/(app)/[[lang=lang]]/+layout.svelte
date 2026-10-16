@@ -1,7 +1,9 @@
 <script lang="ts">
+	import Cookies from 'js-cookie';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import SiteFooter from './SiteFooter.svelte';
 	import AppBar from './AppBar.svelte';
+	import AppBanner from '$lib/components/supersearch/AppBanner.svelte';
 	import { page } from '$app/state';
 	import { setHomepageContext } from '$lib/contexts/homepage';
 	import { setSearchContext } from '$lib/contexts/search';
@@ -15,6 +17,8 @@
 		previews: undefined
 	});
 
+	let dismissedBanner: boolean | undefined = $state(page.data.dismissedBanner);
+
 	setHomepageContext(homepageCache);
 
 	let searchContextState = $state({
@@ -27,6 +31,13 @@
 
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
 	setSearchContext(searchContextState);
+
+	function onDismiss() {
+		Cookies.set('dismissed-banner', 'true', {
+			sameSite: 'strict'
+		});
+		dismissedBanner = true;
+	}
 </script>
 
 <svelte:head>
@@ -35,6 +46,9 @@
 </svelte:head>
 <div class={['app contents', page.data.subsetMapping && 'subset']}>
 	<AppBar />
+	{#if !dismissedBanner}
+		<AppBanner ondismiss={onDismiss} />
+	{/if}
 	<main
 		id="content"
 		class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}

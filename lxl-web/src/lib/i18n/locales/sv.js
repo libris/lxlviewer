@@ -383,5 +383,11 @@ export default {
 		positionUnavailable: 'Kunde inte hämta din plats',
 		timeOut: 'Att hämta din plats tog för lång tid. Försök igen',
 		unknown: 'Ett okänt fel inträffade när din plats skulle hämtas'
+	},
+	banner: {
+		message: 'Planerat driftsavbrott tisdag den 20 okt',
+		message2:
+			'Mellan kl. 20.00-21.30 tisdag den 20 oktober kommer Libris att vara tillfälligt otillgänglig på grund av planerat underhåll. Vi räknar med att tjänsten fungerar som vanligt igen efter avbrottet',
+		dismiss: 'Dölj informationen'
 	}
 };
