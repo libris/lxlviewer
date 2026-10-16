@@ -152,7 +152,8 @@
 				ariaLabelledBy={id}
 				{type}
 				{lazyload}
-				showResourceImages={page.data.features.resourceImages}
+				showResourceImages={page.data.features.resourceImages &&
+					page.data.features.resourceImagesHorizontal}
 			/>
 		</div>
 		{#if featured.footerTextByLang}

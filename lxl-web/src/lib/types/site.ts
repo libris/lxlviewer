@@ -24,6 +24,7 @@ export interface Features {
 	favouriteLibraries: boolean;
 	holdings: boolean;
 	resourceImages: boolean;
+	resourceImagesHorizontal: boolean;
 }
 
 export const FOOTER_COOKIES_HREF = '[cookies]';

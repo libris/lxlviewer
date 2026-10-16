@@ -91,7 +91,7 @@
 			href={resolve(page.data.localizeHref(relativizeUrl(data['@id'])))}
 			class="resource-link flex flex-col items-stretch -outline-offset-2 hover:[&_h2]:underline"
 		>
-			{#if page.data.features.resourceImages}
+			{#if page.data.features.resourceImages && page.data.features.resourceImagesHorizontal}
 				{@render image()}
 			{/if}
 			<p class="decorated-card-heading-top text-subtle line-clamp-2 text-xs break-normal">
