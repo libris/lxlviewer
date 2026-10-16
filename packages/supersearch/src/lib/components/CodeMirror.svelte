@@ -37,9 +37,9 @@
 	import { onMount } from 'svelte';
 	import { EditorView } from '@codemirror/view';
 	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
-	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
-	import isViewUpdateOfUserEvent from '$lib/utils/isViewUpdateOfUserEvent.js';
-	import type { UserEvent } from '$lib/types/superSearch.js';
+	import isViewUpdateFromUserInput from '#lib/utils/isViewUpdateFromUserInput.js';
+	import isViewUpdateOfUserEvent from '#lib/utils/isViewUpdateOfUserEvent.js';
+	import type { UserEvent } from '#lib/types/superSearch.js';
 	import { history, historyField } from '@codemirror/commands';
 
 	type CodeMirrorProps = {

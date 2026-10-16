@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { Locales, baseLocale, type LocaleCode } from '$lib/i18n/locales';
+import { Locales, baseLocale, type LocaleCode } from '#lib/i18n/locales.js';
 
 const ROUTES_TO_CHECK = [
 	'/',

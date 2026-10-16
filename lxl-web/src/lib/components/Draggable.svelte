@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { throttleRAF } from '$lib/utils/throttle';
-	import { browser } from '$app/environment';
+	import { throttleRAF } from '#lib/utils/throttle.js';
+	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	/**
 	 * Create a resizable panel by adding this component inside a relative positioned element

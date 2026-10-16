@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
-	import type { FacetValue as FacetValueType } from '$lib/types/search';
+	import { MY_LIBRARIES_FILTER_ALIAS } from '#lib/constants/facets.js';
+	import type { FacetValue as FacetValueType } from '#lib/types/search.js';
 	import Facet from './Facet.svelte';
 	import FacetLink from './FacetLink.svelte';
 	import BiPencil from '~icons/bi/pencil';

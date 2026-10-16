@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IconSearch from '~icons/bi/search';
-	import Spinner from '$lib/components/Spinner.svelte';
+	import Spinner from '#lib/components/Spinner.svelte';
 	import { page } from '$app/state';
 	import IconReturnKey from '~icons/bi/arrow-return-left';
 

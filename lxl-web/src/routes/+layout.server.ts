@@ -1,5 +1,5 @@
-import { getSupportedLocale } from '$lib/i18n/locales';
-import { defaultSiteConfiguration, resolveFeatures } from '$lib/constants/defaultSiteConfig';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import { defaultSiteConfiguration, resolveFeatures } from '#lib/constants/defaultSiteConfig.js';
 
 export async function load({ locals, url, params, cookies }) {
 	const userSettings = locals.userSettings;

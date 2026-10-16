@@ -3,25 +3,25 @@
 	import { resolve } from '$app/paths';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
-	import type { Facet, SearchResult } from '$lib/types/search';
-	import type { HoldingsData } from '$lib/types/holdings';
+	import type { Facet, SearchResult } from '#lib/types/search.js';
+	import type { HoldingsData } from '#lib/types/holdings.js';
 	import SiteFooter from '../SiteFooter.svelte';
-	import { USE_HOLDING_PANE } from '$lib/constants/panels';
-	import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-	import Toolbar from '$lib/components/Toolbar.svelte';
-	import LeadingPane from '$lib/components/find/LeadingPane.svelte';
-	import Filters from '$lib/components/find/Filters.svelte';
-	import SearchResultToolbar from '$lib/components/find/SearchResultToolbar.svelte';
-	import SearchResultInfo from '$lib/components/find/SearchResultInfo.svelte';
-	import SearchCard from '$lib/components/find/SearchCard.svelte';
-	import Pagination from '$lib/components/find/Pagination.svelte';
-	import HoldingsContent from '$lib/components/HoldingsContent.svelte';
-	import Spinner from '$lib/components/Spinner.svelte';
-	import TrailingPane from '$lib/components/find/TrailingPane.svelte';
-	import Modal from '$lib/components/Modal.svelte';
-	import Meta from '$lib/components/Meta.svelte';
-	import getPageTitle from '$lib/utils/getPageTitle';
-	import { HeadingElem } from '$lib/types/decoratedData';
+	import { USE_HOLDING_PANE } from '#lib/constants/panels.js';
+	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import Toolbar from '#lib/components/Toolbar.svelte';
+	import LeadingPane from '#lib/components/find/LeadingPane.svelte';
+	import Filters from '#lib/components/find/Filters.svelte';
+	import SearchResultToolbar from '#lib/components/find/SearchResultToolbar.svelte';
+	import SearchResultInfo from '#lib/components/find/SearchResultInfo.svelte';
+	import SearchCard from '#lib/components/find/SearchCard.svelte';
+	import Pagination from '#lib/components/find/Pagination.svelte';
+	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
+	import Spinner from '#lib/components/Spinner.svelte';
+	import TrailingPane from '#lib/components/find/TrailingPane.svelte';
+	import Modal from '#lib/components/Modal.svelte';
+	import Meta from '#lib/components/Meta.svelte';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
@@ -35,7 +35,6 @@
 	);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
-
 	const HoldingsComponent = $derived(
 		USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
 	);
@@ -49,7 +48,9 @@
 
 	let previousURL: URL;
 
-	afterNavigate(({ from }) => {
+	afterNavigate(({ from, shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if (from) {
 			previousURL = from.url;
 		}
@@ -67,7 +68,7 @@
 				...Array.from(page.url.searchParams.entries())
 			]);
 			newSearchParams.delete('holdings');
-			goto(resolve(page.url.pathname + `?${newSearchParams.toString()}`), { replaceState: true });
+			goto(resolve(page.url.pathname + `?${newSearchParams.toString()}`), { replace: true });
 		}
 	}
 </script>
@@ -96,11 +97,10 @@
 					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar {searchResult} />
 					<SearchResultInfo {searchResult} />
+
 					<ol aria-labelledby="search-results" class="flex flex-col">
 						{#each searchResult.items as item, index (item['@id'] + index)}
-							<li>
-								<SearchCard {item} headingElement={HeadingElem.H2} />
-							</li>
+							<li><SearchCard {item} headingElement={HeadingElem.H2} /></li>
 						{/each}
 					</ol>
 					<Pagination data={searchResult} />
@@ -155,10 +155,6 @@
 			& .search-result-content {
 				overflow-y: auto;
 				scrollbar-width: thin;
-			}
-
-			& aside {
-				display: none;
 			}
 		}
 	}

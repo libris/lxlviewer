@@ -10,18 +10,18 @@
 </script>
 
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
+	import { PUBLIC_FJARRLAN_URL } from '$app/env/public';
 	import { type Component, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { type LocaleCode, Locales } from '$lib/i18n/locales';
+	import { type LocaleCode, Locales } from '#lib/i18n/locales.js';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
-	import { getSearchContext } from '$lib/contexts/search';
-	import librisLogo from '$lib/assets/img/libris-logo.svg';
+	import { getSearchContext } from '#lib/contexts/search.js';
+	import librisLogo from '#lib/assets/img/libris-logo.svg';
 	import AppSearch from './AppSearch.svelte';
-	import SkipToContent from '$lib/components/SkipToContent.svelte';
-	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
-	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
+	import SkipToContent from '#lib/components/SkipToContent.svelte';
+	import AppMenuContent from '#lib/components/AppMenuContent.svelte';
+	import SearchMapping from '#lib/components/find/SearchMapping.svelte';
 	import IconMenu from '~icons/bi/list';
 	import IconCloseMenu from '~icons/bi/x-lg';
 	import IconBookmark from '~icons/bi/bookmark';
@@ -92,7 +92,10 @@
 		closeExpandedMenu();
 		searchContext.superSearch?.showExpandedSearch({ cursorAtEnd: true });
 	}
-	beforeNavigate(() => {
+
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		closeExpandedMenu();
 	});
 
@@ -184,14 +187,11 @@
 				{/if}
 			</li>
 		</ul>
-		<div class="contents lg:hidden">
-			{@render trailingActions({ mobile: true })}
-		</div>
+
+		<div class="contents lg:hidden">{@render trailingActions({ mobile: true })}</div>
 
 		{#if !isHomeRoute || (isHomeRoute && searchContext.showSearchInAppBar)}
-			<div class={['search']}>
-				<AppSearch id={ID_APP_BAR_LG_SEARCH} />
-			</div>
+			<div class={['search']}><AppSearch id={ID_APP_BAR_LG_SEARCH} /></div>
 		{/if}
 		<div class="hidden lg:contents">
 			{@render trailingActions({ mobile: false })}
@@ -279,7 +279,7 @@
 				<!-- eslint-disable svelte/no-navigation-without-resolve -->
 				<a
 					class="action bg-primary-800 hover:bg-primary-900 *:text-page!"
-					href={`${env.PUBLIC_FJARRLAN_URL}/lf.php`}
+					href={`${PUBLIC_FJARRLAN_URL}/lf.php`}
 				>
 					{@render actionItemContents({
 						Icon: IconFjarrlan,
@@ -313,9 +313,7 @@
 		class="3xl:px-2.5 text-subtle flex min-w-11 flex-col items-center gap-1 px-1 text-xs font-medium sm:text-sm 2xl:gap-1.5 2xl:text-base"
 	>
 		<Icon class="mt-1 size-5 2xl:size-6" />
-		<p {id} class="px-1 whitespace-nowrap lg:px-0">
-			{label}
-		</p>
+		<p {id} class="px-1 whitespace-nowrap lg:px-0">{label}</p>
 	</div>
 {/snippet}
 

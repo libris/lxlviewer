@@ -1,9 +1,9 @@
 <script lang="ts">
-	import getPageTitle from '$lib/utils/getPageTitle';
-	import Meta from '$lib/components/Meta.svelte';
-	import TableOfContents from '$lib/components/TableOfContents.svelte';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
+	import Meta from '#lib/components/Meta.svelte';
+	import TableOfContents from '#lib/components/TableOfContents.svelte';
 	import { page } from '$app/state';
-	import { getSearchContext } from '$lib/contexts/search';
+	import { getSearchContext } from '#lib/contexts/search.js';
 	import SvContent from './sv.md';
 	import EnContent from './en.md';
 

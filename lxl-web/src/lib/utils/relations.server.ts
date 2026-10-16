@@ -1,14 +1,14 @@
-import { env } from '$env/dynamic/private';
+import { API_URL } from '$app/env/private';
 import { error } from '@sveltejs/kit';
-import type { VocabUtil } from '$lib/utils/xl.server';
-import type { PartialCollectionView } from '$lib/types/search';
-import { Base, JsonLd, Platform } from '$lib/types/xl';
-import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
-import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
-import capitalize from '$lib/utils/capitalize';
-import { type ApiError } from '$lib/types/api.js';
-import getAtPath from '$lib/utils/getAtPath';
-import { getUriSlug } from '$lib/utils/http';
+import type { VocabUtil } from '#lib/utils/xl.server.js';
+import type { PartialCollectionView } from '#lib/types/search.js';
+import { Base, JsonLd, Platform } from '#lib/types/xl.js';
+import addDefaultSearchParams from '#lib/utils/addDefaultSearchParams.js';
+import getSortedSearchParams from '#lib/utils/getSortedSearchParams.js';
+import capitalize from '#lib/utils/capitalize.js';
+import { type ApiError } from '#lib/types/api.js';
+import getAtPath from '#lib/utils/getAtPath.js';
+import { getUriSlug } from '#lib/utils/http.js';
 
 export async function getRelations(
 	resourceId: string | null,
@@ -22,7 +22,7 @@ export async function getRelations(
 	}
 
 	const res = await fetch(
-		`${env.API_URL}/find.jsonld?${new URLSearchParams({
+		`${API_URL}/find.jsonld?${new URLSearchParams({
 			_o: resourceId,
 			_q: '*',
 			_limit: '0',
@@ -36,9 +36,7 @@ export async function getRelations(
 
 	if (!res.ok) {
 		const err = (await res.json()) as ApiError;
-		throw error(err.status_code, {
-			message: err.message,
-			status: err.status,
+		throw error(err.status_code, err.message, {
 			...(err.error_id && { errorId: err.error_id })
 		});
 	}
@@ -55,15 +53,9 @@ export async function getRelations(
 			const preferLike: boolean = getAtPath(p.predicate, [Base.category, '*', JsonLd.ID])
 				.map(getUriSlug)
 				.some((c) => c === Platform.preferLike);
-			const findUrl = `/find?${getSortedSearchParams(
-				addDefaultSearchParams(
-					new URLSearchParams({
-						_q: q,
-						_spell: 'false'
-					})
-				)
-			).toString()}`;
-			const previewUrl = `${env.API_URL}/find.jsonld?${getSortedSearchParams(
+			const findUrl = `/find?${getSortedSearchParams(addDefaultSearchParams(new URLSearchParams({ _q: q, _spell: 'false' }))).toString()}`;
+
+			const previewUrl = `${API_URL}/find.jsonld?${getSortedSearchParams(
 				addDefaultSearchParams(
 					new URLSearchParams({
 						_q: q,

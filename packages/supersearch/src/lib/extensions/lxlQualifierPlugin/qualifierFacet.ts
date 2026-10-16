@@ -1,5 +1,5 @@
 import { Facet } from '@codemirror/state';
-import type { QualifierValidator, QualifierRenderer } from '$lib/types/lxlQualifierPlugin.js';
+import type { QualifierValidator, QualifierRenderer } from '#lib/types/lxlQualifierPlugin.js';
 
 export const qualifierValidatorFacet = Facet.define<QualifierValidator, QualifierValidator>({
 	combine(values) {

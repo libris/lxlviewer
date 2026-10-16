@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/state';
-	import getPageTitle from '$lib/utils/getPageTitle';
-	import librisLogo from '$lib/assets/img/libris-logo.svg';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
+	import librisLogo from '#lib/assets/img/libris-logo.svg';
 
 	let { showHeader = false } = $props();
 	const siteName = $derived(page.data.siteName || 'Libris');

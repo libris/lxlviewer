@@ -1,29 +1,30 @@
+import type { HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
 import fs from 'fs';
-import {
-	type HandleServerError,
-	redirect,
-	type RequestEvent,
-	type ServerInit
-} from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { defaultLocale, Locales } from '$lib/i18n/locales';
-import { DERIVED_LENSES } from '$lib/types/display';
-import type { QualifierSuggestion2 } from '$lib/types/search';
-import type { Site } from '$lib/types/site';
+import 'dotenv/config';
+import { ID_URL, API_URL, USE_LOCAL_DISPLAY_JSONLD, SUBSITES } from '$app/env/private';
+import { defaultLocale, Locales } from '#lib/i18n/locales.js';
+import { DERIVED_LENSES } from '#lib/types/display.js';
+import type { QualifierSuggestion2 } from '#lib/types/search.js';
+import type { Site } from '#lib/types/site.js';
 import {
 	DebugFlags,
 	type MyLibrariesType,
 	SettingsParams,
 	type UserSettings
-} from '$lib/types/userSettings';
-import displayWeb from '$lib/assets/json/display-web.json';
-import { defaultSiteConfiguration } from '$lib/constants/defaultSiteConfig';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
-import { getLibrary, getOrgMembers, startRefreshLibraries } from '$lib/utils/getLibraries.server';
-import { getSubsetMapping } from '$lib/utils/subsetCache.server';
-import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions.server';
-import { updateSettings } from '$lib/utils/userSettings.svelte';
-import { JsonLd } from '$lib/types/xl';
+} from '#lib/types/userSettings.js';
+import displayWeb from '#lib/assets/json/display-web.json';
+import { defaultSiteConfiguration } from '#lib/constants/defaultSiteConfig.js';
+import { DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
+import {
+	getLibrary,
+	getOrgMembers,
+	startRefreshLibraries
+} from '#lib/utils/getLibraries.server.js';
+import { getSubsetMapping } from '#lib/utils/subsetCache.server.js';
+import { getQualifierSuggestions } from '#lib/utils/getQualifierSuggestions.server.js';
+import { updateSettings } from '#lib/utils/userSettings.svelte.js';
+import { JsonLd } from '#lib/types/xl.js';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
@@ -36,12 +37,13 @@ export const init: ServerInit = async () => {
 		const [, displayUtil] = await loadUtilCached();
 		startRefreshLibraries(displayUtil, defaultLocale);
 
-		const sites = (env['SUBSITES'] || '')
+		const sites = (SUBSITES || '')
 			.split(',')
 			.map((s) => s.trim())
 			.filter((s) => s.length > 0)
-			.map((site) => env[`SUBSITE.${site}.SEARCH_SITE`])
+			.map((site) => process.env[`SUBSITE.${site}.SEARCH_SITE`])
 			.filter((s) => typeof s === 'string');
+
 		for (const s of sites) {
 			await getSiteConfCached(s);
 		}
@@ -246,16 +248,16 @@ function loadUtilCached() {
 // TODO error handling
 async function loadUtil(): Promise<Util> {
 	const [contextRes, vocabRes, displayRes] = await Promise.all([
-		fetch(`${env.ID_URL}/context.jsonld`),
-		fetch(`${env.ID_URL}/vocab/data.jsonld`),
-		fetch(`${env.ID_URL}/vocab/display/data.jsonld`)
+		fetch(`${ID_URL}/context.jsonld`),
+		fetch(`${ID_URL}/vocab/data.jsonld`),
+		fetch(`${ID_URL}/vocab/display/data.jsonld`)
 	]);
 
 	const context = await contextRes.json();
 	const vocab = await vocabRes.json();
 	let display = await displayRes.json();
 
-	if (env.USE_LOCAL_DISPLAY_JSONLD === 'true') {
+	if (USE_LOCAL_DISPLAY_JSONLD === 'true') {
 		const path = '../../definitions/source/vocab/display.jsonld';
 		const displayJson = fs.readFileSync(path, { encoding: 'utf8' });
 		display = JSON.parse(displayJson);
@@ -294,7 +296,7 @@ function getSite(event: RequestEvent): Promise<Site> | null {
 	const deepestSubDomain = host.split('.')[0];
 
 	if (configuredSubDomains().includes(deepestSubDomain)) {
-		const siteUrl = env[`SUBSITE.${deepestSubDomain}.SEARCH_SITE`];
+		const siteUrl = process.env[`SUBSITE.${deepestSubDomain}.SEARCH_SITE`];
 		if (!siteUrl) {
 			return null;
 		}
@@ -315,7 +317,7 @@ async function getSiteConfCached(siteUrl: string) {
 }
 
 async function loadSiteConf(siteUrl: string): Promise<Site> {
-	const fetchUrl = `${env.API_URL}/${siteUrl}?nocache=1`;
+	const fetchUrl = `${API_URL}/${siteUrl}?nocache=1`;
 	console.log(`Fetching ${fetchUrl}`);
 	const response = await fetch(fetchUrl, {
 		headers: { Accept: 'application/ld+json' },
@@ -338,12 +340,19 @@ async function loadSiteConf(siteUrl: string): Promise<Site> {
 }
 
 function configuredSubDomains(): string[] {
-	return env.SUBSITES?.split(',').map((s) => s.trim()) || [];
+	return SUBSITES?.split(',').map((s) => s.trim()) || [];
 }
 
-export const handleError: HandleServerError = ({ error, event, status }) => {
-	if (status >= 500) {
-		console.error(`[${status}] ${event.request.method} ${event.url.pathname}${event.url.search}`);
+export const handleError: HandleServerError = ({ error, event, kind }) => {
+	if (kind === 'app' || kind === 'framework') {
+		if (error.status >= 500) {
+			console.error(
+				`[${error.status}] ${event.request.method} ${event.url.pathname}${event.url.search}`
+			);
+			console.error(error);
+		}
+	} else {
+		console.error(`[500] ${event.request.method} ${event.url.pathname}${event.url.search}`);
 		console.error(error);
 	}
 };

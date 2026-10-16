@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Cookies from 'js-cookie';
-	import getPageTitle from '$lib/utils/getPageTitle';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import SiteFooter from './SiteFooter.svelte';
 	import AppBar from './AppBar.svelte';
-	import AppBanner from '$lib/components/AppBanner.svelte';
+	import AppBanner from '#lib/components/AppBanner.svelte';
 	import { page } from '$app/state';
-	import { setHomepageContext } from '$lib/contexts/homepage';
-	import { setSearchContext } from '$lib/contexts/search';
+	import { setHomepageContext } from '#lib/contexts/homepage.js';
+	import { setSearchContext } from '#lib/contexts/search.js';
 
 	const { children } = $props();
 

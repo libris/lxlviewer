@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { displayMappingToString } from './displayMappingToString';
-import type { DisplayMapping } from '$lib/types/search';
+import type { DisplayMapping } from '#lib/types/search.js';
 
 describe('displayMappingToString', () => {
 	it('returns a readable text string from a DisplayMapping object', () => {

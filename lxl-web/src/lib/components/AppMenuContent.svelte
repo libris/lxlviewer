@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type Component } from 'svelte';
 	import { page } from '$app/state';
-	import { Locales, type LocaleCode } from '$lib/i18n/locales';
+	import { Locales, type LocaleCode } from '#lib/i18n/locales.js';
 	import IconHome from '~icons/bi/house';
 	import IconSearch from '~icons/bi/search';
 	import IconSaved from '~icons/bi/bookmark';

@@ -1,5 +1,5 @@
 import type { JSONValue } from './json.js';
-import type { Editor, Selection } from '$lib/components/CodeMirror.svelte';
+import type { Editor, Selection } from '#lib/components/CodeMirror.svelte';
 
 export type QueryFunction = (value: string, cursor: number) => URLSearchParams;
 export type PaginationQueryFunction = (

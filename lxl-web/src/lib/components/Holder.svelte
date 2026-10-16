@@ -6,12 +6,12 @@
 		LibraryWithLinks,
 		LibraryWithLinksAndInstances,
 		UnknownLibrary
-	} from '$lib/types/holdings';
-	import { Fmt, JsonLd } from '$lib/types/xl';
-	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
-	import { createHoldingLinks } from '$lib/utils/holdings';
+	} from '#lib/types/holdings.js';
+	import { Fmt, JsonLd } from '#lib/types/xl.js';
+	import { Elem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
+	import { createHoldingLinks } from '#lib/utils/holdings.js';
 	import LoanStatus from './LoanStatus.svelte';
-	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
+	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 

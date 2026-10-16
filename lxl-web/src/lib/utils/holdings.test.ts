@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { getBibIdsByInstanceId, getHoldersByType, getHoldingsByType } from './holdings.server';
 import { getHeldBy } from './holdings';
-import mainEntity from '$lib/assets/json/test-data/main-entity.json';
-import record from '$lib/assets/json/test-data/record.json';
+import mainEntity from '#lib/assets/json/test-data/main-entity.json';
+import record from '#lib/assets/json/test-data/record.json';
 import { UserSettings } from './userSettings.svelte';
 import { centerOnWork } from './centerOnWork.server';
 

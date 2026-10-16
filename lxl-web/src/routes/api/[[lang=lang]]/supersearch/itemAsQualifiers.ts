@@ -1,6 +1,6 @@
-import type { QualifierSuggestion } from '$lib/types/search';
-import { type FramedData } from '$lib/types/xl';
-import type { LocaleCode } from '$lib/i18n/locales';
+import type { QualifierSuggestion } from '#lib/types/search.js';
+import { type FramedData } from '#lib/types/xl.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
 
 function itemAsQualifiers(item: FramedData, locale: LocaleCode): QualifierSuggestion[] {
 	const qualifiers = item['_qualifiers'];

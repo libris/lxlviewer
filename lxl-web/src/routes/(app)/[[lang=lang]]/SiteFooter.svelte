@@ -1,9 +1,9 @@
 <script lang="ts">
-	import KbLogo from '$lib/assets/img/kb_logo_text_black.svg';
+	import KbLogo from '#lib/assets/img/kb_logo_text_black.svg';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import * as CookieConsent from 'vanilla-cookieconsent';
-	import { FOOTER_COOKIES_HREF } from '$lib/types/site';
+	import { FOOTER_COOKIES_HREF } from '#lib/types/site.js';
 
 	const sections = $derived(page.data.footer);
 </script>

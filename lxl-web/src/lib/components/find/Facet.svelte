@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { Facet as FacetType, FacetValue as FacetValueType } from '$lib/types/search';
-	import { ExpandedState } from '$lib/types/userSettings';
+	import type { Facet as FacetType, FacetValue as FacetValueType } from '#lib/types/search.js';
+	import { ExpandedState } from '#lib/types/userSettings.js';
 	import {
 		CUSTOM_FACET_SORT,
 		DEFAULT_FACET_SORT,
 		DEFAULT_FACET_VALUES_SHOWN
-	} from '$lib/constants/facets';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { getMatomoTracker } from '$lib/contexts/matomo';
-	import { popover } from '$lib/actions/popover';
+	} from '#lib/constants/facets.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { getMatomoTracker } from '#lib/contexts/matomo.js';
+	import { popover } from '#lib/actions/popover/index.js';
 	import FacetLinks from './FacetLinks.svelte';
-	import FacetRadio from '$lib/components/find/FacetRadio.svelte';
-	import FacetCheckbox from '$lib/components/find/FacetCheckbox.svelte';
-	import FacetRange from '$lib/components/find/FacetRange.svelte';
+	import FacetRadio from '#lib/components/find/FacetRadio.svelte';
+	import FacetCheckbox from '#lib/components/find/FacetCheckbox.svelte';
+	import FacetRange from '#lib/components/find/FacetRange.svelte';
 	import IconChevron from '~icons/bi/chevron-down';
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiInfo from '~icons/bi/info-circle';

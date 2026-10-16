@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import type { FacetValue as FacetValueType } from '$lib/types/search';
-	import { JsonLd } from '$lib/types/xl';
+	import type { FacetValue as FacetValueType } from '#lib/types/search.js';
+	import { JsonLd } from '#lib/types/xl.js';
 	import FacetLink from './FacetLink.svelte';
 
 	type Props = {
@@ -17,9 +17,7 @@
 		const target = e.currentTarget as HTMLInputElement;
 
 		goto(page.data.localizeHref(target.value), {
-			replaceState: true,
-			keepFocus: true,
-			noScroll: true
+			reset: false
 		});
 	}
 </script>

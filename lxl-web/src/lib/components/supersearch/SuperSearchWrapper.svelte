@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount, tick } from 'svelte';
 	import { page } from '$app/state';
-	import { afterNavigate, goto, onNavigate, pushState } from '$app/navigation';
+	import { afterNavigate, goto, onNavigate } from '$app/navigation';
 	import { innerHeight } from 'svelte/reactivity/window';
 	import {
 		type ChangeEvent,
@@ -24,15 +24,15 @@
 	import ShowAllResultsRow from './rows/ShowAllResultsRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
-	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
-	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import { type DisplayMapping, type QualifierSuggestion2 } from '$lib/types/search';
+	import getLabelFromMappings from '#lib/utils/getLabelsFromMapping.svelte.js';
+	import addSpaceIfEndingQualifier from '#lib/utils/addSpaceIfEndingQualifier.js';
+	import { type DisplayMapping, type QualifierSuggestion2 } from '#lib/types/search.js';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
 	import IconSearch from '~icons/bi/search';
-	import '$lib/styles/lxlquery.css';
-	import { getSearchContext } from '$lib/contexts/search';
+	import '#lib/styles/lxlquery.css';
+	import { getSearchContext } from '#lib/contexts/search.js';
 	import { SvelteURLSearchParams, MediaQuery } from 'svelte/reactivity';
 	import { ID_HERO_SEARCH } from '../../../routes/(app)/[[lang=lang]]/+page.svelte';
 	import {
@@ -109,7 +109,7 @@
 
 	let clearUrl = $derived.by(() => {
 		if (page.url.pathname !== '/find') return undefined;
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('_q', '');
 		url.searchParams.delete('_offset');
 		return url.toString();
@@ -180,6 +180,8 @@
 	});
 
 	onNavigate((navigation) => {
+		if (navigation.shallow && navigation.type === 'goto') return;
+
 		if (navigation.type !== 'popstate' && superSearch?.isExpanded()) {
 			superSearch?.hideExpandedSearch();
 			superSearch?.blur();
@@ -213,7 +215,9 @@
 	});
 
 	// manually fetch data again after sort change to update up-links
-	afterNavigate(({ from, to }) => {
+	afterNavigate(({ from, to, shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		const sortChanged = from?.url.searchParams.get('_sort') !== to?.url.searchParams.get('_sort');
 		if (sortChanged) {
 			superSearch?.fetchData();
@@ -332,7 +336,10 @@
 			event.trigger !== 'popstate' &&
 			event.trigger !== 'navigation'
 		) {
-			pushState('', { ...page.state, expandedSuperSearch: true });
+			goto('', {
+				shallow: true,
+				state: { ...page.state, expandedSuperSearch: true }
+			});
 		}
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
@@ -677,6 +684,7 @@
 						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
 				{/if}
+
 				<FooterRow {footerRowIndex} {getCellId} {isFocusedCell} />
 			</nav>
 		{/snippet}

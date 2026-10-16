@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
+import { DEFAULT_FACETS_EXPANDED } from '#lib/constants/facets.js';
 
 test.beforeEach(async ({ page }) => {
 	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_spell=true');

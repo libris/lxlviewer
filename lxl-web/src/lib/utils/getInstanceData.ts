@@ -1,9 +1,9 @@
-import { JsonLd, type DisplayDecorated, type ResourceNode } from '$lib/types/xl';
+import { JsonLd, type DisplayDecorated, type ResourceNode } from '#lib/types/xl.js';
 import {
 	getPropertyValues,
 	getStringPropertyValues,
 	isResourceNode
-} from '$lib/utils/resourceData';
+} from '#lib/utils/resourceData.js';
 
 function getPublications(data: DisplayDecorated): ResourceNode[] {
 	return getPropertyValues(data, 'publication')?.filter(isResourceNode);

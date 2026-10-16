@@ -31,9 +31,10 @@
 		...items
 	]);
 
-	afterNavigate(() => {
-		observer?.disconnect();
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
 
+		observer?.disconnect();
 		selectedAnchor = window.location.hash?.substring(1);
 
 		if (!mobile) {

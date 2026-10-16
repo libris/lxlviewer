@@ -1,11 +1,10 @@
-import { env } from '$env/dynamic/private';
-import { json } from '@sveltejs/kit';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
 import type { RequestHandler } from './$types.ts';
-import type { SuperSearchResult } from '$lib/types/search.js';
-import { getSupportedLocale } from '$lib/i18n/locales.js';
+import type { SuperSearchResult } from '#lib/types/search.js';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
 import addSuggestParams from './addSuggestParams.js';
-import { asResult } from '$lib/utils/search.server';
-import { DebugFlags } from '$lib/types/userSettings.js';
+import { asResult } from '#lib/utils/search.server.js';
+import { DebugFlags } from '#lib/types/userSettings.js';
 import itemAsQualifiers from './itemAsQualifiers.js';
 
 /**
@@ -41,11 +40,10 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		newSearchParams.set('_site', locals.site?.searchSite);
 	}
 
-	const data = await fetch(`${env.API_URL}/find.jsonld?${newSearchParams.toString()}`).then((res) =>
+	const data = await fetch(`${API_URL}/find.jsonld?${newSearchParams.toString()}`).then((res) =>
 		res.json()
 	);
-
-	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
+	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, AUXD_SECRET);
 
 	const superSearchResult: SuperSearchResult = {
 		...searchResult,
@@ -58,5 +56,5 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		})
 	};
 
-	return json(superSearchResult);
+	return Response.json(superSearchResult);
 };

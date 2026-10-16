@@ -1,4 +1,4 @@
-import { getSupportedLocale, otherLocales } from '$lib/i18n/locales';
+import { getSupportedLocale, otherLocales } from '#lib/i18n/locales.js';
 import {
 	type FramedData,
 	JsonLd,
@@ -8,15 +8,15 @@ import {
 	Owl,
 	Platform,
 	Rdfs
-} from '$lib/types/xl';
-import { asArray, toString, isObject } from '$lib/utils/misc';
-import { type DisplayUtil, isLink, VocabUtil } from '$lib/utils/xl.server';
+} from '#lib/types/xl.js';
+import { asArray, toString, isObject } from '#lib/utils/misc.js';
+import { type DisplayUtil, isLink, VocabUtil } from '#lib/utils/xl.server.js';
 import type {
 	PropertyChain,
 	QualifierDefinition,
 	QualifierDefinitionGroup
-} from '$lib/types/search';
-import { getUriSlug } from '$lib/utils/http';
+} from '#lib/types/search.js';
+import { getUriSlug } from '#lib/utils/http.js';
 
 export async function load({ locals, params }) {
 	const locale = getSupportedLocale(params?.lang);

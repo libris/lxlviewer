@@ -1,5 +1,4 @@
 import type { RequestHandler } from './$types.ts';
-import { json } from '@sveltejs/kit';
 
 const MAX_ITEMS = 30;
 
@@ -14,7 +13,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	await new Promise((resolve) => setTimeout(resolve, 200));
 
-	return json({
+	return Response.json({
 		'@id': `/api/find?${url.searchParams.toString()}`,
 		items: MOCK_ITEMS_DATA.slice(offset, offset + limit).map((item) => ({
 			'@id': item.id,

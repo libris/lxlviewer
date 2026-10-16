@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import type { AvailableCitationFormat, CitationsType } from '$lib/types/citation';
-	import { getAvailableFormats } from '$lib/utils/citation';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import type { AvailableCitationFormat, CitationsType } from '#lib/types/citation.js';
+	import { getAvailableFormats } from '#lib/utils/citation.js';
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/state';
 	import Spinner from './Spinner.svelte';

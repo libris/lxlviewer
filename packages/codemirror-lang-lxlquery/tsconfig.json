@@ -2,11 +2,12 @@
 	"compilerOptions": {
 		"strict": true,
 		"target": "es6",
-		"module": "es2020",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
 		"newLine": "lf",
 		"declaration": true,
 		"declarationDir": "dist/types",
-		"moduleResolution": "node"
+		"rootDir": "./src"
 	},
 	"include": ["src/*.ts"]
 }

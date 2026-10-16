@@ -4,9 +4,9 @@
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import type { CategoryShortcut, FeaturedSearch } from '$lib/remotes/homepage.remote';
-	import getPageTitle from '$lib/utils/getPageTitle';
-	import Meta from '$lib/components/Meta.svelte';
+	import type { CategoryShortcut, FeaturedSearch } from '#lib/remotes/homepage.remote.js';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
+	import Meta from '#lib/components/Meta.svelte';
 	import { page } from '$app/state';
 	import IconSearch from '~icons/bi/search';
 	import IconArrowDown from '~icons/bi/arrow-down';
@@ -15,7 +15,7 @@
 	import AppSearch from './AppSearch.svelte';
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
-	import { getSearchContext } from '$lib/contexts/search';
+	import { getSearchContext } from '#lib/contexts/search.js';
 	import { onNavigate } from '$app/navigation';
 
 	const pageTitle = getPageTitle(
@@ -32,13 +32,11 @@
 	const featuredSearches2: FeaturedSearch[] = $derived(page.data.featuredSearches2);
 	const featuredCollections: FeaturedSearch[] = $derived(page.data.featuredCollections);
 	const featuredCategories: CategoryShortcut[] = $derived(page.data.featuredCategories);
-
-	const heroImageModules = import.meta.glob<string>('$lib/assets/img/hero/*.{jpg,jpeg,png,webp}', {
+	const heroImageModules = import.meta.glob<string>('#lib/assets/img/hero/*.{jpg,jpeg,png,webp}', {
 		eager: true,
 		query: '?url',
 		import: 'default'
 	});
-
 	const heroImageByName: Record<string, string> = Object.fromEntries(
 		Object.entries(heroImageModules).map(([path, url]) => [path.split('/').pop()!, url])
 	);
@@ -81,6 +79,8 @@
 	});
 
 	onNavigate((navigation) => {
+		if (navigation.shallow && navigation.type === 'goto') return;
+
 		if ((navigation.to?.scroll?.y || 0) > (searchContainerElement?.offsetTop || 0)) {
 			searchContext.showSearchInAppBar = true;
 		}

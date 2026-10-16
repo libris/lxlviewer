@@ -10,18 +10,18 @@
 		type PropertyNode,
 		JsonLd,
 		type HtmlNode
-	} from '$lib/types/xl';
-	import { Elem, ShowLabelsOptions } from '$lib/types/decoratedData';
-	import popover from '$lib/actions/popover';
+	} from '#lib/types/xl.js';
+	import { Elem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
+	import popover from '#lib/actions/popover/index.js';
 	import {
 		hasStyle,
 		getResourceId,
 		getStyle,
 		isPropertyNode,
 		isHtmlNode
-	} from '$lib/utils/resourceData';
-	import { relativizeUrl, trimSlashes } from '$lib/utils/http';
-	import { getSupportedLocale } from '$lib/i18n/locales';
+	} from '#lib/utils/resourceData.js';
+	import { relativizeUrl, trimSlashes } from '#lib/utils/http.js';
+	import { getSupportedLocale } from '#lib/i18n/locales.js';
 
 	type Parent = Elem | undefined;
 	type Node = ResourceNode | PropertyNode | HtmlNode;

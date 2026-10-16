@@ -1,7 +1,7 @@
 <script lang="ts">
-	import getPageTitle from '$lib/utils/getPageTitle';
-	import Meta from '$lib/components/Meta.svelte';
-	import MarkdownContent from '$lib/components/MarkdownContent.svelte';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
+	import Meta from '#lib/components/Meta.svelte';
+	import MarkdownContent from '#lib/components/MarkdownContent.svelte';
 	import { page } from '$app/state';
 	import SvContent from './sv.md';
 	import EnContent from './en.md';

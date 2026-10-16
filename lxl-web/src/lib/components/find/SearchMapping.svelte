@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { JsonLd } from '$lib/types/xl';
-	import type { DisplayMapping } from '$lib/types/search';
-	import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
-	import { getRelationSymbol } from '$lib/utils/getRelationSymbol';
+	import { JsonLd } from '#lib/types/xl.js';
+	import type { DisplayMapping } from '#lib/types/search.js';
+	import { MAPPING_IGNORE_VARIABLE } from '#lib/constants/mapping.js';
+	import { getRelationSymbol } from '#lib/utils/getRelationSymbol.js';
 	import SearchMapping from './SearchMapping.svelte';
 	import QualifierPill from '../supersearch/QualifierPill.svelte';
 	import IconClose from '~icons/bi/x-lg';

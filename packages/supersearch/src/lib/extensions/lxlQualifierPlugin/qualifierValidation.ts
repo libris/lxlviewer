@@ -5,10 +5,10 @@ import type {
 	QualifierState,
 	QualifierStateField,
 	QualifierValidator
-} from '$lib/types/lxlQualifierPlugin.js';
-import { sendMessage } from '$lib/utils/sendMessage.js';
+} from '#lib/types/lxlQualifierPlugin.js';
+import { sendMessage } from '#lib/utils/sendMessage.js';
 import { qualifierRenderFacet, qualifierValidatorFacet } from './qualifierFacet.js';
-import { messages } from '$lib/constants/messages.js';
+import { messages } from '#lib/constants/messages.js';
 import { startEditingQualifier, stopEditingQualifier } from './qualifierEffects.js';
 
 class AtomicRange extends RangeValue {}

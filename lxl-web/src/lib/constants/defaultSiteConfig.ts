@@ -1,5 +1,5 @@
-import { env } from '$env/dynamic/public';
-import defaultSiteConfigJson from '$lib/assets/json/defaultSiteConfig.json';
+import { PUBLIC_FJARRLAN_URL } from '$app/env/public';
+import defaultSiteConfigJson from '#lib/assets/json/defaultSiteConfig.json';
 import type {
 	AppMenuItem,
 	FeaturedCategoryConfig,
@@ -7,7 +7,7 @@ import type {
 	Features,
 	FooterSection,
 	Site
-} from '$lib/types/site';
+} from '#lib/types/site.js';
 
 interface DefaultSiteConfiguration extends NonNullable<Site['configuration']> {
 	themeName: string;
@@ -24,7 +24,7 @@ interface DefaultSiteConfiguration extends NonNullable<Site['configuration']> {
 export const defaultSiteConfiguration: DefaultSiteConfiguration = JSON.parse(
 	JSON.stringify(defaultSiteConfigJson).replaceAll(
 		'${PUBLIC_FJARRLAN_URL}',
-		env.PUBLIC_FJARRLAN_URL ?? ''
+		PUBLIC_FJARRLAN_URL ?? ''
 	)
 ).lxlwebConfiguration;
 

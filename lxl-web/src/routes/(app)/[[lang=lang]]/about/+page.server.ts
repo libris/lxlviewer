@@ -1,5 +1,5 @@
-import { defaultLocale, getSupportedLocale } from '$lib/i18n/locales';
-import { markdownToHtml } from '$lib/utils/htmlFromMarkdown.server';
+import { defaultLocale, getSupportedLocale } from '#lib/i18n/locales.js';
+import { markdownToHtml } from '#lib/utils/htmlFromMarkdown.server.js';
 
 export const load = ({ params, locals }) => {
 	const locale = getSupportedLocale(params?.lang);
