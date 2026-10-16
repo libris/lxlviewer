@@ -561,7 +561,7 @@
 					>
 					{#if instances?.length === 1 && process.env.NODE_ENV === 'development'}
 						· <a
-							href="https://gamla.libris.kb.se/bib/{controlNumber}"
+							href="http://gamla.libris.kb.se/bib/{controlNumber}"
 							target="_blank"
 							class="ext-link"
 							>{page.data.t('resource.showIn')} {page.data.t('resource.librisOld')}</a
