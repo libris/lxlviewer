@@ -147,12 +147,12 @@
 
 	/* prevent vertical scroll on individual items? */
 	/* TODO: Something smarter than this but we need a height value to prevent layout-shifting */
-	.horizontal-type.featured-previews {
+	/* .horizontal-type.featured-previews {
 		& .placeholder-container,
 		:global(article) {
 			height: calc(100cqw + (var(--spacing) * 3) + 10rem);
 		}
-	}
+	} */
 
 	.no-images.horizontal-type.featured-previews {
 		& .placeholder-container,
