@@ -9,7 +9,6 @@ import Icons from 'unplugin-icons/vite';
 import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 
 export default defineConfig({
-	logLevel: 'warn',
 	plugins: [
 		tailwindcss(),
 		sveltekit({

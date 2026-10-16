@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { onDestroy } from 'svelte';
-	import { goto, onNavigate } from '$app/navigation';
+	import { goto, beforeNavigate } from '$app/navigation';
 	import popover from '#lib/actions/popover/index.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import type { LibraryResultItem, SearchResultItem } from '#lib/types/search.js';
@@ -153,9 +153,7 @@
 		if (browser) document?.removeEventListener('click', handleRemoveHighlighting);
 	});
 
-	onNavigate(({ shallow, type }) => {
-		if (shallow && type === 'goto') return;
-
+	beforeNavigate(() => {
 		document?.removeEventListener('click', handleRemoveHighlighting);
 	});
 </script>
