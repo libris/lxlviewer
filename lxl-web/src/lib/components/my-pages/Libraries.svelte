@@ -54,7 +54,7 @@
 		}
 
 		goto(resolve(page.url.pathname + `?${params.toString()}`), {
-			replaceState: true,
+			replace: true,
 			reset: false
 		});
 	}

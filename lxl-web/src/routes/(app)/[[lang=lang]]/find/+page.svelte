@@ -68,7 +68,7 @@
 				...Array.from(page.url.searchParams.entries())
 			]);
 			newSearchParams.delete('holdings');
-			goto(resolve(page.url.pathname + `?${newSearchParams.toString()}`), { replaceState: true });
+			goto(resolve(page.url.pathname + `?${newSearchParams.toString()}`), { replace: true });
 		}
 	}
 </script>

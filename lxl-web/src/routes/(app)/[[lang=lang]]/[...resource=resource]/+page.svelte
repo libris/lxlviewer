@@ -60,7 +60,7 @@
 				...Array.from(page.url.searchParams.entries())
 			]);
 			newSearchParams.delete(param);
-			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
+			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replace: true });
 		}
 	}
 </script>

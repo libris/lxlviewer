@@ -17,7 +17,6 @@
 		const target = e.currentTarget as HTMLInputElement;
 
 		goto(page.data.localizeHref(target.value), {
-			replaceState: true,
 			reset: false
 		});
 	}

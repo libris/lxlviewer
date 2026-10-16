@@ -22,7 +22,6 @@
 
 		navigationTimeout = setTimeout(() => {
 			goto(page.data.localizeHref(value), {
-				replaceState: true,
 				reset: false
 			});
 		}, 200);
