@@ -132,8 +132,8 @@ export const handle = async ({ event, resolve }) => {
 		event.locals.dismissedBanner = JSON.parse(dismissedBannerCookie);
 	}
 	const _bannerEnds = 1792524600;
-	const isPast = Date.now() >= _bannerEnds * 1000;
-	if (isPast) {
+	const _isPast = Date.now() >= _bannerEnds * 1000;
+	if (_isPast) {
 		event.locals.dismissedBanner = true;
 	}
 	// ---
