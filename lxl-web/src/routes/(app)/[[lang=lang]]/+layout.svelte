@@ -3,7 +3,7 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import SiteFooter from './SiteFooter.svelte';
 	import AppBar from './AppBar.svelte';
-	import AppBanner from '$lib/components/supersearch/AppBanner.svelte';
+	import AppBanner from '$lib/components/AppBanner.svelte';
 	import { page } from '$app/state';
 	import { setHomepageContext } from '$lib/contexts/homepage';
 	import { setSearchContext } from '$lib/contexts/search';

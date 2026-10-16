@@ -10,7 +10,7 @@
 	const dismissable = $derived(ondismiss);
 </script>
 
-<div class={['app-banner bg-primary-200 flex w-full gap-2 p-2 text-sm font-medium']}>
+<aside class={['app-banner bg-primary-200 flex w-full gap-2 p-2 text-sm font-medium']}>
 	<div class="w-full">
 		<p class="font-bold">{page.data.t('banner.message')}</p>
 		<p>{page.data.t('banner.message2')}.</p>
@@ -31,4 +31,4 @@
 			</button>
 		</div>
 	{/if}
-</div>
+</aside>
