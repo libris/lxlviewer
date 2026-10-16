@@ -375,5 +375,11 @@ export default {
 		positionUnavailable: 'Location information is unavailable',
 		timeOut: 'Location request timed out. Try again',
 		unknown: 'An unknown error occurred while fetching location'
+	},
+	banner: {
+		message: 'Scheduled maintenance on Tuesday, 20 October',
+		message2:
+			'Libris will be temporarily unavailable due to scheduled maintenance between 20:00 and 21:30 on Tuesday, 20 October. We expect the service to be back to normal once the maintenance is complete',
+		dismiss: 'Hide information'
 	}
 };
