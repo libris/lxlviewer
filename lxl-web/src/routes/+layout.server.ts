@@ -4,6 +4,7 @@ import { defaultSiteConfiguration, resolveFeatures } from '$lib/constants/defaul
 export async function load({ locals, url, params, cookies }) {
 	const userSettings = locals.userSettings;
 	const librisSession = locals.librisSession;
+	const dismissedBanner = locals.dismissedBanner;
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param
 
 	// create dependency to react to _r changes
@@ -25,6 +26,7 @@ export async function load({ locals, url, params, cookies }) {
 	return {
 		userSettings,
 		librisSession,
+		dismissedBanner,
 		subsetMapping,
 		siteName,
 		siteTranslations,

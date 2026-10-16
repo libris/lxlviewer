@@ -126,6 +126,18 @@ export const handle = async ({ event, resolve }) => {
 		});
 	}
 
+	// remove me
+	const dismissedBannerCookie = event.cookies.get('dismissed-banner');
+	if (dismissedBannerCookie) {
+		event.locals.dismissedBanner = JSON.parse(dismissedBannerCookie);
+	}
+	const _bannerEnds = 1792524600;
+	const _isPast = Date.now() >= _bannerEnds * 1000;
+	if (_isPast) {
+		event.locals.dismissedBanner = true;
+	}
+	// ---
+
 	event.locals.userSettings = userSettings;
 
 	// fjärrlån
