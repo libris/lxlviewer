@@ -168,6 +168,19 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		result.select.push(...select);
 	}
 
+	if (
+		(thing.category || []).some((c) => c[JsonLd.ID]?.startsWith('https://id.kb.se/term/swepub'))
+	) {
+		(thing.category || []).forEach((c) => {
+			if (c[JsonLd.TYPE] === 'https://id.kb.se/term/swepub/OutputType') {
+				result.identify.push(c);
+			}
+			if (c[JsonLd.TYPE] === 'https://id.kb.se/term/swepub/ContentType') {
+				result.select.push(c);
+			}
+		});
+	}
+
 	return result;
 }
 
