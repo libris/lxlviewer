@@ -1,6 +1,6 @@
 import { ViewPlugin, EditorView, type DecorationSet, type ViewUpdate } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
-import type { QualifierValidator, QualifierRenderer } from '$lib/types/lxlQualifierPlugin.js';
+import type { QualifierValidator, QualifierRenderer } from '#lib/types/lxlQualifierPlugin.js';
 import { qualifierValidatorFacet, qualifierRenderFacet } from './qualifierFacet.js';
 import { qualifierStateField } from './qualifierValidation.js';
 import { addDecorations } from './qualifierDecoration.js';

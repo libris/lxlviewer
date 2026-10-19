@@ -1,4 +1,4 @@
-import type { Image, ImageResolution } from '$lib/types/auxd';
+import type { Image, ImageResolution } from '#lib/types/auxd.js';
 
 export function bestSize(from: Image, minWidthPx: number): ImageResolution;
 export function bestSize(from: undefined, minWidthPx: number): undefined;

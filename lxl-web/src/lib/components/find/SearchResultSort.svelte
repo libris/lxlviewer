@@ -28,7 +28,7 @@
 
 	function handleSortChange(e: Event) {
 		const value = (e.target as HTMLSelectElement).value;
-		let searchParams = new SvelteURLSearchParams(page.url.searchParams);
+		let searchParams = new SvelteURLSearchParams(page.url.searchParams.toString());
 		searchParams.set('_sort', value);
 		if (searchParams.has('_offset')) {
 			searchParams.set('_offset', '0');

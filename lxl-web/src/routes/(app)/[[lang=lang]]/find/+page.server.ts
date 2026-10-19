@@ -1,16 +1,16 @@
 import { redirect, error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { getSupportedLocale } from '$lib/i18n/locales.js';
-import { getTranslator } from '$lib/i18n';
-import { TITLE_SEPARATOR } from '$lib/constants/pageTitle.js';
-import { type ApiError } from '$lib/types/api.js';
-import type { PartialCollectionView } from '$lib/types/search.js';
-import { appendMyLibrariesParam, asResult } from '$lib/utils/search.server';
-import { DebugFlags } from '$lib/types/userSettings';
-import { displayMappingToString } from '$lib/utils/displayMappingToString.js';
-import getPageTitle from '$lib/utils/getPageTitle';
-import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server.js';
-import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import { getTranslator } from '#lib/i18n/index.js';
+import { TITLE_SEPARATOR } from '#lib/constants/pageTitle.js';
+import { type ApiError } from '#lib/types/api.js';
+import type { PartialCollectionView } from '#lib/types/search.js';
+import { appendMyLibrariesParam, asResult } from '#lib/utils/search.server.js';
+import { DebugFlags } from '#lib/types/userSettings.js';
+import { displayMappingToString } from '#lib/utils/displayMappingToString.js';
+import getPageTitle from '#lib/utils/getPageTitle.js';
+import { getRefinedOrgs } from '#lib/utils/getRefinedOrgs.server.js';
+import { getLibraryIdsFromMapping } from '#lib/utils/getLibraryIdsFromMapping.js';
 
 export const load = async ({ params, url, locals, fetch, depends }) => {
 	const displayUtil = locals.display;
@@ -44,7 +44,7 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 	}
 
 	const recordsRes = await fetch(
-		`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}${debug}`,
+		`${API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}${debug}`,
 		{
 			// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
 			redirect: 'manual'
@@ -63,9 +63,7 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 			}
 		} else {
 			const err = (await recordsRes.json()) as ApiError;
-			throw error(err.status_code, {
-				message: err.message,
-				status: err.status,
+			throw error(err.status_code, err.message, {
 				...(err.error_id && { errorId: err.error_id })
 			});
 		}
@@ -105,7 +103,7 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 		displayUtil,
 		vocabUtil,
 		locale,
-		env.AUXD_SECRET,
+		AUXD_SECRET,
 		`${params?.lang ? `/${params.lang}` : ''}/find`, // avoid creating a dependency to url.pathName!
 		myLibraries,
 		subsetLibraries

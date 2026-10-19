@@ -1,6 +1,6 @@
-import type { LibOrg, OrgId } from '$lib/types/holdings';
-import type { DisplayMapping } from '$lib/types/search';
-import type { MyLibrariesType } from '$lib/types/userSettings';
+import type { LibOrg, OrgId } from '#lib/types/holdings.js';
+import type { DisplayMapping } from '#lib/types/search.js';
+import type { MyLibrariesType } from '#lib/types/userSettings.js';
 import { getOrg } from './getLibraries.server';
 import { getLibraryIdsFromMapping } from './getLibraryIdsFromMapping';
 import { isLibraryOrg } from './holdings';

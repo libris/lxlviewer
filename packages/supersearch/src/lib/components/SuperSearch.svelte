@@ -6,22 +6,22 @@
 		type SelectCodeMirrorEvent,
 		type ViewUpdateCodeMirrorEvent,
 		type Selection
-	} from '$lib/components/CodeMirror.svelte';
-	import { sendMessage } from '$lib/utils/sendMessage.js';
+	} from '#lib/components/CodeMirror.svelte';
+	import { sendMessage } from '#lib/utils/sendMessage.js';
 	import {
 		type Editor,
 		type ChangeEvent,
 		type ViewUpdateEvent,
 		type SelectEvent
-	} from '$lib/index.js';
+	} from '#lib/index.js';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, EditorState, Transaction, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
-	import preventEnterKeyHandling from '$lib/extensions/preventEnterKeyHandling.js';
-	import arrowKeyCursorHandling from '$lib/extensions/arrowKeyCursorHandling.js';
-	import preventNewLine from '$lib/extensions/preventNewLine.js';
-	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
-	import { messages } from '$lib/constants/messages.js';
+	import preventEnterKeyHandling from '#lib/extensions/preventEnterKeyHandling.js';
+	import arrowKeyCursorHandling from '#lib/extensions/arrowKeyCursorHandling.js';
+	import preventNewLine from '#lib/extensions/preventNewLine.js';
+	import useSearchRequest from '#lib/utils/useSearchRequest.svelte.js';
+	import { messages } from '#lib/constants/messages.js';
 	import type {
 		QueryFunction,
 		PaginationQueryFunction,
@@ -34,9 +34,9 @@
 		CollapseEvent,
 		DispatchChangeParams,
 		ChangeActiveCell
-	} from '$lib/types/superSearch.js';
+	} from '#lib/types/superSearch.js';
 	import { historyKeymap, standardKeymap } from '@codemirror/commands';
-	import { draw, theme } from '$lib/extensions/theme';
+	import { draw, theme } from '#lib/extensions/theme.js';
 
 	export type ExpandedContentParams = {
 		search: ReturnType<typeof useSearchRequest>;

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import SuperSearch from '$lib/components/SuperSearch.svelte';
+	import SuperSearch from '#lib/components/SuperSearch.svelte';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
-	import type { JSONValue } from '$lib/types/json.js';
+	import type { JSONValue } from '#lib/types/json.js';
 	import type { MockQueryResponse } from './api/find/+server.js';
 	import clearIconSvg from './icon-clear.svg';
 	import backIconSvg from './icon-arrow-left.svg';
-	import type { ExpandedContentParams } from '$lib/components/SuperSearch.svelte';
-	import { lxlQualifierPlugin } from '$lib/index.js';
+	import type { ExpandedContentParams } from '#lib/components/SuperSearch.svelte';
+	import { lxlQualifierPlugin } from '#lib/index.js';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
-	import type { QualifierValidationResponse } from '$lib/types/lxlQualifierPlugin.js';
+	import type { QualifierValidationResponse } from '#lib/types/lxlQualifierPlugin.js';
 
 	let isLoading: boolean | undefined = $state();
 	let hasData: boolean | undefined = $state();

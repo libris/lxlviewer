@@ -32,11 +32,11 @@ import {
 	type ShowProperties,
 	type ShowProperty,
 	type VocabData
-} from '$lib/types/xl';
-import { markdownToHtml } from '$lib/utils/htmlFromMarkdown.server';
-import { asArray, isObject, toString } from '$lib/utils/misc';
-import { cleanData } from '$lib/utils/cleanupDecorated.server';
-import { isResourceNode } from '$lib/utils/resourceData';
+} from '#lib/types/xl.js';
+import { markdownToHtml } from '#lib/utils/htmlFromMarkdown.server.js';
+import { asArray, isObject, toString } from '#lib/utils/misc.js';
+import { cleanData } from '#lib/utils/cleanupDecorated.server.js';
+import { isResourceNode } from '#lib/utils/resourceData.js';
 
 // TODO TESTS!
 

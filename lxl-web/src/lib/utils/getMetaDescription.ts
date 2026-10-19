@@ -1,5 +1,5 @@
-import { toString } from '$lib/utils/misc';
-import type { DisplayDecorated } from '$lib/types/xl';
+import { toString } from '#lib/utils/misc.js';
+import type { DisplayDecorated } from '#lib/types/xl.js';
 
 const META_DESCRIPTION_MAX_LENGTH = 155;
 

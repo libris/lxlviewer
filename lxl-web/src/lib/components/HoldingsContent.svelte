@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type { Snippet } from 'svelte';
-	import { JsonLd } from '$lib/types/xl';
+	import { JsonLd } from '#lib/types/xl.js';
 	import type {
 		BibIdData,
 		HoldingsData,
 		LibraryWithLinksAndInstances,
 		UnknownLibrary
-	} from '$lib/types/holdings';
+	} from '#lib/types/holdings.js';
 	import TabList, { type Tab } from './TabList.svelte';
 	import HoldingsPanel from './HoldingsPanel.svelte';
-	import isFnurgel from '$lib/utils/isFnurgel';
+	import isFnurgel from '#lib/utils/isFnurgel.js';
 
 	type Props = {
 		holdings: HoldingsData;

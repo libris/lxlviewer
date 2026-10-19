@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import SuperSearchFallback from '$lib/components/supersearch/SuperSearchFallback.svelte';
-	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
-	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
-	import { displayMappingToString } from '$lib/utils/displayMappingToString';
-	import { baseLocale } from '$lib/i18n/locales';
-	import { getSearchContext } from '$lib/contexts/search';
+	import SuperSearchFallback from '#lib/components/supersearch/SuperSearchFallback.svelte';
+	import addDefaultSearchParams from '#lib/utils/addDefaultSearchParams.js';
+	import getSortedSearchParams from '#lib/utils/getSortedSearchParams.js';
+	import { displayMappingToString } from '#lib/utils/displayMappingToString.js';
+	import { baseLocale } from '#lib/i18n/locales.js';
+	import { getSearchContext } from '#lib/contexts/search.js';
 
 	type Props = {
 		id: string;
@@ -58,7 +58,7 @@
 
 <search {id} class={['@container z-41 mx-auto grid h-full w-full max-w-7xl items-center lg:px-3']}>
 	<form id={`${id}-form`} {action} class="mx-auto w-full min-w-0">
-		{#await import('$lib/components/supersearch/SuperSearchWrapper.svelte')}
+		{#await import('#lib/components/supersearch/SuperSearchWrapper.svelte')}
 			{@render fallbackInput()}
 		{:then { default: SuperSearchWrapper }}
 			<div class="contents" data-testid="supersearch">

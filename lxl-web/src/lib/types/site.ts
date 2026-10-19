@@ -1,7 +1,7 @@
-import type { Translations } from '$lib/i18n';
-import type { LocaleCode } from '$lib/i18n/locales';
+import type { Translations } from '#lib/i18n/index.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
 import type { InferInput } from 'valibot';
-import type { SearchResultsSchema } from '$lib/schemas/searchResult';
+import type { SearchResultsSchema } from '#lib/schemas/searchResult.js';
 
 export interface FeaturedSearchConfig {
 	headingByLang: Record<LocaleCode, string>;
@@ -51,7 +51,7 @@ export interface Site {
 	configuration?: {
 		themeName?: string;
 		favicon?: string;
-		// file name of an image in `$lib/assets/img/hero/` or an absolute URL.
+		// file name of an image in `#lib/assets/img/hero/` or an absolute URL.
 		heroImage?: string;
 		locales?: Translations;
 		features?: Partial<Features>;

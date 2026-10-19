@@ -1,4 +1,4 @@
-import type { AvailableCitationFormat } from '$lib/types/citation';
+import type { AvailableCitationFormat } from '#lib/types/citation.js';
 import type { LibraryId } from './holdings';
 
 // label string is obsolete and not used

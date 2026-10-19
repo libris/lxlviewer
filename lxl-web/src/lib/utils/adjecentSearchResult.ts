@@ -1,7 +1,7 @@
-import { JsonLd } from '$lib/types/xl';
-import type { SearchResult } from '$lib/types/search';
-import type { AdjecentSearchResult } from '$lib/types/search';
-import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
+import { JsonLd } from '#lib/types/xl.js';
+import type { SearchResult } from '#lib/types/search.js';
+import type { AdjecentSearchResult } from '#lib/types/search.js';
+import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
 
 export function asAdjecentSearchResult(data: SearchResult): AdjecentSearchResult {
 	const {

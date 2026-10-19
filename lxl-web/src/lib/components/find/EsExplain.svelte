@@ -1,6 +1,6 @@
 <script lang="ts">
 	import EsExplain from './EsExplain.svelte';
-	import type { EsExplain as EsExplainType } from '$lib/types/search';
+	import type { EsExplain as EsExplainType } from '#lib/types/search.js';
 	interface Props {
 		explain: EsExplainType;
 		open?: boolean;

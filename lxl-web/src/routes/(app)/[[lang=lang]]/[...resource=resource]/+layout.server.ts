@@ -1,7 +1,7 @@
-import { getSupportedLocale } from '$lib/i18n/locales';
-import type { ApiError } from '$lib/types/api.js';
-import type { CSLJSON } from '$lib/types/citation.js';
-import { getAvailableFormats, initCite } from '$lib/utils/citation.js';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import type { ApiError } from '#lib/types/api.js';
+import type { CSLJSON } from '#lib/types/citation.js';
+import { getAvailableFormats, initCite } from '#lib/utils/citation.js';
 
 export const load = async ({ url, fetch, params }) => {
 	// makes this load function dependant on 'cite' param change

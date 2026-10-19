@@ -4,14 +4,14 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { JsonLd } from '$lib/types/xl';
-	import { type LibraryResult, type LibraryResultItem } from '$lib/types/search';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { JsonLd } from '#lib/types/xl.js';
+	import { type LibraryResult, type LibraryResultItem } from '#lib/types/search.js';
 	import { useSearchRequest } from 'supersearch';
-	import SearchCard from '$lib/components/find/SearchCard.svelte';
+	import SearchCard from '#lib/components/find/SearchCard.svelte';
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
-	import { HeadingElem } from '$lib/types/decoratedData';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
 
 	type Props = {
 		q: string | null;
@@ -54,8 +54,8 @@
 		}
 
 		goto(resolve(page.url.pathname + `?${params.toString()}`), {
-			replaceState: true,
-			keepFocus: true
+			replace: true,
+			reset: false
 		});
 	}
 

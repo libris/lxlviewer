@@ -1,5 +1,5 @@
-import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
-import type { DisplayMapping } from '$lib/types/search';
+import { MAPPING_IGNORE_VARIABLE } from '#lib/constants/mapping.js';
+import type { DisplayMapping } from '#lib/types/search.js';
 
 export function displayMappingToString(mapping: DisplayMapping[]): string {
 	if (!mapping) return '';

@@ -2,12 +2,12 @@
 	import { onMount } from 'svelte';
 	import * as CookieConsent from 'vanilla-cookieconsent';
 	import 'vanilla-cookieconsent/dist/cookieconsent.css';
-	import '$lib/styles/cookieconsent.css';
-	import svTranslations from '$lib/i18n/cookieConsent/sv';
-	import enTranslations from '$lib/i18n/cookieConsent/en';
+	import '#lib/styles/cookieconsent.css';
+	import svTranslations from '#lib/i18n/cookieConsent/sv.js';
+	import enTranslations from '#lib/i18n/cookieConsent/en.js';
 	import { page } from '$app/state';
-	import { getMatomoTracker } from '$lib/contexts/matomo';
-	import { getCookieConsentContext } from '$lib/contexts/cookieConsent';
+	import { getMatomoTracker } from '#lib/contexts/matomo.js';
+	import { getCookieConsentContext } from '#lib/contexts/cookieConsent.js';
 
 	let cookieConsentContext = getCookieConsentContext();
 

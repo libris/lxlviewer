@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
-	import SearchCard from '$lib/components/find/SearchCard.svelte';
-	import type { SearchResultItem } from '$lib/types/search';
+	import SearchCard from '#lib/components/find/SearchCard.svelte';
+	import type { SearchResultItem } from '#lib/types/search.js';
 
 	interface PopoverProps {
 		title?: string | undefined;
@@ -78,7 +78,7 @@
 <!-- 
   @component
 	Renders a popover.
-	Note that `Popover.svelte` isn't intended to be used directly in page templates – use the `use:popover` instead (see `$lib/actions/popover`).
+	Note that `Popover.svelte` isn't intended to be used directly in page templates – use the `use:popover` instead (see `#lib/actions/popover/index.js`).
 -->
 <div
 	class={[

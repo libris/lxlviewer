@@ -2,10 +2,10 @@
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { fade } from 'svelte/transition';
-	import type { BibIdObj } from '$lib/types/holdings';
-	import type { HoldingStatus } from '$lib/types/api';
+	import type { BibIdObj } from '#lib/types/holdings.js';
+	import type { HoldingStatus } from '#lib/types/api.js';
 	import BiChevronRight from '~icons/bi/chevron-right';
-	import Spinner from '$lib/components/Spinner.svelte';
+	import Spinner from '#lib/components/Spinner.svelte';
 
 	type HoldingInfoProps = {
 		bibIdObj: BibIdObj;

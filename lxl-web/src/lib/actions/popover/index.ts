@@ -1,7 +1,7 @@
 import type { Action } from 'svelte/action';
 import Popover from './Popover.svelte';
-import type { LocaleCode } from '$lib/i18n/locales';
-import type { DisplayDecorated } from '$lib/types/xl';
+import type { LocaleCode } from '#lib/i18n/locales.js';
+import type { DisplayDecorated } from '#lib/types/xl.js';
 import { mount, unmount, type Snippet } from 'svelte';
 
 /**

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { page } from '$app/state';
 	import { afterNavigate, onNavigate } from '$app/navigation';
-	import { type FeaturedSearch } from '$lib/remotes/homepage.remote';
-	import SearchResultList from '$lib/components/SearchResultList.svelte';
-	import { getHomepageContext } from '$lib/contexts/homepage';
-	import { getFeaturedPreviews } from '$lib/remotes/homepage.remote';
-	import { HeadingElem } from '$lib/types/decoratedData';
+	import { type FeaturedSearch } from '#lib/remotes/homepage.remote.js';
+	import SearchResultList from '#lib/components/SearchResultList.svelte';
+	import { getHomepageContext } from '#lib/contexts/homepage.js';
+	import { getFeaturedPreviews } from '#lib/remotes/homepage.remote.js';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
 
 	type Props = {
 		featured: FeaturedSearch;
@@ -36,7 +37,11 @@
 	const previewsQuery = $derived(
 		!homepageContext.previews?.[previewParamsString] &&
 			(!lazyload || (lazyload && shouldGetPreviews))
-			? getFeaturedPreviews(featured.previewParams)
+			? getFeaturedPreviews({
+					...featured.previewParams,
+					lang: page.data.locale,
+					url: page.url.href
+				})
 			: undefined
 	);
 
@@ -70,12 +75,16 @@
 	}
 
 	onNavigate((navigation) => {
+		if (navigation.shallow && navigation.type === 'goto') return;
+
 		if (navigation?.from) {
 			fadeInImages = false;
 		}
 	});
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if (lazyload === 'intersection') {
 			initObserver();
 		}
@@ -137,17 +146,18 @@
 	@reference "tailwindcss";
 
 	/* prevent vertical scroll on individual items? */
-	.horizontal-type.featured-previews {
+	/* TODO: Something smarter than this but we need a height value to prevent layout-shifting */
+	/* .horizontal-type.featured-previews {
 		& .placeholder-container,
 		:global(article) {
-			height: calc(100cqw + (var(--spacing) * 3) + 10rem);  // TODO: Something smarter than this but we need a height value to prevent layout-shifting
+			height: calc(100cqw + (var(--spacing) * 3) + 10rem);
+		}
+	} */
+
+	.no-images.horizontal-type.featured-previews {
+		& .placeholder-container,
+		:global(article) {
+			height: unset;
 		}
 	}
-
-    .no-images.horizontal-type.featured-previews {
-        & .placeholder-container,
-        :global(article) {
-            height: unset;
-        }
-    }
 </style>

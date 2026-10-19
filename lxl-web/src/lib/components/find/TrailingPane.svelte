@@ -6,11 +6,11 @@
 		TRAILING_PANE_DEFAULT_WIDTH,
 		TRAILING_PANE_MAX_WIDTH,
 		TRAILING_PANE_MIN_WIDTH
-	} from '$lib/constants/panels';
+	} from '#lib/constants/panels.js';
 	import Toolbar from '../Toolbar.svelte';
 	import { page } from '$app/state';
 	import BiXLg from '~icons/bi/x-lg';
-	import { getUserSettings } from '$lib/contexts/userSettings';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
 
 	type Props = {
 		children?: Snippet;

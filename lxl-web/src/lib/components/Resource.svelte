@@ -1,31 +1,31 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import TableOfContents, { type TableOfContentsItem } from './TableOfContents.svelte';
-	import { type SecureImage, Width as ImageWidth } from '$lib/types/auxd';
-	import { type DisplayDecorated, Fmt, JsonLd } from '$lib/types/xl';
-	import { Elem, HeadingElem, ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { HoldingsData } from '$lib/types/holdings';
+	import { type SecureImage, Width as ImageWidth } from '#lib/types/auxd.js';
+	import { type DisplayDecorated, Fmt, JsonLd } from '#lib/types/xl.js';
+	import { Elem, HeadingElem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
+	import type { HoldingsData } from '#lib/types/holdings.js';
 	import type {
 		SearchResultItem,
 		AdjecentSearchResult,
 		ResourceSearchResult
-	} from '$lib/types/search';
-	import capitalize from '$lib/utils/capitalize';
-	import { isResourceNode } from '$lib/utils/resourceData';
-	import type { Relation } from '$lib/types/relations';
-	import { getCiteLink, handleClickCite } from '$lib/utils/citation';
-	import { getBaseUrl, relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-	import DecoratedData2 from '$lib/components/DecoratedData2.svelte';
+	} from '#lib/types/search.js';
+	import capitalize from '#lib/utils/capitalize.js';
+	import { isResourceNode } from '#lib/utils/resourceData.js';
+	import type { Relation } from '#lib/types/relations.js';
+	import { getCiteLink, handleClickCite } from '#lib/utils/citation.js';
+	import { getBaseUrl, relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
-	import ResourceDigitalAccess from '$lib/components/ResourceDigitalAccess.svelte';
+	import ResourceDigitalAccess from '#lib/components/ResourceDigitalAccess.svelte';
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjecentResults from './resource/AdjecentResults.svelte';
-	import TypeIcon from '$lib/components/TypeIcon.svelte';
+	import TypeIcon from '#lib/components/TypeIcon.svelte';
 	import SearchCard from './find/SearchCard.svelte';
 	import TabList, { type Tab } from './TabList.svelte';
 	import SearchMapping from './find/SearchMapping.svelte';
-	import ExpandableArea from '$lib/components/ExpandableArea.svelte';
+	import ExpandableArea from '#lib/components/ExpandableArea.svelte';
 	import Suggestion from './supersearch/Suggestion.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';

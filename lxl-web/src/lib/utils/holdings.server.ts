@@ -9,15 +9,15 @@ import type {
 	HoldingsByType,
 	LibraryFull,
 	LibraryWithLinks
-} from '$lib/types/holdings';
-import { Base, BibDb, Bibframe, JsonLd, LensType, type FramedData } from '$lib/types/xl';
-import { toString } from '$lib/utils/misc';
-import { VocabUtil, type DisplayUtil } from '$lib/utils/xl.server';
-import getAtPath from '$lib/utils/getAtPath';
-import { getLibrary } from '$lib/utils/getLibraries.server';
-import type { LocaleCode } from '$lib/i18n/locales';
-import { relativizeUrl, stripAnchor, trimSlashes } from '$lib/utils/http';
-import { COMPONENT_PART } from '$lib/utils/getTypeLike.server';
+} from '#lib/types/holdings.js';
+import { Base, BibDb, Bibframe, JsonLd, LensType, type FramedData } from '#lib/types/xl.js';
+import { toString } from '#lib/utils/misc.js';
+import { VocabUtil, type DisplayUtil } from '#lib/utils/xl.server.js';
+import getAtPath from '#lib/utils/getAtPath.js';
+import { getLibrary } from '#lib/utils/getLibraries.server.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
+import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+import { COMPONENT_PART } from '#lib/utils/getTypeLike.server.js';
 
 type BibDbObj = {
 	[JsonLd.TYPE]: string;

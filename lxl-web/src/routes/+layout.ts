@@ -1,5 +1,5 @@
-import { getTranslator } from '$lib/i18n/index.js';
-import { baseLocale, getSupportedLocale, initLocalizeHref } from '$lib/i18n/locales';
+import { getTranslator } from '#lib/i18n/index.js';
+import { baseLocale, getSupportedLocale, initLocalizeHref } from '#lib/i18n/locales.js';
 
 export async function load({ params, data, url }) {
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param

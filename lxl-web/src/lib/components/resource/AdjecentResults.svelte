@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
-	import type { AdjecentSearchResult } from '$lib/types/search';
-	import { relativizeUrl } from '$lib/utils/http';
+	import type { AdjecentSearchResult } from '#lib/types/search.js';
+	import { relativizeUrl } from '#lib/utils/http.js';
 	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';
-	import capitalize from '$lib/utils/capitalize';
-	import { getPreviousItemFnurgel, getNextItemFnurgel } from '$lib/utils/adjecentSearchResult';
-	import { getAdjecentSearchResult } from '$lib/remotes/searchResult.remote';
+	import capitalize from '#lib/utils/capitalize.js';
+	import { getPreviousItemFnurgel, getNextItemFnurgel } from '#lib/utils/adjecentSearchResult.js';
+	import { getAdjecentSearchResult } from '#lib/remotes/searchResult.remote.js';
 
 	type Props = {
 		fnurgel: string;
@@ -20,19 +20,16 @@
 	let nextQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
 
 	let adjecentSearchResults = $derived(adjecentSearchResultsFromPageState);
-
 	const currentSearchResult = $derived(
 		adjecentSearchResults?.find((searchResult) =>
 			searchResult.items.find((item) => item['@id']?.includes(fnurgel))
 		)
 	);
-
 	const currentSearchResultIndex = $derived(
 		adjecentSearchResults?.findIndex(
 			(searchResult) => searchResult['@id'] === currentSearchResult?.['@id']
 		)
 	);
-
 	const itemIndex = $derived(
 		currentSearchResult?.items.findIndex((item) => item['@id']?.includes(fnurgel))
 	);
@@ -46,7 +43,6 @@
 	const previousItemFnurgel = $derived(
 		getPreviousItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
 	);
-
 	const nextItemFnurgel = $derived(
 		getNextItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
 	);
@@ -61,20 +57,30 @@
 		});
 	}
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if (
 			!previousItemFnurgel &&
 			currentSearchResult?.previous?.['@id'] &&
 			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.previous?.['@id'])
 		) {
-			previousQuery = getAdjecentSearchResult(currentSearchResult.previous['@id']);
+			previousQuery = getAdjecentSearchResult({
+				url: page.url.href,
+				lang: page.params.lang || '',
+				viewId: currentSearchResult.previous['@id']
+			});
 		}
 		if (
 			!nextItemFnurgel &&
 			currentSearchResult?.next?.['@id'] &&
 			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.next?.['@id'])
 		) {
-			nextQuery = getAdjecentSearchResult(currentSearchResult.next['@id']);
+			nextQuery = getAdjecentSearchResult({
+				url: page.url.href,
+				lang: page.params.lang || '',
+				viewId: currentSearchResult.next['@id']
+			});
 		}
 	});
 

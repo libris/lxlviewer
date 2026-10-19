@@ -1,5 +1,5 @@
-import type { SearchResultItem } from '$lib/types/search';
-import { Fmt, type DisplayDecorated, type PropertyNode } from '$lib/types/xl';
+import type { SearchResultItem } from '#lib/types/search.js';
+import { Fmt, type DisplayDecorated, type PropertyNode } from '#lib/types/xl.js';
 
 type DigitalAccess = {
 	online?: DisplayDecorated;

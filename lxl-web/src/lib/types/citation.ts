@@ -1,4 +1,4 @@
-import type { availableFormats } from '$lib/utils/citation';
+import type { availableFormats } from '#lib/utils/citation.js';
 import type { ApiError } from './api';
 
 // full CSL-JSON schema, see

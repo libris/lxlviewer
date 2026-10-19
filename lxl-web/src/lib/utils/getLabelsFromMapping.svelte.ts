@@ -1,6 +1,6 @@
-import type { DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
-import { JsonLd } from '$lib/types/xl';
-import capitalize from '$lib/utils/capitalize';
+import type { DisplayMapping, QualifierSuggestion2 } from '#lib/types/search.js';
+import { JsonLd } from '#lib/types/xl.js';
+import capitalize from '#lib/utils/capitalize.js';
 
 let prevSuggestMapping: DisplayMapping[] | undefined;
 

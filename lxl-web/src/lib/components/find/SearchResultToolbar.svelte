@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { DisplayMapping, Facet, SearchResult } from '$lib/types/search';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
+	import type { DisplayMapping, Facet, SearchResult } from '#lib/types/search.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { MAPPING_IGNORE_VARIABLE } from '#lib/constants/mapping.js';
 	import { fade } from 'svelte/transition';
 	import Modal from '../Modal.svelte';
 	import Toolbar from '../Toolbar.svelte';

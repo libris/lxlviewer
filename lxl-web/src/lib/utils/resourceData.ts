@@ -5,7 +5,7 @@ import {
 	type HtmlNode,
 	type PropertyNode,
 	type ResourceNode
-} from '$lib/types/xl';
+} from '#lib/types/xl.js';
 
 function _getPropertyValue(data: DisplayDecorated, name: string) {
 	if (data && typeof data === 'object' && !Array.isArray(data) && name in data) {

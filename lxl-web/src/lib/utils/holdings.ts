@@ -1,4 +1,4 @@
-import { pushState } from '$app/navigation';
+import { goto } from '$app/navigation';
 import type {
 	BibIdObj,
 	HoldersByType,
@@ -9,17 +9,18 @@ import type {
 	LibraryWithLinks,
 	LinkResolver,
 	OrgId
-} from '$lib/types/holdings';
-import { BibDb } from '$lib/types/xl';
-import type { MyLibrariesType } from '$lib/types/userSettings';
-import type { LocaleCode } from '$lib/i18n/locales';
-import { stripAnchor } from '$lib/utils/http';
-import getAtPath from '$lib/utils/getAtPath';
-import { USE_HOLDING_PANE } from '$lib/constants/panels';
+} from '#lib/types/holdings.js';
+import { BibDb } from '#lib/types/xl.js';
+import type { MyLibrariesType } from '#lib/types/userSettings.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
+import type { ReadonlyURL } from '$app/state';
+import { stripAnchor } from '#lib/utils/http.js';
+import getAtPath from '#lib/utils/getAtPath.js';
+import { USE_HOLDING_PANE } from '#lib/constants/panels.js';
 
 export const LIBRARY_URI_PREFIX = 'https://libris.kb.se/library/';
 
-export function getHoldingsLink(url: URL, value: string) {
+export function getHoldingsLink(url: ReadonlyURL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('holdings', value);
 	const conditionallyAddAnchor = url.searchParams.has('holdings') ? '' : `#${value}`;
@@ -32,7 +33,11 @@ export function handleClickHoldings(
 	id: string
 ) {
 	event.preventDefault();
-	pushState(event.currentTarget.href, { ...state, holdings: stripAnchor(id) });
+
+	goto(event.currentTarget.href, {
+		shallow: true,
+		state: { ...state, holdings: stripAnchor(id) }
+	});
 }
 
 /**

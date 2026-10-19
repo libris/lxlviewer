@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { SearchResult } from '$lib/types/search';
+	import type { SearchResult } from '#lib/types/search.js';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronLeft from '~icons/bi/chevron-left';
 
