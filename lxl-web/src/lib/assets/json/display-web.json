@@ -369,7 +369,13 @@
 							]
 						},
 						{
-							"alternateProperties": ["publication", "production", "manufacture"]
+							"alternateProperties": [
+								{ "subPropertyOf": "publication", "range": "PrimaryPublication" },
+								"publication",
+								{ "subPropertyOf": "production", "range": "PrimaryProduction" },
+								"production",
+								"manufacture"
+							]
 						},
 						"uri",
 						"marc:publicNote",
