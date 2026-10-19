@@ -1,7 +1,6 @@
 import type { HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import fs from 'fs';
-import 'dotenv/config';
 import { ID_URL, API_URL, USE_LOCAL_DISPLAY_JSONLD, SUBSITES } from '$app/env/private';
 import { defaultLocale, Locales } from '#lib/i18n/locales.js';
 import { DERIVED_LENSES } from '#lib/types/display.js';

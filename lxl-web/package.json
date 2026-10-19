@@ -65,9 +65,6 @@
 		"vite": "^8.3.4",
 		"vitest": "^4.1.12"
 	},
-	"dependencies": {
-		"dotenv": "^17.2.1"
-	},
 	"imports": {
 		"#lib": "./src/lib/index.js",
 		"#lib/*": "./src/lib/*",

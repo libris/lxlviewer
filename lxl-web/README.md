@@ -32,7 +32,7 @@ npm run build
 and start it:
 
 ```bash
-node -r dotenv/config build
+node --env-file=.env build
 ```
 
 Here, dotenv is needed to [load the environment variables](https://kit.svelte.dev/docs/adapter-node#environment-variables) from the `.env` file.
