@@ -34,6 +34,7 @@
 						value={item.view[JsonLd.ID]}
 						checked={item.selected}
 						onchange={handleChange}
+						data-identifier={item.view[JsonLd.ID]}
 					/>
 					<span>{item.str}</span>
 					{#if item.discriminator}

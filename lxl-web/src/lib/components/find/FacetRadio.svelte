@@ -45,6 +45,7 @@
 						value={item.view[JsonLd.ID]}
 						checked={item.selected}
 						onchange={handleChange}
+						data-identifier={item.view[JsonLd.ID]}
 					/>
 					<label for={id} class="w-full">
 						<span>{item.str}</span>
