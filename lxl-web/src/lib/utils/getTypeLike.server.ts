@@ -5,6 +5,7 @@ import getAtPath from '#lib/utils/getAtPath.js';
 export type TypeLike = {
 	find: FramedData[];
 	identify: FramedData[];
+	identifyQualifier?: FramedData[];
 	none: FramedData[];
 	select: FramedData[];
 };
@@ -168,6 +169,20 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		result.select.push(...select);
 	}
 
+	if (
+		(thing.category || []).some((c) => c[JsonLd.ID]?.startsWith('https://id.kb.se/term/swepub'))
+	) {
+		result.identifyQualifier = [];
+		(thing.category || []).forEach((c) => {
+			if (c[JsonLd.TYPE] === 'https://id.kb.se/term/swepub/OutputType') {
+				result.identify.push(c);
+			}
+			if (c[JsonLd.TYPE] === 'https://id.kb.se/term/swepub/ContentType') {
+				result.identifyQualifier?.push(c);
+			}
+		});
+	}
+
 	return result;
 }
 
@@ -221,6 +236,8 @@ export function toTypes(typeLike: TypeLike) {
 		'@type': '_Types',
 		...(showFind && { _find: typeLike.find }),
 		...(!noIdentify && { _identify: typeLike.identify }),
+		...(typeLike.identifyQualifier &&
+			typeLike.identifyQualifier.length > 0 && { _identifyQualifier: typeLike.identifyQualifier }),
 		...(showNone && { _none: typeLike.none })
 	};
 }
