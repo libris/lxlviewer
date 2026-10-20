@@ -159,6 +159,17 @@ test('focus is placed in opened modals and restored on close', async ({ page }) 
 	expect(holdingLink).toBeFocused();
 });
 
+test('closing the filter panel puts focus in panel on open btn', async ({ page }) => {
+	page.locator('#collapse-leading-pane-btn').click();
+	await expect(page.locator('#expand-leading-pane-btn')).toBeFocused();
+});
+
+test('opening the filter panel puts focus in toolbar on close btn', async ({ page }) => {
+	page.locator('#collapse-leading-pane-btn').click();
+	page.locator('#expand-leading-pane-btn').click();
+	await expect(page.locator('#collapse-leading-pane-btn')).toBeFocused();
+});
+
 test('can handle square brackets in query', async ({ page }) => {
 	await page.goto('/find?_q=[test]');
 	await expect(page.getByTestId('supersearch').nth(0)).toBeVisible();
