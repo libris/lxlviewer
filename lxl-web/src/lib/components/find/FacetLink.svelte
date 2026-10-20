@@ -22,6 +22,7 @@
 	href={page.data.localizeHref(data.view[JsonLd.ID])}
 	data-sveltekit-preload-data="false"
 	data-sveltekit-reset="false"
+	data-identifier={data.view[JsonLd.ID]}
 >
 	<span title={data.str} class="mr-1">
 		<span class={[data.selected && !className && 'text-accent font-medium']}>

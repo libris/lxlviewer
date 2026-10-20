@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { tick } from 'svelte';
 	import type { Facet as FacetType, FacetValue as FacetValueType } from '#lib/types/search.js';
+	import { JsonLd } from '#lib/types/xl.ts';
 	import { ExpandedState } from '#lib/types/userSettings.js';
 	import {
 		CUSTOM_FACET_SORT,
@@ -147,6 +149,28 @@
 		}
 		if (data.operator === 'OR') return 'checkbox';
 	});
+
+	function onClickShowMore() {
+		let focusAfter = false;
+		if (canShowMoreItems) {
+			focusAfter = true;
+			defaultItemsShown = totalItems;
+		} else {
+			defaultItemsShown = DEFAULT_FACET_VALUES_SHOWN;
+		}
+
+		if (focusAfter) {
+			tick().then(() => {
+				const firstRevealedItem = filteredItems[DEFAULT_FACET_VALUES_SHOWN];
+				const identifier = firstRevealedItem?.view[JsonLd.ID];
+				const section = document.querySelector(`[data-dimension="${data.dimension}"]`);
+				const element = section?.querySelector(
+					`[data-identifier="${identifier}"]`
+				) as HTMLElement | null;
+				element?.focus();
+			});
+		}
+	}
 </script>
 
 {#snippet values(items: FacetValueType[])}
@@ -201,13 +225,7 @@
 	<div class="flex flex-col justify-start text-xs">
 		<!-- 'show more' btn -->
 		{#if canShowMoreItems || canShowFewerItems}
-			<button
-				class="hover:bg-primary-100 link-subtle w-full text-sm"
-				onclick={() =>
-					canShowMoreItems
-						? (defaultItemsShown = totalItems)
-						: (defaultItemsShown = DEFAULT_FACET_VALUES_SHOWN)}
-			>
+			<button class="hover:bg-primary-100 link-subtle w-full text-sm" onclick={onClickShowMore}>
 				<span class="indented block py-1.5 pr-3 text-left">
 					{canShowMoreItems ? page.data.t('search.showMore') : page.data.t('search.showFewer')}...
 				</span>
@@ -271,6 +289,7 @@
 				level > 1 && 'pl-1.5 text-sm'
 			]}
 			data-testid={level === 1 ? 'facet-toggle' : undefined}
+			data-identifier={level > 1 && parent ? parent?.view?.[JsonLd.ID] : undefined}
 		>
 			{#if level > 1}
 				{@render chevron()}
