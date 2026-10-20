@@ -50,12 +50,12 @@ const cookieConsentConfig = {
                 },
                 body: [
                   {
-                    name: "techaro.lol-anubis-auth",
+                    name: "libris.kb.se-auth",
                     description: "Sparas när din webbläsare klarat en säkerhetskontroll som skyddar mot automatiserade bottar. Den gör att du slipper genomgå kontrollen på nytt vid varje sidbesök.",
                     duration: "1 vecka"
                   },
                   {
-                    name: "techaro.lol-anubis-cookie-verification",
+                    name: "libris.kb.se-anubis-cookie-verification",
                     description: "Används för att kontrollera att din webbläsare accepterar kakor, vilket krävs för att säkerhetskontrollen ska fungera.",
                     duration: "30 minuter"
                   }

@@ -39,13 +39,13 @@ export default {
 							duration: '1 year'
 						},
 						{
-							name: 'techaro.lol-anubis-auth',
+							name: 'libris.kb.se-anubis-auth',
 							description:
 								"Saved when your browser has passed a security check against automated bots. It means you don't have to go through the check again on each page visit.",
 							duration: '1 week'
 						},
 						{
-							name: 'techaro.lol-anubis-cookie-verification',
+							name: 'libris.kb.se-anubis-cookie-verification',
 							description:
 								'Used to check that your browser accepts cookies, which is required for the security check to work.',
 							duration: '30 minutes'
