@@ -173,6 +173,7 @@ export function getItemObject(itemOf, heldBy, instance) {
           shelfControlNumber: '',
         },
       ],
+      cataloguersNote: ['','',''],
       associatedMedia: [
         {
           '@type': 'MediaObject',
