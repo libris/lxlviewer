@@ -517,6 +517,8 @@
     "are missing" : "saknas",
     "and": "och",
     "The term is implied by another term and will be removed on save": "Termen impliceras av en annan term och kommer raderas när posten sparas",
-    "Blocked": "Spärrad"
+    "Blocked": "Spärrad",
+    "Show formal resource": "Visa formell resurs",
+    "Show in Libris Search" : "Visa i Libris Sök"
   }
 }
