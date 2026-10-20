@@ -106,7 +106,12 @@
 					<span class="hidden has-[+*]:inline"> · </span>
 				{/if}
 				{#each data['web-card-header-top']?._display as displayObj, index (index)}
-					<DecoratedData2 data={displayObj} showLabels={ShowLabelsOptions.Never} parent={Elem.P} />
+					<DecoratedData2
+						data={displayObj}
+						showLabels={ShowLabelsOptions.Never}
+						parent={Elem.P}
+						allowLinks={false}
+					/>
 				{/each}
 			</p>
 			<hgroup>
@@ -132,6 +137,7 @@
 									showLabels={ShowLabelsOptions.DefaultOn}
 									parent={Elem.Span}
 									skipOuter={false}
+									allowLinks={false}
 								/>
 							</span>
 						{/each}
@@ -145,6 +151,7 @@
 									data={displayObj}
 									showLabels={ShowLabelsOptions.DefaultOff}
 									parent={Elem.Span}
+									allowLinks={false}
 								/>
 							</span>
 						{/each}
