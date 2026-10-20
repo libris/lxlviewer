@@ -902,6 +902,7 @@
 						{ "alternateProperties": ["publication", "manufacture"] },
 						"extent",
 						"seriesMembership",
+						"hasSeries",
 						"responsibilityStatement",
 						"isPartOf",
 						"part",
@@ -1115,6 +1116,7 @@
 						"replaces",
 						"supplement",
 						"seriesMembership",
+						"hasSeries",
 						"intendedAudience",
 						"associatedMedia",
 						"usageAndAccessPolicy",
@@ -1534,7 +1536,7 @@
 		"needs-label-format": {
 			"@id": "needs-label-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["category", "subject", "seriesMembership", "isPartOf"],
+			"fresnel:propertyFormatDomain": ["category", "subject"],
 			"fresnel:propertyStyle": ["label"]
 		},
 		"needs-label-sorted-format": {
@@ -1609,6 +1611,15 @@
 			"@id": "seriesMembership-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["seriesMembership"],
+			"fresnel:propertyStyle": ["label", "ul-when-multiple"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
+		},
+		"hasSeries-format": {
+			"@id": "hasSeries-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["hasSeries"],
 			"fresnel:propertyStyle": ["label", "ul-when-multiple"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ""
