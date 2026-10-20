@@ -13,9 +13,11 @@
 
 	type SearchResultToolbarProps = {
 		searchResult: SearchResult;
+		expandLeadingPaneBtnId: string;
+		onOpenPane: () => void;
 	};
 
-	const { searchResult }: SearchResultToolbarProps = $props();
+	const { searchResult, expandLeadingPaneBtnId, onOpenPane }: SearchResultToolbarProps = $props();
 	const userSettings = getUserSettings();
 
 	let showFiltersModal = $state(false);
@@ -72,10 +74,11 @@
 			<!-- expand leadingPane btn -->
 			{#if !userSettings.leadingPane?.open}
 				<button
+					id={expandLeadingPaneBtnId}
 					class="btn btn-primary hidden sm:block"
 					aria-label={page.data.t('panes.show')}
 					in:fade={{ duration: 200 }}
-					onclick={() => userSettings.openLeadingPane()}
+					onclick={onOpenPane}
 				>
 					<BiLayoutSidebar class="size-4" />
 				</button>
