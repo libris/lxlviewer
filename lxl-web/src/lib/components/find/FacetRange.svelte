@@ -40,7 +40,7 @@
 	<fieldset
 		class="[&_label]:text-subtle grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-end gap-2 p-2 border border-neutral-200"
 	>
-		<legend>{page.data.t('general.yearRange')}</legend>
+		<legend>{page.data.t('general.range')}</legend>
 		<div class="flex flex-col gap-1">
 			<label class="text-xs" for="facet-range-from"
 				>{`${page.data.t('general.from')} (${page.data.t('general.year')})`}:</label
