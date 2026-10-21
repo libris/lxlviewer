@@ -542,7 +542,7 @@ export default {
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" :href="convertResourceLink(focusData['@id'])" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true" />
-            {{ translatePhrase('Show in Libris Search') }}
+            {{ translatePhrase('Show in Libris') }}
           </a>
         </li>
         <li v-if="shouldShowFormalResourceLink" class="Toolbar-menuItem">
