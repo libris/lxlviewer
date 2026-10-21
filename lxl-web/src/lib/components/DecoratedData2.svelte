@@ -275,7 +275,7 @@
 	>
 		{@render node(data, Elem.A)}<!--
 	-->{#if hasStyle(data, 'ext-link')}
-			<span class="sr-only">({page.data.t('general.externalLink')})</span>
+			<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 		{:else if hasStyle(data, 'find-link')}
 			<span class="sr-only">({page.data.t('general.linkToSearchQuery')})</span>
 		{/if}</a

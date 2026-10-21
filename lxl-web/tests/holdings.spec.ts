@@ -85,6 +85,6 @@ test('The find-at-library link has an accessible description that includes libra
 	await page.goto('/fxqqg6xr2062ndl?_q=library%3A"sigel%3Aorg%2FKB"&holdings=PhysicalResource');
 	const findLink = page.getByRole('link', { name: 'Hitta på bibliotek' }).first();
 
-	await expect(findLink).toHaveAccessibleName('Hitta på bibliotek (extern länk)');
+	await expect(findLink).toHaveAccessibleName('Hitta på bibliotek (öppnas i nytt fönster)');
 	await expect(findLink).toHaveAccessibleDescription('Kungliga biblioteket (S)');
 });

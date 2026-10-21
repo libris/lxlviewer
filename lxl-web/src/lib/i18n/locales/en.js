@@ -273,7 +273,7 @@ export default {
 		approx: 'approx.',
 		copyToClipboard: 'Copy to clipboard',
 		copied: 'Copied!',
-		externalLink: 'external link',
+		targetBlank: 'opens in new window',
 		linkToSearchQuery: 'link to search query',
 		downloadLink: 'download link'
 	},

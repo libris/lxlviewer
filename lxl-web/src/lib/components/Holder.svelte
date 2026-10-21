@@ -90,7 +90,7 @@
 				href={getBestLink(instance)}
 				target="_blank"
 				class="ext-link"
-				aria-label={`${page.data.t('holdings.findAtLibrary')} (${page.data.t('general.externalLink')})`}
+				aria-label={`${page.data.t('holdings.findAtLibrary')} (${page.data.t('general.targetBlank')})`}
 				aria-describedby={`holder-${holder[JsonLd.ID]}`}
 			>
 				{page.data.t('holdings.linkToLocal')}
@@ -100,7 +100,7 @@
 		{#if instance.linkResolver}
 			<a href={instance.linkResolver.uri} target="_blank" class="ext-link">
 				{instance.linkResolver.label}
-				<span class="sr-only">({page.data.t('general.externalLink')})</span>
+				<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 			</a>
 		{/if}
 	{/if}
@@ -173,7 +173,7 @@
 				<a
 					href={getBestLink(instances[0])}
 					target="_blank"
-					aria-label={`${page.data.t('holdings.findAtLibrary')} (${page.data.t('general.externalLink')})`}
+					aria-label={`${page.data.t('holdings.findAtLibrary')} (${page.data.t('general.targetBlank')})`}
 					aria-describedby={`holder-${holder[JsonLd.ID]}`}
 				>
 					<BiBoxArrowUpRight aria-hidden="true" class="text-link ml-2 size-4" />
@@ -240,7 +240,7 @@
 								aria-describedby={`holder-${holder[JsonLd.ID]}`}
 							>
 								{page.data.t('holdings.myLoans')}
-								<span class="sr-only">({page.data.t('general.externalLink')})</span>
+								<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 							</a>
 						{/if}
 						{#if holder._links.registrationLink}
@@ -251,7 +251,7 @@
 								aria-describedby={`holder-${holder[JsonLd.ID]}`}
 							>
 								{page.data.t('holdings.applyForCard')}
-								<span class="sr-only">({page.data.t('general.externalLink')})</span>
+								<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 							</a>
 						{/if}
 					</div>

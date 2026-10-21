@@ -156,7 +156,7 @@
 												<!-- eslint-disable svelte/no-navigation-without-resolve -->
 												(<a href={item.Map} target="_blank" class="ext-link">
 													{page.data.t('holdings.map')}
-													<span class="sr-only">({page.data.t('general.externalLink')})</span>
+													<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 												</a>)
 											{/if}
 										</td>

@@ -81,7 +81,7 @@
 								<!-- eslint-disable svelte/no-navigation-without-resolve -->
 								<a class="ext-link" target="_blank" href={library[BibDb.eodUri]}>
 									{library.displayStr}
-									<span class="sr-only">({page.data.t('general.externalLink')})</span>
+									<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 								</a>
 							</li>
 						{/each}

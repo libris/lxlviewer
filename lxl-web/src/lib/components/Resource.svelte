@@ -517,15 +517,15 @@
 					{page.data.t('resource.downloadDescription')}:
 					<!-- eslint-disable svelte/no-navigation-without-resolve -->
 					<a href="{recordUri}/data.jsonld" target="_blank" class="ext-link"
-						>JSON-LD <span class="sr-only">({page.data.t('general.externalLink')})</span></a
+						>JSON-LD <span class="sr-only">({page.data.t('general.targetBlank')})</span></a
 					>
 					·
 					<a href="{recordUri}/data.ttl" target="_blank" class="ext-link"
-						>Turtle <span class="sr-only">({page.data.t('general.externalLink')})</span></a
+						>Turtle <span class="sr-only">({page.data.t('general.targetBlank')})</span></a
 					>
 					·
 					<a href="{recordUri}/data.rdf" target="_blank" class="ext-link"
-						>RDF/XML <span class="sr-only">({page.data.t('general.externalLink')})</span></a
+						>RDF/XML <span class="sr-only">({page.data.t('general.targetBlank')})</span></a
 					>
 					{#if instances?.length === 1}
 						<!--
@@ -560,7 +560,7 @@
 					>
 						{page.data.t('resource.showIn')}
 						{page.data.t('resource.librisCataloging')}
-						<span class="sr-only">({page.data.t('general.externalLink')})</span>
+						<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 					</a>
 					{#if instances?.length === 1 && process.env.NODE_ENV === 'development'}
 						· <a
@@ -570,7 +570,7 @@
 						>
 							{page.data.t('resource.showIn')}
 							{page.data.t('resource.librisOld')}
-							<span class="sr-only">({page.data.t('general.externalLink')})</span>
+							<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 						</a>
 					{/if}
 				</p>
