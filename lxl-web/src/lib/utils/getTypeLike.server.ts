@@ -1,6 +1,7 @@
 import { Bibframe, type FramedData, JsonLd } from '#lib/types/xl.js';
 import { VocabUtil } from '#lib/utils/xl.server.js';
 import getAtPath from '#lib/utils/getAtPath.js';
+import { asArray } from '#lib/utils/misc.ts';
 
 export type TypeLike = {
 	find: FramedData[];
@@ -170,7 +171,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	}
 
 	if (
-		(thing.category || []).some((c) => c[JsonLd.ID]?.startsWith('https://id.kb.se/term/swepub'))
+		asArray(thing.category).some((c) => c[JsonLd.ID]?.startsWith('https://id.kb.se/term/swepub'))
 	) {
 		result.identifyQualifier = [];
 		(thing.category || []).forEach((c) => {
