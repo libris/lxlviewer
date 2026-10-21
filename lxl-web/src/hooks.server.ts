@@ -128,9 +128,9 @@ export const handle = async ({ event, resolve }) => {
 	}
 
 	// remove me
-	const dismissedBannerCookie = event.cookies.get('dismissed-banner');
+	const dismissedBannerCookie = event.cookies.get('dismissed-banner2');
 	if (dismissedBannerCookie) {
-		event.locals.dismissedBanner = JSON.parse(dismissedBannerCookie);
+		event.locals.dismissedBanner2 = JSON.parse(dismissedBannerCookie);
 	}
 	const _bannerEnds = 1792524600;
 	const _isPast = Date.now() >= _bannerEnds * 1000;
