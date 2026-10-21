@@ -377,9 +377,9 @@ export default {
 		unknown: 'An unknown error occurred while fetching location'
 	},
 	banner: {
-		message: 'Scheduled maintenance on Tuesday, 20 October',
+		message: 'Disruptions affecting several of KB’s digital services',
 		message2:
-			'Libris will be temporarily unavailable due to scheduled maintenance between 20:00 and 21:30 on Tuesday, 20 October. We expect the service to be back to normal once the maintenance is complete',
+			'Several of KB’s digital services are currently experiencing technical issues. Some services may be unavailable or have limited functionality. We are working to resolve the issues.',
 		dismiss: 'Hide information'
 	}
 };

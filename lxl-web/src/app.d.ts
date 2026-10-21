@@ -19,7 +19,7 @@ declare global {
 			display: DisplayUtil;
 			userSettings: UserSettings;
 			librisSession?: string;
-			dismissedBanner: boolean;
+			dismissedBanner2: boolean;
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
 			qualifierSuggestionsByLocale: Record<
@@ -35,7 +35,7 @@ declare global {
 		interface PageData extends LayoutData {
 			base: string;
 			librisSession?: string;
-			dismissedBanner?: boolean;
+			dismissedBanner2?: boolean;
 			locale: string;
 			qualifierSuggestions: QualifierSuggestion2[];
 			siteName?: string;
