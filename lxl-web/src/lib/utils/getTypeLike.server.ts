@@ -174,7 +174,7 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		asArray(thing.category).some((c) => c[JsonLd.ID]?.startsWith('https://id.kb.se/term/swepub'))
 	) {
 		result.identifyQualifier = [];
-		(thing.category || []).forEach((c) => {
+		asArray(thing.category).forEach((c) => {
 			if (c[JsonLd.TYPE] === 'https://id.kb.se/term/swepub/OutputType') {
 				result.identify.push(c);
 			}
