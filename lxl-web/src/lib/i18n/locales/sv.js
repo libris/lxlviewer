@@ -379,9 +379,9 @@ export default {
 		unknown: 'Ett okänt fel inträffade när din plats skulle hämtas'
 	},
 	banner: {
-		message: 'Planerat driftsavbrott tisdag den 20 okt',
+		message: 'Störningar i flera av KBs digitala tjänster',
 		message2:
-			'Mellan kl. 20.00-21.30 tisdag den 20 oktober kommer Libris att vara tillfälligt otillgänglig på grund av planerat underhåll. Vi räknar med att tjänsten fungerar som vanligt igen efter avbrottet',
+			'Just nu påverkas flera av KBs digitala tjänster av tekniska problem. Vissa tjänster kan vara otillgängliga eller ha begränsad funktionalitet. Vi arbetar med att åtgärda problemen.',
 		dismiss: 'Dölj informationen'
 	}
 };
