@@ -9,7 +9,7 @@ export async function load({ params, data, url }) {
 	const base = locale === baseLocale ? '/' : `/${locale}`;
 	const userSettings = data.userSettings;
 	const librisSession = data.librisSession;
-	const dismissedBanner = data.dismissedBanner;
+	const dismissedBanner2 = data.dismissedBanner2;
 	const subsetMapping = data.subsetMapping;
 	const siteName = data.siteName;
 	const heroImage = data.heroImage;
@@ -26,7 +26,7 @@ export async function load({ params, data, url }) {
 		base,
 		userSettings,
 		librisSession,
-		dismissedBanner,
+		dismissedBanner2,
 		subsetMapping,
 		siteName,
 		heroImage,
