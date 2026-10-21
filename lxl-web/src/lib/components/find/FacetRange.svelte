@@ -50,6 +50,9 @@
 				id="facet-range-from"
 				type="number"
 				step="1"
+				min="1000"
+				max="2099"
+				aria-valuetext={rangeFrom}
 				bind:value={rangeFrom}
 			/>
 		</div>
@@ -62,6 +65,9 @@
 				id="facet-range-to"
 				type="number"
 				step="1"
+				min="1000"
+				max="2099"
+				aria-valuetext={rangeTo}
 				bind:value={rangeTo}
 			/>
 		</div>
