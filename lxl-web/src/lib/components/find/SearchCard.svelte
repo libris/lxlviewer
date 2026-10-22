@@ -215,8 +215,8 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				<svelte:element
 					this={headingIsLink ? 'a' : 'div'}
 					href={headingIsLink ? resourceLink : undefined}
-					aria-labelledby={titleId}
-					aria-describedby={`${bodyId} ${footerId}`}
+					aria-labelledby={headingIsLink ? titleId : undefined}
+					aria-describedby={headingIsLink ? `${bodyId} ${footerId}` : undefined}
 					tabindex="-1"
 					role={headingIsLink ? 'link' : undefined}
 					onclick={headingIsLink ? passAlongAdjecentSearchResults : undefined}
@@ -289,7 +289,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 								headingIsLink &&
 									'hover:text-link focus:text-link block hover:underline focus:underline'
 							]}
-							aria-describedby={`${bodyId} ${footerId}`}
+							aria-describedby={headingIsLink ? `${bodyId} ${footerId}` : undefined}
 							onclick={headingIsLink ? passAlongAdjecentSearchResults : undefined}
 							role={headingIsLink ? 'link' : undefined}
 						>
