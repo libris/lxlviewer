@@ -3,7 +3,7 @@ import { getSupportedLocale } from '$lib/i18n/locales';
 export async function load({ locals, url, params }) {
 	const userSettings = locals.userSettings;
 	const librisSession = locals.librisSession;
-	const dismissedBanner2 = locals.dismissedBanner2;
+	const dismissedBanner3 = locals.dismissedBanner3;
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param
 
 	// create dependency to react to _r changes
@@ -16,7 +16,7 @@ export async function load({ locals, url, params }) {
 	return {
 		userSettings,
 		librisSession,
-		dismissedBanner2,
+		dismissedBanner3,
 		subsetMapping,
 		siteName,
 		qualifierSuggestions
