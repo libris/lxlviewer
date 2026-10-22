@@ -181,7 +181,7 @@
 				bind:value={currentSort}
 				onchange={saveUserSort}
 				class="btn btn-primary size-full cursor-pointer appearance-none border-0 text-transparent"
-				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
+				aria-label={page.data.t('sort.sort') + ' ' + data?.label?.toLowerCase()}
 				data-testid={`facet-sort-${data.dimension}`}
 			>
 				{#each sortOptions as option (option.value)}

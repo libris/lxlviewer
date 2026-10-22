@@ -96,7 +96,7 @@
 				class={['text-sm', loading && 'pointer-events-none opacity-50']}
 			>
 				{#each data as facet, index (facet.dimension)}
-					<li aria-label={facet.dimension}>
+					<li>
 						<Facet
 							data={facet}
 							level={1}

@@ -224,7 +224,7 @@ export default {
 		addAsQualifier: 'Lägg till som filter'
 	},
 	sort: {
-		sort: 'Sortera',
+		sort: 'Sortering',
 		relevancy: 'Relevans',
 		alphaAsc: 'A-Ö',
 		alphaDesc: 'Ö-A',
@@ -261,6 +261,7 @@ export default {
 		from: 'Från',
 		to: 'Till',
 		year: 'år',
+		range: 'Intervall',
 		usagePolicy: 'Licensvillkor',
 		usagePolicyLibris: 'Om bilder i Libris',
 		usagePolicyNielsen: 'Om bilder från Nielsen',

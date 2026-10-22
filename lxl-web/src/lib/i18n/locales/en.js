@@ -224,7 +224,7 @@ export default {
 		addAsQualifier: 'Add as filter'
 	},
 	sort: {
-		sort: 'Sort',
+		sort: 'Sort by',
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',
 		alphaDesc: 'Z-A',
@@ -261,6 +261,7 @@ export default {
 		from: 'From',
 		to: 'To',
 		year: 'year',
+		range: 'Range',
 		usagePolicy: 'License terms',
 		usagePolicyLibris: 'About images in Libris',
 		usagePolicyNielsen: 'About images from Nielsen',

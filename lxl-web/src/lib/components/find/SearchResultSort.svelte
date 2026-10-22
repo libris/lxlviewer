@@ -39,9 +39,9 @@
 	}
 </script>
 
-<div class="sort-select flex flex-col items-end justify-self-end" data-testid="sort-select">
-	<label class="sr-only" for="search-sort">
-		{page.data.t('sort.sort')}
+<div class="sort-select flex gap-2 items-center" data-testid="sort-select">
+	<label for="search-sort" class="text-xs">
+		{page.data.t('sort.sort')}:
 	</label>
 	<div class="relative">
 		<span class="text-subtle pointer-events-none absolute top-0 p-2">
