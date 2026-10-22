@@ -219,7 +219,7 @@
 				class="text-severe-700 bg-severe-50 indented flex items-center gap-1 rounded-sm py-1"
 				use:popover={{
 					title: page.data.t('facet.limitText'),
-					placeAsSibling: false
+					placeAsSibling: true
 				}}
 			>
 				<span>{page.data.t('facet.limitInfo')}</span>

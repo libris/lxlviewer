@@ -130,7 +130,7 @@
 					<HoldingsContent {holdings}>
 						{#snippet card()}
 							{#if modalCard}
-								<SearchCard item={modalCard} />
+								<SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} />
 							{/if}
 						{/snippet}
 					</HoldingsContent>

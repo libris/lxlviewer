@@ -35,7 +35,8 @@
 
 	function imagePopover(title: string): Attachment<HTMLElement> {
 		return fromAction(popover, () => ({
-			title
+			title,
+			placeAsSibling: true
 		}));
 	}
 </script>

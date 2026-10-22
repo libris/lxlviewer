@@ -114,7 +114,8 @@
 			resource: {
 				id,
 				lang: getSupportedLocale(page.params.lang)
-			}
+			},
+			placeAsSibling: true
 		}));
 	}
 
