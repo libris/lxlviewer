@@ -38,6 +38,7 @@
 		allowActions?: boolean;
 		hideType?: boolean;
 		headingElement?: HeadingElem;
+		headingIsLink?: boolean;
 	}
 
 	let articleElement: HTMLElement;
@@ -48,7 +49,8 @@
 		allowLinks = true,
 		allowActions = true,
 		hideType = false,
-		headingElement = HeadingElem.H2
+		headingElement = HeadingElem.H2,
+		headingIsLink = true
 	}: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
@@ -210,12 +212,14 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	>
 		{#if page.data.features.resourceImages}
 			<div class="card-image">
-				<a
-					href={resourceLink}
-					aria-labelledby={titleId}
-					aria-describedby={`${bodyId} ${footerId}`}
+				<svelte:element
+					this={headingIsLink ? 'a' : 'div'}
+					href={headingIsLink ? resourceLink : undefined}
+					aria-labelledby={headingIsLink ? titleId : undefined}
+					aria-describedby={headingIsLink ? `${bodyId} ${footerId}` : undefined}
 					tabindex="-1"
-					onclick={passAlongAdjecentSearchResults}
+					role={headingIsLink ? 'link' : undefined}
+					onclick={headingIsLink ? passAlongAdjecentSearchResults : undefined}
 				>
 					<div class="pointer-events-none relative flex">
 						{#if item.image}
@@ -245,7 +249,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 							</div>
 						{/if}
 					</div>
-				</a>
+				</svelte:element>
 			</div>
 		{/if}
 		<div class="card-content grid">
@@ -277,21 +281,27 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 						this={headingElement}
 						class="decorated-heading card-header-title text-base"
 					>
-						<a
-							href={resourceLink}
-							class="hover:text-link focus:text-link block hover:underline focus:underline"
-							aria-describedby={`${bodyId} ${footerId}`}
-							onclick={passAlongAdjecentSearchResults}
+						<svelte:element
+							this={headingIsLink ? 'a' : 'span'}
+							href={headingIsLink ? resourceLink : undefined}
+							class={[
+								'block',
+								headingIsLink &&
+									'hover:text-link focus:text-link block hover:underline focus:underline'
+							]}
+							aria-describedby={headingIsLink ? `${bodyId} ${footerId}` : undefined}
+							onclick={headingIsLink ? passAlongAdjecentSearchResults : undefined}
+							role={headingIsLink ? 'link' : undefined}
 						>
 							<DecoratedData2
 								data={item['card-heading']}
 								showLabels={ShowLabelsOptions.Never}
-								{allowLinks}
+								allowLinks={headingIsLink ? allowLinks : false}
 								{allowPopovers}
-								parent={Elem.A}
+								parent={headingIsLink ? Elem.A : Elem.Span}
 								skipOuter={true}
 							/>
-						</a>
+						</svelte:element>
 					</svelte:element>
 				</hgroup>
 				{#if isResourceNode(item[LensType.WebCardHeaderExtra]) && item[LensType.WebCardHeaderExtra]?.[Fmt.DISPLAY].length}
@@ -632,11 +642,13 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 		& :global(dl) {
 			margin-top: calc(var(--spacing) * 1);
+			margin-bottom: calc(var(--spacing) * 0) !important;
 		}
 
 		& :global(dt) {
 			display: inline-block;
 			font-style: italic;
+			font-size: var(--text-sm) !important;
 			&::after {
 				content: ': ';
 			}
@@ -675,11 +687,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		& .card-actions {
 			display: none;
 		}
-		/* todo: allow links? */
-		& .card-image,
-		.card-header-title {
-			pointer-events: none;
-		}
 	}
 
 	/* slim card in myLibraries search */
@@ -716,8 +723,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		}
 
 		& .card-header-title {
-			pointer-events: none;
-			font-size: var(--text-sm);
+			font-size: var(--text-base);
 		}
 	}
 </style>
