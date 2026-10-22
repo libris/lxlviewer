@@ -32,7 +32,7 @@
 <span
 	use:popover={{
 		title: indicatorText,
-		placeAsSibling: true
+		placeAsSibling: false
 	}}
 >
 	<BiHouseHeart aria-hidden="true" class="libraries-indicator" />
