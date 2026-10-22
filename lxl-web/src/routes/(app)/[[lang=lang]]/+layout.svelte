@@ -17,7 +17,7 @@
 		previews: undefined
 	});
 
-	let dismissedBanner: boolean | undefined = $state(page.data.dismissedBanner2);
+	let dismissedBanner: boolean | undefined = $state(page.data.dismissedBanner3);
 
 	setHomepageContext(homepageCache);
 
@@ -33,7 +33,7 @@
 	setSearchContext(searchContextState);
 
 	function onDismiss() {
-		Cookies.set('dismissed-banner2', 'true', {
+		Cookies.set('dismissed-banner3', 'true', {
 			sameSite: 'strict'
 		});
 		dismissedBanner = true;
