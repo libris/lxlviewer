@@ -384,9 +384,9 @@ export default {
 		unknown: 'An unknown error occurred while fetching location'
 	},
 	banner: {
-		message: 'Disruptions affecting several of KB’s digital services',
+		message: 'Services back in operation',
 		message2:
-			'Several of KB’s digital services are currently experiencing technical issues. Some services may be unavailable or have limited functionality. We are working to resolve the issues.',
+			'Libris fjärrlån and loanstatus are back in operation after a short disruption for unplanned maintenance.',
 		dismiss: 'Hide information'
 	}
 };

@@ -387,9 +387,9 @@ export default {
 		unknown: 'Ett okänt fel inträffade när din plats skulle hämtas'
 	},
 	banner: {
-		message: 'Störningar i flera av KBs digitala tjänster',
+		message: 'Tjänster åter i drift',
 		message2:
-			'Just nu påverkas flera av KBs digitala tjänster av tekniska problem. Vissa tjänster kan vara otillgängliga eller ha begränsad funktionalitet. Vi arbetar med att åtgärda problemen.',
+			'Libris fjärrlån och lånestatus är åter i drift efter ett kort avbrott för oplanerat underhåll.',
 		dismiss: 'Dölj informationen'
 	}
 };
