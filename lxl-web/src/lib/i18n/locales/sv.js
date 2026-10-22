@@ -273,7 +273,10 @@ export default {
 		show: 'Visa',
 		approx: 'ca',
 		copyToClipboard: 'Kopiera till urklipp',
-		copied: 'Kopierad!'
+		copied: 'Kopierad!',
+		targetBlank: 'öppnas i nytt fönster',
+		linkToSearchQuery: 'länk till sökfråga',
+		downloadLink: 'nedladdningslänk'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',

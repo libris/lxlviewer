@@ -74,8 +74,10 @@
 					<small class="text-3xs text-subtle">
 						{'© '}
 						{#if image.attribution.link}
+							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a href={image.attribution.link} target="_blank" class="ext-link">
 								{image.attribution.name}
+								<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 							</a>
 						{:else}
 							{image.attribution.name}
@@ -97,8 +99,10 @@
 						>
 							{#if image.usageAndAccessPolicy.identifier}
 								{image.usageAndAccessPolicy.identifier}
+								<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 							{:else}
 								{page.data.t('general.usagePolicy')}
+								<span class="sr-only">({page.data.t('general.targetBlank')})</span>
 							{/if}
 						</a>
 					{:else if image?.usageAndAccessPolicy?.identifier === 'Nielsen'}

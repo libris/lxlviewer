@@ -273,7 +273,10 @@ export default {
 		show: 'Show',
 		approx: 'approx.',
 		copyToClipboard: 'Copy to clipboard',
-		copied: 'Copied!'
+		copied: 'Copied!',
+		targetBlank: 'opens in new window',
+		linkToSearchQuery: 'link to search query',
+		downloadLink: 'download link'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',
