@@ -1,6 +1,6 @@
 {
   "name": "cataloging",
-  "version": "1.45.6",
+  "version": "1.45.7",
   "type": "module",
   "private": true,
   "scripts": {
