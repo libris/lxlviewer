@@ -1,11 +1,12 @@
-import { Fmt, JsonLd } from '$lib/types/xl';
-import { isObject } from '$lib/utils/misc';
+import { Fmt, JsonLd } from '#lib/types/xl.js';
+import { isObject } from '#lib/utils/misc.js';
 
 const METADATA_KEYS = new Set<string>([
 	JsonLd.ID,
 	JsonLd.TYPE,
 	Fmt.LABEL,
 	Fmt.STYLE,
+	Fmt.PROP,
 	Fmt.CONTENT_BEFORE,
 	Fmt.CONTENT_AFTER
 ]);

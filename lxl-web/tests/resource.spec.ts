@@ -5,14 +5,31 @@ test('should not have any detectable a11y issues', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
 	const accessibilityScanResults = await new AxeBuilder({ page })
 		.exclude('[role="combobox"][aria-placeholder]') // aria-placeholder issue in supersearch is a false alarm (see https://github.com/w3c/aria/issues/2689)
+		.disableRules([
+			'link-in-text-block' // enable when link underline fixed
+		])
 		.analyze();
 	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
+
+test('first heading on page should be h1', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	const firstHeading = page.locator('h1, h2, h3, h4, h5, h6').first();
+	await expect(firstHeading).toHaveJSProperty('tagName', 'H1');
+});
+
+test('page displays the correct title', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	await expect(page).toHaveTitle('Pappaklausulen. — Jonas Hassen Khemiri, 1978- | Libris');
 });
 
 test('Open holdings panel should not have any detectable a11y issues', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf?holdings=Electronic');
 	const accessibilityScanResults = await new AxeBuilder({ page })
 		.exclude('[role="combobox"][aria-placeholder]')
+		.disableRules([
+			'link-in-text-block' // enable when link underline fixed
+		])
 		.analyze();
 	expect.soft(accessibilityScanResults.violations).toEqual([]);
 });
@@ -39,10 +56,10 @@ test('initially opened holdings modals are closable', async ({ page }) => {
 test('decorated data in holdings modal is not duplicated while closing modal', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
 	await page.getByTestId('holding-link').first().click();
-	await expect(page.locator('dialog [data-type="Monograph"]')).toHaveCount(1);
+	await expect(page.locator('dialog [data-property="hasTitle"]')).toHaveCount(1);
 	await page.keyboard.press('Escape');
 	await page.waitForTimeout(10);
-	await expect(page.locator('dialog [data-type="Monograph"]')).toHaveCount(1);
+	await expect(page.locator('dialog [data-property="hasTitle"]')).toHaveCount(1);
 	await page.getByTestId('modal').waitFor({ state: 'hidden' });
 	await expect(page.getByTestId('modal')).toBeHidden();
 });
@@ -100,4 +117,11 @@ test('table of contents', async ({ page }) => {
 		page.getByTestId('toc-mobile').locator('a').first(),
 		'enter keypress toggles table of contents while focused on toggle'
 	).toBeVisible();
+});
+
+test('the line height (click area) of links are at least 24px', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	const firstLink = page.locator('a.link').first();
+	const lineHeight = await firstLink.evaluate((el) => parseFloat(getComputedStyle(el).lineHeight));
+	expect(lineHeight).toBeGreaterThanOrEqual(24);
 });

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import getPageTitle from '$lib/utils/getPageTitle';
-	import Meta from '$lib/components/Meta.svelte';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
+	import Meta from '#lib/components/Meta.svelte';
 	import { page } from '$app/state';
 	import SvContent from './sv.md';
 	import EnContent from './en.md';
@@ -16,7 +16,7 @@
 
 <Meta
 	title={pageTitle}
-	description={page.data.t('help.pageDescription')}
+	description={page.data.t('help.metaDescription')}
 	url={page.url.origin + page.url.pathname}
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />

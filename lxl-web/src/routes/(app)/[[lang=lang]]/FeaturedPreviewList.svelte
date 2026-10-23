@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { page } from '$app/state';
 	import { afterNavigate, onNavigate } from '$app/navigation';
-	import { type FeaturedSearch } from '$lib/remotes/homepage.remote';
-	import SearchResultList from '$lib/components/SearchResultList.svelte';
-	import { getHomepageContext } from '$lib/contexts/homepage';
-	import { getFeaturedPreviews } from '$lib/remotes/homepage.remote';
+	import { type FeaturedSearch } from '#lib/remotes/homepage.remote.js';
+	import SearchResultList from '#lib/components/SearchResultList.svelte';
+	import { getHomepageContext } from '#lib/contexts/homepage.js';
+	import { getFeaturedPreviews } from '#lib/remotes/homepage.remote.js';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
 
 	type Props = {
 		featured: FeaturedSearch;
@@ -12,6 +14,7 @@
 		type?: 'horizontal' | 'grid';
 		lazyload?: 'intersection' | 'mount';
 		placeholderCount?: number;
+		showResourceImages?: boolean;
 	};
 
 	let {
@@ -19,7 +22,8 @@
 		ariaLabelledBy,
 		type = 'horizontal',
 		lazyload = undefined,
-		placeholderCount = 11
+		placeholderCount = 11,
+		showResourceImages = true
 	}: Props = $props();
 
 	let listElement: HTMLUListElement | undefined = $state();
@@ -33,7 +37,11 @@
 	const previewsQuery = $derived(
 		!homepageContext.previews?.[previewParamsString] &&
 			(!lazyload || (lazyload && shouldGetPreviews))
-			? getFeaturedPreviews(featured.previewParams)
+			? getFeaturedPreviews({
+					...featured.previewParams,
+					lang: page.data.locale,
+					url: page.url.href
+				})
 			: undefined
 	);
 
@@ -67,12 +75,16 @@
 	}
 
 	onNavigate((navigation) => {
+		if (navigation.shallow && navigation.type === 'goto') return;
+
 		if (navigation?.from) {
 			fadeInImages = false;
 		}
 	});
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if (lazyload === 'intersection') {
 			initObserver();
 		}
@@ -92,7 +104,11 @@
 {#snippet previewPlaceholder()}
 	<div class="placeholder-container @container">
 		<div class="placeholder flex flex-col items-center"></div>
-		<div class={['skeleton mb-2 w-full', type === 'grid' ? 'aspect-video' : 'aspect-square']}></div>
+		{#if showResourceImages}
+			<div
+				class={['skeleton mb-2 w-full', type === 'grid' ? 'aspect-video' : 'aspect-square']}
+			></div>
+		{/if}
 		<div class="skeleton bg-neutral my-0.5 h-3 w-1/3"></div>
 		<div
 			class="skeleton bg-neutral mt-1.25 mb-2.5 h-3.5 w-3/4 @min-[16rem]:mb-2.25 @min-[16rem]:h-3.75"
@@ -106,7 +122,8 @@
 	class={[
 		'featured-previews contents',
 		previews?.totalItems === 0 && 'empty',
-		type === 'grid' ? 'grid-type' : 'horizontal-type'
+		type === 'grid' ? 'grid-type' : 'horizontal-type',
+		!showResourceImages && 'no-images'
 	]}
 >
 	<SearchResultList
@@ -121,6 +138,7 @@
 		lazyImages
 		{fadeInImages}
 		bind:listElement
+		headingElement={HeadingElem.H3}
 	/>
 </div>
 
@@ -128,10 +146,18 @@
 	@reference "tailwindcss";
 
 	/* prevent vertical scroll on individual items? */
-	.horizontal-type.featured-previews {
+	/* TODO: Something smarter than this but we need a height value to prevent layout-shifting */
+	/* .horizontal-type.featured-previews {
 		& .placeholder-container,
 		:global(article) {
-			height: calc(100cqw + (var(--spacing) * 3) + 10rem);  // TODO: Something smarter than this but we need a height value to prevent layout-shifting
+			height: calc(100cqw + (var(--spacing) * 3) + 10rem);
+		}
+	} */
+
+	.no-images.horizontal-type.featured-previews {
+		& .placeholder-container,
+		:global(article) {
+			height: unset;
 		}
 	}
 </style>

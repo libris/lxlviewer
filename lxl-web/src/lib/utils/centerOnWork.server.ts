@@ -1,4 +1,4 @@
-import type { FramedData } from '$lib/types/xl';
+import type { FramedData } from '#lib/types/xl.js';
 
 // TODO: handle titles correctly
 export function centerOnWork(mainEntity: FramedData): FramedData {

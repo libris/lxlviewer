@@ -1,6 +1,7 @@
-import { getSupportedLocale } from '$lib/i18n/locales';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import { defaultSiteConfiguration, resolveFeatures } from '#lib/constants/defaultSiteConfig.js';
 
-export async function load({ locals, url, params }) {
+export async function load({ locals, url, params, cookies }) {
 	const userSettings = locals.userSettings;
 	const librisSession = locals.librisSession;
 	const dismissedBanner3 = locals.dismissedBanner3;
@@ -11,6 +12,15 @@ export async function load({ locals, url, params }) {
 	const subsetMapping = locals.subsetMapping;
 
 	const siteName = locals.site?.name;
+	const siteTranslations = locals.site?.configuration?.locales;
+	const heroImage = locals.site?.configuration?.heroImage ?? defaultSiteConfiguration.heroImage;
+	const features = resolveFeatures(locals.site?.configuration?.features);
+	const footer = locals.site
+		? (locals.site.configuration?.footer ?? [])
+		: defaultSiteConfiguration.footer;
+	const appMenuItems = locals.site?.configuration
+		? (locals.site.configuration?.appMenu ?? [])
+		: defaultSiteConfiguration.appMenu;
 	const qualifierSuggestions = locals.qualifierSuggestionsByLocale[locale];
 
 	return {
@@ -19,6 +29,12 @@ export async function load({ locals, url, params }) {
 		dismissedBanner3,
 		subsetMapping,
 		siteName,
-		qualifierSuggestions
+		siteTranslations,
+		heroImage,
+		features,
+		footer,
+		appMenuItems,
+		qualifierSuggestions,
+		initialCookieConsentModal: !cookies.get('cc_cookie')
 	};
 }

@@ -1,6 +1,6 @@
 import jmespath from 'jmespath';
-import type { CSLJSON, CSLName, CSLRoles, CSLType } from '$lib/types/citation';
-import { JsonLd, type FramedData } from '$lib/types/xl';
+import type { CSLJSON, CSLName, CSLRoles, CSLType } from '#lib/types/citation.js';
+import { JsonLd, type FramedData } from '#lib/types/xl.js';
 import getTypeLike, { slug, type TypeLike } from './getTypeLike.server';
 import type { VocabUtil } from './xl.server';
 

@@ -22,19 +22,11 @@ test('index page shows featured searches', async ({ page }) => {
 	await expect(page).toHaveURL('/');
 	await page.waitForLoadState('networkidle');
 
-	await expect(page.getByLabel('Ny skönlitteratur på svenska').getByRole('listitem')).toHaveCount(
-		20,
-		{
-			timeout: 10000
-		}
-	);
-	// await page.getByLabel('Böcker om att börja skolan').scrollIntoViewIfNeeded();
-	// await expect(page.getByLabel('Böcker om att börja skolan').getByRole('listitem')).toHaveCount(
-	// 	11,
-	// 	{
-	// 		timeout: 10000
-	// 	}
-	// );
+	const section = page.getByLabel('Ny skönlitteratur på svenska');
+	await section.scrollIntoViewIfNeeded();
+	await expect(section.locator('article')).toHaveCount(20, {
+		timeout: 10000
+	});
 });
 
 test('can change the language', async ({ page }) => {
@@ -44,6 +36,17 @@ test('can change the language', async ({ page }) => {
 
 test('index page has a search input', async ({ page }) => {
 	await expect(page.getByTestId('supersearch').getByRole('combobox')).toBeVisible();
+});
+
+test('search input has visible outline on focus', async ({ page }) => {
+	const supersearch = page.getByTestId('supersearch');
+	const input = supersearch.getByRole('combobox');
+	await input.focus();
+	await expect(input).toBeFocused();
+
+	const focusElement = supersearch.locator('.supersearch-input').first();
+	await expect(focusElement).toHaveCSS('outline-style', 'solid');
+	await expect(focusElement).toHaveCSS('outline-width', '2px');
 });
 
 test('can perform a search', async ({ page }) => {

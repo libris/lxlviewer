@@ -1,9 +1,9 @@
-import { getTranslator } from '$lib/i18n/index.js';
-import { baseLocale, getSupportedLocale, initLocalizeHref } from '$lib/i18n/locales';
+import { getTranslator } from '#lib/i18n/index.js';
+import { baseLocale, getSupportedLocale, initLocalizeHref } from '#lib/i18n/locales.js';
 
 export async function load({ params, data, url }) {
 	const locale = getSupportedLocale(params?.lang); // will use default locale if no lang param
-	const t = await getTranslator(locale);
+	const t = await getTranslator(locale, data.siteTranslations);
 	const localizeHref = initLocalizeHref(locale, url);
 
 	const base = locale === baseLocale ? '/' : `/${locale}`;
@@ -12,7 +12,12 @@ export async function load({ params, data, url }) {
 	const dismissedBanner3 = data.dismissedBanner3;
 	const subsetMapping = data.subsetMapping;
 	const siteName = data.siteName;
+	const heroImage = data.heroImage;
+	const features = data.features;
+	const footer = data.footer;
+	const appMenuItems = data.appMenuItems;
 	const qualifierSuggestions = data.qualifierSuggestions;
+	const initialCookieConsentModal = data.initialCookieConsentModal;
 
 	return {
 		locale,
@@ -24,6 +29,11 @@ export async function load({ params, data, url }) {
 		dismissedBanner3,
 		subsetMapping,
 		siteName,
-		qualifierSuggestions
+		heroImage,
+		features,
+		footer,
+		appMenuItems,
+		qualifierSuggestions,
+		initialCookieConsentModal
 	};
 }

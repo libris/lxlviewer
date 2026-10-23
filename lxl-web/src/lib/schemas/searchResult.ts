@@ -2,6 +2,8 @@ import * as v from 'valibot';
 
 export const SearchResultsSchema = v.pipe(
 	v.object({
+		url: v.string(),
+		lang: v.string(),
 		_q: v.string(),
 		_limit: v.optional(
 			v.pipe(v.union([v.string(), v.number()]), v.toNumber(), v.number(), v.toString())
@@ -13,5 +15,13 @@ export const SearchResultsSchema = v.pipe(
 		_spell: v.optional(v.pipe(v.union([v.boolean(), v.string()]), v.toBoolean(), v.toString())),
 		_r: v.optional(v.string()),
 		_stats: v.optional(v.pipe(v.union([v.boolean(), v.string()]), v.toBoolean(), v.toString()))
+	})
+);
+
+export const AdjacentSearchResultsSchema = v.pipe(
+	v.object({
+		url: v.string(),
+		lang: v.string(),
+		viewId: v.string()
 	})
 );

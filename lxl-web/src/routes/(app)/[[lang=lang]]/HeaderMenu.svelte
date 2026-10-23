@@ -3,7 +3,7 @@
 	import BiGlobe from '~icons/bi/globe';
 	import BiPerson from '~icons/bi/person-circle';
 	import BiQuestionCircle from '~icons/bi/question-circle';
-	import { Locales } from '$lib/i18n/locales';
+	import { Locales } from '#lib/i18n/locales.js';
 	import { goto } from '$app/navigation';
 
 	const otherLangCode = $derived(
@@ -34,17 +34,19 @@
 				</span>
 			</a>
 		</li>
-		<li>
-			<a
-				class="flex flex-col items-center gap-1 whitespace-nowrap"
-				href={page.data.localizeHref('/my-pages')}
-			>
-				<BiPerson />
-				<div class="text-nowrap">
-					{page.data.t('header.myPages')}
-				</div>
-			</a>
-		</li>
+		{#if page.data.features.myPages}
+			<li>
+				<a
+					class="flex flex-col items-center gap-1 whitespace-nowrap"
+					href={page.data.localizeHref('/my-pages')}
+				>
+					<BiPerson />
+					<div class="text-nowrap">
+						{page.data.t('header.myPages')}
+					</div>
+				</a>
+			</li>
+		{/if}
 		<li>
 			<a
 				class="flex flex-col items-center gap-1 whitespace-nowrap"

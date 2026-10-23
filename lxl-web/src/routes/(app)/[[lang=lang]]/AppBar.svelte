@@ -10,18 +10,18 @@
 </script>
 
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
+	import { PUBLIC_FJARRLAN_URL } from '$app/env/public';
 	import { type Component, onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { type LocaleCode, Locales } from '$lib/i18n/locales';
+	import { type LocaleCode, Locales } from '#lib/i18n/locales.js';
 	import { page } from '$app/state';
 	import { beforeNavigate } from '$app/navigation';
-	import { getSearchContext } from '$lib/contexts/search';
-	import librisLogo from '$lib/assets/img/libris-logo.svg';
+	import { getSearchContext } from '#lib/contexts/search.js';
+	import librisLogo from '#lib/assets/img/libris-logo.svg';
 	import AppSearch from './AppSearch.svelte';
-	import SkipToContent from '$lib/components/SkipToContent.svelte';
-	import AppMenuContent from '$lib/components/AppMenuContent.svelte';
-	import SearchMapping from '$lib/components/find/SearchMapping.svelte';
+	import SkipToContent from '#lib/components/SkipToContent.svelte';
+	import AppMenuContent from '#lib/components/AppMenuContent.svelte';
+	import SearchMapping from '#lib/components/find/SearchMapping.svelte';
 	import IconMenu from '~icons/bi/list';
 	import IconCloseMenu from '~icons/bi/x-lg';
 	import IconBookmark from '~icons/bi/bookmark';
@@ -51,6 +51,7 @@
 			}
 		);
 	});
+	const siteName = $derived(page.data.siteName || 'Libris');
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
 
@@ -91,7 +92,10 @@
 		closeExpandedMenu();
 		searchContext.superSearch?.showExpandedSearch({ cursorAtEnd: true });
 	}
-	beforeNavigate(() => {
+
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		closeExpandedMenu();
 	});
 
@@ -116,7 +120,7 @@
 		withMobileSearchInput && 'with-mobile-search-input'
 	]}
 >
-	<nav class={['appbar-nav bg-appbar']} aria-label={`Libris ${page.data.t('appMenu.label')}`}>
+	<nav class={['appbar-nav bg-appbar']} aria-label={`${siteName} ${page.data.t('appMenu.label')}`}>
 		<ul class={['leading-actions z-43 flex items-stretch 2xl:pl-3', subset && 'min-w-0']}>
 			<li>
 				<svelte:element
@@ -145,45 +149,49 @@
 					})}
 				</svelte:element>
 			</li>
-			<li class={subset && 'flex items-center gap-4 overflow-hidden'}>
+			<li class={subset && 'flex items-center gap-1 overflow-hidden'}>
 				<a
-					class={['action px-1.5']}
+					class={['action flex flex-row gap-1.5 px-1.5 sm:gap-2', subset ? 'min-w-24!' : '']}
 					href={resolve(page.data.localizeHref(page.data.base))}
 					aria-current={page.route.id === '/(app)/[[lang=lang]]' ? 'page' : undefined}
 					data-testid="home"
 				>
-					{#if page.data.siteName}
-						<span class="text-2xl font-medium">
-							{page.data.siteName}
-						</span>
-					{:else}
+					{#if siteName === 'Libris'}
 						<img
 							src={librisLogo}
-							width={275}
+							width={66}
 							height={75}
-							alt="Libris"
+							alt=""
 							class={[
-								'h-auto min-w-20',
-								subset ? 'w-20 2xl:w-27.5' : 'mb-0.5 w-22 sm:w-27.5 sm:pb-1 2xl:w-35.75'
+								'w-auto',
+								subset ? 'h-5.5 2xl:h-9' : 'mb-1.5 h-6.5 sm:h-8.5 sm:mb-0.5 sm:pb-1 2xl:h-10.75'
 							]}
 						/>
 					{/if}
+					<p
+						class={[
+							'font-display text-body whitespace-nowrap',
+							subset ? 'text-2xl' : 'text-2xl sm:text-3xl 2xl:text-4xl'
+						]}
+					>
+						{siteName}
+					</p>
 				</a>
 				{#if subset}
-					<div class="subset-container relative items-center overflow-hidden">
+					<span>/</span>
+					<div
+						class="subset-container relative flex items-center overflow-y-scroll scrollbar-hidden"
+					>
 						<SearchMapping mapping={subset} />
 					</div>
 				{/if}
 			</li>
 		</ul>
-		<div class="contents lg:hidden">
-			{@render trailingActions({ mobile: true })}
-		</div>
+
+		<div class="contents lg:hidden">{@render trailingActions({ mobile: true })}</div>
 
 		{#if !isHomeRoute || (isHomeRoute && searchContext.showSearchInAppBar)}
-			<div class={['search']}>
-				<AppSearch id={ID_APP_BAR_LG_SEARCH} />
-			</div>
+			<div class={['search']}><AppSearch id={ID_APP_BAR_LG_SEARCH} /></div>
 		{/if}
 		<div class="hidden lg:contents">
 			{@render trailingActions({ mobile: false })}
@@ -271,7 +279,7 @@
 				<!-- eslint-disable svelte/no-navigation-without-resolve -->
 				<a
 					class="action bg-primary-800 hover:bg-primary-900 *:text-page!"
-					href={`${env.PUBLIC_FJARRLAN_URL}/lf.php`}
+					href={`${PUBLIC_FJARRLAN_URL}/lf.php`}
 				>
 					{@render actionItemContents({
 						Icon: IconFjarrlan,
@@ -281,20 +289,22 @@
 				</a>
 			</li>
 		{/if}
-		<li>
-			<a
-				class="action hover:bg-primary-200 text-subtle"
-				href={resolve(page.data.localizeHref('/my-pages'))}
-				aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
-				aria-labelledby={myPagesLabelId}
-			>
-				{@render actionItemContents({
-					Icon: IconBookmark,
-					label: page.data.t('header.myPages'),
-					id: myPagesLabelId
-				})}
-			</a>
-		</li>
+		{#if page.data.features.myPages}
+			<li>
+				<a
+					class="action hover:bg-primary-200 text-subtle"
+					href={resolve(page.data.localizeHref('/my-pages'))}
+					aria-current={page.route.id?.endsWith('/my-pages') ? 'page' : undefined}
+					aria-labelledby={myPagesLabelId}
+				>
+					{@render actionItemContents({
+						Icon: IconBookmark,
+						label: page.data.t('header.myPages'),
+						id: myPagesLabelId
+					})}
+				</a>
+			</li>
+		{/if}
 	</ul>
 {/snippet}
 
@@ -303,9 +313,7 @@
 		class="3xl:px-2.5 text-subtle flex min-w-11 flex-col items-center gap-1 px-1 text-xs font-medium sm:text-sm 2xl:gap-1.5 2xl:text-base"
 	>
 		<Icon class="mt-1 size-5 2xl:size-6" />
-		<p {id} class="px-1 whitespace-nowrap lg:px-0">
-			{label}
-		</p>
+		<p {id} class="px-1 whitespace-nowrap lg:px-0">{label}</p>
 	</div>
 {/snippet}
 
@@ -421,22 +429,34 @@
 		}
 	}
 
-	.subset-container :global(.lxl-qualifier) {
-		width: 100%;
-		& :global(.lxl-qualifier-value) {
-			@apply inline-flex h-full items-center truncate py-0;
-			max-width: calc(100% - 32px) !important;
+	/* subset in header */
+	.appbar.subset {
+		& :global(.search-mapping) {
+			overflow-x: auto;
+			scroll-behavior: smooth;
+			scrollbar-width: none;
+			padding-right: calc(var(--spacing) * 4);
 		}
 
-		& :global(.lxl-qualifier-remove) {
-			@apply inline-block h-full items-center py-0;
-		}
-		@variant lg {
-			@apply flex items-center justify-stretch;
+		& :global(.search-mapping .group) {
+			flex-wrap: nowrap;
+			max-width: none;
 		}
 
-		@variant 2xl {
-			@apply flex items-center justify-stretch;
+		& :global(.search-mapping .pill),
+		.subset-container :global(ul) {
+			max-width: none;
+		}
+
+		& .subset-container::after {
+			content: '';
+			position: absolute;
+			top: -1px;
+			right: 0;
+			width: calc(var(--spacing) * 4);
+			height: 100%;
+			pointer-events: none;
+			background: linear-gradient(to right, transparent, var(--color-primary-100));
 		}
 	}
 </style>

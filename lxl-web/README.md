@@ -32,14 +32,14 @@ npm run build
 and start it:
 
 ```bash
-node -r dotenv/config build
+node --env-file=.env build
 ```
 
 Here, dotenv is needed to [load the environment variables](https://kit.svelte.dev/docs/adapter-node#environment-variables) from the `.env` file.
 
 ## Folder structure
 
-- `src/lib` includes library code (assets, utils and components), which can be imported via the `$lib` alias
+- `src/lib` includes library code (assets, utils and components), which can be imported via the `#lib` alias
 - `src/params` contains [param matchers](https://kit.svelte.dev/docs/advanced-routing#matching) used for routing uses dynamic params.
 - `src/routes` contains the routes of the application (as well as components that are only used within a single route).
 - `static` contains static assets that should be served as-is, like robots.txt or favicon.png.

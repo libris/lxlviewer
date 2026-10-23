@@ -25,8 +25,6 @@ export default {
 		specialCollections: 'Special collections',
 		myPages: 'My pages',
 		help: 'Help',
-		about: 'About Libris',
-		aboutBeta: 'FAQ',
 		illSite: 'Libris Fjärrlån',
 		contact: 'Contact',
 		cookies: 'About cookies on the website',
@@ -49,12 +47,13 @@ export default {
 	},
 	about: {
 		pageTitle: 'About Libris',
-		pageDescription:
+		metaDescription:
 			'Libris is a collaboration between hundreds of libraries in Sweden and this is the Libris union catalog.'
 	},
 	help: {
-		pageTitle: 'Help',
-		pageDescription:
+		pageTitle: 'Help and tips',
+		filtersPageTitle: 'Search filters',
+		metaDescription:
 			'Help and documentation for using Libris, the Swedish national union catalogue.',
 		description: 'Description',
 		filter: 'Filter',
@@ -64,7 +63,7 @@ export default {
 	},
 	myPages: {
 		pageTitle: 'My pages',
-		pageDescription: 'Here you can manage your favourite libraries, among other things.',
+		metaDescription: 'Here you can manage your favourite libraries, among other things.',
 		myPages: 'My pages',
 		libraries: 'Libraries',
 		favouriteLibraries: 'Favourite libraries',
@@ -95,6 +94,7 @@ export default {
 		'librissearch:identifyCategory': 'Category',
 		'librissearch:noneCategory': 'Subcategory',
 		'librissearch:instanceCategory': 'Format',
+		'librissearch:workCategory': 'Category',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
 		'instanceOf.@type': 'Type of work',
 		issuanceType: 'Issuance type',
@@ -128,16 +128,16 @@ export default {
 		'librissearch:bibliography': 'Bibliography',
 		'librissearch:contributor': 'Author/Contributor',
 		language: 'Language',
-		subject: 'Subject',
+		'librissearch:subject': 'Subject',
 		yearPublished: 'Year published',
 		'librissearch:yearPublished': 'Year published',
 		intendedAudience: 'Intended audience',
+		classification: 'Classification',
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
 		fieldOfActivity: 'Field of Activity',
 		accessFilters: 'Access',
-		boolFilters: 'Other',
-		'alias-myLibraries': 'Limit to favourite libraries',
+		otherFilters: 'Other',
 		limitInfo: 'Some options are not displayed',
 		limitText:
 			'The list shows a limited number of options, the most common ones related to your search. Try narrowing your search to get other, more relevant options.'
@@ -172,7 +172,7 @@ export default {
 		type: 'Type',
 		related: 'related',
 		relatedOne: 'related',
-		pagination: 'pagination',
+		pagination: 'Pagination',
 		previous: 'Previous page',
 		page: 'Page',
 		next: 'Next page',
@@ -202,10 +202,12 @@ export default {
 		showEquals: 'Only show exact matches for'
 	},
 	supersearch: {
-		addQualifiers: 'Filter',
-		moreQualifiers: 'More filters',
+		search: 'Search',
+		addQualifiers: 'Add filter',
 		loading: 'Loading...',
+		suggestion: 'Suggestion',
 		suggestions: 'Suggestions',
+		expandedSearch: 'Expanded search',
 		showAll: 'Show search results',
 		arrowUpKey: 'Arrow Up key',
 		arrowRightKey: 'Arrow Right key',
@@ -218,10 +220,11 @@ export default {
 		add: 'Add',
 		searchHelp: 'Search help',
 		expandSearch: 'Go to search',
-		or: 'or'
+		or: 'or',
+		addAsQualifier: 'Add as filter'
 	},
 	sort: {
-		sort: 'Sort',
+		sort: 'Sort by',
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',
 		alphaDesc: 'Z-A',
@@ -254,13 +257,14 @@ export default {
 	general: {
 		collapseAll: 'Collapse all',
 		copyPermalinkToInstance: 'Copy link to edition',
-		latestInstanceCover: 'Cover of latest edition',
-		instanceCover: 'Cover of edition',
 		close: 'Close',
 		from: 'From',
 		to: 'To',
 		year: 'year',
+		range: 'Range',
 		usagePolicy: 'License terms',
+		usagePolicyLibris: 'About images in Libris',
+		usagePolicyNielsen: 'About images from Nielsen',
 		cropped: 'Cropped',
 		more: 'more',
 		readMore: 'Read more',
@@ -269,7 +273,10 @@ export default {
 		show: 'Show',
 		approx: 'approx.',
 		copyToClipboard: 'Copy to clipboard',
-		copied: 'Copied!'
+		copied: 'Copied!',
+		targetBlank: 'opens in new window',
+		linkToSearchQuery: 'link to search query',
+		downloadLink: 'download link'
 	},
 	tableOfContents: {
 		onThisPage: 'On this page',
@@ -286,6 +293,7 @@ export default {
 		result: 'result',
 		editions: 'Editions',
 		editionOf: 'Edition of',
+		navToWork: 'To resource main page',
 		summary: 'Summary',
 		tableOfContents: 'Table of Contents',
 		details: 'Details',
@@ -306,7 +314,8 @@ export default {
 		digitizationAvailable: 'Digitization available',
 		requestDigitization: 'Request digitization',
 		digitizationInfo:
-			'The book can, for a fee, be digitized and sent to you by email as a PDF file. The libraries that provide this service are listed below'
+			'The book can, for a fee, be digitized and sent to you by email as a PDF file. The libraries that provide this service are listed below',
+		imageLink: 'Link to resource image in fullsize'
 	},
 	holdings: {
 		availabilityByType: 'Availability by type',
@@ -322,12 +331,13 @@ export default {
 		itemNote: 'Item note',
 		itemMedia: 'Related link',
 		itemInformation: 'Library specific information (holding)',
+		item: 'item',
 		location: 'Location',
 		shelf: 'Shelf',
 		status: 'Status',
 		date: 'Date',
 		loanPolicy: 'Loan policy',
-		loanStatus: 'See loan status',
+		loanStatus: 'Loan status',
 		libraryUnvaliable: 'Loan status is not available for this library',
 		loanStatusFailed: 'Failed to get loan status',
 		available: 'Available',

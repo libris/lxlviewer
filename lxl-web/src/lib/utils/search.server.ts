@@ -1,16 +1,17 @@
-import { asArray, isObject, toString } from '$lib/utils/misc';
-import { DisplayUtil, pickProperty, toLite, VocabUtil } from '$lib/utils/xl.server';
+import { asArray, isObject, toString } from '#lib/utils/misc.js';
+import { DisplayUtil, pickProperty, toLite, VocabUtil } from '#lib/utils/xl.server.js';
 
 import {
 	Base,
 	type DisplayDecorated,
+	Fmt,
 	type FramedData,
 	JsonLd,
 	LensType,
 	type Link,
 	Owl,
 	Platform
-} from '$lib/types/xl';
+} from '#lib/types/xl.js';
 
 import {
 	type ApiItemDebugInfo,
@@ -28,26 +29,35 @@ import {
 	type SearchResult,
 	type SearchResultItem,
 	type Slice
-} from '$lib/types/search';
+} from '#lib/types/search.js';
 
-import { getTranslator, type TranslateFn } from '$lib/i18n';
-import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import type { MyLibrariesType } from '$lib/types/userSettings';
-import { LxlLens } from '$lib/types/display';
-import { Width } from '$lib/types/auxd';
-import { bestImage, toSecure } from '$lib/utils/auxd.server';
-import { bestSize } from '$lib/utils/auxd';
-import getAtPath from '$lib/utils/getAtPath';
-import { getUriSlug } from '$lib/utils/http';
-import { isLibraryOrg } from '$lib/utils/holdings';
-import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
-import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
-import { getHoldersByType, getHoldersCount, getHoldingsByType } from '$lib/utils/holdings.server';
-import { getHeldBy } from '$lib/utils/holdings';
-import { getLibrary, getOrg } from '$lib/utils/getLibraries.server';
-import getTypeLike, { getTypeForIcon, toTypes, type TypeLike } from '$lib/utils/getTypeLike.server';
-import capitalize from '$lib/utils/capitalize';
-import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
+import { getTranslator, type TranslateFn } from '#lib/i18n/index.js';
+import { type LocaleCode as LangCode } from '#lib/i18n/locales.js';
+import type { MyLibrariesType } from '#lib/types/userSettings.js';
+import { LxlLens } from '#lib/types/display.js';
+import { Width } from '#lib/types/auxd.js';
+import { bestImage, toSecure } from '#lib/utils/auxd.server.js';
+import { bestSize } from '#lib/utils/auxd.js';
+import getAtPath from '#lib/utils/getAtPath.js';
+import { getUriSlug } from '#lib/utils/http.js';
+import { isLibraryOrg } from '#lib/utils/holdings.js';
+import { getRefinedOrgs } from '#lib/utils/getRefinedOrgs.server.js';
+import { copyMediaLinksToWork } from '#lib/utils/copyMediaLinksToWork.server.js';
+import {
+	getHoldersByType,
+	getHoldersCount,
+	getHoldingsByType
+} from '#lib/utils/holdings.server.js';
+import { getHeldBy } from '#lib/utils/holdings.js';
+import { getLibrary, getOrg } from '#lib/utils/getLibraries.server.js';
+import getTypeLike, {
+	getTypeForIcon,
+	toTypes,
+	type TypeLike
+} from '#lib/utils/getTypeLike.server.js';
+import capitalize from '#lib/utils/capitalize.js';
+import { isResourceNode } from '#lib/utils/resourceData.js';
+import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '#lib/constants/facets.js';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -118,7 +128,13 @@ export function asSearchResultItem(
 
 		const headerThing = isWorkSingleInstance ? (i['@reverse']['instanceOf'][0] as FramedData) : i;
 
-		const heading = displayUtil.lensAndFormat(headerThing, LxlLens.CardHeading, locale);
+		let heading = displayUtil.lensAndFormat(headerThing, LxlLens.CardHeading, locale);
+
+		// TODO: this is a fallback for swepub where there is only titles on works, not instances
+		// TODO: add support for property paths in lenses
+		if (isResourceNode(heading) && heading[Fmt.DISPLAY].length === 0) {
+			heading = displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale);
+		}
 
 		const workTitle = isWorkSingleInstance
 			? displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale)
@@ -430,36 +446,25 @@ export function displayFacets(
 	usePath?: string
 ): Facet[] {
 	const slices = view.stats?.sliceByDimension || {};
-	// manually add myLibraries to boolfilters
-	const boolFilters = addMyLibrariesBoolFilter(view.stats?._boolFilters, translate) || [];
+	const boolFilters = view.stats?._boolFilters || [];
+	const accessFilters = boolFilters.filter((f) => ACCESS_FILTERS.includes(<string>f.object?.alias));
+	const otherFilters = boolFilters.filter((f) => !ACCESS_FILTERS.includes(<string>f.object?.alias));
 
 	const result = [];
 
-	result.push(
-		displayBoolFilters(
-			'accessFilters',
-			(f) => ACCESS_FILTERS.includes(<string>f.object?.alias),
-			boolFilters,
-			displayUtil,
-			locale,
-			translate,
-			usePath
-		)
-	);
+	if (accessFilters.length > 0) {
+		result.push(
+			mapBoolFilters('accessFilters', accessFilters, displayUtil, locale, translate, usePath)
+		);
+	}
 
 	result.push(...mapSlices(slices, displayUtil, locale, translate));
 
-	result.push(
-		displayBoolFilters(
-			'boolFilters',
-			(f) => !ACCESS_FILTERS.includes(<string>f.object?.alias),
-			boolFilters,
-			displayUtil,
-			locale,
-			translate,
-			usePath
-		)
-	);
+	if (otherFilters.length > 0) {
+		result.push(
+			mapBoolFilters('otherFilters', otherFilters, displayUtil, locale, translate, usePath)
+		);
+	}
 
 	return result;
 }
@@ -540,17 +545,14 @@ function displayPredicates(
 	});
 }
 
-function displayBoolFilters(
+function mapBoolFilters(
 	dimension: string,
-	predicate: (o: Observation) => boolean,
-	boolFilters: Observation[],
+	filters: Observation[],
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: TranslateFn,
 	usePath?: string
 ): Facet {
-	const filters = boolFilters?.filter(predicate) || [];
-
 	const values = filters.map((o) => {
 		return {
 			selected: o._selected || false,
@@ -581,47 +583,11 @@ function replacePath<T extends Link | undefined>(view: T, usePath: string | unde
 	return view;
 }
 
-// TODO: we should get this from the backend...
-function addMyLibrariesBoolFilter(boolFilters: Observation[] | undefined, translate: TranslateFn) {
-	if (boolFilters) {
-		let existingBoolFilter: Observation | undefined;
-		const rest: Observation[] = [];
-		boolFilters.forEach((f) => {
-			if (f.object.alias === MY_LIBRARIES_FILTER_ALIAS) {
-				existingBoolFilter = f;
-			} else rest.push(f);
-		});
-
-		if (existingBoolFilter) {
-			// need to remove prefLabelByLang: {}, or lensAndFormat will use it (nothing) as label
-			// and entire filter will be disregarded
-			delete existingBoolFilter.object.prefLabelByLang;
-			existingBoolFilter.object.prefLabel = translate(`facet.${MY_LIBRARIES_FILTER_ALIAS}`);
-			return [...[existingBoolFilter], ...rest];
-		} else {
-			// not present, get a template object an modify it
-			const newBoolFilter = structuredClone(rest[0]);
-			delete newBoolFilter.object.prefLabelByLang;
-			delete newBoolFilter.object.raw;
-			newBoolFilter.object.prefLabel = translate(`facet.${MY_LIBRARIES_FILTER_ALIAS}`);
-			newBoolFilter.view['@id'] = newBoolFilter.view['@id'].replace(
-				newBoolFilter.object.alias as string,
-				MY_LIBRARIES_FILTER_ALIAS
-			);
-			newBoolFilter.object.alias = MY_LIBRARIES_FILTER_ALIAS;
-			newBoolFilter._selected = false;
-
-			return [...[newBoolFilter], ...rest];
-		}
-	}
-	return boolFilters;
-}
-
 function getMediaLinks(
 	item: FramedData,
 	displayUtil: DisplayUtil,
 	locale: LangCode
-): DisplayDecorated | null {
+): DisplayDecorated | undefined {
 	const _item = { ...item };
 	copyMediaLinksToWork(_item);
 
@@ -644,10 +610,9 @@ function getMediaLinks(
 		'electronicLocator',
 		'marc:versionOfResource'
 	]);
-	if (mediaLinks._display?.length) {
+	if (mediaLinks && isResourceNode(mediaLinks) && mediaLinks[Fmt.DISPLAY]?.length) {
 		return mediaLinks;
 	}
-	return null;
 }
 
 /**

@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { getSupportedLocale } from '$lib/i18n/locales.js';
-import { getTranslator } from '$lib/i18n';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import { getTranslator } from '#lib/i18n/index.js';
 import * as v from 'valibot';
 
 import {
@@ -11,43 +11,44 @@ import {
 	type FramedData,
 	JsonLd,
 	LensType
-} from '$lib/types/xl.js';
-import { LxlLens } from '$lib/types/display';
-import { type ApiError } from '$lib/types/api.js';
+} from '#lib/types/xl.js';
+import { LxlLens } from '#lib/types/display.js';
+import { type ApiError } from '#lib/types/api.js';
 import type {
 	PartialCollectionView,
 	ResourceSearchResult,
 	SearchResultItem
-} from '$lib/types/search.js';
-import type { TableOfContentsItem } from '$lib/components/TableOfContents.svelte';
-import type { HoldingsData, HoldingItem } from '$lib/types/holdings.js';
-import { type Relation } from '$lib/types/relations';
+} from '#lib/types/search.js';
+import type { TableOfContentsItem } from '#lib/components/TableOfContents.svelte';
+import type { HoldingsData, HoldingItem } from '#lib/types/holdings.js';
+import { type Relation } from '#lib/types/relations.js';
 
-import { asArray, toString } from '$lib/utils/misc';
-import { pickProperty, first } from '$lib/utils/xl.server';
-import { bestImage, toSecure } from '$lib/utils/auxd.server';
-import { getSortedInstances } from '$lib/utils/getSortedInstances.server';
+import { asArray, toString } from '#lib/utils/misc.js';
+import { pickProperty, first } from '#lib/utils/xl.server.js';
+import { bestImage, toSecure } from '#lib/utils/auxd.server.js';
+import { getSortedInstances } from '#lib/utils/getSortedInstances.server.js';
 import {
 	getBibIdsByInstanceId,
 	getHoldersByType,
 	getHoldingLibraries,
 	getHoldingsByInstanceId,
 	getHoldingsByType
-} from '$lib/utils/holdings.server';
-import getTypeLike, { getTypeForIcon, toTypes } from '$lib/utils/getTypeLike.server';
-import { centerOnWork } from '$lib/utils/centerOnWork.server';
-import { getRelations } from '$lib/utils/relations.server';
+} from '#lib/utils/holdings.server.js';
+import getTypeLike, { getTypeForIcon, toTypes } from '#lib/utils/getTypeLike.server.js';
+import { centerOnWork } from '#lib/utils/centerOnWork.server.js';
+import { getRelations } from '#lib/utils/relations.server.js';
 import {
 	appendMyLibrariesParam,
 	asSearchResultItem,
 	displayMappings
-} from '$lib/utils/search.server';
-import { getRefinedOrgs } from '$lib/utils/getRefinedOrgs.server';
-import { getEodAvailable } from '$lib/utils/getEodAvailable.server';
-import { getSearchResults } from '$lib/remotes/searchResult.remote';
-import { SearchResultsSchema } from '$lib/schemas/searchResult';
-import { copyMediaLinksToWork } from '$lib/utils/copyMediaLinksToWork.server';
-import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping.js';
+} from '#lib/utils/search.server.js';
+import { getRefinedOrgs } from '#lib/utils/getRefinedOrgs.server.js';
+import { getEodAvailable } from '#lib/utils/getEodAvailable.server.js';
+import { getSearchResults } from '#lib/remotes/searchResult.remote.js';
+import { SearchResultsSchema } from '#lib/schemas/searchResult.js';
+import { copyMediaLinksToWork } from '#lib/utils/copyMediaLinksToWork.server.js';
+import { getLibraryIdsFromMapping } from '#lib/utils/getLibraryIdsFromMapping.js';
+import { isResourceNode } from '#lib/utils/resourceData.js';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil = locals.display;
@@ -64,12 +65,12 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const _q = url.searchParams.get('_q');
 
 	const resourcePath = params.resource.split('/').map(encodeURIComponent).join('/');
-	const resourceRes = await fetch(`${env.API_URL}/${resourcePath}?framed=true&_findBlank=true`, {
+	const resourceRes = await fetch(`${API_URL}/${resourcePath}?framed=true&_findBlank=true`, {
 		headers: { Accept: 'application/ld+json' }
 	});
 
 	if (resourceRes.status === 404) {
-		throw error(resourceRes.status, { message: 'Not found' });
+		throw error(resourceRes.status, 'Not found');
 	}
 
 	if (!resourceRes.ok) {
@@ -79,17 +80,19 @@ export const load = async ({ params, locals, fetch, url }) => {
 		} catch (e) {
 			console.warn(e);
 		}
-		throw error(apiError?.status_code || resourceRes.status, {
-			message: apiError?.message || resourceRes.statusText,
-			status: apiError?.status,
-			...(apiError?.error_id && { errorId: apiError.error_id })
-		});
+		throw error(
+			apiError?.status_code || resourceRes.status,
+			apiError?.message || resourceRes.statusText,
+			{
+				...(apiError?.error_id && { errorId: apiError.error_id })
+			}
+		);
 	}
 
 	const resource = await resourceRes.json();
 
 	if (!resource?.mainEntity) {
-		throw error(404, { message: 'Not found' });
+		throw error(404, 'Not found');
 	}
 
 	let workCard: SearchResultItem | null = null;
@@ -103,7 +106,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			displayUtil,
 			vocabUtil,
 			locale,
-			env.AUXD_SECRET,
+			AUXD_SECRET,
 			myLibraries
 		)[0];
 	} else if (resource.mainEntity.instanceOf) {
@@ -114,6 +117,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 			workCard = await workRes.json();
 		}
 	}
+
+	const chipStr = displayUtil.lensAndFormat(resource['mainEntity'], LensType.Chip, locale);
 
 	const mainEntity = { ...centerOnWork(resource['mainEntity'] as FramedData) };
 	if (isWork) {
@@ -157,7 +162,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 		? displayUtil.lensAndFormat(mainEntity, LxlLens.CardHeading, locale)
 		: undefined;
 
-	const heading = displayUtil.lensAndFormat(headingThing, LxlLens.PageHeading, locale);
+	let heading = displayUtil.lensAndFormat(headingThing, LxlLens.PageHeading, locale);
+
+	// TODO: this is a fallback for swepub where there is only titles on works, not instances
+	// TODO: add support for property paths in lenses
+	if (isResourceNode(heading) && heading[Fmt.DISPLAY].length === 0) {
+		heading = displayUtil.lensAndFormat(mainEntity, LxlLens.CardHeading, locale);
+	}
+
 	const hasWorkTitle = isWorkSingleInstance && toString(heading) !== toString(workTitle);
 
 	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
@@ -202,6 +214,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	if (mainEntity?.[JsonLd.REVERSE]?.instanceOf?.length > 0) {
 		const sortedInstances = getSortedInstances(mainEntity?.[JsonLd.REVERSE]?.instanceOf);
+
 		sortedInstances.forEach(
 			(i) => (i[Bibframe.instanceOf] = { [JsonLd.TYPE]: mainEntity[JsonLd.TYPE] })
 		);
@@ -210,7 +223,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			displayUtil,
 			vocabUtil,
 			locale,
-			env.AUXD_SECRET,
+			AUXD_SECRET,
 			myLibraries,
 			subsetLibraries
 		);
@@ -242,8 +255,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			[JsonLd.TYPE]: c[JsonLd.TYPE],
 			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
 			[Bibframe.summary]: c[Bibframe.summary]
-		}))
-		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		})) // FIXME Don't use SearchCard lens - support ad-hoc lenses?
 		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
 
 	const resourceTableOfContents = creations
@@ -253,8 +265,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			[JsonLd.TYPE]: c[JsonLd.TYPE],
 			...(creations.length > 2 ? { [Bibframe.publication]: c[Bibframe.publication] } : {}),
 			[Bibframe.tableOfContents]: c[Bibframe.tableOfContents]
-		}))
-		// FIXME Don't use SearchCard lens - support ad-hoc lenses?
+		})) // FIXME Don't use SearchCard lens - support ad-hoc lenses?
 		.map((c: FramedData) => displayUtil.lensAndFormat(c, LensType.SearchCard, locale));
 
 	// Search for instances that matches query
@@ -273,7 +284,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 			myLibraries
 		);
 
-		const res = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+		const res = await fetch(`${API_URL}/find.jsonld?${searchParams.toString()}`);
 
 		if (res.ok) {
 			const data = (await res.json()) as PartialCollectionView;
@@ -297,6 +308,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		(relations || []).map(async (relation) => {
 			const url = new URL(relation.previewUrl);
 			const params = Object.fromEntries(url.searchParams);
+			params.lang = locale;
+			params.url = url.href;
 
 			if (v.is(SearchResultsSchema, params)) {
 				const preview = await getSearchResults(params);
@@ -315,22 +328,10 @@ export const load = async ({ params, locals, fetch, url }) => {
 	);
 
 	const tableOfContents: TableOfContentsItem[] = [
-		...(summary.length
-			? [
-					{
-						id: 'summary',
-						label: translate('resource.summary')
-					}
-				]
-			: []),
-		...(instances?.length > 1
-			? [
-					{
-						id: 'editions',
-						label: translate('resource.editions')
-					}
-				]
-			: []),
+		...(summary.length ? [{ id: 'summary', label: translate('resource.summary') }] : []),
+
+		...(instances?.length > 1 ? [{ id: 'editions', label: translate('resource.editions') }] : []),
+
 		...(relations?.length
 			? [
 					{
@@ -351,20 +352,16 @@ export const load = async ({ params, locals, fetch, url }) => {
 					}
 				]
 			: []),
+
 		...(details.length && details.some((d) => d[Fmt.DISPLAY] && d[Fmt.DISPLAY].length > 0)
-			? [
-					{
-						id: 'details',
-						label: translate('resource.details')
-					}
-				]
+			? [{ id: 'details', label: translate('resource.details') }]
 			: [])
 	];
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [_, overviewWithoutHasInstance] = pickProperty(overview[0], ['hasInstance']);
 
-	const image = toSecure(bestImage(mainEntity, locale), env.AUXD_SECRET);
+	const image = toSecure(bestImage(mainEntity, locale), AUXD_SECRET);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const byType = getHoldersByType(holdingsByType);
 
@@ -387,22 +384,22 @@ export const load = async ({ params, locals, fetch, url }) => {
 		controlNumber,
 		type: mainEntity[JsonLd.TYPE] as string,
 		typeForIcon: getTypeForIcon(typeLike), // FIXME
-		title: toString(heading),
+		title: toString(chipStr),
 		relations,
 		relationsPreviewsByQualifierKey,
 		instances,
 		decoratedData: {
 			headingTop: types,
-			heading: heading,
-			headingExtra: headingExtra,
+			heading,
+			headingExtra,
 			...(hasWorkTitle && { _workTitle2: workTitle }),
-			overview: overview,
-			overview2: overview2,
-			overviewFooter: overviewFooter,
-			summary: summary,
-			resourceTableOfContents: resourceTableOfContents,
-			details: details,
-			token: token,
+			overview,
+			overview2,
+			overviewFooter,
+			summary,
+			resourceTableOfContents,
+			details,
+			token,
 			itemInformation
 		},
 		searchResult,

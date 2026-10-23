@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { JsonLd } from '$lib/types/xl';
-	import type { DisplayMapping } from '$lib/types/search';
-	import { MAPPING_IGNORE_VARIABLE } from '$lib/constants/mapping';
-	import { getRelationSymbol } from '$lib/utils/getRelationSymbol';
+	import { JsonLd } from '#lib/types/xl.js';
+	import type { DisplayMapping } from '#lib/types/search.js';
+	import { MAPPING_IGNORE_VARIABLE } from '#lib/constants/mapping.js';
+	import { getRelationSymbol } from '#lib/utils/getRelationSymbol.js';
 	import SearchMapping from './SearchMapping.svelte';
 	import QualifierPill from '../supersearch/QualifierPill.svelte';
 	import IconClose from '~icons/bi/x-lg';
@@ -20,7 +20,7 @@
 
 <ul
 	class={[
-		'max-w-full py-px leading-7.5',
+		'search-mapping max-w-full py-px leading-7.5',
 		depth === 0 ? 'search-mapping flex-col-reverse gap-2' : 'flex-col',
 		'flex items-start text-xs'
 	]}
@@ -40,7 +40,7 @@
 								valueLabel={displayStr || m._value}
 								removeLink={up?.['@id']}
 								type={m.display?.[JsonLd.TYPE]}
-								id={m.display[JsonLd.ID]}
+								id={m.display?.[JsonLd.ID]}
 								{isRedundantKeyLabel}
 							/>{' '}</span
 						>

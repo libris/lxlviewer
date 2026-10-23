@@ -1,10 +1,12 @@
-import { Bibframe, type FramedData, JsonLd } from '$lib/types/xl';
-import { VocabUtil } from '$lib/utils/xl.server';
-import getAtPath from '$lib/utils/getAtPath';
+import { Bibframe, type FramedData, JsonLd } from '#lib/types/xl.js';
+import { VocabUtil } from '#lib/utils/xl.server.js';
+import getAtPath from '#lib/utils/getAtPath.js';
+import { asArray } from '#lib/utils/misc.ts';
 
 export type TypeLike = {
 	find: FramedData[];
 	identify: FramedData[];
+	identifyQualifier?: FramedData[];
 	none: FramedData[];
 	select: FramedData[];
 };
@@ -110,7 +112,10 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 	const thingType = thing[JsonLd.TYPE];
 
 	if (thingType != 'Monograph' && thingType != 'Serial') {
-		result.find.push(vocabUtil.getDefinition(thingType));
+		const thingTypeDefinition = vocabUtil.getDefinition(thingType);
+		if (thingTypeDefinition) {
+			result.find.push(thingTypeDefinition);
+		}
 	}
 
 	if (thing._categoryByCollection) {
@@ -165,6 +170,20 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		result.select.push(...select);
 	}
 
+	if (
+		asArray(thing.category).some((c) => c[JsonLd.ID]?.startsWith('https://id.kb.se/term/swepub'))
+	) {
+		result.identifyQualifier = [];
+		asArray(thing.category).forEach((c) => {
+			if (c[JsonLd.TYPE] === 'https://id.kb.se/term/swepub/OutputType') {
+				result.identify.push(c);
+			}
+			if (c[JsonLd.TYPE] === 'https://id.kb.se/term/swepub/ContentType') {
+				result.identifyQualifier?.push(c);
+			}
+		});
+	}
+
 	return result;
 }
 
@@ -209,7 +228,7 @@ export function toTypes(typeLike: TypeLike) {
 	const noIdentify = typeLike.identify.length == 0;
 	const noFind = typeLike.find.length == 0;
 	const manyFind = typeLike.find.length > 1;
-	const typeInFind = !noFind && typeLike.find[0][JsonLd.TYPE] === 'Class';
+	const typeInFind = !noFind && typeLike.find[0]?.[JsonLd.TYPE] === 'Class';
 	const showFind = manyFind || typeInFind || (!noFind && noIdentify);
 	//const showFind = !noFind && noIdentify;
 	const showNone = noFind && noIdentify && typeLike.none.length > 0;
@@ -218,6 +237,8 @@ export function toTypes(typeLike: TypeLike) {
 		'@type': '_Types',
 		...(showFind && { _find: typeLike.find }),
 		...(!noIdentify && { _identify: typeLike.identify }),
+		...(typeLike.identifyQualifier &&
+			typeLike.identifyQualifier.length > 0 && { _identifyQualifier: typeLike.identifyQualifier }),
 		...(showNone && { _none: typeLike.none })
 	};
 }
@@ -232,7 +253,12 @@ export function getTypeForIcon(typeLike: TypeLike) {
 		.concat(typeLike.select)
 		.concat(typeLike.none)) {
 		if (t) {
-			const slugStr = slug(((t[JsonLd.ID] as string) || '').replace('/bibdb/', '/bibdb:'));
+			const slugStr = slug(
+				((t[JsonLd.ID] as string) || '')
+					.replace('/bibdb/', '/bibdb:')
+					.replace('/uppsok/', '/uppsok:')
+					.replace(/uppsok:.*/, 'uppsok')
+			);
 			result.push(slugStr);
 		}
 	}

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import SearchResultItem from '$lib/components/SearchResultItem.svelte';
-	import type { SearchResultItem as SearchResultItemType } from '$lib/types/search';
+	import SearchResultItem from '#lib/components/SearchResultItem.svelte';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
+	import type { SearchResultItem as SearchResultItemType } from '#lib/types/search.js';
 	import { onMount, type Snippet } from 'svelte';
 	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';
@@ -20,6 +21,7 @@
 		fadeInImages?: boolean;
 		listElement?: HTMLUListElement | undefined;
 		suppressProperty?: string[];
+		headingElement?: HeadingElem;
 	};
 
 	let {
@@ -35,7 +37,8 @@
 		lazyImages = false,
 		fadeInImages = false,
 		listElement = $bindable(),
-		suppressProperty = undefined
+		suppressProperty = undefined,
+		headingElement = HeadingElem.H2
 	}: Props = $props();
 
 	const SCROLL_AMOUNT = 0.85;
@@ -121,6 +124,7 @@
 						highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
 							index <= lazyImagesAfterIndex}
 						{suppressProperty}
+						{headingElement}
 					/>
 				</li>
 			{/each}
@@ -177,6 +181,7 @@
 						index <= lazyImagesAfterIndex}
 					{suppressProperty}
 					aspectRatio={aspectRatio === 'landscape' ? 'video' : 'square'}
+					{headingElement}
 				/>
 			</li>
 		{/each}

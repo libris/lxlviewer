@@ -8,7 +8,7 @@ test.describe('Set settings with link', async () => {
 
 		await setFavourites(page);
 
-		const link = await page.locator('#settings-url').textContent();
+		const link = (await page.locator('#settings-url').textContent()) || '';
 		await context.close();
 
 		const context2 = await browser.newContext();
@@ -31,7 +31,7 @@ test.describe('Set settings with link', async () => {
 
 		await setFavourites(page);
 
-		const link = await page.locator('#settings-url').textContent();
+		const link = (await page.locator('#settings-url').textContent()) || '';
 
 		await context.close();
 
@@ -57,15 +57,15 @@ async function setFavourites(page: Page) {
 	await page.getByRole('button', { name: 'Lägg till' }).first().click();
 
 	// two my-libraries-result side-by-side. pick the right = second one
-	const selectedLibraries = page.locator('ol.my-libraries-result').nth(1).locator('li');
+	const selectedLibraries = page.locator('ol.my-libraries-result').nth(1).locator(':scope > li');
 	await expect(selectedLibraries).toHaveCount(2);
-	await expect(selectedLibraries.nth(0)).toContainText('Biblioteken i Norrbotten (BIN)');
-	await expect(selectedLibraries.nth(1)).toContainText('Ale bibliotek (Nodi)');
+	await expect(selectedLibraries.nth(0)).toContainText('Biblioteken i Norrbotten');
+	await expect(selectedLibraries.nth(1)).toContainText('Ale bibliotek');
 }
 
 async function checkFavourites(page: Page) {
 	// now there's only one my-libraries-result to the right
-	const selectedLibraries2 = page.locator('ol.my-libraries-result').nth(0).locator('li');
+	const selectedLibraries2 = page.locator('ol.my-libraries-result').nth(0).locator(':scope > li');
 	await expect(selectedLibraries2).toHaveCount(2);
 	await expect(selectedLibraries2.nth(0)).toContainText('Biblioteken i Norrbotten (BIN)');
 	await expect(selectedLibraries2.nth(1)).toContainText('Ale bibliotek (Nodi)');

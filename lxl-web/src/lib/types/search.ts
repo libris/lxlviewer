@@ -6,10 +6,10 @@ import {
 	LensType,
 	type Link,
 	Owl
-} from '$lib/types/xl';
-import { type SecureImageResolution } from '$lib/types/auxd';
-import { LxlLens } from '$lib/types/display';
-import type { LibraryId, OrgId } from '$lib/types/holdings';
+} from '#lib/types/xl.js';
+import { type SecureImageResolution } from '#lib/types/auxd.js';
+import { LxlLens } from '#lib/types/display.js';
+import type { LibraryId, OrgId } from '#lib/types/holdings.js';
 
 export interface SearchResult {
 	[JsonLd.ID]: string;
@@ -58,7 +58,7 @@ export interface SearchResultItem {
 	typeForIcon: string[]; // FIXME
 	typeStr: string;
 	selectTypeStr: string; // FIXME
-	mediaLinks: DisplayDecorated | null;
+	mediaLinks: DisplayDecorated | undefined;
 	heldByMyLibraries?: (LibraryId | OrgId)[];
 	heldBySubset?: (LibraryId | OrgId)[];
 	numberOfHolders: number;

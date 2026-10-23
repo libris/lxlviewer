@@ -1,6 +1,6 @@
-import { getSupportedLocale } from '$lib/i18n/locales.js';
-import { isLibraryOrg } from '$lib/utils/holdings.js';
-import { getUriSlug } from '$lib/utils/http';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import { isLibraryOrg } from '#lib/utils/holdings.js';
+import { getUriSlug } from '#lib/utils/http.js';
 
 export async function load({ locals, params, fetch }) {
 	const myLibraries = locals.userSettings.myLibraries;

@@ -1,4 +1,4 @@
-import type { SearchOperators } from '$lib/types/search';
+import type { SearchOperators } from '#lib/types/search.js';
 
 export function getRelationSymbol(operator: keyof typeof SearchOperators): string {
 	switch (operator) {

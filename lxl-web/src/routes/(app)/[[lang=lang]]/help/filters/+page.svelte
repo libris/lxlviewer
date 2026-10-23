@@ -1,16 +1,16 @@
 <script lang="ts">
-	import getPageTitle from '$lib/utils/getPageTitle';
-	import Meta from '$lib/components/Meta.svelte';
-	import TableOfContents from '$lib/components/TableOfContents.svelte';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
+	import Meta from '#lib/components/Meta.svelte';
+	import TableOfContents from '#lib/components/TableOfContents.svelte';
 	import { page } from '$app/state';
-	import { getSearchContext } from '$lib/contexts/search';
+	import { getSearchContext } from '#lib/contexts/search.js';
 	import SvContent from './sv.md';
 	import EnContent from './en.md';
 
 	let { data } = $props();
 
 	const searchContext = getSearchContext();
-	const pageTitle = $derived(page.data.t('help.pageTitle'));
+	const pageTitle = $derived(page.data.t('help.filtersPageTitle'));
 
 	const tableOfContents = $derived(
 		data.filterGroups
@@ -47,7 +47,7 @@
 
 <Meta
 	title={pageTitle}
-	description={page.data.t('help.pageDescription')}
+	description={page.data.t('help.metaDescription')}
 	url={page.url.origin + page.url.pathname}
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
@@ -61,13 +61,6 @@
 	<div
 		class="wide:max-w-screen mx-auto grid grid-cols-1 items-start gap-3 px-3 xl:grid-cols-[1fr_auto] @md:gap-6 @md:px-6 @7xl:gap-12 @7xl:px-12"
 	>
-		{#if tableOfContents.length}
-			<div class="sticky top-22 order-last hidden h-fit xl:block print:hidden">
-				<section data-testid="toc" class="py-3 @sm:py-6">
-					<TableOfContents items={tableOfContents} />
-				</section>
-			</div>
-		{/if}
 		<div class="max-w-8xl mx-auto w-full py-3 @sm:py-6">
 			<div class="max-ch-text">
 				{#if data.locale === 'en'}
@@ -218,6 +211,13 @@
 				{/each}
 			</div>
 		</div>
+		{#if tableOfContents.length}
+			<div class="sticky top-22 hidden h-fit xl:block print:hidden">
+				<section data-testid="toc" class="py-3 @sm:py-6">
+					<TableOfContents items={tableOfContents} />
+				</section>
+			</div>
+		{/if}
 	</div>
 </article>
 

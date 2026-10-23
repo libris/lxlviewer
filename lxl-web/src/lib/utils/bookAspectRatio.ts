@@ -12,5 +12,6 @@ const BOOKTYPE = [
 	'Barn-%20och%20ungdomslitteratur',
 	'Seriella%20publikationer',
 	'Periodika',
-	'NotatedMusic'
+	'NotatedMusic',
+	'uppsok'
 ];

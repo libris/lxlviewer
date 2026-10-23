@@ -1,37 +1,33 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { Facet, FacetValue as FacetValueType } from '$lib/types/search';
-	import { ExpandedState } from '$lib/types/userSettings';
+	import type { Facet as FacetType, FacetValue as FacetValueType } from '#lib/types/search.js';
+	import { ExpandedState } from '#lib/types/userSettings.js';
 	import {
 		CUSTOM_FACET_SORT,
 		DEFAULT_FACET_SORT,
-		DEFAULT_FACET_VALUES_SHOWN,
-		MY_LIBRARIES_FILTER_ALIAS
-	} from '$lib/constants/facets';
-	import { toString } from '$lib/utils/misc';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { getMatomoTracker } from '$lib/contexts/matomo';
-	import { popover } from '$lib/actions/popover';
-	import FacetGroup from './FacetGroup.svelte';
-	import FacetValue from '$lib/components/find/FacetValue.svelte';
-	import FacetRange from '$lib/components/find/FacetRange.svelte';
+		DEFAULT_FACET_VALUES_SHOWN
+	} from '#lib/constants/facets.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { getMatomoTracker } from '#lib/contexts/matomo.js';
+	import { popover } from '#lib/actions/popover/index.js';
+	import FacetLinks from './FacetLinks.svelte';
+	import FacetRadio from '#lib/components/find/FacetRadio.svelte';
+	import FacetCheckbox from '#lib/components/find/FacetCheckbox.svelte';
+	import FacetRange from '#lib/components/find/FacetRange.svelte';
 	import IconChevron from '~icons/bi/chevron-down';
 	import BiSortDown from '~icons/bi/sort-down';
 	import BiInfo from '~icons/bi/info-circle';
-	import BiPencil from '~icons/bi/pencil';
 
 	type Props = {
-		data: Facet;
+		data: FacetType;
 		level: number;
 		searchPhrase: string;
 		isDefaultExpanded: boolean;
 		parent?: FacetValueType;
-		parentUid?: string;
+		enhanced: boolean;
 	};
 
-	let { data, level, searchPhrase, isDefaultExpanded, parent, parentUid = '' }: Props = $props();
-
-	const uid = $props.id();
+	let { data, level, searchPhrase, isDefaultExpanded, parent, enhanced }: Props = $props();
 
 	const PERMANENTLY_EXPANDED_FACETS = ['accessFilters', 'librissearch:instanceType'];
 	const permanentlyExpanded = $derived(PERMANENTLY_EXPANDED_FACETS.includes(data.dimension));
@@ -42,7 +38,7 @@
 	const totalItems = $derived(data.values.length);
 	let defaultItemsShown = $state(DEFAULT_FACET_VALUES_SHOWN);
 
-	const showSort = $derived((level === 1 && data.dimension !== 'boolFilters') || level === 3);
+	const showSort = $derived((level === 1 && data.dimension !== 'otherFilters') || level === 3);
 
 	let currentSort = $derived(
 		userSettings.facetSort?.[data.dimension] ||
@@ -97,7 +93,6 @@
 	};
 
 	const filteredItems = $derived(sortedItems.filter((facet) => match(facet)));
-
 	const shownItems = $derived(filteredItems.filter((facet, index) => index < defaultItemsShown));
 
 	let hasHits = $derived(filteredItems.length > 0);
@@ -125,6 +120,7 @@
 		}
 		return count;
 	}
+
 	function saveUserSort(e: Event): void {
 		const target = e.target as HTMLSelectElement;
 		userSettings.saveFacetSort(data.dimension, target.value);
@@ -139,8 +135,8 @@
 		userSettings.saveFacetExpanded(data.dimension, event.currentTarget.open);
 	}
 
-	function getValueVariant(facet: Facet) {
-		const d = facet.dimension.split('|');
+	const variant = $derived.by(() => {
+		const d = data.dimension.split('|');
 		// FIXME
 		if (
 			d[0] === 'librissearch:findCategory' &&
@@ -149,63 +145,25 @@
 		) {
 			return 'radio';
 		}
-		if (facet.operator === 'OR') return 'checkbox';
-	}
+		if (data.operator === 'OR') return 'checkbox';
+	});
 </script>
 
 {#snippet values(items: FacetValueType[])}
-	{#each items as value (toString(value.label) + value.discriminator + value.totalItems)}
-		{#if value.facets}
-			{@const label =
-				`${page.data.t('search.allInFacet')} ` + (toString(value.label) as string).toLowerCase()}
-			<li>
-				<FacetGroup
-					data={{
-						...value.facets[0],
-						values: [
-							...(level === 1
-								? [
-										{
-											// FIXME
-											label,
-											str: label,
-											totalItems: value.totalItems,
-											selected: value.selected,
-											view: value.view,
-											all: true,
-											facets: value.facets.length > 1 ? value.facets.slice(1) : undefined
-										}
-									]
-								: []),
-							...value.facets[0].values
-						]
-					}}
-					level={level + 1}
-					{searchPhrase}
-					parent={value}
-					isDefaultExpanded={false}
-					parentUid={uid}
-				/>
-			</li>
-		{:else if value.alias === MY_LIBRARIES_FILTER_ALIAS}
-			<li
-				class={['flex', permanentlyExpanded && '[&>a:first-child]:w-full [&>a:first-child]:pl-4!']}
-			>
-				<FacetValue data={value} />
-				<a
-					href={page.data.localizeHref('/my-pages')}
-					class="btn btn-primary mr-2 size-8 border-0"
-					aria-label={page.data.t('search.changeLibraries')}
-				>
-					<BiPencil aria-hidden="true" />
-				</a>
-			</li>
-		{:else}
-			<li class={[permanentlyExpanded && '[&>a]:pl-4!']}>
-				<FacetValue data={value} variant={getValueVariant(data)} />
-			</li>
-		{/if}
-	{/each}
+	{#if variant === 'radio'}
+		<FacetRadio {items} parentLabel={parent?.str || data.label} {level} {enhanced} />
+	{:else if variant === 'checkbox'}
+		<FacetCheckbox {items} parentLabel={parent?.str || data.label} {level} {enhanced} />
+	{:else}
+		<FacetLinks
+			{items}
+			{level}
+			{searchPhrase}
+			{permanentlyExpanded}
+			parentLabel={parent?.str || data.label}
+			{enhanced}
+		/>
+	{/if}
 {/snippet}
 
 {#snippet controls()}
@@ -219,11 +177,11 @@
 			]}
 		>
 			<select
-				name={parentUid + data.dimension}
+				name={data.dimension}
 				bind:value={currentSort}
 				onchange={saveUserSort}
 				class="btn btn-primary size-full cursor-pointer appearance-none border-0 text-transparent"
-				aria-label={page.data.t('sort.sort') + ' ' + page.data.t('search.filters')}
+				aria-label={page.data.t('sort.sort') + ' ' + data?.label?.toLowerCase()}
 				data-testid={`facet-sort-${data.dimension}`}
 			>
 				{#each sortOptions as option (option.value)}
@@ -237,9 +195,9 @@
 		<!-- facet range inputs; hide in filter search results -->
 		<FacetRange search={data.search} />
 	{/if}
-	<ul data-testid={level === 1 ? 'facet-list' : undefined}>
-		{@render values(shownItems)}
-	</ul>
+	<!-- <ul data-testid={level === 1 ? 'facet-list' : undefined}> -->
+	{@render values(shownItems)}
+	<!-- </ul> -->
 	<div class="flex flex-col justify-start text-xs">
 		<!-- 'show more' btn -->
 		{#if canShowMoreItems || canShowFewerItems}
@@ -287,15 +245,8 @@
 {/snippet}
 
 {#if permanentlyExpanded}
-	<ul class="border-b border-neutral-200 py-2">
+	<div class="border-b border-neutral-200 py-2">
 		{@render values(data.values)}
-	</ul>
-{:else if parent && parent.selected === true && level > 2}
-	<div class="relative">
-		<FacetValue data={parent} variant="radio" />
-		<div style={`--level:${level}`}>
-			{@render controls()}
-		</div>
 	</div>
 {:else}
 	<details
@@ -310,7 +261,7 @@
 		style={`--level:${level}`}
 		ontoggle={saveUserExpanded}
 		name={data.dimension?.startsWith('librissearch:findCategory/') && level === 2
-			? parentUid + 'category'
+			? 'todo' + 'category'
 			: undefined}
 	>
 		<summary
@@ -370,9 +321,6 @@
 		&[open] > summary .chevron.left {
 			transform: rotate(90deg);
 		}
-	}
-
-	summary {
 	}
 
 	.indented {

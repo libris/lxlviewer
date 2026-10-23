@@ -2,10 +2,10 @@
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { fade } from 'svelte/transition';
-	import type { BibIdObj } from '$lib/types/holdings';
-	import type { HoldingStatus } from '$lib/types/api';
+	import type { BibIdObj } from '#lib/types/holdings.js';
+	import type { HoldingStatus } from '#lib/types/api.js';
 	import BiChevronRight from '~icons/bi/chevron-right';
-	import Spinner from '$lib/components/Spinner.svelte';
+	import Spinner from '#lib/components/Spinner.svelte';
 
 	type HoldingInfoProps = {
 		bibIdObj: BibIdObj;
@@ -141,7 +141,11 @@
 						{/if}
 						{#each items.items as item, index (index)}
 							{@const indicator = getIndicator(item.Status)}
-							<table>
+							<table class="text-left">
+								<caption class="text-left mb-1 font-medium text-subtle"
+									>{page.data.t('holdings.loanStatus')}
+									{item?.Item_No ? `${page.data.t('holdings.item')} ${item.Item_No}` : ''}</caption
+								>
 								<tbody class="text-xs leading-relaxed">
 									<tr>
 										<th>{page.data.t('holdings.location')}</th>
@@ -153,9 +157,11 @@
 											{item.Call_No}
 											<!-- show map link only if absolute url -->
 											{#if item.Map && (item.Map.startsWith('http://') || item.Map.startsWith('https://'))}
+												<!-- eslint-disable svelte/no-navigation-without-resolve -->
 												(<a href={item.Map} target="_blank" class="ext-link">
-													{page.data.t('holdings.map')}</a
-												>)
+													{page.data.t('holdings.map')}
+													<span class="sr-only">({page.data.t('general.targetBlank')})</span>
+												</a>)
 											{/if}
 										</td>
 									</tr>

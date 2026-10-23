@@ -3,9 +3,9 @@ import type {
 	PaginationQueryFunction,
 	TransformFunction,
 	DebouncedWaitFunction
-} from '$lib/types/superSearch.js';
-import type { JSONValue } from '$lib/types/json.js';
-import debounce from '$lib/utils/debounce.js';
+} from '#lib/types/superSearch.js';
+import type { JSONValue } from '#lib/types/json.js';
+import debounce from '#lib/utils/debounce.js';
 
 export function useSearchRequest({
 	endpoint,

@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { getUserSettings } from '$lib/contexts/userSettings';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import type {
 		LibOrg,
 		LibraryWithLinksAndInstances,
 		OrgId,
 		UnknownLibrary
-	} from '$lib/types/holdings';
-	import { JsonLd } from '$lib/types/xl';
-	import { getHeldBy, isLibraryOrg } from '$lib/utils/holdings';
-	import { getLibraryIdsFromMapping } from '$lib/utils/getLibraryIdsFromMapping';
-	import { sortByDistance, userLocation } from '$lib/utils/geolocation.svelte';
+	} from '#lib/types/holdings.js';
+	import { JsonLd } from '#lib/types/xl.js';
+	import { getHeldBy, isLibraryOrg } from '#lib/utils/holdings.js';
+	import { getLibraryIdsFromMapping } from '#lib/utils/getLibraryIdsFromMapping.js';
+	import { sortByDistance, userLocation } from '#lib/utils/geolocation.svelte.js';
 	import HoldingsNearMeBtn from './HoldingsNearMeBtn.svelte';
 	import Holder from './Holder.svelte';
 	import BiSearch from '~icons/bi/search';
@@ -181,11 +181,11 @@
 		bind:value={searchPhrase}
 		placeholder={page.data.t('holdings.findLibrary')}
 		aria-label={page.data.t('holdings.findLibrary')}
-		class="bg-input h-9 w-full rounded-sm border border-neutral-300 pr-2 pl-8 text-base sm:text-sm"
+		class="bg-input h-9 w-full rounded-sm border border-neutral-500 pr-2 pl-8 text-base sm:text-sm"
 		type="search"
 		name={page.data.t('holdings.findLibrary')}
 	/>
-	<BiSearch class="text-subtle absolute top-0 left-2.5 h-9" />
+	<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 pointer-events-none" />
 </div>
 <!-- near me -->
 <HoldingsNearMeBtn {location} />

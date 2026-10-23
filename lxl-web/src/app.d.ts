@@ -1,17 +1,20 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-import type { CitationsType } from '$lib/types/citation';
-import type { MatomoTracker } from '$lib/types/matomo';
-import type { UserSettings } from '$lib/types/userSettings';
-import type { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
-import type { AdjecentSearchResult, DisplayMapping, QualifierSuggestion2 } from '$lib/types/search';
+import type { CitationsType } from '#lib/types/citation.js';
+import type { MatomoTracker } from '#lib/types/matomo.js';
+import type { UserSettings } from '#lib/types/userSettings.js';
+import type { DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
+import type {
+	AdjecentSearchResult,
+	DisplayMapping,
+	QualifierSuggestion2
+} from '#lib/types/search.js';
 import 'unplugin-icons/types/svelte';
-import type { Site } from '$lib/types/site';
+import type { AppMenuItem, Features, FooterSection, Site } from '#lib/types/site.js';
 
 declare global {
 	namespace App {
 		interface Error {
-			status?: string;
 			errorId?: string;
 		}
 		interface Locals {
@@ -23,17 +26,20 @@ declare global {
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
 			qualifierSuggestionsByLocale: Record<
-				import('$lib/i18n/locales').LocaleCode,
+				import('#lib/i18n/locales.js').LocaleCode,
 				QualifierSuggestion2[]
 			>;
 		}
 		interface LayoutData {
-			locale: import('$lib/i18n/locales').LocaleCode;
-			t: Awaited<ReturnType<typeof import('$lib/i18n').getTranslator>>;
-			localizeHref: ReturnType<typeof import('$lib/i18n/locales').initLocalizeHref>;
+			locale: import('#lib/i18n/locales.js').LocaleCode;
+			t: Awaited<ReturnType<typeof import('#lib/i18n/index.js').getTranslator>>;
+			localizeHref: ReturnType<typeof import('#lib/i18n/locales.js').initLocalizeHref>;
 		}
 		interface PageData extends LayoutData {
 			base: string;
+			features: Features;
+			footer: FooterSection[];
+			appMenuItems: AppMenuItem[];
 			librisSession?: string;
 			dismissedBanner3?: boolean;
 			locale: string;

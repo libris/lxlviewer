@@ -1,9 +1,9 @@
-import { env } from '$env/dynamic/private';
-import { getSupportedLocale } from '$lib/i18n/locales';
-import type { HoldingsData } from '$lib/types/holdings.js';
-import { getTranslator } from '$lib/i18n';
-import { appendMyLibrariesParam, displayFacets } from '$lib/utils/search.server';
-import type { PartialCollectionView } from '$lib/types/search';
+import { API_URL } from '$app/env/private';
+import { getSupportedLocale } from '#lib/i18n/locales.js';
+import type { HoldingsData } from '#lib/types/holdings.js';
+import { getTranslator } from '#lib/i18n/index.js';
+import { appendMyLibrariesParam, displayFacets } from '#lib/utils/search.server.js';
+import type { PartialCollectionView } from '#lib/types/search.js';
 
 export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 	const locale = getSupportedLocale(params?.lang);
@@ -11,17 +11,34 @@ export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 	const myLibraries = locals.userSettings?.myLibraries;
 
 	const searchParams = new URLSearchParams();
+	if (locals.site?.searchSite) {
+		searchParams.set('_site', locals.site.searchSite);
+	}
 
 	// reruns on change in these params:
-	const _q = url.searchParams.get('_q');
-	const _r = url.searchParams.get('_r');
-	const holdingsParam = url.searchParams.get('holdings');
+	const reactiveParams = ['_q', '_r', '_sort'];
+	reactiveParams.forEach((param) => {
+		if (url.searchParams.has(param) || param === '_q') {
+			searchParams.set(param, url.searchParams.get(param) || '');
+		}
+	});
 
-	searchParams.set('_q', _q || '');
-	if (_r) searchParams.set('_r', _r);
+	const holdingsParam = url.searchParams.get('holdings');
 
 	async function getHoldings(fnurgel: string): Promise<HoldingsData> {
 		const res = await fetch(`/api/${locale}/${fnurgel}/holdings`);
+
+		if (!res.ok) {
+			console.warn(`Failed to fetch holdings for ${fnurgel}: ${res.status}`);
+			return {
+				byInstanceId: {},
+				byType: {},
+				bibIdData: {},
+				holdingLibraries: {},
+				eodAvailable: null
+			};
+		}
+
 		const holdings = await res.json();
 		return holdings;
 	}
@@ -31,10 +48,9 @@ export const load = async ({ url, params, fetch, locals, isDataRequest }) => {
 		searchParams.set('_limit', '0');
 
 		const recordsRes = await fetch(
-			`${env.API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}`
+			`${API_URL}/find.jsonld?${appendMyLibrariesParam(searchParams, myLibraries).toString()}`
 		);
 		const view = (await recordsRes.json()) as PartialCollectionView;
-
 		const translate = await getTranslator(locale);
 		return displayFacets(view, displayUtil, locale, translate, '');
 	}

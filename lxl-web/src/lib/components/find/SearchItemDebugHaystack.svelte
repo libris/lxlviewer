@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ItemDebugInfo } from '$lib/types/search';
+	import type { ItemDebugInfo } from '#lib/types/search.js';
 	interface Props {
 		debugInfo: ItemDebugInfo;
 	}

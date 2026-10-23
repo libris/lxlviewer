@@ -1,4 +1,4 @@
-import { TITLE_SEPARATOR, TITLE_SUFFIX, TITLE_MAX_LENGTH } from '$lib/constants/pageTitle';
+import { TITLE_SEPARATOR, TITLE_SUFFIX, TITLE_MAX_LENGTH } from '#lib/constants/pageTitle.js';
 
 /**
  * Adds title separator and suffix to title string

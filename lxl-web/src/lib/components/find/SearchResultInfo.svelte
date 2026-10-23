@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { SearchResult } from '$lib/types/search';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { MY_LIBRARIES_FILTER_ALIAS } from '$lib/constants/facets';
-	import { displayMappingToString } from '$lib/utils/displayMappingToString';
+	import type { SearchResult } from '#lib/types/search.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { MY_LIBRARIES_FILTER_ALIAS } from '#lib/constants/facets.js';
+	import { displayMappingToString } from '#lib/utils/displayMappingToString.js';
 	import BiInfo from '~icons/bi/info-circle';
 	import BiQuestionCircle from '~icons/bi/question-circle';
 

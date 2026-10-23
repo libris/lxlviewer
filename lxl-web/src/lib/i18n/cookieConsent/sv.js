@@ -3,7 +3,7 @@ export default {
 	consentModal: {
 		title: 'Vi använder kakor',
 		description:
-			'Tjänsten Libris använder olika typer av kakor (cookies). Dessa är till för att förbättra användarupplevelsen samt för att tjänsten och dess funktioner ska fungera som de ska. Nedan kan du välja dina inställningar för vilka kakor du ger ditt samtycke till. Du kan alltid ändra dina val senare genom att klicka på “Hantera kakor” längst ner på sidan.',
+			'Tjänsten {siteName} använder olika typer av kakor (cookies). Dessa är till för att förbättra användarupplevelsen samt för att tjänsten och dess funktioner ska fungera som de ska. Nedan kan du välja dina inställningar för vilka kakor du ger ditt samtycke till. Du kan alltid ändra dina val senare genom att klicka på “Hantera kakor” längst ner på sidan.',
 		acceptAllBtn: 'Tillåt alla kakor',
 		acceptNecessaryBtn: 'Tillåt bara nödvändiga kakor',
 		showPreferencesBtn: 'Inställningar'
@@ -18,7 +18,7 @@ export default {
 			{
 				title: 'Om användning av kakor',
 				description:
-					'Webbplatsen Libris använder kakor (cookies). En kaka är en liten textfil som lagras i besökarens dator. KB:s tjänster är designade för att minska risken för spridning av dina uppgifter. Informationen som lagras via kakor kan aldrig användas av tredje part i marknadsföringssyfte.'
+					'Webbplatsen {siteName} använder kakor (cookies). En kaka är en liten textfil som lagras i besökarens dator. KB:s tjänster är designade för att minska risken för spridning av dina uppgifter. Informationen som lagras via kakor kan aldrig användas av tredje part i marknadsföringssyfte.'
 			},
 			{
 				title: 'Nödvändiga kakor',
@@ -40,13 +40,13 @@ export default {
 							duration: '1 år'
 						},
 						{
-							name: 'techaro.lol-anubis-auth',
+							name: 'libris.kb.se-anubis-auth',
 							description:
 								'Sparas när din webbläsare klarat en säkerhetskontroll som skyddar mot automatiserade bottar. Den gör att du slipper genomgå kontrollen på nytt vid varje sidbesök.',
 							duration: '1 vecka'
 						},
 						{
-							name: 'techaro.lol-anubis-cookie-verification',
+							name: 'libris.kb.se-anubis-cookie-verification',
 							description:
 								'Används för att kontrollera att din webbläsare accepterar kakor, vilket krävs för att säkerhetskontrollen ska fungera.',
 							duration: '30 minuter'

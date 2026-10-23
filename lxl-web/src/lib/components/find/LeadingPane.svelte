@@ -5,8 +5,8 @@
 		LEADING_PANE_MAX_WIDTH,
 		LEADING_PANE_MIN_WIDTH,
 		LEADING_PANE_COLLAPSE_WIDTH
-	} from '$lib/constants/panels';
-	import { getUserSettings } from '$lib/contexts/userSettings';
+	} from '#lib/constants/panels.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import type { Snippet } from 'svelte';
 	import Draggable from '../Draggable.svelte';
 	import TabList, { type Tab } from '../TabList.svelte';
@@ -38,8 +38,7 @@
 	];
 </script>
 
-<nav
-	aria-label={page.data.t('panes.leadingPane')}
+<div
 	id="leading-pane"
 	class={[
 		'leading-pane sticky top-0 z-10 hidden w-0 sm:block print:hidden',
@@ -91,7 +90,7 @@
 		onexpand={() => userSettings.openLeadingPane()}
 		onresized={handleOnResized}
 	/>
-</nav>
+</div>
 
 <style lang="postcss">
 	@reference 'tailwindcss';

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
-	import type { FacetSearch } from '$lib/types/search';
+	import type { FacetSearch } from '#lib/types/search.js';
 	import BiSearch from '~icons/bi/search';
 
 	interface Props {
@@ -13,7 +13,9 @@
 	let rangeFrom = $derived(search.mapping.greaterThanOrEquals);
 	let rangeTo = $derived(search.mapping.lessThanOrEquals);
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		rangeFrom = search.mapping.greaterThanOrEquals;
 		rangeTo = search.mapping.lessThanOrEquals;
 	});
@@ -34,51 +36,57 @@
 	);
 </script>
 
-<form
-	class="[&_label]:text-subtle grid grid-cols-[1fr_1fr_auto] items-end gap-2 p-2"
-	onsubmit={handleSubmit}
->
-	<div class="flex flex-col gap-1">
-		<label class="sr-only" for="facet-range-from">{page.data.t('general.from')}</label>
-		<input
-			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1 text-base sm:text-sm"
-			id="facet-range-from"
-			type="number"
-			min="1000"
-			max="2099"
-			step="1"
-			placeholder={`${page.data.t('general.from')} (${page.data.t('general.year')})`}
-			bind:value={rangeFrom}
-		/>
-	</div>
-	<div class="flex flex-col gap-1">
-		<label class="sr-only" for="facet-range-to">{page.data.t('general.to')}</label>
-		<input
-			class="bg-input h-8 rounded-sm border border-neutral-300 px-2 py-1 text-base sm:text-sm"
-			id="facet-range-to"
-			type="number"
-			min="1000"
-			max="2099"
-			step="1"
-			placeholder={`${page.data.t('general.to')} (${page.data.t('general.year')})`}
-			bind:value={rangeTo}
-		/>
-	</div>
-	<button
-		class="btn btn-primary size-8"
-		disabled={!rangeFrom && !rangeTo}
-		type="submit"
-		aria-label={page.data.t('search.search')}
+<form onsubmit={handleSubmit} class="mt-1 mb-4">
+	<fieldset
+		class="[&_label]:text-subtle grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-end gap-2 p-2 border border-neutral-200"
 	>
-		<BiSearch class="text-base" />
-	</button>
+		<legend>{page.data.t('general.range')}</legend>
+		<div class="flex flex-col gap-1">
+			<label class="text-xs" for="facet-range-from"
+				>{`${page.data.t('general.from')} (${page.data.t('general.year')})`}:</label
+			>
+			<input
+				class="bg-input w-full h-8 rounded-sm border border-neutral-500 px-2 py-1 text-base sm:text-sm"
+				id="facet-range-from"
+				type="number"
+				step="1"
+				min="1000"
+				max="2099"
+				aria-valuetext={rangeFrom}
+				bind:value={rangeFrom}
+			/>
+		</div>
+		<div class="flex flex-col gap-1">
+			<label class="text-xs" for="facet-range-to"
+				>{`${page.data.t('general.to')} (${page.data.t('general.year')})`}:</label
+			>
+			<input
+				class="bg-input w-full h-8 rounded-sm border border-neutral-500 px-2 py-1 text-base sm:text-sm"
+				id="facet-range-to"
+				type="number"
+				step="1"
+				min="1000"
+				max="2099"
+				aria-valuetext={rangeTo}
+				bind:value={rangeTo}
+			/>
+		</div>
+		<button
+			class="btn btn-primary size-8"
+			disabled={!rangeFrom && !rangeTo}
+			type="submit"
+			aria-label={page.data.t('search.search')}
+		>
+			<BiSearch class="text-base" />
+		</button>
 
-	{#each searchParams as [name, value], index (index)}
-		{#if name !== '_q'}
-			<input type="hidden" {name} {value} />
-		{/if}
-	{/each}
-	<input type="hidden" name="_q" value={qOutput} />
+		{#each searchParams as [name, value], index (index)}
+			{#if name !== '_q'}
+				<input type="hidden" {name} {value} />
+			{/if}
+		{/each}
+		<input type="hidden" name="_q" value={qOutput} />
+	</fieldset>
 </form>
 
 <style lang="postcss">

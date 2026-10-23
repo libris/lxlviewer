@@ -1,5 +1,5 @@
 import type { JSONValue } from './json.js';
-import type { Editor, Selection } from '$lib/components/CodeMirror.svelte';
+import type { Editor, Selection } from '#lib/components/CodeMirror.svelte';
 
 export type QueryFunction = (value: string, cursor: number) => URLSearchParams;
 export type PaginationQueryFunction = (
@@ -67,3 +67,9 @@ export type UserEvent =
 	| 'select.pointer'
 	| 'undo'
 	| 'redo'; // see: https://codemirror.net/docs/ref/#state.Transaction%5EuserEvent
+
+export type ChangeActiveCell = {
+	activeRowIndex: number;
+	activeColIndex: number;
+	id: string;
+};

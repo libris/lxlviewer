@@ -1,8 +1,8 @@
-import mainEntity from '$lib/assets/json/test-data/main-entity.json';
+import mainEntity from '#lib/assets/json/test-data/main-entity.json';
 import { describe, it, expect } from 'vitest';
 import { cslFromMainEntity } from './cslFromMainEntity';
 import type { VocabUtil } from './xl.server';
-import type { FramedData } from '$lib/types/xl';
+import type { FramedData } from '#lib/types/xl.js';
 
 const vocabUtil = { getDefinition: (a: string) => a as unknown as FramedData } as VocabUtil;
 

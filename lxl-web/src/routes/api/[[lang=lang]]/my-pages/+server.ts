@@ -1,10 +1,9 @@
-import { env } from '$env/dynamic/private';
-import { json } from '@sveltejs/kit';
+import { API_URL, AUXD_SECRET } from '$app/env/private';
 import type { RequestHandler } from './$types.ts';
-import { getSupportedLocale, type LocaleCode as LangCode } from '$lib/i18n/locales.js';
-import type { LibraryResult, PartialCollectionView } from '$lib/types/search';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
-import { asSearchResultItem } from '$lib/utils/search.server';
+import { getSupportedLocale, type LocaleCode as LangCode } from '#lib/i18n/locales.js';
+import type { LibraryResult, PartialCollectionView } from '#lib/types/search.js';
+import { DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
+import { asSearchResultItem } from '#lib/utils/search.server.js';
 
 export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const displayUtil = locals.display;
@@ -22,7 +21,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('_stats', 'falseThisRequest');
-	const findRes = await fetch(`${env.API_URL}/find.jsonld?${newSearchParams.toString()}`);
+	const findRes = await fetch(`${API_URL}/find.jsonld?${newSearchParams.toString()}`);
 
 	if (!findRes.ok) {
 		let apiError;
@@ -32,7 +31,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 			apiError = null;
 		}
 
-		return json(
+		return Response.json(
 			{
 				error: true,
 				statusText: apiError?.message || findRes.statusText,
@@ -47,7 +46,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const data = await findRes.json();
 	const result = await asLibraryResult(data, displayUtil, vocabUtil, locale);
 
-	return json(result, {
+	return Response.json(result, {
 		headers: {
 			'cache-control': 'public, max-age=1800' // 30 mins
 		}
@@ -60,16 +59,7 @@ async function asLibraryResult(
 	vocabUtil: VocabUtil,
 	locale: LangCode
 ): Promise<LibraryResult> {
-	const items = await asSearchResultItem(
-		view.items,
-		displayUtil,
-		vocabUtil,
-		locale,
-		env.AUXD_SECRET
-	);
-	return {
-		totalItems: view.totalItems,
-		maxItems: view.maxItems,
-		items
-	} as LibraryResult;
+	const items = await asSearchResultItem(view.items, displayUtil, vocabUtil, locale, AUXD_SECRET);
+
+	return { totalItems: view.totalItems, maxItems: view.maxItems, items } as LibraryResult;
 }

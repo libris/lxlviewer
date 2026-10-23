@@ -10,7 +10,6 @@
 		placeholder: string;
 		ariaLabelledBy?: string;
 		ariaLabel?: string;
-		autofocus?: boolean;
 	}
 
 	let {
@@ -19,8 +18,7 @@
 		selection = $bindable(),
 		placeholder,
 		ariaLabel,
-		ariaLabelledBy,
-		autofocus
+		ariaLabelledBy
 	}: Props = $props();
 
 	let fallbackInputElement: HTMLInputElement | undefined = $state();
@@ -68,7 +66,6 @@
 		bind:value
 		aria-labelledby={ariaLabelledBy}
 		aria-label={ariaLabel}
-		{autofocus}
 		bind:this={fallbackInputElement}
 		class="placeholder:text-placeholder w-full pl-3 text-base focus:outline-none lg:pl-4 2xl:pl-4"
 	/>
@@ -100,7 +97,7 @@
 		width: 100%;
 		height: var(--search-input-height);
 		background: var(--color-input);
-		box-shadow: 0 0 0 1px var(--color-primary-400);
+		box-shadow: 0 0 0 1px var(--color-primary-700);
 		border-radius: var(--radius-md);
 
 		@variant sm {

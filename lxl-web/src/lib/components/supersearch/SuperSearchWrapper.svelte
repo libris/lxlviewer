@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { mount, onMount, onDestroy, unmount, tick } from 'svelte';
 	import { page } from '$app/state';
-	import { goto, onNavigate, pushState } from '$app/navigation';
+	import { afterNavigate, goto, onNavigate } from '$app/navigation';
+	import { innerHeight } from 'svelte/reactivity/window';
 	import {
 		type ChangeEvent,
 		type DebouncedWaitFunction,
@@ -15,28 +16,30 @@
 		type Selection,
 		type ShowExpandedSearchOptions,
 		SuperSearch,
-		type ViewUpdateEvent
+		type ViewUpdateEvent,
+		type ChangeActiveCell
 	} from 'supersearch';
 	import FooterRow from './rows/FooterRow.svelte';
 	import QualifierSuggestionsRow from './rows/QualifierSuggestionsRow.svelte';
 	import ShowAllResultsRow from './rows/ShowAllResultsRow.svelte';
 	import QualifierPill from './QualifierPill.svelte';
 	import Suggestion from './Suggestion.svelte';
-	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
-	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
-	import { type DisplayMapping, type QualifierSuggestion2 } from '$lib/types/search';
+	import getLabelFromMappings from '#lib/utils/getLabelsFromMapping.svelte.js';
+	import addSpaceIfEndingQualifier from '#lib/utils/addSpaceIfEndingQualifier.js';
+	import { type DisplayMapping, type QualifierSuggestion2 } from '#lib/types/search.js';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import IconClear from '~icons/bi/x-circle';
 	import IconBack from '~icons/bi/arrow-left-short';
 	import IconSearch from '~icons/bi/search';
-	import '$lib/styles/lxlquery.css';
-	import { getSearchContext } from '$lib/contexts/search';
+	import '#lib/styles/lxlquery.css';
+	import { getSearchContext } from '#lib/contexts/search.js';
 	import { SvelteURLSearchParams, MediaQuery } from 'svelte/reactivity';
 	import { ID_HERO_SEARCH } from '../../../routes/(app)/[[lang=lang]]/+page.svelte';
 	import {
 		ID_APP_BAR_LG_SEARCH,
 		ID_APP_BAR_SM_SEARCH
 	} from '../../../routes/(app)/[[lang=lang]]/AppBar.svelte';
+	import { prefersReducedMotion } from 'svelte/motion';
 
 	interface Props {
 		id: string;
@@ -82,23 +85,31 @@
 	let selection: Selection | undefined = $state();
 
 	let isLoading: boolean | undefined = $state();
+	let resultsCount: number = $state(0);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let debouncedLoading: boolean | undefined = $state();
 	let wrappedLines: boolean | undefined = $state();
-	let dialogMarginTop: string | undefined = $state();
+	let skipShowAllResultsRowOnArrowKey = $state(true);
+	let toggleWithKeyboardShortcut = false;
 
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let fetchOnExpand = $state(true);
 	let pageMapping: DisplayMapping[] | undefined = $derived(page.data.searchResult?.mapping);
 	let prevLocale = page.data.locale;
 
+	const smMediaQuery = new MediaQuery('min-width: 640px');
 	const lgMediaQuery = new MediaQuery('min-width: 1024px');
+
+	const showAllResultsRowIndex = $derived(1);
+	const qualifiersRowIndex = $derived(2);
+	const suggestionsRowOffset = $derived(qualifiersRowIndex + 1);
+	const footerRowIndex = $derived(suggestionsRowOffset + resultsCount);
 
 	let interceptedHref: string | undefined = $state();
 
 	let clearUrl = $derived.by(() => {
 		if (page.url.pathname !== '/find') return undefined;
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.set('_q', '');
 		url.searchParams.delete('_offset');
 		return url.toString();
@@ -129,8 +140,15 @@
 	let cursor = $derived(selection?.head || 0);
 	let isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	let isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
+	let currentSort = $derived(page.url.searchParams.get('_sort') || '');
 
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
+	let comboboxOffsetTop: number = $derived.by(() => {
+		if (smMediaQuery.current && innerHeight.current) {
+			return calculateComboboxOffsetTop();
+		}
+		return 0;
+	});
 
 	let suggestMapping: DisplayMapping[] | undefined = $state();
 
@@ -162,6 +180,8 @@
 	});
 
 	onNavigate((navigation) => {
+		if (navigation.shallow && navigation.type === 'goto') return;
+
 		if (navigation.type !== 'popstate' && superSearch?.isExpanded()) {
 			superSearch?.hideExpandedSearch();
 			superSearch?.blur();
@@ -192,6 +212,16 @@
 
 			fetchOnExpand = true;
 		};
+	});
+
+	// manually fetch data again after sort change to update up-links
+	afterNavigate(({ from, to, shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
+		const sortChanged = from?.url.searchParams.get('_sort') !== to?.url.searchParams.get('_sort');
+		if (sortChanged) {
+			superSearch?.fetchData();
+		}
 	});
 
 	const hasCharBefore = $derived(/\S/.test(q.charAt(cursor - 1)));
@@ -263,6 +293,7 @@
 	}
 
 	function handleOnChange(event: ChangeEvent) {
+		skipShowAllResultsRowOnArrowKey = true;
 		searchContext.superSearch = superSearch;
 		if (syncEditorsOnChange) {
 			searchContext.lastTouchedEditor = event.editor;
@@ -305,20 +336,17 @@
 			event.trigger !== 'popstate' &&
 			event.trigger !== 'navigation'
 		) {
-			pushState('', { ...page.state, expandedSuperSearch: true });
+			goto('', {
+				shallow: true,
+				state: { ...page.state, expandedSuperSearch: true }
+			});
 		}
 		if (fetchOnExpand && q.trim()) {
 			superSearch?.fetchData();
 			fetchOnExpand = false;
 		}
 
-		const searchElement = getSearchElement();
-		const comboboxElement = searchElement?.querySelector(':scope [role="combobox"]');
-
-		if (comboboxElement) {
-			const comboboxOffsetTop = comboboxElement.getBoundingClientRect().top || 0;
-			dialogMarginTop = `${comboboxOffsetTop}px`;
-		}
+		comboboxOffsetTop = calculateComboboxOffsetTop();
 	}
 
 	function handleOnCollapse(event: CollapseEvent) {
@@ -457,6 +485,31 @@
 			}
 		}
 	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab') {
+			skipShowAllResultsRowOnArrowKey = false;
+		}
+	}
+
+	function calculateComboboxOffsetTop() {
+		const searchElement = getSearchElement();
+		const comboboxElement = searchElement?.querySelector(':scope [role="combobox"]');
+		if (comboboxElement) {
+			return comboboxElement.getBoundingClientRect().top || 0;
+		}
+		return 0;
+	}
+
+	function handleChangeActiveCell({ id }: ChangeActiveCell) {
+		const activeCellElement = document.getElementById(id);
+		if (activeCellElement) {
+			activeCellElement?.scrollIntoView({
+				behavior: prefersReducedMotion.current ? 'instant' : 'smooth',
+				block: 'end'
+			});
+		}
+	}
 </script>
 
 <!-- Use zero-delay timeout to place popstate processing at the end of the browser loop (ensuring the document has changed) -->
@@ -469,6 +522,7 @@
 		bind:value={q}
 		bind:selection
 		bind:isLoading
+		bind:resultsCount
 		language={lxlQuery}
 		{placeholder}
 		{collapsedAriaLabelledBy}
@@ -477,13 +531,16 @@
 		{expandedAriaLabelledBy}
 		{expandedAriaLabel}
 		{expandedAriaDescribedBy}
-		collapsedAriaKeyshortcuts={`Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`}
+		collapsedAriaKeyshortcuts={toggleWithKeyboardShortcut
+			? `Shift+7 ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'}`
+			: undefined}
 		{autofocus}
 		endpoint={`/api/${page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			const searchParams = new SvelteURLSearchParams({
 				_q: query,
 				_limit: '5',
+				_sort: currentSort,
 				cursor: cursor.toString()
 			});
 			if (page.url.searchParams.get('_r')) {
@@ -496,9 +553,10 @@
 		{editor}
 		{syncEditorsOnChange}
 		{syncEditorsOnSelection}
-		toggleWithKeyboardShortcut
+		{toggleWithKeyboardShortcut}
 		wrappingArrowKeyNavigation
-		defaultInputCol={undefined}
+		defaultInputCol={-1}
+		defaultResultRow={showAllResultsRowIndex}
 		{getDebouncedWait}
 		onexpand={handleOnExpand}
 		oncollapse={handleOnCollapse}
@@ -507,7 +565,9 @@
 		oninterceptexpandedclick={interceptExpandedClick}
 		oninterceptexpandedsubmit={interceptExpandedSubmit}
 		onexpandedviewupdate={handleOnExpandedViewUpdate}
-		--supersearch-dialog-margin-top={dialogMarginTop || undefined}
+		onkeydown={handleKeyDown}
+		onchangeactivecell={handleChangeActiveCell}
+		--supersearch-dialog-padding-top={comboboxOffsetTop ? `${comboboxOffsetTop}px` : undefined}
 	>
 		{#snippet inputRow({
 			expanded,
@@ -534,11 +594,11 @@
 						aria-label={page.data.t('general.close')}
 						class={[
 							'action text-subtle flex min-h-11 sm:hidden sm:min-h-13.5 lg:min-h-auto',
-							expanded && 'mr-1 h-16.5 w-14 sm:h-full sm:w-13'
+							expanded && 'mr-1 h-16.5 w-13 sm:h-full'
 						]}
 						onclick={onclickClose}
 					>
-						<IconBack aria-hidden="true" class="size-7" />
+						<IconBack aria-hidden="true" class="size-7 text-link" />
 					</button>
 				{/if}
 				<div class="flex-1 overflow-hidden">
@@ -554,40 +614,29 @@
 						class:focused-cell={isFocusedCell(1)}
 						class={[
 							'action sm:min-h-auto',
-							expanded ? 'flex h-16.5 max-sm:w-13 sm:h-full' : 'hidden sm:flex'
+							expanded ? 'flex h-16.5 max-sm:w-13 sm:h-full sm:rounded-r-lg' : 'hidden sm:flex'
 						]}
 						aria-label={page.data.t('search.clear')}
 						title={page.data.t('search.clear')}
 					>
-						<IconClear aria-hidden="true" class="size-4.5 sm:size-4" />
+						<IconClear aria-hidden="true" class="size-4.5 sm:size-4 text-subtle" />
 					</svelte:element>
-				{:else if !expanded}
+				{/if}
+				{#if !expanded}
 					<button
-						type="button"
-						onclick={() => showExpandedSearch()}
-						tabindex={-1}
-						class="hidden h-full cursor-text items-center justify-center px-3 select-none sm:flex"
+						type="submit"
+						id={getCellId(2)}
+						class:focused-cell={isFocusedCell(2)}
+						class={[
+							'action rounded-r-md border-l-neutral-300 sm:rounded-r-lg sm:border-l',
+							isHomeRoute || expanded ? 'hidden sm:flex' : 'flex'
+						]}
+						aria-label={page.data.t('supersearch.search')}
+						tabindex={isHomeRoute ? -1 : undefined}
 					>
-						<kbd
-							class="key pointer-events-auto h-[1.75em] w-[1.75em] text-sm"
-							title={`${page.data.t('supersearch.expandSearch')} (Shift+7 ${page.data.t('supersearch.or')} ${navigator.userAgent.includes('Mac OS X') ? 'Meta+K' : 'Control+K'})`}
-							>/</kbd
-						>
+						<IconSearch aria-hidden="true" class={['flex size-4.5']} />
 					</button>
 				{/if}
-				<button
-					type="submit"
-					id={getCellId(2)}
-					class:focused-cell={isFocusedCell(2)}
-					class={[
-						'action rounded-r-md border-l-neutral-300 sm:rounded-r-lg sm:border-l',
-						isHomeRoute || expanded ? 'hidden sm:flex' : 'flex'
-					]}
-					aria-label={page.data.t('search.search')}
-					tabindex={isHomeRoute ? -1 : undefined}
-				>
-					<IconSearch aria-hidden="true" class={['flex size-4.5']} />
-				</button>
 			</div>
 		{/snippet}
 		{#snippet expandedContent({
@@ -597,12 +646,19 @@
 			isFocusedRow,
 			isFocusedCell
 		})}
-			{@const inputRowIndex = 0}
-			{@const qualifiersRowIndex = 1}
-			{@const showAllResultsRowIndex = 2}
-			{@const suggestionsRowOffset = 3}
-			{@const footerRowIndex = suggestionsRowOffset + (resultsCount || 0)}
-			<nav class="expanded-content mt-2 sm:mt-3">
+			{@const ID_RESULTS_LABEL = 'supersearch-results-label'}
+			<nav
+				class="expanded-content py-1 sm:mt-2 flex w-full flex-col border-t border-neutral sm:border-none"
+				aria-label={page.data.t('supersearch.expandedSearch')}
+			>
+				<ShowAllResultsRow
+					rowIndex={showAllResultsRowIndex}
+					{isLoading}
+					{getCellId}
+					{isFocusedRow}
+					{isFocusedCell}
+					{skipShowAllResultsRowOnArrowKey}
+				/>
 				<QualifierSuggestionsRow
 					{qualifierSuggestions}
 					rowIndex={qualifiersRowIndex}
@@ -612,54 +668,46 @@
 					query={q}
 					{selection}
 				/>
-				<ShowAllResultsRow
-					{resultsCount}
-					{isLoading}
-					rowIndex={showAllResultsRowIndex}
-					{getCellId}
-					{isFocusedRow}
-					{isFocusedCell}
-				/>
 				{#if resultsCount && q.trim().length}
+					<hr class="hidden sm:border-neutral sm:block sm:mt-2" />
 					<div
 						role="rowgroup"
-						aria-labelledby="supersearch-results-label"
-						class="border-neutral border-t"
+						aria-labelledby={ID_RESULTS_LABEL}
+						class="min-h-0 overflow-y-auto grow pb-0.75"
 					>
+						<h2
+							id={ID_RESULTS_LABEL}
+							class="text-placeholder pt-2 sm:pt-4 pb-3 pl-4 text-xs font-medium tracking-widest uppercase"
+						>
+							{page.data.t('supersearch.suggestions')}
+						</h2>
 						{@render resultsSnippet({ rowOffset: suggestionsRowOffset })}
 					</div>
 				{/if}
-				<FooterRow
-					{inputRowIndex}
-					{showAllResultsRowIndex}
-					{qualifiersRowIndex}
-					{footerRowIndex}
-					{getCellId}
-					{isFocusedRow}
-					{isFocusedCell}
-				/>
+
+				<FooterRow {footerRowIndex} {getCellId} {isFocusedCell} />
 			</nav>
 		{/snippet}
-		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
+		{#snippet resultItemRow({ resultItem, getCellId, isFocusedRow, isFocusedCell })}
 			{#if resultItem}
-				<Suggestion item={resultItem} {getCellId} {isFocusedCell} />
+				<Suggestion item={resultItem} {getCellId} {isFocusedRow} {isFocusedCell} />
 			{/if}
 		{/snippet}
 	</SuperSearch>
 {/key}
 
 <style lang="postcss">
-	@reference "../../../app.css";
+	@reference "#app.css";
 
 	.supersearch-input {
 		height: 100%;
 		min-height: var(--search-input-height);
 		font-size: var(--text-base);
 		border-radius: var(--radius-md);
-		box-shadow: 0 0 0 1px var(--color-primary-400);
+		box-shadow: 0 0 0 1px var(--color-primary-700);
 
 		&:hover {
-			box-shadow: 0 0 0 1px var(--color-primary-600);
+			box-shadow: 0 0 0 1px var(--color-primary-900);
 		}
 
 		@variant sm {
@@ -671,21 +719,39 @@
 		}
 	}
 
-	.supersearch-input:not(.expanded),
+	.supersearch-input:not(.expanded) {
+		&:focus-within:not(:has(button:focus)) {
+			outline: 2px solid var(--color-outline);
+			outline-offset: 0;
+			box-shadow: 0 0 0 6px var(--color-accent-100);
+		}
+	}
+
 	.expanded.supersearch-input.focused-row:not(:has(.focused-cell)) {
+		&:focus-within:not(:has(button:focus)) {
+			outline: 2px solid var(--color-outline);
+			outline-offset: -2px;
+			box-shadow: none;
+
+			@variant sm {
+				outline-offset: 0;
+				box-shadow: 0 0 0 6px var(--color-accent-100);
+			}
+		}
+	}
+
+	.supersearch-input {
 		@variant sm {
 			&:focus-within:not(:has(button:focus)) {
-				box-shadow: 0 0 0 6px var(--color-accent-100);
-				outline: 2px solid var(--color-outline);
-				outline-offset: 0;
+				box-shadow:
+					0 0 0 1px var(--color-link),
+					0 0 0 6px var(--color-accent-50);
 			}
 		}
 	}
 
 	.expanded.supersearch-input {
 		min-height: var(--search-input-height);
-		border-bottom: 1px solid var(--color-neutral);
-		border-radius: 0;
 		box-shadow: none;
 
 		&:focus-within {
@@ -693,19 +759,9 @@
 		}
 
 		@variant sm {
-			border-bottom: none;
-			border-radius: var(--radius-md);
-			margin-top: calc(var(--spacing) * 1.5);
-			box-shadow: 0 0 0 1px var(--color-neutral-400);
-
-			&:hover {
-				box-shadow: 0 0 0 1px var(--color-neutral-600);
-			}
-		}
-
-		@variant sm {
-			border-radius: var(--radius-lg);
 			margin-top: 0;
+			border-radius: var(--radius-lg);
+			box-shadow: 0 0 0 1px var(--color-link);
 		}
 	}
 
@@ -758,32 +814,18 @@
 	}
 
 	:global(.supersearch-dialog) {
-		position: fixed;
 		height: 100%;
-		max-height: 100vh;
-		max-height: 100lvh;
+		height: 100vh;
+		height: 100lvh;
 		width: 100%;
 		max-width: 100%;
 		background-color: transparent;
 		margin: 0;
 		padding: 0;
-		top: 0;
+		max-height: none;
 
 		&::backdrop {
 			background: var(--color-backdrop);
-		}
-
-		@variant sm {
-			top: 0;
-			margin-top: max(0px, calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 2));
-		}
-
-		@variant lg {
-			margin-top: calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 3);
-		}
-
-		@variant 2xl {
-			margin-top: calc(var(--supersearch-dialog-margin-top, 0px) - var(--spacing) * 3.25);
 		}
 	}
 
@@ -792,8 +834,7 @@
 		width: 100%;
 
 		@variant sm {
-			position: fixed;
-			height: auto;
+			padding-top: max(0px, calc(var(--supersearch-dialog-padding-top, 0px) - var(--spacing) * 2));
 		}
 
 		@variant lg {
@@ -801,20 +842,25 @@
 			grid-template-areas: var(--appbar-template-areas);
 			grid-template-columns: var(--appbar-template-columns);
 			gap: var(--appbar-gap);
+			padding-top: calc(var(--supersearch-dialog-padding-top, 0px) - var(--spacing) * 3);
+			padding-bottom: calc(var(--spacing) * 3);
 			padding-inline: 0;
 		}
 
 		@variant 2xl {
+			padding-top: calc(var(--supersearch-dialog-padding-top, 0px) - var(--spacing) * 3.25);
 		}
 	}
 
 	:global(.supersearch-dialog-content) {
+		display: flex;
+		flex-direction: column;
 		grid-area: search;
 		background: var(--color-page);
 		pointer-events: auto;
 		max-height: 100vh;
 		max-height: 100lvh;
-		overflow-y: scroll;
+		overflow-y: hidden;
 		overflow-x: hidden;
 		overscroll-behavior: contain;
 		scrollbar-width: none;
@@ -826,8 +872,15 @@
 		@variant sm {
 			border-radius: var(--radius-2xl);
 			height: fit-content;
+			max-height: 100%;
 			@apply drop-shadow-md;
 		}
+
+		& :global([role='grid']) {
+			display: flex;
+			overflow: hidden;
+		}
+
 		& :global(.supersearch-combobox) {
 			@variant sm {
 				padding-inline: calc(var(--spacing) * 1.5);
@@ -959,12 +1012,24 @@
 			@apply bg-accent-50/75;
 		}
 
+		& :global([role='row'] *:active) {
+			@apply bg-accent-200/50;
+		}
+
 		& :global(.focused-cell) {
 			outline: 2px solid var(--color-outline);
+			background: var(--color-accent-100);
 		}
-	}
 
-	button:has(kbd) {
-		min-height: var(--search-input-height);
+		& :global([role='row']:hover) {
+			& :global(.decorated-heading),
+			& :global(.person-extra) {
+				text-decoration: underline;
+				color: var(--color-link);
+			}
+			& :global(.delimiter) {
+				color: var(--color-link);
+			}
+		}
 	}
 </style>

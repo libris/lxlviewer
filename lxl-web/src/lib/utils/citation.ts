@@ -1,8 +1,9 @@
 import { Cite, plugins } from '@citation-js/core';
-import { goto, preloadData, pushState } from '$app/navigation';
+import { goto, preloadData } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
-import type { CSLJSON, AvailableCitationFormat } from '$lib/types/citation';
-import type { LocaleCode } from '$lib/i18n/locales';
+import type { CSLJSON, AvailableCitationFormat } from '#lib/types/citation.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
+import type { ReadonlyURL } from '$app/state';
 
 export const availableFormats = {
 	chicago: {
@@ -24,6 +25,10 @@ export const availableFormats = {
 	harvard_sh: {
 		name: 'Harvard',
 		fullName: 'Harvard (Södertörns högskola — author-date/Harvard)'
+	},
+	elsevier_vancouver: {
+		name: 'Vancouver',
+		fullName: 'Elsevier - NLM/Vancouver (name-year)'
 	},
 	ris: {
 		name: 'RIS',
@@ -73,6 +78,12 @@ export async function initCite(locale: LocaleCode) {
 				return cite.format('bibliography', { template: 'oxford_umu', format: 'html', lang });
 			case 'harvard_sh':
 				return cite.format('bibliography', { template: 'harvard_sh', format: 'html', lang });
+			case 'elsevier_vancouver':
+				return cite.format('bibliography', {
+					template: 'elsevier_vancouver',
+					format: 'html',
+					lang
+				});
 			default:
 				console.warn('asked for unavailable format', name);
 				return '-';
@@ -91,19 +102,22 @@ async function loadCiteResources() {
 
 	const externalStyleTemplates: Partial<Record<AvailableCitationFormat, string>> = {
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fchicago-author-date
-		chicago: (await import('$lib/assets/csl/chicago-author-date.csl?raw')).default,
+		chicago: (await import('#lib/assets/csl/chicago-author-date.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fmodern-language-association
-		mla: (await import('$lib/assets/csl/modern-language-association.csl?raw')).default,
+		mla: (await import('#lib/assets/csl/modern-language-association.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fumea-university-oxford
-		oxford_umu: (await import('$lib/assets/csl/umea-university-oxford.csl?raw')).default,
+		oxford_umu: (await import('#lib/assets/csl/umea-university-oxford.csl?raw')).default,
 		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Fsodertorns-hogskola-harvard
-		harvard_sh: (await import('$lib/assets/csl/sodertorns-hogskola-harvard.csl?raw')).default
+		harvard_sh: (await import('#lib/assets/csl/sodertorns-hogskola-harvard.csl?raw')).default,
+		// https://editor.citationstyles.org/styleInfo/?styleId=http%3A%2F%2Fwww.zotero.org%2Fstyles%2Felsevier-vancouver-author-date
+		elsevier_vancouver: (await import('#lib/assets/csl/elsevier-vancouver-author-date.csl?raw'))
+			.default
 	};
 
 	// https://github.com/citation-js/citation-js/tree/main/packages/plugin-csl
 	const config = plugins.config.get('@csl');
 
-	const sv = (await import('$lib/assets/csl/locales-sv-SE.xml?raw')).default;
+	const sv = (await import('#lib/assets/csl/locales-sv-SE.xml?raw')).default;
 	config.locales.add('sv-SE', sv);
 
 	const formatKeys = Object.keys(availableFormats) as (keyof typeof availableFormats)[];
@@ -127,7 +141,7 @@ export function getAvailableFormats() {
 	});
 }
 
-export function getCiteLink(url: URL, value: string) {
+export function getCiteLink(url: ReadonlyURL, value: string) {
 	const newSearchParams = new SvelteURLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('cite', value);
 	return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
@@ -144,7 +158,14 @@ export async function handleClickCite(
 	const result = await preloadData(href);
 
 	if (result.type === 'loaded' && result.status === 200) {
-		pushState(href, { ...state, citations: await result.data.citations, citationId: id });
+		goto(href, {
+			shallow: true,
+			state: {
+				...state,
+				citations: await result.data.citations,
+				citationId: id
+			}
+		});
 	} else {
 		goto(href);
 	}

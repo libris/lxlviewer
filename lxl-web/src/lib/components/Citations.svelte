@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import type { AvailableCitationFormat, CitationsType } from '$lib/types/citation';
-	import { getAvailableFormats } from '$lib/utils/citation';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import type { AvailableCitationFormat, CitationsType } from '#lib/types/citation.js';
+	import { getAvailableFormats } from '#lib/utils/citation.js';
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/state';
 	import Spinner from './Spinner.svelte';
@@ -117,6 +117,7 @@
 									{:else}
 										{page.data.t('general.copyToClipboard')}
 									{/if}
+									<span class="sr-only">({format.name})</span>
 								</button>
 								{#if isFileFormat && id}
 									<!-- download button -->
@@ -126,8 +127,9 @@
 										href={`/api/${page.data.locale}/cite?id=${id}&format=${format.key}`}
 									>
 										<BiDownload />
-										{page.data.t('citations.saveAsFile')}</a
-									>
+										{page.data.t('citations.saveAsFile')}
+										<span class="sr-only">({format.name})</span>
+									</a>
 								{/if}
 							</div>
 						</article>

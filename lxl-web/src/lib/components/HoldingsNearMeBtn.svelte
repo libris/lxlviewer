@@ -2,9 +2,9 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { saveUserLocation } from '$lib/utils/geolocation.svelte';
-	import type { LatLng } from '$lib/types/holdings';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { saveUserLocation } from '#lib/utils/geolocation.svelte.js';
+	import type { LatLng } from '#lib/types/holdings.js';
 	import Spinner from './Spinner.svelte';
 	import BiToggleOff from '~icons/bi/toggle-off';
 	import BiToggleOn from '~icons/bi/toggle-on';

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { DEFAULT_FACETS_EXPANDED } from '$lib/constants/facets';
+import { DEFAULT_FACETS_EXPANDED } from '#lib/constants/facets.js';
 
 test.beforeEach(async ({ page }) => {
 	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_spell=true');
@@ -18,9 +18,9 @@ test('page displays the site header', async ({ page }) => {
 });
 
 test('page displays the correct title', async ({ page }) => {
-	await expect(page).toHaveTitle('f | Libris');
+	await expect(page).toHaveTitle('f | Sökresultat | Libris');
 	await page.goto('/find?_q=*&_limit=20&_offset=0');
-	await expect(page).toHaveTitle('Libris');
+	await expect(page).toHaveTitle('Sökresultat | Libris');
 });
 
 test('page has a search input', async ({ page }) => {
@@ -130,6 +130,14 @@ test('sorting changes the sort param', async ({ page }) => {
 	await expect(page).toHaveURL(/_sort=_sortKeyByLang.sv/);
 });
 
+test('change sort -> facets are updated with new sorting', async ({ page }) => {
+	const link = page.getByTestId('facets').getByRole('link', { name: 'Fysisk resurs' });
+	await expect(link).not.toHaveAttribute('href', /_sortKeyByLang\.sv/);
+	await page.getByTestId('sort-select').locator('select').selectOption('_sortKeyByLang.sv');
+	await page.waitForLoadState('networkidle');
+	await expect(link).toHaveAttribute('href', /_sortKeyByLang\.sv/);
+});
+
 test('has pagination', async ({ page }) => {
 	await expect(page.getByTestId('pagination')).toBeVisible();
 });
@@ -145,4 +153,10 @@ test('can paginate to next and previous', async ({ page }) => {
 test('can handle square brackets in query', async ({ page }) => {
 	await page.goto('/find?_q=[test]');
 	await expect(page.getByTestId('supersearch').nth(0)).toBeVisible();
+});
+
+test('the line height (click area) of links are at least 24px', async ({ page }) => {
+	const firstLink = page.locator('a.link').first();
+	const lineHeight = await firstLink.evaluate((el) => parseFloat(getComputedStyle(el).lineHeight));
+	expect(lineHeight).toBeGreaterThanOrEqual(24);
 });

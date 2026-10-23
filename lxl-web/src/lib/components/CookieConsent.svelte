@@ -2,15 +2,25 @@
 	import { onMount } from 'svelte';
 	import * as CookieConsent from 'vanilla-cookieconsent';
 	import 'vanilla-cookieconsent/dist/cookieconsent.css';
-	import '$lib/styles/cookieconsent.css';
-	import svTranslations from '$lib/i18n/cookieConsent/sv';
-	import enTranslations from '$lib/i18n/cookieConsent/en';
+	import '#lib/styles/cookieconsent.css';
+	import svTranslations from '#lib/i18n/cookieConsent/sv.js';
+	import enTranslations from '#lib/i18n/cookieConsent/en.js';
 	import { page } from '$app/state';
-	import { getMatomoTracker } from '$lib/contexts/matomo';
+	import { getMatomoTracker } from '#lib/contexts/matomo.js';
+	import { getCookieConsentContext } from '#lib/contexts/cookieConsent.js';
+
+	let cookieConsentContext = getCookieConsentContext();
 
 	const matomoTracker = getMatomoTracker();
 
+	const siteName = page.data.siteName ?? 'Libris';
+
+	function withSiteName(translations: typeof svTranslations): typeof svTranslations {
+		return JSON.parse(JSON.stringify(translations).replaceAll('{siteName}', siteName));
+	}
+
 	const config: CookieConsent.CookieConsentConfig = {
+		root: '#cookie-consent-container',
 		guiOptions: {
 			consentModal: {
 				layout: 'bar',
@@ -47,11 +57,17 @@
 				$matomoTracker?.forgetConsentGiven();
 			}
 		},
+		onModalShow: () => {
+			cookieConsentContext.visibleModal = true;
+		},
+		onModalHide: () => {
+			cookieConsentContext.visibleModal = false;
+		},
 		language: {
 			default: page.data.locale,
 			translations: {
-				sv: svTranslations,
-				en: enTranslations
+				sv: withSiteName(svTranslations),
+				en: withSiteName(enTranslations)
 			}
 		}
 	};

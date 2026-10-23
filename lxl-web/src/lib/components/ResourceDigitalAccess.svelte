@@ -1,20 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import type { EodAvailable } from '$lib/types/holdings';
-	import type { ResourceData } from '$lib/types/resourceData';
-	import type { SearchResultItem } from '$lib/types/search';
-	import { BibDb, type DisplayDecorated } from '$lib/types/xl';
-	import { getResourceDigitalAccess } from '$lib/utils/getResourceDigitalAccess';
-	import DecoratedData from './DecoratedData.svelte';
+	import { Elem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
+	import type { EodAvailable } from '#lib/types/holdings.js';
+	import type { SearchResultItem } from '#lib/types/search.js';
+	import { BibDb, type DisplayDecorated } from '#lib/types/xl.js';
+	import { getResourceDigitalAccess } from '#lib/utils/getResourceDigitalAccess.js';
+	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
 	import BiLaptop from '~icons/bi/laptop';
 	import BiChevronRight from '~icons/bi/chevron-right';
 
 	type Props = {
 		overview2: DisplayDecorated[];
-		instances: SearchResultItem[] | ResourceData[];
+		instances: SearchResultItem[];
 		eodAvailable: EodAvailable;
-		workCard: SearchResultItem | null;
+		workCard: SearchResultItem;
 		isWork: boolean;
 	};
 	const { overview2, instances, eodAvailable, workCard, isWork }: Props = $props();
@@ -33,7 +32,7 @@
 					<BiLaptop class="text-subtle" />
 					<span>{page.data.t('search.existsOnline')}:</span>
 				</p>
-				<DecoratedData
+				<DecoratedData2
 					data={online}
 					showLabels={ShowLabelsOptions.Never}
 					block
@@ -43,6 +42,8 @@
 						electronicLocator: 1,
 						'marc:versionOfResource': 1
 					}}
+					parent={Elem.Div}
+					skipOuter={true}
 				/>
 			</div>
 		{/if}
@@ -52,12 +53,14 @@
 					<BiLaptop class="text-subtle" />
 					<span>{page.data.t('resource.digitizationAvailable')}:</span>
 				</p>
-				<DecoratedData
+				<DecoratedData2
 					data={hasReproduction}
 					allowLinks={true}
 					showLabels={ShowLabelsOptions.Never}
 					block
 					limit={{ hasReproduction: 1 }}
+					parent={Elem.Div}
+					skipOuter={true}
 				/>
 			</div>
 		{:else if eodAvailable}
@@ -75,9 +78,11 @@
 					<ul>
 						{#each eodAvailable as library (library.displayStr)}
 							<li>
-								<a class="ext-link" target="_blank" href={library[BibDb.eodUri]}
-									>{library.displayStr}</a
-								>
+								<!-- eslint-disable svelte/no-navigation-without-resolve -->
+								<a class="ext-link" target="_blank" href={library[BibDb.eodUri]}>
+									{library.displayStr}
+									<span class="sr-only">({page.data.t('general.targetBlank')})</span>
+								</a>
 							</li>
 						{/each}
 					</ul>
@@ -88,6 +93,10 @@
 {/if}
 
 <style lang="postcss">
+	:global(.resource-access ul) {
+		margin-bottom: calc(var(--spacing) * 2);
+	}
+
 	details[open] {
 		& .chevron {
 			transform: rotate(90deg);

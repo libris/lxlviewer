@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { SuperSearchResultItem } from '$lib/types/search';
-	import placeholder from '$lib/assets/img/placeholder.svg';
-	import TypeIcon from '$lib/components/TypeIcon.svelte';
+	import type { SuperSearchResultItem } from '#lib/types/search.js';
+	import placeholder from '#lib/assets/img/placeholder.svg';
+	import TypeIcon from '#lib/components/TypeIcon.svelte';
 
 	type Props = {
 		item: SuperSearchResultItem;

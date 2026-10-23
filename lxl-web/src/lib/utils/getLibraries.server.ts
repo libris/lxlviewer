@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { API_URL } from '$app/env/private';
 import { error } from '@sveltejs/kit';
 import type {
 	LibOrg,
@@ -7,13 +7,13 @@ import type {
 	LibraryRecord,
 	LibraryWithLinks,
 	OrgId
-} from '$lib/types/holdings';
-import { BibDb, JsonLd, LensType } from '$lib/types/xl';
+} from '#lib/types/holdings.js';
+import { BibDb, JsonLd, LensType } from '#lib/types/xl.js';
 import { gunzipSync } from 'node:zlib';
-import { createHolderLinks } from '$lib/utils/holdings.server';
-import { type DisplayUtil } from '$lib/utils/xl.server';
-import { toString } from '$lib/utils/misc';
-import type { LocaleCode } from '$lib/i18n/locales';
+import { createHolderLinks } from '#lib/utils/holdings.server.js';
+import { type DisplayUtil } from '#lib/utils/xl.server.js';
+import { toString } from '#lib/utils/misc.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
 
 type Data = {
 	[JsonLd.CONTEXT]: string[];
@@ -43,15 +43,14 @@ async function fetchLibraries(displayUtil: DisplayUtil, locale: LocaleCode) {
 	const libraryMap = new Map(
 		libraryArr.map((lib) => [lib[JsonLd.ID], withLinks(lib, displayUtil, locale)])
 	);
+
 	return libraryMap;
 }
 
 async function doFetch(type: string) {
 	const start = Date.now();
+	const res = await fetch(`${API_URL}/api/emm/full?selection=type:${type}&download=.ndjsonld.gz`);
 
-	const res = await fetch(
-		`${env.API_URL}/api/emm/full?selection=type:${type}&download=.ndjsonld.gz`
-	);
 	if (!res.ok) {
 		return error(res.status);
 	}

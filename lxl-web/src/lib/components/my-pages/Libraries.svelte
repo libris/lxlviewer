@@ -4,13 +4,14 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
-	import { getUserSettings } from '$lib/contexts/userSettings';
-	import { JsonLd } from '$lib/types/xl';
-	import { type LibraryResult, type LibraryResultItem } from '$lib/types/search';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { JsonLd } from '#lib/types/xl.js';
+	import { type LibraryResult, type LibraryResultItem } from '#lib/types/search.js';
 	import { useSearchRequest } from 'supersearch';
-	import SearchCard from '$lib/components/find/SearchCard.svelte';
+	import SearchCard from '#lib/components/find/SearchCard.svelte';
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
 
 	type Props = {
 		q: string | null;
@@ -53,8 +54,8 @@
 		}
 
 		goto(resolve(page.url.pathname + `?${params.toString()}`), {
-			replaceState: true,
-			keepFocus: true
+			replace: true,
+			reset: false
 		});
 	}
 
@@ -100,12 +101,12 @@
 				id="my-libraries-search"
 				bind:value={searchPhrase}
 				placeholder={page.data.t('myPages.findLibrary')}
-				class="bg-input h-9 w-full max-w-xl rounded-sm border border-neutral-300 pr-2 pl-8 text-base sm:text-sm"
+				class="bg-input h-9 w-full max-w-xl rounded-sm border border-neutral-500 pr-2 pl-8 text-base sm:text-sm"
 				oninput={handleInputChange}
 				aria-label={page.data.t('myPages.findLibrary')}
 				type="search"
 			/>
-			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm" />
+			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm pointer-events-none" />
 		</div>
 		<span class="mt-4 mb-2 block text-sm" role="status">
 			{#if search.isLoading}
@@ -130,7 +131,7 @@
 				<ol class="my-libraries-result flex flex-col rounded-sm p-1">
 					{#each searchResult.items as resultItem (resultItem[JsonLd.ID])}
 						<li>
-							<SearchCard item={resultItem} />
+							<SearchCard item={resultItem} headingElement={HeadingElem.H3} />
 						</li>
 					{/each}
 				</ol>
@@ -150,7 +151,7 @@
 			>
 				{#each mergedLibraries as myLib (myLib[JsonLd.ID])}
 					<li>
-						<SearchCard item={myLib} />
+						<SearchCard item={myLib} headingElement={HeadingElem.H3} />
 					</li>
 				{/each}
 			</ol>

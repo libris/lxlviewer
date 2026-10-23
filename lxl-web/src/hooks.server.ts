@@ -1,37 +1,51 @@
+import type { HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
 import fs from 'fs';
-import {
-	type HandleServerError,
-	redirect,
-	type RequestEvent,
-	type ServerInit
-} from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { defaultLocale, Locales } from '$lib/i18n/locales';
-import { DERIVED_LENSES } from '$lib/types/display';
-import type { QualifierSuggestion2 } from '$lib/types/search';
-import type { Site } from '$lib/types/site';
+import { ID_URL, API_URL, USE_LOCAL_DISPLAY_JSONLD, SUBSITES } from '$app/env/private';
+import { defaultLocale, Locales } from '#lib/i18n/locales.js';
+import { DERIVED_LENSES } from '#lib/types/display.js';
+import type { QualifierSuggestion2 } from '#lib/types/search.js';
+import type { Site } from '#lib/types/site.js';
 import {
 	DebugFlags,
 	type MyLibrariesType,
 	SettingsParams,
 	type UserSettings
-} from '$lib/types/userSettings';
-import displayWeb from '$lib/assets/json/display-web.json';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl.server';
-import { getLibrary, getOrgMembers, startRefreshLibraries } from '$lib/utils/getLibraries.server';
-import { getSubsetMapping } from '$lib/utils/subsetCache.server';
-import { getQualifierSuggestions } from '$lib/utils/getQualifierSuggestions.server';
-import { updateSettings } from '$lib/utils/userSettings.svelte';
+} from '#lib/types/userSettings.js';
+import displayWeb from '#lib/assets/json/display-web.json';
+import { defaultSiteConfiguration } from '#lib/constants/defaultSiteConfig.js';
+import { DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
+import {
+	getLibrary,
+	getOrgMembers,
+	startRefreshLibraries
+} from '#lib/utils/getLibraries.server.js';
+import { getSubsetMapping } from '#lib/utils/subsetCache.server.js';
+import { getQualifierSuggestions } from '#lib/utils/getQualifierSuggestions.server.js';
+import { updateSettings } from '#lib/utils/userSettings.svelte.js';
+import { JsonLd } from '#lib/types/xl.js';
 
 type QualifierSuggestionsByLocale = Record<keyof typeof Locales, QualifierSuggestion2[]>;
 type Util = [VocabUtil, DisplayUtil, QualifierSuggestionsByLocale];
 let utilCache: Promise<Util> | undefined;
+const subsiteCache: Record<string, Promise<Site>> = {};
 
 // Warm up caches immediately on startup instead of waiting for a request
 export const init: ServerInit = async () => {
 	try {
 		const [, displayUtil] = await loadUtilCached();
 		startRefreshLibraries(displayUtil, defaultLocale);
+
+		const sites = (SUBSITES || '')
+			.split(',')
+			.map((s) => s.trim())
+			.filter((s) => s.length > 0)
+			.map((site) => process.env[`SUBSITE.${site}.SEARCH_SITE`])
+			.filter((s) => typeof s === 'string');
+
+		for (const s of sites) {
+			await getSiteConfCached(s);
+		}
 	} catch (err) {
 		// This is OK, handle() will retry
 		console.error('Startup initialization failed:', err);
@@ -53,7 +67,7 @@ export const handle = async ({ event, resolve }) => {
 		redirect(302, `?_r=itemHeldByOrg:${clean}`);
 	}
 
-	const site = getSite(event);
+	const site = await getSite(event);
 
 	if (site) {
 		event.locals.site = site;
@@ -184,7 +198,8 @@ export const handle = async ({ event, resolve }) => {
 	});
 
 	// set data-theme defined in themes.css
-	const dataTheme = site?.themeName || 'libris';
+	const dataTheme = site?.configuration?.themeName || defaultSiteConfiguration.themeName;
+	const favicon = site?.configuration?.favicon || defaultSiteConfiguration.favicon;
 
 	// get subset mapping
 	const _r = event.url.searchParams.get('_r');
@@ -200,7 +215,8 @@ export const handle = async ({ event, resolve }) => {
 	}
 
 	return resolve(event, {
-		transformPageChunk: ({ html }) => html.replace('%lang%', lang).replace('%theme%', dataTheme)
+		transformPageChunk: ({ html }) =>
+			html.replace('%lang%', lang).replace('%theme%', dataTheme).replaceAll('%favicon%', favicon)
 	});
 };
 
@@ -231,16 +247,16 @@ function loadUtilCached() {
 // TODO error handling
 async function loadUtil(): Promise<Util> {
 	const [contextRes, vocabRes, displayRes] = await Promise.all([
-		fetch(`${env.ID_URL}/context.jsonld`),
-		fetch(`${env.ID_URL}/vocab/data.jsonld`),
-		fetch(`${env.ID_URL}/vocab/display/data.jsonld`)
+		fetch(`${ID_URL}/context.jsonld`),
+		fetch(`${ID_URL}/vocab/data.jsonld`),
+		fetch(`${ID_URL}/vocab/display/data.jsonld`)
 	]);
 
 	const context = await contextRes.json();
 	const vocab = await vocabRes.json();
 	let display = await displayRes.json();
 
-	if (env.USE_LOCAL_DISPLAY_JSONLD === 'true') {
+	if (USE_LOCAL_DISPLAY_JSONLD === 'true') {
 		const path = '../../definitions/source/vocab/display.jsonld';
 		const displayJson = fs.readFileSync(path, { encoding: 'utf8' });
 		display = JSON.parse(displayJson);
@@ -274,30 +290,68 @@ async function loadUtil(): Promise<Util> {
 	return [vocabUtil, displayUtil, qualifierSuggestionsByLocale];
 }
 
-function getSite(event: RequestEvent): Site | null {
-	// TODO replace this with proper domain matching
-	const deepestSubDomain = event.url.hostname.split('.')[0];
+function getSite(event: RequestEvent): Promise<Site> | null {
+	const host = event.request.headers.get('x-forwarded-host') ?? event.url.hostname;
+	const deepestSubDomain = host.split('.')[0];
 
 	if (configuredSubDomains().includes(deepestSubDomain)) {
-		// TODO fetch from backend?
-		const site = deepestSubDomain;
-		return {
-			name: env[`SUBSITE.${site}.NAME`] || site,
-			themeName: env[`SUBSITE.${site}.APP_THEME`],
-			searchSite: env[`SUBSITE.${site}.SEARCH_SITE`]
-		};
+		const siteUrl = process.env[`SUBSITE.${deepestSubDomain}.SEARCH_SITE`];
+		if (!siteUrl) {
+			return null;
+		}
+		return getSiteConfCached(siteUrl);
 	}
 
 	return null;
 }
 
-function configuredSubDomains(): string[] {
-	return env.SUBSITES?.split(',').map((s) => s.trim()) || [];
+async function getSiteConfCached(siteUrl: string) {
+	if (!subsiteCache[siteUrl]) {
+		subsiteCache[siteUrl] = loadSiteConf(siteUrl).catch((err) => {
+			delete subsiteCache[siteUrl];
+			throw err;
+		});
+	}
+	return subsiteCache[siteUrl];
 }
 
-export const handleError: HandleServerError = ({ error, event, status }) => {
-	if (status >= 500) {
-		console.error(`[${status}] ${event.request.method} ${event.url.pathname}${event.url.search}`);
+async function loadSiteConf(siteUrl: string): Promise<Site> {
+	const fetchUrl = `${API_URL}/${siteUrl}?nocache=1`;
+	console.log(`Fetching ${fetchUrl}`);
+	const response = await fetch(fetchUrl, {
+		headers: { Accept: 'application/ld+json' },
+		signal: AbortSignal.timeout(10_000)
+	});
+	if (!response.ok) {
+		throw new Error(
+			`Failed to load site conf: ${fetchUrl} ${response.status} ${response.statusText}`
+		);
+	}
+	const conf = (await response.json())[JsonLd.GRAPH][1];
+
+	const site = {
+		name: conf['title'],
+		searchSite: siteUrl,
+		configuration: conf['lxlwebConfiguration']
+	};
+	console.log(`Loaded site conf: ${JSON.stringify(site, null, 2)}`);
+	return site;
+}
+
+function configuredSubDomains(): string[] {
+	return SUBSITES?.split(',').map((s) => s.trim()) || [];
+}
+
+export const handleError: HandleServerError = ({ error, event, kind }) => {
+	if (kind === 'app' || kind === 'framework') {
+		if (error.status >= 500) {
+			console.error(
+				`[${error.status}] ${event.request.method} ${event.url.pathname}${event.url.search}`
+			);
+			console.error(error);
+		}
+	} else {
+		console.error(`[500] ${event.request.method} ${event.url.pathname}${event.url.search}`);
 		console.error(error);
 	}
 };

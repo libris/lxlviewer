@@ -68,7 +68,7 @@ export default {
             </ul>
             <ul class="Footer-navList">
               <li>
-                <a href="https://kbplay.mediaflowportal.com/folder/91512/" class="Footer-link">{{ translatePhrase("Instruction videos") }}</a>
+                <a href="https://kb-play.mediaflow.site/filmer/92013" class="Footer-link">{{ translatePhrase("Instruction videos") }}</a>
               </li>
               <li>
                 <a

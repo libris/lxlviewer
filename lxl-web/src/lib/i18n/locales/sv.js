@@ -24,8 +24,6 @@ export default {
 		specialCollections: 'Särskilda samlingar',
 		myPages: 'Mina sidor',
 		help: 'Hjälp',
-		about: 'Om Libris',
-		aboutBeta: 'Frågor och svar',
 		illSite: 'Libris fjärrlån',
 		contact: 'Kontakt',
 		cookies: 'Om kakor på webbplatsen',
@@ -48,12 +46,13 @@ export default {
 	},
 	about: {
 		pageTitle: 'Om Libris',
-		pageDescription:
+		metaDescription:
 			'Libris är ett samarbete mellan hundratals bibliotek i Sverige och detta är Libris gemensamma katalog.'
 	},
 	help: {
-		pageTitle: 'Hjälp',
-		pageDescription:
+		pageTitle: 'Hjälp och tips',
+		filtersPageTitle: 'Sökfilter',
+		metaDescription:
 			'Hjälp och dokumentation för att använda Libris, Sveriges nationella bibliotekskatalog.',
 		description: 'Beskrivning',
 		reference: 'Referens',
@@ -63,7 +62,7 @@ export default {
 	},
 	myPages: {
 		pageTitle: 'Mina sidor',
-		pageDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
+		metaDescription: 'Här kan du bland annat hantera dina favoritbibliotek.',
 		myPages: 'Mina sidor',
 		libraries: 'Bibliotek',
 		favouriteLibraries: 'Favoritbibliotek',
@@ -94,6 +93,7 @@ export default {
 		'librissearch:identifyCategory': 'Kategori',
 		'librissearch:noneCategory': 'Underkategori',
 		'librissearch:instanceCategory': 'Format',
+		'librissearch:workCategory': 'Kategori',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'instanceOf.@type': 'Verkstyp',
 		issuanceType: 'Utgivningssätt',
@@ -127,16 +127,16 @@ export default {
 		'librissearch:bibliography': 'Bibliografi',
 		'librissearch:contributor': 'Författare/upphov',
 		language: 'Språk',
-		subject: 'Ämne',
+		'librissearch:subject': 'Ämne',
 		yearPublished: 'Utgivningsår',
 		'librissearch:yearPublished': 'Utgivningsår',
 		intendedAudience: 'Målgrupp',
+		classification: 'Klassifikation',
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
 		fieldOfActivity: 'Verksamhetsområde',
 		accessFilters: 'Åtkomst',
-		boolFilters: 'Övrigt',
-		'alias-myLibraries': 'Avgränsa till favoritbibliotek',
+		otherFilters: 'Övrigt',
 		limitInfo: 'Alla val kan ej visas',
 		limitText:
 			'Listan visar ett begränsat antal alternativ, de mest förekommande kopplade till din sökning. Prova att avgränsa din sökning för att få andra, mer relevanta alternativ.'
@@ -171,7 +171,7 @@ export default {
 		type: 'Typ',
 		related: 'relaterade',
 		relatedOne: 'relaterad',
-		pagination: 'paginering',
+		pagination: 'Paginering',
 		previous: 'Föregående sida',
 		page: 'Sida',
 		next: 'Nästa sida',
@@ -201,10 +201,13 @@ export default {
 		showEquals: 'Visa bara exakta träffar för'
 	},
 	supersearch: {
-		addQualifiers: 'Filter',
 		moreQualifiers: 'Fler filter',
+		search: 'Sök',
+		addQualifiers: 'Lägg till filter',
 		loading: 'Laddar...',
-		suggestions: 'Förslag',
+		suggestion: 'förslag',
+		suggestions: 'förslag',
+		expandedSearch: 'Expanderad sökruta',
 		showAll: 'Visa sökresultat',
 		arrowUpKey: 'Piltangent uppåt',
 		arrowRightKey: 'Piltangent höger',
@@ -217,10 +220,11 @@ export default {
 		add: 'Lägg till',
 		searchHelp: 'Sökhjälp',
 		expandSearch: 'Gå till sökruta',
-		or: 'eller'
+		or: 'eller',
+		addAsQualifier: 'Lägg till som filter'
 	},
 	sort: {
-		sort: 'Sortera',
+		sort: 'Sortering',
 		relevancy: 'Relevans',
 		alphaAsc: 'A-Ö',
 		alphaDesc: 'Ö-A',
@@ -253,13 +257,14 @@ export default {
 	general: {
 		collapseAll: 'Stäng alla',
 		copyPermalinkToInstance: 'Kopiera länk till utgåva',
-		latestInstanceCover: 'Senaste utgåvans omslag',
-		instanceCover: 'Utgåvans omslag',
 		close: 'Stäng',
 		from: 'Från',
 		to: 'Till',
 		year: 'år',
+		range: 'Intervall',
 		usagePolicy: 'Licensvillkor',
+		usagePolicyLibris: 'Om bilder i Libris',
+		usagePolicyNielsen: 'Om bilder från Nielsen',
 		cropped: 'Beskuren',
 		more: 'till',
 		readMore: 'Läs mer',
@@ -268,7 +273,10 @@ export default {
 		show: 'Visa',
 		approx: 'ca',
 		copyToClipboard: 'Kopiera till urklipp',
-		copied: 'Kopierad!'
+		copied: 'Kopierad!',
+		targetBlank: 'öppnas i nytt fönster',
+		linkToSearchQuery: 'länk till sökfråga',
+		downloadLink: 'nedladdningslänk'
 	},
 	tableOfContents: {
 		onThisPage: 'På den här sidan',
@@ -285,6 +293,7 @@ export default {
 		result: 'träff',
 		editions: 'Utgåvor',
 		editionOf: 'Utgåva av',
+		navToWork: 'Till resursens huvudsida',
 		summary: 'Sammanfattning',
 		tableOfContents: 'Innehållsförteckning',
 		details: 'Detaljer',
@@ -305,7 +314,8 @@ export default {
 		digitizationAvailable: 'Finns digitiserad',
 		requestDigitization: 'Beställ digitisering',
 		digitizationInfo:
-			'Boken kan mot en kostnad digitiseras och skickas via epost till dig som en pdf-fil. Nedan listas de bibliotek som tillhandahåller tjänsten'
+			'Boken kan mot en kostnad digitiseras och skickas via epost till dig som en pdf-fil. Nedan listas de bibliotek som tillhandahåller tjänsten',
+		imageLink: 'Länk till resursens bild i fullstorlek'
 	},
 	holdings: {
 		availabilityByType: 'Tillgänglighet utifrån medietyp',
@@ -321,12 +331,13 @@ export default {
 		itemNote: 'Beståndsuppgift',
 		itemMedia: 'Relaterad länk',
 		itemInformation: 'Biblioteksspecifik information (bestånd)',
+		item: 'exemplar',
 		location: 'Placering',
 		shelf: 'Hylla',
 		loanPolicy: 'Lånevillkor',
 		status: 'Status',
 		date: 'Datum',
-		loanStatus: 'Se utlåningsstatus',
+		loanStatus: 'Utlåningsstatus',
 		libraryUnvaliable: 'Lånestatus är inte tillgänglig för detta bibliotek',
 		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',

@@ -1,5 +1,69 @@
+import type { Translations } from '#lib/i18n/index.js';
+import type { LocaleCode } from '#lib/i18n/locales.js';
+import type { InferInput } from 'valibot';
+import type { SearchResultsSchema } from '#lib/schemas/searchResult.js';
+
+export interface FeaturedSearchConfig {
+	headingByLang: Record<LocaleCode, string>;
+	leadingTextByLang?: Record<LocaleCode, string>;
+	footerTextByLang?: Record<LocaleCode, string>;
+	findHref: string;
+	previewParams: InferInput<typeof SearchResultsSchema>;
+	showAllLabelByLang?: Record<LocaleCode, string>;
+}
+
+export interface FeaturedCategoryConfig {
+	id: string;
+	href: string;
+	labelByLang: Record<LocaleCode, string>;
+}
+
+export interface Features {
+	specialCollections: boolean;
+	myPages: boolean;
+	favouriteLibraries: boolean;
+	holdings: boolean;
+	resourceImages: boolean;
+	resourceImagesHorizontal: boolean;
+}
+
+export const FOOTER_COOKIES_HREF = '[cookies]';
+
+export interface FooterLink {
+	titleKey: string;
+	href: string;
+}
+
+export interface FooterSection {
+	id: string;
+	titleKey: string;
+	items: FooterLink[];
+}
+
+export interface AppMenuItem {
+	titleKey: string;
+	href: string;
+}
+
 export interface Site {
 	name: string;
-	themeName?: string;
 	searchSite?: string;
+	configuration?: {
+		themeName?: string;
+		favicon?: string;
+		// file name of an image in `#lib/assets/img/hero/` or an absolute URL.
+		heroImage?: string;
+		locales?: Translations;
+		features?: Partial<Features>;
+		footer?: FooterSection[];
+		appMenu?: AppMenuItem[];
+		featuredSearches?: FeaturedSearchConfig[];
+		featuredSearches2?: FeaturedSearchConfig[];
+		featuredCategories?: FeaturedCategoryConfig[];
+		articles?: {
+			about?: {
+				articleBodyByLang?: Record<LocaleCode, string>;
+			};
+		};
+	};
 }
