@@ -360,11 +360,11 @@ export default {
 		'alias-myLibraries': 'Favoritbibliotek'
 	},
 	panes: {
-		leadingPane: 'Vänsterpanel',
-		leadingPaneTabs: 'Vänsterpanelsflikar',
+		leadingPane: 'Sidopanel',
+		leadingPaneTabs: 'Sidopanelsflikar',
 		show: 'Visa sidopanel',
 		hide: 'Dölj sidopanel',
-		trailingPane: 'Högerpanel',
+		trailingPane: 'Sidopanel',
 		resizablePane: 'Ändra storlek på panel'
 	},
 	citations: {

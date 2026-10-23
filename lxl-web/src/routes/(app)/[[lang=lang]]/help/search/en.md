@@ -10,7 +10,7 @@ Click the examples further down on this page to see how filters and search opera
 ## Filters
 
 A search can be narrowed down by adding different search filters.
-The easiest way is to choose from the suggestions that appear when the search box is active, or from the list in the left panel.
+The easiest way is to choose from the suggestions that appear when the search box is active, or from the list in the filter panel.
 Filters can also be added manually by typing one of the allowed [keywords](/help/filters) followed by a colon (`:`).
 Examples of keywords include `Author/Contributor`, `Title`, `Language` etc.
 
@@ -112,7 +112,7 @@ An empty filter can be used to require that the search results contain the prope
 ## Favourite libraries
 
 You can save one or more libraries as favorites to quickly limit your searches to these.
-You can do this either by clicking on “My Pages” at the top of the page or on the pencil icon next to the filter “Limit to favourite libraries” on the search results page.
+You can do this either by clicking on “My Pages” in the main menu or on the pencil icon next to the filter “Limit to favourite libraries” on the search results page.
 On My Pages, search for the desired libraries and click “add”. To remove libraries from your favorites, click “remove” under each respective library.
 Information about your favorite libraries is stored locally in your web browser in a cookie file.
 
