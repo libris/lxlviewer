@@ -49,10 +49,7 @@
 	{#if !dismissedBanner}
 		<AppBanner ondismiss={onDismiss} />
 	{/if}
-	<main
-		id="content"
-		class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
-	>
+	<main id="content" class={['@container flex flex-1 flex-col', !isHomeRoute && 'content']}>
 		{@render children()}
 	</main>
 	{#if !isFindRoute}
