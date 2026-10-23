@@ -5,9 +5,9 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
-	import { SvelteSet } from 'svelte/reactivity';
 	import { page } from '$app/state';
 	import IconToC from '~icons/bi/list-ul';
+	import { browser } from '$app/env';
 
 	type Props = {
 		items: TableOfContentsItem[];
@@ -19,16 +19,21 @@
 	let { items, uidPrefix = '', mobile = false, intersectionRoot }: Props = $props();
 	let tocElement: HTMLDivElement;
 	let observer: IntersectionObserver | undefined = $state();
-	let visibleSections: Set<string> = new SvelteSet();
 	let firstVisibleSection: string | undefined = $state();
 	let selectedAnchor: string = $state('');
 	let isProgrammaticScroll = $state(false);
-	let currentSection = $derived(selectedAnchor || firstVisibleSection);
+	let currentSection = $derived(selectedAnchor || firstVisibleSection || 'top');
 
 	const itemsWithTop = $derived([
 		{ id: 'top', label: page.data.t('tableOfContents.top') },
 		...items
 	]);
+
+	let navbarHeight = $state(0);
+	if (browser) {
+		const navbar = document.getElementById('appbar');
+		navbarHeight = navbar?.getBoundingClientRect().height ?? 0;
+	}
 
 	afterNavigate(({ shallow, type }) => {
 		if (shallow && type === 'goto') return;
@@ -49,7 +54,8 @@
 				if (sections) {
 					observer = new IntersectionObserver(handleObserve, {
 						root: intersectionRoot,
-						threshold: 0.1 // threashold is requried to ensure correct link is highlighted after clicking on it
+						rootMargin: `-${navbarHeight}px 0px -80% 0px`,
+						threshold: 0
 					});
 					for (const sectionItem of sections) {
 						observer.observe(sectionItem);
@@ -83,23 +89,13 @@
 	});
 
 	function handleObserve(entries: IntersectionObserverEntry[]) {
-		entries.forEach((entry) => {
-			const id = entry.target.getAttribute('id');
-			if (id) {
-				if (entry.isIntersecting) {
-					visibleSections.add(id);
-				} else {
-					if (visibleSections.size > 1) visibleSections.delete(id); // always keep atleast one visible section
-				}
-				if (visibleSections.size) {
-					firstVisibleSection =
-						tocElement
-							?.closest('article')
-							?.querySelector(`:scope #${Array.from(visibleSections).join(', :scope #')}`) // find first visible section by generating a selector string using the ids of visible sections
-							?.getAttribute('id') || firstVisibleSection; // fallback to previous visible section
-				}
-			}
-		});
+		const visible = entries
+			.filter((entry) => entry.isIntersecting)
+			.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+		if (visible.length) {
+			firstVisibleSection = visible[0].target.id;
+		}
 	}
 
 	function handleAnchorClick() {
