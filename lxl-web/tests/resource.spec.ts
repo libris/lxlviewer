@@ -98,18 +98,18 @@ test('table of contents', async ({ page }) => {
 	await expect(page.getByTestId('toc')).not.toBeVisible();
 	await expect(page.getByTestId('toc-mobile')).toBeVisible();
 	await expect(page.getByTestId('toc-mobile').locator('a').first()).not.toBeVisible();
-	await page.getByTestId('toc-mobile').locator('label').click();
+	await page.getByTestId('toc-mobile').locator('summary').click();
 	await expect(
 		page.getByTestId('toc-mobile').locator('a').first(),
 		'mobile table of contents is visible after clicking on toggle'
 	).toHaveText('Översikt');
-	await page.getByTestId('toc-mobile').locator('a').nth(1).click();
+	await page.getByTestId('toc-mobile').locator('a').nth(4).click();
 	await expect(page.locator('#top')).not.toBeInViewport({ ratio: 0.1 });
 	await expect(
-		page.locator('#relations'),
+		page.locator('#details'),
 		'links in mobile table of contents works'
 	).toBeInViewport();
-	await page.getByTestId('toc-mobile').locator('label input[type="checkbox"]').focus();
+	await page.getByTestId('toc-mobile').locator('summary').focus();
 	await page.keyboard.press('Enter');
 	await expect(page.getByTestId('toc-mobile').locator('a').first()).not.toBeVisible();
 	await page.keyboard.press('Enter');
