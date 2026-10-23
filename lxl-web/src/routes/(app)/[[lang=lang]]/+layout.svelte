@@ -35,8 +35,11 @@
 </svelte:head>
 <div class={['app contents', page.data.subsetMapping && 'subset']}>
 	<AppBar />
-	<main
-		id="content"
+	{#if !dismissedBanner}
+		<AppBanner ondismiss={onDismiss} />
+	{/if}
+	<main 
+		id="content" 
 		class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
 	>
 		{@render children()}
