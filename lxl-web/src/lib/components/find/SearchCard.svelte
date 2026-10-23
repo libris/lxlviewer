@@ -462,8 +462,13 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				{@render holdingsButton()}
 			</div>
 		{/if}
-		{#if bibliographyLink && (item?.numberOfItems || 0) > 50}
-			{@const numItems = formatNumItems(item?.numberOfItems)}
+		{#if bibliographyLink}
+			<!-- numberOfItems doesn't include count from parts on parent bibliographies with parts.
+                 Some parents have a small number of instances directly linked to them instead of 0.
+                 Only show count if it looks "correct", i.e. large enough -->
+			{@const numItems = formatNumItems(
+				item?.numberOfItems > 100 ? item?.numberOfItems : undefined
+			)}
 			<div class="card-explore mt-2">
 				<a
 					href={bibliographyLink}
