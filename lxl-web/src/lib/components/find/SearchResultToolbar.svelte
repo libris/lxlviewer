@@ -74,6 +74,8 @@
 				<button
 					class="btn btn-primary hidden sm:block"
 					aria-label={page.data.t('panes.show')}
+					aria-expanded={userSettings.leadingPane?.open}
+					aria-controls="leading-pane"
 					in:fade={{ duration: 200 }}
 					onclick={() => userSettings.openLeadingPane()}
 				>

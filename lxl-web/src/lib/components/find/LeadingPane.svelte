@@ -65,6 +65,8 @@
 					<button
 						class="btn btn-primary my-2"
 						aria-label={page.data.t('panes.hide')}
+						aria-expanded={paneOpen}
+						aria-controls="leading-pane"
 						onclick={() => userSettings.closeLeadingPane()}
 					>
 						<BiArrowBarLeft class="size-4" />
