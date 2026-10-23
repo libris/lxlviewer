@@ -292,7 +292,7 @@
 		})}
 	{/each}
 	{#if page.data.features.specialCollections}
-		<section class="bg-primary-50 mb-8 scroll-mt-20 px-3 py-12 lg:py-16">
+		<section class="bg-primary-50 mb-8 px-3 py-12 lg:py-16">
 			<div class="2xl:max-w-10xl mx-auto max-w-7xl">
 				<h2
 					class="font-heading mb-4.5 px-6 text-center text-2xl lg:text-3xl @min-[110rem]:text-4xl"
@@ -426,10 +426,6 @@
 		width: 100%;
 		height: 100%;
 		opacity: 1;
-	}
-
-	.explore {
-		scroll-margin-top: var(--appbar-height);
 	}
 
 	.hero-search-container {

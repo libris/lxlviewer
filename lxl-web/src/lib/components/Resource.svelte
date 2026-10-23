@@ -178,7 +178,7 @@
 		</Suggestion>
 	</nav>
 {/if}
-<article class="@container @3xl:[&_[id]]:scroll-mt-36">
+<article class="@container @3xl:**:[[id]]:scroll-mt-4">
 	{#if tableOfContents.length}
 		<section data-testid="toc-mobile" class="contents @7xl:hidden print:hidden">
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
