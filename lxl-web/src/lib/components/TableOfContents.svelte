@@ -21,7 +21,6 @@
 	let observer: IntersectionObserver | undefined = $state();
 	let visibleSections: Set<string> = new SvelteSet();
 	let firstVisibleSection: string | undefined = $state();
-	let openOnMobile = $state(false);
 	let selectedAnchor: string = $state('');
 	let isProgrammaticScroll = $state(false);
 	let currentSection = $derived(selectedAnchor || firstVisibleSection);
@@ -103,12 +102,6 @@
 		});
 	}
 
-	function handleCheckboxKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			tocElement.querySelector<HTMLInputElement>(':scope input[type="checkbox"]')?.click();
-		}
-	}
-
 	function handleAnchorClick() {
 		// this just handles the case where there is no hashchange event:
 		// user clicks anchor, scrolls away, clicks same anchor
@@ -144,32 +137,23 @@
 
 <div bind:this={tocElement} class="contents">
 	{#if mobile}
-		<div class="border-b-neutral border-b p-1 text-xs sm:text-sm">
-			<label
+		<details class="border-b-neutral border-b p-1 text-xs sm:text-sm">
+			<summary
 				id={`${uidPrefix}toc-label`}
-				class="bg-page text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2 has-checked:[&+nav]:block"
+				class="bg-page text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2"
 			>
 				<IconToC class="size-4" />
 				<span>{page.data.t('tableOfContents.onThisPage')}</span>
-				<input
-					type="checkbox"
-					role="switch"
-					bind:checked={openOnMobile}
-					aria-expanded={openOnMobile}
-					aria-controls={`${uidPrefix}toc-items`}
-					class="h-0 appearance-none focus:outline-0"
-					onkeydown={handleCheckboxKeydown}
-				/>
-			</label>
+			</summary>
 			<nav
 				id={`${uidPrefix}toc-items`}
-				class="bg-page text-subtle mb-3 hidden px-3 sm:px-6"
+				class="bg-page text-subtle mb-3 px-3 sm:px-6"
 				aria-labelledby="toc-heading"
 			>
 				<p id="toc-heading" class="sr-only">{page.data.t('tableOfContents.onThisPage')}</p>
 				{@render tocList(itemsWithTop)}
 			</nav>
-		</div>
+		</details>
 	{:else}
 		<nav class="text-placeholder text-xs sm:text-sm" aria-labelledby="toc-heading">
 			<header class="text-subtle mb-2 text-xs font-medium sm:text-sm">
