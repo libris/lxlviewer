@@ -25,8 +25,6 @@
 
 <div
 	class="search-result-info flex flex-col justify-center gap-1 px-3 py-1.5 text-sm"
-	role="status"
-	aria-atomic="true"
 	data-testid="result-info"
 >
 	{#if relaxedSearch && numHits && numHits > 0}
@@ -95,7 +93,7 @@
 	{/each}
 	<!-- no fav libraries + myLibraries filter warning -->
 	{#if showMyLibrariesWarning}
-		<div role="alert" data-testid="my-libraries-warning">
+		<div data-testid="my-libraries-warning">
 			<BiInfo aria-hidden="true" class="mb-0.5 inline size-3 align-middle" />
 			<p class="inline">{page.data.t('search.noAddedLibrariesText')}.</p>
 			<a class="link inline" href={page.data.localizeHref('/my-pages')}

@@ -125,7 +125,7 @@
 			</span>
 		{/if}
 		{#if error}
-			<p class="error" role="alert">{error}</p>
+			<p class="error" role="status">{error}</p>
 		{/if}
 		{#if statusData && statusData.length > 0}
 			{#each statusData as instance, index (index)}
@@ -136,7 +136,7 @@
 							{#if urlNotDefinedError(items.error)}
 								<p class="library-unavailable">{page.data.t('holdings.libraryUnvaliable')}</p>
 							{:else}
-								<p class="error" role="alert">{page.data.t('holdings.loanStatusFailed')}</p>
+								<p class="error" role="status">{page.data.t('holdings.loanStatusFailed')}</p>
 							{/if}
 						{/if}
 						{#each items.items as item, index (index)}

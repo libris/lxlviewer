@@ -444,19 +444,13 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					>
 						{#if alreadyAdded}
 							<BiHeartFill aria-hidden="true" class="text-primary-600" />
-							<span
-								aria-label={`${page.data.t('general.remove')} ${page.data.t('myPages.favouriteLibrary')}`}
-							>
-								{page.data.t('general.remove')}</span
-							>
+							<span>{page.data.t('general.remove')}</span>
 						{:else}
 							<BiHeart aria-hidden="true" class="text-primary-600" />
-							<span
-								aria-label={`${page.data.t('general.add')} ${page.data.t('myPages.favouriteLibrary')}`}
-							>
-								{page.data.t('general.add')}</span
-							>
+							<span>{page.data.t('general.add')}</span>
 						{/if}
+						<span class="sr-only">{page.data.t('myPages.favouriteLibrary')}</span>
+						<span class="sr-only">{item.displayStr}</span>
 					</button>
 				{/if}
 				{@render holdingsButton()}
