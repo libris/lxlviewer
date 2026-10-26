@@ -108,7 +108,7 @@
 			{/snippet}
 			<HoldingsContent holdings={data.holdings}>
 				{#snippet card()}
-					<SearchCard item={modalCard} />
+					<SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} />
 				{/snippet}
 			</HoldingsContent>
 		</Modal>

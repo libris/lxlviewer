@@ -53,6 +53,17 @@ test('initially opened holdings modals are closable', async ({ page }) => {
 	await expect(page).toHaveURL(new RegExp(/h08ndxddfg5v2pjf\?holdings=\w+/));
 });
 
+test('focus is placed in opened modals and restored on close', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	const holdingLink = page.getByTestId('holding-link').first();
+	await holdingLink.click();
+
+	const closeBtn = page.getByTestId('close-modal').first();
+	await expect(closeBtn).toBeFocused();
+	await closeBtn.click();
+	await expect(holdingLink).toBeFocused();
+});
+
 test('decorated data in holdings modal is not duplicated while closing modal', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
 	await page.getByTestId('holding-link').first().click();
@@ -98,18 +109,18 @@ test('table of contents', async ({ page }) => {
 	await expect(page.getByTestId('toc')).not.toBeVisible();
 	await expect(page.getByTestId('toc-mobile')).toBeVisible();
 	await expect(page.getByTestId('toc-mobile').locator('a').first()).not.toBeVisible();
-	await page.getByTestId('toc-mobile').locator('label').click();
+	await page.getByTestId('toc-mobile').locator('summary').click();
 	await expect(
 		page.getByTestId('toc-mobile').locator('a').first(),
 		'mobile table of contents is visible after clicking on toggle'
 	).toHaveText('Översikt');
-	await page.getByTestId('toc-mobile').locator('a').nth(1).click();
+	await page.getByTestId('toc-mobile').locator('a').nth(4).click();
 	await expect(page.locator('#top')).not.toBeInViewport({ ratio: 0.1 });
 	await expect(
-		page.locator('#relations'),
+		page.locator('#details'),
 		'links in mobile table of contents works'
 	).toBeInViewport();
-	await page.getByTestId('toc-mobile').locator('label input[type="checkbox"]').focus();
+	await page.getByTestId('toc-mobile').locator('summary').focus();
 	await page.keyboard.press('Enter');
 	await expect(page.getByTestId('toc-mobile').locator('a').first()).not.toBeVisible();
 	await page.keyboard.press('Enter');

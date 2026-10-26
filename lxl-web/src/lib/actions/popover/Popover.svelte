@@ -1,28 +1,25 @@
 <script lang="ts">
-	import { onMount, type Snippet } from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
-	import SearchCard from '#lib/components/find/SearchCard.svelte';
 	import type { SearchResultItem } from '#lib/types/search.js';
+	import { HeadingElem } from '#lib/types/decoratedData.ts';
+	import SearchCard from '#lib/components/find/SearchCard.svelte';
 
 	interface PopoverProps {
 		title?: string | undefined;
 		resourceData?: SearchResultItem | undefined;
 		snippet?: Snippet;
 		referenceElement: HTMLElement;
-		onMouseOver: (event: MouseEvent) => void;
-		onMouseLeave: (event: MouseEvent) => void;
-		onFocus: (event: FocusEvent) => void;
-		onBlur: (event: FocusEvent) => void;
+		onAttach: () => void;
+		onDismiss: () => void;
 	}
 
 	let {
 		title = undefined,
 		resourceData = undefined,
 		referenceElement,
-		onMouseOver,
-		onMouseLeave,
-		onFocus,
-		onBlur,
+		onAttach,
+		onDismiss,
 		snippet
 	}: PopoverProps = $props();
 
@@ -70,8 +67,20 @@
 		});
 	}
 
+	function onKeypress(event: KeyboardEvent) {
+		if (event.key === 'Escape') {
+			referenceElement?.focus();
+			onDismiss();
+		}
+	}
+
 	onMount(() => {
 		updatePosition();
+		document.addEventListener('keydown', onKeypress);
+	});
+
+	onDestroy(() => {
+		document.removeEventListener('keydown', onKeypress);
 	});
 </script>
 
@@ -87,14 +96,31 @@
 	]}
 	role="complementary"
 	bind:this={popoverElement}
-	onmouseover={onMouseOver}
-	onmouseleave={onMouseLeave}
-	onfocus={onFocus}
-	onblur={onBlur}
+	onmouseover={onAttach}
+	onmouseleave={onDismiss}
+	onfocusin={onAttach}
+	onfocusout={(event) => {
+		// check if focus is still inside
+		const next = event.relatedTarget;
+		if (
+			next instanceof Node &&
+			(event.currentTarget.contains(next) || referenceElement.contains(next))
+		) {
+			return;
+		}
+		onDismiss?.();
+	}}
+	aria-label="popover"
 >
 	<div class="p-2">
 		{#if resourceData}
-			<SearchCard item={resourceData} allowPopovers={false} allowActions={false} />
+			<SearchCard
+				item={resourceData}
+				allowPopovers={false}
+				allowActions={false}
+				headingElement={HeadingElem.P}
+				headingIsLink={false}
+			/>
 		{:else if snippet}
 			{@render snippet?.()}
 		{:else if title}

@@ -1,7 +1,7 @@
 <svelte:options />
 
 <script lang="ts">
-	import { onDestroy, onMount, type Snippet } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
 	import { page } from '$app/state';
@@ -30,22 +30,20 @@
 		dialog?.showModal();
 	});
 
-	onDestroy(() => {});
+	function requestClose() {
+		dialog?.close();
+	}
 
-	function handleClose(event: MouseEvent | Event) {
+	function handleDialogClose(event: Event) {
 		// Use close method from prop if available
-		if (close) {
-			event.preventDefault();
-			close(event);
-		} else {
-			dialog?.close();
-		}
+		event.preventDefault();
+		close?.(event);
 	}
 
 	function handleBackdropClick(event: MouseEvent) {
 		/** Close dialog if backdrop is clicked */
 		if (event.target === event.currentTarget) {
-			handleClose(event);
+			requestClose();
 		}
 	}
 
@@ -60,7 +58,7 @@
 	class="fixed top-0 left-0 flex h-screen max-h-full w-screen max-w-full"
 	tabindex="-1"
 	onclick={handleBackdropClick}
-	onclose={handleClose}
+	onclose={handleDialogClose}
 	bind:this={dialog}
 	data-testid="modal"
 	transition:fly={{
@@ -90,7 +88,7 @@
 				<!-- svelte-ignore a11y_autofocus -->
 				<button
 					class="btn btn-primary size-8 min-w-8 border-none p-0"
-					onclick={handleClose}
+					onclick={requestClose}
 					autofocus
 					aria-label={page.data.t('general.close')}
 					data-testid="close-modal"

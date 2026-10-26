@@ -108,7 +108,12 @@
 			/>
 			<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 text-sm pointer-events-none" />
 		</div>
-		<span class="mt-4 mb-2 block text-sm" role="status">
+		<span
+			class="mt-4 mb-2 block text-sm"
+			role="status"
+			aria-atomic="true"
+			aria-busy={search.isLoading}
+		>
 			{#if search.isLoading}
 				{page.data.t('search.loading')}
 			{:else if search.error && !search.data}
@@ -144,6 +149,17 @@
 			<BiHouseHeart class="libraries-indicator" aria-hidden="true" />
 			<span>{page.data.t('myPages.myFavouriteLibraries')}</span>
 		</h2>
+		<p class="mt-2 text-sm" role="status" aria-atomic="true">
+			{#if mergedLibraries.length}
+				{`${mergedLibraries.length} ${mergedLibraries.length === 1 ? page.data.t('myPages.favouriteLibrary') : page.data.t('myPages.favouriteLibraries')}`}
+			{:else if myLibsError}
+				<span class="bg-severe-50 mt-2 rounded-sm p-1 text-sm">
+					{page.data.t('errors.somethingWentWrong')}: {myLibsError}
+				</span>
+			{:else}
+				{page.data.t('search.noAddedLibrariesText')}
+			{/if}
+		</p>
 		{#if mergedLibraries.length}
 			<ol
 				class="my-libraries-result border-neutral mt-2 rounded-sm border"
@@ -155,12 +171,6 @@
 					</li>
 				{/each}
 			</ol>
-		{:else if myLibsError}
-			<p class="bg-severe-50 mt-2 rounded-sm p-1 text-sm">
-				{page.data.t('errors.somethingWentWrong')}: {myLibsError}
-			</p>
-		{:else}
-			<p class="mt-2 text-sm">{page.data.t('search.noAddedLibrariesText')}</p>
 		{/if}
 	</div>
 </div>

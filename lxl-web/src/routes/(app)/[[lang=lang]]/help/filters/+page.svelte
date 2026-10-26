@@ -52,7 +52,7 @@
 	siteName={getPageTitle(undefined, page.data.siteName)}
 />
 
-<article class="@container @xl:**:[[id]]:scroll-mt-20">
+<article class="@container">
 	{#if tableOfContents.length}
 		<section data-testid="toc-mobile" class="contents xl:hidden print:hidden">
 			<TableOfContents items={tableOfContents} mobile />

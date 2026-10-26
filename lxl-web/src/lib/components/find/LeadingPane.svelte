@@ -16,9 +16,11 @@
 
 	interface Props {
 		children?: Snippet;
+		onClose: () => void;
+		collapseLeadingPaneBtnId: string;
 	}
 
-	const { children }: Props = $props();
+	const { children, onClose, collapseLeadingPaneBtnId }: Props = $props();
 	const userSettings = getUserSettings();
 
 	const paneOpen = $derived(userSettings.leadingPane?.open);
@@ -63,9 +65,12 @@
 				{/snippet}
 				{#snippet trailingActions()}
 					<button
+						id={collapseLeadingPaneBtnId}
 						class="btn btn-primary my-2"
 						aria-label={page.data.t('panes.hide')}
-						onclick={() => userSettings.closeLeadingPane()}
+						aria-expanded={paneOpen}
+						aria-controls="leading-pane"
+						onclick={onClose}
 					>
 						<BiArrowBarLeft class="size-4" />
 					</button>

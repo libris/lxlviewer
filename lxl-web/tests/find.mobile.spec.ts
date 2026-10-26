@@ -33,7 +33,7 @@ test('button displays the correct filter count 3', async ({ page }) => {
 
 test('can toggle filters and show facets and mapping', async ({ page }) => {
 	await page.goto('/find?_q=språk%3A"lang%3Aswe"+sommar');
-	const filterButton = await page.getByRole('link', { name: 'Sökfilter' });
+	const filterButton = page.getByRole('link', { name: 'Sökfilter' });
 	await expect(filterButton).toBeVisible;
 	await filterButton.click();
 	await expect(page.getByTestId('modal')).toBeVisible();

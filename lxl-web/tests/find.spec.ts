@@ -56,20 +56,20 @@ test('facet groups can toggle', async ({ page }) => {
 
 test('opening and sorting the facet sets a cookie', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
-	await expect(beforeCookies).toEqual([]);
+	expect(beforeCookies).toEqual([]);
 	await page.waitForLoadState('networkidle');
 	await page.locator('summary').filter({ hasText: 'Språk' }).click();
 	await page.getByTestId('facet-sort-language').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
-	await expect(afterCookies[0].name).toEqual('userSettings');
-	await expect(afterCookies[0].value).toEqual(
+	expect(afterCookies[0].name).toEqual('userSettings');
+	expect(afterCookies[0].value).toEqual(
 		'{%22leadingPane%22:{%22open%22:true}%2C%22facetExpanded%22:{%22language%22:%22OPEN%22}%2C%22facetSort%22:{%22language%22:%22alpha.asc%22}}'
 	);
 });
 
 test('facet opened/closed state is preserved', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
-	await expect(beforeCookies).toEqual([]);
+	expect(beforeCookies).toEqual([]);
 
 	const firstClosed = DEFAULT_FACETS_EXPANDED;
 
@@ -148,6 +148,47 @@ test('can paginate to next and previous', async ({ page }) => {
 	await expect(page).toHaveURL(/_offset=20/);
 	await page.getByTestId('pagination').getByLabel('Föregående sida').click();
 	await expect(page).not.toHaveURL(/_offset=/);
+});
+
+test('focus is placed in opened modals and restored on close', async ({ page }) => {
+	const holdingLink = page.getByTestId('holding-link').first();
+	await holdingLink.click();
+
+	const closeBtn = page.getByTestId('close-modal').first();
+	await expect(closeBtn).toBeFocused();
+	await closeBtn.click();
+	await expect(holdingLink).toBeFocused();
+});
+
+test('closing the filter panel puts focus in panel on open btn', async ({ page }) => {
+	await page.locator('#collapse-leading-pane-btn').click();
+	await expect(page.locator('#expand-leading-pane-btn')).toBeFocused();
+});
+
+test('opening the filter panel puts focus in toolbar on close btn', async ({ page }) => {
+	await page.locator('#collapse-leading-pane-btn').click();
+	await page.locator('#expand-leading-pane-btn').click();
+	await expect(page.locator('#collapse-leading-pane-btn')).toBeFocused();
+});
+
+test('filter panel can be resized using keyboard and loses focus on Tab', async ({ page }) => {
+	const leadingPane = page.locator('#leading-pane');
+	const slider = page.locator('[role="slider"][aria-controls="leading-pane"]');
+
+	const initialWidth = await leadingPane.evaluate(
+		(element) => element.getBoundingClientRect().width
+	);
+
+	await slider.focus();
+	await page.keyboard.press('ArrowRight');
+
+	await expect
+		.poll(() => leadingPane.evaluate((element) => element.getBoundingClientRect().width))
+		.toBeGreaterThan(initialWidth);
+
+	await page.keyboard.press('Tab');
+
+	await expect(slider).not.toBeFocused();
 });
 
 test('can handle square brackets in query', async ({ page }) => {

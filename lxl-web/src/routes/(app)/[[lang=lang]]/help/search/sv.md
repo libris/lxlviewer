@@ -10,7 +10,7 @@ Klicka på exemplen längre ner på den här sidan för att se hur filter och s�
 ## Filter
 
 En sökning kan snävas ner genom att lägga till olika sökfilter.
-Enklast är att välja bland de förslag som dyker upp när sökrutan är markerad, eller från listan i vänsterpanelen.
+Enklast är att välja bland de förslag som dyker upp när sökrutan är markerad, eller från listan i filterpanelen.
 Filter kan också läggas till för hand, genom att skriva in något av de tillåtna [nyckelorden](/help/filters) följt av ett kolon (`:`).
 Exempel på nyckelord är `Författare/Upphov`, `Titel`, `Språk` etc.
 
@@ -114,7 +114,7 @@ När du söker på en person som är kopplad till flera verk visas både exakta 
 ## Favoritbibliotek
 
 Du kan spara ett eller flera bibliotek som favoriter för att snabbt avgränsa dina sökningar till dessa.
-Du gör detta antingen genom att: klicka på “Mina sidor“ högst upp på sidan eller på penn-ikonen bredvid filtret “Avgränsa till favoritbibliotek“ på sökträffsidan.
+Du gör detta antingen genom att: klicka på “Mina sidor“ i huvudmenyn eller på penn-ikonen bredvid filtret “Avgränsa till favoritbibliotek“ på sökträffsidan.
 På Mina sidor söker du fram önskade bibliotek och klickar på “lägg till“. För att ta bort bibliotek från dina favoriter klickar du på “ta bort“ under respektive bibliotek.
 Informationen om dina favoritbibliotek sparas lokalt i din webbläsare i en kak-fil.
 

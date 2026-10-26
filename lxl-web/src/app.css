@@ -230,6 +230,7 @@
 		scrollbar-gutter: stable;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
+		scroll-padding-top: calc(var(--appbar-base) + calc(var(--spacing) * 2));
 	}
 
 	body {

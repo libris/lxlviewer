@@ -84,7 +84,6 @@
 
 	// https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/slider_role#keyboard_interactions
 	function handleKeyDown(e: KeyboardEvent) {
-		e.preventDefault();
 		isDragging = true;
 
 		switch (e.key) {
@@ -103,27 +102,31 @@
 				stepDown(step * 2);
 				break;
 			case 'Home':
-				width = minWidth;
+				stepDown(minWidth);
 				break;
 			case 'End':
-				width = maxWidth;
+				stepUp(maxWidth);
 				break;
 		}
 
 		function stepUp(s: number) {
+			e.preventDefault();
 			if (width + s < maxWidth) {
 				width = width + s;
 			} else {
 				width = maxWidth;
 			}
+			onresized?.();
 		}
 
 		function stepDown(s: number) {
+			e.preventDefault();
 			if (width - s > minWidth) {
 				width = width - s;
 			} else {
 				width = minWidth;
 			}
+			onresized?.();
 		}
 	}
 

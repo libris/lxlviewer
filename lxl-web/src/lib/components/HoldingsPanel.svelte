@@ -45,11 +45,11 @@
 
 	const filteredHolders = $derived(
 		holders.filter((holder) => {
-			if (searchPhrase && !holder.name) return false;
+			if (searchPhrase.trim() && !holder.name) return false;
 			const searchableString =
 				`${holder.name} ${holder?._links?.addressLocality || ''}`.toLowerCase();
 
-			return searchableString.indexOf(searchPhrase.toLowerCase()) > -1;
+			return searchableString.indexOf(searchPhrase.toLowerCase().trim()) > -1;
 		})
 	);
 
@@ -175,6 +175,8 @@
 		</details>
 	{/if}
 {/each}
+<!-- near me -->
+<HoldingsNearMeBtn {location} />
 <!-- search -->
 <div class="relative">
 	<input
@@ -187,18 +189,21 @@
 	/>
 	<BiSearch class="text-subtle absolute top-0 left-2.5 h-9 pointer-events-none" />
 </div>
-<!-- near me -->
-<HoldingsNearMeBtn {location} />
+<!-- status -->
+<p class="text-sm mx-2 my-1" role="status" aria-atomic="true">
+	{#if searchPhrase.trim() && filteredHolders.length === 1}
+		{`${filteredHolders.length} ${page.data.t('search.hitsOne')}`}
+	{:else if searchPhrase.trim() && filteredHolders.length > 1}
+		{`${filteredHolders.length} ${page.data.t('search.hits')}`}
+	{:else if searchPhrase.trim() && filteredHolders.length == 0}
+		{page.data.t('search.noResults')}
+	{/if}
+</p>
 <!-- list holders -->
 <ul class="flex flex-col gap-2 text-xs">
 	{#each sortedHolders as holder, i (`${holder[JsonLd.ID]}-${i}`)}
 		<Holder {holder} hidden={!filteredHolders.find((h) => h[JsonLd.ID] === holder[JsonLd.ID])} />
 	{/each}
-	{#if filteredHolders.length === 0}
-		<li class="text-sm">
-			<span role="alert">{page.data.t('search.noResults')}</span>
-		</li>
-	{/if}
 </ul>
 
 <style>
