@@ -213,8 +213,12 @@
 		{/if}
 		<!-- limit reached info -->
 		{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
-			<details class="bg-severe-50 m-2 p-2">
-				<summary class="cursor-pointer font-medium">{'ⓘ '}{page.data.t('facet.limitInfo')}</summary>
+			<details class="bg-severe-50 m-2 px-2">
+				<summary class="cursor-pointer font-medium flex items-center">
+					{'ⓘ '}
+					{page.data.t('facet.limitInfo')}
+					{@render chevron('right')}
+				</summary>
 				<div class="my-2">
 					{page.data.t('facet.limitText')}
 				</div>
