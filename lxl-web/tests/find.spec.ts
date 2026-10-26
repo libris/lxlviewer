@@ -170,6 +170,26 @@ test('opening the filter panel puts focus in toolbar on close btn', async ({ pag
 	await expect(page.locator('#collapse-leading-pane-btn')).toBeFocused();
 });
 
+test('filter panel can be resized using keyboard and loses focus on Tab', async ({ page }) => {
+	const leadingPane = page.locator('#leading-pane');
+	const slider = page.locator('[role="slider"][aria-controls="leading-pane"]');
+
+	const initialWidth = await leadingPane.evaluate(
+		(element) => element.getBoundingClientRect().width
+	);
+
+	await slider.focus();
+	await page.keyboard.press('ArrowRight');
+
+	await expect
+		.poll(() => leadingPane.evaluate((element) => element.getBoundingClientRect().width))
+		.toBeGreaterThan(initialWidth);
+
+	await page.keyboard.press('Tab');
+
+	await expect(slider).not.toBeFocused();
+});
+
 test('can handle square brackets in query', async ({ page }) => {
 	await page.goto('/find?_q=[test]');
 	await expect(page.getByTestId('supersearch').nth(0)).toBeVisible();
