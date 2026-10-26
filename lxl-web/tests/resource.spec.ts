@@ -53,6 +53,16 @@ test('initially opened holdings modals are closable', async ({ page }) => {
 	await expect(page).toHaveURL(new RegExp(/h08ndxddfg5v2pjf\?holdings=\w+/));
 });
 
+test('focus is placed in opened modals and restored on close', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf');
+	const holdingLink = page.getByTestId('holding-link').first();
+	await holdingLink.click();
+	const closeBtn = page.getByTestId('close-modal').first();
+	expect(closeBtn).toBeFocused();
+	await closeBtn.click();
+	expect(holdingLink).toBeFocused();
+});
+
 test('decorated data in holdings modal is not duplicated while closing modal', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
 	await page.getByTestId('holding-link').first().click();
