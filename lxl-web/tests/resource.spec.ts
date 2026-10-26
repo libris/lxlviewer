@@ -57,12 +57,11 @@ test('focus is placed in opened modals and restored on close', async ({ page }) 
 	await page.goto('/h08ndxddfg5v2pjf');
 	const holdingLink = page.getByTestId('holding-link').first();
 	await holdingLink.click();
-	await page.waitForLoadState('networkidle');
 
 	const closeBtn = page.getByTestId('close-modal').first();
-	expect(closeBtn).toBeFocused();
+	await expect(closeBtn).toBeFocused();
 	await closeBtn.click();
-	expect(holdingLink).toBeFocused();
+	await expect(holdingLink).toBeFocused();
 });
 
 test('decorated data in holdings modal is not duplicated while closing modal', async ({ page }) => {

@@ -153,22 +153,21 @@ test('can paginate to next and previous', async ({ page }) => {
 test('focus is placed in opened modals and restored on close', async ({ page }) => {
 	const holdingLink = page.getByTestId('holding-link').first();
 	await holdingLink.click();
-	await page.waitForLoadState('networkidle');
 
 	const closeBtn = page.getByTestId('close-modal').first();
-	expect(closeBtn).toBeFocused();
+	await expect(closeBtn).toBeFocused();
 	await closeBtn.click();
-	expect(holdingLink).toBeFocused();
+	await expect(holdingLink).toBeFocused();
 });
 
 test('closing the filter panel puts focus in panel on open btn', async ({ page }) => {
-	page.locator('#collapse-leading-pane-btn').click();
+	await page.locator('#collapse-leading-pane-btn').click();
 	await expect(page.locator('#expand-leading-pane-btn')).toBeFocused();
 });
 
 test('opening the filter panel puts focus in toolbar on close btn', async ({ page }) => {
-	page.locator('#collapse-leading-pane-btn').click();
-	page.locator('#expand-leading-pane-btn').click();
+	await page.locator('#collapse-leading-pane-btn').click();
+	await page.locator('#expand-leading-pane-btn').click();
 	await expect(page.locator('#collapse-leading-pane-btn')).toBeFocused();
 });
 
