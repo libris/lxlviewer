@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { tick } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
@@ -22,9 +23,11 @@
 	import Meta from '#lib/components/Meta.svelte';
 	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import { HeadingElem } from '#lib/types/decoratedData.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.ts';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
+	const userSettings = getUserSettings();
 
 	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
 	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
@@ -47,6 +50,8 @@
 	);
 
 	let previousURL: URL;
+	const expandLeadingPaneBtnId = 'expand-leading-pane-btn';
+	const collapseLeadingPaneBtnId = 'collapse-leading-pane-btn';
 
 	afterNavigate(({ from, shallow, type }) => {
 		if (shallow && type === 'goto') return;
@@ -71,6 +76,20 @@
 			goto(resolve(page.url.pathname + `?${newSearchParams.toString()}`), { replace: true });
 		}
 	}
+
+	function onCloseLeadingPane() {
+		userSettings.closeLeadingPane();
+		tick().then(() => {
+			document.getElementById(expandLeadingPaneBtnId)?.focus();
+		});
+	}
+
+	function onOpenLeadingPane() {
+		userSettings.openLeadingPane();
+		tick().then(() => {
+			document.getElementById(collapseLeadingPaneBtnId)?.focus();
+		});
+	}
 </script>
 
 <svelte:head>
@@ -86,7 +105,7 @@
 			holdings && USE_HOLDING_PANE && 'has-trailing-pane'
 		]}
 	>
-		<LeadingPane>
+		<LeadingPane onClose={onCloseLeadingPane} {collapseLeadingPaneBtnId}>
 			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
 				<Filters {facets} />
 			</div>
@@ -95,7 +114,11 @@
 			<div class="flex flex-1 flex-col @5xl/content:flex-row">
 				<div class="flex-1">
 					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
-					<SearchResultToolbar {searchResult} />
+					<SearchResultToolbar
+						{searchResult}
+						{expandLeadingPaneBtnId}
+						onOpenPane={onOpenLeadingPane}
+					/>
 					<SearchResultInfo {searchResult} />
 
 					<ol aria-labelledby="search-results" class="flex flex-col">

@@ -153,10 +153,42 @@ test('can paginate to next and previous', async ({ page }) => {
 test('focus is placed in opened modals and restored on close', async ({ page }) => {
 	const holdingLink = page.getByTestId('holding-link').first();
 	await holdingLink.click();
+
 	const closeBtn = page.getByTestId('close-modal').first();
-	expect(closeBtn).toBeFocused();
+	await expect(closeBtn).toBeFocused();
 	await closeBtn.click();
-	expect(holdingLink).toBeFocused();
+	await expect(holdingLink).toBeFocused();
+});
+
+test('closing the filter panel puts focus in panel on open btn', async ({ page }) => {
+	await page.locator('#collapse-leading-pane-btn').click();
+	await expect(page.locator('#expand-leading-pane-btn')).toBeFocused();
+});
+
+test('opening the filter panel puts focus in toolbar on close btn', async ({ page }) => {
+	await page.locator('#collapse-leading-pane-btn').click();
+	await page.locator('#expand-leading-pane-btn').click();
+	await expect(page.locator('#collapse-leading-pane-btn')).toBeFocused();
+});
+
+test('filter panel can be resized using keyboard and loses focus on Tab', async ({ page }) => {
+	const leadingPane = page.locator('#leading-pane');
+	const slider = page.locator('[role="slider"][aria-controls="leading-pane"]');
+
+	const initialWidth = await leadingPane.evaluate(
+		(element) => element.getBoundingClientRect().width
+	);
+
+	await slider.focus();
+	await page.keyboard.press('ArrowRight');
+
+	await expect
+		.poll(() => leadingPane.evaluate((element) => element.getBoundingClientRect().width))
+		.toBeGreaterThan(initialWidth);
+
+	await page.keyboard.press('Tab');
+
+	await expect(slider).not.toBeFocused();
 });
 
 test('can handle square brackets in query', async ({ page }) => {
