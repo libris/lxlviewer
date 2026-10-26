@@ -1,9 +1,8 @@
 import type { Action } from 'svelte/action';
+import { mount, unmount, type Snippet } from 'svelte';
 import Popover from './Popover.svelte';
 import type { LocaleCode } from '#lib/i18n/locales.js';
 import type { DisplayDecorated } from '#lib/types/xl.js';
-import { mount, unmount, type Snippet } from 'svelte';
-
 /**
  * Svelte action used for showing either a generic title or decorated data for a resource (by supplying the resource id or resource data).
  * This action can be made much more flexible with Svelte 5 when we will be able to set slots when creating component instances (see: https://github.com/sveltejs/svelte/issues/2588)
@@ -34,24 +33,32 @@ export const popover: Action<HTMLElement, Parameter> = (
 	const FETCH_DELAY = 250;
 	const ATTACH_DELAY = 500;
 	const REMOVE_DELAY = 200;
-	let container = document.getElementById('floating-elements-container') || document.body; // See https://atfzl.com/articles/don-t-attach-tooltips-to-document-body
 
-	if (placeAsSibling && node.parentElement) {
-		container = node.parentElement;
-	}
+	const container =
+		placeAsSibling && node.parentElement
+			? node.parentElement
+			: document.getElementById('floating-elements-container') || document.body;
 
 	let attached = false;
-	let floatingElement: typeof Popover | null = Popover;
-	let cancelAttach: (reason?: unknown) => void;
-	let cancelRemove: (reason?: unknown) => void;
-	let cancelFetch: (reason?: unknown) => void;
+	let floatingElement: ReturnType<typeof mount> | undefined;
+	let cancelAttach: (() => void) | undefined;
+	let cancelRemove: (() => void) | undefined;
+	let cancelFetch: (() => void) | undefined;
 
 	node.addEventListener('mouseover', attachPopover);
 	node.addEventListener('mouseout', removePopover);
 
 	if (onFocus) {
 		node.addEventListener('focus', attachPopover);
-		node.addEventListener('blur', removePopover);
+		node.addEventListener('blur', handleBlur);
+	}
+
+	function handleBlur(event: FocusEvent) {
+		const next = event.relatedTarget;
+		if (next instanceof Node && node.contains(next)) {
+			// focus went inside popover, don't close
+			return;
+		} else removePopover();
 	}
 
 	async function attachPopover() {
@@ -75,10 +82,8 @@ export const popover: Action<HTMLElement, Parameter> = (
 						title,
 						resourceData,
 						snippet,
-						onMouseOver: startFloatingElementInteraction,
-						onFocus: startFloatingElementInteraction,
-						onMouseLeave: endFloatingElementInteraction,
-						onBlur: endFloatingElementInteraction
+						onAttach: startFloatingElementInteraction,
+						onDismiss: endFloatingElementInteraction
 					}
 				});
 
@@ -146,7 +151,7 @@ export const popover: Action<HTMLElement, Parameter> = (
 			node.removeEventListener('mouseover', attachPopover);
 			node.removeEventListener('mouseout', removePopover);
 			node.removeEventListener('focus', attachPopover);
-			node.removeEventListener('blur', removePopover);
+			node.removeEventListener('blur', handleBlur);
 		}
 	};
 };

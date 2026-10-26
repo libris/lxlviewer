@@ -9,14 +9,12 @@
 	} from '#lib/constants/facets.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import { getMatomoTracker } from '#lib/contexts/matomo.js';
-	import { popover } from '#lib/actions/popover/index.js';
 	import FacetLinks from './FacetLinks.svelte';
 	import FacetRadio from '#lib/components/find/FacetRadio.svelte';
 	import FacetCheckbox from '#lib/components/find/FacetCheckbox.svelte';
 	import FacetRange from '#lib/components/find/FacetRange.svelte';
 	import IconChevron from '~icons/bi/chevron-down';
 	import BiSortDown from '~icons/bi/sort-down';
-	import BiInfo from '~icons/bi/info-circle';
 
 	type Props = {
 		data: FacetType;
@@ -215,17 +213,16 @@
 		{/if}
 		<!-- limit reached info -->
 		{#if maxItemsReached && (canShowFewerItems || (!canShowMoreItems && searchPhrase))}
-			<button
-				class="text-severe-700 bg-severe-50 indented flex items-center gap-1 rounded-sm py-1"
-				use:popover={{
-					title: page.data.t('facet.limitText'),
-					placeAsSibling: false
-				}}
-			>
-				<span>{page.data.t('facet.limitInfo')}</span>
-				<span class="sr-only">{page.data.t('facet.limitText')}</span>
-				<BiInfo aria-hidden="true" />
-			</button>
+			<details class="bg-severe-50 m-2 px-2">
+				<summary class="cursor-pointer font-medium flex items-center">
+					{'ⓘ '}
+					{page.data.t('facet.limitInfo')}
+					{@render chevron('right')}
+				</summary>
+				<div class="my-2">
+					{page.data.t('facet.limitText')}
+				</div>
+			</details>
 		{/if}
 	</div>
 {/snippet}
