@@ -34,6 +34,7 @@
 			searchParams.set('_offset', '0');
 		}
 		goto(resolve(`${page.url.pathname}?${searchParams.toString()}`), {
+			reset: false,
 			invalidate: ['app:search']
 		});
 	}
