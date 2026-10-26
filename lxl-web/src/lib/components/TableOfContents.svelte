@@ -5,9 +5,9 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
-	import { SvelteSet } from 'svelte/reactivity';
 	import { page } from '$app/state';
 	import IconToC from '~icons/bi/list-ul';
+	import { browser } from '$app/env';
 
 	type Props = {
 		items: TableOfContentsItem[];
@@ -19,17 +19,21 @@
 	let { items, uidPrefix = '', mobile = false, intersectionRoot }: Props = $props();
 	let tocElement: HTMLDivElement;
 	let observer: IntersectionObserver | undefined = $state();
-	let visibleSections: Set<string> = new SvelteSet();
 	let firstVisibleSection: string | undefined = $state();
-	let openOnMobile = $state(false);
 	let selectedAnchor: string = $state('');
 	let isProgrammaticScroll = $state(false);
-	let currentSection = $derived(selectedAnchor || firstVisibleSection);
+	let currentSection = $derived(selectedAnchor || firstVisibleSection || 'top');
 
 	const itemsWithTop = $derived([
 		{ id: 'top', label: page.data.t('tableOfContents.top') },
 		...items
 	]);
+
+	let navbarHeight = $state(0);
+	if (browser) {
+		const navbar = document.getElementById('appbar');
+		navbarHeight = navbar?.getBoundingClientRect().height ?? 0;
+	}
 
 	afterNavigate(({ shallow, type }) => {
 		if (shallow && type === 'goto') return;
@@ -50,7 +54,8 @@
 				if (sections) {
 					observer = new IntersectionObserver(handleObserve, {
 						root: intersectionRoot,
-						threshold: 0.1 // threashold is requried to ensure correct link is highlighted after clicking on it
+						rootMargin: `-${navbarHeight}px 0px -80% 0px`,
+						threshold: 0
 					});
 					for (const sectionItem of sections) {
 						observer.observe(sectionItem);
@@ -84,28 +89,12 @@
 	});
 
 	function handleObserve(entries: IntersectionObserverEntry[]) {
-		entries.forEach((entry) => {
-			const id = entry.target.getAttribute('id');
-			if (id) {
-				if (entry.isIntersecting) {
-					visibleSections.add(id);
-				} else {
-					if (visibleSections.size > 1) visibleSections.delete(id); // always keep atleast one visible section
-				}
-				if (visibleSections.size) {
-					firstVisibleSection =
-						tocElement
-							?.closest('article')
-							?.querySelector(`:scope #${Array.from(visibleSections).join(', :scope #')}`) // find first visible section by generating a selector string using the ids of visible sections
-							?.getAttribute('id') || firstVisibleSection; // fallback to previous visible section
-				}
-			}
-		});
-	}
+		const visible = entries
+			.filter((entry) => entry.isIntersecting)
+			.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
-	function handleCheckboxKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			tocElement.querySelector<HTMLInputElement>(':scope input[type="checkbox"]')?.click();
+		if (visible.length) {
+			firstVisibleSection = visible[0].target.id;
 		}
 	}
 
@@ -144,32 +133,23 @@
 
 <div bind:this={tocElement} class="contents">
 	{#if mobile}
-		<div class="border-b-neutral border-b p-1 text-xs sm:text-sm">
-			<label
+		<details class="border-b-neutral border-b p-1 text-xs sm:text-sm">
+			<summary
 				id={`${uidPrefix}toc-label`}
-				class="bg-page text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2 has-checked:[&+nav]:block"
+				class="bg-page text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2"
 			>
 				<IconToC class="size-4" />
 				<span>{page.data.t('tableOfContents.onThisPage')}</span>
-				<input
-					type="checkbox"
-					role="switch"
-					bind:checked={openOnMobile}
-					aria-expanded={openOnMobile}
-					aria-controls={`${uidPrefix}toc-items`}
-					class="h-0 appearance-none focus:outline-0"
-					onkeydown={handleCheckboxKeydown}
-				/>
-			</label>
+			</summary>
 			<nav
 				id={`${uidPrefix}toc-items`}
-				class="bg-page text-subtle mb-3 hidden px-3 sm:px-6"
+				class="bg-page text-subtle mb-3 px-3 sm:px-6"
 				aria-labelledby="toc-heading"
 			>
 				<p id="toc-heading" class="sr-only">{page.data.t('tableOfContents.onThisPage')}</p>
 				{@render tocList(itemsWithTop)}
 			</nav>
-		</div>
+		</details>
 	{:else}
 		<nav class="text-placeholder text-xs sm:text-sm" aria-labelledby="toc-heading">
 			<header class="text-subtle mb-2 text-xs font-medium sm:text-sm">

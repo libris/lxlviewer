@@ -82,7 +82,7 @@
 {#if searchResult}
 	<div
 		class={[
-			'search-result flex w-full flex-1 [&_[id]]:scroll-mt-18 sm:[&_[id]]:scroll-mt-32',
+			'search-result flex w-full flex-1',
 			holdings && USE_HOLDING_PANE && 'has-trailing-pane'
 		]}
 	>
