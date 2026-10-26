@@ -153,6 +153,8 @@ test('can paginate to next and previous', async ({ page }) => {
 test('focus is placed in opened modals and restored on close', async ({ page }) => {
 	const holdingLink = page.getByTestId('holding-link').first();
 	await holdingLink.click();
+	await page.waitForLoadState('networkidle');
+
 	const closeBtn = page.getByTestId('close-modal').first();
 	expect(closeBtn).toBeFocused();
 	await closeBtn.click();
