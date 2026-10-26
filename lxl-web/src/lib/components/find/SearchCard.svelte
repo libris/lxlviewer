@@ -270,7 +270,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<DecoratedData2
 						data={item[LensType.WebCardHeaderTop]}
 						showLabels={ShowLabelsOptions.Never}
-						{allowLinks}
+						allowLinks={headingIsLink ? allowLinks : false}
 						{allowPopovers}
 						parent={Elem.Span}
 						skipOuter={true}
