@@ -1290,19 +1290,17 @@
 			"fresnel:propertyStyle": ["sequenceStatus-appliesTo"]
 		},
 		"ProvisionActivity-endYear-format": {
-			"TODO": "endYear without startYear? fresnel:contentNoValue on startYear? but we only want it when endYear is present",
 			"@id": "ProvisionActivity-endYear-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
 			"fresnel:propertyFormatDomain": ["endYear"],
 			"fresnel:propertyStyle": ["endYear"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": "-",
-				"fresnel:contentFirst": "-"
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
 			}
 		},
 		"ProvisionActivity-startYear-format": {
-			"TODO": "this can fail if there are additional properties after startYear? see also endYear above",
 			"@id": "ProvisionActivity-startYear-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["ProvisionActivity"],
