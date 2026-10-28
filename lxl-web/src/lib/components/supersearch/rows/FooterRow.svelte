@@ -20,9 +20,9 @@
 		href={resolve(page.data.localizeHref('/help'))}
 		id={getCellId(footerRowIndex, 0)}
 		class={[
-			'text-link mr-4 justify-end hover:underline hover:text-link',
+			'link mr-4 justify-end hover:underline hover:link',
 			isFocusedCell(footerRowIndex, 0) &&
-				'underline outline-2 -outline-offset-2 outline-outline text-link'
+				'underline outline-2 -outline-offset-2 outline-outline link'
 		]}
 	>
 		{page.data.t('supersearch.searchHelp')}
