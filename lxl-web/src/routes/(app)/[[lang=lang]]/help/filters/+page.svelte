@@ -249,48 +249,48 @@
 										{#if f.searchPaths?.length}
 											<ul>
 												{#each f.searchPaths as p (p.key ?? p.path)}
-													{#if p.key}
-														<li class="mb-1">
+													<li class={p.children?.length ? 'mb-3' : 'mb-2'}>
+														{#if p.key}
 															<a
 																href={`#${p.key}`}
 																class="text-s text-accent-700 underline underline-offset-2"
 															>
 																{p.label ?? p.key}
 															</a>
-														</li>
-													{:else}
-														{#if p.label}
-															<li class="text-s">{p.label}</li>
-														{/if}
-														<li
-															class={[
-																p.label ? 'text-2xs text-subtle' : 'text-s',
-																'font-mono wrap-anywhere',
-																p.children?.length ? 'mt-0.5' : 'mb-2'
-															]}
-														>
-															{p.path}
-														</li>
-														{#if p.children?.length}
-															<li class="mb-3 mt-1">
-																<ul class="border-l-2 border-l-neutral-200 pl-3">
+														{:else}
+															{#if p.label}
+																<div class="text-s">{p.label}</div>
+															{/if}
+															<div
+																class={[
+																	p.label ? 'text-2xs text-subtle' : 'text-s',
+																	'font-mono wrap-anywhere',
+																	p.children?.length ? 'mt-0.5' : ''
+																]}
+															>
+																{p.path}
+															</div>
+															{#if p.children?.length}
+																<ul class="mt-1 border-l-2 border-l-neutral-200 pl-3">
 																	{#each p.children as c (c.path)}
-																		{#if c.label}
-																			<li class="text-s">{c.label}</li>
-																		{/if}
-																		<li
-																			class={[
-																				c.label ? 'text-2xs text-subtle' : 'text-s',
-																				'mb-2 font-mono wrap-anywhere'
-																			]}
-																		>
-																			{c.path}
+																		<li class="mb-2">
+																			{#if c.label}
+																				<div class="text-s">{c.label}</div>
+																			{/if}
+																			<div
+																				class={[
+																					c.label ? 'text-2xs text-subtle' : 'text-s',
+																					'font-mono wrap-anywhere'
+																				]}
+																			>
+																				{c.path}
+																			</div>
 																		</li>
 																	{/each}
 																</ul>
-															</li>
+															{/if}
 														{/if}
-													{/if}
+													</li>
 												{/each}
 											</ul>
 										{/if}
