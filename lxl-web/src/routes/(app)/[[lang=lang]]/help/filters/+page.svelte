@@ -169,19 +169,46 @@
 								<div
 									role="cell"
 									aria-labelledby={`searchin-header row-${f.key}`}
-									class={[f.propertyChainAxiom ? '' : 'hidden md:block', 'min-w-0 my-3']}
+									class={[f.searchPaths?.length ? '' : 'hidden md:block', 'min-w-0 my-3']}
 								>
 									<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
 										{page.data.t('help.searchIn')}
 									</div>
 
-									{#if f.propertyChainAxiom}
+									{#if f.searchPaths?.length}
 										<ul>
-											{#each f.propertyChainAxiom as p (p)}
-												<li class="text-s">{p.label}</li>
-												<li class="text-2xs text-subtle mb-2 font-mono wrap-anywhere">
+											{#each f.searchPaths as p (p.path)}
+												{#if p.label}
+													<li class="text-s">{p.label}</li>
+												{/if}
+												<li
+													class={[
+														p.label ? 'text-2xs text-subtle' : 'text-s',
+														'font-mono wrap-anywhere',
+														p.children?.length ? 'mt-0.5' : 'mb-2'
+													]}
+												>
 													{p.path}
 												</li>
+												{#if p.children?.length}
+													<li class="mb-3 mt-1">
+														<ul class="border-l-2 border-l-neutral-200 pl-3">
+															{#each p.children as c (c.path)}
+																{#if c.label}
+																	<li class="text-s">{c.label}</li>
+																{/if}
+																<li
+																	class={[
+																		c.label ? 'text-2xs text-subtle' : 'text-s',
+																		'mb-2 font-mono wrap-anywhere'
+																	]}
+																>
+																	{c.path}
+																</li>
+															{/each}
+														</ul>
+													</li>
+												{/if}
 											{/each}
 										</ul>
 									{/if}
