@@ -5,9 +5,10 @@
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/state';
 	import Spinner from './Spinner.svelte';
-	import BiCopy from '~icons/bi/copy';
-	import BiDownload from '~icons/bi/download';
+	// import BiCopy from '~icons/bi/copy';
+	// import BiDownload from '~icons/bi/download';
 	import BiChevronDown from '~icons/bi/chevron-down';
+	import Citations2 from './Citations2.svelte';
 
 	type Props = {
 		citations: Promise<CitationsType>;
@@ -17,7 +18,7 @@
 	let { citations, id }: Props = $props();
 	const userSettings = getUserSettings();
 
-	let wasCopied: Record<string, boolean> = $state({});
+	// let wasCopied: Record<string, boolean> = $state({});
 	let selectedFormat = $state(userSettings.selectedCitationFormat || 'all');
 
 	function getDisplayedFormats(citations: CitationsType) {
@@ -34,18 +35,18 @@
 		userSettings.saveSelectedCitationFormat(target.value as AvailableCitationFormat);
 	}
 
-	async function handleCopyCitation(
-		citation: string,
-		type: 'text/html' | 'text/plain' = 'text/plain',
-		onSuccess?: () => void
-	) {
-		if (citation) {
-			const blob = new Blob([citation], { type });
-			const data = new ClipboardItem({ [type]: blob });
-			await navigator.clipboard.write([data]);
-			onSuccess?.();
-		}
-	}
+	// async function handleCopyCitation(
+	// 	citation: string,
+	// 	type: 'text/html' | 'text/plain' = 'text/plain',
+	// 	onSuccess?: () => void
+	// ) {
+	// 	if (citation) {
+	// 		const blob = new Blob([citation], { type });
+	// 		const data = new ClipboardItem({ [type]: blob });
+	// 		await navigator.clipboard.write([data]);
+	// 		onSuccess?.();
+	// 	}
+	// }
 </script>
 
 <div>
@@ -79,11 +80,11 @@
 		{#if displayedFormats && displayedFormats.length}
 			<ul class="mt-2 flex flex-col gap-1">
 				{#each displayedFormats as format (format.key)}
-					{@const isFileFormat = !!format?.fileFormat}
-					<li
-						class="bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs"
-					>
-						<article aria-labelledby={format.key}>
+					<!-- {@const isFileFormat = !!format?.fileFormat} -->
+					<li>
+						<!-- <article 
+							class="bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs" 
+							aria-labelledby={format.key}>
 							<h2 class="mb-2 text-sm font-medium" id={format.key}>
 								{format.fullName || format.name}
 							</h2>
@@ -91,15 +92,15 @@
 								this={isFileFormat ? 'pre' : 'p'}
 								class={[
 									'mb-2 block',
-									isFileFormat && 'text-2xs overflow-x-scroll [scrollbar-width:thin]'
+									isFileFormat && 'text-2xs overflow-x-scroll scrollbar-thin'
 								]}
-							>
-								<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-								{@html format.citation}
+							> -->
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						<!-- {@html format.citation}
 							</svelte:element>
-							<div class="flex gap-2">
-								<!-- copy button -->
-								<button
+							<div class="flex gap-2"> -->
+						<!-- copy button -->
+						<!-- <button
 									class="btn btn-accent"
 									onclick={() =>
 										handleCopyCitation(
@@ -119,9 +120,9 @@
 									{/if}
 									<span class="sr-only">({format.name})</span>
 								</button>
-								{#if isFileFormat && id}
-									<!-- download button -->
-									<a
+								{#if isFileFormat && id} -->
+						<!-- download button -->
+						<!-- <a
 										class="btn btn-accent"
 										download={`${id}.${format.fileFormat}`}
 										href={`/api/${page.data.locale}/cite?id=${id}&format=${format.key}`}
@@ -132,7 +133,8 @@
 									</a>
 								{/if}
 							</div>
-						</article>
+						</article> -->
+						<Citations2 data={format} {id} />
 					</li>
 				{/each}
 			</ul>

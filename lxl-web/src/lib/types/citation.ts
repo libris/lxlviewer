@@ -75,16 +75,16 @@ export interface CSLJSON extends CSLRoles {
 	volume?: string | number;
 }
 
+export type CitationData = {
+	citation: string;
+	fileFormat?: string;
+	fullName?: string;
+	key: AvailableCitationFormat;
+	name: string;
+};
+
 export interface CitationsType {
-	data:
-		| {
-				citation: string;
-				fileFormat?: string;
-				fullName?: string;
-				key: AvailableCitationFormat;
-				name: string;
-		  }[]
-		| undefined;
+	data: CitationData[] | undefined;
 	error: ApiError | undefined;
 }
 

@@ -24,6 +24,7 @@ export type UserSettings = {
 	selectedCitationFormat?: AvailableCitationFormat | 'all';
 	trailingPane?: {
 		width?: number;
+		open?: boolean;
 	};
 	debug?: DebugFlags[];
 	prefersNearMe?: boolean;
