@@ -15,10 +15,11 @@ import { getUriSlug } from '#lib/utils/http.js';
 const MERGES = 'ls:merges';
 const CATEGORY = 'category';
 const SEARCH_FILTER_CATEGORY = 'https://id.kb.se/vocab/searchfilter';
-const CONTROL_NUMBERS = 'https://id.kb.se/ns/librissearch/controlNumbers';
+const LIBRISSEARCH_BASE = 'https://id.kb.se/ns/librissearch/';
+const CONTROL_NUMBERS = LIBRISSEARCH_BASE + 'controlNumbers';
 const CONTROL_NUMBER = 'https://id.kb.se/vocab/controlNumber';
-const WORK_CATEGORY = 'https://id.kb.se/ns/librissearch/workCategory';
-const INSTANCE_CATEGORY = 'https://id.kb.se/ns/librissearch/instanceCategory';
+const WORK_CATEGORY = LIBRISSEARCH_BASE + 'workCategory';
+const INSTANCE_CATEGORY = LIBRISSEARCH_BASE + 'instanceCategory';
 const FNURGEL = 'fnurgel';
 const MAX_DEPTH = 3;
 
@@ -41,6 +42,13 @@ export function resolveSearchPaths(
 		return [];
 	}
 
+	if (depth === 0) {
+		const lsDef = librissearchNamesake(def, ctx);
+		if (lsDef) {
+			return resolveSearchPaths(lsDef, ctx, depth);
+		}
+	}
+
 	const hardcoded = hardcodedCategoryPaths(def, ctx);
 	if (hardcoded) {
 		return hardcoded;
@@ -48,7 +56,6 @@ export function resolveSearchPaths(
 
 	if (hasCategory(def, Platform.composite)) {
 		return dedupe([
-			...chainsOf(def, ctx, depth),
 			...subFiltersOf(def).flatMap((sub) => {
 				const subLabel = ctx.chipLabel(sub);
 				if (hasCategory(sub, SEARCH_FILTER_CATEGORY)) {
@@ -60,7 +67,8 @@ export function resolveSearchPaths(
 					return entries;
 				}
 				return [{ ...entries[0], label: subLabel }];
-			})
+			}),
+			...chainsOf(def, ctx, depth)
 		]);
 	}
 
@@ -199,14 +207,14 @@ function expandElement(element: unknown, ctx: SearchPathContext, depth: number):
 }
 
 function compositeParts(def: FramedData, ctx: SearchPathContext, depth: number): PathPart[][] {
-	const alternatives: PathPart[][] = [...chainAxiomParts(def, ctx, depth)];
+	const alternatives: PathPart[][] = [];
 	for (const sub of subFiltersOf(def)) {
 		const id = sub[JsonLd.ID];
 		if (typeof id === 'string') {
 			alternatives.push(...expandElement({ [JsonLd.ID]: id } as Link, ctx, depth));
 		}
 	}
-	return alternatives;
+	return [...alternatives, ...chainAxiomParts(def, ctx, depth)];
 }
 
 function isRestrictedSubProperty(def: Data): boolean {
@@ -259,6 +267,21 @@ function controlNumbersParts(ctx: SearchPathContext): PathPart[][] {
 		[{ label: controlNumberLabel, path: 'controlNumber' }],
 		[{ label: fnurgelLabel, path: fnurgelPath }]
 	];
+}
+
+// Mirrors the search API's namespace precedence (Disambiguate.defaultNsPrecedenceOrder):
+// a query key with terms in both kbv and librissearch resolves to the librissearch term.
+function librissearchNamesake(def: FramedData, ctx: SearchPathContext): FramedData | undefined {
+	const slug = getUriSlug(def[JsonLd.ID] as string);
+	if (!slug || def[JsonLd.ID] === LIBRISSEARCH_BASE + slug) {
+		return undefined;
+	}
+	const lsDef = ctx.getDefinition(LIBRISSEARCH_BASE + slug);
+	const isDefinedTerm =
+		isObject(lsDef) &&
+		lsDef[JsonLd.ID] === LIBRISSEARCH_BASE + slug &&
+		Object.keys(lsDef).some((k) => k !== JsonLd.ID);
+	return isDefinedTerm ? lsDef : undefined;
 }
 
 // TODO: ls:workCategory and ls:instanceCategory have incomplete definitions in the vocab

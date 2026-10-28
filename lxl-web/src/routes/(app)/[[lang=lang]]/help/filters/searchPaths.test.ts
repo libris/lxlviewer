@@ -353,10 +353,10 @@ describe('resolveSearchPaths', () => {
 			{ key: 'issn', label: 'ISSN', path: 'issn' }
 		]);
 		expect(resolveSearchPaths(ctx.getDefinition(`${LS}identifier`), ctx)).toEqual([
-			{ label: 'värde', path: 'identifiedBy.value' },
 			{ key: 'controlNumber', label: 'kontrollnummer', path: 'controlNumber' },
 			{ label: 'Indirekt identifierad av', path: 'indirectlyIdentifiedBy' },
-			{ label: 'värde', path: 'value' }
+			{ label: 'värde', path: 'value' },
+			{ label: 'värde', path: 'identifiedBy.value' }
 		]);
 	});
 
@@ -592,11 +592,37 @@ describe('resolveSearchPaths', () => {
 			}
 		);
 		expect(resolveSearchPaths(ctx.getDefinition(`${LS}itemSubject`), ctx)).toEqual([
+			{ label: 'Har bestånd › ämne', path: 'hasItem.subject' },
 			{
 				label: 'Har bestånd › ämne › ämneskomponentlista',
 				path: 'hasItem.subject.termComponentList'
+			}
+		]);
+	});
+
+	it('resolves filters through their librissearch namesake, mirroring the search API precedence', () => {
+		const ctx = ctxFor(
+			{
+				[`${VOCAB}subject`]: {
+					'@id': `${VOCAB}subject`
+				},
+				[`${LS}subject`]: {
+					'@id': `${LS}subject`,
+					category: [link(`${LS}composite`)],
+					propertyChainAxiom: [
+						{ '@list': [link(`${VOCAB}subject`), link(`${VOCAB}termComponentList`)] }
+					],
+					basePropertyOf: [{ '@id': `${VOCAB}subject` }]
+				}
 			},
-			{ label: 'Har bestånd › ämne', path: 'hasItem.subject' }
+			{
+				[`${VOCAB}subject`]: 'ämne',
+				[`${VOCAB}termComponentList`]: 'ämneskomponentlista'
+			}
+		);
+		expect(resolveSearchPaths(ctx.getDefinition(`${VOCAB}subject`), ctx)).toEqual([
+			{ label: 'ämne', path: 'subject' },
+			{ label: 'ämne › ämneskomponentlista', path: 'subject.termComponentList' }
 		]);
 	});
 
@@ -634,7 +660,7 @@ describe('resolveSearchPaths', () => {
 			{ [`${VOCAB}subject`]: 'ämne', [`${VOCAB}termComponentList`]: 'ämneskomponentlista' }
 		);
 		expect(resolveSearchPaths(ctx.getDefinition(`${LS}subject`), ctx)).toEqual([
-			{ label: 'ämne › ämneskomponentlista', path: 'subject.termComponentList' }
+			{ label: 'ämne', path: 'subject.termComponentList' }
 		]);
 	});
 
