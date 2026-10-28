@@ -356,7 +356,7 @@ function formatRangeRestricted(
 	const valueLink = isLink(rawValue) ? rawValue : undefined;
 	const valuePath = valueLink ? `<${termKeyOf(valueLink, ctx)}>` : String(rawValue);
 	const valueLabel = valueLink
-		? ctx.chipLabel(ctx.getDefinition(valueLink)) || termKeyOf(valueLink, ctx)
+		? ctx.chipLabel(ctx.getDefinition(valueLink)) || `<${termKeyOf(valueLink, ctx)}>`
 		: String(rawValue);
 
 	return {

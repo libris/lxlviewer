@@ -403,7 +403,7 @@ describe('resolveSearchPaths', () => {
 		);
 		expect(resolveSearchPaths(ctx.getDefinition(`${LS}author`), ctx)).toEqual([
 			{
-				label: 'Medverkan och funktion [funktion: author] › agent',
+				label: 'Medverkan och funktion [funktion: <author>] › agent',
 				path: 'contribution[role=<author>].agent'
 			}
 		]);
