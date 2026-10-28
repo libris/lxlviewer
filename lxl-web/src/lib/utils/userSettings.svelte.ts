@@ -107,6 +107,14 @@ export class UserSettings {
 		this.update('prefersNearMe', setting);
 	}
 
+	setShowSearchPaths(setting: boolean) {
+		this.update('showSearchPaths', setting);
+	}
+
+	setShowQueryCodes(setting: boolean) {
+		this.update('showQueryCodes', setting);
+	}
+
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
@@ -132,6 +140,14 @@ export class UserSettings {
 
 	get prefersNearMe() {
 		return this.settings.prefersNearMe;
+	}
+
+	get showSearchPaths() {
+		return this.settings.showSearchPaths;
+	}
+
+	get showQueryCodes() {
+		return this.settings.showQueryCodes;
 	}
 
 	toURLSearchParams(): URLSearchParams {

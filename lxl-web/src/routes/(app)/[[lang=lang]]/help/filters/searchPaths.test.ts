@@ -510,11 +510,14 @@ describe('resolveSearchPaths', () => {
 	});
 
 	it('falls back to the property itself for plain filters', () => {
-		const ctx = ctxFor({
-			[`${VOCAB}language`]: { '@id': `${VOCAB}language` }
-		});
+		const ctx = ctxFor(
+			{
+				[`${VOCAB}language`]: { '@id': `${VOCAB}language` }
+			},
+			{ [`${VOCAB}language`]: 'språk' }
+		);
 		expect(resolveSearchPaths(ctx.getDefinition(`${VOCAB}language`), ctx)).toEqual([
-			{ path: 'language' }
+			{ label: 'språk', path: 'language' }
 		]);
 	});
 

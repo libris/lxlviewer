@@ -69,20 +69,8 @@ export function resolveSearchPaths(
 		return chains;
 	}
 
-	return [withOptionalLabel({ path: termKeyOf(def, ctx) }, def, ctx, depth)];
-}
-
-function withOptionalLabel(
-	entry: PropertyChain,
-	def: FramedData,
-	ctx: SearchPathContext,
-	depth: number
-): PropertyChain {
-	if (depth === 0) {
-		return entry;
-	}
 	const label = ctx.chipLabel(def);
-	return label ? { ...entry, label } : entry;
+	return [{ path: termKeyOf(def, ctx), ...(label ? { label } : {}) }];
 }
 
 function chainsOf(def: Data, ctx: SearchPathContext, depth: number): PropertyChain[] {
