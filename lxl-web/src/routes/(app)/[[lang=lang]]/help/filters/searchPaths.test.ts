@@ -19,7 +19,8 @@ function compactIri(iri: string) {
 	if (iri.startsWith(MARC)) {
 		return `marc:${iri.slice(MARC.length)}`;
 	}
-	return iri;
+	const lastSegment = iri.split('/').pop() ?? iri;
+	return lastSegment;
 }
 
 function ctxFor(fixture: Record<string, unknown>, labels: Record<string, string> = {}) {
@@ -285,6 +286,123 @@ describe('resolveSearchPaths', () => {
 		]);
 	});
 
+	it('links to sub filters that are themselves search filters', () => {
+		const ctx = ctxFor(
+			{
+				[`${LS}isxn`]: {
+					'@id': `${LS}isxn`,
+					category: [link(`${LS}composite`)],
+					basePropertyOf: [
+						{
+							'@id': `${LS}isbn`,
+							category: [link(`${VOCAB}shorthand`), link(`${VOCAB}searchfilter`)],
+							propertyChainAxiom: [
+								{
+									'@list': [
+										{
+											subPropertyOf: [link(`${VOCAB}identifiedBy`)],
+											range: [link(`${VOCAB}ISBN`)]
+										},
+										link(`${VOCAB}value`)
+									]
+								}
+							]
+						},
+						{
+							'@id': `${LS}issn`,
+							category: [link(`${VOCAB}shorthand`), link(`${VOCAB}searchfilter`)]
+						}
+					]
+				},
+				[`${LS}identifier`]: {
+					'@id': `${LS}identifier`,
+					category: [link(`${LS}composite`)],
+					propertyChainAxiom: [{ '@list': [link(`${VOCAB}identifiedBy`), link(`${VOCAB}value`)] }],
+					basePropertyOf: [
+						{
+							'@id': `${LS}controlNumber`,
+							category: [link(`${VOCAB}shorthand`), link(`${VOCAB}searchfilter`)]
+						},
+						{
+							'@id': `${LS}instanceIdentifier`,
+							category: [link(`${LS}merged`)],
+							'ls:merges': [link(`${VOCAB}indirectlyIdentifiedBy`), link(`${VOCAB}value`)]
+						}
+					]
+				}
+			},
+			{
+				[`${LS}isbn`]: 'ISBN',
+				[`${LS}issn`]: 'ISSN',
+				[`${LS}controlNumber`]: 'kontrollnummer',
+				[`${VOCAB}indirectlyIdentifiedBy`]: 'Indirekt identifierad av',
+				[`${VOCAB}value`]: 'värde'
+			}
+		);
+		expect(resolveSearchPaths(ctx.getDefinition(`${LS}isxn`), ctx)).toEqual([
+			{ key: 'isbn', label: 'ISBN', path: 'isbn' },
+			{ key: 'issn', label: 'ISSN', path: 'issn' }
+		]);
+		expect(resolveSearchPaths(ctx.getDefinition(`${LS}identifier`), ctx)).toEqual([
+			{ label: 'värde', path: 'identifiedBy.value' },
+			{ key: 'controlNumber', label: 'kontrollnummer', path: 'controlNumber' },
+			{ label: 'Indirekt identifierad av', path: 'indirectlyIdentifiedBy' },
+			{ label: 'värde', path: 'value' }
+		]);
+	});
+
+	it('expands named restricted sub properties to property plus restriction', () => {
+		const RELATOR = 'https://id.kb.se/relator/';
+		const ctx = ctxFor(
+			{
+				[`${LS}author`]: {
+					'@id': `${LS}author`,
+					propertyChainAxiom: [
+						{ '@list': [link(`${LS}authorContribution`), link(`${VOCAB}agent`)] }
+					]
+				},
+				[`${LS}authorContribution`]: {
+					'@id': `${LS}authorContribution`,
+					subPropertyOf: [link(`${VOCAB}contribution`)],
+					range: [
+						{
+							subClassOf: [
+								{
+									'@type': 'Restriction',
+									onProperty: link(`${VOCAB}role`),
+									hasValue: link(`${RELATOR}author`)
+								}
+							]
+						}
+					]
+				},
+				[`${VOCAB}contribution`]: {
+					'@id': `${VOCAB}contribution`,
+					subPropertyOf: [link(`${VOCAB}hasStatement`)],
+					range: [link(`${VOCAB}Contribution`)]
+				},
+				[`${VOCAB}plain`]: {
+					'@id': `${VOCAB}plain`,
+					propertyChainAxiom: [{ '@list': [link(`${VOCAB}contribution`), link(`${VOCAB}agent`)] }]
+				}
+			},
+			{
+				[`${VOCAB}contribution`]: 'Medverkan och funktion',
+				[`${VOCAB}role`]: 'funktion',
+				[`${VOCAB}agent`]: 'agent'
+			}
+		);
+		expect(resolveSearchPaths(ctx.getDefinition(`${LS}author`), ctx)).toEqual([
+			{
+				label: 'Medverkan och funktion [funktion: author] › agent',
+				path: 'contribution[role=<author>].agent'
+			}
+		]);
+		expect(resolveSearchPaths(ctx.getDefinition(`${VOCAB}plain`), ctx)).toEqual([
+			{ label: 'Medverkan och funktion › agent', path: 'contribution.agent' }
+		]);
+	});
+
 	it('resolves coercing sub filters to their index keys with labels', () => {
 		const ctx = ctxFor(
 			{
@@ -295,12 +413,22 @@ describe('resolveSearchPaths', () => {
 						{
 							'@id': `${LS}itemHeldBy`,
 							category: [link(`${LS}coercing`)],
-							'ls:indexKey': '@reverse.itemOf.heldBy'
+							'ls:indexKey': '@reverse.itemOf.heldBy',
+							propertyChainAxiom: [{ '@list': [link(`${VOCAB}hasItem`), link(`${VOCAB}heldBy`)] }]
 						},
 						{
 							'@id': `${LS}itemHeldByOrg`,
 							category: [link(`${LS}coercing`)],
-							'ls:indexKey': '@reverse.itemOf.heldBy.isPartOf'
+							'ls:indexKey': '@reverse.itemOf.heldBy.isPartOf',
+							propertyChainAxiom: [
+								{
+									'@list': [
+										link(`${VOCAB}hasItem`),
+										link(`${VOCAB}heldBy`),
+										link(`${VOCAB}isPartOf`)
+									]
+								}
+							]
 						}
 					]
 				}
@@ -311,8 +439,8 @@ describe('resolveSearchPaths', () => {
 			}
 		);
 		expect(resolveSearchPaths(ctx.getDefinition(`${LS}library`), ctx)).toEqual([
-			{ label: 'bibliotek (sigel)', path: '@reverse.itemOf.heldBy' },
-			{ label: 'biblioteksorganisation', path: '@reverse.itemOf.heldBy.isPartOf' }
+			{ label: 'bibliotek (sigel)', path: 'hasItem.heldBy' },
+			{ label: 'biblioteksorganisation', path: 'hasItem.heldBy.isPartOf' }
 		]);
 	});
 
@@ -357,15 +485,27 @@ describe('resolveSearchPaths', () => {
 		]);
 	});
 
-	it('resolves filters with index keys to the index key', () => {
-		const ctx = ctxFor({
-			[`${LS}instanceCategory`]: {
-				'@id': `${LS}instanceCategory`,
-				'ls:indexKey': '_categoryByCollection.@none'
-			}
-		});
+	it('shows property chains instead of index keys when both are defined', () => {
+		const ctx = ctxFor(
+			{
+				[`${LS}sab`]: {
+					'@id': `${LS}sab`,
+					category: [link(`${VOCAB}shorthand`)],
+					'ls:indexKey': 'classification._sab',
+					propertyChainAxiom: [{ '@list': [link(`${VOCAB}classification`), link(`${VOCAB}code`)] }]
+				},
+				[`${LS}instanceCategory`]: {
+					'@id': `${LS}instanceCategory`,
+					'ls:indexKey': '_categoryByCollection.@none'
+				}
+			},
+			{ [`${VOCAB}classification`]: 'klassifikation', [`${VOCAB}code`]: 'kod' }
+		);
+		expect(resolveSearchPaths(ctx.getDefinition(`${LS}sab`), ctx)).toEqual([
+			{ label: 'klassifikation › kod', path: 'classification.code' }
+		]);
 		expect(resolveSearchPaths(ctx.getDefinition(`${LS}instanceCategory`), ctx)).toEqual([
-			{ path: '_categoryByCollection.@none' }
+			{ path: 'librissearch:instanceCategory' }
 		]);
 	});
 

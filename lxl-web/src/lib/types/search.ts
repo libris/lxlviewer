@@ -305,6 +305,7 @@ export interface QualifierDefinitionGroup {
 export interface PropertyChain {
 	label?: string;
 	path: string;
+	key?: string;
 	children?: PropertyChain[];
 }
 
