@@ -29,6 +29,7 @@
 	import BiHeart from '~icons/bi/heart';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 	import IconArrowRight from '~icons/bi/arrow-right';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 
 	interface Props {
 		item: SearchResultItem | LibraryResultItem;
@@ -39,6 +40,7 @@
 		hideType?: boolean;
 		headingElement?: HeadingElem;
 		headingIsLink?: boolean;
+		itemNo?: number;
 	}
 
 	let articleElement: HTMLElement;
@@ -50,7 +52,8 @@
 		allowActions = true,
 		hideType = false,
 		headingElement = HeadingElem.H2,
-		headingIsLink = true
+		headingIsLink = true,
+		itemNo = undefined
 	}: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
@@ -106,6 +109,13 @@
 
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
+
+	const selection = getSelectionContext();
+	const isSelected = $derived(selection.isSelected(item[JsonLd.ID]));
+
+	function toggleSelected() {
+		selection.toggle(item[JsonLd.ID]);
+	}
 
 	function passAlongAdjecentSearchResults(event: MouseEvent) {
 		event.preventDefault();
@@ -210,6 +220,17 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		data-testid="search-card"
 		bind:this={articleElement}
 	>
+		{#if itemNo && allowActions}
+			<div class="card-select flex flex-col items-start justify-start gap-1">
+				<label for={`checkbox-${itemNo}`} class="text-xs text-subtle">{itemNo}.</label>
+				<input
+					type="checkbox"
+					id={`checkbox-${itemNo}`}
+					checked={isSelected}
+					onchange={toggleSelected}
+				/>
+			</div>
+		{/if}
 		{#if page.data.features.resourceImages}
 			<div class="card-image">
 				<svelte:element
@@ -536,26 +557,26 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.search-card {
 		grid-template-areas:
-			'image content content'
-			'image footer footer'
-			'image explore explore'
-			'actions actions actions'
-			'debug . .';
+			'select image content content'
+			'select image footer footer'
+			'. image explore explore'
+			'. actions actions actions'
+			'. debug . .';
 
-		grid-template-columns: 64px 1fr auto;
+		grid-template-columns: minmax(0px, 24px) 64px 1fr auto;
 
 		@container card (min-width: 768px) {
-			grid-template-columns: 72px 1fr auto;
+			grid-template-columns: minmax(0px, 24px) 72px 1fr auto;
 			@apply gap-x-6 px-6 py-4;
 		}
 
 		@container card (min-width: 640px) {
 			grid-template-areas:
-				'image content content'
-				'image content content'
-				'image explore explore'
-				'image footer actions'
-				'debug . .';
+				'select image content content'
+				'select image content content'
+				'. image explore explore'
+				'. image footer actions'
+				'. debug . .';
 
 			& .card-actions {
 				padding-top: calc(var(--spacing) * 1);
@@ -566,6 +587,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			color: var(--color-subtle);
 			font-size: var(--text-xs);
 		}
+	}
+
+	.card-select {
+		grid-area: select;
 	}
 
 	.no-image {

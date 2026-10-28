@@ -3,7 +3,8 @@
 	import { tick } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { afterNavigate, goto } from '$app/navigation';
-	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
+	// import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { Facet, SearchResult } from '#lib/types/search.js';
 	import type { HoldingsData } from '#lib/types/holdings.js';
 	import SiteFooter from '../SiteFooter.svelte';
@@ -24,10 +25,15 @@
 	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import { HeadingElem } from '#lib/types/decoratedData.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
+	import Selection from '#lib/components/Selection.svelte';
+	import BiLayoutSidebarReverse from '~icons/bi/layout-sidebar-reverse';
+	import { fade } from 'svelte/transition';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
 	const userSettings = getUserSettings();
+	const selection = getSelectionContext();
 
 	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
 	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
@@ -37,10 +43,10 @@
 			: `${page.data.t('search.searchResults')} - ${siteName}`
 	);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
-	const isSmallScreen = new MediaQuery('max-width: 640px', false);
-	const HoldingsComponent = $derived(
-		USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
-	);
+	// const isSmallScreen = new MediaQuery('max-width: 640px', false);
+	// const HoldingsComponent = $derived(
+	// 	USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
+	// );
 	const holdingsParam = $derived(page.url.searchParams.get('holdings'));
 	const modalCard = $derived(
 		holdingsParam &&
@@ -52,6 +58,12 @@
 	let previousURL: URL;
 	const expandLeadingPaneBtnId = 'expand-leading-pane-btn';
 	const collapseLeadingPaneBtnId = 'collapse-leading-pane-btn';
+
+	const canShowTrailingPane = $derived(selection.hasSelection);
+	const expandTrailingPanePaneBtnId = 'expand-trailing-pane-btn';
+	const collapseTrailingPaneBtnId = 'collapse-trailing-pane-btn';
+
+	const offset = $derived(parseInt(page.url.searchParams.get('_offset') || '0'));
 
 	afterNavigate(({ from, shallow, type }) => {
 		if (shallow && type === 'goto') return;
@@ -77,6 +89,20 @@
 		}
 	}
 
+	function onOpenLeadingPane() {
+		userSettings.openLeadingPane();
+		tick().then(() => {
+			document.getElementById(collapseLeadingPaneBtnId)?.focus();
+		});
+	}
+
+	function onOpenTrailingPane() {
+		userSettings.openTrailingPane();
+		tick().then(() => {
+			document.getElementById(collapseTrailingPaneBtnId)?.focus();
+		});
+	}
+
 	function onCloseLeadingPane() {
 		userSettings.closeLeadingPane();
 		tick().then(() => {
@@ -84,10 +110,10 @@
 		});
 	}
 
-	function onOpenLeadingPane() {
-		userSettings.openLeadingPane();
+	function onCloseTrailingPane() {
+		userSettings.closeTrailingPane();
 		tick().then(() => {
-			document.getElementById(collapseLeadingPaneBtnId)?.focus();
+			document.getElementById(expandTrailingPanePaneBtnId)?.focus();
 		});
 	}
 </script>
@@ -123,7 +149,9 @@
 
 					<ol aria-labelledby="search-results" class="flex flex-col">
 						{#each searchResult.items as item, index (item['@id'] + index)}
-							<li><SearchCard {item} headingElement={HeadingElem.H2} /></li>
+							<li>
+								<SearchCard {item} headingElement={HeadingElem.H2} itemNo={offset + (index + 1)} />
+							</li>
 						{/each}
 					</ol>
 					<Pagination data={searchResult} />
@@ -131,15 +159,43 @@
 				<!-- placeholder for aside trailing pane -->
 				<div class="search-result-aside min-w-75">
 					<div class="hidden @5xl/content:block">
-						<Toolbar />
+						<Toolbar>
+							<!-- expand trailingPane btn -->
+							{#if canShowTrailingPane && !userSettings.trailingPane?.open}
+								<button
+									id={expandTrailingPanePaneBtnId}
+									class="ml-auto btn btn-primary flex gap-1.5"
+									aria-label={page.data.t('panes.show')}
+									aria-expanded={userSettings.leadingPane?.open}
+									aria-controls="leading-pane"
+									in:fade={{ duration: 200 }}
+									onclick={onOpenTrailingPane}
+								>
+									<BiLayoutSidebarReverse class="size-4" />
+									{#if selection.hasSelection}
+										<span class="badge badge-accent">
+											{selection.getAll.length}
+										</span>
+									{/if}
+								</button>
+							{/if}
+						</Toolbar>
 					</div>
 					<div class="aside-content sticky h-px"></div>
 				</div>
 			</div>
 			<SiteFooter />
 		</div>
+		{#if canShowTrailingPane && userSettings.trailingPane?.open}
+			<TrailingPane onClose={onCloseTrailingPane} {collapseTrailingPaneBtnId}>
+				{#snippet title()}
+					<span>Urval</span>
+				{/snippet}
+				<Selection {selection} defaultFormat={userSettings.selectedCitationFormat} />
+			</TrailingPane>
+		{/if}
 		{#if holdings && holdingsParam}
-			<HoldingsComponent close={handleCloseHoldings}>
+			<Modal close={handleCloseHoldings}>
 				{#snippet title()}
 					<span>{page.data.t('holdings.findAtLibrary')}</span>
 				{/snippet}
@@ -160,7 +216,7 @@
 				{:catch err}
 					<p>{err}</p>
 				{/await}
-			</HoldingsComponent>
+			</Modal>
 		{/if}
 	</div>
 {/if}

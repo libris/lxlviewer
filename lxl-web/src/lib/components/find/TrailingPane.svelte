@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import Draggable from '../Draggable.svelte';
 	import {
-		LEADING_PANE_COLLAPSE_WIDTH,
+		TRAILING_PANE_COLLAPSE_WIDTH,
 		TRAILING_PANE_DEFAULT_WIDTH,
 		TRAILING_PANE_MAX_WIDTH,
 		TRAILING_PANE_MIN_WIDTH
@@ -15,12 +15,15 @@
 	type Props = {
 		children?: Snippet;
 		title: Snippet;
-		close: () => void;
+		onClose: () => void;
+		collapseTrailingPaneBtnId: string;
 	};
 
-	const { children, title, close }: Props = $props();
+	const { children, title, onClose, collapseTrailingPaneBtnId }: Props = $props();
 
 	const userSettings = getUserSettings();
+
+	const paneOpen = $derived(userSettings.trailingPane?.open);
 	let paneWidth = $state(userSettings.trailingPane?.width || TRAILING_PANE_DEFAULT_WIDTH);
 	let isDragging = $state(false);
 
@@ -29,20 +32,21 @@
 	}
 </script>
 
-<section
-	aria-label={page.data.t('panes.trailingPane')}
+<div
 	id="trailing-pane"
 	class={[
-		'trailing-pane relative hidden w-0 border-b border-b-neutral-200 sm:block',
+		'trailing-pane sticky top-0 z-10 hidden w-0 sm:block print:hidden',
 		// Enable transition for the collapse animation. But disable it while resizing the panel!
 		!isDragging && 'transition-[padding] duration-150 ease-in motion-reduce:transition-none'
 	]}
-	style="padding-right:{paneWidth}px"
+	style="padding-right:{paneOpen ? paneWidth : 0}px"
+	inert={!paneOpen}
 >
 	<div
 		class={[
-			'trailing-pane-wrapper flex flex-col',
-			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none'
+			'flex h-full flex-col',
+			!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none',
+			paneOpen ? 'translate-x-0' : '-translate-x-full'
 		]}
 		style="width:{paneWidth}px"
 	>
@@ -55,16 +59,22 @@
 				{/snippet}
 				{#snippet trailingActions()}
 					<button
+						id={collapseTrailingPaneBtnId}
 						class="btn btn-primary my-2 border-0"
 						aria-label={page.data.t('panes.hide')}
-						onclick={close}
+						aria-expanded={paneOpen}
+						aria-controls="trailing-pane"
+						onclick={onClose}
 					>
 						<BiXLg class="size-4" />
 					</button>
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div class="trailing-pane-content p-4">
+		<div
+			class="leading-pane-content p-4 mr-1.5 overflow-y-auto overscroll-contain *:h-full"
+			style="--leading-pane-height:calc(100vh - var(--appbar-height) - var(--banner-height, 0))"
+		>
 			{@render children?.()}
 		</div>
 	</div>
@@ -74,32 +84,37 @@
 		minWidth={TRAILING_PANE_MIN_WIDTH}
 		maxWidth={TRAILING_PANE_MAX_WIDTH}
 		bind:isDragging
-		collapseWidth={LEADING_PANE_COLLAPSE_WIDTH}
-		oncollapse={() => {}}
-		onexpand={() => {}}
+		collapseWidth={TRAILING_PANE_COLLAPSE_WIDTH}
+		oncollapse={() => userSettings.closeTrailingPane()}
+		onexpand={() => userSettings.openTrailingPane()}
 		onresized={handleOnResized}
 	/>
-</section>
+</div>
 
 <style lang="postcss">
 	@reference 'tailwindcss';
+
+	.trailing-pane {
+		height: calc(100vh - var(--appbar-height) - var(--banner-height, 0));
+		top: calc(var(--appbar-height) + var(--banner-height, 0));
+	}
 
 	.trailing-pane,
 	.trailing-pane-toolbar {
 		background: linear-gradient(90deg, var(--color-neutral-100) 0%, var(--color-aside) 10px);
 	}
 
-	.trailing-pane-wrapper {
+	/* .trailing-pane-wrapper {
 		@variant sm {
 			top: var(--appbar-height);
 		}
-	}
+	} */
 
 	.trailing-pane-content {
+		height: 100%;
 		max-height: calc(
-			100vh - var(--appbar-height) - var(--toolbar-height) - var(--banner-height, 0px)
+			100vh - var(--appbar-height) - var(--banner-height, 0) - var(--toolbar-height, 0)
 		);
-		overflow-y: auto;
 		scrollbar-width: thin;
 	}
 </style>

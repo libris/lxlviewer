@@ -9,6 +9,7 @@
 	import Matomo from '#lib/components/Matomo.svelte';
 	import CookieConsent from '#lib/components/CookieConsent.svelte';
 	import { setCookieConsentContext } from '#lib/contexts/cookieConsent.js';
+	import { setSelectionContext } from '#lib/contexts/selection.svelte.ts';
 
 	const { children } = $props();
 
@@ -24,6 +25,7 @@
 
 	setCookieConsentContext(cookieConsentState);
 	setUserSettings(page.data.userSettings);
+	setSelectionContext();
 
 	let progressBarTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 	const progressDelay = 300;
