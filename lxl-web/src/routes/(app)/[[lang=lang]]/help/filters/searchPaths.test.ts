@@ -502,10 +502,6 @@ describe('resolveSearchPaths', () => {
 					category: [link(`${VOCAB}shorthand`)],
 					'ls:indexKey': 'classification._sab',
 					propertyChainAxiom: [{ '@list': [link(`${VOCAB}classification`), link(`${VOCAB}code`)] }]
-				},
-				[`${LS}instanceCategory`]: {
-					'@id': `${LS}instanceCategory`,
-					'ls:indexKey': '_categoryByCollection.@none'
 				}
 			},
 			{ [`${VOCAB}classification`]: 'klassifikation', [`${VOCAB}code`]: 'kod' }
@@ -513,8 +509,94 @@ describe('resolveSearchPaths', () => {
 		expect(resolveSearchPaths(ctx.getDefinition(`${LS}sab`), ctx)).toEqual([
 			{ label: 'klassifikation › kod', path: 'classification.code' }
 		]);
+	});
+
+	it('hardcodes category paths for workCategory and instanceCategory', () => {
+		const ctx = ctxFor(
+			{
+				[`${LS}workCategory`]: {
+					'@id': `${LS}workCategory`,
+					category: [link(`${LS}composite`)],
+					domain: [link(`${VOCAB}Work`)]
+				},
+				[`${LS}instanceCategory`]: {
+					'@id': `${LS}instanceCategory`,
+					'ls:indexKey': '_categoryByCollection.@none',
+					domain: [link(`${VOCAB}Instance`)]
+				}
+			},
+			{
+				[`${VOCAB}Work`]: 'Verk',
+				[`${VOCAB}Instance`]: 'Instans',
+				[`${VOCAB}category`]: 'kategori'
+			}
+		);
+		expect(resolveSearchPaths(ctx.getDefinition(`${LS}workCategory`), ctx)).toEqual([
+			{ label: '[Verk] › kategori', path: 'workCategory' }
+		]);
 		expect(resolveSearchPaths(ctx.getDefinition(`${LS}instanceCategory`), ctx)).toEqual([
-			{ path: 'librissearch:instanceCategory' }
+			{ label: '[Instans] › kategori', path: 'instanceCategory' }
+		]);
+	});
+
+	it('expands librissearch:controlNumbers to control number and fnurgel id', () => {
+		const ctx = {
+			...ctxFor(
+				{
+					[`${LS}controlNumber`]: {
+						'@id': `${LS}controlNumber`,
+						category: [link(`${VOCAB}shorthand`)],
+						propertyChainAxiom: [{ '@list': [link(`${VOCAB}meta`), link(`${LS}controlNumbers`)] }]
+					}
+				},
+				{ [`${VOCAB}meta`]: 'Metadata', [`${VOCAB}controlNumber`]: 'Kontrollnummer' }
+			),
+			recordUrlBase: 'https://libris-qa.kb.se'
+		};
+		expect(resolveSearchPaths(ctx.getDefinition(`${LS}controlNumber`), ctx)).toEqual([
+			{
+				label: 'Metadata',
+				path: 'meta',
+				children: [
+					{ label: 'Kontrollnummer', path: 'controlNumber' },
+					{
+						label: 'kort-id',
+						path: '{fnurgel} i https://libris-qa.kb.se/{fnurgel}'
+					}
+				]
+			}
+		]);
+	});
+
+	it('expands composite properties inside chains to their components', () => {
+		const ctx = ctxFor(
+			{
+				[`${LS}itemSubject`]: {
+					'@id': `${LS}itemSubject`,
+					category: [link(`${VOCAB}shorthand`)],
+					propertyChainAxiom: [{ '@list': [link(`${VOCAB}hasItem`), link(`${LS}subject`)] }]
+				},
+				[`${LS}subject`]: {
+					'@id': `${LS}subject`,
+					category: [link(`${LS}composite`)],
+					propertyChainAxiom: [
+						{ '@list': [link(`${VOCAB}subject`), link(`${VOCAB}termComponentList`)] }
+					],
+					basePropertyOf: [{ '@id': `${VOCAB}subject` }]
+				}
+			},
+			{
+				[`${VOCAB}hasItem`]: 'Har bestånd',
+				[`${VOCAB}subject`]: 'ämne',
+				[`${VOCAB}termComponentList`]: 'ämneskomponentlista'
+			}
+		);
+		expect(resolveSearchPaths(ctx.getDefinition(`${LS}itemSubject`), ctx)).toEqual([
+			{
+				label: 'Har bestånd › ämne › ämneskomponentlista',
+				path: 'hasItem.subject.termComponentList'
+			},
+			{ label: 'Har bestånd › ämne', path: 'hasItem.subject' }
 		]);
 	});
 

@@ -5,6 +5,7 @@ import { type DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
 import type { QualifierDefinition, QualifierDefinitionGroup } from '#lib/types/search.js';
 import { getUriSlug } from '#lib/utils/http.js';
 import { getCompactUri } from 'lxljs/string';
+import { API_URL } from '$app/env/private';
 import { resolveSearchPaths, type SearchPathContext } from './searchPaths.js';
 
 export async function load({ locals, params }) {
@@ -42,7 +43,8 @@ function mapSearchFilterDefinition(
 			locale,
 			getDefinition: (name) => vocab.getDefinition(name),
 			chipLabel: (d) => (d ? toString(display.lensAndFormat(d, LensType.Chip, locale)) : ''),
-			compactIri: (iri) => getCompactUri(iri, vocab.context)
+			compactIri: (iri) => getCompactUri(iri, vocab.context),
+			recordUrlBase: API_URL
 		};
 
 		return {

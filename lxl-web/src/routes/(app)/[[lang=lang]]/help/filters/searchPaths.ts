@@ -15,6 +15,11 @@ import { getUriSlug } from '#lib/utils/http.js';
 const MERGES = 'ls:merges';
 const CATEGORY = 'category';
 const SEARCH_FILTER_CATEGORY = 'https://id.kb.se/vocab/searchfilter';
+const CONTROL_NUMBERS = 'https://id.kb.se/ns/librissearch/controlNumbers';
+const CONTROL_NUMBER = 'https://id.kb.se/vocab/controlNumber';
+const WORK_CATEGORY = 'https://id.kb.se/ns/librissearch/workCategory';
+const INSTANCE_CATEGORY = 'https://id.kb.se/ns/librissearch/instanceCategory';
+const FNURGEL = 'fnurgel';
 const MAX_DEPTH = 3;
 
 export interface SearchPathContext {
@@ -22,6 +27,7 @@ export interface SearchPathContext {
 	getDefinition: (name: string | Link) => FramedData | undefined;
 	chipLabel: (def: FramedData | undefined) => string;
 	compactIri: (iri: string) => string;
+	recordUrlBase?: string;
 }
 
 type PathPart = { label: string; path: string };
@@ -33,6 +39,11 @@ export function resolveSearchPaths(
 ): PropertyChain[] {
 	if (!def || depth > MAX_DEPTH) {
 		return [];
+	}
+
+	const hardcoded = hardcodedCategoryPaths(def, ctx);
+	if (hardcoded) {
+		return hardcoded;
 	}
 
 	if (hasCategory(def, Platform.composite)) {
@@ -94,7 +105,10 @@ function expandChain(elements: unknown[], ctx: SearchPathContext, depth: number)
 	}
 
 	const prefix = commonPrefixParts(alternatives);
-	if (prefix.length === 0) {
+	if (
+		prefix.length === 0 ||
+		alternatives.some((alternative) => alternative.length === prefix.length)
+	) {
 		return alternatives.map(toPropertyChain);
 	}
 
@@ -107,9 +121,10 @@ function expandChain(elements: unknown[], ctx: SearchPathContext, depth: number)
 
 function commonPrefixParts(alternatives: PathPart[][]): PathPart[] {
 	const first = alternatives[0];
+	const shortest = Math.min(...alternatives.map((alternative) => alternative.length));
 	let length = 0;
 	while (
-		length < first.length &&
+		length < shortest &&
 		alternatives.every((alternative) => samePart(alternative[length], first[length]))
 	) {
 		length++;
@@ -152,6 +167,9 @@ function expandChainParts(
 
 function expandElement(element: unknown, ctx: SearchPathContext, depth: number): PathPart[][] {
 	if (isLink(element)) {
+		if (element[JsonLd.ID] === CONTROL_NUMBERS) {
+			return controlNumbersParts(ctx);
+		}
 		const def = ctx.getDefinition(element);
 		if (def && depth < MAX_DEPTH && hasCategory(def, Platform.merged)) {
 			return mergeConstituents(def).flatMap((constituent) => {
@@ -160,6 +178,12 @@ function expandElement(element: unknown, ctx: SearchPathContext, depth: number):
 				}
 				return isObject(constituent) ? chainAxiomParts(constituent, ctx, depth + 1) : [];
 			});
+		}
+		if (def && depth < MAX_DEPTH && hasCategory(def, Platform.composite)) {
+			const alternatives = compositeParts(def, ctx, depth + 1);
+			if (alternatives.length > 0) {
+				return alternatives;
+			}
 		}
 		if (def && isRestrictedSubProperty(def)) {
 			const restricted = formatRestrictedElement(def, ctx, depth);
@@ -172,6 +196,17 @@ function expandElement(element: unknown, ctx: SearchPathContext, depth: number):
 
 	const restricted = isObject(element) ? formatRestrictedElement(element, ctx, depth) : null;
 	return restricted ? [[restricted]] : [];
+}
+
+function compositeParts(def: FramedData, ctx: SearchPathContext, depth: number): PathPart[][] {
+	const alternatives: PathPart[][] = [...chainAxiomParts(def, ctx, depth)];
+	for (const sub of subFiltersOf(def)) {
+		const id = sub[JsonLd.ID];
+		if (typeof id === 'string') {
+			alternatives.push(...expandElement({ [JsonLd.ID]: id } as Link, ctx, depth));
+		}
+	}
+	return alternatives;
 }
 
 function isRestrictedSubProperty(def: Data): boolean {
@@ -211,6 +246,40 @@ function partFor(link: Link, ctx: SearchPathContext): PathPart {
 		label: ctx.chipLabel(ctx.getDefinition(link)),
 		path: termKeyOf(link, ctx)
 	};
+}
+
+function controlNumbersParts(ctx: SearchPathContext): PathPart[][] {
+	const controlNumberLabel = ctx.chipLabel(ctx.getDefinition(CONTROL_NUMBER)) || 'controlNumber';
+	const isEnglish = ctx.locale === 'en';
+	const fnurgelLabel = isEnglish ? 'short id' : 'kort-id';
+	const fnurgelPath = ctx.recordUrlBase
+		? `{${FNURGEL}} ${isEnglish ? 'in' : 'i'} ${ctx.recordUrlBase}/{${FNURGEL}}`
+		: `{${FNURGEL}}`;
+	return [
+		[{ label: controlNumberLabel, path: 'controlNumber' }],
+		[{ label: fnurgelLabel, path: fnurgelPath }]
+	];
+}
+
+// TODO: ls:workCategory and ls:instanceCategory have incomplete definitions in the vocab
+// (their category-by-type index construction is not expressible as property chains).
+// Hardcode "[domain] › category" until they are properly defined.
+function hardcodedCategoryPaths(def: FramedData, ctx: SearchPathContext): PropertyChain[] | null {
+	const id = def[JsonLd.ID];
+	if (id !== WORK_CATEGORY && id !== INSTANCE_CATEGORY) {
+		return null;
+	}
+	const slug = getUriSlug(id as string) ?? '';
+	const domainLink = firstLink(def[Rdfs.domain] as unknown);
+	const domainLabel = domainLink
+		? ctx.chipLabel(ctx.getDefinition(domainLink)) || termKeyOf(domainLink, ctx)
+		: id === WORK_CATEGORY
+			? 'Verk'
+			: 'Instans';
+	const categoryLabel =
+		ctx.chipLabel(ctx.getDefinition('https://id.kb.se/vocab/category')) ||
+		(ctx.locale === 'en' ? 'category' : 'kategori');
+	return [{ label: `[${domainLabel}] › ${categoryLabel}`, path: slug }];
 }
 
 function termKeyOf(term: Link | FramedData, ctx: SearchPathContext): string {
