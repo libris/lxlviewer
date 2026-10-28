@@ -162,7 +162,7 @@ function expandElement(element: unknown, ctx: SearchPathContext, depth: number):
 			});
 		}
 		if (def && isRestrictedSubProperty(def)) {
-			const restricted = formatRestrictedElement(def, ctx);
+			const restricted = formatRestrictedElement(def, ctx, depth);
 			if (restricted) {
 				return [[restricted]];
 			}
@@ -170,7 +170,7 @@ function expandElement(element: unknown, ctx: SearchPathContext, depth: number):
 		return [[partFor(element, ctx)]];
 	}
 
-	const restricted = isObject(element) ? formatRestrictedElement(element, ctx) : null;
+	const restricted = isObject(element) ? formatRestrictedElement(element, ctx, depth) : null;
 	return restricted ? [[restricted]] : [];
 }
 
@@ -218,7 +218,7 @@ function termKeyOf(term: Link | FramedData, ctx: SearchPathContext): string {
 	return typeof iri === 'string' ? ctx.compactIri(iri) : '';
 }
 
-function formatRestrictedElement(el: Data, ctx: SearchPathContext): PathPart | null {
+function formatRestrictedElement(el: Data, ctx: SearchPathContext, depth: number): PathPart | null {
 	const superProperty = firstLink(el[Rdfs.subPropertyOf] as unknown);
 	if (!superProperty) {
 		return null;
@@ -229,7 +229,7 @@ function formatRestrictedElement(el: Data, ctx: SearchPathContext): PathPart | n
 
 	const range = firstOf(el[Rdfs.range] as unknown);
 	if (range !== undefined) {
-		return formatRangeRestricted(superPath, superLabel, range, ctx);
+		return formatRangeRestricted(superPath, superLabel, range, ctx, depth);
 	}
 
 	const domain = firstLink(el[Rdfs.domain] as unknown);
@@ -245,7 +245,8 @@ function formatRangeRestricted(
 	superPath: string,
 	superLabel: string,
 	range: unknown,
-	ctx: SearchPathContext
+	ctx: SearchPathContext,
+	depth: number
 ): PathPart | null {
 	if (isLink(range)) {
 		const valuePath = termKeyOf(range, ctx);
@@ -281,8 +282,7 @@ function formatRangeRestricted(
 		return null;
 	}
 
-	const propertyPath = termKeyOf(onProperty, ctx);
-	const propertyLabel = ctx.chipLabel(ctx.getDefinition(onProperty)) || propertyPath;
+	const property = restrictionProperty(onProperty, ctx, depth);
 	const rawValue = restriction[Owl.hasValue];
 	const valueLink = isLink(rawValue) ? rawValue : undefined;
 	const valuePath = valueLink ? `<${termKeyOf(valueLink, ctx)}>` : String(rawValue);
@@ -291,9 +291,24 @@ function formatRangeRestricted(
 		: String(rawValue);
 
 	return {
-		label: `${superLabel} [${propertyLabel}: ${valueLabel}]`,
-		path: `${superPath}[${propertyPath}=${valuePath}]`
+		label: `${superLabel} [${property.label}: ${valueLabel}]`,
+		path: `${superPath}[${property.path}=${valuePath}]`
 	};
+}
+
+function restrictionProperty(
+	onProperty: Link,
+	ctx: SearchPathContext,
+	depth: number
+): { label: string; path: string } {
+	const def = ctx.getDefinition(onProperty);
+	const chains = def ? chainsOf(def, ctx, depth + 1) : [];
+	const chain = chains.find((c) => c.path);
+	if (chain) {
+		return { label: chain.label || chain.path, path: chain.path };
+	}
+	const path = termKeyOf(onProperty, ctx);
+	return { label: ctx.chipLabel(def) || path, path };
 }
 
 function mergeConstituents(def: FramedData): unknown[] {

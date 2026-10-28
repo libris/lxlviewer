@@ -192,14 +192,23 @@ describe('resolveSearchPaths', () => {
 							]
 						}
 					]
+				},
+				[`${LS}schemeCode`]: {
+					'@id': `${LS}schemeCode`,
+					category: [link(`${VOCAB}shorthand`)],
+					propertyChainAxiom: [{ '@list': [link(`${VOCAB}inScheme`), link(`${VOCAB}code`)] }]
 				}
 			},
-			{ [`${VOCAB}classification`]: 'klassifikation', [`${VOCAB}code`]: 'kod' }
+			{
+				[`${VOCAB}classification`]: 'klassifikation',
+				[`${VOCAB}code`]: 'kod',
+				[`${VOCAB}inScheme`]: 'klassifikationssystem'
+			}
 		);
 		expect(resolveSearchPaths(ctx.getDefinition(`${LS}sab`), ctx)).toEqual([
 			{
-				label: 'klassifikation [librissearch:schemeCode: kssb] › kod',
-				path: 'classification[librissearch:schemeCode=kssb].code'
+				label: 'klassifikation [klassifikationssystem › kod: kssb] › kod',
+				path: 'classification[inScheme.code=kssb].code'
 			}
 		]);
 	});
