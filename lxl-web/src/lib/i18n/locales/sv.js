@@ -58,8 +58,7 @@ export default {
 		reference: 'Referens',
 		searchIn: 'Söker i',
 		filter: 'Filter',
-		code: 'Kod',
-		showPathsAndCodes: 'Visa sökvägar och sökkoder'
+		code: 'Kod'
 	},
 	myPages: {
 		pageTitle: 'Mina sidor',

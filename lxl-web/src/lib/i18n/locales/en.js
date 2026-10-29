@@ -59,8 +59,7 @@ export default {
 		filter: 'Filter',
 		reference: 'Reference',
 		searchIn: 'Searches in',
-		code: 'Code',
-		showPathsAndCodes: 'Show search paths and codes'
+		code: 'Code'
 	},
 	myPages: {
 		pageTitle: 'My pages',
