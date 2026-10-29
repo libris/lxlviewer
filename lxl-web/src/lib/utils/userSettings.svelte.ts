@@ -120,6 +120,10 @@ export class UserSettings {
 		this.update('prefersNearMe', setting);
 	}
 
+	setSelectableResults(setting: boolean) {
+		this.update('selectableResults', setting);
+	}
+
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
@@ -146,6 +150,10 @@ export class UserSettings {
 
 	get prefersNearMe() {
 		return this.settings.prefersNearMe;
+	}
+
+	get selectableResults() {
+		return this.settings.selectableResults;
 	}
 
 	toURLSearchParams(): URLSearchParams {

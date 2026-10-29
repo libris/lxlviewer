@@ -40,6 +40,7 @@
 		hideType?: boolean;
 		headingElement?: HeadingElem;
 		headingIsLink?: boolean;
+		selectable?: boolean;
 		itemNo?: number;
 	}
 
@@ -53,6 +54,7 @@
 		hideType = false,
 		headingElement = HeadingElem.H2,
 		headingIsLink = true,
+		selectable = false,
 		itemNo = undefined
 	}: Props = $props();
 
@@ -214,13 +216,14 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		class={[
 			'search-card border-neutral relative grid w-full gap-x-4 border-t px-3 py-3 font-normal transition-colors',
 			showHighlight && 'bg-accent-50/75',
-			!page.data.features.resourceImages && 'no-image'
+			!page.data.features.resourceImages && 'no-image',
+			selectable && 'selectable'
 		]}
 		aria-current={showHighlight || undefined}
 		data-testid="search-card"
 		bind:this={articleElement}
 	>
-		{#if itemNo && allowActions}
+		{#if selectable && itemNo && allowActions}
 			<div class="card-select flex flex-col items-start justify-start gap-1">
 				<label for={`checkbox-${itemNo}`} class="text-xs text-subtle">{itemNo}.</label>
 				<input
@@ -489,10 +492,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		{/if}
 		{#if bibliographyLink}
 			<!-- numberOfItems doesn't include count from parts on parent bibliographies with parts.
-                 Some parents have a small number of instances directly linked to them instead of 0.
-                 Only show count if it looks "correct", i.e. large enough -->
+					Some parents have a small number of instances directly linked to them instead of 0.
+					Only show count if it looks "correct", i.e. large enough -->
 			{@const numItems = formatNumItems(
-				item?.numberOfItems > 100 ? item?.numberOfItems : undefined
+				item?.numberOfItems && item.numberOfItems > 100 ? item?.numberOfItems : undefined
 			)}
 			<div class="card-explore mt-2">
 				<a
@@ -557,6 +560,40 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 
 	.search-card {
 		grid-template-areas:
+			'image content content'
+			'image footer footer'
+			'image explore explore'
+			'actions actions actions'
+			'debug . .';
+
+		grid-template-columns: 64px 1fr auto;
+
+		@container card (min-width: 768px) {
+			grid-template-columns: 72px 1fr auto;
+			@apply gap-x-6 px-6 py-4;
+		}
+
+		@container card (min-width: 640px) {
+			grid-template-areas:
+				'image content content'
+				'image content content'
+				'image explore explore'
+				'image footer actions'
+				'debug . .';
+
+			& .card-actions {
+				padding-top: calc(var(--spacing) * 1);
+			}
+		}
+
+		& :global(.contribution-role) {
+			color: var(--color-subtle);
+			font-size: var(--text-xs);
+		}
+	}
+
+	.search-card.selectable {
+		grid-template-areas:
 			'select image content content'
 			'select image footer footer'
 			'. image explore explore'
@@ -577,15 +614,6 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 				'. image explore explore'
 				'. image footer actions'
 				'. debug . .';
-
-			& .card-actions {
-				padding-top: calc(var(--spacing) * 1);
-			}
-		}
-
-		& :global(.contribution-role) {
-			color: var(--color-subtle);
-			font-size: var(--text-xs);
 		}
 	}
 

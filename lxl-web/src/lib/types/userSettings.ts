@@ -28,6 +28,7 @@ export type UserSettings = {
 	};
 	debug?: DebugFlags[];
 	prefersNearMe?: boolean;
+	selectableResults?: boolean;
 };
 
 export enum DebugFlags {
