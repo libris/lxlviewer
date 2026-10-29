@@ -150,7 +150,12 @@
 					<ol aria-labelledby="search-results" class="flex flex-col">
 						{#each searchResult.items as item, index (item['@id'] + index)}
 							<li>
-								<SearchCard {item} headingElement={HeadingElem.H2} itemNo={offset + (index + 1)} />
+								<SearchCard
+									{item}
+									headingElement={HeadingElem.H2}
+									itemNo={offset + (index + 1)}
+									selectable={userSettings.selectableResults}
+								/>
 							</li>
 						{/each}
 					</ol>
@@ -189,7 +194,7 @@
 		{#if canShowTrailingPane && userSettings.trailingPane?.open}
 			<TrailingPane onClose={onCloseTrailingPane} {collapseTrailingPaneBtnId}>
 				{#snippet title()}
-					<span>Urval</span>
+					<span>Hantera ditt urval</span>
 				{/snippet}
 				<Selection {selection} />
 			</TrailingPane>

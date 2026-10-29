@@ -53,7 +53,7 @@
 		<div class="trailing-pane-toolbar">
 			<Toolbar>
 				{#snippet leadingActions()}
-					<p class="text-xs">
+					<p class="text-sm font-medium truncate">
 						{@render title?.()}
 					</p>
 				{/snippet}

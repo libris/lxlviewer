@@ -10,6 +10,8 @@
 	import SearchResultSort from './SearchResultSort.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiLayoutSidebar from '~icons/bi/layout-sidebar';
+	import BiUiChecks from '~icons/bi/ui-checks';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 
 	type SearchResultToolbarProps = {
 		searchResult: SearchResult;
@@ -19,6 +21,9 @@
 
 	const { searchResult, expandLeadingPaneBtnId, onOpenPane }: SearchResultToolbarProps = $props();
 	const userSettings = getUserSettings();
+	const selection = getSelectionContext();
+
+	let selectableResults = $state(userSettings?.selectableResults);
 
 	let showFiltersModal = $state(false);
 	const numHits = $derived(searchResult.totalItems);
@@ -41,6 +46,12 @@
 		}
 		_iter(root);
 		return count;
+	}
+
+	function toggleSelectableResults() {
+		selectableResults = !selectableResults;
+		userSettings.setSelectableResults(selectableResults);
+		selection.clear();
 	}
 
 	function toggleFiltersModal() {
@@ -85,6 +96,13 @@
 					<BiLayoutSidebar class="size-4" />
 				</button>
 			{/if}
+			<button
+				type="button"
+				class={['btn btn-primary', selectableResults ? 'btn-accent' : '']}
+				onclick={toggleSelectableResults}
+			>
+				<BiUiChecks />
+			</button>
 		{/snippet}
 		{#snippet trailingActions()}
 			{#if numHits > 0}
