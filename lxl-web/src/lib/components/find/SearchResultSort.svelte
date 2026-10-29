@@ -20,10 +20,14 @@
 			value: '@reverse.instanceOf.publication.librissearch:year',
 			label: page.data.t('sort.publicationAsc')
 		},
-		{
-			value: '-reverseLinks.totalItemsByRelation.itemOf.instanceOf',
-			label: page.data.t('sort.holdingsDesc')
-		}
+		...(page.data.features.holdings
+			? [
+					{
+						value: '-reverseLinks.totalItemsByRelation.itemOf.instanceOf',
+						label: page.data.t('sort.holdingsDesc')
+					}
+				]
+			: [])
 	]);
 
 	function handleSortChange(e: Event) {
