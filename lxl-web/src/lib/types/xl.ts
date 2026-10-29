@@ -83,6 +83,10 @@ export enum Bibframe {
 	reproductionOf = 'reproductionOf'
 }
 
+export enum Kbv {
+	DigitalResource = 'DigitalResource'
+}
+
 export enum BibDb {
 	ils = 'bibdb:ils',
 	lopac = 'bibdb:lopac',

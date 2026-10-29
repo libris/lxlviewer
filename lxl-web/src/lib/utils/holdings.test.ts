@@ -67,7 +67,7 @@ describe('getHeldBy', () => {
 		]);
 	});
 
-	it('Ignores holdings on reproductions', () => {
+	it('Ignores holdings on digital reproductions', () => {
 		const reproduction = {
 			'@id': 'https://example.com/b',
 			'@type': 'DigitalResource',

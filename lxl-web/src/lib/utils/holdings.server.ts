@@ -10,7 +10,7 @@ import type {
 	LibraryFull,
 	LibraryWithLinks
 } from '#lib/types/holdings.js';
-import { Base, BibDb, Bibframe, JsonLd, LensType, type FramedData } from '#lib/types/xl.js';
+import { Base, BibDb, Bibframe, JsonLd, LensType, type FramedData, Kbv } from '#lib/types/xl.js';
 import { toString } from '#lib/utils/misc.js';
 import { VocabUtil, type DisplayUtil } from '#lib/utils/xl.server.js';
 import getAtPath from '#lib/utils/getAtPath.js';
@@ -50,7 +50,7 @@ export function getHoldingsByType(mainEntity: HoldingMainEntity | HoldingInstanc
 	const result: HoldingsByType = {};
 
 	for (const instance of instances) {
-		if (isComponentPart(instance) || isReproduction(instance)) {
+		if (isComponentPart(instance) || isDigitalReproduction(instance)) {
 			continue;
 		}
 
@@ -79,7 +79,7 @@ export function getHoldingsByInstanceId(
 		const id = stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])));
 		if (!id) continue;
 
-		if (isReproduction(instance)) {
+		if (isDigitalReproduction(instance)) {
 			continue;
 		}
 
@@ -118,7 +118,7 @@ export function getBibIdsByInstanceId(
 		const id = stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])));
 		if (!id) continue;
 
-		if (isReproduction(instance)) {
+		if (isDigitalReproduction(instance)) {
 			continue;
 		}
 
@@ -245,7 +245,7 @@ export function getHoldersCount(
 		return -1;
 	}
 
-	if (isInstance && isReproduction(data)) {
+	if (isInstance && isDigitalReproduction(data)) {
 		return -1;
 	}
 
@@ -260,7 +260,7 @@ export function getHoldersCount(
 		if (isComponentPart(instance)) {
 			return -1;
 		}
-		if (isReproduction(instance)) {
+		if (isDigitalReproduction(instance)) {
 			continue;
 		}
 
@@ -278,6 +278,8 @@ function isComponentPart(instance) {
 	return (instance[Base.category] || []).some((c) => c[JsonLd.ID] === COMPONENT_PART);
 }
 
-function isReproduction(instance) {
-	return !!instance[Bibframe.reproductionOf]?.[JsonLd.ID];
+function isDigitalReproduction(instance) {
+	return (
+		!!instance[Bibframe.reproductionOf]?.[JsonLd.ID] && instance[JsonLd.TYPE] == Kbv.DigitalResource
+	);
 }
