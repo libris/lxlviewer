@@ -60,6 +60,14 @@ export async function initCite(locale: LocaleCode) {
 		cite.add(data);
 	}
 
+	function set(data: CSLJSON[]) {
+		cite.set(data);
+	}
+
+	function reset() {
+		cite.reset();
+	}
+
 	function formatAs(name: AvailableCitationFormat) {
 		switch (name) {
 			case 'csl':
@@ -90,7 +98,7 @@ export async function initCite(locale: LocaleCode) {
 		}
 	}
 
-	return { add, formatAs };
+	return { add, set, formatAs, reset };
 }
 
 // load these resources only if user uses cite functionality

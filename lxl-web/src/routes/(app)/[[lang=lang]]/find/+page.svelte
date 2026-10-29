@@ -59,7 +59,7 @@
 	const expandLeadingPaneBtnId = 'expand-leading-pane-btn';
 	const collapseLeadingPaneBtnId = 'collapse-leading-pane-btn';
 
-	const canShowTrailingPane = $derived(selection.hasSelection);
+	const canShowTrailingPane = $derived(selection.length > 0);
 	const expandTrailingPanePaneBtnId = 'expand-trailing-pane-btn';
 	const collapseTrailingPaneBtnId = 'collapse-trailing-pane-btn';
 
@@ -172,9 +172,9 @@
 									onclick={onOpenTrailingPane}
 								>
 									<BiLayoutSidebarReverse class="size-4" />
-									{#if selection.hasSelection}
+									{#if selection.length > 0}
 										<span class="badge badge-accent">
-											{selection.getAll.length}
+											{selection.length}
 										</span>
 									{/if}
 								</button>
@@ -191,7 +191,7 @@
 				{#snippet title()}
 					<span>Urval</span>
 				{/snippet}
-				<Selection {selection} defaultFormat={userSettings.selectedCitationFormat} />
+				<Selection {selection} />
 			</TrailingPane>
 		{/if}
 		{#if holdings && holdingsParam}
