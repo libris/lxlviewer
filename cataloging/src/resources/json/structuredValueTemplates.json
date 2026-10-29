@@ -665,6 +665,27 @@
       "marc:publicNote": [""]
     }
   ],
+  "hasItemAction": {
+        "@type": "ItemAction",
+        "agent": null,
+        "date": [
+          ""
+        ],
+        "category": [
+          {
+            "@id": "https://id.kb.se/term/spa/committed-to-retain"
+          }
+        ],
+        "_categoryByCollection": {
+          "@none": [
+            {
+              "@id": "https://id.kb.se/term/spa/committed-to-retain"
+            }
+          ]
+        },
+        "endDate": "",
+        "startDate": ""
+      },
   "Classification": {
     "@type": "Classification",
     "code": "",
