@@ -30,7 +30,9 @@
 
 <div class="text-sm">
 	<div class="flex items-center gap-4">
-		<p class="font-medium">{selection.length} valda</p>
+		<p role="status" aria-atomic="true" class="font-medium">
+			{selection.length} valda
+		</p>
 		<button class="btn btn-primary" onclick={() => selection.clear()}> Rensa </button>
 	</div>
 
@@ -60,10 +62,8 @@
 			</div>
 		</fieldset>
 
-		{#if selection.loading}
-			<p>Laddar...</p>
-		{:else if selection.length > 0}
-			<Citations2 {citation} format={selectedFormat} />
+		{#if selection.length > 0}
+			<Citations2 {citation} format={selectedFormat} loading={selection.loading} />
 		{/if}
 	</div>
 </div>

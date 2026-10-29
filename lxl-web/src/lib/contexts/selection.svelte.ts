@@ -1,5 +1,4 @@
 import { defaultLocale, type LocaleCode } from '#lib/i18n/locales.js';
-import type { ApiError } from '#lib/types/api.js';
 import type { AvailableCitationFormat, CSLJSON } from '#lib/types/citation.js';
 import { initCite } from '#lib/utils/citation.js';
 import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
@@ -7,7 +6,8 @@ import { getContext, setContext } from 'svelte';
 
 type Selection = {
 	id: string;
-	csl: CSLJSON;
+	requestId: symbol;
+	csl?: CSLJSON;
 };
 
 type SelectionContext = {
@@ -28,9 +28,10 @@ function createSelection(): SelectionContext {
 	let cite: Awaited<ReturnType<typeof initCite>> | undefined;
 	let currentFormat = $state<AvailableCitationFormat | undefined>();
 	let citation = $state<ReturnType<Awaited<ReturnType<typeof initCite>>['formatAs']>>();
+	let pendingRequests = 0;
 
 	function updateCitation() {
-		cite?.set(selection.map((item) => item.csl));
+		cite?.set(selection.flatMap((item) => (item.csl ? [item.csl] : [])));
 		citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
 	}
 
@@ -70,15 +71,24 @@ function createSelection(): SelectionContext {
 
 		async toggle(id: string) {
 			const normalizedId = normalize(id);
-
 			if (!normalizedId) return;
 
-			if (selection.some((item) => item.id === normalizedId)) {
+			const existing = selection.find((item) => item.id === normalizedId);
+
+			if (existing) {
 				selection = selection.filter((item) => item.id !== normalizedId);
 				updateCitation();
 				return;
 			}
 
+			// add immediately so selection gets length -> open panel
+			const item: Selection = {
+				id: normalizedId,
+				requestId: Symbol(normalizedId)
+			};
+			selection.push(item);
+
+			pendingRequests++;
 			loading = true;
 
 			try {
@@ -87,25 +97,28 @@ function createSelection(): SelectionContext {
 				);
 
 				if (!res.ok) {
-					const error = (await res.json()) as ApiError;
-					console.error(error);
-					return;
+					throw new Error(`Failed to fetch citation: ${res.status}`);
 				}
 
 				const csl: CSLJSON[] = await res.json();
 
-				if (Array.isArray(csl) && csl.length === 1) {
-					selection.push({
-						id: normalizedId,
-						csl: csl[0]
-					});
+				const entry = selection.find((entry) => entry.id === normalizedId);
 
-					updateCitation();
+				if (entry?.requestId === item.requestId) {
+					if (csl.length === 1) {
+						entry.csl = csl[0];
+					} else {
+						// user may have deselect the entry while fetching
+						selection = selection.filter((entry) => entry.requestId !== item.requestId);
+					}
 				}
 			} catch (error) {
 				console.error('Failed to fetch citation:', error);
+				selection = selection.filter((entry) => entry !== item);
 			} finally {
-				loading = false;
+				pendingRequests--;
+				loading = pendingRequests > 0;
+				updateCitation();
 			}
 		},
 
