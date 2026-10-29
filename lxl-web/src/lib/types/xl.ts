@@ -79,7 +79,12 @@ export enum Bibframe {
 	summary = 'summary',
 	tableOfContents = 'tableOfContents',
 	publication = 'publication',
-	instanceOf = 'instanceOf'
+	instanceOf = 'instanceOf',
+	reproductionOf = 'reproductionOf'
+}
+
+export enum Kbv {
+	DigitalResource = 'DigitalResource'
 }
 
 export enum BibDb {
