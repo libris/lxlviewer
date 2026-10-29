@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
-	import type { AvailableCitationFormat } from '#lib/types/citation.ts';
+	import type { AvailableCitationFormat, CitationData } from '#lib/types/citation.ts';
 	import { getAvailableFormats } from '#lib/utils/citation.ts';
 	import { page } from '$app/state';
 	import BiChevronDown from '~icons/bi/chevron-down';
-	import Citations2 from './Citations2.svelte';
+	import Citation from './Citation.svelte';
 
 	interface Props {
 		selection: ReturnType<typeof getSelectionContext>;
@@ -16,10 +16,9 @@
 	const userSettings = getUserSettings();
 
 	const availableCitationFormats = getAvailableFormats();
-
 	let selectedFormat = $derived(availableCitationFormats.find((f) => f.key === selection.format));
-
 	const citation = $derived(selection.citation);
+	const citationData: CitationData = $derived({ ...selectedFormat, citation });
 
 	function handleChangeFormat(event: Event) {
 		const format = (event.currentTarget as HTMLSelectElement).value as AvailableCitationFormat;
@@ -63,7 +62,7 @@
 		</fieldset>
 
 		{#if selection.length > 0}
-			<Citations2 {citation} format={selectedFormat} loading={selection.loading} />
+			<Citation citation={citationData} loading={selection.loading} />
 		{/if}
 	</div>
 </div>

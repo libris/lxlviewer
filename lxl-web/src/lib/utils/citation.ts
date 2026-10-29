@@ -1,7 +1,7 @@
 import { Cite, plugins } from '@citation-js/core';
 import { goto, preloadData } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
-import type { CSLJSON, AvailableCitationFormat } from '#lib/types/citation.js';
+import type { CSLJSON, AvailableCitationFormat, CitationFormat } from '#lib/types/citation.js';
 import type { LocaleCode } from '#lib/i18n/locales.js';
 import type { ReadonlyURL } from '$app/state';
 
@@ -138,7 +138,7 @@ async function loadCiteResources() {
 	loaded = true;
 }
 
-export function getAvailableFormats() {
+export function getAvailableFormats(): CitationFormat[] {
 	return Object.entries(availableFormats).map(([key, value]) => {
 		return {
 			key: key as AvailableCitationFormat,

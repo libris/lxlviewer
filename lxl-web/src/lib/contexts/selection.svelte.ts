@@ -13,7 +13,7 @@ type Selection = {
 type SelectionContext = {
 	readonly loading: boolean;
 	readonly length: number;
-	readonly citation: ReturnType<Awaited<ReturnType<typeof initCite>>['formatAs']> | undefined;
+	readonly citation: Awaited<string> | undefined;
 	format: AvailableCitationFormat | undefined;
 	isSelected(id: string): boolean;
 	toggle(id: string): Promise<void>;

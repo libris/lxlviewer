@@ -5,13 +5,12 @@
 	import type { CitationData } from '#lib/types/citation.ts';
 
 	type Props = {
-		citation: string;
-		format: CitationData;
-		loading: boolean;
+		citation: CitationData;
+		loading?: boolean;
 		id?: string | undefined | null;
 	};
 
-	const { citation, format, id, loading = false }: Props = $props();
+	const { citation, id, loading = false }: Props = $props();
 
 	async function handleCopyCitation(
 		citation: string,
@@ -27,16 +26,16 @@
 	}
 
 	let wasCopied: Record<string, boolean> = $state({});
-	const isFileFormat = $derived(!!format?.fileFormat);
+	const isFileFormat = $derived(!!citation?.fileFormat);
 </script>
 
 <article
 	class="citation bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs"
-	aria-labelledby={format.key}
+	aria-labelledby={citation.key}
 	aria-busy={loading}
 >
-	<h2 class="mb-2 text-sm font-medium" id={format.key}>
-		{format.fullName || format.name}
+	<h2 class="mb-2 text-sm font-medium" id={citation.key}>
+		{citation.fullName || citation.name}
 	</h2>
 	{#if loading}
 		<div class="flex flex-col gap-2 overflow-hidden">
@@ -52,36 +51,36 @@
 			class={['mb-2 block', isFileFormat && 'text-2xs overflow-x-scroll scrollbar-thin']}
 		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html citation}
+			{@html citation.citation}
 		</svelte:element>
 		<div class="flex gap-2">
 			<!-- copy button -->
 			<button
 				class="btn btn-accent"
 				onclick={() =>
-					handleCopyCitation(citation, isFileFormat ? 'text/plain' : 'text/html', () => {
+					handleCopyCitation(citation.citation, isFileFormat ? 'text/plain' : 'text/html', () => {
 						wasCopied = {};
-						wasCopied[format.key] = true;
+						wasCopied[citation.key] = true;
 					})}
 			>
 				<BiCopy />
-				{#if wasCopied[format.key]}
+				{#if wasCopied[citation.key]}
 					{page.data.t('general.copied')}
 				{:else}
 					{page.data.t('general.copyToClipboard')}
 				{/if}
-				<span class="sr-only">({format.name})</span>
+				<span class="sr-only">({citation.name})</span>
 			</button>
 			{#if isFileFormat && id}
 				<!-- download button -->
 				<a
 					class="btn btn-accent"
-					download={`${id}.${format.fileFormat}`}
-					href={`/api/${page.data.locale}/cite?id=${id}&format=${format.key}`}
+					download={`${id}.${citation.fileFormat}`}
+					href={`/api/${page.data.locale}/cite?id=${id}&format=${citation.key}`}
 				>
 					<BiDownload />
 					{page.data.t('citations.saveAsFile')}
-					<span class="sr-only">({format.name})</span>
+					<span class="sr-only">({citation.name})</span>
 				</a>
 			{/if}
 		</div>
