@@ -59,7 +59,7 @@
 	}
 </script>
 
-<div class="bg-page sticky top-0 z-10 sm:static">
+<div class="search-result-sticky-toolbar bg-page z-1">
 	<Toolbar>
 		{#snippet leadingActions()}
 			<!-- mobile modal filter btn -->

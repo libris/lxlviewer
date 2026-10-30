@@ -23,7 +23,7 @@
 	let searchPhrase = $state('');
 
 	// instanceId | type | work fnurgel | ''
-	const holdingParam = $derived(page.state.holdings || page.url.searchParams.get('holdings') || '');
+	const holdingParam = $derived(page.url.searchParams.get('holdings') || '');
 
 	type SelectionKind = 'instance' | 'type' | 'work' | 'all';
 

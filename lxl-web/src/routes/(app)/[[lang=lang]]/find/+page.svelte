@@ -8,7 +8,6 @@
 	import type { Facet, SearchResult } from '#lib/types/search.js';
 	import type { HoldingsData } from '#lib/types/holdings.js';
 	import SiteFooter from '../SiteFooter.svelte';
-	import { USE_HOLDING_PANE } from '#lib/constants/panels.js';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
 	import Toolbar from '#lib/components/Toolbar.svelte';
 	import LeadingPane from '#lib/components/find/LeadingPane.svelte';
@@ -128,7 +127,8 @@
 	<div
 		class={[
 			'search-result flex w-full flex-1',
-			holdings && USE_HOLDING_PANE && 'has-trailing-pane'
+			'has-[#trailing-pane]:has-trailing-pane',
+			userSettings.selectableResults && 'selectable'
 		]}
 	>
 		<LeadingPane onClose={onCloseLeadingPane} {collapseLeadingPaneBtnId}>
@@ -163,7 +163,7 @@
 				</div>
 				<!-- placeholder for aside trailing pane -->
 				<div class="search-result-aside min-w-75">
-					<div class="hidden @5xl/content:block">
+					<div class="search-result-sticky-toolbar hidden @5xl/content:block">
 						<Toolbar>
 							<!-- expand trailingPane btn -->
 							{#if canShowTrailingPane && !userSettings.trailingPane?.open}
@@ -226,20 +226,9 @@
 	</div>
 {/if}
 
-<style>
+<style lang="postcss">
+	@reference "tailwindcss";
 	.aside-content {
 		top: calc(var(--appbar-height) + (var(--spacing) * 4));
-	}
-
-	.search-result {
-		&.has-trailing-pane {
-			max-height: calc(100vh - (var(--appbar-height) + var(--banner-height, 0)));
-			overflow: hidden;
-
-			& .search-result-content {
-				overflow-y: auto;
-				scrollbar-width: thin;
-			}
-		}
 	}
 </style>
