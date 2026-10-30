@@ -672,7 +672,8 @@
 								},
 								"hasTitle"
 							]
-						}
+						},
+						"responsibilityStatement"
 					]
 				}
 			}
@@ -1871,6 +1872,16 @@
 				"fresnel:contentFirst": "[",
 				"fresnel:contentAfter": "]",
 				"fresnel:contentLast": "]"
+			}
+		},
+		"responsibilityStatement-format": {
+			"@id": "responsibilityStatement-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["responsibilityStatement"],
+			"fresnel:propertyStyle": ["responsibilityStatement"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " / ",
+				"fresnel:contentFirst": ""
 			}
 		},
 		"role-format": {
