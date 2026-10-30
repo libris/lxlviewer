@@ -602,3 +602,13 @@
 @utility skeleton {
 	@apply animate-pulse rounded-lg bg-neutral-100;
 }
+
+@utility has-trailing-pane {
+	max-height: calc(100vh - (var(--appbar-height) + var(--banner-height, 0)));
+	overflow: hidden;
+
+	& .search-result-content {
+		overflow-y: auto;
+		scrollbar-width: thin;
+	}
+}

@@ -214,7 +214,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	<article
 		{id}
 		class={[
-			'search-card border-neutral relative grid w-full gap-x-4 border-t px-3 py-3 font-normal transition-colors',
+			'search-card border-neutral relative grid w-full gap-x-4 border-t p-3 font-normal transition-colors',
 			showHighlight && 'bg-accent-50/75',
 			!page.data.features.resourceImages && 'no-image',
 			selectable && 'selectable'
@@ -593,6 +593,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	}
 
 	.search-card.selectable {
+		column-gap: calc(var(--spacing) * 2)
 		grid-template-areas:
 			'select image content content'
 			'select image footer footer'
@@ -600,11 +601,11 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			'. actions actions actions'
 			'. debug . .';
 
-		grid-template-columns: minmax(0px, 24px) 64px 1fr auto;
+		grid-template-columns: minmax(0px, auto) 64px 1fr auto;
 
 		@container card (min-width: 768px) {
-			grid-template-columns: minmax(0px, 24px) 72px 1fr auto;
-			@apply gap-x-6 px-6 py-4;
+			grid-template-columns: minmax(0px, auto) 72px 1fr auto;
+			@apply gap-x-4 px-3 py-4;
 		}
 
 		@container card (min-width: 640px) {

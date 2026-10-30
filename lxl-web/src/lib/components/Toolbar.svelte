@@ -26,3 +26,24 @@
 		</div>
 	{/if}
 </div>
+
+<style lang="postcss">
+	@reference "tailwindcss";
+
+	:global(.search-result.selectable .search-result-sticky-toolbar) {
+		position: sticky;
+		top: calc(var(--appbar-height) + 60px);
+
+		@variant md {
+			top: calc(var(--appbar-height) + 56px);
+		}
+
+		@variant lg {
+			top: var(--appbar-height);
+		}
+	}
+
+	:global(.search-result.selectable:has(#trailing-pane) .search-result-sticky-toolbar) {
+		top: 0;
+	}
+</style>
