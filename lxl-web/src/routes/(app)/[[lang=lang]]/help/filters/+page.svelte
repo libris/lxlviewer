@@ -171,7 +171,7 @@
 						id={g.label ? toId('section', g.label) : undefined}
 					>
 						{#if g.label || g.filterGroupDescription}
-							<div role="row" class="border-t border-gray-300 bg-neutral-100 px-2 py-3">
+							<div role="row" class="border-t border-neutral-300 bg-neutral-100 px-2 py-3">
 								{#if g.label}
 									<div role="columnheader" aria-colspan={columnCount} class="font-semibold">
 										{g.label}
@@ -190,7 +190,10 @@
 							<div
 								role="row"
 								id={f.key}
-								class={['border-t border-gray-300 @3xl:grid @3xl:gap-x-4 @3xl:py-0', rowGridCols]}
+								class={[
+									'border-t border-neutral-300 @3xl:grid @3xl:gap-x-4 @3xl:py-0',
+									rowGridCols
+								]}
 							>
 								<!-- Filter -->
 								<div
