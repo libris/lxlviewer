@@ -17,6 +17,8 @@ type SelectionContext = {
 	format: AvailableCitationFormat | undefined;
 	isSelected(id: string): boolean;
 	toggle(id: string): Promise<void>;
+	add(id: string): Promise<void>;
+	remove(id: string): void;
 	clear(): void;
 	init(locale: LocaleCode, defaultFormat: AvailableCitationFormat): Promise<void>;
 };
@@ -80,6 +82,17 @@ function createSelection(): SelectionContext {
 				updateCitation();
 				return;
 			}
+			this.add(id);
+		},
+
+		async add(id: string) {
+			const normalizedId = normalize(id);
+			if (!normalizedId) return;
+
+			const existing = selection.find((item) => item.id === normalizedId);
+			if (existing) {
+				return;
+			}
 
 			// add immediately so selection gets length -> open panel
 			const item: Selection = {
@@ -118,6 +131,18 @@ function createSelection(): SelectionContext {
 			} finally {
 				pendingRequests--;
 				loading = pendingRequests > 0;
+				updateCitation();
+			}
+		},
+
+		remove(id: string) {
+			const normalizedId = normalize(id);
+			if (!normalizedId) return;
+
+			const existing = selection.find((item) => item.id === normalizedId);
+
+			if (existing) {
+				selection = selection.filter((item) => item.id !== normalizedId);
 				updateCitation();
 			}
 		},

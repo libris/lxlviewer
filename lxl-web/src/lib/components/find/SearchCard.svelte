@@ -225,7 +225,9 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	>
 		{#if selectable && itemNo && allowActions}
 			<div class="card-select flex flex-col items-start justify-start gap-1">
-				<label for={`checkbox-${itemNo}`} class="text-xs text-subtle">{itemNo}.</label>
+				<label for={`checkbox-${itemNo}`} class="text-xs text-subtle"
+					>{itemNo.toLocaleString()}.</label
+				>
 				<input
 					type="checkbox"
 					id={`checkbox-${itemNo}`}
@@ -593,7 +595,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	}
 
 	.search-card.selectable {
-		column-gap: calc(var(--spacing) * 2)
+		column-gap: calc(var(--spacing) * 2);
 		grid-template-areas:
 			'select image content content'
 			'select image footer footer'
