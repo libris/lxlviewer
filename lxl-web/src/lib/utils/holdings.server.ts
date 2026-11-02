@@ -10,7 +10,7 @@ import type {
 	LibraryFull,
 	LibraryWithLinks
 } from '#lib/types/holdings.js';
-import { Base, BibDb, Bibframe, JsonLd, LensType, type FramedData } from '#lib/types/xl.js';
+import { Base, BibDb, Bibframe, JsonLd, LensType, type FramedData, Kbv } from '#lib/types/xl.js';
 import { toString } from '#lib/utils/misc.js';
 import { VocabUtil, type DisplayUtil } from '#lib/utils/xl.server.js';
 import getAtPath from '#lib/utils/getAtPath.js';
@@ -50,7 +50,7 @@ export function getHoldingsByType(mainEntity: HoldingMainEntity | HoldingInstanc
 	const result: HoldingsByType = {};
 
 	for (const instance of instances) {
-		if (isComponentPart(instance)) {
+		if (isComponentPart(instance) || isDigitalReproduction(instance)) {
 			continue;
 		}
 
@@ -78,6 +78,10 @@ export function getHoldingsByInstanceId(
 	for (const instance of instances) {
 		const id = stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])));
 		if (!id) continue;
+
+		if (isDigitalReproduction(instance)) {
+			continue;
+		}
 
 		const items = instance[JsonLd.REVERSE]?.itemOf ?? [];
 		result[id] = items.map((item) => {
@@ -113,6 +117,10 @@ export function getBibIdsByInstanceId(
 	for (const instance of instances) {
 		const id = stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])));
 		if (!id) continue;
+
+		if (isDigitalReproduction(instance)) {
+			continue;
+		}
 
 		const type = instance[JsonLd.TYPE];
 		// const holders = instance[JsonLd.REVERSE]?.itemOf?.map(item => item?.heldBy?.[JsonLd.ID]) ?? [];
@@ -227,12 +235,17 @@ export function getHoldersCount(
 	vocabUtil: VocabUtil
 ): number {
 	const type = vocabUtil.getType(data);
-	if (
-		!type ||
-		!(
-			vocabUtil.isSubClassOf(type, Bibframe.Work) || vocabUtil.isSubClassOf(type, Bibframe.Instance)
-		)
-	) {
+	if (!type) {
+		return -1;
+	}
+
+	const isWork = vocabUtil.isSubClassOf(type, Bibframe.Work);
+	const isInstance = vocabUtil.isSubClassOf(type, Bibframe.Instance);
+	if (!(isWork || isInstance)) {
+		return -1;
+	}
+
+	if (isInstance && isDigitalReproduction(data)) {
 		return -1;
 	}
 
@@ -247,6 +260,9 @@ export function getHoldersCount(
 		if (isComponentPart(instance)) {
 			return -1;
 		}
+		if (isDigitalReproduction(instance)) {
+			continue;
+		}
 
 		const itemOf = instance[JsonLd.REVERSE]?.itemOf ?? [];
 		for (const item of itemOf) {
@@ -260,4 +276,10 @@ export function getHoldersCount(
 
 function isComponentPart(instance) {
 	return (instance[Base.category] || []).some((c) => c[JsonLd.ID] === COMPONENT_PART);
+}
+
+function isDigitalReproduction(instance) {
+	return (
+		!!instance[Bibframe.reproductionOf]?.[JsonLd.ID] && instance[JsonLd.TYPE] == Kbv.DigitalResource
+	);
 }
