@@ -137,7 +137,9 @@ function getTypeLike(thing: FramedData, vocabUtil: VocabUtil): TypeLike {
 		// FIXME
 		const isSingleInstance = thingType === 'PhysicalResource' || thingType === 'DigitalResource';
 
-		const workType = isSingleInstance ? thing[Bibframe.instanceOf][JsonLd.TYPE] : thingType;
+		const workType = isSingleInstance
+			? (thing[Bibframe.instanceOf]?.[JsonLd.TYPE] ?? null)
+			: thingType;
 
 		const instances = isSingleInstance
 			? [thing]
