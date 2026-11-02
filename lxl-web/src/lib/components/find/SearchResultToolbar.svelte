@@ -98,6 +98,8 @@
 			{/if}
 			<button
 				type="button"
+				role="switch"
+				aria-checked={!!selectableResults}
 				class={['btn btn-primary', selectableResults ? 'btn-accent' : '']}
 				onclick={toggleSelectableResults}
 			>
