@@ -145,7 +145,7 @@
 						{expandLeadingPaneBtnId}
 						onOpenPane={onOpenLeadingPane}
 					/>
-					<SearchResultInfo {searchResult} />
+					<SearchResultInfo {searchResult} selectableResults={userSettings.selectableResults} />
 
 					<ol aria-labelledby="search-results" class="flex flex-col">
 						{#each searchResult.items as item, index (item['@id'] + index)}

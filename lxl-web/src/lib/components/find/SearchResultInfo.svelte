@@ -6,13 +6,19 @@
 	import { displayMappingToString } from '#lib/utils/displayMappingToString.js';
 	import BiInfo from '~icons/bi/info-circle';
 	import BiQuestionCircle from '~icons/bi/question-circle';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
+	import { JsonLd } from '#lib/types/xl.ts';
 
 	type SearchResultInfoProps = {
 		searchResult: SearchResult;
+		selectableResults?: boolean;
 	};
 
-	const { searchResult }: SearchResultInfoProps = $props();
+	const { searchResult, selectableResults = false }: SearchResultInfoProps = $props();
 	const userSettings = getUserSettings();
+	const selection = getSelectionContext();
+	let selectAllEl: HTMLInputElement | undefined = $state();
+
 	const numHits = $derived(searchResult.totalItems);
 	const showMyLibrariesWarning = $derived(
 		numHits === 0 &&
@@ -21,6 +27,34 @@
 	);
 
 	const relaxedSearch = $derived(page.url.searchParams.get('_relaxed'));
+
+	const selectionStatus = $derived.by(() => {
+		if (!selectableResults) return false;
+		if (searchResult.items.every((i) => selection.isSelected(i[JsonLd.ID]))) {
+			return true;
+		}
+		if (searchResult.items.some((i) => selection.isSelected(i[JsonLd.ID]))) {
+			if (selectAllEl) {
+				selectAllEl.indeterminate = true;
+			}
+			return true;
+		}
+		if (selectAllEl) {
+			selectAllEl.indeterminate = false;
+		}
+		return false;
+	});
+
+	function toggleSelectAll(e: Event) {
+		const checkbox = e.target as HTMLInputElement;
+		searchResult.items.forEach((item) => {
+			if (checkbox.checked) {
+				selection.add(item[JsonLd.ID]);
+			} else {
+				selection.remove(item[JsonLd.ID]);
+			}
+		});
+	}
 </script>
 
 <div
@@ -35,6 +69,17 @@
 		</p>
 	{/if}
 	<div class="flex gap-1">
+		{#if selectableResults}
+			<label for="select-all-page-results" class="sr-only">Välj alla sökträffar på sidan</label>
+			<input
+				type="checkbox"
+				bind:this={selectAllEl}
+				id="select-all-page-results"
+				class="mr-1.5"
+				onchange={toggleSelectAll}
+				checked={selectionStatus}
+			/>
+		{/if}
 		{#if numHits && numHits > 0}
 			<p class="hits-count">
 				{#if numHits > searchResult.itemsPerPage && searchResult.itemsPerPage > 0}
