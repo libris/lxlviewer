@@ -18,21 +18,17 @@
 	import Pagination from '#lib/components/find/Pagination.svelte';
 	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
 	import Spinner from '#lib/components/Spinner.svelte';
-	import TrailingPane from '#lib/components/find/TrailingPane.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import { HeadingElem } from '#lib/types/decoratedData.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
-	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
-	import Selection from '#lib/components/Selection.svelte';
 	import SelectToolbar from '#lib/components/SelectToolbar.svelte';
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
 	const userSettings = getUserSettings();
-	const selection = getSelectionContext();
 	const trailingPane = getTrailingPaneContext();
 
 	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
@@ -107,13 +103,7 @@
 <Meta title={page.data.pageTitle} {description} url={page.url.href} {siteName} />
 
 {#if searchResult}
-	<div
-		class={[
-			'search-result flex w-full flex-1',
-			'has-[#trailing-pane]:has-trailing-pane',
-			userSettings.selectableResults && 'selectable'
-		]}
-	>
+	<div class={['search-result flex w-full flex-1', userSettings.selectableResults && 'selectable']}>
 		<LeadingPane onClose={onCloseLeadingPane} {collapseLeadingPaneBtnId}>
 			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
 				<Filters {facets} />
@@ -156,12 +146,6 @@
 			</div>
 			<SiteFooter />
 		</div>
-		<TrailingPane>
-			{#snippet title()}
-				<span>Hantera ditt urval</span>
-			{/snippet}
-			<Selection {selection} />
-		</TrailingPane>
 		{#if holdings && holdingsParam}
 			<Modal close={handleCloseHoldings}>
 				{#snippet title()}
