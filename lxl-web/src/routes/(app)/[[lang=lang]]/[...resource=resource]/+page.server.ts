@@ -158,8 +158,9 @@ export const load = async ({ params, locals, fetch, url }) => {
 		? (mainEntity[JsonLd.REVERSE]['instanceOf'][0] as FramedData)
 		: mainEntity;
 
+	const workOrInstanceTitle = displayUtil.lensAndFormat(headingThing, LensType.WebToken, locale);
 	const workTitle = isWorkSingleInstance
-		? displayUtil.lensAndFormat(mainEntity, LxlLens.CardHeading, locale)
+		? displayUtil.lensAndFormat(mainEntity, LensType.WebToken, locale)
 		: undefined;
 
 	let heading = displayUtil.lensAndFormat(headingThing, LxlLens.PageHeading, locale);
@@ -170,7 +171,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 		heading = displayUtil.lensAndFormat(mainEntity, LxlLens.CardHeading, locale);
 	}
 
-	const hasWorkTitle = isWorkSingleInstance && toString(heading) !== toString(workTitle);
+	const hasWorkTitle =
+		isWorkSingleInstance && toString(workOrInstanceTitle) !== toString(workTitle);
 
 	const headingExtra = displayUtil.lensAndFormat(mainEntity, LensType.WebCardHeaderExtra, locale);
 	const overview = [

@@ -138,11 +138,13 @@ export function asSearchResultItem(
 			heading = displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale);
 		}
 
+		const workOrInstanceTitle = displayUtil.lensAndFormat(headerThing, LensType.WebToken, locale);
 		const workTitle = isWorkSingleInstance
-			? displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale)
+			? displayUtil.lensAndFormat(i, LensType.WebToken, locale)
 			: undefined;
 
-		const hasWorkTitle = isWorkSingleInstance && toString(heading) !== toString(workTitle);
+		const hasWorkTitle =
+			isWorkSingleInstance && toString(workOrInstanceTitle) !== toString(workTitle);
 
 		return {
 			...(myLibraries && {
