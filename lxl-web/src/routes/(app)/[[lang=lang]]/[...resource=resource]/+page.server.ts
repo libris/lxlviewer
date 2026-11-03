@@ -216,7 +216,11 @@ export const load = async ({ params, locals, fetch, url }) => {
 		const sortedInstances = getSortedInstances(mainEntity?.[JsonLd.REVERSE]?.instanceOf);
 
 		sortedInstances.forEach(
-			(i) => (i[Bibframe.instanceOf] = { [JsonLd.TYPE]: mainEntity[JsonLd.TYPE] })
+			(i) =>
+				(i[Bibframe.instanceOf] = {
+					[JsonLd.TYPE]: mainEntity[JsonLd.TYPE],
+					_categoryByCollection: mainEntity._categoryByCollection
+				})
 		);
 		instances = asSearchResultItem(
 			sortedInstances,
