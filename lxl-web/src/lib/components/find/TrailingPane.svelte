@@ -31,7 +31,7 @@
 </script>
 
 {#if trailingPane.visible}
-	<div
+	<aside
 		id="trailing-pane"
 		class={[
 			'trailing-pane sticky top-0 z-10 hidden w-0 sm:block print:hidden',
@@ -40,6 +40,7 @@
 		]}
 		style="padding-right:{trailingPane.visible ? paneWidth : 0}px"
 		inert={!trailingPane.visible}
+		aria-labelledby="trailing-pane-title"
 	>
 		<div
 			class={[
@@ -52,7 +53,7 @@
 			<div class="trailing-pane-toolbar">
 				<Toolbar>
 					{#snippet leadingActions()}
-						<p class="text-sm font-medium truncate">
+						<p class="text-sm font-medium truncate" id="trailing-pane-title">
 							{@render title?.()}
 						</p>
 					{/snippet}
@@ -88,7 +89,7 @@
 			onexpand={() => userSettings.openTrailingPane()}
 			onresized={handleOnResized}
 		/>
-	</div>
+	</aside>
 {/if}
 
 <style lang="postcss">

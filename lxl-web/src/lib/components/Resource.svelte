@@ -10,6 +10,7 @@
 		AdjecentSearchResult,
 		ResourceSearchResult
 	} from '#lib/types/search.js';
+	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 	import capitalize from '#lib/utils/capitalize.js';
 	import { isResourceNode } from '#lib/utils/resourceData.js';
 	import type { Relation } from '#lib/types/relations.js';
@@ -91,6 +92,7 @@
 
 	const fnurgel = $derived(stripAnchor(trimSlashes(relativizeUrl(recordUri))));
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
+	const trailinePane = getTrailingPaneContext();
 
 	let searchMapping = $derived(searchResult?.mapping.filter((m) => m.variable === '_q'));
 	let filteredInstances = $derived(searchResult?.items);
@@ -591,7 +593,7 @@
 				</div>
 			{/if}
 		</div>
-		{#if tableOfContents.length}
+		{#if tableOfContents.length && !trailinePane.visible}
 			<div class="hidden @7xl:block print:hidden">
 				<section data-testid="toc" class="sticky py-3 @sm:py-6">
 					<TableOfContents items={tableOfContents} />
