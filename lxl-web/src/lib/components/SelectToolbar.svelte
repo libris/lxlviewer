@@ -6,18 +6,18 @@
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 
 	const selection = getSelectionContext();
-	const trailinePane = getTrailingPaneContext();
+	const trailingPane = getTrailingPaneContext();
 </script>
 
-{#if trailinePane.canExpand}
+{#if trailingPane.canExpand}
 	<button
-		id={trailinePane.expandBtnId}
+		id={trailingPane.expandBtnId}
 		class="ml-auto btn btn-primary flex gap-1.5"
 		aria-label={page.data.t('panes.show')}
-		aria-expanded={trailinePane.visible}
+		aria-expanded={trailingPane.visible}
 		aria-controls="trailing-pane"
 		in:fade={{ duration: 200 }}
-		onclick={trailinePane.onOpen}
+		onclick={trailingPane.onOpen}
 	>
 		<BiLayoutSidebarReverse class="size-4" />
 		{#if selection.length > 0}
