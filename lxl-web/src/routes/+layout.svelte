@@ -10,6 +10,7 @@
 	import CookieConsent from '#lib/components/CookieConsent.svelte';
 	import { setCookieConsentContext } from '#lib/contexts/cookieConsent.js';
 	import { setSelectionContext } from '#lib/contexts/selection.svelte.ts';
+	import { setTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 	import type { LocaleCode } from '#lib/i18n/locales.ts';
 
 	const { children } = $props();
@@ -29,6 +30,7 @@
 
 	// TODO fix, use real user setting
 	setSelectionContext().init(page.data.locale as LocaleCode, 'chicago');
+	setTrailingPaneContext();
 
 	let progressBarTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 	const progressDelay = 300;

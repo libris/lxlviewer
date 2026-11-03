@@ -26,13 +26,14 @@
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
 	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import Selection from '#lib/components/Selection.svelte';
-	import BiLayoutSidebarReverse from '~icons/bi/layout-sidebar-reverse';
-	import { fade } from 'svelte/transition';
+	import SelectToolbar from '#lib/components/SelectToolbar.svelte';
+	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
 	const userSettings = getUserSettings();
 	const selection = getSelectionContext();
+	const trailingPane = getTrailingPaneContext();
 
 	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
 	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
@@ -57,10 +58,6 @@
 	let previousURL: URL;
 	const expandLeadingPaneBtnId = 'expand-leading-pane-btn';
 	const collapseLeadingPaneBtnId = 'collapse-leading-pane-btn';
-
-	const canShowTrailingPane = $derived(selection.length > 0);
-	const expandTrailingPanePaneBtnId = 'expand-trailing-pane-btn';
-	const collapseTrailingPaneBtnId = 'collapse-trailing-pane-btn';
 
 	const offset = $derived(parseInt(page.url.searchParams.get('_offset') || '0'));
 
@@ -95,24 +92,10 @@
 		});
 	}
 
-	function onOpenTrailingPane() {
-		userSettings.openTrailingPane();
-		tick().then(() => {
-			document.getElementById(collapseTrailingPaneBtnId)?.focus();
-		});
-	}
-
 	function onCloseLeadingPane() {
 		userSettings.closeLeadingPane();
 		tick().then(() => {
 			document.getElementById(expandLeadingPaneBtnId)?.focus();
-		});
-	}
-
-	function onCloseTrailingPane() {
-		userSettings.closeTrailingPane();
-		tick().then(() => {
-			document.getElementById(expandTrailingPanePaneBtnId)?.focus();
 		});
 	}
 </script>
@@ -137,12 +120,7 @@
 			</div>
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">
-			<div
-				class={[
-					'flex flex-1 flex-col',
-					!userSettings.trailingPane?.open && '@5xl/content:flex-row'
-				]}
-			>
+			<div class={['flex flex-1 flex-col', !trailingPane.visible && '@5xl/content:flex-row']}>
 				<div class="flex-1">
 					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar
@@ -166,29 +144,11 @@
 					</ol>
 					<Pagination data={searchResult} />
 				</div>
-				<!-- placeholder for aside trailing pane -->
+				<!-- trailing pane toolbar -->
 				<div class="search-result-aside min-w-75">
 					<div class="search-result-sticky-toolbar hidden @5xl/content:block">
 						<Toolbar>
-							<!-- expand trailingPane btn -->
-							{#if canShowTrailingPane && !userSettings.trailingPane?.open}
-								<button
-									id={expandTrailingPanePaneBtnId}
-									class="ml-auto btn btn-primary flex gap-1.5"
-									aria-label={page.data.t('panes.show')}
-									aria-expanded={userSettings.leadingPane?.open}
-									aria-controls="leading-pane"
-									in:fade={{ duration: 200 }}
-									onclick={onOpenTrailingPane}
-								>
-									<BiLayoutSidebarReverse class="size-4" />
-									{#if selection.length > 0}
-										<span class="badge badge-accent">
-											{selection.length}
-										</span>
-									{/if}
-								</button>
-							{/if}
+							<SelectToolbar />
 						</Toolbar>
 					</div>
 					<div class="aside-content sticky h-px"></div>
@@ -196,14 +156,12 @@
 			</div>
 			<SiteFooter />
 		</div>
-		{#if canShowTrailingPane && userSettings.trailingPane?.open}
-			<TrailingPane onClose={onCloseTrailingPane} {collapseTrailingPaneBtnId}>
-				{#snippet title()}
-					<span>Hantera ditt urval</span>
-				{/snippet}
-				<Selection {selection} />
-			</TrailingPane>
-		{/if}
+		<TrailingPane>
+			{#snippet title()}
+				<span>Hantera ditt urval</span>
+			{/snippet}
+			<Selection {selection} />
+		</TrailingPane>
 		{#if holdings && holdingsParam}
 			<Modal close={handleCloseHoldings}>
 				{#snippet title()}
