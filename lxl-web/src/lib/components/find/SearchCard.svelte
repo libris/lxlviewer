@@ -223,14 +223,15 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		data-testid="search-card"
 		bind:this={articleElement}
 	>
-		{#if selectable && itemNo && allowActions}
+		{#if selectable && allowActions}
+			{const checkboxId = itemNo || item[JsonLd.ID]}
 			<div class="card-select flex flex-col items-start justify-start gap-1">
-				<label for={`checkbox-${itemNo}`} class="text-xs text-subtle"
-					>{itemNo.toLocaleString()}.</label
+				<label for={`checkbox-${checkboxId}`} class={['text-xs text-subtle', !itemNo && 'sr-only']}
+					>{itemNo && itemNo.toLocaleString() + '.'}</label
 				>
 				<input
 					type="checkbox"
-					id={`checkbox-${itemNo}`}
+					id={`checkbox-${checkboxId}`}
 					checked={isSelected}
 					onchange={toggleSelected}
 				/>

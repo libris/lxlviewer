@@ -10,8 +10,7 @@
 	import SearchResultSort from './SearchResultSort.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiLayoutSidebar from '~icons/bi/layout-sidebar';
-	import BiCheckSquare from '~icons/bi/check2-square';
-	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
+	import ToggleSelectModeBtn from '../ToggleSelectModeBtn.svelte';
 
 	type SearchResultToolbarProps = {
 		searchResult: SearchResult;
@@ -21,9 +20,6 @@
 
 	const { searchResult, expandLeadingPaneBtnId, onOpenPane }: SearchResultToolbarProps = $props();
 	const userSettings = getUserSettings();
-	const selection = getSelectionContext();
-
-	let selectableResults = $state(userSettings?.selectableResults);
 
 	let showFiltersModal = $state(false);
 	const numHits = $derived(searchResult.totalItems);
@@ -46,12 +42,6 @@
 		}
 		_iter(root);
 		return count;
-	}
-
-	function toggleSelectableResults() {
-		selectableResults = !selectableResults;
-		userSettings.setSelectableResults(selectableResults);
-		selection.clear();
 	}
 
 	function toggleFiltersModal() {
@@ -96,16 +86,7 @@
 					<BiLayoutSidebar class="size-4" />
 				</button>
 			{/if}
-			<button
-				type="button"
-				role="switch"
-				aria-checked={!!selectableResults}
-				class={['btn btn-primary size-8', selectableResults ? 'btn-accent' : '']}
-				onclick={toggleSelectableResults}
-				title="Valbara och numrerade träffar"
-			>
-				<BiCheckSquare class="size-4" />
-			</button>
+			<ToggleSelectModeBtn />
 		{/snippet}
 		{#snippet trailingActions()}
 			{#if numHits > 0}

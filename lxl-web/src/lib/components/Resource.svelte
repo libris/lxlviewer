@@ -36,7 +36,8 @@
 	import BiQuote from '~icons/bi/quote';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import Toolbar from './Toolbar.svelte';
-	import SelectToolbar from './SelectToolbar.svelte';
+	import ToggleTrailingPaneBtn from './ToggleTrailingPaneBtn.svelte';
+	import ToggleSelectModeBtn from './ToggleSelectModeBtn.svelte';
 
 	type Props = {
 		uri: string | null;
@@ -157,17 +158,24 @@
 			<SearchMapping mapping={searchMapping} />
 		</div>
 	{/if}
-	{#each derivedFilteredInstances as instance (instance?.[JsonLd.ID])}
-		<SearchCard item={instance as SearchResultItem} headingElement={HeadingElem.H3} />
+	{#each derivedFilteredInstances as instance, index (instance?.[JsonLd.ID])}
+		<SearchCard
+			item={instance as SearchResultItem}
+			headingElement={HeadingElem.H3}
+			itemNo={index + 1}
+			selectable={userSettings.selectableResults}
+		/>
 	{/each}
 {/snippet}
 
 {#snippet panelAllInstances()}
-	{#each instances as instance (instance?.[JsonLd.ID])}
+	{#each instances as instance, index (instance?.[JsonLd.ID])}
 		<SearchCard
 			item={instance as SearchResultItem}
 			hideType={true}
 			headingElement={HeadingElem.H3}
+			itemNo={index + 1}
+			selectable={userSettings.selectableResults}
 		/>
 	{/each}
 {/snippet}
@@ -184,7 +192,7 @@
 		{/snippet}
 		{#snippet trailingActions()}
 			<div class="min-w-75 hidden @5xl:block">
-				<SelectToolbar />
+				<ToggleTrailingPaneBtn />
 			</div>
 		{/snippet}
 	</Toolbar>
@@ -375,9 +383,12 @@
 			{/if}
 			{#if isWork && instances?.length}
 				<section class="print:break-before-page print:break-after-page">
-					<h2 id="{uidPrefix}editions" class="font-heading mb-4 text-2xl font-medium">
-						{page.data.t('resource.editions')}
-					</h2>
+					<div class="flex justify-between">
+						<h2 id="{uidPrefix}editions" class="font-heading mb-4 text-2xl font-medium">
+							{page.data.t('resource.editions')}
+						</h2>
+						<ToggleSelectModeBtn />
+					</div>
 					{#if showTabs}
 						<TabList ariaLabel={page.data.t('resource.editions')} tabs={instanceTabs} />
 					{:else}

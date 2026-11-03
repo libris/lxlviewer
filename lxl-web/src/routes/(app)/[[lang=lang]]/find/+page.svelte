@@ -6,9 +6,13 @@
 	// import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { Facet, SearchResult } from '#lib/types/search.js';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
 	import type { HoldingsData } from '#lib/types/holdings.js';
-	import SiteFooter from '../SiteFooter.svelte';
+	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
+	import { getUserSettings } from '#lib/contexts/userSettings.ts';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import SiteFooter from '../SiteFooter.svelte';
 	import Toolbar from '#lib/components/Toolbar.svelte';
 	import LeadingPane from '#lib/components/find/LeadingPane.svelte';
 	import Filters from '#lib/components/find/Filters.svelte';
@@ -20,11 +24,7 @@
 	import Spinner from '#lib/components/Spinner.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
-	import getPageTitle from '#lib/utils/getPageTitle.js';
-	import { HeadingElem } from '#lib/types/decoratedData.js';
-	import { getUserSettings } from '#lib/contexts/userSettings.ts';
-	import SelectToolbar from '#lib/components/SelectToolbar.svelte';
-	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
+	import ToggleTrailingPaneBtn from '#lib/components/ToggleTrailingPaneBtn.svelte';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
@@ -138,7 +138,7 @@
 				<div class="search-result-aside min-w-75">
 					<div class="search-result-sticky-toolbar hidden @5xl/content:block">
 						<Toolbar>
-							<SelectToolbar />
+							<ToggleTrailingPaneBtn />
 						</Toolbar>
 					</div>
 					<div class="aside-content sticky h-px"></div>
