@@ -855,7 +855,19 @@
 					"@id": "Instance-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
-					"showProperties": ["editionStatement", "publication", "identifier"]
+					"showProperties": [
+						"editionStatement",
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "publication", "range": "PrimaryPublication" },
+								"publication",
+								{ "subPropertyOf": "production", "range": "PrimaryProduction" },
+								"production",
+								"manufacture"
+							]
+						},
+						"identifier"
+					]
 				},
 				"Agent": {
 					"@id": "Agent-web-card-footer",

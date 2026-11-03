@@ -130,6 +130,8 @@ export function asSearchResultItem(
 
 		let heading = displayUtil.lensAndFormat(headerThing, LxlLens.CardHeading, locale);
 
+		const headerTopThing = i['instanceOf'] ? (i['instanceOf'] as FramedData) : i;
+
 		// TODO: this is a fallback for swepub where there is only titles on works, not instances
 		// TODO: add support for property paths in lenses
 		if (isResourceNode(heading) && heading[Fmt.DISPLAY].length === 0) {
@@ -156,7 +158,11 @@ export function asSearchResultItem(
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
 			[LxlLens.CardHeading]: heading,
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-			[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(i, LensType.WebCardHeaderTop, locale),
+			[LensType.WebCardHeaderTop]: displayUtil.lensAndFormat(
+				headerTopThing,
+				LensType.WebCardHeaderTop,
+				locale
+			),
 			[LensType.WebCardHeaderExtra]: displayUtil.lensAndFormat(
 				i,
 				LensType.WebCardHeaderExtra,
@@ -174,8 +180,8 @@ export function asSearchResultItem(
 				),
 				auxdSecret
 			),
-			typeStr: typeStr(getTypeLike(i, vocabUtil), displayUtil, locale),
-			typeForIcon: getTypeForIcon(getTypeLike(i, vocabUtil)), // FIXME
+			typeStr: typeStr(getTypeLike(headerTopThing, vocabUtil), displayUtil, locale),
+			typeForIcon: getTypeForIcon(getTypeLike(headerTopThing, vocabUtil)), // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME
 			numberOfHolders: getHoldersCount(i, vocabUtil),
 			mediaLinks: getMediaLinks(i, displayUtil, locale),
