@@ -10,7 +10,7 @@
 	import SearchResultSort from './SearchResultSort.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiLayoutSidebar from '~icons/bi/layout-sidebar';
-	import BiUiChecks from '~icons/bi/ui-checks';
+	import BiCheckSquare from '~icons/bi/check2-square';
 	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 
 	type SearchResultToolbarProps = {
@@ -100,10 +100,11 @@
 				type="button"
 				role="switch"
 				aria-checked={!!selectableResults}
-				class={['btn btn-primary', selectableResults ? 'btn-accent' : '']}
+				class={['btn btn-primary size-8', selectableResults ? 'btn-accent' : '']}
 				onclick={toggleSelectableResults}
+				title="Valbara och numrerade träffar"
 			>
-				<BiUiChecks />
+				<BiCheckSquare class="size-4" />
 			</button>
 		{/snippet}
 		{#snippet trailingActions()}
