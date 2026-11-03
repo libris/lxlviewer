@@ -11,6 +11,8 @@
 		ResourceSearchResult
 	} from '#lib/types/search.js';
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
+	import { getUserSettings } from '#lib/contexts/userSettings.ts';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import capitalize from '#lib/utils/capitalize.js';
 	import { isResourceNode } from '#lib/utils/resourceData.js';
 	import type { Relation } from '#lib/types/relations.js';
@@ -33,6 +35,8 @@
 	import BiDownload from '~icons/bi/download';
 	import BiQuote from '~icons/bi/quote';
 	import BiChevronRight from '~icons/bi/chevron-right';
+	import Toolbar from './Toolbar.svelte';
+	import SelectToolbar from './SelectToolbar.svelte';
 
 	type Props = {
 		uri: string | null;
@@ -92,7 +96,9 @@
 
 	const fnurgel = $derived(stripAnchor(trimSlashes(relativizeUrl(recordUri))));
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
-	const trailinePane = getTrailingPaneContext();
+	const trailingPane = getTrailingPaneContext();
+	const userSettings = getUserSettings();
+	const selection = getSelectionContext();
 
 	let searchMapping = $derived(searchResult?.mapping.filter((m) => m.variable === '_q'));
 	let filteredInstances = $derived(searchResult?.items);
@@ -135,6 +141,14 @@
 			instances &&
 			page.data.features.holdings
 	);
+
+	// TODO check selectable thing!
+	const selectable = $derived(userSettings.selectableResults && hasHoldingsBtn);
+	const isSelected = $derived(selection.isSelected(recordUri));
+
+	function toggleSelected() {
+		selection.toggle(recordUri);
+	}
 </script>
 
 {#snippet panelMatchingInstances()}
@@ -158,10 +172,22 @@
 	{/each}
 {/snippet}
 
-{#if adjecentSearchResults && fnurgel}
-	<div class="border-b-neutral @container border-b print:hidden">
-		<AdjecentResults {fnurgel} {adjecentSearchResults} />
-	</div>
+{#if (adjecentSearchResults && fnurgel) || trailingPane.canExpand || selectable}
+	<Toolbar>
+		{#snippet leadingActions()}
+			{#if selectable}
+				<input class="ml-2" type="checkbox" checked={isSelected} onchange={toggleSelected} />
+			{/if}
+			{#if adjecentSearchResults && fnurgel}
+				<AdjecentResults {fnurgel} {adjecentSearchResults} />
+			{/if}
+		{/snippet}
+		{#snippet trailingActions()}
+			<div class="min-w-75 hidden @5xl:block">
+				<SelectToolbar />
+			</div>
+		{/snippet}
+	</Toolbar>
 {/if}
 {#if workCard && !isWork}
 	<nav
@@ -593,7 +619,7 @@
 				</div>
 			{/if}
 		</div>
-		{#if tableOfContents.length && !trailinePane.visible}
+		{#if tableOfContents.length && !trailingPane.visible}
 			<div class="hidden @7xl:block print:hidden">
 				<section data-testid="toc" class="sticky py-3 @sm:py-6">
 					<TableOfContents items={tableOfContents} />

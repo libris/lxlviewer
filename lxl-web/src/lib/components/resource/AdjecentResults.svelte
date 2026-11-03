@@ -116,7 +116,7 @@
 {/snippet}
 
 {#if currentSearchResult}
-	<div class="my-1 flex items-center gap-2 px-3 text-xs sm:text-sm">
+	<div class="my-1 flex items-center gap-4 px-3 text-xs sm:text-sm">
 		{#if typeof indexOfTotalSearchResults === 'number'}
 			<a
 				href={page.data.localizeHref(relativizeUrl(currentSearchResult['@id']) + `#${fnurgel}`)}
