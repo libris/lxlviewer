@@ -924,7 +924,6 @@
 						"extent",
 						"seriesMembership",
 						"hasSeries",
-						"responsibilityStatement",
 						"isPartOf",
 						"part",
 						"_select"
