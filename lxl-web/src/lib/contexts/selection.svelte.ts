@@ -1,5 +1,7 @@
 import { defaultLocale, type LocaleCode } from '#lib/i18n/locales.js';
+import { getSelectionData } from '#lib/remotes/selection.remote.js';
 import type { AvailableCitationFormat, CSLJSON } from '#lib/types/citation.js';
+import type { SearchResultItem } from '#lib/types/search.js';
 import { initCite } from '#lib/utils/citation.js';
 import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
 import { getContext, setContext } from 'svelte';
@@ -10,10 +12,18 @@ type Selection = {
 	csl?: CSLJSON;
 };
 
+export type ReviewItem = {
+	id: string;
+	str: string;
+	instances: { id: string; str: string }[];
+};
+
 type SelectionContext = {
 	readonly loading: boolean;
 	readonly length: number;
 	readonly citation: Awaited<string> | undefined;
+	readonly forReview: ReviewItem[];
+	readonly cards: SearchResultItem[];
 	format: AvailableCitationFormat | undefined;
 	isSelected(id: string): boolean;
 	toggle(id: string): Promise<void>;
@@ -24,12 +34,14 @@ type SelectionContext = {
 };
 
 function createSelection(): SelectionContext {
+	let cite: Awaited<ReturnType<typeof initCite>> | undefined;
 	let locale: LocaleCode = $state(defaultLocale);
 	let selection = $state<Selection[]>([]);
-	let loading = $state(false);
-	let cite: Awaited<ReturnType<typeof initCite>> | undefined;
+	const cards: SearchResultItem[] = $state([]);
+	let forReview: ReviewItem[] = $state([]);
 	let currentFormat = $state<AvailableCitationFormat | undefined>();
 	let citation = $state<ReturnType<Awaited<ReturnType<typeof initCite>>['formatAs']>>();
+	let loading = $state(false);
 	let pendingRequests = 0;
 
 	function updateCitation() {
@@ -54,6 +66,14 @@ function createSelection(): SelectionContext {
 			return currentFormat;
 		},
 
+		get cards() {
+			return cards;
+		},
+
+		get forReview() {
+			return forReview;
+		},
+
 		set format(format: AvailableCitationFormat | undefined) {
 			currentFormat = format;
 			citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
@@ -72,25 +92,20 @@ function createSelection(): SelectionContext {
 		},
 
 		async toggle(id: string) {
-			const normalizedId = normalize(id);
-			if (!normalizedId) return;
-
-			const existing = selection.find((item) => item.id === normalizedId);
+			const existing = this.isSelected(id);
 
 			if (existing) {
-				selection = selection.filter((item) => item.id !== normalizedId);
-				updateCitation();
-				return;
+				this.remove(id);
+			} else {
+				this.add(id);
 			}
-			this.add(id);
 		},
 
 		async add(id: string) {
 			const normalizedId = normalize(id);
 			if (!normalizedId) return;
 
-			const existing = selection.find((item) => item.id === normalizedId);
-			if (existing) {
+			if (this.isSelected(normalizedId)) {
 				return;
 			}
 
@@ -105,25 +120,25 @@ function createSelection(): SelectionContext {
 			loading = true;
 
 			try {
-				const res = await fetch(
-					`/api/${locale}/cite?id=${encodeURIComponent(normalizedId)}&format=csl`
-				);
-
-				if (!res.ok) {
-					throw new Error(`Failed to fetch citation: ${res.status}`);
-				}
-
-				const csl: CSLJSON[] = await res.json();
-
+				const { csl, card, work } = await getSelectionData({ id: normalizedId, locale });
 				const entry = selection.find((entry) => entry.id === normalizedId);
 
 				if (entry?.requestId === item.requestId) {
+					console.log(csl, card, work);
 					if (csl.length === 1) {
 						entry.csl = csl[0];
-					} else {
-						// user may have deselect the entry while fetching
-						selection = selection.filter((entry) => entry.requestId !== item.requestId);
 					}
+
+					if (work) {
+						forReview.push(work);
+					}
+
+					if (card) {
+						cards.push(card);
+					}
+				} else {
+					// user may have deselect the entry while fetching
+					selection = selection.filter((entry) => entry.requestId !== item.requestId);
 				}
 			} catch (error) {
 				console.error('Failed to fetch citation:', error);
@@ -139,16 +154,15 @@ function createSelection(): SelectionContext {
 			const normalizedId = normalize(id);
 			if (!normalizedId) return;
 
-			const existing = selection.find((item) => item.id === normalizedId);
-
-			if (existing) {
-				selection = selection.filter((item) => item.id !== normalizedId);
-				updateCitation();
-			}
+			selection = selection.filter((item) => item.id !== normalizedId);
+			forReview = forReview.filter((item) => normalize(item.id) !== normalizedId);
+			updateCitation();
 		},
 
 		clear() {
 			selection = [];
+			forReview = [];
+
 			cite?.reset();
 			citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
 		}
@@ -156,7 +170,7 @@ function createSelection(): SelectionContext {
 }
 
 function normalize(id: string) {
-	return stripAnchor(trimSlashes(relativizeUrl(id))) || '';
+	return stripAnchor(trimSlashes(relativizeUrl(id))) || id;
 }
 
 const selectionKey = Symbol('selection');

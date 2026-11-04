@@ -7,7 +7,6 @@
 	import { setSearchContext } from '#lib/contexts/search.js';
 	import TrailingPane from '#lib/components/find/TrailingPane.svelte';
 	import Selection from '#lib/components/Selection.svelte';
-	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 
 	const { children } = $props();
 
@@ -17,7 +16,6 @@
 		page.route.id === '/(app)/[[lang=lang]]/find' ||
 			page.route.id === '/(app)/[[lang=lang]]/[...resource=resource]'
 	);
-	const selection = getSelectionContext();
 
 	let homepageCache = $state({
 		previews: undefined
@@ -60,7 +58,7 @@
 				{#snippet title()}
 					<span>Hantera ditt urval</span>
 				{/snippet}
-				<Selection {selection} />
+				<Selection />
 			</TrailingPane>
 		{/if}
 	</div>
