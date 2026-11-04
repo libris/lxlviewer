@@ -10,7 +10,6 @@
 	import SearchResultSort from './SearchResultSort.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiLayoutSidebar from '~icons/bi/layout-sidebar';
-	import ToggleSelectModeBtn from '../ToggleSelectModeBtn.svelte';
 
 	type SearchResultToolbarProps = {
 		searchResult: SearchResult;
@@ -49,7 +48,7 @@
 	}
 </script>
 
-<div class="search-result-sticky-toolbar bg-page z-1">
+<div class="bg-page z-1">
 	<Toolbar>
 		{#snippet leadingActions()}
 			<!-- mobile modal filter btn -->
@@ -86,7 +85,6 @@
 					<BiLayoutSidebar class="size-4" />
 				</button>
 			{/if}
-			<ToggleSelectModeBtn />
 		{/snippet}
 		{#snippet trailingActions()}
 			{#if numHits > 0}
