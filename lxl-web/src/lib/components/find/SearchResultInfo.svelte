@@ -8,6 +8,8 @@
 	import BiQuestionCircle from '~icons/bi/question-circle';
 	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import { JsonLd } from '#lib/types/xl.ts';
+	import ToggleSelectModeBtn from '../ToggleSelectModeBtn.svelte';
+	import ToggleTrailingPaneBtn from '../ToggleTrailingPaneBtn.svelte';
 
 	type SearchResultInfoProps = {
 		searchResult: SearchResult;
@@ -58,7 +60,7 @@
 </script>
 
 <div
-	class="search-result-info flex flex-col justify-center gap-1 px-3 py-1.5 text-sm"
+	class="search-result-info search-result-sticky-toolbar bg-page z-1 border-b border-b-neutral-200 flex flex-col justify-center gap-1 px-3 py-1.5 text-sm"
 	data-testid="result-info"
 >
 	{#if relaxedSearch && numHits && numHits > 0}
@@ -68,7 +70,7 @@
 			<span class="italic">{searchStr}.</span>
 		</p>
 	{/if}
-	<div class="flex gap-1">
+	<div class="flex gap-1 items-center">
 		{#if selectableResults}
 			<label for="select-all-page-results" class="sr-only">Välj alla sökträffar på sidan</label>
 			<input
@@ -100,6 +102,10 @@
 				{/if}
 				{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}
 			</p>
+			<div class="ml-auto flex gap-1">
+				<ToggleSelectModeBtn />
+				<ToggleTrailingPaneBtn />
+			</div>
 		{:else}
 			<p class="hits-count">{page.data.t('search.noResults')}</p>
 		{/if}

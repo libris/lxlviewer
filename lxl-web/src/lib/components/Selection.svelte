@@ -27,6 +27,7 @@
 {#snippet checkbox(item: ReviewItem)}
 	{const checked = $derived(selection.isSelected(item.id))}
 	<input
+		class="mr-1"
 		type="checkbox"
 		id={`checkbox-${item.id}`}
 		{checked}
@@ -57,18 +58,24 @@
 					<div class="my-2">
 						<p class="mt-1">
 							Ditt urval innehåller <span class="font-medium">{reviewItems.length}</span> verk med flera
-							utgåvor. Dessa saknar utgivningsår och förlag, vilket leder till ofullständiga referenser.
-							Nedan kan du granska detta och välja en enskild utgåva istället.
+							utgåvor. Verk saknar utgivningsår och förlag, vilket leder till ofullständiga referenser.
+							Nedan kan du granska och välja en enskild utgåva istället.
 						</p>
 					</div>
 					{#each reviewItems as item (item.id)}
 						<details class="mt-2">
-							<summary>
-								{@render checkbox(item)}
+							<summary class="flex items-baseline cursor-pointer font-medium">
+								{item.str}
+								<span aria-hidden="true" class="transition-transform ml-auto">
+									<IconChevron class="text-subtle size-3.5" />
+								</span>
 							</summary>
-							<ul class="ml-2 mt-1">
+							<ul class="mt-2 flex flex-col gap-1">
+								<li>{@render checkbox(item)}</li>
 								{#each item.instances as instance (instance.id)}
-									<li>{@render checkbox(instance)}</li>
+									<li class="ml-1 pl-2 border-l border-l-severe-100">
+										{@render checkbox(instance)}
+									</li>
 								{/each}
 							</ul>
 						</details>

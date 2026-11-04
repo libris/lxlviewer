@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
-	import BiCheckSquare from '~icons/bi/check2-square';
+	import BiToggleOff from '~icons/bi/toggle-off';
+	import BiToggleOn from '~icons/bi/toggle-on';
 
 	const userSettings = getUserSettings();
 	const selection = getSelectionContext();
 	let selectableResults = $state(userSettings?.selectableResults);
+
+	const ToggleComponent = $derived(selectableResults ? BiToggleOn : BiToggleOff);
 
 	function toggleSelectableResults() {
 		selectableResults = !selectableResults;
@@ -17,10 +20,13 @@
 <button
 	type="button"
 	role="switch"
-	aria-checked={!!selectableResults}
-	class={['btn btn-primary size-8', selectableResults ? 'btn-accent' : '']}
+	aria-checked={selectableResults}
+	class="btn btn-ghost h-4 gap-2 text-sm sm:text-xs"
 	onclick={toggleSelectableResults}
-	title="Visa urvalsläge"
 >
-	<BiCheckSquare class="size-4" />
+	<span>Skapa urval</span>
+	<ToggleComponent
+		aria-hidden="true"
+		class={['text-2xl', selectableResults ? 'text-accent' : 'text-subtle']}
+	/>
 </button>

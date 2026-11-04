@@ -575,6 +575,11 @@
 		background-color: var(--color-accent);
 	}
 
+	.badge-disabled {
+		color: var(--color-page);
+		background-color: var(--color-neutral-400);
+	}
+
 	/* keyboard input denotations */
 	.key {
 		display: inline-flex;
