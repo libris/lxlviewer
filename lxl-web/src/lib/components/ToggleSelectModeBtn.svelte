@@ -20,7 +20,7 @@
 	aria-checked={!!selectableResults}
 	class={['btn btn-primary size-8', selectableResults ? 'btn-accent' : '']}
 	onclick={toggleSelectableResults}
-	title="Visa valbara och numrerade träffar"
+	title="Visa urvalsläge"
 >
 	<BiCheckSquare class="size-4" />
 </button>

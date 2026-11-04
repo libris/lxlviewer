@@ -21,7 +21,8 @@ export class UserSettings {
 			this.settings = {
 				...this.settings,
 				...{ leadingPane: { open: true } },
-				...{ trailingPane: { open: true } }
+				...{ trailingPane: { open: true } },
+				...{ selectableResults: false }
 			};
 		}
 	}
