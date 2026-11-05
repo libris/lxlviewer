@@ -20,6 +20,11 @@ export type ReviewItem = {
 	instances: { id: string; str: string }[];
 };
 
+const errorMsg = {
+	citation: 'Ett fel uppstod när referenser skulle skapas',
+	fetch: 'Ett fel uppstod vid datahämtningen'
+};
+
 type SelectionContext = {
 	readonly loading: boolean;
 	readonly length: number;
@@ -28,6 +33,7 @@ type SelectionContext = {
 	readonly cards: SearchResultItem[];
 	readonly limit: number;
 	readonly limitReached: boolean;
+	readonly error: string;
 	format: AvailableCitationFormat | undefined;
 	isSelected(id: string): boolean;
 	toggle(id: string): Promise<void>;
@@ -47,11 +53,16 @@ function createSelection(): SelectionContext {
 	let citation = $state<ReturnType<Awaited<ReturnType<typeof initCite>>['formatAs']>>();
 	const limit = SELECTION_LIMIT;
 	let loading = $state(false);
+	let error = $state('');
 	let pendingRequests = 0;
 
 	function updateCitation() {
-		cite?.set(selection.flatMap((item) => (item.csl ? [item.csl] : [])));
-		citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
+		try {
+			cite?.set(selection.flatMap((item) => (item.csl ? [item.csl] : [])));
+			citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
+		} catch {
+			error = errorMsg.citation;
+		}
 	}
 
 	return {
@@ -87,16 +98,24 @@ function createSelection(): SelectionContext {
 			return selection.length >= limit;
 		},
 
-		set format(format: AvailableCitationFormat | undefined) {
-			currentFormat = format;
-			citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
+		get error() {
+			return error;
 		},
 
+		// set format(format: AvailableCitationFormat | undefined) {
+		// 	currentFormat = format;
+		// 	citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
+		// },
+
 		async init(_locale: LocaleCode, defaultFormat: AvailableCitationFormat) {
-			currentFormat = defaultFormat;
-			locale = _locale;
-			cite = await initCite(_locale);
-			updateCitation();
+			try {
+				currentFormat = defaultFormat;
+				locale = _locale;
+				cite = await initCite(_locale);
+				updateCitation();
+			} catch {
+				error = errorMsg.citation;
+			}
 		},
 
 		isSelected(id: string) {
@@ -154,9 +173,8 @@ function createSelection(): SelectionContext {
 					// user may have deselect the entry while fetching
 					selection = selection.filter((entry) => entry.requestId !== item.requestId);
 				}
-			} catch (error) {
-				console.error('Failed to fetch citation:', error);
-				selection = selection.filter((entry) => entry !== item);
+			} catch {
+				error = errorMsg.fetch;
 			} finally {
 				pendingRequests--;
 				loading = pendingRequests > 0;
