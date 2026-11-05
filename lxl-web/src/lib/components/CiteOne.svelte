@@ -16,7 +16,7 @@
 	let { citations, id }: Props = $props();
 	const userSettings = getUserSettings();
 
-	let selectedFormat = $state(userSettings.selectedCitationFormat || 'all');
+	let selectedFormat = $state(userSettings?.selectedCitationFormat || 'all');
 
 	function getDisplayedFormats(citations: CitationDataWithError) {
 		return (
