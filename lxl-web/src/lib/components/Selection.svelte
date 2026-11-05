@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { JsonLd } from '#lib/types/xl.ts';
 	import { getSelectionContext, type ReviewItem } from '#lib/contexts/selection.svelte.ts';
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
 	import type { AvailableCitationFormat, CitationData } from '#lib/types/citation.ts';
 	import { getAvailableFormats } from '#lib/utils/citation.ts';
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import Citation from './Citation.svelte';
-	import IconChevron from '~icons/bi/chevron-down';
 	import TabList, { type Tab } from './TabList.svelte';
 	import SearchCard from './find/SearchCard.svelte';
-	import { JsonLd } from '#lib/types/xl.ts';
+	import IconChevron from '~icons/bi/chevron-down';
+	import BiTrash from '~icons/bi/trash';
 
 	const userSettings = getUserSettings();
 	const selection = getSelectionContext();
@@ -152,11 +153,14 @@
 {/snippet}
 
 <div class="text-sm">
-	<div class="flex items-center justify-between gap-4">
+	<div class="flex items-center justify-between gap-4 mb-2">
 		<p role="status" aria-atomic="true" class="font-medium">
 			{selection.length} valda saker
 		</p>
-		<button class="btn btn-primary" onclick={() => selection.clear()}> Rensa urval </button>
+		<button class="btn btn-primary" onclick={() => selection.clear()}>
+			<BiTrash aria-hidden="true" />
+			Rensa urval
+		</button>
 	</div>
 	{#if selection.limitReached}
 		<details class="text-xs bg-severe-50 p-2 my-2 mb-2">
@@ -170,6 +174,10 @@
 			</p>
 		</details>
 	{/if}
-
+	{#if selection.error}
+		<p role="status" class="p-2 bg-severe-50 my-2">
+			{selection.error}
+		</p>
+	{/if}
 	<TabList ariaLabel="hantera urval" {tabs} />
 </div>
