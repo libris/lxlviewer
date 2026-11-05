@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Draggable from '../Draggable.svelte';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 	import {
@@ -8,7 +7,8 @@
 		TRAILING_PANE_MAX_WIDTH,
 		TRAILING_PANE_MIN_WIDTH
 	} from '#lib/constants/panels.js';
-	import Toolbar from '../Toolbar.svelte';
+	import Draggable from '#lib/components/Draggable.svelte';
+	import Toolbar from '#lib/components/Toolbar.svelte';
 	import { page } from '$app/state';
 	import BiXLg from '~icons/bi/x-lg';
 
