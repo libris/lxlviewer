@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 	import {
@@ -32,24 +33,25 @@
 
 {#if trailingPane.visible}
 	<aside
+		transition:fade={{ duration: 150 }}
 		id="trailing-pane"
-		class={[
-			'trailing-pane sticky top-0 z-10 hidden w-0 sm:block print:hidden',
-			// Enable transition for the collapse animation. But disable it while resizing the panel!
-			!isDragging && 'transition-[padding] duration-150 ease-in motion-reduce:transition-none'
-		]}
+		class={['trailing-pane sticky top-0 z-10 hidden w-0 sm:block print:hidden']}
 		style="padding-right:{trailingPane.visible ? paneWidth : 0}px"
 		inert={!trailingPane.visible}
 		aria-labelledby="trailing-pane-title"
 	>
-		<div
-			class={[
-				'flex h-full flex-col',
-				!isDragging && 'transition-transform duration-150 ease-in motion-reduce:transition-none',
-				trailingPane.visible ? 'translate-x-0' : '-translate-x-full'
-			]}
-			style="width:{paneWidth}px"
-		>
+		<Draggable
+			bind:width={paneWidth}
+			side="left"
+			minWidth={TRAILING_PANE_MIN_WIDTH}
+			maxWidth={TRAILING_PANE_MAX_WIDTH}
+			bind:isDragging
+			collapseWidth={TRAILING_PANE_COLLAPSE_WIDTH}
+			oncollapse={() => userSettings.closeTrailingPane()}
+			onexpand={() => userSettings.openTrailingPane()}
+			onresized={handleOnResized}
+		/>
+		<div class={['flex h-full flex-col']} style="width:{paneWidth}px">
 			<div class="trailing-pane-toolbar">
 				<Toolbar>
 					{#snippet leadingActions()}
@@ -78,17 +80,6 @@
 				{@render children?.()}
 			</div>
 		</div>
-		<Draggable
-			bind:width={paneWidth}
-			side="left"
-			minWidth={TRAILING_PANE_MIN_WIDTH}
-			maxWidth={TRAILING_PANE_MAX_WIDTH}
-			bind:isDragging
-			collapseWidth={TRAILING_PANE_COLLAPSE_WIDTH}
-			oncollapse={() => userSettings.closeTrailingPane()}
-			onexpand={() => userSettings.openTrailingPane()}
-			onresized={handleOnResized}
-		/>
 	</aside>
 {/if}
 
