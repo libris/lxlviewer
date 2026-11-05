@@ -24,6 +24,7 @@
 	import Spinner from '#lib/components/Spinner.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
+	import ToggleTrailingPaneBtn from '#lib/components/ToggleTrailingPaneBtn.svelte';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
@@ -136,7 +137,9 @@
 				<!-- trailing pane toolbar -->
 				<div class="search-result-aside min-w-75">
 					<div class="hidden @5xl/content:block">
-						<Toolbar />
+						<Toolbar>
+							<ToggleTrailingPaneBtn />
+						</Toolbar>
 					</div>
 					<div class="aside-content sticky h-px"></div>
 				</div>

@@ -8,8 +8,7 @@
 	import BiQuestionCircle from '~icons/bi/question-circle';
 	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import { JsonLd } from '#lib/types/xl.ts';
-	import ToggleSelectModeBtn from '../ToggleSelectModeBtn.svelte';
-	import ToggleTrailingPaneBtn from '../ToggleTrailingPaneBtn.svelte';
+	import ToggleSelectModeBtn from '#lib/components/ToggleSelectModeBtn.svelte';
 
 	type SearchResultInfoProps = {
 		searchResult: SearchResult;
@@ -104,7 +103,6 @@
 			</p>
 			<div class="ml-auto flex gap-1">
 				<ToggleSelectModeBtn />
-				<ToggleTrailingPaneBtn />
 			</div>
 		{:else}
 			<p class="hits-count">{page.data.t('search.noResults')}</p>

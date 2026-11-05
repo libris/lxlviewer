@@ -5,7 +5,7 @@
 	import { page } from '$app/state';
 	import { setHomepageContext } from '#lib/contexts/homepage.js';
 	import { setSearchContext } from '#lib/contexts/search.js';
-	import TrailingPane from '#lib/components/find/TrailingPane.svelte';
+	import TrailingPane from '#lib/components/TrailingPane.svelte';
 	import Selection from '#lib/components/Selection.svelte';
 
 	const { children } = $props();
