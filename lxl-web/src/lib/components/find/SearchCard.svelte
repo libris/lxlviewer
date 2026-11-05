@@ -223,7 +223,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		data-testid="search-card"
 		bind:this={articleElement}
 	>
-		{#if selectable && allowActions}
+		{#if selectable}
 			{const checkboxId = itemNo || item[JsonLd.ID]}
 			<div class="card-select flex flex-col items-start justify-start gap-1">
 				<label for={`checkbox-${checkboxId}`} class={['text-xs text-subtle', !itemNo && 'sr-only']}

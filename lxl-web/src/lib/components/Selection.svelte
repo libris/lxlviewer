@@ -7,6 +7,9 @@
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import Citation from './Citation.svelte';
 	import IconChevron from '~icons/bi/chevron-down';
+	import TabList, { type Tab } from './TabList.svelte';
+	import SearchCard from './find/SearchCard.svelte';
+	import { JsonLd } from '#lib/types/xl.ts';
 
 	const userSettings = getUserSettings();
 	const selection = getSelectionContext();
@@ -17,9 +20,21 @@
 	const citationData: CitationData = $derived({ ...selectedFormat, citation });
 	const reviewItems = $derived(selection.forReview);
 
+	const tabs: Tab[] = [
+		{
+			label: 'Skapa referenser',
+			id: 'references',
+			content: createReferences
+		},
+		{
+			label: 'Redigera urval',
+			id: 'edit-selection',
+			content: editSelection
+		}
+	];
+
 	function handleChangeFormat(event: Event) {
 		const format = (event.currentTarget as HTMLSelectElement).value as AvailableCitationFormat;
-
 		userSettings.saveSelectedCitationFormat(format);
 	}
 </script>
@@ -36,17 +51,10 @@
 	<label for={`checkbox-${item.id}`}>{item.str}</label>
 {/snippet}
 
-<div class="text-sm">
-	<div class="flex items-center justify-between gap-4">
-		<p role="status" aria-atomic="true" class="font-medium">
-			{selection.length} valda saker
-		</p>
-		<button class="btn btn-primary" onclick={() => selection.clear()}> Rensa </button>
-	</div>
-
-	<div class="mt-4 pt-4 flex flex-col gap-2 border-t border-t-neutral-200">
+{#snippet createReferences()}
+	<div class="py-4 flex flex-col gap-2">
 		{#if reviewItems.length}
-			<div class="text-xs bg-severe-50 p-2">
+			<div class="text-xs bg-severe-50 p-2 mb-2">
 				<details>
 					<summary class="flex items-center cursor-pointer font-medium">
 						{'ⓘ '}
@@ -83,13 +91,11 @@
 				</details>
 			</div>
 		{/if}
-		<fieldset class="flex items-center gap-2">
-			<legend class="mb-2">Skapa referenser av ditt urval</legend>
 
-			<label for="citation-format-select" class="sr-only">
+		<div>
+			<label for="citation-format-select" class="pb-2 block">
 				{page.data.t('citations.selectFormat')}:
 			</label>
-
 			<div class="relative w-min">
 				<select
 					class="btn btn-primary appearance-none pr-8"
@@ -106,10 +112,32 @@
 					<BiChevronDown aria-hidden="true" />
 				</span>
 			</div>
-		</fieldset>
+		</div>
 
 		{#if selection.length > 0}
 			<Citation citation={citationData} loading={selection.loading} />
 		{/if}
 	</div>
+{/snippet}
+
+{#snippet editSelection()}
+	{$inspect(selection.cards)}
+	<ol class="py-4 flex flex-col gap-1">
+		{#each selection.cards as item, index (item[JsonLd.ID])}
+			<li class="border-b border-b-neutral-200">
+				<SearchCard {item} selectable={true} allowActions={false} itemNo={index + 1} />
+			</li>
+		{/each}
+	</ol>
+{/snippet}
+
+<div class="text-sm">
+	<div class="flex items-center justify-between gap-4">
+		<p role="status" aria-atomic="true" class="font-medium">
+			{selection.length} valda saker
+		</p>
+		<button class="btn btn-primary" onclick={() => selection.clear()}> Rensa urval </button>
+	</div>
+
+	<TabList ariaLabel="hantera urval" {tabs} />
 </div>
