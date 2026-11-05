@@ -13,11 +13,11 @@
 		{ value: `_sortKeyByLang.${page.data.locale}`, label: page.data.t('sort.alphaAsc') },
 		{ value: `-_sortKeyByLang.${page.data.locale}`, label: page.data.t('sort.alphaDesc') },
 		{
-			value: '-@reverse.instanceOf.publication.librissearch:year',
+			value: '-yearPublished',
 			label: page.data.t('sort.publicationDesc')
 		},
 		{
-			value: '@reverse.instanceOf.publication.librissearch:year',
+			value: 'yearPublished',
 			label: page.data.t('sort.publicationAsc')
 		},
 		...(page.data.features.holdings
