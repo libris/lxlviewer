@@ -124,7 +124,6 @@ function createSelection(): SelectionContext {
 				const entry = selection.find((entry) => entry.id === normalizedId);
 
 				if (entry?.requestId === item.requestId) {
-					console.log(csl, card, work);
 					if (csl.length === 1) {
 						entry.csl = csl[0];
 					}

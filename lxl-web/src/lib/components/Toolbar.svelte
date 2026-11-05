@@ -30,7 +30,7 @@
 <style lang="postcss">
 	@reference "tailwindcss";
 
-	:global(.search-result.selectable .search-result-sticky-toolbar) {
+	:global(.search-result.selectable .sticky-toolbar) {
 		position: sticky;
 		top: calc(var(--appbar-height) + 60px);
 
@@ -43,7 +43,7 @@
 		}
 	}
 
-	:global(.search-result.selectable:has(#trailing-pane) .search-result-sticky-toolbar) {
+	:global(.search-result.selectable:has(#trailing-pane) .sticky-toolbar) {
 		top: 0;
 	}
 </style>
