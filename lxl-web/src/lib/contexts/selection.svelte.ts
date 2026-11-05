@@ -2,6 +2,7 @@ import { defaultLocale, type LocaleCode } from '#lib/i18n/locales.js';
 import { getSelectionData } from '#lib/remotes/selection.remote.js';
 import type { AvailableCitationFormat, CSLJSON } from '#lib/types/citation.js';
 import type { SearchResultItem } from '#lib/types/search.js';
+import { JsonLd } from '#lib/types/xl.js';
 import { initCite } from '#lib/utils/citation.js';
 import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
 import { getContext, setContext } from 'svelte';
@@ -37,7 +38,7 @@ function createSelection(): SelectionContext {
 	let cite: Awaited<ReturnType<typeof initCite>> | undefined;
 	let locale: LocaleCode = $state(defaultLocale);
 	let selection = $state<Selection[]>([]);
-	const cards: SearchResultItem[] = $state([]);
+	let cards: SearchResultItem[] = $state([]);
 	let forReview: ReviewItem[] = $state([]);
 	let currentFormat = $state<AvailableCitationFormat | undefined>();
 	let citation = $state<ReturnType<Awaited<ReturnType<typeof initCite>>['formatAs']>>();
@@ -155,6 +156,7 @@ function createSelection(): SelectionContext {
 
 			selection = selection.filter((item) => item.id !== normalizedId);
 			forReview = forReview.filter((item) => normalize(item.id) !== normalizedId);
+			cards = cards.filter((item) => normalize(item[JsonLd.ID]) !== normalizedId);
 			updateCitation();
 		},
 
