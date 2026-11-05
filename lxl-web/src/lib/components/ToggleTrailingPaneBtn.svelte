@@ -9,6 +9,7 @@
 	const selection = getSelectionContext();
 	const trailingPane = getTrailingPaneContext();
 	const userSettings = getUserSettings();
+	const limitReached = $derived(selection.limitReached);
 </script>
 
 {#if userSettings.selectableResults && !trailingPane.visible}
@@ -24,7 +25,12 @@
 		title={page.data.t('panes.show')}
 	>
 		<BiLayoutSidebarReverse class="size-4" />
-		<span class={['badge', selection.length > 0 ? 'badge-accent' : 'badge-disabled']}>
+		<span
+			class={[
+				'badge',
+				selection.length > 0 ? (limitReached ? 'badge-warning' : 'badge-accent') : 'badge-disabled'
+			]}
+		>
 			{selection.length}
 		</span>
 	</button>

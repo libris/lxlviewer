@@ -136,7 +136,6 @@
 {/snippet}
 
 {#snippet editSelection()}
-	{$inspect(selection.cards)}
 	<div class="py-4 flex flex-col gap-1" aria-busy={loading}>
 		{#if loading}
 			{@render skeleton()}
@@ -159,6 +158,18 @@
 		</p>
 		<button class="btn btn-primary" onclick={() => selection.clear()}> Rensa urval </button>
 	</div>
+	{#if selection.limitReached}
+		<details class="text-xs bg-severe-50 p-2 my-2 mb-2">
+			<summary class="flex cursor-pointer">
+				<span class="font-medium">Du har nått maxgränsen för ditt urval</span>
+				<IconChevron class="ml-auto text-subtle size-3.5" />
+			</summary>
+			<p class="mt-2">
+				Ditt urval har nått maxgränsen på {selection.limit} och inget mer kan läggas till. Du kan ta
+				bort valda poster under fliken "Redigera urval".
+			</p>
+		</details>
+	{/if}
 
 	<TabList ariaLabel="hantera urval" {tabs} />
 </div>

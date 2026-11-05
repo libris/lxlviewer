@@ -1,3 +1,4 @@
+import { SELECTION_LIMIT } from '#lib/constants/selection.js';
 import { defaultLocale, type LocaleCode } from '#lib/i18n/locales.js';
 import { getSelectionData } from '#lib/remotes/selection.remote.js';
 import type { AvailableCitationFormat, CSLJSON } from '#lib/types/citation.js';
@@ -25,6 +26,8 @@ type SelectionContext = {
 	readonly citation: Awaited<string> | undefined;
 	readonly forReview: ReviewItem[];
 	readonly cards: SearchResultItem[];
+	readonly limit: number;
+	readonly limitReached: boolean;
 	format: AvailableCitationFormat | undefined;
 	isSelected(id: string): boolean;
 	toggle(id: string): Promise<void>;
@@ -42,6 +45,7 @@ function createSelection(): SelectionContext {
 	let forReview: ReviewItem[] = $state([]);
 	let currentFormat = $state<AvailableCitationFormat | undefined>();
 	let citation = $state<ReturnType<Awaited<ReturnType<typeof initCite>>['formatAs']>>();
+	const limit = SELECTION_LIMIT;
 	let loading = $state(false);
 	let pendingRequests = 0;
 
@@ -75,6 +79,14 @@ function createSelection(): SelectionContext {
 			return forReview;
 		},
 
+		get limit() {
+			return limit;
+		},
+
+		get limitReached() {
+			return selection.length >= limit;
+		},
+
 		set format(format: AvailableCitationFormat | undefined) {
 			currentFormat = format;
 			citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
@@ -103,6 +115,8 @@ function createSelection(): SelectionContext {
 		},
 
 		async add(id: string) {
+			if (this.limitReached) return;
+
 			const normalizedId = normalize(id);
 			if (!normalizedId) return;
 
