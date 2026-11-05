@@ -53,8 +53,8 @@
 {/snippet}
 
 {#snippet skeleton()}
-	<div class="flex flex-col gap-2 overflow-hidden">
-		{#each new Array(3)}
+	<div class="flex p-2 flex-col gap-2 overflow-hidden">
+		{#each new Array(5)}
 			<div class="skeleton bg-neutral min-h-2 w-full"></div>
 			<div class="skeleton bg-neutral min-h-2 w-3/4"></div>
 			<div class="skeleton bg-neutral mb-2 min-h-2 w-5/6"></div>
