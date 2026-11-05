@@ -355,6 +355,7 @@
 								type="button"
 								aria-checked={isSelected}
 								role="switch"
+								disabled={!isSelected && selection.limitReached}
 								onclick={toggleSelected}
 							>
 								<BiCheckSquare />

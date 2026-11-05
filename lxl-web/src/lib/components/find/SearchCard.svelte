@@ -115,7 +115,10 @@
 	const selection = getSelectionContext();
 	const isSelected = $derived(selection.isSelected(item[JsonLd.ID]));
 
-	function toggleSelected() {
+	function toggleSelected(e: Event) {
+		const checkbox = e.currentTarget as HTMLInputElement;
+		checkbox.checked = isSelected;
+
 		selection.toggle(item[JsonLd.ID]);
 	}
 
