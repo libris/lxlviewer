@@ -163,6 +163,7 @@ function createSelection(): SelectionContext {
 		clear() {
 			selection = [];
 			forReview = [];
+			cards = [];
 
 			cite?.reset();
 			citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
