@@ -155,7 +155,7 @@
 <div class="text-sm">
 	<div class="flex items-center justify-between gap-4 mb-2">
 		<p role="status" aria-atomic="true" class="font-medium">
-			{selection.length} valda saker
+			{selection.length} valda
 		</p>
 		<button class="btn btn-primary" onclick={() => selection.clear()}>
 			<BiTrash aria-hidden="true" />

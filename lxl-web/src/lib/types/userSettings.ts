@@ -21,7 +21,7 @@ export type UserSettings = {
 		width?: number;
 		open?: boolean;
 	};
-	selectedCitationFormat?: AvailableCitationFormat | 'all';
+	selectedCitationFormat?: AvailableCitationFormat;
 	trailingPane?: {
 		width?: number;
 		open?: boolean;

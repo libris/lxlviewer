@@ -26,10 +26,9 @@
 	});
 
 	setCookieConsentContext(cookieConsentState);
-	setUserSettings(page.data.userSettings);
+	const userSettings = setUserSettings(page.data.userSettings);
 
-	// TODO fix, use real user setting
-	setSelectionContext().init(page.data.locale as LocaleCode, 'chicago');
+	setSelectionContext().init(page.data.locale as LocaleCode, userSettings.selectedCitationFormat);
 	setTrailingPaneContext();
 
 	let progressBarTimeout: ReturnType<typeof setTimeout> | undefined = undefined;

@@ -40,7 +40,7 @@ type SelectionContext = {
 	add(id: string): Promise<void>;
 	remove(id: string): void;
 	clear(): void;
-	init(locale: LocaleCode, defaultFormat: AvailableCitationFormat): Promise<void>;
+	init(locale: LocaleCode, defaultFormat: AvailableCitationFormat | undefined): Promise<void>;
 };
 
 function createSelection(): SelectionContext {
@@ -102,12 +102,15 @@ function createSelection(): SelectionContext {
 			return error;
 		},
 
-		// set format(format: AvailableCitationFormat | undefined) {
-		// 	currentFormat = format;
-		// 	citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
-		// },
+		set format(format: AvailableCitationFormat | undefined) {
+			currentFormat = format;
+			citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
+		},
 
-		async init(_locale: LocaleCode, defaultFormat: AvailableCitationFormat) {
+		async init(_locale: LocaleCode, defaultFormat: AvailableCitationFormat | 'all' | undefined) {
+			if (defaultFormat === 'all') {
+				defaultFormat = undefined;
+			}
 			try {
 				currentFormat = defaultFormat;
 				locale = _locale;
