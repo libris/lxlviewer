@@ -90,7 +90,6 @@ export enum Kbv {
 export enum BibDb {
 	ils = 'bibdb:ils',
 	lopac = 'bibdb:lopac',
-	bibIdSearchUriByLang = 'bibdb:bibIdSearchUriByLang',
 	bibIdSearchUri = 'bibdb:bibIdSearchUri',
 	isbnSearchUri = 'bibdb:isbnSearchUri',
 	issnSearchUri = 'bibdb:issnSearchUri',
