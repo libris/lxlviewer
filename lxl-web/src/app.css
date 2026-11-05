@@ -580,6 +580,11 @@
 		background-color: var(--color-neutral-400);
 	}
 
+	.badge-warning {
+		color: var(--color-page);
+		background-color: var(--color-severe-400);
+	}
+
 	/* keyboard input denotations */
 	.key {
 		display: inline-flex;

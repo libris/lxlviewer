@@ -335,6 +335,17 @@
 								<span class="ml-1">{page.data.t('resource.moreDetails')}</span>
 							</a>
 						{/if}
+						{#if !isWork && instances?.length === 1 && fnurgel}
+							<!-- eslint-disable svelte/no-navigation-without-resolve -->
+							<a
+								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
+								href={getCiteLink(page.url, fnurgel)}
+								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
+							>
+								<BiQuote class="text-neutral-500" />
+								<span>{page.data.t('citations.cite')}</span>
+							</a>
+						{/if}
 						{#if selectable}
 							<button
 								class={[
@@ -349,17 +360,6 @@
 								<BiCheckSquare />
 								<span class="ml-1">{isSelected ? 'Ta bort från' : 'Lägg till i'} urval</span>
 							</button>
-						{/if}
-						{#if !isWork && instances?.length === 1 && fnurgel}
-							<!-- eslint-disable svelte/no-navigation-without-resolve -->
-							<a
-								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
-								href={getCiteLink(page.url, fnurgel)}
-								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
-							>
-								<BiQuote class="text-neutral-500" />
-								<span>{page.data.t('citations.cite')}</span>
-							</a>
 						{/if}
 					</div>
 				</div>

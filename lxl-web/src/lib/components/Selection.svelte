@@ -19,6 +19,7 @@
 	const citation = $derived(selection.citation);
 	const citationData: CitationData = $derived({ ...selectedFormat, citation });
 	const reviewItems = $derived(selection.forReview);
+	const loading = $derived(selection.loading);
 
 	const tabs: Tab[] = [
 		{
@@ -51,14 +52,24 @@
 	<label for={`checkbox-${item.id}`}>{item.str}</label>
 {/snippet}
 
+{#snippet skeleton()}
+	<div class="flex flex-col gap-2 overflow-hidden">
+		{#each new Array(3)}
+			<div class="skeleton bg-neutral min-h-2 w-full"></div>
+			<div class="skeleton bg-neutral min-h-2 w-3/4"></div>
+			<div class="skeleton bg-neutral mb-2 min-h-2 w-5/6"></div>
+		{/each}
+	</div>
+{/snippet}
+
 {#snippet createReferences()}
-	<div class="py-4 flex flex-col gap-2">
+	<div class="py-4 flex flex-col gap-2" aria-busy={loading}>
 		{#if reviewItems.length}
 			<div class="text-xs bg-severe-50 p-2 mb-2">
 				<details>
 					<summary class="flex items-center cursor-pointer font-medium">
-						{'ⓘ '}
-						Urvalet kan behöva granskas
+						<span class="badge badge-warning mr-2">{reviewItems.length}</span>
+						<span>Urvalet kan behöva granskas</span>
 						<span aria-hidden="true" class="transition-transform ml-auto">
 							<IconChevron class="text-subtle size-3.5" />
 						</span>
@@ -71,17 +82,20 @@
 						</p>
 					</div>
 					{#each reviewItems as item (item.id)}
-						<details class="mt-2">
-							<summary class="flex items-baseline cursor-pointer font-medium">
+						<details class="open:mb-2 open:[&>summary]:bg-severe-100">
+							<summary
+								class="flex items-baseline p-2 cursor-pointer font-medium transition-colors bg-severe-50 hover:bg-severe-100"
+							>
+								{'•'}
 								{item.str}
 								<span aria-hidden="true" class="transition-transform ml-auto">
 									<IconChevron class="text-subtle size-3.5" />
 								</span>
 							</summary>
-							<ul class="mt-2 flex flex-col gap-1">
-								<li>{@render checkbox(item)}</li>
+							<ul class="mt-2 flex flex-col">
+								<li class="ml-1 py-1">{@render checkbox(item)}</li>
 								{#each item.instances as instance (instance.id)}
-									<li class="ml-1 pl-2 border-l border-l-severe-100">
+									<li class="ml-2 pl-2 py-1 border-l border-l-severe-100">
 										{@render checkbox(instance)}
 									</li>
 								{/each}
@@ -113,22 +127,29 @@
 				</span>
 			</div>
 		</div>
-
-		{#if selection.length > 0}
-			<Citation citation={citationData} loading={selection.loading} />
+		{#if loading}
+			{@render skeleton()}
+		{:else if selection.length > 0}
+			<Citation citation={citationData} />
 		{/if}
 	</div>
 {/snippet}
 
 {#snippet editSelection()}
 	{$inspect(selection.cards)}
-	<ol class="py-4 flex flex-col gap-1">
-		{#each selection.cards as item, index (item[JsonLd.ID])}
-			<li class="border-b border-b-neutral-200">
-				<SearchCard {item} selectable={true} allowActions={false} itemNo={index + 1} />
-			</li>
-		{/each}
-	</ol>
+	<div class="py-4 flex flex-col gap-1" aria-busy={loading}>
+		{#if loading}
+			{@render skeleton()}
+		{:else if selection.cards.length}
+			<ol>
+				{#each selection.cards as item, index (item[JsonLd.ID] + index)}
+					<li class="border-b border-b-neutral-200">
+						<SearchCard {item} selectable={true} allowActions={false} itemNo={index + 1} />
+					</li>
+				{/each}
+			</ol>
+		{/if}
+	</div>
 {/snippet}
 
 <div class="text-sm">

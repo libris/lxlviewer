@@ -6,11 +6,10 @@
 
 	type Props = {
 		citation: CitationData;
-		loading?: boolean;
 		id?: string | undefined | null;
 	};
 
-	const { citation, id, loading = false }: Props = $props();
+	const { citation, id }: Props = $props();
 
 	async function handleCopyCitation(
 		citation: string,
@@ -32,59 +31,48 @@
 <article
 	class="citation bg-page border-r-neutral border-b-neutral flex flex-col gap-2 rounded-sm border-r border-b p-4 text-xs"
 	aria-labelledby={citation.key}
-	aria-busy={loading}
 >
 	<h2 class="mb-2 text-sm font-medium" id={citation.key}>
 		{citation.fullName || citation.name}
 	</h2>
-	{#if loading}
-		<div class="flex flex-col gap-2 overflow-hidden">
-			{#each new Array(3)}
-				<div class="skeleton bg-neutral min-h-2 w-full"></div>
-				<div class="skeleton bg-neutral min-h-2 w-3/4"></div>
-				<div class="skeleton bg-neutral mb-2 min-h-2 w-5/6"></div>
-			{/each}
-		</div>
-	{:else}
-		<svelte:element
-			this={isFileFormat ? 'pre' : 'p'}
-			class={['mb-2 block', isFileFormat && 'text-2xs overflow-x-scroll scrollbar-thin']}
+	<svelte:element
+		this={isFileFormat ? 'pre' : 'p'}
+		class={['mb-2 block', isFileFormat && 'text-2xs overflow-x-scroll scrollbar-thin']}
+	>
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+		{@html citation.citation}
+	</svelte:element>
+	<div class="flex gap-2">
+		<!-- copy button -->
+		<button
+			class="btn btn-accent"
+			onclick={() =>
+				handleCopyCitation(citation.citation, isFileFormat ? 'text/plain' : 'text/html', () => {
+					wasCopied = {};
+					wasCopied[citation.key] = true;
+				})}
 		>
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html citation.citation}
-		</svelte:element>
-		<div class="flex gap-2">
-			<!-- copy button -->
-			<button
-				class="btn btn-accent"
-				onclick={() =>
-					handleCopyCitation(citation.citation, isFileFormat ? 'text/plain' : 'text/html', () => {
-						wasCopied = {};
-						wasCopied[citation.key] = true;
-					})}
-			>
-				<BiCopy />
-				{#if wasCopied[citation.key]}
-					{page.data.t('general.copied')}
-				{:else}
-					{page.data.t('general.copyToClipboard')}
-				{/if}
-				<span class="sr-only">({citation.name})</span>
-			</button>
-			{#if isFileFormat && id}
-				<!-- download button -->
-				<a
-					class="btn btn-accent"
-					download={`${id}.${citation.fileFormat}`}
-					href={`/api/${page.data.locale}/cite?id=${id}&format=${citation.key}`}
-				>
-					<BiDownload />
-					{page.data.t('citations.saveAsFile')}
-					<span class="sr-only">({citation.name})</span>
-				</a>
+			<BiCopy />
+			{#if wasCopied[citation.key]}
+				{page.data.t('general.copied')}
+			{:else}
+				{page.data.t('general.copyToClipboard')}
 			{/if}
-		</div>
-	{/if}
+			<span class="sr-only">({citation.name})</span>
+		</button>
+		{#if isFileFormat && id}
+			<!-- download button -->
+			<a
+				class="btn btn-accent"
+				download={`${id}.${citation.fileFormat}`}
+				href={`/api/${page.data.locale}/cite?id=${id}&format=${citation.key}`}
+			>
+				<BiDownload />
+				{page.data.t('citations.saveAsFile')}
+				<span class="sr-only">({citation.name})</span>
+			</a>
+		{/if}
+	</div>
 </article>
 
 <style>

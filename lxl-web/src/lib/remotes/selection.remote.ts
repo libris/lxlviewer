@@ -10,6 +10,7 @@ import type { CSLJSON } from '#lib/types/citation.js';
 import type { ApiError } from '#lib/types/api.js';
 import { cslFromMainEntity } from '#lib/utils/cslFromMainEntity.js';
 import { asSearchResultItem } from '#lib/utils/search.server.js';
+import { centerOnWork } from '#lib/utils/centerOnWork.server.js';
 
 /**
  * Fetches a record and returns data needed to support the selection
@@ -38,7 +39,7 @@ export const getSelectionData = query(
 		}
 
 		const record = await res.json();
-		const { mainEntity } = record;
+		let { mainEntity } = record;
 		csl = cslFromMainEntity(mainEntity, vocab);
 
 		const isWork = vocab.isSubClassOf(vocab.getType(mainEntity), Bibframe.Work);
@@ -54,9 +55,9 @@ export const getSelectionData = query(
 				})
 			};
 		}
-
-		// const mainEntity = centerOnWork(record['mainEntity'] as FramedData);
-		// mainEntity.meta = { [JsonLd.ID]: mainEntity[JsonLd.ID] };
+		const originalId = mainEntity[JsonLd.ID];
+		mainEntity = centerOnWork(record['mainEntity'] as FramedData);
+		mainEntity.meta = { [JsonLd.ID]: originalId };
 
 		card = asSearchResultItem([mainEntity], display, vocab, lang, AUXD_SECRET)[0];
 
