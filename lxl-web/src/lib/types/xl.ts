@@ -26,6 +26,7 @@ export enum Owl {
 
 export enum Rdfs {
 	RDF_TYPE = 'rdf:type',
+	domain = 'domain',
 	range = 'range',
 	subClassOf = 'subClassOf',
 	subPropertyOf = 'subPropertyOf'
@@ -69,6 +70,7 @@ export enum Platform {
 	impliedByObject = 'impliedByObject',
 	preferLike = 'preferLike',
 	composite = 'https://id.kb.se/ns/librissearch/composite',
+	merged = 'https://id.kb.se/ns/librissearch/merged',
 	filters = 'https://id.kb.se/ns/librissearch/filters',
 	meta = 'meta'
 }

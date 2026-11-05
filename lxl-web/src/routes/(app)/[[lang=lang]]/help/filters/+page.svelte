@@ -4,13 +4,55 @@
 	import TableOfContents from '#lib/components/TableOfContents.svelte';
 	import { page } from '$app/state';
 	import { getSearchContext } from '#lib/contexts/search.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import SvContent from './sv.md';
 	import EnContent from './en.md';
+	import BiToggleOff from '~icons/bi/toggle-off';
+	import BiToggleOn from '~icons/bi/toggle-on';
 
 	let { data } = $props();
 
 	const searchContext = getSearchContext();
+	const userSettings = getUserSettings();
 	const pageTitle = $derived(page.data.t('help.filtersPageTitle'));
+
+	let showSearchPaths = $state(userSettings?.showSearchPaths ?? false);
+	let showQueryCodes = $state(userSettings?.showQueryCodes ?? false);
+
+	function toggleSearchPaths() {
+		showSearchPaths = !showSearchPaths;
+		userSettings?.setShowSearchPaths(showSearchPaths);
+	}
+
+	function toggleQueryCodes() {
+		showQueryCodes = !showQueryCodes;
+		userSettings?.setShowQueryCodes(showQueryCodes);
+	}
+
+	const SearchPathsToggle = $derived(showSearchPaths ? BiToggleOn : BiToggleOff);
+	const QueryCodesToggle = $derived(showQueryCodes ? BiToggleOn : BiToggleOff);
+
+	const columnCount = $derived(2 + (showSearchPaths ? 1 : 0) + (showQueryCodes ? 1 : 0));
+
+	const headerGridCols = $derived(
+		showSearchPaths && showQueryCodes
+			? '@3xl:grid-cols-[16rem_1.5fr_1.5fr_1fr]'
+			: showSearchPaths
+				? '@3xl:grid-cols-[16rem_2fr_1.5fr]'
+				: showQueryCodes
+					? '@3xl:grid-cols-[16rem_2fr_1fr]'
+					: '@3xl:grid-cols-[16rem_2fr]'
+	);
+
+	const rowGridCols = $derived(
+		showSearchPaths && showQueryCodes
+			? '@3xl:grid-cols-[minmax(min-content,16rem)_1.5fr_1.5fr_1fr]'
+			: showSearchPaths
+				? '@3xl:grid-cols-[minmax(min-content,16rem)_2fr_1.5fr]'
+				: showQueryCodes
+					? '@3xl:grid-cols-[minmax(min-content,16rem)_2fr_1fr]'
+					: '@3xl:grid-cols-[minmax(min-content,16rem)_2fr]'
+	);
 
 	const tableOfContents = $derived(
 		data.filterGroups
@@ -69,25 +111,57 @@
 					<SvContent />
 				{/if}
 			</div>
-			<div role="table" class="@container mt-12">
-				<!-- Header row -->
-				<div
-					role="row"
-					class="sr-only @3xl:not-sr-only @3xl:grid
-					@3xl:grid-cols-[1fr_2fr_1.5fr_1fr] @3xl:gap-x-4"
+			<div class="mt-12 flex flex-wrap justify-end gap-4">
+				<button
+					type="button"
+					role="switch"
+					aria-checked={showSearchPaths}
+					class="btn btn-ghost gap-2 text-sm sm:text-xs"
+					onclick={toggleSearchPaths}
 				>
+					<span>
+						{page.data.t('help.searchIn')}
+					</span>
+					<SearchPathsToggle
+						aria-hidden="true"
+						class={['text-2xl', showSearchPaths ? 'text-accent' : 'text-subtle']}
+					/>
+				</button>
+				<button
+					type="button"
+					role="switch"
+					aria-checked={showQueryCodes}
+					class="btn btn-ghost gap-2 text-sm sm:text-xs"
+					onclick={toggleQueryCodes}
+				>
+					<span>
+						{page.data.t('help.code')}
+					</span>
+					<QueryCodesToggle
+						aria-hidden="true"
+						class={['text-2xl', showQueryCodes ? 'text-accent' : 'text-subtle']}
+					/>
+				</button>
+			</div>
+			<div role="table" class="@container mt-3">
+				<!-- Header row -->
+				<div role="row" class={['sr-only @3xl:not-sr-only @3xl:grid @3xl:gap-x-4', headerGridCols]}>
 					<div id="filter-header" role="columnheader" class="py-3 font-medium">
 						{page.data.t('help.filter')}
 					</div>
 					<div id="description-header" role="columnheader" class="py-3 font-medium">
 						{page.data.t('help.description')}
 					</div>
-					<div id="searchin-header" role="columnheader" class="py-3 font-medium">
-						{page.data.t('help.searchIn')}
-					</div>
-					<div id="code-header" role="columnheader" class="py-3 font-medium">
-						{page.data.t('help.code')}
-					</div>
+					{#if showSearchPaths}
+						<div id="searchin-header" role="columnheader" class="py-3 font-medium">
+							{page.data.t('help.searchIn')}
+						</div>
+					{/if}
+					{#if showQueryCodes}
+						<div id="code-header" role="columnheader" class="py-3 font-medium">
+							{page.data.t('help.code')}
+						</div>
+					{/if}
 				</div>
 
 				{#each data.filterGroups as g, i (i)}
@@ -97,9 +171,9 @@
 						id={g.label ? toId('section', g.label) : undefined}
 					>
 						{#if g.label || g.filterGroupDescription}
-							<div role="row" class="border-t border-gray-300 bg-neutral-100 px-2 py-3">
+							<div role="row" class="border-t border-neutral-300 bg-neutral-100 px-2 py-3">
 								{#if g.label}
-									<div role="columnheader" aria-colspan="4" class="font-semibold">
+									<div role="columnheader" aria-colspan={columnCount} class="font-semibold">
 										{g.label}
 									</div>
 								{/if}
@@ -116,11 +190,10 @@
 							<div
 								role="row"
 								id={f.key}
-								class="border-t border-gray-300
-								@3xl:grid
-								@3xl:grid-cols-[minmax(min-content,1fr)_2fr_1.5fr_1fr]
-								@3xl:gap-x-4
-								@3xl:py-0"
+								class={[
+									'border-t border-neutral-300 @3xl:grid @3xl:gap-x-4 @3xl:py-0',
+									rowGridCols
+								]}
 							>
 								<!-- Filter -->
 								<div
@@ -151,9 +224,9 @@
 										{page.data.t('help.description')}
 									</div>
 
-									<span class="max-ch-text whitespace-pre-line">
+									<div class="max-ch-text whitespace-pre-line">
 										{f.filterDescription}
-									</span>
+									</div>
 									{#if f.descriptionRemark}
 										<div class="mt-4">
 											{#each f.descriptionRemark as remark, i (i)}
@@ -165,46 +238,88 @@
 									{/if}
 								</div>
 
-								<!-- Search in -->
-								<div
-									role="cell"
-									aria-labelledby={`searchin-header row-${f.key}`}
-									class={[f.propertyChainAxiom ? '' : 'hidden md:block', 'min-w-0 my-3']}
-								>
-									<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
-										{page.data.t('help.searchIn')}
-									</div>
+								{#if showSearchPaths}
+									<!-- Search in -->
+									<div
+										role="cell"
+										aria-labelledby={`searchin-header row-${f.key}`}
+										class={[f.searchPaths?.length ? '' : 'hidden md:block', 'min-w-0 my-3']}
+									>
+										<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
+											{page.data.t('help.searchIn')}
+										</div>
 
-									{#if f.propertyChainAxiom}
-										<ul>
-											{#each f.propertyChainAxiom as p (p)}
-												<li class="text-s">{p.label}</li>
-												<li class="text-2xs text-subtle mb-2 font-mono wrap-anywhere">
-													{p.path}
-												</li>
+										{#if f.searchPaths?.length}
+											<ul>
+												{#each f.searchPaths as p (p.key ?? p.path)}
+													<li class={p.children?.length ? 'mb-3' : 'mb-2'}>
+														{#if p.key}
+															<a
+																href={`#${p.key}`}
+																class="text-s text-accent-700 underline underline-offset-2"
+															>
+																{p.label ?? p.key}
+															</a>
+														{:else}
+															{#if p.label}
+																<div class="text-s">{p.label}</div>
+															{/if}
+															<div
+																class={[
+																	p.label ? 'text-2xs text-subtle' : 'text-s',
+																	'font-mono wrap-anywhere',
+																	p.children?.length ? 'mt-0.5' : ''
+																]}
+															>
+																{p.path}
+															</div>
+															{#if p.children?.length}
+																<ul class="mt-1 border-l-2 border-l-neutral-200 pl-3">
+																	{#each p.children as c (c.path)}
+																		<li class="mb-2">
+																			{#if c.label}
+																				<div class="text-s">{c.label}</div>
+																			{/if}
+																			<div
+																				class={[
+																					c.label ? 'text-2xs text-subtle' : 'text-s',
+																					'font-mono wrap-anywhere'
+																				]}
+																			>
+																				{c.path}
+																			</div>
+																		</li>
+																	{/each}
+																</ul>
+															{/if}
+														{/if}
+													</li>
+												{/each}
+											</ul>
+										{/if}
+									</div>
+								{/if}
+
+								{#if showQueryCodes}
+									<!-- Code -->
+									<div
+										role="cell"
+										aria-labelledby={`code-header row-${f.key}`}
+										class={[f.queryCodes ? '' : 'hidden md:block', 'min-w-0 my-3']}
+									>
+										<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
+											{page.data.t('help.code')}
+										</div>
+
+										<ul class="font-mono">
+											<li class="text-xs wrap-anywhere">{f.key}</li>
+
+											{#each f.queryCodes as q (q)}
+												<li class="text-subtle text-xs">{q}</li>
 											{/each}
 										</ul>
-									{/if}
-								</div>
-
-								<!-- Code -->
-								<div
-									role="cell"
-									aria-labelledby={`code-header row-${f.key}`}
-									class={[f.queryCodes ? '' : 'hidden md:block', 'min-w-0 my-3']}
-								>
-									<div class="mb-1 text-xs font-medium text-neutral-500 @3xl:hidden">
-										{page.data.t('help.code')}
 									</div>
-
-									<ul class="font-mono">
-										<li class="text-xs wrap-anywhere">{f.key}</li>
-
-										{#each f.queryCodes as q (q)}
-											<li class="text-subtle text-xs">{q}</li>
-										{/each}
-									</ul>
-								</div>
+								{/if}
 							</div>
 						{/each}
 					</div>
