@@ -30,14 +30,14 @@
 	import SearchMapping from './find/SearchMapping.svelte';
 	import ExpandableArea from '#lib/components/ExpandableArea.svelte';
 	import Suggestion from './supersearch/Suggestion.svelte';
+	import Toolbar from './Toolbar.svelte';
+	import ToggleSelectModeBtn from './ToggleSelectModeBtn.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
 	import BiQuote from '~icons/bi/quote';
 	import BiChevronRight from '~icons/bi/chevron-right';
-	import Toolbar from './Toolbar.svelte';
-	import ToggleTrailingPaneBtn from './ToggleTrailingPaneBtn.svelte';
-	import ToggleSelectModeBtn from './ToggleSelectModeBtn.svelte';
+	import BiCheckSquare from '~icons/bi/check-square';
 
 	type Props = {
 		uri: string | null;
@@ -180,20 +180,12 @@
 	{/each}
 {/snippet}
 
-{#if (adjecentSearchResults && fnurgel) || trailingPane.canExpand || selectable}
+{#if adjecentSearchResults && fnurgel}
 	<Toolbar>
 		{#snippet leadingActions()}
-			{#if selectable}
-				<input class="ml-2" type="checkbox" checked={isSelected} onchange={toggleSelected} />
-			{/if}
 			{#if adjecentSearchResults && fnurgel}
 				<AdjecentResults {fnurgel} {adjecentSearchResults} />
 			{/if}
-		{/snippet}
-		{#snippet trailingActions()}
-			<div class="min-w-75 hidden @5xl:block">
-				<ToggleTrailingPaneBtn />
-			</div>
 		{/snippet}
 	</Toolbar>
 {/if}
@@ -340,8 +332,23 @@
 								data-testid="details-link"
 							>
 								<IconArrowDown />
-								{page.data.t('resource.moreDetails')}
+								<span class="ml-1">{page.data.t('resource.moreDetails')}</span>
 							</a>
+						{/if}
+						{#if selectable}
+							<button
+								class={[
+									'btn my-2 h-8 w-fit rounded-full px-4 text-sm',
+									isSelected ? 'btn-accent' : 'btn-primary'
+								]}
+								type="button"
+								aria-checked={isSelected}
+								role="switch"
+								onclick={toggleSelected}
+							>
+								<BiCheckSquare />
+								<span class="ml-1">{isSelected ? 'Ta bort från' : 'Lägg till i'} urval</span>
+							</button>
 						{/if}
 						{#if !isWork && instances?.length === 1 && fnurgel}
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->

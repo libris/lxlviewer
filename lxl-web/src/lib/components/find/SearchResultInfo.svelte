@@ -60,7 +60,7 @@
 </script>
 
 <div
-	class="search-result-info search-result-sticky-toolbar bg-page z-1 border-b border-b-neutral-200 flex flex-col justify-center gap-1 px-3 py-1.5 text-sm"
+	class="search-result-info sticky-toolbar bg-page z-1 border-b border-b-neutral-200 flex flex-col justify-center gap-1 px-3 py-1.5 text-sm"
 	data-testid="result-info"
 >
 	{#if relaxedSearch && numHits && numHits > 0}
