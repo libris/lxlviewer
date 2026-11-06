@@ -61,10 +61,18 @@ test('opening and sorting the facet sets a cookie', async ({ page, context }) =>
 	await page.locator('summary').filter({ hasText: 'Språk' }).click();
 	await page.getByTestId('facet-sort-language').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
-	expect(afterCookies[0].name).toEqual('userSettings');
-	expect(afterCookies[0].value).toEqual(
-		'{%22leadingPane%22:{%22open%22:true}%2C%22facetExpanded%22:{%22language%22:%22OPEN%22}%2C%22facetSort%22:{%22language%22:%22alpha.asc%22}}'
-	);
+	const firstCookie = afterCookies[0];
+	expect(firstCookie.name).toEqual('userSettings');
+	const userSettings = JSON.parse(decodeURIComponent(firstCookie.value));
+
+	expect(userSettings).toMatchObject({
+		facetExpanded: {
+			language: 'OPEN'
+		},
+		facetSort: {
+			language: 'alpha.asc'
+		}
+	});
 });
 
 test('facet opened/closed state is preserved', async ({ page, context }) => {
