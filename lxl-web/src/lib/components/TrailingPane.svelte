@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 	import {
@@ -33,8 +32,6 @@
 
 {#if trailingPane.visible}
 	<aside
-		transition:fade={{ duration: 150 }}
-		onoutroend={trailingPane.onClose}
 		id="trailing-pane"
 		class={['trailing-pane sticky top-0 z-10 hidden w-0 sm:block print:hidden']}
 		style="padding-right:{trailingPane.visible ? paneWidth : 0}px"
