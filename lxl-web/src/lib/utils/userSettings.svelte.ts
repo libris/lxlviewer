@@ -20,7 +20,9 @@ export class UserSettings {
 		if (!Object.prototype.hasOwnProperty.call(settings, 'leadingPane')) {
 			this.settings = {
 				...this.settings,
-				...{ leadingPane: { open: true } }
+				...{ leadingPane: { open: true } },
+				...{ trailingPane: { open: true } },
+				...{ selectableResults: false }
 			};
 		}
 	}
@@ -73,10 +75,22 @@ export class UserSettings {
 		this.update('leadingPane', leadingPane);
 	}
 
+	setTrailingPaneWidth(width: number) {
+		const trailingPane = { ...this.settings?.trailingPane };
+		trailingPane.width = width;
+		this.update('trailingPane', trailingPane);
+	}
+
 	closeLeadingPane() {
 		const leadingPane = { ...this.settings?.leadingPane };
 		leadingPane.open = false;
 		this.update('leadingPane', leadingPane);
+	}
+
+	closeTrailingPane() {
+		const trailingPane = { ...this.settings?.trailingPane };
+		trailingPane.open = false;
+		this.update('trailingPane', trailingPane);
 	}
 
 	openLeadingPane() {
@@ -85,9 +99,9 @@ export class UserSettings {
 		this.update('leadingPane', leadingPane);
 	}
 
-	setTrailingPaneWidth(width: number) {
+	openTrailingPane() {
 		const trailingPane = { ...this.settings?.trailingPane };
-		trailingPane.width = width;
+		trailingPane.open = true;
 		this.update('trailingPane', trailingPane);
 	}
 
@@ -107,6 +121,10 @@ export class UserSettings {
 		this.update('prefersNearMe', setting);
 	}
 
+	setSelectableResults(setting: boolean) {
+		this.update('selectableResults', setting);
+	}
+
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
@@ -122,6 +140,7 @@ export class UserSettings {
 	get selectedCitationFormat() {
 		return this.settings?.selectedCitationFormat;
 	}
+
 	get leadingPane() {
 		return this.settings?.leadingPane;
 	}
@@ -132,6 +151,10 @@ export class UserSettings {
 
 	get prefersNearMe() {
 		return this.settings.prefersNearMe;
+	}
+
+	get selectableResults() {
+		return this.settings.selectableResults;
 	}
 
 	toURLSearchParams(): URLSearchParams {

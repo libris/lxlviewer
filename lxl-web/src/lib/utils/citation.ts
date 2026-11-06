@@ -1,7 +1,7 @@
 import { Cite, plugins } from '@citation-js/core';
 import { goto, preloadData } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
-import type { CSLJSON, AvailableCitationFormat } from '#lib/types/citation.js';
+import type { CSLJSON, AvailableCitationFormat, CitationFormat } from '#lib/types/citation.js';
 import type { LocaleCode } from '#lib/i18n/locales.js';
 import type { ReadonlyURL } from '$app/state';
 
@@ -60,6 +60,14 @@ export async function initCite(locale: LocaleCode) {
 		cite.add(data);
 	}
 
+	function set(data: CSLJSON[]) {
+		cite.set(data);
+	}
+
+	function reset() {
+		cite.reset();
+	}
+
 	function formatAs(name: AvailableCitationFormat) {
 		switch (name) {
 			case 'csl':
@@ -90,7 +98,7 @@ export async function initCite(locale: LocaleCode) {
 		}
 	}
 
-	return { add, formatAs };
+	return { add, set, formatAs, reset };
 }
 
 // load these resources only if user uses cite functionality
@@ -130,7 +138,7 @@ async function loadCiteResources() {
 	loaded = true;
 }
 
-export function getAvailableFormats() {
+export function getAvailableFormats(): CitationFormat[] {
 	return Object.entries(availableFormats).map(([key, value]) => {
 		return {
 			key: key as AvailableCitationFormat,

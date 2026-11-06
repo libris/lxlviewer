@@ -5,11 +5,17 @@
 	import { page } from '$app/state';
 	import { setHomepageContext } from '#lib/contexts/homepage.js';
 	import { setSearchContext } from '#lib/contexts/search.js';
+	import TrailingPane from '#lib/components/TrailingPane.svelte';
+	import Selection from '#lib/components/Selection.svelte';
 
 	const { children } = $props();
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
+	const trailingPaneAllowedRoute = $derived(
+		page.route.id === '/(app)/[[lang=lang]]/find' ||
+			page.route.id === '/(app)/[[lang=lang]]/[...resource=resource]'
+	);
 
 	let homepageCache = $state({
 		previews: undefined
@@ -35,15 +41,27 @@
 </svelte:head>
 <div class={['app contents', page.data.subsetMapping && 'subset']}>
 	<AppBar />
-	<main
-		id="content"
-		class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
-	>
-		{@render children()}
-	</main>
-	{#if !isFindRoute}
-		<SiteFooter />
-	{/if}
+	<div class="content-wrapper flex">
+		<div class="main-wrapper flex-1">
+			<main
+				id="content"
+				class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
+			>
+				{@render children()}
+			</main>
+			{#if !isFindRoute}
+				<SiteFooter />
+			{/if}
+		</div>
+		{#if trailingPaneAllowedRoute}
+			<TrailingPane>
+				{#snippet title()}
+					<span>Hantera ditt urval</span>
+				{/snippet}
+				<Selection />
+			</TrailingPane>
+		{/if}
+	</div>
 	<div id="floating-elements-container"></div>
 </div>
 
@@ -71,4 +89,15 @@
 			}
 		}
 	}
+
+	/* TODO SCROLL IN MAIN CONTAINER? */
+	/* :global(.content-wrapper:has(#trailing-pane)){
+		max-height: calc(100vh - (var(--appbar-height) + var(--banner-height, 0)));
+		overflow: hidden;
+
+		& .main-wrapper {
+			overflow-y: auto;
+			scrollbar-width: thin;
+		}
+	} */
 </style>

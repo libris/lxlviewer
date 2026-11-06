@@ -4,12 +4,13 @@
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import { MAPPING_IGNORE_VARIABLE } from '#lib/constants/mapping.js';
 	import { fade } from 'svelte/transition';
-	import Modal from '../Modal.svelte';
-	import Toolbar from '../Toolbar.svelte';
-	import Filters from './Filters.svelte';
-	import SearchResultSort from './SearchResultSort.svelte';
-	import IconSliders from '~icons/bi/sliders';
+	import Modal from '#lib/components/Modal.svelte';
+	import Toolbar from '#lib/components/Toolbar.svelte';
+	import Filters from '#lib/components/find/Filters.svelte';
+	import ToggleSelectModeBtn from '#lib/components/ToggleSelectModeBtn.svelte';
+	import ToggleTrailingPaneBtn from '#lib/components/ToggleTrailingPaneBtn.svelte';
 	import BiLayoutSidebar from '~icons/bi/layout-sidebar';
+	import IconSliders from '~icons/bi/sliders';
 
 	type SearchResultToolbarProps = {
 		searchResult: SearchResult;
@@ -48,7 +49,7 @@
 	}
 </script>
 
-<div class="bg-page sticky top-0 z-10 sm:static">
+<div class="bg-page z-1 sticky-toolbar">
 	<Toolbar>
 		{#snippet leadingActions()}
 			<!-- mobile modal filter btn -->
@@ -85,11 +86,12 @@
 					<BiLayoutSidebar class="size-4" />
 				</button>
 			{/if}
+			<div class="ml-auto flex gap-1">
+				<ToggleSelectModeBtn />
+			</div>
 		{/snippet}
 		{#snippet trailingActions()}
-			{#if numHits > 0}
-				<SearchResultSort />
-			{/if}
+			<ToggleTrailingPaneBtn />
 		{/snippet}
 	</Toolbar>
 </div>

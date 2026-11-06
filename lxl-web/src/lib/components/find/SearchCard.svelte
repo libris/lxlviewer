@@ -29,6 +29,7 @@
 	import BiHeart from '~icons/bi/heart';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 	import IconArrowRight from '~icons/bi/arrow-right';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 
 	interface Props {
 		item: SearchResultItem | LibraryResultItem;
@@ -39,6 +40,8 @@
 		hideType?: boolean;
 		headingElement?: HeadingElem;
 		headingIsLink?: boolean;
+		selectable?: boolean;
+		itemNo?: number;
 	}
 
 	let articleElement: HTMLElement;
@@ -50,7 +53,9 @@
 		allowActions = true,
 		hideType = false,
 		headingElement = HeadingElem.H2,
-		headingIsLink = true
+		headingIsLink = true,
+		selectable = false,
+		itemNo = undefined
 	}: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
@@ -106,6 +111,13 @@
 
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
+
+	const selection = getSelectionContext();
+	const isSelected = $derived(selection.isSelected(item[JsonLd.ID]));
+
+	function toggleSelected() {
+		selection.toggle(item[JsonLd.ID]);
+	}
 
 	function passAlongAdjecentSearchResults(event: MouseEvent) {
 		event.preventDefault();
@@ -202,14 +214,30 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	<article
 		{id}
 		class={[
-			'search-card border-neutral relative grid w-full gap-x-4 border-t px-3 py-3 font-normal transition-colors',
+			'search-card border-neutral relative grid w-full gap-x-4 border-t p-3 font-normal transition-colors',
 			showHighlight && 'bg-accent-50/75',
-			!page.data.features.resourceImages && 'no-image'
+			!page.data.features.resourceImages && 'no-image',
+			selectable && 'selectable'
 		]}
 		aria-current={showHighlight || undefined}
 		data-testid="search-card"
 		bind:this={articleElement}
 	>
+		{#if selectable}
+			{const checkboxId = itemNo || item[JsonLd.ID]}
+			<div class="card-select flex flex-col items-start justify-start gap-1">
+				<label for={`checkbox-${checkboxId}`} class={['text-xs text-subtle', !itemNo && 'sr-only']}
+					>{itemNo && itemNo.toLocaleString() + '.'}</label
+				>
+				<input
+					type="checkbox"
+					id={`checkbox-${checkboxId}`}
+					checked={isSelected}
+					onchange={toggleSelected}
+					disabled={selection.limitReached && !isSelected}
+				/>
+			</div>
+		{/if}
 		{#if page.data.features.resourceImages}
 			<div class="card-image">
 				<svelte:element
@@ -468,10 +496,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		{/if}
 		{#if bibliographyLink}
 			<!-- numberOfItems doesn't include count from parts on parent bibliographies with parts.
-                 Some parents have a small number of instances directly linked to them instead of 0.
-                 Only show count if it looks "correct", i.e. large enough -->
+					Some parents have a small number of instances directly linked to them instead of 0.
+					Only show count if it looks "correct", i.e. large enough -->
 			{@const numItems = formatNumItems(
-				item?.numberOfItems > 100 ? item?.numberOfItems : undefined
+				item?.numberOfItems && item.numberOfItems > 100 ? item?.numberOfItems : undefined
 			)}
 			<div class="card-explore mt-2">
 				<a
@@ -566,6 +594,36 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			color: var(--color-subtle);
 			font-size: var(--text-xs);
 		}
+	}
+
+	.search-card.selectable {
+		column-gap: calc(var(--spacing) * 2);
+		grid-template-areas:
+			'select image content content'
+			'select image footer footer'
+			'. image explore explore'
+			'. actions actions actions'
+			'. debug . .';
+
+		grid-template-columns: minmax(0px, auto) 64px 1fr auto;
+
+		@container card (min-width: 768px) {
+			grid-template-columns: minmax(0px, auto) 72px 1fr auto;
+			@apply gap-x-4 px-3 py-4;
+		}
+
+		@container card (min-width: 640px) {
+			grid-template-areas:
+				'select image content content'
+				'select image content content'
+				'. image explore explore'
+				'. image footer actions'
+				'. debug . .';
+		}
+	}
+
+	.card-select {
+		grid-area: select;
 	}
 
 	.no-image {

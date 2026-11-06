@@ -9,6 +9,9 @@
 	import Matomo from '#lib/components/Matomo.svelte';
 	import CookieConsent from '#lib/components/CookieConsent.svelte';
 	import { setCookieConsentContext } from '#lib/contexts/cookieConsent.js';
+	import { setSelectionContext } from '#lib/contexts/selection.svelte.ts';
+	import { setTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
+	import type { LocaleCode } from '#lib/i18n/locales.ts';
 
 	const { children } = $props();
 
@@ -23,7 +26,12 @@
 	});
 
 	setCookieConsentContext(cookieConsentState);
-	setUserSettings(page.data.userSettings);
+	const userSettings = setUserSettings(page.data.userSettings);
+
+	const selection = setSelectionContext();
+	selection.init(page.data.locale as LocaleCode, userSettings.selectedCitationFormat);
+
+	setTrailingPaneContext();
 
 	let progressBarTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 	const progressDelay = 300;
@@ -35,8 +43,11 @@
 		progressBarTimeout = setTimeout(NProgress.start, progressDelay);
 	});
 
-	afterNavigate(({ shallow, type }) => {
+	afterNavigate(({ shallow, type, from, to }) => {
 		if (shallow && type === 'goto') return;
+		if (from?.params?.lang !== to?.params?.lang) {
+			selection?.init(page.data.locale as LocaleCode, userSettings.selectedCitationFormat);
+		}
 
 		clearTimeout(progressBarTimeout);
 		NProgress.done();

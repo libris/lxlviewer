@@ -3,12 +3,16 @@
 	import { tick } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { afterNavigate, goto } from '$app/navigation';
-	import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
+	// import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { Facet, SearchResult } from '#lib/types/search.js';
+	import { HeadingElem } from '#lib/types/decoratedData.js';
 	import type { HoldingsData } from '#lib/types/holdings.js';
-	import SiteFooter from '../SiteFooter.svelte';
-	import { USE_HOLDING_PANE } from '#lib/constants/panels.js';
+	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
+	import { getUserSettings } from '#lib/contexts/userSettings.ts';
+	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import SiteFooter from '../SiteFooter.svelte';
 	import Toolbar from '#lib/components/Toolbar.svelte';
 	import LeadingPane from '#lib/components/find/LeadingPane.svelte';
 	import Filters from '#lib/components/find/Filters.svelte';
@@ -18,16 +22,13 @@
 	import Pagination from '#lib/components/find/Pagination.svelte';
 	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
 	import Spinner from '#lib/components/Spinner.svelte';
-	import TrailingPane from '#lib/components/find/TrailingPane.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
-	import getPageTitle from '#lib/utils/getPageTitle.js';
-	import { HeadingElem } from '#lib/types/decoratedData.js';
-	import { getUserSettings } from '#lib/contexts/userSettings.ts';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
 	const userSettings = getUserSettings();
+	const trailingPane = getTrailingPaneContext();
 
 	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
 	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
@@ -37,10 +38,10 @@
 			: `${page.data.t('search.searchResults')} - ${siteName}`
 	);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
-	const isSmallScreen = new MediaQuery('max-width: 640px', false);
-	const HoldingsComponent = $derived(
-		USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
-	);
+	// const isSmallScreen = new MediaQuery('max-width: 640px', false);
+	// const HoldingsComponent = $derived(
+	// 	USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
+	// );
 	const holdingsParam = $derived(page.url.searchParams.get('holdings'));
 	const modalCard = $derived(
 		holdingsParam &&
@@ -52,6 +53,8 @@
 	let previousURL: URL;
 	const expandLeadingPaneBtnId = 'expand-leading-pane-btn';
 	const collapseLeadingPaneBtnId = 'collapse-leading-pane-btn';
+
+	const offset = $derived(parseInt(page.url.searchParams.get('_offset') || '0'));
 
 	afterNavigate(({ from, shallow, type }) => {
 		if (shallow && type === 'goto') return;
@@ -77,17 +80,17 @@
 		}
 	}
 
-	function onCloseLeadingPane() {
-		userSettings.closeLeadingPane();
-		tick().then(() => {
-			document.getElementById(expandLeadingPaneBtnId)?.focus();
-		});
-	}
-
 	function onOpenLeadingPane() {
 		userSettings.openLeadingPane();
 		tick().then(() => {
 			document.getElementById(collapseLeadingPaneBtnId)?.focus();
+		});
+	}
+
+	function onCloseLeadingPane() {
+		userSettings.closeLeadingPane();
+		tick().then(() => {
+			document.getElementById(expandLeadingPaneBtnId)?.focus();
 		});
 	}
 </script>
@@ -99,19 +102,14 @@
 <Meta title={page.data.pageTitle} {description} url={page.url.href} {siteName} />
 
 {#if searchResult}
-	<div
-		class={[
-			'search-result flex w-full flex-1',
-			holdings && USE_HOLDING_PANE && 'has-trailing-pane'
-		]}
-	>
+	<div class={['search-result flex w-full flex-1', userSettings.selectableResults && 'selectable']}>
 		<LeadingPane onClose={onCloseLeadingPane} {collapseLeadingPaneBtnId}>
 			<div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters">
 				<Filters {facets} />
 			</div>
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">
-			<div class="flex flex-1 flex-col @5xl/content:flex-row">
+			<div class={['flex flex-1 flex-col', !trailingPane.visible && '@5xl/content:flex-row']}>
 				<div class="flex-1">
 					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar
@@ -119,18 +117,25 @@
 						{expandLeadingPaneBtnId}
 						onOpenPane={onOpenLeadingPane}
 					/>
-					<SearchResultInfo {searchResult} />
+					<SearchResultInfo {searchResult} selectableResults={userSettings.selectableResults} />
 
 					<ol aria-labelledby="search-results" class="flex flex-col">
 						{#each searchResult.items as item, index (item['@id'] + index)}
-							<li><SearchCard {item} headingElement={HeadingElem.H2} /></li>
+							<li>
+								<SearchCard
+									{item}
+									headingElement={HeadingElem.H2}
+									itemNo={offset + (index + 1)}
+									selectable={userSettings.selectableResults}
+								/>
+							</li>
 						{/each}
 					</ol>
 					<Pagination data={searchResult} />
 				</div>
-				<!-- placeholder for aside trailing pane -->
+				<!-- trailing pane toolbar -->
 				<div class="search-result-aside min-w-75">
-					<div class="hidden @5xl/content:block">
+					<div class="sticky-toolbar hidden @5xl/content:block">
 						<Toolbar />
 					</div>
 					<div class="aside-content sticky h-px"></div>
@@ -139,7 +144,7 @@
 			<SiteFooter />
 		</div>
 		{#if holdings && holdingsParam}
-			<HoldingsComponent close={handleCloseHoldings}>
+			<Modal close={handleCloseHoldings}>
 				{#snippet title()}
 					<span>{page.data.t('holdings.findAtLibrary')}</span>
 				{/snippet}
@@ -160,25 +165,14 @@
 				{:catch err}
 					<p>{err}</p>
 				{/await}
-			</HoldingsComponent>
+			</Modal>
 		{/if}
 	</div>
 {/if}
 
-<style>
+<style lang="postcss">
+	@reference "tailwindcss";
 	.aside-content {
 		top: calc(var(--appbar-height) + (var(--spacing) * 4));
-	}
-
-	.search-result {
-		&.has-trailing-pane {
-			max-height: calc(100vh - (var(--appbar-height) + var(--banner-height, 0)));
-			overflow: hidden;
-
-			& .search-result-content {
-				overflow-y: auto;
-				scrollbar-width: thin;
-			}
-		}
 	}
 </style>
