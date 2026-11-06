@@ -30,7 +30,7 @@
 	import SearchMapping from './find/SearchMapping.svelte';
 	import ExpandableArea from '#lib/components/ExpandableArea.svelte';
 	import Suggestion from './supersearch/Suggestion.svelte';
-	import Toolbar from './Toolbar.svelte';
+	import ToggleTrailingPaneBtn from '#lib/components/ToggleTrailingPaneBtn.svelte';
 	import ToggleSelectModeBtn from './ToggleSelectModeBtn.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';
@@ -181,13 +181,9 @@
 {/snippet}
 
 {#if adjecentSearchResults && fnurgel}
-	<Toolbar>
-		{#snippet leadingActions()}
-			{#if adjecentSearchResults && fnurgel}
-				<AdjecentResults {fnurgel} {adjecentSearchResults} />
-			{/if}
-		{/snippet}
-	</Toolbar>
+	<div class="border-b-neutral @container border-b print:hidden">
+		<AdjecentResults {fnurgel} {adjecentSearchResults} />
+	</div>
 {/if}
 {#if workCard && !isWork}
 	<nav
@@ -640,8 +636,11 @@
 		</div>
 		{#if tableOfContents.length && !trailingPane.visible}
 			<div class="hidden @7xl:block print:hidden">
-				<section data-testid="toc" class="sticky py-3 @sm:py-6">
+				<section data-testid="toc" class="sticky flex items-start py-3 @sm:py-6">
 					<TableOfContents items={tableOfContents} />
+					{#if selectable}
+						<ToggleTrailingPaneBtn />
+					{/if}
 				</section>
 			</div>
 		{/if}
