@@ -115,10 +115,7 @@
 	const selection = getSelectionContext();
 	const isSelected = $derived(selection.isSelected(item[JsonLd.ID]));
 
-	function toggleSelected(e: Event) {
-		const checkbox = e.currentTarget as HTMLInputElement;
-		checkbox.checked = isSelected;
-
+	function toggleSelected() {
 		selection.toggle(item[JsonLd.ID]);
 	}
 
@@ -237,6 +234,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					id={`checkbox-${checkboxId}`}
 					checked={isSelected}
 					onchange={toggleSelected}
+					disabled={selection.limitReached && !isSelected}
 				/>
 			</div>
 		{/if}
