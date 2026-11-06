@@ -34,6 +34,7 @@
 {#if trailingPane.visible}
 	<aside
 		transition:fade={{ duration: 150 }}
+		onoutroend={trailingPane.onClose}
 		id="trailing-pane"
 		class={['trailing-pane sticky top-0 z-10 hidden w-0 sm:block print:hidden']}
 		style="padding-right:{trailingPane.visible ? paneWidth : 0}px"
