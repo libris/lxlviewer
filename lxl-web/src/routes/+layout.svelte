@@ -28,7 +28,9 @@
 	setCookieConsentContext(cookieConsentState);
 	const userSettings = setUserSettings(page.data.userSettings);
 
-	setSelectionContext().init(page.data.locale as LocaleCode, userSettings.selectedCitationFormat);
+	const selection = setSelectionContext();
+	selection.init(page.data.locale as LocaleCode, userSettings.selectedCitationFormat);
+
 	setTrailingPaneContext();
 
 	let progressBarTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -41,8 +43,11 @@
 		progressBarTimeout = setTimeout(NProgress.start, progressDelay);
 	});
 
-	afterNavigate(({ shallow, type }) => {
+	afterNavigate(({ shallow, type, from, to }) => {
 		if (shallow && type === 'goto') return;
+		if (from?.params?.lang !== to?.params?.lang) {
+			selection?.init(page.data.locale as LocaleCode, userSettings.selectedCitationFormat);
+		}
 
 		clearTimeout(progressBarTimeout);
 		NProgress.done();

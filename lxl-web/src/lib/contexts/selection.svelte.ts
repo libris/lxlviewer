@@ -214,8 +214,7 @@ const selectionKey = Symbol('selection');
 
 export function setSelectionContext() {
 	const selection = createSelection();
-	setContext(selectionKey, selection);
-	return selection;
+	return setContext(selectionKey, selection);
 }
 
 export function getSelectionContext() {
