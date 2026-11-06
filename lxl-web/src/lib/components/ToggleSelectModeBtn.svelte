@@ -24,7 +24,7 @@
 	class="btn btn-ghost h-4 gap-2 text-sm sm:text-xs"
 	onclick={toggleSelectableResults}
 >
-	<span>Skapa urval</span>
+	<span class="whitespace-nowrap">Välj träffar</span>
 	<ToggleComponent
 		aria-hidden="true"
 		class={['text-2xl', selectableResults ? 'text-accent' : 'text-subtle']}

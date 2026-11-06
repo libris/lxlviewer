@@ -43,7 +43,7 @@
 		}
 	}
 
-	:global(.search-result.selectable:has(#trailing-pane) .sticky-toolbar) {
-		top: 0;
+	:global(.content-wrapper:has(#trailing-pane) .search-result.selectable .sticky-toolbar) {
+		position: initial;
 	}
 </style>
