@@ -15,12 +15,10 @@ export async function GET({ params, url, fetch, locals }) {
 
 	if (id && format) {
 		if (supportedFormats.some((f) => format.toLowerCase() === f)) {
-			let url;
-			if (id.startsWith(API_URL)) {
-				// support both full URI:s and fnurgels
-				url = id;
-			} else {
-				url = `${API_URL}/${id}`;
+			// support both full URI:s and fnurgels
+			const url = resolveRecordUrl(id);
+			if (!url) {
+				return error(400, 'Bad id');
 			}
 			const res = await fetch(`${url}/data.jsonld?framed=true&computedLabel=${lang}`);
 			if (res.ok) {
@@ -73,7 +71,7 @@ export async function GET({ params, url, fetch, locals }) {
 		}
 	} else {
 		// XML response when missing id or format param
-		const formats = id ? `<formats id='${id}'>` : '<formats>';
+		const formats = id ? `<formats id='${escapeXml(id)}'>` : '<formats>';
 
 		const xml = `<?xml version='1.0' encoding='UTF-8'?>
       ${formats}
@@ -89,4 +87,24 @@ export async function GET({ params, url, fetch, locals }) {
 			}
 		});
 	}
+}
+
+function resolveRecordUrl(id: string): string | undefined {
+	let parsed: URL | undefined;
+	try {
+		parsed = new URL(id);
+	} catch {
+		// not an absolute URL, i.e. a fnurgel
+		return `${API_URL}/${id}`;
+	}
+	return parsed.origin === new URL(API_URL).origin ? id : undefined;
+}
+
+function escapeXml(s: string) {
+	return s
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll("'", '&apos;')
+		.replaceAll('"', '&quot;');
 }
