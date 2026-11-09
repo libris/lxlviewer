@@ -5,6 +5,7 @@
 	import { page } from '$app/state';
 	import { setHomepageContext } from '#lib/contexts/homepage.js';
 	import { setSearchContext } from '#lib/contexts/search.js';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import TrailingPane from '#lib/components/TrailingPane.svelte';
 	import Selection from '#lib/components/Selection.svelte';
 
@@ -20,6 +21,8 @@
 	let homepageCache = $state({
 		previews: undefined
 	});
+
+	const selection = getSelectionContext();
 
 	setHomepageContext(homepageCache);
 
@@ -57,6 +60,10 @@
 			<TrailingPane>
 				{#snippet title()}
 					<span>Hantera ditt urval</span>
+					<!-- todo: sr-only atomic -->
+					<span role="status" aria-atomic="true" class="font-medium badge badge-accent ml-0.5">
+						{selection.length}
+					</span>
 				{/snippet}
 				<Selection />
 			</TrailingPane>

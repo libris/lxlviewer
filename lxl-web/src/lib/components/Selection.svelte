@@ -138,6 +138,10 @@
 
 {#snippet editSelection()}
 	<div class="py-4 flex flex-col gap-1" aria-busy={loading}>
+		<button class="btn btn-primary self-start mb-2" onclick={() => selection.clear()}>
+			<BiTrash aria-hidden="true" />
+			Rensa urval
+		</button>
 		{#if loading}
 			{@render skeleton()}
 		{:else if selection.cards.length}
@@ -153,15 +157,6 @@
 {/snippet}
 
 <div class="text-sm">
-	<div class="flex items-center justify-between gap-4 mb-2">
-		<p role="status" aria-atomic="true" class="font-medium">
-			{selection.length} valda
-		</p>
-		<button class="btn btn-primary" onclick={() => selection.clear()}>
-			<BiTrash aria-hidden="true" />
-			Rensa urval
-		</button>
-	</div>
 	{#if selection.limitReached}
 		<details class="text-xs bg-severe-50 p-2 my-2 mb-2">
 			<summary class="flex cursor-pointer">
