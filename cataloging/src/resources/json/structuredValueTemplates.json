@@ -667,14 +667,14 @@
   ],
   "hasItemAction": {
         "@type": "ItemAction",
-        "agent": null,
+        "agent": "@id": "https://libris.kb.se/3qw7qg7j1zt0dlnh#it",
         "category": [
           {
             "@id": "https://id.kb.se/term/spa/committed-to-retain"
           }
         ],
-        "endDate": "",
-        "startDate": ""
+        "startDate": "",
+        "endDate": ""
       },
   "Classification": {
     "@type": "Classification",
