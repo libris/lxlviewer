@@ -3,7 +3,6 @@
 	import { tick } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { afterNavigate, goto } from '$app/navigation';
-	// import { MediaQuery, SvelteURLSearchParams } from 'svelte/reactivity';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { Facet, SearchResult } from '#lib/types/search.js';
 	import { HeadingElem } from '#lib/types/decoratedData.js';
@@ -38,10 +37,6 @@
 			: `${page.data.t('search.searchResults')} - ${siteName}`
 	);
 	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
-	// const isSmallScreen = new MediaQuery('max-width: 640px', false);
-	// const HoldingsComponent = $derived(
-	// 	USE_HOLDING_PANE ? (isSmallScreen.current ? Modal : TrailingPane) : Modal
-	// );
 	const holdingsParam = $derived(page.url.searchParams.get('holdings'));
 	const modalCard = $derived(
 		holdingsParam &&

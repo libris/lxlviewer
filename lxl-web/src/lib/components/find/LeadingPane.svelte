@@ -77,10 +77,7 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div
-			class="leading-pane-content mr-1.5 overflow-y-auto overscroll-contain [&>*]:h-full"
-			style="--leading-pane-height:calc(100vh - var(--appbar-height) - var(--banner-height, 0))"
-		>
+		<div class="leading-pane-content mr-1.5 overflow-y-auto overscroll-contain *:h-full">
 			{@render children?.()}
 		</div>
 	</div>

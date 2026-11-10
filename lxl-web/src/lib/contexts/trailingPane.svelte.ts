@@ -7,7 +7,6 @@ type TrailingPaneContext = {
 	readonly expandBtnId: string;
 	readonly collapseBtnId: string;
 	readonly visible: boolean;
-	readonly canExpand: boolean;
 	readonly width: number;
 	onClose: () => void;
 	onOpen: () => void;
@@ -18,7 +17,6 @@ function createTrailingPane(): TrailingPaneContext {
 	const userSettings = getUserSettings();
 	const selection = getSelectionContext();
 	const isVisible = $derived(!!(selection.length > 0 && userSettings.trailingPane?.open));
-	const canExpand = $derived(selection.length > 0 && !userSettings.trailingPane?.open);
 
 	const expandBtnId = 'expand-trailing-pane-btn';
 	const collapseBtnId = 'collapse-trailing-pane-btn';
@@ -32,9 +30,6 @@ function createTrailingPane(): TrailingPaneContext {
 		},
 		get visible() {
 			return isVisible;
-		},
-		get canExpand() {
-			return canExpand;
 		},
 		get width() {
 			return userSettings.trailingPane?.width || TRAILING_PANE_DEFAULT_WIDTH;

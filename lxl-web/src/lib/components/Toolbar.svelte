@@ -32,15 +32,7 @@
 
 	:global(.search-result.selectable .sticky-toolbar) {
 		position: sticky;
-		top: calc(var(--appbar-height) + 60px);
-
-		@variant md {
-			top: calc(var(--appbar-height) + 56px);
-		}
-
-		@variant lg {
-			top: var(--appbar-height);
-		}
+		top: calc(var(--appbar-height) + var(--banner-height));
 	}
 
 	:global(.content-wrapper:has(#trailing-pane) .search-result.selectable .sticky-toolbar) {

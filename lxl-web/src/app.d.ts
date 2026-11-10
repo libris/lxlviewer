@@ -58,6 +58,7 @@ declare global {
 			dimissedHighlighting?: boolean;
 			citations?: CitationDataWithError;
 			citationId?: string;
+			modalOpen?: boolean;
 		}
 		// interface Platform {}
 	}

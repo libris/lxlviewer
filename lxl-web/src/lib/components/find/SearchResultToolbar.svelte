@@ -1,8 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import { SvelteURL } from 'svelte/reactivity';
+	import { relativizeUrl } from '#lib/utils/http.ts';
 	import type { DisplayMapping, Facet, SearchResult } from '#lib/types/search.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import { MAPPING_IGNORE_VARIABLE } from '#lib/constants/mapping.js';
+	import { FILTERS_HASH } from '#lib/constants/modals.ts';
 	import { fade } from 'svelte/transition';
 	import Modal from '#lib/components/Modal.svelte';
 	import Toolbar from '#lib/components/Toolbar.svelte';
@@ -21,7 +26,23 @@
 	const { searchResult, expandLeadingPaneBtnId, onOpenPane }: SearchResultToolbarProps = $props();
 	const userSettings = getUserSettings();
 
-	let showFiltersModal = $state(false);
+	const filtersModalOpen = $derived((page.shallow?.url ?? page.url).hash === FILTERS_HASH);
+
+	function showFiltersModal() {
+		const url = new SvelteURL(page.url.toString());
+		url.hash = FILTERS_HASH;
+
+		const rel = relativizeUrl(url.toString()) as string;
+		goto(resolve(rel), {
+			state: { modalOpen: true },
+			replace: true
+		});
+	}
+
+	function hideFiltersModal() {
+		history.back();
+	}
+
 	const numHits = $derived(searchResult.totalItems);
 	const mapping = $derived(searchResult.mapping.filter((m) => m.variable === '_q'));
 	const filterCount = $derived(getFiltersCount(mapping));
@@ -43,26 +64,17 @@
 		_iter(root);
 		return count;
 	}
-
-	function toggleFiltersModal() {
-		showFiltersModal = !showFiltersModal;
-	}
 </script>
 
 <div class="bg-page z-1 sticky-toolbar">
 	<Toolbar>
 		{#snippet leadingActions()}
 			<!-- mobile modal filter btn -->
-			<a
-				href={page.data.localizeHref(
-					`${page.url.pathname}?${page.url.searchParams.toString()}#filters`
-				)}
+			<button
+				type="button"
 				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
 				aria-label={`${page.data.t('general.show')} ${page.data.t('search.filters')}. ${page.data.t('search.selectedFilters')}: ${filterCount}`}
-				onclick={(e) => {
-					e.preventDefault();
-					toggleFiltersModal();
-				}}
+				onclick={showFiltersModal}
 			>
 				<IconSliders class="text-base" />
 				{page.data.t('search.filters')}
@@ -71,7 +83,7 @@
 						{filterCount}
 					</span>
 				{/if}
-			</a>
+			</button>
 			<!-- expand leadingPane btn -->
 			{#if !userSettings.leadingPane?.open}
 				<button
@@ -96,8 +108,8 @@
 	</Toolbar>
 </div>
 
-{#if showFiltersModal}
-	<Modal position="left" close={toggleFiltersModal}>
+{#if filtersModalOpen}
+	<Modal position="left" close={hideFiltersModal}>
 		{#snippet title()}
 			<span>
 				{page.data.t('search.filters')} ({numHits.toLocaleString(page.data.locale)}
