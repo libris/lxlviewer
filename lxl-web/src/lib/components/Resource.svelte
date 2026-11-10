@@ -181,7 +181,7 @@
 {/snippet}
 
 {#if adjecentSearchResults && fnurgel}
-	<div class="border-b-neutral @container border-b print:hidden">
+	<div class="@container print:hidden">
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	</div>
 {/if}
@@ -204,8 +204,9 @@
 {/if}
 <article class="@container @3xl:**:[[id]]:scroll-mt-4">
 	{#if tableOfContents.length}
-		<section data-testid="toc-mobile" class="contents @7xl:hidden print:hidden">
+		<section data-testid="toc-mobile" class="flex @7xl:hidden print:hidden">
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
+			<ToggleTrailingPaneBtn />
 		</section>
 	{/if}
 	<div
@@ -318,11 +319,11 @@
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>
-					<div class="flex items-center gap-2 print:hidden">
+					<div class="flex flex-wrap items-center gap-x-2 print:hidden">
 						{#if decoratedData.summary.length || instances?.length > 1 || relations?.length || decoratedData.resourceTableOfContents.length}
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
-								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
+								class="btn btn-primary mt-2 h-8 w-fit rounded-full px-4 text-sm"
 								href="#{uidPrefix}details"
 								data-sveltekit-preload-data="false"
 								data-testid="details-link"
@@ -334,7 +335,7 @@
 						{#if !isWork && instances?.length === 1 && fnurgel}
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
-								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
+								class="btn btn-primary mt-2 h-8 w-fit rounded-full px-4 text-sm"
 								href={getCiteLink(page.url, fnurgel)}
 								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
 							>
@@ -345,7 +346,7 @@
 						{#if selectable}
 							<button
 								class={[
-									'btn my-2 h-8 w-fit rounded-full px-4 text-sm',
+									'btn mt-2 h-8 w-fit rounded-full px-4 text-sm',
 									isSelected ? 'btn-accent' : 'btn-primary'
 								]}
 								type="button"

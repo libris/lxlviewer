@@ -22,7 +22,7 @@
 	const userSettings = getUserSettings();
 	const trailingPane = getTrailingPaneContext();
 
-	let paneWidth = $state(trailingPane.width);
+	let paneWidth = $state(trailingPane?.width);
 	let isDragging = $state(false);
 
 	function handleOnResized() {
@@ -33,7 +33,7 @@
 {#if trailingPane.visible}
 	<aside
 		id="trailing-pane"
-		class={['trailing-pane sticky top-0 z-10 hidden w-0 sm:block print:hidden']}
+		class={['trailing-pane z-10 hidden w-0 sm:block print:hidden']}
 		style="padding-right:{trailingPane.visible ? paneWidth : 0}px"
 		inert={!trailingPane.visible}
 		aria-labelledby="trailing-pane-title"
@@ -74,10 +74,7 @@
 					{/snippet}
 				</Toolbar>
 			</div>
-			<div
-				class="trailing-pane-content p-4 mr-1.5 overflow-y-auto overscroll-contain *:h-full"
-				style="--trailing-pane-height:calc(100vh - var(--appbar-height) - var(--banner-height, 0))"
-			>
+			<div class="trailing-pane-content p-4 mr-1.5 overflow-y-auto overscroll-contain *:h-full">
 				{@render children?.()}
 			</div>
 		</div>
@@ -88,6 +85,7 @@
 	@reference 'tailwindcss';
 
 	.trailing-pane {
+		position: sticky;
 		height: calc(100vh - var(--appbar-height) - var(--banner-height, 0));
 		top: calc(var(--appbar-height) + var(--banner-height, 0));
 	}
@@ -96,12 +94,6 @@
 	.trailing-pane-toolbar {
 		background: linear-gradient(90deg, var(--color-neutral-100) 0%, var(--color-aside) 10px);
 	}
-
-	/* .trailing-pane-wrapper {
-		@variant sm {
-			top: var(--appbar-height);
-		}
-	} */
 
 	.trailing-pane-content {
 		height: 100%;
