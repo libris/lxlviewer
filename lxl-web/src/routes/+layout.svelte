@@ -11,6 +11,7 @@
 	import { setCookieConsentContext } from '#lib/contexts/cookieConsent.js';
 	import { setSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import { setTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
+	import { setModalContext } from '#lib/contexts/modal.svelte.ts';
 	import type { LocaleCode } from '#lib/i18n/locales.ts';
 
 	const { children } = $props();
@@ -32,6 +33,7 @@
 	selection.init(page.data.locale as LocaleCode, userSettings.selectedCitationFormat);
 
 	setTrailingPaneContext();
+	setModalContext();
 
 	let progressBarTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 	const progressDelay = 300;

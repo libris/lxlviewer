@@ -2,12 +2,13 @@
 	import { PUBLIC_FJARRLAN_URL } from '$app/env/public';
 	import { page } from '$app/state';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import { JsonLd, type DisplayDecorated } from '#lib/types/xl.js';
 	import type { HoldingsData } from '#lib/types/holdings.js';
 	import type { SearchResultItem } from '#lib/types/search.js';
 	import { LxlLens } from '#lib/types/display.js';
 	import { getLibraryIdsFromMapping } from '#lib/utils/getLibraryIdsFromMapping.js';
-	import { getHoldingsLink, getHeldBy, handleClickHoldings } from '#lib/utils/holdings.js';
+	import { getHoldingsLink, getHeldBy } from '#lib/utils/holdings.js';
 	import MyLibsHoldingIndicator from '#lib/components/MyLibsHoldingIndicator.svelte';
 
 	interface Props {
@@ -17,6 +18,8 @@
 
 	let { holdings, instances }: Props = $props();
 	const { myLibraries } = getUserSettings();
+	const modal = getModalContext();
+
 	const subsetLibraries = $derived(
 		getLibraryIdsFromMapping([page.data.subsetMapping]) || undefined
 	);
@@ -53,7 +56,18 @@
 				href={page.data.localizeHref(getHoldingsLink(page.url, type))}
 				data-sveltekit-preload-data="false"
 				data-testid="holding-link"
-				onclick={(event) => handleClickHoldings(event, page.state, type)}
+				onclick={(event) => {
+					event.preventDefault();
+					modal.onOpen({
+						type: 'holdings',
+						searchParams: {
+							holdings: type
+						},
+						state: {
+							holdingId: type
+						}
+					});
+				}}
 			>
 				{#if myLibsHoldingByType}
 					<div class="mr-1 text-lg">

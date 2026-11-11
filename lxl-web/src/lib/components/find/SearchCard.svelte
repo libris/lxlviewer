@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { onDestroy } from 'svelte';
-	import { goto, beforeNavigate } from '$app/navigation';
+	import { goto, beforeNavigate, preloadData } from '$app/navigation';
 	import popover from '#lib/actions/popover/index.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import type { LibraryResultItem, SearchResultItem } from '#lib/types/search.js';
 	import { Fmt, JsonLd, LensType, type DisplayDecorated } from '#lib/types/xl.js';
 	import { Elem, HeadingElem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
@@ -17,7 +19,7 @@
 	import EsExplain from '#lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '#lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '#lib/components/MyLibsHoldingIndicator.svelte';
-	import { getHoldingsLink, handleClickHoldings } from '#lib/utils/holdings.js';
+	import { getHoldingsLink } from '#lib/utils/holdings.js';
 	import { asAdjecentSearchResult } from '#lib/utils/adjecentSearchResult.js';
 	import { isResourceNode } from '#lib/utils/resourceData.js';
 	import TypeIcon from '#lib/components/TypeIcon.svelte';
@@ -29,7 +31,6 @@
 	import BiHeart from '~icons/bi/heart';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 	import IconArrowRight from '~icons/bi/arrow-right';
-	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 
 	interface Props {
 		item: SearchResultItem | LibraryResultItem;
@@ -64,7 +65,7 @@
 	let footerId = $derived(`card-footer-${id}`);
 	let modalParam = $derived(
 		page.url.searchParams.get('holdings') ||
-			page.state.holdings ||
+			page.state.holdingId ||
 			page.url.searchParams.get('cite') ||
 			page.state.citationId
 	);
@@ -112,6 +113,7 @@
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
 
+	const modal = getModalContext();
 	const selection = getSelectionContext();
 	const isSelected = $derived(selection.isSelected(item[JsonLd.ID]));
 
@@ -140,6 +142,26 @@
 				replace: true,
 				state: { ...page.state, dimissedHighlighting: true }
 			});
+		}
+	}
+
+	async function handleClickHoldings(event: Event) {
+		event.preventDefault();
+		const { href } = event.currentTarget as HTMLLinkElement;
+		const result = await preloadData(href);
+		if (result.type === 'loaded' && result.status === 200) {
+			modal.onOpen({
+				type: 'holdings',
+				searchParams: {
+					holdings: stripAnchor(id) || ''
+				},
+				state: {
+					holdingId: stripAnchor(id) || '',
+					holdings: await result.data.holdings
+				}
+			});
+		} else {
+			goto(href);
 		}
 	}
 
@@ -183,7 +205,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			data-sveltekit-preload-data={isInstanceCard ? 'false' : ''}
 			data-sveltekit-reset="false"
 			data-testid="holding-link"
-			onclick={(event) => isInstanceCard && handleClickHoldings(event, page.state, id)}
+			onclick={handleClickHoldings}
 		>
 			<span class="text-base">
 				{#if item.heldByMyLibraries}
@@ -462,7 +484,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<a
 						class="btn btn-primary h-7 min-w-22.5 rounded-full md:h-8"
 						href={getCiteLink(page.url, id)}
-						onclick={(event) => handleClickCite(event, page.state, id)}
+						onclick={(event) => handleClickCite(event, id, modal)}
 					>
 						<BiQuote aria-hidden="true" class="size-4 text-neutral-500" />
 						<span id={`cite-${id}`}> {page.data.t('citations.cite')}</span>

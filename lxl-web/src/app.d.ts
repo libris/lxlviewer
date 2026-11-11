@@ -11,6 +11,8 @@ import type {
 } from '#lib/types/search.js';
 import 'unplugin-icons/types/svelte';
 import type { AppMenuItem, Features, FooterSection, Site } from '#lib/types/site.js';
+import type { ModalType } from '#lib/types/modal.js';
+import type { HoldingsData } from '#lib/types/holdings.js';
 
 declare global {
 	namespace App {
@@ -51,14 +53,16 @@ declare global {
 		interface PageState {
 			expandedSuperSearch?: boolean;
 			expandedInstances?: string[];
-			holdings?: string;
+			holdings?: HoldingsData;
+			holdingId?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
 			dimissedHighlighting?: boolean;
 			citations?: CitationDataWithError;
 			citationId?: string;
-			modalOpen?: boolean;
+			modal?: {
+				type: ModalType;
+			};
 		}
-		// interface Platform {}
 	}
 	interface Window {
 		Matomo?: {

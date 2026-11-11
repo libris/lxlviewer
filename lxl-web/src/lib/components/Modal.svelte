@@ -6,7 +6,6 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { page } from '$app/state';
 	import IconClose from '~icons/bi/x-lg';
-	import { setModalContext } from '#lib/contexts/modal.js';
 
 	interface Props {
 		dialog?: HTMLDialogElement | undefined;
@@ -23,8 +22,6 @@
 		title,
 		children
 	}: Props = $props();
-
-	setModalContext();
 
 	onMount(() => {
 		dialog?.showModal();

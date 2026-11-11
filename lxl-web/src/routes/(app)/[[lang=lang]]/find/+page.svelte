@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { tick } from 'svelte';
-	import { resolve } from '$app/paths';
-	import { afterNavigate, goto } from '$app/navigation';
-	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { Facet, SearchResult } from '#lib/types/search.js';
 	import { HeadingElem } from '#lib/types/decoratedData.js';
 	import type { HoldingsData } from '#lib/types/holdings.js';
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
 	import SiteFooter from '../SiteFooter.svelte';
@@ -28,6 +26,7 @@
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
 	const userSettings = getUserSettings();
 	const trailingPane = getTrailingPaneContext();
+	const modal = getModalContext();
 
 	const siteName = $derived(getPageTitle(undefined, page.data.siteName));
 	const searchQuery = $derived(page.url.searchParams.get('q') || page.url.searchParams.get('_q'));
@@ -36,8 +35,11 @@
 			? `${page.data.t('search.searchResults')} ${searchQuery} - ${siteName}`
 			: `${page.data.t('search.searchResults')} - ${siteName}`
 	);
-	const holdings: Promise<HoldingsData> | undefined = $derived(page.data?.holdings);
-	const holdingsParam = $derived(page.url.searchParams.get('holdings'));
+	const holdings: Promise<HoldingsData> | undefined = $derived(
+		page.data?.holdings || page.state.holdings
+	);
+	const holdingsParam = $derived(page.url.searchParams.get('holdings') || page.state.holdingId);
+
 	const modalCard = $derived(
 		holdingsParam &&
 			searchResult.items.filter(
@@ -45,35 +47,10 @@
 			)[0]
 	);
 
-	let previousURL: URL;
 	const expandLeadingPaneBtnId = 'expand-leading-pane-btn';
 	const collapseLeadingPaneBtnId = 'collapse-leading-pane-btn';
 
 	const offset = $derived(parseInt(page.url.searchParams.get('_offset') || '0'));
-
-	afterNavigate(({ from, shallow, type }) => {
-		if (shallow && type === 'goto') return;
-
-		if (from) {
-			previousURL = from.url;
-		}
-	});
-
-	function handleCloseHoldings() {
-		if (
-			previousURL &&
-			previousURL.pathname === page.url.pathname &&
-			!previousURL?.searchParams.has('holdings')
-		) {
-			history.back();
-		} else {
-			const newSearchParams = new SvelteURLSearchParams([
-				...Array.from(page.url.searchParams.entries())
-			]);
-			newSearchParams.delete('holdings');
-			goto(resolve(page.url.pathname + `?${newSearchParams.toString()}`), { replace: true });
-		}
-	}
 
 	function onOpenLeadingPane() {
 		userSettings.openLeadingPane();
@@ -138,8 +115,8 @@
 			</div>
 			<SiteFooter />
 		</div>
-		{#if holdings && holdingsParam}
-			<Modal close={handleCloseHoldings}>
+		{#if holdingsParam && holdings}
+			<Modal close={() => modal.onClose('holdings')}>
 				{#snippet title()}
 					<span>{page.data.t('holdings.findAtLibrary')}</span>
 				{/snippet}

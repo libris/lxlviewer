@@ -1,9 +1,10 @@
 import { Cite, plugins } from '@citation-js/core';
 import { goto, preloadData } from '$app/navigation';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
-import type { CSLJSON, AvailableCitationFormat, CitationFormat } from '#lib/types/citation.js';
 import type { LocaleCode } from '#lib/i18n/locales.js';
 import type { ReadonlyURL } from '$app/state';
+import type { CSLJSON, AvailableCitationFormat, CitationFormat } from '#lib/types/citation.js';
+import type { ModalContext } from '#lib/contexts/modal.svelte.js';
 
 export const availableFormats = {
 	chicago: {
@@ -157,8 +158,8 @@ export function getCiteLink(url: ReadonlyURL, value: string) {
 
 export async function handleClickCite(
 	event: MouseEvent & { currentTarget: HTMLAnchorElement },
-	state: object,
-	id: string
+	id: string,
+	modal: ModalContext
 ) {
 	// https://svelte.dev/docs/kit/shallow-routing#Loading-data-for-a-route
 	event.preventDefault();
@@ -166,10 +167,12 @@ export async function handleClickCite(
 	const result = await preloadData(href);
 
 	if (result.type === 'loaded' && result.status === 200) {
-		goto(href, {
-			shallow: true,
+		modal.onOpen({
+			type: 'cite',
+			searchParams: {
+				cite: id
+			},
 			state: {
-				...state,
 				citations: await result.data.citations,
 				citationId: id
 			}
