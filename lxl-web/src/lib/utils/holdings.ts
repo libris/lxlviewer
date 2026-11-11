@@ -1,4 +1,3 @@
-import { goto } from '$app/navigation';
 import type {
 	BibIdObj,
 	HoldersByType,
@@ -14,7 +13,6 @@ import { BibDb } from '#lib/types/xl.js';
 import type { MyLibrariesType } from '#lib/types/userSettings.js';
 import type { LocaleCode } from '#lib/i18n/locales.js';
 import type { ReadonlyURL } from '$app/state';
-import { stripAnchor } from '#lib/utils/http.js';
 import getAtPath from '#lib/utils/getAtPath.js';
 
 export const LIBRARY_URI_PREFIX = 'https://libris.kb.se/library/';
@@ -23,19 +21,6 @@ export function getHoldingsLink(url: ReadonlyURL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 	newSearchParams.set('holdings', value);
 	return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
-}
-
-export function handleClickHoldings(
-	event: MouseEvent & { currentTarget: HTMLAnchorElement },
-	state: object,
-	id: string
-) {
-	event.preventDefault();
-
-	goto(event.currentTarget.href, {
-		shallow: true,
-		state: { ...state, holdings: stripAnchor(id) }
-	});
 }
 
 /**

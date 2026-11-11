@@ -3,7 +3,7 @@
 	import { browser } from '$app/env';
 	import Facet from '#lib/components/find/Facet.svelte';
 	import { DEFAULT_FACETS_EXPANDED } from '#lib/constants/facets.js';
-	import { getModalContext } from '#lib/contexts/modal.js';
+	import { getModalContext } from '#lib/contexts/modal.svelte.js';
 	import type { DisplayMapping, Facet as FacetType } from '#lib/types/search.js';
 	import { displayMappingToString } from '#lib/utils/displayMappingToString.js';
 	import BiSearch from '~icons/bi/search';
@@ -67,7 +67,8 @@
 		return !!displayMappingToString(m).trim();
 	}
 
-	const inModal = getModalContext();
+	const modal = getModalContext();
+	const inModal = $derived(modal.isOpen);
 
 	let searchPhrase = $state('');
 </script>

@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
-	import { SvelteURL } from 'svelte/reactivity';
-	import { relativizeUrl } from '#lib/utils/http.ts';
 	import type { DisplayMapping, Facet, SearchResult } from '#lib/types/search.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import { MAPPING_IGNORE_VARIABLE } from '#lib/constants/mapping.js';
 	import { FILTERS_HASH } from '#lib/constants/modals.ts';
 	import { fade } from 'svelte/transition';
@@ -25,23 +22,8 @@
 
 	const { searchResult, expandLeadingPaneBtnId, onOpenPane }: SearchResultToolbarProps = $props();
 	const userSettings = getUserSettings();
-
-	const filtersModalOpen = $derived((page.shallow?.url ?? page.url).hash === FILTERS_HASH);
-
-	function showFiltersModal() {
-		const url = new SvelteURL(page.url.toString());
-		url.hash = FILTERS_HASH;
-
-		const rel = relativizeUrl(url.toString()) as string;
-		goto(resolve(rel), {
-			state: { modalOpen: true },
-			replace: true
-		});
-	}
-
-	function hideFiltersModal() {
-		history.back();
-	}
+	const modal = getModalContext();
+	const filtersModalOpen = $derived(modal.isOpen === 'filters');
 
 	const numHits = $derived(searchResult.totalItems);
 	const mapping = $derived(searchResult.mapping.filter((m) => m.variable === '_q'));
@@ -74,7 +56,11 @@
 				type="button"
 				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
 				aria-label={`${page.data.t('general.show')} ${page.data.t('search.filters')}. ${page.data.t('search.selectedFilters')}: ${filterCount}`}
-				onclick={showFiltersModal}
+				onclick={() =>
+					modal.onOpen({
+						hash: FILTERS_HASH,
+						type: 'filters'
+					})}
 			>
 				<IconSliders class="text-base" />
 				{page.data.t('search.filters')}
@@ -109,7 +95,7 @@
 </div>
 
 {#if filtersModalOpen}
-	<Modal position="left" close={hideFiltersModal}>
+	<Modal position="left" close={() => modal.onClose('filters')}>
 		{#snippet title()}
 			<span>
 				{page.data.t('search.filters')} ({numHits.toLocaleString(page.data.locale)}

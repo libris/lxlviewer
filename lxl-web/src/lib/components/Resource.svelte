@@ -12,6 +12,7 @@
 	} from '#lib/types/search.js';
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import capitalize from '#lib/utils/capitalize.js';
 	import { isResourceNode } from '#lib/utils/resourceData.js';
@@ -100,6 +101,7 @@
 	const trailingPane = getTrailingPaneContext();
 	const userSettings = getUserSettings();
 	const selection = getSelectionContext();
+	const modal = getModalContext();
 
 	let searchMapping = $derived(searchResult?.mapping.filter((m) => m.variable === '_q'));
 	let filteredInstances = $derived(searchResult?.items);
@@ -337,7 +339,7 @@
 							<a
 								class="btn btn-primary mt-2 h-8 w-fit rounded-full px-4 text-sm"
 								href={getCiteLink(page.url, fnurgel)}
-								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
+								onclick={(event) => handleClickCite(event, fnurgel, modal)}
 							>
 								<BiQuote class="text-neutral-500" />
 								<span>{page.data.t('citations.cite')}</span>

@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { SvelteURLSearchParams } from 'svelte/reactivity';
-	import { afterNavigate, goto } from '$app/navigation';
 	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import getMetaDescription from '#lib/utils/getMetaDescription.js';
 	import { JsonLd } from '#lib/types/xl.js';
 	import { type CitationDataWithError } from '#lib/types/citation.js';
+	import { getModalContext } from '#lib/contexts/modal.svelte.js';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
 	import Resource from '#lib/components/Resource.svelte';
 	import Modal from '#lib/components/Modal.svelte';
@@ -20,13 +19,12 @@
 
 	const description = $derived(getMetaDescription(data.decoratedData.overview?.[0]));
 	const ogImage = $derived(data.image ? bestSize(data.image, Width.MEDIUM)?.url : undefined);
+	const modal = getModalContext();
 
 	// TODO: Possibly figure out some mapping and set og:type,
 	// see https://ogp.me/#types. Unclear how meaningful this would be.
 
-	let previousURL: URL;
-
-	const holdingsParam = $derived(page.state.holdings || page.url.searchParams.get('holdings'));
+	const holdingsParam = $derived(page.state.holdingId || page.url.searchParams.get('holdings'));
 
 	const modalCard = $derived.by(() => {
 		const instances = data.instances ?? [];
@@ -39,30 +37,6 @@
 
 		return matchingInstance ?? (data.isWork ? data.workCard : instances[0]);
 	});
-
-	afterNavigate(({ to, shallow, type }) => {
-		if (shallow && type === 'goto') return;
-
-		if (to) {
-			previousURL = to.url;
-		}
-	});
-
-	function handleCloseModal(param: string) {
-		if (
-			previousURL &&
-			previousURL.pathname === page.url.pathname &&
-			!previousURL?.searchParams.has(param)
-		) {
-			history.back();
-		} else {
-			const newSearchParams = new SvelteURLSearchParams([
-				...Array.from(page.url.searchParams.entries())
-			]);
-			newSearchParams.delete(param);
-			goto(page.url.pathname + `?${newSearchParams.toString()}`, { replace: true });
-		}
-	}
 </script>
 
 <svelte:head>
@@ -102,7 +76,7 @@
 		isWork={data.isWork}
 	/>
 	{#if holdingsParam}
-		<Modal close={() => handleCloseModal('holdings')}>
+		<Modal close={() => modal.onClose('holdings')}>
 			{#snippet title()}
 				<span>{page.data.t('holdings.findAtLibrary')}</span>
 			{/snippet}
@@ -113,7 +87,7 @@
 			</HoldingsContent>
 		</Modal>
 	{:else if page.state.citations || page.url.searchParams.get('cite')}
-		<Modal close={() => handleCloseModal('cite')}>
+		<Modal close={() => modal.onClose('cite')}>
 			{#snippet title()}
 				<span>{page.data.t('citations.cite')} {data.title}</span>
 			{/snippet}

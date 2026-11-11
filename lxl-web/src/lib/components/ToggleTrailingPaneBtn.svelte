@@ -1,32 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
-	import { MediaQuery, SvelteURL } from 'svelte/reactivity';
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
+	import { MediaQuery } from 'svelte/reactivity';
 	import { SELECTION_HASH } from '#lib/constants/modals.ts';
 	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
-	import { relativizeUrl } from '#lib/utils/http.ts';
 	import BiLayoutSidebarReverse from '~icons/bi/layout-sidebar-reverse';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 
 	const selection = getSelectionContext();
+	const modal = getModalContext();
 	const trailingPane = getTrailingPaneContext();
 	const userSettings = getUserSettings();
 	const limitReached = $derived(selection?.limitReached);
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
-
-	function showSelectionModal() {
-		const url = new SvelteURL(page.url.toString());
-		url.hash = SELECTION_HASH;
-
-		const rel = relativizeUrl(url.toString()) as string;
-		goto(resolve(rel), {
-			state: { modalOpen: true },
-			replace: true
-		});
-	}
 </script>
 
 {#snippet content()}
@@ -50,7 +38,11 @@
 			aria-label={page.data.t('panes.show')}
 			disabled={!selection.length}
 			in:fade={{ duration: 200 }}
-			onclick={showSelectionModal}
+			onclick={() =>
+				modal.onOpen({
+					hash: SELECTION_HASH,
+					type: 'selection'
+				})}
 			title={page.data.t('panes.show')}
 		>
 			{@render content()}

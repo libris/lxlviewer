@@ -22,9 +22,7 @@
 	const { byInstanceId, byType, bibIdData, holdingLibraries } = $derived(holdings);
 	let searchPhrase = $state('');
 
-	// instanceId | type | work fnurgel | ''
-	const holdingParam = $derived(page.url.searchParams.get('holdings') || page.state.holdings || '');
-
+	const holdingParam = $derived(page.url.searchParams.get('holdings') || page.state.holdingId);
 	type SelectionKind = 'instance' | 'type' | 'work' | 'all';
 
 	function getSelectionKind(selection?: string): SelectionKind {
@@ -118,8 +116,6 @@
 
 		return tabs;
 	});
-
-	$inspect(tabsByType, holdingParam, page.state);
 </script>
 
 {#snippet holdingPanel(holders: (LibraryWithLinksAndInstances | UnknownLibrary)[])}

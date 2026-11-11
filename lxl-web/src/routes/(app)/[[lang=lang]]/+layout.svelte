@@ -2,10 +2,10 @@
 	import { page } from '$app/state';
 	import { MediaQuery } from 'svelte/reactivity';
 	import getPageTitle from '#lib/utils/getPageTitle.js';
-	import { SELECTION_HASH } from '#lib/constants/modals.ts';
 	import { setHomepageContext } from '#lib/contexts/homepage.js';
 	import { setSearchContext } from '#lib/contexts/search.js';
 	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import SiteFooter from './SiteFooter.svelte';
 	import AppBar from './AppBar.svelte';
 	import Modal from '#lib/components/Modal.svelte';
@@ -26,6 +26,7 @@
 	});
 
 	const selection = getSelectionContext();
+	const modal = getModalContext();
 
 	setHomepageContext(homepageCache);
 
@@ -38,7 +39,7 @@
 	});
 
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
-	const selectionModalOpen = $derived((page.shallow?.url ?? page.url).hash === SELECTION_HASH);
+	const selectionModalOpen = $derived(modal.isOpen === 'selection');
 
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
 	setSearchContext(searchContextState);
@@ -64,7 +65,7 @@
 		</div>
 		{#if trailingPaneAllowedRoute}
 			{#if isSmallScreen.current && selectionModalOpen}
-				<Modal close={() => history.back()}>
+				<Modal close={() => modal.onClose('selection')}>
 					{#snippet title()}
 						<span class="p-1">Hantera ditt urval ({selection.length})</span>
 					{/snippet}
