@@ -30,7 +30,7 @@
 	}
 </script>
 
-{#if trailingPane.visible}
+{#if trailingPane?.visible}
 	<aside
 		id="trailing-pane"
 		class={['trailing-pane z-10 hidden w-0 sm:block print:hidden']}
