@@ -13,6 +13,7 @@
 	const modal = getModalContext();
 	const trailingPane = getTrailingPaneContext();
 	const userSettings = getUserSettings();
+	const selectableResults = $derived(userSettings.selectableResults);
 	const limitReached = $derived(selection?.limitReached);
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
 </script>
@@ -29,7 +30,7 @@
 	</span>
 {/snippet}
 
-{#if userSettings?.selectableResults}
+{#if selectableResults}
 	{#if isSmallScreen.current}
 		<!-- mobile btn -->
 		<button

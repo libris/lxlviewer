@@ -169,7 +169,7 @@
 			</p>
 		</details>
 	{/if}
-	{#if selection.error}
+	{#if selection?.error}
 		<p role="status" class="p-2 bg-severe-50 my-2">
 			{selection.error}
 		</p>
