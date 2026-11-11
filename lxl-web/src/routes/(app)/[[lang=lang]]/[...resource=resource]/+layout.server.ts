@@ -1,6 +1,6 @@
 import { getSupportedLocale } from '#lib/i18n/locales.js';
 import type { ApiError } from '#lib/types/api.js';
-import type { CSLJSON } from '#lib/types/citation.js';
+import type { CitationData, CSLJSON } from '#lib/types/citation.js';
 import { getAvailableFormats, initCite } from '#lib/utils/citation.js';
 
 export const load = async ({ url, fetch, params }) => {
@@ -10,7 +10,7 @@ export const load = async ({ url, fetch, params }) => {
 
 	async function getData() {
 		if (id) {
-			let data;
+			let data: CitationData[] | undefined;
 			let error;
 
 			// fetching the record again via cite api is needed as long as csl mapping depends on computedLabel

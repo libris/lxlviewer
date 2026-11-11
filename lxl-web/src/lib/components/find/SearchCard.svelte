@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { onDestroy } from 'svelte';
-	import { goto, beforeNavigate } from '$app/navigation';
+	import { goto, beforeNavigate, preloadData } from '$app/navigation';
 	import popover from '#lib/actions/popover/index.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import type { LibraryResultItem, SearchResultItem } from '#lib/types/search.js';
 	import { Fmt, JsonLd, LensType, type DisplayDecorated } from '#lib/types/xl.js';
 	import { Elem, HeadingElem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
@@ -17,7 +19,7 @@
 	import EsExplain from '#lib/components/find/EsExplain.svelte';
 	import SearchItemDebugHaystack from '#lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '#lib/components/MyLibsHoldingIndicator.svelte';
-	import { getHoldingsLink, handleClickHoldings } from '#lib/utils/holdings.js';
+	import { getHoldingsLink } from '#lib/utils/holdings.js';
 	import { asAdjecentSearchResult } from '#lib/utils/adjecentSearchResult.js';
 	import { isResourceNode } from '#lib/utils/resourceData.js';
 	import TypeIcon from '#lib/components/TypeIcon.svelte';
@@ -39,6 +41,8 @@
 		hideType?: boolean;
 		headingElement?: HeadingElem;
 		headingIsLink?: boolean;
+		selectable?: boolean;
+		itemNo?: number;
 	}
 
 	let articleElement: HTMLElement;
@@ -50,7 +54,9 @@
 		allowActions = true,
 		hideType = false,
 		headingElement = HeadingElem.H2,
-		headingIsLink = true
+		headingIsLink = true,
+		selectable = false,
+		itemNo = undefined
 	}: Props = $props();
 
 	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
@@ -59,7 +65,7 @@
 	let footerId = $derived(`card-footer-${id}`);
 	let modalParam = $derived(
 		page.url.searchParams.get('holdings') ||
-			page.state.holdings ||
+			page.state.holdingId ||
 			page.url.searchParams.get('cite') ||
 			page.state.citationId
 	);
@@ -107,6 +113,14 @@
 	let showDebugExplain = $state(false);
 	let showDebugHaystack = $state(false);
 
+	const modal = getModalContext();
+	const selection = getSelectionContext();
+	const isSelected = $derived(selection.isSelected(item[JsonLd.ID]));
+
+	function toggleSelected() {
+		selection.toggle(item[JsonLd.ID]);
+	}
+
 	function passAlongAdjecentSearchResults(event: MouseEvent) {
 		event.preventDefault();
 		goto((event.currentTarget as HTMLAnchorElement).href, {
@@ -128,6 +142,26 @@
 				replace: true,
 				state: { ...page.state, dimissedHighlighting: true }
 			});
+		}
+	}
+
+	async function handleClickHoldings(event: Event) {
+		event.preventDefault();
+		const { href } = event.currentTarget as HTMLLinkElement;
+		const result = await preloadData(href);
+		if (result.type === 'loaded' && result.status === 200) {
+			modal.onOpen({
+				type: 'holdings',
+				searchParams: {
+					holdings: stripAnchor(id) || ''
+				},
+				state: {
+					holdingId: stripAnchor(id) || '',
+					holdings: await result.data.holdings
+				}
+			});
+		} else {
+			goto(href);
 		}
 	}
 
@@ -171,7 +205,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			data-sveltekit-preload-data={isInstanceCard ? 'false' : ''}
 			data-sveltekit-reset="false"
 			data-testid="holding-link"
-			onclick={(event) => isInstanceCard && handleClickHoldings(event, page.state, id)}
+			onclick={handleClickHoldings}
 		>
 			<span class="text-base">
 				{#if item.heldByMyLibraries}
@@ -202,14 +236,30 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 	<article
 		{id}
 		class={[
-			'search-card border-neutral relative grid w-full gap-x-4 border-t px-3 py-3 font-normal transition-colors',
+			'search-card border-neutral relative grid w-full gap-x-4 border-t p-3 font-normal transition-colors',
 			showHighlight && 'bg-accent-50/75',
-			!page.data.features.resourceImages && 'no-image'
+			!page.data.features.resourceImages && 'no-image',
+			selectable && 'selectable'
 		]}
 		aria-current={showHighlight || undefined}
 		data-testid="search-card"
 		bind:this={articleElement}
 	>
+		{#if selectable}
+			{const checkboxId = itemNo || item[JsonLd.ID]}
+			<div class="card-select flex flex-col items-start justify-start gap-1">
+				<label for={`checkbox-${checkboxId}`} class={['text-xs text-subtle', !itemNo && 'sr-only']}
+					>{itemNo && itemNo.toLocaleString() + '.'}</label
+				>
+				<input
+					type="checkbox"
+					id={`checkbox-${checkboxId}`}
+					checked={isSelected}
+					onchange={toggleSelected}
+					disabled={selection.limitReached && !isSelected}
+				/>
+			</div>
+		{/if}
 		{#if page.data.features.resourceImages}
 			<div class="card-image">
 				<svelte:element
@@ -434,7 +484,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					<a
 						class="btn btn-primary h-7 min-w-22.5 rounded-full md:h-8"
 						href={getCiteLink(page.url, id)}
-						onclick={(event) => handleClickCite(event, page.state, id)}
+						onclick={(event) => handleClickCite(event, id, modal)}
 					>
 						<BiQuote aria-hidden="true" class="size-4 text-neutral-500" />
 						<span id={`cite-${id}`}> {page.data.t('citations.cite')}</span>
@@ -468,10 +518,10 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		{/if}
 		{#if bibliographyLink}
 			<!-- numberOfItems doesn't include count from parts on parent bibliographies with parts.
-                 Some parents have a small number of instances directly linked to them instead of 0.
-                 Only show count if it looks "correct", i.e. large enough -->
+					Some parents have a small number of instances directly linked to them instead of 0.
+					Only show count if it looks "correct", i.e. large enough -->
 			{@const numItems = formatNumItems(
-				item?.numberOfItems > 100 ? item?.numberOfItems : undefined
+				item?.numberOfItems && item.numberOfItems > 100 ? item?.numberOfItems : undefined
 			)}
 			<div class="card-explore mt-2">
 				<a
@@ -566,6 +616,36 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 			color: var(--color-subtle);
 			font-size: var(--text-xs);
 		}
+	}
+
+	.search-card.selectable {
+		column-gap: calc(var(--spacing) * 3);
+		grid-template-areas:
+			'select image content content'
+			'select image footer footer'
+			'. image explore explore'
+			'. actions actions actions'
+			'. debug . .';
+
+		grid-template-columns: minmax(0px, auto) 64px 1fr auto;
+
+		@container card (min-width: 768px) {
+			grid-template-columns: minmax(0px, auto) 72px 1fr auto;
+			@apply gap-x-4 px-3 py-4;
+		}
+
+		@container card (min-width: 640px) {
+			grid-template-areas:
+				'select image content content'
+				'select image content content'
+				'. image explore explore'
+				'. image footer actions'
+				'. debug . .';
+		}
+	}
+
+	.card-select {
+		grid-area: select;
 	}
 
 	.no-image {

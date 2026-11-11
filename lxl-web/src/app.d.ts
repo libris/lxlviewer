@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-import type { CitationsType } from '#lib/types/citation.js';
+import type { CitationDataWithError } from '#lib/types/citation.js';
 import type { MatomoTracker } from '#lib/types/matomo.js';
 import type { UserSettings } from '#lib/types/userSettings.js';
 import type { DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
@@ -11,6 +11,8 @@ import type {
 } from '#lib/types/search.js';
 import 'unplugin-icons/types/svelte';
 import type { AppMenuItem, Features, FooterSection, Site } from '#lib/types/site.js';
+import type { ModalType } from '#lib/types/modal.js';
+import type { HoldingsData } from '#lib/types/holdings.js';
 
 declare global {
 	namespace App {
@@ -51,13 +53,16 @@ declare global {
 		interface PageState {
 			expandedSuperSearch?: boolean;
 			expandedInstances?: string[];
-			holdings?: string;
+			holdings?: HoldingsData;
+			holdingId?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
 			dimissedHighlighting?: boolean;
-			citations?: CitationsType;
+			citations?: CitationDataWithError;
 			citationId?: string;
+			modal?: {
+				type: ModalType;
+			};
 		}
-		// interface Platform {}
 	}
 	interface Window {
 		Matomo?: {

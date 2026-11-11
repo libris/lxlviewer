@@ -45,7 +45,7 @@
 </script>
 
 <div class="sort-select flex gap-2 items-center" data-testid="sort-select">
-	<label for="search-sort" class="text-xs">
+	<label for="search-sort" class="text-xs sr-only @lg/content:not-sr-only">
 		{page.data.t('sort.sort')}:
 	</label>
 	<div class="relative">
@@ -55,7 +55,7 @@
 		<select
 			id="search-sort"
 			bind:value={sortOrder}
-			class="btn btn-primary w-px sm:w-auto"
+			class="btn btn-primary w-px @lg/content:w-auto"
 			form="search-form"
 			onchange={handleSortChange}
 		>

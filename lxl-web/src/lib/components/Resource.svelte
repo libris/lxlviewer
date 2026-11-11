@@ -10,6 +10,10 @@
 		AdjecentSearchResult,
 		ResourceSearchResult
 	} from '#lib/types/search.js';
+	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
+	import { getUserSettings } from '#lib/contexts/userSettings.ts';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import capitalize from '#lib/utils/capitalize.js';
 	import { isResourceNode } from '#lib/utils/resourceData.js';
 	import type { Relation } from '#lib/types/relations.js';
@@ -27,11 +31,14 @@
 	import SearchMapping from './find/SearchMapping.svelte';
 	import ExpandableArea from '#lib/components/ExpandableArea.svelte';
 	import Suggestion from './supersearch/Suggestion.svelte';
+	import ToggleTrailingPaneBtn from '#lib/components/ToggleTrailingPaneBtn.svelte';
+	import ToggleSelectModeBtn from './ToggleSelectModeBtn.svelte';
 	import IconArrowRight from '~icons/bi/arrow-right-short';
 	import IconArrowDown from '~icons/bi/arrow-down';
 	import BiDownload from '~icons/bi/download';
 	import BiQuote from '~icons/bi/quote';
 	import BiChevronRight from '~icons/bi/chevron-right';
+	import BiCheckSquare from '~icons/bi/check-square';
 
 	type Props = {
 		uri: string | null;
@@ -91,6 +98,10 @@
 
 	const fnurgel = $derived(stripAnchor(trimSlashes(relativizeUrl(recordUri))));
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
+	const trailingPane = getTrailingPaneContext();
+	const userSettings = getUserSettings();
+	const selection = getSelectionContext();
+	const modal = getModalContext();
 
 	let searchMapping = $derived(searchResult?.mapping.filter((m) => m.variable === '_q'));
 	let filteredInstances = $derived(searchResult?.items);
@@ -133,6 +144,14 @@
 			instances &&
 			page.data.features.holdings
 	);
+
+	// TODO check selectable thing!
+	const selectable = $derived(userSettings.selectableResults && hasHoldingsBtn);
+	const isSelected = $derived(selection.isSelected(recordUri));
+
+	function toggleSelected() {
+		selection.toggle(recordUri);
+	}
 </script>
 
 {#snippet panelMatchingInstances()}
@@ -141,23 +160,30 @@
 			<SearchMapping mapping={searchMapping} />
 		</div>
 	{/if}
-	{#each derivedFilteredInstances as instance (instance?.[JsonLd.ID])}
-		<SearchCard item={instance as SearchResultItem} headingElement={HeadingElem.H3} />
+	{#each derivedFilteredInstances as instance, index (instance?.[JsonLd.ID])}
+		<SearchCard
+			item={instance as SearchResultItem}
+			headingElement={HeadingElem.H3}
+			itemNo={index + 1}
+			selectable={userSettings.selectableResults}
+		/>
 	{/each}
 {/snippet}
 
 {#snippet panelAllInstances()}
-	{#each instances as instance (instance?.[JsonLd.ID])}
+	{#each instances as instance, index (instance?.[JsonLd.ID])}
 		<SearchCard
 			item={instance as SearchResultItem}
 			hideType={true}
 			headingElement={HeadingElem.H3}
+			itemNo={index + 1}
+			selectable={userSettings.selectableResults}
 		/>
 	{/each}
 {/snippet}
 
 {#if adjecentSearchResults && fnurgel}
-	<div class="border-b-neutral @container border-b print:hidden">
+	<div class="@container print:hidden">
 		<AdjecentResults {fnurgel} {adjecentSearchResults} />
 	</div>
 {/if}
@@ -180,8 +206,9 @@
 {/if}
 <article class="@container @3xl:**:[[id]]:scroll-mt-4">
 	{#if tableOfContents.length}
-		<section data-testid="toc-mobile" class="contents @7xl:hidden print:hidden">
+		<section data-testid="toc-mobile" class="flex @7xl:hidden print:hidden">
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
+			<ToggleTrailingPaneBtn />
 		</section>
 	{/if}
 	<div
@@ -294,29 +321,45 @@
 							limit={{ contribution: 5, hasVariant: 10, hasPart: 10 }}
 						/>
 					</div>
-					<div class="flex items-center gap-2 print:hidden">
+					<div class="flex flex-wrap items-center gap-x-2 print:hidden">
 						{#if decoratedData.summary.length || instances?.length > 1 || relations?.length || decoratedData.resourceTableOfContents.length}
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
-								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
+								class="btn btn-primary mt-2 h-8 w-fit rounded-full px-4 text-sm"
 								href="#{uidPrefix}details"
 								data-sveltekit-preload-data="false"
 								data-testid="details-link"
 							>
 								<IconArrowDown />
-								{page.data.t('resource.moreDetails')}
+								<span class="ml-1">{page.data.t('resource.moreDetails')}</span>
 							</a>
 						{/if}
 						{#if !isWork && instances?.length === 1 && fnurgel}
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
-								class="btn btn-primary my-2 h-8 w-fit rounded-full px-4 text-sm"
+								class="btn btn-primary mt-2 h-8 w-fit rounded-full px-4 text-sm"
 								href={getCiteLink(page.url, fnurgel)}
-								onclick={(event) => handleClickCite(event, page.state, fnurgel)}
+								onclick={(event) => handleClickCite(event, fnurgel, modal)}
 							>
 								<BiQuote class="text-neutral-500" />
 								<span>{page.data.t('citations.cite')}</span>
 							</a>
+						{/if}
+						{#if selectable}
+							<button
+								class={[
+									'btn mt-2 h-8 w-fit rounded-full px-4 text-sm',
+									isSelected ? 'btn-accent' : 'btn-primary'
+								]}
+								type="button"
+								aria-checked={isSelected}
+								role="switch"
+								disabled={!isSelected && selection.limitReached}
+								onclick={toggleSelected}
+							>
+								<BiCheckSquare />
+								<span class="ml-1">{isSelected ? 'Ta bort från' : 'Lägg till i'} urval</span>
+							</button>
 						{/if}
 					</div>
 				</div>
@@ -347,9 +390,12 @@
 			{/if}
 			{#if isWork && instances?.length}
 				<section class="print:break-before-page print:break-after-page">
-					<h2 id="{uidPrefix}editions" class="font-heading mb-4 text-2xl font-medium">
-						{page.data.t('resource.editions')}
-					</h2>
+					<div class="flex justify-between">
+						<h2 id="{uidPrefix}editions" class="font-heading mb-4 text-2xl font-medium">
+							{page.data.t('resource.editions')}
+						</h2>
+						<ToggleSelectModeBtn />
+					</div>
 					{#if showTabs}
 						<TabList ariaLabel={page.data.t('resource.editions')} tabs={instanceTabs} />
 					{:else}
@@ -591,10 +637,13 @@
 				</div>
 			{/if}
 		</div>
-		{#if tableOfContents.length}
+		{#if tableOfContents.length && !trailingPane.visible}
 			<div class="hidden @7xl:block print:hidden">
-				<section data-testid="toc" class="sticky py-3 @sm:py-6">
+				<section data-testid="toc" class="sticky flex items-start py-3 @sm:py-6">
 					<TableOfContents items={tableOfContents} />
+					{#if selectable}
+						<ToggleTrailingPaneBtn />
+					{/if}
 				</section>
 			</div>
 		{/if}

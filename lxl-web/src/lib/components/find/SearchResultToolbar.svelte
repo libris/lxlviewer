@@ -2,14 +2,17 @@
 	import { page } from '$app/state';
 	import type { DisplayMapping, Facet, SearchResult } from '#lib/types/search.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import { MAPPING_IGNORE_VARIABLE } from '#lib/constants/mapping.js';
+	import { FILTERS_HASH } from '#lib/constants/modals.ts';
 	import { fade } from 'svelte/transition';
-	import Modal from '../Modal.svelte';
-	import Toolbar from '../Toolbar.svelte';
-	import Filters from './Filters.svelte';
-	import SearchResultSort from './SearchResultSort.svelte';
-	import IconSliders from '~icons/bi/sliders';
+	import Modal from '#lib/components/Modal.svelte';
+	import Toolbar from '#lib/components/Toolbar.svelte';
+	import Filters from '#lib/components/find/Filters.svelte';
+	import ToggleSelectModeBtn from '#lib/components/ToggleSelectModeBtn.svelte';
+	import ToggleTrailingPaneBtn from '#lib/components/ToggleTrailingPaneBtn.svelte';
 	import BiLayoutSidebar from '~icons/bi/layout-sidebar';
+	import IconSliders from '~icons/bi/sliders';
 
 	type SearchResultToolbarProps = {
 		searchResult: SearchResult;
@@ -19,8 +22,9 @@
 
 	const { searchResult, expandLeadingPaneBtnId, onOpenPane }: SearchResultToolbarProps = $props();
 	const userSettings = getUserSettings();
+	const modal = getModalContext();
+	const filtersModalOpen = $derived(modal.isOpen === 'filters');
 
-	let showFiltersModal = $state(false);
 	const numHits = $derived(searchResult.totalItems);
 	const mapping = $derived(searchResult.mapping.filter((m) => m.variable === '_q'));
 	const filterCount = $derived(getFiltersCount(mapping));
@@ -42,26 +46,21 @@
 		_iter(root);
 		return count;
 	}
-
-	function toggleFiltersModal() {
-		showFiltersModal = !showFiltersModal;
-	}
 </script>
 
-<div class="bg-page sticky top-0 z-10 sm:static">
+<div class="bg-page z-1 sticky-toolbar">
 	<Toolbar>
 		{#snippet leadingActions()}
 			<!-- mobile modal filter btn -->
-			<a
-				href={page.data.localizeHref(
-					`${page.url.pathname}?${page.url.searchParams.toString()}#filters`
-				)}
+			<button
+				type="button"
 				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
 				aria-label={`${page.data.t('general.show')} ${page.data.t('search.filters')}. ${page.data.t('search.selectedFilters')}: ${filterCount}`}
-				onclick={(e) => {
-					e.preventDefault();
-					toggleFiltersModal();
-				}}
+				onclick={() =>
+					modal.onOpen({
+						hash: FILTERS_HASH,
+						type: 'filters'
+					})}
 			>
 				<IconSliders class="text-base" />
 				{page.data.t('search.filters')}
@@ -70,7 +69,7 @@
 						{filterCount}
 					</span>
 				{/if}
-			</a>
+			</button>
 			<!-- expand leadingPane btn -->
 			{#if !userSettings.leadingPane?.open}
 				<button
@@ -85,17 +84,18 @@
 					<BiLayoutSidebar class="size-4" />
 				</button>
 			{/if}
+			<div class="ml-auto flex gap-1">
+				<ToggleSelectModeBtn />
+			</div>
 		{/snippet}
 		{#snippet trailingActions()}
-			{#if numHits > 0}
-				<SearchResultSort />
-			{/if}
+			<ToggleTrailingPaneBtn />
 		{/snippet}
 	</Toolbar>
 </div>
 
-{#if showFiltersModal}
-	<Modal position="left" close={toggleFiltersModal}>
+{#if filtersModalOpen}
+	<Modal position="left" close={() => modal.onClose('filters')}>
 		{#snippet title()}
 			<span>
 				{page.data.t('search.filters')} ({numHits.toLocaleString(page.data.locale)}

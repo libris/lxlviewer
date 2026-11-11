@@ -112,6 +112,11 @@
 	--appbar-lg: 76px;
 	--appbar-2xl: 84px;
 
+	--appbar-find-base: calc(var(--appbar-base) + 56px);
+	--appbar-find-md: calc(var(--appbar-base) + 60px);
+	--appbar-find-lg: var(--appbar-lg);
+	--appbar-find-2xl: var(--appbar-2xl);
+
 	--toolbar-height: 48px;
 	--banner-height: 0px;
 
@@ -573,6 +578,16 @@
 	.badge-accent {
 		color: var(--color-page);
 		background-color: var(--color-accent);
+	}
+
+	.badge-disabled {
+		color: var(--color-page);
+		background-color: var(--color-neutral-400);
+	}
+
+	.badge-warning {
+		color: var(--color-page);
+		background-color: var(--color-severe-400);
 	}
 
 	/* keyboard input denotations */
