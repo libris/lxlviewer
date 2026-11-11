@@ -1,3 +1,4 @@
+import { dev } from '$app/env';
 import { getContext, setContext, tick } from 'svelte';
 import { getUserSettings } from './userSettings';
 import { getSelectionContext } from './selection.svelte';
@@ -61,5 +62,9 @@ export function setTrailingPaneContext() {
 }
 
 export function getTrailingPaneContext() {
-	return getContext<TrailingPaneContext>(paneKey);
+	const context = getContext<TrailingPaneContext>(paneKey);
+	if (dev && !context) {
+		console.trace('Trailing Pane context missing');
+	}
+	return context;
 }

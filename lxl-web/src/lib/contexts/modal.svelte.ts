@@ -1,10 +1,11 @@
-import type { ModalType } from '#lib/types/modal.js';
-import { relativizeUrl } from '#lib/utils/http.js';
+import { dev } from '$app/env';
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import { setContext, getContext } from 'svelte';
 import { SvelteURL, SvelteURLSearchParams } from 'svelte/reactivity';
+import type { ModalType } from '#lib/types/modal.js';
+import { relativizeUrl } from '#lib/utils/http.js';
 
 export type ModalContext = {
 	readonly isOpen: ModalType | undefined;
@@ -81,5 +82,9 @@ export function setModalContext() {
 }
 
 export function getModalContext() {
-	return getContext<ModalContext>(paneKey);
+	const context = getContext<ModalContext>(paneKey);
+	if (dev && !context) {
+		console.trace('Selection context missing');
+	}
+	return context;
 }
