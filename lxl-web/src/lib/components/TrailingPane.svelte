@@ -21,6 +21,7 @@
 
 	const userSettings = getUserSettings();
 	const trailingPane = getTrailingPaneContext();
+	const visible = $derived(trailingPane.visible);
 
 	let paneWidth = $state(trailingPane?.width);
 	let isDragging = $state(false);
@@ -30,7 +31,7 @@
 	}
 </script>
 
-{#if trailingPane?.visible}
+{#if visible}
 	<aside
 		id="trailing-pane"
 		class={['trailing-pane z-10 hidden w-0 sm:block print:hidden']}
