@@ -13,8 +13,6 @@
 	const modal = getModalContext();
 	const trailingPane = getTrailingPaneContext();
 	const userSettings = getUserSettings();
-	const selectableResults = $derived(userSettings.selectableResults);
-	const limitReached = $derived(selection?.limitReached);
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
 </script>
 
@@ -23,14 +21,18 @@
 	<span
 		class={[
 			'badge',
-			selection.length > 0 ? (limitReached ? 'badge-warning' : 'badge-accent') : 'badge-disabled'
+			selection.length > 0
+				? selection.limitReached
+					? 'badge-warning'
+					: 'badge-accent'
+				: 'badge-disabled'
 		]}
 	>
 		{selection.length}
 	</span>
 {/snippet}
 
-{#if selectableResults}
+{#if userSettings.selectableResults}
 	{#if isSmallScreen.current}
 		<!-- mobile btn -->
 		<button

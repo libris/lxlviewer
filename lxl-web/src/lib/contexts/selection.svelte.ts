@@ -1,3 +1,5 @@
+import { dev } from '$app/env';
+import { getContext, setContext } from 'svelte';
 import { SELECTION_LIMIT } from '#lib/constants/selection.js';
 import { defaultLocale, type LocaleCode } from '#lib/i18n/locales.js';
 import { getSelectionData } from '#lib/remotes/selection.remote.js';
@@ -6,7 +8,6 @@ import type { SearchResultItem } from '#lib/types/search.js';
 import { JsonLd } from '#lib/types/xl.js';
 import { initCite } from '#lib/utils/citation.js';
 import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
-import { getContext, setContext } from 'svelte';
 
 type Selection = {
 	id: string;
@@ -218,5 +219,9 @@ export function setSelectionContext() {
 }
 
 export function getSelectionContext() {
-	return getContext<SelectionContext>(selectionKey);
+	const context = getContext<SelectionContext>(selectionKey);
+	if (dev && !context) {
+		console.trace('Selection context missing');
+	}
+	return context;
 }

@@ -157,7 +157,7 @@
 {/snippet}
 
 <div class="text-sm">
-	{#if selection?.limitReached}
+	{#if selection.limitReached}
 		<details class="text-xs bg-severe-50 p-2 my-2 mb-2">
 			<summary class="flex cursor-pointer">
 				<span class="font-medium">Du har nått maxgränsen för ditt urval</span>
@@ -169,7 +169,7 @@
 			</p>
 		</details>
 	{/if}
-	{#if selection?.error}
+	{#if selection.error}
 		<p role="status" class="p-2 bg-severe-50 my-2">
 			{selection.error}
 		</p>
