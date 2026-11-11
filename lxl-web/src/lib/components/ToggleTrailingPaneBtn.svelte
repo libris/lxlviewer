@@ -29,7 +29,7 @@
 	</span>
 {/snippet}
 
-{#if userSettings.selectableResults}
+{#if userSettings?.selectableResults}
 	{#if isSmallScreen.current}
 		<!-- mobile btn -->
 		<button
