@@ -28,7 +28,7 @@ export const availableFormats = {
 	},
 	elsevier_vancouver: {
 		name: 'Vancouver',
-		fullName: 'Elsevier - NLM/Vancouver (name-year)'
+		fullName: 'Vancouver (Elsevier name-year)'
 	},
 	ris: {
 		name: 'RIS',
