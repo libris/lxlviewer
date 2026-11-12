@@ -18,7 +18,7 @@ const CSL_KBV_MAPPING: Partial<Record<keyof CSLJSON, string>> = {
     publication[].place[].computedLabel[],
     publication[].hasPart[].place[].computedLabel[]
   ][])`,
-	issued: `{"date-parts": [[ (publication[0].year || '') ]] }`,
+	issued: `{"date-parts": [[ (publication[0].year || publication[0].date || '') ]] }`,
 	'number-of-pages': `join(', ', extent[].computedLabel)`,
 	edition: `editionStatement`,
 	language: `join(', ', instanceOf.language[].computedLabel)`,
@@ -56,7 +56,8 @@ export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil):
 	// for each mapping field, try to get the data
 	for (const [key, expr] of Object.entries(CSL_KBV_MAPPING) as [keyof CSLJSON, string][]) {
 		try {
-			const value = jmespath.search(mainEntity, expr);
+			const value =
+				jmespath.search(mainEntity, expr) || jmespath.search(mainEntity.instanceOf, expr);
 			if (value) {
 				result[key] = value;
 			}
