@@ -3,13 +3,11 @@
 	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import getMetaDescription from '#lib/utils/getMetaDescription.js';
 	import { JsonLd } from '#lib/types/xl.js';
-	import { type CitationDataWithError } from '#lib/types/citation.js';
 	import { getModalContext } from '#lib/contexts/modal.svelte.js';
 	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
 	import Resource from '#lib/components/Resource.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
-	import CiteOne from '#lib/components/CiteOne.svelte';
 	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
 	import { bestSize } from '#lib/utils/auxd.js';
 	import { Width } from '#lib/types/auxd.js';
@@ -85,16 +83,6 @@
 					<SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} />
 				{/snippet}
 			</HoldingsContent>
-		</Modal>
-	{:else if page.state.citations || page.url.searchParams.get('cite')}
-		<Modal close={() => modal.onClose('cite')}>
-			{#snippet title()}
-				<span>{page.data.t('citations.cite')} {data.title}</span>
-			{/snippet}
-			<CiteOne
-				citations={(page.state.citations || page.data.citations) as Promise<CitationDataWithError>}
-				id={page.state.citationId || page.url.searchParams.get('cite')}
-			/>
 		</Modal>
 	{/if}
 </div>

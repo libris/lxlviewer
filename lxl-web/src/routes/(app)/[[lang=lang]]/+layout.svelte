@@ -12,6 +12,8 @@
 	import TrailingPane from '#lib/components/TrailingPane.svelte';
 	import Selection from '#lib/components/Selection.svelte';
 	import { SELECTION_HASH } from '#lib/constants/modals.ts';
+	import CiteOne from '#lib/components/CiteOne.svelte';
+	import { type CitationDataWithError } from '#lib/types/citation.ts';
 
 	const { children } = $props();
 
@@ -44,6 +46,8 @@
 		page.url.hash === SELECTION_HASH || page.state.modal === 'selection'
 	);
 
+	const citeParam = $derived(page.state.citations || page.url.searchParams.get('cite'));
+
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
 	setSearchContext(searchContextState);
 </script>
@@ -66,6 +70,18 @@
 				<SiteFooter />
 			{/if}
 		</div>
+		{#if citeParam}
+			<Modal close={() => modal.onClose('cite')}>
+				{#snippet title()}
+					<span>{page.data.t('citations.cite')} {page.data.title}</span>
+				{/snippet}
+				<CiteOne
+					citations={(page.state.citations ||
+						page.data.citations) as Promise<CitationDataWithError>}
+					id={page.state.citationId || page.url.searchParams.get('cite')}
+				/>
+			</Modal>
+		{/if}
 		{#if trailingPaneAllowedRoute}
 			{#if isSmallScreen.current && selectionModalOpen}
 				<Modal close={() => modal.onClose('selection')}>

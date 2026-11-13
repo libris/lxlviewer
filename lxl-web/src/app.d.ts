@@ -54,7 +54,6 @@ declare global {
 		}
 		interface PageState {
 			expandedSuperSearch?: boolean;
-			expandedInstances?: string[];
 			holdings?: HoldingsData;
 			holdingId?: string;
 			adjecentSearchResults?: AdjecentSearchResult[];
