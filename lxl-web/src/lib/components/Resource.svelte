@@ -206,9 +206,11 @@
 {/if}
 <article class="@container @3xl:**:[[id]]:scroll-mt-4">
 	{#if tableOfContents.length}
-		<section data-testid="toc-mobile" class="flex @7xl:hidden print:hidden">
+		<section data-testid="toc-mobile" class="relative block @7xl:hidden print:hidden">
 			<TableOfContents items={tableOfContents} {uidPrefix} mobile />
-			<ToggleTrailingPaneBtn />
+			<div class="absolute right-3 top-1.5">
+				<ToggleTrailingPaneBtn />
+			</div>
 		</section>
 	{/if}
 	<div
@@ -639,11 +641,13 @@
 		</div>
 		{#if tableOfContents.length && !trailingPane.visible}
 			<div class="hidden @7xl:block print:hidden">
-				<section data-testid="toc" class="sticky flex items-start py-3 @sm:py-6">
-					<TableOfContents items={tableOfContents} />
+				<section data-testid="toc" class="sticky flex-col items-start py-3 @sm:py-6">
 					{#if selectable}
-						<ToggleTrailingPaneBtn />
+						<div class="mr-auto pb-2 mb-2 border-b border-b-neutral">
+							<ToggleTrailingPaneBtn />
+						</div>
 					{/if}
+					<TableOfContents items={tableOfContents} />
 				</section>
 			</div>
 		{/if}

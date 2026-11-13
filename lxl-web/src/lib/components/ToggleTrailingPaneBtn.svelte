@@ -37,7 +37,7 @@
 		<!-- mobile btn -->
 		<button
 			id={trailingPane.expandBtnId}
-			class="ml-auto btn btn-primary flex gap-1.5"
+			class="btn btn-primary flex gap-1.5"
 			aria-label={page.data.t('panes.show')}
 			disabled={!selection.length}
 			in:fade={{ duration: 200 }}
@@ -54,7 +54,7 @@
 		<!-- desktop btn -->
 		<button
 			id={trailingPane.expandBtnId}
-			class="ml-auto btn btn-primary flex gap-1.5"
+			class="btn btn-primary flex gap-1.5"
 			aria-label={page.data.t('panes.show')}
 			aria-expanded={trailingPane.visible}
 			aria-controls="trailing-pane"

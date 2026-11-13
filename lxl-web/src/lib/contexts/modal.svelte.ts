@@ -45,16 +45,15 @@ function createModal(): ModalContext {
 		},
 		onClose(type: ModalType) {
 			if (previousUrl && previousUrl.pathname === page.url.pathname) {
-				console.log('history back');
 				history.back();
 			} else {
-				// construct own url
+				// construct url without param
 				const url = new SvelteURL(page.url.toString());
 				url.searchParams.delete(type);
 				if (url.hash === `#${type}`) {
 					url.hash = '';
 				}
-				goto(url, { replace: true });
+				goto(url, { replace: true, reset: false });
 			}
 		}
 	};
