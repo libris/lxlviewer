@@ -146,6 +146,9 @@
 	}
 
 	async function handleClickHoldings(event: Event) {
+		// perform a regular link navigation on find route to allow streaming with promises
+		if (page.route.id === '/(app)/[[lang=lang]]/find') return;
+
 		event.preventDefault();
 		const { href } = event.currentTarget as HTMLLinkElement;
 		const result = await preloadData(href);
