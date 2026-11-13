@@ -168,7 +168,6 @@ export async function handleClickCite(
 
 	if (result.type === 'loaded' && result.status === 200) {
 		modal.onOpen({
-			type: 'cite',
 			searchParams: {
 				cite: id
 			},

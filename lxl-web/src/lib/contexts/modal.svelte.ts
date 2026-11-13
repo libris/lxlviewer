@@ -1,90 +1,79 @@
-import { dev } from '$app/env';
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
-import { page } from '$app/state';
+import { page, type Page } from '$app/state';
 import { setContext, getContext } from 'svelte';
-import { SvelteURL, SvelteURLSearchParams } from 'svelte/reactivity';
+import { SvelteURL } from 'svelte/reactivity';
 import type { ModalType } from '#lib/types/modal.js';
 import { relativizeUrl } from '#lib/utils/http.js';
+import { dev } from '$app/env';
 
-export type ModalContext = {
-	readonly isOpen: ModalType | undefined;
-	onClose: (type: ModalType) => void;
-	onOpen: (opts: OpenModalOptions) => void;
+type OnOpenProps = {
+	hash?: string;
+	searchParams?: Record<string, string>;
+	state?: Record<string, string> | object;
 };
 
-interface OpenModalOptions {
-	type: ModalType;
-	hash?: string;
-	searchParams?: Record<string, string | null>;
-	state?: Record<string, unknown>;
-}
+export type ModalContext = {
+	onOpen: (props: OnOpenProps) => void;
+	onClose: (type: ModalType) => void;
+};
 
 function createModal(): ModalContext {
-	let isOpen: ModalType | undefined = $state();
-
+	let previousUrl: Page['url'] | undefined = undefined;
 	return {
-		get isOpen() {
-			return isOpen;
-		},
-
-		onClose(type) {
-			if (page.state?.modal?.type === type) {
-				console.log('history back');
-				history.back();
-			} else {
-				const newSearchParams = new SvelteURLSearchParams([
-					...Array.from(page.url.searchParams.entries())
-				]);
-				newSearchParams.delete(type);
-				goto(resolve(page.url.pathname + `?${newSearchParams.toString()}`), { replace: true });
-			}
-			isOpen = undefined;
-		},
-
-		async onOpen({ type, hash, searchParams, state = {} }) {
+		onOpen({ hash, searchParams, state }: OnOpenProps) {
+			previousUrl = page.url;
 			const url = new SvelteURL(page.url.toString());
 
-			if (hash !== undefined) {
+			if (hash) {
 				url.hash = hash;
 			}
 
 			if (searchParams) {
 				for (const [key, value] of Object.entries(searchParams)) {
-					if (value === null) {
-						url.searchParams.delete(key);
-					} else {
-						url.searchParams.set(key, value);
-					}
+					url.searchParams.set(key, value);
 				}
 			}
-
-			const rel = relativizeUrl(url.toString()) as string;
-
-			await goto(resolve(rel), {
+			console.log('goto', resolve(relativizeUrl(url.toString()) as string));
+			goto(resolve(relativizeUrl(url.toString()) as string), {
 				shallow: true,
 				state: {
 					...page.state,
-					...state,
-					...{ modal: { type } }
+					...state
 				}
 			});
-			isOpen = type;
+		},
+		onClose(type: ModalType) {
+			if (previousUrl && previousUrl.pathname === page.url.pathname) {
+				console.log('history back');
+				history.back();
+			} else {
+				// construct own url
+				const url = new SvelteURL(page.url.toString());
+				url.searchParams.delete(type);
+				if (url.hash === `#${type}`) {
+					url.hash = '';
+				}
+				goto(url, { replace: true });
+			}
 		}
 	};
 }
 
-const paneKey = Symbol('modal');
+const modalKey = Symbol.for('modal');
 
 export function setModalContext() {
 	const modal = createModal();
-	setContext(paneKey, modal);
+	setContext(modalKey, modal);
+	return modal;
 }
 
 export function getModalContext() {
-	const context = getContext<ModalContext>(paneKey);
+	const context = getContext<ModalContext>(modalKey);
+
 	if (dev && !context) {
-		console.trace('Selection context missing');
+		console.trace('Modal context missing');
 	}
+
 	return context;
 }

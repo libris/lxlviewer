@@ -59,7 +59,6 @@
 				onclick={(event) => {
 					event.preventDefault();
 					modal.onOpen({
-						type: 'holdings',
 						searchParams: {
 							holdings: type
 						},

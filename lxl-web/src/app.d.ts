@@ -61,9 +61,7 @@ declare global {
 			dimissedHighlighting?: boolean;
 			citations?: CitationDataWithError;
 			citationId?: string;
-			modal?: {
-				type: ModalType;
-			};
+			modal?: ModalType;
 		}
 	}
 	interface Window {

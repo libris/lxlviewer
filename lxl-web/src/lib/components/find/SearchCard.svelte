@@ -151,7 +151,6 @@
 		const result = await preloadData(href);
 		if (result.type === 'loaded' && result.status === 200) {
 			modal.onOpen({
-				type: 'holdings',
 				searchParams: {
 					holdings: stripAnchor(id) || ''
 				},

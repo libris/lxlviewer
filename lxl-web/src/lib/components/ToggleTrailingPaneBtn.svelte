@@ -44,7 +44,7 @@
 			onclick={() =>
 				modal.onOpen({
 					hash: SELECTION_HASH,
-					type: 'selection'
+					state: { modal: 'selection' }
 				})}
 			title={page.data.t('panes.show')}
 		>

@@ -23,7 +23,9 @@
 	const { searchResult, expandLeadingPaneBtnId, onOpenPane }: SearchResultToolbarProps = $props();
 	const userSettings = getUserSettings();
 	const modal = getModalContext();
-	const filtersModalOpen = $derived(modal.isOpen === 'filters');
+	const filtersModalOpen = $derived(
+		page.url.hash === FILTERS_HASH || page.state.modal === 'filters'
+	);
 
 	const numHits = $derived(searchResult.totalItems);
 	const mapping = $derived(searchResult.mapping.filter((m) => m.variable === '_q'));
@@ -59,7 +61,7 @@
 				onclick={() =>
 					modal.onOpen({
 						hash: FILTERS_HASH,
-						type: 'filters'
+						state: { modal: 'filters' }
 					})}
 			>
 				<IconSliders class="text-base" />
@@ -102,6 +104,6 @@
 				{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')})
 			</span>
 		{/snippet}
-		<Filters {facets} {mapping} />
+		<Filters {facets} {mapping} inModal={true} />
 	</Modal>
 {/if}

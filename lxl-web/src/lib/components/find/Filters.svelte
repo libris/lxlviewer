@@ -3,7 +3,6 @@
 	import { browser } from '$app/env';
 	import Facet from '#lib/components/find/Facet.svelte';
 	import { DEFAULT_FACETS_EXPANDED } from '#lib/constants/facets.js';
-	import { getModalContext } from '#lib/contexts/modal.svelte.js';
 	import type { DisplayMapping, Facet as FacetType } from '#lib/types/search.js';
 	import { displayMappingToString } from '#lib/utils/displayMappingToString.js';
 	import BiSearch from '~icons/bi/search';
@@ -12,9 +11,10 @@
 	type Props = {
 		facets: Promise<FacetType[]>;
 		mapping?: DisplayMapping[];
+		inModal?: boolean;
 	};
 
-	const { facets, mapping }: Props = $props();
+	const { facets, mapping, inModal = false }: Props = $props();
 
 	let facetData = $state<FacetType[] | null>(null);
 	const initialFacets: FacetType[] | null = $derived(Array.isArray(facets) ? facets : null);
@@ -66,9 +66,6 @@
 	function shouldShowMapping(m: DisplayMapping[]) {
 		return !!displayMappingToString(m).trim();
 	}
-
-	const modal = getModalContext();
-	const inModal = $derived(modal.isOpen);
 
 	let searchPhrase = $state('');
 </script>

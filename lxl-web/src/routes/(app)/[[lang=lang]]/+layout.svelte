@@ -11,6 +11,7 @@
 	import Modal from '#lib/components/Modal.svelte';
 	import TrailingPane from '#lib/components/TrailingPane.svelte';
 	import Selection from '#lib/components/Selection.svelte';
+	import { SELECTION_HASH } from '#lib/constants/modals.ts';
 
 	const { children } = $props();
 
@@ -39,7 +40,9 @@
 	});
 
 	const isSmallScreen = new MediaQuery('max-width: 640px', false);
-	const selectionModalOpen = $derived(modal.isOpen === 'selection');
+	const selectionModalOpen = $derived(
+		page.url.hash === SELECTION_HASH || page.state.modal === 'selection'
+	);
 
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
 	setSearchContext(searchContextState);
