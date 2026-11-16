@@ -48,21 +48,25 @@
 		_iter(root);
 		return count;
 	}
+
+	function handleFilterModalToggle(e: MouseEvent) {
+		e.preventDefault();
+		modal.onOpen({
+			hash: FILTERS_HASH,
+			state: { modal: 'filters' }
+		});
+	}
 </script>
 
 <div class="bg-page z-1 sticky-toolbar">
 	<Toolbar>
 		{#snippet leadingActions()}
 			<!-- mobile modal filter btn -->
-			<button
-				type="button"
+			<a
+				href="#filters"
 				class="filter-modal-toggle btn btn-primary max-w-44 sm:hidden"
 				aria-label={`${page.data.t('general.show')} ${page.data.t('search.filters')}. ${page.data.t('search.selectedFilters')}: ${filterCount}`}
-				onclick={() =>
-					modal.onOpen({
-						hash: FILTERS_HASH,
-						state: { modal: 'filters' }
-					})}
+				onclick={handleFilterModalToggle}
 			>
 				<IconSliders class="text-base" />
 				{page.data.t('search.filters')}
@@ -71,7 +75,7 @@
 						{filterCount}
 					</span>
 				{/if}
-			</button>
+			</a>
 			<!-- expand leadingPane btn -->
 			{#if !userSettings.leadingPane?.open}
 				<button
