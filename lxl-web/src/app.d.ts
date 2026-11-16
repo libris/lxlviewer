@@ -23,6 +23,7 @@ declare global {
 			userSettings: UserSettings;
 			librisSession?: string;
 			dismissedBanner3: boolean;
+			siteConfig: import('./env.js').SiteConfig;
 			site?: Site;
 			subsetMapping?: DisplayMapping[];
 			qualifierSuggestionsByLocale: Record<
@@ -45,6 +46,7 @@ declare global {
 			locale: string;
 			qualifierSuggestions: QualifierSuggestion2[];
 			siteName?: string;
+			matomoId?: number;
 			subsetMapping: DisplayMapping[] | undefined;
 			userSettings: UserSettings;
 		}

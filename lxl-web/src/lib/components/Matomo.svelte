@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_MATOMO_URL } from '$app/env/public';
 	import { afterNavigate } from '$app/navigation';
+	import { page } from '$app/state';
 	import { setMatomoTracker, getMatomoTracker, setMatomoContext } from '#lib/contexts/matomo.js';
 	import { onMount, type Snippet } from 'svelte';
 	import { browser } from '$app/env';
@@ -12,14 +13,15 @@
 	let { children }: Props = $props();
 
 	const URL: string = PUBLIC_MATOMO_URL;
+	const matomoId: number | undefined = page.data.matomoId;
 	let scriptTag: HTMLScriptElement | undefined = $state();
 
-	setMatomoContext();
+	setMatomoContext(matomoId);
 	const tracker = getMatomoTracker();
 
 	function onMatomoScriptLoad() {
 		if (!$tracker) {
-			setMatomoTracker();
+			setMatomoTracker(matomoId);
 		}
 	}
 
@@ -51,7 +53,7 @@
 </script>
 
 <svelte:head>
-	{#if URL}
+	{#if URL && matomoId}
 		<script bind:this={scriptTag} async defer src={`${URL}/matomo.js`}></script>
 	{/if}
 </svelte:head>

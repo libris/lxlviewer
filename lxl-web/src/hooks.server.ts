@@ -1,7 +1,8 @@
 import type { HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import fs from 'fs';
-import { ID_URL, API_URL, USE_LOCAL_DISPLAY_JSONLD, SUBSITES } from '$app/env/private';
+import { ID_URL, API_URL, USE_LOCAL_DISPLAY_JSONLD, SITES } from '$app/env/private';
+import { DEFAULT_SITE_ID, type SiteConfig } from './env.js';
 import { defaultLocale, Locales } from '#lib/i18n/locales.js';
 import { DERIVED_LENSES } from '#lib/types/display.js';
 import type { QualifierSuggestion2 } from '#lib/types/search.js';
@@ -36,15 +37,10 @@ export const init: ServerInit = async () => {
 		const [, displayUtil] = await loadUtilCached();
 		startRefreshLibraries(displayUtil, defaultLocale);
 
-		const sites = (SUBSITES || '')
-			.split(',')
-			.map((s) => s.trim())
-			.filter((s) => s.length > 0)
-			.map((site) => process.env[`SUBSITE.${site}.SEARCH_SITE`])
-			.filter((s) => typeof s === 'string');
-
-		for (const s of sites) {
-			await getSiteConfCached(s);
+		for (const { searchSite } of Object.values(SITES)) {
+			if (searchSite) {
+				await getSiteConfCached(searchSite);
+			}
 		}
 	} catch (err) {
 		// This is OK, handle() will retry
@@ -67,7 +63,10 @@ export const handle = async ({ event, resolve }) => {
 		redirect(302, `?_r=itemHeldByOrg:${clean}`);
 	}
 
-	const site = await getSite(event);
+	const siteConfig = resolveSiteConfig(event);
+	event.locals.siteConfig = siteConfig;
+
+	const site = siteConfig.searchSite ? await getSiteConfCached(siteConfig.searchSite) : null;
 
 	if (site) {
 		event.locals.site = site;
@@ -290,19 +289,14 @@ async function loadUtil(): Promise<Util> {
 	return [vocabUtil, displayUtil, qualifierSuggestionsByLocale];
 }
 
-function getSite(event: RequestEvent): Promise<Site> | null {
+function resolveSiteConfig(event: RequestEvent): SiteConfig {
 	const host = event.request.headers.get('x-forwarded-host') ?? event.url.hostname;
 	const deepestSubDomain = host.split('.')[0];
 
-	if (configuredSubDomains().includes(deepestSubDomain)) {
-		const siteUrl = process.env[`SUBSITE.${deepestSubDomain}.SEARCH_SITE`];
-		if (!siteUrl) {
-			return null;
-		}
-		return getSiteConfCached(siteUrl);
+	if (deepestSubDomain !== DEFAULT_SITE_ID && Object.hasOwn(SITES, deepestSubDomain)) {
+		return SITES[deepestSubDomain];
 	}
-
-	return null;
+	return SITES[DEFAULT_SITE_ID];
 }
 
 async function getSiteConfCached(siteUrl: string) {
@@ -336,10 +330,6 @@ async function loadSiteConf(siteUrl: string): Promise<Site> {
 	};
 	console.log(`Loaded site conf: ${JSON.stringify(site, null, 2)}`);
 	return site;
-}
-
-function configuredSubDomains(): string[] {
-	return SUBSITES?.split(',').map((s) => s.trim()) || [];
 }
 
 export const handleError: HandleServerError = ({ error, event, kind }) => {
