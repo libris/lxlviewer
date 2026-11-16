@@ -16,8 +16,8 @@
 	const selection = getSelectionContext();
 	const availableCitationFormats = getAvailableFormats();
 
-	let selectedFormat = $derived(availableCitationFormats.find((f) => f.key === selection.format));
-	const citation = $derived(selection.citation);
+	let selectedFormat = $derived(availableCitationFormats.find((f) => f.key === selection.format)!);
+	const citation = $derived(selection.citation || '');
 	const citationData: CitationData = $derived({ ...selectedFormat, citation });
 	const reviewItems = $derived(selection.forReview);
 	const loading = $derived(selection.loading);
@@ -41,7 +41,7 @@
 	}
 </script>
 
-{#snippet checkbox(item: ReviewItem)}
+{#snippet checkbox(item: ReviewItem | ReviewItem['instances'][number])}
 	{const checked = $derived(selection.isSelected(item.id))}
 	<input
 		class="mr-1"

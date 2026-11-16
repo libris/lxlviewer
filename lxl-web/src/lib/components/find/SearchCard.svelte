@@ -248,14 +248,19 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		bind:this={articleElement}
 	>
 		{#if selectable}
-			{const checkboxId = itemNo || item[JsonLd.ID]}
 			<div class="card-select flex flex-col items-start justify-start gap-1">
-				<label for={`checkbox-${checkboxId}`} class={['text-xs text-subtle', !itemNo && 'sr-only']}
-					>{itemNo && itemNo.toLocaleString() + '.'}</label
+				<label
+					for={`selection-${id}`}
+					class={['text-xs text-subtle', !itemNo && 'sr-only']}
+					aria-labelledby={`selection-label-${id} ${titleId}`}
 				>
+					<span id={`selection-label-${id}`}>
+						{itemNo && itemNo.toLocaleString() + '.'}
+					</span>
+				</label>
 				<input
 					type="checkbox"
-					id={`checkbox-${checkboxId}`}
+					id={`selection-${id}`}
 					checked={isSelected}
 					onchange={toggleSelected}
 					disabled={selection.limitReached && !isSelected}

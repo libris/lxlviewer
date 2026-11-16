@@ -389,6 +389,10 @@ export default {
 		timeOut: 'Att hämta din plats tog för lång tid. Försök igen',
 		unknown: 'Ett okänt fel inträffade när din plats skulle hämtas'
 	},
+	selection: {
+		selectMultiple: 'Välj flera',
+		selected: 'valda'
+	},
 	banner: {
 		message: 'Tjänster åter i drift',
 		message2:

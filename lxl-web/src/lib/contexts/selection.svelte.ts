@@ -6,7 +6,7 @@ import { getSelectionData } from '#lib/remotes/selection.remote.js';
 import type { AvailableCitationFormat, CSLJSON } from '#lib/types/citation.js';
 import type { SearchResultItem } from '#lib/types/search.js';
 import { JsonLd } from '#lib/types/xl.js';
-import { initCite } from '#lib/utils/citation.js';
+import { getAvailableFormats, initCite } from '#lib/utils/citation.js';
 import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
 
 type Selection = {
@@ -35,7 +35,7 @@ type SelectionContext = {
 	readonly limit: number;
 	readonly limitReached: boolean;
 	readonly error: string;
-	format: AvailableCitationFormat | undefined;
+	format: AvailableCitationFormat;
 	isSelected(id: string): boolean;
 	toggle(id: string): Promise<void>;
 	add(id: string): Promise<void>;
@@ -45,12 +45,14 @@ type SelectionContext = {
 };
 
 function createSelection(): SelectionContext {
+	const DEFAULT_FORMAT: AvailableCitationFormat = getAvailableFormats()[0].key;
+
 	let cite: Awaited<ReturnType<typeof initCite>> | undefined;
 	let locale: LocaleCode = $state(defaultLocale);
 	let selection = $state<Selection[]>([]);
 	let cards: SearchResultItem[] = $state([]);
 	let forReview: ReviewItem[] = $state([]);
-	let currentFormat = $state<AvailableCitationFormat | undefined>();
+	let currentFormat = $state<AvailableCitationFormat>(DEFAULT_FORMAT);
 	let citation = $state<ReturnType<Awaited<ReturnType<typeof initCite>>['formatAs']>>();
 	const limit = SELECTION_LIMIT;
 	let loading = $state(false);
@@ -103,14 +105,16 @@ function createSelection(): SelectionContext {
 			return error;
 		},
 
-		set format(format: AvailableCitationFormat | undefined) {
-			currentFormat = format;
-			citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
+		set format(format: AvailableCitationFormat) {
+			if (format) {
+				currentFormat = format;
+				citation = currentFormat ? cite?.formatAs(currentFormat) : undefined;
+			}
 		},
 
 		async init(_locale: LocaleCode, defaultFormat: AvailableCitationFormat | 'all' | undefined) {
-			if (defaultFormat === 'all') {
-				defaultFormat = undefined;
+			if (defaultFormat === 'all' || !defaultFormat) {
+				defaultFormat = DEFAULT_FORMAT;
 			}
 			try {
 				currentFormat = defaultFormat;

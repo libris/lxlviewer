@@ -90,12 +90,12 @@
 					<BiLayoutSidebar class="size-4" />
 				</button>
 			{/if}
-			<div class="ml-auto flex gap-1">
-				<ToggleSelectModeBtn />
-			</div>
 		{/snippet}
 		{#snippet trailingActions()}
-			<ToggleTrailingPaneBtn />
+			{#if searchResult.totalItems}
+				<ToggleSelectModeBtn />
+				<ToggleTrailingPaneBtn />
+			{/if}
 		{/snippet}
 	</Toolbar>
 </div>

@@ -64,7 +64,6 @@
 		<Toolbar>
 			{#snippet leadingActions()}
 				{#if selectableResults}
-					<label for="select-all-page-results" class="sr-only">Välj alla sökträffar på sidan</label>
 					<input
 						type="checkbox"
 						bind:this={selectAllEl}
@@ -74,7 +73,11 @@
 						checked={selectionStatus}
 					/>
 				{/if}
-				<p class="hits-count">
+				<svelte:element
+					this={selectableResults ? 'label' : 'p'}
+					class="hits-count"
+					for={selectableResults ? 'select-all-page-results' : undefined}
+				>
 					{#if numHits > searchResult.itemsPerPage && searchResult.itemsPerPage > 0}
 						<span class="font-medium">
 							{(searchResult.itemOffset + 1).toLocaleString(page.data.locale)}
@@ -93,7 +96,7 @@
 						{numHits == 1 ? page.data.t('search.relatedOne') : page.data.t('search.related')}
 					{/if}
 					{numHits == 1 ? page.data.t('search.hitsOne') : page.data.t('search.hits')}
-				</p>
+				</svelte:element>
 			{/snippet}
 			{#snippet trailingActions()}
 				<SearchResultSort />

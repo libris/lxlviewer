@@ -38,8 +38,8 @@
 		<button
 			id={trailingPane.expandBtnId}
 			class="btn btn-primary flex gap-1.5"
-			aria-label={page.data.t('panes.show')}
 			disabled={!selection.length}
+			aria-labelledby="selection-status"
 			in:fade={{ duration: 200 }}
 			onclick={() =>
 				modal.onOpen({
@@ -55,10 +55,10 @@
 		<button
 			id={trailingPane.expandBtnId}
 			class="btn btn-primary flex gap-1.5"
-			aria-label={page.data.t('panes.show')}
 			aria-expanded={trailingPane.visible}
 			aria-controls="trailing-pane"
 			disabled={!selection.length}
+			aria-labelledby="selection-status"
 			in:fade={{ duration: 200 }}
 			onclick={trailingPane.onOpen}
 			title={page.data.t('panes.show')}
@@ -66,4 +66,7 @@
 			{@render content()}
 		</button>
 	{/if}
+	<span id="selection-status" class="sr-only" role="status" aria-atomic="true">
+		{`${selection.length} ${page.data.t('selection.selected')}`}
+	</span>
 {/if}

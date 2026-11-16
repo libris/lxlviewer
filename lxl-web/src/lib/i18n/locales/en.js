@@ -386,6 +386,10 @@ export default {
 		timeOut: 'Location request timed out. Try again',
 		unknown: 'An unknown error occurred while fetching location'
 	},
+	selection: {
+		selectMultiple: 'Select multiple',
+		selected: 'selected'
+	},
 	banner: {
 		message: 'Services back in operation',
 		message2:
