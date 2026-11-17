@@ -3,7 +3,19 @@ import * as v from 'valibot';
 
 export const DEFAULT_SITE_ID = 'default';
 
+/** Lowercases and strips port and trailing dot, e.g. "Suecia.Libris.KB.se:443" -> "suecia.libris.kb.se" */
+export function normalizeHost(host: string): string {
+	return host.trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '');
+}
+
+const HostSchema = v.pipe(
+	v.string(),
+	v.transform(normalizeHost),
+	v.regex(/^[a-z0-9.-]+$/, 'host must be a bare hostname (no scheme, port or path)')
+);
+
 const SiteConfigSchema = v.object({
+	hosts: v.optional(v.array(HostSchema)),
 	searchSite: v.optional(v.pipe(v.string(), v.url())),
 	matomoId: v.optional(
 		v.pipe(
@@ -20,7 +32,16 @@ const SitesSchema = v.pipe(
 		(sites) =>
 			Object.entries(sites).every(([id, site]) => id === DEFAULT_SITE_ID || site.searchSite),
 		`every site except "${DEFAULT_SITE_ID}" must have a searchSite`
-	)
+	),
+	v.check(
+		(sites) =>
+			Object.entries(sites).every(([id, site]) => id === DEFAULT_SITE_ID || site.hosts?.length),
+		`every site except "${DEFAULT_SITE_ID}" must have at least one host`
+	),
+	v.check((sites) => {
+		const hosts = Object.values(sites).flatMap((site) => site.hosts ?? []);
+		return new Set(hosts).size === hosts.length;
+	}, 'a host may only belong to one site')
 );
 
 export interface SiteConfig extends v.InferOutput<typeof SiteConfigSchema> {
@@ -28,8 +49,9 @@ export interface SiteConfig extends v.InferOutput<typeof SiteConfigSchema> {
 }
 
 /**
- * Parses SITES into a map of site id -> config. The "default" entry (the main site) is used
- * for any host that doesn't match another site id, and is always present in the result.
+ * Parses SITES into a map of site id -> config. A request is served by the site whose hosts
+ * include the request host; the "default" entry (the main site) is used for any host that doesn't
+ * match, and is always present in the result.
  */
 function parseSites(input: string | undefined): Record<string, SiteConfig> {
 	let json: unknown = {};
@@ -72,7 +94,7 @@ export const variables = defineEnvVars({
 	SITES: {
 		schema: parseSites,
 		description:
-			'JSON object mapping site id (subdomain, or "default" for the main site) to site config, e.g. {"default":{"matomoId":"1"},"suecia":{"searchSite":"https://suecia.kb.se/","matomoId":"12"}}'
+			'JSON object mapping site id ("default" for the main site) to site config, e.g. {"default":{"matomoId":1},"suecia":{"hosts":["suecia.libris.kb.se"],"searchSite":"https://suecia.kb.se/","matomoId":12}}'
 	},
 	PUBLIC_FJARRLAN_URL: { public: true, schema: (input) => input ?? '' },
 	PUBLIC_MATOMO_URL: { public: true, schema: (input) => input ?? '' },

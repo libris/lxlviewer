@@ -2,7 +2,7 @@ import type { HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import fs from 'fs';
 import { ID_URL, API_URL, USE_LOCAL_DISPLAY_JSONLD, SITES } from '$app/env/private';
-import { DEFAULT_SITE_ID, type SiteConfig } from './env.js';
+import { DEFAULT_SITE_ID, normalizeHost, type SiteConfig } from './env.js';
 import { defaultLocale, Locales } from '#lib/i18n/locales.js';
 import { DERIVED_LENSES } from '#lib/types/display.js';
 import type { QualifierSuggestion2 } from '#lib/types/search.js';
@@ -290,13 +290,10 @@ async function loadUtil(): Promise<Util> {
 }
 
 function resolveSiteConfig(event: RequestEvent): SiteConfig {
-	const host = event.request.headers.get('x-forwarded-host') ?? event.url.hostname;
-	const deepestSubDomain = host.split('.')[0];
+	const forwardedHost = event.request.headers.get('x-forwarded-host')?.split(',')[0];
+	const host = normalizeHost(forwardedHost || event.url.hostname);
 
-	if (deepestSubDomain !== DEFAULT_SITE_ID && Object.hasOwn(SITES, deepestSubDomain)) {
-		return SITES[deepestSubDomain];
-	}
-	return SITES[DEFAULT_SITE_ID];
+	return Object.values(SITES).find((site) => site.hosts?.includes(host)) ?? SITES[DEFAULT_SITE_ID];
 }
 
 async function getSiteConfCached(siteUrl: string) {
