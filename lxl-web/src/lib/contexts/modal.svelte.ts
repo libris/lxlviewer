@@ -34,7 +34,6 @@ function createModal(): ModalContext {
 					url.searchParams.set(key, value);
 				}
 			}
-			console.log('goto', resolve(relativizeUrl(url.toString()) as string));
 			goto(resolve(relativizeUrl(url.toString()) as string), {
 				shallow: true,
 				state: {
