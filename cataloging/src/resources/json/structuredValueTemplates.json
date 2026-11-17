@@ -665,6 +665,17 @@
       "marc:publicNote": [""]
     }
   ],
+  "hasItemAction": {
+        "@type": "ItemAction",
+        "agent": "@id": "https://libris.kb.se/3qw7qg7j1zt0dlnh#it",
+        "category": [
+          {
+            "@id": "https://id.kb.se/term/spa/committed-to-retain"
+          }
+        ],
+        "startDate": "",
+        "endDate": ""
+      },
   "Classification": {
     "@type": "Classification",
     "code": "",
