@@ -86,15 +86,14 @@
 			{#if isSmallScreen.current && selectionModalOpen}
 				<Modal close={() => modal.onClose('selection')}>
 					{#snippet title()}
-						<span class="p-1">Hantera ditt urval ({selection.length})</span>
+						<span class="p-1">{page.data.t('selection.manage')} ({selection.length})</span>
 					{/snippet}
 					<Selection />
 				</Modal>
 			{:else if !isSmallScreen.current}
 				<TrailingPane>
 					{#snippet title()}
-						<span>Hantera ditt urval</span>
-						<!-- todo: sr-only atomic -->
+						<span>{page.data.t('selection.manage')}</span>
 						<span role="status" aria-atomic="true" class="font-medium badge badge-accent ml-0.5">
 							{selection.length}
 						</span>

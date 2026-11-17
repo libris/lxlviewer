@@ -22,18 +22,18 @@
 	const reviewItems = $derived(selection.forReview);
 	const loading = $derived(selection.loading);
 
-	const tabs: Tab[] = [
+	const tabs: Tab[] = $derived([
 		{
-			label: 'Skapa referenser',
+			label: page.data.t('citations.cite'),
 			id: 'references',
 			content: createReferences
 		},
 		{
-			label: 'Redigera urval',
+			label: page.data.t('selection.edit'),
 			id: 'edit-selection',
 			content: editSelection
 		}
-	];
+	]);
 
 	function handleChangeFormat(event: Event) {
 		const format = (event.currentTarget as HTMLSelectElement).value as AvailableCitationFormat;
@@ -46,11 +46,11 @@
 	<input
 		class="mr-1"
 		type="checkbox"
-		id={`checkbox-${item.id}`}
+		id={`review-checkbox-${item.id}`}
 		{checked}
 		onchange={() => selection.toggle(item.id)}
 	/>
-	<label for={`checkbox-${item.id}`}>{item.str}</label>
+	<label for={`review-checkbox-${item.id}`}>{item.str}</label>
 {/snippet}
 
 {#snippet skeleton()}
@@ -70,27 +70,25 @@
 				<details>
 					<summary class="flex items-center cursor-pointer font-medium">
 						<span class="badge badge-warning mr-2">{reviewItems.length}</span>
-						<span>Urvalet kan behöva granskas</span>
-						<span aria-hidden="true" class="transition-transform ml-auto">
-							<IconChevron class="text-subtle size-3.5" />
+						<span>{page.data.t('selection.reviewShort')}</span>
+						<span aria-hidden="true" class="chevron text-subtle transition-transform ml-auto">
+							<IconChevron />
 						</span>
 					</summary>
 					<div class="my-2">
 						<p class="mt-1">
-							Ditt urval innehåller <span class="font-medium">{reviewItems.length}</span> verk med flera
-							utgåvor. Verk saknar utgivningsår och förlag, vilket leder till ofullständiga referenser.
-							Nedan kan du granska och välja en enskild utgåva istället.
+							{page.data.t('selection.reviewLong')}.
 						</p>
 					</div>
 					{#each reviewItems as item (item.id)}
 						<details class="open:mb-2 open:[&>summary]:bg-severe-100">
 							<summary
-								class="flex items-baseline p-2 cursor-pointer font-medium transition-colors bg-severe-50 hover:bg-severe-100"
+								class="flex items-center p-2 cursor-pointer font-medium transition-colors bg-severe-50 hover:bg-severe-100"
 							>
 								{'•'}
 								{item.str}
-								<span aria-hidden="true" class="transition-transform ml-auto">
-									<IconChevron class="text-subtle size-3.5" />
+								<span aria-hidden="true" class="chevron text-subtle transition-transform ml-auto">
+									<IconChevron />
 								</span>
 							</summary>
 							<ul class="mt-2 flex flex-col">
@@ -140,7 +138,7 @@
 	<div class="py-4 flex flex-col gap-1" aria-busy={loading}>
 		<button class="btn btn-primary self-start mb-2" onclick={() => selection.clear()}>
 			<BiTrash aria-hidden="true" />
-			Rensa urval
+			{page.data.t('selection.clear')}
 		</button>
 		{#if loading}
 			{@render skeleton()}
@@ -159,20 +157,29 @@
 <div class="text-sm">
 	{#if selection.limitReached}
 		<details class="text-xs bg-severe-50 p-2 my-2 mb-2">
-			<summary class="flex cursor-pointer">
-				<span class="font-medium">Du har nått maxgränsen för ditt urval</span>
-				<IconChevron class="ml-auto text-subtle size-3.5" />
+			<summary class="flex items-center cursor-pointer">
+				<span class="font-medium">{page.data.t('selection.limitShort')}</span>
+				<span class="chevron text-subtle transition-transform ml-auto">
+					<IconChevron />
+				</span>
 			</summary>
 			<p class="mt-2">
-				Ditt urval har nått maxgränsen på {selection.limit} och inget mer kan läggas till. Du kan ta
-				bort valda poster under fliken "Redigera urval".
+				{page.data.t('selection.limitLong', { selectionLimit: selection.limit })}.
 			</p>
 		</details>
 	{/if}
 	{#if selection.error}
 		<p role="status" class="p-2 bg-severe-50 my-2">
-			{selection.error}
+			{page.data.t(selection.error)}
 		</p>
 	{/if}
-	<TabList ariaLabel="hantera urval" {tabs} />
+	<TabList ariaLabel={page.data.t('selection.manage')} {tabs} />
 </div>
+
+<style lang="postcss">
+	details[open] > summary {
+		& .chevron {
+			rotate: 180deg;
+		}
+	}
+</style>

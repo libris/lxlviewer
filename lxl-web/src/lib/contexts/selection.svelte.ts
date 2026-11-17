@@ -22,8 +22,8 @@ export type ReviewItem = {
 };
 
 const errorMsg = {
-	citation: 'Ett fel uppstod när referenser skulle skapas',
-	fetch: 'Ett fel uppstod vid datahämtningen'
+	citation: 'selection.errorCite',
+	fetch: 'selection.errorFetch'
 };
 
 type SelectionContext = {

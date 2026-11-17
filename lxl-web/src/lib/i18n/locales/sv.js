@@ -391,7 +391,18 @@ export default {
 	},
 	selection: {
 		selectMultiple: 'Välj flera',
-		selected: 'valda'
+		selected: 'valda',
+		edit: 'Redigera urval',
+		reviewShort: 'Urvalet kan behöva granskas',
+		reviewLong:
+			'Ditt urval innehåller verk med flera utgåvor. Verk saknar utgivningsår och förlag, vilket leder till ofullständiga referenser. Nedan kan du granska och välja en enskild utgåva istället',
+		clear: 'Rensa urval',
+		manage: 'Hantera ditt urval',
+		limitShort: 'Du har nått maxgränsen för ditt urval',
+		limitLong:
+			'Ditt urval har nått maxgränsen på {selectionLimit} och inget mer kan läggas till. Du kan ta bort valda poster under fliken "Redigera urval"',
+		errorFetch: 'Ett fel uppstod vid datahämtningen',
+		errorCite: 'Ett fel uppstod när referenser skulle skapas'
 	},
 	banner: {
 		message: 'Tjänster åter i drift',
