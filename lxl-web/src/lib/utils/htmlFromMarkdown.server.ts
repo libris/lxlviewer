@@ -8,8 +8,10 @@ function isExternal(href: string) {
 }
 
 const opts: sanitizeHtml.IOptions = {
+	allowedTags: [...sanitizeHtml.defaults.allowedTags, 'img'],
 	allowedAttributes: {
-		a: ['href', 'target', 'rel', 'class', 'title']
+		a: ['href', 'target', 'rel', 'class', 'title'],
+		img: ['src', 'alt', 'title']
 	},
 	transformTags: {
 		a: (tagName, attribs) => {
