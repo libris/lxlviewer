@@ -5,6 +5,7 @@
 		explain: EsExplainType;
 		open?: boolean;
 	}
+	// test change
 
 	let { explain, open = true }: Props = $props();
 </script>
