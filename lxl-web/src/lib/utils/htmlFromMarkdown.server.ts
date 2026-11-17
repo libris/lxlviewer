@@ -1,6 +1,12 @@
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 
+// http(s) and protocol-relative (//) URLs are external; relative paths,
+// fragments and other schemes (mailto:, tel:) are left as they are.
+function isExternal(href: string) {
+	return /^(https?:)?\/\//i.test(href.trim());
+}
+
 const opts: sanitizeHtml.IOptions = {
 	allowedAttributes: {
 		a: ['href', 'target', 'rel', 'class', 'title']
@@ -8,6 +14,10 @@ const opts: sanitizeHtml.IOptions = {
 	transformTags: {
 		a: (tagName, attribs) => {
 			const href = attribs.href || '';
+
+			if (!isExternal(href)) {
+				return { tagName: 'a', attribs: { ...attribs, href } };
+			}
 
 			return {
 				tagName: 'a',
