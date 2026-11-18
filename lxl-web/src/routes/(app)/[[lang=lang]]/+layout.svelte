@@ -3,6 +3,7 @@
 	import { MediaQuery } from 'svelte/reactivity';
 	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import { setHomepageContext } from '#lib/contexts/homepage.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.ts';
 	import { setSearchContext } from '#lib/contexts/search.js';
 	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
 	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
@@ -28,6 +29,7 @@
 		previews: undefined
 	});
 
+	const userSettings = getUserSettings();
 	const selection = getSelectionContext();
 	const modal = getModalContext();
 
@@ -82,7 +84,7 @@
 				/>
 			</Modal>
 		{/if}
-		{#if trailingPaneAllowedRoute}
+		{#if trailingPaneAllowedRoute && userSettings.selectableResults}
 			{#if isSmallScreen.current && selectionModalOpen}
 				<Modal close={() => modal.onClose('selection')}>
 					{#snippet title()}

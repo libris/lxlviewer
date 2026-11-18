@@ -30,56 +30,54 @@
 	}
 </script>
 
-{#if trailingPane.visible}
-	<aside
-		id="trailing-pane"
-		class={['trailing-pane z-10 hidden w-0 sm:block print:hidden']}
-		style="padding-right:{paneWidth || 0}px"
-		inert={!trailingPane.visible}
-		aria-labelledby="trailing-pane-title"
-	>
-		<Draggable
-			bind:width={paneWidth}
-			side="left"
-			minWidth={TRAILING_PANE_MIN_WIDTH}
-			maxWidth={TRAILING_PANE_MAX_WIDTH}
-			bind:isDragging
-			collapseWidth={TRAILING_PANE_COLLAPSE_WIDTH}
-			oncollapse={() => userSettings.closeTrailingPane()}
-			onexpand={() => userSettings.openTrailingPane()}
-			onresized={handleOnResized}
-		/>
-		<div class={['flex h-full flex-col']} style="width:{paneWidth}px">
-			<div class="trailing-pane-toolbar">
-				<Toolbar>
-					{#snippet leadingActions()}
-						<p
-							class="text-sm font-medium truncate flex gap-1 items-center"
-							id="trailing-pane-title"
-						>
-							{@render title?.()}
-						</p>
-					{/snippet}
-					{#snippet trailingActions()}
-						<button
-							id={trailingPane.collapseBtnId}
-							class="btn btn-primary my-2 border-0"
-							aria-label={page.data.t('panes.hide')}
-							aria-expanded={trailingPane.visible}
-							aria-controls="trailing-pane"
-							onclick={trailingPane.onClose}
-						>
-							<BiXLg class="size-4" />
-						</button>
-					{/snippet}
-				</Toolbar>
-			</div>
-			<div class="trailing-pane-content p-4 mr-1.5 overflow-y-auto overscroll-contain *:h-full">
-				{@render children?.()}
-			</div>
+<aside
+	id="trailing-pane"
+	class={[
+		'trailing-pane z-10 w-0 print:hidden',
+		trailingPane.visible ? 'hidden sm:block' : 'hidden'
+	]}
+	style="padding-right:{paneWidth || 0}px"
+	inert={!trailingPane.visible}
+	aria-labelledby="trailing-pane-title"
+>
+	<Draggable
+		bind:width={paneWidth}
+		side="left"
+		minWidth={TRAILING_PANE_MIN_WIDTH}
+		maxWidth={TRAILING_PANE_MAX_WIDTH}
+		bind:isDragging
+		collapseWidth={TRAILING_PANE_COLLAPSE_WIDTH}
+		oncollapse={() => userSettings.closeTrailingPane()}
+		onexpand={() => userSettings.openTrailingPane()}
+		onresized={handleOnResized}
+	/>
+	<div class={['flex h-full flex-col']} style="width:{paneWidth}px">
+		<div class="trailing-pane-toolbar">
+			<Toolbar>
+				{#snippet leadingActions()}
+					<p class="text-sm font-medium truncate flex gap-1 items-center" id="trailing-pane-title">
+						{@render title?.()}
+					</p>
+				{/snippet}
+				{#snippet trailingActions()}
+					<button
+						id={trailingPane.collapseBtnId}
+						class="btn btn-primary my-2 border-0"
+						aria-label={page.data.t('panes.hide')}
+						aria-expanded={trailingPane.visible}
+						aria-controls="trailing-pane"
+						onclick={trailingPane.onClose}
+					>
+						<BiXLg class="size-4" />
+					</button>
+				{/snippet}
+			</Toolbar>
 		</div>
-	</aside>
-{/if}
+		<div class="trailing-pane-content p-4 mr-1.5 overflow-y-auto overscroll-contain *:h-full">
+			{@render children?.()}
+		</div>
+	</div>
+</aside>
 
 <style lang="postcss">
 	@reference 'tailwindcss';

@@ -145,7 +145,6 @@
 			page.data.features.holdings
 	);
 
-	// TODO check selectable thing!
 	const selectable = $derived(userSettings.selectableResults && hasHoldingsBtn);
 	const isSelected = $derived(selection.isSelected(recordUri));
 
