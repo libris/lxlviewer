@@ -47,6 +47,7 @@
 					state: { modal: 'selection' }
 				})}
 			title={page.data.t('panes.show')}
+			data-testid="toggle-trailing-pane-btn"
 		>
 			{@render content()}
 		</button>
@@ -62,6 +63,7 @@
 			in:fade={{ duration: 200 }}
 			onclick={trailingPane.onOpen}
 			title={page.data.t('panes.show')}
+			data-testid="toggle-trailing-pane-btn"
 		>
 			{@render content()}
 		</button>
