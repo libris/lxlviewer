@@ -22,6 +22,7 @@ export async function load({ locals, url, params, cookies }) {
 		? (locals.site.configuration?.appMenu ?? [])
 		: defaultSiteConfiguration.appMenu;
 	const qualifierSuggestions = locals.qualifierSuggestionsByLocale[locale];
+	const matomoId = locals.siteConfig.matomoId;
 
 	return {
 		userSettings,
@@ -35,6 +36,7 @@ export async function load({ locals, url, params, cookies }) {
 		footer,
 		appMenuItems,
 		qualifierSuggestions,
+		matomoId,
 		initialCookieConsentModal: !cookies.get('cc_cookie')
 	};
 }
