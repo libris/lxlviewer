@@ -38,7 +38,10 @@ function createTrailingPane(): TrailingPaneContext {
 		onClose() {
 			userSettings.closeTrailingPane();
 			tick().then(() => {
-				document.getElementById(expandBtnId)?.focus();
+				const openBtn = [...document.querySelectorAll(`#${expandBtnId}`)].find((el) =>
+					el.checkVisibility()
+				) as HTMLButtonElement | undefined;
+				openBtn?.focus();
 			});
 		},
 		onOpen() {
