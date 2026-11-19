@@ -55,9 +55,8 @@ export const getSelectionData = query(
 				})
 			};
 		}
-		const originalId = mainEntity[JsonLd.ID];
 		mainEntity = centerOnWork(record['mainEntity'] as FramedData);
-		mainEntity.meta = { [JsonLd.ID]: originalId };
+		mainEntity.meta = { [JsonLd.ID]: record?.[JsonLd.ID] };
 
 		card = asSearchResultItem([mainEntity], display, vocab, lang, AUXD_SECRET)[0];
 
