@@ -131,21 +131,78 @@ test('A selection changes selection indication', async ({ page }) => {
 	await expectSelectionCount(page, 2);
 });
 
-// test('Selection interface displays the citations', async ({ page }) => {
-// 	  TODO
-// });
+test('Selection interface displays the citations', async ({ page }) => {
+	await gotoSearchResults(page);
+	await enableSelectionMode(page);
 
-// test('Selection interface displays the selections', async ({ page }) => {
-// 	  TODO
-// });
+	await searchCards(page).first().getByRole('checkbox').check();
+	await expect(trailingPane(page)).toBeVisible();
+	await expect(page.locator('#trailing-pane article.citation')).toBeVisible();
+});
 
-// test('Selection can be deselected from the interface', async ({ page }) => {
-// 	  TODO
-// });
+test('Selection interface displays the selections', async ({ page }) => {
+	await gotoSearchResults(page);
+	await enableSelectionMode(page);
 
-// test('Selection can be cleared from the interface', async ({ page }) => {
-// 	  TODO
-// });
+	await searchCards(page).nth(1).getByRole('checkbox').check();
+	await searchCards(page).nth(2).getByRole('checkbox').check();
+
+	expect(page.getByRole('tab', { name: 'Redigera urval' })).toBeVisible();
+	await page.getByRole('tab', { name: 'Redigera urval' }).click();
+
+	const selections = page.locator('#trailing-pane .search-card');
+	await expect(selections).toHaveCount(2);
+});
+
+test('Selection can be deselected from the interface', async ({ page }) => {
+	await gotoSearchResults(page);
+	await enableSelectionMode(page);
+
+	await searchCards(page).nth(1).getByRole('checkbox').check();
+	await searchCards(page).nth(2).getByRole('checkbox').check();
+
+	expect(page.getByRole('tab', { name: 'Redigera urval' })).toBeVisible();
+	await page.getByRole('tab', { name: 'Redigera urval' }).click();
+
+	const firstCheckbox = page.locator('#trailing-pane .search-card').getByRole('checkbox').first();
+
+	await firstCheckbox.click();
+
+	await hideTrailingPaneButton(page).click();
+	await expectSelectionCount(page, 1);
+});
+
+test('Selection can be cleared from the interface', async ({ page }) => {
+	await gotoSearchResults(page);
+	await enableSelectionMode(page);
+
+	await searchCards(page).nth(1).getByRole('checkbox').check();
+	await searchCards(page).nth(2).getByRole('checkbox').check();
+
+	expect(page.getByRole('tab', { name: 'Redigera urval' })).toBeVisible();
+	await page.getByRole('tab', { name: 'Redigera urval' }).click();
+
+	const clearBtn = page.getByRole('button', { name: 'Rensa urval' });
+	expect(clearBtn).toBeVisible();
+
+	await clearBtn.click();
+
+	await expect(trailingPane(page)).not.toBeVisible();
+	await expect(selectionIndicator(page)).toBeVisible();
+	await expect(selectionIndicator(page)).toBeDisabled();
+	await expectSelectionCount(page, 0);
+});
+
+test('Selection all checkbox selects all hits on page', async ({ page }) => {
+	await gotoSearchResults(page);
+	await enableSelectionMode(page);
+
+	const numHits = await searchCards(page).count();
+	await selectAllCheckbox(page).check();
+
+	await hideTrailingPaneButton(page).click();
+	await expectSelectionCount(page, numHits);
+});
 
 test('Resource page has the indicator button when selection mode is on', async ({ page }) => {
 	await gotoSearchResults(page);
@@ -166,14 +223,11 @@ test('Resource page has an "add" button when selection mode is on', async ({ pag
 });
 
 // test('Selecting a work displays a warning', async ({ page }) => {
-// 	// TODO: Select a work with multiple editions.
-// 	// Assert the expected warning.
+// 	TODO
 // });
 
 // test('Exceeding the limit displays a warning', async ({ page }) => {
-// 	// TODO: Select the maximum number of allowed works.
-// 	// Attempt to select one additional work.
-// 	// Assert the expected warning.
+// 	TODO
 // });
 
 test('Selection survives navigation from search results to a resource page', async ({ page }) => {
