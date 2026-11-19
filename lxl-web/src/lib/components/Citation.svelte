@@ -37,7 +37,7 @@
 	</h2>
 	<svelte:element
 		this={isFileFormat ? 'pre' : 'p'}
-		class={['mb-2 block', isFileFormat && 'text-2xs overflow-x-scroll scrollbar-thin']}
+		class={['pb-2 block overflow-x-scroll scrollbar-thin', isFileFormat && 'text-2xs']}
 	>
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		{@html citation.citation}
