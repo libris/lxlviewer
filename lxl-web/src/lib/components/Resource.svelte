@@ -145,7 +145,7 @@
 			page.data.features.holdings
 	);
 
-	const selectable = $derived(userSettings.selectableResults && hasHoldingsBtn);
+	const selectable = $derived(userSettings.selectableResults && page.data.selectable);
 	const isSelected = $derived(selection.isSelected(recordUri));
 
 	function toggleSelected() {
