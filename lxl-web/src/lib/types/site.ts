@@ -64,6 +64,9 @@ export interface Site {
 			about?: {
 				articleBodyByLang?: Record<LocaleCode, string>;
 			};
+			help?: {
+				articleBodyByLang?: Record<LocaleCode, string>;
+			};
 		};
 	};
 }

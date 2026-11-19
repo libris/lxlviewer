@@ -1,6 +1,7 @@
 <script lang="ts">
 	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import Meta from '#lib/components/Meta.svelte';
+	import MarkdownContent from '#lib/components/MarkdownContent.svelte';
 	import { page } from '$app/state';
 	import SvContent from './sv.md';
 	import EnContent from './en.md';
@@ -22,7 +23,12 @@
 />
 
 <article class="mx-auto mt-8 mb-12 max-w-3xl p-4 sm:px-6">
-	{#if data.locale === 'en'}
+	{#if data.overrideHelpHtml}
+		<MarkdownContent>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html data.overrideHelpHtml}
+		</MarkdownContent>
+	{:else if data.locale === 'en'}
 		<EnContent />
 	{:else}
 		<SvContent />
