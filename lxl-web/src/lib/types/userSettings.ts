@@ -27,6 +27,8 @@ export type UserSettings = {
 	};
 	debug?: DebugFlags[];
 	prefersNearMe?: boolean;
+	showSearchPaths?: boolean;
+	showQueryCodes?: boolean;
 };
 
 export enum DebugFlags {

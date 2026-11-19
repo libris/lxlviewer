@@ -293,7 +293,7 @@ export interface QualifierSuggestion2 {
 export interface QualifierDefinition extends QualifierSuggestion2 {
 	filterDescription?: string;
 	descriptionRemark?: string[];
-	propertyChainAxiom?: PropertyChain[];
+	searchPaths?: PropertyChain[];
 }
 
 export interface QualifierDefinitionGroup {
@@ -303,8 +303,10 @@ export interface QualifierDefinitionGroup {
 }
 
 export interface PropertyChain {
-	label: string;
+	label?: string;
 	path: string;
+	key?: string;
+	children?: PropertyChain[];
 }
 
 export interface AdjecentSearchResult {
