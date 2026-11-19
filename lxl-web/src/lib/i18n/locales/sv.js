@@ -393,6 +393,8 @@ export default {
 		selectMultiple: 'Välj flera',
 		selected: 'valda',
 		edit: 'Redigera urval',
+		add: 'Lägg till i urval',
+		remove: 'Ta bort från urval',
 		reviewShort: 'Urvalet kan behöva granskas',
 		reviewLong:
 			'Ditt urval innehåller verk med flera utgåvor. Verk saknar utgivningsår och förlag, vilket leder till ofullständiga referenser. Nedan kan du granska och välja en enskild utgåva istället',

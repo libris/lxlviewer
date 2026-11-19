@@ -359,7 +359,9 @@
 								onclick={toggleSelected}
 							>
 								<BiCheckSquare />
-								<span class="ml-1">{isSelected ? 'Ta bort från' : 'Lägg till i'} urval</span>
+								<span class="ml-1"
+									>{page.data.t(isSelected ? 'selection.remove' : 'selection.add')}</span
+								>
 							</button>
 						{/if}
 					</div>
