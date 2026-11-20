@@ -66,7 +66,9 @@ export function cslFromMainEntity(mainEntity: FramedData, vocabUtil: VocabUtil):
 	}
 
 	// for each contributor, assign a role
-	const contributors = mapContribution(mainEntity.instanceOf?.contribution as Contribution[]);
+	const contribution =
+		mainEntity?.instanceOf?.contribution || (mainEntity?.contribution as Contribution[]);
+	const contributors = mapContribution(contribution);
 	result = { ...result, ...contributors };
 	result.type = getCslType(mainEntity, vocabUtil);
 

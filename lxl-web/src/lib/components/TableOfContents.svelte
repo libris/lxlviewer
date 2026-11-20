@@ -133,10 +133,10 @@
 
 <div bind:this={tocElement} class="contents">
 	{#if mobile}
-		<details class="border-b-neutral border-b p-1 text-xs sm:text-sm">
+		<details class="border-b-neutral border-b text-xs sm:text-sm">
 			<summary
 				id={`${uidPrefix}toc-label`}
-				class="bg-page text-subtle flex min-h-8 cursor-pointer items-center gap-1.5 px-2"
+				class="bg-page text-subtle flex cursor-pointer items-center gap-1.5 px-2 sm:px-4"
 			>
 				<IconToC class="size-4" />
 				<span>{page.data.t('tableOfContents.onThisPage')}</span>
@@ -161,6 +161,9 @@
 </div>
 
 <style lang="postcss">
+	summary {
+		min-height: calc(var(--toolbar-height) - 1px);
+	}
 	/*
 		aria-current is styled here as aria-current variant is currently not supported by Tailwind
 		(see: https://github.com/tailwindlabs/tailwindcss/discussions/9563 

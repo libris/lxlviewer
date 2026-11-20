@@ -8,9 +8,9 @@
 	} from '#lib/constants/panels.js';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import type { Snippet } from 'svelte';
-	import Draggable from '../Draggable.svelte';
-	import TabList, { type Tab } from '../TabList.svelte';
-	import Toolbar from '../Toolbar.svelte';
+	import Draggable from '#lib/components/Draggable.svelte';
+	import TabList, { type Tab } from '#lib/components/TabList.svelte';
+	import Toolbar from '#lib/components/Toolbar.svelte';
 	import BiArrowBarLeft from '~icons/bi/arrow-bar-left';
 	import IconSliders from '~icons/bi/sliders';
 
@@ -77,10 +77,7 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div
-			class="leading-pane-content mr-1.5 overflow-y-auto overscroll-contain [&>*]:h-full"
-			style="--leading-pane-height:calc(100vh - var(--appbar-height) - var(--banner-height, 0))"
-		>
+		<div class="leading-pane-content mr-1.5 overflow-y-auto overscroll-contain *:h-full">
 			{@render children?.()}
 		</div>
 	</div>
