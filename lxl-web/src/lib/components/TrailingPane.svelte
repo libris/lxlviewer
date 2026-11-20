@@ -51,7 +51,7 @@
 		onexpand={() => userSettings.openTrailingPane()}
 		onresized={handleOnResized}
 	/>
-	<div class={['flex h-full flex-col']} style="width:{paneWidth}px">
+	<div class="flex h-full flex-col" style="width:{paneWidth}px">
 		<div class="trailing-pane-toolbar">
 			<Toolbar>
 				{#snippet leadingActions()}
@@ -73,7 +73,7 @@
 				{/snippet}
 			</Toolbar>
 		</div>
-		<div class="trailing-pane-content p-4 mr-1.5 overflow-y-auto overscroll-contain *:h-full">
+		<div class="trailing-pane-content p-4 mr-3 overflow-y-auto overscroll-contain *:h-full">
 			{@render children?.()}
 		</div>
 	</div>
@@ -86,6 +86,7 @@
 		position: sticky;
 		height: calc(100vh - var(--appbar-height) - var(--banner-height, 0));
 		top: calc(var(--appbar-height) + var(--banner-height, 0));
+		overflow: hidden;
 	}
 
 	.trailing-pane,
