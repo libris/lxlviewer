@@ -4,13 +4,15 @@ import { API_URL, AUXD_SECRET } from '$app/env/private';
 import { getSupportedLocale } from '#lib/i18n/locales.js';
 import { error } from '@sveltejs/kit';
 import type { SearchResultItem } from '#lib/types/search.js';
-import { Bibframe, JsonLd, type FramedData } from '#lib/types/xl.js';
+import { Bibframe, JsonLd, LensType, type FramedData } from '#lib/types/xl.js';
 import type { ReviewItem } from '#lib/contexts/selection.svelte.js';
 import type { CSLJSON } from '#lib/types/citation.js';
 import type { ApiError } from '#lib/types/api.js';
 import { cslFromMainEntity } from '#lib/utils/cslFromMainEntity.js';
 import { asSearchResultItem } from '#lib/utils/search.server.js';
 import { centerOnWork } from '#lib/utils/centerOnWork.server.js';
+import { toString } from '#lib/utils/misc.js';
+import { getSortedInstances } from '#lib/utils/getSortedInstances.server.ts';
 
 /**
  * Fetches a record and returns data needed to support the selection
@@ -47,13 +49,26 @@ export const getSelectionData = query(
 			work = {
 				id: mainEntity[JsonLd.ID] as string,
 				str: mainEntity?.computedLabel ?? ('' as string),
-				instances: mainEntity[JsonLd.REVERSE].instanceOf.map((i: FramedData) => {
-					return {
-						id: i[JsonLd.ID],
-						str: i?.computedLabel ?? ('' as string)
-					};
-				})
+				instances: formatInstances(mainEntity)
 			};
+		}
+
+		function formatInstances(mainEntity: FramedData) {
+			const reverse = mainEntity[JsonLd.REVERSE] as FramedData;
+			const sortedInstances = getSortedInstances(reverse.instanceOf as FramedData[]);
+			sortedInstances.forEach(
+				(i) =>
+					(i[Bibframe.instanceOf] = {
+						[JsonLd.TYPE]: mainEntity[JsonLd.TYPE],
+						_categoryByCollection: mainEntity._categoryByCollection
+					})
+			);
+			return asSearchResultItem(sortedInstances, display, vocab, lang, AUXD_SECRET).map((i) => {
+				return {
+					id: i[JsonLd.ID],
+					str: `${i.selectTypeStr} · ${toString(i[LensType.WebCardFooter])}`
+				};
+			});
 		}
 		mainEntity = centerOnWork(record['mainEntity'] as FramedData);
 		mainEntity.meta = { [JsonLd.ID]: record?.[JsonLd.ID] };

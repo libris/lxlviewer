@@ -164,7 +164,7 @@
 				</span>
 			</summary>
 			<p class="mt-2">
-				{page.data.t('selection.limitLong', { selectionLimit: selection.limit })}.
+				{page.data.t('selection.limitLong', { selectionLimit: selection.limit.toString() })}.
 			</p>
 		</details>
 	{/if}
