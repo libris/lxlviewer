@@ -183,6 +183,7 @@ function createSelection(): SelectionContext {
 				}
 			} catch {
 				error = errorMsg.fetch;
+				selection = selection.filter((entry) => entry.requestId !== item.requestId);
 			} finally {
 				pendingRequests--;
 				loading = pendingRequests > 0;
