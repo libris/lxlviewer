@@ -274,6 +274,7 @@ export default {
 		approx: 'ca',
 		copyToClipboard: 'Kopiera till urklipp',
 		copied: 'Kopierad!',
+		copyToClipboardFailed: 'Kunde inte kopiera till urklipp',
 		targetBlank: 'öppnas i nytt fönster',
 		linkToSearchQuery: 'länk till sökfråga',
 		downloadLink: 'nedladdningslänk'
@@ -388,6 +389,23 @@ export default {
 		positionUnavailable: 'Kunde inte hämta din plats',
 		timeOut: 'Att hämta din plats tog för lång tid. Försök igen',
 		unknown: 'Ett okänt fel inträffade när din plats skulle hämtas'
+	},
+	selection: {
+		selectMultiple: 'Välj flera',
+		selected: 'valda',
+		edit: 'Redigera urval',
+		add: 'Lägg till i urval',
+		remove: 'Ta bort från urval',
+		reviewShort: 'Urvalet kan behöva granskas',
+		reviewLong:
+			'Ditt urval innehåller verk med flera utgåvor. Verk saknar utgivningsår och förlag, vilket leder till ofullständiga referenser. Nedan kan du granska och välja en enskild utgåva istället',
+		clear: 'Rensa urval',
+		manage: 'Hantera ditt urval',
+		limitShort: 'Du har nått maxgränsen för ditt urval',
+		limitLong:
+			'Ditt urval har nått maxgränsen på {selectionLimit} och inget mer kan läggas till. Du kan ta bort valda poster under fliken "Redigera urval"',
+		errorFetch: 'Ett fel uppstod vid datahämtningen',
+		errorCite: 'Ett fel uppstod när referenser skulle skapas'
 	},
 	banner: {
 		message: 'Tjänster åter i drift',

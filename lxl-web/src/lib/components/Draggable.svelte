@@ -85,25 +85,37 @@
 	// https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/slider_role#keyboard_interactions
 	function handleKeyDown(e: KeyboardEvent) {
 		isDragging = true;
-
 		switch (e.key) {
 			case 'ArrowRight':
 			case 'ArrowUp':
-				stepUp(step);
+				if (side === 'right') {
+					stepUp(step);
+				} else {
+					stepDown(step);
+				}
 				break;
+
 			case 'ArrowLeft':
 			case 'ArrowDown':
-				stepDown(step);
+				if (side === 'right') {
+					stepDown(step);
+				} else {
+					stepUp(step);
+				}
 				break;
+
 			case 'PageUp':
 				stepUp(step * 2);
 				break;
+
 			case 'PageDown':
 				stepDown(step * 2);
 				break;
+
 			case 'Home':
 				stepDown(minWidth);
 				break;
+
 			case 'End':
 				stepUp(maxWidth);
 				break;

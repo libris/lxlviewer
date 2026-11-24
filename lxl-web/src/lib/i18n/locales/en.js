@@ -274,6 +274,7 @@ export default {
 		approx: 'approx.',
 		copyToClipboard: 'Copy to clipboard',
 		copied: 'Copied!',
+		copyToClipboardFailed: 'Failed to copy to clipboard',
 		targetBlank: 'opens in new window',
 		linkToSearchQuery: 'link to search query',
 		downloadLink: 'download link'
@@ -385,6 +386,23 @@ export default {
 		positionUnavailable: 'Location information is unavailable',
 		timeOut: 'Location request timed out. Try again',
 		unknown: 'An unknown error occurred while fetching location'
+	},
+	selection: {
+		selectMultiple: 'Select multiple',
+		selected: 'selected',
+		edit: 'Edit selection',
+		add: 'Add to selection',
+		remove: 'Remove from selection',
+		reviewShort: 'Selection may need review',
+		reviewLong:
+			'Your selection contains works with multiple editions. Works lack publication year and publisher information, resulting in incomplete citations. Below, you can review and select a specific edition instead',
+		clear: 'Clear selection',
+		manage: 'Manage your selection',
+		limitShort: 'You have reached the maximum selection limit',
+		limitLong:
+			'Your selection has reached the maximum limit of {selectionLimit}, and no more items can be added. You can remove selected items under the "Edit selection" tab',
+		errorFetch: 'An error occurred while retrieving the data',
+		errorCite: 'An error occurred while generating the citations'
 	},
 	banner: {
 		message: 'Services back in operation',

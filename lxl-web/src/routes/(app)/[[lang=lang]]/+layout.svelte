@@ -1,19 +1,37 @@
 <script lang="ts">
+	import { page } from '$app/state';
+	import { MediaQuery } from 'svelte/reactivity';
 	import getPageTitle from '#lib/utils/getPageTitle.js';
+	import { setHomepageContext } from '#lib/contexts/homepage.js';
+	import { getUserSettings } from '#lib/contexts/userSettings.ts';
+	import { setSearchContext } from '#lib/contexts/search.js';
+	import { getSelectionContext } from '#lib/contexts/selection.svelte.ts';
+	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import SiteFooter from './SiteFooter.svelte';
 	import AppBar from './AppBar.svelte';
-	import { page } from '$app/state';
-	import { setHomepageContext } from '#lib/contexts/homepage.js';
-	import { setSearchContext } from '#lib/contexts/search.js';
+	import Modal from '#lib/components/Modal.svelte';
+	import TrailingPane from '#lib/components/TrailingPane.svelte';
+	import Selection from '#lib/components/Selection.svelte';
+	import { SELECTION_HASH } from '#lib/constants/modals.ts';
+	import CiteOne from '#lib/components/CiteOne.svelte';
+	import { type CitationDataWithError } from '#lib/types/citation.ts';
 
 	const { children } = $props();
 
 	const isHomeRoute = $derived(page.route.id === '/(app)/[[lang=lang]]');
 	const isFindRoute = $derived(page.route.id === '/(app)/[[lang=lang]]/find');
+	const trailingPaneAllowedRoute = $derived(
+		page.route.id === '/(app)/[[lang=lang]]/find' ||
+			page.route.id === '/(app)/[[lang=lang]]/[...resource=resource]'
+	);
 
 	let homepageCache = $state({
 		previews: undefined
 	});
+
+	const userSettings = getUserSettings();
+	const selection = getSelectionContext();
+	const modal = getModalContext();
 
 	setHomepageContext(homepageCache);
 
@@ -25,6 +43,13 @@
 		q: ''
 	});
 
+	const isSmallScreen = new MediaQuery('max-width: 640px', false);
+	const selectionModalOpen = $derived(
+		page.url.hash === SELECTION_HASH || page.state.modal === 'selection'
+	);
+
+	const citeParam = $derived(page.state.citations || page.url.searchParams.get('cite'));
+
 	// Search context is later updated in the onMount lifecycle hook of SuperSearchWrapper.svelte (which is lazy-loaded)
 	setSearchContext(searchContextState);
 </script>
@@ -35,15 +60,51 @@
 </svelte:head>
 <div class={['app contents', page.data.subsetMapping && 'subset']}>
 	<AppBar />
-	<main
-		id="content"
-		class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
-	>
-		{@render children()}
-	</main>
-	{#if !isFindRoute}
-		<SiteFooter />
-	{/if}
+	<div class="content-wrapper flex">
+		<div class="main-wrapper flex-1">
+			<main
+				id="content"
+				class={['@container flex flex-1 scroll-mt-24 flex-col', !isHomeRoute && 'content']}
+			>
+				{@render children()}
+			</main>
+			{#if !isFindRoute}
+				<SiteFooter />
+			{/if}
+		</div>
+		{#if citeParam}
+			<Modal close={() => modal.onClose('cite')}>
+				{#snippet title()}
+					<span>{page.data.t('citations.cite')} {page.data.title}</span>
+				{/snippet}
+				<CiteOne
+					citations={(page.state.citations ||
+						page.data.citations) as Promise<CitationDataWithError>}
+					id={page.state.citationId || page.url.searchParams.get('cite')}
+				/>
+			</Modal>
+		{/if}
+		{#if trailingPaneAllowedRoute && userSettings.selectableResults}
+			{#if isSmallScreen.current && selectionModalOpen}
+				<Modal close={() => modal.onClose('selection')}>
+					{#snippet title()}
+						<span class="p-1">{page.data.t('selection.manage')} ({selection.length})</span>
+					{/snippet}
+					<Selection />
+				</Modal>
+			{:else if !isSmallScreen.current}
+				<TrailingPane>
+					{#snippet title()}
+						<span>{page.data.t('selection.manage')}</span>
+						<span role="status" aria-atomic="true" class="font-medium badge badge-accent ml-0.5">
+							{selection.length}
+						</span>
+					{/snippet}
+					<Selection />
+				</TrailingPane>
+			{/if}
+		{/if}
+	</div>
 	<div id="floating-elements-container"></div>
 </div>
 
@@ -71,4 +132,32 @@
 			}
 		}
 	}
+
+	/* set a different --appbar-height for the find route content (two rows of content) */
+	.content-wrapper:global(:has(.search-result)) {
+		--appbar-height: var(--appbar-find-base);
+
+		@variant md {
+			--appbar-height: var(--appbar-find-md);
+		}
+
+		@variant lg {
+			--appbar-height: var(--appbar-find-lg);
+		}
+
+		@variant 2xl {
+			--appbar-height: var(--appbar-find-2xl);
+		}
+	}
+
+	/* TODO SCROLL IN MAIN CONTAINER? */
+	/* :global(.content-wrapper:has(#trailing-pane)){
+		max-height: calc(100vh - (var(--appbar-height) + var(--banner-height, 0)));
+		overflow: hidden;
+
+		& .main-wrapper {
+			overflow-y: auto;
+			scrollbar-width: thin;
+		}
+	} */
 </style>

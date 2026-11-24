@@ -95,11 +95,13 @@ export const load = async ({ params, locals, fetch, url }) => {
 		throw error(404, 'Not found');
 	}
 
+	const baseClasses = vocabUtil.getBaseClasses(resource.mainEntity[JsonLd.TYPE]);
+	const isWork = baseClasses.includes(Bibframe.Work);
+	const isInstance = baseClasses.includes(Bibframe.Instance);
+
 	let workCard: SearchResultItem | null = null;
-	let isWork = false;
 
 	if (resource.mainEntity?.['@reverse']?.instanceOf) {
-		isWork = true;
 		// work - get card
 		workCard = asSearchResultItem(
 			[{ ...resource.mainEntity }],
@@ -412,6 +414,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 		tableOfContents,
 		workCard,
 		refinedOrgs,
-		isWork
+		isWork,
+		selectable: isWork || isInstance
 	};
 };
