@@ -68,7 +68,7 @@
 						type="checkbox"
 						bind:this={selectAllEl}
 						id="select-all-page-results"
-						class="mr-1.5"
+						class="mr-1.5 ml-1 md:ml-1.5 lg:ml-1"
 						onchange={toggleSelectAll}
 						checked={selectionStatus}
 					/>

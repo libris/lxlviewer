@@ -248,7 +248,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 		bind:this={articleElement}
 	>
 		{#if selectable}
-			<div class="card-select flex flex-col items-start justify-start gap-1">
+			<div class="card-select flex flex-col items-start justify-start gap-0.5 md:pl-1">
 				<label
 					for={`selection-${id}`}
 					class={['text-xs text-subtle', !itemNo && 'sr-only']}
