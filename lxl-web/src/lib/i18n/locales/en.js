@@ -390,6 +390,8 @@ export default {
 		selectMultiple: 'Select multiple',
 		selected: 'selected',
 		edit: 'Edit selection',
+		add: 'Add to selection',
+		remove: 'Remove from selection',
 		reviewShort: 'Selection may need review',
 		reviewLong:
 			'Your selection contains works with multiple editions. Works lack publication year and publisher information, resulting in incomplete citations. Below, you can review and select a specific edition instead',
