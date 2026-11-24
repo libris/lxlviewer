@@ -274,6 +274,7 @@ export default {
 		approx: 'approx.',
 		copyToClipboard: 'Copy to clipboard',
 		copied: 'Copied!',
+		copyToClipboardFailed: 'Failed to copy to clipboard',
 		targetBlank: 'opens in new window',
 		linkToSearchQuery: 'link to search query',
 		downloadLink: 'download link'

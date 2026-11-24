@@ -274,6 +274,7 @@ export default {
 		approx: 'ca',
 		copyToClipboard: 'Kopiera till urklipp',
 		copied: 'Kopierad!',
+		copyToClipboardFailed: 'Kunde inte kopiera till urklipp',
 		targetBlank: 'öppnas i nytt fönster',
 		linkToSearchQuery: 'länk till sökfråga',
 		downloadLink: 'nedladdningslänk'

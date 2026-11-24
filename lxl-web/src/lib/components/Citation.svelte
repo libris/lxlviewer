@@ -14,17 +14,24 @@
 	async function handleCopyCitation(
 		citation: string,
 		type: 'text/html' | 'text/plain' = 'text/plain',
-		onSuccess?: () => void
+		onSuccess?: () => void,
+		onError?: () => void
 	) {
 		if (citation) {
-			const blob = new Blob([citation], { type });
-			const data = new ClipboardItem({ [type]: blob });
-			await navigator.clipboard.write([data]);
-			onSuccess?.();
+			try {
+				const blob = new Blob([citation], { type });
+				const data = new ClipboardItem({ [type]: blob });
+				await navigator.clipboard.write([data]);
+				onSuccess?.();
+			} catch (error) {
+				console.error('Failed to copy citation to clipboard', error);
+				onError?.();
+			}
 		}
 	}
 
 	let wasCopied: Record<string, boolean> = $state({});
+	let copyFailed: Record<string, boolean> = $state({});
 	const isFileFormat = $derived(!!citation?.fileFormat);
 </script>
 
@@ -47,10 +54,20 @@
 		<button
 			class="btn btn-accent"
 			onclick={() =>
-				handleCopyCitation(citation.citation, isFileFormat ? 'text/plain' : 'text/html', () => {
-					wasCopied = {};
-					wasCopied[citation.key] = true;
-				})}
+				handleCopyCitation(
+					citation.citation,
+					isFileFormat ? 'text/plain' : 'text/html',
+					() => {
+						wasCopied = {};
+						wasCopied[citation.key] = true;
+						copyFailed = {};
+					},
+					() => {
+						wasCopied = {};
+						copyFailed = {};
+						copyFailed[citation.key] = true;
+					}
+				)}
 		>
 			<BiCopy />
 			{#if wasCopied[citation.key]}
@@ -73,6 +90,11 @@
 			</a>
 		{/if}
 	</div>
+	{#if copyFailed[citation.key]}
+		<p role="status" class="font-medium text-xs bg-severe-50 p-2 mb-2">
+			{page.data.t('general.copyToClipboardFailed')}
+		</p>
+	{/if}
 </article>
 
 <style>
