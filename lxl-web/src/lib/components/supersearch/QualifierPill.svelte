@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import type { QualifierRendererProps } from 'supersearch';
-	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import { normalizeId } from '#lib/utils/http.js';
 	import { getPersonImage } from '#lib/utils/getPersonImage.js';
 	import IconClose from '~icons/bi/x-lg';
 	import TypeIcon from '../TypeIcon.svelte';
@@ -24,7 +24,7 @@
 		onclick
 	}: Props = $props();
 
-	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(id))));
+	const resourceId = $derived(normalizeId(id));
 	let image = $state(null);
 
 	const getImage = async () => {

@@ -8,7 +8,7 @@
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
 	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import getPageTitle from '#lib/utils/getPageTitle.js';
-	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import { normalizeId } from '#lib/utils/http.js';
 	import SiteFooter from '../SiteFooter.svelte';
 	import Toolbar from '#lib/components/Toolbar.svelte';
 	import LeadingPane from '#lib/components/find/LeadingPane.svelte';
@@ -21,6 +21,8 @@
 	import Spinner from '#lib/components/Spinner.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
+	import { JsonLd } from '#lib/types/xl.ts';
+	import ResourceCard from '#lib/components/ResourceCard.svelte';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
@@ -42,9 +44,7 @@
 
 	const modalCard = $derived(
 		holdingsParam &&
-			searchResult.items.filter(
-				(item) => `${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}` === holdingsParam
-			)[0]
+			searchResult.items.filter((item) => normalizeId(item[JsonLd.ID]) === holdingsParam)[0]
 	);
 
 	const expandLeadingPaneBtnId = 'expand-leading-pane-btn';
@@ -95,6 +95,12 @@
 						{#each searchResult.items as item, index (item['@id'] + index)}
 							<li>
 								<SearchCard
+									{item}
+									headingElement={HeadingElem.H2}
+									itemNo={offset + (index + 1)}
+									selectable={userSettings.selectableResults}
+								/>
+								<ResourceCard
 									{item}
 									headingElement={HeadingElem.H2}
 									itemNo={offset + (index + 1)}

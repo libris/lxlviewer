@@ -16,7 +16,7 @@ import { VocabUtil, type DisplayUtil } from '#lib/utils/xl.server.js';
 import getAtPath from '#lib/utils/getAtPath.js';
 import { getLibrary } from '#lib/utils/getLibraries.server.js';
 import type { LocaleCode } from '#lib/i18n/locales.js';
-import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+import { normalizeId } from '#lib/utils/http.js';
 import { COMPONENT_PART } from '#lib/utils/getTypeLike.server.js';
 
 type BibDbObj = {
@@ -76,7 +76,7 @@ export function getHoldingsByInstanceId(
 	const result: HoldersByInstanceId = {};
 
 	for (const instance of instances) {
-		const id = stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])));
+		const id = normalizeId(instance[JsonLd.ID]);
 		if (!id) continue;
 
 		if (isDigitalReproduction(instance)) {
@@ -115,7 +115,7 @@ export function getBibIdsByInstanceId(
 	const result: BibIdData = {};
 
 	for (const instance of instances) {
-		const id = stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID])));
+		const id = normalizeId(instance[JsonLd.ID]);
 		if (!id) continue;
 
 		if (isDigitalReproduction(instance)) {

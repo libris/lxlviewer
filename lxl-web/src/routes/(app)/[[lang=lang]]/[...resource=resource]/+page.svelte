@@ -4,7 +4,7 @@
 	import getMetaDescription from '#lib/utils/getMetaDescription.js';
 	import { JsonLd } from '#lib/types/xl.js';
 	import { getModalContext } from '#lib/contexts/modal.svelte.js';
-	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import { normalizeId } from '#lib/utils/http.js';
 	import Resource from '#lib/components/Resource.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
@@ -28,8 +28,7 @@
 		const instances = data.instances ?? [];
 		const matchingInstance = holdingsParam
 			? instances.find(
-					(instance: { [JsonLd.ID]: string }) =>
-						stripAnchor(trimSlashes(relativizeUrl(instance[JsonLd.ID]))) === holdingsParam
+					(instance: { [JsonLd.ID]: string }) => normalizeId(instance[JsonLd.ID]) === holdingsParam
 				)
 			: undefined;
 

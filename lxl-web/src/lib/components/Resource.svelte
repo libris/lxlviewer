@@ -18,7 +18,7 @@
 	import { isResourceNode } from '#lib/utils/resourceData.js';
 	import type { Relation } from '#lib/types/relations.js';
 	import { getCiteLink, handleClickCite } from '#lib/utils/citation.js';
-	import { getBaseUrl, relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import { getBaseUrl, normalizeId } from '#lib/utils/http.js';
 	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
 	import ResourceImage from './ResourceImage.svelte';
 	import ResourceHoldings from './ResourceHoldings.svelte';
@@ -96,7 +96,7 @@
 		isWork
 	}: Props = $props();
 
-	const fnurgel = $derived(stripAnchor(trimSlashes(relativizeUrl(recordUri))));
+	const fnurgel = $derived(normalizeId(recordUri));
 	const uidPrefix = $derived(uid ? `${uid}-` : ''); // used for prefixing id's when resource is rendered inside panes
 	const trailingPane = getTrailingPaneContext();
 	const userSettings = getUserSettings();

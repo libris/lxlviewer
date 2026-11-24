@@ -7,7 +7,7 @@ import type { AvailableCitationFormat, CSLJSON } from '#lib/types/citation.js';
 import type { SearchResultItem } from '#lib/types/search.js';
 import { JsonLd } from '#lib/types/xl.js';
 import { getAvailableFormats, initCite } from '#lib/utils/citation.js';
-import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+import { normalizeId } from '#lib/utils/http.js';
 
 type Selection = {
 	id: string;
@@ -216,7 +216,7 @@ function createSelection(): SelectionContext {
 }
 
 function normalize(id: string) {
-	return stripAnchor(trimSlashes(relativizeUrl(id))) || id;
+	return normalizeId(id) || id;
 }
 
 const selectionKey = Symbol('selection');
