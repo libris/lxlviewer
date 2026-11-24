@@ -195,6 +195,12 @@
 						"_find"
 					]
 				},
+				"Contribution": {
+					"@id": "Contribution-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Contribution",
+					"showProperties": ["agent", "role", "hasAffiliation"]
+				},
 				"Category": {
 					"@id": "Category-chips",
 					"@type": "fresnel:Lens",
@@ -1441,6 +1447,17 @@
 				"fresnel:contentLast": ")"
 			}
 		},
+		"Contribution-hasAffiliation-format": {
+			"@id": "Contribution-hasAffiliation-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Contribution"],
+			"fresnel:propertyFormatDomain": ["hasAffiliation"],
+			"fresnel:propertyStyle": ["contribution-hasAffiliation"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "; ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"PrimaryContribution-agent-format": {
 			"@id": "PrimaryContribution-agent-format",
 			"@type": "fresnel:Format",
@@ -1647,9 +1664,24 @@
 			"@id": "isPartOf-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["isPartOf"],
-			"fresnel:propertyStyle": ["label", "ul-when-multiple"],
+			"fresnel:propertyStyle": ["label", "ul-when-multiple", "link"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ""
+			}
+		},
+		"Organization-isPartOf-format": {
+			"@id": "isPartOf-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Organization"],
+			"fresnel:propertyFormatDomain": ["isPartOf"],
+			"fresnel:propertyStyle": ["label", "ul-when-multiple"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			},
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "/",
+				"fresnel:contentFirst": ""
 			}
 		},
 		"Work-hasPart-format": {

@@ -776,6 +776,12 @@
 			color: var(--color-subtle);
 		}
 
+		& :global(.contribution-hasAffiliation) {
+			font-size: var(--text-sm);
+			display: block;
+			color: var(--color-subtle);
+		}
+
 		& :global(.see-also > *) {
 			display: block;
 			width: fit-content;
