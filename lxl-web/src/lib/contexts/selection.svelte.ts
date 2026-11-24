@@ -113,6 +113,7 @@ function createSelection(): SelectionContext {
 		},
 
 		async init(_locale: LocaleCode, defaultFormat: AvailableCitationFormat | 'all' | undefined) {
+			error = '';
 			if (defaultFormat === 'all' || !defaultFormat) {
 				defaultFormat = DEFAULT_FORMAT;
 			}
@@ -142,6 +143,7 @@ function createSelection(): SelectionContext {
 		},
 
 		async add(id: string) {
+			error = '';
 			if (this.limitReached) return;
 
 			const normalizedId = normalize(id);
@@ -202,6 +204,7 @@ function createSelection(): SelectionContext {
 		},
 
 		clear() {
+			error = '';
 			selection = [];
 			forReview = [];
 			cards = [];
