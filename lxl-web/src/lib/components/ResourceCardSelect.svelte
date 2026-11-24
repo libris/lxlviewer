@@ -13,7 +13,7 @@
 	let isSelected = $derived(selection.isSelected(id));
 </script>
 
-<div class="card-select flex flex-col items-start justify-start gap-1">
+<div class="card-select flex flex-col items-start justify-start gap-0.5 md:pl-1">
 	<label
 		for={`selection-${id}`}
 		class={['text-xs text-subtle', !itemNo && 'sr-only']}

@@ -15,6 +15,7 @@
 	import TypeIcon from '#lib/components/TypeIcon.svelte';
 	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
 	import ResourceCardActions from '#lib/components/ResourceCardActions.svelte';
+	import SearchItemDebug from '#lib/components/find/SearchItemDebug.svelte';
 
 	type Props = {
 		item: SearchResultItem;
@@ -264,7 +265,7 @@
 		</div>
 		{#if item.selectTypeStr || cardFooter}
 			<!-- card-footer -->
-			<footer class="card-footer mt-1.5" id={footerId}>
+			<footer class="card-footer mt-2" id={footerId}>
 				{#if item.selectTypeStr}
 					<span class="text-body font-medium">{item.selectTypeStr}</span>
 				{/if}
@@ -322,6 +323,10 @@
 			<!-- card actions -->
 			<ResourceCardActions {item} {id} />
 		{/if}
+		{#if item._debug}
+			<!-- debug -->
+			<SearchItemDebug debugInfo={item._debug} />
+		{/if}
 	</article>
 </div>
 
@@ -339,7 +344,7 @@
 			@container card (min-width: 768px) {
 				grid-template-columns: 72px 1fr auto;
 				column-gap: calc(var(--spacing) * 6);
-				padding-inline: calc(var(--spacing));
+				padding-inline: calc(var(--spacing) * 6);
 				padding-block: calc(var(--spacing) * 4);
 			}
 
@@ -358,7 +363,6 @@
 				grid-template-areas:
 					'select image content content'
 					'select image footer footer'
-					'. image explore explore'
 					'. actions actions actions'
 					'. debug . .';
 
@@ -372,7 +376,6 @@
 					grid-template-areas:
 						'select image content content'
 						'select image content content'
-						'. image explore explore'
 						'. image footer actions'
 						'. debug . .';
 				}
@@ -405,6 +408,12 @@
 
 	.card-footer {
 		grid-area: footer;
+	}
+
+	.card-body {
+		&:global(:has(a.link)) {
+			line-height: calc(var(--spacing) * 6);
+		}
 	}
 
 	.card-header-top,

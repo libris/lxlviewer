@@ -93,13 +93,13 @@
 
 					<ol aria-labelledby="search-results" class="flex flex-col">
 						{#each searchResult.items as item, index (item['@id'] + index)}
-							<li>
-								<SearchCard
+							<li class="border-t border-neutral first:border-t-0">
+								<!-- <SearchCard
 									{item}
 									headingElement={HeadingElem.H2}
 									itemNo={offset + (index + 1)}
 									selectable={userSettings.selectableResults}
-								/>
+								/> -->
 								<ResourceCard
 									{item}
 									headingElement={HeadingElem.H2}

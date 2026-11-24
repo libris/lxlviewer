@@ -21,7 +21,7 @@
 	import IconArrowRight from '~icons/bi/arrow-right';
 
 	type Props = {
-		item: SearchResultItem;
+		item: SearchResultItem | LibraryResultItem;
 		id: string;
 	};
 
@@ -88,83 +88,22 @@
 	}
 </script>
 
-{#snippet holdingsButton()}
-	{#if id && item.numberOfHolders >= 0 && page.data.features.holdings}
-		<a
-			class="btn btn-primary h-7 min-w-28 rounded-full md:h-8"
-			href={page.data.localizeHref(getHoldingsLink(page.url, id))}
-			data-sveltekit-preload-data={isInstanceCard ? 'false' : ''}
-			data-sveltekit-reset="false"
-			data-testid="holding-link"
-			onclick={handleClickHoldings}
-		>
-			<span class="text-base">
-				{#if item.heldByMyLibraries}
-					<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
-				{:else}
-					<BiHouse class="text-neutral-500" />
-				{/if}
-			</span>
-			{#if item.heldBySubset}
-				<span>{page.data.t('holdings.findTitle')}</span>
-			{:else}
-				<span>
-					{item.numberOfHolders}
-					{page.data.t('search.libraries')}
-				</span>
-			{/if}
-			{#if item.heldByMyLibraries}
-				<span class="sr-only"
-					>{`. ${page.data.t('holdings.availableAt')}`}
-					{`${page.data.t('myPages.favouriteLibrary')}`}</span
-				>
-			{/if}
-		</a>
-	{/if}
-{/snippet}
-
-<div class="card-actions flex w-full gap-1 pt-3 print:hidden">
+<div class="card-actions flex justify-end w-full gap-1 pt-1.5 sm:pt-0 print:hidden">
 	{#if bibliographyLink}
-		<!-- explore bibliography -->
 		{@render exploreBibliography()}
 	{/if}
+	{#if isLibraryCard(item)}
+		{@render toggleFavLibrary(item)}
+	{/if}
 	{#if firstMediaLink}
-		<!-- free online -->
 		{@render freeOnline()}
 	{/if}
 	{#if isInstanceCard}
-		<a
-			class="btn btn-primary h-7 min-w-22.5 rounded-full md:h-8"
-			href={getCiteLink(page.url, id)}
-			onclick={(event) => handleClickCite(event, id, modal)}
-		>
-			<BiQuote aria-hidden="true" class="size-4 text-neutral-500" />
-			<span id={`cite-${id}`}> {page.data.t('citations.cite')}</span>
-		</a>
-	{:else if isLibraryCard(item)}
-		{@const userSettings = getUserSettings()}
-		{@const alreadyAdded =
-			userSettings.myLibraries && Object.keys(userSettings.myLibraries).includes(item.libraryId)}
-		<button
-			class="btn btn-primary h-7 rounded-full md:h-8"
-			type="button"
-			onclick={() =>
-				alreadyAdded
-					? userSettings.removeLibrary(item.libraryId)
-					: userSettings.addLibrary(item.libraryId)}
-		>
-			{#if alreadyAdded}
-				<BiHeartFill aria-hidden="true" class="text-primary-600" />
-				<span>{page.data.t('general.remove')}</span>
-			{:else}
-				<BiHeart aria-hidden="true" class="text-primary-600" />
-				<span>{page.data.t('general.add')}</span>
-			{/if}
-			<span class="sr-only">{page.data.t('myPages.favouriteLibrary')}</span>
-			<span class="sr-only">{item.displayStr}</span>
-		</button>
+		{@render citeBtn()}
 	{/if}
-	{@render holdingsButton()}
+	{#if id && item.numberOfHolders >= 0 && page.data.features.holdings}
+		{@render holdingsButton()}
+	{/if}
 </div>
 
 {#snippet exploreBibliography()}
@@ -201,6 +140,41 @@
 	</a>
 {/snippet}
 
+{#snippet citeBtn()}
+	<a
+		class="btn btn-primary h-7 min-w-22.5 rounded-full md:h-8"
+		href={getCiteLink(page.url, id)}
+		onclick={(event) => handleClickCite(event, id, modal)}
+	>
+		<BiQuote aria-hidden="true" class="size-4 text-neutral-500" />
+		<span id={`cite-${id}`}> {page.data.t('citations.cite')}</span>
+	</a>
+{/snippet}
+
+{#snippet toggleFavLibrary(item: LibraryResultItem)}
+	{@const userSettings = getUserSettings()}
+	{@const alreadyAdded =
+		userSettings.myLibraries && Object.keys(userSettings.myLibraries).includes(item.libraryId)}
+	<button
+		class="btn btn-primary h-7 rounded-full md:h-8"
+		type="button"
+		onclick={() =>
+			alreadyAdded
+				? userSettings.removeLibrary(item.libraryId)
+				: userSettings.addLibrary(item.libraryId)}
+	>
+		{#if alreadyAdded}
+			<BiHeartFill aria-hidden="true" class="text-primary-600" />
+			<span>{page.data.t('general.remove')}</span>
+		{:else}
+			<BiHeart aria-hidden="true" class="text-primary-600" />
+			<span>{page.data.t('general.add')}</span>
+		{/if}
+		<span class="sr-only">{page.data.t('myPages.favouriteLibrary')}</span>
+		<span class="sr-only">{item.displayStr}</span>
+	</button>
+{/snippet}
+
 {#snippet mediaLinksPopover()}
 	<DecoratedData2
 		data={item.mediaLinks as DisplayDecorated}
@@ -210,6 +184,39 @@
 		parent={Elem.Div}
 		skipOuter={true}
 	/>
+{/snippet}
+
+{#snippet holdingsButton()}
+	<a
+		class="btn btn-primary h-7 min-w-28 rounded-full md:h-8"
+		href={page.data.localizeHref(getHoldingsLink(page.url, id))}
+		data-sveltekit-preload-data={isInstanceCard ? 'false' : ''}
+		data-sveltekit-reset="false"
+		data-testid="holding-link"
+		onclick={handleClickHoldings}
+	>
+		<span class="text-base">
+			{#if item.heldByMyLibraries}
+				<MyLibsHoldingIndicator libraries={item.heldByMyLibraries} />
+			{:else}
+				<BiHouse class="text-neutral-500" />
+			{/if}
+		</span>
+		{#if item.heldBySubset}
+			<span>{page.data.t('holdings.findTitle')}</span>
+		{:else}
+			<span>
+				{item.numberOfHolders}
+				{page.data.t('search.libraries')}
+			</span>
+		{/if}
+		{#if item.heldByMyLibraries}
+			<span class="sr-only"
+				>{`. ${page.data.t('holdings.availableAt')}`}
+				{`${page.data.t('myPages.favouriteLibrary')}`}</span
+			>
+		{/if}
+	</a>
 {/snippet}
 
 <style lang="postcss">
