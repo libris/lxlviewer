@@ -147,7 +147,7 @@ test('Selection interface displays the selections', async ({ page }) => {
 	await searchCards(page).nth(1).getByRole('checkbox').check();
 	await searchCards(page).nth(2).getByRole('checkbox').check();
 
-	expect(page.getByRole('tab', { name: 'Redigera urval' })).toBeVisible();
+	await expect(page.getByRole('tab', { name: 'Redigera urval' })).toBeVisible();
 	await page.getByRole('tab', { name: 'Redigera urval' }).click();
 
 	const selections = page.locator('#trailing-pane .search-card');
@@ -161,7 +161,7 @@ test('Selection can be deselected from the interface', async ({ page }) => {
 	await searchCards(page).nth(1).getByRole('checkbox').check();
 	await searchCards(page).nth(2).getByRole('checkbox').check();
 
-	expect(page.getByRole('tab', { name: 'Redigera urval' })).toBeVisible();
+	await expect(page.getByRole('tab', { name: 'Redigera urval' })).toBeVisible();
 	await page.getByRole('tab', { name: 'Redigera urval' }).click();
 
 	const firstCheckbox = page.locator('#trailing-pane .search-card').getByRole('checkbox').first();
@@ -179,11 +179,11 @@ test('Selection can be cleared from the interface', async ({ page }) => {
 	await searchCards(page).nth(1).getByRole('checkbox').check();
 	await searchCards(page).nth(2).getByRole('checkbox').check();
 
-	expect(page.getByRole('tab', { name: 'Redigera urval' })).toBeVisible();
+	await expect(page.getByRole('tab', { name: 'Redigera urval' })).toBeVisible();
 	await page.getByRole('tab', { name: 'Redigera urval' }).click();
 
 	const clearBtn = page.getByRole('button', { name: 'Rensa urval' });
-	expect(clearBtn).toBeVisible();
+	await expect(clearBtn).toBeVisible();
 
 	await clearBtn.click();
 
