@@ -26,7 +26,8 @@
 	import SearchResultList from './SearchResultList.svelte';
 	import AdjacentResults from './resource/AdjacentResults.svelte';
 	import TypeIcon from '#lib/components/TypeIcon.svelte';
-	import SearchCard from './find/SearchCard.svelte';
+	// import SearchCard from './find/SearchCard.svelte';
+	import ResourceCard from '#lib/components/ResourceCard.svelte';
 	import TabList, { type Tab } from './TabList.svelte';
 	import SearchMapping from './find/SearchMapping.svelte';
 	import ExpandableArea from '#lib/components/ExpandableArea.svelte';
@@ -159,26 +160,47 @@
 			<SearchMapping mapping={searchMapping} />
 		</div>
 	{/if}
-	{#each derivedFilteredInstances as instance, index (instance?.[JsonLd.ID])}
-		<SearchCard
-			item={instance as SearchResultItem}
-			headingElement={HeadingElem.H3}
-			itemNo={index + 1}
-			selectable={userSettings.selectableResults}
-		/>
-	{/each}
+	<ol>
+		{#each derivedFilteredInstances as instance, index (instance?.[JsonLd.ID])}
+			<!-- <SearchCard
+				item={instance as SearchResultItem}
+				headingElement={HeadingElem.H3}
+				itemNo={index + 1}
+				selectable={userSettings.selectableResults}
+			/> -->
+			<li class="border-t border-t-neutral">
+				<ResourceCard
+					item={instance as SearchResultItem}
+					headingElement={HeadingElem.H3}
+					itemNo={index + 1}
+					selectable={userSettings.selectableResults}
+				/>
+			</li>
+		{/each}
+	</ol>
 {/snippet}
 
 {#snippet panelAllInstances()}
-	{#each instances as instance, index (instance?.[JsonLd.ID])}
-		<SearchCard
-			item={instance as SearchResultItem}
-			hideType={true}
-			headingElement={HeadingElem.H3}
-			itemNo={index + 1}
-			selectable={userSettings.selectableResults}
-		/>
-	{/each}
+	<ol>
+		{#each instances as instance, index (instance?.[JsonLd.ID])}
+			<!-- <SearchCard
+				item={instance as SearchResultItem}
+				hideType={true}
+				headingElement={HeadingElem.H3}
+				itemNo={index + 1}
+				selectable={userSettings.selectableResults}
+			/> -->
+			<li class="border-t border-t-neutral">
+				<ResourceCard
+					item={instance as SearchResultItem}
+					hideType={true}
+					headingElement={HeadingElem.H3}
+					itemNo={index + 1}
+					selectable={userSettings.selectableResults}
+				/>
+			</li>
+		{/each}
+	</ol>
 {/snippet}
 
 {#if adjacentSearchResults && fnurgel}

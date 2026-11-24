@@ -176,14 +176,16 @@
 {/snippet}
 
 {#snippet mediaLinksPopover()}
-	<DecoratedData2
-		data={item.mediaLinks as DisplayDecorated}
-		showLabels={ShowLabelsOptions.Never}
-		allowPopovers={false}
-		block
-		parent={Elem.Div}
-		skipOuter={true}
-	/>
+	<div class="text-xs">
+		<DecoratedData2
+			data={item.mediaLinks as DisplayDecorated}
+			showLabels={ShowLabelsOptions.Never}
+			allowPopovers={false}
+			block
+			parent={Elem.Div}
+			skipOuter={true}
+		/>
+	</div>
 {/snippet}
 
 {#snippet holdingsButton()}

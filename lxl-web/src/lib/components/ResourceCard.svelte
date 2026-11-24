@@ -265,7 +265,7 @@
 		</div>
 		{#if item.selectTypeStr || cardFooter}
 			<!-- card-footer -->
-			<footer class="card-footer mt-2" id={footerId}>
+			<footer class="card-footer mt-1" id={footerId}>
 				{#if item.selectTypeStr}
 					<span class="text-body font-medium">{item.selectTypeStr}</span>
 				{/if}
@@ -422,5 +422,31 @@
 		font-size: var(--text-2xs);
 		color: var(--color-subtle);
 		font-weight: var(--font-weight-normal);
+	}
+
+	/* card in popover */
+	:global(.popover .resource-card-container) {
+		container-type: normal;
+
+		& .resource-card {
+			padding: calc(var(--spacing) * 1);
+			padding-top: 0;
+			column-gap: calc(var(--spacing) * 3);
+
+			&:has(img.placeholder) {
+				grid-template-columns: 1fr;
+				grid-template-areas:
+					'content'
+					'footer';
+
+				& .card-image {
+					display: none;
+				}
+			}
+		}
+
+		& .card-header-title {
+			font-size: var(--text-base);
+		}
 	}
 </style>

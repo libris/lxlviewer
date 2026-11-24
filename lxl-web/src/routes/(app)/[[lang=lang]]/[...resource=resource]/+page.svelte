@@ -3,15 +3,16 @@
 	import getPageTitle from '#lib/utils/getPageTitle.js';
 	import getMetaDescription from '#lib/utils/getMetaDescription.js';
 	import { JsonLd } from '#lib/types/xl.js';
+	import { Width } from '#lib/types/auxd.js';
 	import { getModalContext } from '#lib/contexts/modal.svelte.js';
 	import { normalizeId } from '#lib/utils/http.js';
+	import { bestSize } from '#lib/utils/auxd.js';
 	import Resource from '#lib/components/Resource.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
-	import { bestSize } from '#lib/utils/auxd.js';
-	import { Width } from '#lib/types/auxd.js';
-	import SearchCard from '#lib/components/find/SearchCard.svelte';
+	// import SearchCard from '#lib/components/find/SearchCard.svelte';
+	import ResourceCard from '#lib/components/ResourceCard.svelte';
 
 	const { data } = $props();
 
@@ -79,7 +80,17 @@
 			{/snippet}
 			<HoldingsContent holdings={data.holdings}>
 				{#snippet card()}
-					<SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} />
+					{#if modalCard}
+						<!-- <SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} /> -->
+						<div class="bg-page rounded-sm border-b border-b-neutral">
+							<ResourceCard
+								item={modalCard}
+								linkToResource={false}
+								allowPopovers={false}
+								allowActions={false}
+							/>
+						</div>
+					{/if}
 				{/snippet}
 			</HoldingsContent>
 		</Modal>
