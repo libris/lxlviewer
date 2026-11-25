@@ -55,6 +55,10 @@ export const getAdjecentSearchResult = query(
 		const _url = new URL(url);
 		const searchParams = new URL(_url.origin + viewId).searchParams;
 		searchParams.set('_stats', 'falseThisRequest');
+		searchParams.set('_spell', 'false');
+		if (locals.site?.searchSite) {
+			searchParams.set('_site', locals.site.searchSite);
+		}
 		const res = await fetch(`${API_URL}/find.jsonld?${searchParams.toString()}`);
 
 		if (!res.ok) {
