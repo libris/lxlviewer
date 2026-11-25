@@ -1,9 +1,9 @@
 import { JsonLd } from '#lib/types/xl.js';
 import type { SearchResult } from '#lib/types/search.js';
-import type { AdjecentSearchResult } from '#lib/types/search.js';
+import type { AdjacentSearchResult } from '#lib/types/search.js';
 import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
 
-export function asAdjecentSearchResult(data: SearchResult): AdjecentSearchResult {
+export function asAdjacentSearchResult(data: SearchResult): AdjacentSearchResult {
 	const {
 		'@id': id,
 		itemOffset,
@@ -31,12 +31,12 @@ export function asAdjecentSearchResult(data: SearchResult): AdjecentSearchResult
 }
 
 export function getPreviousItemFnurgel(
-	adjecentSearchResults?: AdjecentSearchResult[],
+	adjacentSearchResults?: AdjacentSearchResult[],
 	searchResultIndex?: number,
 	itemIndex?: number
 ): string | undefined {
 	if (
-		adjecentSearchResults &&
+		adjacentSearchResults &&
 		typeof searchResultIndex === 'number' &&
 		typeof itemIndex === 'number'
 	) {
@@ -44,7 +44,7 @@ export function getPreviousItemFnurgel(
 		if (itemIndex > 0) {
 			return stripAnchor(
 				trimSlashes(
-					relativizeUrl(adjecentSearchResults[searchResultIndex].items[itemIndex - 1]['@id'])
+					relativizeUrl(adjacentSearchResults[searchResultIndex].items[itemIndex - 1]['@id'])
 				)
 			);
 		}
@@ -53,8 +53,8 @@ export function getPreviousItemFnurgel(
 			return stripAnchor(
 				trimSlashes(
 					relativizeUrl(
-						adjecentSearchResults[searchResultIndex - 1].items[
-							adjecentSearchResults[searchResultIndex - 1].items.length - 1
+						adjacentSearchResults[searchResultIndex - 1].items[
+							adjacentSearchResults[searchResultIndex - 1].items.length - 1
 						]['@id']
 					)
 				)
@@ -65,30 +65,30 @@ export function getPreviousItemFnurgel(
 }
 
 export function getNextItemFnurgel(
-	adjecentSearchResults?: AdjecentSearchResult[],
+	adjacentSearchResults?: AdjacentSearchResult[],
 	searchResultIndex?: number,
 	itemIndex?: number
 ): string | undefined {
 	if (
-		adjecentSearchResults &&
+		adjacentSearchResults &&
 		typeof searchResultIndex === 'number' &&
 		typeof itemIndex === 'number'
 	) {
 		/** if next fnurgel is part of current search result view , get fnurgel from next item*/
-		if (itemIndex >= 0 && itemIndex < adjecentSearchResults[searchResultIndex].items.length - 1) {
+		if (itemIndex >= 0 && itemIndex < adjacentSearchResults[searchResultIndex].items.length - 1) {
 			return stripAnchor(
 				trimSlashes(
-					relativizeUrl(adjecentSearchResults[searchResultIndex].items[itemIndex + 1]['@id'])
+					relativizeUrl(adjacentSearchResults[searchResultIndex].items[itemIndex + 1]['@id'])
 				)
 			);
 		}
 		/** otherwise get next fnurgel from first item of next search result view */
 		if (
 			searchResultIndex >= 0 &&
-			itemIndex === adjecentSearchResults[searchResultIndex]?.items.length - 1
+			itemIndex === adjacentSearchResults[searchResultIndex]?.items.length - 1
 		) {
 			return stripAnchor(
-				trimSlashes(relativizeUrl(adjecentSearchResults[searchResultIndex + 1]?.items?.[0]['@id']))
+				trimSlashes(relativizeUrl(adjacentSearchResults[searchResultIndex + 1]?.items?.[0]['@id']))
 			);
 		}
 	}

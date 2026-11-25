@@ -5,7 +5,7 @@ import type { MatomoTracker } from '#lib/types/matomo.js';
 import type { UserSettings } from '#lib/types/userSettings.js';
 import type { DisplayUtil, VocabUtil } from '#lib/utils/xl.server.js';
 import type {
-	AdjecentSearchResult,
+	AdjacentSearchResult,
 	DisplayMapping,
 	QualifierSuggestion2
 } from '#lib/types/search.js';
@@ -56,7 +56,7 @@ declare global {
 			expandedSuperSearch?: boolean;
 			holdings?: HoldingsData;
 			holdingId?: string;
-			adjecentSearchResults?: AdjecentSearchResult[];
+			adjacentSearchResults?: AdjacentSearchResult[];
 			dimissedHighlighting?: boolean;
 			citations?: CitationDataWithError;
 			citationId?: string;

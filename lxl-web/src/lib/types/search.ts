@@ -307,7 +307,7 @@ export interface PropertyChain {
 	path: string;
 }
 
-export interface AdjecentSearchResult {
+export interface AdjacentSearchResult {
 	[JsonLd.ID]: string;
 	itemOffset: number;
 	itemsPerPage: number;

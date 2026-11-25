@@ -1,32 +1,32 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
-	import type { AdjecentSearchResult } from '#lib/types/search.js';
+	import type { AdjacentSearchResult } from '#lib/types/search.js';
 	import { relativizeUrl } from '#lib/utils/http.js';
 	import IconChevronLeft from '~icons/bi/chevron-left';
 	import IconChevronRight from '~icons/bi/chevron-right';
 	import capitalize from '#lib/utils/capitalize.js';
-	import { getPreviousItemFnurgel, getNextItemFnurgel } from '#lib/utils/adjecentSearchResult.js';
-	import { getAdjecentSearchResult } from '#lib/remotes/searchResult.remote.js';
+	import { getPreviousItemFnurgel, getNextItemFnurgel } from '#lib/utils/adjacentSearchResult.js';
+	import { getAdjacentSearchResult } from '#lib/remotes/searchResult.remote.js';
 
 	type Props = {
 		fnurgel: string;
-		adjecentSearchResults: AdjecentSearchResult[];
+		adjacentSearchResults: AdjacentSearchResult[];
 	};
 
-	const { fnurgel, adjecentSearchResults: adjecentSearchResultsFromPageState }: Props = $props();
+	const { fnurgel, adjacentSearchResults: adjacentSearchResultsFromPageState }: Props = $props();
 
-	let previousQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
-	let nextQuery: ReturnType<typeof getAdjecentSearchResult> | undefined = $state();
+	let previousQuery: ReturnType<typeof getAdjacentSearchResult> | undefined = $state();
+	let nextQuery: ReturnType<typeof getAdjacentSearchResult> | undefined = $state();
 
-	let adjecentSearchResults = $derived(adjecentSearchResultsFromPageState);
+	let adjacentSearchResults = $derived(adjacentSearchResultsFromPageState);
 	const currentSearchResult = $derived(
-		adjecentSearchResults?.find((searchResult) =>
+		adjacentSearchResults?.find((searchResult) =>
 			searchResult.items.find((item) => item['@id']?.includes(fnurgel))
 		)
 	);
 	const currentSearchResultIndex = $derived(
-		adjecentSearchResults?.findIndex(
+		adjacentSearchResults?.findIndex(
 			(searchResult) => searchResult['@id'] === currentSearchResult?.['@id']
 		)
 	);
@@ -41,18 +41,18 @@
 	);
 
 	const previousItemFnurgel = $derived(
-		getPreviousItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
+		getPreviousItemFnurgel(adjacentSearchResults, currentSearchResultIndex, itemIndex)
 	);
 	const nextItemFnurgel = $derived(
-		getNextItemFnurgel(adjecentSearchResults, currentSearchResultIndex, itemIndex)
+		getNextItemFnurgel(adjacentSearchResults, currentSearchResultIndex, itemIndex)
 	);
 
-	function passAlongAdjecentSearchResults(event: MouseEvent) {
+	function passAlongAdjacentSearchResults(event: MouseEvent) {
 		event.preventDefault();
 		goto((event.currentTarget as HTMLAnchorElement).href, {
 			state: {
 				...page.state,
-				adjecentSearchResults: $state.snapshot(adjecentSearchResults)
+				adjacentSearchResults: $state.snapshot(adjacentSearchResults)
 			}
 		});
 	}
@@ -63,9 +63,9 @@
 		if (
 			!previousItemFnurgel &&
 			currentSearchResult?.previous?.['@id'] &&
-			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.previous?.['@id'])
+			!adjacentSearchResults?.find((i) => i['@id'] === currentSearchResult.previous?.['@id'])
 		) {
-			previousQuery = getAdjecentSearchResult({
+			previousQuery = getAdjacentSearchResult({
 				url: page.url.href,
 				lang: page.params.lang || '',
 				viewId: currentSearchResult.previous['@id']
@@ -74,9 +74,9 @@
 		if (
 			!nextItemFnurgel &&
 			currentSearchResult?.next?.['@id'] &&
-			!adjecentSearchResults?.find((i) => i['@id'] === currentSearchResult.next?.['@id'])
+			!adjacentSearchResults?.find((i) => i['@id'] === currentSearchResult.next?.['@id'])
 		) {
-			nextQuery = getAdjecentSearchResult({
+			nextQuery = getAdjacentSearchResult({
 				url: page.url.href,
 				lang: page.params.lang || '',
 				viewId: currentSearchResult.next['@id']
@@ -87,22 +87,22 @@
 	$effect(() => {
 		if (
 			previousQuery?.current &&
-			!adjecentSearchResults.find(
+			!adjacentSearchResults.find(
 				(searchResult) => searchResult['@id'] === previousQuery?.current?.['@id']
 			)
 		) {
-			adjecentSearchResults = [previousQuery.current, ...adjecentSearchResults];
+			adjacentSearchResults = [previousQuery.current, ...adjacentSearchResults];
 		}
 	});
 
 	$effect(() => {
 		if (
 			nextQuery?.current &&
-			!adjecentSearchResults.find(
+			!adjacentSearchResults.find(
 				(searchResult) => searchResult['@id'] === nextQuery?.current?.['@id']
 			)
 		) {
-			adjecentSearchResults = [...adjecentSearchResults, nextQuery.current];
+			adjacentSearchResults = [...adjacentSearchResults, nextQuery.current];
 		}
 	});
 </script>
@@ -146,7 +146,7 @@
 					<a
 						href={page.data.localizeHref(previousItemFnurgel + page.url.search)}
 						class="link flex min-h-8 items-center @7xl:min-h-9"
-						onclick={passAlongAdjecentSearchResults}
+						onclick={passAlongAdjacentSearchResults}
 					>
 						{@render previousResultContent()}
 					</a>
@@ -161,7 +161,7 @@
 					<a
 						href={page.data.localizeHref(nextItemFnurgel + page.url.search)}
 						class="link flex min-h-8 items-center @7xl:min-h-9"
-						onclick={passAlongAdjecentSearchResults}
+						onclick={passAlongAdjacentSearchResults}
 					>
 						{@render nextResultContent()}
 					</a>

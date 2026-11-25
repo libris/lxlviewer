@@ -7,7 +7,7 @@
 	import type { HoldingsData } from '#lib/types/holdings.js';
 	import type {
 		SearchResultItem,
-		AdjecentSearchResult,
+		AdjacentSearchResult,
 		ResourceSearchResult
 	} from '#lib/types/search.js';
 	import { getTrailingPaneContext } from '#lib/contexts/trailingPane.svelte.ts';
@@ -24,7 +24,7 @@
 	import ResourceHoldings from './ResourceHoldings.svelte';
 	import ResourceDigitalAccess from '#lib/components/ResourceDigitalAccess.svelte';
 	import SearchResultList from './SearchResultList.svelte';
-	import AdjecentResults from './resource/AdjecentResults.svelte';
+	import AdjacentResults from './resource/AdjacentResults.svelte';
 	import TypeIcon from '#lib/components/TypeIcon.svelte';
 	import SearchCard from './find/SearchCard.svelte';
 	import TabList, { type Tab } from './TabList.svelte';
@@ -72,7 +72,7 @@
 		searchResult?: ResourceSearchResult;
 		holdings: HoldingsData;
 		tableOfContents: TableOfContentsItem[];
-		adjecentSearchResults?: AdjecentSearchResult[];
+		adjacentSearchResults?: AdjacentSearchResult[];
 		workCard: SearchResultItem | null;
 		isWork: boolean;
 	};
@@ -91,7 +91,7 @@
 		searchResult,
 		holdings,
 		tableOfContents,
-		adjecentSearchResults,
+		adjacentSearchResults,
 		workCard,
 		isWork
 	}: Props = $props();
@@ -181,9 +181,9 @@
 	{/each}
 {/snippet}
 
-{#if adjecentSearchResults && fnurgel}
+{#if adjacentSearchResults && fnurgel}
 	<div class="@container print:hidden">
-		<AdjecentResults {fnurgel} {adjecentSearchResults} />
+		<AdjacentResults {fnurgel} {adjacentSearchResults} />
 	</div>
 {/if}
 {#if workCard && !isWork}

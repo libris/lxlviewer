@@ -69,7 +69,7 @@
 		holdings={data.holdings}
 		searchResult={data.searchResult}
 		tableOfContents={data.tableOfContents}
-		adjecentSearchResults={page.state.adjecentSearchResults}
+		adjacentSearchResults={page.state.adjacentSearchResults}
 		workCard={data.workCard}
 		isWork={data.isWork}
 	/>

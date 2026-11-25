@@ -8,7 +8,7 @@ import type { PartialCollectionView } from '#lib/types/search.js';
 import { DebugFlags } from '#lib/types/userSettings.js';
 import { getSupportedLocale } from '#lib/i18n/locales.js';
 import { AdjacentSearchResultsSchema, SearchResultsSchema } from '#lib/schemas/searchResult.js';
-import { asAdjecentSearchResult } from '#lib/utils/adjecentSearchResult.js';
+import { asAdjacentSearchResult } from '#lib/utils/adjacentSearchResult.js';
 
 export const getSearchResults = query(SearchResultsSchema, async ({ lang, url, ...params }) => {
 	const { fetch, locals } = getRequestEvent();
@@ -48,7 +48,7 @@ export const getSearchResults = query(SearchResultsSchema, async ({ lang, url, .
 	return asResult(data, displayUtil, vocabUtil, locale, AUXD_SECRET || '', undefined, myLibraries);
 });
 
-export const getAdjecentSearchResult = query(
+export const getAdjacentSearchResult = query(
 	AdjacentSearchResultsSchema,
 	async ({ url, lang, viewId }) => {
 		const { fetch, locals } = getRequestEvent();
@@ -71,6 +71,6 @@ export const getAdjecentSearchResult = query(
 		const data = (await res.json()) as PartialCollectionView;
 		const result = await asResult(data, locals.display, locals.vocab, getSupportedLocale(lang), '');
 
-		return asAdjecentSearchResult(result);
+		return asAdjacentSearchResult(result);
 	}
 );

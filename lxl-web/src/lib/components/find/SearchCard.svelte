@@ -20,7 +20,7 @@
 	import SearchItemDebugHaystack from '#lib/components/find/SearchItemDebugHaystack.svelte';
 	import MyLibsHoldingIndicator from '#lib/components/MyLibsHoldingIndicator.svelte';
 	import { getHoldingsLink } from '#lib/utils/holdings.js';
-	import { asAdjecentSearchResult } from '#lib/utils/adjecentSearchResult.js';
+	import { asAdjacentSearchResult } from '#lib/utils/adjacentSearchResult.js';
 	import { isResourceNode } from '#lib/utils/resourceData.js';
 	import TypeIcon from '#lib/components/TypeIcon.svelte';
 	import { getCiteLink, handleClickCite } from '#lib/utils/citation.js';
@@ -121,14 +121,14 @@
 		selection.toggle(item[JsonLd.ID]);
 	}
 
-	function passAlongAdjecentSearchResults(event: MouseEvent) {
+	function passAlongAdjacentSearchResults(event: MouseEvent) {
 		event.preventDefault();
 		goto((event.currentTarget as HTMLAnchorElement).href, {
 			state: {
 				...page.state,
-				adjecentSearchResults: page.data.searchResult
-					? [asAdjecentSearchResult(page.data.searchResult)]
-					: [] // TODO: save adjecent results together with optional pane references so it will work with multiple panes
+				adjacentSearchResults: page.data.searchResult
+					? [asAdjacentSearchResult(page.data.searchResult)]
+					: [] // TODO: save adjacent results together with optional pane references so it will work with multiple panes
 			}
 		});
 	}
@@ -276,7 +276,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 					aria-describedby={headingIsLink ? `${bodyId} ${footerId}` : undefined}
 					tabindex="-1"
 					role={headingIsLink ? 'link' : undefined}
-					onclick={headingIsLink ? passAlongAdjecentSearchResults : undefined}
+					onclick={headingIsLink ? passAlongAdjacentSearchResults : undefined}
 				>
 					<div class="pointer-events-none relative flex">
 						{#if item.image}
@@ -347,7 +347,7 @@ see https://github.com/libris/lxlviewer/pull/1336/files/c2d45b319782da2d39d0ca0c
 									'hover:text-link focus:text-link block hover:underline focus:underline'
 							]}
 							aria-describedby={headingIsLink ? `${bodyId} ${footerId}` : undefined}
-							onclick={headingIsLink ? passAlongAdjecentSearchResults : undefined}
+							onclick={headingIsLink ? passAlongAdjacentSearchResults : undefined}
 							role={headingIsLink ? 'link' : undefined}
 						>
 							<DecoratedData2
