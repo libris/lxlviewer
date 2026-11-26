@@ -294,7 +294,7 @@
 					"@id": "Document-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Document",
-					"showProperties": ["uri", "marc:publicNote", "appliesTo"]
+					"showProperties": ["uri", "marc:publicNote", "appliesTo", "label", "hasNote"]
 				},
 				"MediaObject": {
 					"@id": "MediaObject-chips",
@@ -1761,11 +1761,7 @@
 			"@id": "hasNote-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["hasNote"],
-			"fresnel:propertyStyle": ["hasNote", "ul"],
-			"fresnel:valueFormat": {
-				"fresnel:contentBefore": "",
-				"fresnel:contentFirst": ""
-			}
+			"fresnel:propertyStyle": ["hasNote", "ul"]
 		},
 		"Classification-format": {
 			"@id": "Classification-format",
