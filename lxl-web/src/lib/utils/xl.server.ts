@@ -725,6 +725,33 @@ export class DisplayUtil {
 
 type Styler = (v: unknown) => unknown;
 
+/**
+ * Moves the value of a `uri` property to `@id` (so the resource can be rendered as a link)
+ * and removes `uri` from `_display` if there is something else to use as link label.
+ * Separators are assigned before stylers run, so if `uri` was the first property the
+ * new first property must not keep its `_contentBefore`.
+ */
+export function uriToId(v: unknown): unknown {
+	if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
+		const display = v[Fmt.DISPLAY] as Array<unknown>;
+		const ix = display.findIndex((d) => isObject(d) && d[Fmt.PROP] === 'uri');
+
+		if (ix >= 0 && asArray(display[ix][Fmt.VALUE]).length > 0) {
+			const uri = asArray(display[ix][Fmt.VALUE])[0];
+			v[JsonLd.ID] = uri;
+			if (display.length > 1) {
+				// Is there anything else to display as link label?
+				display.splice(ix, 1);
+				if (ix === 0 && isObject(display[0])) {
+					delete display[0][Fmt.CONTENT_BEFORE];
+				}
+			}
+		}
+	}
+
+	return v;
+}
+
 class Formatter {
 	private readonly DEFAULT_FORMAT: Format = {
 		[JsonLd.TYPE]: Fresnel.Format,
@@ -770,23 +797,7 @@ class Formatter {
 
 			return v;
 		},
-		'uriToId()': (v) => {
-			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
-				const display = v[Fmt.DISPLAY] as Array<unknown>;
-				const ix = display.findIndex((d) => isObject(d) && d[Fmt.PROP] === 'uri');
-
-				if (ix >= 0 && asArray(display[ix][Fmt.VALUE]).length > 0) {
-					const uri = asArray(display[ix][Fmt.VALUE])[0];
-					v[JsonLd.ID] = uri;
-					if (display.length > 1) {
-						// Is there anything else to display as link label?
-						display.splice(ix, 1);
-					}
-				}
-			}
-
-			return v;
-		},
+		'uriToId()': uriToId,
 		'findToTop()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				const display = v[Fmt.DISPLAY] as Array<unknown>;
