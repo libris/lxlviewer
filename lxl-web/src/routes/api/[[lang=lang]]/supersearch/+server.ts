@@ -5,6 +5,8 @@ import { getSupportedLocale } from '#lib/i18n/locales.js';
 import addSuggestParams from './addSuggestParams.js';
 import { asResult } from '#lib/utils/search.server.js';
 import { DebugFlags } from '#lib/types/userSettings.js';
+import { Width } from '#lib/types/auxd.ts';
+import { JsonLd } from '#lib/types/xl.ts';
 import itemAsQualifiers from './itemAsQualifiers.js';
 
 /**
@@ -40,18 +42,25 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		newSearchParams.set('_site', locals.site?.searchSite);
 	}
 
-	const data = await fetch(`${API_URL}/find.jsonld?${newSearchParams.toString()}`).then((res) =>
+	const view = await fetch(`${API_URL}/find.jsonld?${newSearchParams.toString()}`).then((res) =>
 		res.json()
 	);
-	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, AUXD_SECRET);
+	const searchResult = await asResult({
+		view,
+		displayUtil,
+		vocabUtil,
+		locale,
+		auxdSecret: AUXD_SECRET,
+		imageSize: Width.X_SMALL
+	});
 
 	const superSearchResult: SuperSearchResult = {
 		...searchResult,
-		'@id': data['@id'],
+		[JsonLd.ID]: view[JsonLd.ID],
 		items: searchResult.items?.map((item, index) => {
 			return {
 				...item,
-				qualifiers: itemAsQualifiers(data.items[index], locale)
+				qualifiers: itemAsQualifiers(view.items[index], locale)
 			};
 		})
 	};

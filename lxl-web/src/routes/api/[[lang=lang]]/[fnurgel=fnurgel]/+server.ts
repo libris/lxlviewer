@@ -42,13 +42,13 @@ export async function GET({ params, locals }) {
 
 	const displayUtil: DisplayUtil = locals.display;
 	const vocabUtil: VocabUtil = locals.vocab;
-	const searchCard = asSearchResultItem(
-		[mainEntity],
+	const searchCard = asSearchResultItem({
+		items: [mainEntity],
 		displayUtil,
 		vocabUtil,
-		getSupportedLocale(params?.lang),
-		AUXD_SECRET
-	)[0];
+		locale: getSupportedLocale(params?.lang),
+		auxdSecret: AUXD_SECRET
+	})[0];
 
 	return Response.json(searchCard, {
 		headers: {

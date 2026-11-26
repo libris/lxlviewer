@@ -59,7 +59,13 @@ async function asLibraryResult(
 	vocabUtil: VocabUtil,
 	locale: LangCode
 ): Promise<LibraryResult> {
-	const items = await asSearchResultItem(view.items, displayUtil, vocabUtil, locale, AUXD_SECRET);
+	const items = asSearchResultItem({
+		items: view.items,
+		displayUtil,
+		vocabUtil,
+		locale,
+		auxdSecret: AUXD_SECRET
+	});
 
 	return { totalItems: view.totalItems, maxItems: view.maxItems, items } as LibraryResult;
 }

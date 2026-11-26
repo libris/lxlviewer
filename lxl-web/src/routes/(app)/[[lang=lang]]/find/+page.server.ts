@@ -6,6 +6,7 @@ import { TITLE_SEPARATOR } from '#lib/constants/pageTitle.js';
 import { type ApiError } from '#lib/types/api.js';
 import type { PartialCollectionView } from '#lib/types/search.js';
 import { appendMyLibrariesParam, asResult } from '#lib/utils/search.server.js';
+import { Width } from '#lib/types/auxd.js';
 import { DebugFlags } from '#lib/types/userSettings.js';
 import { displayMappingToString } from '#lib/utils/displayMappingToString.js';
 import getPageTitle from '#lib/utils/getPageTitle.js';
@@ -98,16 +99,19 @@ export const load = async ({ params, url, locals, fetch, depends }) => {
 		}
 	}
 
-	const searchResult = await asResult(
-		result,
+	const imageSize = locals.userSettings.displayMode === 'gallery' ? Width.MEDIUM : Width.SMALL;
+
+	const searchResult = await asResult({
+		view: result,
 		displayUtil,
 		vocabUtil,
 		locale,
-		AUXD_SECRET,
-		`${params?.lang ? `/${params.lang}` : ''}/find`, // avoid creating a dependency to url.pathName!
+		auxdSecret: AUXD_SECRET,
+		usePath: `${params?.lang ? `/${params.lang}` : ''}/find`, // avoid creating a dependency to url.pathName!
 		myLibraries,
-		subsetLibraries
-	);
+		subsetLibraries,
+		imageSize
+	});
 
 	const mappingToString = displayMappingToString(searchResult.mapping);
 	const pageTitle = getPageTitle(
