@@ -48,6 +48,13 @@
 		return false;
 	});
 
+	let displayMode = $state(userSettings.displayMode || 'default');
+
+	const displayOptions = $derived([
+		{ value: 'default', label: page.data.t('displayMode.default') },
+		{ value: 'gallery', label: page.data.t('displayMode.gallery') }
+	]);
+
 	function toggleSelectAll(e: Event) {
 		const checkbox = e.target as HTMLInputElement;
 		searchResult.items.forEach((item) => {
@@ -57,12 +64,6 @@
 				selection.remove(item[JsonLd.ID]);
 			}
 		});
-	}
-
-	function handleChangeListDisplay(e: Event) {
-		const select = e.target as HTMLSelectElement;
-		const value: DisplayMode = select.value as DisplayMode;
-		userSettings.setDisplayMode(value);
 	}
 </script>
 
@@ -107,9 +108,15 @@
 			{/snippet}
 			{#snippet trailingActions()}
 				<SearchResultSort />
-				<select onchange={handleChangeListDisplay}>
-					<option value="default">Standard</option>
-					<option value="gallery">Galleri</option>
+				<select
+					id="search-display-select"
+					class="btn btn-primary w-px @lg/content:w-auto"
+					bind:value={displayMode}
+					onchange={(e) => userSettings.setDisplayMode(e.currentTarget.value as DisplayMode)}
+				>
+					{#each displayOptions as option (option.value)}
+						<option value={option.value}>{option.label}</option>
+					{/each}
 				</select>
 			{/snippet}
 		</Toolbar>

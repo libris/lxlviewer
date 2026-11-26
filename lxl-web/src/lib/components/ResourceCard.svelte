@@ -239,7 +239,7 @@
 			<header id={titleId}>
 				<!-- header-top -->
 				{#if item.typeStr && !hideType}
-					<p class="card-header-top">
+					<p class={['card-header-top', variant === 'gallery' && 'line-clamp-2']}>
 						<TypeIcon
 							type={item.typeForIcon}
 							class="text-2xs mr-px mb-px inline align-text-bottom"
@@ -286,7 +286,7 @@
 				</hgroup>
 				{#if webCardHeaderExtra}
 					<!-- header extra -->
-					<p class={['card-header-extra', variant === 'gallery' && 'mt-1']}>
+					<p class={['card-header-extra', variant === 'gallery' && 'mt-1 line-clamp-2']}>
 						<DecoratedData2
 							data={webCardHeaderExtra}
 							showLabels={ShowLabelsOptions.DefaultOn}
@@ -318,7 +318,7 @@
 						data={cardBody}
 						showLabels={ShowLabelsOptions.DefaultOff}
 						limit={{
-							contribution: 3,
+							contribution: variant === 'gallery' ? 1 : 3,
 							hasPart: 5,
 							related: 5,
 							broader: 5,
@@ -402,8 +402,8 @@
 
 <style lang="postcss">
 	.resource-card {
-		/* default variant */
 		&.default {
+			/* default variant */
 			grid-template-columns: 64px 1fr auto;
 			grid-template-areas:
 				'image content content'
@@ -452,8 +452,8 @@
 			}
 		}
 
-		/* Gallery variant */
 		&.gallery {
+			/* Gallery variant */
 			grid-template-areas:
 				'image'
 				'select'
@@ -461,6 +461,15 @@
 				'footer'
 				'actions'
 				'debug';
+		}
+
+		& .card-body {
+			& :global([data-property='isPartOf']) {
+				display: -webkit-box;
+				-webkit-line-clamp: 3;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+			}
 		}
 	}
 
