@@ -10,6 +10,7 @@
 	import { stripAnchor } from '#lib/utils/http.ts';
 	import { Fmt, JsonLd, type DisplayDecorated } from '#lib/types/xl.ts';
 	import type { LibraryResultItem, SearchResultItem } from '#lib/types/search.ts';
+	import type { DisplayMode } from '#lib/types/userSettings.ts';
 	import { Elem, ShowLabelsOptions } from '#lib/types/decoratedData.ts';
 	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
 	import MyLibsHoldingIndicator from '#lib/components/MyLibsHoldingIndicator.svelte';
@@ -23,9 +24,10 @@
 	type Props = {
 		item: SearchResultItem | LibraryResultItem;
 		id: string;
+		variant: DisplayMode;
 	};
 
-	const { item, id }: Props = $props();
+	const { item, id, variant = 'default' }: Props = $props();
 	const modal = getModalContext();
 
 	// better way to check if data is an instance?
@@ -88,7 +90,12 @@
 	}
 </script>
 
-<div class="card-actions flex justify-end w-full gap-1 pt-1.5 sm:pt-0 print:hidden">
+<div
+	class={[
+		'card-actions flex w-full gap-1 pt-1.5 print:hidden',
+		variant === 'default' && 'justify-end sm:pt-0'
+	]}
+>
 	{#if bibliographyLink}
 		{@render exploreBibliography()}
 	{/if}

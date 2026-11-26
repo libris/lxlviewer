@@ -15,14 +15,14 @@
 	import Filters from '#lib/components/find/Filters.svelte';
 	import SearchResultToolbar from '#lib/components/find/SearchResultToolbar.svelte';
 	import SearchResultInfo from '#lib/components/find/SearchResultInfo.svelte';
-	import SearchCard from '#lib/components/find/SearchCard.svelte';
+	// import SearchCard from '#lib/components/find/SearchCard.svelte';
+	import ResourceCard from '#lib/components/ResourceCard.svelte';
 	import Pagination from '#lib/components/find/Pagination.svelte';
 	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
 	import Spinner from '#lib/components/Spinner.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import { JsonLd } from '#lib/types/xl.ts';
-	import ResourceCard from '#lib/components/ResourceCard.svelte';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
@@ -51,6 +51,7 @@
 	const collapseLeadingPaneBtnId = 'collapse-leading-pane-btn';
 
 	const offset = $derived(parseInt(page.url.searchParams.get('_offset') || '0'));
+	const displayMode = $derived(userSettings.displayMode || 'default');
 
 	function onOpenLeadingPane() {
 		userSettings.openLeadingPane();
@@ -80,9 +81,9 @@
 				<Filters {facets} />
 			</div>
 		</LeadingPane>
-		<div class="search-result-content @container/content flex flex-1 flex-col">
+		<div class="search-result-content flex flex-1 flex-col">
 			<div class={['flex flex-1 flex-col', !trailingPane.visible && '@5xl/content:flex-row']}>
-				<div class="flex-1">
+				<div class="flex-1 @container/content">
 					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar
 						{searchResult}
@@ -91,9 +92,21 @@
 					/>
 					<SearchResultInfo {searchResult} selectableResults={userSettings.selectableResults} />
 
-					<ol aria-labelledby="search-results" class="flex flex-col">
+					<ol
+						aria-labelledby="search-results"
+						class={[
+							displayMode === 'default' && 'flex flex-col',
+							displayMode === 'gallery' &&
+								'grid grid-cols-1 @md/content:grid-cols-2 @2xl/content:grid-cols-3 @3xl/content:grid-cols-4 @4xl/content:grid-cols-5'
+						]}
+					>
 						{#each searchResult.items as item, index (item['@id'] + index)}
-							<li class="border-t border-neutral first:border-t-0">
+							<li
+								class={[
+									displayMode === 'default' && 'border-t border-t-neutral first:border-t-0',
+									displayMode === 'gallery' && 'm-4'
+								]}
+							>
 								<!-- <SearchCard
 									{item}
 									headingElement={HeadingElem.H2}
@@ -101,6 +114,7 @@
 									selectable={userSettings.selectableResults}
 								/> -->
 								<ResourceCard
+									variant={displayMode}
 									{item}
 									headingElement={HeadingElem.H2}
 									itemNo={offset + (index + 1)}
@@ -136,7 +150,13 @@
 					<HoldingsContent {holdings}>
 						{#snippet card()}
 							{#if modalCard}
-								<SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} />
+								<!-- <SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} /> -->
+								<ResourceCard
+									item={modalCard}
+									linkToResource={false}
+									allowActions={false}
+									allowPopovers={false}
+								/>
 							{/if}
 						{/snippet}
 					</HoldingsContent>
@@ -149,7 +169,6 @@
 {/if}
 
 <style lang="postcss">
-	@reference "tailwindcss";
 	.aside-content {
 		top: calc(var(--appbar-height) + (var(--spacing) * 4));
 	}

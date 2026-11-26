@@ -468,7 +468,7 @@
 									<SearchResultList
 										type="horizontal"
 										items={relationsPreviewsByQualifierKey[relationItem.qualifierKey]}
-										suppressProperty={[relationItem.qualifierKey]}
+										// suppressProperty={[relationItem.qualifierKey]}
 										headingElement={HeadingElem.H4}
 									/>
 								</div>

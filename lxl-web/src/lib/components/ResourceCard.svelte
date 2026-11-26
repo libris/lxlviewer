@@ -6,6 +6,7 @@
 	import { Fmt, JsonLd, LensType } from '#lib/types/xl.ts';
 	import { LxlLens } from '#lib/types/display.ts';
 	import { Elem, HeadingElem, ShowLabelsOptions } from '#lib/types/decoratedData.ts';
+	import type { DisplayMode } from '#lib/types/userSettings.ts';
 	import { normalizeId } from '#lib/utils/http.ts';
 	import { bookAspectRatio } from '#lib/utils/bookAspectRatio.ts';
 	import { isResourceNode } from '#lib/utils/resourceData.ts';
@@ -20,7 +21,7 @@
 	type Props = {
 		item: SearchResultItem;
 		itemNo?: number;
-		variant?: 'default' | 'compact' | 'gallery';
+		variant?: DisplayMode;
 		selectable?: boolean;
 		allowImage?: boolean;
 		linkToResource?: boolean;
@@ -29,6 +30,10 @@
 		allowActions?: boolean;
 		allowPopovers?: boolean;
 		headingElement?: HeadingElem;
+		aspectRatio?: 'landscape' | 'square';
+		lazyImage?: boolean;
+		highPriorityImage?: boolean;
+		fadeInImage?: boolean;
 	};
 
 	let {
@@ -42,7 +47,11 @@
 		allowLinks = true,
 		allowActions = true,
 		allowPopovers = true,
-		headingElement = HeadingElem.H2
+		headingElement = HeadingElem.H2,
+		aspectRatio = 'square',
+		lazyImage = false,
+		highPriorityImage = false,
+		fadeInImage = false
 	}: Props = $props();
 
 	let id = $derived(normalizeId(item[JsonLd.ID]) ?? '');
@@ -50,6 +59,8 @@
 	let titleId = $derived(`card-title-${id}`);
 	let bodyId = $derived(`card-body-${id}`);
 	let footerId = $derived(`card-footer-${id}`);
+	const isPerson = $derived(item[JsonLd.TYPE] === 'Person');
+	let loadedImage = $state(false);
 
 	const resourceLink = $derived.by(() => {
 		if (!linkToResource) return undefined;
@@ -100,30 +111,84 @@
 </script>
 
 {#snippet image()}
-	{const isPerson = item[JsonLd.TYPE] === 'Person'}
-	<div class="pointer-events-none relative flex">
+	{#if variant === 'gallery'}
+		{@render galleryImage()}
+	{:else}
+		<div class="pointer-events-none relative flex">
+			{#if item.image}
+				<img
+					src={item.image.url}
+					width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
+					height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
+					loading={lazyImage ? 'lazy' : undefined}
+					fetchpriority={typeof highPriorityImage === 'boolean' && highPriorityImage
+						? 'high'
+						: undefined}
+					alt=""
+					class:rounded-full={isPerson}
+					class="object-contain object-top {!isPerson ? 'aspect-2/3' : 'aspect-square'}"
+				/>
+			{:else}
+				<div class="flex items-center justify-center">
+					<img
+						src={placeholder}
+						alt=""
+						class:rounded-full={isPerson}
+						class:rounded-sm={!isPerson}
+						class={[
+							'placeholder object-cover object-top',
+							bookAspectRatio(item.typeForIcon) && 'aspect-3/4'
+						]}
+					/>
+					<TypeIcon type={item.typeForIcon} class="absolute text-2xl text-neutral-400" />
+				</div>
+			{/if}
+		</div>
+	{/if}
+{/snippet}
+
+{#snippet galleryImage()}
+	<div
+		class={[
+			'resource-image mx-auto mb-2 flex w-full items-end justify-center',
+			aspectRatio === 'square' && 'aspect-square rounded-lg bg-neutral-50 p-3'
+		]}
+	>
 		{#if item.image}
 			<img
 				src={item.image.url}
-				width={item.image.widthPx > 0 ? item.image.widthPx : undefined}
-				height={item.image.heightPx > 0 ? item.image.heightPx : undefined}
+				width={item.image.widthPx > 0 ? item.image?.widthPx : undefined}
+				height={item.image.heightPx > 0 ? item.image?.heightPx : undefined}
 				alt=""
-				class:rounded-full={isPerson}
-				class="object-contain object-top {!isPerson ? 'aspect-2/3' : 'aspect-square'}"
+				loading={lazyImage ? 'lazy' : undefined}
+				fetchpriority={typeof highPriorityImage === 'boolean' && highPriorityImage
+					? 'high'
+					: undefined}
+				class={[
+					'w-full object-center transition-opacity',
+					aspectRatio === 'square' && 'aspect-square',
+					fadeInImage && !loadedImage && 'opacity-0 motion-reduce:opacity-100 noscript:opacity-100',
+					isPerson ? 'rounded-full object-cover' : 'object-contain'
+				]}
+				onload={fadeInImage ? () => (loadedImage = true) : undefined}
 			/>
 		{:else}
-			<div class="flex items-center justify-center">
+			<div
+				class={[
+					'relative flex w-full items-center justify-center',
+					aspectRatio === 'square' && 'aspect-square'
+				]}
+			>
 				<img
 					src={placeholder}
 					alt=""
-					class:rounded-full={isPerson}
-					class:rounded-sm={!isPerson}
 					class={[
-						'placeholder object-cover object-top',
+						'h-full object-cover',
+						isPerson ? 'rounded-full' : 'rounded-lg',
 						bookAspectRatio(item.typeForIcon) && 'aspect-3/4'
 					]}
 				/>
-				<TypeIcon type={item.typeForIcon} class="absolute text-2xl text-neutral-400" />
+				<TypeIcon type={item.typeForIcon} class="@4xs:size-14! absolute size-10 text-neutral-300" />
 			</div>
 		{/if}
 	</div>
@@ -140,23 +205,24 @@
 	/>
 {/snippet}
 
-<div class="resource-card-container @container/card">
+<div class="resource-card-container h-full @container/card">
 	<article
 		id={cardId}
-		class="resource-card grid w-full gap-x-4 p-3 transition-colors print:break-inside-avoid"
-		class:default={variant === 'default'}
-		class:compact={variant === 'compact'}
-		class:gallery={variant === 'gallery'}
+		class={[
+			'resource-card grid w-full gap-x-4 transition-colors print:break-inside-avoid',
+			variant,
+			variant === 'default' ? 'p-3' : 'p-0.5'
+		]}
 		class:selectable
 	>
-		{#if selectable && variant !== 'gallery'}
-			<ResourceCardSelect {id} {itemNo} {titleId} />
+		{#if selectable}
+			<ResourceCardSelect {id} {itemNo} {titleId} {variant} />
 		{/if}
 		{#if allowImage}
 			<!-- image -->
 			{#if resourceLink}
 				<a
-					class="card-image"
+					class="card-image resource-link"
 					href={resourceLink}
 					aria-labelledby={titleId}
 					aria-describedby={`${bodyId} ${footerId}`}
@@ -198,12 +264,16 @@
 					<!-- heading -->
 					<svelte:element
 						this={headingElement}
-						class="decorated-heading card-header-title text-base"
+						class={[
+							'card-header-title decorated-heading',
+							variant === 'default' && 'text-base',
+							variant === 'gallery' && 'text-sm line-clamp-3'
+						]}
 					>
 						{#if resourceLink}
 							<a
 								href={resourceLink}
-								class="block hover:text-link focus:text-link hover:underline focus:underline"
+								class="resource-link block hover:text-link focus:text-link hover:underline focus:underline"
 								aria-describedby={`${bodyId} ${footerId}`}
 								onclick={passAlongAdjacentSearchResults}
 							>
@@ -216,7 +286,7 @@
 				</hgroup>
 				{#if webCardHeaderExtra}
 					<!-- header extra -->
-					<p class="card-header-extra">
+					<p class={['card-header-extra', variant === 'gallery' && 'mt-1']}>
 						<DecoratedData2
 							data={webCardHeaderExtra}
 							showLabels={ShowLabelsOptions.DefaultOn}
@@ -321,7 +391,7 @@
 		{/if}
 		{#if allowActions}
 			<!-- card actions -->
-			<ResourceCardActions {item} {id} />
+			<ResourceCardActions {item} {id} {variant} />
 		{/if}
 		{#if item._debug}
 			<!-- debug -->
@@ -386,6 +456,7 @@
 		&.gallery {
 			grid-template-areas:
 				'image'
+				'select'
 				'content'
 				'footer'
 				'actions'
@@ -443,10 +514,6 @@
 					display: none;
 				}
 			}
-		}
-
-		& .card-header-title {
-			font-size: var(--text-base);
 		}
 	}
 </style>

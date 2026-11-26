@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { JsonLd } from '#lib/types/xl.ts';
 	import type { SearchResult } from '#lib/types/search.js';
+	import type { DisplayMode } from '#lib/types/userSettings.ts';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import { MY_LIBRARIES_FILTER_ALIAS } from '#lib/constants/facets.js';
 	import { displayMappingToString } from '#lib/utils/displayMappingToString.js';
@@ -57,6 +58,12 @@
 			}
 		});
 	}
+
+	function handleChangeListDisplay(e: Event) {
+		const select = e.target as HTMLSelectElement;
+		const value: DisplayMode = select.value as DisplayMode;
+		userSettings.setDisplayMode(value);
+	}
 </script>
 
 <div class="search-result-info text-sm" data-testid="result-info">
@@ -100,6 +107,10 @@
 			{/snippet}
 			{#snippet trailingActions()}
 				<SearchResultSort />
+				<select onchange={handleChangeListDisplay}>
+					<option value="default">Standard</option>
+					<option value="gallery">Galleri</option>
+				</select>
 			{/snippet}
 		</Toolbar>
 	{/if}
