@@ -540,6 +540,12 @@
 					"classLensDomain": "ToCEntry",
 					"showProperties": ["label", "responsibilityStatement"]
 				},
+				"CreatorCount": {
+					"@id": "CreatorCount-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "CreatorCount",
+					"showProperties": ["rdf:type", "label"]
+				},
 				"marc:SourceOfDescriptionNote": {
 					"NOTE": "Only visible in cataloging",
 					"@id": "marc:SourceOfDescriptionNote-chips",
@@ -2201,6 +2207,16 @@
 			"fresnel:propertyStyle": ["ul-when-multiple"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ""
+			}
+		},
+		"CreatorCount-label-format": {
+			"@id": "MediaObject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["CreatorCount"],
+			"fresnel:propertyFormatDomain": ["label"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": ": ",
+				"fresnel:contentFirst": ""
 			}
 		},
 		"bibdb:PostalAddress-format": {
