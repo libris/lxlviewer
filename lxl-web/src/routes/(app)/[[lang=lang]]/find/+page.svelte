@@ -98,7 +98,7 @@
 						class={[
 							!isGallery && 'flex flex-col',
 							isGallery &&
-								'grid grid-cols-1 @md/result:grid-cols-2 @2xl/result:grid-cols-3 @3xl/result:grid-cols-4 @4xl/result:grid-cols-5'
+								'grid grid-cols-1 @lg/result:grid-cols-2 @4xl/result:grid-cols-3 @6xl/result:grid-cols-4 @8xl/result:grid-cols-5'
 						]}
 					>
 						{#each searchResult.items as item, index (item['@id'] + index)}

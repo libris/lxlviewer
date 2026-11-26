@@ -342,6 +342,7 @@
 					<span class="text-body font-medium">{item.selectTypeStr}</span>
 				{/if}
 				{#if item.selectTypeStr && cardFooter}
+					{$inspect(cardFooter)}
 					<span class="hidden whitespace-pre-wrap md:inline">{'·'}</span>
 				{/if}
 				{#if cardFooter}
@@ -504,6 +505,46 @@
 		font-size: var(--text-2xs);
 		color: var(--color-subtle);
 		font-weight: var(--font-weight-normal);
+	}
+
+	.card-header-extra,
+	.card-body {
+		/* inline label in cards */
+
+		& :global(dl) {
+			margin-block: calc(var(--spacing) * 1);
+		}
+
+		& :global(dt) {
+			display: inline-block;
+			font-style: italic;
+			font-size: var(--text-sm) !important;
+			&::after {
+				content: ': ';
+			}
+		}
+
+		& :global(dd) {
+			display: inline;
+		}
+
+		& :global([data-property='isPartOf']) {
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+
+		/* hasPart + part hack, should be combined into a virtual property */
+		:global(dl[data-property='isPartOf']:has(+ *[data-property='part'])) {
+			display: inline !important;
+		}
+		:global(dl[data-property='isPartOf'] + *[data-property='part']) {
+			display: inline;
+		}
+		:global(dl[data-property='isPartOf'] + *[data-property='part'])::before {
+			content: ' ; ';
+		}
 	}
 
 	/* card in popover */
