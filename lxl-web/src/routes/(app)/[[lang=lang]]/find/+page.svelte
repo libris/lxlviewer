@@ -52,6 +52,7 @@
 
 	const offset = $derived(parseInt(page.url.searchParams.get('_offset') || '0'));
 	const displayMode = $derived(userSettings.displayMode || 'default');
+	const isGallery = $derived(displayMode === 'gallery');
 
 	function onOpenLeadingPane() {
 		userSettings.openLeadingPane();
@@ -81,9 +82,9 @@
 				<Filters {facets} />
 			</div>
 		</LeadingPane>
-		<div class="search-result-content flex flex-1 flex-col">
+		<div class="search-result-content @container/content flex flex-1 flex-col">
 			<div class={['flex flex-1 flex-col', !trailingPane.visible && '@5xl/content:flex-row']}>
-				<div class="flex-1 @container/content">
+				<div class="flex-1 @container/result">
 					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar
 						{searchResult}
@@ -95,16 +96,16 @@
 					<ol
 						aria-labelledby="search-results"
 						class={[
-							displayMode === 'default' && 'flex flex-col',
-							displayMode === 'gallery' &&
-								'grid grid-cols-1 @md/content:grid-cols-2 @2xl/content:grid-cols-3 @3xl/content:grid-cols-4 @4xl/content:grid-cols-5'
+							!isGallery && 'flex flex-col',
+							isGallery &&
+								'grid grid-cols-1 @md/result:grid-cols-2 @2xl/result:grid-cols-3 @3xl/result:grid-cols-4 @4xl/result:grid-cols-5'
 						]}
 					>
 						{#each searchResult.items as item, index (item['@id'] + index)}
 							<li
 								class={[
-									displayMode === 'default' && 'border-t border-t-neutral first:border-t-0',
-									displayMode === 'gallery' && 'm-4'
+									!isGallery && 'border-t border-t-neutral first:border-t-0',
+									isGallery && 'm-4'
 								]}
 							>
 								<!-- <SearchCard
@@ -126,7 +127,7 @@
 					<Pagination data={searchResult} />
 				</div>
 				<!-- trailing pane toolbar -->
-				<div class="search-result-aside min-w-75">
+				<div class={['search-result-aside min-w-75', isGallery && 'hidden']}>
 					<div class="sticky-toolbar hidden @5xl/content:block">
 						<Toolbar />
 					</div>

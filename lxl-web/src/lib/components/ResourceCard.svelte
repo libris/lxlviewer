@@ -62,6 +62,8 @@
 	const isPerson = $derived(item[JsonLd.TYPE] === 'Person');
 	let loadedImage = $state(false);
 
+	const galleryCard = $derived(variant === 'gallery');
+
 	const resourceLink = $derived.by(() => {
 		if (!linkToResource) return undefined;
 		const url = new URL(page.url.origin + page.data.localizeHref(id));
@@ -111,7 +113,7 @@
 </script>
 
 {#snippet image()}
-	{#if variant === 'gallery'}
+	{#if galleryCard}
 		{@render galleryImage()}
 	{:else}
 		<div class="pointer-events-none relative flex">
@@ -239,7 +241,7 @@
 			<header id={titleId}>
 				<!-- header-top -->
 				{#if item.typeStr && !hideType}
-					<p class={['card-header-top', variant === 'gallery' && 'line-clamp-2']}>
+					<p class={['card-header-top', galleryCard && 'line-clamp-2']}>
 						<TypeIcon
 							type={item.typeForIcon}
 							class="text-2xs mr-px mb-px inline align-text-bottom"
@@ -266,8 +268,8 @@
 						this={headingElement}
 						class={[
 							'card-header-title decorated-heading',
-							variant === 'default' && 'text-base',
-							variant === 'gallery' && 'text-sm line-clamp-3'
+							!galleryCard && 'text-base',
+							galleryCard && 'text-sm line-clamp-3'
 						]}
 					>
 						{#if resourceLink}
@@ -286,7 +288,7 @@
 				</hgroup>
 				{#if webCardHeaderExtra}
 					<!-- header extra -->
-					<p class={['card-header-extra', variant === 'gallery' && 'mt-1 line-clamp-2']}>
+					<p class={['card-header-extra', galleryCard && 'mt-1 line-clamp-2']}>
 						<DecoratedData2
 							data={webCardHeaderExtra}
 							showLabels={ShowLabelsOptions.DefaultOn}
@@ -318,7 +320,7 @@
 						data={cardBody}
 						showLabels={ShowLabelsOptions.DefaultOff}
 						limit={{
-							contribution: variant === 'gallery' ? 1 : 3,
+							contribution: galleryCard ? 1 : 3,
 							hasPart: 5,
 							related: 5,
 							broader: 5,
