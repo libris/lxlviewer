@@ -133,6 +133,7 @@ export default {
 		'librissearch:yearPublished': 'Year published',
 		intendedAudience: 'Intended audience',
 		classification: 'Classification',
+		'librissearch:derivedFromPublisher': 'Metadata source',
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
 		fieldOfActivity: 'Field of Activity',

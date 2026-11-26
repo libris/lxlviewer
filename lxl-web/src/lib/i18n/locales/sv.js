@@ -132,6 +132,7 @@ export default {
 		'librissearch:yearPublished': 'Utgivningsår',
 		intendedAudience: 'Målgrupp',
 		classification: 'Klassifikation',
+		'librissearch:derivedFromPublisher': 'Metadatakälla',
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
 		fieldOfActivity: 'Verksamhetsområde',
