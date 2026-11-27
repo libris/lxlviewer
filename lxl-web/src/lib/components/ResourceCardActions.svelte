@@ -94,6 +94,7 @@
 	class={[
 		'card-actions flex flex-wrap w-full gap-1 pt-1.5 print:hidden',
 		variant === 'default' && 'justify-end sm:pt-0'
+		// variant === 'gallery' && 'items-end'
 	]}
 >
 	{#if bibliographyLink}

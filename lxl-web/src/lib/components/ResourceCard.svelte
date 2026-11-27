@@ -211,7 +211,7 @@
 	<article
 		id={cardId}
 		class={[
-			'resource-card grid w-full gap-x-4 transition-colors print:break-inside-avoid',
+			'resource-card grid w-full h-full gap-x-4 transition-colors print:break-inside-avoid',
 			variant,
 			variant === 'default' ? 'p-3' : 'p-0.5'
 		]}
@@ -342,7 +342,6 @@
 					<span class="text-body font-medium">{item.selectTypeStr}</span>
 				{/if}
 				{#if item.selectTypeStr && cardFooter}
-					{$inspect(cardFooter)}
 					<span class="hidden whitespace-pre-wrap md:inline">{'·'}</span>
 				{/if}
 				{#if cardFooter}
@@ -465,6 +464,8 @@
 				'actions'
 				'debug';
 		}
+		/* place actions at bottom */
+		grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
 
 		& .card-body {
 			& :global([data-property='isPartOf']) {
