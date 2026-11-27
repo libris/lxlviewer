@@ -19,7 +19,6 @@
 	import BiHeartFill from '~icons/bi/heart-fill';
 	import BiHeart from '~icons/bi/heart';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
-	import IconArrowRight from '~icons/bi/arrow-right';
 
 	type Props = {
 		item: SearchResultItem | LibraryResultItem;
@@ -52,21 +51,6 @@
 		return true;
 	}
 
-	const bibliographyLink = $derived.by(() => {
-		if (item[JsonLd.TYPE] === 'Bibliography' && item?.sigel) {
-			return page.data.localizeHref(`/find?_q=bibliography:"sigel:${item.sigel}"`);
-		}
-		return null;
-	});
-
-	function formatNumItems(n: number | undefined) {
-		if (!n) return null;
-		const digits = Math.floor(Math.log10(n)) + 1;
-		const factor = Math.pow(10, digits - 2);
-		const rounded = Math.floor(n / factor) * factor;
-		return rounded.toLocaleString();
-	}
-
 	async function handleClickHoldings(event: Event) {
 		// perform a regular link navigation on find route to allow streaming with promises
 		if (page.route.id === '/(app)/[[lang=lang]]/find') return;
@@ -97,9 +81,6 @@
 		// variant === 'gallery' && 'items-end'
 	]}
 >
-	{#if bibliographyLink}
-		{@render exploreBibliography()}
-	{/if}
 	{#if isLibraryCard(item)}
 		{@render toggleFavLibrary(item)}
 	{/if}
@@ -113,25 +94,6 @@
 		{@render holdingsButton()}
 	{/if}
 </div>
-
-{#snippet exploreBibliography()}
-	<!-- numberOfItems doesn't include count from parts on parent bibliographies with parts.
-    Some parents have a small number of instances directly linked to them instead of 0.
-    Only show count if it looks "correct", i.e. large enough -->
-	{@const numItems = formatNumItems(
-		item?.numberOfItems && item.numberOfItems > 100 ? item?.numberOfItems : undefined
-	)}
-	<a
-		href={bibliographyLink}
-		class={[
-			'hover:text-link focus:text-link text-sm ease-in-out hover:underline focus:underline [&>svg]:mb-0.5 [&>svg]:transition-transform hover:[&>svg]:translate-x-1'
-		]}
-	>
-		<span class="font-medium">{page.data.t('search.exploreCollection')}</span>{numItems &&
-			` (${page.data.t('general.approx')} ${numItems} ${page.data.t('search.hits')})`}
-		<IconArrowRight class={['mx-0.5 inline size-4 transition-transform']} />
-	</a>
-{/snippet}
 
 {#snippet freeOnline()}
 	<a

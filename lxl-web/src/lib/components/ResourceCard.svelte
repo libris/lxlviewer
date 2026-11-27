@@ -17,6 +17,7 @@
 	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
 	import ResourceCardActions from '#lib/components/ResourceCardActions.svelte';
 	import SearchItemDebug from '#lib/components/find/SearchItemDebug.svelte';
+	import IconArrowRight from '~icons/bi/arrow-right';
 
 	type Props = {
 		item: SearchResultItem;
@@ -63,6 +64,7 @@
 	let loadedImage = $state(false);
 
 	const galleryCard = $derived(variant === 'gallery');
+	const isBibliography = $derived(item[JsonLd.TYPE] === 'Bibliography' && item?.sigel);
 
 	const resourceLink = $derived.by(() => {
 		if (!linkToResource) return undefined;
@@ -109,6 +111,14 @@
 					: []
 			}
 		});
+	}
+
+	function formatNumItems(n: number | undefined) {
+		if (!n) return null;
+		const digits = Math.floor(Math.log10(n)) + 1;
+		const factor = Math.pow(10, digits - 2);
+		const rounded = Math.floor(n / factor) * factor;
+		return rounded.toLocaleString();
 	}
 </script>
 
@@ -206,6 +216,25 @@
 		parent={resourceLink ? Elem.A : Elem.Span}
 		skipOuter={true}
 	/>
+{/snippet}
+
+{#snippet bibliographyLink()}
+	<!-- numberOfItems doesn't include count from parts on parent bibliographies with parts.
+    Some parents have a small number of instances directly linked to them instead of 0.
+    Only show count if it looks "correct", i.e. large enough -->
+	{@const numItems = formatNumItems(
+		item?.numberOfItems && item.numberOfItems > 100 ? item?.numberOfItems : undefined
+	)}
+	<a
+		href={page.data.localizeHref(`/find?_q=bibliography:"sigel:${item.sigel}"`)}
+		class={[
+			'block mt-2 text-sm ease-in-out hover:text-link focus:text-link hover:underline focus:underline [&>svg]:mb-0.5 [&>svg]:transition-transform hover:[&>svg]:translate-x-1'
+		]}
+	>
+		<span class="font-medium">{page.data.t('search.exploreCollection')}</span>{numItems &&
+			` (${page.data.t('general.approx')} ${numItems} ${page.data.t('search.hits')})`}
+		<IconArrowRight class={['mx-0.5 inline size-4 transition-transform']} />
+	</a>
 {/snippet}
 
 <div class="resource-card-container h-full @container/card">
@@ -336,9 +365,12 @@
 				</div>
 			{/if}
 		</div>
-		{#if item.selectTypeStr || cardFooter}
+		{#if item.selectTypeStr || cardFooter || isBibliography}
 			<!-- card-footer -->
 			<footer class="card-footer mt-1" id={footerId}>
+				{#if isBibliography}
+					{@render bibliographyLink()}
+				{/if}
 				{#if item.selectTypeStr}
 					<span class="text-body font-medium">{item.selectTypeStr}</span>
 				{/if}
