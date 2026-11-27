@@ -11,7 +11,6 @@
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
-	// import SearchCard from '#lib/components/find/SearchCard.svelte';
 	import ResourceCard from '#lib/components/ResourceCard.svelte';
 
 	const { data } = $props();
@@ -81,7 +80,6 @@
 			<HoldingsContent holdings={data.holdings}>
 				{#snippet card()}
 					{#if modalCard}
-						<!-- <SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} /> -->
 						<div class="bg-page rounded-sm border-b border-b-neutral">
 							<ResourceCard
 								item={modalCard}

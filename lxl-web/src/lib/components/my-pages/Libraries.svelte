@@ -9,7 +9,6 @@
 	import { type LibraryResult, type LibraryResultItem } from '#lib/types/search.js';
 	import { HeadingElem } from '#lib/types/decoratedData.js';
 	import { useSearchRequest } from 'supersearch';
-	// import SearchCard from '#lib/components/find/SearchCard.svelte';
 	import ResourceCard from '#lib/components/ResourceCard.svelte';
 	import BiSearch from '~icons/bi/search';
 	import BiHouseHeart from '~icons/bi/house-heart';
@@ -137,7 +136,6 @@
 				<ol class="my-libraries-result flex flex-col rounded-sm p-1">
 					{#each searchResult.items as resultItem (resultItem[JsonLd.ID])}
 						<li class="border-t border-t-neutral first:border-t-0">
-							<!-- <SearchCard item={resultItem} headingElement={HeadingElem.H3} /> -->
 							<ResourceCard item={resultItem} headingElement={HeadingElem.H3} />
 						</li>
 					{/each}
@@ -169,7 +167,6 @@
 			>
 				{#each mergedLibraries as myLib (myLib[JsonLd.ID])}
 					<li class="border-t border-t-neutral first:border-t-0">
-						<!-- <SearchCard item={myLib} headingElement={HeadingElem.H3} /> -->
 						<ResourceCard item={myLib} headingElement={HeadingElem.H3} />
 					</li>
 				{/each}

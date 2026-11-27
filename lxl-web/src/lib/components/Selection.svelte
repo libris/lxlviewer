@@ -8,7 +8,6 @@
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import Citation from './Citation.svelte';
 	import TabList, { type Tab } from './TabList.svelte';
-	// import SearchCard from './find/SearchCard.svelte';
 	import ResourceCard from '#lib/components/ResourceCard.svelte';
 	import IconChevron from '~icons/bi/chevron-down';
 	import BiTrash from '~icons/bi/trash';
@@ -147,7 +146,6 @@
 			<ol>
 				{#each selection.cards as item, index (item[JsonLd.ID] + index)}
 					<li class="border-b border-b-neutral-200">
-						<!-- <SearchCard {item} selectable={true} allowActions={false} itemNo={index + 1} /> -->
 						<ResourceCard {item} selectable={true} allowActions={false} itemNo={index + 1} />
 					</li>
 				{/each}

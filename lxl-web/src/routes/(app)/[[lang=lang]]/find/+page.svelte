@@ -15,7 +15,6 @@
 	import Filters from '#lib/components/find/Filters.svelte';
 	import SearchResultToolbar from '#lib/components/find/SearchResultToolbar.svelte';
 	import SearchResultInfo from '#lib/components/find/SearchResultInfo.svelte';
-	// import SearchCard from '#lib/components/find/SearchCard.svelte';
 	import ResourceCard from '#lib/components/ResourceCard.svelte';
 	import Pagination from '#lib/components/find/Pagination.svelte';
 	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
@@ -103,12 +102,6 @@
 					>
 						{#each searchResult.items as item, index (item['@id'] + index)}
 							<li class={[!isGallery && 'border-t border-t-neutral first:border-t-0']}>
-								<!-- <SearchCard
-									{item}
-									headingElement={HeadingElem.H2}
-									itemNo={offset + (index + 1)}
-									selectable={userSettings.selectableResults}
-								/> -->
 								<ResourceCard
 									variant={displayMode}
 									{item}
@@ -146,7 +139,6 @@
 					<HoldingsContent {holdings}>
 						{#snippet card()}
 							{#if modalCard}
-								<!-- <SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} /> -->
 								<div class="bg-page rounded-sm border-b border-b-neutral">
 									<ResourceCard
 										item={modalCard}

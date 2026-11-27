@@ -3,7 +3,6 @@
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
 	import type { SearchResultItem } from '#lib/types/search.js';
 	import { HeadingElem } from '#lib/types/decoratedData.ts';
-	// import SearchCard from '#lib/components/find/SearchCard.svelte';
 	import ResourceCard from '#lib/components/ResourceCard.svelte';
 
 	interface PopoverProps {
@@ -115,13 +114,6 @@
 >
 	<div class="p-2">
 		{#if resourceData}
-			<!-- <SearchCard
-				item={resourceData}
-				allowPopovers={false}
-				allowActions={false}
-				headingElement={HeadingElem.P}
-				headingIsLink={false}
-			/> -->
 			<ResourceCard
 				item={resourceData}
 				allowPopovers={false}

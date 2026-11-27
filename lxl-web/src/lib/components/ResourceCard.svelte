@@ -30,7 +30,7 @@
 		allowActions?: boolean;
 		allowPopovers?: boolean;
 		headingElement?: HeadingElem;
-		aspectRatio?: 'landscape' | 'square';
+		aspectRatio?: 'square' | 'landscape'; // only used for collections on startpage todo: remove
 		lazyImage?: boolean;
 		highPriorityImage?: boolean;
 		fadeInImage?: boolean;
@@ -270,7 +270,7 @@
 						class={[
 							'card-header-title decorated-heading',
 							!galleryCard && 'text-base',
-							galleryCard && 'text-sm line-clamp-3'
+							galleryCard && 'text-base line-clamp-3'
 						]}
 					>
 						{#if resourceLink}

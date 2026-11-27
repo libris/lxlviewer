@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	// import SearchResultItem from '#lib/components/SearchResultItem.svelte';
 	import ResourceCard from '#lib/components/ResourceCard.svelte';
 	import { HeadingElem } from '#lib/types/decoratedData.js';
 	import type { SearchResultItem as SearchResultItemType } from '#lib/types/search.js';
@@ -118,15 +117,6 @@
 		>
 			{#each items as item, index (item['@id'])}
 				<li class="@container overflow-x-hidden">
-					<!-- <SearchResultItem
-						data={item}
-						lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
-						fadeInImage={fadeInImages}
-						highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
-							index <= lazyImagesAfterIndex}
-						{suppressProperty}
-						{headingElement}
-					/> -->
 					<ResourceCard
 						variant="gallery"
 						{item}
@@ -184,16 +174,6 @@
 	>
 		{#each items as item, index (item['@id'])}
 			<li class="@container">
-				<!-- <SearchResultItem
-					data={item}
-					lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
-					fadeInImage={fadeInImages}
-					highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
-						index <= lazyImagesAfterIndex}
-					{suppressProperty}
-					aspectRatio={aspectRatio === 'landscape' ? 'video' : 'square'}
-					{headingElement}
-				/> -->
 				<ResourceCard
 					variant="gallery"
 					{item}
