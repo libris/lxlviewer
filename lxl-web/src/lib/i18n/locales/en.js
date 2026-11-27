@@ -238,8 +238,8 @@ export default {
 		yearDesc: 'Newest first'
 	},
 	displayMode: {
-		default: 'Default',
-		gallery: 'Gallery'
+		default: 'Default view',
+		gallery: 'Gallery view'
 	},
 	errors: {
 		somethingWentWrong: 'Something went wrong',

@@ -238,8 +238,8 @@ export default {
 		yearDesc: 'Nyast först'
 	},
 	displayMode: {
-		default: 'Standard',
-		gallery: 'Galleri'
+		default: 'Standardvy',
+		gallery: 'Gallerivy'
 	},
 	errors: {
 		somethingWentWrong: 'Något gick fel',
