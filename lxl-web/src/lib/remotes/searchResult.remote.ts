@@ -10,43 +10,52 @@ import { getSupportedLocale } from '#lib/i18n/locales.js';
 import { AdjacentSearchResultsSchema, SearchResultsSchema } from '#lib/schemas/searchResult.js';
 import { asAdjacentSearchResult } from '#lib/utils/adjacentSearchResult.js';
 
-export const getSearchResults = query(SearchResultsSchema, async ({ lang, url, ...params }) => {
-	const { fetch, locals } = getRequestEvent();
-	const searchParams = new URLSearchParams(Object.entries(params));
-	const _url = new URL(url);
+export const getSearchResults = query(
+	SearchResultsSchema,
+	async ({ lang, url, imageSize, ...params }) => {
+		const { fetch, locals } = getRequestEvent();
+		const searchParams = new URLSearchParams(Object.entries(params));
+		const _url = new URL(url);
 
-	if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
-		searchParams.set('_debug', 'true');
+		if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
+			searchParams.set('_debug', 'true');
+		}
+
+		if (locals.site?.searchSite) {
+			searchParams.set('_site', locals.site.searchSite);
+		}
+
+		const _r = _url.searchParams.get('_r');
+		if (_r) {
+			searchParams.set('_r', _r);
+		}
+
+		searchParams.set('_stats', 'falseThisRequest');
+
+		const res = await fetch(`${API_URL}/find.jsonld?${searchParams.toString()}`);
+
+		if (!res.ok) {
+			const err = (await res.json()) as ApiError;
+			return error(err.status_code, err.message, {
+				...(err.error_id && { errorId: err.error_id })
+			});
+		}
+
+		const view = (await res.json()) as PartialCollectionView;
+
+		const opts = {
+			view,
+			displayUtil: locals.display,
+			vocabUtil: locals.vocab,
+			locale: getSupportedLocale(lang),
+			auxdSecret: AUXD_SECRET,
+			myLibraries: locals.userSettings?.myLibraries,
+			imageSize: parseInt(imageSize) ?? undefined
+		};
+
+		return asResult(opts);
 	}
-
-	if (locals.site?.searchSite) {
-		searchParams.set('_site', locals.site.searchSite);
-	}
-
-	const _r = _url.searchParams.get('_r');
-	if (_r) {
-		searchParams.set('_r', _r);
-	}
-
-	searchParams.set('_stats', 'falseThisRequest');
-
-	const res = await fetch(`${API_URL}/find.jsonld?${searchParams.toString()}`);
-
-	if (!res.ok) {
-		const err = (await res.json()) as ApiError;
-		return error(err.status_code, err.message, {
-			...(err.error_id && { errorId: err.error_id })
-		});
-	}
-
-	const displayUtil = locals.display;
-	const vocabUtil = locals.vocab;
-	const locale = getSupportedLocale(lang);
-	const myLibraries = locals.userSettings?.myLibraries;
-	const data = (await res.json()) as PartialCollectionView;
-
-	return asResult(data, displayUtil, vocabUtil, locale, AUXD_SECRET || '', undefined, myLibraries);
-});
+);
 
 export const getAdjacentSearchResult = query(
 	AdjacentSearchResultsSchema,
@@ -68,8 +77,14 @@ export const getAdjacentSearchResult = query(
 			});
 		}
 
-		const data = (await res.json()) as PartialCollectionView;
-		const result = await asResult(data, locals.display, locals.vocab, getSupportedLocale(lang), '');
+		const view = (await res.json()) as PartialCollectionView;
+		const result = await asResult({
+			view,
+			displayUtil: locals.display,
+			vocabUtil: locals.vocab,
+			locale: getSupportedLocale(lang),
+			auxdSecret: AUXD_SECRET
+		});
 
 		return asAdjacentSearchResult(result);
 	}

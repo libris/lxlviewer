@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import { normalizeId } from '#lib/utils/http.js';
 	import { resolve } from '$app/paths';
 	import type { SuperSearchResultItem } from '#lib/types/search.js';
 	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
 	import { Elem, HeadingElem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
 	import { LxlLens } from '#lib/types/display.js';
-	import { Fmt, LensType } from '#lib/types/xl.js';
+	import { Fmt, JsonLd, LensType } from '#lib/types/xl.js';
 	import getInstanceData from '#lib/utils/getInstanceData.js';
 	import SuggestionImage from './SuggestionImage.svelte';
 	import type { Snippet } from 'svelte';
@@ -31,7 +31,7 @@
 		headingElement = HeadingElem.H2
 	}: Props = $props();
 
-	const resourceId = $derived(stripAnchor(trimSlashes(relativizeUrl(item?.['@id']))));
+	const resourceId = $derived(normalizeId(item?.[JsonLd.ID]));
 	const primaryAddQualifierLink = $derived(item?.qualifiers?.[0]?._q || resourceId);
 
 	const contribution = $derived.by(() => {

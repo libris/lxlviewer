@@ -237,6 +237,10 @@ export default {
 		yearAsc: 'Äldst först',
 		yearDesc: 'Nyast först'
 	},
+	displayMode: {
+		default: 'Standardvy',
+		gallery: 'Gallerivy'
+	},
 	errors: {
 		somethingWentWrong: 'Något gick fel',
 		notAvailable: 'Information saknas',

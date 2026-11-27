@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import SearchResultItem from '#lib/components/SearchResultItem.svelte';
+	import ResourceCard from '#lib/components/ResourceCard.svelte';
 	import { HeadingElem } from '#lib/types/decoratedData.js';
 	import type { SearchResultItem as SearchResultItemType } from '#lib/types/search.js';
 	import { onMount, type Snippet } from 'svelte';
@@ -20,7 +20,7 @@
 		lazyImages?: boolean;
 		fadeInImages?: boolean;
 		listElement?: HTMLUListElement | undefined;
-		suppressProperty?: string[];
+		// suppressProperty?: string[];
 		headingElement?: HeadingElem;
 	};
 
@@ -37,7 +37,7 @@
 		lazyImages = false,
 		fadeInImages = false,
 		listElement = $bindable(),
-		suppressProperty = undefined,
+		// suppressProperty = undefined,
 		headingElement = HeadingElem.H2
 	}: Props = $props();
 
@@ -117,14 +117,15 @@
 		>
 			{#each items as item, index (item['@id'])}
 				<li class="@container overflow-x-hidden">
-					<SearchResultItem
-						data={item}
+					<ResourceCard
+						variant="gallery"
+						{item}
+						{headingElement}
+						allowActions={false}
 						lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
-						fadeInImage={fadeInImages}
 						highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
 							index <= lazyImagesAfterIndex}
-						{suppressProperty}
-						{headingElement}
+						fadeInImage={fadeInImages}
 					/>
 				</li>
 			{/each}
@@ -173,15 +174,16 @@
 	>
 		{#each items as item, index (item['@id'])}
 			<li class="@container">
-				<SearchResultItem
-					data={item}
+				<ResourceCard
+					variant="gallery"
+					{item}
+					{headingElement}
+					allowActions={false}
+					{aspectRatio}
 					lazyImage={typeof lazyImagesAfterIndex === 'number' && index > lazyImagesAfterIndex}
-					fadeInImage={fadeInImages}
 					highPriorityImage={typeof lazyImagesAfterIndex === 'number' &&
 						index <= lazyImagesAfterIndex}
-					{suppressProperty}
-					aspectRatio={aspectRatio === 'landscape' ? 'video' : 'square'}
-					{headingElement}
+					fadeInImage={fadeInImages}
 				/>
 			</li>
 		{/each}

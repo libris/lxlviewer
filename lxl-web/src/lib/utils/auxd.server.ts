@@ -12,7 +12,7 @@ import { isObject, asArray } from '#lib/utils/misc.js';
 import { first } from '#lib/utils/xl.server.js';
 import getAtPath from '#lib/utils/getAtPath.js';
 import { getSortedInstances } from '#lib/utils/getSortedInstances.server.js';
-import { relativizeUrl, trimSlashes, stripAnchor } from '#lib/utils/http.js';
+import { normalizeId } from '#lib/utils/http.js';
 import type { LocaleCode } from '#lib/i18n/locales.js';
 
 function toImage(imageObject: KbvImageObject, recordId: string, lang: LocaleCode): Image {
@@ -38,7 +38,7 @@ export function getImages(thing: FramedData, lang: LocaleCode): Image[] {
 
 	return [
 		...asArray(thing.image).map((i) =>
-			toImage(i as KbvImageObject, stripAnchor(trimSlashes(relativizeUrl(thing['@id']))), lang)
+			toImage(i as KbvImageObject, normalizeId(thing[JsonLd.ID]), lang)
 		),
 		...getSortedInstances(getInstances(thing)).flatMap((instance) => getImages(instance, lang))
 	];

@@ -10,7 +10,7 @@
 	import { Fmt, JsonLd, LensType, type DisplayDecorated } from '#lib/types/xl.js';
 	import { Elem, HeadingElem, ShowLabelsOptions } from '#lib/types/decoratedData.js';
 	import { LxlLens } from '#lib/types/display.js';
-	import { relativizeUrl, trimSlashes, stripAnchor } from '#lib/utils/http.js';
+	import { stripAnchor, normalizeId } from '#lib/utils/http.js';
 	import getInstanceData from '#lib/utils/getInstanceData.js';
 	import placeholder from '#lib/assets/img/placeholder.svg';
 	import DecoratedData2 from '#lib/components/DecoratedData2.svelte';
@@ -59,7 +59,7 @@
 		itemNo = undefined
 	}: Props = $props();
 
-	let id = $derived(`${uidPrefix}${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}`);
+	let id = $derived(`${uidPrefix}${normalizeId(item[JsonLd.ID])}`);
 	let titleId = $derived(`card-title-${id}`);
 	let bodyId = $derived(`card-body-${id}`);
 	let footerId = $derived(`card-footer-${id}`);

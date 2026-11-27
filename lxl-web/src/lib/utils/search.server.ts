@@ -59,16 +59,30 @@ import capitalize from '#lib/utils/capitalize.js';
 import { isResourceNode } from '#lib/utils/resourceData.js';
 import { ACCESS_FILTERS, MY_LIBRARIES_FILTER_ALIAS } from '#lib/constants/facets.js';
 
-export async function asResult(
-	view: PartialCollectionView,
-	displayUtil: DisplayUtil,
-	vocabUtil: VocabUtil,
-	locale: LangCode,
-	auxdSecret: string,
-	usePath?: string,
-	myLibraries?: MyLibrariesType,
-	subsetLibraries?: MyLibrariesType
-): Promise<SearchResult> {
+type AsResultOpts = {
+	view: PartialCollectionView;
+	displayUtil: DisplayUtil;
+	vocabUtil: VocabUtil;
+	locale: LangCode;
+	auxdSecret: string;
+	usePath?: string;
+	myLibraries?: MyLibrariesType;
+	subsetLibraries?: MyLibrariesType;
+	imageSize?: number;
+};
+
+export async function asResult(opts: AsResultOpts): Promise<SearchResult> {
+	const {
+		view,
+		displayUtil,
+		vocabUtil,
+		locale,
+		auxdSecret,
+		usePath,
+		myLibraries,
+		subsetLibraries,
+		imageSize
+	} = opts;
 	const translate = await getTranslator(locale);
 
 	const hasDebug = view.items?.length > 0 && view.items?.[0]._debug;
@@ -87,16 +101,17 @@ export async function asResult(
 		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
-		items: asSearchResultItem(
-			view.items,
+		items: asSearchResultItem({
+			items: view.items,
 			displayUtil,
 			vocabUtil,
 			locale,
 			auxdSecret,
 			myLibraries,
 			subsetLibraries,
-			maxScores
-		),
+			maxScores,
+			imageSize
+		}),
 		...('stats' in view && {
 			facets: displayFacets(view, displayUtil, locale, translate, usePath)
 		}),
@@ -112,16 +127,30 @@ export async function asResult(
 	};
 }
 
-export function asSearchResultItem(
-	items: FramedData[],
-	displayUtil: DisplayUtil,
-	vocabUtil: VocabUtil,
-	locale: LangCode,
-	auxdSecret: string,
-	myLibraries?: MyLibrariesType,
-	subsetLibraries?: MyLibrariesType,
-	maxScores?: Record<string, number>
-): SearchResultItem[] {
+type AsSearchResultItemOps = {
+	items: FramedData[];
+	displayUtil: DisplayUtil;
+	vocabUtil: VocabUtil;
+	locale: LangCode;
+	auxdSecret: string;
+	myLibraries?: MyLibrariesType;
+	subsetLibraries?: MyLibrariesType;
+	maxScores?: Record<string, number>;
+	imageSize?: number;
+};
+
+export function asSearchResultItem(opts: AsSearchResultItemOps): SearchResultItem[] {
+	const {
+		items,
+		displayUtil,
+		vocabUtil,
+		locale,
+		auxdSecret,
+		myLibraries,
+		subsetLibraries,
+		maxScores,
+		imageSize = Width.SMALL
+	} = opts;
 	return items?.map((i) => {
 		const isWorkSingleInstance = (i?.['@reverse']?.instanceOf || []).length === 1;
 		i = cleanUpItem(i, isWorkSingleInstance);
@@ -173,13 +202,7 @@ export function asSearchResultItem(
 			}),
 			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
 			// FIXME
-			image: toSecure(
-				bestSize(
-					bestImage(i, locale),
-					'Bibliography' === i[JsonLd.TYPE] ? Width.MEDIUM : Width.SMALL
-				),
-				auxdSecret
-			),
+			image: toSecure(bestSize(bestImage(i, locale), imageSize), auxdSecret),
 			typeStr: typeStr(getTypeLike(headerTopThing, vocabUtil), displayUtil, locale),
 			typeForIcon: getTypeForIcon(getTypeLike(headerTopThing, vocabUtil)), // FIXME
 			selectTypeStr: selectTypeStr(getTypeLike(i, vocabUtil), displayUtil, locale), // FIXME

@@ -29,6 +29,7 @@ export type UserSettings = {
 	debug?: DebugFlags[];
 	prefersNearMe?: boolean;
 	selectableResults?: boolean;
+	displayMode?: DisplayMode;
 };
 
 export enum DebugFlags {
@@ -38,3 +39,5 @@ export enum DebugFlags {
 export enum SettingsParams {
 	favouriteLibraries = 'favouriteLibraries'
 }
+
+export type DisplayMode = 'default' | 'gallery';

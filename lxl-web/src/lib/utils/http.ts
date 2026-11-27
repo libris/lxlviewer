@@ -62,3 +62,10 @@ export function getUriSlug(url: string | undefined) {
 		? urlArray.slice(urlArray.indexOf('term') + 1).join('/')
 		: urlArray.pop();
 }
+
+export function normalizeId(url: string | undefined) {
+	if (!url) {
+		return url;
+	}
+	return stripAnchor(trimSlashes(relativizeUrl(url)));
+}

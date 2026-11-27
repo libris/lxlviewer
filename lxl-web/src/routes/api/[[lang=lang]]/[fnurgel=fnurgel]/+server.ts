@@ -42,15 +42,15 @@ export async function GET({ params, locals }) {
 
 	const displayUtil: DisplayUtil = locals.display;
 	const vocabUtil: VocabUtil = locals.vocab;
-	const searchCard = asSearchResultItem(
-		[mainEntity],
+	const resourceCard = asSearchResultItem({
+		items: [mainEntity],
 		displayUtil,
 		vocabUtil,
-		getSupportedLocale(params?.lang),
-		AUXD_SECRET
-	)[0];
+		locale: getSupportedLocale(params?.lang),
+		auxdSecret: AUXD_SECRET
+	})[0];
 
-	return Response.json(searchCard, {
+	return Response.json(resourceCard, {
 		headers: {
 			'cache-control': 'public, max-age=300' // Probably best with an short max-age?
 		}

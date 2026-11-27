@@ -63,7 +63,13 @@ export const getSelectionData = query(
 						_categoryByCollection: mainEntity._categoryByCollection
 					})
 			);
-			return asSearchResultItem(sortedInstances, display, vocab, lang, AUXD_SECRET).map((i) => {
+			return asSearchResultItem({
+				items: sortedInstances,
+				displayUtil: display,
+				vocabUtil: vocab,
+				locale: lang,
+				auxdSecret: AUXD_SECRET
+			}).map((i) => {
 				return {
 					id: i[JsonLd.ID],
 					str: `${i.selectTypeStr} · ${toString(i[LensType.WebCardFooter])}`
@@ -73,7 +79,13 @@ export const getSelectionData = query(
 		mainEntity = centerOnWork(record['mainEntity'] as FramedData);
 		mainEntity.meta = { [JsonLd.ID]: record?.[JsonLd.ID] };
 
-		card = asSearchResultItem([mainEntity], display, vocab, lang, AUXD_SECRET)[0];
+		card = asSearchResultItem({
+			items: [mainEntity],
+			displayUtil: display,
+			vocabUtil: vocab,
+			locale: lang,
+			auxdSecret: AUXD_SECRET
+		})[0];
 
 		return { csl, card, work };
 	}

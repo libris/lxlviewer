@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import {
+	type DisplayMode,
 	ExpandedState,
 	type MyLibrariesType,
 	SettingsParams,
@@ -125,6 +126,10 @@ export class UserSettings {
 		this.update('selectableResults', setting);
 	}
 
+	setDisplayMode(setting: DisplayMode) {
+		this.update('displayMode', setting);
+	}
+
 	get myLibraries() {
 		return this.settings?.myLibraries;
 	}
@@ -155,6 +160,10 @@ export class UserSettings {
 
 	get selectableResults() {
 		return this.settings.selectableResults;
+	}
+
+	get displayMode() {
+		return this.settings.displayMode;
 	}
 
 	toURLSearchParams(): URLSearchParams {

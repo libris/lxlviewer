@@ -7,6 +7,7 @@
 	import { getHomepageContext } from '#lib/contexts/homepage.js';
 	import { getFeaturedPreviews } from '#lib/remotes/homepage.remote.js';
 	import { HeadingElem } from '#lib/types/decoratedData.js';
+	import { Width } from '#lib/types/auxd.ts';
 
 	type Props = {
 		featured: FeaturedSearch;
@@ -39,6 +40,7 @@
 			(!lazyload || (lazyload && shouldGetPreviews))
 			? getFeaturedPreviews({
 					...featured.previewParams,
+					imageSize: Width.MEDIUM.toString(),
 					lang: page.data.locale,
 					url: page.url.href
 				})

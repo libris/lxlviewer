@@ -22,6 +22,7 @@ import type {
 import type { TableOfContentsItem } from '#lib/components/TableOfContents.svelte';
 import type { HoldingsData, HoldingItem } from '#lib/types/holdings.js';
 import { type Relation } from '#lib/types/relations.js';
+import { Width } from '#lib/types/auxd.js';
 
 import { asArray, toString } from '#lib/utils/misc.js';
 import { pickProperty, first } from '#lib/utils/xl.server.js';
@@ -103,14 +104,14 @@ export const load = async ({ params, locals, fetch, url }) => {
 
 	if (resource.mainEntity?.['@reverse']?.instanceOf) {
 		// work - get card
-		workCard = asSearchResultItem(
-			[{ ...resource.mainEntity }],
+		workCard = asSearchResultItem({
+			items: [{ ...resource.mainEntity }],
 			displayUtil,
 			vocabUtil,
 			locale,
-			AUXD_SECRET,
+			auxdSecret: AUXD_SECRET,
 			myLibraries
-		)[0];
+		})[0];
 	} else if (resource.mainEntity.instanceOf) {
 		// instance - fetch work card
 		const workId = (resource.mainEntity.instanceOf[JsonLd.ID] || '').split('/').pop();
@@ -224,15 +225,15 @@ export const load = async ({ params, locals, fetch, url }) => {
 					_categoryByCollection: mainEntity._categoryByCollection
 				})
 		);
-		instances = asSearchResultItem(
-			sortedInstances,
+		instances = asSearchResultItem({
+			items: sortedInstances,
 			displayUtil,
 			vocabUtil,
 			locale,
-			AUXD_SECRET,
+			auxdSecret: AUXD_SECRET,
 			myLibraries,
 			subsetLibraries
-		);
+		});
 
 		if (!isWork && sortedInstances.length === 1) {
 			const items = sortedInstances[0]?.[JsonLd.REVERSE]?.itemOf ?? [];
@@ -316,6 +317,8 @@ export const load = async ({ params, locals, fetch, url }) => {
 			const params = Object.fromEntries(url.searchParams);
 			params.lang = locale;
 			params.url = url.href;
+
+			params.imageSize = Width.MEDIUM.toString();
 
 			if (v.is(SearchResultsSchema, params)) {
 				const preview = await getSearchResults(params);

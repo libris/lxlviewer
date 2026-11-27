@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { JsonLd } from '#lib/types/xl.ts';
 	import type { SearchResult } from '#lib/types/search.js';
+	import type { DisplayMode } from '#lib/types/userSettings.ts';
 	import { getUserSettings } from '#lib/contexts/userSettings.js';
 	import { MY_LIBRARIES_FILTER_ALIAS } from '#lib/constants/facets.js';
 	import { displayMappingToString } from '#lib/utils/displayMappingToString.js';
@@ -10,6 +11,9 @@
 	import Toolbar from '#lib/components/Toolbar.svelte';
 	import BiInfo from '~icons/bi/info-circle';
 	import BiQuestionCircle from '~icons/bi/question-circle';
+	import BiChevronDown from '~icons/bi/chevron-down';
+	import BiGrid from '~icons/bi/grid';
+	import BiViewList from '~icons/bi/view-list';
 
 	type SearchResultInfoProps = {
 		searchResult: SearchResult;
@@ -46,6 +50,14 @@
 		}
 		return false;
 	});
+
+	let displayMode = $state(userSettings.displayMode || 'default');
+
+	const displayOptions = $derived([
+		{ value: 'default', label: page.data.t('displayMode.default') },
+		{ value: 'gallery', label: page.data.t('displayMode.gallery') }
+	]);
+	let DisplayIcon = $derived(displayMode === 'gallery' ? BiGrid : BiViewList);
 
 	function toggleSelectAll(e: Event) {
 		const checkbox = e.target as HTMLInputElement;
@@ -100,6 +112,24 @@
 			{/snippet}
 			{#snippet trailingActions()}
 				<SearchResultSort />
+				<div class="relative">
+					<span class="text-subtle pointer-events-none absolute top-0 p-2">
+						<DisplayIcon aria-hidden="true" />
+					</span>
+					<select
+						id="search-display-select"
+						class="btn btn-primary w-px appearance-none px-8 @lg/content:w-auto"
+						bind:value={displayMode}
+						onchange={(e) => userSettings.setDisplayMode(e.currentTarget.value as DisplayMode)}
+					>
+						{#each displayOptions as option (option.value)}
+							<option value={option.value}>{option.label}</option>
+						{/each}
+					</select>
+					<span class="text-subtle pointer-events-none absolute top-0 right-1.5 py-2.5 text-sm">
+						<BiChevronDown aria-hidden="true" />
+					</span>
+				</div>
 			{/snippet}
 		</Toolbar>
 	{/if}

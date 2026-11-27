@@ -8,19 +8,20 @@
 	import { getUserSettings } from '#lib/contexts/userSettings.ts';
 	import { getModalContext } from '#lib/contexts/modal.svelte.ts';
 	import getPageTitle from '#lib/utils/getPageTitle.js';
-	import { relativizeUrl, stripAnchor, trimSlashes } from '#lib/utils/http.js';
+	import { normalizeId } from '#lib/utils/http.js';
 	import SiteFooter from '../SiteFooter.svelte';
 	import Toolbar from '#lib/components/Toolbar.svelte';
 	import LeadingPane from '#lib/components/find/LeadingPane.svelte';
 	import Filters from '#lib/components/find/Filters.svelte';
 	import SearchResultToolbar from '#lib/components/find/SearchResultToolbar.svelte';
 	import SearchResultInfo from '#lib/components/find/SearchResultInfo.svelte';
-	import SearchCard from '#lib/components/find/SearchCard.svelte';
+	import ResourceCard from '#lib/components/ResourceCard.svelte';
 	import Pagination from '#lib/components/find/Pagination.svelte';
 	import HoldingsContent from '#lib/components/HoldingsContent.svelte';
 	import Spinner from '#lib/components/Spinner.svelte';
 	import Modal from '#lib/components/Modal.svelte';
 	import Meta from '#lib/components/Meta.svelte';
+	import { JsonLd } from '#lib/types/xl.ts';
 
 	const searchResult: SearchResult = $derived(page.data.searchResult);
 	const facets: Promise<Facet[]> = $derived(page.data.facets);
@@ -42,15 +43,15 @@
 
 	const modalCard = $derived(
 		holdingsParam &&
-			searchResult.items.filter(
-				(item) => `${stripAnchor(trimSlashes(relativizeUrl(item['@id'])))}` === holdingsParam
-			)[0]
+			searchResult.items.filter((item) => normalizeId(item[JsonLd.ID]) === holdingsParam)[0]
 	);
 
 	const expandLeadingPaneBtnId = 'expand-leading-pane-btn';
 	const collapseLeadingPaneBtnId = 'collapse-leading-pane-btn';
 
 	const offset = $derived(parseInt(page.url.searchParams.get('_offset') || '0'));
+	const displayMode = $derived(userSettings.displayMode || 'default');
+	const isGallery = $derived(displayMode === 'gallery');
 
 	function onOpenLeadingPane() {
 		userSettings.openLeadingPane();
@@ -82,7 +83,7 @@
 		</LeadingPane>
 		<div class="search-result-content @container/content flex flex-1 flex-col">
 			<div class={['flex flex-1 flex-col', !trailingPane.visible && '@5xl/content:flex-row']}>
-				<div class="flex-1">
+				<div class="flex-1 @container/result">
 					<h1 id="search-results" class="sr-only">{page.data.t('search.searchResults')}</h1>
 					<SearchResultToolbar
 						{searchResult}
@@ -91,10 +92,18 @@
 					/>
 					<SearchResultInfo {searchResult} selectableResults={userSettings.selectableResults} />
 
-					<ol aria-labelledby="search-results" class="flex flex-col">
+					<ol
+						aria-labelledby="search-results"
+						class={[
+							!isGallery && 'flex flex-col',
+							isGallery &&
+								'grid p-2 gap-4 grid-cols-1 lg:p-3 @lg/result:grid-cols-2 @3xl/result:grid-cols-3 @5xl/result:grid-cols-4 @7xl/result:grid-cols-5 @10xl/result:grid-cols-6'
+						]}
+					>
 						{#each searchResult.items as item, index (item['@id'] + index)}
-							<li>
-								<SearchCard
+							<li class={[!isGallery && 'border-t border-t-neutral first:border-t-0']}>
+								<ResourceCard
+									variant={displayMode}
 									{item}
 									headingElement={HeadingElem.H2}
 									itemNo={offset + (index + 1)}
@@ -106,7 +115,7 @@
 					<Pagination data={searchResult} />
 				</div>
 				<!-- trailing pane toolbar -->
-				<div class="search-result-aside min-w-75">
+				<div class={['search-result-aside min-w-75', isGallery && 'hidden']}>
 					<div class="sticky-toolbar hidden @5xl/content:block">
 						<Toolbar />
 					</div>
@@ -130,7 +139,14 @@
 					<HoldingsContent {holdings}>
 						{#snippet card()}
 							{#if modalCard}
-								<SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} />
+								<div class="bg-page rounded-sm border-b border-b-neutral">
+									<ResourceCard
+										item={modalCard}
+										linkToResource={false}
+										allowActions={false}
+										allowPopovers={false}
+									/>
+								</div>
 							{/if}
 						{/snippet}
 					</HoldingsContent>
@@ -143,7 +159,6 @@
 {/if}
 
 <style lang="postcss">
-	@reference "tailwindcss";
 	.aside-content {
 		top: calc(var(--appbar-height) + (var(--spacing) * 4));
 	}

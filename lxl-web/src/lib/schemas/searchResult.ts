@@ -4,6 +4,7 @@ export const SearchResultsSchema = v.pipe(
 	v.object({
 		url: v.string(),
 		lang: v.string(),
+		imageSize: v.string(),
 		_q: v.string(),
 		_limit: v.optional(
 			v.pipe(v.union([v.string(), v.number()]), v.toNumber(), v.number(), v.toString())

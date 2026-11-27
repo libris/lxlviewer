@@ -237,6 +237,10 @@ export default {
 		yearAsc: 'Oldest first',
 		yearDesc: 'Newest first'
 	},
+	displayMode: {
+		default: 'Default view',
+		gallery: 'Gallery view'
+	},
 	errors: {
 		somethingWentWrong: 'Something went wrong',
 		notAvailable: 'Information is not available',
