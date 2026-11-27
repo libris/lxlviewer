@@ -147,12 +147,14 @@
 						{#snippet card()}
 							{#if modalCard}
 								<!-- <SearchCard item={modalCard} headingIsLink={false} allowPopovers={false} /> -->
-								<ResourceCard
-									item={modalCard}
-									linkToResource={false}
-									allowActions={false}
-									allowPopovers={false}
-								/>
+								<div class="bg-page rounded-sm border-b border-b-neutral">
+									<ResourceCard
+										item={modalCard}
+										linkToResource={false}
+										allowActions={false}
+										allowPopovers={false}
+									/>
+								</div>
 							{/if}
 						{/snippet}
 					</HoldingsContent>

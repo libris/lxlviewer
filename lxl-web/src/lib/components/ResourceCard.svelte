@@ -127,17 +127,18 @@
 						? 'high'
 						: undefined}
 					alt=""
-					class:rounded-full={isPerson}
-					class="object-contain object-top {!isPerson ? 'aspect-2/3' : 'aspect-square'}"
+					class={[
+						'object-top',
+						isPerson ? 'aspect-square rounded-full object-cover' : 'aspect-2/3 object-contain'
+					]}
 				/>
 			{:else}
 				<div class="flex items-center justify-center">
 					<img
 						src={placeholder}
 						alt=""
-						class:rounded-full={isPerson}
-						class:rounded-sm={!isPerson}
 						class={[
+							isPerson ? 'rounded-full' : 'rounded-sm',
 							'placeholder object-cover object-top',
 							bookAspectRatio(item.typeForIcon) && 'aspect-3/4'
 						]}
@@ -495,6 +496,12 @@
 	.card-body {
 		&:global(:has(a.link)) {
 			line-height: calc(var(--spacing) * 6);
+		}
+	}
+
+	.card-header-extra {
+		& :global(.Title-type) {
+			display: none;
 		}
 	}
 
