@@ -98,16 +98,11 @@
 						class={[
 							!isGallery && 'flex flex-col',
 							isGallery &&
-								'grid grid-cols-1 @lg/result:grid-cols-2 @4xl/result:grid-cols-3 @6xl/result:grid-cols-4 @8xl/result:grid-cols-6 @10xl/result:grid-cols-8'
+								'grid p-2 gap-4 grid-cols-1 lg:p-3 @lg/result:grid-cols-2 @3xl/result:grid-cols-3 @5xl/result:grid-cols-4 @7xl/result:grid-cols-5 @10xl/result:grid-cols-6'
 						]}
 					>
 						{#each searchResult.items as item, index (item['@id'] + index)}
-							<li
-								class={[
-									!isGallery && 'border-t border-t-neutral first:border-t-0',
-									isGallery && 'm-4'
-								]}
-							>
+							<li class={[!isGallery && 'border-t border-t-neutral first:border-t-0']}>
 								<!-- <SearchCard
 									{item}
 									headingElement={HeadingElem.H2}

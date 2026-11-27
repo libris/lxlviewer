@@ -153,7 +153,7 @@
 	<div
 		class={[
 			'resource-image mx-auto mb-2 flex w-full items-end justify-center',
-			aspectRatio === 'square' && 'aspect-square rounded-lg bg-neutral-50 p-3'
+			aspectRatio === 'square' && 'aspect-square rounded-lg bg-neutral-100 p-3'
 		]}
 	>
 		{#if item.image}
@@ -211,9 +211,9 @@
 	<article
 		id={cardId}
 		class={[
-			'resource-card grid w-full h-full gap-x-4 transition-colors print:break-inside-avoid',
+			'resource-card grid w-full gap-x-4 transition-colors print:break-inside-avoid',
 			variant,
-			variant === 'default' ? 'p-3' : 'p-0.5'
+			variant === 'default' && 'p-3'
 		]}
 		class:selectable
 	>
@@ -464,8 +464,6 @@
 				'actions'
 				'debug';
 		}
-		/* place actions at bottom */
-		grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
 
 		& .card-body {
 			& :global([data-property='isPartOf']) {
