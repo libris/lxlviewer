@@ -50,7 +50,7 @@ function localizeHref(
 
 	return (
 		(url.pathname.length > 1 ? url.pathname.replace(/\/+$/, '') : url.pathname) + // remove trailing slashes
-		url.search +
+		url.search.replaceAll('/', '%2F') +
 		url.hash
 	);
 }

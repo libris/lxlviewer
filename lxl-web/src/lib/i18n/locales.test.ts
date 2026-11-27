@@ -46,4 +46,15 @@ describe('initLocalizeHref', () => {
 		expect(localizeHref('/test?hello=world#top')).toEqual('/en/test?hello=world&_r=howdy#top');
 		expect(localizeHref('https://www.wikipedia.org/')).toEqual('https://www.wikipedia.org/');
 	});
+
+	it('slashes in search params are encoded (so consecutive slashes survive resolve())', () => {
+		const localizeHref = initLocalizeHref('sv', new URL('https://libris.kb.se'));
+		const href = localizeHref('/find?_q=category:%22https://id.kb.se/term/swepub/svep/ref%22+');
+		expect(href).toEqual(
+			'/find?_q=category:%22https:%2F%2Fid.kb.se%2Fterm%2Fswepub%2Fsvep%2Fref%22+'
+		);
+		expect(new URLSearchParams(href?.split('?')[1]).get('_q')).toEqual(
+			'category:"https://id.kb.se/term/swepub/svep/ref" '
+		);
+	});
 });
